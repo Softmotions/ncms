@@ -1,1 +1,1 @@
-# [Wiki] (https://dev.nsu.ru/gitlab/nsusite/ncms/wikis/home)
+# [Wiki] (https://dev.nsu.ru/gitlab/softmotions/ncms/wikis/home)
