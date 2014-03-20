@@ -17,7 +17,7 @@ public class NcmsServletContextListener extends GuiceServletContextListener {
     private static final Logger log = LoggerFactory.getLogger(NcmsServletContextListener.class);
 
     protected Injector getInjector() {
-        log.info("Building NCMS Guice injector");
+        log.info("BUILDING NCMS GUICE INJECTOR");
         return Guice.createInjector(new NcmsServletModule());
     }
 }
