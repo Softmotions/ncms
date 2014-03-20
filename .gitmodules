@@ -1,0 +1,3 @@
+[submodule "submodules/qx-softmotions"]
+	path = submodules/qx-softmotions
+	url = gitlab@dev.nsu.ru:softmotions/qx-softmotions.git

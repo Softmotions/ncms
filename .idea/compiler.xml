@@ -24,9 +24,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="ncms" />
+        <module name="engine" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="engine" target="1.8" />
+      <module name="ncms" target="1.7" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 
