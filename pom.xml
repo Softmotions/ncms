@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>engine</module>
+        <module>ncms-engine</module>
     </modules>
 
     <parent>
@@ -63,6 +63,8 @@
         <qooxdoo.build.job>release</qooxdoo.build.job>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
+        <guice.version>3.0</guice.version>
+        <guice.servlet.version>3.0</guice.servlet.version>
     </properties>
 
     <profiles>
@@ -153,7 +155,49 @@
         </pluginManagement>
     </build>
 
-    <dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet.api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.qooxdoo</groupId>
+                <artifactId>qooxdoo-sdk</artifactId>
+                <version>${qooxdoo.sdk.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>${guice.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject.extensions</groupId>
+                <artifactId>guice-servlet</artifactId>
+                <version>3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
+                <artifactId>softmotions-web</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
+                <artifactId>softmotions-utils</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.6</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

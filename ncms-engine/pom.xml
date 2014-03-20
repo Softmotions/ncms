@@ -28,6 +28,9 @@
                 <configuration>
                     <source>${java.source.version}</source>
                     <target>${java.source.version}</target>
+                    <compilerArgs>
+                        <arg>-Xlint</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
@@ -127,24 +130,26 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>${servlet.api.version}</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
         </dependency>
         <dependency>
             <groupId>org.qooxdoo</groupId>
             <artifactId>qooxdoo-sdk</artifactId>
-            <version>${qooxdoo.sdk.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-web</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-utils</artifactId>
-            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>

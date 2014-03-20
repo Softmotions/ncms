@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="engine:war exploded">
-    <output-path>$PROJECT_DIR$/engine/target/ncms-engine-1.0-SNAPSHOT</output-path>
+  <artifact type="exploded-war" name="ncms-engine:war exploded">
+    <output-path>$PROJECT_DIR$/ncms-engine/target/ncms-engine-1.0-SNAPSHOT</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="ncms-engine/web/Web" />
       <element id="directory" name="WEB-INF">
@@ -14,7 +14,7 @@
           <element id="library" level="project" name="Maven: com.google.inject.extensions:guice-servlet:3.0" />
           <element id="library" level="project" name="Maven: softmotions:softmotions-web:1.0.0" />
           <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.6" />
-          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.5" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.6" />
           <element id="library" level="project" name="Maven: softmotions:softmotions-utils:1.0.0" />
           <element id="library" level="project" name="Maven: org.beanshell:bsh:2.0b4" />
           <element id="library" level="project" name="Maven: net.sf.ujac:ujac:1.0.0" />

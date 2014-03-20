@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ncms-engine:war">
+    <output-path>$PROJECT_DIR$/ncms-engine/target</output-path>
+    <root id="archive" name="ncms-engine-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="ncms-engine:war exploded" />
+    </root>
+  </artifact>
+</component>
