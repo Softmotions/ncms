@@ -18,13 +18,13 @@ public class NcmsServletModule extends ServletModule {
     private static final Logger log = LoggerFactory.getLogger(NcmsServletModule.class);
 
     protected void configureServlets() {
-        log.info("Configuring Ncms servlets");
+        log.info("CONFIGURING NCMS SERVLETS:");
         bind(AssemblyServlet.class).in(Singleton.class);
         serveWithServletClass("/" + NcmsConstants.URL_ACCESS_PREFIX + "/asm", AssemblyServlet.class);
     }
 
     private void serveWithServletClass(String pattern, Class<? extends HttpServlet> clazz) {
-        log.info("\tServe '%s' with %s", pattern, clazz.getName());
+        log.info("\tSERVE {} => {}", pattern, clazz.getName());
         serve(pattern).with(clazz);
     }
 }
