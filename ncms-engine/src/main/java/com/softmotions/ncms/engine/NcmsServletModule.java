@@ -24,7 +24,7 @@ public class NcmsServletModule extends ServletModule {
     }
 
     private void serveWithServletClass(String pattern, Class<? extends HttpServlet> clazz) {
-        log.info("\tSERVE {} => {}", pattern, clazz.getName());
+        log.info("SERVE {} => {}", pattern, clazz.getName());
         serve(pattern).with(clazz);
     }
 }
