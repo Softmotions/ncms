@@ -37,6 +37,7 @@
     </developers>
 
     <properties>
+        <python.exec>python</python.exec>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.source.version>1.7</java.source.version>
@@ -44,19 +45,29 @@
         <servlet.api.version>3.1.0</servlet.api.version>
         <guice.version>3.0</guice.version>
         <guice.servlet.version>3.0</guice.servlet.version>
+        <qooxdoo.sdk.version>3.5</qooxdoo.sdk.version>
+        <qooxdoo.test.job>test</qooxdoo.test.job>
+        <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
     </properties>
 
 
     <profiles>
+        <profile>
+            <id>prerelease</id>
+            <properties>
+                <environment.type>prerelease</environment.type>
+                <environment.debug>true</environment.debug>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
         <profile>
             <id>debug</id>
             <properties>
                 <environment.type>debug</environment.type>
                 <environment.debug>true</environment.debug>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <id>production</id>

@@ -8,13 +8,16 @@
           <element id="module-output" name="ncms-engine-web" />
         </element>
         <element id="directory" name="lib">
+          <element id="archive" name="ncms-engine-qx-1.0-SNAPSHOT-prerelease.jar">
+            <element id="module-output" name="ncms-engine-qx" />
+          </element>
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.6" />
           <element id="library" level="project" name="Maven: com.google.inject:guice:3.0" />
           <element id="library" level="project" name="Maven: javax.inject:javax.inject:1" />
           <element id="library" level="project" name="Maven: aopalliance:aopalliance:1.0" />
           <element id="library" level="project" name="Maven: com.google.inject.extensions:guice-servlet:3.0" />
           <element id="library" level="project" name="Maven: softmotions:softmotions-web:1.0.0" />
           <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.6" />
-          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.6" />
           <element id="library" level="project" name="Maven: softmotions:softmotions-utils:1.0.0" />
           <element id="library" level="project" name="Maven: org.beanshell:bsh:2.0b4" />
           <element id="library" level="project" name="Maven: net.sf.ujac:ujac:1.0.0" />

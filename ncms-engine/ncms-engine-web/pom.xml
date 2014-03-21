@@ -110,6 +110,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>softmotions-ncms</groupId>
+            <artifactId>ncms-engine-qx</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <classifier>${environment.type}</classifier>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>

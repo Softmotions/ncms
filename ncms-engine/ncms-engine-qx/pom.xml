@@ -13,43 +13,15 @@
     <packaging>qooxdoo-jar</packaging>
 
     <properties>
-        <python.exec>python</python.exec>
-        <qooxdoo.sdk.version>3.5</qooxdoo.sdk.version>
-        <qooxdoo.test.job>test</qooxdoo.test.job>
-        <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
+        <qooxdoo.build.job>${environment.type}</qooxdoo.build.job>
         <qooxdoo.application.name>ncms</qooxdoo.application.name>
         <qooxdoo.application.summary>${project.name}</qooxdoo.application.summary>
         <qooxdoo.application.description>${project.description}</qooxdoo.application.description>
         <qooxdoo.submodules.dir>${basedir}/../../submodules</qooxdoo.submodules.dir>
     </properties>
 
-    <profiles>
-        <profile>
-            <id>qx-debug</id>
-            <properties>
-                <qooxdoo.build.job>debug</qooxdoo.build.job>
-            </properties>
-            <activation>
-               <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>qx-prerelease</id>
-            <properties>
-                <qooxdoo.build.job>prerelease</qooxdoo.build.job>
-            </properties>
-        </profile>
-        <profile>
-            <id>qx-production</id>
-            <properties>
-                <qooxdoo.build.job>production</qooxdoo.build.job>
-            </properties>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
-            <!-- QOOXDOO -->
             <plugin>
                 <groupId>softmotions</groupId>
                 <artifactId>qooxdoo-maven-plugin</artifactId>
