@@ -1,3 +1,4 @@
 .cache/
 .idea/workspace.xml
-
+/ncms-engine/ncms-engine-qx/target/
+/ncms-engine/ncms-engine-web/target/
