@@ -25,13 +25,16 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="engine" />
-        <module name="ncms-engine" />
+        <module name="ncms-engine-qx" />
+        <module name="ncms-engine-web" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="engine" target="1.8" />
       <module name="ncms" target="1.7" />
       <module name="ncms-engine" target="1.7" />
+      <module name="ncms-engine-qx" target="1.7" />
+      <module name="ncms-engine-web" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

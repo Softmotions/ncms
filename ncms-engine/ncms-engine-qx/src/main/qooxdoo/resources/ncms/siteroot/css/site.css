@@ -1,0 +1,9 @@
+.atopnav a, .atopnav a:link, .atopnav a:visited {
+    font-family: Arial, sans-serif;
+    text-decoration: none;
+    color: #314a6e;
+}
+
+.atopnav a.selected {
+    font-weight: bold;
+}

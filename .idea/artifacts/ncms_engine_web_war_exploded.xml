@@ -1,11 +1,11 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="ncms-engine:war exploded">
-    <output-path>$PROJECT_DIR$/ncms-engine/target/ncms-base-1.0-SNAPSHOT</output-path>
+  <artifact type="exploded-war" name="ncms-engine-web:war exploded">
+    <output-path>$PROJECT_DIR$/ncms-engine/ncms-engine-web/target/ncms-engine-web-1.0-SNAPSHOT</output-path>
     <root id="root">
-      <element id="javaee-facet-resources" facet="ncms-engine/web/Web" />
+      <element id="javaee-facet-resources" facet="ncms-engine-web/web/Web" />
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
-          <element id="module-output" name="ncms-engine" />
+          <element id="module-output" name="ncms-engine-web" />
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: com.google.inject:guice:3.0" />

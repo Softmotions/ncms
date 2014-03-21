@@ -1,0 +1,32 @@
+1) PREPARE THE APPLICATION
+To translate an application, all translatable strings must be marked using one of the following functions: 
+- this.tr(): translate a message
+- this.trn(): translate a message that supports a plural form
+- this.trc(): translate a message and providing a comment
+- this.marktr(): mark a string for translation, but do not perform any translation
+You can use these methods right away for your own classes if they are derived from qx.ui.core.Widget or qx.application.AbstractGui. 
+If that’s not the case you have to include the mixin qx.locale.MTranslation manually:
+qx.Class.define("custom.MyClass",
+{
+  extend : qx.core.Object,
+  include : [qx.locale.MTranslation],
+  ...
+});
+
+Example Change original code like this:
+var button = new qx.ui.form.Button("Hello World");
+to:
+var button = new qx.ui.form.Button(this.tr("Hello World"));
+
+2) CHECK YOUR CONFIG 
+After the source code has been prepared, the desired languages of the application may be specified in config.json, 
+in the LOCALES macro within the global let section, for example
+This would add a German and a French translation to the project. For a more exhaustive list of available locales see here.
+
+"let" : {
+    // ...
+    "LOCALES"       : ["de", "fr"]
+}
+
+3) GENERATE/UPDATE TRANSLATION FILES
+This is done automatically during the maven build process.
