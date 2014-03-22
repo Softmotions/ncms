@@ -5,8 +5,11 @@ package com.softmotions.ncms.engine;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class NcmsConstants {
+public class NcmsConfiguration {
 
     public static String URL_ACCESS_PREFIX = "ncms";
 
+    public NcmsConfiguration(String cfgResource) {
+
+    }
 }

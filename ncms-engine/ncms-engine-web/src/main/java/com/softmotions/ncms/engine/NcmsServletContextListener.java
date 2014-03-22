@@ -18,6 +18,7 @@ public class NcmsServletContextListener extends GuiceServletContextListener {
 
     protected Injector getInjector() {
         log.info("BUILDING NCMS GUICE INJECTOR");
-        return Guice.createInjector(new NcmsServletModule());
+        NcmsConfiguration cfg = new NcmsConfiguration();
+        return Guice.createInjector(new NcmsGuiceModule(cfg), new NcmsServletModule(cfg));
     }
 }
