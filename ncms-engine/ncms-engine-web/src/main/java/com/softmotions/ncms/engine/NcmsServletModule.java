@@ -27,7 +27,7 @@ public class NcmsServletModule extends ServletModule {
 
     protected void configureServlets() {
         log.info("CONFIGURING NCMS SERVLETS:");
-        String aprefix = "/" + NcmsConfiguration.URL_ACCESS_PREFIX;
+        String aprefix = cfg.getUrlPrefix();
 
         bind(AssemblyServlet.class).in(Singleton.class);
         serveWithServletClass(aprefix + "/asm", AssemblyServlet.class);
