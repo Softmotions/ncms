@@ -48,6 +48,7 @@
         <qooxdoo.sdk.version>3.5</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
+        <tomcat.version>7.0.52</tomcat.version>
     </properties>
 
     <repositories>
