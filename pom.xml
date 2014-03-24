@@ -43,7 +43,7 @@
         <java.source.version>1.7</java.source.version>
         <maven.war.plugin.version>2.4</maven.war.plugin.version>
         <servlet.api.version>3.1.0</servlet.api.version>
-        <guice.version>3.0</guice.version>
+        <guice.version>3.2.0</guice.version>
         <guice.servlet.version>3.0</guice.servlet.version>
         <qooxdoo.sdk.version>3.5</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
@@ -119,24 +119,24 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>com.google.inject</groupId>
-                <artifactId>guice</artifactId>
+                <groupId>org.sonatype.sisu</groupId>
+                <artifactId>sisu-guice</artifactId>
                 <version>${guice.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-servlet</artifactId>
-                <version>3.0</version>
+                <version>${guice.servlet.version}</version>
             </dependency>
             <dependency>
                 <groupId>softmotions</groupId>
                 <artifactId>softmotions-web</artifactId>
-                <version>1.0.0</version>
+                <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>softmotions</groupId>
                 <artifactId>softmotions-utils</artifactId>
-                <version>1.0.0</version>
+                <version>1.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
@@ -162,11 +162,6 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.6</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.3</version>
         </dependency>
     </dependencies>
 </project>
