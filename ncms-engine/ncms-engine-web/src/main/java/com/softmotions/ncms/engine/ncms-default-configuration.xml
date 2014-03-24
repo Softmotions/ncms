@@ -2,4 +2,18 @@
 
 <configuration>
     <url-prefix>/ncms</url-prefix>
+
+    <logging-configuration>
+        com/softmotions/ncms/engine/ncms-default-logging.xml
+    </logging-configuration>
+
+    <!-- Web resources packed in JAR archives.
+         Resources served by com.softmotions.commons.web.JarResourcesServlet -->
+    <jar-web-resources>
+        <resource>
+            <path-prefix>/</path-prefix>
+            <options>/ncms-engine-qx/ncms\,watch=true</options>
+        </resource>
+    </jar-web-resources>
+
 </configuration>

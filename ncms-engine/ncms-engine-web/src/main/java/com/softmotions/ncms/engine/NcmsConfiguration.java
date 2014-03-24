@@ -19,7 +19,7 @@ import java.net.URL;
  */
 public class NcmsConfiguration {
 
-    public static final String DEFAULT_CFG_RESOURCE = "/com/softmotions/ncms/engine/ncms-default-configuration.xml";
+    public static final String DEFAULT_CFG_RESOURCE = "com/softmotions/ncms/engine/ncms-default-configuration.xml";
 
     private static final Logger log = LoggerFactory.getLogger(NcmsConfiguration.class);
 
