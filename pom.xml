@@ -50,6 +50,25 @@
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>jaxion_repository</id>
+            <url>http://jaxion.org/mvn/</url>
+	    <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
 
     <profiles>
         <profile>
