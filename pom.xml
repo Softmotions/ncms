@@ -49,6 +49,8 @@
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
         <tomcat.version>7.0.52</tomcat.version>
+        <web.run.port>8080</web.run.port>
+        <web.context.reloadable>true</web.context.reloadable>
     </properties>
 
     <repositories>
@@ -77,6 +79,7 @@
             <properties>
                 <environment.type>prerelease</environment.type>
                 <environment.debug>true</environment.debug>
+                <web.context.reloadable>true</web.context.reloadable>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -87,6 +90,7 @@
             <properties>
                 <environment.type>debug</environment.type>
                 <environment.debug>true</environment.debug>
+                <web.context.reloadable>true</web.context.reloadable>
             </properties>
         </profile>
         <profile>
@@ -94,6 +98,7 @@
             <properties>
                 <environment.type>production</environment.type>
                 <environment.production>true</environment.production>
+                <web.context.reloadable>false</web.context.reloadable>
             </properties>
         </profile>
     </profiles>

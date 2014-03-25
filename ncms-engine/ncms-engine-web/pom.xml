@@ -180,9 +180,9 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <port>8080</port>
+                    <port>${web.run.port}</port>
                     <path>/</path>
-                    <contextReloadable>true</contextReloadable>
+                    <contextReloadable>${web.context.reloadable}</contextReloadable>
                 </configuration>
             </plugin>
 
