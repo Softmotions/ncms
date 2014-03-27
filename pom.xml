@@ -44,10 +44,10 @@
         <maven.war.plugin.version>2.4</maven.war.plugin.version>
         <servlet.api.version>3.1.0</servlet.api.version>
         <guice.version>3.2.0</guice.version>
-        <guice.servlet.version>3.0</guice.servlet.version>
         <qooxdoo.sdk.version>3.5</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
+        <ninjaframework.version>3.1.3</ninjaframework.version>
         <tomcat.version>7.0.52</tomcat.version>
         <web.run.port>8080</web.run.port>
         <web.context.reloadable>true</web.context.reloadable>
@@ -66,7 +66,7 @@
         <repository>
             <id>jaxion_repository</id>
             <url>http://jaxion.org/mvn/</url>
-	    <snapshots>
+            <snapshots>
                 <enabled>true</enabled>
             </snapshots>
         </repository>
@@ -149,9 +149,14 @@
                 <version>${guice.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.inject.extensions</groupId>
+                <groupId>org.sonatype.sisu.inject</groupId>
                 <artifactId>guice-servlet</artifactId>
-                <version>${guice.servlet.version}</version>
+                <version>${guice.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sonatype.sisu.inject</groupId>
+                <artifactId>guice-persist</artifactId>
+                <version>${guice.version}</version>
             </dependency>
             <dependency>
                 <groupId>softmotions</groupId>
@@ -177,6 +182,46 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
                 <version>1.7.6</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-servlet</artifactId>
+                <version>${ninjaframework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-configuration</groupId>
+                <artifactId>commons-configuration</artifactId>
+                <version>1.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.9.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>2.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-afterburner</artifactId>
+                <version>2.3.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
