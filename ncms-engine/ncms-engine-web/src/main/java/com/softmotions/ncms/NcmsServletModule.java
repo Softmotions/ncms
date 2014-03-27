@@ -18,7 +18,7 @@ public class NcmsServletModule extends ServletModule {
     private static final Logger log = LoggerFactory.getLogger(NcmsServletModule.class);
 
     protected void configureServlets() {
-        log.info("Configure NCMS servlets");
+        log.info("Configuring NCMS modules and servlets");
         NinjaProperties nprops =
                 (NinjaProperties) getServletContext()
                         .getAttribute(NcmsServletListener.NCMS_NINJA_PROPS_SCTX_KEY);
