@@ -4,11 +4,13 @@ import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.web.JarResourcesProvider;
 import com.softmotions.commons.web.JarResourcesServlet;
+import com.softmotions.ncms.db.NcmsDBModule;
 
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.SubnodeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,14 +45,18 @@ public class NcmsServletModule extends ServletModule {
         }
 
         //Bind NcmsConfiguration
-        NcmsConfiguration ncmsCfg = new NcmsConfiguration(nprops, ncmsCfgFile, true);
-        bind(NcmsConfiguration.class).toInstance(ncmsCfg);
+        NcmsConfiguration cfg = new NcmsConfiguration(nprops, ncmsCfgFile, true);
+        bind(NcmsConfiguration.class).toInstance(cfg);
 
-        initServlets(ncmsCfg);
+        SubnodeConfiguration subCfg = cfg.impl().configurationAt("db");
+        if (subCfg != null) {
+            install(new NcmsDBModule(subCfg));
+        }
+
+        initServlets(cfg);
     }
 
     protected void initServlets(NcmsConfiguration cfg) {
-
         //Ninja init part
         bind(NinjaServletDispatcher.class).asEagerSingleton();
         serve(cfg.getNcmsPrefix() + "/exec/*", NinjaServletDispatcher.class);

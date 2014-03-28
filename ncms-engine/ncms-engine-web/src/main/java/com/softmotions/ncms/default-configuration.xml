@@ -10,5 +10,10 @@
         </resource>
     </jar-web-resources>
 
+    <database>
+        <url>jdbc:h2:mem:ncms-test</url>
+        <username>sa</username>
+        <password/>
+    </database>
 
 </configuration>

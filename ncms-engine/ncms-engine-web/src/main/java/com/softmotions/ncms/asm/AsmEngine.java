@@ -29,8 +29,4 @@ public interface AsmEngine {
     void dropAsmAttribute(String asmName, String attrName) throws AsmException;
 
     void clearAllAsms() throws AsmException;
-
-    void beginBatch() throws AsmException;
-
-    void finishBatch() throws AsmException;
 }
