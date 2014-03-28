@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <configuration>
-    <url-prefix>/ncms</url-prefix>
+    <ncms-prefix>/ncms</ncms-prefix>
+
+    <jar-web-resources>
+        <resource>
+            <path-prefix>/</path-prefix>
+            <options>/ncms-engine-qx/ncms</options>
+        </resource>
+    </jar-web-resources>
+
+
 </configuration>
