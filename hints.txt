@@ -1,3 +1,9 @@
 - Flyaway prefix generation:
 
     date +%g%j%H%M%S
+
+mvn liquibase:update tomcat7:run
+
+mvn liquibase:dropAll
+
+
