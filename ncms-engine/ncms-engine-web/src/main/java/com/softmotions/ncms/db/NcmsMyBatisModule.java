@@ -52,6 +52,7 @@ public class NcmsMyBatisModule extends XMLMyBatisModule {
         if (props.containsKey("JDBC.password")) {
             props.setProperty("JDBC.password", "********");
         }
+        log.info("MyBatis environment type: " + cfg.getEnvironmentType());
         log.info("MyBatis properties: " + props);
         log.info("Using mybatis config: " + cfgLocation);
 

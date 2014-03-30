@@ -4,19 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
-
     <properties>
-
     </properties>
-
     <settings>
         <setting name="useGeneratedKeys" value="true"/>
     </settings>
-
-
     <mappers>
         <mapper resource="com/softmotions/ncms/db/AsmMapper.xml"/>
     </mappers>
-
-
 </configuration>
