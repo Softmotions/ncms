@@ -80,9 +80,11 @@
         <profile>
             <id>prerelease</id>
             <properties>
-                <environment.type>prerelease</environment.type>
-                <environment.debug>true</environment.debug>
+                <ncms.environment>prerelease</ncms.environment>
+                <ncms.debug>true</ncms.debug>
                 <web.context.reloadable>true</web.context.reloadable>
+                <ncms.configuration>conf/ncms-dev-configuration.xml</ncms.configuration>
+                <ncms.log.configuration>conf/ncms-dev-logging.xml</ncms.log.configuration>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -91,17 +93,21 @@
         <profile>
             <id>debug</id>
             <properties>
-                <environment.type>debug</environment.type>
-                <environment.debug>true</environment.debug>
+                <ncms.environment>debug</ncms.environment>
+                <ncms.debug>true</ncms.debug>
                 <web.context.reloadable>true</web.context.reloadable>
+                <ncms.configuration>conf/ncms-dev-configuration.xml</ncms.configuration>
+                <ncms.log.configuration>conf/ncms-dev-logging.xml</ncms.log.configuration>
             </properties>
         </profile>
         <profile>
             <id>production</id>
             <properties>
-                <environment.type>production</environment.type>
-                <environment.production>true</environment.production>
+                <ncms.environment>production</ncms.environment>
+                <ncms.production>true</ncms.production>
                 <web.context.reloadable>false</web.context.reloadable>
+                <ncms.configuration>conf/ncms-prod-configuration.xml</ncms.configuration>
+                <ncms.log.configuration>conf/ncms-prod-logging.xml</ncms.log.configuration>
             </properties>
         </profile>
     </profiles>

@@ -33,7 +33,7 @@ public class NcmsMyBatisModule extends XMLMyBatisModule {
 
     protected void initialize() {
         XMLConfiguration xcfg = cfg.impl();
-        setEnvironmentId(cfg.getEnvironmentType());
+        setEnvironmentId(cfg.getDBEnvironmentType());
         SubnodeConfiguration mbCfg = xcfg.configurationAt("mybatis");
         String cfgLocation = mbCfg.getString("[@config]");
         if (cfgLocation == null) {
@@ -42,17 +42,20 @@ public class NcmsMyBatisModule extends XMLMyBatisModule {
         setClassPathResource(cfgLocation);
 
         Properties props = new Properties();
-        List<HierarchicalConfiguration> fields = xcfg.configurationsAt("mybatis.property");
+        List<HierarchicalConfiguration> fields = mbCfg.configurationsAt("property");
         for (HierarchicalConfiguration sub : fields) {
             String pkey = sub.getString("[@name]");
             String pval = sub.getString("[@value]");
             props.setProperty(pkey, pval);
         }
         addProperties(props);
-        if (props.containsKey("JDBC.password")) {
-            props.setProperty("JDBC.password", "********");
+
+        for (String k : props.stringPropertyNames()) {
+            if (k.toLowerCase().contains("passw")) {
+                props.setProperty(k, "********");
+            }
         }
-        log.info("MyBatis environment type: " + cfg.getEnvironmentType());
+        log.info("MyBatis environment type: " + cfg.getDBEnvironmentType());
         log.info("MyBatis properties: " + props);
         log.info("Using mybatis config: " + cfgLocation);
 

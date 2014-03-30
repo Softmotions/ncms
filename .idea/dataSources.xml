@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="3444002972">
-    <data-source source="LOCAL" name="H2 - ide test" uuid="54869444-7ca6-459f-8660-0e3c179ec350">
-      <driver-ref>h2.in-memory</driver-ref>
+  <component name="DataSourceManagerImpl" format="xml" hash="881466522">
+    <data-source source="LOCAL" name="H2 - NCMS" uuid="8b913111-8a78-4ced-9acf-6e1606c30a2b">
+      <driver-ref>h2.embedded</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.h2.Driver</jdbc-driver>
-      <jdbc-url>jdbc:h2:mem:ncms-ide-test</jdbc-url>
-      <libraries>
-        <library>
-          <url>file://$MAVEN_REPOSITORY$/com/h2database/h2/1.3.175/h2-1.3.175.jar</url>
-        </library>
-      </libraries>
+      <jdbc-url>jdbc:h2:~/ncms-dev-db</jdbc-url>
+      <user-name>sa</user-name>
+      <libraries />
     </data-source>
   </component>
 </project>

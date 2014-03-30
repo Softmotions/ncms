@@ -11,10 +11,10 @@
     </jar-web-resources>
 
     <mybatis config="com/softmotions/ncms/db/myibatis-config.xml">
-        <property name="JDBC.driver" value="org.hsqldb.jdbcDriver"/>
-        <property name="JDBC.url" value="jdbc:h2:mem:ncms-test"/>
-        <property name="JDBC.username" value="sa"/>
-        <property name="JDBC.password" value=""/>
+        <property name="JDBC.driver" value="${ncms.JDBC.driver}"/>
+        <property name="JDBC.url" value="${ncms.JDBC.url}"/>
+        <property name="JDBC.username" value="${ncms.JDBC.username}"/>
+        <property name="JDBC.password" value="${ncms.JDBC.password}"/>
     </mybatis>
 
 </configuration>

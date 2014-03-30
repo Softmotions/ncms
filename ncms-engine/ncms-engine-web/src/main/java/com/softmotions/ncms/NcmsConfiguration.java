@@ -22,7 +22,7 @@ import java.net.URL;
  */
 public class NcmsConfiguration {
 
-    public static final String DEFAULT_CFG_RESOURCE = "com/softmotions/ncms/default-configuration.xml";
+    public static final String DEFAULT_CFG_RESOURCE = "com/softmotions/ncms/ncms-configuration.xml";
 
     private static final Logger log = LoggerFactory.getLogger(NcmsConfiguration.class);
 
@@ -57,10 +57,18 @@ public class NcmsConfiguration {
     }
 
     public String getEnvironmentType() {
-        //application.environment.type
-        String etype = ninjaProperties.get("application.environment.type");
+        String etype = ninjaProperties.get("ncms.environment");
         if (etype == null) {
-            throw new RuntimeException("Missing required 'application.environment.type' " +
+            throw new RuntimeException("Missing required 'ncms.environment' " +
+                                       "property in 'application.conf'");
+        }
+        return etype;
+    }
+
+    public String getDBEnvironmentType() {
+        String etype = ninjaProperties.get("ncms.db.environment");
+        if (etype == null) {
+            throw new RuntimeException("Missing required 'ncms.db.environment' " +
                                        "property in 'application.conf'");
         }
         return etype;

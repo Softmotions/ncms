@@ -9,6 +9,31 @@
     <settings>
         <setting name="useGeneratedKeys" value="true"/>
     </settings>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC">
+            </transactionManager>
+            <dataSource type="POOLED">
+                <property name="driver" value="${JDBC.driver}"/>
+                <property name="url" value="${JDBC.url}"/>
+                <property name="username" value="${JDBC.username}"/>
+                <property name="password" value="${JDBC.password}"/>
+            </dataSource>
+        </environment>
+
+        <environment id="production">
+            <transactionManager type="JDBC">
+            </transactionManager>
+            <dataSource type="POOLED">
+                <property name="driver" value="${JDBC.driver}"/>
+                <property name="url" value="${JDBC.url}"/>
+                <property name="username" value="${JDBC.username}"/>
+                <property name="password" value="${JDBC.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
     <mappers>
         <mapper resource="com/softmotions/ncms/db/AsmMapper.xml"/>
     </mappers>
