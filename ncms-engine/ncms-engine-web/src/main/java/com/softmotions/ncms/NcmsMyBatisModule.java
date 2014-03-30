@@ -1,6 +1,4 @@
-package com.softmotions.ncms.db;
-
-import com.softmotions.ncms.NcmsConfiguration;
+package com.softmotions.ncms;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;

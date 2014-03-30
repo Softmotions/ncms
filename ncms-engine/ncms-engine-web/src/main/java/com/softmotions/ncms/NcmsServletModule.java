@@ -4,7 +4,6 @@ import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.web.JarResourcesProvider;
 import com.softmotions.commons.web.JarResourcesServlet;
-import com.softmotions.ncms.db.NcmsMyBatisModule;
 
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
