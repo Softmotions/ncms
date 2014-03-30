@@ -56,6 +56,15 @@ public class NcmsConfiguration {
         return xcfg;
     }
 
+    public String getEnvironmentType() {
+        //application.environment.type
+        String etype = ninjaProperties.get("application.environment.type");
+        if (etype == null) {
+            throw new RuntimeException("Missing required 'application.environment.type' " +
+                                       "property in 'application.conf'");
+        }
+        return etype;
+    }
 
     public NinjaProperties getNinjaProperties() {
         return ninjaProperties;

@@ -3,11 +3,9 @@ package com.softmotions.ncms.asm;
 import java.io.Serializable;
 
 /**
- * Assembly attribute.
+ * Assembly attribute option.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmAttribute implements Serializable {
-
-
+public class AsmAttributeOption implements Serializable {
 }

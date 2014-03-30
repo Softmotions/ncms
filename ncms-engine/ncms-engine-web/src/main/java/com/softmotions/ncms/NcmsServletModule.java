@@ -4,13 +4,12 @@ import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.web.JarResourcesProvider;
 import com.softmotions.commons.web.JarResourcesServlet;
-import com.softmotions.ncms.db.NcmsDBModule;
+import com.softmotions.ncms.db.NcmsMyBatisModule;
 
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.SubnodeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +47,8 @@ public class NcmsServletModule extends ServletModule {
         NcmsConfiguration cfg = new NcmsConfiguration(nprops, ncmsCfgFile, true);
         bind(NcmsConfiguration.class).toInstance(cfg);
 
-        SubnodeConfiguration subCfg = cfg.impl().configurationAt("db");
-        if (subCfg != null) {
-            install(new NcmsDBModule(subCfg));
+        if (cfg.impl().configurationAt("mybatis") != null) {
+            install(new NcmsMyBatisModule(cfg));
         }
 
         initServlets(cfg);

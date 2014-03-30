@@ -57,13 +57,14 @@
           <element id="library" level="project" name="Maven: javax.validation:validation-api:1.0.0.GA" />
           <element id="library" level="project" name="Maven: net.sf.ehcache:ehcache:2.8.0" />
           <element id="library" level="project" name="Maven: net.spy:spymemcached:2.10.4" />
-          <element id="library" level="project" name="Maven: com.googlecode.flyway:flyway-core:2.3.1" />
           <element id="library" level="project" name="Maven: com.google.inject.extensions:guice-persist:3.0" />
           <element id="library" level="project" name="Maven: com.google.inject.extensions:guice-servlet:3.0" />
           <element id="library" level="project" name="Maven: org.mybatis:mybatis:3.2.6" />
           <element id="library" level="project" name="Maven: org.mybatis:mybatis-guice:3.6" />
           <element id="library" level="project" name="Maven: ognl:ognl:3.0.8" />
-          <element id="library" level="project" name="Maven: javassist:javassist:3.11.0.GA" />
+          <element id="library" level="project" name="Maven: org.javassist:javassist:3.18.1-GA" />
+          <element id="library" level="project" name="Maven: org.liquibase:liquibase-core:3.1.1" />
+          <element id="library" level="project" name="Maven: org.yaml:snakeyaml:1.13" />
           <element id="library" level="project" name="Maven: com.h2database:h2:1.3.175" />
         </element>
       </element>
