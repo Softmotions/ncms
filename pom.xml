@@ -83,8 +83,7 @@
                 <ncms.environment>prerelease</ncms.environment>
                 <ncms.debug>true</ncms.debug>
                 <web.context.reloadable>true</web.context.reloadable>
-                <ncms.configuration>conf/ncms-dev-configuration.xml</ncms.configuration>
-                <ncms.log.configuration>conf/ncms-dev-logging.xml</ncms.log.configuration>
+                <ninja.mode>dev</ninja.mode>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -96,8 +95,7 @@
                 <ncms.environment>debug</ncms.environment>
                 <ncms.debug>true</ncms.debug>
                 <web.context.reloadable>true</web.context.reloadable>
-                <ncms.configuration>conf/ncms-dev-configuration.xml</ncms.configuration>
-                <ncms.log.configuration>conf/ncms-dev-logging.xml</ncms.log.configuration>
+                <ninja.mode>dev</ninja.mode>
             </properties>
         </profile>
         <profile>
@@ -106,8 +104,7 @@
                 <ncms.environment>production</ncms.environment>
                 <ncms.production>true</ncms.production>
                 <web.context.reloadable>false</web.context.reloadable>
-                <ncms.configuration>conf/ncms-prod-configuration.xml</ncms.configuration>
-                <ncms.log.configuration>conf/ncms-prod-logging.xml</ncms.log.configuration>
+                <ninja.mode>prod</ninja.mode>
             </properties>
         </profile>
     </profiles>
