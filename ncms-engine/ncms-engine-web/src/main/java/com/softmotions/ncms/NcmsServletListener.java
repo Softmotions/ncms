@@ -5,6 +5,8 @@ import ninja.utils.NinjaModeHelper;
 import ninja.utils.NinjaProperties;
 import ninja.utils.NinjaPropertiesImpl;
 
+import com.google.inject.Injector;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -25,6 +27,11 @@ public class NcmsServletListener implements ServletContextListener {
         ninjaServletListener = new NinjaServletListener();
     }
 
+    public NcmsServletListener(NinjaProperties ninjaProperties) {
+        this.ninjaProperties = ninjaProperties;
+        ninjaServletListener = new NinjaServletListener();
+    }
+
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         if (ninjaProperties == null) {
             ninjaProperties = new NinjaPropertiesImpl(
@@ -41,5 +48,9 @@ public class NcmsServletListener implements ServletContextListener {
         } finally {
             servletContextEvent.getServletContext().removeAttribute(NCMS_NINJA_PROPS_SCTX_KEY);
         }
+    }
+
+    public Injector getInjector() {
+        return ninjaServletListener.getInjector();
     }
 }

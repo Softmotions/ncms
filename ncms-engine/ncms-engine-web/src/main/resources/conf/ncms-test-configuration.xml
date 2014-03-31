@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<configuration>
+    <ncms-prefix>/ncms</ncms-prefix>
+
+    <jar-web-resources>
+        <resource>
+            <path-prefix>/</path-prefix>
+            <options>/ncms-engine-qx/ncms</options>
+        </resource>
+    </jar-web-resources>
+
+    <mybatis config="com/softmotions/ncms/db/myibatis-config.xml">
+        <property name="JDBC.driver" value="org.h2.Driver"/>
+        <property name="JDBC.url" value="jdbc:h2:mem:ncms"/>
+        <property name="JDBC.username" value="sa"/>
+        <property name="JDBC.password" value=""/>
+    </mybatis>
+
+</configuration>

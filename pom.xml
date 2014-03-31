@@ -190,6 +190,12 @@
                 <version>${ninjaframework.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.ninjaframework</groupId>
+                <artifactId>ninja-test-utilities</artifactId>
+                <version>${ninjaframework.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
                 <version>${slf4j-api.version}</version>
