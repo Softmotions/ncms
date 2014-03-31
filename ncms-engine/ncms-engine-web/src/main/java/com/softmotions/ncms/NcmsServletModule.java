@@ -9,6 +9,7 @@ import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,10 +45,16 @@ public class NcmsServletModule extends ServletModule {
 
         //Bind NcmsConfiguration
         NcmsConfiguration cfg = new NcmsConfiguration(nprops, ncmsCfgFile, true);
+        XMLConfiguration xcfg = cfg.impl();
+
         bind(NcmsConfiguration.class).toInstance(cfg);
 
-        if (cfg.impl().configurationAt("mybatis") != null) {
+        if (xcfg.configurationAt("mybatis") != null) {
             install(new NcmsMyBatisModule(cfg));
+        }
+
+        if (xcfg.configurationAt("liquibase") != null) {
+            install(new NcmsLiquibaseModule());
         }
 
         initServlets(cfg);

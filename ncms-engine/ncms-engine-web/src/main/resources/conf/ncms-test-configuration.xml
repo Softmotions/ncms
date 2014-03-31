@@ -17,4 +17,9 @@
         <property name="JDBC.password" value=""/>
     </mybatis>
 
+    <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
+        <dropAll/>
+        <update/>
+    </liquibase>
+
 </configuration>
