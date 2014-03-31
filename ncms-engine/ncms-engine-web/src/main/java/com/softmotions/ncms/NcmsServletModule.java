@@ -4,6 +4,7 @@ import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.web.JarResourcesProvider;
 import com.softmotions.commons.web.JarResourcesServlet;
+import com.softmotions.ncms.asm.AsmGuiceModule;
 
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
@@ -51,6 +52,7 @@ public class NcmsServletModule extends ServletModule {
 
         if (xcfg.configurationAt("mybatis") != null) {
             install(new NcmsMyBatisModule(cfg));
+            install(new AsmGuiceModule());
         }
 
         if (xcfg.configurationAt("liquibase") != null) {

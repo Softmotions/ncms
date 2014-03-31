@@ -35,6 +35,6 @@
     </environments>
 
     <mappers>
-        <mapper resource="com/softmotions/ncms/db/AsmMapper.xml"/>
+        <mapper resource="com/softmotions/ncms/asm/dao/AsmMapper.xml"/>
     </mappers>
 </configuration>
