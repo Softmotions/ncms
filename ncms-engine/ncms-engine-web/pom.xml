@@ -35,20 +35,6 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <!--<mainClass>startup.class.name</mainClass>-->
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
             <!-- Allows you to run Ninja via the SuperDevMode. -->
             <!-- run "mvn ninja:run" on the command line for the best -->
             <!-- development experience. -->
@@ -71,14 +57,6 @@
                     <username>${ncms.JDBC.username}</username>
                     <password>${ncms.JDBC.password}</password>
                 </configuration>
-                <!--<executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>update</goal>
-                        </goals>
-                    </execution>
-                </executions>-->
             </plugin>
 
             <plugin>
@@ -223,7 +201,6 @@
                     </systemProperties>
                 </configuration>
             </plugin>
-
         </plugins>
 
         <resources>
@@ -254,63 +231,16 @@
             <classifier>${ncms.environment}</classifier>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>softmotions</groupId>
-            <artifactId>softmotions-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>softmotions</groupId>
-            <artifactId>softmotions-utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-        <!--<dependency>
-            <groupId>net.sf.trove4j</groupId>
-            <artifactId>trove4j</artifactId>
-            <version>3.0.3</version>
-        </dependency>-->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-afterburner</artifactId>
-        </dependency>
+
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.ninjaframework</groupId>
-            <artifactId>ninja-servlet</artifactId>
+            <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot</artifactId>
             <exclusions>
-                <!--<exclusion>
-                    <groupId>com.google.inject</groupId>
-                    <artifactId>guice</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.inject.extensions</groupId>
-                    <artifactId>guice-persist</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.google.inject.extensions</groupId>
-                    <artifactId>guice-servlet</artifactId>
-                </exclusion>-->
                 <exclusion>
                     <groupId>org.hibernate</groupId>
                     <artifactId>hibernate-entitymanager</artifactId>
@@ -323,77 +253,39 @@
                     <groupId>com.googlecode.flyway</groupId>
                     <artifactId>flyway-core</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-servlet</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-test-utilities</artifactId>
-        </dependency>
-        <!--<dependency>
-            <groupId>org.sonatype.sisu</groupId>
-            <artifactId>sisu-guice</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.sonatype.sisu.inject</groupId>
-            <artifactId>guice-servlet</artifactId>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.sonatype.sisu.inject</groupId>
-            <artifactId>guice-persist</artifactId>
-        </dependency>-->
-        <dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-multibindings</artifactId>
-            <version>3.0</version>
-            <scope>provided</scope>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-afterburner</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-guice</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ognl</groupId>
-            <artifactId>ognl</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-        </dependency>
+
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.3.175</version>
         </dependency>
     </dependencies>
-
 </project>
