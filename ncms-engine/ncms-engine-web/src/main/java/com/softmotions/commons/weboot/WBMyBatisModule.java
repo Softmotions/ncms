@@ -1,4 +1,4 @@
-package com.softmotions.ncms;
+package com.softmotions.commons.weboot;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -19,13 +19,13 @@ import java.util.Properties;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class NcmsMyBatisModule extends XMLMyBatisModule {
+public class WBMyBatisModule extends XMLMyBatisModule {
 
-    private static final Logger log = LoggerFactory.getLogger(NcmsMyBatisModule.class);
+    private static final Logger log = LoggerFactory.getLogger(WBMyBatisModule.class);
 
-    final NcmsConfiguration cfg;
+    final WBConfiguration cfg;
 
-    public NcmsMyBatisModule(NcmsConfiguration cfg) {
+    public WBMyBatisModule(WBConfiguration cfg) {
         this.cfg = cfg;
     }
 

@@ -1,4 +1,4 @@
-package com.softmotions.ncms;
+package com.softmotions.commons.weboot;
 
 import ninja.servlet.NinjaServletListener;
 import ninja.utils.NinjaModeHelper;
@@ -11,23 +11,23 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
- * NCMS engine startup listener.
+ * Weboot engine startup listener.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class NcmsServletListener implements ServletContextListener {
+public class WBServletListener implements ServletContextListener {
 
-    public static final String NCMS_NINJA_PROPS_SCTX_KEY = "com.softmotions.ncms.NINJA_PROPS";
+    public static final String WB_NINJA_PROPS_SCTX_KEY = "com.softmotions.weboot.NINJA_PROPS";
 
     final NinjaServletListener ninjaServletListener;
 
     NinjaProperties ninjaProperties;
 
-    public NcmsServletListener() {
+    public WBServletListener() {
         ninjaServletListener = new NinjaServletListener();
     }
 
-    public NcmsServletListener(NinjaProperties ninjaProperties) {
+    public WBServletListener(NinjaProperties ninjaProperties) {
         this.ninjaProperties = ninjaProperties;
         ninjaServletListener = new NinjaServletListener();
     }
@@ -38,7 +38,7 @@ public class NcmsServletListener implements ServletContextListener {
                     NinjaModeHelper.determineModeFromSystemPropertiesOrProdIfNotSet());
             ninjaServletListener.setNinjaProperties((NinjaPropertiesImpl) ninjaProperties);
         }
-        servletContextEvent.getServletContext().setAttribute(NCMS_NINJA_PROPS_SCTX_KEY, ninjaProperties);
+        servletContextEvent.getServletContext().setAttribute(WB_NINJA_PROPS_SCTX_KEY, ninjaProperties);
         ninjaServletListener.contextInitialized(servletContextEvent);
     }
 
@@ -46,7 +46,7 @@ public class NcmsServletListener implements ServletContextListener {
         try {
             ninjaServletListener.contextDestroyed(servletContextEvent);
         } finally {
-            servletContextEvent.getServletContext().removeAttribute(NCMS_NINJA_PROPS_SCTX_KEY);
+            servletContextEvent.getServletContext().removeAttribute(WB_NINJA_PROPS_SCTX_KEY);
         }
     }
 

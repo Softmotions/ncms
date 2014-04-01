@@ -1,4 +1,4 @@
-package com.softmotions.ncms;
+package com.softmotions.commons.weboot;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -28,9 +28,9 @@ import java.util.List;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class NcmsLiquibaseModule extends AbstractModule {
+public class WBLiquibaseModule extends AbstractModule {
 
-    private static final Logger log = LoggerFactory.getLogger(NcmsLiquibaseModule.class);
+    private static final Logger log = LoggerFactory.getLogger(WBLiquibaseModule.class);
 
     protected void configure() {
         bind(LiquibaseInitializer.class).asEagerSingleton();
@@ -42,7 +42,7 @@ public class NcmsLiquibaseModule extends AbstractModule {
         DataSource ds;
 
         @Inject
-        NcmsConfiguration cfg;
+        WBConfiguration cfg;
 
         @Start(order = 10)
         public void start() {
@@ -101,7 +101,7 @@ public class NcmsLiquibaseModule extends AbstractModule {
                     }
                 }
             } catch (Exception e) {
-                log.error("Failed to initiate NcmsLiquibaseModule", e);
+                log.error("Failed to initiate WBLiquibaseModule", e);
                 throw new RuntimeException(e);
             }
         }

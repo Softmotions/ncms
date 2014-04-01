@@ -4,88 +4,35 @@ import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.web.JarResourcesProvider;
 import com.softmotions.commons.web.JarResourcesServlet;
+import com.softmotions.commons.weboot.WBServletModule;
 
-import com.google.inject.Module;
 import com.google.inject.Singleton;
-import com.google.inject.servlet.ServletModule;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServlet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * NCMS engine servlet module.
- *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class NcmsServletModule extends ServletModule {
+public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
 
-    private static final Logger log = LoggerFactory.getLogger(NcmsServletModule.class);
-
-    protected void configureServlets() {
-        log.info("Configuring NCMS modules and servlets");
-        NinjaProperties nprops =
-                (NinjaProperties) getServletContext()
-                        .getAttribute(NcmsServletListener.NCMS_NINJA_PROPS_SCTX_KEY);
-        if (nprops == null) {
-            throw new RuntimeException("Unable to find Ninja framework properties in " +
-                                       "ServletContext#" + NcmsServletListener.NCMS_NINJA_PROPS_SCTX_KEY
-                                       + " attribute");
-        }
+    protected NcmsConfiguration createConfiguration(NinjaProperties nprops) {
         String ncmsCfgFile = nprops.get("ncms.configurationFile");
         if (ncmsCfgFile == null) {
             log.warn("Missing 'ncms.configurationFile' property in the ninja configuration, " +
                      "using fallback resource location: " + NcmsConfiguration.DEFAULT_CFG_RESOURCE);
+            ncmsCfgFile = NcmsConfiguration.DEFAULT_CFG_RESOURCE;
         }
+        return new NcmsConfiguration(nprops, ncmsCfgFile, true);
+    }
 
-        //Bind NcmsConfiguration
-        NcmsConfiguration cfg = new NcmsConfiguration(nprops, ncmsCfgFile, true);
-        XMLConfiguration xcfg = cfg.impl();
+    protected void init(NcmsConfiguration cfg) {
 
         bind(NcmsConfiguration.class).toInstance(cfg);
 
-        if (xcfg.configurationAt("mybatis") != null) {
-            install(new NcmsMyBatisModule(cfg));
-        }
-        if (xcfg.configurationAt("liquibase") != null) {
-            install(new NcmsLiquibaseModule());
-        }
-
-        ClassLoader cl = ObjectUtils.firstNonNull(
-                Thread.currentThread().getContextClassLoader(),
-                getClass().getClassLoader()
-        );
-        List<HierarchicalConfiguration> mconfigs = xcfg.configurationsAt("modules.module");
-        for (final HierarchicalConfiguration mcfg : mconfigs) {
-            String mclassName = mcfg.getString("[@class]");
-            if (StringUtils.isBlank(mclassName)) {
-                continue;
-            }
-            try {
-                Class mclass = cl.loadClass(mclassName);
-                if (!Module.class.isAssignableFrom(mclass)) {
-                    log.warn("Module class: " + mclassName + " is not Guice module, skipped");
-                    continue;
-                }
-                log.info("Installing " + mclassName + " Guice module");
-                install((Module) mclass.newInstance());
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                throw new RuntimeException("Failed to activate Guice module: " + mclassName, e);
-            }
-        }
-
-        initServlets(cfg);
-    }
-
-    protected void initServlets(NcmsConfiguration cfg) {
         //Ninja init part
         bind(NinjaServletDispatcher.class).asEagerSingleton();
         serve(cfg.getNcmsPrefix() + "/exec/*", NinjaServletDispatcher.class);
@@ -108,17 +55,5 @@ public class NcmsServletModule extends ServletModule {
         bind(JarResourcesServlet.class).in(Singleton.class);
         bind(JarResourcesProvider.class).to(JarResourcesServlet.class);
         serve(cfg.getNcmsPrefix() + "/*", JarResourcesServlet.class, params);
-
     }
-
-    protected void serve(String pattern, Class<? extends HttpServlet> servletClass) {
-        log.info("Serving {} with {}", pattern, servletClass);
-        serve(pattern).with(servletClass);
-    }
-
-    protected void serve(String pattern, Class<? extends HttpServlet> servletClass, Map<String, String> params) {
-        log.info("Serving {} with {}", pattern, servletClass);
-        serve(pattern).with(servletClass, params);
-    }
-
 }

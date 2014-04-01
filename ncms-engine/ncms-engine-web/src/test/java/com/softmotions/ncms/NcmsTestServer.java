@@ -4,6 +4,8 @@ import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
 
+import com.softmotions.commons.weboot.WBServletListener;
+
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
 
@@ -95,7 +97,7 @@ public class NcmsTestServer {
 
         String ninjaContextPath;
 
-        NcmsServletListener ninjaServletListener;
+        WBServletListener ninjaServletListener;
 
         public NcmsJetty() {
             //some sensible defaults
@@ -143,7 +145,7 @@ public class NcmsTestServer {
                 // Therefore we inject the server name here:
                 ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
 
-                ninjaServletListener = new NcmsServletListener(ninjaProperties);
+                ninjaServletListener = new WBServletListener(ninjaProperties);
                 context.addEventListener(ninjaServletListener);
                 context.addFilter(GuiceFilter.class, "/*", null);
                 context.addServlet(DefaultServlet.class, "/");
