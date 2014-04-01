@@ -2,7 +2,6 @@ package com.softmotions.ncms.db;
 
 import com.softmotions.commons.weboot.mb.MBAction;
 import com.softmotions.ncms.NcmsWebTest;
-import com.softmotions.ncms.asm.ASMCriteriaQuery;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
@@ -60,12 +59,11 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         AsmAttribute attr2 = new AsmAttribute("name2", "type2", "val2");
         assertEquals(1, adao.insertAsmAttribute(asm, attr2));
 
-        ASMCriteriaQuery cq =
-                new ASMCriteriaQuery()
-                        .orderBy("name").desc()
-                        .onAsmAttribute()
-                        .orderBy("type")
-                        .limit(100);
+        AsmDAO.Criteria cq = adao.newCriteria()
+                .orderBy("name").desc()
+                .onAsmAttribute()
+                .orderBy("type")
+                .limit(100);
 
         asmList = adao.selectAsmByCriteria(cq);
         assertEquals(1, asmList.size());
@@ -98,7 +96,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertTrue(hasException);
 
         //Find by PK
-        cq = new ASMCriteriaQuery().pk(asm.getId());
+        cq = adao.newCriteria().pk(asm.getId());
         asm = adao.selectAsmByCriteriaOne(cq);
         assertNotNull(asm);
         assertEquals(asm.getId(), asm2.getId());

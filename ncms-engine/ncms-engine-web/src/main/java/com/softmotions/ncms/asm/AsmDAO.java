@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.commons.weboot.mb.MBAction;
+import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
 import com.softmotions.commons.weboot.mb.MBDAOSupport;
 
 import com.google.inject.Inject;
@@ -11,6 +12,7 @@ import org.mybatis.guice.transactional.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Assembly access DAO.
@@ -23,6 +25,14 @@ public class AsmDAO extends MBDAOSupport {
     @Inject
     public AsmDAO(SqlSession sess) {
         super(sess);
+    }
+
+    public Criteria newCriteria() {
+        return new Criteria();
+    }
+
+    public Criteria newCriteria(Map<String, Object> params) {
+        return new Criteria(params);
     }
 
     @Transactional
@@ -47,7 +57,7 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public List<Asm> selectAsmByCriteria(ASMCriteriaQuery cq) {
+    public List<Asm> selectAsmByCriteria(Criteria cq) {
         cq.finish();
         if (cq.getStatement() != null) {
             return sess.selectList(cq.getStatement(), cq);
@@ -57,7 +67,7 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public Asm selectAsmByCriteriaOne(ASMCriteriaQuery cq) {
+    public Asm selectAsmByCriteriaOne(Criteria cq) {
         cq.finish();
         if (cq.getStatement() != null) {
             return sess.selectOne(cq.getStatement(), cq);
@@ -65,4 +75,25 @@ public class AsmDAO extends MBDAOSupport {
             return sess.selectOne("com.softmotions.ncms.AsmMapper.selectAsmByCriteria", cq);
         }
     }
+
+    public static class Criteria extends MBCriteriaQuery<Criteria> {
+
+        private Criteria() {
+        }
+
+        private Criteria(Map<String, Object> params) {
+            super(params);
+        }
+
+        public Criteria onAsm() {
+            prefixedBy(null);
+            return this;
+        }
+
+        public Criteria onAsmAttribute() {
+            prefixedBy("ATTR_");
+            return this;
+        }
+    }
+
 }
