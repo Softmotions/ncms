@@ -11,6 +11,11 @@
          SELECT * FROM ASMS ORDER BY name ASC
     </select>
 
+
+
+
+
+
     <insert id="insertAsm" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
         INSERT INTO ASMS

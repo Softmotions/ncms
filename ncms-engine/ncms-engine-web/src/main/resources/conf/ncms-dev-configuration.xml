@@ -22,4 +22,8 @@
         <update/>
     </liquibase>
 
+    <modules>
+        <module class="com.softmotions.ncms.asm.AsmGuiceModule"/>
+    </modules>
+
 </configuration>

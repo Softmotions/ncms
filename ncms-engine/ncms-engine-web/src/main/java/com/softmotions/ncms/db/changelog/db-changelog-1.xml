@@ -6,7 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="1" author="adam">
+    <changeSet id="1" author="adamansky@gmail.com">
 
         <!-- ===================== ASMS ========================== -->
 
@@ -27,7 +27,7 @@
             <column name="name"></column>
         </createIndex>
 
-        <!-- =================== ASM_ATTRS ======================= -->
+        <!-- ==================== ASM_ATTRS ======================= -->
 
         <createTable tableName="ASM_ATTRS"
                      remarks="Assembly attributes">
@@ -53,6 +53,39 @@
                                  referencedTableName="ASMS"
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"/>
+
+        <!-- ================ ASSEMBLY PARENTS ==================== -->
+
+        <createTable tableName="ASM_PARENTS">
+            <column name="asm_id" type="java.sql.Types.BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="asm_parent_id" type="java.sql.Types.BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="ASM_PARENTS"
+                     indexName="IDX_ASMPARENTS_UNIQ"
+                     unique="true">
+            <column name="asm_id"></column>
+            <column name="asm_parent_id"></column>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="ASM_PARENTS"
+                                 baseColumnNames="asm_id"
+                                 constraintName="FK_ASMPARENTS_ASMID"
+                                 referencedTableName="ASMS"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="ASM_PARENTS"
+                                 baseColumnNames="asm_parent_id"
+                                 constraintName="FK_ASMPARENTS_ASMPARENTID"
+                                 referencedTableName="ASMS"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
     </changeSet>
 
 </databaseChangeLog>

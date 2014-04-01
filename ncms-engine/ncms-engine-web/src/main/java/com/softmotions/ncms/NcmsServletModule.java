@@ -4,13 +4,15 @@ import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.web.JarResourcesProvider;
 import com.softmotions.commons.web.JarResourcesServlet;
-import com.softmotions.ncms.asm.AsmGuiceModule;
 
+import com.google.inject.Module;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,11 +54,32 @@ public class NcmsServletModule extends ServletModule {
 
         if (xcfg.configurationAt("mybatis") != null) {
             install(new NcmsMyBatisModule(cfg));
-            install(new AsmGuiceModule());
         }
-
         if (xcfg.configurationAt("liquibase") != null) {
             install(new NcmsLiquibaseModule());
+        }
+
+        ClassLoader cl = ObjectUtils.firstNonNull(
+                Thread.currentThread().getContextClassLoader(),
+                getClass().getClassLoader()
+        );
+        List<HierarchicalConfiguration> mconfigs = xcfg.configurationsAt("modules.module");
+        for (final HierarchicalConfiguration mcfg : mconfigs) {
+            String mclassName = mcfg.getString("[@class]");
+            if (StringUtils.isBlank(mclassName)) {
+                continue;
+            }
+            try {
+                Class mclass = cl.loadClass(mclassName);
+                if (!Module.class.isAssignableFrom(mclass)) {
+                    log.warn("Module class: " + mclassName + " is not Guice module, skipped");
+                    continue;
+                }
+                log.info("Installing " + mclassName + " Guice module");
+                install((Module) mclass.newInstance());
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException("Failed to activate Guice module: " + mclassName, e);
+            }
         }
 
         initServlets(cfg);

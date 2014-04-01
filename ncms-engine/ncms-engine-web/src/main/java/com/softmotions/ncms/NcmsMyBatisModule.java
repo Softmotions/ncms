@@ -55,7 +55,7 @@ public class NcmsMyBatisModule extends XMLMyBatisModule {
         }
         log.info("MyBatis environment type: " + cfg.getDBEnvironmentType());
         log.info("MyBatis properties: " + props);
-        log.info("Using mybatis config: " + cfgLocation);
+        log.info("MyBatis config: " + cfgLocation);
 
         bind(DataSource.class).toProvider(DataSourceProvider.class);
     }
