@@ -1,7 +1,5 @@
 package com.softmotions.ncms.asm;
 
-import com.softmotions.ncms.asm.dao.AsmDAO;
-
 import com.google.inject.AbstractModule;
 
 /**

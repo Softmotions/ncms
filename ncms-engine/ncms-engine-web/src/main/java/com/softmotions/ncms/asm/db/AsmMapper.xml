@@ -5,9 +5,7 @@
 
 <mapper namespace="com.softmotions.ncms.AsmMapper">
 
-    <sql id="asmColumns">id, name, description</sql>
-
-    <select id="selectAllAsm" resultType="com.softmotions.ncms.asm.Asm">
+    <select id="selectAllPlainAsms" resultType="com.softmotions.ncms.asm.Asm">
          select * from ASMS order by NAME asc
     </select>
 
@@ -15,28 +13,40 @@
             keyProperty="id" useGeneratedKeys="true">
         insert into ASMS
         (NAME, DESCRIPTION)
-        values (
-           #{name},
-           #{description}
-        )
+        values (#{name}, #{description})
+    </insert>
+
+    <insert id="insertAsmAttribute" parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        insert into ASM_ATTRS
+        (ASM_ID, NAME, TYPE, VALUE)
+        values (#{asmId}, #{name}, #{type}, #{value})
     </insert>
 
     <select id="selectAsmByCriteria"
             resultType="com.softmotions.ncms.asm.Asm"
+            parameterType="java.util.Map"
             resultMap="asmFullRM">
-       select asm.*,
-       attr.NAME    as ATTR_NAME,
-       attr.TYPE    as ATTR_TYPE,
-       attr.VALUE   as ATTR_VALUE
-       from ASMS as asm
-       left outer join ASM_ATTRS attr on attr.ASM_ID = asm.ID
+        select asm.*,
+        attr.ASM_ID as ATTR_ASM_ID,
+        attr.NAME as ATTR_NAME,
+        attr.TYPE as ATTR_TYPE,
+        attr.VALUE as ATTR_VALUE
+        from ASMS as asm
+        left outer join ASM_ATTRS attr on attr.ASM_ID = asm.ID
+        <where>
+            <if test="CQ_PK != null">asm.ID = #{CQ_PK}</if>
+            <if test="name != null">asm.NAME = #{name}</if>
+        </where>
+        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">limit ${CQ_LIMIT}</if>
+        <if test="CQ_OFFSET">offset ${CQ_OFFSET}</if>
     </select>
 
     <!-- ======================== Result maps ============================= -->
 
     <resultMap id="attrPlainRM" type="com.softmotions.ncms.asm.AsmAttribute">
         <id property="name" column="NAME"/>
-        <id column="ASM_ID"/>
+        <id property="asmId" column="ASM_ID"/>
         <result property="type" column="TYPE"/>
         <result property="value" column="VALUE"/>
     </resultMap>
@@ -46,7 +56,7 @@
 
     <resultMap id="asmPlainRM" type="com.softmotions.ncms.asm.Asm">
         <constructor>
-            <idArg column="ID" javaType="int"/>
+            <idArg column="ID" javaType="long"/>
             <arg column="NAME" javaType="string"/>
         </constructor>
         <result property="description" column="DESCRIPTION"/>
@@ -60,5 +70,4 @@
                     columnPrefix="ATTR_"
                 />
     </resultMap>
-
 </mapper>

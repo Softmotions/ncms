@@ -9,11 +9,22 @@ import java.io.Serializable;
  */
 public class AsmAttribute implements Serializable {
 
+    long asmId;
+
     String name;
 
     String value;
 
     String type;
+
+    public AsmAttribute() {
+    }
+
+    public AsmAttribute(String name, String type, String value) {
+        this.name = name;
+        this.value = value;
+        this.type = type;
+    }
 
     public String getName() {
         return name;

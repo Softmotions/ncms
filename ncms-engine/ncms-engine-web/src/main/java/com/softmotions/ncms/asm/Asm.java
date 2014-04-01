@@ -23,7 +23,7 @@ public class Asm implements Serializable {
     public Asm() {
     }
 
-    public Asm(long id, String name) {
+    public Asm(Long id, String name) {
         this.id = id;
         this.name = name;
     }

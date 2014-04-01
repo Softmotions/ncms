@@ -240,6 +240,10 @@
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-weboot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ninjaframework</groupId>
+            <artifactId>ninja-servlet</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.hibernate</groupId>
@@ -254,10 +258,6 @@
                     <artifactId>flyway-core</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.ninjaframework</groupId>
-            <artifactId>ninja-servlet</artifactId>
         </dependency>
         <dependency>
             <groupId>org.ninjaframework</groupId>
