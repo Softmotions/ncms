@@ -12,55 +12,60 @@
 
         <createTable tableName="ASMS"
                      remarks="Assemblies">
-            <column name="id" type="java.sql.Types.BIGINT" autoIncrement="true">
+            <column name="ID" type="java.sql.Types.BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="java.sql.Types.VARCHAR(128)">
+            <column name="NAME" type="java.sql.Types.VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="java.sql.Types.VARCHAR(256)"/>
+            <column name="DESCRIPTION" type="java.sql.Types.VARCHAR(256)"/>
         </createTable>
 
         <createIndex tableName="ASMS"
                      indexName="IDX_ASMS_NAME"
                      unique="true">
-            <column name="name"></column>
+            <column name="NAME"></column>
         </createIndex>
 
         <!-- ==================== ASM_ATTRS ======================= -->
 
         <createTable tableName="ASM_ATTRS"
                      remarks="Assembly attributes">
-            <column name="asm_id" type="java.sql.Types.BIGINT">
+            <column name="ASM_ID" type="java.sql.Types.BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="name" type="java.sql.Types.VARCHAR(128)">
+            <column name="NAME" type="java.sql.Types.VARCHAR(128)">
                 <constraints nullable="false"/>
+            </column>
+            <column name="TYPE" type="java.sql.Types.VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="java.sql.Types.VARCHAR(1024)">
             </column>
         </createTable>
 
         <createIndex tableName="ASM_ATTRS"
                      indexName="IDX_ASMATTRS_UNIQ"
                      unique="true">
-            <column name="name"></column>
-            <column name="asm_id"></column>
+            <column name="NAME"></column>
+            <column name="ASM_ID"></column>
         </createIndex>
 
         <!-- FK ASM_ATTRS => ASM  -->
         <addForeignKeyConstraint baseTableName="ASM_ATTRS"
-                                 baseColumnNames="asm_id"
+                                 baseColumnNames="ASM_ID"
                                  constraintName="FK_ASMATTRS_ASM"
                                  referencedTableName="ASMS"
-                                 referencedColumnNames="id"
+                                 referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
 
         <!-- ================ ASSEMBLY PARENTS ==================== -->
 
         <createTable tableName="ASM_PARENTS">
-            <column name="asm_id" type="java.sql.Types.BIGINT">
+            <column name="ASM_ID" type="java.sql.Types.BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="asm_parent_id" type="java.sql.Types.BIGINT">
+            <column name="ASM_PARENT_ID" type="java.sql.Types.BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -68,22 +73,22 @@
         <createIndex tableName="ASM_PARENTS"
                      indexName="IDX_ASMPARENTS_UNIQ"
                      unique="true">
-            <column name="asm_id"></column>
-            <column name="asm_parent_id"></column>
+            <column name="ASM_ID"></column>
+            <column name="ASM_PARENT_ID"></column>
         </createIndex>
 
         <addForeignKeyConstraint baseTableName="ASM_PARENTS"
-                                 baseColumnNames="asm_id"
+                                 baseColumnNames="ASM_ID"
                                  constraintName="FK_ASMPARENTS_ASMID"
                                  referencedTableName="ASMS"
-                                 referencedColumnNames="id"
+                                 referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="ASM_PARENTS"
-                                 baseColumnNames="asm_parent_id"
+                                 baseColumnNames="ASM_PARENT_ID"
                                  constraintName="FK_ASMPARENTS_ASMPARENTID"
                                  referencedTableName="ASMS"
-                                 referencedColumnNames="id"
+                                 referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
 
     </changeSet>

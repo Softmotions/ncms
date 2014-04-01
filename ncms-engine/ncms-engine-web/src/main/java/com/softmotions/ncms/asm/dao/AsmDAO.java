@@ -30,12 +30,17 @@ public class AsmDAO {
     }
 
     @Transactional
-    public List<Asm> getAllAsms() {
-        return sess.selectList("com.softmotions.ncms.asm.getAllAsms");
+    public List<Asm> selectAllAsm() {
+        return sess.selectList("com.softmotions.ncms.AsmMapper.selectAllAsm");
     }
 
     @Transactional
     public int insertAsm(Asm asm) {
-        return sess.insert("com.softmotions.ncms.asm.insertAsm", asm);
+        return sess.insert("com.softmotions.ncms.AsmMapper.insertAsm", asm);
+    }
+
+    @Transactional
+    public List<Asm> selectAsmByCriteria() {
+        return sess.selectList("com.softmotions.ncms.AsmMapper.selectAsmByCriteria");
     }
 }

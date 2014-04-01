@@ -9,9 +9,12 @@
         </encoder>
     </appender>
 
-    <logger name="com.softmotions.commons.web" level="DEBUG" />
+    <logger name="com.softmotions.commons.web" level="DEBUG"/>
+
+    <!-- Debugging MyBatis SQL statements -->
+    <logger name="com.softmotions.ncms.AsmMapper" level="TRACE"/>
 
     <root level="info">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

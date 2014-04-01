@@ -1,18 +1,13 @@
 package com.softmotions.ncms.db;
 
 import com.softmotions.ncms.NcmsWebTest;
-import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.dao.AsmDAO;
 
 import com.google.inject.Injector;
 
-import org.apache.ibatis.exceptions.PersistenceException;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class NcmsModelAsmTest extends NcmsWebTest {
 
@@ -22,11 +17,12 @@ public class NcmsModelAsmTest extends NcmsWebTest {
     public void testInsertAssembly() throws Exception {
         Injector injector = getInjector();
         AsmDAO adao = injector.getInstance(AsmDAO.class);
-        Asm asm = new Asm();
+
+        /*Asm asm = new Asm();
         asm.setName("foo");
         Assert.assertEquals(1, adao.insertAsm(asm));
 
-        List<Asm> allAsms = adao.getAllAsms();
+        List<Asm> allAsms = adao.selectAllAsm();
         Assert.assertFalse(allAsms.isEmpty());
 
         Asm asm2 = allAsms.get(0);
@@ -43,6 +39,8 @@ public class NcmsModelAsmTest extends NcmsWebTest {
             Assert.assertTrue(e instanceof PersistenceException);
             PersistenceException pe = (PersistenceException) e;
         }
-        Assert.assertTrue(hasException);
+        Assert.assertTrue(hasException);*/
+
+        adao.selectAsmByCriteria();
     }
 }

@@ -7,6 +7,7 @@
     <properties>
     </properties>
     <settings>
+        <setting name="logImpl" value="SLF4J"/>
         <setting name="useGeneratedKeys" value="true"/>
     </settings>
 

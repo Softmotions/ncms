@@ -1,6 +1,9 @@
 package com.softmotions.ncms.asm;
 
+import com.softmotions.commons.cont.AbstractIndexedCollection;
+
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Assembly object.
@@ -15,12 +18,18 @@ public class Asm implements Serializable {
 
     String description;
 
-    public long getId() {
-        return id;
+    AttrsList attributes;
+
+    public Asm() {
     }
 
-    public void setId(long id) {
+    public Asm(long id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {
@@ -37,5 +46,19 @@ public class Asm implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public AsmAttribute getAttribute(String name) {
+        return attributes != null ? attributes.getIndex().get(name) : null;
+    }
+
+    public Collection<AsmAttribute> getAttributes() {
+        return attributes;
+    }
+
+    public static class AttrsList extends AbstractIndexedCollection<String, AsmAttribute> {
+        protected String getElementKey(AsmAttribute el) {
+            return el.getName();
+        }
     }
 }

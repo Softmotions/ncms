@@ -3,27 +3,62 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.softmotions.ncms.asm">
+<mapper namespace="com.softmotions.ncms.AsmMapper">
 
     <sql id="asmColumns">id, name, description</sql>
 
-    <select id="getAllAsms" resultType="com.softmotions.ncms.asm.Asm">
-         SELECT * FROM ASMS ORDER BY name ASC
+    <select id="selectAllAsm" resultType="com.softmotions.ncms.asm.Asm">
+         select * from ASMS order by NAME asc
     </select>
-
-
-
-
-
 
     <insert id="insertAsm" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
-        INSERT INTO ASMS
-        (name, description)
-        VALUES (
+        insert into ASMS
+        (NAME, DESCRIPTION)
+        values (
            #{name},
            #{description}
         )
     </insert>
+
+    <select id="selectAsmByCriteria"
+            resultType="com.softmotions.ncms.asm.Asm"
+            resultMap="asmFullRM">
+       select asm.*,
+       attr.NAME    as ATTR_NAME,
+       attr.TYPE    as ATTR_TYPE,
+       attr.VALUE   as ATTR_VALUE
+       from ASMS as asm
+       left outer join ASM_ATTRS attr on attr.ASM_ID = asm.ID
+    </select>
+
+    <!-- ======================== Result maps ============================= -->
+
+    <resultMap id="attrPlainRM" type="com.softmotions.ncms.asm.AsmAttribute">
+        <id property="name" column="NAME"/>
+        <id column="ASM_ID"/>
+        <result property="type" column="TYPE"/>
+        <result property="value" column="VALUE"/>
+    </resultMap>
+
+    <resultMap id="attrFullRM" type="com.softmotions.ncms.asm.AsmAttribute" extends="attrPlainRM">
+    </resultMap>
+
+    <resultMap id="asmPlainRM" type="com.softmotions.ncms.asm.Asm">
+        <constructor>
+            <idArg column="ID" javaType="int"/>
+            <arg column="NAME" javaType="string"/>
+        </constructor>
+        <result property="description" column="DESCRIPTION"/>
+    </resultMap>
+
+    <resultMap id="asmFullRM" type="com.softmotions.ncms.asm.Asm" extends="asmPlainRM">
+        <collection property="attributes"
+                    javaType="com.softmotions.ncms.asm.Asm$AttrsList"
+                    ofType="com.softmotions.ncms.asm.AsmAttribute"
+                    resultMap="attrFullRM"
+                    columnPrefix="ATTR_"
+                />
+    </resultMap>
 
 </mapper>
