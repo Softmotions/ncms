@@ -55,6 +55,18 @@ public class AsmCore implements Serializable {
         this.templateEngine = templateEngine;
     }
 
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AsmCore asmCore = (AsmCore) o;
+        if (!location.equals(asmCore.location)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        return location.hashCode();
+    }
+
     public String toString() {
         final StringBuilder sb = new StringBuilder("AsmCore{");
         sb.append("id=").append(id);
