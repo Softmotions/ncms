@@ -74,10 +74,12 @@
             <column name="NAME" type="java.sql.Types.VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="TYPE" type="java.sql.Types.VARCHAR(128)">
+            <column name="TYPE" type="java.sql.Types.VARCHAR(512)">
                 <constraints nullable="false"/>
             </column>
             <column name="VALUE" type="java.sql.Types.VARCHAR(1024)">
+            </column>
+            <column name="LARGE_VALUE" type="java.sql.Types.CLOB">
             </column>
         </createTable>
 

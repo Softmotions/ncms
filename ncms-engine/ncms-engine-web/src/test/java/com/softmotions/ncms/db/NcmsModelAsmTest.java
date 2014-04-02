@@ -19,6 +19,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -34,7 +36,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
 
         Asm asm = new Asm();
         asm.setName("foo");
-        assertEquals(1, adao.insertAsm(asm));
+        assertEquals(1, adao.asmInsert(asm));
 
         List<Asm> asmList = adao.selectAllPlainAsms();
         assertFalse(asmList.isEmpty());
@@ -47,7 +49,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
 
         boolean hasException = false;
         try {
-            adao.insertAsm(asm);
+            adao.asmInsert(asm);
         } catch (Exception e) {
             hasException = true;
             assertTrue(e instanceof PersistenceException);
@@ -55,10 +57,10 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertTrue(hasException);
 
         AsmAttribute attr1 = new AsmAttribute("name1", "type1", "val1");
-        assertEquals(1, adao.insertAsmAttribute(asm, attr1));
+        assertEquals(1, adao.asmSetAttribute(asm, attr1));
 
         AsmAttribute attr2 = new AsmAttribute("name2", "type2", "val2");
-        assertEquals(1, adao.insertAsmAttribute(asm, attr2));
+        assertEquals(1, adao.asmSetAttribute(asm, attr2));
 
         AsmDAO.AsmCriteria cq = adao.newAsmCriteria()
                 .orderBy("name").desc()
@@ -89,7 +91,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
 
         hasException = false;
         try {
-            adao.insertAsmAttribute(asm, attr2);
+            adao.asmSetAttribute(asm, attr2);
         } catch (Exception e) {
             hasException = true;
             assertTrue(e instanceof PersistenceException);
@@ -129,7 +131,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
 
         //Insert AsmCore
         AsmCore core = new AsmCore("file:///some/file", "my first assembly core");
-        adao.insertAsmCore(core);
+        adao.asmSetCore(core);
 
         //Select by criteria query
         AsmCore core2 = adao.newCriteria("location", "file:///some/file")
@@ -141,13 +143,13 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertEquals(core.getLocation(), core2.getLocation());
 
         core = new AsmCore("file:///some/file2", "the second assembly core");
-        adao.insertAsmCore(core);
+        adao.asmSetCore(core);
 
         //Update core
         core.setName(null);
         core.setLocation(null);
         core.setTemplateEngine("freemarker");
-        assertEquals(1, adao.updateAsmCore(core));
+        assertEquals(1, adao.coreUpdate(core));
 
         //Test attachment of core
         core = adao.newCriteria("name", "the second assembly core")
@@ -160,7 +162,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertNotNull(asm);
 
         asm.setCore(core);
-        assertEquals(1, adao.updateAsm(asm));
+        assertEquals(1, adao.asmUpdate(asm));
 
         asm = adao.newAsmCriteria().param("name", "foo").selectOne();
         assertNotNull(asm);
@@ -168,9 +170,63 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertEquals(core.getId(), asm.getCore().getId());
         assertEquals(core.getLocation(), asm.getCore().getLocation());
 
-        //Test assemblies hierachy
-        //log.info("PARENTS!!!");
-        //asm.getParents().size();
+         /*
+         Test assemblies inheritance:
 
+            p[0]
+             /\
+            /  \
+         p[1]  p[2]
+           \    /
+             \/
+             asm
+         */
+        Asm[] parentsArr = new Asm[]{
+                new Asm("p[0]"),
+                new Asm("p[1]"),
+                new Asm("p[2]")
+        };
+        for (Asm a : parentsArr) {
+            adao.asmInsert(a);
+        }
+        parentsArr[0].setCore(core);
+        adao.asmUpdate(parentsArr[0]);
+        adao.asmSetParent(parentsArr[1], parentsArr[0]);
+        adao.asmSetParent(parentsArr[2], parentsArr[0]);
+        adao.asmSetParent(asm, parentsArr[1]);
+        adao.asmSetParent(asm, parentsArr[2]);
+        adao.asmSetAttribute(parentsArr[2], new AsmAttribute("p[2]attr", "p[2]type", "p[2]value"));
+
+        asm = adao.newAsmCriteria().pk(asm.getId()).selectOne();
+        assertNotNull(asm);
+
+        //Toggle lazy loading of parents
+        List<Asm> parents = asm.getParents();
+        assertEquals(2, parents.size());
+
+        for (int i = 0, l = parents.size(); i < l; ++i) {
+            Asm p = parents.get(i);
+            assertTrue("p[1]".equals(p.getName()) || "p[2]".equals(p.getName()));
+            if ("p[2]".equals(p.getName())) {
+                assertNotNull(p.getAttributes());
+                assertEquals(1, p.getAttributes().size());
+                AsmAttribute a = p.getAttributes().iterator().next();
+                assertEquals("p[2]attr", a.getName());
+                assertEquals("p[2]type", a.getType());
+                assertEquals("p[2]value", a.getValue());
+            } else if ("p[1]".equals(p.getName())) {
+                assertNotNull(p.getAttributes());
+                assertEquals(0, p.getAttributes().size());
+            }
+
+            List<Asm> pParents = p.getParents();
+            assertEquals(1, pParents.size());
+            assertEquals("p[0]", pParents.get(0).getName());
+        }
+        Collection<String> anames = asm.getEffectiveAttributeNames();
+        assertEquals(3, anames.size());
+        assertTrue(anames.containsAll(Arrays.asList("name1", "name2", "p[2]attr")));
+        assertNotNull(asm.getEffectiveCore());
+        assertEquals(core.getId(), asm.getEffectiveCore().getId());
     }
 }

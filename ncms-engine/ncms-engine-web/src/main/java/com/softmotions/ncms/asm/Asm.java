@@ -4,7 +4,9 @@ import com.softmotions.commons.cont.AbstractIndexedCollection;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Assembly object.
@@ -30,6 +32,10 @@ public class Asm implements Serializable {
 
     public Asm(Long id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public Asm(String name) {
         this.name = name;
     }
 
@@ -61,6 +67,20 @@ public class Asm implements Serializable {
         this.core = core;
     }
 
+    public AsmCore getEffectiveCore() {
+        AsmCore c = getCore();
+        if (c != null || getParents() == null) {
+            return c;
+        }
+        for (final Asm p : getParents()) {
+            c = p.getEffectiveCore();
+            if (c != null) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     public List<Asm> getParents() {
         return parents;
     }
@@ -69,12 +89,59 @@ public class Asm implements Serializable {
         this.parents = parents;
     }
 
+    public AsmAttribute getEffectiveAttribute(String name) {
+        AsmAttribute attr = getAttribute(name);
+        if (attr != null || getParents() == null) {
+            return attr;
+        }
+        for (final Asm p : getParents()) {
+            attr = p.getEffectiveAttribute(name);
+            if (attr != null) {
+                return attr;
+            }
+        }
+        return null;
+    }
+
     public AsmAttribute getAttribute(String name) {
         return attributes != null ? attributes.getIndex().get(name) : null;
     }
 
     public Collection<AsmAttribute> getAttributes() {
+        if (attributes == null) {
+            attributes = new AttrsList();
+        }
         return attributes;
+    }
+
+    public Collection<String> getEffectiveAttributeNames() {
+        final Set<String> anames = new HashSet<>();
+        if (attributes != null) {
+            for (final AsmAttribute a : attributes) {
+                anames.add(a.getName());
+            }
+        }
+        if (getParents() != null) {
+            for (final Asm p : getParents()) {
+                anames.addAll(p.getEffectiveAttributeNames());
+            }
+        }
+        return anames;
+    }
+
+    public Collection<AsmAttribute> getEffectiveAttributes() {
+        final Set<AsmAttribute> attrs = new HashSet<>();
+        if (attributes != null) {
+            for (final AsmAttribute a : attributes) {
+                attrs.add(a);
+            }
+        }
+        if (getParents() != null) {
+            for (final Asm p : getParents()) {
+                attrs.addAll(p.getEffectiveAttributes());
+            }
+        }
+        return attrs;
     }
 
     public static class AttrsList extends AbstractIndexedCollection<String, AsmAttribute> {

@@ -3,6 +3,7 @@ package com.softmotions.ncms.asm;
 import com.softmotions.commons.weboot.mb.MBAction;
 import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
 import com.softmotions.commons.weboot.mb.MBDAOSupport;
+import com.softmotions.commons.weboot.mb.MBTinyParams;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -53,40 +54,52 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public int insertAsmCore(AsmCore core) {
-        return sess.insert(toStatementId("insertAsmCore"), core);
+    public int asmSetCore(AsmCore core) {
+        return sess.insert(toStatementId("asmSetCore"), core);
     }
 
     @Transactional
-    public int updateAsmCore(AsmCore core) {
-        return sess.update(toStatementId("updateAsmCore"), core);
+    public int coreUpdate(AsmCore core) {
+        return sess.update(toStatementId("coreUpdate"), core);
     }
 
     @Transactional
-    public int delAsmCore(Long id, String location) {
+    public int coreDelete(Long id, String location) {
         AsmCore core = new AsmCore();
         if (id != null) {
             core.id = id;
         } else if (location != null) {
             core.location = location;
         }
-        return sess.delete(toStatementId("delAsmCore"), core);
+        return sess.delete(toStatementId("coreDelete"), core);
     }
 
     @Transactional
-    public int insertAsm(Asm asm) {
-        return sess.insert(toStatementId("insertAsm"), asm);
+    public int asmInsert(Asm asm) {
+        return sess.insert(toStatementId("asmInsert"), asm);
     }
 
     @Transactional
-    public int updateAsm(Asm asm) {
-        return sess.update(toStatementId("updateAsm"), asm);
+    public int asmUpdate(Asm asm) {
+        return sess.update(toStatementId("asmUpdate"), asm);
     }
 
     @Transactional
-    public int insertAsmAttribute(Asm asm, AsmAttribute attr) {
+    public int asmSetParent(Asm asm, Asm parent) {
+        MBTinyParams params = new MBTinyParams()
+                .param("asmId", asm.id)
+                .param("parentId", parent.id);
+        Number cnt = sess.selectOne(toStatementId("asmHasSpecificParent"), params);
+        if (cnt.intValue() > 0) {
+            return 0; //we have parent
+        }
+        return sess.insert("asmSetParent", params);
+    }
+
+    @Transactional
+    public int asmSetAttribute(Asm asm, AsmAttribute attr) {
         attr.asmId = asm.id;
-        return sess.insert(toStatementId("insertAsmAttribute"), attr);
+        return sess.insert(toStatementId("asmSetAttribute"), attr);
     }
 
     @SuppressWarnings("unchecked")

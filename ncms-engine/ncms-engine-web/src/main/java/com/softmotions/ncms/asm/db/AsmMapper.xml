@@ -5,14 +5,14 @@
 
 <mapper namespace="com.softmotions.ncms.AsmMapper">
 
-    <insert id="insertAsmCore" parameterType="com.softmotions.ncms.asm.AsmCore"
+    <insert id="asmSetCore" parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id" useGeneratedKeys="true">
         insert into ASM_CORES
         (LOCATION, NAME, TEMPLATE_ENGINE)
         values (#{location}, #{name}, #{templateEngine})
     </insert>
 
-    <update id="updateAsmCore" parameterType="com.softmotions.ncms.asm.AsmCore"
+    <update id="coreUpdate" parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id">
         update ASM_CORES
         <set>
@@ -23,7 +23,7 @@
         where ID = #{id}
     </update>
 
-    <delete id="delAsmCore">
+    <delete id="coreDelete">
         delete from ASM_CORES
         <where>
             <if test="id != null">#{id}</if>
@@ -44,14 +44,14 @@
         </where>
     </select>
 
-    <insert id="insertAsm" parameterType="com.softmotions.ncms.asm.Asm"
+    <insert id="asmInsert" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
         insert into ASMS
         (NAME, DESCRIPTION)
         values (#{name}, #{description})
     </insert>
 
-    <update id="updateAsm"
+    <update id="asmUpdate"
             parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id">
         update ASMS
@@ -72,6 +72,7 @@
         attr.NAME as ATTR_NAME,
         attr.TYPE as ATTR_TYPE,
         attr.VALUE as ATTR_VALUE,
+        attr.LARGE_VALUE as ATTR_LARGE_VALUE,
         core.ID as CORE_ID,
         core.LOCATION as CORE_LOCATION,
         core.NAME as CORE_NAME,
@@ -88,7 +89,7 @@
     </select>
 
 
-    <insert id="insertAsmAttribute"
+    <insert id="asmSetAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         insert into ASM_ATTRS
         (ASM_ID, NAME, TYPE, VALUE)
@@ -111,6 +112,7 @@
         attr.NAME as ATTR_NAME,
         attr.TYPE as ATTR_TYPE,
         attr.VALUE as ATTR_VALUE,
+        attr.LARGE_VALUE as ATTR_LARGE_VALUE,
         core.ID as CORE_ID,
         core.LOCATION as CORE_LOCATION,
         core.NAME as CORE_NAME,
@@ -121,6 +123,24 @@
         left outer join ASM_CORES core on core.ID = asm.ASM_CORE_ID
         where parent.ASM_ID = #{id}
     </select>
+
+
+    <!-- ======================== Misc ops ============================ -->
+
+    <select id="asmHasSpecificParent"
+            resultType="int"
+            parameterType="map">
+        select count(*)
+        from ASM_PARENTS as p
+        where p.ASM_ID = #{asmId}
+        and p.ASM_PARENT_ID = #{parentId}
+    </select>
+
+    <insert id="asmSetParent">
+        insert into ASM_PARENTS
+        (ASM_ID, ASM_PARENT_ID)
+        values(#{asmId}, #{parentId})
+    </insert>
 
     <!-- ======================== Result maps ============================= -->
 
