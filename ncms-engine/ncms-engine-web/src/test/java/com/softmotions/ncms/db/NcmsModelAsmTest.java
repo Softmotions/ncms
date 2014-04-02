@@ -169,7 +169,8 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertEquals(core.getLocation(), asm.getCore().getLocation());
 
         //Test assemblies hierachy
-
+        //log.info("PARENTS!!!");
+        //asm.getParents().size();
 
     }
 }
