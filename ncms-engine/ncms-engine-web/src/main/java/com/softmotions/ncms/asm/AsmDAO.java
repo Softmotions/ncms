@@ -12,7 +12,6 @@ import org.mybatis.guice.transactional.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Assembly access DAO.
@@ -27,12 +26,20 @@ public class AsmDAO extends MBDAOSupport {
         super("com.softmotions.ncms.AsmMapper", sess);
     }
 
+    public Criteria newCriteria() {
+        return new Criteria(this, namespace);
+    }
+
+    public Criteria newCriteria(Object... params) {
+        return new Criteria(this, namespace).params(params);
+    }
+
     public AsmCriteria newAsmCriteria() {
-        return new AsmCriteria(namespace);
+        return new AsmCriteria(this, namespace).withStatement("selectAsmByCriteria");
     }
 
     public AsmCriteria newAsmCriteria(Object... params) {
-        return new AsmCriteria(namespace).params(params);
+        return new AsmCriteria(this, namespace).params(params).withStatement("selectAsmByCriteria");
     }
 
     @Transactional
@@ -72,38 +79,53 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
+    public int updateAsm(Asm asm) {
+        return sess.update(toStatementId("updateAsm"), asm);
+    }
+
+    @Transactional
     public int insertAsmAttribute(Asm asm, AsmAttribute attr) {
         attr.asmId = asm.id;
         return sess.insert(toStatementId("insertAsmAttribute"), attr);
     }
 
-    @Transactional
-    public List<Asm> selectAsmByCriteria(AsmCriteria cq) {
-        return selectByCriteria(cq, "selectAsmByCriteria");
-    }
+    @SuppressWarnings("unchecked")
+    static class CriteriaBase<T extends CriteriaBase> extends MBCriteriaQuery<T> {
 
-    @Transactional
-    public Asm selectOneAsmByCriteria(AsmCriteria cq) {
-        return selectOneByCriteria(cq, "selectAsmByCriteria");
-    }
-
-    public static class AsmCriteria extends MBCriteriaQuery<AsmCriteria> {
-
-        public AsmCriteria(String namespace) {
-            super(namespace);
+        CriteriaBase(MBDAOSupport dao, String namespace) {
+            super(dao, namespace);
         }
 
-        public AsmCriteria(String namespace, Map<String, Object> params) {
-            super(namespace, params);
+        public T onAsm() {
+            prefixedBy("ASM_");
+            return (T) this;
+        }
+
+        public T onAsmAttribute() {
+            prefixedBy("ATTR_");
+            return (T) this;
+        }
+
+        public T onAsmCore() {
+            prefixedBy("CORE_");
+            return (T) this;
+        }
+    }
+
+    public static class Criteria extends CriteriaBase<Criteria> {
+        public Criteria(AsmDAO dao, String namespace) {
+            super(dao, namespace);
+        }
+    }
+
+    public static class AsmCriteria extends CriteriaBase<AsmCriteria> {
+
+        public AsmCriteria(AsmDAO dao, String namespace) {
+            super(dao, namespace);
         }
 
         public AsmCriteria onAsm() {
             prefixedBy(null);
-            return this;
-        }
-
-        public AsmCriteria onAsmAttribute() {
-            prefixedBy("ATTR_");
             return this;
         }
     }

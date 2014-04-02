@@ -9,6 +9,7 @@
     <settings>
         <setting name="logImpl" value="SLF4J"/>
         <setting name="useGeneratedKeys" value="true"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
 
     <environments default="development">

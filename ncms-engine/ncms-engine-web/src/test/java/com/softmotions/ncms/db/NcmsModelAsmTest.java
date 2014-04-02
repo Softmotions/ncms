@@ -66,7 +66,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
                 .orderBy("type")
                 .limit(100);
 
-        asmList = adao.selectAsmByCriteria(cq);
+        asmList = cq.select();
         assertEquals(1, asmList.size());
 
         asm = asmList.get(0);
@@ -98,7 +98,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
 
         //Find by PK
         cq = adao.newAsmCriteria().pk(asm.getId());
-        asm = adao.selectOneAsmByCriteria(cq);
+        asm = cq.selectOne();
         assertNotNull(asm);
         assertEquals(asm.getId(), asm2.getId());
         assertEquals(asm.getName(), asm2.getName());
@@ -106,7 +106,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         //Find by NAME
         cq.clear();
         cq.param("name", "foo");
-        asm = adao.selectOneAsmByCriteria(cq);
+        asm = cq.selectOne();
         assertNotNull(asm);
         assertEquals(asm.getId(), asm2.getId());
         assertEquals(asm.getName(), asm2.getName());
@@ -128,16 +128,44 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertEquals(2, count.intValue());
 
         //Insert AsmCore
-        AsmCore core = new AsmCore("file://some/file", "my first assembly core");
+        AsmCore core = new AsmCore("file:///some/file", "my first assembly core");
         adao.insertAsmCore(core);
 
         //Select by criteria query
-        AsmCore core2 = adao.selectOneByCriteria(
-                adao.newAsmCriteria("location", "file://some/file")
-                        .withStatement("selectAsmCore")
-        );
+        AsmCore core2 = adao.newCriteria("location", "file:///some/file")
+                .withStatement("selectAsmCore")
+                .selectOne();
+
         assertNotNull(core2);
         assertEquals(core.getId(), core2.getId());
         assertEquals(core.getLocation(), core2.getLocation());
+
+        core = new AsmCore("file:///some/file2", "the second assembly core");
+        adao.insertAsmCore(core);
+
+        //Update core
+        core.setName(null);
+        core.setLocation(null);
+        core.setTemplateEngine("freemarker");
+        assertEquals(1, adao.updateAsmCore(core));
+
+        //Test attachment of core
+        core = adao.newCriteria("name", "the second assembly core")
+                .withStatement("selectAsmCore")
+                .selectOne();
+        assertNotNull(core);
+        assertEquals("freemarker", core.getTemplateEngine());
+
+        asm = adao.newAsmCriteria().param("name", "foo").selectOne();
+        assertNotNull(asm);
+
+        asm.setCore(core);
+        assertEquals(1, adao.updateAsm(asm));
+
+        asm = adao.newAsmCriteria().param("name", "foo").selectOne();
+        assertNotNull(asm);
+        assertNotNull(asm.getCore());
+        assertEquals(core.getId(), asm.getCore().getId());
+        assertEquals(core.getLocation(), asm.getCore().getLocation());
     }
 }

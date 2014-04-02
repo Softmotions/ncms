@@ -17,10 +17,10 @@
         update ASM_CORES
         <set>
             <if test="name != null">NAME = #{name},</if>
-            <if test="location != null">NAME = #{location},</if>
-            <if test="templateEngine != null">NAME = #{templateEngine}</if>
+            <if test="location != null">LOCATION = #{location},</if>
+            <if test="templateEngine != null">TEMPLATE_ENGINE = #{templateEngine}</if>
         </set>
-        where ID = #{ID}
+        where ID = #{id}
     </update>
 
     <delete id="delAsmCore">
@@ -31,13 +31,16 @@
         </where>
     </delete>
 
-    <select id="selectAsmCore" resultType="com.softmotions.ncms.asm.AsmCore">
+    <select id="selectAsmCore"
+            resultType="com.softmotions.ncms.asm.AsmCore"
+            resultMap="coreRM">
         select *
         from ASM_CORES
         <where>
             <if test="id != null">ID = #{id}</if>
             <if test="location != null">AND LOCATION = #{location}</if>
-            <if test="name != null">AND TEMPLATE_ENGINE = #{templateEgine}</if>
+            <if test="name != null">AND NAME = #{name}</if>
+            <if test="templateEngine != null">AND TEMPLATE_ENGINE = #{templateEngine}</if>
         </where>
     </select>
 
@@ -48,7 +51,45 @@
         values (#{name}, #{description})
     </insert>
 
-    <insert id="insertAsmAttribute" parameterType="com.softmotions.ncms.asm.AsmAttribute">
+    <update id="updateAsm"
+            parameterType="com.softmotions.ncms.asm.Asm"
+            keyProperty="id">
+        update ASMS
+        <set>
+            <if test="name != null">NAME = #{name},</if>
+            <if test="description != null">DESCRIPTION = #{description},</if>
+            <if test="core != null">ASM_CORE_ID = #{core.id}</if>
+        </set>
+        where ID = #{id}
+    </update>
+
+    <select id="selectAsmByCriteria"
+            resultType="com.softmotions.ncms.asm.Asm"
+            parameterType="java.util.Map"
+            resultMap="asmFullRM">
+        select asm.*,
+        attr.ASM_ID as ATTR_ASM_ID,
+        attr.NAME as ATTR_NAME,
+        attr.TYPE as ATTR_TYPE,
+        attr.VALUE as ATTR_VALUE,
+        core.ID as CORE_ID,
+        core.LOCATION as CORE_LOCATION,
+        core.NAME as CORE_NAME,
+        core.TEMPLATE_ENGINE as CORE_TEMPLATE_ENGINE
+        from ASMS as asm
+        left outer join ASM_ATTRS attr on attr.ASM_ID = asm.ID
+        left outer join ASM_CORES core on core.ID = asm.ASM_CORE_ID
+        <where>
+            <if test="CQ_PK != null">asm.ID = #{CQ_PK}</if>
+            <if test="name != null">asm.NAME = #{name}</if>
+            <if test="location != null">AND core.LOCATION = #{location}</if>
+        </where>
+        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+    </select>
+
+
+    <insert id="insertAsmAttribute"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
         insert into ASM_ATTRS
         (ASM_ID, NAME, TYPE, VALUE)
         values (#{asmId}, #{name}, #{type}, #{value})
@@ -59,45 +100,43 @@
          select * from ASMS order by NAME asc
     </select>
 
-    <select id="selectAsmByCriteria"
-            resultType="com.softmotions.ncms.asm.Asm"
-            parameterType="java.util.Map"
-            resultMap="asmFullRM">
-        select asm.*,
-        attr.ASM_ID as ATTR_ASM_ID,
-        attr.NAME as ATTR_NAME,
-        attr.TYPE as ATTR_TYPE,
-        attr.VALUE as ATTR_VALUE
-        from ASMS as asm
-        left outer join ASM_ATTRS attr on attr.ASM_ID = asm.ID
-        <where>
-            <if test="CQ_PK != null">asm.ID = #{CQ_PK}</if>
-            <if test="name != null">asm.NAME = #{name}</if>
-        </where>
-        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
-    </select>
-
     <!-- ======================== Result maps ============================= -->
 
-    <resultMap id="attrPlainRM" type="com.softmotions.ncms.asm.AsmAttribute">
+    <resultMap id="coreRM"
+               type="com.softmotions.ncms.asm.AsmCore"
+               autoMapping="true">
+        <id property="id" column="ID"/>
+    </resultMap>
+
+    <resultMap id="attrPlainRM"
+               type="com.softmotions.ncms.asm.AsmAttribute"
+               autoMapping="true">
         <id property="name" column="NAME"/>
         <id property="asmId" column="ASM_ID"/>
-        <result property="type" column="TYPE"/>
-        <result property="value" column="VALUE"/>
     </resultMap>
 
-    <resultMap id="attrFullRM" type="com.softmotions.ncms.asm.AsmAttribute" extends="attrPlainRM">
+    <resultMap id="attrFullRM"
+               type="com.softmotions.ncms.asm.AsmAttribute"
+               extends="attrPlainRM"
+               autoMapping="true">
     </resultMap>
 
-    <resultMap id="asmPlainRM" type="com.softmotions.ncms.asm.Asm">
+    <resultMap id="asmPlainRM"
+               type="com.softmotions.ncms.asm.Asm"
+               autoMapping="true">
         <constructor>
             <idArg column="ID" javaType="long"/>
             <arg column="NAME" javaType="string"/>
         </constructor>
-        <result property="description" column="DESCRIPTION"/>
     </resultMap>
 
-    <resultMap id="asmFullRM" type="com.softmotions.ncms.asm.Asm" extends="asmPlainRM">
+    <resultMap id="asmFullRM"
+               type="com.softmotions.ncms.asm.Asm"
+               extends="asmPlainRM">
+        <association property="core"
+                     columnPrefix="CORE_"
+                     resultMap="coreRM"
+                />
         <collection property="attributes"
                     javaType="com.softmotions.ncms.asm.Asm$AttrsList"
                     ofType="com.softmotions.ncms.asm.AsmAttribute"
