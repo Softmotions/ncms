@@ -167,5 +167,9 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertNotNull(asm.getCore());
         assertEquals(core.getId(), asm.getCore().getId());
         assertEquals(core.getLocation(), asm.getCore().getLocation());
+
+        //Test assemblies hierachy
+
+
     }
 }

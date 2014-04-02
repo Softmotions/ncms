@@ -65,7 +65,7 @@
 
     <select id="selectAsmByCriteria"
             resultType="com.softmotions.ncms.asm.Asm"
-            parameterType="java.util.Map"
+            parameterType="com.softmotions.commons.weboot.mb.MBCriteriaQuery"
             resultMap="asmFullRM">
         select asm.*,
         attr.ASM_ID as ATTR_ASM_ID,
@@ -100,30 +100,48 @@
          select * from ASMS order by NAME asc
     </select>
 
+    <!-- ======================= Nested selects =========================== -->
+
+    <select id="selectAsmParents"
+            resultType="com.softmotions.ncms.asm.Asm"
+            resultMap="asmFullRM"
+            parameterType="long">
+        select asm.*,
+        attr.ASM_ID as ATTR_ASM_ID,
+        attr.NAME as ATTR_NAME,
+        attr.TYPE as ATTR_TYPE,
+        attr.VALUE as ATTR_VALUE,
+        core.ID as CORE_ID,
+        core.LOCATION as CORE_LOCATION,
+        core.NAME as CORE_NAME,
+        core.TEMPLATE_ENGINE as CORE_TEMPLATE_ENGINE
+        from ASM_PARENTS as parent
+        inner join ASMS asm on asm.ID = parent.ASM_PARENT_ID
+        left outer join ASM_ATTRS attr on attr.ASM_ID = asm.ID
+        left outer join ASM_CORES core on core.ID = asm.ASM_CORE_ID
+        where parent.ASM_ID = #{id}
+    </select>
+
     <!-- ======================== Result maps ============================= -->
 
     <resultMap id="coreRM"
-               type="com.softmotions.ncms.asm.AsmCore"
-               autoMapping="true">
+               type="com.softmotions.ncms.asm.AsmCore">
         <id property="id" column="ID"/>
     </resultMap>
 
     <resultMap id="attrPlainRM"
-               type="com.softmotions.ncms.asm.AsmAttribute"
-               autoMapping="true">
+               type="com.softmotions.ncms.asm.AsmAttribute">
         <id property="name" column="NAME"/>
         <id property="asmId" column="ASM_ID"/>
     </resultMap>
 
     <resultMap id="attrFullRM"
                type="com.softmotions.ncms.asm.AsmAttribute"
-               extends="attrPlainRM"
-               autoMapping="true">
+               extends="attrPlainRM">
     </resultMap>
 
     <resultMap id="asmPlainRM"
-               type="com.softmotions.ncms.asm.Asm"
-               autoMapping="true">
+               type="com.softmotions.ncms.asm.Asm">
         <constructor>
             <idArg column="ID" javaType="long"/>
             <arg column="NAME" javaType="string"/>
@@ -142,6 +160,13 @@
                     ofType="com.softmotions.ncms.asm.AsmAttribute"
                     resultMap="attrFullRM"
                     columnPrefix="ATTR_"
+                />
+        <collection property="parents"
+                    javaType="arraylist"
+                    ofType="com.softmotions.ncms.asm.Asm"
+                    select="selectAsmParents"
+                    column="id"
+                    fetchType="lazy"
                 />
     </resultMap>
 </mapper>

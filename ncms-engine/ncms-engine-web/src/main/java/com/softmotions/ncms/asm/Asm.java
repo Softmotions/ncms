@@ -4,6 +4,7 @@ import com.softmotions.commons.cont.AbstractIndexedCollection;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Assembly object.
@@ -19,6 +20,8 @@ public class Asm implements Serializable {
     String description;
 
     AsmCore core;
+
+    List<Asm> parents;
 
     AttrsList attributes;
 
@@ -58,6 +61,14 @@ public class Asm implements Serializable {
         this.core = core;
     }
 
+    public List<Asm> getParents() {
+        return parents;
+    }
+
+    public void setParents(List<Asm> parents) {
+        this.parents = parents;
+    }
+
     public AsmAttribute getAttribute(String name) {
         return attributes != null ? attributes.getIndex().get(name) : null;
     }
@@ -72,5 +83,14 @@ public class Asm implements Serializable {
         }
     }
 
-
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Asm{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", core=").append(core);
+        sb.append(", description='").append(description).append('\'');
+        sb.append(", attributes=").append(attributes);
+        sb.append('}');
+        return sb.toString();
+    }
 }
