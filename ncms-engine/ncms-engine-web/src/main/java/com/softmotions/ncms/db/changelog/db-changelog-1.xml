@@ -8,12 +8,42 @@
 
     <changeSet id="1" author="adamansky@gmail.com">
 
+        <!-- ===================== ASM CORE ========================== -->
+
+        <createTable tableName="ASM_CORES">
+            <column name="ID" type="java.sql.Types.BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="LOCATION" type="java.sql.Types.VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="java.sql.Types.VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TEMPLATE_ENGINE" type="java.sql.Types.VARCHAR(256)">
+            </column>
+        </createTable>
+
+        <createIndex tableName="ASM_CORES"
+                     indexName="IDX_ASMCORES_LOCATION"
+                     unique="true">
+            <column name="LOCATION"></column>
+        </createIndex>
+
+        <createIndex tableName="ASM_CORES"
+                     indexName="IDX_ASMCORES_NAME"
+                     unique="false">
+            <column name="NAME"></column>
+        </createIndex>
+
         <!-- ===================== ASMS ========================== -->
 
         <createTable tableName="ASMS"
                      remarks="Assemblies">
             <column name="ID" type="java.sql.Types.BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ASM_CORE_ID" type="java.sql.Types.BIGINT">
             </column>
             <column name="NAME" type="java.sql.Types.VARCHAR(128)">
                 <constraints nullable="false"/>
@@ -26,6 +56,13 @@
                      unique="true">
             <column name="NAME"></column>
         </createIndex>
+
+        <addForeignKeyConstraint baseTableName="ASMS"
+                                 baseColumnNames="ASM_CORE_ID"
+                                 constraintName="FK_ASMS_ASMCORES"
+                                 referencedTableName="ASM_CORES"
+                                 referencedColumnNames="ID"
+                                 onDelete="SET NULL"/>
 
         <!-- ==================== ASM_ATTRS ======================= -->
 

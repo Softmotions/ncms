@@ -4,6 +4,7 @@ import com.softmotions.commons.weboot.mb.MBAction;
 import com.softmotions.ncms.NcmsWebTest;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
 
 import com.google.inject.Injector;
@@ -59,7 +60,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         AsmAttribute attr2 = new AsmAttribute("name2", "type2", "val2");
         assertEquals(1, adao.insertAsmAttribute(asm, attr2));
 
-        AsmDAO.Criteria cq = adao.newCriteria()
+        AsmDAO.AsmCriteria cq = adao.newAsmCriteria()
                 .orderBy("name").desc()
                 .onAsmAttribute()
                 .orderBy("type")
@@ -96,8 +97,8 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertTrue(hasException);
 
         //Find by PK
-        cq = adao.newCriteria().pk(asm.getId());
-        asm = adao.selectAsmByCriteriaOne(cq);
+        cq = adao.newAsmCriteria().pk(asm.getId());
+        asm = adao.selectOneAsmByCriteria(cq);
         assertNotNull(asm);
         assertEquals(asm.getId(), asm2.getId());
         assertEquals(asm.getName(), asm2.getName());
@@ -105,7 +106,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         //Find by NAME
         cq.clear();
         cq.param("name", "foo");
-        asm = adao.selectAsmByCriteriaOne(cq);
+        asm = adao.selectOneAsmByCriteria(cq);
         assertNotNull(asm);
         assertEquals(asm.getId(), asm2.getId());
         assertEquals(asm.getName(), asm2.getName());
@@ -125,5 +126,18 @@ public class NcmsModelAsmTest extends NcmsWebTest {
             }
         });
         assertEquals(2, count.intValue());
+
+        //Insert AsmCore
+        AsmCore core = new AsmCore("file://some/file", "my first assembly core");
+        adao.insertAsmCore(core);
+
+        //Select by criteria query
+        AsmCore core2 = adao.selectOneByCriteria(
+                adao.newAsmCriteria("location", "file://some/file")
+                        .withStatement("selectAsmCore")
+        );
+        assertNotNull(core2);
+        assertEquals(core.getId(), core2.getId());
+        assertEquals(core.getLocation(), core2.getLocation());
     }
 }

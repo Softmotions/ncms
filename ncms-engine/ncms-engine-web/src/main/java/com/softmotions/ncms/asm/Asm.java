@@ -12,11 +12,13 @@ import java.util.Collection;
  */
 public class Asm implements Serializable {
 
-    long id;
+    Long id;
 
     String name;
 
     String description;
+
+    AsmCore core;
 
     AttrsList attributes;
 
@@ -28,7 +30,7 @@ public class Asm implements Serializable {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -48,6 +50,14 @@ public class Asm implements Serializable {
         this.description = description;
     }
 
+    public AsmCore getCore() {
+        return core;
+    }
+
+    public void setCore(AsmCore core) {
+        this.core = core;
+    }
+
     public AsmAttribute getAttribute(String name) {
         return attributes != null ? attributes.getIndex().get(name) : null;
     }
@@ -61,4 +71,6 @@ public class Asm implements Serializable {
             return el.getName();
         }
     }
+
+
 }

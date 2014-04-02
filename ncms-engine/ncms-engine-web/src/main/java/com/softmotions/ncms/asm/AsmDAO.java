@@ -24,15 +24,15 @@ public class AsmDAO extends MBDAOSupport {
 
     @Inject
     public AsmDAO(SqlSession sess) {
-        super(sess);
+        super("com.softmotions.ncms.AsmMapper", sess);
     }
 
-    public Criteria newCriteria() {
-        return new Criteria();
+    public AsmCriteria newAsmCriteria() {
+        return new AsmCriteria(namespace);
     }
 
-    public Criteria newCriteria(Map<String, Object> params) {
-        return new Criteria(params);
+    public AsmCriteria newAsmCriteria(Object... params) {
+        return new AsmCriteria(namespace).params(params);
     }
 
     @Transactional
@@ -42,55 +42,67 @@ public class AsmDAO extends MBDAOSupport {
 
     @Transactional
     public List<Asm> selectAllPlainAsms() {
-        return sess.selectList("com.softmotions.ncms.AsmMapper.selectAllPlainAsms");
+        return sess.selectList(toStatementId("selectAllPlainAsms"));
+    }
+
+    @Transactional
+    public int insertAsmCore(AsmCore core) {
+        return sess.insert(toStatementId("insertAsmCore"), core);
+    }
+
+    @Transactional
+    public int updateAsmCore(AsmCore core) {
+        return sess.update(toStatementId("updateAsmCore"), core);
+    }
+
+    @Transactional
+    public int delAsmCore(Long id, String location) {
+        AsmCore core = new AsmCore();
+        if (id != null) {
+            core.id = id;
+        } else if (location != null) {
+            core.location = location;
+        }
+        return sess.delete(toStatementId("delAsmCore"), core);
     }
 
     @Transactional
     public int insertAsm(Asm asm) {
-        return sess.insert("com.softmotions.ncms.AsmMapper.insertAsm", asm);
+        return sess.insert(toStatementId("insertAsm"), asm);
     }
 
     @Transactional
     public int insertAsmAttribute(Asm asm, AsmAttribute attr) {
         attr.asmId = asm.id;
-        return sess.insert("com.softmotions.ncms.AsmMapper.insertAsmAttribute", attr);
+        return sess.insert(toStatementId("insertAsmAttribute"), attr);
     }
 
     @Transactional
-    public List<Asm> selectAsmByCriteria(Criteria cq) {
-        cq.finish();
-        if (cq.getStatement() != null) {
-            return sess.selectList(cq.getStatement(), cq);
-        } else {
-            return sess.selectList("com.softmotions.ncms.AsmMapper.selectAsmByCriteria", cq);
-        }
+    public List<Asm> selectAsmByCriteria(AsmCriteria cq) {
+        return selectByCriteria(cq, "selectAsmByCriteria");
     }
 
     @Transactional
-    public Asm selectAsmByCriteriaOne(Criteria cq) {
-        cq.finish();
-        if (cq.getStatement() != null) {
-            return sess.selectOne(cq.getStatement(), cq);
-        } else {
-            return sess.selectOne("com.softmotions.ncms.AsmMapper.selectAsmByCriteria", cq);
-        }
+    public Asm selectOneAsmByCriteria(AsmCriteria cq) {
+        return selectOneByCriteria(cq, "selectAsmByCriteria");
     }
 
-    public static class Criteria extends MBCriteriaQuery<Criteria> {
+    public static class AsmCriteria extends MBCriteriaQuery<AsmCriteria> {
 
-        private Criteria() {
+        public AsmCriteria(String namespace) {
+            super(namespace);
         }
 
-        private Criteria(Map<String, Object> params) {
-            super(params);
+        public AsmCriteria(String namespace, Map<String, Object> params) {
+            super(namespace, params);
         }
 
-        public Criteria onAsm() {
+        public AsmCriteria onAsm() {
             prefixedBy(null);
             return this;
         }
 
-        public Criteria onAsmAttribute() {
+        public AsmCriteria onAsmAttribute() {
             prefixedBy("ATTR_");
             return this;
         }

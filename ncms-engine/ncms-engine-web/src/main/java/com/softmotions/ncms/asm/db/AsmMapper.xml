@@ -5,8 +5,40 @@
 
 <mapper namespace="com.softmotions.ncms.AsmMapper">
 
-    <select id="selectAllPlainAsms" resultType="com.softmotions.ncms.asm.Asm">
-         select * from ASMS order by NAME asc
+    <insert id="insertAsmCore" parameterType="com.softmotions.ncms.asm.AsmCore"
+            keyProperty="id" useGeneratedKeys="true">
+        insert into ASM_CORES
+        (LOCATION, NAME, TEMPLATE_ENGINE)
+        values (#{location}, #{name}, #{templateEngine})
+    </insert>
+
+    <update id="updateAsmCore" parameterType="com.softmotions.ncms.asm.AsmCore"
+            keyProperty="id">
+        update ASM_CORES
+        <set>
+            <if test="name != null">NAME = #{name},</if>
+            <if test="location != null">NAME = #{location},</if>
+            <if test="templateEngine != null">NAME = #{templateEngine}</if>
+        </set>
+        where ID = #{ID}
+    </update>
+
+    <delete id="delAsmCore">
+        delete from ASM_CORES
+        <where>
+            <if test="id != null">#{id}</if>
+            <if test="location != null">#{location}</if>
+        </where>
+    </delete>
+
+    <select id="selectAsmCore" resultType="com.softmotions.ncms.asm.AsmCore">
+        select *
+        from ASM_CORES
+        <where>
+            <if test="id != null">ID = #{id}</if>
+            <if test="location != null">AND LOCATION = #{location}</if>
+            <if test="name != null">AND TEMPLATE_ENGINE = #{templateEgine}</if>
+        </where>
     </select>
 
     <insert id="insertAsm" parameterType="com.softmotions.ncms.asm.Asm"
@@ -21,6 +53,11 @@
         (ASM_ID, NAME, TYPE, VALUE)
         values (#{asmId}, #{name}, #{type}, #{value})
     </insert>
+
+
+    <select id="selectAllPlainAsms" resultType="com.softmotions.ncms.asm.Asm">
+         select * from ASMS order by NAME asc
+    </select>
 
     <select id="selectAsmByCriteria"
             resultType="com.softmotions.ncms.asm.Asm"
@@ -38,8 +75,6 @@
             <if test="name != null">asm.NAME = #{name}</if>
         </where>
         <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
-        <if test="CQ_LIMIT">limit ${CQ_LIMIT}</if>
-        <if test="CQ_OFFSET">offset ${CQ_OFFSET}</if>
     </select>
 
     <!-- ======================== Result maps ============================= -->
