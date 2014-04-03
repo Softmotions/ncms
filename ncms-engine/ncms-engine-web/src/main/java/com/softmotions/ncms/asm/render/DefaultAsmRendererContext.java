@@ -119,7 +119,7 @@ public class DefaultAsmRendererContext implements AsmAttributeRendererContext {
         return attributeName;
     }
 
-    public AsmRendererContext createChildContext(AsmRendererContext parent, String asmname, String attrname) {
+    public AsmRendererContext createChildContext(String asmname, String attrname) {
         Asm nasm = adao.selectAsmByName(asmname);
         if (nasm == null) {
             throw new AsmRenderingException("Unknown asm: '" + asmname + "'");

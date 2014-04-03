@@ -32,5 +32,5 @@ public interface AsmRendererContext {
 
     Asm getContextAsm();
 
-    AsmRendererContext createChildContext(AsmRendererContext parent, String asmname, String attrname);
+    AsmRendererContext createChildContext(String asmname, String attrname);
 }
