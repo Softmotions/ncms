@@ -3,6 +3,9 @@ package com.softmotions.ncms.asm;
 import java.io.Serializable;
 
 /**
+ * Assembly core instance.
+ * This class is not thread safe for concurrent updating.
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public class AsmCore implements Serializable {
@@ -53,6 +56,15 @@ public class AsmCore implements Serializable {
 
     public void setTemplateEngine(String templateEngine) {
         this.templateEngine = templateEngine;
+    }
+
+    public AsmCore cloneDeep() {
+        AsmCore core = new AsmCore();
+        core.id = id;
+        core.location = location;
+        core.name = name;
+        core.templateEngine = templateEngine;
+        return core;
     }
 
     public boolean equals(Object o) {

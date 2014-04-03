@@ -99,7 +99,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertTrue(hasException);
 
         //Find by PK
-        cq = adao.newAsmCriteria().pk(asm.getId());
+        cq = adao.newAsmCriteria().withPK(asm.getId());
         asm = cq.selectOne();
         assertNotNull(asm);
         assertEquals(asm.getId(), asm2.getId());
@@ -107,7 +107,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
 
         //Find by NAME
         cq.clear();
-        cq.param("name", "foo");
+        cq.withParam("name", "foo");
         asm = cq.selectOne();
         assertNotNull(asm);
         assertEquals(asm.getId(), asm2.getId());
@@ -158,13 +158,17 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertNotNull(core);
         assertEquals("freemarker", core.getTemplateEngine());
 
-        asm = adao.newAsmCriteria().param("name", "foo").selectOne();
+        asm = adao.newAsmCriteria()
+                .withParam("name", "foo")
+                .selectOne();
         assertNotNull(asm);
 
         asm.setCore(core);
         assertEquals(1, adao.asmUpdate(asm));
 
-        asm = adao.newAsmCriteria().param("name", "foo").selectOne();
+        asm = adao.newAsmCriteria()
+                .withParam("name", "foo")
+                .selectOne();
         assertNotNull(asm);
         assertNotNull(asm.getCore());
         assertEquals(core.getId(), asm.getCore().getId());
@@ -197,7 +201,9 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         adao.asmSetParent(asm, parentsArr[2]);
         adao.asmSetAttribute(parentsArr[2], new AsmAttribute("p[2]attr", "p[2]type", "p[2]value"));
 
-        asm = adao.newAsmCriteria().pk(asm.getId()).selectOne();
+        asm = adao.newAsmCriteria()
+                .withPK(asm.getId())
+                .selectOne();
         assertNotNull(asm);
 
         //Toggle lazy loading of parents

@@ -65,7 +65,7 @@
 
     <select id="selectAsmByCriteria"
             resultType="com.softmotions.ncms.asm.Asm"
-            parameterType="com.softmotions.commons.weboot.mb.MBCriteriaQuery"
+            parameterType="map"
             resultMap="asmFullRM">
         select asm.*,
         attr.ASM_ID             as ATTR_ASM_ID,
@@ -83,6 +83,7 @@
         left outer join ASM_CORES core on core.ID = asm.ASM_CORE_ID
         <where>
             <if test="CQ_PK != null">asm.ID = #{CQ_PK}</if>
+            <if test="id != null">asm.ID = #{id}</if>
             <if test="name != null">asm.NAME = #{name}</if>
             <if test="location != null">AND core.LOCATION = #{location}</if>
         </where>

@@ -3,13 +3,16 @@ package com.softmotions.ncms.asm;
 import com.softmotions.commons.cont.AbstractIndexedCollection;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * Assembly object.
+ * Assembly.
+ * This class is not thread safe for concurrent updating.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
@@ -23,11 +26,13 @@ public class Asm implements Serializable {
 
     AsmCore core;
 
+    String options;
+
+    AsmOptions parsedOptions;
+
     List<Asm> parents;
 
     AttrsList attributes;
-
-    String options;
 
     public Asm() {
     }
@@ -61,20 +66,30 @@ public class Asm implements Serializable {
         this.description = description;
     }
 
-    public AsmCore getCore() {
-        return core;
-    }
-
-    public void setCore(AsmCore core) {
-        this.core = core;
-    }
-
     public String getOptions() {
         return options;
     }
 
     public void setOptions(String options) {
         this.options = options;
+        this.parsedOptions = null;
+    }
+
+    public AsmOptions getParsedOptions() {
+        String opts = this.options;
+        if (opts == null) {
+            return null;
+        }
+        this.parsedOptions = new AsmOptions(opts);
+        return parsedOptions;
+    }
+
+    public AsmCore getCore() {
+        return core;
+    }
+
+    public void setCore(AsmCore core) {
+        this.core = core;
     }
 
     public AsmCore getEffectiveCore() {
@@ -114,13 +129,10 @@ public class Asm implements Serializable {
     }
 
     public AsmAttribute getAttribute(String name) {
-        return attributes != null ? attributes.getIndex().get(name) : null;
+        return (attributes != null) ? attributes.getIndex().get(name) : null;
     }
 
     public Collection<AsmAttribute> getAttributes() {
-        if (attributes == null) {
-            attributes = new AttrsList();
-        }
         return attributes;
     }
 
@@ -155,9 +167,62 @@ public class Asm implements Serializable {
     }
 
     public static class AttrsList extends AbstractIndexedCollection<String, AsmAttribute> {
+
         protected String getElementKey(AsmAttribute el) {
             return el.getName();
         }
+
+        public AttrsList() {
+        }
+
+        protected AttrsList(int size) {
+            super(size);
+        }
+
+        public AttrsList cloneShallow() {
+            AttrsList nlist = new AttrsList(size());
+            for (AsmAttribute attr : this) {
+                nlist.add(attr.cloneDeep());
+            }
+            return nlist;
+        }
+    }
+
+    /**
+     * Perform deep clone of this assembly.
+     * Cloned parents are cached in <c></c>.
+     */
+    public Asm cloneDeep(Map<String, Asm> cloneContext) {
+        Asm asm = new Asm();
+        asm.id = id;
+        asm.name = name;
+        asm.description = description;
+        asm.options = options;
+        asm.core = (core != null) ? core.cloneDeep() : null;
+        asm.attributes = (asm.attributes != null) ? asm.attributes.cloneShallow() : null;
+        if (getParents() != null) {
+            asm.parents = new ArrayList<>(getParents().size());
+            for (Asm parent : getParents()) {
+                Asm clonedParent = cloneContext.get(parent.name);
+                if (clonedParent == null) {
+                    clonedParent = parent.cloneDeep(cloneContext);
+                    cloneContext.put(clonedParent.getName(), clonedParent);
+                }
+                asm.parents.add(clonedParent);
+            }
+        }
+        return asm;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Asm asm = (Asm) o;
+        return name.equals(asm.name);
+    }
+
+    public int hashCode() {
+        return name.hashCode();
     }
 
     public String toString() {

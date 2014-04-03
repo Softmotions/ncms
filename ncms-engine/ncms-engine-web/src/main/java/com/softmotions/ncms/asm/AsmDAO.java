@@ -32,7 +32,8 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     public Criteria newCriteria(Object... params) {
-        return new Criteria(this, namespace).params(params);
+        return new Criteria(this, namespace)
+                .withParams(params);
     }
 
     public AsmCriteria newAsmCriteria() {
@@ -40,7 +41,9 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     public AsmCriteria newAsmCriteria(Object... params) {
-        return new AsmCriteria(this, namespace).params(params).withStatement("selectAsmByCriteria");
+        return new AsmCriteria(this, namespace)
+                .withParams(params)
+                .withStatement("selectAsmByCriteria");
     }
 
     @Transactional
@@ -100,6 +103,18 @@ public class AsmDAO extends MBDAOSupport {
     public int asmSetAttribute(Asm asm, AsmAttribute attr) {
         attr.asmId = asm.id;
         return sess.insert(toStatementId("asmSetAttribute"), attr);
+    }
+
+    @Transactional
+    public Asm selectAsmByName(String name) {
+        return selectOne("selectAsmByCriteria",
+                         new MBTinyParams().param("name", name));
+    }
+
+    @Transactional
+    public Asm selectAsmById(Number id) {
+        return selectOne("selectAsmByCriteria",
+                         new MBTinyParams().param("id", id));
     }
 
     @SuppressWarnings("unchecked")

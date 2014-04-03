@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Assembly attribute.
+ * This class is not thread safe for concurrent updating.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
@@ -70,6 +71,29 @@ public class AsmAttribute implements Serializable {
         this.options = options;
     }
 
+    public String getEffectiveValue() {
+        return (largeValue != null) ? largeValue : value;
+    }
+
+    /**
+     * String representation of attribute
+     * in the context of specified assembyly.
+     */
+    public String toString(Asm asm) {
+        return asm.getName() + '#' + name;
+    }
+
+    public AsmAttribute cloneDeep() {
+        AsmAttribute attr = new AsmAttribute();
+        attr.asmId = asmId;
+        attr.name = name;
+        attr.type = type;
+        attr.value = value;
+        attr.largeValue = largeValue;
+        attr.options = options;
+        return attr;
+    }
+
     public String toString() {
         final StringBuilder sb = new StringBuilder("AsmAttribute{");
         sb.append("name='").append(name).append('\'');
@@ -84,8 +108,7 @@ public class AsmAttribute implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AsmAttribute that = (AsmAttribute) o;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return true;
+        return !(name != null ? !name.equals(that.name) : that.name != null);
     }
 
     public int hashCode() {

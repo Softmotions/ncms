@@ -5,6 +5,7 @@ import ninja.utils.NinjaProperties;
 import com.softmotions.commons.web.JarResourcesProvider;
 import com.softmotions.commons.web.JarResourcesServlet;
 import com.softmotions.commons.weboot.WBServletModule;
+import com.softmotions.ncms.asm.render.AsmServlet;
 
 import com.google.inject.Singleton;
 
@@ -30,14 +31,10 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
     }
 
     protected void init(NcmsConfiguration cfg) {
-
         bind(NcmsConfiguration.class).toInstance(cfg);
-
-        //Ninja init part
         bind(NinjaServletDispatcher.class).asEagerSingleton();
         serve(cfg.getNcmsPrefix() + "/exec/*", NinjaServletDispatcher.class);
-        serve(cfg.getNcmsPrefix() + "/admin/exec/*", NinjaServletDispatcher.class);
-
+        serve(cfg.getNcmsPrefix() + "/asm/*", AsmServlet.class);
         initJarResourcesServlet(cfg);
     }
 
