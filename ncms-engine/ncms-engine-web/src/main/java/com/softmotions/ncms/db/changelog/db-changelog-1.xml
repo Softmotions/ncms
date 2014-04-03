@@ -48,6 +48,7 @@
             <column name="NAME" type="java.sql.Types.VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
+            <column name="OPTIONS" type="java.sql.Types.VARCHAR(512)"/>
             <column name="DESCRIPTION" type="java.sql.Types.VARCHAR(256)"/>
         </createTable>
 
@@ -74,13 +75,12 @@
             <column name="NAME" type="java.sql.Types.VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="TYPE" type="java.sql.Types.VARCHAR(512)">
+            <column name="TYPE" type="java.sql.Types.VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="VALUE" type="java.sql.Types.VARCHAR(1024)">
-            </column>
-            <column name="LARGE_VALUE" type="java.sql.Types.CLOB">
-            </column>
+            <column name="OPTIONS" type="java.sql.Types.VARCHAR(512)"/>
+            <column name="VALUE" type="java.sql.Types.VARCHAR(1024)"/>
+            <column name="LARGE_VALUE" type="java.sql.Types.CLOB"/>
         </createTable>
 
         <createIndex tableName="ASM_ATTRS"

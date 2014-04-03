@@ -27,6 +27,8 @@ public class Asm implements Serializable {
 
     AttrsList attributes;
 
+    String options;
+
     public Asm() {
     }
 
@@ -65,6 +67,14 @@ public class Asm implements Serializable {
 
     public void setCore(AsmCore core) {
         this.core = core;
+    }
+
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
     }
 
     public AsmCore getEffectiveCore() {
@@ -154,6 +164,7 @@ public class Asm implements Serializable {
         final StringBuilder sb = new StringBuilder("Asm{");
         sb.append("id=").append(id);
         sb.append(", name='").append(name).append('\'');
+        sb.append(", options='").append(options).append('\'');
         sb.append(", core=").append(core);
         sb.append(", description='").append(description).append('\'');
         sb.append(", attributes=").append(attributes);

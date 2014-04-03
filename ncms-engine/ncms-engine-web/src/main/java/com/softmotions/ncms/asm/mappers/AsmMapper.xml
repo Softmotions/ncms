@@ -68,15 +68,16 @@
             parameterType="com.softmotions.commons.weboot.mb.MBCriteriaQuery"
             resultMap="asmFullRM">
         select asm.*,
-        attr.ASM_ID as ATTR_ASM_ID,
-        attr.NAME as ATTR_NAME,
-        attr.TYPE as ATTR_TYPE,
-        attr.VALUE as ATTR_VALUE,
-        attr.LARGE_VALUE as ATTR_LARGE_VALUE,
-        core.ID as CORE_ID,
-        core.LOCATION as CORE_LOCATION,
-        core.NAME as CORE_NAME,
-        core.TEMPLATE_ENGINE as CORE_TEMPLATE_ENGINE
+        attr.ASM_ID             as ATTR_ASM_ID,
+        attr.NAME               as ATTR_NAME,
+        attr.TYPE               as ATTR_TYPE,
+        attr.OPTIONS            as ATTR_OPTIONS,
+        attr.VALUE              as ATTR_VALUE,
+        attr.LARGE_VALUE        as ATTR_LARGE_VALUE,
+        core.ID                 as CORE_ID,
+        core.LOCATION           as CORE_LOCATION,
+        core.NAME               as CORE_NAME,
+        core.TEMPLATE_ENGINE    as CORE_TEMPLATE_ENGINE
         from ASMS as asm
         left outer join ASM_ATTRS attr on attr.ASM_ID = asm.ID
         left outer join ASM_CORES core on core.ID = asm.ASM_CORE_ID
@@ -108,16 +109,17 @@
             resultMap="asmFullRM"
             parameterType="long">
         select asm.*,
-        attr.ASM_ID as ATTR_ASM_ID,
-        attr.NAME as ATTR_NAME,
-        attr.TYPE as ATTR_TYPE,
-        attr.VALUE as ATTR_VALUE,
-        attr.LARGE_VALUE as ATTR_LARGE_VALUE,
-        core.ID as CORE_ID,
-        core.LOCATION as CORE_LOCATION,
-        core.NAME as CORE_NAME,
-        core.TEMPLATE_ENGINE as CORE_TEMPLATE_ENGINE
-        from ASM_PARENTS as parent
+        attr.ASM_ID             as ATTR_ASM_ID,
+        attr.NAME               as ATTR_NAME,
+        attr.TYPE               as ATTR_TYPE,
+        attr.OPTIONS            as ATTR_OPTIONS,
+        attr.VALUE              as ATTR_VALUE,
+        attr.LARGE_VALUE        as ATTR_LARGE_VALUE,
+        core.ID                 as CORE_ID,
+        core.LOCATION           as CORE_LOCATION,
+        core.NAME               as CORE_NAME,
+        core.TEMPLATE_ENGINE    as CORE_TEMPLATE_ENGINE
+        from ASM_PARENTS        as parent
         inner join ASMS asm on asm.ID = parent.ASM_PARENT_ID
         left outer join ASM_ATTRS attr on attr.ASM_ID = asm.ID
         left outer join ASM_CORES core on core.ID = asm.ASM_CORE_ID

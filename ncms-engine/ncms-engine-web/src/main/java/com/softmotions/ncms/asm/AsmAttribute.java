@@ -19,6 +19,8 @@ public class AsmAttribute implements Serializable {
 
     String largeValue;
 
+    String options;
+
     public AsmAttribute() {
     }
 
@@ -60,10 +62,19 @@ public class AsmAttribute implements Serializable {
         this.largeValue = largeValue;
     }
 
+    public String getOptions() {
+        return options;
+    }
+
+    public void setOptions(String options) {
+        this.options = options;
+    }
+
     public String toString() {
         final StringBuilder sb = new StringBuilder("AsmAttribute{");
         sb.append("name='").append(name).append('\'');
         sb.append(", type='").append(type).append('\'');
+        sb.append(", options='").append(options).append('\'');
         sb.append(", value='").append(value).append('\'');
         sb.append('}');
         return sb.toString();
