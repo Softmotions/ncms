@@ -5,25 +5,27 @@ import com.softmotions.ncms.asm.AsmAttribute;
 
 import com.google.inject.Singleton;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-public class AsmStringAttributeRenderer implements AsmAttributeRenderer {
+public class AsmStringAttributeRenderer implements AttributeRendererCallback {
 
-    public void render(AsmAttributeRendererContext ctx, Writer out) throws AsmRenderingException {
+    public static final String[] TYPES = new String[]{"string"};
+
+    public String[] getSupportedAttributeTypes() {
+        return TYPES;
+    }
+
+    public String renderAsmAttribute(AsmRendererContext ctx, String attrname,
+                                     Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getContextAsm();
-        AsmAttribute attr = asm.getEffectiveAttribute(ctx.getAttributeName());
+        AsmAttribute attr = asm.getEffectiveAttribute(attrname);
         if (attr == null || attr.getEffectiveValue() == null) {
-            return;
+            return null;
         }
-        try {
-            out.write(attr.getEffectiveValue());
-        } catch (IOException e) {
-            throw new AsmRenderingException(attr.toString(asm), e);
-        }
+        return attr.getEffectiveValue();
     }
 }

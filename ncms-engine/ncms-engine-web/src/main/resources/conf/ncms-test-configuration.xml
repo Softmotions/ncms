@@ -12,8 +12,8 @@
 
     <mybatis config="com/softmotions/ncms/db/myibatis-config.xml">
         <property name="JDBC.driver" value="org.h2.Driver"/>
-        <property name="JDBC.url" value="jdbc:h2:mem:ncms"/>
-        <!-- <property name="JDBC.url" value="jdbc:h2:~/ncms-dev-db"/>-->
+        <!--<property name="JDBC.url" value="jdbc:h2:mem:ncms"/>-->
+        <property name="JDBC.url" value="jdbc:h2:~/ncms-dev-db"/>
         <property name="JDBC.username" value="sa"/>
         <property name="JDBC.password" value=""/>
     </mybatis>

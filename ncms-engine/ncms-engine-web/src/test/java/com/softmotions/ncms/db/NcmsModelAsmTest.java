@@ -131,7 +131,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
 
         //Insert AsmCore
         AsmCore core = new AsmCore("file:///some/file", "my first assembly core");
-        adao.asmSetCore(core);
+        adao.coreInsert(core);
 
         //Select by criteria query
         AsmCore core2 = adao.newCriteria("location", "file:///some/file")
@@ -143,7 +143,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         assertEquals(core.getLocation(), core2.getLocation());
 
         core = new AsmCore("file:///some/file2", "the second assembly core");
-        adao.asmSetCore(core);
+        adao.coreInsert(core);
 
         //Update core
         core.setName(null);

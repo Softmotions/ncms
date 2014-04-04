@@ -18,6 +18,8 @@ import java.util.Set;
  */
 public class Asm implements Serializable {
 
+    public static final String ASM_HANDLER_CLASS_ATTR_NAME = "NCMS__ASM_HANDLER_CLASS";
+
     Long id;
 
     String name;
@@ -44,6 +46,18 @@ public class Asm implements Serializable {
 
     public Asm(String name) {
         this.name = name;
+    }
+
+    public Asm(String name, AsmCore core) {
+        this.name = name;
+        this.core = core;
+    }
+
+    public Asm(String name, AsmCore core, String description, String options) {
+        this.name = name;
+        this.core = core;
+        this.description = description;
+        this.options = options;
     }
 
     public Long getId() {
@@ -136,6 +150,23 @@ public class Asm implements Serializable {
         return attributes;
     }
 
+    public void addAttribute(AsmAttribute attr) {
+        if (attributes == null) {
+            attributes = new AttrsList();
+        }
+        attributes.add(attr);
+    }
+
+    public void rmAttribute(String name) {
+        if (attributes == null || attributes.isEmpty()) {
+            return;
+        }
+        AsmAttribute attr = attributes.getIndex().get(name);
+        if (attr != null) {
+            attributes.remove(attr);
+        }
+    }
+
     public Collection<String> getEffectiveAttributeNames() {
         final Set<String> anames = new HashSet<>();
         if (attributes != null) {
@@ -179,7 +210,7 @@ public class Asm implements Serializable {
             super(size);
         }
 
-        public AttrsList cloneShallow() {
+        public AttrsList cloneDeep() {
             AttrsList nlist = new AttrsList(size());
             for (AsmAttribute attr : this) {
                 nlist.add(attr.cloneDeep());
@@ -193,24 +224,24 @@ public class Asm implements Serializable {
      * Cloned parents are cached in <c></c>.
      */
     public Asm cloneDeep(Map<String, Asm> cloneContext) {
-        Asm asm = new Asm();
+        Asm asm = cloneContext.get(name);
+        if (asm != null) {
+            return asm;
+        }
+        asm = new Asm();
         asm.id = id;
         asm.name = name;
         asm.description = description;
         asm.options = options;
         asm.core = (core != null) ? core.cloneDeep() : null;
-        asm.attributes = (asm.attributes != null) ? asm.attributes.cloneShallow() : null;
+        asm.attributes = (attributes != null) ? attributes.cloneDeep() : null;
         if (getParents() != null) {
             asm.parents = new ArrayList<>(getParents().size());
             for (Asm parent : getParents()) {
-                Asm clonedParent = cloneContext.get(parent.name);
-                if (clonedParent == null) {
-                    clonedParent = parent.cloneDeep(cloneContext);
-                    cloneContext.put(clonedParent.getName(), clonedParent);
-                }
-                asm.parents.add(clonedParent);
+                asm.parents.add(parent.cloneDeep(cloneContext));
             }
         }
+        cloneContext.put(asm.name, asm);
         return asm;
     }
 

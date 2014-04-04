@@ -26,18 +26,19 @@ public class NcmsWebTest {
     /**
      * A persistent HttpClient that stores cookies to make requests
      */
-    public NinjaTestBrowser ninjaTestBrowser;
+    public NcmsTestBrowser ncmsTestBrowser;
 
 
     @Before
-    public void startupServerAndBrowser() {
+    public void startupServerAndBrowser() throws Exception {
         System.setProperty("ninja.mode", "test");
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.INFO);
 
         ncmsTestServer = new NcmsTestServer();
-        ninjaTestBrowser = new NinjaTestBrowser();
+        ncmsTestBrowser = new NcmsTestBrowser();
+        afterServerStart();
     }
 
     public Injector getInjector() {
@@ -60,8 +61,20 @@ public class NcmsWebTest {
     }
 
     @After
-    public void shutdownServerAndBrowser() {
-        ncmsTestServer.shutdown();
-        ninjaTestBrowser.shutdown();
+    public void shutdownServerAndBrowser() throws Exception {
+        try {
+            beforeServerShutdown();
+        } finally {
+            ncmsTestServer.shutdown();
+            ncmsTestBrowser.shutdown();
+        }
+    }
+
+    protected void afterServerStart() throws Exception {
+    }
+
+
+    protected void beforeServerShutdown() throws Exception {
+
     }
 }

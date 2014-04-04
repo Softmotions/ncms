@@ -1,8 +1,7 @@
 package com.softmotions.ncms.asm.render;
 
-import com.softmotions.ncms.asm.AsmDAO;
-
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import org.mybatis.guice.transactional.Transactional;
@@ -30,10 +29,13 @@ public class AsmServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(AsmServlet.class);
 
     @Inject
-    AsmDAO adao;
+    Injector injector;
 
     @Inject
     Provider<AsmRenderer> rendererProvider;
+
+    @Inject
+    Provider<AsmResourceResolver> resolverProvider;
 
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -50,6 +52,12 @@ public class AsmServlet extends HttpServlet {
 
     @Transactional
     protected void getContent(HttpServletRequest req, HttpServletResponse resp, boolean transfer) throws ServletException, IOException {
+
+        //Set charset before calling javax.servlet.ServletResponse.getWriter()
+        //Assumed all assemblies generated as utf8 encoded text data.
+        //Content-Type can be overriden by assembly renderer.
+        resp.setContentType("text/html;charset=UTF-8");
+
         Writer out = transfer ? resp.getWriter() : new StringWriter();
 
         String ref = req.getPathInfo();
@@ -68,12 +76,11 @@ public class AsmServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             asmRef = ref;
         }
-
         AsmRendererContext ctx =
-                new DefaultAsmRendererContext(req, resp, adao, asmRef, null);
+                new AsmRendererContextImpl(injector, resolverProvider.get(),
+                                           req, resp, asmRef);
         AsmRenderer renderer = rendererProvider.get();
         renderer.render(ctx, out);
-
         if (transfer) {
             out.flush();
         } else {

@@ -25,6 +25,12 @@ public class AsmAttribute implements Serializable {
     public AsmAttribute() {
     }
 
+    public AsmAttribute(String name, String value) {
+        this.name = name;
+        this.value = value;
+        this.type = "string";
+    }
+
     public AsmAttribute(String name, String type, String value) {
         this.name = name;
         this.value = value;

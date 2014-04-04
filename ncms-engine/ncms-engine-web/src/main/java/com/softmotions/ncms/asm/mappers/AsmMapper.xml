@@ -5,7 +5,7 @@
 
 <mapper namespace="com.softmotions.ncms.AsmMapper">
 
-    <insert id="asmSetCore" parameterType="com.softmotions.ncms.asm.AsmCore"
+    <insert id="coreInsert" parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id" useGeneratedKeys="true">
         insert into ASM_CORES
         (LOCATION, NAME, TEMPLATE_ENGINE)
@@ -47,8 +47,8 @@
     <insert id="asmInsert" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
         insert into ASMS
-        (NAME, DESCRIPTION)
-        values (#{name}, #{description})
+        (NAME, DESCRIPTION<if test="core != null">, ASM_CORE_ID</if>)
+        values (#{name}, #{description}<if test="core != null">, #{core.id}</if>)
     </insert>
 
     <update id="asmUpdate"

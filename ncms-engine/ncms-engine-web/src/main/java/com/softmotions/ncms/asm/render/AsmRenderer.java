@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm.render;
 
+import java.io.IOException;
 import java.io.Writer;
 
 /**
@@ -9,5 +10,5 @@ import java.io.Writer;
  */
 public interface AsmRenderer {
 
-    void render(AsmRendererContext ctx, Writer out) throws AsmRenderingException;
+    void render(AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException;
 }

@@ -4,60 +4,65 @@ import com.softmotions.commons.weboot.mb.MBTinyParams;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 
+import com.google.inject.Injector;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class DefaultAsmRendererContext implements AsmAttributeRendererContext {
+public class AsmRendererContextImpl extends HashMap<String, Object> implements AsmRendererContext {
+
+    final Injector injector;
 
     final HttpServletRequest req;
 
     final HttpServletResponse resp;
 
-    final AsmDAO adao;
-
     final Asm asm;
 
-    final String attributeName;
+    final AsmResourceResolver resolver;
+
+    final ClassLoader classLoader;
 
     Map<String, Asm> asmCloneContext;
 
     Map<String, String[]> dedicatedParams;
 
-    private DefaultAsmRendererContext(HttpServletRequest req, HttpServletResponse resp,
-                                     AsmDAO adao, Asm asm, String attributeName)
-            throws AsmRenderingException {
+
+    private AsmRendererContextImpl(Injector injector, ClassLoader classLoader,
+                                   AsmResourceResolver resolver,
+                                   HttpServletRequest req, HttpServletResponse resp,
+                                   Asm asm) {
+        this.injector = injector;
+        this.resolver = resolver;
         this.req = req;
         this.resp = resp;
-        this.adao = adao;
         this.asm = asm;
-        this.attributeName = attributeName;
+        this.classLoader = classLoader;
     }
 
-    public DefaultAsmRendererContext(HttpServletRequest req, HttpServletResponse resp,
-                                     AsmDAO adao, long asmId)
-            throws AsmRenderingException {
-        this(req, resp, adao, asmId, null);
-    }
-
-    public DefaultAsmRendererContext(HttpServletRequest req, HttpServletResponse resp,
-                                     AsmDAO adao, String asmName)
-            throws AsmRenderingException {
-        this(req, resp, adao, asmName, null);
-    }
-
-    public DefaultAsmRendererContext(HttpServletRequest req, HttpServletResponse resp,
-                                     AsmDAO adao, Object asmRef, String attributeName)
+    public AsmRendererContextImpl(Injector injector, AsmResourceResolver resolver,
+                                  HttpServletRequest req, HttpServletResponse resp,
+                                  Object asmRef)
             throws AsmRenderingException {
 
+        this.injector = injector;
+        this.resolver = resolver;
         this.req = req;
         this.resp = resp;
-        this.adao = adao;
-        this.attributeName = attributeName;
+        if (Thread.currentThread().getContextClassLoader() != null) {
+            this.classLoader = Thread.currentThread().getContextClassLoader();
+        } else {
+            this.classLoader = getClass().getClassLoader();
+        }
+
+        AsmDAO adao = injector.getInstance(AsmDAO.class);
         Asm localAsm =
                 adao.selectOne("selectAsmByCriteria",
                                new MBTinyParams()
@@ -67,8 +72,8 @@ public class DefaultAsmRendererContext implements AsmAttributeRendererContext {
         if (localAsm == null) {
             throw new AsmRenderingException("Assembly not found with ID/name: " + asmRef);
         }
-
-        //Perform assembly clone in order current thread to be free on changing asm props
+        //Clone the assembly to allow
+        //rendering routines be free to change assembly structure and properties
         this.asmCloneContext = new HashMap<>();
         this.asm = localAsm.cloneDeep(this.asmCloneContext);
     }
@@ -79,6 +84,10 @@ public class DefaultAsmRendererContext implements AsmAttributeRendererContext {
 
     public HttpServletResponse getServletResponse() {
         return resp;
+    }
+
+    public Injector getInjector() {
+        return injector;
     }
 
     public Map<String, String[]> getDedicatedRequestParams() {
@@ -115,16 +124,25 @@ public class DefaultAsmRendererContext implements AsmAttributeRendererContext {
         return asm;
     }
 
-    public String getAttributeName() {
-        return attributeName;
-    }
-
-    public AsmRendererContext createChildContext(String asmname, String attrname) {
+    public AsmRendererContext createSubcontext(String asmname) {
+        AsmDAO adao = injector.getInstance(AsmDAO.class);
         Asm nasm = adao.selectAsmByName(asmname);
         if (nasm == null) {
             throw new AsmRenderingException("Unknown asm: '" + asmname + "'");
         }
         nasm = nasm.cloneDeep(asmCloneContext);
-        return new DefaultAsmRendererContext(req, resp, adao, nasm, attrname);
+        AsmRendererContextImpl nctx =
+                new AsmRendererContextImpl(injector, classLoader, resolver, req, resp, nasm);
+        nctx.asmCloneContext = asmCloneContext;
+        nctx.putAll(this);
+        return nctx;
+    }
+
+    public Reader resolveResource(AsmRendererContext ctx, String location) throws IOException {
+        return resolver.resolveResource(ctx, location);
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

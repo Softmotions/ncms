@@ -57,8 +57,8 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public int asmSetCore(AsmCore core) {
-        return sess.insert(toStatementId("asmSetCore"), core);
+    public int coreInsert(AsmCore core) {
+        return sess.insert(toStatementId("coreInsert"), core);
     }
 
     @Transactional
@@ -79,7 +79,20 @@ public class AsmDAO extends MBDAOSupport {
 
     @Transactional
     public int asmInsert(Asm asm) {
-        return sess.insert(toStatementId("asmInsert"), asm);
+        if (asm.getCore() != null) {
+            if (asm.getCore().getId() == null) {
+                coreInsert(asm.getCore());
+            } else {
+                asm.setCore(null);
+            }
+        }
+        int ret = sess.insert(toStatementId("asmInsert"), asm);
+        if (asm.getAttributes() != null) {
+            for (AsmAttribute attr : asm.getAttributes()) {
+                asmSetAttribute(asm, attr);
+            }
+        }
+        return ret;
     }
 
     @Transactional
