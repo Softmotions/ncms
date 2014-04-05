@@ -76,13 +76,16 @@ public class AsmServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             asmRef = ref;
         }
+        AsmRenderer renderer = rendererProvider.get();
+        AsmResourceResolver resolver = resolverProvider.get();
         AsmRendererContext ctx =
-                new AsmRendererContextImpl(injector, resolverProvider,
+                new AsmRendererContextImpl(injector,
+                                           renderer,
+                                           resolver,
                                            req, resp, asmRef);
         ctx.push();
         try {
-            AsmRenderer renderer = rendererProvider.get();
-            renderer.render(ctx, out);
+            renderer.renderAsm(ctx, out);
             if (transfer) {
                 out.flush();
             } else {

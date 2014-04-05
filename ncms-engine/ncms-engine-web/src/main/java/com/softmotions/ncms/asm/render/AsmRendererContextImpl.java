@@ -6,7 +6,6 @@ import com.softmotions.ncms.asm.AsmDAO;
 
 import com.google.inject.Injector;
 
-import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -30,7 +29,9 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final Asm asm;
 
-    final Provider<AsmResourceResolver> resolver;
+    final AsmRenderer renderer;
+
+    final AsmResourceResolver resolver;
 
     final ClassLoader classLoader;
 
@@ -39,11 +40,14 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     Map<String, String[]> dedicatedParams;
 
 
-    private AsmRendererContextImpl(Injector injector, ClassLoader classLoader,
-                                   Provider<AsmResourceResolver> resolver,
+    private AsmRendererContextImpl(Injector injector,
+                                   ClassLoader classLoader,
+                                   AsmRenderer renderer,
+                                   AsmResourceResolver resolver,
                                    HttpServletRequest req, HttpServletResponse resp,
                                    Asm asm) {
         this.injector = injector;
+        this.renderer = renderer;
         this.resolver = resolver;
         this.req = req;
         this.resp = resp;
@@ -51,12 +55,15 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.classLoader = classLoader;
     }
 
-    public AsmRendererContextImpl(Injector injector, Provider<AsmResourceResolver> resolver,
+    public AsmRendererContextImpl(Injector injector,
+                                  AsmRenderer renderer,
+                                  AsmResourceResolver resolver,
                                   HttpServletRequest req, HttpServletResponse resp,
                                   Object asmRef)
             throws AsmRenderingException {
 
         this.injector = injector;
+        this.renderer = renderer;
         this.resolver = resolver;
         this.req = req;
         this.resp = resp;
@@ -80,6 +87,10 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         //rendering routines be free to change assembly structure and properties
         this.asmCloneContext = new HashMap<>();
         this.asm = localAsm.cloneDeep(this.asmCloneContext);
+    }
+
+    public AsmRenderer getRenderer() {
+        return renderer;
     }
 
     public HttpServletRequest getServletRequest() {
@@ -136,26 +147,27 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         }
         nasm = nasm.cloneDeep(asmCloneContext);
         AsmRendererContextImpl nctx =
-                new AsmRendererContextImpl(injector, classLoader, resolver, req, resp, nasm);
+                new AsmRendererContextImpl(injector, classLoader, renderer, resolver,
+                                           req, resp, nasm);
         nctx.asmCloneContext = asmCloneContext;
         nctx.putAll(this);
         return nctx;
     }
 
     public Reader openResourceReader(String location) throws IOException {
-        return resolver.get().openResourceReader(this, location);
+        return resolver.openResourceReader(this, location);
     }
 
     public InputStream openResourceInputStream(String location) throws IOException {
-        return resolver.get().openResourceInputStream(this, location);
+        return resolver.openResourceInputStream(this, location);
     }
 
     public List<String> listResources(String directory, String suffix) throws IOException {
-        return resolver.get().listResources(this, directory, suffix);
+        return resolver.listResources(this, directory, suffix);
     }
 
     public boolean isResourceExists(String location) {
-        return resolver.get().isResourceExists(this, location);
+        return resolver.isResourceExists(this, location);
     }
 
     public ClassLoader getClassLoader() {
@@ -165,5 +177,9 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     public Locale getLocale() {
         //todo
         return Locale.getDefault();
+    }
+
+    public String renderAsmAttribute(String attributeName, Map<String, Object> opts) {
+        return renderer.renderAsmAttribute(this, attributeName, opts);
     }
 }

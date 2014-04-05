@@ -61,6 +61,8 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
         return sctx.peek();
     }
 
+    public abstract AsmRenderer getRenderer();
+
     /**
      * Raw http servlet request.
      */
@@ -114,6 +116,9 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      * Cannot be null.
      */
     public abstract Locale getLocale();
+
+
+    public abstract String renderAsmAttribute(String attributeName, Map<String, Object> opts);
 
     /**
      * List resource names.

@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm.render;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 /**
  * Assembly {@link com.softmotions.ncms.asm.Asm} renderer.
@@ -10,5 +11,7 @@ import java.io.Writer;
  */
 public interface AsmRenderer {
 
-    void render(AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException;
+    void renderAsm(AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException;
+
+    String renderAsmAttribute(AsmRendererContext ctx, String attributeName, Map<String, Object> opts);
 }

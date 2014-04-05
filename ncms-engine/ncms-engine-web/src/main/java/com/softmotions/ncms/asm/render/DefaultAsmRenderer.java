@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -23,7 +24,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
     private static final Logger log = LoggerFactory.getLogger(DefaultAsmRenderer.class);
 
 
-    public void render(AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException {
+    public void renderAsm(AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException {
         Asm asm = ctx.getAsm();
         AsmCore core = asm.getEffectiveCore();
         if (core == null) {
@@ -33,9 +34,13 @@ public class DefaultAsmRenderer implements AsmRenderer {
             return; //Assembly handler took full control on response
         }
 
-
-        //out.write("ASM=" + asm);
+        //todo
         out.write("ASM=" + asm);
+    }
+
+    public String renderAsmAttribute(AsmRendererContext ctx, String attributeName, Map<String, Object> opts) {
+        //todo
+        return null;
     }
 
 
