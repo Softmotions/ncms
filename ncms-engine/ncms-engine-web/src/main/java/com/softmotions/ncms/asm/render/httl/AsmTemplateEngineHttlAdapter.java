@@ -28,9 +28,9 @@ import java.util.Properties;
  */
 
 @Singleton
-public class HttlAsmTemplateEngineAdapter implements AsmTemplateEngineAdapter {
+public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
 
-    private static final Logger log = LoggerFactory.getLogger(HttlAsmTemplateEngineAdapter.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmTemplateEngineHttlAdapter.class);
 
     public static final String[] DEFAULT_EXTS = new String[]{"httl"};
 
@@ -39,7 +39,7 @@ public class HttlAsmTemplateEngineAdapter implements AsmTemplateEngineAdapter {
     private final Engine engine;
 
     @Inject
-    public HttlAsmTemplateEngineAdapter(NcmsConfiguration cfg) {
+    public AsmTemplateEngineHttlAdapter(NcmsConfiguration cfg) {
         Properties httlProps = new Properties();
         String extsStr = cfg.impl().getString("httl[@extensions]");
         if (!StringUtils.isBlank(extsStr)) {

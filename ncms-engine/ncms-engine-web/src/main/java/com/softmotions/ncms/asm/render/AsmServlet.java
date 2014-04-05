@@ -83,6 +83,12 @@ public class AsmServlet extends HttpServlet {
                                            renderer,
                                            resolver,
                                            req, resp, asmRef);
+
+        ClassLoader old = Thread.currentThread().getContextClassLoader();
+        //noinspection ObjectEquality
+        if (old != ctx.getClassLoader()) {
+            Thread.currentThread().setContextClassLoader(ctx.getClassLoader());
+        }
         ctx.push();
         try {
             renderer.renderAsm(ctx, out);
@@ -93,6 +99,7 @@ public class AsmServlet extends HttpServlet {
                 resp.flushBuffer();
             }
         } finally {
+            Thread.currentThread().setContextClassLoader(old);
             ctx.pop();
         }
     }
