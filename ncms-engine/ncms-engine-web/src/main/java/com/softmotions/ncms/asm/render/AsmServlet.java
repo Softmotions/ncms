@@ -77,15 +77,20 @@ public class AsmServlet extends HttpServlet {
             asmRef = ref;
         }
         AsmRendererContext ctx =
-                new AsmRendererContextImpl(injector, resolverProvider.get(),
+                new AsmRendererContextImpl(injector, resolverProvider,
                                            req, resp, asmRef);
-        AsmRenderer renderer = rendererProvider.get();
-        renderer.render(ctx, out);
-        if (transfer) {
-            out.flush();
-        } else {
-            resp.setContentLength(((StringWriter) out).getBuffer().length());
-            resp.flushBuffer();
+        ctx.push();
+        try {
+            AsmRenderer renderer = rendererProvider.get();
+            renderer.render(ctx, out);
+            if (transfer) {
+                out.flush();
+            } else {
+                resp.setContentLength(((StringWriter) out).getBuffer().length());
+                resp.flushBuffer();
+            }
+        } finally {
+            ctx.pop();
         }
     }
 }

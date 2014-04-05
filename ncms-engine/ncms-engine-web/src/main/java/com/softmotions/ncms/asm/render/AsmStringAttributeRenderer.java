@@ -21,7 +21,7 @@ public class AsmStringAttributeRenderer implements AttributeRendererCallback {
 
     public String renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
-        Asm asm = ctx.getContextAsm();
+        Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
         if (attr == null || attr.getEffectiveValue() == null) {
             return null;

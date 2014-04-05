@@ -11,17 +11,22 @@
     </jar-web-resources>
 
     <mybatis config="com/softmotions/ncms/db/myibatis-config.xml">
-        <property name="JDBC.driver" value="org.h2.Driver"/>
-        <!--<property name="JDBC.url" value="jdbc:h2:mem:ncms"/>-->
-        <property name="JDBC.url" value="jdbc:h2:~/ncms-dev-db"/>
-        <property name="JDBC.username" value="sa"/>
-        <property name="JDBC.password" value=""/>
+        JDBC.driver=org.h2.Driver
+        JDBC.url=jdbc:h2:mem:ncms
+        JDBC.username=sa
+        JDBC.password
     </mybatis>
 
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
         <dropAll/>
         <update/>
     </liquibase>
+
+    <httl extensions="*,httl,html">
+        loggers=httl.spi.loggers.Slf4jLogger
+        loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
+        import.methods+=com.softmotions.ncms.asm.render.httl.HttlAsmMethods
+    </httl>
 
     <modules>
         <module class="com.softmotions.ncms.asm.AsmGuiceModule"/>

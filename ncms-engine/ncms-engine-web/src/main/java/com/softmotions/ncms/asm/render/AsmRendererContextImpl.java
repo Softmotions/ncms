@@ -6,17 +6,21 @@ import com.softmotions.ncms.asm.AsmDAO;
 
 import com.google.inject.Injector;
 
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmRendererContextImpl extends HashMap<String, Object> implements AsmRendererContext {
+public class AsmRendererContextImpl extends AsmRendererContext {
 
     final Injector injector;
 
@@ -26,7 +30,7 @@ public class AsmRendererContextImpl extends HashMap<String, Object> implements A
 
     final Asm asm;
 
-    final AsmResourceResolver resolver;
+    final Provider<AsmResourceResolver> resolver;
 
     final ClassLoader classLoader;
 
@@ -36,7 +40,7 @@ public class AsmRendererContextImpl extends HashMap<String, Object> implements A
 
 
     private AsmRendererContextImpl(Injector injector, ClassLoader classLoader,
-                                   AsmResourceResolver resolver,
+                                   Provider<AsmResourceResolver> resolver,
                                    HttpServletRequest req, HttpServletResponse resp,
                                    Asm asm) {
         this.injector = injector;
@@ -47,7 +51,7 @@ public class AsmRendererContextImpl extends HashMap<String, Object> implements A
         this.classLoader = classLoader;
     }
 
-    public AsmRendererContextImpl(Injector injector, AsmResourceResolver resolver,
+    public AsmRendererContextImpl(Injector injector, Provider<AsmResourceResolver> resolver,
                                   HttpServletRequest req, HttpServletResponse resp,
                                   Object asmRef)
             throws AsmRenderingException {
@@ -120,7 +124,7 @@ public class AsmRendererContextImpl extends HashMap<String, Object> implements A
         return pvals[0];
     }
 
-    public Asm getContextAsm() {
+    public Asm getAsm() {
         return asm;
     }
 
@@ -138,11 +142,28 @@ public class AsmRendererContextImpl extends HashMap<String, Object> implements A
         return nctx;
     }
 
-    public Reader resolveResource(AsmRendererContext ctx, String location) throws IOException {
-        return resolver.resolveResource(ctx, location);
+    public Reader openResourceReader(String location) throws IOException {
+        return resolver.get().openResourceReader(this, location);
+    }
+
+    public InputStream openResourceInputStream(String location) throws IOException {
+        return resolver.get().openResourceInputStream(this, location);
+    }
+
+    public List<String> listResources(String directory, String suffix) throws IOException {
+        return resolver.get().listResources(this, directory, suffix);
+    }
+
+    public boolean isResourceExists(String location) {
+        return resolver.get().isResourceExists(this, location);
     }
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    public Locale getLocale() {
+        //todo
+        return Locale.getDefault();
     }
 }

@@ -17,13 +17,14 @@ import java.io.Writer;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
+@SuppressWarnings("unchecked")
 public class DefaultAsmRenderer implements AsmRenderer {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultAsmRenderer.class);
 
 
     public void render(AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException {
-        Asm asm = ctx.getContextAsm();
+        Asm asm = ctx.getAsm();
         AsmCore core = asm.getEffectiveCore();
         if (core == null) {
             throw new AsmRenderingException("Missing core for assembly: " + asm.getName());
