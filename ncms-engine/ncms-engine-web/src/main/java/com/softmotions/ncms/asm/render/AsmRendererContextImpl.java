@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -179,7 +180,11 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return Locale.getDefault();
     }
 
-    public String renderAsmAttribute(String attributeName, Map<String, Object> opts) {
+    public String renderAttribute(String attributeName, Map<String, String> opts) {
         return renderer.renderAsmAttribute(this, attributeName, opts);
+    }
+
+    public void render(Writer out) throws AsmRenderingException, IOException {
+        renderer.renderAsm(this, out);
     }
 }

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -117,8 +118,9 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     public abstract Locale getLocale();
 
+    public abstract void render(Writer out) throws AsmRenderingException, IOException;
 
-    public abstract String renderAsmAttribute(String attributeName, Map<String, Object> opts);
+    public abstract String renderAttribute(String attributeName, Map<String, String> opts);
 
     /**
      * List resource names.

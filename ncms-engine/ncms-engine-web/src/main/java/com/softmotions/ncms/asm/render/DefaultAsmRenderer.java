@@ -38,7 +38,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         out.write("ASM=" + asm);
     }
 
-    public String renderAsmAttribute(AsmRendererContext ctx, String attributeName, Map<String, Object> opts) {
+    public String renderAsmAttribute(AsmRendererContext ctx, String attributeName, Map<String, String> opts) {
         //todo
         return null;
     }

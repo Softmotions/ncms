@@ -91,7 +91,7 @@ public class AsmServlet extends HttpServlet {
         }
         ctx.push();
         try {
-            renderer.renderAsm(ctx, out);
+            ctx.render(out);
             if (transfer) {
                 out.flush();
             } else {
