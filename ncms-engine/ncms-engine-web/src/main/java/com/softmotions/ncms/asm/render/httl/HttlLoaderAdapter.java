@@ -5,6 +5,10 @@ import httl.Resource;
 import httl.spi.loaders.AbstractLoader;
 import httl.spi.loaders.resources.AbstractResource;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmResourceNotFoundException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +22,8 @@ import java.util.Locale;
  */
 @SuppressWarnings("unchecked")
 public class HttlLoaderAdapter extends AbstractLoader {
+
+    private static final Logger log = LoggerFactory.getLogger(HttlLoaderAdapter.class);
 
     protected List<String> doList(String directory, String suffix) throws IOException {
         AsmRendererContext ctx = AsmRendererContext.get();
@@ -47,7 +53,7 @@ public class HttlLoaderAdapter extends AbstractLoader {
             AsmRendererContext ctx = AsmRendererContext.getSafe();
             Reader reader = ctx.openResourceReader(path);
             if (reader == null) {
-                throw new IOException("Resource: " + path + " not found");
+                throw new AsmResourceNotFoundException(path);
             }
             return reader;
         }
@@ -56,7 +62,7 @@ public class HttlLoaderAdapter extends AbstractLoader {
             AsmRendererContext ctx = AsmRendererContext.getSafe();
             InputStream is = ctx.openResourceInputStream(path);
             if (is == null) {
-                throw new IOException("Resource: " + path + " not found");
+                throw new AsmResourceNotFoundException(path);
             }
             return is;
         }

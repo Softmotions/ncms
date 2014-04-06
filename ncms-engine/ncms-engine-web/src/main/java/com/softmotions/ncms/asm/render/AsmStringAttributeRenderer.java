@@ -11,9 +11,9 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-public class AsmStringAttributeRenderer implements AttributeRendererCallback {
+public class AsmStringAttributeRenderer implements AsmAttributeRenderer {
 
-    public static final String[] TYPES = new String[]{"string"};
+    public static final String[] TYPES = new String[]{"*", "string"};
 
     public String[] getSupportedAttributeTypes() {
         return TYPES;

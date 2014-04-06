@@ -17,7 +17,7 @@ import java.util.List;
 public class ClasspathAsmResourceResolver implements AsmResourceResolver {
 
     public Reader openResourceReader(AsmRendererContext ctx, String location) throws IOException {
-        location = location.charAt(0) == '/' ? location.substring(0) : location;
+        location = location.charAt(0) == '/' ? location.substring(1) : location;
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         if (cl == null) {
             cl = getClass().getClassLoader();
@@ -30,7 +30,7 @@ public class ClasspathAsmResourceResolver implements AsmResourceResolver {
     }
 
     public InputStream openResourceInputStream(AsmRendererContext ctx, String location) throws IOException {
-        location = location.charAt(0) == '/' ? location.substring(0) : location;
+        location = location.charAt(0) == '/' ? location.substring(1) : location;
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         if (cl == null) {
             cl = getClass().getClassLoader();
@@ -39,12 +39,12 @@ public class ClasspathAsmResourceResolver implements AsmResourceResolver {
     }
 
     public boolean isResourceExists(AsmRendererContext ctx, String location) {
-        location = location.charAt(0) == '/' ? location.substring(0) : location;
+        location = location.charAt(0) == '/' ? location.substring(1) : location;
         return (ctx.getClassLoader().getResource(location) != null);
     }
 
     public List<String> listResources(AsmRendererContext ctx, String directory, String suffix) throws IOException {
-        directory = directory.charAt(0) == '/' ? directory.substring(0) : directory;
+        directory = directory.charAt(0) == '/' ? directory.substring(1) : directory;
         return UrlUtils.listUrl(Thread.currentThread().getContextClassLoader().getResource(directory), suffix);
     }
 }

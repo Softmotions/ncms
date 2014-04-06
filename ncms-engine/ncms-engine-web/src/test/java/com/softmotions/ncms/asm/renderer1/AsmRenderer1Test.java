@@ -11,6 +11,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Test basics of assembly rendering.
  *
@@ -23,19 +26,36 @@ public class AsmRenderer1Test extends NcmsWebTest {
     protected void afterServerStart() throws Exception {
         AsmDAO adao = getInjector().getInstance(AsmDAO.class);
 
+        //testRendererBasic
         Asm asm = new Asm("asm1",
                           new AsmCore("com/softmotions/ncms/asm/renderer1/core1.txt", "Core1"));
         asm.addAttribute(new AsmAttribute("asm1_attr1", "a15e2f74f8724be9947acc586fd15a84"));
         asm.addAttribute(new AsmAttribute("asm1_attr2", "53496feab7f34f488185edacc70a4739"));
+        adao.asmInsert(asm);
+
+        //testCoreNotFound
+        asm = new Asm("asmCoreNotFound",
+                      new AsmCore("com/softmotions/ncms/asm/renderer1/coreNotFound.txt", "coreNotFound"));
         adao.asmInsert(asm);
     }
 
     @Test
     public void testRendererBasic() throws Exception {
         HttpTestResponse resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asm1");
-        log.info("SCODE=" + resp.statusCode);
-        log.info("CHARSET=" + resp.charset);
-        log.info("RESP=" + resp);
+        assertEquals(200, resp.statusCode);
+        assertEquals("UTF-8", resp.charset);
+        String respStr = resp.toString();
+        assertTrue(respStr.contains("f67c7ec829b84e9da79c420f09e04994"));
+        assertTrue(respStr.contains("asm1_attr1=a15e2f74f8724be9947acc586fd15a84"));
+        assertTrue(respStr.contains("asm1_attr2=53496feab7f34f488185edacc70a4739"));
+    }
 
+    @Test
+    public void testNotFound() throws Exception {
+        HttpTestResponse resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmCoreNotFound");
+        assertEquals(404, resp.statusCode);
+
+        resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmNotFound");
+        assertEquals(404, resp.statusCode);
     }
 }

@@ -9,7 +9,8 @@
         </encoder>
     </appender>
 
-    <logger name="com.softmotions.commons.web" level="DEBUG"/>
+    <logger name="com.softmotions.commons.web" level="INFO"/>
+    <logger name="com.softmotions.ncms.asm.render" level="DEBUG"/>
 
     <!-- Set it to TRACE in order view MyBatis SQL statements -->
     <logger name="com.softmotions.ncms.AsmMapper" level="INFO"/>

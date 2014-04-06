@@ -1,6 +1,5 @@
 package com.softmotions.ncms.asm.render;
 
-import com.softmotions.commons.weboot.mb.MBTinyParams;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 
@@ -61,7 +60,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                   AsmResourceResolver resolver,
                                   HttpServletRequest req, HttpServletResponse resp,
                                   Object asmRef)
-            throws AsmRenderingException {
+            throws AsmRenderingException, AsmResourceNotFoundException {
 
         this.injector = injector;
         this.renderer = renderer;
@@ -77,12 +76,9 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         AsmDAO adao = injector.getInstance(AsmDAO.class);
         Asm localAsm =
                 adao.selectOne("selectAsmByCriteria",
-                               new MBTinyParams()
-                                       .param((asmRef instanceof Number) ? "id" : "name",
-                                              asmRef)
-                );
+                               ((asmRef instanceof Number) ? "id" : "name"), asmRef);
         if (localAsm == null) {
-            throw new AsmRenderingException("Assembly not found with ID/name: " + asmRef);
+            throw new AsmResourceNotFoundException("asm: " + asmRef);
         }
         //Clone the assembly to allow
         //rendering routines be free to change assembly structure and properties

@@ -78,11 +78,18 @@ public class AsmServlet extends HttpServlet {
         }
         AsmRenderer renderer = rendererProvider.get();
         AsmResourceResolver resolver = resolverProvider.get();
-        AsmRendererContext ctx =
-                new AsmRendererContextImpl(injector,
-                                           renderer,
-                                           resolver,
-                                           req, resp, asmRef);
+        AsmRendererContext ctx;
+
+        try {
+            ctx = new AsmRendererContextImpl(injector,
+                                             renderer,
+                                             resolver,
+                                             req, resp, asmRef);
+        } catch (AsmResourceNotFoundException e) {
+            log.error("Resource not found: " + e.getResource() + " assembly: " + asmRef);
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
 
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         //noinspection ObjectEquality
@@ -98,6 +105,9 @@ public class AsmServlet extends HttpServlet {
                 resp.setContentLength(((StringWriter) out).getBuffer().length());
                 resp.flushBuffer();
             }
+        } catch (AsmResourceNotFoundException e) {
+            log.error("Resource not found: " + e.getResource() + " assembly: " + ctx.getAsm().getName());
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
             ctx.pop();

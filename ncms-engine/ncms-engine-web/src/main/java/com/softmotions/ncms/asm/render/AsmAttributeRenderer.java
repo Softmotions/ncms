@@ -5,7 +5,7 @@ import java.util.Map;
 /**
 * @author Adamansky Anton (adamansky@gmail.com)
 */
-public interface AttributeRendererCallback {
+public interface AsmAttributeRenderer {
 
     String[] getSupportedAttributeTypes();
 

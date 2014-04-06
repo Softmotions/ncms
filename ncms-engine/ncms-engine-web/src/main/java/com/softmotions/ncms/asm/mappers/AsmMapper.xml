@@ -65,7 +65,7 @@
 
     <select id="selectAsmByCriteria"
             resultType="com.softmotions.ncms.asm.Asm"
-            parameterType="map"
+            parameterType="java.util.Map"
             resultMap="asmFullRM">
         select asm.*,
         attr.ASM_ID             as ATTR_ASM_ID,
