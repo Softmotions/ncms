@@ -197,7 +197,10 @@
                         </scanTargetPattern>
                     </scanTargetPatterns>
                     <systemProperties>
-                        <ninja.mode>${ninja.mode}</ninja.mode>
+                        <systemProperty>
+                            <name>ninja.mode</name>
+                            <value>${ninja.mode}</value>
+                        </systemProperty>
                     </systemProperties>
                 </configuration>
             </plugin>
