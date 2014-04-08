@@ -7,7 +7,7 @@ import java.util.Locale;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public interface AsmLoader {
+public interface AsmTemplateLoader {
 
     /**
      * list resource names.

@@ -1,7 +1,7 @@
 package com.softmotions.ncms.asm.render.ldrs;
 
 import httl.spi.loaders.ClasspathLoader;
-import com.softmotions.ncms.asm.render.AsmLoader;
+import com.softmotions.ncms.asm.render.AsmTemplateLoader;
 import com.softmotions.ncms.asm.render.AsmResource;
 
 import com.google.inject.Singleton;
@@ -14,11 +14,11 @@ import java.util.Locale;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-public class AsmClasspathLoader implements AsmLoader {
+public class AsmClasspathTemplateLoader implements AsmTemplateLoader {
 
     private final ClasspathLoader loader;
 
-    public AsmClasspathLoader() {
+    public AsmClasspathTemplateLoader() {
         this.loader = new ClasspathLoader();
     }
 

@@ -139,7 +139,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public abstract String renderAttribute(String attributeName, Map<String, String> opts);
 
-    public abstract AsmLoader getLoader();
+    public abstract AsmTemplateLoader getLoader();
 
     public String toString() {
         return "AsmRendererContext{asm=" + getAsm() + ", context=" + super.toString() + '}';
