@@ -16,7 +16,7 @@ import java.util.Locale;
 @Singleton
 public class AsmClasspathLoader implements AsmLoader {
 
-    final ClasspathLoader loader;
+    private final ClasspathLoader loader;
 
     public AsmClasspathLoader() {
         this.loader = new ClasspathLoader();
