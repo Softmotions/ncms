@@ -145,10 +145,6 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
     }
 
-    protected AsmTemplateEngineAdapter findTemplateEngineAdapter(AsmCore core, AsmRendererContext ctx) {
-        return null;
-    }
-
     protected AsmTemplateEngineAdapter selectTemplateEngineForCore(AsmCore core) {
         AsmTemplateEngineAdapter defaultTe = null;
         String type = core.getTemplateEngine();
