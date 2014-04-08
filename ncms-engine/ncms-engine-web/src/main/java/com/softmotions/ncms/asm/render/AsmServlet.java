@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 
 /**
  * Asm handler.
@@ -37,7 +36,7 @@ public class AsmServlet extends HttpServlet {
     Provider<AsmRenderer> rendererProvider;
 
     @Inject
-    Provider<AsmResourceResolver> resolverProvider;
+    Provider<AsmLoader> loaderProvider;
 
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -77,7 +76,7 @@ public class AsmServlet extends HttpServlet {
             asmRef = ref;
         }
         AsmRenderer renderer = rendererProvider.get();
-        AsmResourceResolver resolver = resolverProvider.get();
+        AsmLoader loader = loaderProvider.get();
         AsmRendererContext ctx;
         HttpServletResponse renderResp = resp;
         StringWriter out = null;
@@ -88,7 +87,7 @@ public class AsmServlet extends HttpServlet {
         try {
             ctx = new AsmRendererContextImpl(injector,
                                              renderer,
-                                             resolver,
+                                             loader,
                                              req, renderResp, asmRef);
         } catch (AsmResourceNotFoundException e) {
             log.error("Resource not found: " + e.getResource() + " assembly: " + asmRef);

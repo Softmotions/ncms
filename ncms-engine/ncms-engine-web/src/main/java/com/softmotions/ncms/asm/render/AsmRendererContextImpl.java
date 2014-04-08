@@ -12,11 +12,8 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -37,7 +34,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final AsmRenderer renderer;
 
-    final AsmResourceResolver resolver;
+    final AsmLoader loader;
 
     final ClassLoader classLoader;
 
@@ -51,12 +48,12 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     private AsmRendererContextImpl(Injector injector,
                                    ClassLoader classLoader,
                                    AsmRenderer renderer,
-                                   AsmResourceResolver resolver,
+                                   AsmLoader loader,
                                    HttpServletRequest req, HttpServletResponse resp,
                                    Asm asm) {
         this.injector = injector;
         this.renderer = renderer;
-        this.resolver = resolver;
+        this.loader = loader;
         this.req = req;
         this.resp = resp;
         this.asm = asm;
@@ -66,14 +63,14 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     public AsmRendererContextImpl(Injector injector,
                                   AsmRenderer renderer,
-                                  AsmResourceResolver resolver,
+                                  AsmLoader loader,
                                   HttpServletRequest req, HttpServletResponse resp,
                                   Object asmRef)
             throws AsmRenderingException, AsmResourceNotFoundException {
 
         this.injector = injector;
         this.renderer = renderer;
-        this.resolver = resolver;
+        this.loader = loader;
         this.req = req;
         this.resp = resp;
         this.subcontext = false;
@@ -157,28 +154,12 @@ public class AsmRendererContextImpl extends AsmRendererContext {
             throw new AsmResourceNotFoundException("asm: '" + asmname + "'");
         }
         AsmRendererContextImpl nctx =
-                new AsmRendererContextImpl(injector, classLoader, renderer, resolver,
+                new AsmRendererContextImpl(injector, classLoader, renderer, loader,
                                            req, new GenericResponseWrapper(resp, out, false),
                                            nasm.cloneDeep(asmCloneContext));
         nctx.asmCloneContext = asmCloneContext;
         nctx.putAll(this);
         return nctx;
-    }
-
-    public Reader openResourceReader(String location) throws IOException {
-        return resolver.openResourceReader(this, location);
-    }
-
-    public InputStream openResourceInputStream(String location) throws IOException {
-        return resolver.openResourceInputStream(this, location);
-    }
-
-    public List<String> listResources(String directory, String suffix) throws IOException {
-        return resolver.listResources(this, directory, suffix);
-    }
-
-    public boolean isResourceExists(String location) {
-        return resolver.isResourceExists(this, location);
     }
 
     public ClassLoader getClassLoader() {
@@ -196,5 +177,9 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     public void render() throws AsmRenderingException, IOException {
         renderer.renderAsm(this);
+    }
+
+    public AsmLoader getLoader() {
+        return loader;
     }
 }

@@ -8,11 +8,8 @@ import com.google.inject.Injector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -142,34 +139,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public abstract String renderAttribute(String attributeName, Map<String, String> opts);
 
-    /**
-     * List resource names.
-     */
-    public abstract List<String> listResources(String directory, String suffix) throws IOException;
-
-    /**
-     * Returns true if resource specified by
-     * location exists and can be retrieved by
-     * {@link #openResourceReader(String)}
-     */
-    public abstract boolean isResourceExists(String location);
-
-    /**
-     * Resolve resource location, and return resource content reader.
-     * If resource is not exists it returns <code>null</code>
-     *
-     * @param location Resource file reader or <code>null</code> if resource is not exists
-     */
-    public abstract Reader openResourceReader(String location) throws IOException;
-
-    /**
-     * Resolve resource location, and return resource content input stream.
-     * If resource is not exists it returns <code>null</code>
-     *
-     * @param location Resource file input stream or <code>null</code> if resource is not exists
-     */
-    public abstract InputStream openResourceInputStream(String location) throws IOException;
-
+    public abstract AsmLoader getLoader();
 
     public String toString() {
         return "AsmRendererContext{asm=" + getAsm() + ", context=" + super.toString() + '}';

@@ -2,13 +2,9 @@ package com.softmotions.ncms.asm.render.httl;
 
 import httl.Engine;
 import httl.Resource;
-import httl.spi.loaders.AbstractLoader;
-import httl.spi.loaders.resources.AbstractResource;
+import httl.spi.Loader;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
-import com.softmotions.ncms.asm.render.AsmResourceNotFoundException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.softmotions.ncms.asm.render.AsmResource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,50 +17,70 @@ import java.util.Locale;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class HttlLoaderAdapter extends AbstractLoader {
+public class HttlLoaderAdapter implements Loader {
 
-    private static final Logger log = LoggerFactory.getLogger(HttlLoaderAdapter.class);
+    private Engine engine;
 
-    protected List<String> doList(String directory, String suffix) throws IOException {
+    public Engine getEngine() {
+        return engine;
+    }
+
+    public void setEngine(Engine engine) {
+        this.engine = engine;
+    }
+
+    public List<String> list(String suffix) throws IOException {
         AsmRendererContext ctx = AsmRendererContext.get();
-        if (ctx == null) return Collections.EMPTY_LIST;
-        return ctx.listResources(directory, suffix);
+        return ctx != null ? ctx.getLoader().list(suffix) : Collections.EMPTY_LIST;
     }
 
-    protected boolean doExists(String name, Locale locale, String path) throws IOException {
+    public boolean exists(String name, Locale locale) {
         AsmRendererContext ctx = AsmRendererContext.get();
-        return (ctx != null && ctx.isResourceExists(path));
+        return ctx != null && ctx.getLoader().exists(name, locale);
     }
 
-    protected Resource doLoad(String name, Locale locale, String encoding, String path) throws IOException {
-        return new HttlLoaderResource(getEngine(), name, locale, encoding, path);
-    }
-
-    private static final class HttlLoaderResource extends AbstractResource {
-
-        final String path;
-
-        private HttlLoaderResource(Engine engine, String name, Locale locale, String encoding, String path) {
-            super(engine, name, locale, encoding);
-            this.path = path;
+    public Resource load(String name, Locale locale, String encoding) throws IOException {
+        AsmRendererContext ctx = AsmRendererContext.get();
+        if (ctx == null) {
+            return null;
         }
-
-        public Reader openReader() throws IOException {
-            AsmRendererContext ctx = AsmRendererContext.getSafe();
-            Reader reader = ctx.openResourceReader(path);
-            if (reader == null) {
-                throw new AsmResourceNotFoundException(path);
+        final AsmResource res = ctx.getLoader().load(name, locale, encoding);
+        return new Resource() {
+            public String getName() {
+                return res.getName();
             }
-            return reader;
-        }
 
-        public InputStream openStream() throws IOException {
-            AsmRendererContext ctx = AsmRendererContext.getSafe();
-            InputStream is = ctx.openResourceInputStream(path);
-            if (is == null) {
-                throw new AsmResourceNotFoundException(path);
+            public String getEncoding() {
+                return res.getEncoding();
             }
-            return is;
-        }
+
+            public Locale getLocale() {
+                return res.getLocale();
+            }
+
+            public long getLastModified() {
+                return res.getLastModified();
+            }
+
+            public long getLength() {
+                return res.getLength();
+            }
+
+            public String getSource() throws IOException {
+                return res.getSource();
+            }
+
+            public Reader openReader() throws IOException {
+                return res.openReader();
+            }
+
+            public InputStream openStream() throws IOException {
+                return res.openStream();
+            }
+
+            public Engine getEngine() {
+                return engine;
+            }
+        };
     }
 }
