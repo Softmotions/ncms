@@ -1,2 +1,3 @@
 2fd82732b21646b48335e81f9b4281d5
 asm1_inc=${asm("asm1_inc")}
+<coreAsmInc>&amp;</coreAsmInc>

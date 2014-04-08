@@ -70,8 +70,8 @@ public class DefaultAsmRenderer implements AsmRenderer {
             throw new AsmRenderingException("Failed to select template engine for assembly " +
                                             "core: " + core + " assembly: " + asm.getName());
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Selected template engine: " + te.getClass().getName() +
+        if (log.isTraceEnabled()) {
+            log.trace("Selected template engine: " + te.getClass().getName() +
                       " assembly: " + asm.getName());
         }
         te.renderTemplate(core.getLocation(), ctx, ctx.getServletResponse().getWriter());
