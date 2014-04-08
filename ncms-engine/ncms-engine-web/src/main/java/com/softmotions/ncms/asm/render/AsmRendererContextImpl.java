@@ -1,9 +1,13 @@
 package com.softmotions.ncms.asm.render;
 
+import com.softmotions.commons.web.GenericResponseWrapper;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 
 import com.google.inject.Injector;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +24,8 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public class AsmRendererContextImpl extends AsmRendererContext {
+
+    private static final Logger log = LoggerFactory.getLogger(AsmRendererContextImpl.class);
 
     final Injector injector;
 
@@ -136,16 +142,16 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return asm;
     }
 
-    public AsmRendererContext createSubcontext(String asmname) {
+    public AsmRendererContext createSubcontext(String asmname, Writer out) throws AsmResourceNotFoundException {
         AsmDAO adao = injector.getInstance(AsmDAO.class);
         Asm nasm = adao.selectAsmByName(asmname);
         if (nasm == null) {
-            throw new AsmRenderingException("Unknown asm: '" + asmname + "'");
+            throw new AsmResourceNotFoundException("asm: '" + asmname + "'");
         }
-        nasm = nasm.cloneDeep(asmCloneContext);
         AsmRendererContextImpl nctx =
                 new AsmRendererContextImpl(injector, classLoader, renderer, resolver,
-                                           req, resp, nasm);
+                                           req, new GenericResponseWrapper(resp, out, false),
+                                           nasm.cloneDeep(asmCloneContext));
         nctx.asmCloneContext = asmCloneContext;
         nctx.putAll(this);
         return nctx;
@@ -180,7 +186,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return renderer.renderAsmAttribute(this, attributeName, opts);
     }
 
-    public void render(Writer out) throws AsmRenderingException, IOException {
-        renderer.renderAsm(this, out);
+    public void render() throws AsmRenderingException, IOException {
+        renderer.renderAsm(this);
     }
 }

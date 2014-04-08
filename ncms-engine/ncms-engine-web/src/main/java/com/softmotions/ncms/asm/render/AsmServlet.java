@@ -1,5 +1,7 @@
 package com.softmotions.ncms.asm.render;
 
+import com.softmotions.commons.web.GenericResponseWrapper;
+
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
@@ -58,8 +60,6 @@ public class AsmServlet extends HttpServlet {
         //Content-Type can be overriden by assembly renderer.
         resp.setContentType("text/html;charset=UTF-8");
 
-        Writer out = transfer ? resp.getWriter() : new StringWriter();
-
         String ref = req.getPathInfo();
         if (ref.charAt(0) == '/') {
             ref = ref.substring(1);
@@ -79,12 +79,17 @@ public class AsmServlet extends HttpServlet {
         AsmRenderer renderer = rendererProvider.get();
         AsmResourceResolver resolver = resolverProvider.get();
         AsmRendererContext ctx;
-
+        HttpServletResponse renderResp = resp;
+        StringWriter out = null;
+        if (!transfer) {
+            out = new StringWriter();
+            renderResp = new GenericResponseWrapper(resp, out, false);
+        }
         try {
             ctx = new AsmRendererContextImpl(injector,
                                              renderer,
                                              resolver,
-                                             req, resp, asmRef);
+                                             req, renderResp, asmRef);
         } catch (AsmResourceNotFoundException e) {
             log.error("Resource not found: " + e.getResource() + " assembly: " + asmRef);
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -98,12 +103,9 @@ public class AsmServlet extends HttpServlet {
         }
         ctx.push();
         try {
-            ctx.render(out);
-            if (transfer) {
-                out.flush();
-            } else {
-                resp.setContentLength(((StringWriter) out).getBuffer().length());
-                resp.flushBuffer();
+            ctx.render();
+            if (!transfer) {
+                resp.setContentLength(out.getBuffer().length());
             }
         } catch (AsmResourceNotFoundException e) {
             log.error("Resource not found: " + e.getResource() + " assembly: " + ctx.getAsm().getName());
@@ -111,6 +113,7 @@ public class AsmServlet extends HttpServlet {
         } finally {
             Thread.currentThread().setContextClassLoader(old);
             ctx.pop();
+            resp.flushBuffer();
         }
     }
 }

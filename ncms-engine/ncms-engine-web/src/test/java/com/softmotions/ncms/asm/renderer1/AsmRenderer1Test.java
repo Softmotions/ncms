@@ -37,6 +37,13 @@ public class AsmRenderer1Test extends NcmsWebTest {
         asm = new Asm("asmCoreNotFound",
                       new AsmCore("com/softmotions/ncms/asm/renderer1/coreNotFound.txt", "coreNotFound"));
         adao.asmInsert(asm);
+
+
+        //Assembly which includes other assembly
+        asm = new Asm("asmInc",
+                      new AsmCore("com/softmotions/ncms/asm/renderer1/coreAsmInc.httl", "AsmIncCore"));
+        asm.addAttribute(new AsmAttribute("asm1_inc", "asmref", "asm1"));
+        adao.asmInsert(asm);
     }
 
     @Test
@@ -48,13 +55,24 @@ public class AsmRenderer1Test extends NcmsWebTest {
         assertTrue(respStr.contains("f67c7ec829b84e9da79c420f09e04994"));
         assertTrue(respStr.contains("asm1_attr1=a15e2f74f8724be9947acc586fd15a84"));
         assertTrue(respStr.contains("asm1_attr2=53496feab7f34f488185edacc70a4739"));
+
+        //test assembly inclusion
+        resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmInc");
+        assertEquals(200, resp.statusCode);
+        respStr = resp.toString();
+        assertTrue(respStr.contains("2fd82732b21646b48335e81f9b4281d5"));
+        assertTrue(respStr.contains("asm1_inc=f67c7ec829b84e9da79c420f09e04994"));
+        assertTrue(respStr.contains("asm1_attr1=a15e2f74f8724be9947acc586fd15a84"));
+        assertTrue(respStr.contains("asm1_attr2=53496feab7f34f488185edacc70a4739"));
     }
 
     @Test
     public void testNotFound() throws Exception {
+        //missing assembly core
         HttpTestResponse resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmCoreNotFound");
         assertEquals(404, resp.statusCode);
 
+        //missing assembly
         resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmNotFound");
         assertEquals(404, resp.statusCode);
     }

@@ -99,8 +99,9 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      * referenced by <code>asmname</code>.
      *
      * @param asmname Name of assembly used in child context.
+     * @param out Writer will be used to generate content.
      */
-    public abstract AsmRendererContext createSubcontext(String asmname);
+    public abstract AsmRendererContext createSubcontext(String asmname, Writer out) throws AsmResourceNotFoundException;
 
     /**
      * Guice injector.
@@ -118,7 +119,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     public abstract Locale getLocale();
 
-    public abstract void render(Writer out) throws AsmRenderingException, IOException;
+    public abstract void render() throws AsmRenderingException, IOException;
 
     public abstract String renderAttribute(String attributeName, Map<String, String> opts);
 

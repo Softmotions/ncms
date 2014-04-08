@@ -56,7 +56,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
     }
 
-    public void renderAsm(AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException {
+    public void renderAsm(AsmRendererContext ctx) throws AsmRenderingException, IOException {
         Asm asm = ctx.getAsm();
         AsmCore core = asm.getEffectiveCore();
         if (core == null) {
@@ -74,7 +74,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
             log.debug("Selected template engine: " + te.getClass().getName() +
                       " assembly: " + asm.getName());
         }
-        te.renderTemplate(core.getLocation(), ctx, out);
+        te.renderTemplate(core.getLocation(), ctx, ctx.getServletResponse().getWriter());
     }
 
     public String renderAsmAttribute(AsmRendererContext ctx, String attributeName,

@@ -83,7 +83,7 @@ public class AsmDAO extends MBDAOSupport {
             if (asm.getCore().getId() == null) {
                 coreInsert(asm.getCore());
             } else {
-                asm.setCore(null);
+                coreUpdate(asm.getCore());
             }
         }
         int ret = sess.insert(toStatementId("asmInsert"), asm);
@@ -121,13 +121,13 @@ public class AsmDAO extends MBDAOSupport {
     @Transactional
     public Asm selectAsmByName(String name) {
         return selectOne("selectAsmByCriteria",
-                         new MBTinyParams().param("name", name));
+                         "name", name);
     }
 
     @Transactional
     public Asm selectAsmById(Number id) {
         return selectOne("selectAsmByCriteria",
-                         new MBTinyParams().param("id", id));
+                         "id", id);
     }
 
     @SuppressWarnings("unchecked")
