@@ -25,6 +25,8 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = new ThreadLocal<>();
 
+    protected boolean scheduleEscapeSkipping = true;
+
     /**
      * Push the current context in the ThreadLocal {@link #ASM_CTX}
      */
@@ -33,6 +35,9 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
         if (asmRendererContexts == null) {
             asmRendererContexts = new Stack<>();
             ASM_CTX.set(asmRendererContexts);
+        }
+        if (asmRendererContexts.contains(this)) {
+            throw new AsmRenderingException("Cycling assembly dependency on: " + this);
         }
         asmRendererContexts.push(this);
     }
@@ -60,6 +65,14 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
             return null;
         }
         return sctx.peek();
+    }
+
+    public boolean isScheduleEscapeSkipping() {
+        return scheduleEscapeSkipping;
+    }
+
+    public void setScheduleEscapeSkipping(boolean scheduleEscapeSkipping) {
+        this.scheduleEscapeSkipping = scheduleEscapeSkipping;
     }
 
     public abstract AsmRenderer getRenderer();
@@ -94,12 +107,18 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
     public abstract Asm getAsm();
 
     /**
+     * Return true is current context is subcontext.
+     * @return
+     */
+    public abstract boolean isSubcontext();
+
+    /**
      * Create new rendering subcontext for
      * {@link com.softmotions.ncms.asm.Asm assembly}
      * referenced by <code>asmname</code>.
      *
      * @param asmname Name of assembly used in child context.
-     * @param out Writer will be used to generate content.
+     * @param out     Writer will be used to generate content.
      */
     public abstract AsmRendererContext createSubcontext(String asmname, Writer out) throws AsmResourceNotFoundException;
 
@@ -150,4 +169,23 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      * @param location Resource file input stream or <code>null</code> if resource is not exists
      */
     public abstract InputStream openResourceInputStream(String location) throws IOException;
+
+
+    public String toString() {
+        return "AsmRendererContext{asm=" + getAsm() + ", context=" + super.toString() + '}';
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o == null || o.getClass() != getClass()) {
+            return false;
+        }
+        return getAsm().equals(((AsmRendererContext) o).getAsm());
+    }
+
+    public int hashCode() {
+        return getAsm().hashCode();
+    }
 }

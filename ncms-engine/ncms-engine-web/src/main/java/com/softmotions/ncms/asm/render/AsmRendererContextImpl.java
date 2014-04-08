@@ -41,6 +41,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final ClassLoader classLoader;
 
+    final boolean subcontext;
+
     Map<String, Asm> asmCloneContext;
 
     Map<String, String[]> dedicatedParams;
@@ -59,6 +61,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.resp = resp;
         this.asm = asm;
         this.classLoader = classLoader;
+        this.subcontext = true;
     }
 
     public AsmRendererContextImpl(Injector injector,
@@ -73,6 +76,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.resolver = resolver;
         this.req = req;
         this.resp = resp;
+        this.subcontext = false;
         if (Thread.currentThread().getContextClassLoader() != null) {
             this.classLoader = Thread.currentThread().getContextClassLoader();
         } else {
@@ -140,6 +144,10 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     public Asm getAsm() {
         return asm;
+    }
+
+    public boolean isSubcontext() {
+        return subcontext;
     }
 
     public AsmRendererContext createSubcontext(String asmname, Writer out) throws AsmResourceNotFoundException {

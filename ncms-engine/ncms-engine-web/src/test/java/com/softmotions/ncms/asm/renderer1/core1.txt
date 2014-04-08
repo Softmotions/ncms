@@ -1,4 +1,5 @@
 f67c7ec829b84e9da79c420f09e04994
 asm1_attr1=${asm("asm1_attr1")}
 asm1_attr2=${asm("asm1_attr2")}
+asm1_attr3=${asm("asm1_attr3")}
 <core1>&amp;</core1>

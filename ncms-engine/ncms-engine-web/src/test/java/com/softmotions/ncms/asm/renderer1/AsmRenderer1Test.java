@@ -31,6 +31,7 @@ public class AsmRenderer1Test extends NcmsWebTest {
                           new AsmCore("com/softmotions/ncms/asm/renderer1/core1.txt", "Core1"));
         asm.addAttribute(new AsmAttribute("asm1_attr1", "a15e2f74f8724be9947acc586fd15a84"));
         asm.addAttribute(new AsmAttribute("asm1_attr2", "53496feab7f34f488185edacc70a4739"));
+        asm.addAttribute(new AsmAttribute("asm1_attr3", "<asm1_attr3>"));
         adao.asmInsert(asm);
 
         //testCoreNotFound
@@ -64,8 +65,9 @@ public class AsmRenderer1Test extends NcmsWebTest {
         assertTrue(respStr.contains("asm1_inc=f67c7ec829b84e9da79c420f09e04994"));
         assertTrue(respStr.contains("asm1_attr1=a15e2f74f8724be9947acc586fd15a84"));
         assertTrue(respStr.contains("asm1_attr2=53496feab7f34f488185edacc70a4739"));
-
-        log.info("DATA=" + respStr);
+        assertTrue(respStr.contains("asm1_attr3=&lt;asm1_attr3&gt;"));
+        assertTrue(respStr.contains("<core1>&amp;</core1>"));
+        assertTrue(respStr.contains("<coreAsmInc>&amp;</coreAsmInc>"));
     }
 
     @Test
