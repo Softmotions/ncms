@@ -110,8 +110,8 @@ public class AsmServlet extends HttpServlet {
             log.error("Resource not found: " + e.getResource() + " assembly: " + ctx.getAsm().getName());
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         } finally {
-            Thread.currentThread().setContextClassLoader(old);
             ctx.pop();
+            Thread.currentThread().setContextClassLoader(old);
             resp.flushBuffer();
         }
     }
