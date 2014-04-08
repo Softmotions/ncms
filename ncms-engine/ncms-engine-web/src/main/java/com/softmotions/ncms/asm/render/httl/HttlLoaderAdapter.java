@@ -16,7 +16,6 @@ import java.util.Locale;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-@SuppressWarnings("unchecked")
 public class HttlLoaderAdapter implements Loader {
 
     private Engine engine;
@@ -29,6 +28,7 @@ public class HttlLoaderAdapter implements Loader {
         this.engine = engine;
     }
 
+    @SuppressWarnings("unchecked")
     public List<String> list(String suffix) throws IOException {
         AsmRendererContext ctx = AsmRendererContext.get();
         return ctx != null ? ctx.getLoader().list(suffix) : Collections.EMPTY_LIST;
@@ -44,43 +44,54 @@ public class HttlLoaderAdapter implements Loader {
         if (ctx == null) {
             return null;
         }
-        final AsmResource res = ctx.getLoader().load(name, locale, encoding);
-        return new Resource() {
-            public String getName() {
-                return res.getName();
-            }
+        return new HttlResourceAsmAdapter(ctx.getLoader().load(name, locale, encoding), engine);
+    }
 
-            public String getEncoding() {
-                return res.getEncoding();
-            }
+    private static final class HttlResourceAsmAdapter implements Resource {
 
-            public Locale getLocale() {
-                return res.getLocale();
-            }
+        private final AsmResource res;
 
-            public long getLastModified() {
-                return res.getLastModified();
-            }
+        private final Engine engine;
 
-            public long getLength() {
-                return res.getLength();
-            }
+        private HttlResourceAsmAdapter(AsmResource res, Engine engine) {
+            this.res = res;
+            this.engine = engine;
+        }
 
-            public String getSource() throws IOException {
-                return res.getSource();
-            }
+        public String getName() {
+            return res.getName();
+        }
 
-            public Reader openReader() throws IOException {
-                return res.openReader();
-            }
+        public String getEncoding() {
+            return res.getEncoding();
+        }
 
-            public InputStream openStream() throws IOException {
-                return res.openStream();
-            }
+        public Locale getLocale() {
+            return res.getLocale();
+        }
 
-            public Engine getEngine() {
-                return engine;
-            }
-        };
+        public long getLastModified() {
+            return res.getLastModified();
+        }
+
+        public long getLength() {
+            return res.getLength();
+        }
+
+        public String getSource() throws IOException {
+            return res.getSource();
+        }
+
+        public Reader openReader() throws IOException {
+            return res.openReader();
+        }
+
+        public InputStream openStream() throws IOException {
+            return res.openStream();
+        }
+
+        public Engine getEngine() {
+            return engine;
+        }
     }
 }
