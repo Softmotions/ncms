@@ -22,7 +22,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = new ThreadLocal<>();
 
-    protected boolean scheduleEscapeSkipping = true;
+    protected boolean nextEscapeSkipping = true;
 
     /**
      * Push the current context in the ThreadLocal {@link #ASM_CTX}
@@ -64,12 +64,12 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
         return sctx.peek();
     }
 
-    public boolean isScheduleEscapeSkipping() {
-        return scheduleEscapeSkipping;
+    public boolean isNextEscapeSkipping() {
+        return nextEscapeSkipping;
     }
 
-    public void setScheduleEscapeSkipping(boolean scheduleEscapeSkipping) {
-        this.scheduleEscapeSkipping = scheduleEscapeSkipping;
+    public void setNextEscapeSkipping(boolean nextEscapeSkipping) {
+        this.nextEscapeSkipping = nextEscapeSkipping;
     }
 
     public abstract AsmRenderer getRenderer();

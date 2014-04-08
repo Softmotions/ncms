@@ -61,7 +61,7 @@ public class AsmRefAttributeRenderer implements AsmAttributeRenderer {
             }
         }
         //Schedule skip escaping on this attribute
-        ctx.setScheduleEscapeSkipping(true);
+        ctx.setNextEscapeSkipping(true);
         return out.toString();
     }
 }

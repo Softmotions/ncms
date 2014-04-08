@@ -37,8 +37,8 @@ public class HttlValueFilter extends EscapeXmlFilter {
         if (ctx == null) {
             return true;
         }
-        if (ctx.isScheduleEscapeSkipping()) {
-            ctx.setScheduleEscapeSkipping(false);
+        if (ctx.isNextEscapeSkipping()) {
+            ctx.setNextEscapeSkipping(false);
             return false;
         }
         return true;
