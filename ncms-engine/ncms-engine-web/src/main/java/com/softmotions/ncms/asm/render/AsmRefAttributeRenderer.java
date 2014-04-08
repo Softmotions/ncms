@@ -37,7 +37,6 @@ public class AsmRefAttributeRenderer implements AsmAttributeRenderer {
         }
         try {
             subcontext = ctx.createSubcontext(asmName, out);
-            subcontext.push();
             subcontext.render();
         } catch (Exception e) {
             log.warn("Exception " + e.getMessage() +
@@ -45,10 +44,6 @@ public class AsmRefAttributeRenderer implements AsmAttributeRenderer {
                      " of assembly: " + asm.getName() +
                      " attribute: " + attr.getName(), e);
             return null;
-        } finally {
-            if (subcontext != null) {
-                subcontext.pop();
-            }
         }
         if (subcontext != null) {
             resp = subcontext.getServletResponse();

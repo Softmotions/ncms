@@ -176,7 +176,12 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     }
 
     public void render() throws AsmRenderingException, IOException {
-        renderer.renderAsm(this);
+        push();
+        try {
+            renderer.renderAsm(this);
+        } finally {
+            pop();
+        }
     }
 
     public AsmLoader getLoader() {

@@ -100,7 +100,6 @@ public class AsmServlet extends HttpServlet {
         if (old != ctx.getClassLoader()) {
             Thread.currentThread().setContextClassLoader(ctx.getClassLoader());
         }
-        ctx.push();
         try {
             ctx.render();
             if (!transfer) {
@@ -110,7 +109,6 @@ public class AsmServlet extends HttpServlet {
             log.error("Resource not found: " + e.getResource() + " assembly: " + ctx.getAsm().getName());
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         } finally {
-            ctx.pop();
             Thread.currentThread().setContextClassLoader(old);
             resp.flushBuffer();
         }
