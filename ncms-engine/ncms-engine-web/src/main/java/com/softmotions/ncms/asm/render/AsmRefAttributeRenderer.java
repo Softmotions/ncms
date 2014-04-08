@@ -25,7 +25,7 @@ public class AsmRefAttributeRenderer implements AsmAttributeRenderer {
 
     public String renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
 
-        StringWriter out = new StringWriter();
+        StringWriter out = new StringWriter(4096);
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
         String asmName = attr.getEffectiveValue();
