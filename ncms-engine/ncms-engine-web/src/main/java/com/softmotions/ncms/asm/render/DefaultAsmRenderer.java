@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -62,19 +61,25 @@ public class DefaultAsmRenderer implements AsmRenderer {
         if (core == null) {
             throw new AsmRenderingException("Missing core for assembly: " + asm.getName());
         }
-        if (executeAsmHandler(asm, ctx) || ctx.getServletResponse().isCommitted()) {
-            return; //Assembly handler took full control on response
+        ctx.push();
+        try {
+            if (executeAsmHandler(asm, ctx) || ctx.getServletResponse().isCommitted()) {
+                return; //Assembly handler took full control on response
+            }
+            AsmTemplateEngineAdapter te = selectTemplateEngineForCore(core);
+            if (te == null) {
+                throw new AsmRenderingException("Failed to select template engine for assembly " +
+                                                "core: " + core + " assembly: " + asm.getName());
+            }
+            if (log.isTraceEnabled()) {
+                log.trace("Selected template engine: " + te.getClass().getName() +
+                          " assembly: " + asm.getName());
+            }
+
+            te.renderTemplate(core.getLocation(), ctx, ctx.getServletResponse().getWriter());
+        } finally {
+            ctx.pop();
         }
-        AsmTemplateEngineAdapter te = selectTemplateEngineForCore(core);
-        if (te == null) {
-            throw new AsmRenderingException("Failed to select template engine for assembly " +
-                                            "core: " + core + " assembly: " + asm.getName());
-        }
-        if (log.isTraceEnabled()) {
-            log.trace("Selected template engine: " + te.getClass().getName() +
-                      " assembly: " + asm.getName());
-        }
-        te.renderTemplate(core.getLocation(), ctx, ctx.getServletResponse().getWriter());
     }
 
     public String renderAsmAttribute(AsmRendererContext ctx, String attributeName,
