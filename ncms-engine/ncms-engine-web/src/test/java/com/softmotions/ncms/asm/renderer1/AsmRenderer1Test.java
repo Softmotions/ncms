@@ -70,7 +70,7 @@ public class AsmRenderer1Test extends NcmsWebTest {
         asmInc2.addAttribute(new AsmAttribute("internal_inc2", "resource",
                                               "/testresp?dc6bda8275b2=4c3e&6b21e2ee=a9cb"));
         asmInc2.addAttribute(new AsmAttribute("external_inc1", "resource",
-                                              getServerAddress() + "testresp?d499e094=3bc8"));
+                                              getServerAddress() + "/testresp?d499e094=3bc8"));
 
 
         adao.asmInsert(asmInc2);

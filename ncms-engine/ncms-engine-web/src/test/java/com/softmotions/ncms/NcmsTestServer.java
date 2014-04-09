@@ -46,7 +46,7 @@ public class NcmsTestServer {
     }
 
     public String getServerAddress() {
-        return serverUri.toString() + "/";
+        return serverUri.toString();
     }
 
     public URI getServerAddressAsUri() {
