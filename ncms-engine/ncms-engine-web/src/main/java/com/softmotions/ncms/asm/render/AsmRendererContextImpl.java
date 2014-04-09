@@ -66,7 +66,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                   AsmTemplateLoader loader,
                                   HttpServletRequest req, HttpServletResponse resp,
                                   Object asmRef)
-            throws AsmRenderingException, AsmResourceNotFoundException {
+            throws AsmRenderingException {
 
         this.injector = injector;
         this.renderer = renderer;

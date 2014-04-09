@@ -30,7 +30,7 @@ public class NcmsTestServer {
     private final NcmsJetty ncmsJetty;
 
     public NcmsTestServer(NcmsTestServerInitializer initializer) {
-        this.port = findAvailablePort(1000, 10000);
+        this.port = findAvailablePort(8000, 10000);
         serverUri = createServerUri();
 
         ncmsJetty = new NcmsJetty(initializer);

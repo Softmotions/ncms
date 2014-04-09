@@ -1,5 +1,7 @@
 package com.softmotions.ncms.asm.render;
 
+import ninja.lifecycle.Dispose;
+import ninja.lifecycle.Start;
 import com.softmotions.commons.web.GenericResponseWrapper;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
@@ -8,9 +10,15 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.map.Flat3Map;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +28,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -39,6 +49,8 @@ public class AsmResourceAttributeRenderer implements AsmAttributeRenderer {
 
     public static final String[] TYPES = new String[]{"resource"};
 
+    CloseableHttpClient httpclient;
+
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
@@ -46,10 +58,6 @@ public class AsmResourceAttributeRenderer implements AsmAttributeRenderer {
     public String renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
 
-        String cs = ctx.getServletRequest().getCharacterEncoding();
-        if (cs == null) {
-            cs = "UTF-8";
-        }
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
         if (attr == null || StringUtils.isBlank(attr.getEffectiveValue())) {
@@ -68,7 +76,81 @@ public class AsmResourceAttributeRenderer implements AsmAttributeRenderer {
         if (log.isDebugEnabled()) {
             log.debug("Including resource: '" + uri + '\'');
         }
-        List<NameValuePair> qparams = URLEncodedUtils.parse(uri, cs);
+        if (uri.getScheme() == null) {
+            return internalInclude(ctx, uri, options);
+        } else {
+            return externalInclude(ctx, uri, options);
+        }
+    }
+
+    private String externalInclude(AsmRendererContext ctx, URI location, Map<String, String> options) {
+        StringWriter out = new StringWriter(1024);
+        String cs = ctx.getServletRequest().getCharacterEncoding();
+        if (cs == null) {
+            cs = "UTF-8";
+        }
+        try {
+            if (location.getScheme().startsWith("http")) {
+                //HTTP GET
+                if (options != null && !options.isEmpty()) {
+                    URIBuilder ub = new URIBuilder(location);
+                    for (Map.Entry<String, String> opt : options.entrySet()) {
+                        ub.addParameter(opt.getKey(), opt.getValue());
+                    }
+                    location = ub.build();
+                }
+                HttpGet httpGet = new HttpGet(location);
+                CloseableHttpResponse hresp = null;
+                InputStream is = null;
+                try {
+                    httpclient = HttpClients.createSystem();
+                    hresp = httpclient.execute(httpGet);
+                    if (hresp.getStatusLine().getStatusCode() != HttpServletResponse.SC_OK) {
+                        log.warn("Invalid resource response status code: " + hresp.getStatusLine().getStatusCode() +
+                                 " location: " + location +
+                                 " asm: " + ctx.getAsm() +
+                                 " response: " + out.toString());
+                        return null;
+                    }
+                    is = hresp.getEntity().getContent();
+                    IOUtils.copy(is, out, cs);
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            log.error("", e);
+                        }
+                    }
+                    if (hresp != null) {
+                        try {
+                            hresp.close();
+                        } catch (IOException e) {
+                            log.error("", e);
+                        }
+                    }
+                    httpGet.reset();
+                }
+            } else {
+                URL url = location.toURL();
+                try (InputStream is = url.openStream()) {
+                    IOUtils.copy(is, out, cs);
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Unable to load resource: " + location +
+                     " asm: " + ctx.getAsm(), e);
+            return null;
+        }
+        return out.toString();
+    }
+
+    private String internalInclude(AsmRendererContext ctx, URI location, Map<String, String> options) {
+        String cs = ctx.getServletRequest().getCharacterEncoding();
+        if (cs == null) {
+            cs = "UTF-8";
+        }
+        List<NameValuePair> qparams = URLEncodedUtils.parse(location, cs);
         if (!qparams.isEmpty()) {
             if (options == null) {
                 options = new Flat3Map();
@@ -79,13 +161,6 @@ public class AsmResourceAttributeRenderer implements AsmAttributeRenderer {
                 }
             }
         }
-        if (uri.getScheme() == null) {
-            return internalInclude(ctx, uri, options);
-        }
-        return null;
-    }
-
-    private String internalInclude(AsmRendererContext ctx, URI location, Map<String, String> options) {
         StringWriter out = new StringWriter(1024);
         HttpServletResponse resp = new GenericResponseWrapper(ctx.getServletResponse(), out, false);
         HttpServletRequest req = new InternalHttpRequest(ctx.getServletRequest(), options);
@@ -107,6 +182,23 @@ public class AsmResourceAttributeRenderer implements AsmAttributeRenderer {
         }
     }
 
+
+    @Start(order = 10)
+    public void start() {
+        httpclient = HttpClients.createSystem();
+    }
+
+    @Dispose(order = 10)
+    public void stop() {
+        if (httpclient != null) {
+            try {
+                httpclient.close();
+            } catch (IOException e) {
+                log.error("", e);
+            }
+            httpclient = null;
+        }
+    }
 
     @SuppressWarnings("unchecked")
     static final class InternalHttpRequest extends HttpServletRequestWrapper {

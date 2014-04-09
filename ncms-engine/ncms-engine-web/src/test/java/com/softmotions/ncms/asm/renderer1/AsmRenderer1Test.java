@@ -69,6 +69,10 @@ public class AsmRenderer1Test extends NcmsWebTest {
                                               "/testresp"));
         asmInc2.addAttribute(new AsmAttribute("internal_inc2", "resource",
                                               "/testresp?dc6bda8275b2=4c3e&6b21e2ee=a9cb"));
+        asmInc2.addAttribute(new AsmAttribute("external_inc1", "resource",
+                                              getServerAddress() + "testresp?d499e094=3bc8"));
+
+
         adao.asmInsert(asmInc2);
         adao.asmSetParent(asmInc2, asmInc);
     }
@@ -101,12 +105,26 @@ public class AsmRenderer1Test extends NcmsWebTest {
         respStr = resp.toString();
         assertTrue(respStr.contains("0f7542de52b847b68ea6a16a7762c560"));
 
-
         resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmInc2");
-        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!  RESP=" + resp);
-        //assertEquals(200, resp.statusCode);
-
-
+        respStr = resp.toString();
+        assertEquals(200, resp.statusCode);
+        assertEquals("UTF-8", resp.charset);
+        assertTrue(respStr.contains("b7d52d51edf94942a09fdda98ed88020"));
+        assertTrue(respStr.contains("internal_inc1=0f7542de52b847b68ea6a16a7762c560"));
+        assertTrue(respStr.contains("4b5c=83f4"));
+        assertTrue(respStr.contains("internal_inc2=0f7542de52b847b68ea6a16a7762c560"));
+        assertTrue(respStr.contains("dc6bda8275b2=4c3e"));
+        assertTrue(respStr.contains("6b21e2ee=a9cb"));
+        assertTrue(respStr.contains("internal_inc11=0f7542de52b847b68ea6a16a7762c560"));
+        assertTrue(respStr.contains("e71f=4737"));
+        assertTrue(respStr.contains("internal_inc111=0f7542de52b847b68ea6a16a7762c560"));
+        assertTrue(respStr.contains("42b7=8729"));
+        assertTrue(respStr.contains("440d=b6dc"));
+        assertTrue(respStr.contains("asm1_inc=f67c7ec829b84e9da79c420f09e04994"));
+        assertTrue(respStr.contains("asm1_attr3=&lt;asm1_attr3&gt;"));
+        assertTrue(respStr.contains("<core1>&amp;</core1>"));
+        assertTrue(respStr.contains("external_inc1=0f7542de52b847b68ea6a16a7762c560"));
+        assertTrue(respStr.contains("d499e094=3bc8"));
     }
 
     @Test
