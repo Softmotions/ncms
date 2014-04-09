@@ -192,6 +192,27 @@
                 <artifactId>jackson-module-afterburner</artifactId>
                 <version>2.3.2</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.3.3</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.github.httl</groupId>
+                <artifactId>httl</artifactId>
+                <version>1.0.11</version>
+            </dependency>
+            <dependency>
+                <groupId>net.htmlparser.jericho</groupId>
+                <artifactId>jericho-html</artifactId>
+                <version>3.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

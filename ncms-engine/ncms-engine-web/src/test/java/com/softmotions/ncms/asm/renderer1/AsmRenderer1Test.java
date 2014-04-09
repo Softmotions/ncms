@@ -7,9 +7,18 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
 
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Enumeration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,6 +32,11 @@ public class AsmRenderer1Test extends NcmsWebTest {
 
     private static final Logger log = LoggerFactory.getLogger(AsmRenderer1Test.class);
 
+
+    public void initContext(ServletContextHandler context) {
+        context.addServlet(TestResponseServlet.class, "/testresp");
+    }
+
     protected void afterServerStart() throws Exception {
         AsmDAO adao = getInjector().getInstance(AsmDAO.class);
 
@@ -34,6 +48,7 @@ public class AsmRenderer1Test extends NcmsWebTest {
         asm.addAttribute(new AsmAttribute("asm1_attr3", "<asm1_attr3>"));
         adao.asmInsert(asm);
 
+
         //testCoreNotFound
         asm = new Asm("asmCoreNotFound",
                       new AsmCore("com/softmotions/ncms/asm/renderer1/coreNotFound.txt", "coreNotFound"));
@@ -41,10 +56,21 @@ public class AsmRenderer1Test extends NcmsWebTest {
 
 
         //Assembly which includes other assembly
-        asm = new Asm("asmInc",
-                      new AsmCore("com/softmotions/ncms/asm/renderer1/coreAsmInc.httl", "AsmIncCore"));
-        asm.addAttribute(new AsmAttribute("asm1_inc", "asmref", "asm1"));
-        adao.asmInsert(asm);
+        Asm asmInc = new Asm("asmInc",
+                             new AsmCore("com/softmotions/ncms/asm/renderer1/coreAsmInc.httl", "AsmIncCore"));
+        asmInc.addAttribute(new AsmAttribute("asm1_inc", "asmref", "asm1"));
+        adao.asmInsert(asmInc);
+
+
+        //Another version of assembly inclusion
+        Asm asmInc2 = new Asm("asmInc2",
+                              new AsmCore("com/softmotions/ncms/asm/renderer1/coreAsmInc2.httl", "coreAsmInc2"));
+        asmInc2.addAttribute(new AsmAttribute("internal_inc1", "resource",
+                                              "/testresp"));
+        asmInc2.addAttribute(new AsmAttribute("internal_inc2", "resource",
+                                              "/testresp?dc6bda8275b2=4c3e&6b21e2ee=a9cb"));
+        adao.asmInsert(asmInc2);
+        adao.asmSetParent(asmInc2, asmInc);
     }
 
     @Test
@@ -68,6 +94,19 @@ public class AsmRenderer1Test extends NcmsWebTest {
         assertTrue(respStr.contains("asm1_attr3=&lt;asm1_attr3&gt;"));
         assertTrue(respStr.contains("<core1>&amp;</core1>"));
         assertTrue(respStr.contains("<coreAsmInc>&amp;</coreAsmInc>"));
+
+        resp = ncmsTestBrowser.makeGET(getServerAddress() + "/testresp");
+        assertEquals(200, resp.statusCode);
+        assertEquals("UTF-8", resp.charset);
+        respStr = resp.toString();
+        assertTrue(respStr.contains("0f7542de52b847b68ea6a16a7762c560"));
+
+
+        resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmInc2");
+        log.info("!!!!!!!!!!!!!!!!!!!!!!!!!  RESP=" + resp);
+        //assertEquals(200, resp.statusCode);
+
+
     }
 
     @Test
@@ -79,5 +118,20 @@ public class AsmRenderer1Test extends NcmsWebTest {
         //missing assembly
         resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmNotFound");
         assertEquals(404, resp.statusCode);
+    }
+
+
+    public static class TestResponseServlet extends HttpServlet {
+
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            resp.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = resp.getWriter();
+            out.println("0f7542de52b847b68ea6a16a7762c560");
+            Enumeration<String> pnames = req.getParameterNames();
+            while (pnames.hasMoreElements()) {
+                String pname = pnames.nextElement();
+                out.println(pname + '=' + req.getParameter(pname));
+            }
+        }
     }
 }

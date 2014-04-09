@@ -107,7 +107,7 @@ public class AsmDAO extends MBDAOSupport {
                 .param("parentId", parent.id);
         Number cnt = sess.selectOne(toStatementId("asmHasSpecificParent"), params);
         if (cnt.intValue() > 0) {
-            return 0; //we have parent
+            return 0; //we have this parent
         }
         return sess.insert("asmSetParent", params);
     }

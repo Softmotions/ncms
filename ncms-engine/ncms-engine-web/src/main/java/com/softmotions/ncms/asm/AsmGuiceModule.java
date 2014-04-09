@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.ncms.asm.render.AsmAttributeRenderer;
+import com.softmotions.ncms.asm.render.AsmResourceAttributeRenderer;
 import com.softmotions.ncms.asm.render.AsmTemplateLoader;
 import com.softmotions.ncms.asm.render.AsmRefAttributeRenderer;
 import com.softmotions.ncms.asm.render.AsmRenderer;
@@ -24,6 +25,7 @@ public class AsmGuiceModule extends AbstractModule {
                 Multibinder.newSetBinder(binder(), AsmAttributeRenderer.class);
         attrBinder.addBinding().to(AsmStringAttributeRenderer.class);
         attrBinder.addBinding().to(AsmRefAttributeRenderer.class);
+        attrBinder.addBinding().to(AsmResourceAttributeRenderer.class);
 
         //Resource loaders
         bind(AsmTemplateLoader.class).to(AsmClasspathTemplateLoader.class);

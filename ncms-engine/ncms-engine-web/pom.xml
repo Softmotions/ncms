@@ -302,20 +302,17 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-afterburner</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>org.rythmengine</groupId>
-            <artifactId>rythm-engine</artifactId>
-            <version>1.0-b10</version>
-        </dependency>-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.github.httl</groupId>
             <artifactId>httl</artifactId>
-            <version>1.0.11</version>
         </dependency>
         <dependency>
             <groupId>net.htmlparser.jericho</groupId>
             <artifactId>jericho-html</artifactId>
-            <version>3.3</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>

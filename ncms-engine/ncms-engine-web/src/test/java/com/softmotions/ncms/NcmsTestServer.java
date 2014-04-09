@@ -29,11 +29,11 @@ public class NcmsTestServer {
     private final URI serverUri;
     private final NcmsJetty ncmsJetty;
 
-    public NcmsTestServer() {
+    public NcmsTestServer(NcmsTestServerInitializer initializer) {
         this.port = findAvailablePort(1000, 10000);
         serverUri = createServerUri();
 
-        ncmsJetty = new NcmsJetty();
+        ncmsJetty = new NcmsJetty(initializer);
         ncmsJetty.setPort(this.port);
         ncmsJetty.setServerUri(serverUri);
         ncmsJetty.setNinjaMode(NinjaMode.test);
@@ -99,11 +99,14 @@ public class NcmsTestServer {
 
         WBServletListener ninjaServletListener;
 
-        public NcmsJetty() {
+        NcmsTestServerInitializer initializer;
+
+        public NcmsJetty(NcmsTestServerInitializer initializer) {
             //some sensible defaults
             port = DEFAULT_PORT;
             serverUri = URI.create("http://localhost:" + port);
             ninjaMode = NinjaMode.dev;
+            this.initializer = initializer;
         }
 
         public Injector getInjector() {
@@ -148,11 +151,19 @@ public class NcmsTestServer {
                 ninjaServletListener = new WBServletListener(ninjaProperties);
                 context.addEventListener(ninjaServletListener);
                 context.addFilter(GuiceFilter.class, "/*", null);
+                initContext(context);
                 context.addServlet(DefaultServlet.class, "/");
 
                 server.start();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
+            }
+        }
+
+
+        protected void initContext(ServletContextHandler context) {
+            if (initializer != null) {
+                initializer.initContext(context);
             }
         }
 

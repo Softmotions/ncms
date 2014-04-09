@@ -12,6 +12,9 @@ import java.util.Map;
  */
 public class AsmOptions extends Flat3Map {
 
+    public AsmOptions() {
+    }
+
     public AsmOptions(Map map) {
         super(map);
     }
