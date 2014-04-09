@@ -22,7 +22,7 @@ public class NcmsConfiguration extends WBConfiguration {
 
     public String getNcmsPrefix() {
         String p = impl().getString("ncms-prefix", "/ncms");
-        return p.charAt(0) != '/' ? "/" + p : p;
+        return p.charAt(0) != '/' ? '/' + p : p;
     }
 
     public String getEnvironmentType() {

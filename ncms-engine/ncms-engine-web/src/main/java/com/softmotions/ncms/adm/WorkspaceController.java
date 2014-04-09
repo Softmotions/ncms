@@ -10,9 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Root admin zone workspace controller.
+ * Оставлен в живых для демонстрации
  *
  * @author Adamansky Anton (adamansky@gmail.com)
+ * @deprecated
  */
 public class WorkspaceController {
 

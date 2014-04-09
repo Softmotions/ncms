@@ -27,11 +27,16 @@ public class Routes implements ApplicationRoutes {
     @Inject
     public Routes(NcmsConfiguration cfg) {
         this.cfg = cfg;
-        this.prefix = cfg.getNcmsPrefix() + "/exec";
+        this.prefix = cfg.getNcmsPrefix() + "/nj";
     }
 
     public void init(Router r) {
-        log.info("Init ADMIN routes, prefix: " + this.prefix);
+        log.info("Init routes, prefix: " + this.prefix);
+
+        //конкретно для админ зоны ninja routing - херня
+        //больше подходит для free-style сайтов с лежащими шаблонами
+        //и контроллерами, но не для stateless-json-restful обмена с
+        //толстым js клиентом в браузере
 
         route(r.GET(), "/workspace").with(WorkspaceController.class, "workspace");
     }
