@@ -5,12 +5,13 @@ import ninja.utils.NinjaProperties;
 import com.softmotions.commons.web.JarResourcesProvider;
 import com.softmotions.commons.web.JarResourcesServlet;
 import com.softmotions.commons.weboot.WBServletModule;
-import com.softmotions.ncms.adm.AdmServlet;
+import com.softmotions.commons.weboot.mb.MBTinyParams;
 import com.softmotions.ncms.asm.render.AsmServlet;
 
 import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@SuppressWarnings("unchecked")
 public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
 
     protected NcmsConfiguration createConfiguration(NinjaProperties nprops) {
@@ -33,10 +35,21 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
 
     protected void init(NcmsConfiguration cfg) {
         bind(NcmsConfiguration.class).toInstance(cfg);
-        bind(NinjaServletDispatcher.class).asEagerSingleton();
+
+        //Ninja staff
+        bind(NinjaServletDispatcher.class).in(Singleton.class);
         serve(cfg.getNcmsPrefix() + "/nj/*", NinjaServletDispatcher.class);
+
+        //Assembly rendering servlet
         serve(cfg.getNcmsPrefix() + "/asm/*", AsmServlet.class);
-        serve(cfg.getNcmsPrefix() + "/adm/*", AdmServlet.class);
+
+        //Resteasy dispatcher root
+        bind(HttpServletDispatcher.class).in(Singleton.class);
+        serve(cfg.getNcmsPrefix() + "/rs/*",
+              HttpServletDispatcher.class,
+              new MBTinyParams().param("resteasy.servlet.mapping.prefix", cfg.getNcmsPrefix() + "/rs"));
+
+        //JAR resources servlet:  '/*'
         initJarResourcesServlet(cfg);
     }
 
@@ -55,4 +68,11 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
         bind(JarResourcesProvider.class).to(JarResourcesServlet.class);
         serve(cfg.getNcmsPrefix() + "/*", JarResourcesServlet.class, params);
     }
+
+
+    protected void installResteasyDispatcher() {
+
+    }
+
+
 }

@@ -64,6 +64,10 @@
             </snapshots>
         </repository>
         <repository>
+            <id>jboss</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>jaxion_repository</id>
             <url>http://jaxion.org/mvn/</url>
             <snapshots>
@@ -212,6 +216,11 @@
                 <groupId>net.htmlparser.jericho</groupId>
                 <artifactId>jericho-html</artifactId>
                 <version>3.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-guice</artifactId>
+                <version>3.0.7.Final</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
