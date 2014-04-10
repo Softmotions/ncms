@@ -4,6 +4,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 /**
+ * Admin-zone GUI RESTFull modules.
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public class AdmRestModule extends AbstractModule {
