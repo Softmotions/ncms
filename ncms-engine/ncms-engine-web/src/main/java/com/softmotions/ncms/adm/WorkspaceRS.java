@@ -8,11 +8,11 @@ import javax.ws.rs.PathParam;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 
-@Path("adm/workspace")
+@Path("adm/ws")
 public class WorkspaceRS {
 
     @GET
-    @Path("{name}")
+    @Path("hello/{name}")
     public String hello(@PathParam("name") final String name) {
         return "Hello " + name;
     }
