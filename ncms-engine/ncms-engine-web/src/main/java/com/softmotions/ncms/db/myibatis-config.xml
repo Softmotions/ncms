@@ -41,5 +41,6 @@
 
     <mappers>
         <mapper resource="com/softmotions/ncms/asm/mappers/AsmMapper.xml"/>
+        <mapper resource="com/softmotions/ncms/adm/mappers/AdmMapper.xml"/>
     </mappers>
 </configuration>
