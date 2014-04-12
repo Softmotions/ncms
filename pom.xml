@@ -55,6 +55,7 @@
         <tomcat.version>7.0.52</tomcat.version>
         <httl.version>1.0.11</httl.version>
         <jericho.version>3.3</jericho.version>
+        <guava.version>16.0.1</guava.version>
         <web.run.port>8080</web.run.port>
         <web.context.reloadable>true</web.context.reloadable>
     </properties>
@@ -242,6 +243,11 @@
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jsapi</artifactId>
                 <version>${resteasy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
