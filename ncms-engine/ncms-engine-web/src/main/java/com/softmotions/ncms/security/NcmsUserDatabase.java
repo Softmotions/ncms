@@ -65,11 +65,11 @@ public class NcmsUserDatabase implements WSUserDatabase {
     }
 
     public void removeRole(WSRole role) {
-        throw new UnsupportedOperationException("createRole");
+        throw new UnsupportedOperationException("removeRole");
     }
 
     public void removeUser(WSUser user) {
-        throw new UnsupportedOperationException("createRole");
+        throw new UnsupportedOperationException("removeUser");
     }
 
     public void close() throws IOException {
