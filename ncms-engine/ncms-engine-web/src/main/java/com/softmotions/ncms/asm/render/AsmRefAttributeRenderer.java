@@ -25,7 +25,7 @@ public class AsmRefAttributeRenderer implements AsmAttributeRenderer {
 
     public String renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
 
-        StringWriter out = new StringWriter(4096);
+        StringWriter out;
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
         String asmName = attr.getEffectiveValue();
@@ -35,6 +35,8 @@ public class AsmRefAttributeRenderer implements AsmAttributeRenderer {
         if (attr == null || attr.getEffectiveValue() == null) {
             return null;
         }
+
+        out = new StringWriter(4096);
         try {
             subcontext = ctx.createSubcontext(asmName, out);
             subcontext.render();
