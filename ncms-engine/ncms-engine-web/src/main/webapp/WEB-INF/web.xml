@@ -26,6 +26,23 @@
     </filter-mapping>
 
 
+    <!--<security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Everything</web-resource-name>
+            <description>coarse grained approach</description>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>user</role-name>
+        </auth-constraint>
+    </security-constraint>
 
+    <login-config>
+        <auth-method>BASIC</auth-method>
+    </login-config>
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>-->
 
 </web-app>

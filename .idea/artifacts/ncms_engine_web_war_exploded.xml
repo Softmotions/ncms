@@ -66,7 +66,6 @@
           <element id="library" level="project" name="Maven: ognl:ognl:3.0.8" />
           <element id="library" level="project" name="Maven: org.liquibase:liquibase-core:3.1.1" />
           <element id="library" level="project" name="Maven: org.yaml:snakeyaml:1.13" />
-          <element id="library" level="project" name="Maven: softmotions:softmotions-web-realms:1.0-SNAPSHOT" />
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient:4.3.3" />
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.3.2" />
           <element id="library" level="project" name="Maven: com.github.httl:httl:1.0.11" />

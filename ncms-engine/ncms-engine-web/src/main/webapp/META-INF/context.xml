@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context>
+<Context useNaming="true">
 
-    <!--<Resource name="WSUserDatabase"
+    <Resource name="WSUserDatabase"
               auth="Container"
-              type="org.apache.catalina.UserDatabase"
+              type="com.softmotions.web.security.WSUserDatabase"
               description="NcmsUserDatabase adapter"
-              factory="com.softmotions.ncms.security.tomcat.NcmsUserDatabaseFactory"
-              pathname="conf/tomcat-users.xml"
+              factory="com.softmotions.ncms.security.NcmsUserDBFactory"
               scope="Shareable"/>
 
-    <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"/>-->
+    <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"
+           localDatabase="true"/>
+
 </Context>
