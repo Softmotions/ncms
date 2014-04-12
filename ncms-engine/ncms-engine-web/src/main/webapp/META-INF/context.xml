@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
 
-    <Resource name="NcmsUserDatabase"
+    <!--<Resource name="WSUserDatabase"
               auth="Container"
               type="org.apache.catalina.UserDatabase"
               description="NcmsUserDatabase adapter"
@@ -9,5 +9,5 @@
               pathname="conf/tomcat-users.xml"
               scope="Shareable"/>
 
-    <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"/>
+    <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"/>-->
 </Context>
