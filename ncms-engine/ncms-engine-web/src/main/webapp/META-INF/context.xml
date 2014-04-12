@@ -9,6 +9,7 @@
               scope="Shareable"/>
 
     <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"
-           localDatabase="true"/>
+           localDatabase="true"
+           resourceName="WSUserDatabase"/>
 
 </Context>
