@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <Resource name="NcmsUserDatabase"
+              auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="NcmsUserDatabase adapter"
+              factory="com.softmotions.ncms.security.tomcat.NcmsUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml"
+              scope="Shareable"/>
+
+    <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"/>
+</Context>

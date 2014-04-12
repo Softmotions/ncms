@@ -167,14 +167,23 @@
                         <artifactId>tomcat-embed-logging-log4j</artifactId>
                         <version>${tomcat.version}</version>
                     </dependency>
+                    <dependency>
+                        <groupId>softmotions</groupId>
+                        <version>1.0-SNAPSHOT</version>
+                        <artifactId>softmotions-web-realms</artifactId>
+                    </dependency>
                 </dependencies>
                 <configuration>
                     <port>${web.run.port}</port>
                     <path>/</path>
                     <contextReloadable>${web.context.reloadable}</contextReloadable>
+                    <useSeparateTomcatClassLoader>false</useSeparateTomcatClassLoader>
                     <systemProperties>
                         <ninja.mode>${ninja.mode}</ninja.mode>
                     </systemProperties>
+                    <server>ncms-tomcat-server</server>
+                    <useNaming>true</useNaming>
+                    <contextFile>src/main/webapp/META-INF/context.xml</contextFile>
                 </configuration>
             </plugin>
 
@@ -264,6 +273,10 @@
             <artifactId>softmotions-weboot</artifactId>
         </dependency>
         <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>softmotions-web-realms</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
             <exclusions>
@@ -323,9 +336,19 @@
             <artifactId>resteasy-jackson2-provider</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jsapi</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.3.175</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>${tomcat.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
 	    <groupId>com.google.guava</groupId>

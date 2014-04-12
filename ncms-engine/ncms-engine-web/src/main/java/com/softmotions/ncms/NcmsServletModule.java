@@ -11,6 +11,7 @@ import com.softmotions.ncms.asm.render.AsmServlet;
 import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
 import java.util.LinkedHashMap;
@@ -48,6 +49,11 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
         serve(cfg.getNcmsPrefix() + "/rs/*",
               HttpServletDispatcher.class,
               new MBTinyParams().param("resteasy.servlet.mapping.prefix", cfg.getNcmsPrefix() + "/rs"));
+
+        //Resteasy JS API
+        bind(JSAPIServlet.class).in(Singleton.class);
+        serve(cfg.getNcmsPrefix() + "/rjs", JSAPIServlet.class);
+
 
         //JAR resources servlet:  '/*'
         initJarResourcesServlet(cfg);
