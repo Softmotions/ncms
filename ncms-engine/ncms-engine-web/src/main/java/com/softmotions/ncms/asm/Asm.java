@@ -221,7 +221,7 @@ public class Asm implements Serializable {
 
     /**
      * Perform deep clone of this assembly.
-     * Cloned parents are cached in <c></c>.
+     * Cloned parents are cached in <c>cloneContext</c>.
      */
     public Asm cloneDeep(Map<String, Asm> cloneContext) {
         Asm asm = cloneContext.get(name);

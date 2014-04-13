@@ -97,7 +97,7 @@ public class NcmsTestServer {
 
         String ninjaContextPath;
 
-        WBServletListener ninjaServletListener;
+        WBServletListener servletListener;
 
         NcmsTestServerInitializer initializer;
 
@@ -110,7 +110,7 @@ public class NcmsTestServer {
         }
 
         public Injector getInjector() {
-            return ninjaServletListener.getInjector();
+            return servletListener.getInjector();
         }
 
         public NcmsJetty setPort(int port) {
@@ -141,15 +141,11 @@ public class NcmsTestServer {
                 server.addConnector(http);
                 context = new ServletContextHandler(server, ninjaContextPath);
 
-                NinjaPropertiesImpl ninjaProperties
-                        = new NinjaPropertiesImpl(ninjaMode);
-                // We are using an embeded jetty for quick server testing. The
-                // problem is that the port will change.
-                // Therefore we inject the server name here:
+                NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
                 ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
 
-                ninjaServletListener = new WBServletListener(ninjaProperties);
-                context.addEventListener(ninjaServletListener);
+                servletListener = new NcmsServletListener(ninjaProperties);
+                context.addEventListener(servletListener);
                 context.addFilter(GuiceFilter.class, "/*", null);
                 initContext(context);
                 context.addServlet(DefaultServlet.class, "/");

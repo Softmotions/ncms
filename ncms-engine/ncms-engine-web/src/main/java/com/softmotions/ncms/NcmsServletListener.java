@@ -1,5 +1,6 @@
 package com.softmotions.ncms;
 
+import ninja.utils.NinjaProperties;
 import com.softmotions.commons.weboot.WBServletListener;
 
 import org.jboss.resteasy.logging.Logger;
@@ -19,6 +20,14 @@ public class NcmsServletListener extends WBServletListener {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(NcmsServletListener.class);
 
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
+
+
+    public NcmsServletListener() {
+    }
+
+    public NcmsServletListener(NinjaProperties ninjaProperties) {
+        super(ninjaProperties);
+    }
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         Logger.setLoggerType(Logger.LoggerType.SLF4J);
