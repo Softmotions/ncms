@@ -82,15 +82,15 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
     }
 
     public void initServer(Server server, ServletContextHandler context) {
-        bindJNDIResource("WSUserDatabase",
-                         new XMLWSUserDatabaseJNDIFactory().setConfig("conf/ncms-test-users.xml"));
+        bindEnvJNDIResource("WSUserDatabase",
+                            new XMLWSUserDatabaseJNDIFactory().setConfig("conf/ncms-test-users.xml"));
     }
 
 
     /**
      * Bind JNDI resource into Jetty java:comp/env context
      */
-    protected void bindJNDIResource(String name, Object res) {
+    protected void bindEnvJNDIResource(String name, Object res) {
         ensureEnvJNDIContext();
         try {
             new Resource(name, res).bindToENC(name);
