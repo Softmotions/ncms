@@ -40,8 +40,8 @@ public class AsmRenderer1Test extends NcmsWebTest {
     }
 
     public void initServer(Server server, ServletContextHandler context) {
-        context.addServlet(TestResponseServlet.class, "/testresp");
         super.initServer(server, context);
+        context.addServlet(TestResponseServlet.class, "/testresp");
     }
 
     protected void afterServerStart() throws Exception {

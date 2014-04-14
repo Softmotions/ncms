@@ -9,6 +9,8 @@ import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceFilter;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.eclipse.jetty.security.ConstraintSecurityHandler;
+import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -145,6 +147,9 @@ public class NcmsTestServer {
                 ServerConnector http = new ServerConnector(server);
                 server.addConnector(http);
                 context = new ServletContextHandler(server, contextPath);
+
+                ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
+                context.setSecurityHandler(securityHandler);
 
                 NinjaPropertiesImpl nprops = new NinjaPropertiesImpl(ninjaMode);
                 nprops.setProperty(NinjaConstant.serverName, serverUri.toString());
