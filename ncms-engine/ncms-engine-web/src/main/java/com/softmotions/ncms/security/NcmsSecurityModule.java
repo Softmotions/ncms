@@ -40,6 +40,8 @@ public class NcmsSecurityModule extends AbstractModule {
                 try {
                     Context ctx = new InitialContext();
                     usersDb = (WSUserDatabase) ctx.lookup(jndiName);
+                    usersDb = (WSUserDatabase) ctx.lookup(jndiName);
+                    usersDb = (WSUserDatabase) ctx.lookup(jndiName);
                 } catch (NamingException e) {
                     log.error("", e);
                     throw new RuntimeException(e);
