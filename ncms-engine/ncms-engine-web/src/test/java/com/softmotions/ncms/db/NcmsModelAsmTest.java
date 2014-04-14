@@ -1,6 +1,5 @@
 package com.softmotions.ncms.db;
 
-import com.google.inject.Inject;
 import com.softmotions.commons.weboot.mb.MBAction;
 import com.softmotions.ncms.NcmsWebTest;
 import com.softmotions.ncms.asm.Asm;
@@ -8,13 +7,11 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
 
-import com.google.inject.Injector;
+import com.google.inject.Inject;
 
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -27,8 +24,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class NcmsModelAsmTest extends NcmsWebTest {
-
-    private static final Logger log = LoggerFactory.getLogger(NcmsModelAsmTest.class);
 
     @Inject
     AsmDAO adao;

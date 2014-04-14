@@ -48,7 +48,7 @@ public class XMLWSUserDatabase implements WSUserDatabase {
 
     private final URL xmlLocationUrl;
 
-    protected final Map<String, WSGroup> groups = new HashMap<>();
+    private final Map<String, WSGroup> groups = new HashMap<>();
 
     private final Map<String, WSUser> users = new HashMap<>();
 
@@ -364,13 +364,13 @@ public class XMLWSUserDatabase implements WSUserDatabase {
     }
 
 
-    private class WSUserImpl extends AbstractWSUser {
+    private final class WSUserImpl extends AbstractWSUser {
 
-        final HierarchicalConfiguration cfg;
+        private final HierarchicalConfiguration cfg;
 
-        String[] roleNames;
+        private String[] roleNames;
 
-        String[] groupNames;
+        private String[] groupNames;
 
         private WSUserImpl(HierarchicalConfiguration cfg) {
             super(cfg.getString("[@name]"), cfg.getString("[@fullName]"), cfg.getString("[@password]"));
@@ -505,9 +505,9 @@ public class XMLWSUserDatabase implements WSUserDatabase {
         }
     }
 
-    private class WSRoleImpl extends AbstractWSRole {
+    private final class WSRoleImpl extends AbstractWSRole {
 
-        final HierarchicalConfiguration cfg;
+        private final HierarchicalConfiguration cfg;
 
         private WSRoleImpl(HierarchicalConfiguration cfg) {
             super(cfg.getString("[@name]"), cfg.getString("[@description]"));
@@ -522,9 +522,9 @@ public class XMLWSUserDatabase implements WSUserDatabase {
 
     private class WSGroupImpl extends AbstractWSGroup {
 
-        final HierarchicalConfiguration cfg;
+        private final HierarchicalConfiguration cfg;
 
-        String[] roleNames;
+        private String[] roleNames;
 
         private WSGroupImpl(HierarchicalConfiguration cfg) {
             super(cfg.getString("[@name]"), cfg.getString("[@description]"));

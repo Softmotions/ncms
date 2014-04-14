@@ -13,6 +13,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.webapp.Configuration;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -94,7 +95,7 @@ public class NcmsTestServer {
 
         ServletContextHandler context;
 
-        String ninjaContextPath;
+        String contextPath;
 
         WBServletListener servletListener;
 
@@ -127,8 +128,8 @@ public class NcmsTestServer {
             return this;
         }
 
-        public NcmsJetty setNinjaContextPath(String ninjaContextPath) {
-            this.ninjaContextPath = ninjaContextPath;
+        public NcmsJetty setContextPath(String contextPath) {
+            this.contextPath = contextPath;
             return this;
         }
 
@@ -136,9 +137,14 @@ public class NcmsTestServer {
             server = new Server(port);
             try {
 
+                Configuration.ClassList classlist = Configuration.ClassList.setServerDefault(server);
+                classlist.addAfter("org.eclipse.jetty.webapp.FragmentConfiguration",
+                                   "org.eclipse.jetty.plus.webapp.EnvConfiguration",
+                                   "org.eclipse.jetty.plus.webapp.PlusConfiguration");
+
                 ServerConnector http = new ServerConnector(server);
                 server.addConnector(http);
-                context = new ServletContextHandler(server, ninjaContextPath);
+                context = new ServletContextHandler(server, contextPath);
 
                 NinjaPropertiesImpl nprops = new NinjaPropertiesImpl(ninjaMode);
                 nprops.setProperty(NinjaConstant.serverName, serverUri.toString());
@@ -146,20 +152,13 @@ public class NcmsTestServer {
                 servletListener = new NcmsServletListener(nprops);
                 context.addEventListener(servletListener);
                 context.addFilter(GuiceFilter.class, "/*", null);
-                initContext(context);
-                context.addServlet(DefaultServlet.class, "/");
 
+                initializer.initServer(server, context);
+                context.addServlet(DefaultServlet.class, "/");
 
                 server.start();
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
-            }
-        }
-
-
-        protected void initContext(ServletContextHandler context) {
-            if (initializer != null) {
-                initializer.initContext(context);
             }
         }
 

@@ -8,8 +8,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
  */
 public interface NcmsTestServerInitializer {
 
-    void initServer(Server server);
-
-    void initContext(ServletContextHandler context);
+    void initServer(Server server, ServletContextHandler context);
 
 }

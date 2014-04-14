@@ -1,17 +1,18 @@
 package com.softmotions.ncms.asm.renderer1;
 
-import com.google.inject.Inject;
 import com.softmotions.ncms.HttpTestResponse;
 import com.softmotions.ncms.NcmsWebTest;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.security.XMLWSUserDatabaseJNDIFactory;
 
+import com.google.inject.Inject;
+
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -31,13 +32,16 @@ import static org.junit.Assert.assertTrue;
  */
 public class AsmRenderer1Test extends NcmsWebTest {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmRenderer1Test.class);
-
     @Inject
     AsmDAO adao;
 
-    public void initContext(ServletContextHandler context) {
+    public AsmRenderer1Test() {
+        //usersDbLocation = "conf/ncms-test-users.xml";
+    }
+
+    public void initServer(Server server, ServletContextHandler context) {
         context.addServlet(TestResponseServlet.class, "/testresp");
+        super.initServer(server, context);
     }
 
     protected void afterServerStart() throws Exception {
@@ -80,7 +84,7 @@ public class AsmRenderer1Test extends NcmsWebTest {
 
     @Test
     public void testRendererBasic() throws Exception {
-        HttpTestResponse resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asm1");
+        HttpTestResponse resp = testBrowser.makeGET(getServerAddress() + "/ncms/asm/asm1");
         assertEquals(200, resp.statusCode);
         assertEquals("UTF-8", resp.charset);
         String respStr = resp.toString();
@@ -89,7 +93,7 @@ public class AsmRenderer1Test extends NcmsWebTest {
         assertTrue(respStr.contains("asm1_attr2=53496feab7f34f488185edacc70a4739"));
 
         //test assembly inclusion
-        resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmInc");
+        resp = testBrowser.makeGET(getServerAddress() + "/ncms/asm/asmInc");
         assertEquals(200, resp.statusCode);
         respStr = resp.toString();
         assertTrue(respStr.contains("2fd82732b21646b48335e81f9b4281d5"));
@@ -100,13 +104,13 @@ public class AsmRenderer1Test extends NcmsWebTest {
         assertTrue(respStr.contains("<core1>&amp;</core1>"));
         assertTrue(respStr.contains("<coreAsmInc>&amp;</coreAsmInc>"));
 
-        resp = ncmsTestBrowser.makeGET(getServerAddress() + "/testresp");
+        resp = testBrowser.makeGET(getServerAddress() + "/testresp");
         assertEquals(200, resp.statusCode);
         assertEquals("UTF-8", resp.charset);
         respStr = resp.toString();
         assertTrue(respStr.contains("0f7542de52b847b68ea6a16a7762c560"));
 
-        resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmInc2");
+        resp = testBrowser.makeGET(getServerAddress() + "/ncms/asm/asmInc2");
         respStr = resp.toString();
         assertEquals(200, resp.statusCode);
         assertEquals("UTF-8", resp.charset);
@@ -131,11 +135,11 @@ public class AsmRenderer1Test extends NcmsWebTest {
     @Test
     public void testNotFound() throws Exception {
         //missing assembly core
-        HttpTestResponse resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmCoreNotFound");
+        HttpTestResponse resp = testBrowser.makeGET(getServerAddress() + "/ncms/asm/asmCoreNotFound");
         assertEquals(404, resp.statusCode);
 
         //missing assembly
-        resp = ncmsTestBrowser.makeGET(getServerAddress() + "/ncms/asm/asmNotFound");
+        resp = testBrowser.makeGET(getServerAddress() + "/ncms/asm/asmNotFound");
         assertEquals(404, resp.statusCode);
     }
 
