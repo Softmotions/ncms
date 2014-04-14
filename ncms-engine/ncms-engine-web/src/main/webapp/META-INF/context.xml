@@ -5,7 +5,8 @@
               auth="Container"
               type="com.softmotions.web.security.WSUserDatabase"
               description="NcmsUserDatabase adapter"
-              factory="com.softmotions.ncms.security.NcmsUserDBFactory"
+              factory="com.softmotions.ncms.security.XMLWSUserDatabaseJNDIFactory"
+              config="conf/ncms-test-users.xml"
               scope="Shareable"/>
 
     <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"
