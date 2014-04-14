@@ -28,7 +28,6 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
      */
     public NcmsTestBrowser ncmsTestBrowser;
 
-
     @Before
     public void startupServerAndBrowser() throws Exception {
         System.setProperty("ninja.mode", "test");
@@ -38,11 +37,8 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
 
         ncmsTestServer = new NcmsTestServer(this);
         ncmsTestBrowser = new NcmsTestBrowser();
+        ncmsTestServer.getInjector().injectMembers(this);
         afterServerStart();
-    }
-
-    public Injector getInjector() {
-        return ncmsTestServer.getInjector();
     }
 
     /**

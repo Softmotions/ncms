@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm.renderer1;
 
+import com.google.inject.Inject;
 import com.softmotions.ncms.HttpTestResponse;
 import com.softmotions.ncms.NcmsWebTest;
 import com.softmotions.ncms.asm.Asm;
@@ -32,14 +33,14 @@ public class AsmRenderer1Test extends NcmsWebTest {
 
     private static final Logger log = LoggerFactory.getLogger(AsmRenderer1Test.class);
 
+    @Inject
+    AsmDAO adao;
 
     public void initContext(ServletContextHandler context) {
         context.addServlet(TestResponseServlet.class, "/testresp");
     }
 
     protected void afterServerStart() throws Exception {
-        AsmDAO adao = getInjector().getInstance(AsmDAO.class);
-
         //testRendererBasic
         Asm asm = new Asm("asm1",
                           new AsmCore("com/softmotions/ncms/asm/renderer1/core1.txt", "Core1"));

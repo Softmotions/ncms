@@ -1,5 +1,6 @@
 package com.softmotions.ncms.db;
 
+import com.google.inject.Inject;
 import com.softmotions.commons.weboot.mb.MBAction;
 import com.softmotions.ncms.NcmsWebTest;
 import com.softmotions.ncms.asm.Asm;
@@ -29,11 +30,11 @@ public class NcmsModelAsmTest extends NcmsWebTest {
 
     private static final Logger log = LoggerFactory.getLogger(NcmsModelAsmTest.class);
 
+    @Inject
+    AsmDAO adao;
+
     @Test
     public void testBasicAsmOperations() throws Exception {
-        Injector injector = getInjector();
-        AsmDAO adao = injector.getInstance(AsmDAO.class);
-
         Asm asm = new Asm();
         asm.setName("foo");
         assertEquals(1, adao.asmInsert(asm));
