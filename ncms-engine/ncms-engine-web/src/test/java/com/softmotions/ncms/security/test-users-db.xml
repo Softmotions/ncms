@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <database>
-
     <role name="role1"/>
     <role name="role2" description="description of role2"/>
+    <role name="role3"/>
+    <role name="role4"/>
 
     <group name="group1"
            description="description of group1"
            roles="role1,role2,role3">
     </group>
 
-    <group name="group2"/>
+    <group name="group2"
+           roles="role3">
+    </group>
+
+    <group name="group3"
+           roles="role1, role4"/>
 
     <user name="user1"
           password="pw1"
           roles="role1,role2"
-          groups="group1">
+          groups="group2">
     </user>
+
+    <user name="user2"
+          password="pw2"
+          fullName="user2 password"
+          groups="group3">
+    </user>
+
 
 </database>

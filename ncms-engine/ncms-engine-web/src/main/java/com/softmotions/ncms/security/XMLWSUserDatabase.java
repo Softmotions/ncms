@@ -25,10 +25,14 @@ import java.io.Writer;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -139,7 +143,7 @@ public class XMLWSUserDatabase implements WSUserDatabase {
 
     public Iterator<WSUser> getUsers() {
         synchronized (lock) {
-            return IteratorUtils.arrayIterator(users.values().toArray(new WSUser[roles.size()]));
+            return IteratorUtils.arrayIterator(users.values().toArray(new WSUser[users.size()]));
         }
     }
 
@@ -225,8 +229,12 @@ public class XMLWSUserDatabase implements WSUserDatabase {
                 HierarchicalConfiguration hc = xgroups.get(i);
                 String name = hc.getString("[@name]");
                 if (group.getName().equals(name)) {
-                    xcfg.clearProperty("group(" + i + ")");
+                    for (final WSUser u : users.values()) {
+                        u.removeGroup(group);
+                    }
+                    hc.clear();
                     groups.remove(group.getName());
+                    break;
                 }
             }
         }
@@ -239,8 +247,15 @@ public class XMLWSUserDatabase implements WSUserDatabase {
                 HierarchicalConfiguration hc = xroles.get(i);
                 String name = hc.getString("[@name]");
                 if (role.getName().equals(name)) {
-                    xcfg.clearProperty("role(" + i + ")");
+                    for (final WSGroup g : groups.values()) {
+                        g.removeRole(role);
+                    }
+                    for (final WSUser u : users.values()) {
+                        u.removeRole(role);
+                    }
+                    hc.clear();
                     roles.remove(role.getName());
+                    break;
                 }
             }
         }
@@ -253,8 +268,9 @@ public class XMLWSUserDatabase implements WSUserDatabase {
                 HierarchicalConfiguration hc = xusers.get(i);
                 String name = hc.getString("[@name]");
                 if (user.getName().equals(name)) {
-                    xcfg.clearProperty("user(" + i + ")");
+                    hc.clear();
                     users.remove(user.getName());
+                    break;
                 }
             }
         }
@@ -319,6 +335,19 @@ public class XMLWSUserDatabase implements WSUserDatabase {
         return res;
     }
 
+    private List<WSRole> projectRoles(Collection<String> names) {
+        List<WSRole> res = new ArrayList<>(names.size());
+        synchronized (lock) {
+            for (final String name : names) {
+                WSRole v = roles.get(name);
+                if (v != null) {
+                    res.add(v);
+                }
+            }
+        }
+        return res;
+    }
+
     private List<WSUser> projectUsers(WSGroupImpl grp) {
         String gname = grp.getName();
         List<WSUser> res = new ArrayList<>();
@@ -356,7 +385,16 @@ public class XMLWSUserDatabase implements WSUserDatabase {
 
         public Iterator<WSRole> getRoles() {
             synchronized (lock) {
-                return projectRoles(roleNames).iterator();
+                if (groupNames.length == 0) {
+                    return projectRoles(roleNames).iterator();
+                }
+                Set<String> effectiveRoles = new HashSet<>();
+                Collections.addAll(effectiveRoles, roleNames);
+                for (final String gn : groupNames) {
+                    WSGroupImpl group = (WSGroupImpl) groups.get(gn);
+                    Collections.addAll(effectiveRoles, group.roleNames);
+                }
+                return projectRoles(effectiveRoles).iterator();
             }
         }
 
@@ -389,7 +427,7 @@ public class XMLWSUserDatabase implements WSUserDatabase {
                 for (final String g : groupNames) {
                     WSGroupImpl gi = (WSGroupImpl) groups.get(g);
                     if (gi != null) {
-                        for (final String r : roleNames) {
+                        for (final String r : gi.roleNames) {
                             if (r.equals(n)) {
                                 return true;
                             }
