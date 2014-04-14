@@ -91,7 +91,7 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
      * Bind JNDI resource into Jetty java:comp/env context
      */
     protected void bindJNDIResource(String name, Object res) {
-        checkEnvJNDIContext();
+        ensureEnvJNDIContext();
         try {
             new Resource(name, res).bindToENC(name);
         } catch (NamingException e) {
@@ -100,7 +100,7 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
         }
     }
 
-    private void checkEnvJNDIContext() {
+    protected void ensureEnvJNDIContext() {
         try {
             Context ctx = new InitialContext();
             Context compCtx = (Context) ctx.lookup("java:comp");
