@@ -26,7 +26,7 @@ public class NcmsUserDBFactory implements ObjectFactory {
             return null;
         }
 
-        NcmsUserDatabase db = new NcmsUserDatabase(name.toString());
+        EmptyWSUserDatabase db = new EmptyWSUserDatabase(name.toString());
         //todo
         return db;
     }

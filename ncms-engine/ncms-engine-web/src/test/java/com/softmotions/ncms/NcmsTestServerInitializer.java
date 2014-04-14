@@ -1,5 +1,6 @@
 package com.softmotions.ncms;
 
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
@@ -7,5 +8,8 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
  */
 public interface NcmsTestServerInitializer {
 
+    void initServer(Server server);
+
     void initContext(ServletContextHandler context);
+
 }

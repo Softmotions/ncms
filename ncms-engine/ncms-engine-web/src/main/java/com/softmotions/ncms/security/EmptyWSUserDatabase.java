@@ -12,11 +12,11 @@ import java.util.Iterator;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class NcmsUserDatabase implements WSUserDatabase {
+public class EmptyWSUserDatabase implements WSUserDatabase {
 
-    private final String databaseName;
+    protected final String databaseName;
 
-    public NcmsUserDatabase(String name) {
+    public EmptyWSUserDatabase(String name) {
         this.databaseName = name;
     }
 

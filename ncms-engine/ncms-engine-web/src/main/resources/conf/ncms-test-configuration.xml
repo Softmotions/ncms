@@ -31,6 +31,7 @@
     </httl>
 
     <modules>
+        <!--<module class="com.softmotions.ncms.security.NcmsSecurityModule"/>-->
         <module class="com.softmotions.ncms.asm.AsmGuiceModule"/>
         <module class="com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule"/>
         <module class="com.softmotions.ncms.adm.AdmRestModule"/>

@@ -3,7 +3,6 @@ package com.softmotions.ncms;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
-
 import com.softmotions.commons.weboot.WBServletListener;
 
 import com.google.inject.Injector;
@@ -27,22 +26,22 @@ public class NcmsTestServer {
 
     private final int port;
     private final URI serverUri;
-    private final NcmsJetty ncmsJetty;
+    private final NcmsJetty container;
+
 
     public NcmsTestServer(NcmsTestServerInitializer initializer) {
         this.port = findAvailablePort(8000, 10000);
         serverUri = createServerUri();
 
-        ncmsJetty = new NcmsJetty(initializer);
-        ncmsJetty.setPort(this.port);
-        ncmsJetty.setServerUri(serverUri);
-        ncmsJetty.setNinjaMode(NinjaMode.test);
-        ncmsJetty.start();
-
+        container = new NcmsJetty(initializer);
+        container.setPort(this.port);
+        container.setServerUri(serverUri);
+        container.setNinjaMode(NinjaMode.test);
+        container.start();
     }
 
     public Injector getInjector() {
-        return ncmsJetty.getInjector();
+        return container.getInjector();
     }
 
     public String getServerAddress() {
@@ -64,7 +63,7 @@ public class NcmsTestServer {
     }
 
     public void shutdown() {
-        ncmsJetty.shutdown();
+        container.shutdown();
     }
 
     private static int findAvailablePort(int min, int max) {
@@ -141,14 +140,15 @@ public class NcmsTestServer {
                 server.addConnector(http);
                 context = new ServletContextHandler(server, ninjaContextPath);
 
-                NinjaPropertiesImpl ninjaProperties = new NinjaPropertiesImpl(ninjaMode);
-                ninjaProperties.setProperty(NinjaConstant.serverName, serverUri.toString());
+                NinjaPropertiesImpl nprops = new NinjaPropertiesImpl(ninjaMode);
+                nprops.setProperty(NinjaConstant.serverName, serverUri.toString());
 
-                servletListener = new NcmsServletListener(ninjaProperties);
+                servletListener = new NcmsServletListener(nprops);
                 context.addEventListener(servletListener);
                 context.addFilter(GuiceFilter.class, "/*", null);
                 initContext(context);
                 context.addServlet(DefaultServlet.class, "/");
+
 
                 server.start();
             } catch (Exception ex) {

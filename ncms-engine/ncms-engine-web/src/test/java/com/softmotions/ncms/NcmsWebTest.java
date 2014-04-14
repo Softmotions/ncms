@@ -6,6 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 
 import com.google.inject.Injector;
 
+import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
@@ -21,7 +22,7 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
     /**
      * Backend of the test => Starts Ninja
      */
-    public NcmsTestServer ncmsTestServer;
+    public NcmsTestServer testServer;
 
     /**
      * A persistent HttpClient that stores cookies to make requests
@@ -35,9 +36,9 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
         Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.INFO);
 
-        ncmsTestServer = new NcmsTestServer(this);
+        testServer = new NcmsTestServer(this);
         ncmsTestBrowser = new NcmsTestBrowser();
-        ncmsTestServer.getInjector().injectMembers(this);
+        testServer.getInjector().injectMembers(this);
         afterServerStart();
     }
 
@@ -49,11 +50,11 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
      * @return
      */
     public String getServerAddress() {
-        return ncmsTestServer.getServerAddress();
+        return testServer.getServerAddress();
     }
 
     public URI getServerAddressAsUri() {
-        return ncmsTestServer.getServerAddressAsUri();
+        return testServer.getServerAddressAsUri();
     }
 
     @After
@@ -61,7 +62,7 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
         try {
             beforeServerShutdown();
         } finally {
-            ncmsTestServer.shutdown();
+            testServer.shutdown();
             ncmsTestBrowser.shutdown();
         }
     }
@@ -71,6 +72,10 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
 
 
     protected void beforeServerShutdown() throws Exception {
+
+    }
+
+    public void initServer(Server server) {
 
     }
 
