@@ -2,20 +2,16 @@
 
 <database>
 
-    <role name="role1"/>
-    <role name="role2"/>
+    <role name="admin" description="Superuser role"/>
+    <role name="user" description="Simple user"/>
 
-    <group name="group1"
-           description="Simple foo group"
-           roles="role1,role2">
+    <group name="admins" description="Superuser group"
+           roles="admin,user">
     </group>
 
-    <group name="group2"/>
-
-    <user name="foo"
-          password="password"
-          roles="role1,role2"
-          groups="group1">
+    <user name="admin"
+          password="admin"
+          groups="admins">
     </user>
 
 </database>
