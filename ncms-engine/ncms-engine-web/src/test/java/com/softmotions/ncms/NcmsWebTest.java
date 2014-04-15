@@ -3,11 +3,13 @@ package com.softmotions.ncms;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-
+import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.web.security.SecurityFakeEnvFilter;
 import com.softmotions.web.security.XMLWSUserDatabaseJNDIFactory;
 
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
@@ -17,14 +19,19 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.servlet.DispatcherType;
 import java.net.URI;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@SuppressWarnings("unchecked")
 public class NcmsWebTest implements NcmsTestServerInitializer {
 
-    private final org.slf4j.Logger log = LoggerFactory.getLogger(getClass());
+    protected final org.slf4j.Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * Backend of the test => Starts Ninja
@@ -36,8 +43,20 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
      */
     public NcmsTestBrowser testBrowser;
 
+
+    protected Map<String, String> envProps;
+
+    public NcmsWebTest() {
+        envProps = new HashMap<>();
+    }
+
+    public NcmsWebTest(String options) {
+        envProps = new AsmOptions(options);
+    }
+
     @Before
     public void startupServerAndBrowser() throws Exception {
+        log.info("EnvProps: " + envProps);
         System.setProperty("ninja.mode", "test");
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -83,8 +102,24 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
     }
 
     public void initServer(Server server, ServletContextHandler context) {
+        String username = "admin";
+        String usersdb = "com/softmotions/ncms/test-users-db.xml";
+        if (envProps.containsKey("usersdb")) {
+            usersdb = envProps.get("usersdb");
+        }
+        if (envProps.containsKey("username")) {
+            username = envProps.get("username");
+        }
+        //Setup fake test security
         bindEnvJNDIResource("WSUserDatabase",
-                            new XMLWSUserDatabaseJNDIFactory().setConfig("conf/ncms-test-users.xml"));
+                            new XMLWSUserDatabaseJNDIFactory()
+                                    .setConfig(usersdb)
+        );
+
+        FilterHolder fh = context.addFilter(SecurityFakeEnvFilter.class, "/*",
+                                            EnumSet.of(DispatcherType.REQUEST));
+        fh.setInitParameter("username", username);
+        fh.setInitParameter("dbJndiName", "java:comp/env/WSUserDatabase");
     }
 
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<database>
+
+    <role name="admin" description="Superuser role"/>
+    <role name="user" description="Simple user"/>
+
+    <group name="admins" description="Superuser group"
+           roles="admin,user">
+    </group>
+
+    <user name="admin"
+          password="admin"
+          groups="admins">
+    </user>
+
+</database>
