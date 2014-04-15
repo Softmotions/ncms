@@ -52,6 +52,7 @@
         <jackson.version>2.3.2</jackson.version>
         <resteasy.version>3.0.7.Final</resteasy.version>
         <commons.collection.version>3.2.1</commons.collection.version>
+        <httpcomponents.version>4.3.3</httpcomponents.version>
         <tomcat.version>7.0.52</tomcat.version>
         <httl.version>1.0.11</httl.version>
         <jericho.version>3.3</jericho.version>
@@ -212,7 +213,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.3.3</version>
+                <version>${httpcomponents.version}</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-logging</artifactId>

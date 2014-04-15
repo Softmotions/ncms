@@ -6,7 +6,6 @@ import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
-import com.softmotions.ncms.security.XMLWSUserDatabaseJNDIFactory;
 
 import com.google.inject.Inject;
 
