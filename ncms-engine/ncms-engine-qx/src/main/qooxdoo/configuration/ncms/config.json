@@ -37,6 +37,14 @@
                 {
                     "manifest" : "${QOOXDOO_PATH}/framework/Manifest.json",
                     "uri" : "${QOOXDOO_PATH}/framework"
+                },
+                {
+                    "manifest" : "${SUBMODULES_PATH}/qx-softmotions/client/Manifest.json",
+                    "uri" : "${SUBMODULES_PATH}/qx-softmotions/client"
+                },
+                {
+                    "manifest" : "${SUBMODULES_PATH}/qx-softmotions/extra/sm-dialog/Manifest.json",
+                    "uri" : "${SUBMODULES_PATH}/qx-softmotions/extra/sm-dialog"
                 }
             ]
         },
