@@ -2,6 +2,8 @@
  * Ncms Application
  *
  * @asset(icons/*)
+ * @asset(sm/icons/misc/help16.png)
+ * @asset(sm/icons/misc/door_in16.png)
  */
 qx.Class.define("ncms.Application", {
     extend : qx.application.Standalone,
@@ -71,7 +73,6 @@ qx.Class.define("ncms.Application", {
         "guiInitialized" : "qx.event.type.Event"
     },
 
-
     members : {
 
         /**
@@ -89,7 +90,6 @@ qx.Class.define("ncms.Application", {
                 qx.log.appender.Native;
                 qx.log.appender.Console;
             }
-
             // Call super class
             this.base(arguments);
             this.__components = {};
@@ -101,9 +101,9 @@ qx.Class.define("ncms.Application", {
             var comp = new qx.ui.container.Composite(new qx.ui.layout.Dock().set({separatorY : "separator-vertical"}));
             this.getRoot().add(comp, {edge : 0});
 
-
-
-
+            comp.add(this.__createMainToolbar(), {edge : "north"});
+            var hsp = new qx.ui.splitpane.Pane();
+            comp.add(hsp);
 
 
             this.fireEvent("guiInitialized");
@@ -111,7 +111,36 @@ qx.Class.define("ncms.Application", {
 
         __bootstrap : function() {
             ncms.Application.INSTANCE = this;
-            ncms.Application.APP_STATE = new sm.app.AppState(ncms.Application.ACT.getUrl("app.state"));
+            ncms.Application.APP_STATE = new ncms.AppState("app.state");
+        },
+
+        __createMainToolbar : function() {
+            var toolbar = new qx.ui.toolbar.ToolBar().set({overflowHandling : false});
+            this.addListenerOnce("guiInitialized", function() {
+                var apps = ncms.Application.APP_STATE;
+                if (apps.getHelpSite()) {
+                    var helpButton = new qx.ui.toolbar.Button(this.tr("Help"), "sm/icons/misc/help16.png");
+                    helpButton.addListener("execute", function() {
+                        qx.bom.Window.open(apps.getHelpSite());
+                    });
+                    helpButton.setToolTipText(this.tr("Help"));
+                    toolbar.add(helpButton);
+                }
+                var logoff = new qx.ui.toolbar.Button(this.tr("Logout"), "sm/icons/misc/door_in16.png");
+                logoff.setToolTipText(this.tr("Logout"));
+                logoff.addListener("execute", function() {
+                    if (window.confirm(this.tr("Do you really want to logout?"))) {
+                        window.location.href = ncms.Application.ACT.getUrl("app.logout");
+                    }
+                }, this);
+                toolbar.add(logoff);
+                toolbar.add(new qx.ui.core.Spacer, {flex : 1});
+                toolbar.add(new qx.ui.basic.Label(apps.getUserFullName()));
+                toolbar.add(new qx.ui.basic.Label("(" + apps.getUserLogin() + ")"));
+                toolbar.setPaddingRight(10);
+                //toolbar.set({"show" : "icon"});
+            }, this);
+            return toolbar;
         }
     },
 

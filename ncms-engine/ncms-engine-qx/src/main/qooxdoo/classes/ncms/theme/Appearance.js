@@ -3,7 +3,7 @@
  ************************************************************************ */
 
 qx.Theme.define("ncms.theme.Appearance", {
-    extend : qx.theme.indigo.Appearance,
+    extend : qx.theme.simple.Appearance,
     appearances : {
 
 

@@ -3,7 +3,7 @@
  ************************************************************************ */
 
 qx.Theme.define("ncms.theme.Color", {
-    extend : qx.theme.indigo.Color,
+    extend : qx.theme.simple.Color,
 
     colors : {
 

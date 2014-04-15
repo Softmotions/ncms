@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <configuration>
+    <app-name>Ncms</app-name>
+    <help-site>http://nsu.ru</help-site>
+    <logout-redirect>http://nsu.ru</logout-redirect>
+
     <ncms-prefix>/ncms</ncms-prefix>
 
     <jar-web-resources>

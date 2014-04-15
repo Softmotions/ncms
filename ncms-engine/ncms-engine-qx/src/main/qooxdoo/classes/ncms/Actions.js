@@ -10,6 +10,7 @@ qx.Class.define("ncms.Actions", {
         this._resourceManager = qx.util.ResourceManager.getInstance();
 
         //Начальное состояние GUI клиента
+        this._action("app.logout", "/ncms/rs/adm/ws/logout");
         this._action("app.state", "/ncms/rs/adm/ws/state");
     },
 

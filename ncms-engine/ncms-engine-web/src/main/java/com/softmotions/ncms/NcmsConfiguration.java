@@ -20,6 +20,18 @@ public class NcmsConfiguration extends WBConfiguration {
         super(ninjaProperties, cfgResource, resource);
     }
 
+    public String getApplicationName() {
+        return impl().getString("app-name", "Ncms");
+    }
+
+    public String getHelpSite() {
+        return impl().getString("help-site");
+    }
+
+    public String getLogoutRedirect() {
+        return impl().getString("logout-redirect");
+    }
+
     public String getNcmsPrefix() {
         String p = impl().getString("ncms-prefix", "/ncms");
         return p.charAt(0) != '/' ? '/' + p : p;

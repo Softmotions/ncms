@@ -97,12 +97,21 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     }
 
     private static WSUserDatabase locateWSUserDatabase(String jndiName) {
+        Context ctx = null;
         try {
-            Context ctx = new InitialContext();
+            ctx = new InitialContext();
             return (WSUserDatabase) ctx.lookup(jndiName);
         } catch (NamingException e) {
             log.error("", e);
             throw new RuntimeException(e);
+        } finally {
+            //noinspection EmptyCatchBlock
+            try {
+                if (ctx != null) {
+                    ctx.close();
+                }
+            } catch (NamingException e) {
+            }
         }
     }
 }
