@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 
-import com.softmotions.commons.web.security.XMLWSUserDatabaseJNDIFactory;
+import com.softmotions.web.security.XMLWSUserDatabaseJNDIFactory;
 
 import org.eclipse.jetty.plus.jndi.Resource;
 import org.eclipse.jetty.server.Server;

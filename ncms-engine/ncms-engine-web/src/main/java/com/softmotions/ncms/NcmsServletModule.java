@@ -2,8 +2,8 @@ package com.softmotions.ncms;
 
 import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
-import com.softmotions.commons.web.JarResourcesProvider;
-import com.softmotions.commons.web.JarResourcesServlet;
+import com.softmotions.web.JarResourcesProvider;
+import com.softmotions.web.JarResourcesServlet;
 import com.softmotions.commons.weboot.WBServletModule;
 import com.softmotions.commons.weboot.mb.MBTinyParams;
 import com.softmotions.ncms.asm.render.AsmServlet;

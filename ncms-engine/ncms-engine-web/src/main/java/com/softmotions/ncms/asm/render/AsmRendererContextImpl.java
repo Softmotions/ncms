@@ -1,6 +1,6 @@
 package com.softmotions.ncms.asm.render;
 
-import com.softmotions.commons.web.GenericResponseWrapper;
+import com.softmotions.web.GenericResponseWrapper;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 
