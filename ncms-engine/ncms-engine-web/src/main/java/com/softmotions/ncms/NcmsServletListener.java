@@ -3,13 +3,13 @@ package com.softmotions.ncms;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.weboot.WBServletListener;
 
+import com.google.inject.servlet.GuiceFilter;
+
 import org.jboss.resteasy.logging.Logger;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 /**
@@ -29,11 +29,19 @@ public class NcmsServletListener extends WBServletListener {
         super(ninjaProperties);
     }
 
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
+    public void contextInitialized(ServletContextEvent event) {
         Logger.setLoggerType(Logger.LoggerType.SLF4J);
-        super.contextInitialized(servletContextEvent);
+        ServletContext sctx = event.getServletContext();
+        sctx.setInitParameter("resteasy.document.expand.entity.references", "false");
+        sctx.setInitParameter("resteasy.role.based.security", "true");
+
+        sctx.addFilter("guiceFilter", GuiceFilter.class)
+                .addMappingForUrlPatterns(null, false, "/*");
+
+        super.contextInitialized(event);
+
         resteasyBootstrap = getInjector().getInstance(GuiceResteasyBootstrapServletContextListener.class);
-        resteasyBootstrap.contextInitialized(servletContextEvent);
+        resteasyBootstrap.contextInitialized(event);
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {

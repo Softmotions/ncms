@@ -11,6 +11,12 @@ import javax.ws.rs.PathParam;
 @Path("adm/ws")
 public class WorkspaceRS {
 
+
+
+
+
+
+
     @GET
     @Path("hello/{name}")
     public String hello(@PathParam("name") final String name) {

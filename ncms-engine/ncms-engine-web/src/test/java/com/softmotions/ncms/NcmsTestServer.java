@@ -6,11 +6,9 @@ import ninja.utils.NinjaPropertiesImpl;
 import com.softmotions.commons.weboot.WBServletListener;
 
 import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceFilter;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
-import org.eclipse.jetty.security.SecurityHandler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -156,7 +154,6 @@ public class NcmsTestServer {
 
                 servletListener = new NcmsServletListener(nprops);
                 context.addEventListener(servletListener);
-                context.addFilter(GuiceFilter.class, "/*", null);
 
                 initializer.initServer(server, context);
                 context.addServlet(DefaultServlet.class, "/");
