@@ -3,8 +3,8 @@
 
     <Resource name="WSUserDatabase"
               auth="Container"
-              type="com.softmotions.ncms.security.XMLWSUserDatabase"
-              factory="com.softmotions.ncms.security.XMLWSUserDatabaseJNDIFactory"
+              type="com.softmotions.web.security.WSUserDatabase"
+              factory="com.softmotions.commons.web.security.XMLWSUserDatabaseJNDIFactory"
               config="conf/ncms-test-users.xml"
               scope="Shareable"/>
 
