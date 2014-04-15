@@ -11,6 +11,8 @@
 
     <user name="admin"
           password="admin"
+          email="adamansky@gmail.com"
+          fullName="Антон Адаманский"
           groups="admins">
     </user>
 
