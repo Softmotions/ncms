@@ -3,6 +3,7 @@ package com.softmotions.ncms.security;
 import com.softmotions.commons.weboot.WBServletInitializerModule;
 import com.softmotions.commons.weboot.WBServletModule;
 import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.web.AccessControlHDRFilter;
 import com.softmotions.web.security.SecurityFakeEnvFilter;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUserDatabase;
@@ -40,17 +41,20 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     public void initServlets(WBServletModule m) {
         NcmsConfiguration cfg = (NcmsConfiguration) m.getConfiguration();
         String dbJndiName = cfg.impl().getString("security[@dbJndiName]");
-        String fakeWebUser = cfg.impl().getString("security[@fakeWebUser]");
-        if (fakeWebUser != null) {
-            log.info("Setup SecurityFakeEnvFilter filter fake web user: " + fakeWebUser);
+        String webFakeUser = cfg.impl().getString("security[@webFakeUser]");
+        String webAccessControlAllow = cfg.impl().getString("security[@webAccessControlAllow]");
+
+        if (webFakeUser != null) {
+            log.info("Setup SecurityFakeEnvFilter filter fake web user: " + webFakeUser);
             if (StringUtils.isBlank(dbJndiName)) {
                 throw new RuntimeException("Missing required 'dbJndiName' attribute in the <security> configuration");
             }
             Map<String, String> params = new Flat3Map();
             params.put("dbJndiName", dbJndiName);
-            params.put("username", fakeWebUser);
+            params.put("username", webFakeUser);
             m.filterAndBind("/*", SecurityFakeEnvFilter.class, params);
         }
+
         if (dbJndiName != null) {
             WSUserDatabase udb = locateWSUserDatabase(dbJndiName);
             List<String> roleNames = new ArrayList<>();
@@ -61,6 +65,14 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
             }
             log.info("Roles declared in the current servlet context: " + roleNames);
             m.getWBServletContext().declareRoles(roleNames.toArray(new String[roleNames.size()]));
+        }
+
+        if (webAccessControlAllow != null) {
+            log.info("Enabled Access-Control-Allow-{Origin|Headers|Methods}=" + webAccessControlAllow);
+            Map<String, String> params = new Flat3Map();
+            params.put("enabled", "true");
+            params.put("headerValue", webAccessControlAllow);
+            m.filterAndBind("/*", AccessControlHDRFilter.class, params);
         }
     }
 

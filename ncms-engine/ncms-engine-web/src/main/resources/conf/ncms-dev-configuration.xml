@@ -30,7 +30,8 @@
     </httl>
 
     <security dbJndiName="java:comp/env/WSUserDatabase"
-              fakeWebUser="admin">
+              webFakeUser="admin"
+              webAccessControlAllow="*">
     </security>
 
     <modules>
