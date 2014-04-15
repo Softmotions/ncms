@@ -29,7 +29,8 @@
         value.filters=com.softmotions.ncms.asm.render.httl.HttlValueFilter
     </httl>
 
-    <security dbJndiName="java:comp/env/WSUserDatabase">
+    <security dbJndiName="java:comp/env/WSUserDatabase"
+              fakeWebUser="admin">
     </security>
 
     <modules>
