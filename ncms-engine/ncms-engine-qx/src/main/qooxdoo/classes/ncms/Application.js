@@ -4,6 +4,10 @@
  * @asset(icons/*)
  * @asset(sm/icons/misc/help16.png)
  * @asset(sm/icons/misc/door_in16.png)
+ *
+ * @use(ncms.asm.NavAssemblies)
+ * @use(ncms.mmgr.NavMediaManager)
+ * @use(ncms.pgs.NavPages)
  */
 qx.Class.define("ncms.Application", {
     extend : qx.application.Standalone,

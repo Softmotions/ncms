@@ -1,4 +1,4 @@
-qx.Class.define("ncms.NavResources", {
+qx.Class.define("ncms.mmgr.NavMediaManager", {
     extend : qx.ui.container.Composite,
 
     statics : {
@@ -21,6 +21,6 @@ qx.Class.define("ncms.NavResources", {
     },
 
     destruct : function() {
-        //this._disposeObjects("__field_name");                                
+        //this._disposeObjects("__field_name");
     }
 });

@@ -3,6 +3,8 @@ package com.softmotions.ncms;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.weboot.WBConfiguration;
 
+import java.util.Collection;
+
 /**
  * Ncms configuration.
  *

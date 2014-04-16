@@ -46,4 +46,12 @@
         <!--<module class="com.softmotions.ncms.media.rest.MediaModule"/>-->
     </modules>
 
+    <ui>
+        <navigation-selectors>
+            <widget qxClass="ncms.pgs.NavPages" roles="user"/>
+            <widget qxClass="ncms.mmgr.NavMediaManager" roles="user"/>
+            <widget qxClass="ncms.asm.NavAssemblies" roles="admin.asm"/>
+        </navigation-selectors>
+    </ui>
+
 </configuration>
