@@ -42,6 +42,7 @@
         <module class="com.softmotions.ncms.asm.AsmGuiceModule"/>
         <module class="com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule"/>
         <module class="com.softmotions.ncms.adm.AdmRestModule"/>
+        <module class="com.softmotions.ncms.jaxrs.JAXRSExceptionHandlingModule"/>
     </modules>
 
 </configuration>

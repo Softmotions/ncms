@@ -2,11 +2,12 @@ package com.softmotions.ncms;
 
 import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
-import com.softmotions.web.JarResourcesProvider;
-import com.softmotions.web.JarResourcesServlet;
 import com.softmotions.commons.weboot.WBServletModule;
 import com.softmotions.commons.weboot.mb.MBTinyParams;
 import com.softmotions.ncms.asm.render.AsmServlet;
+import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
+import com.softmotions.web.JarResourcesProvider;
+import com.softmotions.web.JarResourcesServlet;
 
 import com.google.inject.Singleton;
 
@@ -44,7 +45,8 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
         //Assembly rendering servlet
         serve(cfg.getNcmsPrefix() + "/asm/*", AsmServlet.class);
 
-        //Resteasy dispatcher root
+        //Resteasy staff
+        bind(NcmsRSExceptionHandler.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
         serve(cfg.getNcmsPrefix() + "/rs/*",
               HttpServletDispatcher.class,
