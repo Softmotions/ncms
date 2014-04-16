@@ -35,6 +35,7 @@ qx.Class.define("ncms.Application", {
                 "noButtonLabel" : root.tr("No")
             })).show();
         },
+
         alert : function(message, callback, context) {
             var root = qx.core.Init.getApplication().getRoot();
             (new dialog.Alert({
@@ -45,6 +46,7 @@ qx.Class.define("ncms.Application", {
                 "blockerColor" : root.getBlockerColor() || "transparent"
             })).show();
         },
+
         warning : function(message, callback, context) {
             var root = qx.core.Init.getApplication().getRoot();
             (new dialog.Alert({
@@ -56,6 +58,7 @@ qx.Class.define("ncms.Application", {
                 "image" : "icon/48/status/dialog-warning.png"
             })).show();
         },
+
         prompt : function(message, callback, context) {
             var root = qx.core.Init.getApplication().getRoot();
             (new dialog.Prompt({
@@ -65,6 +68,38 @@ qx.Class.define("ncms.Application", {
                 "blockerOpacity" : root.getBlockerOpacity(),
                 "blockerColor" : root.getBlockerColor() || "transparent"
             })).show();
+        },
+
+        getComponent : function(name) {
+            var val = ncms.Application.INSTANCE.__components[name];
+            if (!val) {
+                throw new Error("Unknown component: '" + name + "'");
+            }
+            return val;
+        },
+
+        registerComponent : function(name, component) {
+            var val = ncms.Application.INSTANCE.__components[name];
+            if (val) {
+                throw new Error("Component with name: " + name + " already registered");
+            }
+            ncms.Application.INSTANCE.__components[name] = component;
+        },
+
+        getUserId : function() {
+            return ncms.Application.APP_STATE.getUserId();
+        },
+
+        userHasRole : function(role) {
+            return ncms.Application.APP_STATE.userHasRole(role);
+        },
+
+        userInRoles : function(roles) {
+            return ncms.Application.APP_STATE.userInRoles(roles);
+        },
+
+        activateWorkspace : function(wsSpec) {
+            return ncms.Application.INSTANCE.activateWorkspace(wsSpec);
         }
     },
 
@@ -74,7 +109,15 @@ qx.Class.define("ncms.Application", {
         /**
          * Fired when main gui widget created and attached
          */
-        "guiInitialized" : "qx.event.type.Event"
+        "guiInitialized" : "qx.event.type.Event",
+
+
+        /**
+         * Fired if specifig admin GUI workspace activated
+         * Data: {"qxClass":<workspace loader class>, "label":<workspace name>}
+         * Example data: {"qxClass":"ncms.pgs.NavPages","label":"Страницы"}
+         */
+        "workspaceActivated" : "qx.event.type.Data"
     },
 
     members : {
@@ -105,46 +148,38 @@ qx.Class.define("ncms.Application", {
             var comp = new qx.ui.container.Composite(new qx.ui.layout.Dock().set({separatorY : "separator-vertical"}));
             this.getRoot().add(comp, {edge : 0});
 
-            comp.add(this.__createMainToolbar(), {edge : "north"});
+            //Toolbar
+            var toolbar = new ncms.Toolbar();
+            comp.add(toolbar, {edge : "north"});
+
             var hsp = new qx.ui.splitpane.Pane();
             comp.add(hsp);
 
+            //Left nav side
+            var navStack = new sm.ui.cont.LazyStack();
+            navStack.setWidth(250);
+            navStack.setBackgroundColor("red");
+            hsp.add(navStack, 0);
 
+            //Right nav side
+            var rightStack = new sm.ui.cont.LazyStack();
+            hsp.add(rightStack, 1);
+
+            ncms.Application.registerComponent("toolbar", toolbar);
+            ncms.Application.registerComponent("nav-stack", navStack);
+            ncms.Application.registerComponent("right-stack", rightStack);
             this.fireEvent("guiInitialized");
+        },
+
+        activateWorkspace : function(wsSpec) {
+            qx.log.Logger.info("Activate workspace: " + JSON.stringify(wsSpec));
+            //todo perform workspace activation
+            this.fireDataEvent("workspaceActivated", wsSpec);
         },
 
         __bootstrap : function() {
             ncms.Application.INSTANCE = this;
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
-        },
-
-        __createMainToolbar : function() {
-            var toolbar = new qx.ui.toolbar.ToolBar().set({overflowHandling : false});
-            this.addListenerOnce("guiInitialized", function() {
-                var apps = ncms.Application.APP_STATE;
-                if (apps.getHelpSite()) {
-                    var helpButton = new qx.ui.toolbar.Button(this.tr("Help"), "sm/icons/misc/help16.png");
-                    helpButton.addListener("execute", function() {
-                        qx.bom.Window.open(apps.getHelpSite());
-                    });
-                    helpButton.setToolTipText(this.tr("Help"));
-                    toolbar.add(helpButton);
-                }
-                var logoff = new qx.ui.toolbar.Button(this.tr("Logout"), "sm/icons/misc/door_in16.png");
-                logoff.setToolTipText(this.tr("Logout"));
-                logoff.addListener("execute", function() {
-                    if (window.confirm(this.tr("Do you really want to logout?"))) {
-                        window.location.href = ncms.Application.ACT.getUrl("app.logout");
-                    }
-                }, this);
-                toolbar.add(logoff);
-                toolbar.add(new qx.ui.core.Spacer, {flex : 1});
-                toolbar.add(new qx.ui.basic.Label(apps.getUserFullName()));
-                toolbar.add(new qx.ui.basic.Label("(" + apps.getUserLogin() + ")"));
-                toolbar.setPaddingRight(10);
-                //toolbar.set({"show" : "icon"});
-            }, this);
-            return toolbar;
         }
     },
 

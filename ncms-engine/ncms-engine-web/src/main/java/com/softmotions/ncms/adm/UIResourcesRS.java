@@ -12,8 +12,6 @@ import com.google.inject.Inject;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -32,8 +30,6 @@ import javax.ws.rs.core.SecurityContext;
 @Path("adm/ui")
 @Produces("application/json")
 public class UIResourcesRS {
-
-    private static final Logger log = LoggerFactory.getLogger(UIResourcesRS.class);
 
     @Inject
     NcmsConfiguration cfg;
@@ -62,10 +58,14 @@ public class UIResourcesRS {
             String[] widgetRoles = hc.getStringArray("[@roles]");
             if (widgetRoles.length == 0 || user.isHasAnyRole(widgetRoles)) {
                 String qxClass = hc.getString("[@qxClass]");
+                String icon = hc.getString("[@qxIcon]");
                 ObjectNode on = mapper.createObjectNode()
                         .put("qxClass", qxClass);
                 String label = msg.get(qxClass + ".label", req);
                 on.put("label", label != null ? label : qxClass);
+                if (icon != null) {
+                    on.put("icon", icon);
+                }
                 arr.add(on);
             }
         }
