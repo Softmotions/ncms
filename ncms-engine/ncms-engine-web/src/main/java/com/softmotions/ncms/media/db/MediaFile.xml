@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.MediaFile">
+
+    <resultMap id="result" type="com.softmotions.ncms.media.model.MediaFile">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="filePath" column="filePath"/>
+    </resultMap>
+
+    <select id="getAll" resultMap="result">
+        SELECT * FROM MediaFile
+    </select>
+
+    <select id="getById" parameterType="long" resultMap="result">
+        SELECT * FROM MediaFile WHERE ID = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="long">
+        DELETE from MediaFile WHERE ID = #{id};
+    </delete>
+
+    <delete id="deleteAll">
+        DELETE from MediaFile;
+    </delete>
+
+    <insert id="insert" parameterType="com.softmotions.ncms.media.model.MediaFile" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO MediaFile (name, description, filePath)
+        VALUES (#{name}, #{description}, #{filePath});
+    </insert>
+
+    <update id="update" parameterType="com.softmotions.ncms.media.model.MediaFile">
+        UPDATE MediaFile
+        SET
+        name = #{name},
+        filePath = #{filePath},
+        description = #{description}
+        WHERE ID = #{id};
+    </update>
+
+</mapper>

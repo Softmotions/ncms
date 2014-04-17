@@ -130,6 +130,30 @@
                                  referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
 
+        <!-- ================ MEDIA ==================== -->
+
+        <createTable tableName="MediaFile">
+            <column name="ID" type="java.sql.Types.BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="java.sql.Types.VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="java.sql.Types.VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="filePath" type="java.sql.Types.VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="MediaFile"
+                     indexName="IDX_MediaFile_UNIQ"
+                     unique="true">
+            <column name="ID"></column>
+        </createIndex>
+
+
     </changeSet>
 
 </databaseChangeLog>
