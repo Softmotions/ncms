@@ -82,11 +82,4 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
         bind(JarResourcesProvider.class).to(JarResourcesServlet.class);
         serve(cfg.getNcmsPrefix() + "/*", JarResourcesServlet.class, params);
     }
-
-
-    protected void installResteasyDispatcher() {
-
-    }
-
-
 }
