@@ -37,14 +37,24 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
 
     protected void init(NcmsConfiguration cfg) {
         bind(NcmsConfiguration.class).toInstance(cfg);
+        initNinjaDispatcher(cfg);
+        initAsmServlet(cfg);
+        initJAXRS(cfg);
+        initJarResourcesServlet(cfg);
+    }
 
+    protected void initAsmServlet(NcmsConfiguration cfg) {
+        //Assembly rendering servlet
+        serve(cfg.getNcmsPrefix() + "/asm/*", AsmServlet.class);
+    }
+
+    protected void initNinjaDispatcher(NcmsConfiguration cfg) {
         //Ninja staff
         bind(NinjaServletDispatcher.class).in(Singleton.class);
         serve(cfg.getNcmsPrefix() + "/nj/*", NinjaServletDispatcher.class);
+    }
 
-        //Assembly rendering servlet
-        serve(cfg.getNcmsPrefix() + "/asm/*", AsmServlet.class);
-
+    protected void initJAXRS(NcmsConfiguration cfg) {
         //Resteasy staff
         bind(NcmsRSExceptionHandler.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
@@ -55,10 +65,6 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
         //Resteasy JS API
         bind(JSAPIServlet.class).in(Singleton.class);
         serve(cfg.getNcmsPrefix() + "/rjs", JSAPIServlet.class);
-
-
-        //JAR resources servlet:  '/*'
-        initJarResourcesServlet(cfg);
     }
 
     protected void initJarResourcesServlet(NcmsConfiguration cfg) {
