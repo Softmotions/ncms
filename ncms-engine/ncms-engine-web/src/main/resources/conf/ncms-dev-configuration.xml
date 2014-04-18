@@ -14,12 +14,17 @@
         </resource>
     </jar-web-resources>
 
-    <mybatis config="com/softmotions/ncms/db/myibatis-config.xml">
+    <mybatis config="com/softmotions/ncms/db/myibatis-config.xml"
+             bindDatasource="true">
         JDBC.driver=${ncms.JDBC.driver}
         JDBC.url=${ncms.JDBC.url}
         JDBC.username=${ncms.JDBC.username}
         JDBC.password=${ncms.JDBC.password}
     </mybatis>
+
+    <ebean useGuiceProvidedDatasource="true"
+           scanGuiceEntities="true">
+    </ebean>
 
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
         <!-- <dropAll/>-->

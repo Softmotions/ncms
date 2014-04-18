@@ -14,7 +14,8 @@
         </resource>
     </jar-web-resources>
 
-    <mybatis config="com/softmotions/ncms/db/myibatis-config.xml">
+    <mybatis config="com/softmotions/ncms/db/myibatis-config.xml"
+             bindDatasource="true">
         JDBC.driver=org.h2.Driver
         JDBC.url=jdbc:h2:mem:ncms
         ##JDBC.url=${ncms.JDBC.url}

@@ -1,11 +1,8 @@
 package com.softmotions.ncms.media.model;
 
-import java.util.List;
-import java.util.Objects;
-import com.avaje.ebean.Ebean;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Objects;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,45 +15,46 @@ import javax.persistence.Id;
 @Entity
 public class MediaFile {
 
-  @Id  Long id;
+    @Id
+    Long id;
 
-  String name;
-  String description;
-  String filePath;
+    String name;
+    String description;
+    String filePath;
 
-  //List<String> tags;
+    //List<String> tags;
 
-  public Long getId() {
-    return id;
-  }
+    public Long getId() {
+        return id;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public String getFilePath() {
-    return filePath;
-  }
+    public String getFilePath() {
+        return filePath;
+    }
 
-  public void setFilePath(String filePath) {
-    this.filePath = filePath;
-  }
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
-  public String getDescription() {
-    return description;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 //  public List<String> getTags() {
 //    return tags;
@@ -66,11 +64,11 @@ public class MediaFile {
 //    this.tags = tags;
 //  }
 
-  @Override
-  public boolean equals(Object obj) {
-    if(!MediaFile.class.isAssignableFrom(obj.getClass())) return false;
-    MediaFile mf = MediaFile.class.cast(obj);
-    if(mf == null) return false;
-    return Objects.equals(name, mf.name) && Objects.equals(description, mf.description) && Objects.equals(filePath, mf.filePath);
-  }
+    @Override
+    public boolean equals(Object obj) {
+        if (!MediaFile.class.isAssignableFrom(obj.getClass())) return false;
+        MediaFile mf = MediaFile.class.cast(obj);
+        if (mf == null) return false;
+        return Objects.equals(name, mf.name) && Objects.equals(description, mf.description) && Objects.equals(filePath, mf.filePath);
+    }
 }
