@@ -2,7 +2,10 @@ package com.softmotions.ncms.media.model;
 
 import java.util.List;
 import java.util.Objects;
-//import java.util.Objects;
+import com.avaje.ebean.Ebean;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,14 +14,17 @@ import java.util.Objects;
  * Time: 5:25 PM
  * To change this template use File | Settings | File Templates.
  */
+
+@Entity
 public class MediaFile {
 
-  Long id;
+  @Id  Long id;
+
   String name;
   String description;
   String filePath;
 
-  List<String> tags;
+  //List<String> tags;
 
   public Long getId() {
     return id;
@@ -52,13 +58,13 @@ public class MediaFile {
     this.description = description;
   }
 
-  public List<String> getTags() {
-    return tags;
-  }
+//  public List<String> getTags() {
+//    return tags;
+//  }
 
-  public void setTags(List<String> tags) {
-    this.tags = tags;
-  }
+//  public void setTags(List<String> tags) {
+//    this.tags = tags;
+//  }
 
   @Override
   public boolean equals(Object obj) {
