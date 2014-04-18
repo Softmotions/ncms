@@ -24,6 +24,9 @@
 
     <ebean useGuiceProvidedDatasource="true"
            scanGuiceEntities="true">
+        name=ebean
+        ddlGenerate=false
+        ddlRun=false
     </ebean>
 
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
