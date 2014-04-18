@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class EbeanTest {
 
-  @Test
+  /*@Test
   public void testEbeanDatasource() {
     //Model m;
     String sql = "select count(*) as count from dual";
@@ -42,6 +42,6 @@ public class EbeanTest {
     Ebean.delete(mediaFile);
     MediaFile mf = Ebean.find(MediaFile.class, mediaFile.getId());
     assertNull(mf);
-  }
+  }*/
 
 }
