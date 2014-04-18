@@ -37,7 +37,8 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     public AsmCriteria newAsmCriteria() {
-        return new AsmCriteria(this, namespace).withStatement("selectAsmByCriteria");
+        return new AsmCriteria(this, namespace)
+                .withStatement("selectAsmByCriteria");
     }
 
     public AsmCriteria newAsmCriteria(Object... params) {
