@@ -1,7 +1,6 @@
 package com.softmotions.ncms.media.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**

@@ -22,6 +22,7 @@
         JDBC.password=${ncms.JDBC.password}
     </mybatis>
 
+
     <ebean useGuiceProvidedDatasource="true"
            scanGuiceEntities="true">
         name=ebean
@@ -51,7 +52,7 @@
         <module class="com.softmotions.ncms.asm.AsmGuiceModule"/>
         <module class="com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule"/>
         <module class="com.softmotions.ncms.adm.AdmRestModule"/>
-        <!--<module class="com.softmotions.ncms.media.rest.MediaModule"/>-->
+        <module class="com.softmotions.ncms.media.db.MediaDbModule"/>
     </modules>
 
     <ui>
