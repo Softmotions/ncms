@@ -19,14 +19,7 @@ import static org.junit.Assert.*;
 public class EbeanTest extends NcmsWebTest {
 
   @Inject
-  WBEBeanModule.EbeanProvider ebeanProvider;
-
   EbeanServer ebean;
-
-  @Before
-  public void setup() {
-    ebean = ebeanProvider.get();
-  }
 
   @Test
   public void testEbeanDatasource() {
