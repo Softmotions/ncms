@@ -15,7 +15,8 @@
     </jar-web-resources>
 
     <mybatis config="com/softmotions/ncms/db/myibatis-config.xml"
-             bindDatasource="true">
+             bindDatasource="true"
+             shutdownSQL="SHUTDOWN">
         JDBC.driver=${ncms.JDBC.driver}
         JDBC.url=${ncms.JDBC.url}
         JDBC.username=${ncms.JDBC.username}
@@ -26,6 +27,8 @@
     <ebean useGuiceProvidedDatasource="true"
            scanGuiceEntities="true">
         name=ebean
+        register=true
+        defaultServer=true
         ddlGenerate=false
         ddlRun=false
     </ebean>

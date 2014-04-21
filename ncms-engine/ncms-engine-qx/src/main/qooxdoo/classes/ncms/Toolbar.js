@@ -57,6 +57,7 @@ qx.Class.define("ncms.Toolbar", {
                 if (nitems.length > 0) {
                     this.__activateWorkspace(nitems[0]);
                 }
+                ncms.Application.registerWorkspaces(nitems);
             }, this);
         },
 

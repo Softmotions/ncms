@@ -13,6 +13,7 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
     construct : function() {
         this.base(arguments);
         this.setLayout(new qx.ui.layout.VBox());
+        this.setBackgroundColor("green");
 
     },
 

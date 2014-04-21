@@ -71,19 +71,11 @@ qx.Class.define("ncms.Application", {
         },
 
         getComponent : function(name) {
-            var val = ncms.Application.INSTANCE.__components[name];
-            if (!val) {
-                throw new Error("Unknown component: '" + name + "'");
-            }
-            return val;
+            return ncms.Application.INSTANCE.getComponent(name);
         },
 
         registerComponent : function(name, component) {
-            var val = ncms.Application.INSTANCE.__components[name];
-            if (val) {
-                throw new Error("Component with name: " + name + " already registered");
-            }
-            ncms.Application.INSTANCE.__components[name] = component;
+            return ncms.Application.INSTANCE.registerComponent(name, component);
         },
 
         getUserId : function() {
@@ -100,6 +92,10 @@ qx.Class.define("ncms.Application", {
 
         activateWorkspace : function(wsSpec) {
             return ncms.Application.INSTANCE.activateWorkspace(wsSpec);
+        },
+
+        registerWorkspaces : function(wsSpec) {
+            return ncms.Application.INSTANCE.registerWorkspaces(wsSpec);
         }
     },
 
@@ -165,10 +161,26 @@ qx.Class.define("ncms.Application", {
             var rightStack = new sm.ui.cont.LazyStack();
             hsp.add(rightStack, 1);
 
-            ncms.Application.registerComponent("toolbar", toolbar);
-            ncms.Application.registerComponent("nav-stack", navStack);
-            ncms.Application.registerComponent("right-stack", rightStack);
+            this.registerComponent("toolbar", toolbar);
+            this.registerComponent("nav-stack", navStack);
+            this.registerComponent("right-stack", rightStack);
             this.fireEvent("guiInitialized");
+        },
+
+        getComponent : function(name) {
+            var val = this.__components[name];
+            if (!val) {
+                throw new Error("Unknown component: '" + name + "'");
+            }
+            return val;
+        },
+
+        registerComponent : function(name, component) {
+            var val = this.__components[name];
+            if (val) {
+                throw new Error("Component with name: " + name + " already registered");
+            }
+            this.__components[name] = component;
         },
 
         activateWorkspace : function(wsSpec) {
@@ -177,9 +189,29 @@ qx.Class.define("ncms.Application", {
             this.fireDataEvent("workspaceActivated", wsSpec);
         },
 
+        registerWorkspaces : function(wsList) {
+            //it is LazyStack
+            var ns = this.getComponent("nav-stack");
+            for (var i = 0, l = wsList.length; i < l; ++i) {
+                var cname = wsList[i]["qxClass"];
+                qx.log.Logger.info("Registering workspace: " + cname);
+            }
+
+            //ns.registerWidget()
+        },
+
         __bootstrap : function() {
             ncms.Application.INSTANCE = this;
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
+        },
+
+        __construct : function(constructor, args) {
+            function F() {
+                return constructor.apply(this, args);
+            }
+
+            F.prototype = constructor.prototype;
+            return new F();
         }
     },
 
