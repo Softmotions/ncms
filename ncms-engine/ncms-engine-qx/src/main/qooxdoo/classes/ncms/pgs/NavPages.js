@@ -13,6 +13,7 @@ qx.Class.define("ncms.pgs.NavPages", {
     construct : function() {
         this.base(arguments);
         this.setLayout(new qx.ui.layout.VBox());
+        this.setBackgroundColor("blue");
 
     },
 

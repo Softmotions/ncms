@@ -154,7 +154,6 @@ qx.Class.define("ncms.Application", {
             //Left nav side
             var navStack = new sm.ui.cont.LazyStack();
             navStack.setWidth(250);
-            navStack.setBackgroundColor("red");
             hsp.add(navStack, 0);
 
             //Right nav side
@@ -185,7 +184,7 @@ qx.Class.define("ncms.Application", {
 
         activateWorkspace : function(wsSpec) {
             qx.log.Logger.info("Activate workspace: " + JSON.stringify(wsSpec));
-            //todo perform workspace activation
+            this.getComponent("nav-stack").showWidget(wsSpec["qxClass"]);
             this.fireDataEvent("workspaceActivated", wsSpec);
         },
 
@@ -193,11 +192,23 @@ qx.Class.define("ncms.Application", {
             //it is LazyStack
             var ns = this.getComponent("nav-stack");
             for (var i = 0, l = wsList.length; i < l; ++i) {
-                var cname = wsList[i]["qxClass"];
+                var wspec = wsList[i];
+                var cname = wspec["qxClass"];
                 qx.log.Logger.info("Registering workspace: " + cname);
+                if (cname == null) {
+                    continue;
+                }
+                ns.registerWidget(cname, function(id, opts) {
+                    var clazz = qx.Class.getByName(id);
+                    var wspec = opts["wspec"];
+                    qx.log.Logger.info("Creating new instance of workspace: " + clazz);
+                    if (!clazz) {
+                        throw new Error("Class: '" + id + "' is not defined");
+                    }
+                    var cargs = Array.isArray(wspec["args"]) ? wspec["args"] : undefined;
+                    return this.__construct(clazz, cargs);
+                }, {cache : true, wspec : wspec}, this);
             }
-
-            //ns.registerWidget()
         },
 
         __bootstrap : function() {

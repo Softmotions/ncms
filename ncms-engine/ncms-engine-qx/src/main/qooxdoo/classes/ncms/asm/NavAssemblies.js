@@ -13,7 +13,7 @@ qx.Class.define("ncms.asm.NavAssemblies", {
     construct : function() {
         this.base(arguments);
         this.setLayout(new qx.ui.layout.VBox());
-
+        this.setBackgroundColor("yellow");
     },
 
     members : {

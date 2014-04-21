@@ -66,6 +66,10 @@ public class UIResourcesRS {
                 if (icon != null) {
                     on.put("icon", icon);
                 }
+                ArrayNode argsNode = on.putArray("args");
+                for (String arg : hc.getStringArray("[@args]")) {
+                    argsNode.add(arg);
+                }
                 arr.add(on);
             }
         }
