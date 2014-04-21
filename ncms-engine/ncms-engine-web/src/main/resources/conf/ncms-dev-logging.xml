@@ -12,7 +12,7 @@
 
     <logger name="com.softmotions.commons.web" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.render" level="DEBUG"/>
-    <logger name="org.apache.ibatis.datasource" level="DEBUG"/>
+    <!--<logger name="org.apache.ibatis.datasource" level="DEBUG"/>-->
 
     <!-- Set it to TRACE in order view MyBatis SQL statements -->
     <logger name="com.softmotions.ncms.AsmMapper" level="INFO"/>
