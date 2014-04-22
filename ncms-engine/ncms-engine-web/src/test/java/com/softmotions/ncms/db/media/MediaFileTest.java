@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 /**
  * Created by shu on 4/18/2014.
  */
-public class EbeanTest extends NcmsWebTest {
+public class MediaFileTest extends NcmsWebTest {
 
   @Inject
   EbeanServer ebean;
