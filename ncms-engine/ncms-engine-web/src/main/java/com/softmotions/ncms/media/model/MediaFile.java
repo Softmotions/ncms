@@ -1,7 +1,11 @@
 package com.softmotions.ncms.media.model;
 
+import com.google.common.collect.Lists;
+
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,60 +18,94 @@ import java.util.Objects;
 @Entity
 public class MediaFile {
 
-    @Id
-    Long id;
+	@Id
+	Long id;
 
-    String name;
-    String description;
-    String filePath;
+	String name;
+	String description;
+	String filePath;
 
-    //List<String> tags;
+	@ManyToMany(cascade = CascadeType.ALL)
+	List<Tag> tags = Lists.newArrayList();
 
-    public Long getId() {
-        return id;
-    }
+	public MediaFile() {
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getFilePath() {
-        return filePath;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
+	public String getFilePath() {
+		return filePath;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-//  public List<String> getTags() {
-//    return tags;
-//  }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-//  public void setTags(List<String> tags) {
-//    this.tags = tags;
-//  }
+	public List<Tag> getTags() {
+		return tags;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!MediaFile.class.isAssignableFrom(obj.getClass())) return false;
-        MediaFile mf = MediaFile.class.cast(obj);
-        if (mf == null) return false;
-        return Objects.equals(name, mf.name) && Objects.equals(description, mf.description) && Objects.equals(filePath, mf.filePath);
-    }
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
+
+	public void addTag(Tag tag) {
+		tags.add(tag);
+	}
+
+	public boolean deleteTag(Tag tag) {
+		System.out.println("Tags1: " + tags);
+		boolean ok = tags.remove(tag);
+		System.out.println("Tags2: " + tags);
+		return ok;
+	}
+
+	public boolean hasTag(Tag tag) {
+		return tags.contains(tag);
+	}
+
+	@Override
+	public String toString() {
+		return com.google.common.base.Objects.toStringHelper(this)
+						.add("id", id)
+						.add("name", name)
+						.add("description", description)
+						.add("filePath", filePath)
+						.add("tags", tags)
+						.toString();
+	}
+
+	/*
+	@Override
+	public boolean equals(Object obj) {
+		if (!MediaFile.class.isAssignableFrom(obj.getClass())) return false;
+		MediaFile mf = MediaFile.class.cast(obj);
+		if (mf == null) return false;
+		return Objects.equals(name, mf.name) && Objects.equals(description, mf.description) && Objects.equals(filePath, mf.filePath);
+	}
+	*/
+
+
 }
