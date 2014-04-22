@@ -7,6 +7,7 @@ import com.softmotions.ncms.NcmsWebTest;
 import com.softmotions.ncms.media.db.MediaDbModule;
 import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.MediaFolder;
+import com.softmotions.ncms.media.model.Tag;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,6 +31,14 @@ public class MediaFolderTest  extends NcmsWebTest {
 		ebean = ebeanServerProvider.get();
 	}
 
+	Tag tag(String name) {
+		Tag tag = ebean.find(Tag.class).where().eq("name", name).findUnique();
+		if(tag == null) {
+			tag = Tag.of(name);
+			//ebean.save(tag);
+		}
+		return tag;
+	}
 
 	@Test
 	public void testMediaFolder() {
@@ -71,6 +80,39 @@ public class MediaFolderTest  extends NcmsWebTest {
 		files = ebean.find(MediaFile.class).where().eq("media_Folder_ID", mediaFolder1.getId()).findList();
 		assertEquals(1, files.size());
 
+	}
+
+	@Test
+	public void testMediaFolderTagsAddDelete() {
+		MediaFolder mediaFile1 = MediaTestUtils.createMediaFolder(1);
+		mediaFile1.setTags(Lists.newArrayList(tag("aaa"), tag("bbb"), tag("ccc")));
+		ebean.save(mediaFile1);
+
+		MediaFolder mf1 = ebean.find(MediaFolder.class, mediaFile1.getId());
+		List<Tag> tags = mf1.getTags();
+		assertNotNull(tags);
+		assertEquals(3, tags.size());
+		assertTrue(tags.contains(tag("aaa")));
+		assertTrue(tags.contains(tag("bbb")));
+		assertTrue(tags.contains(tag("ccc")));
+		assertTrue(!tags.contains(tag("xxx")));
+		assertTrue(!tags.contains(tag("zzz")));
+
+		assertTrue(mf1.hasTag(tag("aaa")));
+		assertTrue(mf1.hasTag(tag("bbb")));
+		assertTrue(mf1.hasTag(tag("ccc")));
+
+		assertTrue(mf1.deleteTag(tag("bbb")));
+		ebean.update(mf1);
+		mf1 = ebean.find(MediaFolder.class, mediaFile1.getId());
+		tags = mf1.getTags();
+		assertNotNull(tags);
+		assertEquals(2, tags.size());
+		assertTrue(tags.contains(tag("aaa")));
+		assertTrue(!tags.contains(tag("bbb")));
+		assertTrue(tags.contains(tag("ccc")));
+		assertTrue(!tags.contains(tag("xxx")));
+		assertTrue(!tags.contains(tag("zzz")));
 	}
 
 }

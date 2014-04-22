@@ -27,21 +27,13 @@ public class MediaFolder {
 	@ManyToMany(cascade = CascadeType.ALL)
   List<Tag> tags;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="mediaFolder")
-	List<MediaFile> mediaFiles = new ArrayList<>();
-
 	public MediaFolder() {
-
 	}
 
 	public MediaFolder(String name) {
 		this.name = name;
 		this.description = "desc";
 	}
-
-	//@PrivateOwned
-	//@OneToMany(cascade = CascadeType.ALL, mappedBy = "mediaFolder")
-	//List<XMediaFile> mediaFiles = Lists.newArrayList();
 
   public Long getId() {
     return id;
@@ -80,29 +72,18 @@ public class MediaFolder {
 	}
 
 	public boolean deleteTag(Tag tag) {
-		System.out.println("Tags1: " + tags);
-		boolean ok = tags.remove(tag);
-		System.out.println("Tags2: " + tags);
-		return ok;
+		return tags.remove(tag);
 	}
 
 	public boolean hasTag(Tag tag) {
 		return tags.contains(tag);
 	}
 
-	public void deleteMediaFile(MediaFile file) {
-		file.setMediaFolder(null);
-	}
+	//public void deleteMediaFile(MediaFile file) {
+	//	file.setMediaFolder(null);
+	//}
 
 	public void addMediaFile(MediaFile file) {
 		file.setMediaFolder(this);
-	}
-
-	public List<MediaFile> getMediaFiles() {
-		return mediaFiles;
-	}
-
-	public void setMediaFiles(List<MediaFile> mediaFiles) {
-		this.mediaFiles = mediaFiles;
 	}
 }

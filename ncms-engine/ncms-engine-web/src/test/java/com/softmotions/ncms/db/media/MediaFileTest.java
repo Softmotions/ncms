@@ -5,6 +5,7 @@ import com.avaje.ebean.SqlRow;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.softmotions.ncms.NcmsWebTest;
+import com.softmotions.ncms.media.db.MediaDbModule;
 import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.Tag;
 import org.junit.Before;
@@ -19,15 +20,15 @@ import static org.junit.Assert.*;
  */
 public class MediaFileTest extends NcmsWebTest {
 
-  @Inject
+  //@Inject
   EbeanServer ebean;
 
-	//@Inject
-	//MediaDbModule.EbeanServerProvider ebeanServerProvider;
+	@Inject
+	MediaDbModule.EbeanServerProvider ebeanServerProvider;
 
 	@Before
 	public void setup() {
-		//ebean = ebeanServerProvider.get();
+		ebean = ebeanServerProvider.get();
 	}
 
   //@Test
