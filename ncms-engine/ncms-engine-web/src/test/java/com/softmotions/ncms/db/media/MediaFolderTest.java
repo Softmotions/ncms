@@ -162,16 +162,20 @@ public class MediaFolderTest  extends NcmsWebTest {
 		folder22.setParent(folder2);
 		ebean.save(folder22);
 
-		List<MediaFolder> childs = ebean.find(MediaFolder.class).where().eq("parent_id", root.getId()).findList();
-		System.out.println("Childs List: " + childs.size());
-		show(root, 0);
+		List<MediaFolder> childs = childs(root);
+		assertEquals(2, childs.size());
+		//show(root, 0);
 
-		MediaFolder f = childs.get(1);
-		f.setParent(null);
-		ebean.update(f);
+		assertEquals(0, childs(childs.get(0)).size());
 
-		show(root, 0);
+		MediaFolder f1 = childs.get(1);
+		assertEquals(1, childs(f1).size());
 
+		f1.setParent(null);
+		ebean.update(f1);
+		assertEquals(1, childs(root).size());
+
+		//show(root, 0);
 
 	}
 
