@@ -29,11 +29,16 @@ public class MediaFile {
 	@ManyToMany(cascade = CascadeType.ALL)
 	List<Tag> tags = Lists.newArrayList();
 
-	//@ManyToOne(cascade = CascadeType.ALL)
-	@ManyToOne
+	@ManyToOne(cascade=CascadeType.ALL)
 	MediaFolder mediaFolder;
 
 	public MediaFile() {
+	}
+
+	public MediaFile(String name) {
+		this.name = name;
+		this.description = "desc";
+		this.filePath = "path";
 	}
 
 	public Long getId() {

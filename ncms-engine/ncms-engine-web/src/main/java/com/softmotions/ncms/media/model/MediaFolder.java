@@ -4,6 +4,7 @@ import com.avaje.ebean.annotation.PrivateOwned;
 import com.google.common.collect.Lists;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,11 +27,21 @@ public class MediaFolder {
 	@ManyToMany(cascade = CascadeType.ALL)
   List<Tag> tags;
 
-  //List<MediaFolder> folders;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="mediaFolder")
+	List<MediaFile> mediaFiles = new ArrayList<>();
+
+	public MediaFolder() {
+
+	}
+
+	public MediaFolder(String name) {
+		this.name = name;
+		this.description = "desc";
+	}
 
 	//@PrivateOwned
 	//@OneToMany(cascade = CascadeType.ALL, mappedBy = "mediaFolder")
-	//List<MediaFile> mediaFiles = Lists.newArrayList();
+	//List<XMediaFile> mediaFiles = Lists.newArrayList();
 
   public Long getId() {
     return id;
@@ -87,4 +98,11 @@ public class MediaFolder {
 		file.setMediaFolder(this);
 	}
 
+	public List<MediaFile> getMediaFiles() {
+		return mediaFiles;
+	}
+
+	public void setMediaFiles(List<MediaFile> mediaFiles) {
+		this.mediaFiles = mediaFiles;
+	}
 }

@@ -31,7 +31,7 @@ public class MediaFolderTest  extends NcmsWebTest {
 	}
 
 
-	//@Test
+	@Test
 	public void testMediaFolder() {
 		MediaFolder mediaFolder1 = MediaTestUtils.createMediaFolder(1);
 		ebean.save(mediaFolder1);
@@ -41,13 +41,10 @@ public class MediaFolderTest  extends NcmsWebTest {
 		assertEquals("something-1", mf1.getDescription());
 	}
 
-	//@Test
+	@Test
 	public void testMediaFolderFiles() {
 		MediaFolder mediaFolder1 = MediaTestUtils.createMediaFolder(1);
 		ebean.save(mediaFolder1);
-
-		MediaFolder mediaFolder2 = MediaTestUtils.createMediaFolder(1);
-		ebean.save(mediaFolder2);
 
 		MediaFolder mf1 = ebean.find(MediaFolder.class, mediaFolder1.getId());
 
@@ -62,21 +59,14 @@ public class MediaFolderTest  extends NcmsWebTest {
 
 		ebean.update(file1);
 		ebean.update(file2);
-		//ebean.update(mf1);
 
 		List<MediaFile> files = ebean.find(MediaFile.class).where().eq("media_Folder_ID", mediaFolder1.getId()).findList();
 		assertEquals(2, files.size());
 
-		//mf1.deleteMediaFile(file1);
-		file1.setName("del");
-		file1.setMediaFolder(mediaFolder2);
-		ebean.update(file1);
-
-		file1.setMediaFolder(mediaFolder1);
-		ebean.update(file1);
-
-		file1.setMediaFolder(null);
-		ebean.update(file1);
+		MediaFile f1 = files.get(0);
+		//f1.setName("del");
+		f1.setMediaFolder(null);
+		ebean.update(f1);
 
 		files = ebean.find(MediaFile.class).where().eq("media_Folder_ID", mediaFolder1.getId()).findList();
 		assertEquals(1, files.size());
