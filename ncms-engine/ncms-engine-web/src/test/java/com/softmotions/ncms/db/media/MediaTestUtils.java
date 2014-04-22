@@ -3,6 +3,8 @@ package com.softmotions.ncms.db.media;
 import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.MediaFolder;
 
+import java.util.List;
+
 /**
  * Created by shu on 4/22/2014.
  */

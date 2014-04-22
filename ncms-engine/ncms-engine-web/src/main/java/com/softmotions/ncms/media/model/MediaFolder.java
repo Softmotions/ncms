@@ -27,6 +27,9 @@ public class MediaFolder {
 	@ManyToMany(cascade = CascadeType.ALL)
   List<Tag> tags;
 
+	@ManyToOne
+	MediaFolder parent;
+
 	public MediaFolder() {
 	}
 
@@ -85,5 +88,13 @@ public class MediaFolder {
 
 	public void addMediaFile(MediaFile file) {
 		file.setMediaFolder(this);
+	}
+
+	public MediaFolder getParent() {
+		return parent;
+	}
+
+	public void setParent(MediaFolder parent) {
+		this.parent = parent;
 	}
 }

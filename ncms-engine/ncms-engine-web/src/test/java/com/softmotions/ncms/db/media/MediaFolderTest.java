@@ -115,4 +115,65 @@ public class MediaFolderTest  extends NcmsWebTest {
 		assertTrue(!tags.contains(tag("zzz")));
 	}
 
+
+
+
+	List<MediaFolder> childs(MediaFolder root) {
+		List<MediaFolder> childs = ebean.find(MediaFolder.class).where().eq("parent_id", root.getId()).findList();
+		return childs;
+	}
+
+	public String ident(int lev) {
+		String res = "";
+		for(int i=0; i<lev; i++) res += "  ";
+		return res;
+	}
+
+	public void show(MediaFolder folder, int lev) {
+		List<MediaFolder> childs = childs(folder);
+		if(childs.isEmpty()) {
+			System.out.println(ident(lev) + "Folder: " + folder.getName() + " {}");
+		} else {
+			System.out.println(ident(lev) + "Folder: " + folder.getName() + " {");
+			for(MediaFolder f: childs) {
+				show(f, lev+1);
+			}
+			System.out.println(ident(lev) + "}");
+		}
+	}
+
+
+
+	@Test
+	public void testFolderHierarchy() {
+		MediaFolder root = new MediaFolder("root");
+		ebean.save(root);
+
+		MediaFolder folder1 = new MediaFolder("folder-1");
+		ebean.save(folder1);
+		folder1.setParent(root);
+		ebean.update(folder1);
+
+		MediaFolder folder2 = new MediaFolder("folder-2");
+		folder2.setParent(root);
+		ebean.save(folder2);
+
+		MediaFolder folder22 = new MediaFolder("folder-22");
+		folder22.setParent(folder2);
+		ebean.save(folder22);
+
+		List<MediaFolder> childs = ebean.find(MediaFolder.class).where().eq("parent_id", root.getId()).findList();
+		System.out.println("Childs List: " + childs.size());
+		show(root, 0);
+
+		MediaFolder f = childs.get(1);
+		f.setParent(null);
+		ebean.update(f);
+
+		show(root, 0);
+
+
+	}
+
+
 }
