@@ -132,15 +132,11 @@
 
         <!-- ================ MEDIA ==================== -->
 
+        <!--
         <createTable tableName="MEDIA_FILE">
             <column name="ID" type="java.sql.Types.BIGINT">
                 <constraints primaryKey="true"/>
             </column>
-<!--
-            <column name="ID" type="java.sql.Types.BIGINT" autoIncrement="true">
-                <constraints primaryKey="true"/>
-            </column>
--->
             <column name="name" type="java.sql.Types.VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
@@ -159,6 +155,31 @@
         </createIndex>
 
         <createSequence sequenceName="MEDIA_FILE_SEQ"/>
+
+        <createTable tableName="TAG">
+            <column name="ID" type="java.sql.Types.BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="java.sql.Types.VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="TAG"
+                     indexName="IDX_TAG_UNIQ"
+                     unique="true">
+            <column name="ID"></column>
+        </createIndex>
+
+        <createSequence sequenceName="TAG_SEQ"/>
+
+        <createTable tableName="MEDIA_FILE_TAG">
+            <column name="MEDIA_FILE_ID" type="java.sql.Types.BIGINT"/>
+            <column name="TAG_ID" type="java.sql.Types.BIGINT"/>
+        </createTable>
+
+        <createSequence sequenceName="MEDIA_FILE_TAG_SEQ"/>
+        -->
+
 
     </changeSet>
 

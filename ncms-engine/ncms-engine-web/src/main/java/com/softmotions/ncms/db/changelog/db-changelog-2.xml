@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="shu" id="2">
+        <createTable catalogName="NCMS-DEV-DB" schemaName="PUBLIC" tableName="MEDIA_FILE">
+            <column name="ID" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="FILE_PATH" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="PK_MEDIA_FILE" tableName="MEDIA_FILE"/>
+        <createSequence  sequenceName="MEDIA_FILE_SEQ"/>
+    </changeSet>
+
+    <changeSet author="shu" id="3">
+        <createTable tableName="TAG">
+            <column name="ID" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+        </createTable>
+        <addPrimaryKey columnNames="ID" constraintName="PK_TAG" tableName="TAG"/>
+        <createSequence sequenceName="TAG_SEQ"/>
+    </changeSet>
+
+    <changeSet author="shu" id="4">
+        <createTable tableName="MEDIA_FILE_TAG">
+            <column name="MEDIA_FILE_ID" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TAG_ID" type="BIGINT(19)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="MEDIA_FILE_ID, TAG_ID" constraintName="PK_MEDIA_FILE_TAG" tableName="MEDIA_FILE_TAG"/>
+        <createSequence sequenceName="MEDIA_FILE_TAG_SEQ"/>
+        <addForeignKeyConstraint baseColumnNames="MEDIA_FILE_ID"
+                                 baseTableName="MEDIA_FILE_TAG"
+                                 constraintName="FK_MEDIA_FILE_TAG_MEDIA_FILE_01" deferrable="false"
+                                 initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
+                                 referencedColumnNames="ID"
+                                 referencedTableName="MEDIA_FILE" />
+        <addForeignKeyConstraint baseColumnNames="TAG_ID"
+                                 baseTableName="MEDIA_FILE_TAG"
+                                 constraintName="FK_MEDIA_FILE_TAG_TAG_02" deferrable="false" initiallyDeferred="false"
+                                 onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID"
+                                 referencedTableName="TAG"
+                />
+    </changeSet>
+
+</databaseChangeLog>
