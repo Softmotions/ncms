@@ -1,5 +1,6 @@
 package com.softmotions.ncms.media.model;
 
+import com.avaje.ebean.annotation.PrivateOwned;
 import com.google.common.collect.Lists;
 
 import javax.persistence.*;
@@ -27,6 +28,10 @@ public class MediaFile {
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	List<Tag> tags = Lists.newArrayList();
+
+	//@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
+	MediaFolder mediaFolder;
 
 	public MediaFile() {
 	}
@@ -76,9 +81,7 @@ public class MediaFile {
 	}
 
 	public boolean deleteTag(Tag tag) {
-		System.out.println("Tags1: " + tags);
 		boolean ok = tags.remove(tag);
-		System.out.println("Tags2: " + tags);
 		return ok;
 	}
 
@@ -97,7 +100,8 @@ public class MediaFile {
 						.toString();
 	}
 
-	/*
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!MediaFile.class.isAssignableFrom(obj.getClass())) return false;
@@ -105,7 +109,12 @@ public class MediaFile {
 		if (mf == null) return false;
 		return Objects.equals(name, mf.name) && Objects.equals(description, mf.description) && Objects.equals(filePath, mf.filePath);
 	}
-	*/
 
+	public MediaFolder getMediaFolder() {
+		return mediaFolder;
+	}
 
+	public void setMediaFolder(MediaFolder mediaFolder) {
+		this.mediaFolder = mediaFolder;
+	}
 }

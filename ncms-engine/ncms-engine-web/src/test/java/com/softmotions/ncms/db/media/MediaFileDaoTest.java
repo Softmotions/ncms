@@ -52,7 +52,7 @@ public class MediaFileDaoTest extends NcmsWebTest {
     assertNotEquals(mediaFile, mf);
     assertEquals("xxx", mf.getName());
 
-    //mediaFileDao.deleteById(mf.getId());
+    //mediaFileDao.deleteById(createMediaFile.getId());
     list = mediaFileDao.selectAll();
     assertEquals(0, list.size());
 

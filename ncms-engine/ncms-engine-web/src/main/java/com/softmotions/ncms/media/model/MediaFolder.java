@@ -1,5 +1,9 @@
 package com.softmotions.ncms.media.model;
 
+import com.avaje.ebean.annotation.PrivateOwned;
+import com.google.common.collect.Lists;
+
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -9,16 +13,24 @@ import java.util.List;
  * Time: 5:25 PM
  * To change this template use File | Settings | File Templates.
  */
+
+@Entity
 public class MediaFolder {
 
+	@Id
   Long id;
 
   String name;
   String description;
-  List<String> tags;
 
-  List<MediaFolder> folders;
-  List<MediaFile> files;
+	@ManyToMany(cascade = CascadeType.ALL)
+  List<Tag> tags;
+
+  //List<MediaFolder> folders;
+
+	//@PrivateOwned
+	//@OneToMany(cascade = CascadeType.ALL, mappedBy = "mediaFolder")
+	//List<MediaFile> mediaFiles = Lists.newArrayList();
 
   public Long getId() {
     return id;
@@ -44,28 +56,35 @@ public class MediaFolder {
     this.description = description;
   }
 
-  public List<String> getTags() {
-    return tags;
-  }
+	public List<Tag> getTags() {
+		return tags;
+	}
 
-  public void setTags(List<String> tags) {
-    this.tags = tags;
-  }
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
 
-  public List<MediaFolder> getFolders() {
-    return folders;
-  }
+	public void addTag(Tag tag) {
+		tags.add(tag);
+	}
 
-  public void setFolders(List<MediaFolder> folders) {
-    this.folders = folders;
-  }
+	public boolean deleteTag(Tag tag) {
+		System.out.println("Tags1: " + tags);
+		boolean ok = tags.remove(tag);
+		System.out.println("Tags2: " + tags);
+		return ok;
+	}
 
-  public List<MediaFile> getFiles() {
-    return files;
-  }
+	public boolean hasTag(Tag tag) {
+		return tags.contains(tag);
+	}
 
-  public void setFiles(List<MediaFile> files) {
-    this.files = files;
-  }
+	public void deleteMediaFile(MediaFile file) {
+		file.setMediaFolder(null);
+	}
+
+	public void addMediaFile(MediaFile file) {
+		file.setMediaFolder(this);
+	}
 
 }

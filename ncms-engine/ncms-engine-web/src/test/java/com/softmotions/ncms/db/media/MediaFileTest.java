@@ -1,19 +1,15 @@
 package com.softmotions.ncms.db.media;
 
 import com.avaje.ebean.EbeanServer;
-import com.avaje.ebean.LogLevel;
 import com.avaje.ebean.SqlRow;
-import com.avaje.ebean.validation.AssertTrue;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.softmotions.ncms.NcmsWebTest;
-import com.softmotions.ncms.media.db.MediaDbModule;
 import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.Tag;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -51,18 +47,10 @@ public class MediaFileTest extends NcmsWebTest {
 		return tag;
 	}
 
-	MediaFile mf(int no) {
-		MediaFile mf = new MediaFile();
-		mf.setName("test-" + no);
-		mf.setDescription("something-"+no);
-		mf.setFilePath("path-"+no);
-		return mf;
-	}
-
 
 	@Test
 	public void testMediaFile() {
-		MediaFile mediaFile1 = mf(1);
+		MediaFile mediaFile1 = MediaTestUtils.createMediaFile(1);
 		ebean.save(mediaFile1);
 
 		MediaFile mf1 = ebean.find(MediaFile.class, mediaFile1.getId());
@@ -84,15 +72,15 @@ public class MediaFileTest extends NcmsWebTest {
 
   @Test
   public void testMediaFileTagsOverlap() {
-	  MediaFile mediaFile1 = mf(1);
+	  MediaFile mediaFile1 = MediaTestUtils.createMediaFile(1);
     mediaFile1.setTags(Lists.newArrayList(tag("aaa"), tag("bbb"), tag("ccc")));
     ebean.save(mediaFile1);
 
-	  MediaFile mediaFile2 = mf(2);
+	  MediaFile mediaFile2 = MediaTestUtils.createMediaFile(2);
     mediaFile2.setTags(Lists.newArrayList(tag("aaa"), tag("xxx"), tag("zzz")));
     ebean.save(mediaFile2);
 
-	  MediaFile mediaFile3 = mf(3);
+	  MediaFile mediaFile3 = MediaTestUtils.createMediaFile(3);
 	  ebean.save(mediaFile3);
 	  mediaFile3.addTag(tag("aaa"));
 	  mediaFile3.addTag(tag("bbb"));
@@ -133,7 +121,7 @@ public class MediaFileTest extends NcmsWebTest {
 
 	@Test
 	public void testMediaFileTagsAddDelete() {
-		MediaFile mediaFile1 = mf(1);
+		MediaFile mediaFile1 = MediaTestUtils.createMediaFile(1);
 		mediaFile1.setTags(Lists.newArrayList(tag("aaa"), tag("bbb"), tag("ccc")));
 		ebean.save(mediaFile1);
 
