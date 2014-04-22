@@ -20,15 +20,15 @@ import static org.junit.Assert.*;
  */
 public class MediaFolderTest  extends NcmsWebTest {
 
-	//@Inject
+	@Inject
 	EbeanServer ebean;
 
-	@Inject
-	MediaDbModule.EbeanServerProvider ebeanServerProvider;
+	//@Inject
+	//MediaDbModule.EbeanServerProvider ebeanServerProvider;
 
 	@Before
 	public void setup() {
-		ebean = ebeanServerProvider.get();
+		//ebean = ebeanServerProvider.get();
 	}
 
 	Tag tag(String name) {
