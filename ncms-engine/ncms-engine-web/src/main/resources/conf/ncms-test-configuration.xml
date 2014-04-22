@@ -18,8 +18,8 @@
              bindDatasource="true"
              shutdownSQL="SHUTDOWN">
         JDBC.driver=org.h2.Driver
-        #JDBC.url=jdbc:h2:mem:ncms
-        JDBC.url=${ncms.JDBC.url}
+        JDBC.url=jdbc:h2:mem:ncms
+        #JDBC.url=${ncms.JDBC.url}
         JDBC.username=sa
         JDBC.password
     </mybatis>
@@ -29,8 +29,8 @@
         name=ebean
         register=true
         defaultServer=true
-        ddlGenerate=true
-        ddlRun=true
+        ddlGenerate=false
+        ddlRun=false
     </ebean>
 
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
