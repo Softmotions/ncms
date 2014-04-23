@@ -1,6 +1,7 @@
 package com.softmotions.ncms.media.model;
 
 import com.avaje.ebean.annotation.PrivateOwned;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -91,6 +92,7 @@ public class MediaFolder {
 		file.setMediaFolder(this);
 	}
 
+	@JsonIgnore
 	public MediaFolder getParent() {
 		return parent;
 	}
