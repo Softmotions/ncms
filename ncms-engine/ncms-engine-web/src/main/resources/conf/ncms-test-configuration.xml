@@ -55,6 +55,7 @@
         <module class="com.softmotions.ncms.adm.AdmRestModule"/>
         <module class="com.softmotions.ncms.jaxrs.JAXRSExceptionHandlingModule"/>
         <module class="com.softmotions.ncms.media.db.MediaDbModule"/>
+        <module class="com.softmotions.ncms.media.rest.MediaModule"/>
     </modules>
 
 </configuration>
