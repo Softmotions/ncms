@@ -24,7 +24,14 @@ qx.Class.define("ncms.asm.AsmSelector", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
 
-        this.__sf = new sm.ui.form.SearchField();
+        var sf = this.__sf = new sm.ui.form.SearchField();
+        sf.addListener("clear", this.__search, this);
+        sf.addListener("keydown", function(ev) {
+            if (ev.getKeyCode() != 13) {
+                this.__search();
+            }
+        }, this);
+
         this.__table = new ncms.asm.AsmTable();
 
         this._add(this.__sf);
@@ -73,7 +80,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
         },
 
         getSearchField : function() {
-            return this.__stext;
+            return this.__sf;
         },
 
         __createViewSpec : function(vspec) {
@@ -81,9 +88,17 @@ qx.Class.define("ncms.asm.AsmSelector", {
                 return vspec;
             }
             var nspec = {};
-            qx.lang.Object.carefullyMergeWith(nspec, this.getConstViewSpec());
-            qx.lang.Object.carefullyMergeWith(nspec, vspec);
+            qx.Bootstrap.objectMergeWith(nspec, this.getConstViewSpec(), false);
+            qx.Bootstrap.objectMergeWith(nspec, vspec, false);
             return nspec;
+        },
+
+        __search : function() {
+            this.__table.resetSelection();
+            var val = this.__sf.getValue();
+            var vspec = (val != null && val != "" ? {stext : val} : {});
+            qx.log.Logger.info("Search vspec: " + JSON.stringify(vspec));
+            this.setViewSpec(this.__createViewSpec(vspec));
         }
     },
 
