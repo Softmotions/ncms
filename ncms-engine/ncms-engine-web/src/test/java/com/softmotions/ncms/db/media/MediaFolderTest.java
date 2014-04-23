@@ -4,6 +4,7 @@ import com.avaje.ebean.EbeanServer;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.softmotions.ncms.NcmsWebTest;
+import com.softmotions.ncms.media.db.MediaDataManager;
 import com.softmotions.ncms.media.db.MediaDbModule;
 import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.MediaFolder;
@@ -19,6 +20,9 @@ import static org.junit.Assert.*;
  * Created by shu on 4/22/2014.
  */
 public class MediaFolderTest  extends NcmsWebTest {
+
+	@Inject
+	MediaDataManager manager;
 
 	@Inject
 	EbeanServer ebean;
@@ -115,35 +119,6 @@ public class MediaFolderTest  extends NcmsWebTest {
 		assertTrue(!tags.contains(tag("zzz")));
 	}
 
-
-
-
-	List<MediaFolder> childs(MediaFolder root) {
-		List<MediaFolder> childs = ebean.find(MediaFolder.class).where().eq("parent_id", root.getId()).findList();
-		return childs;
-	}
-
-	public String ident(int lev) {
-		String res = "";
-		for(int i=0; i<lev; i++) res += "  ";
-		return res;
-	}
-
-	public void show(MediaFolder folder, int lev) {
-		List<MediaFolder> childs = childs(folder);
-		if(childs.isEmpty()) {
-			System.out.println(ident(lev) + "Folder: " + folder.getName() + " {}");
-		} else {
-			System.out.println(ident(lev) + "Folder: " + folder.getName() + " {");
-			for(MediaFolder f: childs) {
-				show(f, lev+1);
-			}
-			System.out.println(ident(lev) + "}");
-		}
-	}
-
-
-
 	@Test
 	public void testFolderHierarchy() {
 		MediaFolder root = new MediaFolder("root");
@@ -162,18 +137,18 @@ public class MediaFolderTest  extends NcmsWebTest {
 		folder22.setParent(folder2);
 		ebean.save(folder22);
 
-		List<MediaFolder> childs = childs(root);
+		List<MediaFolder> childs = manager.getSubFolders(root);
 		assertEquals(2, childs.size());
 		//show(root, 0);
 
-		assertEquals(0, childs(childs.get(0)).size());
+		assertEquals(0, manager.getSubFolders(childs.get(0)).size());
 
 		MediaFolder f1 = childs.get(1);
-		assertEquals(1, childs(f1).size());
+		assertEquals(1, manager.getSubFolders(f1).size());
 
 		f1.setParent(null);
 		ebean.update(f1);
-		assertEquals(1, childs(root).size());
+		assertEquals(1, manager.getSubFolders(root).size());
 
 		//show(root, 0);
 

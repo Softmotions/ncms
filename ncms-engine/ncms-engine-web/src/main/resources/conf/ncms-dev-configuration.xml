@@ -57,7 +57,7 @@
         <module class="com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule"/>
         <module class="com.softmotions.ncms.adm.AdmRestModule"/>
         <module class="com.softmotions.ncms.media.db.MediaDbModule"/>
-        <module class="com.softmotions.ncms.media.rest.MediaModule"/>
+        <module class="com.softmotions.ncms.media.rest.MediaRestModule"/>
     </modules>
 
     <ui>
