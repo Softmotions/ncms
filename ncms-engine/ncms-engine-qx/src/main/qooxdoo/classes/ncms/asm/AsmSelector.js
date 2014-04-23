@@ -26,11 +26,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", this.__search, this);
-        sf.addListener("keydown", function(ev) {
-            if (ev.getKeyCode() != 13) {
-                this.__search();
-            }
-        }, this);
+        sf.addListener("execute", this.__search, this);
 
         this.__table = new ncms.asm.AsmTable().set({
             "statusBarVisible" : false,

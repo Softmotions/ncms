@@ -40,7 +40,7 @@
     </environments>
 
     <mappers>
-        <mapper resource="com/softmotions/ncms/asm/mappers/AsmMapper.xml"/>
-        <mapper resource="com/softmotions/ncms/adm/mappers/AdmMapper.xml"/>
+        <mapper resource="com/softmotions/ncms/asm/AsmDAO.xml"/>
+        <mapper resource="com/softmotions/ncms/adm/AsmsRS.xml"/>
     </mappers>
 </configuration>

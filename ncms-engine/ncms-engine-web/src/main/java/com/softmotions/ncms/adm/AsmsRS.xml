@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.adm.AsmsRS">
+
+    <select id="select" resultType="map" parameterType="map">
+        select ID, NAME, TYPE from ASMS
+        <where>
+            <if test="type != null">and TYPE = #{type}</if>
+            <if test="name != null">and NAME like #{name}</if>
+        </where>
+        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+    </select>
+
+    <select id="count" resultType="int" parameterType="map">
+        select count(*) from ASMS
+        <where>
+            <if test="type != null">and TYPE = #{type}</if>
+            <if test="name != null">and NAME like #{name}</if>
+        </where>
+    </select>
+
+</mapper>

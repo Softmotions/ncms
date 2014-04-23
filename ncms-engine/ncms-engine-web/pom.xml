@@ -183,6 +183,7 @@
                     </systemProperties>
                     <server>ncms-tomcat-server</server>
                     <useNaming>true</useNaming>
+                    <uriEncoding>UTF-8</uriEncoding>
                     <contextFile>src/main/webapp/META-INF/context.xml</contextFile>
                 </configuration>
             </plugin>

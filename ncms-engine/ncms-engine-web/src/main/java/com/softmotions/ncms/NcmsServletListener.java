@@ -2,6 +2,7 @@ package com.softmotions.ncms;
 
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.weboot.WBServletListener;
+import com.softmotions.web.CharsetFilter;
 
 import com.google.inject.servlet.GuiceFilter;
 
@@ -35,13 +36,17 @@ public class NcmsServletListener extends WBServletListener {
         sctx.setInitParameter("resteasy.document.expand.entity.references", "false");
         sctx.setInitParameter("resteasy.role.based.security", "true");
 
-        sctx.addFilter("guiceFilter", GuiceFilter.class)
-                .addMappingForUrlPatterns(null, false, "/*");
-
         super.contextInitialized(event);
 
         resteasyBootstrap = getInjector().getInstance(GuiceResteasyBootstrapServletContextListener.class);
         resteasyBootstrap.contextInitialized(event);
+
+        sctx.addFilter("charsetFilter", CharsetFilter.class)
+                .addMappingForUrlPatterns(null, false, "/*");
+
+        sctx.addFilter("guiceFilter", GuiceFilter.class)
+                .addMappingForUrlPatterns(null, false, "/*");
+
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {

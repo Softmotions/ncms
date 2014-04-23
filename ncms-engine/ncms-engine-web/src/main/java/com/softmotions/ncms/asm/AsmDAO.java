@@ -24,7 +24,7 @@ public class AsmDAO extends MBDAOSupport {
 
     @Inject
     public AsmDAO(SqlSession sess) {
-        super("com.softmotions.ncms.AsmMapper", sess);
+        super("com.softmotions.ncms.asm.AsmDAO", sess);
     }
 
     public Criteria newCriteria() {
