@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.commons.cont.AbstractIndexedCollection;
+import com.softmotions.commons.cont.KVOptions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class Asm implements Serializable {
 
     String options;
 
-    AsmOptions parsedOptions;
+    KVOptions parsedOptions;
 
     List<Asm> parents;
 
@@ -99,12 +100,12 @@ public class Asm implements Serializable {
         this.parsedOptions = null;
     }
 
-    public AsmOptions getParsedOptions() {
+    public KVOptions getParsedOptions() {
         String opts = this.options;
         if (opts == null) {
             return null;
         }
-        this.parsedOptions = new AsmOptions(opts);
+        this.parsedOptions = new KVOptions(opts);
         return parsedOptions;
     }
 

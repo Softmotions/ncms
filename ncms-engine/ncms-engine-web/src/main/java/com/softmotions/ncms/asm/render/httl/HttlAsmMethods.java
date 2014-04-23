@@ -1,6 +1,6 @@
 package com.softmotions.ncms.asm.render.httl;
 
-import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 import java.util.Map;
@@ -21,7 +21,7 @@ public class HttlAsmMethods {
         int ind = val.indexOf(',');
         if (ind != -1) {
             attrName = val.substring(0, ind);
-            opts = (ind < val.length() - 1) ? new AsmOptions(val.substring(ind + 1)) : null;
+            opts = (ind < val.length() - 1) ? new KVOptions(val.substring(ind + 1)) : null;
         } else {
             attrName = val;
             opts = null;
@@ -67,11 +67,11 @@ public class HttlAsmMethods {
 
     private static String asmIntern(String attrName, String... extraOpts) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        AsmOptions opts = null;
+        KVOptions opts = null;
         if (extraOpts.length > 0) {
             String ok = null;
             String ov;
-            opts = new AsmOptions();
+            opts = new KVOptions();
             for (int i = 0; i < extraOpts.length; ++i) {
                 if (i % 2 == 0) {
                     ok = extraOpts[i];

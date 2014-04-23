@@ -2,8 +2,8 @@ package com.softmotions.ncms;
 
 import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
+import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.weboot.WBServletModule;
-import com.softmotions.commons.weboot.mb.MBTinyParams;
 import com.softmotions.ncms.asm.render.AsmServlet;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
 import com.softmotions.web.JarResourcesProvider;
@@ -60,7 +60,7 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
         bind(HttpServletDispatcher.class).in(Singleton.class);
         serve(cfg.getNcmsPrefix() + "/rs/*",
               HttpServletDispatcher.class,
-              new MBTinyParams().param("resteasy.servlet.mapping.prefix", cfg.getNcmsPrefix() + "/rs"));
+              new TinyParamMap().param("resteasy.servlet.mapping.prefix", cfg.getNcmsPrefix() + "/rs"));
 
         //Resteasy JS API
         bind(JSAPIServlet.class).in(Singleton.class);

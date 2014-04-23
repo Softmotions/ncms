@@ -3,6 +3,7 @@ package com.softmotions.ncms;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.web.security.SecurityFakeEnvFilter;
 import com.softmotions.web.security.XMLWSUserDatabaseJNDIFactory;
@@ -51,7 +52,7 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
     }
 
     public NcmsWebTest(String options) {
-        envProps = new AsmOptions(options);
+        envProps = new KVOptions(options);
     }
 
     @Before

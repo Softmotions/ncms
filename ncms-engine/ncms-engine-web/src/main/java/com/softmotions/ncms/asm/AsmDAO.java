@@ -1,9 +1,9 @@
 package com.softmotions.ncms.asm;
 
+import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.weboot.mb.MBAction;
 import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
 import com.softmotions.commons.weboot.mb.MBDAOSupport;
-import com.softmotions.commons.weboot.mb.MBTinyParams;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -103,7 +103,7 @@ public class AsmDAO extends MBDAOSupport {
 
     @Transactional
     public int asmSetParent(Asm asm, Asm parent) {
-        MBTinyParams params = new MBTinyParams()
+        TinyParamMap params = new TinyParamMap()
                 .param("asmId", asm.id)
                 .param("parentId", parent.id);
         Number cnt = sess.selectOne(toStatementId("asmHasSpecificParent"), params);
