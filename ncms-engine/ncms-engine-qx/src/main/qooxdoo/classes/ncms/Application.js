@@ -1,13 +1,12 @@
 /**
  * Ncms Application
  *
- * @asset(icons/*)
- * @asset(sm/icons/misc/help16.png)
- * @asset(sm/icons/misc/door_in16.png)
- *
  * @use(ncms.asm.NavAssemblies)
  * @use(ncms.mmgr.NavMediaManager)
  * @use(ncms.pgs.NavPages)
+ *
+ * @asset(ncms/icon/16/help/help.png)
+ * @asset(ncms/icon/16/misc/door_in.png)
  */
 qx.Class.define("ncms.Application", {
     extend : qx.application.Standalone,

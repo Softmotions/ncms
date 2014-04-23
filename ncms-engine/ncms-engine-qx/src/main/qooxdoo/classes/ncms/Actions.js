@@ -9,14 +9,18 @@ qx.Class.define("ncms.Actions", {
         this._testPrefix = "http://localhost:8080";
         this._resourceManager = qx.util.ResourceManager.getInstance();
 
-        //Начальное состояние GUI клиента
+        //Starting GUI state
         this._action("app.state", "/ncms/rs/adm/ws/state");
 
         //Logout
         this._action("app.logout", "/ncms/rs/adm/ws/logout");
 
-        //Компоненты рабочих зон
-        this._action("nav.selectors", "/ncms/rs/adm/ui/widgets/navigation-selectors")
+        //Workspace components
+        this._action("nav.selectors", "/ncms/rs/adm/ui/widgets/navigation-selectors");
+
+        //Asm selector
+        this._action("asms.select", "/ncms/rs/adm/asms/select");
+        this._action("asms.select.count", "/ncms/rs/adm/asms/select/count");
     },
 
     members : {

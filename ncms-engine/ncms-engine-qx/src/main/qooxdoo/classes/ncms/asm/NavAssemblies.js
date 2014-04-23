@@ -1,5 +1,5 @@
 qx.Class.define("ncms.asm.NavAssemblies", {
-    extend : qx.ui.container.Composite,
+    extend : qx.ui.core.Widget,
 
     statics : {
     },
@@ -12,8 +12,8 @@ qx.Class.define("ncms.asm.NavAssemblies", {
 
     construct : function() {
         this.base(arguments);
-        this.setLayout(new qx.ui.layout.VBox());
-        this.setBackgroundColor("yellow");
+        this._setLayout(new qx.ui.layout.VBox());
+        this._add(new ncms.asm.AsmSelector());
     },
 
     members : {

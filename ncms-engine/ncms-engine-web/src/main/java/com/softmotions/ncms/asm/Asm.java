@@ -24,6 +24,8 @@ public class Asm implements Serializable {
 
     String name;
 
+    String type;
+
     String description;
 
     AsmCore core;
@@ -70,6 +72,14 @@ public class Asm implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getDescription() {

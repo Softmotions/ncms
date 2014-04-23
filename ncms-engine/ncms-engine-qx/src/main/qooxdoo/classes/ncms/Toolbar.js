@@ -1,3 +1,7 @@
+/**
+ * @asset(ncms/icon/16/help/help.png)
+ * @asset(ncms/icon/16/misc/door_in.png)
+ */
 qx.Class.define("ncms.Toolbar", {
     extend : qx.ui.toolbar.ToolBar,
 
@@ -22,7 +26,8 @@ qx.Class.define("ncms.Toolbar", {
             this.add(new qx.ui.core.Spacer, {flex : 1});
 
             if (apps.getHelpSite()) {
-                var helpButton = new qx.ui.toolbar.Button(this.tr("Help"), "sm/icons/misc/help16.png");
+                var helpButton = new qx.ui.toolbar.Button(this.tr("Help"),
+                        "ncms/icon/16/help/help.png");
                 helpButton.addListener("execute", function() {
                     qx.bom.Window.open(apps.getHelpSite());
                 });
@@ -30,7 +35,7 @@ qx.Class.define("ncms.Toolbar", {
                 this.add(helpButton);
             }
             var logoff = new qx.ui.toolbar.Button(this.tr("Logout") + " (" + apps.getUserLogin() + ")",
-                    "sm/icons/misc/door_in16.png");
+                    "ncms/icon/16/misc/door_in.png");
             logoff.setToolTipText(this.tr("Logout"));
             logoff.addListener("execute", function() {
                 if (window.confirm(this.tr("Do you really want to logout?"))) {

@@ -48,6 +48,8 @@
             <column name="NAME" type="java.sql.Types.VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
+            <column name="TYPE" type="java.sql.Types.VARCHAR(64)">
+            </column>
             <column name="OPTIONS" type="java.sql.Types.VARCHAR(512)"/>
             <column name="DESCRIPTION" type="java.sql.Types.VARCHAR(256)"/>
         </createTable>
@@ -55,6 +57,12 @@
         <createIndex tableName="ASMS"
                      indexName="IDX_ASMS_NAME"
                      unique="true">
+            <column name="NAME"></column>
+        </createIndex>
+
+        <createIndex tableName="ASMS"
+                     indexName="IDX_ASMS_TYPENAME">
+            <column name="TYPE"></column>
             <column name="NAME"></column>
         </createIndex>
 
@@ -129,57 +137,6 @@
                                  referencedTableName="ASMS"
                                  referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
-
-        <!-- ================ MEDIA ==================== -->
-
-        <!--
-        <createTable tableName="MEDIA_FILE">
-            <column name="ID" type="java.sql.Types.BIGINT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="name" type="java.sql.Types.VARCHAR(128)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="description" type="java.sql.Types.VARCHAR(1024)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="file_path" type="java.sql.Types.VARCHAR(256)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <createIndex tableName="MEDIA_FILE"
-                     indexName="IDX_MediaFile_UNIQ"
-                     unique="true">
-            <column name="ID"></column>
-        </createIndex>
-
-        <createSequence sequenceName="MEDIA_FILE_SEQ"/>
-
-        <createTable tableName="TAG">
-            <column name="ID" type="java.sql.Types.BIGINT">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="name" type="java.sql.Types.VARCHAR(128)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <createIndex tableName="TAG"
-                     indexName="IDX_TAG_UNIQ"
-                     unique="true">
-            <column name="ID"></column>
-        </createIndex>
-
-        <createSequence sequenceName="TAG_SEQ"/>
-
-        <createTable tableName="MEDIA_FILE_TAG">
-            <column name="MEDIA_FILE_ID" type="java.sql.Types.BIGINT"/>
-            <column name="TAG_ID" type="java.sql.Types.BIGINT"/>
-        </createTable>
-
-        <createSequence sequenceName="MEDIA_FILE_TAG_SEQ"/>
-        -->
-
 
     </changeSet>
 

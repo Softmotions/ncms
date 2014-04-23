@@ -7,5 +7,6 @@ qx.Theme.define("ncms.theme.Decoration", {
 
     decorations : {
 
+
     }
 });

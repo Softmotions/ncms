@@ -47,8 +47,8 @@
     <insert id="asmInsert" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
         insert into ASMS
-        (NAME, DESCRIPTION<if test="core != null">, ASM_CORE_ID</if>)
-        values (#{name}, #{description}<if test="core != null">, #{core.id}</if>)
+        (NAME, TYPE, DESCRIPTION<if test="core != null">, ASM_CORE_ID</if>)
+        values (#{name}, #{type}, #{description}<if test="core != null">, #{core.id}</if>)
     </insert>
 
     <update id="asmUpdate"
@@ -57,6 +57,7 @@
         update ASMS
         <set>
             <if test="name != null">NAME = #{name},</if>
+            <if test="type != null">TYPE = #{type},</if>
             <if test="description != null">DESCRIPTION = #{description},</if>
             <if test="core != null">ASM_CORE_ID = #{core.id}</if>
         </set>
@@ -85,6 +86,7 @@
             <if test="CQ_PK != null">asm.ID = #{CQ_PK}</if>
             <if test="id != null">asm.ID = #{id}</if>
             <if test="name != null">asm.NAME = #{name}</if>
+            <if test="type != null">AND asm.TYPE = #{type}</if>
             <if test="location != null">AND core.LOCATION = #{location}</if>
         </where>
         <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
