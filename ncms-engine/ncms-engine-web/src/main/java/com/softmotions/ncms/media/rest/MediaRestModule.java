@@ -13,8 +13,8 @@ public class MediaRestModule extends AbstractModule {
   @Override
   protected void configure() {
 	  bind(TestService.class).in(Singleton.class);
-	  //bind(FolderRestController.class).in(Singleton.class);
-	  //bind(FoldersRestController.class).in(Singleton.class);
-	  //bind(FileRestController.class).in(Singleton.class);
+	  bind(FolderRestController.class).in(Singleton.class);
+	  bind(FoldersRestController.class).in(Singleton.class);
+	  bind(FileRestController.class).in(Singleton.class);
   }
 }

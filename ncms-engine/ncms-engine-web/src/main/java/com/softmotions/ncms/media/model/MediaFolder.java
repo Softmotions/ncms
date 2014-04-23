@@ -1,6 +1,7 @@
 package com.softmotions.ncms.media.model;
 
 import com.avaje.ebean.annotation.PrivateOwned;
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
 import javax.persistence.*;
@@ -96,5 +97,14 @@ public class MediaFolder {
 
 	public void setParent(MediaFolder parent) {
 		this.parent = parent;
+	}
+
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+						.add("id", id)
+						.add("name", name)
+						.toString();
 	}
 }

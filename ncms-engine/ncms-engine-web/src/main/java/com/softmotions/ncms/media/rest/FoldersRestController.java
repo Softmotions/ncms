@@ -5,10 +5,7 @@ import com.google.inject.Inject;
 import com.softmotions.ncms.media.db.MediaDataManager;
 import com.softmotions.ncms.media.model.MediaFolder;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
@@ -33,6 +30,7 @@ public class FoldersRestController {
 
 	@GET
 	@Path("/")
+	@Produces("text/plain")
 	public String getRootFolders() {
 		List<MediaFolder> folders = manager.getRootFolders();
 		return manager.dump(null, 0);
