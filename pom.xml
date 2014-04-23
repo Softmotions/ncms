@@ -117,6 +117,15 @@
                 <ninja.mode>prod</ninja.mode>
             </properties>
         </profile>
+        <profile>
+            <id>qxdev</id>
+            <properties>
+                <ncms.environment>prerelease</ncms.environment>
+                <ncms.debug>true</ncms.debug>
+                <web.context.reloadable>false</web.context.reloadable>
+                <ninja.mode>dev</ninja.mode>
+            </properties>
+        </profile>
     </profiles>
 
     <build>

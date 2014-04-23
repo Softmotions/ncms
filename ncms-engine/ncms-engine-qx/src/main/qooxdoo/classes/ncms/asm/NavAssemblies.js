@@ -12,7 +12,7 @@ qx.Class.define("ncms.asm.NavAssemblies", {
 
     construct : function() {
         this.base(arguments);
-        this._setLayout(new qx.ui.layout.VBox());
+        this._setLayout(new qx.ui.layout.Grow());
         this._add(new ncms.asm.AsmSelector());
     },
 

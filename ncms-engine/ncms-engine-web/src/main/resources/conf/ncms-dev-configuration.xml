@@ -10,7 +10,7 @@
     <jar-web-resources>
         <resource>
             <path-prefix>/</path-prefix>
-            <options>/ncms-engine-qx/ncms</options>
+            <options>/ncms-engine-qx/ncms\,watch=true</options>
         </resource>
     </jar-web-resources>
 

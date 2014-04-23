@@ -32,11 +32,12 @@ qx.Class.define("ncms.asm.AsmSelector", {
             }
         }, this);
 
-        this.__table = new ncms.asm.AsmTable();
+        this.__table = new ncms.asm.AsmTable().set({
+            "statusBarVisible" : false,
+            "showCellFocusIndicator" : false});
 
         this._add(this.__sf);
         this._add(this.__table, {flex : 1});
-
         this.updateViewSpec({});
     },
 
