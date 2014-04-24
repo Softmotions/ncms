@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
 */
 
 @Path("media/file")
-public class FileRestController {
+public class MediaFileRS {
 
 	@Inject
 	MediaDataManager manager;

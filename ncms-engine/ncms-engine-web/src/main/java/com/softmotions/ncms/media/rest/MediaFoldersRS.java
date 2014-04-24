@@ -23,7 +23,7 @@ import java.util.Objects;
 + get	/folders/id/id
 */
 @Path("media/folders")
-public class FoldersRestController {
+public class MediaFoldersRS {
 
 	@Inject
 	MediaDataManager manager;
