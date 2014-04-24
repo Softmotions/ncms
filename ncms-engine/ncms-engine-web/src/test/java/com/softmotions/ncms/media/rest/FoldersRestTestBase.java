@@ -9,6 +9,8 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -55,6 +57,24 @@ public class FoldersRestTestBase extends MediaRestTest {
 		assertEquals(folder.getName(), f.getName());
 		assertEquals(folder.getName(), f.getName());
 		return f;
+	}
+
+	protected List<MediaFolder> listFoldersAndCheck(int expectedSize) {
+		Response response = getWebTarget("/").request().get();
+		assertEquals(200, response.getStatus());
+		List<MediaFolder> list = response.readEntity(List.class);
+		assertEquals(expectedSize, list.size());
+		response.close();
+		return list;
+	}
+
+	protected List<MediaFolder> listFoldersAndCheck(MediaFolder folder, int expectedSize) {
+		Response response = target(folder).request().get();
+		assertEquals(200, response.getStatus());
+		List<MediaFolder> list = response.readEntity(List.class);
+		assertEquals(expectedSize, list.size());
+		response.close();
+		return list;
 	}
 
 }
