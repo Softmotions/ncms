@@ -5,6 +5,18 @@ qx.Class.define("ncms.asm.AsmSelector", {
     extend : qx.ui.core.Widget,
 
     events : {
+
+        /**
+         * Event fired if assembly was selected/deselected
+         *
+         * data: var item = {
+         *        "id" : {Number} Assembly id.
+         *        "name" : {String} Page name,
+         *        "type" : {String} Assembly type,
+         *};
+         * or null if selection cleared
+         */
+        "asmSelected" : "qx.event.type.Data"
     },
 
     properties : {
@@ -31,6 +43,11 @@ qx.Class.define("ncms.asm.AsmSelector", {
         this.__table = new ncms.asm.AsmTable().set({
             "statusBarVisible" : false,
             "showCellFocusIndicator" : false});
+
+        this.__table.getSelectionModel().addListener("changeSelection", function() {
+            var asm = this.getSelectedAsm();
+            this.fireDataEvent("asmSelected", asm ? asm : null);
+        }, this);
 
         this._add(this.__sf);
         this._add(this.__table, {flex : 1});

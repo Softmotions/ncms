@@ -26,13 +26,13 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Path("adm/asms")
-public class AsmsRS extends MBDAOSupport {
+public class AsmSelectorRS extends MBDAOSupport {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmsRS.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmSelectorRS.class);
 
     @Inject
-    public AsmsRS(ObjectMapper mapper, SqlSession sql) {
-        super(AsmsRS.class.getName(), sql);
+    public AsmSelectorRS(ObjectMapper mapper, SqlSession sql) {
+        super(AsmSelectorRS.class.getName(), sql);
     }
 
     @GET
@@ -78,6 +78,4 @@ public class AsmsRS extends MBDAOSupport {
         }
         return cq;
     }
-
-
 }

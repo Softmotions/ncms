@@ -13,6 +13,6 @@ public class AdmRestModule extends AbstractModule {
     protected void configure() {
         bind(WorkspaceRS.class).in(Singleton.class);
         bind(UIResourcesRS.class).in(Singleton.class);
-        bind(AsmsRS.class).in(Singleton.class);
+        bind(AsmSelectorRS.class).in(Singleton.class);
     }
 }

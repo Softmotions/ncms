@@ -1,6 +1,9 @@
 /**
  * Ncms Application
  *
+ * WSA abbrev means: workspace area (big right side zone)
+ *
+ *
  * @use(ncms.asm.NavAssemblies)
  * @use(ncms.mmgr.NavMediaManager)
  * @use(ncms.pgs.NavPages)
@@ -156,12 +159,15 @@ qx.Class.define("ncms.Application", {
             hsp.add(navStack, 0);
 
             //Right nav side
-            var rightStack = new sm.ui.cont.LazyStack();
+            var rightStack = this.__createRightStack();
+            rightStack.setBackgroundColor("red");
             hsp.add(rightStack, 1);
 
             this.registerComponent("toolbar", toolbar);
             this.registerComponent("nav-stack", navStack);
             this.registerComponent("right-stack", rightStack);
+
+            this.showDefaultWSA();
             this.fireEvent("guiInitialized");
         },
 
@@ -208,6 +214,56 @@ qx.Class.define("ncms.Application", {
                     return this.__construct(clazz, cargs);
                 }, {cache : true, wspec : wspec}, this);
             }
+        },
+
+        /**
+         * Display default workspace area placeholder
+         * widget (ncms.wsa.WSAPlaceholder)
+         */
+        showDefaultWSA : function() {
+            this.showWSA("ncms.wsa.WSAPlaceholder");
+        },
+
+        /**
+         * WSA abbrev means: workspace area (big right side zone)
+         * @param widgetId
+         */
+        showWSA : function(widgetId) {
+            this.getComponent("right-stack").showWidget(widgetId);
+        },
+
+        /**
+         * WSA abbrev means: workspace area (big right side zone)
+         * @param widgetId
+         * @returns {Widget|null|*}
+         */
+        getWSA : function(widgetId) {
+            return this.getComponent("right-stack").getWidget(widgetId, true);
+        },
+
+        /**
+         * Return active WSA ID
+         * @returns {String|null}
+         */
+        getActiveWSAID : function() {
+            return this.getComponent("right-stack").getActiveWidgetId();
+        },
+
+        /**
+         * WSA abbrev means: workspace area (big right side zone)
+         * @see sm.ui.cont.LazyStack.registerWidget
+         */
+        registerWSA : function(widgetId, factory, opts, self) {
+            this.getComponent("right-stack").registerWidget(widgetId, factory, opts, self);
+        },
+
+
+        __createRightStack : function() {
+            var rs = new sm.ui.cont.LazyStack();
+            rs.registerWidget("ncms.wsa.WSAPlaceholder", function() {
+                return new ncms.wsa.WSAPlaceholder()
+            }, null, this);
+            return rs;
         },
 
         __bootstrap : function() {

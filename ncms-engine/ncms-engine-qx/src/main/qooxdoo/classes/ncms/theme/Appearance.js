@@ -15,6 +15,17 @@ qx.Theme.define("ncms.theme.Appearance", {
             }
         },
 
+        /////////////////////////////////////////////////////////////
+        //                   NCMS components
+
+        "ncms-wsa-placeholder" : {
+            style : function(states) {
+                return {
+                    backgroundColor : "#DCDCDC"
+                }
+            }
+        },
+
         //////////////////////////////////////////////////////////////
         //                    SM components
 

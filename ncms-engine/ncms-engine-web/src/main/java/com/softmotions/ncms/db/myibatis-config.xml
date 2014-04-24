@@ -41,6 +41,6 @@
 
     <mappers>
         <mapper resource="com/softmotions/ncms/asm/AsmDAO.xml"/>
-        <mapper resource="com/softmotions/ncms/adm/AsmsRS.xml"/>
+        <mapper resource="com/softmotions/ncms/adm/AsmSelectorRS.xml"/>
     </mappers>
 </configuration>
