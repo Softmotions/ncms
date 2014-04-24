@@ -2,6 +2,8 @@ package com.softmotions.ncms.media.rest;
 
 import com.softmotions.ncms.media.db.MediaRestTest;
 import com.softmotions.ncms.media.model.MediaFolder;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import javax.ws.rs.client.Entity;
@@ -46,7 +48,7 @@ public class FoldersRestTestBase extends MediaRestTest {
 	}
 
 	protected MediaFolder requestAndCheck(MediaFolder folder) {
-		Response response = target(folder).request().get();
+		Response response = getWebTarget("/folder", "/"+folder.getId()).request().get();
 		assertEquals(200, response.getStatus());
 		MediaFolder f = response.readEntity(MediaFolder.class);
 		response.close();
