@@ -54,7 +54,7 @@ public class AsmDAO extends MBDAOSupport {
 
     @Transactional
     public List<Asm> asmSelectAllPlain() {
-        return sess.selectList(toStatementId("selectAllPlainAsms"));
+        return sess.selectList(toStatementId("asmSelectAllPlain"));
     }
 
     @Transactional
