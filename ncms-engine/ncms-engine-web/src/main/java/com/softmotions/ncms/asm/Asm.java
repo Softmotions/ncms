@@ -3,6 +3,11 @@ package com.softmotions.ncms.asm;
 import com.softmotions.commons.cont.AbstractIndexedCollection;
 import com.softmotions.commons.cont.KVOptions;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,20 +22,28 @@ import java.util.Set;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@JsonRootName("asm")
+@XmlAccessorType(XmlAccessType.NONE)
 public class Asm implements Serializable {
 
     public static final String ASM_HANDLER_CLASS_ATTR_NAME = "NCMS__ASM_HANDLER_CLASS";
 
+    @JsonProperty
     Long id;
 
+    @JsonProperty
     String name;
 
+    @JsonProperty
     String type;
 
+    @JsonProperty
     String description;
 
+    @JsonProperty
     AsmCore core;
 
+    @JsonProperty
     String options;
 
     KVOptions parsedOptions;
@@ -161,6 +174,7 @@ public class Asm implements Serializable {
         return (attributes != null) ? attributes.getIndex().get(name) : null;
     }
 
+    @JsonProperty(required = true)
     public Collection<AsmAttribute> getAttributes() {
         return attributes;
     }

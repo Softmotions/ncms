@@ -1,5 +1,7 @@
 /**
- * Available assemblies selector.
+ * Selector of assemblies
+ * with included search text box
+ * and assembly table.
  */
 qx.Class.define("ncms.asm.AsmSelector", {
     extend : qx.ui.core.Widget,

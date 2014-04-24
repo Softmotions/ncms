@@ -1,3 +1,6 @@
+/**
+ * Virtual table of assemblies.
+ */
 qx.Class.define("ncms.asm.AsmTable", {
     extend : qx.ui.table.Table,
 

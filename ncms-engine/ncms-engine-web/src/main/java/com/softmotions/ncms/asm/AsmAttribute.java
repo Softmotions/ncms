@@ -1,5 +1,10 @@
 package com.softmotions.ncms.asm;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 
 /**
@@ -8,18 +13,24 @@ import java.io.Serializable;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@JsonRootName("attribute")
+@XmlAccessorType(XmlAccessType.NONE)
 public class AsmAttribute implements Serializable {
 
     long asmId;
 
+    @JsonProperty
     String name;
 
+    @JsonProperty
     String type;
 
+    @JsonProperty
     String value;
 
     String largeValue;
 
+    @JsonProperty
     String options;
 
     public AsmAttribute() {
@@ -79,6 +90,11 @@ public class AsmAttribute implements Serializable {
 
     public String getEffectiveValue() {
         return (largeValue != null) ? largeValue : value;
+    }
+
+    @JsonProperty
+    public boolean isHasLargeValue() {
+        return (getLargeValue() != null);
     }
 
     /**

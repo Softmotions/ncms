@@ -53,7 +53,7 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public List<Asm> selectAllPlainAsms() {
+    public List<Asm> asmSelectAllPlain() {
         return sess.selectList(toStatementId("selectAllPlainAsms"));
     }
 
@@ -97,17 +97,6 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public int asmInsertOrUpdate(Asm asm) {
-        Number id = sess.selectOne(toStatementId("asmIDByName"), asm.getName());
-        if (id == null) {
-            return asmInsert(asm);
-        } else {
-            asm.setId(id.longValue());
-            return asmUpdate(asm);
-        }
-    }
-
-    @Transactional
     public int asmUpdate(Asm asm) {
         return sess.update(toStatementId("asmUpdate"), asm);
     }
@@ -131,13 +120,13 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public Asm selectAsmByName(String name) {
+    public Asm asmSelectByName(String name) {
         return selectOne("selectAsmByCriteria",
                          "name", name);
     }
 
     @Transactional
-    public Asm selectAsmById(Number id) {
+    public Asm asmSelectById(Number id) {
         return selectOne("selectAsmByCriteria",
                          "id", id);
     }

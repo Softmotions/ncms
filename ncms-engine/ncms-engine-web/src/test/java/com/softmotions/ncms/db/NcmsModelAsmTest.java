@@ -34,7 +34,7 @@ public class NcmsModelAsmTest extends NcmsWebTest {
         asm.setName("foo");
         assertEquals(1, adao.asmInsert(asm));
 
-        List<Asm> asmList = adao.selectAllPlainAsms();
+        List<Asm> asmList = adao.asmSelectAllPlain();
         assertFalse(asmList.isEmpty());
 
         Asm asm2 = asmList.get(0);

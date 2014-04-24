@@ -1,5 +1,10 @@
 package com.softmotions.ncms.asm;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 
 /**
@@ -8,14 +13,20 @@ import java.io.Serializable;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@JsonRootName("core")
+@XmlAccessorType(XmlAccessType.NONE)
 public class AsmCore implements Serializable {
 
+    @JsonProperty
     Long id;
 
+    @JsonProperty
     String location;
 
+    @JsonProperty
     String name;
 
+    @JsonProperty
     String templateEngine;
 
     public AsmCore() {

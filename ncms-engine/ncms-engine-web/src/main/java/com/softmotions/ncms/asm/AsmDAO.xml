@@ -101,7 +101,7 @@
     </insert>
 
 
-    <select id="selectAllPlainAsms" resultType="com.softmotions.ncms.asm.Asm">
+    <select id="asmSelectAllPlain" resultType="com.softmotions.ncms.asm.Asm">
          select * from ASMS order by NAME asc
     </select>
 

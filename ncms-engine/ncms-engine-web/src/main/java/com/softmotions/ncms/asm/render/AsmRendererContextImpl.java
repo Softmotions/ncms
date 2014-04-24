@@ -149,7 +149,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     public AsmRendererContext createSubcontext(String asmname, Writer out) throws AsmResourceNotFoundException {
         AsmDAO adao = injector.getInstance(AsmDAO.class);
-        Asm nasm = adao.selectAsmByName(asmname);
+        Asm nasm = adao.asmSelectByName(asmname);
         if (nasm == null) {
             throw new AsmResourceNotFoundException("asm: '" + asmname + "'");
         }

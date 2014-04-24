@@ -2,6 +2,7 @@ package com.softmotions.ncms.db;
 
 import ninja.lifecycle.Start;
 import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
 
 import com.google.inject.AbstractModule;
@@ -34,11 +35,16 @@ public class DevDBInitializerModule extends AbstractModule {
         public void init() throws Exception {
             log.info("Initializing development database with test data...");
 
-            Asm asm = new Asm("pub.base");
-            adao.asmInsertOrUpdate(asm);
-
-            Asm asm2 = new Asm("pub.main");
-            adao.asmInsertOrUpdate(asm2);
+            Asm asm = adao.asmSelectByName("pub.base");
+            if (asm == null) {
+                asm = new Asm("pub.base");
+                adao.asmInsert(asm);
+            }
+            asm = adao.asmSelectByName("pub.main");
+            if (asm == null) {
+                asm = new Asm("pub.main", new AsmCore("foo/bar", "fobarcore"));
+                adao.asmInsert(asm);
+            }
         }
     }
 }

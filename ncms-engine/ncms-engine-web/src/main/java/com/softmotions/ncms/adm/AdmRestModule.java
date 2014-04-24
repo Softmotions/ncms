@@ -14,5 +14,6 @@ public class AdmRestModule extends AbstractModule {
         bind(WorkspaceRS.class).in(Singleton.class);
         bind(UIResourcesRS.class).in(Singleton.class);
         bind(AsmSelectorRS.class).in(Singleton.class);
+        bind(AsmEditorRS.class).in(Singleton.class);
     }
 }

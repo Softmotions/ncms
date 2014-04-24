@@ -12,6 +12,7 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <setting name="autoMappingBehavior" value="FULL"/>
         <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="proxyFactory" value="JAVASSIST"/>
         <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
 
@@ -42,5 +43,6 @@
     <mappers>
         <mapper resource="com/softmotions/ncms/asm/AsmDAO.xml"/>
         <mapper resource="com/softmotions/ncms/adm/AsmSelectorRS.xml"/>
+        <mapper resource="com/softmotions/ncms/adm/AsmEditorRS.xml"/>
     </mappers>
 </configuration>

@@ -1,3 +1,8 @@
+/**
+ * Left side navigation bar
+ * controls all application assemblies
+ * and assembly editor workspace.
+ */
 qx.Class.define("ncms.asm.NavAssemblies", {
     extend : qx.ui.core.Widget,
 
