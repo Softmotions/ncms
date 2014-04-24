@@ -147,4 +147,10 @@ public class MediaFolder {
 		return getParents().contains(host);
 	}
 
+	public static MediaFolder of(String name, String description) {
+		MediaFolder folder = new MediaFolder(name);
+		folder.setDescription(description);
+		return folder;
+	}
+
 }

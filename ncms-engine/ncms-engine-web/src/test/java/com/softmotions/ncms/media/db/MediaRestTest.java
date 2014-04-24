@@ -13,7 +13,6 @@ public class MediaRestTest extends NcmsWebTest {
 	private String basePath;
 
 	public MediaRestTest(String basePath) {
-
 		this.basePath = basePath;
 	}
 

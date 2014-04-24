@@ -18,9 +18,9 @@ import java.util.Objects;
 
 /*
 + get 	/folders/show
-+ get 	/folders
-+ get 	/folders/id
-+ get	/folders/id/id
+- get 	/folders
+- get 	/folders/id
+- get	/folders/id/id
 */
 @Path("media/folders")
 public class FoldersRestController {
