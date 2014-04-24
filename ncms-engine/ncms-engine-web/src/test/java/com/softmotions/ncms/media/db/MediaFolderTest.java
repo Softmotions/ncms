@@ -1,11 +1,11 @@
-package com.softmotions.ncms.db.media;
+package com.softmotions.ncms.media.db;
 
 import com.avaje.ebean.EbeanServer;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.softmotions.ncms.NcmsWebTest;
+import com.softmotions.ncms.media.MediaTestUtils;
 import com.softmotions.ncms.media.db.MediaDataManager;
-import com.softmotions.ncms.media.db.MediaDbModule;
 import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.MediaFolder;
 import com.softmotions.ncms.media.model.Tag;

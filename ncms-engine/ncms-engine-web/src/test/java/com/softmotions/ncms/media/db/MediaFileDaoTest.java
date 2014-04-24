@@ -1,10 +1,9 @@
-package com.softmotions.ncms.db.media;
+package com.softmotions.ncms.media.db;
 
 import com.google.inject.Inject;
 import com.softmotions.ncms.NcmsWebTest;
 import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.MediaFileDao;
-import org.junit.Test;
 
 import java.util.List;
 
