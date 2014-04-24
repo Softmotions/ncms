@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 /**
  * Created by shu on 4/24/2014.
  */
-public class FolderRestTest extends FoldersRestTestBase {
+public class FolderRestTest extends MediaRestTestBase {
 
 	public FolderRestTest() {
 		super("/folder");
@@ -31,13 +31,13 @@ public class FolderRestTest extends FoldersRestTestBase {
 		assertEquals(200, response.getStatus());
 		response.close();
 
-		requestAndCheckFailed(subFolder);
+		requestAndCheckNotExists(subFolder);
 
 		response = target(root).request().delete();
 		assertEquals(200, response.getStatus());
 		response.close();
 
-		requestAndCheckFailed(root);
+		requestAndCheckNotExists(root);
 	}
 
 	@Test

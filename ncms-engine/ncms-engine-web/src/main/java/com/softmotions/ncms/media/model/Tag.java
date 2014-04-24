@@ -51,7 +51,8 @@ public class Tag {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!Tag.class.isInstance(o)) return false;
+
 		Tag that = (Tag) o;
 		return Objects.equal(this.name, that.name);
 	}
