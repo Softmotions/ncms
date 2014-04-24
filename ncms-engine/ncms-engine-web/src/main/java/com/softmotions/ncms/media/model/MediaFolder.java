@@ -4,10 +4,12 @@ import com.avaje.ebean.annotation.PrivateOwned;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -102,6 +104,7 @@ public class MediaFolder {
 	}
 
 
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
@@ -109,4 +112,38 @@ public class MediaFolder {
 						.add("name", name)
 						.toString();
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		MediaFolder that = (MediaFolder) o;
+
+		return Objects.equal(this.id, that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(id);
+	}
+
+	public Set<MediaFolder> getParents() {
+		MediaFolder folder = this;
+		Set<MediaFolder> parents = Sets.newHashSet();
+		while(folder.getParent() != null) {
+			parents.add(folder.getParent());
+			folder = folder.getParent();
+		}
+		return parents;
+	}
+
+	public boolean isParentOf(MediaFolder host) {
+		return host.getParents().contains(this);
+	}
+
+	public boolean isParent(MediaFolder host) {
+		return getParents().contains(host);
+	}
+
 }

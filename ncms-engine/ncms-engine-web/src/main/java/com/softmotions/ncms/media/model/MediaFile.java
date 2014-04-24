@@ -107,13 +107,6 @@ public class MediaFile {
 
 
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!MediaFile.class.isAssignableFrom(obj.getClass())) return false;
-		MediaFile mf = MediaFile.class.cast(obj);
-		if (mf == null) return false;
-		return Objects.equals(name, mf.name) && Objects.equals(description, mf.description) && Objects.equals(filePath, mf.filePath);
-	}
 
 	public MediaFolder getMediaFolder() {
 		return mediaFolder;
@@ -121,5 +114,20 @@ public class MediaFile {
 
 	public void setMediaFolder(MediaFolder mediaFolder) {
 		this.mediaFolder = mediaFolder;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		MediaFile that = (MediaFile) o;
+
+		return com.google.common.base.Objects.equal(this.id, that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return com.google.common.base.Objects.hashCode(id);
 	}
 }
