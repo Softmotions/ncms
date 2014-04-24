@@ -14,10 +14,10 @@ import javax.ws.rs.core.Response;
  */
 
 /*
-- get 	  /file/id
-- put	    /file/id
-- delete	/file/id
-- post 	  /file/id
++ get 	  /file/id
++ put	    /file/id
++ delete	/file/id
++ post 	  /file/id
 - put	    /file/id/id
 */
 
@@ -41,8 +41,9 @@ public class MediaFileRS {
 	@GET
 	@Path("/{id}")
 	@Produces("application/json")
-	public Response getFole(@PathParam("id") Long id) {
+	public Response getFile(@PathParam("id") Long id) {
 		MediaFile file = ebean.find(MediaFile.class, id);
+		if(file == null) return response(404, "File not found: " + id);
 		return ok(file);
 	}
 
@@ -63,7 +64,8 @@ public class MediaFileRS {
 	@Path("/{id}")
 	public Response deleteFile(@PathParam("id") Long id) {
 		MediaFile f = ebean.find(MediaFile.class, id);
-		if(f != null) ebean.delete(f);
+		if(f == null) return response(500, "File not found: " + id);
+		ebean.delete(f);
 		return ok("deleted: " + id);
 	}
 
@@ -79,9 +81,9 @@ public class MediaFileRS {
 		return ok(file);
 	}
 
-	@PUT
+	@GET
 	@Path("/{id}/{folderId}")
-	public Response getSubSolders(@PathParam("id") Long id, @PathParam("folderId") Long folderId) {
+	public Response moveToFolder(@PathParam("id") Long id, @PathParam("folderId") Long folderId) {
 		MediaFile f = ebean.find(MediaFile.class, id);
 		if(f == null) return response(500, "File not found: " + id);
 		MediaFolder folder = ebean.find(MediaFolder.class, folderId);

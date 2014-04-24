@@ -41,20 +41,20 @@ public class MediaFoldersRS {
 	@GET
 	@Path("/")
 	@Produces("application/json")
-	public List<MediaFolder> getRootFolders() {
+	public Response getRootFolders() {
 		List<MediaFolder> folders = manager.getRootFolders();
-		return folders;
+		return Response.status(200).entity(folders).build();
 	}
 
 	@GET
 	@Path("/{id}")
 	@Produces("application/json")
-	public List<MediaFolder> getSubSolders(@PathParam("id") Long id) {
+	public Response getSubSolders(@PathParam("id") Long id) {
 		MediaFolder folder = ebean.find(MediaFolder.class, id);
 		if(folder == null) {
-			throw new RuntimeException("Folder not found: " + id);
+			return Response.status(500).entity("Folder not found: " + id).build();
 		}
-		return manager.getSubFolders(folder);
+		return Response.status(200).entity(manager.getSubFolders(folder)).build();
 	}
 
 	@GET

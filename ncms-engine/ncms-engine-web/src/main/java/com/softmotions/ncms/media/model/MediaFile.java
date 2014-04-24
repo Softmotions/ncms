@@ -119,7 +119,7 @@ public class MediaFile {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!MediaFile.class.isInstance(o)) return false;
 
 		MediaFile that = (MediaFile) o;
 
@@ -129,5 +129,11 @@ public class MediaFile {
 	@Override
 	public int hashCode() {
 		return com.google.common.base.Objects.hashCode(id);
+	}
+
+	public static MediaFile of(String name, String description) {
+		MediaFile file = new MediaFile(name);
+		file.setDescription(description);
+		return file;
 	}
 }

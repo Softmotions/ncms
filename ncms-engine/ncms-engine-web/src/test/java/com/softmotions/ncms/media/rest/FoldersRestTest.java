@@ -1,25 +1,16 @@
 package com.softmotions.ncms.media.rest;
 
-import com.softmotions.ncms.media.db.MediaRestTest;
 import com.softmotions.ncms.media.model.MediaFolder;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
-
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * Created by shu on 4/24/2014.
  */
-public class FoldersRestTest extends FoldersRestTestBase {
+public class FoldersRestTest extends MediaRestTestBase {
 
 	public FoldersRestTest() {
 		super("/folders");
@@ -52,7 +43,7 @@ public class FoldersRestTest extends FoldersRestTestBase {
 		Response response = getWebTarget("/folder", "/" + sub12.getId()).request().delete();
 		assertEquals(200, response.getStatus());
 		response.close();
-		requestAndCheckFailed(sub12);
+		requestAndCheckNotExists(sub12);
 
 		listFoldersAndCheck(root1, 1);
 
@@ -67,12 +58,12 @@ public class FoldersRestTest extends FoldersRestTestBase {
 		assertEquals(200, response.getStatus());
 		response.close();
 
-		requestAndCheckFailed(root2);
-		requestAndCheckFailed(sub11);
-		requestAndCheckFailed(sub12);
-		requestAndCheckFailed(sub21);
-		requestAndCheckFailed(sub22);
-		requestAndCheckFailed(sub23);
+		requestAndCheckNotExists(root2);
+		requestAndCheckNotExists(sub11);
+		requestAndCheckNotExists(sub12);
+		requestAndCheckNotExists(sub21);
+		requestAndCheckNotExists(sub22);
+		requestAndCheckNotExists(sub23);
 
 		listFoldersAndCheck(1);
 

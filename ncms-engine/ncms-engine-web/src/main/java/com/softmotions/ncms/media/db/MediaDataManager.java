@@ -1,13 +1,16 @@
 package com.softmotions.ncms.media.db;
 
 import com.avaje.ebean.EbeanServer;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.MediaFolder;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +28,10 @@ public class MediaDataManager {
 		return childs;
 	}
 
+	public List<MediaFile> getFiles(MediaFolder parent) {
+		return ebean.find(MediaFile.class).where().eq("media_folder_id", parent.getId()).findList();
+	}
+
 	public List<MediaFolder> getRootFolders() {
 		return getSubFolders(null);
 	}
@@ -37,9 +44,11 @@ public class MediaDataManager {
 
 	public void show(PrintWriter pw, MediaFolder folder, int lev) {
 		List<MediaFolder> childs = getSubFolders(folder);
-		if (childs.isEmpty()) {
-			if (folder != null)
+		List<MediaFile> files = folder == null? new ArrayList<MediaFile>() : getFiles(folder);
+		if (childs.isEmpty() && files.isEmpty()) {
+			if (folder != null) {
 				pw.println(ident(lev) + "Folder: " + folder.getName() + "[" + folder.getId() + "] {}");
+			}
 		} else {
 			int sublev = lev;
 			if (folder != null) {
@@ -48,6 +57,9 @@ public class MediaDataManager {
 			}
 			for (MediaFolder f : childs) {
 				show(pw, f, sublev);
+			}
+			for(MediaFile file: files) {
+				pw.println(ident(lev+1) + "- " + file.getName() + "[" + file.getId() + "] {");
 			}
 			if (folder != null) pw.println(ident(lev) + "}");
 		}
