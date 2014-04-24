@@ -49,6 +49,33 @@ public class FoldersRestTest extends FoldersRestTestBase {
 		listFoldersAndCheck(root2, 3);
 		listFoldersAndCheck(sub11, 0);
 
+		Response response = getWebTarget("/folder", "/" + sub12.getId()).request().delete();
+		assertEquals(200, response.getStatus());
+		response.close();
+		requestAndCheckFailed(sub12);
+
+		listFoldersAndCheck(root1, 1);
+
+		response = getWebTarget("/" + sub11.getId() + "/" + root2.getId()).request().get();
+		assertEquals(200, response.getStatus());
+		response.close();
+
+		listFoldersAndCheck(root1, 0);
+		listFoldersAndCheck(root2, 4);
+
+		response = getWebTarget("/folder", "/" + root2.getId()).request().delete();
+		assertEquals(200, response.getStatus());
+		response.close();
+
+		requestAndCheckFailed(root2);
+		requestAndCheckFailed(sub11);
+		requestAndCheckFailed(sub12);
+		requestAndCheckFailed(sub21);
+		requestAndCheckFailed(sub22);
+		requestAndCheckFailed(sub23);
+
+		listFoldersAndCheck(1);
+
 	}
 
 }

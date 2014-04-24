@@ -31,17 +31,13 @@ public class FolderRestTest extends FoldersRestTestBase {
 		assertEquals(200, response.getStatus());
 		response.close();
 
-		response = target(subFolder).request().get();
-		assertEquals(404, response.getStatus());
-		response.close();
+		requestAndCheckFailed(subFolder);
 
 		response = target(root).request().delete();
 		assertEquals(200, response.getStatus());
 		response.close();
 
-		response = target(root).request().get();
-		assertEquals(404, response.getStatus());
-		response.close();
+		requestAndCheckFailed(root);
 	}
 
 	@Test

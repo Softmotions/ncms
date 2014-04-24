@@ -59,6 +59,11 @@ public class FoldersRestTestBase extends MediaRestTest {
 		return f;
 	}
 
+	protected void requestAndCheckFailed(MediaFolder folder) {
+		Response response = getWebTarget("/folder", "/"+folder.getId()).request().get();
+		assertEquals(404, response.getStatus());
+	}
+
 	protected List<MediaFolder> listFoldersAndCheck(int expectedSize) {
 		Response response = getWebTarget("/").request().get();
 		assertEquals(200, response.getStatus());
