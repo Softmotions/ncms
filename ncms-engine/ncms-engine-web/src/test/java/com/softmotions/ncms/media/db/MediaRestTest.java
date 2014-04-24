@@ -17,10 +17,14 @@ public class MediaRestTest extends NcmsWebTest {
 		this.basePath = basePath;
 	}
 
-	protected ResteasyWebTarget getWebTarget(String path) {
+	protected ResteasyWebTarget getWebTarget(String basePath, String path) {
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		ResteasyWebTarget target = client.target(getServerAddress() + "/ncms/rs/media" + basePath + path);
 		return target;
+	}
+
+	protected ResteasyWebTarget getWebTarget(String path) {
+		return getWebTarget(basePath, path);
 	}
 
 }

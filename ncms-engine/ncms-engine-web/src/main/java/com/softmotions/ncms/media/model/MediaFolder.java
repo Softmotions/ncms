@@ -128,6 +128,7 @@ public class MediaFolder {
 		return Objects.hashCode(id);
 	}
 
+	@JsonIgnore
 	public Set<MediaFolder> getParents() {
 		MediaFolder folder = this;
 		Set<MediaFolder> parents = Sets.newHashSet();

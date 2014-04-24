@@ -24,14 +24,94 @@ public class FolderRestTest extends MediaRestTest {
 		super("/folder");
 	}
 
+	private ResteasyWebTarget target(MediaFolder subFolder) {
+		return getWebTarget("/" + subFolder.getId());
+	}
+
+	private Entity<MediaFolder> entity(MediaFolder folder) {
+		return Entity.entity(folder, "application/json");
+	}
+
 	@Test
-	public void testCreate() throws Exception {
+	public void testCreateDelete() throws Exception {
 		MediaFolder folder = new MediaFolder("test-folder");
-		ResteasyWebTarget target = getWebTarget("/");
 		folder.setDescription("test-desc");
-		Response response = target.request().post((Entity.entity(folder, "application/json")));
-		assertEquals(201, response.getStatus());
+
+		assertEquals(500, getWebTarget("/123").request().delete().getStatus());
+
+		Response response = getWebTarget("/").request().post(entity(folder));
+		assertEquals(200, response.getStatus());
+		MediaFolder f = response.readEntity(MediaFolder.class);
+		assertEquals(folder.getName(), f.getName());
+		assertEquals(folder.getDescription(), f.getDescription());
 		response.close();
+
+		response = target(f).request().get();
+		assertEquals(200, response.getStatus());
+		f = response.readEntity(MediaFolder.class);
+		assertEquals(folder.getName(), f.getName());
+		assertEquals(folder.getDescription(), f.getDescription());
+		response.close();
+
+		response = target(f).request().post(entity(folder));
+		assertEquals(200, response.getStatus());
+		MediaFolder subFolder = response.readEntity(MediaFolder.class);
+		assertEquals(folder.getName(), subFolder.getName());
+		assertEquals(folder.getDescription(), subFolder.getDescription());
+		response.close();
+
+		response = target(subFolder).request().delete();
+		assertEquals(200, response.getStatus());
+		response.close();
+
+		response = target(subFolder).request().get();
+		assertEquals(404, response.getStatus());
+		response.close();
+
+		response = target(f).request().delete();
+		assertEquals(200, response.getStatus());
+		response.close();
+
+		response = target(f).request().get();
+		assertEquals(404, response.getStatus());
+		response.close();
+	}
+
+	@Test
+	public void testUpdate() throws Exception {
+		MediaFolder folder = new MediaFolder("test-folder");
+		folder.setDescription("test-desc");
+
+		Response response = getWebTarget("/").request().post((entity(folder)));
+		assertEquals(200, response.getStatus());
+		MediaFolder created = response.readEntity(MediaFolder.class);
+		assertEquals(folder.getName(), created.getName());
+		assertEquals(folder.getDescription(), created.getDescription());
+		response.close();
+
+		response = target(created).request().get();
+		assertEquals(200, response.getStatus());
+		MediaFolder f1 = response.readEntity(MediaFolder.class);
+		assertEquals(folder.getName(), f1.getName());
+		assertEquals(folder.getDescription(), f1.getDescription());
+		response.close();
+
+		MediaFolder folder2 = new MediaFolder("test-folder2");
+		folder2.setDescription("test-desc2");
+		response = target(created).request().put(entity(folder2));
+		MediaFolder f2 = response.readEntity(MediaFolder.class);
+		assertEquals(200, response.getStatus());
+		assertEquals(folder2.getName(), f2.getName());
+		assertEquals(folder2.getDescription(), f2.getDescription());
+		response.close();
+
+		response = target(created).request().get();
+		assertEquals(200, response.getStatus());
+		MediaFolder f3 = response.readEntity(MediaFolder.class);
+		assertEquals(folder2.getName(), f3.getName());
+		assertEquals(folder2.getDescription(), f3.getDescription());
+		response.close();
+
 	}
 
 }
