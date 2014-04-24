@@ -34,6 +34,7 @@ public class FolderRestController {
 	@Path("/{id}")
 	@Produces("application/json")
 	public MediaFolder getFolder(@PathParam("id") Long id) {
+
 		MediaFolder folder = ebean.find(MediaFolder.class, id);
 		return folder;
 	}
