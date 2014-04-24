@@ -226,7 +226,7 @@ public class Asm implements Serializable {
         return attrs;
     }
 
-    public static class AttrsList extends AbstractIndexedCollection<String, AsmAttribute> {
+    public static class AttrsList extends AbstractIndexedCollection<String, AsmAttribute> implements Serializable {
 
         protected String getElementKey(AsmAttribute el) {
             return el.getName();
