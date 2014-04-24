@@ -35,10 +35,10 @@ public class DevDBInitializerModule extends AbstractModule {
             log.info("Initializing development database with test data...");
 
             Asm asm = new Asm("pub.base");
-            log.info("!=" + adao.asmInsertOrUpdate(asm));
+            adao.asmInsertOrUpdate(asm);
 
             Asm asm2 = new Asm("pub.main");
-            log.info("!=" + adao.asmInsertOrUpdate(asm2));
+            adao.asmInsertOrUpdate(asm2);
         }
     }
 }
