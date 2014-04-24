@@ -97,6 +97,17 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
+    public int asmInsertOrUpdate(Asm asm) {
+        Number id = sess.selectOne(toStatementId("asmIDByName"), asm.getName());
+        if (id == null) {
+            return asmInsert(asm);
+        } else {
+            asm.setId(id.longValue());
+            return asmUpdate(asm);
+        }
+    }
+
+    @Transactional
     public int asmUpdate(Asm asm) {
         return sess.update(toStatementId("asmUpdate"), asm);
     }

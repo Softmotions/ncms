@@ -3,9 +3,7 @@ package com.softmotions.ncms.adm;
 import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
 import com.softmotions.commons.weboot.mb.MBDAOSupport;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -32,24 +30,17 @@ public class AsmsRS extends MBDAOSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmsRS.class);
 
-    final ObjectMapper mapper;
-
-
     @Inject
     public AsmsRS(ObjectMapper mapper, SqlSession sql) {
         super(AsmsRS.class.getName(), sql);
-        this.mapper = mapper;
     }
 
     @GET
     @Path("select")
     @Produces("application/json")
     @Transactional
-    public JsonNode select(@Context HttpServletRequest req) {
-        ArrayNode asmList = mapper.createArrayNode();
-        List<Map> results = selectByCriteria(createQ(req).withStatement("select"));
-        //todo
-        return asmList;
+    public List<Map> select(@Context HttpServletRequest req) {
+        return selectByCriteria(createQ(req).withStatement("select"));
     }
 
     @GET
@@ -79,11 +70,11 @@ public class AsmsRS extends MBDAOSupport {
         }
         val = req.getParameter("sortAsc");
         if (!StringUtils.isBlank(val)) {
-            cq.orderBy(val).asc();
+            cq.orderBy("asm." + val).asc();
         }
         val = req.getParameter("sortDesc");
         if (!StringUtils.isBlank(val)) {
-            cq.orderBy(val).asc();
+            cq.orderBy("asm." + val).desc();
         }
         return cq;
     }

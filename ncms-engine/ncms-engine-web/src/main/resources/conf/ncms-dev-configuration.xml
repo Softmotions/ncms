@@ -51,6 +51,7 @@
     </security>
 
     <modules>
+        <module class="com.softmotions.ncms.db.DevDBInitializerModule"/>
         <module class="com.softmotions.ncms.security.NcmsSecurityModule"/>
         <module class="com.softmotions.ncms.asm.AsmGuiceModule"/>
         <module class="com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule"/>
