@@ -34,10 +34,10 @@ public class DevDBInitializerModule extends AbstractModule {
         public void init() throws Exception {
             log.info("Initializing development database with test data...");
 
-            Asm asm = new Asm("public.base");
+            Asm asm = new Asm("pub.base");
             log.info("!=" + adao.asmInsertOrUpdate(asm));
 
-            Asm asm2 = new Asm("public.main");
+            Asm asm2 = new Asm("pub.main");
             log.info("!=" + adao.asmInsertOrUpdate(asm2));
         }
     }
