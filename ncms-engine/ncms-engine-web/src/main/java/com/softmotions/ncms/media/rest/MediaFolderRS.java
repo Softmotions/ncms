@@ -23,21 +23,7 @@ import java.util.List;
 */
 
 @Path("media/folder")
-public class MediaFolderRS {
-
-	@Inject
-	MediaDataManager manager;
-
-	@Inject
-	EbeanServer ebean;
-
-	protected Response response(int code, Object entity) {
-		return Response.status(code).entity(entity).build();
-	}
-
-	protected Response ok(Object entity) {
-		return response(200, entity);
-	}
+public class MediaFolderRS extends MediaRestBase {
 
 	@GET
 	@Path("/{id}")

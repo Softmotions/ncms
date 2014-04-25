@@ -23,13 +23,7 @@ import java.util.Objects;
 + get	/folders/id/id
 */
 @Path("media/folders")
-public class MediaFoldersRS {
-
-	@Inject
-	MediaDataManager manager;
-
-	@Inject
-	EbeanServer ebean;
+public class MediaFoldersRS extends MediaRestBase {
 
 	@GET
 	@Path("/show")
@@ -43,7 +37,7 @@ public class MediaFoldersRS {
 	@Produces("application/json")
 	public Response getRootFolders() {
 		List<MediaFolder> folders = manager.getRootFolders();
-		return Response.status(200).entity(folders).build();
+		return ok(folders);
 	}
 
 	@GET
@@ -52,9 +46,9 @@ public class MediaFoldersRS {
 	public Response getSubSolders(@PathParam("id") Long id) {
 		MediaFolder folder = ebean.find(MediaFolder.class, id);
 		if(folder == null) {
-			return Response.status(500).entity("Folder not found: " + id).build();
+			return response(500, "Folder not found: " + id);
 		}
-		return Response.status(200).entity(manager.getSubFolders(folder)).build();
+		return ok(manager.getSubFolders(folder));
 	}
 
 	@GET
@@ -62,21 +56,21 @@ public class MediaFoldersRS {
 	public Response moveFolder(@PathParam("id") Long id, @PathParam("hostId") Long hostId) {
 		MediaFolder folder = ebean.find(MediaFolder.class, id);
 		if(folder == null) {
-			return Response.status(500).entity("Folder not found: " + id).build();
+			return response(500, "Folder not found: " + id);
 		}
 		MediaFolder host = ebean.find(MediaFolder.class, hostId);
 		if(folder == null) {
-			return Response.status(500).entity("Folder not found: " + hostId).build();
+			return response(500, "Folder not found: " + hostId);
 		}
 		if(Objects.equals(folder,host)) {
-			return Response.status(500).entity("Couldn't move to itself: " + hostId).build();
+			return response(500, "Couldn't move to itself: " + hostId);
 		}
 		if(folder.isParentOf(host)) {
-			return Response.status(500).entity("Couldn't move to own subtree: " + hostId).build();
+			return response(500, "Couldn't move to own subtree: " + hostId);
 		}
 		folder.setParent(host);
 		ebean.update(folder);
-		return Response.status(200).entity("moved: " + id).build();
+		return ok("moved: " + id);
 	}
 
 }

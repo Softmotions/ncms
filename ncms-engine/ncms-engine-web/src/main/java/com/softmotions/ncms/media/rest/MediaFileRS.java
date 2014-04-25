@@ -22,21 +22,7 @@ import javax.ws.rs.core.Response;
 */
 
 @Path("media/file")
-public class MediaFileRS {
-
-	@Inject
-	MediaDataManager manager;
-
-	@Inject
-	EbeanServer ebean;
-
-	protected Response response(int code, Object entity) {
-		return Response.status(code).entity(entity).build();
-	}
-
-	protected Response ok(Object entity) {
-		return response(200, entity);
-	}
+public class MediaFileRS extends MediaRestBase {
 
 	@GET
 	@Path("/{id}")
