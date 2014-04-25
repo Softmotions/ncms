@@ -20,8 +20,8 @@ import java.util.List;
 
  + get    /tag/file/id/id
  + get    /tag/folder/id/id
-   delete /tag/file/id/id
-   delete /tag/folder/id/id
+ + delete /tag/file/id/id
+ + delete /tag/folder/id/id
 
 */
 
