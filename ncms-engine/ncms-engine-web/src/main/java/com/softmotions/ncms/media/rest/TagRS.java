@@ -72,7 +72,7 @@ public class TagRS extends MediaRestBase {
 		if(tag == null) return response(500, "Tag not found: " + tagId);
 		if(folder == null) return response(500, "Folder not found: " + folderId);
 		if(folder.getTags().contains(tag)) {
-			return ok("already tagged with " + tag.getName());
+			return response(500, "Folder already tagged with " + tag.getName());
 		} else {
 			folder.getTags().add(tag);
 			ebean.update(folder);
@@ -87,9 +87,13 @@ public class TagRS extends MediaRestBase {
 		MediaFile file = ebean.find(MediaFile.class, fileId);
 		if(tag == null) return response(500, "Tag not found: " + tagId);
 		if(file == null) return response(500, "File not found: " + fileId);
-		file.getTags().add(tag);
-		ebean.update(file);
-		return ok("File tagged with " + tag.getName());
+		if(file.getTags().contains(tag)) {
+			return response(500, "File already tagged with " + tag.getName());
+		} else {
+			file.getTags().add(tag);
+			ebean.update(file);
+			return ok("File tagged with " + tag.getName());
+		}
 	}
 
 	@DELETE

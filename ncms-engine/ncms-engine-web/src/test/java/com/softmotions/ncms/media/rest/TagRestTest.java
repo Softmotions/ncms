@@ -52,6 +52,9 @@ public class TagRestTest extends MediaRestTestBase {
 		Response response = getWebTarget("/folder/" + folder.getId() + "/" + tag.getId()).request().get();
 		assertEquals(200, response.getStatus());
 
+		response = getWebTarget("/folder/" + folder.getId() + "/" + tag.getId()).request().get();
+		assertEquals(500, response.getStatus());
+
 		MediaFolder folder1 = requestAndCheck(folder);
 		assertEquals(1, folder1.getTags().size());
 		assertTrue(folder1.hasTag(tag));
@@ -75,8 +78,12 @@ public class TagRestTest extends MediaRestTestBase {
 
 		MediaFolder root = createAndCheck(MediaFolder.of("root", "root-desc"));
 		MediaFile file = createAndCheck(root, MediaFile.of("f1", "f1d"));
+
 		Response response = getWebTarget("/file/" + file.getId() + "/" + tag.getId()).request().get();
 		assertEquals(200, response.getStatus());
+
+		response = getWebTarget("/file/" + file.getId() + "/" + tag.getId()).request().get();
+		assertEquals(500, response.getStatus());
 
 		MediaFile file1 = requestAndCheck(file);
 		assertEquals(1, file1.getTags().size());
