@@ -5,6 +5,8 @@
 
 <mapper namespace="com.softmotions.ncms.asm.AsmDAO">
 
+    <!--<cache type="com.softmotions.ncms.db.MBDebugCache"/>-->
+
     <insert id="coreInsert" parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id" useGeneratedKeys="true">
         insert into ASM_CORES
@@ -67,7 +69,8 @@
     <select id="selectAsmByCriteria"
             resultType="com.softmotions.ncms.asm.Asm"
             parameterType="java.util.Map"
-            resultMap="asmFullRM">
+            resultMap="asmFullRM"
+            useCache="true">
         select asm.*,
         attr.ASM_ID as ATTR_ASM_ID,
         attr.NAME as ATTR_NAME,

@@ -25,6 +25,7 @@
                 <property name="url" value="${JDBC.url}"/>
                 <property name="username" value="${JDBC.username}"/>
                 <property name="password" value="${JDBC.password}"/>
+                <property name="defaultAutoCommit" value="false"/>
             </dataSource>
         </environment>
 
@@ -36,6 +37,7 @@
                 <property name="url" value="${JDBC.url}"/>
                 <property name="username" value="${JDBC.username}"/>
                 <property name="password" value="${JDBC.password}"/>
+                <property name="defaultAutoCommit" value="false"/>
             </dataSource>
         </environment>
     </environments>

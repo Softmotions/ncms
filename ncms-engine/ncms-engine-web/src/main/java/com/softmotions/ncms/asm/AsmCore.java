@@ -82,8 +82,7 @@ public class AsmCore implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AsmCore asmCore = (AsmCore) o;
-        if (!location.equals(asmCore.location)) return false;
-        return true;
+        return location.equals(asmCore.location);
     }
 
     public int hashCode() {
