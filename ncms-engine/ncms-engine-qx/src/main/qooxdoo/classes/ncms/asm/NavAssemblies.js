@@ -24,17 +24,23 @@ qx.Class.define("ncms.asm.NavAssemblies", {
         this._add(this.__selector);
 
         //Register assembly instance editor
+        var eclazz = ncms.asm.NavAssemblies.ASM_EDITOR_CLAZZ;
         var app = ncms.Application.INSTANCE;
-        app.registerWSA(ncms.asm.NavAssemblies.ASM_EDITOR_CLAZZ, function() {
+        app.registerWSA(eclazz, function() {
             return new ncms.asm.AsmEditor();
         }, null, this);
 
         this.addListener("disappear", function() {
             //Navigation side is inactive so hide assembly editor pane if it not done already
-            if (app.getActiveWSAID() == ncms.asm.NavAssemblies.ASM_EDITOR_CLAZZ) {
+            if (app.getActiveWSAID() == eclazz) {
                 app.showDefaultWSA();
             }
-        });
+        }, this);
+        this.addListener("appear", function() {
+            if (app.getActiveWSAID() != eclazz && this.__selector.getSelectedAsm() != null) {
+                app.showWSA(eclazz);
+            }
+        }, this);
     },
 
     members : {
@@ -44,12 +50,13 @@ qx.Class.define("ncms.asm.NavAssemblies", {
         __asmSelected : function(ev) {
             var data = ev.getData();
             var app = ncms.Application.INSTANCE;
+            var eclazz = ncms.asm.NavAssemblies.ASM_EDITOR_CLAZZ;
             if (data == null) {
                 app.showDefaultWSA();
                 return;
             }
-            qx.log.Logger.info("__asmSelected=" + JSON.stringify(data));
-            app.showWSA(ncms.asm.NavAssemblies.ASM_EDITOR_CLAZZ);
+            app.getWSA(eclazz).setAsmId(data["id"]);
+            app.showWSA(eclazz);
         }
     },
 

@@ -6,6 +6,8 @@ import com.softmotions.commons.cont.KVOptions;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
@@ -22,6 +24,7 @@ import java.util.Set;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@SuppressWarnings("unchecked")
 @JsonRootName("asm")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Asm implements Serializable {
@@ -134,6 +137,7 @@ public class Asm implements Serializable {
         this.core = core;
     }
 
+    @JsonProperty()
     public AsmCore getEffectiveCore() {
         AsmCore c = getCore();
         if (c != null || getParents() == null) {
@@ -156,6 +160,20 @@ public class Asm implements Serializable {
         this.parents = parents;
     }
 
+    @JsonProperty()
+    public String[] getParentRefs() {
+        List<Asm> plist = getParents();
+        if (plist == null || plist.isEmpty()) {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+        String[] prefs = new String[plist.size()];
+        for (int i = 0; i < prefs.length; ++i) {
+            Asm p = parents.get(i);
+            prefs[i] = p.getId() + ":" + p.getName();
+        }
+        return prefs;
+    }
+
     public AsmAttribute getEffectiveAttribute(String name) {
         AsmAttribute attr = getAttribute(name);
         if (attr != null || getParents() == null) {
@@ -171,23 +189,26 @@ public class Asm implements Serializable {
     }
 
     public AsmAttribute getAttribute(String name) {
-        return (attributes != null) ? attributes.getIndex().get(name) : null;
+        return (getAttributes() != null) ? attributes.getIndex().get(name) : null;
     }
 
-    @JsonProperty(required = true)
     public Collection<AsmAttribute> getAttributes() {
         return attributes;
     }
 
+    public void setAttributes(AttrsList attributes) {
+        this.attributes = attributes;
+    }
+
     public void addAttribute(AsmAttribute attr) {
-        if (attributes == null) {
+        if (getAttributes() == null) {
             attributes = new AttrsList();
         }
         attributes.add(attr);
     }
 
     public void rmAttribute(String name) {
-        if (attributes == null || attributes.isEmpty()) {
+        if (getAttributes() == null || attributes.isEmpty()) {
             return;
         }
         AsmAttribute attr = attributes.getIndex().get(name);
@@ -196,8 +217,17 @@ public class Asm implements Serializable {
         }
     }
 
+    public Collection<String> getAttributeNames() {
+        List<String> anames = new ArrayList<>(getAttributes().size());
+        for (final AsmAttribute a : attributes) {
+            anames.add(a.getName());
+        }
+        return anames;
+    }
+
+
     public Collection<String> getEffectiveAttributeNames() {
-        final Set<String> anames = new HashSet<>();
+        final Set<String> anames = new HashSet<>(getAttributes().size() * 2);
         if (attributes != null) {
             for (final AsmAttribute a : attributes) {
                 anames.add(a.getName());
@@ -211,9 +241,10 @@ public class Asm implements Serializable {
         return anames;
     }
 
+    @JsonProperty(required = true)
     public Collection<AsmAttribute> getEffectiveAttributes() {
         final Set<AsmAttribute> attrs = new HashSet<>();
-        if (attributes != null) {
+        if (getAttributes() != null) {
             for (final AsmAttribute a : attributes) {
                 attrs.add(a);
             }

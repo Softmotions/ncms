@@ -18,16 +18,79 @@ qx.Theme.define("ncms.theme.Appearance", {
         /////////////////////////////////////////////////////////////
         //                   NCMS components
 
+
+        //empty placeholder on workspace pane
         "ncms-wsa-placeholder" : {
             style : function(states) {
                 return {
-                    backgroundColor : "#DCDCDC"
+                    backgroundColor : "#dcdcdc"
+                }
+            }
+        },
+
+        //form on workspace pane
+        "ncms-wsa-form" : {
+            style : function(states) {
+                return {
+                    padding : [10, 50, 10, 10],
+                    maxWidth : 500
                 }
             }
         },
 
         //////////////////////////////////////////////////////////////
         //                    SM components
+
+        "toolbar-table" : {
+            style : function(states) {
+                return {
+
+                }
+            }
+        },
+
+        "toolbar-table/toolbar" : {
+            include : "toolbar",
+            alias : "toolbar",
+            style : function(states) {
+                return {
+                    padding : 0,
+                    margin : 0
+                    //backgroundColor : "#dcdcdc"
+                }
+            }
+        },
+
+        "toolbar-table/part" : {
+            style : function(states) {
+                return {
+                    padding : 0,
+                    margin : 0
+                }
+            }
+        },
+
+
+        "sm-bt-field" : {
+        },
+
+        "sm-bt-field/button" : {
+            include : "button",
+            alias : "button",
+            style : function(states) {
+                return {
+                }
+            }
+        },
+
+        "sm-bt-field/text" : {
+            include : "textfield",
+            alias : "textfield",
+            style : function(states) {
+                return {
+                }
+            }
+        },
 
         "sm-search-field" : {
             style : function(states) {

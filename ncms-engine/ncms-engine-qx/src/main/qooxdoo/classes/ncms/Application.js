@@ -118,6 +118,7 @@ qx.Class.define("ncms.Application", {
         "workspaceActivated" : "qx.event.type.Data"
     },
 
+
     members : {
 
         /**
@@ -160,7 +161,6 @@ qx.Class.define("ncms.Application", {
 
             //Right nav side
             var rightStack = this.__createRightStack();
-            rightStack.setBackgroundColor("red");
             hsp.add(rightStack, 1);
 
             this.registerComponent("toolbar", toolbar);
@@ -226,7 +226,7 @@ qx.Class.define("ncms.Application", {
 
         /**
          * WSA abbrev means: workspace area (big right side zone)
-         * @param widgetId
+         * @param widgetId {String}
          */
         showWSA : function(widgetId) {
             this.getComponent("right-stack").showWidget(widgetId);
@@ -234,7 +234,7 @@ qx.Class.define("ncms.Application", {
 
         /**
          * WSA abbrev means: workspace area (big right side zone)
-         * @param widgetId
+         * @param widgetId {String}
          * @returns {Widget|null|*}
          */
         getWSA : function(widgetId) {
@@ -256,7 +256,6 @@ qx.Class.define("ncms.Application", {
         registerWSA : function(widgetId, factory, opts, self) {
             this.getComponent("right-stack").registerWidget(widgetId, factory, opts, self);
         },
-
 
         __createRightStack : function() {
             var rs = new sm.ui.cont.LazyStack();

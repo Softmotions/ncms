@@ -17,6 +17,7 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.NONE)
 public class AsmAttribute implements Serializable {
 
+    @JsonProperty
     long asmId;
 
     @JsonProperty

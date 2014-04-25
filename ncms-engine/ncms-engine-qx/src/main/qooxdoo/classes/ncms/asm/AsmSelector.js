@@ -113,7 +113,6 @@ qx.Class.define("ncms.asm.AsmSelector", {
             this.__table.resetSelection();
             var val = this.__sf.getValue();
             var vspec = (val != null && val != "" ? {stext : val} : {});
-            qx.log.Logger.info("Search vspec: " + JSON.stringify(vspec));
             this.setViewSpec(this.__createViewSpec(vspec));
         }
     },

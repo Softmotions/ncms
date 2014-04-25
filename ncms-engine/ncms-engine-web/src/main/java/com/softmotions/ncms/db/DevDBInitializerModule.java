@@ -2,6 +2,7 @@ package com.softmotions.ncms.db;
 
 import ninja.lifecycle.Start;
 import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
 
@@ -38,12 +39,22 @@ public class DevDBInitializerModule extends AbstractModule {
             Asm asm = adao.asmSelectByName("pub.base");
             if (asm == null) {
                 asm = new Asm("pub.base");
+                asm.addAttribute(new AsmAttribute("title", "string", "Hello world"));
+                asm.addAttribute(new AsmAttribute("copyright", "string", "My company (c)"));
                 adao.asmInsert(asm);
             }
             asm = adao.asmSelectByName("pub.main");
             if (asm == null) {
                 asm = new Asm("pub.main", new AsmCore("foo/bar", "fobarcore"));
                 adao.asmInsert(asm);
+                adao.asmSetParent(asm, adao.asmSelectByName("pub.base"));
+            }
+            asm = adao.asmSelectByName("pub.content");
+            if (asm == null) {
+                asm = new Asm("pub.content");
+                asm.addAttribute(new AsmAttribute("content", "string", "Simple text"));
+                adao.asmInsert(asm);
+                adao.asmSetParent(asm, adao.asmSelectByName("pub.main"));
             }
         }
     }
