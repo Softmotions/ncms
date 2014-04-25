@@ -38,53 +38,59 @@ public class TagRestTest extends MediaRestTestBase {
 		requestAndCheckNotExists(tag);
 
 		listTagsAndCheck(0);
-
 	}
 
-	//@Test
-	public void testUpdate() throws Exception {
-		MediaFolder root = createAndCheck(MediaFolder.of("test-folder", "test-desc"));
-		requestAndCheck(root);
+	@Test
+	public void testFolderTags() throws Exception {
+		Tag tag = createAndCheck(Tag.of("tag1"));
+		requestAndCheck(tag);
 
-		MediaFile file = createAndCheck(root, MediaFile.of("test-file", "test-desc"));
-		requestAndCheck(file);
+		listTagsAndCheck(1);
 
-		MediaFile file2 = MediaFile.of("test-file2", "test-desc2");
-		Response response = target(file).request().put(entity(file2));
-		MediaFile f2 = response.readEntity(MediaFile.class);
+
+		MediaFolder folder = createAndCheck(MediaFolder.of("f1", "f1d"));
+		Response response = getWebTarget("/folder/" + folder.getId() + "/" + tag.getId()).request().get();
 		assertEquals(200, response.getStatus());
-		assertEquals(file2.getName(), f2.getName());
-		assertEquals(file2.getDescription(), f2.getDescription());
-		response.close();
 
-		requestAndCheck(f2);
+		MediaFolder folder1 = requestAndCheck(folder);
+		assertEquals(1, folder1.getTags().size());
+		assertTrue(folder1.hasTag(tag));
 
+		response = getWebTarget("/folder/" + folder.getId() + "/" + tag.getId()).request().delete();
+		assertEquals(200, response.getStatus());
+
+		response = getWebTarget("/folder/" + folder.getId() + "/" + tag.getId()).request().delete();
+		assertEquals(500, response.getStatus());
+
+		MediaFolder folder2 = requestAndCheck(folder);
+		assertFalse(folder2.hasTag(tag));
 	}
 
-	//@Test
-	public void testMoveFile() throws Exception {
-		MediaFolder root1 = createAndCheck(MediaFolder.of("test-folder", "test-desc"));
-		requestAndCheck(root1);
-		MediaFolder root2 = createAndCheck(MediaFolder.of("test-folder2", "test-desc2"));
-		requestAndCheck(root2);
+	@Test
+	public void testFileTags() throws Exception {
+		Tag tag = createAndCheck(Tag.of("tag1"));
+		requestAndCheck(tag);
 
-		MediaFile file = createAndCheck(root1, MediaFile.of("test-file", "test-desc"));
-		requestAndCheck(file);
+		listTagsAndCheck(1);
 
-		//checkFileInFolder();
-
-		Response response = getWebTarget("/" + file.getId() + "/" + root2.getId()).request().get();
+		MediaFolder root = createAndCheck(MediaFolder.of("root", "root-desc"));
+		MediaFile file = createAndCheck(root, MediaFile.of("f1", "f1d"));
+		Response response = getWebTarget("/file/" + file.getId() + "/" + tag.getId()).request().get();
 		assertEquals(200, response.getStatus());
-		response.close();
 
+		MediaFile file1 = requestAndCheck(file);
+		assertEquals(1, file1.getTags().size());
+		assertTrue(file1.hasTag(tag));
 
-		System.out.println("File: " + file + " " + file.getClass());
-		System.out.println("ROOT2 Files:");
-		for(MediaFile f: manager.getFiles(root2)) {
-			System.out.println("  " + f + " eq " + file.equals(f) + " " + f.getClass());
-		}
-		assertFalse(manager.getFiles(root1).contains(file));
-		assertTrue(manager.getFiles(root2).contains(file));
+		response = getWebTarget("/file/" + file.getId() + "/" + tag.getId()).request().delete();
+		assertEquals(200, response.getStatus());
+
+		response = getWebTarget("/file/" + file.getId() + "/" + tag.getId()).request().delete();
+		assertEquals(500, response.getStatus());
+
+		MediaFile file2 = requestAndCheck(file);
+		assertFalse(file2.hasTag(tag));
+
 
 	}
 
