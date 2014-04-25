@@ -3,10 +3,8 @@
  *
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
- * @asset(ncms/icon/16/misc/arrow_down.png)
- * @asset(ncms/icon/16/misc/arrow_up.png)
  */
-qx.Class.define("ncms.asm.AsmParentsTable", {
+qx.Class.define("ncms.asm.AsmAttrsTable", {
     extend : sm.table.ToolbarLocalTable,
     implement : [
         qx.ui.form.IStringForm,
@@ -28,7 +26,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
 
     construct : function() {
         this.base(arguments);
-        this.set({allowGrowX : true, allowGrowY : false, height : 120});
+        this.set({allowGrowX : true, allowGrowY : false, height : 240});
         this._reload([]);
     },
 
@@ -57,15 +55,27 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
                 "title" : "",
                 "columns" : [
                     {
-                        "title" : this.tr("#").toString(),
+                        "title" : "#",
                         "id" : "id",
-                        "sortable" : false,
+                        "sortable" : true,
                         "width" : 40
                     },
                     {
                         "title" : this.tr("Name").toString(),
                         "id" : "name",
-                        "sortable" : false,
+                        "sortable" : true,
+                        "width" : "1*"
+                    },
+                    {
+                        "title" : this.tr("Value").toString(),
+                        "id" : "value",
+                        "sortable" : true,
+                        "width" : "3*"
+                    },
+                    {
+                        "title" : this.tr("Type").toString(),
+                        "id" : "type",
+                        "sortable" : true,
                         "width" : "1*"
                     }
                 ],

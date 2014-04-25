@@ -33,7 +33,7 @@ qx.Theme.define("ncms.theme.Appearance", {
             style : function(states) {
                 return {
                     padding : [10, 50, 10, 10],
-                    maxWidth : 500
+                    maxWidth : 600
                 }
             }
         },

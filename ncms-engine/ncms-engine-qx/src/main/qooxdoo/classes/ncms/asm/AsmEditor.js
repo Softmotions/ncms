@@ -54,6 +54,9 @@ qx.Class.define("ncms.asm.AsmEditor", {
         el = new ncms.asm.AsmParentsTable();
         form.add(el, this.tr("Parents"), null, "parents");
 
+        el = new ncms.asm.AsmAttrsTable();
+        form.add(el, this.tr("Attributes"), null, "attributes");
+
         form.addButton(new qx.ui.form.Button(this.tr("Save")));
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
