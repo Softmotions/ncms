@@ -41,32 +41,27 @@ qx.Theme.define("ncms.theme.Appearance", {
         //////////////////////////////////////////////////////////////
         //                    SM components
 
-        "toolbar-table" : {
-            style : function(states) {
-                return {
+        "toolbar-table" : "widget",
 
-                }
-            }
-        },
-
-        "toolbar-table/toolbar" : {
-            include : "toolbar",
-            alias : "toolbar",
-            style : function(states) {
-                return {
-                    padding : 0,
-                    margin : 0
-                    //backgroundColor : "#dcdcdc"
-                }
-            }
-        },
+        "toolbar-table/toolbar" : "toolbar",
 
         "toolbar-table/part" : {
+            include : "toolbar/part",
+            alias : "toolbar/part",
             style : function(states) {
                 return {
-                    padding : 0,
-                    margin : 0
+                    margin : [0, 10, 0, 0]
                 }
+            }
+        },
+
+        "toolbar-table-button" : {
+            alias : "toolbar-button",
+            include : "toolbar-button",
+            style : function(states) {
+                return {
+                    margin : 0
+                };
             }
         },
 

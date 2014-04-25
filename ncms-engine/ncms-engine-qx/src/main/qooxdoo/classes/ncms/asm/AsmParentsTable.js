@@ -28,7 +28,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
 
     construct : function() {
         this.base(arguments);
-        this.set({allowGrowX : true, allowGrowY : false, height : 170});
+        this.set({allowGrowX : true, allowGrowY : false, height : 120});
         this._reload([]);
     },
 
@@ -36,22 +36,25 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
 
         //overriden
         _createToolbarItems : function(toolbar) {
-            var part = new qx.ui.toolbar.Part();
-            part.setAppearance("toolbar-table/part");
+            var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
             toolbar.add(part);
+            part.add(this._createButton(null, "ncms/icon/16/actions/add.png"));
+            part.add(this._createButton(null, "ncms/icon/16/actions/delete.png"));
 
-            var mb = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/add.png");
-            part.add(mb);
-            mb = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/delete.png");
-            part.add(mb);
+            part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
+            toolbar.add(part);
+            part.add(this._createButton(null, "ncms/icon/16/misc/arrow_up.png"));
+            part.add(this._createButton(null, "ncms/icon/16/misc/arrow_down.png"));
 
-            //part.add(new qx.ui.toolbar.Separator());
-
-            mb = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/arrow_up.png");
-            part.add(mb);
-            mb = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/arrow_down.png");
-            part.add(mb);
             return toolbar;
+        },
+
+        _createButton : function(label, icon, handler, self) {
+            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance" : "toolbar-table-button"});
+            if (handler != null) {
+                bt.addListener("execute", handler, self);
+            }
+            return bt;
         },
 
         //overriden
