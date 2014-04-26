@@ -147,8 +147,8 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         },
 
         _syncState : function() {
-            var ri = this.getSelectedRowIndex();
-            this.__delBt.setEnabled(ri != null && ri !== -1);
+            var rd = this.getSelectedRowData();
+            this.__delBt.setEnabled(rd != null && rd["asmId"] == this.__asmId);
         },
 
         __applyValue : function(val) {
