@@ -6,6 +6,6 @@ qx.Theme.define("ncms.theme.Color", {
     extend : qx.theme.simple.Color,
 
     colors : {
-
+        "table-row-gray" : "#dcdcdc"
     }
 });

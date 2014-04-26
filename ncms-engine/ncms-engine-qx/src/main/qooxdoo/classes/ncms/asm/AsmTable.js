@@ -29,10 +29,9 @@ qx.Class.define("ncms.asm.AsmTable", {
         this.base(arguments, tm, custom);
 
         var rr = new sm.table.renderer.CustomRowRenderer();
+        var colorm = qx.theme.manager.Color.getInstance();
         rr.setBgColorInterceptor(qx.lang.Function.bind(function(rowInfo) {
-            var rdata = rowInfo.rowData;
-            //todo row status color assigment
-            return "white";
+            return colorm.resolve("background");
         }, this));
         this.setDataRowRenderer(rr);
 

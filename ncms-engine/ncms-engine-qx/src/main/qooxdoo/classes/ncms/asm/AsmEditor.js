@@ -19,7 +19,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
          */
         "asmId" : {
             apply : "__applyAsmId",
-            nullable : false,
+            nullable : true,
             check : "Number"
         },
 
@@ -29,7 +29,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
          */
         "asmSpec" : {
             apply : "__applyAsmSpec",
-            nullable : false,
+            nullable : true,
             check : "Object"
         }
     },
@@ -69,7 +69,10 @@ qx.Class.define("ncms.asm.AsmEditor", {
         __form : null,
 
         __applyAsmId : function(value, old) {
-            qx.log.Logger.info("Edit asm ID =" + value);
+            if (value == null) {
+                this.setAsmSpec(null);
+                return;
+            }
             var req = new sm.io.Request(
                     ncms.Application.ACT.getRestUrl("asms.get", value),
                     "GET", "application/json");
@@ -126,6 +129,23 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
         __applyAsmSpec : function(spec) {
             qx.log.Logger.info("spec=" + JSON.stringify(spec));
+            if (spec == null) {
+                this.__form.reset();
+                return;
+            }
+            var ctls = this.__form.getItems();
+            ctls["name"].setValue(spec["name"]);
+
+            if (spec["effectiveCore"] != null) {
+                var ecore = spec["effectiveCore"];
+                var ecoreVal = ecore["location"];
+                if (ecore["templateEngine"] != null) {
+                    ecoreVal += (";" + ecore["templateEngine"]);
+                }
+                ctls["core"].setValue(ecoreVal);
+            }
+            ctls["parents"].setParentRefs(spec["parentRefs"]);
+            ctls["attributes"].setAttrsSpec(spec["id"], spec["effectiveAttributes"]);
         }
     },
 

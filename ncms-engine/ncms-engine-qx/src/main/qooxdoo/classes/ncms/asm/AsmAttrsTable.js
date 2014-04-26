@@ -26,18 +26,53 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
 
     construct : function() {
         this.base(arguments);
-        this.set({allowGrowX : true, allowGrowY : false, height : 240});
+        this.set({allowGrowX : true, allowGrowY : false, height : 200});
         this._reload([]);
     },
 
     members : {
+
+        __asmId : null,
+
+        /**
+         * spec example:
+         *  {
+         *    "asmId" : 1,
+         *    "name" : "copyright",
+         *    "type" : "string",
+         *    "value" : "My company (c)",
+         *    "options" : null,
+         *    "hasLargeValue" : false
+         *  },
+         */
+        setAttrsSpec : function(asmId, spec) {
+            this.__asmId = asmId;
+            var items = [];
+            if (!Array.isArray(spec)) {
+                this._reload(items);
+                return;
+            }
+            spec.forEach(function(el) {
+                var row = [el["asmId"], el["name"], el["value"], el["type"]];
+                items.push([row, el]);
+            }, this);
+
+            items.sort(function(o1, o2) {
+                var id1 = o1[0][0];
+                var id2 = o2[0][0];
+                return (id1 < id2) ? -1 : ((id1 === id2) ? 0 : 1);
+            });
+            this._reload(items);
+        },
 
         //overriden
         _createToolbarItems : function(toolbar) {
             var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
             toolbar.add(part);
             part.add(this._createButton(null, "ncms/icon/16/actions/add.png"));
-            part.add(this._createButton(null, "ncms/icon/16/actions/delete.png"));
+
+            this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png");
+            part.add(this.__delBt);
             return toolbar;
         },
 
@@ -82,10 +117,42 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                 "items" : items
             };
             tm.setJsonData(data);
+            this._syncState();
+        },
+
+        //overriden
+        _createTable : function(tableModel) {
+            var table = new sm.table.Table(tableModel, tableModel.getCustom());
+
+            var colorm = qx.theme.manager.Color.getInstance();
+            var rr = new sm.table.renderer.CustomRowRenderer();
+            rr.setBgColorInterceptor(qx.lang.Function.bind(function(rowInfo) {
+                var rdata = rowInfo.rowData;
+                if (rdata[0] !== this.__asmId) {
+                    return colorm.resolve("table-row-gray");
+                } else {
+                    return colorm.resolve("background");
+                }
+            }, this));
+            table.setDataRowRenderer(rr);
+
+            table.set({
+                showCellFocusIndicator : false,
+                statusBarVisible : true,
+                focusCellOnMouseMove : false});
+
+            table.getSelectionModel()
+                    .addListener("changeSelection", this._syncState, this);
+            return table;
+        },
+
+        _syncState : function() {
+            var ri = this.getSelectedRowIndex();
+            this.__delBt.setEnabled(ri != null && ri !== -1);
         },
 
         __applyValue : function(val) {
-            qx.log.Logger.info("Apply=" + val);
+            this.setAttrsSpec(JSON.parse(val));
         }
     },
 
