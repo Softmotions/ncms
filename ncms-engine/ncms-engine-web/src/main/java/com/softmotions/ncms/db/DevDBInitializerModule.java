@@ -36,25 +36,25 @@ public class DevDBInitializerModule extends AbstractModule {
         public void init() throws Exception {
             log.info("Initializing development database with test data...");
 
-            Asm asm = adao.asmSelectByName("pub.base");
+            Asm asm = adao.asmSelectByName("base");
             if (asm == null) {
-                asm = new Asm("pub.base");
+                asm = new Asm("base");
                 asm.addAttribute(new AsmAttribute("title", "string", "Hello world"));
                 asm.addAttribute(new AsmAttribute("copyright", "string", "My company (c)"));
                 adao.asmInsert(asm);
             }
-            asm = adao.asmSelectByName("pub.main");
+            asm = adao.asmSelectByName("main");
             if (asm == null) {
-                asm = new Asm("pub.main", new AsmCore("foo/bar", "fobarcore"));
+                asm = new Asm("main", new AsmCore("foo/bar", "fobarcore"));
                 adao.asmInsert(asm);
-                adao.asmSetParent(asm, adao.asmSelectByName("pub.base"));
+                adao.asmSetParent(asm, adao.asmSelectByName("base"));
             }
-            asm = adao.asmSelectByName("pub.content");
+            asm = adao.asmSelectByName("content");
             if (asm == null) {
-                asm = new Asm("pub.content");
+                asm = new Asm("content");
                 asm.addAttribute(new AsmAttribute("content", "string", "Simple text"));
                 adao.asmInsert(asm);
-                adao.asmSetParent(asm, adao.asmSelectByName("pub.main"));
+                adao.asmSetParent(asm, adao.asmSelectByName("main"));
             }
         }
     }

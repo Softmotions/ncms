@@ -139,7 +139,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
 
         _syncState : function() {
             var rd = this.getSelectedRowData();
-            this.__delBt.setEnabled(rd != null && rd["asmId"] == this.__asmId);
+            this.__delBt.setEnabled(rd != null && rd["asmId"] == this.__spec["id"]);
         },
 
         __applyValue : function(val) {
