@@ -1,13 +1,14 @@
 package com.softmotions.ncms.media.model;
 
-import com.avaje.ebean.annotation.PrivateOwned;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import javax.persistence.*;
-import java.util.ArrayList;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import java.util.List;
 import java.util.Set;
 

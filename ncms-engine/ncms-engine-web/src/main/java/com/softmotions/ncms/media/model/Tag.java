@@ -1,13 +1,9 @@
 package com.softmotions.ncms.media.model;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import java.util.List;
 
 /**
  * Created by shu on 4/20/2014.

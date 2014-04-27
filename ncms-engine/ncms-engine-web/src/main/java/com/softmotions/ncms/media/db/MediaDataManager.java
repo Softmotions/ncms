@@ -1,18 +1,16 @@
 package com.softmotions.ncms.media.db;
 
-import com.avaje.ebean.EbeanServer;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.MediaFolder;
+
+import com.avaje.ebean.EbeanServer;
+import com.google.inject.Inject;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by shu on 4/23/2014.

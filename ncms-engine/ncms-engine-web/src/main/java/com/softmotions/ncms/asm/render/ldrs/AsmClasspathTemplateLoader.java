@@ -1,8 +1,8 @@
 package com.softmotions.ncms.asm.render.ldrs;
 
 import httl.spi.loaders.ClasspathLoader;
-import com.softmotions.ncms.asm.render.AsmTemplateLoader;
 import com.softmotions.ncms.asm.render.AsmResource;
+import com.softmotions.ncms.asm.render.AsmTemplateLoader;
 
 import com.google.inject.Singleton;
 

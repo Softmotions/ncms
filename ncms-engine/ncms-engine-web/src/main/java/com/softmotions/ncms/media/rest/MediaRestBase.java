@@ -1,8 +1,9 @@
 package com.softmotions.ncms.media.rest;
 
+import com.softmotions.ncms.media.db.MediaDataManager;
+
 import com.avaje.ebean.EbeanServer;
 import com.google.inject.Inject;
-import com.softmotions.ncms.media.db.MediaDataManager;
 
 import javax.ws.rs.core.Response;
 
