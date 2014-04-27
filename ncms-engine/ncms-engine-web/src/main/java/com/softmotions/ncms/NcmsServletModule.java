@@ -5,6 +5,7 @@ import ninja.utils.NinjaProperties;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.weboot.WBServletModule;
 import com.softmotions.ncms.asm.render.AsmServlet;
+import com.softmotions.ncms.jaxrs.NcmsJsonNodeReader;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
 import com.softmotions.web.JarResourcesProvider;
 import com.softmotions.web.JarResourcesServlet;
@@ -57,6 +58,7 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
     protected void initJAXRS(NcmsConfiguration cfg) {
         //Resteasy staff
         bind(NcmsRSExceptionHandler.class).in(Singleton.class);
+        bind(NcmsJsonNodeReader.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
         serve(cfg.getNcmsPrefix() + "/rs/*",
               HttpServletDispatcher.class,

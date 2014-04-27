@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -158,6 +159,20 @@ public class Asm implements Serializable {
 
     public void setParents(List<Asm> parents) {
         this.parents = parents;
+    }
+
+    public Set<String> getCumulativeParentNames() {
+        List<Asm> plist = getParents();
+        if (plist == null || plist.isEmpty()) {
+            return Collections.EMPTY_SET;
+        }
+        Set<String> cparents = new HashSet<>();
+        for (final Asm p : getParents()) {
+            cparents.add(p.getName());
+            cparents.addAll(p.getCumulativeParentNames());
+        }
+        return cparents;
+
     }
 
     @JsonProperty()

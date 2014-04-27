@@ -30,11 +30,12 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
         constViewSpec : {
             check : "Object",
-            nullable : true
+            nullable : true,
+            apply : "__applyConstViewSpec"
         }
     },
 
-    construct : function() {
+    construct : function(constViewSpec, smodel) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
 
@@ -46,6 +47,9 @@ qx.Class.define("ncms.asm.AsmSelector", {
             "statusBarVisible" : false,
             "showCellFocusIndicator" : false});
 
+        if (smodel != null) {
+            this.__table.setSelectionModel(smodel);
+        }
         this.__table.getSelectionModel().addListener("changeSelection", function() {
             var asm = this.getSelectedAsm();
             this.fireDataEvent("asmSelected", asm ? asm : null);
@@ -53,7 +57,8 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
         this._add(this.__sf);
         this._add(this.__table, {flex : 1});
-        this.updateViewSpec({});
+
+        this.setConstViewSpec(constViewSpec || null);
     },
 
     members : {
@@ -91,6 +96,10 @@ qx.Class.define("ncms.asm.AsmSelector", {
             return this.__table.getSelectedAsm();
         },
 
+        getSelectedAsms : function() {
+            return this.__table.getSelectedAsms();
+        },
+
         cleanup : function() {
             this.__table.cleanup();
         },
@@ -114,6 +123,10 @@ qx.Class.define("ncms.asm.AsmSelector", {
             var val = this.__sf.getValue();
             var vspec = (val != null && val != "" ? {stext : val} : {});
             this.setViewSpec(this.__createViewSpec(vspec));
+        },
+
+        __applyConstViewSpec : function() {
+            this.__search();
         }
     },
 

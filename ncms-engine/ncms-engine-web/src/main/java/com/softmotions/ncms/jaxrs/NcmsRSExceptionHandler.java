@@ -59,7 +59,8 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
 
         } else if (ex instanceof JsonMappingException ||
                    ex instanceof JsonParseException ||
-                   ex instanceof ReaderException) {
+                   ex instanceof ReaderException ||
+                   ex instanceof BadRequestException) {
 
             log.warn("", ex);
             rb = Response.status(Response.Status.BAD_REQUEST)
@@ -69,7 +70,6 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
                     );
 
         } else {
-
             log.error("", ex);
             rb = Response.serverError()
                     .header("Softmotions-Msg-Err0",

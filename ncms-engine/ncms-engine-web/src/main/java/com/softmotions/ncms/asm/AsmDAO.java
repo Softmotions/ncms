@@ -103,14 +103,27 @@ public class AsmDAO extends MBDAOSupport {
 
     @Transactional
     public int asmSetParent(Asm asm, Asm parent) {
+        return asmSetParent(asm.id, parent.id);
+    }
+
+    @Transactional
+    public int asmSetParent(long asmId, long parentId) {
         TinyParamMap params = new TinyParamMap()
-                .param("asmId", asm.id)
-                .param("parentId", parent.id);
+                .param("asmId", asmId)
+                .param("parentId", parentId);
         Number cnt = sess.selectOne(toStatementId("asmHasSpecificParent"), params);
         if (cnt.intValue() > 0) {
             return 0; //we have this parent
         }
         return sess.insert("asmSetParent", params);
+    }
+
+    @Transactional
+    public int asmRemoveParent(long asmId, long parent) {
+        TinyParamMap params = new TinyParamMap()
+                .param("asmId", asmId)
+                .param("parentId", parent);
+        return sess.delete("asmRemoveParent", params);
     }
 
     @Transactional

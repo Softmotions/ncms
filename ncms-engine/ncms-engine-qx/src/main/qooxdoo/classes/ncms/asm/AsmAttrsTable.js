@@ -16,6 +16,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
     ],
 
     events : {
+        "attributesChanged" : "qx.event.type.Event"
     },
 
     properties : {
@@ -32,27 +33,17 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
 
     members : {
 
-        __asmId : null,
+        __spec : null,
 
-        /**
-         * spec example:
-         *  {
-         *    "asmId" : 1,
-         *    "name" : "copyright",
-         *    "type" : "string",
-         *    "value" : "My company (c)",
-         *    "options" : null,
-         *    "hasLargeValue" : false
-         *  },
-         */
-        setAttrsSpec : function(asmId, spec) {
-            this.__asmId = asmId;
+        setAsmSpec : function(spec) {
+            this.__spec = spec;
             var items = [];
-            if (!Array.isArray(spec)) {
+            if (this.__spec == null || !Array.isArray(spec["effectiveAttributes"])) {
                 this._reload(items);
                 return;
             }
-            spec.forEach(function(el) {
+            var attrs = spec["effectiveAttributes"];
+            attrs.forEach(function(el) {
                 var row = [el["asmId"], el["name"], el["value"], el["type"]];
                 items.push([row, el]);
             }, this);
@@ -128,7 +119,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             var rr = new sm.table.renderer.CustomRowRenderer();
             rr.setBgColorInterceptor(qx.lang.Function.bind(function(rowInfo) {
                 var rdata = rowInfo.rowData;
-                if (rdata[0] !== this.__asmId) {
+                if (rdata[0] !== this.__spec["id"]) {
                     return colorm.resolve("table-row-gray");
                 } else {
                     return colorm.resolve("background");
@@ -152,11 +143,11 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         },
 
         __applyValue : function(val) {
-            this.setAttrsSpec(JSON.parse(val));
         }
     },
 
     destruct : function() {
+        this.__spec = null;
         //this._disposeObjects("__field_name");
     }
 });

@@ -101,12 +101,16 @@ qx.Class.define("ncms.asm.AsmEditor", {
         form.add(el, this.tr("Core"), null, "core");
 
         el = new ncms.asm.AsmParentsTable();
+        el.addListener("parentsChanged", function() {
+            this.__reload("parents");
+        }, this);
         form.add(el, this.tr("Parents"), null, "parents");
 
         el = new ncms.asm.AsmAttrsTable();
+        el.addListener("attributesChanged", function() {
+            this.__reload("attributes");
+        }, this);
         form.add(el, this.tr("Attributes"), null, "attributes");
-
-        //form.addButton(new qx.ui.form.Button(this.tr("Save")));
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
         fr.setAppearance("ncms-wsa-form");
@@ -117,18 +121,13 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
         __form : null,
 
+
         __applyAsmId : function(value, old) {
             if (value == null) {
                 this.setAsmSpec(null);
                 return;
             }
-            var req = new sm.io.Request(
-                    ncms.Application.ACT.getRestUrl("asms.get", value),
-                    "GET", "application/json");
-            req.send(function(resp) {
-                var asmSpec = resp.getContent();
-                this.setAsmSpec(asmSpec);
-            }, this);
+            this.__reload();
         },
 
         __applyAsmSpec : function(spec) {
@@ -137,9 +136,11 @@ qx.Class.define("ncms.asm.AsmEditor", {
                 return;
             }
             var ctls = this.__form.getItems();
-            ctls["name"].setValue(spec["name"]);
-            ctls["description"].setValue(spec["description"]);
 
+            if (spec._part == null) {
+                ctls["name"].setValue(spec["name"]);
+                ctls["description"].setValue(spec["description"]);
+            }
             if (spec["effectiveCore"] != null) {
                 var ecore = spec["effectiveCore"];
                 var ecoreVal = ecore["location"];
@@ -148,8 +149,20 @@ qx.Class.define("ncms.asm.AsmEditor", {
                 }
                 ctls["core"].setValue(ecoreVal);
             }
-            ctls["parents"].setParentRefs(spec["parentRefs"]);
-            ctls["attributes"].setAttrsSpec(spec["id"], spec["effectiveAttributes"]);
+            ctls["parents"].setAsmSpec(spec);
+            ctls["attributes"].setAsmSpec(spec);
+        },
+
+        __reload : function(part) {
+            var req = new sm.io.Request(
+                    ncms.Application.ACT.getRestUrl("asms", {id : this.getAsmId()}),
+                    "GET", "application/json");
+            req.send(function(resp) {
+                var asmSpec = resp.getContent();
+                asmSpec._part = part;
+                this.setAsmSpec(asmSpec);
+                asmSpec._part = null;
+            }, this);
         }
     },
 

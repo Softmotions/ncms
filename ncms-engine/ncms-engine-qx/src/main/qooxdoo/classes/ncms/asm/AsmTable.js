@@ -2,7 +2,7 @@
  * Virtual table of assemblies.
  */
 qx.Class.define("ncms.asm.AsmTable", {
-    extend : qx.ui.table.Table,
+    extend : sm.table.Table,
 
     events : {
     },
@@ -56,6 +56,15 @@ qx.Class.define("ncms.asm.AsmTable", {
         getSelectedAsm : function() {
             var sind = this.getSelectedAsmInd();
             return sind != -1 ? this.getTableModel().getRowData(sind) : null;
+        },
+
+        getSelectedAsms : function() {
+            var me = this;
+            var asms = [];
+            this.getSelectionModel().iterateSelection(function(ind) {
+                asms.push(me.getTableModel().getRowData(ind));
+            });
+            return asms;
         },
 
         cleanup : function() {
