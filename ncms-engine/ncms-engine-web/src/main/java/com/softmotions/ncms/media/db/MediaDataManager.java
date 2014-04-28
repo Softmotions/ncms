@@ -57,7 +57,7 @@ public class MediaDataManager {
 				show(pw, f, sublev);
 			}
 			for(MediaFile file: files) {
-				pw.println(ident(lev+1) + "- " + file.getName() + "[" + file.getId() + "] {");
+				pw.println(ident(lev+1) + "- " + file.getName() + "[" + file.getId() + "] " + file.getFilePath());
 			}
 			if (folder != null) pw.println(ident(lev) + "}");
 		}

@@ -17,15 +17,13 @@ import javax.ws.rs.core.Response;
 
 import com.google.inject.Inject;
 import com.softmotions.commons.weboot.WBConfiguration;
+import com.softmotions.ncms.media.model.MediaFile;
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("/media/file")
 public class FileUploadRS extends MediaRestBase {
-
-	//private static final String SERVER_UPLOAD_LOCATION_FOLDER = "media-data/";
-	//private static final String SERVER_UPLOAD_LOCATION_FOLDER = "C://Users/nikos/Desktop/Upload_Files/";
 
 	@Inject
 	WBConfiguration cfg;
@@ -34,7 +32,8 @@ public class FileUploadRS extends MediaRestBase {
 	@Path("/{id}/upload")
 	@Consumes("multipart/form-data")
 	public Response uploadFile(@PathParam("id") Long id, MultipartFormDataInput input) {
-		System.out.println("File ID: " + id);
+		MediaFile mediaFile = ebean.find(MediaFile.class, id);
+		if(mediaFile == null) return response(500, "Media file not found: " + id);
 		String fileName = "";
 		Map<String, List<InputPart>> formParts = input.getFormDataMap();
 		System.out.println("PARTS:\n" + formParts);
@@ -51,6 +50,8 @@ public class FileUploadRS extends MediaRestBase {
 				InputStream istream = inputPart.getBody(InputStream.class, null);
 				File file = new File(basedir, fileName);
 				saveFile(istream, file);
+				mediaFile.setFilePath(fileName);
+				ebean.save(mediaFile);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return response(500, e.getMessage());
