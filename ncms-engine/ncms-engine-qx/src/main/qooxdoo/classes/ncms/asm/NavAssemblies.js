@@ -72,6 +72,10 @@ qx.Class.define("ncms.asm.NavAssemblies", {
 
             var rind = this.__selector.getSelectedAsmInd();
             if (rind !== -1) {
+                bt = new qx.ui.menu.Button(this.tr("Rename"));
+                bt.addListenerOnce("execute", this.__onRenameAssembly, this);
+                menu.add(bt);
+
                 bt = new qx.ui.menu.Button(this.tr("Remove"));
                 bt.addListenerOnce("execute", this.__onRemoveAssembly, this);
                 menu.add(bt);
@@ -94,12 +98,33 @@ qx.Class.define("ncms.asm.NavAssemblies", {
                     }, this);
         },
 
+        __onRenameAssembly : function(ev) {
+            var asm = this.__selector.getSelectedAsm();
+            if (asm == null) {
+                return;
+            }
+            var d = new ncms.asm.AsmRenameDlg(asm["id"], asm["name"]);
+            d.setPosition("bottom-right");
+            d.addListenerOnce("completed", function(ev) {
+                d.hide();
+                qx.log.Logger.info("Rename completed");
+                this.__selector.reload();
+            }, this);
+            d.placeToWidget(ev.getTarget(), false);
+            d.show();
+
+        },
+
         __onNewAssembly : function(ev) {
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.new"), "PUT", "application/json");
-            req.send(function(resp) {
-                var spec = resp.getContent();
+            var d = new ncms.asm.AsmNewDlg();
+            d.setPosition("bottom-right");
+            d.addListenerOnce("completed", function(ev) {
+                d.hide();
+                var spec = ev.getData();
                 this.__selector.getSearchField().setValue(spec["name"]);
             }, this);
+            d.placeToWidget(ev.getTarget(), false);
+            d.show();
         }
     },
 

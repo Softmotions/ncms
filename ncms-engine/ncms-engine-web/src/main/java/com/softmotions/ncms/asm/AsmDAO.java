@@ -142,10 +142,25 @@ public class AsmDAO extends MBDAOSupport {
                          "name", name);
     }
 
+
+    @Transactional
+    public Long asmSelectIdByName(String name) {
+        Number id = sess.selectOne(toStatementId("asmIDByName"), name);
+        return id != null ? id.longValue() : null;
+
+    }
+
     @Transactional
     public Asm asmSelectById(Number id) {
         return selectOne("selectAsmByCriteria",
                          "id", id);
+    }
+
+    @Transactional
+    public int asmRename(long id, String name) {
+        return update("asmRename",
+                      "id", id,
+                      "name", name);
     }
 
     /**

@@ -5,6 +5,7 @@ import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.ncms.jaxrs.NcmsMessageException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -59,14 +60,42 @@ public class AsmEditorRS extends MBDAOSupport {
     }
 
     /**
-     * Create new empty asse,mbly instance
+     * Create new empty assembly instance
      */
     @PUT
-    @Path("/new")
-    public Asm newasm(@Context HttpServletRequest req) {
-        //name prefix for new assembly
-        String namePrefix = messages.get("ncms.asm.new.name.prefix", req);
-        return adao.asmInsertEmptyNew(namePrefix);
+    @Path("/new/{name}")
+    public Asm newasm(@Context HttpServletRequest req,
+                      @PathParam("name") String name) {
+        name = name.trim();
+        Asm asm;
+        synchronized (Asm.class) {
+            Long id = adao.asmSelectIdByName(name);
+            if (id != null) {
+                String msg = messages.get("ncms.asm.name.already.exists", req, name);
+                throw new NcmsMessageException(msg, true);
+            }
+            asm = new Asm(name);
+            adao.asmInsert(asm);
+        }
+        return asm;
+    }
+
+    @PUT
+    @Path("/rename/{id}/{name}")
+    public void rename(@Context HttpServletRequest req,
+                       @PathParam("id") Long id,
+                       @PathParam("name") String name) {
+        name = name.trim();
+        synchronized (Asm.class) {
+            Long oid = adao.asmSelectIdByName(name);
+            if (oid != null && !oid.equals(id)) {
+                String msg = messages.get("ncms.asm.name.already.other", req, name);
+                throw new NcmsMessageException(msg, true);
+            }
+            if (oid == null) {
+                adao.asmRename(id, name);
+            }
+        }
     }
 
     @DELETE

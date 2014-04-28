@@ -27,8 +27,11 @@ qx.Class.define("ncms.Actions", {
         //GET/PUT/DELETE assembly
         this._action("asms", "/ncms/rs/adm/asms/{id}");
 
-        //PUT create new assembly
-        this._action("asms.new", "/ncms/rs/adm/asms/new");
+        //PUT create new assembly with specified name
+        this._action("asms.new", "/ncms/rs/adm/asms/new/{name}");
+
+        //PUT rename existing assembly
+        this._action("asms.rename", "/ncms/rs/adm/asms/rename/{id}/{name}");
 
         //PUT Assembly parents
         this._action("asms.parents", "/ncms/rs/adm/asms/{id}/parents")

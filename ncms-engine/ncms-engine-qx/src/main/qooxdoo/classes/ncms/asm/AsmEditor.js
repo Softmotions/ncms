@@ -89,7 +89,8 @@ qx.Class.define("ncms.asm.AsmEditor", {
         vmgr.setRequiredFieldMessage(this.tr("This field is required"));
 
         var el = new qx.ui.form.TextField();
-        el.setRequired(true);
+        el.setReadOnly(true);
+        el.setEnabled(false);
         form.add(el, this.tr("Name"), null, "name");
 
         el = new qx.ui.form.TextField();

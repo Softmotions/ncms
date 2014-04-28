@@ -111,6 +111,12 @@
          order by name asc
     </select>
 
+    <update id="asmRename" parameterType="map">
+        update asms
+        set name = #{name}
+        where id = #{id}
+    </update>
+
     <!-- ======================= Nested selects =========================== -->
 
     <select id="selectAsmParents"

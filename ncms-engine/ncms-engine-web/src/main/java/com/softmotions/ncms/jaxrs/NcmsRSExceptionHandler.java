@@ -13,6 +13,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -50,11 +52,21 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
             }
             List<String> messages = mex.getErrorMessages();
             for (int i = 0, l = messages.size(); i < l; ++i) {
-                rb.header("Softmotions-Msg-Err" + i, StringUtils.left(messages.get(i), MAX_MSG_LEN));
+                try {
+                    rb.header("Softmotions-Msg-Err" + i,
+                              StringUtils.left(URLEncoder.encode(messages.get(i), "UTF-8"), MAX_MSG_LEN));
+                } catch (UnsupportedEncodingException e) {
+                    log.error("", e);
+                }
             }
             messages = mex.getRegularMessages();
             for (int i = 0, l = messages.size(); i < l; ++i) {
-                rb.header("Softmotions-Msg-Reg" + i, StringUtils.left(messages.get(i), MAX_MSG_LEN));
+                try {
+                    rb.header("Softmotions-Msg-Reg" + i,
+                              StringUtils.left(URLEncoder.encode(messages.get(i), "UTF-8"), MAX_MSG_LEN));
+                } catch (UnsupportedEncodingException e) {
+                    log.error("", e);
+                }
             }
 
         } else if (ex instanceof JsonMappingException ||
