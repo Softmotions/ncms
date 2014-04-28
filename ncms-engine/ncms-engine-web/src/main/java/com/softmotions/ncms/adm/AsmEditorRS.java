@@ -1,6 +1,7 @@
 package com.softmotions.ncms.adm;
 
 import com.softmotions.commons.weboot.mb.MBDAOSupport;
+import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.jaxrs.BadRequestException;
@@ -15,6 +16,7 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -22,6 +24,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,12 +44,37 @@ public class AsmEditorRS extends MBDAOSupport {
 
     final ObjectMapper mapper;
 
+    final NcmsMessages messages;
+
 
     @Inject
-    public AsmEditorRS(SqlSession sess, AsmDAO adao, ObjectMapper mapper) {
+    public AsmEditorRS(SqlSession sess,
+                       AsmDAO adao, ObjectMapper mapper,
+                       NcmsMessages messages) {
         super(AsmEditorRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
+        this.messages = messages;
+
+    }
+
+    /**
+     * Create new empty asse,mbly instance
+     */
+    @PUT
+    @Path("/new")
+    @Produces("text/plain")
+    public Long newasm(@Context HttpServletRequest req) {
+        String namePrefix = messages.get("ncms.asm.new.name.prefix", req);
+        Asm asm = adao.asmInsertEmptyNew(namePrefix);
+        return asm.getId();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public void delete(@PathParam("id") Long id) {
+        adao.asmRemove(id);
     }
 
     @PUT
@@ -132,4 +160,5 @@ public class AsmEditorRS extends MBDAOSupport {
         asm = adao.asmSelectById(id); //refresh
         return asm.getParentRefs();
     }
+
 }

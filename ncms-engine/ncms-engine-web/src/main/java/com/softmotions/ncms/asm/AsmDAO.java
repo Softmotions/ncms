@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.guice.transactional.Transactional;
 
 import java.sql.SQLException;
@@ -22,9 +23,12 @@ import java.util.List;
 @Singleton
 public class AsmDAO extends MBDAOSupport {
 
+    final SqlSessionFactory sessionFactory;
+
     @Inject
-    public AsmDAO(SqlSession sess) {
+    public AsmDAO(SqlSession sess, SqlSessionFactory sessionFactory) {
         super("com.softmotions.ncms.asm.AsmDAO", sess);
+        this.sessionFactory = sessionFactory;
     }
 
     public Criteria newCriteria() {
@@ -143,6 +147,57 @@ public class AsmDAO extends MBDAOSupport {
         return selectOne("selectAsmByCriteria",
                          "id", id);
     }
+
+    /**
+     * Insert new assembly with generated name
+     *
+     * @return
+     */
+    public Asm asmInsertEmptyNew(String namePrefix) {
+        if (namePrefix == null) {
+            namePrefix = "New assembly";
+        }
+        Asm asm = new Asm();
+        String name;
+        synchronized (Asm.class) { //full exclusive identity synchronization
+            try (SqlSession s = sessionFactory.openSession()) {
+                Number existId;
+                int i = 1;
+                do {
+                    name = namePrefix + i++;
+                    existId = s.selectOne(toStatementId("asmIDByName"), name);
+                    if (existId == null) {
+                        asm.setName(name);
+                        asmInsert(asm);
+                    }
+                } while (existId != null);
+                s.commit(true);
+            }
+        }
+        return asm;
+    }
+
+    /**
+     * Remove assembly instance with specified id
+     *
+     * @param asmId Assembly identifier
+     * @return Number of updated rows
+     */
+    public int asmRemove(Long asmId) {
+        return sess.delete("asmRemove", asmId);
+    }
+
+    /**
+     * Remove specified assembly parent
+     * from all chil assemblies
+     *
+     * @param asmId Assembly identifier
+     * @return Number of updated rows
+     */
+    public int asmRemoveParentFromAll(Long asmId) {
+        return sess.delete("asmRemoveParentFromAll", asmId);
+    }
+
 
     @SuppressWarnings("unchecked")
     static class CriteriaBase<T extends CriteriaBase> extends MBCriteriaQuery<T> {

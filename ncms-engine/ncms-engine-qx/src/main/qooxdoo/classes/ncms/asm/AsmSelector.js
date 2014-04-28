@@ -84,6 +84,15 @@ qx.Class.define("ncms.asm.AsmSelector", {
             this.__table.getTableModel().updateViewSpec(this.__createViewSpec(vspec));
         },
 
+        reload : function(vspec) {
+            this.__table.getTableModel().reloadData();
+            this.__table.resetSelection();
+        },
+
+        resetSelection : function() {
+            this.__table.resetSelection();
+        },
+
         getTable : function() {
             return this.__table;
         },

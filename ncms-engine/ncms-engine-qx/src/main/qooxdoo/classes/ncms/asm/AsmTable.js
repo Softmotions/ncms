@@ -26,7 +26,7 @@ qx.Class.define("ncms.asm.AsmTable", {
             }
         };
 
-        this.base(arguments, tm, custom);
+        this.base(arguments, tm, custom, true);
 
         var rr = new sm.table.renderer.CustomRowRenderer();
         var colorm = qx.theme.manager.Color.getInstance();
