@@ -22,6 +22,13 @@ import org.apache.commons.configuration.SubnodeConfiguration;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+/**
+ * Accepts multipart encoded file <br>
+ *
+ * post /file/id/upload
+ *
+ */
+
 @Path("/media/file")
 public class FileUploadRS extends MediaRestBase {
 

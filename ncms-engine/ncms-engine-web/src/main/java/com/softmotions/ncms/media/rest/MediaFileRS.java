@@ -17,12 +17,13 @@ import javax.ws.rs.core.Response;
  * Created by shu on 4/23/2014.
  */
 
-/*
-+ get 	  /file/id
-+ put	    /file/id
-+ delete	/file/id
-+ post 	  /file/id
-- put	    /file/id/id
+/**
+ * File manipulations API <p>
+ * get 	    /file/id      - retrieve file data <br>
+ * put	    /file/id      - update file data <br>
+ * delete	  /file/id      - delete file <br>
+ * post 	  /file/id      - create new file in specified folder <br>
+ * put	    /file/id/id   - move file to another folder <br>
 */
 
 @Path("media/file")

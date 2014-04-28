@@ -18,17 +18,18 @@ import java.util.List;
  * Created by shu on 4/25/2014.
  */
 
-/*
- + post   /tag
- + get    /tag
- + get    /tag/id
- + delete /tag/id
-
- + get    /tag/file/id/id
- + get    /tag/folder/id/id
- + delete /tag/file/id/id
- + delete /tag/folder/id/id
-
+/**
+ * Tags manupulation API
+ *
+ * post   /tag      - crete tag <br>
+ * get    /tag      - list tags <br>
+ * get    /tag/id   - get tag data <br>
+ * delete /tag/id   - delete tag <br>
+ *
+ * get    /tag/file/id/id     - add file tag <br>
+ * get    /tag/folder/id/id   - add folder tag <br>
+ * delete /tag/file/id/id     - delete file tag <br>
+ * delete /tag/folder/id/id   - delete folder tag <br>
 */
 
 @Path("media/tag")

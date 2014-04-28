@@ -16,12 +16,14 @@ import javax.ws.rs.core.Response;
  * Created by shu on 4/23/2014.
  */
 
-/*
-+ get 	  /folder/id
-+ put 	  /folder/id
-+ delete	/folder/id
-+ post 	  /folder/id
-+ post	  /folder
+/**
+ * Folders manipulatoion API <p>
+ *
+ * get 	    /folder/id    - retrieve folder data <br>
+ * put 	    /folder/id    - update folder data <br>
+ * delete	  /folder/id    - delete folder <br>
+ * post 	  /folder/id    - create sub folder<br>
+ * post	    /folder       - create root folder<br>
 */
 
 @Path("media/folder")

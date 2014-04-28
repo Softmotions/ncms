@@ -14,11 +14,13 @@ import java.util.Objects;
  * Created by shu on 4/23/2014.
  */
 
-/*
-+ get 	/folders/show
-+ get 	/folders
-+ get 	/folders/id
-+ get	/folders/id/id
+/**
+ * Folders manipulation API <p>
+ *
+ * get 	/folders/show   - test call to show hierarchy <br>
+ * get 	/folders        - list root folders <br>
+ * get 	/folders/id     - list subfolders <br>
+ * get	/folders/id/id  - move folder to another location <br>
 */
 @Path("media/folders")
 public class MediaFoldersRS extends MediaRestBase {
