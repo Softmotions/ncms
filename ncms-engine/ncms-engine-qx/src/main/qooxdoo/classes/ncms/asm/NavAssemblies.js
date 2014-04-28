@@ -89,14 +89,18 @@ qx.Class.define("ncms.asm.NavAssemblies", {
                         if (!yes) return;
                         var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms", {id : asm["id"]}), "DELETE");
                         req.send(function(resp) {
-                            qx.log.Logger.info("Assembly removed");
                             this.__selector.reload();
                         }, this);
                     }, this);
         },
 
         __onNewAssembly : function(ev) {
-            qx.log.Logger.info("New assembly");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.new"), "PUT", "application/json");
+            req.send(function(resp) {
+                var spec = resp.getContent();
+                qx.log.Logger.info("spec=" + JSON.stringify(spec));
+                this.__selector.getSearchField().setValue(spec["name"]);
+            }, this);
         }
     },
 

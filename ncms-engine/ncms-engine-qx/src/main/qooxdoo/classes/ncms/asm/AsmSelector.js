@@ -40,8 +40,27 @@ qx.Class.define("ncms.asm.AsmSelector", {
         this._setLayout(new qx.ui.layout.VBox());
 
         var sf = this.__sf = new sm.ui.form.SearchField();
-        sf.addListener("clear", this.__search, this);
-        sf.addListener("execute", this.__search, this);
+        sf.addListener("clear", function() {
+            this.__search(null);
+        }, this);
+        sf.addListener("input", function(ev) {
+            this.__search(ev.getData());
+        }, this);
+        sf.addListener("changeValue", function(ev) {
+            this.__search(ev.getData());
+        }, this);
+        /*sf.addListener("keydown", function(ev) {
+         if (ev.getKeyCode() == 40) {
+         ev.stop();
+         var me = this;
+         var pane = me.__table.getPaneScroller(0);
+         pane.activate();
+         me.__table.selectSingleRow(0);
+         pane.setFocusedCell(0, 0);
+
+         }
+         }, this);*/
+
 
         this.__table = new ncms.asm.AsmTable().set({
             "statusBarVisible" : false,
@@ -127,9 +146,8 @@ qx.Class.define("ncms.asm.AsmSelector", {
             return nspec;
         },
 
-        __search : function() {
+        __search : function(val) {
             this.__table.resetSelection();
-            var val = this.__sf.getValue();
             var vspec = (val != null && val != "" ? {stext : val} : {});
             this.setViewSpec(this.__createViewSpec(vspec));
         },

@@ -23,8 +23,12 @@ qx.Class.define("ncms.Actions", {
         this._action("asms.select.count", "/ncms/rs/adm/asms/select/count");
 
         //Asm editor
+
         //GET/PUT/DELETE assembly
         this._action("asms", "/ncms/rs/adm/asms/{id}");
+
+        //PUT create new assembly
+        this._action("asms.new", "/ncms/rs/adm/asms/new");
 
         //PUT Assembly parents
         this._action("asms.parents", "/ncms/rs/adm/asms/{id}/parents")

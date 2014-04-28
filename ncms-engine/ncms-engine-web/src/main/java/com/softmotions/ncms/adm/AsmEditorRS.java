@@ -63,11 +63,10 @@ public class AsmEditorRS extends MBDAOSupport {
      */
     @PUT
     @Path("/new")
-    @Produces("text/plain")
-    public Long newasm(@Context HttpServletRequest req) {
+    public Asm newasm(@Context HttpServletRequest req) {
+        //name prefix for new assembly
         String namePrefix = messages.get("ncms.asm.new.name.prefix", req);
-        Asm asm = adao.asmInsertEmptyNew(namePrefix);
-        return asm.getId();
+        return adao.asmInsertEmptyNew(namePrefix);
     }
 
     @DELETE
