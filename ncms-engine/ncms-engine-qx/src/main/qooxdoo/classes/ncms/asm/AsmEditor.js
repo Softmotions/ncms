@@ -84,7 +84,6 @@ qx.Class.define("ncms.asm.AsmEditor", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
 
-        var app = ncms.Application.INSTANCE;
         var form = this.__form = new qx.ui.form.Form();
         var vmgr = form.getValidationManager();
         vmgr.setRequiredFieldMessage(this.tr("This field is required"));
