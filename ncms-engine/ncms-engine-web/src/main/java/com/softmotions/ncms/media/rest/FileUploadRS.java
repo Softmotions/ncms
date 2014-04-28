@@ -15,14 +15,20 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
+import com.google.inject.Inject;
+import com.softmotions.commons.weboot.WBConfiguration;
+import org.apache.commons.configuration.SubnodeConfiguration;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("/media/file")
 public class FileUploadRS extends MediaRestBase {
 
-	private static final String SERVER_UPLOAD_LOCATION_FOLDER = "media-data/";
+	//private static final String SERVER_UPLOAD_LOCATION_FOLDER = "media-data/";
 	//private static final String SERVER_UPLOAD_LOCATION_FOLDER = "C://Users/nikos/Desktop/Upload_Files/";
+
+	@Inject
+	WBConfiguration cfg;
 
 	@POST
 	@Path("/{id}/upload")
@@ -33,6 +39,9 @@ public class FileUploadRS extends MediaRestBase {
 		Map<String, List<InputPart>> formParts = input.getFormDataMap();
 		System.out.println("PARTS:\n" + formParts);
 		List<InputPart> inPart = formParts.get("file");
+		String storageDirPath = getStorageDir();
+		if(storageDirPath == null) response(500, "Storare dir is not configured");
+		File basedir = new File(storageDirPath);
 		for (InputPart inputPart : inPart) {
 			try {
 				// Retrieve headers, read the Content-Disposition header to obtain the original name of the file
@@ -40,8 +49,8 @@ public class FileUploadRS extends MediaRestBase {
 				fileName = parseFileName(headers);
 				// Handle the body of that part with an InputStream
 				InputStream istream = inputPart.getBody(InputStream.class, null);
-				fileName = SERVER_UPLOAD_LOCATION_FOLDER + fileName;
-				saveFile(istream, fileName);
+				File file = new File(basedir, fileName);
+				saveFile(istream, file);
 			} catch (IOException e) {
 				e.printStackTrace();
 				return response(500, e.getMessage());
@@ -50,11 +59,10 @@ public class FileUploadRS extends MediaRestBase {
 		return ok("File saved: " + fileName);
 	}
 
-	private void saveFile(InputStream uploadedInputStream, String filepath) {
+	private void saveFile(InputStream uploadedInputStream, File file) {
 		try {
 			int read = 0;
 			byte[] bytes = new byte[1024];
-			File file = new File(filepath);
 			file.getParentFile().mkdirs();
 			OutputStream outpuStream = new FileOutputStream(file);
 			while ((read = uploadedInputStream.read(bytes)) != -1) {
@@ -66,6 +74,12 @@ public class FileUploadRS extends MediaRestBase {
 
 			e.printStackTrace();
 		}
+	}
+
+	String getStorageDir() {
+		SubnodeConfiguration nodeConfig = cfg.impl().configurationAt("storage");
+		if(nodeConfig == null) return null;
+		return nodeConfig.getString("[@basedir]");
 	}
 
 	// Parse Content-Disposition header to get the original file name

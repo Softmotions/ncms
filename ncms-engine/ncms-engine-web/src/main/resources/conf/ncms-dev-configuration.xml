@@ -33,6 +33,8 @@
         ddlRun=false
     </ebean>
 
+    <storage basedir="media-data"/>
+
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
         <!-- <dropAll/>-->
         <update/>
