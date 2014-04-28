@@ -4,9 +4,12 @@ import com.google.inject.Inject;
 import com.softmotions.ncms.media.db.MediaDataManager;
 import com.softmotions.ncms.media.model.MediaFile;
 import com.softmotions.ncms.media.model.MediaFolder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,10 +34,20 @@ public class FileRestTest extends MediaRestTestBase {
 		MediaFolder root = createAndCheck(MediaFolder.of("test-folder", "test-desc"));
 		requestAndCheck(root);
 
+		Response response = getWebTarget("/files", "/" + root.getId()).request().get();
+		assertEquals(200, response.getStatus());
+		List<MediaFile> files = response.readEntity(List.class);
+		assertEquals(0, files.size());
+
 		MediaFile file = createAndCheck(root, MediaFile.of("test-file", "test-desc"));
 		requestAndCheck(file);
 
-		Response response = target(file).request().delete();
+		response = getWebTarget("/files", "/" + root.getId()).request().get();
+		assertEquals(200, response.getStatus());
+		files = response.readEntity(List.class);
+		assertEquals(1, files.size());
+
+		response = target(file).request().delete();
 		assertEquals(200, response.getStatus());
 		response.close();
 		requestAndCheckNotExists(file);

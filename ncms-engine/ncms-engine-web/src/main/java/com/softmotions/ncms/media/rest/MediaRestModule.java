@@ -12,6 +12,7 @@ public class MediaRestModule extends AbstractModule {
 	  bind(MediaFolderRS.class).in(Singleton.class);
 	  bind(MediaFoldersRS.class).in(Singleton.class);
 	  bind(MediaFileRS.class).in(Singleton.class);
+	  bind(MediaFilesRS.class).in(Singleton.class);
 	  bind(TagRS.class).in(Singleton.class);
 	  bind(FileUploadRS.class).in(Singleton.class);
   }

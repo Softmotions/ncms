@@ -1,5 +1,6 @@
 package com.softmotions.ncms.media.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 
 import javax.persistence.CascadeType;
@@ -108,7 +109,7 @@ public class MediaFile {
 
 
 
-
+	@JsonIgnore
 	public MediaFolder getMediaFolder() {
 		return mediaFolder;
 	}
