@@ -158,6 +158,8 @@ qx.Class.define("ncms.asm.AsmEditor", {
                     "GET", "application/json");
             req.send(function(resp) {
                 var asmSpec = resp.getContent();
+                //Prevent overiding of non related form values in `__applyAsmSpec`
+                // if we loading the specific 'part' of data
                 asmSpec._part = part;
                 this.setAsmSpec(asmSpec);
                 asmSpec._part = null;

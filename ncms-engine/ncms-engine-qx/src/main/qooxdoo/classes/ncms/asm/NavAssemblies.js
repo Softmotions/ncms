@@ -98,7 +98,6 @@ qx.Class.define("ncms.asm.NavAssemblies", {
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.new"), "PUT", "application/json");
             req.send(function(resp) {
                 var spec = resp.getContent();
-                qx.log.Logger.info("spec=" + JSON.stringify(spec));
                 this.__selector.getSearchField().setValue(spec["name"]);
             }, this);
         }

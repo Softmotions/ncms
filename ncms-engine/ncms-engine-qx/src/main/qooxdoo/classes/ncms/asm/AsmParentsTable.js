@@ -3,8 +3,6 @@
  *
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
- * @asset(ncms/icon/16/misc/arrow_down.png)
- * @asset(ncms/icon/16/misc/arrow_up.png)
  */
 qx.Class.define("ncms.asm.AsmParentsTable", {
     extend : sm.table.ToolbarLocalTable,
@@ -138,7 +136,6 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             req.send(function(resp) {
                 this.fireEvent("parentsChanged");
             }, this);
-
         },
 
         __addParents : function() {
