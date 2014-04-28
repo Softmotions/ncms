@@ -1,10 +1,12 @@
 package com.softmotions.ncms.media.rest;
 
+import com.softmotions.ncms.jaxrs.NcmsRSException;
 import com.softmotions.ncms.media.db.MediaDataManager;
 
 import com.avaje.ebean.EbeanServer;
 import com.google.inject.Inject;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 
 /**
@@ -18,12 +20,19 @@ public class MediaRestBase {
 	@Inject
 	protected EbeanServer ebean;
 
-	protected Response response(int code, Object entity) {
-		return Response.status(code).entity(entity).build();
+	protected Response response(int code, String message) {
+		switch (code) {
+			case 404:
+				throw new NotFoundException(message);
+			case 500:
+				throw new NcmsRSException(message);
+			default:
+				throw new NcmsRSException("Error [: " + code + "] " + message);
+		}
 	}
 
 	protected Response ok(Object entity) {
-		return response(200, entity);
+		return Response.status(200).entity(entity).build();
 	}
 
 }
