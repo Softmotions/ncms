@@ -11,6 +11,7 @@ import com.softmotions.web.security.WSUserDatabase;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import org.apache.commons.collections.map.Flat3Map;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +37,7 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
 
     protected void configure() {
         bind(WSUserDatabase.class).toProvider(WSUserDatabaseProvider.class).asEagerSingleton();
+        bind(NcmsSecurityRS.class).in(Singleton.class);
     }
 
     public void initServlets(WBServletModule m) {
