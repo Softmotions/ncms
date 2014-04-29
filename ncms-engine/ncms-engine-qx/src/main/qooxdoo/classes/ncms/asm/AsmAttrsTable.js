@@ -60,9 +60,11 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         _createToolbarItems : function(toolbar) {
             var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
             toolbar.add(part);
-            part.add(this._createButton(null, "ncms/icon/16/actions/add.png"));
+            part.add(this._createButton(null, "ncms/icon/16/actions/add.png",
+                    this.__onAdd, this));
 
-            this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png");
+            this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png",
+                    this.__onRemove, this);
             part.add(this.__delBt);
             return toolbar;
         },
@@ -140,6 +142,20 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         _syncState : function() {
             var rd = this.getSelectedRowData();
             this.__delBt.setEnabled(rd != null && rd["asmId"] == this.__spec["id"]);
+        },
+
+        __onAdd : function() {
+            var dlg = new ncms.asm.AsmAttrEditorDlg(
+                    this.tr("New attribute for assembly: %1", this.__spec["name"]));
+            dlg.addListener("completed", function(ev) {
+                var aspec = ev.getData();
+                qx.log.Logger.info("Aspec=" + JSON.stringify(aspec));
+            }, this);
+            dlg.open();
+        },
+
+        __onRemove : function() {
+            qx.log.Logger.info("remove attribute");
         },
 
         __applyValue : function(val) {

@@ -143,7 +143,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             var asmName = spec["name"];
             var asmId = spec["id"];
             var dlg = new ncms.asm.AsmSelectorDlg(
-                    this.tr("Select parents for: ", asmName),
+                    this.tr("Select parents for: %1", asmName),
                     null,
                     {"notIN" : [asmId]}
             );

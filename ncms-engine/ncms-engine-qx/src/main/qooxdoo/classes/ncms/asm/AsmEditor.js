@@ -169,6 +169,6 @@ qx.Class.define("ncms.asm.AsmEditor", {
     },
 
     destruct : function() {
-        this.__form = null;
+        this._disposeObjects("__form");
     }
 });
