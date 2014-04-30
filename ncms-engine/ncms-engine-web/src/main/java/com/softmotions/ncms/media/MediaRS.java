@@ -206,7 +206,7 @@ public class MediaRS {
 
         void check(int length) throws IOException {
             if (getByteCount() + length >= hardThreshould) {
-                throw new IOException("Reached the maximum upload size: " + hardThreshould);
+                throw new IOException("Reached the maximum upload file size: " + hardThreshould);
             }
         }
 
