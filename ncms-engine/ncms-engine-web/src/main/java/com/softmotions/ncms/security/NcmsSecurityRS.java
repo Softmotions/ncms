@@ -49,7 +49,8 @@ public class NcmsSecurityRS {
      *      "name" : "admin",
      *      "email" : "adamansky@gmail.com",
      *      "fullName" : "Антон Адаманский",
-     *      "roles" : ["admin.asm", "admin", "user"]
+     *      "roles" : ["admin.asm", "admin", "user"],
+     *      "groups" : [array of users groups]
      *    }
      * </pre>
      *
@@ -71,6 +72,11 @@ public class NcmsSecurityRS {
         for (final String r : user.getRoleNames()) {
             roles.add(r);
         }
+        ArrayNode groups = res.putArray("groups");
+        Iterator<WSGroup> grpiter = user.getGroups();
+        while (grpiter.hasNext()) {
+            groups.add(grpiter.next().getName());
+        }
         return res;
     }
 
@@ -91,7 +97,8 @@ public class NcmsSecurityRS {
      * <pre>
      *  [{
      *      "name":"admins",
-     *      "description":"Superuser group"
+     *      "description":"Superuser group",
+     *      "roles":[array of groups rolenames]
      *  }]
      * </pre>
      *
@@ -104,9 +111,15 @@ public class NcmsSecurityRS {
         ArrayNode res = mapper.createArrayNode();
         while (groups.hasNext()) {
             WSGroup g = groups.next();
-            res.addObject()
-                    .put("name", g.getName())
+            ObjectNode node = res.addObject();
+            node.put("name", g.getName())
                     .put("description", g.getDescription());
+            ArrayNode roles = node.putArray("roles");
+            Iterator<WSRole> rolesit = g.getRoles();
+            while (rolesit.hasNext()) {
+                roles.add(rolesit.next().getName());
+            }
+
         }
         return res;
     }
@@ -191,8 +204,7 @@ public class NcmsSecurityRS {
     /**
      * Creates group with name and description
      *
-     * @return
-     * <pre>
+     * @return <pre>
      *  {
      *      "name":"admins",
      *      "description":"Superuser group"
@@ -205,16 +217,15 @@ public class NcmsSecurityRS {
         assert (name != null) : "Parameter 'name' of group can not be empty";
         WSGroup group = userDatabase.createGroup(name, description);
         ObjectNode res = mapper.createObjectNode();
-        res.put( "name", group.getName());
-        res.put( "description", group.getDescription());
+        res.put("name", group.getName());
+        res.put("description", group.getDescription());
         return res;
     }
 
     /**
      * Creates role with name and description
      *
-     * @return
-     * <pre>
+     * @return <pre>
      *  {
      *      "name":"admins",
      *      "description":"Description of role"
@@ -227,16 +238,15 @@ public class NcmsSecurityRS {
         assert (name != null) : "Parameter 'name' of role can not be empty";
         WSRole role = userDatabase.createRole(name, description);
         ObjectNode res = mapper.createObjectNode();
-        res.put( "name", role.getName());
-        res.put( "description", role.getDescription());
+        res.put("name", role.getName());
+        res.put("description", role.getDescription());
         return res;
     }
 
     /**
      * Creates user with name, password and full name
      *
-     * @return
-     * <pre>
+     * @return <pre>
      *  {
      *      "name":"admin",
      *      "password":"password",
@@ -248,11 +258,11 @@ public class NcmsSecurityRS {
     @Path("createuser")
     public JsonNode createUser(@QueryParam("name") String name, @QueryParam("password") String password, @QueryParam("fullname") String fullName) {
         assert (name != null) : "Parameter 'name' of user can not be empty";
-        WSUser user = userDatabase.createUser(name,password,fullName);
+        WSUser user = userDatabase.createUser(name, password, fullName);
         ObjectNode res = mapper.createObjectNode();
-        res.put( "name", user.getName());
-        res.put( "password", user.getPassword());
-        res.put( "fullName", user.getFullName());
+        res.put("name", user.getName());
+        res.put("password", user.getPassword());
+        res.put("fullName", user.getFullName());
         return res;
     }
 
@@ -272,7 +282,7 @@ public class NcmsSecurityRS {
     public JsonNode findGroup(@QueryParam("name") String name) {
         WSGroup group = userDatabase.findGroup(name);
         ObjectNode res = null;
-        if(group != null) {
+        if (group != null) {
             res = mapper.createObjectNode();
             res.put("name", group.getName())
                     .put("description", group.getDescription());
@@ -296,7 +306,7 @@ public class NcmsSecurityRS {
     public JsonNode findRole(@QueryParam("name") String name) {
         WSRole role = userDatabase.findRole(name);
         ObjectNode res = null;
-        if(role != null) {
+        if (role != null) {
             res = mapper.createObjectNode();
             res
                     .put("name", role.getName())
@@ -321,7 +331,7 @@ public class NcmsSecurityRS {
     public JsonNode findUser(@QueryParam("name") String name) {
         WSUser user = userDatabase.findUser(name);
         ObjectNode res = null;
-        if(user != null) {
+        if (user != null) {
             res = mapper.createObjectNode();
             res
                     .put("name", user.getName())
@@ -339,7 +349,7 @@ public class NcmsSecurityRS {
     public void removeGroup(@QueryParam("name") String name) {
         assert (name != null) : "Parameter 'name' of group can not be empty";
         WSGroup group = userDatabase.findGroup(name);
-        if(group != null){
+        if (group != null) {
             userDatabase.removeGroup(group);
         }
     }
@@ -352,7 +362,7 @@ public class NcmsSecurityRS {
     public void removeRole(@QueryParam("name") String name) {
         assert (name != null) : "Parameter 'name' of role can not be empty";
         WSRole role = userDatabase.findRole(name);
-        if(role != null){
+        if (role != null) {
             userDatabase.removeRole(role);
         }
     }
@@ -365,8 +375,8 @@ public class NcmsSecurityRS {
     public void removeUser(@QueryParam("name") String name) {
         assert (name != null) : "Parameter 'name' of role can not be empty";
         WSUser user = userDatabase.findUser(name);
-        System.out.println("user = "+user);
-        if(user != null){
+        System.out.println("user = " + user);
+        if (user != null) {
             userDatabase.removeUser(user);
         }
     }
