@@ -202,6 +202,7 @@ public class NcmsSecurityRS {
     @GET
     @Path("creategroup")
     public JsonNode createGroup(@QueryParam("name") String name, @QueryParam("description") String description) {
+        assert (name != null) : "Parameter 'name' of group can not be empty";
         WSGroup group = userDatabase.createGroup(name, description);
         ObjectNode res = mapper.createObjectNode();
         res.put( "name", group.getName());
@@ -222,8 +223,9 @@ public class NcmsSecurityRS {
      */
     @GET
     @Path("createrole")
-    public JsonNode createRole(@QueryParam("rolename") String rolename, @QueryParam("description") String description) {
-        WSRole role = userDatabase.createRole(rolename, description);
+    public JsonNode createRole(@QueryParam("name") String name, @QueryParam("description") String description) {
+        assert (name != null) : "Parameter 'name' of role can not be empty";
+        WSRole role = userDatabase.createRole(name, description);
         ObjectNode res = mapper.createObjectNode();
         res.put( "name", role.getName());
         res.put( "description", role.getDescription());
@@ -245,6 +247,7 @@ public class NcmsSecurityRS {
     @GET
     @Path("createuser")
     public JsonNode createUser(@QueryParam("name") String name, @QueryParam("password") String password, @QueryParam("fullname") String fullName) {
+        assert (name != null) : "Parameter 'name' of user can not be empty";
         WSUser user = userDatabase.createUser(name,password,fullName);
         ObjectNode res = mapper.createObjectNode();
         res.put( "name", user.getName());
@@ -266,8 +269,8 @@ public class NcmsSecurityRS {
      */
     @GET
     @Path("findgroup")
-    public JsonNode findGroup(@QueryParam("groupname") String groupName) {
-        WSGroup group = userDatabase.findGroup(groupName);
+    public JsonNode findGroup(@QueryParam("name") String name) {
+        WSGroup group = userDatabase.findGroup(name);
         ObjectNode res = null;
         if(group != null) {
             res = mapper.createObjectNode();
@@ -290,8 +293,8 @@ public class NcmsSecurityRS {
      */
     @GET
     @Path("findrole")
-    public JsonNode findRole(@QueryParam("rolename") String roleName) {
-        WSRole role = userDatabase.findRole(roleName);
+    public JsonNode findRole(@QueryParam("name") String name) {
+        WSRole role = userDatabase.findRole(name);
         ObjectNode res = null;
         if(role != null) {
             res = mapper.createObjectNode();
@@ -315,8 +318,8 @@ public class NcmsSecurityRS {
      */
     @GET
     @Path("finduser")
-    public JsonNode findUser(@QueryParam("username") String username) {
-        WSUser user = userDatabase.findUser(username);
+    public JsonNode findUser(@QueryParam("name") String name) {
+        WSUser user = userDatabase.findUser(name);
         ObjectNode res = null;
         if(user != null) {
             res = mapper.createObjectNode();
@@ -334,6 +337,7 @@ public class NcmsSecurityRS {
     @GET
     @Path("removegroup")
     public void removeGroup(@QueryParam("name") String name) {
+        assert (name != null) : "Parameter 'name' of group can not be empty";
         WSGroup group = userDatabase.findGroup(name);
         if(group != null){
             userDatabase.removeGroup(group);
@@ -346,6 +350,7 @@ public class NcmsSecurityRS {
     @GET
     @Path("removerole")
     public void removeRole(@QueryParam("name") String name) {
+        assert (name != null) : "Parameter 'name' of role can not be empty";
         WSRole role = userDatabase.findRole(name);
         if(role != null){
             userDatabase.removeRole(role);
@@ -358,6 +363,7 @@ public class NcmsSecurityRS {
     @GET
     @Path("removeuser")
     public void removeUser(@QueryParam("name") String name) {
+        assert (name != null) : "Parameter 'name' of role can not be empty";
         WSUser user = userDatabase.findUser(name);
         System.out.println("user = "+user);
         if(user != null){
