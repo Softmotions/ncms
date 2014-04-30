@@ -43,8 +43,8 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     public void initServlets(WBServletModule m) {
         NcmsConfiguration cfg = (NcmsConfiguration) m.getConfiguration();
         String dbJndiName = cfg.impl().getString("security[@dbJndiName]");
-        String webFakeUser = cfg.impl().getString("security[@webFakeUser]");
-        String webAccessControlAllow = cfg.impl().getString("security[@webAccessControlAllow]");
+        String webFakeUser = cfg.impl().getString("security.web-fakeuser");
+        String webAccessControlAllow = cfg.impl().getString("security.web-access-control-allow");
 
         if (webFakeUser != null) {
             log.info("Setup SecurityFakeEnvFilter filter fake web user: " + webFakeUser);

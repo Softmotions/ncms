@@ -43,9 +43,9 @@
         value.filters=com.softmotions.ncms.asm.render.httl.HttlValueFilter
     </httl>
 
-    <security dbJndiName="java:comp/env/WSUserDatabase"
-              webFakeUser="admin"
-              webAccessControlAllow="*">
+    <security dbJndiName="java:comp/env/WSUserDatabase">
+        <web-fakeuser>admin</web-fakeuser>
+        <web-access-control-allow>*</web-access-control-allow>
     </security>
 
     <modules>
