@@ -4,6 +4,7 @@
     <app-name>Ncms</app-name>
     <help-site>http://nsu.ru</help-site>
     <logout-redirect>http://nsu.ru</logout-redirect>
+    <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->
 
     <ncms-prefix>/ncms</ncms-prefix>
 
@@ -24,21 +25,17 @@
         JDBC.password
     </mybatis>
 
-    <ebean useGuiceProvidedDatasource="true"
-           scanGuiceEntities="true">
-        name=ebean
-        register=true
-        defaultServer=true
-        ddlGenerate=false
-        ddlRun=false
-    </ebean>
-
-    <storage basedir="media-data"/>
-
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
         <dropAll/>
         <update/>
     </liquibase>
+
+    <!-- basedir replacements: {webapp}|{cwd}|{home}|{tmp}|{newtmp} -->
+    <media basedir="{newtmp}/media">
+        <max-upload-size>31457280</max-upload-size>
+        <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
+        <locks-lrucache-size>127</locks-lrucache-size>
+    </media>
 
     <httl extensions="*,httl,html">
         loggers=httl.spi.loggers.Slf4jLogger
@@ -52,11 +49,10 @@
 
     <modules>
         <module class="com.softmotions.ncms.security.NcmsSecurityModule"/>
-        <module class="com.softmotions.ncms.asm.AsmGuiceModule"/>
+        <module class="com.softmotions.ncms.asm.AsmModule"/>
         <module class="com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule"/>
         <module class="com.softmotions.ncms.adm.AdmRestModule"/>
         <module class="com.softmotions.ncms.jaxrs.JAXRSExceptionHandlingModule"/>
-        <module class="com.softmotions.ncms.media_old.MediaModule"/>
     </modules>
 
 </configuration>

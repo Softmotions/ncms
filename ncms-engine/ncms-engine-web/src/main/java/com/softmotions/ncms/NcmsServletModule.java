@@ -16,6 +16,7 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
+import javax.servlet.ServletContext;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +27,14 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
 
-    protected NcmsConfiguration createConfiguration(NinjaProperties nprops) {
+    protected NcmsConfiguration createConfiguration(ServletContext sctx, NinjaProperties nprops) {
         String ncmsCfgFile = nprops.get("ncms.configurationFile");
         if (ncmsCfgFile == null) {
             log.warn("Missing 'ncms.configurationFile' property in the ninja configuration, " +
                      "using fallback resource location: " + NcmsConfiguration.DEFAULT_CFG_RESOURCE);
             ncmsCfgFile = NcmsConfiguration.DEFAULT_CFG_RESOURCE;
         }
-        return new NcmsConfiguration(nprops, ncmsCfgFile, true);
+        return new NcmsConfiguration(sctx, nprops, ncmsCfgFile, true);
     }
 
     protected void init(NcmsConfiguration cfg) {

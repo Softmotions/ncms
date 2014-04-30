@@ -15,7 +15,7 @@ import com.google.inject.multibindings.Multibinder;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmGuiceModule extends AbstractModule {
+public class AsmModule extends AbstractModule {
 
     protected void configure() {
         bind(AsmDAO.class);

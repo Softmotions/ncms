@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class MediaEntryTag implements Serializable {
+public class MediaEntityTag implements Serializable {
 
     String name;
 
@@ -22,7 +22,7 @@ public class MediaEntryTag implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MediaEntryTag that = (MediaEntryTag) o;
+        MediaEntityTag that = (MediaEntityTag) o;
         if (!name.equals(that.name)) return false;
         return true;
     }

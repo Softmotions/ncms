@@ -6,21 +6,25 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
+    <!-- ==================================================================== -->
+    <!-- ====================== ASSEMBLY TABLES ============================= -->
+    <!-- ==================================================================== -->
+
     <changeSet id="1" author="adamansky@gmail.com">
 
         <!-- ===================== ASM CORE ========================== -->
 
         <createTable tableName="ASM_CORES">
-            <column name="ID" type="java.sql.Types.BIGINT" autoIncrement="true">
+            <column name="ID" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="LOCATION" type="java.sql.Types.VARCHAR(256)">
+            <column name="LOCATION" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="NAME" type="java.sql.Types.VARCHAR(256)">
+            <column name="NAME" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="TEMPLATE_ENGINE" type="java.sql.Types.VARCHAR(256)">
+            <column name="TEMPLATE_ENGINE" type="VARCHAR(255)">
             </column>
         </createTable>
 
@@ -40,18 +44,18 @@
 
         <createTable tableName="ASMS"
                      remarks="Assemblies">
-            <column name="ID" type="java.sql.Types.BIGINT" autoIncrement="true">
+            <column name="ID" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="ASM_CORE_ID" type="java.sql.Types.BIGINT">
+            <column name="ASM_CORE_ID" type="BIGINT">
             </column>
-            <column name="NAME" type="java.sql.Types.VARCHAR(128)">
+            <column name="NAME" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="TYPE" type="java.sql.Types.VARCHAR(64)">
+            <column name="TYPE" type="VARCHAR(64)">
             </column>
-            <column name="OPTIONS" type="java.sql.Types.VARCHAR(512)"/>
-            <column name="DESCRIPTION" type="java.sql.Types.VARCHAR(256)"/>
+            <column name="OPTIONS" type="VARCHAR(512)"/>
+            <column name="DESCRIPTION" type="VARCHAR(255)"/>
         </createTable>
 
         <createIndex tableName="ASMS"
@@ -77,18 +81,18 @@
 
         <createTable tableName="ASM_ATTRS"
                      remarks="Assembly attributes">
-            <column name="ASM_ID" type="java.sql.Types.BIGINT">
+            <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="NAME" type="java.sql.Types.VARCHAR(128)">
+            <column name="NAME" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="TYPE" type="java.sql.Types.VARCHAR(128)">
+            <column name="TYPE" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="OPTIONS" type="java.sql.Types.VARCHAR(512)"/>
-            <column name="VALUE" type="java.sql.Types.VARCHAR(1024)"/>
-            <column name="LARGE_VALUE" type="java.sql.Types.CLOB"/>
+            <column name="OPTIONS" type="VARCHAR(512)"/>
+            <column name="VALUE" type="VARCHAR(1024)"/>
+            <column name="LARGE_VALUE" type="CLOB"/>
         </createTable>
 
         <createIndex tableName="ASM_ATTRS"
@@ -109,10 +113,10 @@
         <!-- ================ ASSEMBLY PARENTS ==================== -->
 
         <createTable tableName="ASM_PARENTS">
-            <column name="ASM_ID" type="java.sql.Types.BIGINT">
+            <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="ASM_PARENT_ID" type="java.sql.Types.BIGINT">
+            <column name="ASM_PARENT_ID" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -137,6 +141,106 @@
                                  referencedTableName="ASMS"
                                  referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
+
+
+    </changeSet>
+
+    <!-- ==================================================================== -->
+    <!-- ====================== MEDIA TABLES ================================ -->
+    <!-- ==================================================================== -->
+
+    <changeSet id="2" author="adamansky@gmail.com">
+
+        <!-- ================ MEDIA_ENTITY ==================== -->
+
+        <createTable tableName="MEDIA_ENTITY">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FOLDER" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT_TYPE" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(255)">
+            </column>
+            <column name="PRIMARY_ACL_ID" type="BIGINT">
+            </column>
+            <column name="SECONDARY_ACL_ID" type="BIGINT">
+            </column>
+        </createTable>
+
+        <createIndex tableName="MEDIA_ENTITY"
+                     indexName="IDX_MEDIAENTITY_NAME">
+            <column name="NAME"/>
+        </createIndex>
+        <createIndex tableName="MEDIA_ENTITY"
+                     indexName="IDX_MEDIAENTITY_FOLDER">
+            <column name="FOLDER"/>
+        </createIndex>
+        <createIndex tableName="MEDIA_ENTITY"
+                     indexName="IDX_MEDIAENTITY_PATH"
+                     unique="true">
+            <column name="FOLDER"/>
+            <column name="NAME"/>
+        </createIndex>
+
+        <!-- ================ MEDIA_ENTITY_TAGS ==================== -->
+
+        <createTable tableName="MEDIA_ENTITY_TAGS">
+            <column name="MEDIA_ENTITY_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TAG_NAME" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="MEDIA_ENTITY_TAGS"
+                     indexName="IDX_MEDIAENTITYTAGS_UNIQ"
+                     unique="true">
+            <column name="TAG_NAME"/>
+            <column name="MEDIA_ENTITY_ID"/>
+        </createIndex>
+
+        <!-- ================ MEDIA_ENTITY_ACL ==================== -->
+
+        <createTable tableName="MEDIA_ENTITY_ACL">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <!--<column name="ROOT_MEDIA_ENTYTY_ID" -->
+            <column name="SORTED_ACL" type="VARCHAR(512)">
+            </column>
+        </createTable>
+
+
+        <!-- ==================== FK ============================= -->
+
+        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY_TAGS"
+                                 baseColumnNames="MEDIA_ENTITY_ID"
+                                 constraintName="FK_MEDIAENTITYTAGS_ME"
+                                 referencedTableName="MEDIA_ENTITY"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY"
+                                 baseColumnNames="PRIMARY_ACL_ID"
+                                 constraintName="FK_MEDIAENTITY_PRIMARYACL"
+                                 referencedTableName="MEDIA_ENTITY_ACL"
+                                 referencedColumnNames="ID"
+                                 onDelete="SET NULL"/>
+
+        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY"
+                                 baseColumnNames="SECONDARY_ACL_ID"
+                                 constraintName="FK_MEDIAENTITY_SECONDARYACL"
+                                 referencedTableName="MEDIA_ENTITY_ACL"
+                                 referencedColumnNames="ID"
+                                 onDelete="SET NULL"/>
 
     </changeSet>
 

@@ -8,23 +8,48 @@ import java.util.List;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class MediaEntry implements Serializable {
-
+public class MediaEntity implements Serializable {
+    /**
+     * Primary key
+     */
     Long id;
 
+    /**
+     * File of folder name
+     */
     String name;
 
+    /**
+     * Parent folder path
+     */
     String folder;
 
+    /**
+     * File content type.
+     * Content type: 'internal/folder'
+     * represents folder entry.
+     */
     String contentType;
 
+    /**
+     * Brief file/folder decription.
+     */
     String description;
 
-    List<MediaEntryTag> tags;
+    /**
+     * List of assigned textual tags.
+     */
+    List<MediaEntityTag> tags;
 
-    Long primaryACL;
+    /**
+     * Primary access list.
+     */
+    MediaEntityACL primaryACL;
 
-    Long secondaryACL;
+    /**
+     * Secondary access list.
+     */
+    MediaEntityACL secondaryACL;
 
     public Long getId() {
         return id;
@@ -66,34 +91,34 @@ public class MediaEntry implements Serializable {
         this.description = description;
     }
 
-    public List<MediaEntryTag> getTags() {
+    public List<MediaEntityTag> getTags() {
         return tags;
     }
 
-    public void setTags(List<MediaEntryTag> tags) {
+    public void setTags(List<MediaEntityTag> tags) {
         this.tags = tags;
     }
 
-    public Long getPrimaryACL() {
+    public MediaEntityACL getPrimaryACL() {
         return primaryACL;
     }
 
-    public void setPrimaryACL(Long primaryACL) {
+    public void setPrimaryACL(MediaEntityACL primaryACL) {
         this.primaryACL = primaryACL;
     }
 
-    public Long getSecondaryACL() {
+    public MediaEntityACL getSecondaryACL() {
         return secondaryACL;
     }
 
-    public void setSecondaryACL(Long secondaryACL) {
+    public void setSecondaryACL(MediaEntityACL secondaryACL) {
         this.secondaryACL = secondaryACL;
     }
 
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MediaEntry that = (MediaEntry) o;
+        MediaEntity that = (MediaEntity) o;
         if (folder != null ? !folder.equals(that.folder) : that.folder != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         return true;
@@ -103,5 +128,15 @@ public class MediaEntry implements Serializable {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (folder != null ? folder.hashCode() : 0);
         return result;
+    }
+
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("MediaEntity{");
+        sb.append("id=").append(id);
+        sb.append(", folder='").append(folder).append('\'');
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", contentType='").append(contentType).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }
