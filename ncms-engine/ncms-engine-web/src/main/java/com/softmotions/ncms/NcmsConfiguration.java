@@ -83,15 +83,34 @@ public class NcmsConfiguration extends WBConfiguration {
         return etype;
     }
 
+    /**
+     * System-wide tmp dir.
+     */
     public File getTmpdir() {
         return tmpdir;
+    }
+
+    /**
+     * Tmp dir cleared on application shutdown.
+     */
+    public File getSessionTmpdir() {
+        synchronized (this) {
+            if (sessionTmpDir == null) {
+                try {
+                    sessionTmpDir = Files.createTempDirectory("ncms-").toFile();
+                } catch (IOException e) {
+                    log.error("", e);
+                }
+            }
+        }
+        return sessionTmpDir;
     }
 
     public ServletContext getServletContext() {
         return servletContext;
     }
 
-    private File newtmp;
+    private File sessionTmpDir;
 
     public String substitutePath(String path) {
         String webappPath = getServletContext().getRealPath("");
@@ -104,16 +123,7 @@ public class NcmsConfiguration extends WBConfiguration {
                 .replace("{tmp}", getTmpdir().getAbsolutePath());
 
         if (path.contains("{newtmp}")) {
-            synchronized (this) {
-                if (newtmp == null) {
-                    try {
-                        newtmp = Files.createTempDirectory("ncms-").toFile();
-                    } catch (IOException e) {
-                        log.error("", e);
-                    }
-                }
-            }
-            path = path.replace("{newtmp}", newtmp.getAbsolutePath());
+            path = path.replace("{newtmp}", getSessionTmpdir().getAbsolutePath());
         }
         return path;
     }
@@ -122,9 +132,9 @@ public class NcmsConfiguration extends WBConfiguration {
     @Dispose(order = 1)
     public void dispose() {
         synchronized (this) {
-            if (newtmp != null) {
+            if (sessionTmpDir != null) {
                 try {
-                    FileUtils.deleteDirectory(newtmp);
+                    FileUtils.deleteDirectory(sessionTmpDir);
                 } catch (IOException e) {
                     log.error("", e);
                 }

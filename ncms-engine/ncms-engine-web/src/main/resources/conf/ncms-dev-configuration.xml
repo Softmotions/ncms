@@ -30,7 +30,7 @@
     </liquibase>
 
     <!-- basedir replacements: {webapp}|{cwd}|{home}|{tmp}|{newtmp} -->
-    <media basedir="{tmp}/media">
+    <media basedir="{tmp}/ncms/media">
         <max-upload-size>31457280</max-upload-size>
         <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
         <locks-lrucache-size>127</locks-lrucache-size>
