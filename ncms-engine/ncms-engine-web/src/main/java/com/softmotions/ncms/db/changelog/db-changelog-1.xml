@@ -166,6 +166,9 @@
             <column name="CONTENT_TYPE" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
+            <column name="CONTENT_LENGTH" type="INT">
+                <constraints nullable="true"/>
+            </column>
             <column name="DESCRIPTION" type="VARCHAR(255)">
             </column>
             <column name="PRIMARY_ACL_ID" type="BIGINT">

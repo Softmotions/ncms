@@ -32,6 +32,11 @@ public class MediaEntity implements Serializable {
     String contentType;
 
     /**
+     * File length
+     */
+    Integer contentLength;
+
+    /**
      * Brief file/folder decription.
      */
     String description;
@@ -81,6 +86,14 @@ public class MediaEntity implements Serializable {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public Integer getContentLength() {
+        return contentLength;
+    }
+
+    public void setContentLength(Integer contentLength) {
+        this.contentLength = contentLength;
     }
 
     public String getDescription() {

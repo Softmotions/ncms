@@ -272,6 +272,16 @@
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-weboot</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>bouncycastle</groupId>
+                    <artifactId>bcmail-jdk14</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>bouncycastle</groupId>
+                    <artifactId>bcprov-jdk14</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
@@ -378,11 +388,11 @@
             <artifactId>tika-core</artifactId>
             <version>1.5</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
             <version>1.5</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>

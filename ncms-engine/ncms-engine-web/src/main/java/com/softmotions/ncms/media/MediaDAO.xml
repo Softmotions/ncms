@@ -6,4 +6,23 @@
 <mapper namespace="com.softmotions.ncms.media.MediaDAO">
 
 
+    <select id="selectEntityIdByPath" parameterType="map" resultType="long">
+       select id
+       from media_entity
+       where folder = #{folder} and name = #{name}
+    </select>
+
+    <insert id="insertEntity" parameterType="map">
+        insert into media_entity
+        (folder, name, content_type, content_length)
+        values (#{folder}, #{name}, #{content_type}, #{content_length})
+    </insert>
+
+    <update id="updateEntity" parameterType="map">
+        update media_entity
+        set  content_type = #{content_type},
+             content_length = #{content_length}
+        where id = #{id}
+    </update>
+
 </mapper>

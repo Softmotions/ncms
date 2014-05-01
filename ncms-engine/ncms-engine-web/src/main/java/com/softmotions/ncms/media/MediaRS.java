@@ -12,6 +12,7 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.tika.mime.MediaType;
+import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -49,9 +51,11 @@ public class MediaRS {
 
     private final RWLocksLRUCache locksCache;
 
+    private final MediaDAO mdao;
+
 
     @Inject
-    public MediaRS(NcmsConfiguration cfg) throws IOException {
+    public MediaRS(NcmsConfiguration cfg, MediaDAO mdao) throws IOException {
         this.cfg = cfg;
         XMLConfiguration xcfg = cfg.impl();
         String dir = xcfg.getString("media[@basedir]");
@@ -62,6 +66,7 @@ public class MediaRS {
         basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);
         locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 0x7f));
+        this.mdao = mdao;
     }
 
     /**
@@ -72,21 +77,33 @@ public class MediaRS {
      */
     @PUT
     @Consumes("application/octet-stream")
-    @Path("/file/{path:.*}/{name}")
-    public void putFile(@PathParam("path") String path,
+    @Path("/file/{folder:.*}/{name}")
+    @Transactional
+    public void putFile(@PathParam("folder") String folder,
                         @PathParam("name") String name,
                         @Context HttpServletRequest req,
                         InputStream in) throws IOException {
 
-        if (path.contains("..")) {
-            throw new BadRequestException(path);
+        if (folder.contains("..")) {
+            throw new BadRequestException(folder);
         }
 
         //Used in order to proper ctype detection by TIKA (mark/reset are supported by BufferedInputStream)
         BufferedInputStream bis = new BufferedInputStream(in);
 
+        String rctype = req.getContentType();
+        if (rctype == null) {
+            rctype = req.getServletContext().getMimeType(name);
+        }
         //We do not trust to the content-type provided by request
-        MediaType mtype = MimeTypeDetector.detect(bis, name, req.getContentType(), req.getCharacterEncoding());
+        MediaType mtype = MimeTypeDetector.detect(bis, name, rctype, req.getCharacterEncoding());
+        if (mtype.getBaseType().toString().startsWith("text/") &&
+            mtype.getParameters().get("charset") == null) {
+            Charset charset = MimeTypeDetector.detectCharset(bis, name, rctype, req.getCharacterEncoding());
+            if (charset != null) {
+                mtype = new MediaType(mtype, charset);
+            }
+        }
 
         XMLConfiguration xcfg = cfg.impl();
         int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB); //1Mb by default
@@ -95,34 +112,44 @@ public class MediaRS {
 
         ReentrantReadWriteLock rwlock = null;
         try {
-            long actualSize = IOUtils.copyLarge(bis, us);
+            long actualLength = IOUtils.copyLarge(bis, us);
             us.close();
 
-            if (req.getContentLength() != -1 && req.getContentLength() != actualSize) {
+            if (req.getContentLength() != -1 && req.getContentLength() != actualLength) {
                 throw new BadRequestException(
                         String.format("Wrong Content-Length request header specified. " +
                                       "The file %s/%s will be rejected",
-                                      path, name
+                                      folder, name
                         )
                 );
             }
-            rwlock = acquirePathRWLock(path, true); //lock the folder
-            File dir = new File(basedir, path);
+            rwlock = acquirePathRWLock(folder, true); //lock the folder
+            File dir = new File(basedir, folder);
             File target = new File(dir, name);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
             if (log.isDebugEnabled()) {
                 log.debug("Writing {}/{} into: {} as {} size: {}",
-                          path, name, target.getAbsolutePath(), mtype, actualSize);
+                          folder, name, target.getAbsolutePath(), mtype, actualLength);
             }
             try (FileOutputStream fos = new FileOutputStream(target)) {
                 us.writeTo(fos);
                 fos.flush();
             }
-
-            //todo update database meta!
-
+            Number id = mdao.selectEntityIdByPath(folder, name);
+            if (id == null) {
+                mdao.insert("insertEntity",
+                            "folder", folder,
+                            "name", name,
+                            "content_type", mtype.toString(),
+                            "content_length", actualLength);
+            } else {
+                mdao.update("updateEntity",
+                            "id", id,
+                            "content_type", mtype.toString(),
+                            "content_length", actualLength);
+            }
         } finally {
             if (rwlock != null) {
                 rwlock.writeLock().unlock();
