@@ -9,7 +9,17 @@ import java.io.Serializable;
  */
 public class MediaEntityTag implements Serializable {
 
+    Long ownerId;
+
     String name;
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
 
     public String getName() {
         return name;

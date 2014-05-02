@@ -9,16 +9,16 @@ import java.io.Serializable;
  */
 public class MediaEntityACL implements Serializable {
 
-    Long owner;
+    Long ownerId;
 
     String acl;
 
-    public Long getOwner() {
-        return owner;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(Long owner) {
-        this.owner = owner;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getAcl() {

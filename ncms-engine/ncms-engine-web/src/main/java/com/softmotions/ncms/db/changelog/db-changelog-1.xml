@@ -177,8 +177,6 @@
             </column>
             <column name="DESCRIPTION" type="VARCHAR(255)">
             </column>
-            <column name="PRIMARY_ACL_ID" type="BIGINT">
-            </column>
             <column name="PRIVATE_ACL" type="VARCHAR(512)">
             </column>
         </createTable>
@@ -201,8 +199,8 @@
         <!-- ================ MEDIA_ENTITY_TAGS ==================== -->
 
         <createTable tableName="MEDIA_ENTITY_TAGS">
-            <column name="MEDIA_ENTITY_ID" type="BIGINT">
-                <constraints nullable="false"/>
+            <column name="OWNER_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="TAG_NAME" type="VARCHAR(32)">
                 <constraints nullable="false"/>
@@ -213,13 +211,13 @@
                      indexName="IDX_MEDIAENTITYTAGS_UNIQ"
                      unique="true">
             <column name="TAG_NAME"/>
-            <column name="MEDIA_ENTITY_ID"/>
+            <column name="OWNER_ID"/>
         </createIndex>
 
         <!-- ================ MEDIA_ENTITY_ACL ==================== -->
 
         <createTable tableName="MEDIA_ENTITY_ACL">
-            <column name="OWNER" type="BIGINT">
+            <column name="OWNER_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="ACL" type="VARCHAR(512)">
@@ -230,18 +228,19 @@
         <!-- ==================== FK ============================= -->
 
         <addForeignKeyConstraint baseTableName="MEDIA_ENTITY_TAGS"
-                                 baseColumnNames="MEDIA_ENTITY_ID"
-                                 constraintName="FK_MEDIAENTITYTAGS_ME"
+                                 baseColumnNames="OWNER_ID"
+                                 constraintName="FK_MEDIAENTITYTAGS_OWNER"
                                  referencedTableName="MEDIA_ENTITY"
                                  referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
 
-        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY"
-                                 baseColumnNames="PRIMARY_ACL_ID"
-                                 constraintName="FK_MEDIAENTITY_PRIMARYACL"
-                                 referencedTableName="MEDIA_ENTITY_ACL"
-                                 referencedColumnNames="OWNER"
-                                 onDelete="SET NULL"/>
+        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY_ACL"
+                                 baseColumnNames="OWNER_ID"
+                                 constraintName="FK_ACL_OWNER"
+                                 referencedTableName="MEDIA_ENTITY"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
 
     </changeSet>
 

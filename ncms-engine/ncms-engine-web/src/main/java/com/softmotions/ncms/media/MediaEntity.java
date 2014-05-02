@@ -54,11 +54,6 @@ public class MediaEntity implements Serializable {
     List<MediaEntityTag> tags;
 
     /**
-     * Primary access list.
-     */
-    MediaEntityACL primaryAcl;
-
-    /**
      * Overriden access list.
      */
     String privateAcl;
@@ -125,14 +120,6 @@ public class MediaEntity implements Serializable {
 
     public void setTags(List<MediaEntityTag> tags) {
         this.tags = tags;
-    }
-
-    public MediaEntityACL getPrimaryAcl() {
-        return primaryAcl;
-    }
-
-    public void setPrimaryAcl(MediaEntityACL primaryAcl) {
-        this.primaryAcl = primaryAcl;
     }
 
     public String getPrivateAcl() {
