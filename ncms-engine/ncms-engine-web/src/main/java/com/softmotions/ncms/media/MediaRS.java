@@ -2,9 +2,13 @@ package com.softmotions.ncms.media;
 
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.inject.Inject;
 
 import org.apache.commons.collections.map.LRUMap;
@@ -18,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -29,6 +35,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.text.Collator;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -38,12 +47,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 @Path("/media")
 @Produces("application/json")
-@Consumes("application/json")
 public class MediaRS {
 
     private static final Logger log = LoggerFactory.getLogger(MediaRS.class);
 
     private static final int MB = 1048576;
+
+    private static final File[] EMPTY_FILES_ARRAY = new File[0];
 
     private final NcmsConfiguration cfg;
 
@@ -53,9 +63,14 @@ public class MediaRS {
 
     private final MediaDAO mdao;
 
+    private final ObjectMapper mapper;
+
+    private final NcmsMessages message;
+
 
     @Inject
-    public MediaRS(NcmsConfiguration cfg, MediaDAO mdao) throws IOException {
+    public MediaRS(NcmsConfiguration cfg, MediaDAO mdao,
+                   ObjectMapper mapper, NcmsMessages message) throws IOException {
         this.cfg = cfg;
         XMLConfiguration xcfg = cfg.impl();
         String dir = xcfg.getString("media[@basedir]");
@@ -67,6 +82,8 @@ public class MediaRS {
         DirUtils.ensureDir(basedir, true);
         locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 0x7f));
         this.mdao = mdao;
+        this.mapper = mapper;
+        this.message = message;
     }
 
     /**
@@ -79,11 +96,84 @@ public class MediaRS {
     @Consumes("application/octet-stream")
     @Path("/file/{folder:.*}/{name}")
     @Transactional
-    public void putFile(@PathParam("folder") String folder,
-                        @PathParam("name") String name,
-                        @Context HttpServletRequest req,
-                        InputStream in) throws IOException {
+    public void put(@PathParam("folder") String folder,
+                    @PathParam("name") String name,
+                    @Context HttpServletRequest req,
+                    InputStream in) throws IOException {
+        _put("/" + folder, name, req, in);
+    }
 
+    @PUT
+    @Consumes("application/octet-stream")
+    @Path("/file/{name}")
+    @Transactional
+    public void put(@PathParam("name") String name,
+                    @Context HttpServletRequest req,
+                    InputStream in) throws IOException {
+        _put("/", name, req, in);
+    }
+
+    @GET
+    @Path("/list/{folder:.*}")
+    @Transactional
+    public JsonNode list(@PathParam("folder") String folder,
+                         @Context HttpServletRequest req) throws IOException {
+        return _list("/" + folder, req);
+    }
+
+    @GET
+    @Path("/list")
+    @Transactional
+    public JsonNode list(@Context HttpServletRequest req) throws IOException {
+        return _list("/", req);
+    }
+
+    /**
+     * GET list of files in the specified directory(folder).
+     * <p/>
+     * Produces the following JSON:
+     * <p/>
+     * <pre>
+     *     [
+     *       {"n" : file name, "c" : 1 if it is folder 0 otherwise },
+     *       ...
+     *     ]
+     * </pre>
+     */
+    private JsonNode _list(String folder,
+                           HttpServletRequest req) throws IOException {
+
+        ArrayNode res = mapper.createArrayNode();
+        File f = new File(basedir, folder);
+        if (!f.exists()) {
+            throw new NotFoundException(folder);
+        }
+        if (!f.isDirectory()) {
+            return res;
+        }
+        final Collator collator = Collator.getInstance(message.getLocale(req));
+        File[] files = f.listFiles();
+        if (files == null) files = EMPTY_FILES_ARRAY;
+        Arrays.sort(files, new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                int res = Integer.compare(f2.isDirectory() ? 1 : 0, f1.isDirectory() ? 1 : 0);
+                if (res == 0) {
+                    return collator.compare(f1.getName(), f2.getName());
+                }
+                return res;
+            }
+        });
+        for (int i = 0, l = files.length; i < l; ++i) {
+            res.addObject().put("n", files[i].getName())
+                    .put("c", files[i].isDirectory() ? 1 : 0);
+        }
+        return res;
+    }
+
+    private void _put(String folder,
+                      String name,
+                      HttpServletRequest req,
+                      InputStream in) throws IOException {
         if (folder.contains("..")) {
             throw new BadRequestException(folder);
         }
@@ -142,7 +232,9 @@ public class MediaRS {
                 mdao.insert("insertEntity",
                             "folder", folder,
                             "name", name,
+                            "container", false,
                             "content_type", mtype.toString(),
+                            "put_content_type", req.getContentType(),
                             "content_length", actualLength);
             } else {
                 mdao.update("updateEntity",

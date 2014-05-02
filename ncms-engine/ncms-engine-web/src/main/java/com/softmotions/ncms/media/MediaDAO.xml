@@ -13,9 +13,12 @@
     </select>
 
     <insert id="insertEntity" parameterType="map">
-        insert into media_entity
-        (folder, name, content_type, content_length)
-        values (#{folder}, #{name}, #{content_type}, #{content_length})
+        insert into media_entity (
+        folder, name, container,
+        content_type, put_content_type, content_length)
+        values (
+        #{folder}, #{name}, #{container},
+        #{content_type}, #{put_content_type}, #{content_length})
     </insert>
 
     <update id="updateEntity" parameterType="map">
@@ -24,5 +27,12 @@
              content_length = #{content_length}
         where id = #{id}
     </update>
+
+    <select id="selectInFolder" parameterType="map" resultType="map">
+       select e.*
+       from media_entity as e
+       where e.folder = #{folder}
+       order by e.container desc, e.name asc
+    </select>
 
 </mapper>

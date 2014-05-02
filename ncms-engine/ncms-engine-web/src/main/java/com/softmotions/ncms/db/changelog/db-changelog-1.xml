@@ -160,11 +160,17 @@
             <column name="NAME" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
+            <column name="CONTAINER" type="INT">
+                <constraints nullable="false"/>
+            </column>
             <column name="FOLDER" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="CONTENT_TYPE" type="VARCHAR(64)">
                 <constraints nullable="false"/>
+            </column>
+            <column name="PUT_CONTENT_TYPE" type="VARCHAR(64)">
+                <constraints nullable="true"/>
             </column>
             <column name="CONTENT_LENGTH" type="INT">
                 <constraints nullable="true"/>
@@ -173,7 +179,7 @@
             </column>
             <column name="PRIMARY_ACL_ID" type="BIGINT">
             </column>
-            <column name="SECONDARY_ACL_ID" type="BIGINT">
+            <column name="PRIVATE_ACL" type="VARCHAR(512)">
             </column>
         </createTable>
 
@@ -213,11 +219,10 @@
         <!-- ================ MEDIA_ENTITY_ACL ==================== -->
 
         <createTable tableName="MEDIA_ENTITY_ACL">
-            <column name="ID" type="BIGINT" autoIncrement="true">
+            <column name="OWNER" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <!--<column name="ROOT_MEDIA_ENTYTY_ID" -->
-            <column name="SORTED_ACL" type="VARCHAR(512)">
+            <column name="ACL" type="VARCHAR(512)">
             </column>
         </createTable>
 
@@ -235,14 +240,7 @@
                                  baseColumnNames="PRIMARY_ACL_ID"
                                  constraintName="FK_MEDIAENTITY_PRIMARYACL"
                                  referencedTableName="MEDIA_ENTITY_ACL"
-                                 referencedColumnNames="ID"
-                                 onDelete="SET NULL"/>
-
-        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY"
-                                 baseColumnNames="SECONDARY_ACL_ID"
-                                 constraintName="FK_MEDIAENTITY_SECONDARYACL"
-                                 referencedTableName="MEDIA_ENTITY_ACL"
-                                 referencedColumnNames="ID"
+                                 referencedColumnNames="OWNER"
                                  onDelete="SET NULL"/>
 
     </changeSet>

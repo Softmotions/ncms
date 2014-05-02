@@ -32,6 +32,13 @@ public class MediaEntity implements Serializable {
     String contentType;
 
     /**
+     * Content type used in
+     * PUT HttpServletRequest
+     * on file upload.
+     */
+    String putContentType;
+
+    /**
      * File length
      */
     Integer contentLength;
@@ -49,12 +56,12 @@ public class MediaEntity implements Serializable {
     /**
      * Primary access list.
      */
-    MediaEntityACL primaryACL;
+    MediaEntityACL primaryAcl;
 
     /**
-     * Secondary access list.
+     * Overriden access list.
      */
-    MediaEntityACL secondaryACL;
+    String privateAcl;
 
     public Long getId() {
         return id;
@@ -88,6 +95,14 @@ public class MediaEntity implements Serializable {
         this.contentType = contentType;
     }
 
+    public String getPutContentType() {
+        return putContentType;
+    }
+
+    public void setPutContentType(String putContentType) {
+        this.putContentType = putContentType;
+    }
+
     public Integer getContentLength() {
         return contentLength;
     }
@@ -112,20 +127,20 @@ public class MediaEntity implements Serializable {
         this.tags = tags;
     }
 
-    public MediaEntityACL getPrimaryACL() {
-        return primaryACL;
+    public MediaEntityACL getPrimaryAcl() {
+        return primaryAcl;
     }
 
-    public void setPrimaryACL(MediaEntityACL primaryACL) {
-        this.primaryACL = primaryACL;
+    public void setPrimaryAcl(MediaEntityACL primaryAcl) {
+        this.primaryAcl = primaryAcl;
     }
 
-    public MediaEntityACL getSecondaryACL() {
-        return secondaryACL;
+    public String getPrivateAcl() {
+        return privateAcl;
     }
 
-    public void setSecondaryACL(MediaEntityACL secondaryACL) {
-        this.secondaryACL = secondaryACL;
+    public void setPrivateAcl(String privateAcl) {
+        this.privateAcl = privateAcl;
     }
 
     public boolean equals(Object o) {

@@ -9,34 +9,34 @@ import java.io.Serializable;
  */
 public class MediaEntityACL implements Serializable {
 
-    Long id;
+    Long owner;
 
-    String sortedACL;
+    String acl;
 
-    public Long getId() {
-        return id;
+    public Long getOwner() {
+        return owner;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setOwner(Long owner) {
+        this.owner = owner;
     }
 
-    public String getSortedACL() {
-        return sortedACL;
+    public String getAcl() {
+        return acl;
     }
 
-    public void setSortedACL(String sortedACL) {
-        this.sortedACL = sortedACL;
+    public void setAcl(String acl) {
+        this.acl = acl;
     }
 
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MediaEntityACL that = (MediaEntityACL) o;
-        return !(sortedACL != null ? !sortedACL.equals(that.sortedACL) : that.sortedACL != null);
+        return !(acl != null ? !acl.equals(that.acl) : that.acl != null);
     }
 
     public int hashCode() {
-        return sortedACL != null ? sortedACL.hashCode() : 0;
+        return acl != null ? acl.hashCode() : 0;
     }
 }
