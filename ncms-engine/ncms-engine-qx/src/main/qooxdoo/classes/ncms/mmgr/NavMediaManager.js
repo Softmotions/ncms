@@ -100,19 +100,7 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
         },
 
         _loadChildren : function(parent, cb, self) {
-            var url;
-            if (this.__tree != null) {
-                var path = [parent.getLabel()];
-                var pp = this.__tree.getParent(parent);
-                while (pp != null) {
-                    path.push(pp.getLabel());
-                    pp = this.__tree.getParent(pp);
-                }
-                path.reverse();
-                url = ncms.Application.ACT.getRestUrl("media.list", path);
-            } else {
-                url = ncms.Application.ACT.getRestUrl("media.list");
-            }
+            var url = ncms.Application.ACT.getRestUrl("media.list", this._getItemPathSegments(parent));
             var req = new sm.io.Request(url, "GET", "application/json");
             req.send(function(resp) {
                 var data = resp.getContent();
@@ -139,25 +127,18 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
             }, this);
         },
 
-        createRandomData : function(parent) {
-            var items = parseInt(Math.random() * 50);
-            for (var i = 0; i < items; i++) {
-                var node = {
-                    label : "Item " + this.count++,
-                    icon : "default",
-                    loaded : true
-                };
-                if (Math.random() > 0.3) {
-                    node["loaded"] = false;
-                    node["children"] = [
-                        {
-                            label : "Loading",
-                            icon : "loading"
-                        }
-                    ];
-                }
-                parent.getChildren().push(qx.data.marshal.Json.createModel(node, true));
+        _getItemPathSegments : function(item) {
+            if (this.__tree == null) {
+                return [];
             }
+            var path = [item.getLabel()];
+            var pp = this.__tree.getParent(item);
+            while (pp != null) {
+                path.push(pp.getLabel());
+                pp = this.__tree.getParent(pp);
+            }
+            path.reverse();
+            return path;
         }
     },
 
