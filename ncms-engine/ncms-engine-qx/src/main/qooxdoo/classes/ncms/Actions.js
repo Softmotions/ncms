@@ -35,6 +35,9 @@ qx.Class.define("ncms.Actions", {
 
         //PUT Assembly parents
         this._action("asms.parents", "/ncms/rs/adm/asms/{id}/parents")
+
+        //MediaRS /ncms/rs/media/list/<path to folder>
+        this._action("media.list", "/ncms/rs/media/list");
     },
 
     members : {

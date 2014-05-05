@@ -135,7 +135,7 @@ public class MediaRS {
      * <p/>
      * <pre>
      *     [
-     *       {"n" : file name, "c" : 1 if it is folder 0 otherwise },
+     *       {"label" : file name, "status" : 1 if it is folder 0 otherwise },
      *       ...
      *     ]
      * </pre>
@@ -164,8 +164,9 @@ public class MediaRS {
             }
         });
         for (int i = 0, l = files.length; i < l; ++i) {
-            res.addObject().put("n", files[i].getName())
-                    .put("c", files[i].isDirectory() ? 1 : 0);
+            res.addObject()
+                    .put("label", files[i].getName())
+                    .put("status", files[i].isDirectory() ? 1 : 0);
         }
         return res;
     }
@@ -199,7 +200,6 @@ public class MediaRS {
         int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB); //1Mb by default
         int uplTh = xcfg.getInt("media.max-upload-size", MB * 10); //10Mb by default
         FileUploadStream us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", cfg.getTmpdir());
-
         ReentrantReadWriteLock rwlock = null;
         try {
             long actualLength = IOUtils.copyLarge(bis, us);
