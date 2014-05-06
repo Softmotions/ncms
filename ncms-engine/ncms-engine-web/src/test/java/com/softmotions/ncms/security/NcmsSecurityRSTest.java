@@ -28,11 +28,9 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		/* ------------ test create user ------------------- */
 		WebTarget wt = ClientBuilder.newClient().target(
 		        address + "/ncms/rs/adm/security/user/test-user");
-		wt.queryParam("password", "password")
-		        .queryParam("fullName", "fullName");
-		Response resp = wt.request()
-		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
-		        .invoke();
+		WebTarget wt2 = wt.queryParam("password", "password").queryParam(
+		        "fullname", "fullname");
+		Response resp = wt2.request().buildPost(null).invoke();
 		String data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! user/test-user/create=" + data);
 		assertEquals(200, resp.getStatus());
@@ -72,8 +70,8 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		/* ------------ test users ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + "/ncms/rs/adm/security/users");
-		wt.queryParam("firstRow", "0").queryParam("lastRow", "20");
-		resp = wt.request()
+		wt2 = wt.queryParam("firstRow", "0").queryParam("lastRow", "20");
+		resp = wt2.request()
 		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
 		        .invoke();
 		data = resp.readEntity(String.class);
@@ -91,8 +89,8 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		/* ------------ test create role ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + "/ncms/rs/adm/security/role/test-role");
-		wt.queryParam("description", "test-role-description");
-		resp = wt.request()
+		wt2 = wt.queryParam("description", "test-role-description");
+		resp = wt2.request()
 		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
 		        .invoke();
 		data = resp.readEntity(String.class);
@@ -142,8 +140,8 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		/* ------------ test create group ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + "/ncms/rs/adm/security/group/test-group");
-		wt.queryParam("description", "test-group-description");
-		resp = wt.request()
+		wt2 = wt.queryParam("description", "test-group-description");
+		resp = wt2.request()
 		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
 		        .invoke();
 		data = resp.readEntity(String.class);
@@ -181,5 +179,4 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		log.info("!!!!!!!!!!!!!!!!!!!! groups/get=" + data);
 		assertEquals(200, resp.getStatus());
 	}
-
 }
