@@ -1,7 +1,7 @@
 /**
- * Pages selector.
+ * Users selector pane.
  */
-qx.Class.define("ncms.pgs.PagesNav", {
+qx.Class.define("ncms.usr.UsersNav", {
     extend : qx.ui.core.Widget,
 
     statics : {
@@ -16,7 +16,7 @@ qx.Class.define("ncms.pgs.PagesNav", {
     construct : function() {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
-        this.setBackgroundColor("blue");
+        this.setBackgroundColor("#ffffcc")
 
     },
 

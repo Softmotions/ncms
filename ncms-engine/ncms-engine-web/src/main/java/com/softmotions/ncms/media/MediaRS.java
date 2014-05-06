@@ -426,7 +426,7 @@ public class MediaRS extends MBDAOSupport {
             synchronized (locksCache) {
                 //noinspection ObjectEquality
                 if (rwlock == locksCache.get(path)) {
-                    //Locked rwlock is not changed we are save to use it until it remains locked
+                    //Locked rwlock is not changed we are safe to use it until it remains locked
                     break;
                 } else {
                     //Locked rwlock is changed (removed from locksCache and replaced) so release it and try again

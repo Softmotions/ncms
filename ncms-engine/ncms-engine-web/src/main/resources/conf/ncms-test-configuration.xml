@@ -62,6 +62,7 @@
             <widget qxClass="ncms.pgs.PagesNav" roles="user"/>
             <widget qxClass="ncms.mmgr.MediaNav" roles="user"/>
             <widget qxClass="ncms.asm.AsmNav" roles="admin.asm"/>
+            <widget qxClass="ncms.usr.UsersNav" roles="admin.users"/>
         </navigation-selectors>
     </ui>
 
