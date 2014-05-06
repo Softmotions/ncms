@@ -186,7 +186,7 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
 
         __onNewFolder : function(ev) {
             var path = this._getItemPathSegments(this.__tree.getSelection().getItem(0));
-            var d = new ncms.mmgr.FolderNewDlg(path);
+            var d = new ncms.mmgr.MediaFolderNewDlg(path);
             d.setPosition("bottom-right");
             d.addListenerOnce("completed", function(ev) {
                 d.hide();

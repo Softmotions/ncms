@@ -1,7 +1,7 @@
 /**
  * New folder dialog
  */
-qx.Class.define("ncms.mmgr.FolderNewDlg", {
+qx.Class.define("ncms.mmgr.MediaFolderNewDlg", {
     extend : sm.ui.form.BaseSavePopupDlg,
 
     /**
