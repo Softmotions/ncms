@@ -5,10 +5,10 @@
 
 <mapper namespace="com.softmotions.ncms.media.MediaRS">
 
-<select id="selectEntityIdByPath" parameterType="map" resultType="long">
-       select id
-       from media_entity
-       where folder = #{folder} and name = #{name}
+    <select id="selectEntityIdByPath" parameterType="map" resultType="long">
+        select id
+        from media_entity
+        where folder = #{folder} and name = #{name}
     </select>
 
     <insert id="insertEntity" parameterType="map">
@@ -22,16 +22,16 @@
 
     <update id="updateEntity" parameterType="map">
         update media_entity
-        set  content_type = #{content_type},
+        set content_type = #{content_type},
         content_length = #{content_length},
         mdate = #{mdate}
         where id = #{id}
     </update>
 
     <select id="selectInFolder" parameterType="map" resultType="map">
-       select e.*
-       from media_entity as e
-       where e.folder = #{folder}
+        select e.*
+        from media_entity as e
+        where e.folder = #{folder}
         order by e.status desc, e.name asc
     </select>
 

@@ -7,6 +7,7 @@ import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.ncms.jaxrs.NcmsMessageException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +17,7 @@ import com.google.inject.Inject;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
@@ -201,8 +203,37 @@ public class MediaRS extends MBDAOSupport {
 
     @PUT
     @Path("/folder/{folder:.*}")
-    public void newFolder(@PathParam("folder") String folder) throws IOException {
-        log.info("New folder=" + folder);
+    public JsonNode newFolder(@PathParam("folder") String folder,
+                              @Context HttpServletRequest req) throws Exception {
+        File f = new File(basedir, folder);
+        if (!f.exists()) {
+            if (!f.mkdirs()) {
+                throw new IOException("Cannot create dir: " + folder);
+            }
+        }
+
+        String name = f.getName();
+        String dirname = FilenameUtils.getPath(folder);
+        if (StringUtils.isBlank(dirname)) {
+            dirname = "/";
+        }
+
+        Number id = selectOne("selectEntityIdByPath",
+                              "folder", dirname,
+                              "name", name);
+        if (id == null) {
+            insert("insertEntity",
+                   "folder", dirname,
+                   "name", name,
+                   "status", 1,
+                   "mdate", new Timestamp(System.currentTimeMillis()));
+        } else {
+            throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
+        }
+
+        return mapper.createObjectNode()
+                .put("label", name)
+                .put("status", 1);
     }
 
 
@@ -217,6 +248,10 @@ public class MediaRS extends MBDAOSupport {
                 Integer lrow = Integer.valueOf(val);
                 cq.limit(Math.abs(frow - lrow) + 1);
             }
+        }
+        val = req.getParameter("status");
+        if (!StringUtils.isBlank(val)) {
+            cq.withParam("status", Integer.parseInt(val));
         }
         val = req.getParameter("folder");
         if (!StringUtils.isBlank(val)) {

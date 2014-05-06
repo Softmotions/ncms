@@ -88,7 +88,7 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
 
             this._loadChildren(root, function() {
                 var tree = this.__tree = new qx.ui.tree.VirtualTree(root, "label", "children");
-                tree.setHideRoot(true);
+                tree.setHideRoot(false);
                 tree.setIconPath("icon");
                 tree.setIconOptions({
                     converter : function(value, model) {
@@ -121,19 +121,18 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
                         controller.bindDefaultProperties(item, index);
                         controller.bindProperty("", "open", {
                             converter : function(value, model, source, target) {
-                                if (target.isOpen() && !value.getLoaded()) {
+                                var open = target.isOpen();
+                                if (open && !value.getLoaded()) {
                                     me._loadChildren(value, function() {
                                         value.setLoaded(true);
                                     });
                                 }
-                                return target.isOpen();
+                                return open;
                             }
                         }, item, index);
                     }
                 };
                 tree.setDelegate(delegate);
-
-
                 tree.getSelection().addListener("change", function(e) {
                     this.__onSelected(e.getTarget().getItem(0));
                 }, this);
@@ -168,34 +167,52 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
         __beforeContextmenuOpen : function(ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
-            var bt = new qx.ui.menu.Button(this.tr("New folder"));
-            bt.addListenerOnce("execute", this.__onNewFolder, this);
+
+            var tree = this.__tree;
+            if (tree.getSelection().length > 0) {
+                var bt = new qx.ui.menu.Button(this.tr("New subfolder"));
+                bt.addListenerOnce("execute", this.__onNewFolder, this);
+                menu.add(bt);
+            }
+
+            bt = new qx.ui.menu.Button(this.tr("New root folder"));
+            bt.addListenerOnce("execute", this.__onNewRootFolder, this);
             menu.add(bt);
-
-            /*var rind = this.__selector.getSelectedAsmInd();
-             if (rind !== -1) {
-             bt = new qx.ui.menu.Button(this.tr("Rename"));
-             bt.addListenerOnce("execute", this.__onRenameAssembly, this);
-             menu.add(bt);
-
-             bt = new qx.ui.menu.Button(this.tr("Remove"));
-             bt.addListenerOnce("execute", this.__onRemoveAssembly, this);
-             menu.add(bt);
-             }*/
         },
 
+
         __onNewFolder : function(ev) {
-            var path = this._getItemPathSegments(this.__tree.getSelection().getItem(0));
+            var selected = this.__tree.getSelection().getItem(0) || this.__tree.getModel();
+            var path = this._getItemPathSegments(selected);
             var d = new ncms.mmgr.MediaFolderNewDlg(path);
             d.setPosition("bottom-right");
             d.addListenerOnce("completed", function(ev) {
                 d.hide();
-                var spec = ev.getData();
-                qx.log.Logger.info("spec=" + JSON.stringify(spec));
-                //this.__selector.getSearchField().setValue(spec["name"]);
+                this._refreshNode(selected);
             }, this);
             d.placeToWidget(ev.getTarget(), false);
             d.show();
+        },
+
+        __onNewRootFolder : function(ev) {
+            var selected = this.__tree.getModel();
+            var selected = this.__tree.getModel();
+            var path = this._getItemPathSegments(selected);
+            var d = new ncms.mmgr.MediaFolderNewDlg(path);
+            d.setPosition("bottom-right");
+            d.addListenerOnce("completed", function(ev) {
+                d.hide();
+                this._refreshNode(selected);
+            }, this);
+            d.placeToWidget(ev.getTarget(), false);
+            d.show();
+        },
+
+
+        _refreshNode : function(node) {
+            this._loadChildren(node, function() {
+                this.__tree.openNode(node);
+            }, this);
         },
 
         _loadChildren : function(parent, cb, self) {
@@ -228,12 +245,15 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
         },
 
         _getItemPathSegments : function(item) {
-            if (this.__tree == null || item == null) {
+            if (this.__tree == null ||
+                    item == null ||
+                    item == this.__tree.getModel()) {
                 return [];
             }
+            var root = this.__tree.getModel();
             var path = [item.getLabel()];
             var pp = this.__tree.getParent(item);
-            while (pp != null) {
+            while (pp != null && pp != root) {
                 path.push(pp.getLabel());
                 pp = this.__tree.getParent(pp);
             }

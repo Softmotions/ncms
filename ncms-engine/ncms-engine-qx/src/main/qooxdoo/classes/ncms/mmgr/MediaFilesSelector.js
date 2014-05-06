@@ -53,7 +53,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         }, this);
 
         this.__table = new ncms.mmgr.MediaFilesTable().set({
-            "statusBarVisible" : false,
+            "statusBarVisible" : true,
             "showCellFocusIndicator" : false});
 
         if (smodel != null) {
@@ -67,7 +67,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this._add(this.__sf);
         this._add(this.__table, {flex : 1});
 
-        this.setConstViewSpec(constViewSpec || null);
+        if (constViewSpec != null) {
+            this.setConstViewSpec(constViewSpec);
+        }
     },
 
     members : {
