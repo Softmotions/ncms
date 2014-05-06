@@ -3,10 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.softmotions.ncms.media.MediaDAO">
+<mapper namespace="com.softmotions.ncms.media.MediaRS">
 
-
-    <select id="selectEntityIdByPath" parameterType="map" resultType="long">
+<select id="selectEntityIdByPath" parameterType="map" resultType="long">
        select id
        from media_entity
        where folder = #{folder} and name = #{name}

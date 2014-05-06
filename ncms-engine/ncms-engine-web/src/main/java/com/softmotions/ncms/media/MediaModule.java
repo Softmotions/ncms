@@ -11,7 +11,6 @@ import com.google.inject.Singleton;
 public class MediaModule extends AbstractModule {
 
     protected void configure() {
-        bind(MediaDAO.class).in(Singleton.class);
         bind(MediaRS.class).in(Singleton.class);
     }
 }

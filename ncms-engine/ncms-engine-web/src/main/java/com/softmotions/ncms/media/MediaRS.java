@@ -2,6 +2,7 @@ package com.softmotions.ncms.media;
 
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
+import com.softmotions.commons.weboot.mb.MBDAOSupport;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.io.MimeTypeDetector;
@@ -21,6 +22,7 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.tika.mime.MediaType;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -57,7 +59,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 @Path("/media")
 @Produces("application/json")
-public class MediaRS {
+public class MediaRS extends MBDAOSupport {
 
     private static final Logger log = LoggerFactory.getLogger(MediaRS.class);
 
@@ -71,15 +73,17 @@ public class MediaRS {
 
     private final RWLocksLRUCache locksCache;
 
-    private final MediaDAO mdao;
-
     private final ObjectMapper mapper;
 
     private final NcmsMessages message;
 
     @Inject
-    public MediaRS(NcmsConfiguration cfg, MediaDAO mdao,
-                   ObjectMapper mapper, NcmsMessages message) throws IOException {
+    public MediaRS(NcmsConfiguration cfg,
+                   SqlSession sess,
+                   ObjectMapper mapper,
+                   NcmsMessages message) throws IOException {
+
+        super(MediaRS.class.getName(), sess);
         this.cfg = cfg;
         XMLConfiguration xcfg = cfg.impl();
         String dir = xcfg.getString("media[@basedir]");
@@ -90,7 +94,6 @@ public class MediaRS {
         basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);
         locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 0x7f));
-        this.mdao = mdao;
         this.mapper = mapper;
         this.message = message;
     }
@@ -173,7 +176,7 @@ public class MediaRS {
     @Transactional
     public JsonNode select(@Context HttpServletRequest req) {
         ArrayNode res = mapper.createArrayNode();
-        List<Map<String, ?>> rows = mdao.select("select", createSelectQ(req));
+        List<Map<String, ?>> rows = select("select", createSelectQ(req));
         for (Map<String, ?> row : rows) {
             ObjectNode on = res.addObject();
             on.put("id", ((Number) row.get("id")).longValue());
@@ -192,7 +195,7 @@ public class MediaRS {
     @Produces("text/plain")
     @Transactional
     public Integer selectCount(@Context HttpServletRequest req) {
-        return mdao.selectOne("count", createSelectQ(req));
+        return selectOne("count", createSelectQ(req));
     }
 
 
@@ -204,7 +207,7 @@ public class MediaRS {
 
 
     private MBCriteriaQuery createSelectQ(HttpServletRequest req) {
-        MBCriteriaQuery cq = mdao.createCriteria();
+        MBCriteriaQuery cq = createCriteria();
         String val = req.getParameter("firstRow");
         if (val != null) {
             Integer frow = Integer.valueOf(val);
@@ -335,22 +338,24 @@ public class MediaRS {
                 us.writeTo(fos);
                 fos.flush();
             }
-            Number id = mdao.selectEntityIdByPath(folder, name);
+            Number id = selectOne("selectEntityIdByPath",
+                                  "folder", folder,
+                                  "name", name);
             if (id == null) {
-                mdao.insert("insertEntity",
-                            "folder", folder,
-                            "name", name,
-                            "status", 0,
-                            "content_type", mtype.toString(),
-                            "put_content_type", req.getContentType(),
-                            "content_length", actualLength,
-                            "mdate", new Timestamp(System.currentTimeMillis()));
+                insert("insertEntity",
+                       "folder", folder,
+                       "name", name,
+                       "status", 0,
+                       "content_type", mtype.toString(),
+                       "put_content_type", req.getContentType(),
+                       "content_length", actualLength,
+                       "mdate", new Timestamp(System.currentTimeMillis()));
             } else {
-                mdao.update("updateEntity",
-                            "id", id,
-                            "content_type", mtype.toString(),
-                            "content_length", actualLength,
-                            "mdate", new Timestamp(System.currentTimeMillis()));
+                update("updateEntity",
+                       "id", id,
+                       "content_type", mtype.toString(),
+                       "content_length", actualLength,
+                       "mdate", new Timestamp(System.currentTimeMillis()));
             }
         } finally {
             if (rwlock != null) {
