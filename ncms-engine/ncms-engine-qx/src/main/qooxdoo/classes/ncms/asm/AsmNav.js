@@ -3,7 +3,7 @@
  * controls all application assemblies
  * and assembly editor workspace.
  */
-qx.Class.define("ncms.asm.NavAssemblies", {
+qx.Class.define("ncms.asm.AsmNav", {
     extend : qx.ui.core.Widget,
 
     statics : {
@@ -24,7 +24,7 @@ qx.Class.define("ncms.asm.NavAssemblies", {
         this._add(this.__selector);
 
         //Register assembly instance editor
-        var eclazz = ncms.asm.NavAssemblies.ASM_EDITOR_CLAZZ;
+        var eclazz = ncms.asm.AsmNav.ASM_EDITOR_CLAZZ;
         var app = ncms.Application.INSTANCE;
         app.registerWSA(eclazz, function() {
             return new ncms.asm.AsmEditor();
@@ -54,7 +54,7 @@ qx.Class.define("ncms.asm.NavAssemblies", {
         __asmSelected : function(ev) {
             var data = ev.getData();
             var app = ncms.Application.INSTANCE;
-            var eclazz = ncms.asm.NavAssemblies.ASM_EDITOR_CLAZZ;
+            var eclazz = ncms.asm.AsmNav.ASM_EDITOR_CLAZZ;
             if (data == null) {
                 app.showDefaultWSA();
                 return;

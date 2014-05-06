@@ -4,9 +4,9 @@
  * WSA abbrev means: workspace area (big right side zone)
  *
  *
- * @use(ncms.asm.NavAssemblies)
- * @use(ncms.mmgr.NavMediaManager)
- * @use(ncms.pgs.NavPages)
+ * @use(ncms.asm.AsmNav)
+ * @use(ncms.mmgr.MediaNav)
+ * @use(ncms.pgs.PagesNav)
  *
  * @asset(ncms/icon/16/help/help.png)
  * @asset(ncms/icon/16/misc/door_in.png)
@@ -113,7 +113,7 @@ qx.Class.define("ncms.Application", {
         /**
          * Fired if specifig admin GUI workspace activated
          * Data: {"qxClass":<workspace loader class>, "label":<workspace name>}
-         * Example data: {"qxClass":"ncms.pgs.NavPages","label":"Страницы"}
+         * Example data: {"qxClass":"ncms.pgs.PagesNav","label":"Страницы"}
          */
         "workspaceActivated" : "qx.event.type.Data"
     },

@@ -6,7 +6,7 @@
  * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
  * @asset(ncms/icon/22/state/loading.gif)
  */
-qx.Class.define("ncms.mmgr.NavMediaManager", {
+qx.Class.define("ncms.mmgr.MediaNav", {
     extend : qx.ui.core.Widget,
 
     statics : {
@@ -48,7 +48,7 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
         }
 
         //Register media folder editor
-        var eclazz = ncms.mmgr.NavMediaManager.MMF_EDITOR_CLAZZ;
+        var eclazz = ncms.mmgr.MediaNav.MMF_EDITOR_CLAZZ;
         var app = ncms.Application.INSTANCE;
         app.registerWSA(eclazz, function() {
             return new ncms.mmgr.MediaFolderEditor();
@@ -143,7 +143,7 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
 
         __onSelected : function(item) {
             var app = ncms.Application.INSTANCE;
-            var eclazz = ncms.mmgr.NavMediaManager.MMF_EDITOR_CLAZZ;
+            var eclazz = ncms.mmgr.MediaNav.MMF_EDITOR_CLAZZ;
             if (item == null) {
                 app.showDefaultWSA();
                 if (this.hasListener("itemSelected")) {

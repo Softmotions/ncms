@@ -1,4 +1,4 @@
-qx.Class.define("ncms.pgs.NavPages", {
+qx.Class.define("ncms.pgs.PagesNav", {
     extend : qx.ui.container.Composite,
 
     statics : {

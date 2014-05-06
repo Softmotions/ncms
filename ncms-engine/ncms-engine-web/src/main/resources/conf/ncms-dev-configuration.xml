@@ -59,9 +59,9 @@
 
     <ui>
         <navigation-selectors>
-            <widget qxClass="ncms.pgs.NavPages" roles="user"/>
-            <widget qxClass="ncms.mmgr.NavMediaManager" roles="user"/>
-            <widget qxClass="ncms.asm.NavAssemblies" roles="admin.asm"/>
+            <widget qxClass="ncms.pgs.PagesNav" roles="user"/>
+            <widget qxClass="ncms.mmgr.MediaNav" roles="user"/>
+            <widget qxClass="ncms.asm.AsmNav" roles="admin.asm"/>
         </navigation-selectors>
     </ui>
 
