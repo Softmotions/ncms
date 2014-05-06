@@ -198,7 +198,9 @@ public class NcmsSecurityRS {
 	@Path("users")
 	public JsonNode users(@QueryParam("firstRow") int firstRow,
 	        @QueryParam("lastRow") int lastRow) {
-		log.info("users?firstRow=" + firstRow + "&lastRow=" + lastRow);
+        if (log.isDebugEnabled()) {
+            log.debug("users?firstRow=" + firstRow + "&lastRow=" + lastRow);
+        }
 		Iterator<WSUser> users = userDatabase.getUsers(firstRow,
 		        Math.abs(lastRow - firstRow) + 1);
 		ArrayNode res = mapper.createArrayNode();
@@ -225,8 +227,10 @@ public class NcmsSecurityRS {
 	@Path("group/{name}")
 	public JsonNode createGroup(@PathParam("name") String name,
 	        @QueryParam("description") String description) {
-		log.info("createGroup: creategroup/{" + name + "}?description="
-		        + description);
+        if (log.isDebugEnabled()) {
+            log.debug("createGroup: creategroup/{" + name + "}?description="
+                     + description);
+        }
 		assert (name != null) : "Parameter 'name' of group can not be empty";
 		WSGroup group = userDatabase.createGroup(name, description);
 		ObjectNode res = mapper.createObjectNode();
@@ -249,7 +253,9 @@ public class NcmsSecurityRS {
 	@Path("role/{name}")
 	public JsonNode createRole(@PathParam("name") String name,
 	        @QueryParam("description") String description) {
-		log.info("createrole/{" + name + "}?description=" + description);
+        if (log.isDebugEnabled()) {
+            log.debug("createrole/{" + name + "}?description=" + description);
+        }
 		assert (name != null) : "Parameter 'name' of role can not be empty";
 		WSRole role = userDatabase.createRole(name, description);
 		ObjectNode res = mapper.createObjectNode();
@@ -274,8 +280,10 @@ public class NcmsSecurityRS {
 	public JsonNode createUser(@PathParam("name") String name,
 	        @QueryParam("password") String password,
 	        @QueryParam("fullname") String fullName) {
-		log.info("createuser/{" + name + "}?password=" + password
-		        + "&fullName=" + fullName);
+        if (log.isDebugEnabled()) {
+            log.debug("createuser/{" + name + "}?password=" + password
+                     + "&fullName=" + fullName);
+        }
 		assert (name != null) : "Parameter 'name' of user can not be empty";
 		WSUser user = userDatabase.createUser(name, password, fullName);
 		ObjectNode res = mapper.createObjectNode();
@@ -300,7 +308,9 @@ public class NcmsSecurityRS {
 	@GET
 	@Path("group/{name}")
 	public JsonNode findGroup(@PathParam("name") String name) {
-		log.info("findgroup/{" + name + "}");
+        if (log.isDebugEnabled()) {
+            log.debug("findgroup/{" + name + "}");
+        }
 		WSGroup group = userDatabase.findGroup(name);
 		ObjectNode res = null;
 		if (group != null) {
@@ -326,7 +336,9 @@ public class NcmsSecurityRS {
 	@GET
 	@Path("role/{name}")
 	public JsonNode findRole(@PathParam("name") String name) {
-		log.info("findrole/{" + name + "}");
+        if (log.isDebugEnabled()) {
+            log.debug("findrole/{" + name + "}");
+        }
 		WSRole role = userDatabase.findRole(name);
 		ObjectNode res = null;
 		if (role != null) {
@@ -352,7 +364,9 @@ public class NcmsSecurityRS {
 	@GET
 	@Path("user/{name}")
 	public JsonNode findUser(@PathParam("name") String name) {
-		log.info("finduser/{" + name + "}");
+        if (log.isDebugEnabled()) {
+            log.debug("finduser/{" + name + "}");
+        }
 		WSUser user = userDatabase.findUser(name);
 		ObjectNode res = null;
 		if (user != null) {
@@ -369,7 +383,9 @@ public class NcmsSecurityRS {
 	@DELETE
 	@Path("group/{name}")
 	public void removeGroup(@PathParam("name") String name) {
-		log.info("removegroup/{" + name + "}");
+        if (log.isDebugEnabled()) {
+            log.debug("removegroup/{" + name + "}");
+        }
 		assert (name != null) : "Parameter 'name' of group can not be empty";
 		WSGroup group = userDatabase.findGroup(name);
 		if (group != null) {
@@ -383,7 +399,9 @@ public class NcmsSecurityRS {
 	@DELETE
 	@Path("role/{name}")
 	public void removeRole(@PathParam("name") String name) {
-		log.info("removerole/{" + name + "}");
+        if (log.isDebugEnabled()) {
+            log.debug("removerole/{" + name + "}");
+        }
 		assert (name != null) : "Parameter 'name' of role can not be empty";
 		WSRole role = userDatabase.findRole(name);
 		if (role != null) {
@@ -397,7 +415,9 @@ public class NcmsSecurityRS {
 	@DELETE
 	@Path("user/{name}")
 	public void removeUser(@PathParam("name") String name) {
-		log.info("removeuser/{" + name + "}");
+        if (log.isDebugEnabled()) {
+            log.debug("removeuser/{" + name + "}");
+        }
 		assert (name != null) : "Parameter 'name' of role can not be empty";
 		WSUser user = userDatabase.findUser(name);
 		System.out.println("user = " + user);
