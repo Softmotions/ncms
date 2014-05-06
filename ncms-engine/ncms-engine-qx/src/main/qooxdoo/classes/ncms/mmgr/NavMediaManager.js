@@ -67,6 +67,9 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
         }, this);
 
         this.__initTree();
+
+        this.setContextMenu(new qx.ui.menu.Menu());
+        this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
     },
 
     members : {
@@ -162,6 +165,39 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
             }
         },
 
+        __beforeContextmenuOpen : function(ev) {
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+            var bt = new qx.ui.menu.Button(this.tr("New folder"));
+            bt.addListenerOnce("execute", this.__onNewFolder, this);
+            menu.add(bt);
+
+            /*var rind = this.__selector.getSelectedAsmInd();
+             if (rind !== -1) {
+             bt = new qx.ui.menu.Button(this.tr("Rename"));
+             bt.addListenerOnce("execute", this.__onRenameAssembly, this);
+             menu.add(bt);
+
+             bt = new qx.ui.menu.Button(this.tr("Remove"));
+             bt.addListenerOnce("execute", this.__onRemoveAssembly, this);
+             menu.add(bt);
+             }*/
+        },
+
+        __onNewFolder : function(ev) {
+            var path = this._getItemPathSegments(this.__tree.getSelection().getItem(0));
+            var d = new ncms.mmgr.FolderNewDlg(path);
+            d.setPosition("bottom-right");
+            d.addListenerOnce("completed", function(ev) {
+                d.hide();
+                var spec = ev.getData();
+                qx.log.Logger.info("spec=" + JSON.stringify(spec));
+                //this.__selector.getSearchField().setValue(spec["name"]);
+            }, this);
+            d.placeToWidget(ev.getTarget(), false);
+            d.show();
+        },
+
         _loadChildren : function(parent, cb, self) {
             var url = ncms.Application.ACT.getRestUrl("media.folders", this._getItemPathSegments(parent));
             var req = new sm.io.Request(url, "GET", "application/json");
@@ -192,7 +228,7 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
         },
 
         _getItemPathSegments : function(item) {
-            if (this.__tree == null) {
+            if (this.__tree == null || item == null) {
                 return [];
             }
             var path = [item.getLabel()];

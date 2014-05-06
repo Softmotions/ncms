@@ -195,6 +195,14 @@ public class MediaRS {
         return mdao.selectOne("count", createSelectQ(req));
     }
 
+
+    @PUT
+    @Path("/folder/{folder:.*}")
+    public void newFolder(@PathParam("folder") String folder) throws IOException {
+        log.info("New folder=" + folder);
+    }
+
+
     private MBCriteriaQuery createSelectQ(HttpServletRequest req) {
         MBCriteriaQuery cq = mdao.createCriteria();
         String val = req.getParameter("firstRow");
