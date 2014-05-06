@@ -17,6 +17,8 @@ import com.softmotions.ncms.NcmsWebTest;
  */
 public class NcmsSecurityRSTest extends NcmsWebTest {
 
+	private static final String PREFIX_URI = "/ncms/rs/adm/security";
+
 	public NcmsSecurityRSTest() {
 	}
 
@@ -27,9 +29,9 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		/* ------------ user --------------- */
 		/* ------------ test create user ------------------- */
 		WebTarget wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/user/test-user");
-		wt = wt.queryParam("password", "password").queryParam(
-		        "fullname", "fullname");
+		        address + PREFIX_URI + "/user/test-user");
+		wt = wt.queryParam("password", "password").queryParam("fullname",
+		        "fullname");
 		Response resp = wt.request().buildPost(null).invoke();
 		String data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! user/test-user/create=" + data);
@@ -37,7 +39,7 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 
 		/* ------------ test get user ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/user/test-user");
+		        address + PREFIX_URI + "/user/test-user");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! user/test-user/get=" + data);
@@ -45,7 +47,7 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 
 		/* ------------ test find user ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/user/test-user");
+		        address + PREFIX_URI + "/user/test-user");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! user/test-user/find=" + data);
@@ -53,23 +55,21 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 
 		/* ------------ test user count ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/users/count");
+		        address + PREFIX_URI + "/users/count");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! users/count=" + data);
 		assertEquals(200, resp.getStatus());
 
 		/* ------------ test users ------------------- */
-		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/users");
+		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/users");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! users/get=" + data);
 		assertEquals(200, resp.getStatus());
 
 		/* ------------ test users ------------------- */
-		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/users");
+		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/users");
 		wt = wt.queryParam("firstRow", "0").queryParam("lastRow", "20");
 		resp = wt.request()
 		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
@@ -80,7 +80,7 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 
 		/* ------------ test delete user ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/user/test-user");
+		        address + PREFIX_URI + "/user/test-user");
 		resp = wt.request().buildDelete().invoke();
 		log.info("!!!!!!!!!!!!!!!!!!!! user/test-user/delete");
 		assertEquals(204, resp.getStatus());
@@ -88,7 +88,7 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		/* ------------ role --------------- */
 		/* ------------ test create role ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/role/test-role");
+		        address + PREFIX_URI + "/role/test-role");
 		wt = wt.queryParam("description", "test-role-description");
 		resp = wt.request()
 		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
@@ -99,7 +99,7 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 
 		/* ------------ test get role ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/role/test-role");
+		        address + PREFIX_URI + "/role/test-role");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! role/test-role/get=" + data);
@@ -107,15 +107,14 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 
 		/* ------------ test find role ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/role/test-role");
+		        address + PREFIX_URI + "/role/test-role");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! role/test-role/find=" + data);
 		assertEquals(200, resp.getStatus());
 
 		/* ------------ test roles ------------------- */
-		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/roles");
+		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/roles");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! roles/get=" + data);
@@ -123,14 +122,13 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 
 		/* ------------ test delete role ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/role/test-role");
+		        address + PREFIX_URI + "/role/test-role");
 		resp = wt.request().buildDelete().invoke();
 		log.info("!!!!!!!!!!!!!!!!!!!! role/test-role/delete");
 		assertEquals(204, resp.getStatus());
 
 		/* ------------ test roles ------------------- */
-		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/roles");
+		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/roles");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! roles/get=" + data);
@@ -139,7 +137,7 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		/* ------------ group --------------- */
 		/* ------------ test create group ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/group/test-group");
+		        address + PREFIX_URI + "/group/test-group");
 		wt = wt.queryParam("description", "test-group-description");
 		resp = wt.request()
 		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
@@ -150,15 +148,14 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 
 		/* ------------ test find group ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/group/test-group");
+		        address + PREFIX_URI + "/group/test-group");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! group/test-group/find=" + data);
 		assertEquals(200, resp.getStatus());
 
 		/* ------------ test groups ------------------- */
-		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/groups");
+		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/groups");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! groups/get=" + data);
@@ -166,14 +163,13 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 
 		/* ------------ test delete group ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/group/test-group");
+		        address + PREFIX_URI + "/group/test-group");
 		resp = wt.request().buildDelete().invoke();
 		log.info("!!!!!!!!!!!!!!!!!!!! group/test-group/delete");
 		assertEquals(204, resp.getStatus());
 
 		/* ------------ test groups ------------------- */
-		wt = ClientBuilder.newClient().target(
-		        address + "/ncms/rs/adm/security/groups");
+		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/groups");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
 		log.info("!!!!!!!!!!!!!!!!!!!! groups/get=" + data);
