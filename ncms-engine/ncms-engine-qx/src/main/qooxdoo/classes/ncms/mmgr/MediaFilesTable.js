@@ -1,41 +1,37 @@
 /**
- * Virtual table of assemblies.
+ *  Virtual table for media files.
  */
-qx.Class.define("ncms.asm.AsmTable", {
+qx.Class.define("ncms.mmgr.MediaFilesTable", {
     extend : sm.table.Table,
 
     construct : function(useColumns) {
         var tm = new sm.model.RemoteVirtualTableModel({
             "name" : this.tr("Name"),
-            "type" : this.tr("Type")
+            "content_type" : this.tr("Type"),
+            "content_length" : this.tr("Length"),
+            "folder" : this.tr("Folder")
         }).set({
-                    "useColumns" : useColumns || ["name", "type"],
-                    "rowdataUrl" : ncms.Application.ACT.getUrl("asms.select"),
-                    "rowcountUrl" : ncms.Application.ACT.getUrl("asms.select.count")
+                    "useColumns" : useColumns || ["name", "content_type", "content_length"],
+                    "rowdataUrl" : ncms.Application.ACT.getUrl("media.select"),
+                    "rowcountUrl" : ncms.Application.ACT.getUrl("media.select.count")
                 });
-
         var custom = {
             tableColumnModel : function(obj) {
                 return new qx.ui.table.columnmodel.Resize(obj);
             }
         };
-
         this.base(arguments, tm, custom, true);
-
-        var rr = new sm.table.renderer.CustomRowRenderer();
-        var colorm = qx.theme.manager.Color.getInstance();
-        rr.setBgColorInterceptor(qx.lang.Function.bind(function(rowInfo) {
-            return colorm.resolve("background");
-        }, this));
-        this.setDataRowRenderer(rr);
-
 
         var tcm = this.getTableColumnModel();
         var cInd = tm.getColumnIndexById("name");
         if (cInd != null) {
-            tcm.getBehavior().setWidth(cInd, "2*");
+            tcm.getBehavior().setWidth(cInd, "3*");
         }
-        cInd = tm.getColumnIndexById("type");
+        cInd = tm.getColumnIndexById("content_type");
+        if (cInd != null) {
+            tcm.getBehavior().setWidth(cInd, "1*");
+        }
+        cInd = tm.getColumnIndexById("content_length");
         if (cInd != null) {
             tcm.getBehavior().setWidth(cInd, "1*");
         }
@@ -43,16 +39,16 @@ qx.Class.define("ncms.asm.AsmTable", {
 
     members : {
 
-        getSelectedAsmInd : function() {
+        getSelectedFileInd : function() {
             return this.getSelectionModel().getAnchorSelectionIndex();
         },
 
-        getSelectedAsm : function() {
+        getSelectedFile : function() {
             var sind = this.getSelectedAsmInd();
             return sind != -1 ? this.getTableModel().getRowData(sind) : null;
         },
 
-        getSelectedAsms : function() {
+        getSelectedFiles : function() {
             var me = this;
             var asms = [];
             this.getSelectionModel().iterateSelection(function(ind) {

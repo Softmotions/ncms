@@ -1,31 +1,34 @@
 /**
- * Selector of assemblies
- * with included search text box
- * and assembly table.
+ * Media files selector.
+ * File list table with search field.
  */
-qx.Class.define("ncms.asm.AsmSelector", {
+qx.Class.define("ncms.mmgr.MediaFilesSelector", {
     extend : qx.ui.core.Widget,
+
+    statics : {
+    },
 
     events : {
 
         /**
-         * Event fired if assembly was selected/deselected
-         *
-         * DATA: var item = {
-         *        "id" : {Number} Assembly id.
-         *        "name" : {String} Page name,
-         *        "type" : {String} Assembly type,
-         *       };
-         * or null if selection cleared
+         * DATA: {
+         *   id : {Integer} File ID
+         *   name : {String} File name
+         *   content_type : {String} File content type
+         *   content_length : {Integer} File data length
+         *   folder : {String} Full path to file folder
+         *   status : {Integer} 1 - folder, 0 - file
+         * }
+         * or null
          */
-        "asmSelected" : "qx.event.type.Data"
+        "fileSelected" : "qx.event.type.Data"
     },
 
     properties : {
 
         appearance : {
             refine : true,
-            init : "asm-selector"
+            init : "mf-selector"
         },
 
         constViewSpec : {
@@ -38,7 +41,6 @@ qx.Class.define("ncms.asm.AsmSelector", {
     construct : function(constViewSpec, smodel) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
-
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", function() {
             this.__search(null);
@@ -50,8 +52,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
             this.__search(ev.getData());
         }, this);
 
-
-        this.__table = new ncms.asm.AsmTable().set({
+        this.__table = new ncms.mmgr.MediaFilesTable().set({
             "statusBarVisible" : false,
             "showCellFocusIndicator" : false});
 
@@ -59,8 +60,8 @@ qx.Class.define("ncms.asm.AsmSelector", {
             this.__table.setSelectionModel(smodel);
         }
         this.__table.getSelectionModel().addListener("changeSelection", function() {
-            var asm = this.getSelectedAsm();
-            this.fireDataEvent("asmSelected", asm ? asm : null);
+            var file = this.getSelectedFile();
+            this.fireDataEvent("fileSelected", file ? file : null);
         }, this);
 
         this._add(this.__sf);
@@ -71,18 +72,9 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
     members : {
 
-        /**
-         * Search field
-         * @type {sm.ui.form.SearchField}
-         */
         __sf : null,
 
-        /**
-         * Assemblies virtual table
-         * @type {ncms.asm.AsmTable}
-         */
         __table : null,
-
 
         setViewSpec : function(vspec) {
             this.__table.getTableModel().setViewSpec(this.__createViewSpec(vspec));
@@ -103,26 +95,6 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
         getTable : function() {
             return this.__table;
-        },
-
-        getSelectedAsmInd : function() {
-            return this.__table.getSelectedAsmInd();
-        },
-
-        getSelectedAsm : function() {
-            return this.__table.getSelectedAsm();
-        },
-
-        getSelectedAsms : function() {
-            return this.__table.getSelectedAsms();
-        },
-
-        cleanup : function() {
-            this.__table.cleanup();
-        },
-
-        getSearchField : function() {
-            return this.__sf;
         },
 
         __createViewSpec : function(vspec) {

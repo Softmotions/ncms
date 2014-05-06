@@ -2,6 +2,7 @@
  * Media folders tree
  *
  * @asset(qx/icon/${qx.icontheme}/22/places/folder.png)
+ * @asset(qx/icon/${qx.icontheme}/22/places/folder-open.png)
  * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
  * @asset(ncms/icon/22/state/loading.gif)
  */
@@ -13,14 +14,38 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
     },
 
     events : {
+
+        /**
+         * DATA: var item = {
+         *        "label"  : {String} Item name.
+         *        "status" : {Number} Item status. (1 - folder, 0 - file)
+         *        "path"   : {String} Path to the item (from tree root)
+         *       };
+         * or null if selection cleared
+         */
+        itemSelected : "qx.event.type.Data"
     },
 
     properties : {
+
+        /**
+         * List folders only
+         */
+        foldersOnly : {
+            check : "Boolean",
+            init : true,
+            nullable : false
+        }
     },
 
-    construct : function() {
+    construct : function(opts) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
+
+        opts = opts || {};
+        if (opts["foldersOnly"] != null) {
+            this.setFoldersOnly(!!opts["foldersOnly"]);
+        }
 
         //Register media folder editor
         var eclazz = ncms.mmgr.NavMediaManager.MMF_EDITOR_CLAZZ;
@@ -79,32 +104,71 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
                 });
 
                 var delegate = {
+
+                    createItem : function() {
+                        return new sm.ui.tree.ExtendedVirtualTreeItem();
+                    },
+
+                    configureItem : function(item) {
+                        item.setOpenSymbolMode("always");
+                        item.setIconOpened("icon/22/places/folder-open.png");
+                    },
+
                     bindItem : function(controller, item, index) {
                         controller.bindDefaultProperties(item, index);
                         controller.bindProperty("", "open", {
                             converter : function(value, model, source, target) {
-                                var isOpen = target.isOpen();
-                                if (isOpen && !value.getLoaded()) {
+                                if (target.isOpen() && !value.getLoaded()) {
                                     me._loadChildren(value, function() {
                                         value.setLoaded(true);
                                     });
                                 }
-                                return isOpen;
+                                return target.isOpen();
                             }
                         }, item, index);
                     }
                 };
                 tree.setDelegate(delegate);
+
+
+                tree.getSelection().addListener("change", function(e) {
+                    this.__onSelected(e.getTarget().getItem(0));
+                }, this);
+
                 this._add(tree);
             }, this);
         },
 
+        __onSelected : function(item) {
+            var app = ncms.Application.INSTANCE;
+            var eclazz = ncms.mmgr.NavMediaManager.MMF_EDITOR_CLAZZ;
+            if (item == null) {
+                app.showDefaultWSA();
+                if (this.hasListener("itemSelected")) {
+                    this.fireDataEvent("itemSelected", null);
+                }
+                return;
+            }
+            var data = {
+                "label" : item.getLabel(),
+                "status" : item.getStatus(),
+                "path" : this._getItemPathSegments(item)
+
+            };
+            app.getWSA(eclazz).setItem(data);
+            app.showWSA(eclazz);
+            if (this.hasListener("itemSelected")) {
+                this.fireDataEvent("itemSelected", data);
+            }
+        },
+
         _loadChildren : function(parent, cb, self) {
-            var url = ncms.Application.ACT.getRestUrl("media.list", this._getItemPathSegments(parent));
+            var url = ncms.Application.ACT.getRestUrl("media.folders", this._getItemPathSegments(parent));
             var req = new sm.io.Request(url, "GET", "application/json");
             req.send(function(resp) {
                 var data = resp.getContent();
-                parent.getChildren().removeAll();
+                var children = parent.getChildren();
+                children.removeAll();
                 for (var i = 0, l = data.length; i < l; ++i) {
                     var node = data[i];
                     node["icon"] = "default";
@@ -119,7 +183,7 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
                     } else {
                         node["loaded"] = true;
                     }
-                    parent.getChildren().push(qx.data.marshal.Json.createModel(node, true));
+                    children.push(qx.data.marshal.Json.createModel(node, true));
                 }
                 if (cb != null) {
                     cb.call(self);

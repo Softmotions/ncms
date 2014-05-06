@@ -160,7 +160,7 @@
             <column name="NAME" type="VARCHAR(128)">
                 <constraints nullable="false"/>
             </column>
-            <column name="CONTAINER" type="INT">
+            <column name="STATUS" type="INT">
                 <constraints nullable="false"/>
             </column>
             <column name="FOLDER" type="VARCHAR(255)">
@@ -176,6 +176,8 @@
                 <constraints nullable="true"/>
             </column>
             <column name="DESCRIPTION" type="VARCHAR(255)">
+            </column>
+            <column name="MDATE" type="TIMESTAMP">
             </column>
             <column name="PRIVATE_ACL" type="VARCHAR(512)">
             </column>

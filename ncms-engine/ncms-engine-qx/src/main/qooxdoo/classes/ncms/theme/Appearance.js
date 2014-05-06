@@ -15,6 +15,14 @@ qx.Theme.define("ncms.theme.Appearance", {
             }
         },
 
+        /* Media files selector */
+        "mf-selector" : {
+            style : function(states) {
+                return {
+                }
+            }
+        },
+
         /////////////////////////////////////////////////////////////
         //                   NCMS components
 

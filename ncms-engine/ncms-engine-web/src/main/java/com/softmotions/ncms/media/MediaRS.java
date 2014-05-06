@@ -1,6 +1,7 @@
 package com.softmotions.ncms.media;
 
 import com.softmotions.commons.io.DirUtils;
+import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.io.MimeTypeDetector;
@@ -9,12 +10,17 @@ import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.output.DeferredFileOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.mime.MediaType;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -31,13 +37,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.sql.Timestamp;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -66,7 +76,6 @@ public class MediaRS {
     private final ObjectMapper mapper;
 
     private final NcmsMessages message;
-
 
     @Inject
     public MediaRS(NcmsConfiguration cfg, MediaDAO mdao,
@@ -114,18 +123,108 @@ public class MediaRS {
     }
 
     @GET
-    @Path("/list/{folder:.*}")
+    @Path("/files/{folder:.*}")
     @Transactional
-    public JsonNode list(@PathParam("folder") String folder,
-                         @Context HttpServletRequest req) throws IOException {
-        return _list("/" + folder, req);
+    public JsonNode listFiles(@PathParam("folder") String folder,
+                              @Context HttpServletRequest req) throws IOException {
+        return _list("/" + folder, FileFileFilter.FILE, req);
     }
 
     @GET
-    @Path("/list")
+    @Path("/files")
     @Transactional
-    public JsonNode list(@Context HttpServletRequest req) throws IOException {
-        return _list("/", req);
+    public JsonNode listFiles(@Context HttpServletRequest req) throws IOException {
+        return _list("/", FileFileFilter.FILE, req);
+    }
+
+    @GET
+    @Path("/folders/{folder:.*}")
+    @Transactional
+    public JsonNode listFolders(@PathParam("folder") String folder,
+                                @Context HttpServletRequest req) throws IOException {
+        return _list("/" + folder, DirectoryFileFilter.INSTANCE, req);
+    }
+
+    @GET
+    @Path("/folders")
+    @Transactional
+    public JsonNode listFolders(@Context HttpServletRequest req) throws IOException {
+        return _list("/", DirectoryFileFilter.INSTANCE, req);
+    }
+
+
+    @GET
+    @Path("/all/{folder:.*}")
+    @Transactional
+    public JsonNode listAll(@PathParam("folder") String folder,
+                            @Context HttpServletRequest req) throws IOException {
+        return _list("/" + folder, TrueFileFilter.INSTANCE, req);
+    }
+
+    @GET
+    @Path("/all")
+    @Transactional
+    public JsonNode listAll(@Context HttpServletRequest req) throws IOException {
+        return _list("/", TrueFileFilter.INSTANCE, req);
+    }
+
+    @GET
+    @Path("/select")
+    @Transactional
+    public JsonNode select(@Context HttpServletRequest req) {
+        ArrayNode res = mapper.createArrayNode();
+        List<Map<String, ?>> rows = mdao.select("select", createSelectQ(req));
+        for (Map<String, ?> row : rows) {
+            ObjectNode on = res.addObject();
+            on.put("id", ((Number) row.get("id")).longValue());
+            on.put("name", (String) row.get("name"));
+            on.put("folder", (String) row.get("folder"));
+            on.put("content_type", (String) row.get("content_type"));
+            if (row.get("content_length") != null) {
+                on.put("content_length", ((Number) row.get("content_length")).longValue());
+            }
+        }
+        return res;
+    }
+
+    @GET
+    @Path("/select/count")
+    @Produces("text/plain")
+    @Transactional
+    public Integer selectCount(@Context HttpServletRequest req) {
+        return mdao.selectOne("count", createSelectQ(req));
+    }
+
+    private MBCriteriaQuery createSelectQ(HttpServletRequest req) {
+        MBCriteriaQuery cq = mdao.createCriteria();
+        String val = req.getParameter("firstRow");
+        if (val != null) {
+            Integer frow = Integer.valueOf(val);
+            cq.offset(frow);
+            val = req.getParameter("lastRow");
+            if (val != null) {
+                Integer lrow = Integer.valueOf(val);
+                cq.limit(Math.abs(frow - lrow) + 1);
+            }
+        }
+        val = req.getParameter("folder");
+        if (!StringUtils.isBlank(val)) {
+            cq.withParam("folder", val);
+        }
+        val = req.getParameter("stext");
+        if (!StringUtils.isBlank(val)) {
+            val = val.toLowerCase(message.getLocale(req)).trim() + '%';
+            cq.withParam("name", val);
+        }
+        val = req.getParameter("sortAsc");
+        if (!StringUtils.isBlank(val)) {
+            cq.orderBy("e." + val).asc();
+        }
+        val = req.getParameter("sortDesc");
+        if (!StringUtils.isBlank(val)) {
+            cq.orderBy("e." + val).desc();
+        }
+        return cq.finish();
     }
 
     /**
@@ -141,6 +240,7 @@ public class MediaRS {
      * </pre>
      */
     private JsonNode _list(String folder,
+                           FileFilter filter,
                            HttpServletRequest req) throws IOException {
 
         ArrayNode res = mapper.createArrayNode();
@@ -152,7 +252,7 @@ public class MediaRS {
             return res;
         }
         final Collator collator = Collator.getInstance(message.getLocale(req));
-        File[] files = f.listFiles();
+        File[] files = f.listFiles(filter);
         if (files == null) files = EMPTY_FILES_ARRAY;
         Arrays.sort(files, new Comparator<File>() {
             public int compare(File f1, File f2) {
@@ -232,15 +332,17 @@ public class MediaRS {
                 mdao.insert("insertEntity",
                             "folder", folder,
                             "name", name,
-                            "container", false,
+                            "status", 0,
                             "content_type", mtype.toString(),
                             "put_content_type", req.getContentType(),
-                            "content_length", actualLength);
+                            "content_length", actualLength,
+                            "mdate", new Timestamp(System.currentTimeMillis()));
             } else {
                 mdao.update("updateEntity",
                             "id", id,
                             "content_type", mtype.toString(),
-                            "content_length", actualLength);
+                            "content_length", actualLength,
+                            "mdate", new Timestamp(System.currentTimeMillis()));
             }
         } finally {
             if (rwlock != null) {

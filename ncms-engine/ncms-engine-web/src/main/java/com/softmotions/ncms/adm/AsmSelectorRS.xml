@@ -6,23 +6,23 @@
 <mapper namespace="com.softmotions.ncms.adm.AsmSelectorRS">
 
     <select id="select" resultType="map" parameterType="map">
-        SELECT
+        select
         asm.id as "id",
         asm.name as "name",
         asm.type as "type"
-        FROM ASMS asm
+        from asms asm
         <where>
-            <if test="type != null">AND asm.type = #{type}</if>
-            <if test="name != null">AND asm.name like #{name}</if>
+            <if test="type != null">and asm.type = #{type}</if>
+            <if test="name != null">and asm.name like #{name}</if>
         </where>
-        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
+        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
     </select>
 
     <select id="count" resultType="int" parameterType="map">
-        SELECT count(*) FROM ASMS
+        select count(*) from asms
         <where>
-            <if test="type != null">AND type = #{type}</if>
-            <if test="name != null">AND name like #{name}</if>
+            <if test="type != null">and type = #{type}</if>
+            <if test="name != null">and name like #{name}</if>
         </where>
     </select>
 

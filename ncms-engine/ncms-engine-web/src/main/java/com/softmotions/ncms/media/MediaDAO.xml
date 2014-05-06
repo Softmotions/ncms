@@ -14,17 +14,18 @@
 
     <insert id="insertEntity" parameterType="map">
         insert into media_entity (
-        folder, name, container,
+        folder, name, status, mdate,
         content_type, put_content_type, content_length)
         values (
-        #{folder}, #{name}, #{container},
+        #{folder}, #{name}, #{status}, #{mdate},
         #{content_type}, #{put_content_type}, #{content_length})
     </insert>
 
     <update id="updateEntity" parameterType="map">
         update media_entity
         set  content_type = #{content_type},
-             content_length = #{content_length}
+        content_length = #{content_length},
+        mdate = #{mdate}
         where id = #{id}
     </update>
 
@@ -32,7 +33,35 @@
        select e.*
        from media_entity as e
        where e.folder = #{folder}
-       order by e.container desc, e.name asc
+        order by e.status desc, e.name asc
+    </select>
+
+    <select id="select" resultType="map" parameterType="map">
+        select
+        e.id as "id",
+        e.name as "name",
+        e.status as "status",
+        e.content_type as "content_type",
+        e.content_length as "content_length",
+        e.folder as "folder"
+        from media_entity e
+        <where>
+            <if test="folder != null">and e.folder like #{folder}</if>
+            <if test="name != null">and lower(e.name) like #{name}</if>
+            <if test="status != null">and e.status = #{status}</if>
+        </where>
+        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+    </select>
+
+    <select id="count" resultType="int" parameterType="map">
+        select
+        count(*)
+        from media_entity e
+        <where>
+            <if test="folder != null">and e.folder like #{folder}</if>
+            <if test="name != null">and lower(e.name) like #{name}</if>
+            <if test="status != null">and e.status = #{status}</if>
+        </where>
     </select>
 
 </mapper>

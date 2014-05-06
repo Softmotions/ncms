@@ -34,10 +34,20 @@ qx.Class.define("ncms.Actions", {
         this._action("asms.rename", "/ncms/rs/adm/asms/rename/{id}/{name}");
 
         //PUT Assembly parents
-        this._action("asms.parents", "/ncms/rs/adm/asms/{id}/parents")
+        this._action("asms.parents", "/ncms/rs/adm/asms/{id}/parents");
 
-        //MediaRS /ncms/rs/media/list/<path to folder>
-        this._action("media.list", "/ncms/rs/media/list");
+        //MediaRS
+        //GET files only /ncms/rs/media/files/<path to folder>
+        this._action("media.files", "/ncms/rs/media/files");
+        //GET sub-folders only
+        this._action("media.folders", "/ncms/rs/media/folders");
+        //GET files + sub-folders
+        this._action("media.all", "/ncms/rs/media/all");
+        //GET select
+        this._action("media.select", "/ncms/rs/media/select");
+        //GET select count
+        this._action("media.select.count", "/ncms/rs/media/select/count");
+
     },
 
     members : {
