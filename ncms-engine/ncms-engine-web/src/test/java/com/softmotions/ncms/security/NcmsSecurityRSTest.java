@@ -1,6 +1,7 @@
 package com.softmotions.ncms.security;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -8,6 +9,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Test;
 
 import com.softmotions.ncms.NcmsWebTest;
@@ -27,65 +29,93 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		String address = getServerAddress();
 
 		/* ------------ user --------------- */
+		/* ------------ test user count ------------------- */
+        WebTarget wt = ClientBuilder.newClient().target(
+                address + PREFIX_URI + "/users/count");
+        Response resp = wt.request().buildGet().invoke();
+        long userCount = resp.readEntity(Long.class);
+        assertEquals(200, resp.getStatus());
+
 		/* ------------ test create user ------------------- */
-		WebTarget wt = ClientBuilder.newClient().target(
-		        address + PREFIX_URI + "/user/test-user");
-		wt = wt.queryParam("password", "password").queryParam("fullname",
-		        "fullname");
-		Response resp = wt.request().buildPost(null).invoke();
+		wt = ClientBuilder.newClient().target(
+                address + PREFIX_URI + "/user/test-user");
+		wt = wt.queryParam("password", "password").queryParam("fullname", "fullname");
+		resp = wt.request().buildPost(null).invoke();
 		String data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! user/test-user/create=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-user"));
+
+		/* ------------ test user count ------------------- */
+        wt = ClientBuilder.newClient().target(
+                address + PREFIX_URI + "/users/count");
+        resp = wt.request().buildGet().invoke();
+        userCount = resp.readEntity(Long.class) - userCount;
+        assertEquals(200, resp.getStatus());
+        assertTrue(userCount == 1);
 
 		/* ------------ test get user ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/user/test-user");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! user/test-user/get=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-user"));
 
 		/* ------------ test find user ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/user/test-user");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! user/test-user/find=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-user"));
 
 		/* ------------ test user count ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/users/count");
 		resp = wt.request().buildGet().invoke();
-		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! users/count=" + data);
+		userCount = resp.readEntity(Long.class);
 		assertEquals(200, resp.getStatus());
+        assertTrue(userCount > 1);
 
 		/* ------------ test users ------------------- */
 		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/users");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! users/get=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-user"));
 
 		/* ------------ test users ------------------- */
 		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/users");
-		wt = wt.queryParam("firstRow", "0").queryParam("lastRow", "20");
+		wt = wt.queryParam("firstRow", 0).queryParam("lastRow", userCount);
 		resp = wt.request()
 		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
 		        .invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! users/get/pagination=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-user"));
 
 		/* ------------ test delete user ------------------- */
 		wt = ClientBuilder.newClient().target(
-		        address + PREFIX_URI + "/user/test-user");
+                address + PREFIX_URI + "/user/test-user");
 		resp = wt.request().buildDelete().invoke();
-		log.info("!!!!!!!!!!!!!!!!!!!! user/test-user/delete");
 		assertEquals(204, resp.getStatus());
 
+        /* ------------ test user count ------------------- */
+        wt = ClientBuilder.newClient().target(
+                address + PREFIX_URI + "/users/count");
+        resp = wt.request().buildGet().invoke();
+        userCount =  userCount - resp.readEntity(Long.class);
+        assertEquals(200, resp.getStatus());
+        assertTrue(userCount == 1);
+
 		/* ------------ role --------------- */
+		/* ------------ test roles ------------------- */
+        wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/roles");
+        resp = wt.request().buildGet().invoke();
+        data = resp.readEntity(String.class);
+        assertEquals(200, resp.getStatus());
+        assertTrue(!data.contains("test-role"));
+
 		/* ------------ test create role ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/role/test-role");
@@ -94,47 +124,53 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
 		        .invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! role/test-role/create=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-role"));
+
+		/* ------------ test roles ------------------- */
+        wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/roles");
+        resp = wt.request().buildGet().invoke();
+        data = resp.readEntity(String.class);
+        assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-role"));
 
 		/* ------------ test get role ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/role/test-role");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! role/test-role/get=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-role"));
 
 		/* ------------ test find role ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/role/test-role");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! role/test-role/find=" + data);
 		assertEquals(200, resp.getStatus());
-
-		/* ------------ test roles ------------------- */
-		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/roles");
-		resp = wt.request().buildGet().invoke();
-		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! roles/get=" + data);
-		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-role"));
 
 		/* ------------ test delete role ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/role/test-role");
 		resp = wt.request().buildDelete().invoke();
-		log.info("!!!!!!!!!!!!!!!!!!!! role/test-role/delete");
 		assertEquals(204, resp.getStatus());
 
 		/* ------------ test roles ------------------- */
-		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/roles");
-		resp = wt.request().buildGet().invoke();
-		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! roles/get=" + data);
-		assertEquals(200, resp.getStatus());
+        wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/roles");
+        resp = wt.request().buildGet().invoke();
+        data = resp.readEntity(String.class);
+        assertEquals(200, resp.getStatus());
+        assertTrue(!data.contains("test-role"));
 
 		/* ------------ group --------------- */
+		/* ------------ test groups ------------------- */
+        wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/groups");
+        resp = wt.request().buildGet().invoke();
+        data = resp.readEntity(String.class);
+        assertEquals(200, resp.getStatus());
+        assertTrue(!data.contains("test-group"));
+
 		/* ------------ test create group ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/group/test-group");
@@ -143,36 +179,42 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		        .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
 		        .invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! group/test-group/create=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-group"));
+
+		/* ------------ test groups ------------------- */
+        wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/groups");
+        resp = wt.request().buildGet().invoke();
+        data = resp.readEntity(String.class);
+        assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-group"));
 
 		/* ------------ test find group ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/group/test-group");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! group/test-group/find=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-group"));
 
 		/* ------------ test groups ------------------- */
 		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/groups");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! groups/get=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(data.contains("test-group"));
 
 		/* ------------ test delete group ------------------- */
 		wt = ClientBuilder.newClient().target(
 		        address + PREFIX_URI + "/group/test-group");
 		resp = wt.request().buildDelete().invoke();
-		log.info("!!!!!!!!!!!!!!!!!!!! group/test-group/delete");
 		assertEquals(204, resp.getStatus());
 
 		/* ------------ test groups ------------------- */
 		wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/groups");
 		resp = wt.request().buildGet().invoke();
 		data = resp.readEntity(String.class);
-		log.info("!!!!!!!!!!!!!!!!!!!! groups/get=" + data);
 		assertEquals(200, resp.getStatus());
+        assertTrue(!data.contains("test-group"));
 	}
 }
