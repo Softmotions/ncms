@@ -182,27 +182,20 @@ qx.Class.define("ncms.mmgr.NavMediaManager", {
 
 
         __onNewFolder : function(ev) {
-            var selected = this.__tree.getSelection().getItem(0) || this.__tree.getModel();
-            var path = this._getItemPathSegments(selected);
-            var d = new ncms.mmgr.MediaFolderNewDlg(path);
-            d.setPosition("bottom-right");
-            d.addListenerOnce("completed", function(ev) {
-                d.hide();
-                this._refreshNode(selected);
-            }, this);
-            d.placeToWidget(ev.getTarget(), false);
-            d.show();
+            this.__newFolder(ev, this.__tree.getSelection().getItem(0) || this.__tree.getModel());
         },
 
         __onNewRootFolder : function(ev) {
-            var selected = this.__tree.getModel();
-            var selected = this.__tree.getModel();
-            var path = this._getItemPathSegments(selected);
+            this.__newFolder(ev, this.__tree.getModel());
+        },
+
+        __newFolder : function(ev, parent) {
+            var path = this._getItemPathSegments(parent);
             var d = new ncms.mmgr.MediaFolderNewDlg(path);
             d.setPosition("bottom-right");
             d.addListenerOnce("completed", function(ev) {
                 d.hide();
-                this._refreshNode(selected);
+                this._refreshNode(parent);
             }, this);
             d.placeToWidget(ev.getTarget(), false);
             d.show();

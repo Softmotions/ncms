@@ -50,7 +50,6 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
         __editor : null,
 
         __applyItem : function(item) {
-            qx.log.Logger.info("apply item=" + JSON.stringify(item));
             var folder = "/" + item["path"].join("/");
             if (item["status"] == 1) { //folder
                 this.__selector.setConstViewSpec({"folder" : folder, "status" : 0});
