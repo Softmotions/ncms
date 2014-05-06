@@ -72,7 +72,8 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
         } else if (ex instanceof JsonMappingException ||
                    ex instanceof JsonParseException ||
                    ex instanceof ReaderException ||
-                   ex instanceof BadRequestException) {
+                   ex instanceof BadRequestException ||
+                   ex instanceof javax.ws.rs.BadRequestException) {
 
             log.warn("", ex);
             rb = Response.status(Response.Status.BAD_REQUEST)
