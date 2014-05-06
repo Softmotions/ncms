@@ -231,7 +231,9 @@ public class NcmsSecurityRS {
             log.debug("createGroup: creategroup/{" + name + "}?description="
                       + description);
         }
-        assert (name != null) : "Parameter 'name' of group can not be empty";
+        if (name == null) {
+            throw new BadRequestException("Parameter 'name' of group can not be empty");
+        }
         WSGroup group = userDatabase.createGroup(name, description);
         ObjectNode res = mapper.createObjectNode();
         res.put("name", group.getName());
@@ -256,7 +258,9 @@ public class NcmsSecurityRS {
         if (log.isDebugEnabled()) {
             log.debug("createrole/{" + name + "}?description=" + description);
         }
-        assert (name != null) : "Parameter 'name' of role can not be empty";
+        if (name == null) {
+            throw new BadRequestException("Parameter 'name' of role can not be empty");
+        }
         WSRole role = userDatabase.createRole(name, description);
         ObjectNode res = mapper.createObjectNode();
         res.put("name", role.getName());
@@ -284,7 +288,9 @@ public class NcmsSecurityRS {
             log.debug("createuser/{" + name + "}?password=" + password
                       + "&fullName=" + fullName);
         }
-        assert (name != null) : "Parameter 'name' of user can not be empty";
+        if (name == null || password == null) {
+            throw new BadRequestException("Parameters 'name' and 'password' of user can not be empty");
+        }
         WSUser user = userDatabase.createUser(name, password, fullName);
         ObjectNode res = mapper.createObjectNode();
         res.put("name", user.getName());
@@ -386,7 +392,9 @@ public class NcmsSecurityRS {
         if (log.isDebugEnabled()) {
             log.debug("removegroup/{" + name + "}");
         }
-        assert (name != null) : "Parameter 'name' of group can not be empty";
+        if (name == null) {
+            throw new BadRequestException("Parameter 'name' of group can not be empty");
+        }
         WSGroup group = userDatabase.findGroup(name);
         if (group != null) {
             userDatabase.removeGroup(group);
@@ -403,9 +411,8 @@ public class NcmsSecurityRS {
             log.debug("removerole/{" + name + "}");
         }
         if (name == null) {
-            throw new BadRequestException();
+            throw new BadRequestException("Parameter 'name' of role can not be empty");
         }
-        assert (name != null) : "Parameter 'name' of role can not be empty";
         WSRole role = userDatabase.findRole(name);
         if (role != null) {
             userDatabase.removeRole(role);
@@ -421,9 +428,10 @@ public class NcmsSecurityRS {
         if (log.isDebugEnabled()) {
             log.debug("removeuser/{" + name + "}");
         }
-        assert (name != null) : "Parameter 'name' of role can not be empty";
+        if (name == null) {
+            throw new BadRequestException("Parameter 'name' of role can not be empty");
+        }
         WSUser user = userDatabase.findUser(name);
-        System.out.println("user = " + user);
         if (user != null) {
             userDatabase.removeUser(user);
         }
