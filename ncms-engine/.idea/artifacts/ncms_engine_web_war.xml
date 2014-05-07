@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="ncms-engine-web:war">
-    <output-path>$PROJECT_DIR$/ncms-engine-web/target</output-path>
-    <root id="archive" name="ncms-engine-web-1.0-SNAPSHOT.war">
-      <element id="artifact" artifact-name="ncms-engine-web:war exploded" />
-    </root>
-  </artifact>
-</component>
