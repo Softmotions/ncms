@@ -16,7 +16,14 @@ qx.Class.define("ncms.usr.UsersNav", {
     construct : function() {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
-        this.setBackgroundColor("#ffffcc")
+
+        //todo remove it
+        this.setBackgroundColor("#ffffcc");
+
+        //todo use example: ncms.asm.AsmSelector
+        //todo use sm.ui.form.SearchField as search box
+        //todo use ncms.usr.UsersTable (example: ncms.asm.AsmTable)
+        //todo use com.softmotions.ncms.security.NcmsSecurityRS service
 
     },
 
