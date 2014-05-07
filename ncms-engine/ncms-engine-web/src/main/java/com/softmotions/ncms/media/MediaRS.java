@@ -17,6 +17,7 @@ import com.google.inject.Inject;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
@@ -46,12 +48,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.sql.Timestamp;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -200,40 +202,161 @@ public class MediaRS extends MBDAOSupport {
         return selectOne("count", createSelectQ(req));
     }
 
-
     @PUT
     @Path("/folder/{folder:.*}")
     public JsonNode newFolder(@PathParam("folder") String folder,
                               @Context HttpServletRequest req) throws Exception {
-        File f = new File(basedir, folder);
-        if (!f.exists()) {
-            if (!f.mkdirs()) {
-                throw new IOException("Cannot create dir: " + folder);
+
+        ReadWriteLock rwlock = null;
+        try {
+            rwlock = acquirePathRWLock("/" + folder, true);
+            File f = new File(basedir, folder);
+            if (!f.exists()) {
+                if (!f.mkdirs()) {
+                    throw new IOException("Cannot create dir: " + folder);
+                }
+            }
+            String name = f.getName();
+            String dirname = getResourceFolder(folder);
+            Number id = selectOne("selectEntityIdByPath",
+                                  "folder", dirname,
+                                  "name", name);
+            if (id == null) {
+                insert("insertEntity",
+                       "folder", dirname,
+                       "name", name,
+                       "status", 1);
+            } else {
+                throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
+            }
+
+            return mapper.createObjectNode()
+                    .put("label", name)
+                    .put("status", 1);
+        } finally {
+            if (rwlock != null) {
+                rwlock.writeLock().unlock();
             }
         }
+    }
 
-        String name = f.getName();
-        String dirname = FilenameUtils.getPath(folder);
+    @PUT
+    @Path("/move/{path:.*}")
+    @Transactional
+    public void move(@PathParam("path") String path,
+                     @Context HttpServletRequest req,
+                     String npath) throws Exception {
+
+        if (npath.contains("..") || path.contains("..")) {
+            throw new BadRequestException();
+        }
+
+        path = StringUtils.strip(path, "/");
+        npath = StringUtils.strip(npath, "/");
+
+        ReadWriteLock rwlock1 = null;
+        ReadWriteLock rwlock2 = null;
+        try {
+            rwlock1 = acquirePathRWLock("/" + path, true);
+            File f1 = new File(basedir, path);
+            if (!f1.exists() || StringUtils.isBlank(npath) || npath.contains("..")) {
+                throw new BadRequestException();
+            }
+            rwlock2 = acquirePathRWLock("/" + npath, true);
+            File f2 = new File(basedir, npath);
+            if (f2.exists()) {
+                throw new NcmsMessageException(message.get("ncms.mmgr.file.exists", req, npath), true);
+            }
+            File pf = f2.getParentFile();
+            if (pf != null && !pf.exists() && !pf.mkdirs()) {
+                throw new IOException("Cannot create the target directory");
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("Moving " + f1 + " => " + f2);
+            }
+
+            if (f1.isDirectory()) {
+                String like = "/" + path + "/%";
+                update("fixFolderName",
+                       "new_prefix", "/" + npath + "/",
+                       "prefix_like_len", like.length(),
+                       "prefix_like", like);
+                FileUtils.moveDirectory(f1, f2);
+            } else if (f1.isFile()) {
+                update("fixResourceLocation",
+                       "nfolder", getResourceFolder(npath),
+                       "nname", getResourceName(npath),
+                       "folder", getResourceFolder(path),
+                       "name", getResourceName(path));
+                FileUtils.moveFile(f1, f2);
+            } else {
+                throw new IOException("Unsupported file type");
+            }
+        } finally {
+            if (rwlock1 != null) {
+                rwlock1.writeLock().unlock();
+            }
+            if (rwlock2 != null) {
+                rwlock2.writeLock().unlock();
+            }
+        }
+    }
+
+    @DELETE
+    @Path("/delete/{path:.*}")
+    public void deleteResource(@PathParam("path") String path) throws Exception {
+        if (path.contains("..")) {
+            throw new BadRequestException();
+        }
+        ReadWriteLock rwlock = null;
+        path = StringUtils.strip(path, "/");
+        try {
+            rwlock = acquirePathRWLock("/" + path, true);
+            File f = new File(basedir, path);
+            if (!f.exists()) {
+                throw new NotFoundException(path);
+            }
+            boolean isdir = f.isDirectory();
+            FileUtils.forceDelete(f);
+            if (isdir) {
+                delete("deleteFolder",
+                       "prefix_like", "/" + path + "/%");
+            } else {
+                delete("deleteFile",
+                       "folder", getResourceFolder(path),
+                       "name", getResourceName(path));
+            }
+        } finally {
+            if (rwlock != null) {
+                rwlock.writeLock().unlock();
+            }
+        }
+    }
+
+    private String getResourceFolder(String path) {
+        String dirname = FilenameUtils.getPath(path);
         if (StringUtils.isBlank(dirname)) {
             dirname = "/";
-        }
-
-        Number id = selectOne("selectEntityIdByPath",
-                              "folder", dirname,
-                              "name", name);
-        if (id == null) {
-            insert("insertEntity",
-                   "folder", dirname,
-                   "name", name,
-                   "status", 1,
-                   "mdate", new Timestamp(System.currentTimeMillis()));
         } else {
-            throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
+            if (!dirname.startsWith("/")) {
+                dirname = "/" + dirname;
+            }
+            if (!dirname.endsWith("/")) {
+                dirname += "/";
+            }
         }
+        return dirname;
+    }
 
-        return mapper.createObjectNode()
-                .put("label", name)
-                .put("status", 1);
+    public String getResourceName(String path) {
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        if (path.isEmpty()) {
+            return null;
+        }
+        return FilenameUtils.getName(path);
     }
 
 
@@ -324,6 +447,9 @@ public class MediaRS extends MBDAOSupport {
         if (folder.contains("..")) {
             throw new BadRequestException(folder);
         }
+        if (!folder.endsWith("/")) {
+            folder += "/";
+        }
 
         //Used in order to proper ctype detection by TIKA (mark/reset are supported by BufferedInputStream)
         BufferedInputStream bis = new BufferedInputStream(in);
@@ -359,7 +485,7 @@ public class MediaRS extends MBDAOSupport {
                         )
                 );
             }
-            rwlock = acquirePathRWLock(folder, true); //lock the folder
+            rwlock = acquirePathRWLock(folder + name, true); //lock the resource
             File dir = new File(basedir, folder);
             File target = new File(dir, name);
             if (!dir.exists()) {
@@ -383,14 +509,12 @@ public class MediaRS extends MBDAOSupport {
                        "status", 0,
                        "content_type", mtype.toString(),
                        "put_content_type", req.getContentType(),
-                       "content_length", actualLength,
-                       "mdate", new Timestamp(System.currentTimeMillis()));
+                       "content_length", actualLength);
             } else {
                 update("updateEntity",
                        "id", id,
                        "content_type", mtype.toString(),
-                       "content_length", actualLength,
-                       "mdate", new Timestamp(System.currentTimeMillis()));
+                       "content_length", actualLength);
             }
         } finally {
             if (rwlock != null) {

@@ -41,6 +41,7 @@ qx.Class.define("ncms.mmgr.MediaFolderNewDlg", {
     },
 
     destruct : function() {
+        this.__parentPaths = null;
         //this._disposeObjects("__field_name");
     }
 });

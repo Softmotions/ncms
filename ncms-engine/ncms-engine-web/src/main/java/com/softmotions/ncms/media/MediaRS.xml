@@ -16,7 +16,7 @@
         folder, name, status, mdate,
         content_type, put_content_type, content_length)
         values (
-        #{folder}, #{name}, #{status}, #{mdate},
+        #{folder}, #{name}, #{status}, now(),
         #{content_type}, #{put_content_type}, #{content_length})
     </insert>
 
@@ -24,9 +24,36 @@
         update media_entity
         set content_type = #{content_type},
         content_length = #{content_length},
-        mdate = #{mdate}
+        mdate = now()
         where id = #{id}
     </update>
+
+    <update id="fixResourceLocation" parameterType="map">
+        update media_entity e
+        set e.folder = #{nfolder},
+            e.name = #{nname},
+            mdate = now()
+        where e.folder = #{folder}
+        and e.name = #{name}
+    </update>
+
+    <update id="fixFolderName" parameterType="map">
+        update media_entity e
+        set e.folder = #{new_prefix} || substring(e.folder, #{prefix_like_len}),
+            e.mdate = now()
+        where e.folder like #{prefix_like}
+    </update>
+
+    <delete id="deleteFolder" parameterType="map">
+        delete from media_entity e
+        where e.folder like #{prefix_like}
+    </delete>
+
+    <delete id="deleteFile" parameterType="map">
+        delete from media_entity e
+        where e.folder = #{folder}
+        and e.name = #{name}
+    </delete>
 
     <select id="selectInFolder" parameterType="map" resultType="map">
         select e.*

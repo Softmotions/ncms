@@ -167,10 +167,10 @@ qx.Class.define("ncms.mmgr.MediaNav", {
         __beforeContextmenuOpen : function(ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
-
+            var bt;
             var tree = this.__tree;
             if (tree.getSelection().length > 0) {
-                var bt = new qx.ui.menu.Button(this.tr("New subfolder"));
+                bt = new qx.ui.menu.Button(this.tr("New subfolder"));
                 bt.addListenerOnce("execute", this.__onNewFolder, this);
                 menu.add(bt);
             }
@@ -178,8 +178,32 @@ qx.Class.define("ncms.mmgr.MediaNav", {
             bt = new qx.ui.menu.Button(this.tr("New root folder"));
             bt.addListenerOnce("execute", this.__onNewRootFolder, this);
             menu.add(bt);
+
+            if (tree.getSelection().length > 0) {
+                bt = new qx.ui.menu.Button(this.tr("Rename"));
+                bt.addListenerOnce("execute", this.__onRename, this);
+                menu.add(bt);
+            }
+
         },
 
+        __onRename : function(ev) {
+            var item = this.__tree.getSelection().getItem(0);
+            if (item == null) {
+                return;
+            }
+            var path = this._getItemPathSegments(item);
+            var d = new ncms.mmgr.MediaItemRenameDlg(path, item.getLabel());
+            d.setPosition("bottom-right");
+            d.addListenerOnce("completed", function(ev) {
+                d.hide();
+                var data = ev.getData();
+                item.setLoaded(false);
+                item.setLabel(data[0]);
+            }, this);
+            d.placeToWidget(ev.getTarget(), false);
+            d.show();
+        },
 
         __onNewFolder : function(ev) {
             this.__newFolder(ev, this.__tree.getSelection().getItem(0) || this.__tree.getModel());
@@ -203,9 +227,11 @@ qx.Class.define("ncms.mmgr.MediaNav", {
 
 
         _refreshNode : function(node) {
-            this._loadChildren(node, function() {
-                this.__tree.openNode(node);
-            }, this);
+            if (this.__tree.isNode(node)) {
+                this._loadChildren(node, function() {
+                    this.__tree.openNode(node);
+                }, this);
+            }
         },
 
         _loadChildren : function(parent, cb, self) {

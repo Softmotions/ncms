@@ -36,7 +36,7 @@ qx.Class.define("ncms.Actions", {
         //PUT Assembly parents
         this._action("asms.parents", "/ncms/rs/adm/asms/{id}/parents");
 
-        //MediaRS
+        /////////// MediaRS
 
         //GET files only /ncms/rs/media/files/<path to folder>
         this._action("media.files", "/ncms/rs/media/files");
@@ -56,10 +56,17 @@ qx.Class.define("ncms.Actions", {
         //PUT create new folder with specifed name
         this._action("media.folder.put", "/ncms/rs/media/folder");
 
+        //PUT /ncms/rs/media/rename/<path to folder>
+        this._action("media.move", "/ncms/rs/media/move");
+
+
+        ////////// NcmsSecurityRS
+
         //GET selects users
         this._action("security.users", "/ncms/rs/adm/security/users");
+
         //GET selects users count
-        this._action("security.users.count", "/ncms/rs/adm/security/users/count");        
+        this._action("security.users.count", "/ncms/rs/adm/security/users/count");
     },
 
     members : {
