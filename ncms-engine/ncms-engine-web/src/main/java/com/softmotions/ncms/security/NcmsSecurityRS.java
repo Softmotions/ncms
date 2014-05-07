@@ -1,6 +1,19 @@
 package com.softmotions.ncms.security;
 
-import java.util.Iterator;
+import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.web.security.WSGroup;
+import com.softmotions.web.security.WSRole;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.web.security.WSUserDatabase;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -10,20 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.web.security.WSGroup;
-import com.softmotions.web.security.WSRole;
-import com.softmotions.web.security.WSUser;
-import com.softmotions.web.security.WSUserDatabase;
+import java.util.Iterator;
 
 /**
  * Rest service for operations on users database.
@@ -207,8 +207,9 @@ public class NcmsSecurityRS {
 		if (log.isDebugEnabled()) {
 			log.debug("users?firstRow=" + firstRow + "&lastRow=" + lastRow);
 		}
-		Iterator<WSUser> users = userDatabase.getUsers(firstRow,
-		        Math.abs(lastRow - firstRow) + 1);
+        //todo fix it !
+        Iterator<WSUser> users = userDatabase.getUsers(null, null, false, firstRow,
+                                                       Math.abs(lastRow - firstRow) + 1);
 		ArrayNode res = mapper.createArrayNode();
 		while (users.hasNext()) {
 			WSUser user = users.next();
