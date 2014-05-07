@@ -42,6 +42,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
@@ -53,7 +54,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -116,7 +116,7 @@ public class MediaRS extends MBDAOSupport {
                     @PathParam("name") String name,
                     @Context HttpServletRequest req,
                     InputStream in) throws IOException {
-        _put("/" + folder, name, req, in);
+        _put(folder, name, req, in);
     }
 
     @PUT
@@ -126,7 +126,7 @@ public class MediaRS extends MBDAOSupport {
     public void put(@PathParam("name") String name,
                     @Context HttpServletRequest req,
                     InputStream in) throws IOException {
-        _put("/", name, req, in);
+        _put("", name, req, in);
     }
 
     @GET
@@ -134,14 +134,14 @@ public class MediaRS extends MBDAOSupport {
     @Transactional
     public JsonNode listFiles(@PathParam("folder") String folder,
                               @Context HttpServletRequest req) throws IOException {
-        return _list("/" + folder, FileFileFilter.FILE, req);
+        return _list(folder, FileFileFilter.FILE, req);
     }
 
     @GET
     @Path("/files")
     @Transactional
     public JsonNode listFiles(@Context HttpServletRequest req) throws IOException {
-        return _list("/", FileFileFilter.FILE, req);
+        return _list("", FileFileFilter.FILE, req);
     }
 
     @GET
@@ -149,14 +149,14 @@ public class MediaRS extends MBDAOSupport {
     @Transactional
     public JsonNode listFolders(@PathParam("folder") String folder,
                                 @Context HttpServletRequest req) throws IOException {
-        return _list("/" + folder, DirectoryFileFilter.INSTANCE, req);
+        return _list(folder, DirectoryFileFilter.INSTANCE, req);
     }
 
     @GET
     @Path("/folders")
     @Transactional
     public JsonNode listFolders(@Context HttpServletRequest req) throws IOException {
-        return _list("/", DirectoryFileFilter.INSTANCE, req);
+        return _list("", DirectoryFileFilter.INSTANCE, req);
     }
 
 
@@ -165,14 +165,14 @@ public class MediaRS extends MBDAOSupport {
     @Transactional
     public JsonNode listAll(@PathParam("folder") String folder,
                             @Context HttpServletRequest req) throws IOException {
-        return _list("/" + folder, TrueFileFilter.INSTANCE, req);
+        return _list(folder, TrueFileFilter.INSTANCE, req);
     }
 
     @GET
     @Path("/all")
     @Transactional
     public JsonNode listAll(@Context HttpServletRequest req) throws IOException {
-        return _list("/", TrueFileFilter.INSTANCE, req);
+        return _list("", TrueFileFilter.INSTANCE, req);
     }
 
     @GET
@@ -207,9 +207,7 @@ public class MediaRS extends MBDAOSupport {
     public JsonNode newFolder(@PathParam("folder") String folder,
                               @Context HttpServletRequest req) throws Exception {
 
-        ReadWriteLock rwlock = null;
-        try {
-            rwlock = acquirePathRWLock("/" + folder, true);
+        try (ResourceLock l = new ResourceLock(folder, true)) {
             File f = new File(basedir, folder);
             if (!f.exists()) {
                 if (!f.mkdirs()) {
@@ -217,7 +215,7 @@ public class MediaRS extends MBDAOSupport {
                 }
             }
             String name = f.getName();
-            String dirname = getResourceFolder(folder);
+            String dirname = getResourceParentFolder(folder);
             Number id = selectOne("selectEntityIdByPath",
                                   "folder", dirname,
                                   "name", name);
@@ -229,14 +227,9 @@ public class MediaRS extends MBDAOSupport {
             } else {
                 throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
             }
-
             return mapper.createObjectNode()
                     .put("label", name)
                     .put("status", 1);
-        } finally {
-            if (rwlock != null) {
-                rwlock.writeLock().unlock();
-            }
         }
     }
 
@@ -247,58 +240,45 @@ public class MediaRS extends MBDAOSupport {
                      @Context HttpServletRequest req,
                      String npath) throws Exception {
 
-        if (npath.contains("..") || path.contains("..")) {
-            throw new BadRequestException();
-        }
-
         path = StringUtils.strip(path, "/");
         npath = StringUtils.strip(npath, "/");
-
-        ReadWriteLock rwlock1 = null;
-        ReadWriteLock rwlock2 = null;
-        try {
-            rwlock1 = acquirePathRWLock("/" + path, true);
-            File f1 = new File(basedir, path);
-            if (!f1.exists() || StringUtils.isBlank(npath) || npath.contains("..")) {
-                throw new BadRequestException();
-            }
-            rwlock2 = acquirePathRWLock("/" + npath, true);
-            File f2 = new File(basedir, npath);
-            if (f2.exists()) {
-                throw new NcmsMessageException(message.get("ncms.mmgr.file.exists", req, npath), true);
-            }
-            File pf = f2.getParentFile();
-            if (pf != null && !pf.exists() && !pf.mkdirs()) {
-                throw new IOException("Cannot create the target directory");
-            }
-
-            if (log.isDebugEnabled()) {
-                log.debug("Moving " + f1 + " => " + f2);
-            }
-
-            if (f1.isDirectory()) {
-                String like = "/" + path + "/%";
-                update("fixFolderName",
-                       "new_prefix", "/" + npath + "/",
-                       "prefix_like_len", like.length(),
-                       "prefix_like", like);
-                FileUtils.moveDirectory(f1, f2);
-            } else if (f1.isFile()) {
-                update("fixResourceLocation",
-                       "nfolder", getResourceFolder(npath),
-                       "nname", getResourceName(npath),
-                       "folder", getResourceFolder(path),
-                       "name", getResourceName(path));
-                FileUtils.moveFile(f1, f2);
-            } else {
-                throw new IOException("Unsupported file type");
-            }
-        } finally {
-            if (rwlock1 != null) {
-                rwlock1.writeLock().unlock();
-            }
-            if (rwlock2 != null) {
-                rwlock2.writeLock().unlock();
+        if (npath.contains("..") || path.contains("..") || StringUtils.isBlank(npath)) {
+            throw new BadRequestException();
+        }
+        try (ResourceLock l1 = new ResourceLock(path, true)) {
+            try (ResourceLock l2 = new ResourceLock(npath, true)) {
+                File f1 = new File(basedir, path);
+                if (!f1.exists()) {
+                    throw new NotFoundException(path);
+                }
+                File f2 = new File(basedir, npath);
+                if (f2.exists()) {
+                    throw new IOException(message.get("ncms.mmgr.file.exists", req, npath));
+                }
+                File pf = f2.getParentFile();
+                if (pf != null && !pf.exists() && !pf.mkdirs()) {
+                    throw new IOException("Cannot create the target directory");
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("Moving " + f1 + " => " + f2);
+                }
+                if (f1.isDirectory()) {
+                    String like = "/" + path + "/%";
+                    update("fixFolderName",
+                           "new_prefix", "/" + npath + "/",
+                           "prefix_like_len", like.length(),
+                           "prefix_like", like);
+                    FileUtils.moveDirectory(f1, f2);
+                } else if (f1.isFile()) {
+                    update("fixResourceLocation",
+                           "nfolder", getResourceParentFolder(npath),
+                           "nname", getResourceName(npath),
+                           "folder", getResourceParentFolder(path),
+                           "name", getResourceName(path));
+                    FileUtils.moveFile(f1, f2);
+                } else {
+                    throw new IOException("Unsupported file type");
+                }
             }
         }
     }
@@ -306,59 +286,28 @@ public class MediaRS extends MBDAOSupport {
     @DELETE
     @Path("/delete/{path:.*}")
     public void deleteResource(@PathParam("path") String path) throws Exception {
+        path = StringUtils.strip(path, "/");
         if (path.contains("..")) {
             throw new BadRequestException();
         }
-        ReadWriteLock rwlock = null;
-        path = StringUtils.strip(path, "/");
-        try {
-            rwlock = acquirePathRWLock("/" + path, true);
+        try (ResourceLock l = new ResourceLock(path, true)) {
             File f = new File(basedir, path);
             if (!f.exists()) {
                 throw new NotFoundException(path);
             }
             boolean isdir = f.isDirectory();
+            //todo fix locking!!
             FileUtils.forceDelete(f);
             if (isdir) {
                 delete("deleteFolder",
                        "prefix_like", "/" + path + "/%");
             } else {
                 delete("deleteFile",
-                       "folder", getResourceFolder(path),
+                       "folder", getResourceParentFolder(path),
                        "name", getResourceName(path));
             }
-        } finally {
-            if (rwlock != null) {
-                rwlock.writeLock().unlock();
-            }
         }
     }
-
-    private String getResourceFolder(String path) {
-        String dirname = FilenameUtils.getPath(path);
-        if (StringUtils.isBlank(dirname)) {
-            dirname = "/";
-        } else {
-            if (!dirname.startsWith("/")) {
-                dirname = "/" + dirname;
-            }
-            if (!dirname.endsWith("/")) {
-                dirname += "/";
-            }
-        }
-        return dirname;
-    }
-
-    public String getResourceName(String path) {
-        if (path.endsWith("/")) {
-            path = path.substring(0, path.length() - 1);
-        }
-        if (path.isEmpty()) {
-            return null;
-        }
-        return FilenameUtils.getName(path);
-    }
-
 
     private MBCriteriaQuery createSelectQ(HttpServletRequest req) {
         MBCriteriaQuery cq = createCriteria();
@@ -411,31 +360,35 @@ public class MediaRS extends MBDAOSupport {
     private JsonNode _list(String folder,
                            FileFilter filter,
                            HttpServletRequest req) throws IOException {
-
         ArrayNode res = mapper.createArrayNode();
-        File f = new File(basedir, folder);
-        if (!f.exists()) {
-            throw new NotFoundException(folder);
-        }
-        if (!f.isDirectory()) {
-            return res;
-        }
-        final Collator collator = Collator.getInstance(message.getLocale(req));
-        File[] files = f.listFiles(filter);
-        if (files == null) files = EMPTY_FILES_ARRAY;
-        Arrays.sort(files, new Comparator<File>() {
-            public int compare(File f1, File f2) {
-                int res = Integer.compare(f2.isDirectory() ? 1 : 0, f1.isDirectory() ? 1 : 0);
-                if (res == 0) {
-                    return collator.compare(f1.getName(), f2.getName());
-                }
+        ReentrantReadWriteLock rwlock = acquirePathRWLock(folder, false);
+        try {
+            File f = new File(basedir, folder);
+            if (!f.exists()) {
+                throw new NotFoundException(folder);
+            }
+            if (!f.isDirectory()) {
                 return res;
             }
-        });
-        for (int i = 0, l = files.length; i < l; ++i) {
-            res.addObject()
-                    .put("label", files[i].getName())
-                    .put("status", files[i].isDirectory() ? 1 : 0);
+            final Collator collator = Collator.getInstance(message.getLocale(req));
+            File[] files = f.listFiles(filter);
+            if (files == null) files = EMPTY_FILES_ARRAY;
+            Arrays.sort(files, new Comparator<File>() {
+                public int compare(File f1, File f2) {
+                    int res = Integer.compare(f2.isDirectory() ? 1 : 0, f1.isDirectory() ? 1 : 0);
+                    if (res == 0) {
+                        return collator.compare(f1.getName(), f2.getName());
+                    }
+                    return res;
+                }
+            });
+            for (int i = 0, l = files.length; i < l; ++i) {
+                res.addObject()
+                        .put("label", files[i].getName())
+                        .put("status", files[i].isDirectory() ? 1 : 0);
+            }
+        } finally {
+            rwlock.readLock().unlock();
         }
         return res;
     }
@@ -449,6 +402,9 @@ public class MediaRS extends MBDAOSupport {
         }
         if (!folder.endsWith("/")) {
             folder += "/";
+        }
+        if (!folder.startsWith("/")) {
+            folder = "/" + folder;
         }
 
         //Used in order to proper ctype detection by TIKA (mark/reset are supported by BufferedInputStream)
@@ -472,11 +428,10 @@ public class MediaRS extends MBDAOSupport {
         int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB); //1Mb by default
         int uplTh = xcfg.getInt("media.max-upload-size", MB * 10); //10Mb by default
         FileUploadStream us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", cfg.getTmpdir());
-        ReentrantReadWriteLock rwlock = null;
-        try {
+
+        try (ResourceLock l = new ResourceLock(folder + name, true)) {
             long actualLength = IOUtils.copyLarge(bis, us);
             us.close();
-
             if (req.getContentLength() != -1 && req.getContentLength() != actualLength) {
                 throw new BadRequestException(
                         String.format("Wrong Content-Length request header specified. " +
@@ -485,8 +440,7 @@ public class MediaRS extends MBDAOSupport {
                         )
                 );
             }
-            rwlock = acquirePathRWLock(folder + name, true); //lock the resource
-            File dir = new File(basedir, folder);
+            File dir = new File(basedir, folder.substring(1));
             File target = new File(dir, name);
             if (!dir.exists()) {
                 dir.mkdirs();
@@ -517,9 +471,6 @@ public class MediaRS extends MBDAOSupport {
                        "content_length", actualLength);
             }
         } finally {
-            if (rwlock != null) {
-                rwlock.writeLock().unlock();
-            }
             if (us.getFile() != null) {
                 us.getFile().delete();
             }
@@ -528,7 +479,87 @@ public class MediaRS extends MBDAOSupport {
     }
 
 
+    private final class ResourceLock implements Closeable {
+
+        ReentrantReadWriteLock parent;
+
+        ReentrantReadWriteLock child;
+
+        final boolean parentWriteLock;
+
+        final boolean childWriteLock;
+
+
+        private ResourceLock(String path, boolean childWriteLock) {
+            this(path, false, childWriteLock);
+        }
+
+        private ResourceLock(String path, boolean parentWriteLock, boolean childWriteLock) {
+            if (!path.startsWith("/")) {
+                path = "/" + path;
+            }
+            if (path.length() > 1 && path.endsWith("/")) {
+                path = path.substring(0, path.length() - 1);
+            }
+            this.parent = null;
+            this.child = null;
+            this.parentWriteLock = parentWriteLock;
+            this.childWriteLock = childWriteLock;
+            String folder = getResourceParentFolder(path);
+            try {
+                if (!folder.equals(path)) {
+                    parent = acquirePathRWLock(folder, parentWriteLock);
+                    child = acquirePathRWLock(path, childWriteLock);
+                } else {
+                    parent = null;
+                    child = acquirePathRWLock(path, childWriteLock);
+                }
+            } catch (Throwable e) {
+                //noinspection finally
+                try {
+                    close();
+                } catch (IOException e1) {
+                    log.error("", e1);
+                } finally {
+                    //noinspection ThrowFromFinallyBlock
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        public void close() throws IOException {
+            try {
+                if (child != null) {
+                    if (childWriteLock) {
+                        child.writeLock().unlock();
+                    } else {
+                        child.readLock().unlock();
+                    }
+                    child = null;
+                }
+            } finally {
+                if (parent != null) {
+                    if (parentWriteLock) {
+                        parent.writeLock().unlock();
+                    } else {
+                        parent.readLock().unlock();
+                    }
+                    parent = null;
+                }
+            }
+        }
+    }
+
     private ReentrantReadWriteLock acquirePathRWLock(String path, boolean acquireWrite) {
+        if (!path.startsWith("/")) {
+            path = "/" + path;
+        }
+        if (path.length() > 1 && path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Locking: " + path + " W: " + acquireWrite);
+        }
         ReentrantReadWriteLock rwlock;
         while (true) {
             synchronized (locksCache) {
@@ -563,6 +594,31 @@ public class MediaRS extends MBDAOSupport {
             }
         }
         return rwlock;
+    }
+
+    private static String getResourceParentFolder(String path) {
+        String dirname = FilenameUtils.getPath(path);
+        if (StringUtils.isBlank(dirname)) {
+            dirname = "/";
+        } else {
+            if (!dirname.startsWith("/")) {
+                dirname = "/" + dirname;
+            }
+            if (!dirname.endsWith("/")) {
+                dirname += "/";
+            }
+        }
+        return dirname;
+    }
+
+    private static String getResourceName(String path) {
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        if (path.isEmpty()) {
+            return null;
+        }
+        return FilenameUtils.getName(path);
     }
 
 
