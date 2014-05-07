@@ -55,6 +55,11 @@ qx.Class.define("ncms.Actions", {
 
         //PUT create new folder with specifed name
         this._action("media.folder.put", "/ncms/rs/media/folder");
+
+        //GET selects users
+        this._action("security.users", "/ncms/rs/adm/security/users");
+        //GET selects users count
+        this._action("security.users.count", "/ncms/rs/adm/security/users/count");        
     },
 
     members : {

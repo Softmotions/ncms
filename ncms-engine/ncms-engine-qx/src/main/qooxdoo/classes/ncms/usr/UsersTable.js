@@ -7,11 +7,11 @@ qx.Class.define("ncms.usr.UsersTable", {
     construct : function(useColumns) {
         var tm = new sm.model.RemoteVirtualTableModel({
             "name" : this.tr("Name"),
-            "type" : this.tr("Type")
+            "fullName" : this.tr("Full Name")
         }).set({
-                    "useColumns" : useColumns || ["name", "type"],
-                    "rowdataUrl" : ncms.Application.ACT.getUrl("asms.select"),
-                    "rowcountUrl" : ncms.Application.ACT.getUrl("asms.select.count")
+                    "useColumns" : useColumns || ["name", "fullName"],                    
+                    "rowdataUrl" : ncms.Application.ACT.getUrl("security.users"),
+                    "rowcountUrl" : ncms.Application.ACT.getUrl("security.users.count")
                 });
 
         var custom = {
@@ -33,11 +33,11 @@ qx.Class.define("ncms.usr.UsersTable", {
         var tcm = this.getTableColumnModel();
         var cInd = tm.getColumnIndexById("name");
         if (cInd != null) {
-            tcm.getBehavior().setWidth(cInd, "2*");
-        }
-        cInd = tm.getColumnIndexById("type");
-        if (cInd != null) {
             tcm.getBehavior().setWidth(cInd, "1*");
+        }
+        cInd = tm.getColumnIndexById("fullName");
+        if (cInd != null) {
+            tcm.getBehavior().setWidth(cInd, "2*");
         }
     },
 

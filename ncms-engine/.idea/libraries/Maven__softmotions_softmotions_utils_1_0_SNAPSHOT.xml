@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: softmotions:softmotions-utils:1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/softmotions/softmotions-utils/1.0-SNAPSHOT/softmotions-utils-1.0-20140430.193441-94.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/softmotions/softmotions-utils/1.0-SNAPSHOT/softmotions-utils-1.0-20140430.193441-94-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/softmotions/softmotions-utils/1.0-SNAPSHOT/softmotions-utils-1.0-20140430.193441-94-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

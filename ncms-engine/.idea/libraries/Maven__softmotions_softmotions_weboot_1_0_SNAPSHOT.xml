@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: softmotions:softmotions-weboot:1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/softmotions/softmotions-weboot/1.0-SNAPSHOT/softmotions-weboot-1.0-20140430.193451-95.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/softmotions/softmotions-weboot/1.0-SNAPSHOT/softmotions-weboot-1.0-20140430.193451-95-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/softmotions/softmotions-weboot/1.0-SNAPSHOT/softmotions-weboot-1.0-20140430.193451-95-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

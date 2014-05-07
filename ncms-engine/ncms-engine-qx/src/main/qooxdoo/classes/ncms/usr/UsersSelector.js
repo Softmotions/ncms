@@ -1,11 +1,10 @@
 /**
- * Users selector pane.
+ * Selector of assemblies
+ * with included search text box
+ * and assembly table.
  */
-qx.Class.define("ncms.usr.UsersNav", {
+qx.Class.define("ncms.asm.AsmSelector", {
     extend : qx.ui.core.Widget,
-
-    statics : {
-    },
 
     events : {
 
@@ -14,8 +13,8 @@ qx.Class.define("ncms.usr.UsersNav", {
          *
          * DATA: var item = {
          *        "id" : {Number} Assembly id.
-         *        "name" : {String} User name,
-         *        "fullName" : {String} Full user name,
+         *        "name" : {String} Page name,
+         *        "type" : {String} Assembly type,
          *       };
          * or null if selection cleared
          */
@@ -27,7 +26,7 @@ qx.Class.define("ncms.usr.UsersNav", {
         appearance : {
             refine : true,
             init : "asm-selector"
-    	},
+        },
 
         constViewSpec : {
             check : "Object",
@@ -37,13 +36,8 @@ qx.Class.define("ncms.usr.UsersNav", {
     },
 
     construct : function(constViewSpec, smodel) {
-        //todo use example: ncms.asm.AsmSelector
-        //todo use sm.ui.form.SearchField as search box
-        //todo use ncms.usr.UsersTable (example: ncms.asm.AsmTable)
-        //todo use com.softmotions.ncms.security.NcmsSecurityRS service
-
         this.base(arguments);
-        this._setLayout(new qx.ui.layout.Dock());
+        this._setLayout(new qx.ui.layout.VBox());
 
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", function() {
@@ -57,7 +51,7 @@ qx.Class.define("ncms.usr.UsersNav", {
         }, this);
 
 
-        this.__table = new ncms.usr.UsersTable().set({
+        this.__table = new ncms.asm.AsmTable().set({
             "statusBarVisible" : false,
             "showCellFocusIndicator" : false});
 
@@ -69,8 +63,8 @@ qx.Class.define("ncms.usr.UsersNav", {
             this.fireDataEvent("asmSelected", asm ? asm : null);
         }, this);
 
-        this._add(this.__sf, {edge:"north"});
-        this._add(this.__table, {edge:"center"});
+        this._add(this.__sf);
+        this._add(this.__table, {flex : 1});
 
         this.setConstViewSpec(constViewSpec || null);
     },

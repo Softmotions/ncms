@@ -18,4 +18,11 @@
           groups="admins">
     </user>
 
+    <user name="dimad"
+          password="password"
+          email="dd.savelev@gmail.com"
+          fullName="Дмитрий Савельев"
+          groups="users">
+    </user>
+    
 </database>
