@@ -19,14 +19,14 @@ qx.Class.define("ncms.usr.UsersNav", {
          *       };
          * or null if selection cleared
          */
-        "asmSelected" : "qx.event.type.Data"
+        "userSelected" : "qx.event.type.Data"
     },
 
     properties : {
 
         appearance : {
             refine : true,
-            init : "asm-selector"
+            init : "user-selector"
     	},
 
         constViewSpec : {
@@ -65,8 +65,8 @@ qx.Class.define("ncms.usr.UsersNav", {
             this.__table.setSelectionModel(smodel);
         }
         this.__table.getSelectionModel().addListener("changeSelection", function() {
-            var asm = this.getSelectedAsm();
-            this.fireDataEvent("asmSelected", asm ? asm : null);
+            var user = this.getSelectedUser();
+            this.fireDataEvent("userSelected", user ? user : null);
         }, this);
 
         this._add(this.__sf, {edge:"north"});
@@ -85,7 +85,7 @@ qx.Class.define("ncms.usr.UsersNav", {
 
         /**
          * Assemblies virtual table
-         * @type {ncms.asm.AsmTable}
+         * @type {ncms.usr.UserTable}
          */
         __table : null,
 
@@ -111,16 +111,16 @@ qx.Class.define("ncms.usr.UsersNav", {
             return this.__table;
         },
 
-        getSelectedAsmInd : function() {
-            return this.__table.getSelectedAsmInd();
+        getSelectedUserInd : function() {
+            return this.__table.getSelectedUserInd();
         },
 
-        getSelectedAsm : function() {
-            return this.__table.getSelectedAsm();
+        getSelectedUser : function() {
+            return this.__table.getSelectedUser();
         },
 
-        getSelectedAsms : function() {
-            return this.__table.getSelectedAsms();
+        getSelectedUsers : function() {
+            return this.__table.getSelectedUsers();
         },
 
         cleanup : function() {
