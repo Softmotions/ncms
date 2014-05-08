@@ -169,22 +169,51 @@ qx.Class.define("ncms.mmgr.MediaNav", {
             menu.removeAll();
             var bt;
             var tree = this.__tree;
-            if (tree.getSelection().length > 0) {
-                bt = new qx.ui.menu.Button(this.tr("New subfolder"));
-                bt.addListenerOnce("execute", this.__onNewFolder, this);
-                menu.add(bt);
+            var root = tree.getModel();
+            var sel = tree.getSelection().getItem(0);
+
+            if (sel != null) {
+                if (sel != root) {
+                    bt = new qx.ui.menu.Button(this.tr("New subfolder"));
+                    bt.addListenerOnce("execute", this.__onNewFolder, this);
+                    menu.add(bt);
+                }
             }
 
-            bt = new qx.ui.menu.Button(this.tr("New root folder"));
+            bt = new qx.ui.menu.Button(this.tr("New top-level folder"));
             bt.addListenerOnce("execute", this.__onNewRootFolder, this);
             menu.add(bt);
 
-            if (tree.getSelection().length > 0) {
-                bt = new qx.ui.menu.Button(this.tr("Rename"));
-                bt.addListenerOnce("execute", this.__onRename, this);
-                menu.add(bt);
-            }
+            if (sel != null) {
+                if (sel != root) {
+                    menu.add(new qx.ui.menu.Separator());
 
+                    bt = new qx.ui.menu.Button(this.tr("Rename"));
+                    bt.addListenerOnce("execute", this.__onRename, this);
+                    menu.add(bt);
+
+                    bt = new qx.ui.menu.Button(this.tr("Delete"));
+                    bt.addListenerOnce("execute", this.__onDelete, this);
+                    menu.add(bt);
+                }
+            }
+        },
+
+        __onDelete : function(ev) {
+            var item = this.__tree.getSelection().getItem(0);
+            if (item == null) {
+                return;
+            }
+            var parent = this.__tree.getParent(item) || this.__tree.getModel();
+            var path = this._getItemPathSegments(item);
+            ncms.Application.confirm(this.tr("Are you sure to remove folder: %1", path.join("/")), function(yes) {
+                if (!yes) return;
+                var url = ncms.Application.ACT.getRestUrl("media.delete", path);
+                var req = new sm.io.Request(url, "DELETE", "application/json");
+                req.send(function(resp) {
+                    this._refreshNode(parent);
+                }, this);
+            }, this);
         },
 
         __onRename : function(ev) {

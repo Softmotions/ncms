@@ -285,10 +285,14 @@ public class MediaRS extends MBDAOSupport {
 
     @DELETE
     @Path("/delete/{path:.*}")
-    public void deleteResource(@PathParam("path") String path) throws Exception {
+    public void deleteResource(@PathParam("path") String path,
+                               @Context HttpServletRequest req) throws Exception {
         path = StringUtils.strip(path, "/");
         if (path.contains("..")) {
             throw new BadRequestException();
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("deleteResource: " + path);
         }
         try (ResourceLock l = new ResourceLock(path, true)) {
             File f = new File(basedir, path);
@@ -296,18 +300,59 @@ public class MediaRS extends MBDAOSupport {
                 throw new NotFoundException(path);
             }
             boolean isdir = f.isDirectory();
-            //todo fix locking!!
-            FileUtils.forceDelete(f);
             if (isdir) {
+                deleteDirectoryInternal(path, true);
                 delete("deleteFolder",
                        "prefix_like", "/" + path + "/%");
             } else {
-                delete("deleteFile",
-                       "folder", getResourceParentFolder(path),
-                       "name", getResourceName(path));
+                boolean exists = f.exists();
+                if (f.delete() || !exists) {
+                    delete("deleteFile",
+                           "folder", getResourceParentFolder(path),
+                           "name", getResourceName(path));
+                } else {
+                    throw new NcmsMessageException(message.get("ncms.mmgr.file.cannot.delete", req, path), true);
+                }
             }
         }
     }
+
+
+    private boolean deleteDirectoryInternal(String path, boolean nolock) throws Exception {
+        boolean res = true;
+        ReentrantReadWriteLock rwlock = null;
+        try {
+            rwlock = nolock ? null : acquirePathRWLock(path, true);
+            File f = new File(basedir, path);
+            if (!f.exists() || !f.isDirectory()) {
+                return true;
+            }
+            File[] flist = f.listFiles();
+            if (flist == null) {
+                return false;
+            }
+            for (File sf : flist) {
+                if (sf.isDirectory()) {
+                    deleteDirectoryInternal(path + "/" + sf.getName(), false);
+                } else {
+                    boolean exists = sf.exists();
+                    if (!sf.delete() && exists) {
+                        log.error("Cannot to delete file: " + sf.getAbsolutePath());
+                    }
+                }
+            }
+            if (!f.delete()) {
+                log.error("Cannot delete directory: " + f.getAbsolutePath());
+                res = false;
+            }
+        } finally {
+            if (rwlock != null) {
+                rwlock.writeLock().unlock();
+            }
+        }
+        return res;
+    }
+
 
     private MBCriteriaQuery createSelectQ(HttpServletRequest req) {
         MBCriteriaQuery cq = createCriteria();

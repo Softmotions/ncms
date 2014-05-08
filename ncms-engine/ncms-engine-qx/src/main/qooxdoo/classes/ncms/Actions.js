@@ -59,6 +59,9 @@ qx.Class.define("ncms.Actions", {
         //PUT /ncms/rs/media/rename/<path to folder>
         this._action("media.move", "/ncms/rs/media/move");
 
+        //DELETE media file/folder
+        this._action("media.delete", "/ncms/rs/media/delete");
+
 
         ////////// NcmsSecurityRS
 
