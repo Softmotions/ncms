@@ -43,22 +43,22 @@ qx.Class.define("ncms.usr.UsersTable", {
 
     members : {
 
-        getSelectedAsmInd : function() {
+        getSelectedUserInd : function() {
             return this.getSelectionModel().getAnchorSelectionIndex();
         },
 
-        getSelectedAsm : function() {
-            var sind = this.getSelectedAsmInd();
+        getSelectedUser : function() {
+            var sind = this.getSelectedUserInd();
             return sind != -1 ? this.getTableModel().getRowData(sind) : null;
         },
 
-        getSelectedAsms : function() {
+        getSelectedUsers : function() {
             var me = this;
-            var asms = [];
+            var users = [];
             this.getSelectionModel().iterateSelection(function(ind) {
-                asms.push(me.getTableModel().getRowData(ind));
+                users.push(me.getTableModel().getRowData(ind));
             });
-            return asms;
+            return users;
         },
 
         cleanup : function() {

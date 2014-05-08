@@ -1,20 +1,8 @@
 package com.softmotions.ncms.security;
 
-import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.web.security.WSGroup;
-import com.softmotions.web.security.WSRole;
-import com.softmotions.web.security.WSUser;
-import com.softmotions.web.security.WSUserDatabase;
+import java.util.Iterator;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -23,7 +11,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.Iterator;
+import javax.ws.rs.core.Context;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.web.security.WSGroup;
+import com.softmotions.web.security.WSRole;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.web.security.WSUserDatabase;
 
 /**
  * Rest service for operations on users database.
@@ -202,14 +205,20 @@ public class NcmsSecurityRS {
 	 */
 	@POST
 	@Path("users")
-	public JsonNode users(@QueryParam("firstRow") int firstRow,
+	public JsonNode users(@Context HttpServletRequest request,
+	        @QueryParam("firstRow") int firstRow,
 	        @QueryParam("lastRow") int lastRow) {
 		if (log.isDebugEnabled()) {
 			log.debug("users?firstRow=" + firstRow + "&lastRow=" + lastRow);
 		}
-        //todo fix it !
-        Iterator<WSUser> users = userDatabase.getUsers(null, null, false, firstRow,
-                                                       Math.abs(lastRow - firstRow) + 1);
+		String ascField = request.getParameter("sortAsc");
+		String descField = request.getParameter("sortDesc");
+		String sortField = (!StringUtils.isBlank(ascField)) ? ascField
+		        : (!StringUtils.isBlank(descField)) ? descField : null;
+		String stext = request.getParameter("stext");
+		Iterator<WSUser> users = userDatabase.getUsers(stext, sortField,
+		        !StringUtils.isBlank(descField), firstRow,
+		        Math.abs(lastRow - firstRow) + 1);
 		ArrayNode res = mapper.createArrayNode();
 		while (users.hasNext()) {
 			WSUser user = users.next();
