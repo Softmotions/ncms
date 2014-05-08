@@ -62,6 +62,9 @@ qx.Class.define("ncms.Actions", {
         //DELETE media file/folder
         this._action("media.delete", "/ncms/rs/media/delete");
 
+        //PUT Upload media file /ncms/rs/media/file/<path to file>
+        this._action("media.upload", "/ncms/rs/media/file");
+
 
         ////////// NcmsSecurityRS
 
