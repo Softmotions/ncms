@@ -109,7 +109,7 @@ public class MediaRS extends MBDAOSupport {
      * curl --upload-file ./myfile.txt http://localhost:8080/ncms/rs/media/file/foo/bar/test.txt
      */
     @PUT
-    @Consumes("application/octet-stream")
+    @Consumes("*/*")
     @Path("/file/{folder:.*}/{name}")
     @Transactional
     public void put(@PathParam("folder") String folder,
@@ -120,7 +120,7 @@ public class MediaRS extends MBDAOSupport {
     }
 
     @PUT
-    @Consumes("application/octet-stream")
+    @Consumes("*/*")
     @Path("/file/{name}")
     @Transactional
     public void put(@PathParam("name") String name,
@@ -372,6 +372,9 @@ public class MediaRS extends MBDAOSupport {
         }
         val = req.getParameter("folder");
         if (!StringUtils.isBlank(val)) {
+            if (!val.endsWith("/")) {
+                val += "/";
+            }
             cq.withParam("folder", val);
         }
         val = req.getParameter("stext");

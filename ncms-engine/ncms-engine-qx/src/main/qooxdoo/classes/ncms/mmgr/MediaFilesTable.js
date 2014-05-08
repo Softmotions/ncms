@@ -44,17 +44,17 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
         },
 
         getSelectedFile : function() {
-            var sind = this.getSelectedAsmInd();
+            var sind = this.getSelectedFileInd();
             return sind != -1 ? this.getTableModel().getRowData(sind) : null;
         },
 
         getSelectedFiles : function() {
             var me = this;
-            var asms = [];
+            var items = [];
             this.getSelectionModel().iterateSelection(function(ind) {
-                asms.push(me.getTableModel().getRowData(ind));
+                items.push(me.getTableModel().getRowData(ind));
             });
-            return asms;
+            return items;
         },
 
         cleanup : function() {

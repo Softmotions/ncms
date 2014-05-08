@@ -60,7 +60,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.__table.setSelectionModel(smodel);
         }
         this.__table.getSelectionModel().addListener("changeSelection", function() {
-            var file = this.getSelectedFile();
+            var file = this.__table.getSelectedFile();
             this.fireDataEvent("fileSelected", file ? file : null);
         }, this);
 

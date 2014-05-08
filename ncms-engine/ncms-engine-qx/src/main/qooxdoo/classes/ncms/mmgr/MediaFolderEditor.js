@@ -20,12 +20,12 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
          *  item = {
          *        "label"  : {String} Item name.
          *        "status" : {Number} Item status. (1 - folder, 0 - file)
-         *        "path"   : {String} Path to the item (from tree root)
+         *        "path"   : {Array} Path to the item (from tree root)
          *  };
          */
         "item" : {
             apply : "__applyItem",
-            nullable : false
+            nullable : true
         }
     },
 
@@ -43,7 +43,12 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
         this._add(hsp);
 
         this.__dropFun = this.__dropFiles.bind(this);
-        this.addListener("appear", this.__ensureUploadControls, this);
+        this.addListener("appear", function() {
+            if (this.getItem() == null) {
+                this.__applyItem(null);
+            }
+            this.__ensureUploadControls();
+        }, this);
     },
 
     members : {
@@ -54,10 +59,9 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
 
         __dropFun : null,
 
-
         __applyItem : function(item) {
-            var folder = "/" + item["path"].join("/");
-            if (item["status"] == 1) { //folder
+            if (item != null && item["status"] == 1) { //folder
+                var folder = "/" + item["path"].join("/");
                 this.__selector.setConstViewSpec({"folder" : folder, "status" : 0});
             } else {
                 this.__selector.setConstViewSpec({"status" : 0});
@@ -65,22 +69,18 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
         },
 
         __dropFiles : function(ev) {
-            qx.log.Logger.info("Files dropped0!");
             ev.stopPropagation();
             ev.preventDefault();
             var files = ev.dataTransfer.files;
-            var toUpload = [];
-            for (var i = 0, f; f = files[i]; ++i) {
-                qx.log.Logger.info("f=" + f.name + " f.type=" + f.type);
-            }
-            var dlg = new sm.ui.upload.FileUploadProgressDlg(null, toUpload);
+            var path = (this.getItem() != null) ? this.getItem()["path"] : [];
+            var dlg = new sm.ui.upload.FileUploadProgressDlg(function(f) {
+                return ncms.Application.ACT.getRestUrl("media.upload", path.concat(f.name));
+            }, files);
+            dlg.addListener("completed", function() {
+                dlg.close();
+                this.__selector.reload();
+            }, this);
             dlg.open();
-
-
-        },
-
-
-        __uploadFile : function(f) {
 
         },
 

@@ -222,7 +222,7 @@ qx.Class.define("ncms.Application", {
          * widget (ncms.wsa.WSAPlaceholder)
          */
         showDefaultWSA : function() {
-            this.showWSA("ncms.wsa.WSAPlaceholder");
+            return this.showWSA("ncms.wsa.WSAPlaceholder");
         },
 
         /**
@@ -230,7 +230,7 @@ qx.Class.define("ncms.Application", {
          * @param widgetId {String}
          */
         showWSA : function(widgetId) {
-            this.getComponent("right-stack").showWidget(widgetId);
+            return this.getComponent("right-stack").showWidget(widgetId);
         },
 
         /**
