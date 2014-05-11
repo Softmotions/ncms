@@ -179,7 +179,9 @@
             </column>
             <column name="MDATE" type="TIMESTAMP">
             </column>
-            <column name="PRIVATE_ACL" type="VARCHAR(512)">
+            <column name="TAGS" type="ARRAY">
+            </column>
+            <column name="DEDICATED_ACL" type="ARRAY">
             </column>
         </createTable>
 
@@ -198,43 +200,19 @@
             <column name="NAME"/>
         </createIndex>
 
-        <!-- ================ MEDIA_ENTITY_TAGS ==================== -->
-
-        <createTable tableName="MEDIA_ENTITY_TAGS">
-            <column name="OWNER_ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="TAG_NAME" type="VARCHAR(32)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-
-        <createIndex tableName="MEDIA_ENTITY_TAGS"
-                     indexName="IDX_MEDIAENTITYTAGS_UNIQ"
-                     unique="true">
-            <column name="TAG_NAME"/>
-            <column name="OWNER_ID"/>
-        </createIndex>
-
         <!-- ================ MEDIA_ENTITY_ACL ==================== -->
 
         <createTable tableName="MEDIA_ENTITY_ACL">
             <column name="OWNER_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="ACL" type="VARCHAR(512)">
+            <column name="ACL" type="ARRAY">
             </column>
         </createTable>
 
 
         <!-- ==================== FK ============================= -->
 
-        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY_TAGS"
-                                 baseColumnNames="OWNER_ID"
-                                 constraintName="FK_MEDIAENTITYTAGS_OWNER"
-                                 referencedTableName="MEDIA_ENTITY"
-                                 referencedColumnNames="ID"
-                                 onDelete="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="MEDIA_ENTITY_ACL"
                                  baseColumnNames="OWNER_ID"
