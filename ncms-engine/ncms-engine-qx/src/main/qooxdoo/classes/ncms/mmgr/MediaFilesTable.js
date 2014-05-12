@@ -4,7 +4,7 @@
 qx.Class.define("ncms.mmgr.MediaFilesTable", {
     extend : sm.table.Table,
 
-    construct : function(useColumns) {
+    construct : function(useColumns, smode) {
         var tm = new sm.model.RemoteVirtualTableModel({
             "name" : this.tr("Name"),
             "content_type" : this.tr("Type"),
@@ -15,12 +15,23 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
                     "rowdataUrl" : ncms.Application.ACT.getUrl("media.select"),
                     "rowcountUrl" : ncms.Application.ACT.getUrl("media.select.count")
                 });
+
         var custom = {
+
             tableColumnModel : function(obj) {
                 return new qx.ui.table.columnmodel.Resize(obj);
+            },
+
+            selectionModel : function(obj) {
+                var res = new qx.ui.table.selection.Model();
+                if (smode != null) {
+                    res.setSelectionMode(smode);
+                }
+                return res;
             }
         };
-        this.base(arguments, tm, custom, true);
+
+        this.base(arguments, tm, custom);
 
         var tcm = this.getTableColumnModel();
         var cInd = tm.getColumnIndexById("name");

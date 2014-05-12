@@ -85,7 +85,7 @@ qx.Class.define("ncms.AppState", {
             }
             var url = ncms.Application.ACT.getRestUrl(this.__urlName, pname);
             var req = new sm.io.Request(url, "POST", "application/json");
-            req.setData(qx.lang.Json.stringify(pval));
+            req.setData(JSON.stringify(pval));
             req.send(function() {
                 sprops[pname] = pval;
                 this.fireDataEvent("stateChanged", this.__stateObject);

@@ -318,6 +318,15 @@ public class MediaRS extends MBDAOSupport {
         }
     }
 
+    @DELETE
+    @Path("/delete-batch")
+    public void deleteBatch(@Context HttpServletRequest req,
+                            ArrayNode files) throws Exception {
+        for (int i = 0, l = files.size(); i < l; ++i) {
+            String path = files.get(i).asText();
+            deleteResource(path, req);
+        }
+    }
 
     private boolean deleteDirectoryInternal(String path, boolean nolock) throws Exception {
         boolean res = true;

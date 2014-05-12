@@ -52,9 +52,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         }
     },
 
-    construct : function(allowModify, constViewSpec, smodel) {
+    construct : function(allowModify, constViewSpec, smode) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
+
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", function() {
             this.__search(null);
@@ -66,14 +67,15 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.__search(ev.getData());
         }, this);
 
-        this.__table = new ncms.mmgr.MediaFilesTable().set({
-            "statusBarVisible" : true,
-            "showCellFocusIndicator" : false});
-
-        if (smodel != null) {
-            this.__table.setSelectionModel(smodel);
+        if (smode == null) {
+            smode = qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION;
         }
-        this.__table.getSelectionModel().addListener("changeSelection", function(ev) {
+        var table = this.__table = new ncms.mmgr.MediaFilesTable(null, smode)
+                .set({
+                    "statusBarVisible" : true,
+                    "showCellFocusIndicator" : false});
+
+        table.getSelectionModel().addListener("changeSelection", function(ev) {
             this.__updateState();
             var file = this.__table.getSelectedFile();
             this.fireDataEvent("fileSelected", file ? file : null);
@@ -85,7 +87,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         this._add(this.__sf);
         this._setupToolbar();
-        this._add(this.__table, {flex : 1});
+        this._add(table, {flex : 1});
 
         if (constViewSpec != null) {
             this.setConstViewSpec(constViewSpec);
@@ -96,9 +98,12 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.__updateState();
         }, this);
 
-        this.__table.getTableModel()
-                .addListener("viewSpecChanged",
-                this.__viewSpecChanged, this);
+        table.getTableModel().addListener("viewSpecChanged", this.__viewSpecChanged, this);
+
+        if (this.__allowModify) {
+            this.setContextMenu(new qx.ui.menu.Menu());
+            this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+        }
     },
 
     members : {
@@ -192,12 +197,52 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
         },
 
-        __addFiles : function(ev) {
-            qx.log.Logger.info("addFiles!!!");
+        __addFiles : function() {
+            var form = document.getElementById("ncms-upload-form");
+            form.reset();
+            var input = document.getElementById("ncms-upload-file");
+            input.onchange = this.__handleFormUploadFiles.bind(this);
+            input.click();
         },
 
-        __rmFiles : function(ev) {
-            qx.log.Logger.info("rmFiles!!!");
+        __renameFile : function(ev) {
+            var f = this.__table.getSelectedFile();
+            if (f == null || f.folder == null || f.name == null) {
+                return;
+            }
+            var path = f.folder + f.name;
+            path = path.split("/");
+            var d = new ncms.mmgr.MediaItemRenameDlg(path, f.name);
+            d.setPosition("bottom-center");
+            d.addListenerOnce("completed", function() {
+                d.hide();
+                this.reload();
+            }, this);
+            d.placeToWidget(ev.getTarget(), false);
+            d.show();
+        },
+
+        __rmFiles : function() {
+            var sfiles = this.__table.getSelectedFiles();
+            var paths = [];
+            sfiles.forEach(function(f) {
+                if (f.folder != null && f.name != null) {
+                    paths.push(f.folder + f.name);
+                }
+            });
+            if (paths.length == 0) {
+                return;
+            }
+            ncms.Application.confirm(this.tr("Are you sure to remove selected files?"), function(yes) {
+                if (!yes) return;
+                var url = ncms.Application.ACT.getUrl("media.delete-batch");
+                var req = new sm.io.Request(url, "DELETE", "application/json");
+                req.setData(JSON.stringify(paths));
+                req.setRequestHeader("Content-Type", "application/json");
+                req.send(function(resp) {
+                    this.reload();
+                }, this);
+            }, this);
         },
 
         __viewSpecChanged : function(ev) {
@@ -226,10 +271,27 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
         },
 
+        __handleFormUploadFiles : function(ev) {
+            var input = ev.target;
+            input.onchange = null;
+            this.__uploadFiles(input.files);
+        },
+
         __handleDropFiles : function(ev) {
             ev.stopPropagation();
             ev.preventDefault();
-            var files = ev.dataTransfer.files;
+            this.__uploadFiles(ev.dataTransfer.files);
+        },
+
+        __uploadFiles : function(files, cb, self) {
+            if (files == null) {
+                return;
+            }
+            var fcnt = 0;
+            while (files[fcnt]) fcnt++;
+            if (fcnt === 0) { //nothing to upload
+                return;
+            }
             var path = (this.getItem() != null) ? this.getItem()["path"] : [];
             var dlg = new sm.ui.upload.FileUploadProgressDlg(function(f) {
                 return ncms.Application.ACT.getRestUrl("media.upload", path.concat(f.name));
@@ -237,6 +299,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             dlg.addListener("completed", function() {
                 dlg.close();
                 this.reload();
+                if (cb != null) {
+                    cb.call(self);
+                }
             }, this);
             dlg.open();
         },
@@ -253,6 +318,28 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             el.ondragover = function() {
                 return false;
             };
+        },
+
+        __beforeContextmenuOpen : function(ev) {
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+
+            var selected = !this.__table.getSelectionModel().isSelectionEmpty();
+            var bt = new qx.ui.menu.Button(this.tr("Upload files"));
+            bt.addListenerOnce("execute", this.__addFiles, this);
+            menu.add(bt);
+
+            if (selected) {
+                if (this.__table.getSelectionModel().getSelectedCount() == 1) {
+                    bt = new qx.ui.menu.Button(this.tr("Rename file"));
+                    bt.addListenerOnce("execute", this.__renameFile, this);
+                    menu.add(bt);
+                }
+                bt = new qx.ui.menu.Button(this.tr("Remove selected files"));
+                bt.addListenerOnce("execute", this.__rmFiles, this);
+                menu.add(bt);
+            }
+            return true;
         }
     },
 

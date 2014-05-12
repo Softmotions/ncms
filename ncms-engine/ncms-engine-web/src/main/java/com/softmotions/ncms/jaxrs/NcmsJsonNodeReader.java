@@ -1,9 +1,13 @@
 package com.softmotions.ncms.jaxrs;
 
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -31,7 +35,7 @@ public class NcmsJsonNodeReader implements MessageBodyReader<JsonNode> {
 
     public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
         //noinspection ObjectEquality
-        return (type == JsonNode.class);
+        return (type == JsonNode.class || type == ArrayNode.class || type == ObjectNode.class);
     }
 
     public JsonNode readFrom(Class<JsonNode> type, Type genericType,
@@ -39,6 +43,11 @@ public class NcmsJsonNodeReader implements MessageBodyReader<JsonNode> {
                              MediaType mediaType,
                              MultivaluedMap<String, String> httpHeaders,
                              InputStream entityStream) throws IOException, WebApplicationException {
-        return mapper.readTree(entityStream);
+        JsonNode res = mapper.readTree(entityStream);
+        //noinspection ObjectEquality
+        if (type != JsonNode.class && !type.isAssignableFrom(res.getClass())) {
+            throw new BadRequestException("Cannot map data to the required: " + type.getClass().getName());
+        }
+        return res;
     }
 }
