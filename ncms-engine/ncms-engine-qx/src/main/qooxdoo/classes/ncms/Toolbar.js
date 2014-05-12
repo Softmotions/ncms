@@ -23,7 +23,7 @@ qx.Class.define("ncms.Toolbar", {
             this.__workspaceMB = new qx.ui.toolbar.MenuButton();
             this.add(this.__workspaceMB);
 
-            this.add(new qx.ui.core.Spacer, {flex : 1});
+            this.add(new qx.ui.core.Spacer(), {flex : 1});
 
             if (apps.getHelpSite()) {
                 var helpButton = new qx.ui.toolbar.Button(this.tr("Help"),

@@ -24,6 +24,7 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.output.DeferredFileOutputStream;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.tika.mime.MediaType;
@@ -374,6 +375,9 @@ public class MediaRS extends MBDAOSupport {
         if (!StringUtils.isBlank(val)) {
             if (!val.endsWith("/")) {
                 val += "/";
+            }
+            if (BooleanUtils.toBoolean(req.getParameter("subfolders"))) {
+                val += "%";
             }
             cq.withParam("folder", val);
         }

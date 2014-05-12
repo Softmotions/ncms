@@ -58,7 +58,7 @@ qx.Theme.define("ncms.theme.Appearance", {
             alias : "toolbar/part",
             style : function(states) {
                 return {
-                    margin : [0, 10, 0, 0]
+                    margin : [0, 0, 0, 0]
                 }
             }
         },

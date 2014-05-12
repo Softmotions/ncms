@@ -4,6 +4,8 @@
  *
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
+ * @asset(ncms/icon/16/misc/folder-tree.png)
+ * @asset(ncms/icon/16/misc/folder-tree-bw.png)
  */
 qx.Class.define("ncms.mmgr.MediaFilesSelector", {
     extend : qx.ui.core.Widget,
@@ -32,12 +34,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         appearance : {
             refine : true,
             init : "mf-selector"
-        },
-
-        constViewSpec : {
-            check : "Object",
-            nullable : true,
-            apply : "__applyConstViewSpec"
         },
 
         /**
@@ -94,10 +90,15 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         if (constViewSpec != null) {
             this.setConstViewSpec(constViewSpec);
         }
+
         this.addListener("appear", function() {
             this.__ensureUploadControls();
             this.__updateState();
         }, this);
+
+        this.__table.getTableModel()
+                .addListener("viewSpecChanged",
+                this.__viewSpecChanged, this);
     },
 
     members : {
@@ -112,17 +113,26 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         __rmBt : null,
 
-        setViewSpec : function(vspec) {
-            this.__table.getTableModel().setViewSpec(this.__createViewSpec(vspec));
-        },
+        __subfoldersBt : null,
 
-        updateViewSpec : function(vspec) {
-            this.__table.getTableModel().updateViewSpec(this.__createViewSpec(vspec));
-        },
-
-        reload : function(vspec) {
-            this.__table.getTableModel().reloadData();
+        setViewSpec : function(vs) {
             this.__table.resetSelection();
+            this.__table.getTableModel().setViewSpec(vs);
+        },
+
+        updateViewSpec : function(vs) {
+            this.__table.resetSelection();
+            this.__table.getTableModel().updateViewSpec(vs);
+        },
+
+        setConstViewSpec : function(vs) {
+            this.__table.resetSelection();
+            this.__table.getTableModel().setConstViewSpec(vs);
+        },
+
+        reload : function() {
+            this.__table.resetSelection();
+            this.__table.getTableModel().reloadData();
         },
 
         resetSelection : function() {
@@ -144,31 +154,33 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
             var bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/add.png")
                     .set({"appearance" : "toolbar-table-button"});
+            bt.setToolTipText(this.tr("Add files"));
             bt.addListener("execute", this.__addFiles, this);
             part.add(bt);
 
             this.__rmBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/delete.png")
                     .set({"appearance" : "toolbar-table-button"});
+            bt.setToolTipText(this.tr("Remove files"));
             bt.addListener("execute", this.__rmFiles, this);
-
             part.add(bt);
+
+            toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
+
+            part = new qx.ui.toolbar.Part()
+                    .set({"appearance" : "toolbar-table/part"});
+            toolbar.add(part);
+            this.__subfoldersBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/folder-tree-bw.png")
+                    .set({"appearance" : "toolbar-table-button"});
+            bt.addListener("execute", this.__changeIncludeSubfolders, this);
+            bt.setToolTipText(this.tr("Show subfolders files"));
+            part.add(bt);
+
             this._add(toolbar);
         },
 
-        __createViewSpec : function(vspec) {
-            if (this.getConstViewSpec() == null) {
-                return vspec;
-            }
-            var nspec = {};
-            qx.Bootstrap.objectMergeWith(nspec, this.getConstViewSpec(), false);
-            qx.Bootstrap.objectMergeWith(nspec, vspec, false);
-            return nspec;
-        },
 
         __search : function(val) {
-            this.__table.resetSelection();
-            var vspec = (val != null && val != "" ? {stext : val} : {});
-            this.setViewSpec(this.__createViewSpec(vspec));
+            this.updateViewSpec({stext : val || ""});
         },
 
         __applyItem : function(item) {
@@ -176,12 +188,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 var folder = "/" + item["path"].join("/");
                 this.setConstViewSpec({"folder" : folder, "status" : 0});
             } else {
-                this.setConstViewSpec({"status" : 0});
+                this.setConstViewSpec({"folder" : "/", "status" : 0});
             }
-        },
-
-        __applyConstViewSpec : function() {
-            this.__search();
         },
 
         __addFiles : function(ev) {
@@ -190,6 +198,25 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         __rmFiles : function(ev) {
             qx.log.Logger.info("rmFiles!!!");
+        },
+
+        __viewSpecChanged : function(ev) {
+            var vs = ev.getData() || {};
+            var bt = this.__subfoldersBt;
+            if (bt) {
+                if (vs["subfolders"] == true) {
+                    bt.addState("checked");
+                    bt.setIcon("ncms/icon/16/misc/folder-tree.png");
+                } else {
+                    bt.removeState("checked");
+                    bt.setIcon("ncms/icon/16/misc/folder-tree-bw.png");
+                }
+            }
+        },
+
+        __changeIncludeSubfolders : function(ev) {
+            var bt = ev.getTarget();
+            this.updateViewSpec({"subfolders" : !bt.hasState("checked")});
         },
 
         __updateState : function() {
@@ -239,5 +266,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__table = null;
         this.__dropFun = null;
         this.__rmBt = null;
+        this.__subfoldersBt = null;
     }
 });
