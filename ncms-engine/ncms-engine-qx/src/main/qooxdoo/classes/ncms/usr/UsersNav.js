@@ -37,11 +37,6 @@ qx.Class.define("ncms.usr.UsersNav", {
     },
 
     construct : function(constViewSpec, smodel) {
-        //todo use example: ncms.asm.AsmSelector
-        //todo use sm.ui.form.SearchField as search box
-        //todo use ncms.usr.UsersTable (example: ncms.asm.AsmTable)
-        //todo use com.softmotions.ncms.security.NcmsSecurityRS service
-
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Dock());
 
@@ -84,7 +79,7 @@ qx.Class.define("ncms.usr.UsersNav", {
         __sf : null,
 
         /**
-         * Assemblies virtual table
+         * Users virtual table
          * @type {ncms.usr.UserTable}
          */
         __table : null,

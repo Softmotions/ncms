@@ -1,5 +1,5 @@
 /**
- * Virtual table of assemblies.
+ * Virtual table of users.
  */
 qx.Class.define("ncms.usr.UsersTable", {
     extend : sm.table.Table,
