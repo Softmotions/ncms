@@ -68,6 +68,8 @@ qx.Class.define("ncms.Actions", {
         //PUT Upload media file /ncms/rs/media/file/<path to file>
         this._action("media.upload", "/ncms/rs/media/file");
 
+        //GET Download file /ncms/rs/media/file/<path to file>
+        this._action("media.file", "/ncms/rs/media/file");
 
         ////////// NcmsSecurityRS
 

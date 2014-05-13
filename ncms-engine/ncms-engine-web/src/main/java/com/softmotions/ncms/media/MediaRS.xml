@@ -90,4 +90,20 @@
         </where>
     </select>
 
+
+    <select id="selectByPath" resultType="map" parameterType="map">
+        select
+        e.id as "id",
+        e.name as "name",
+        e.status as "status",
+        e.content_type as "content_type",
+        e.content_length as "content_length",
+        e.folder as "folder"
+        from media_entity e
+        where
+        e.folder = #{folder}
+        and e.name = #{name}
+    </select>
+
+
 </mapper>

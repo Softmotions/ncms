@@ -8,6 +8,7 @@ import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.web.ResponseUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,19 +37,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.Arrays;
@@ -128,6 +136,45 @@ public class MediaRS extends MBDAOSupport {
                     @Context HttpServletRequest req,
                     InputStream in) throws IOException {
         _put("", name, req, in);
+    }
+
+
+    @GET
+    @Path("/file/{folder:.*}/{name}")
+    @Transactional
+    public Response get(@PathParam("folder") String folder,
+                        @PathParam("name") String name,
+                        @Context HttpServletRequest req,
+                        InputStream in) throws Exception {
+        return _get(folder, name, req, true);
+    }
+
+    @GET
+    @Path("/file/{name}")
+    @Transactional
+    public Response get(@PathParam("name") String name,
+                        @Context HttpServletRequest req,
+                        InputStream in) throws Exception {
+        return _get("", name, req, true);
+    }
+
+    @HEAD
+    @Path("/file/{folder:.*}/{name}")
+    @Transactional
+    public Response head(@PathParam("folder") String folder,
+                         @PathParam("name") String name,
+                         @Context HttpServletRequest req,
+                         InputStream in) throws Exception {
+        return _get(folder, name, req, false);
+    }
+
+    @HEAD
+    @Path("/file/{name}")
+    @Transactional
+    public Response head(@PathParam("name") String name,
+                         @Context HttpServletRequest req,
+                         InputStream in) throws Exception {
+        return _get("", name, req, false);
     }
 
     @GET
@@ -452,6 +499,61 @@ public class MediaRS extends MBDAOSupport {
             rwlock.readLock().unlock();
         }
         return res;
+    }
+
+
+    private Response _get(String folder,
+                          String name,
+                          HttpServletRequest req,
+                          boolean transfer) throws Exception {
+        if (folder.contains("..")) {
+            throw new BadRequestException(folder);
+        }
+        if (!folder.endsWith("/")) {
+            folder += "/";
+        }
+        final File f = new File(new File(basedir, folder), name);
+        String path = folder + name;
+        if (!f.exists() || !f.isFile()) {
+            throw new NotFoundException(path);
+        }
+        if (!folder.startsWith("/")) {
+            folder = "/" + folder;
+        }
+        Map<String, ?> res = selectOne("selectByPath",
+                                       "folder", folder,
+                                       "name", name);
+        if (res == null) {
+            throw new NotFoundException(path);
+        }
+        String ctype = (String) res.get("content_type");
+        if (ctype == null) {
+            ctype = "application/octet-stream";
+        }
+        Response.ResponseBuilder rb = Response.ok();
+        Number clength = (Number) res.get("content_length");
+        MediaType mtype = MediaType.parse(ctype);
+        if (mtype != null) {
+            rb.type(mtype.getBaseType().toString());
+            rb.encoding(mtype.getParameters().get("charset"));
+        }
+        if (clength != null) {
+            rb.header(HttpHeaders.CONTENT_LENGTH, clength);
+        }
+        rb.header(HttpHeaders.CONTENT_DISPOSITION, ResponseUtils
+                .encodeContentDisposition(name, BooleanUtils.toBoolean(req.getParameter("inline"))));
+
+        if (transfer) {
+            return rb.entity(new StreamingOutput() {
+                public void write(OutputStream output) throws IOException, WebApplicationException {
+                    try (FileInputStream fis = new FileInputStream(f)) {
+                        IOUtils.copyLarge(fis, output);
+                    }
+                }
+            }).build();
+        } else {
+            return rb.status(Response.Status.NO_CONTENT).build();
+        }
     }
 
     private void _put(String folder,

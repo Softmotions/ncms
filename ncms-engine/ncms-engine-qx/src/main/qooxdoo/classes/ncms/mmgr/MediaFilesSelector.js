@@ -149,25 +149,25 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         },
 
         _setupToolbar : function() {
-            if (!this.__allowModify) {
-                return;
-            }
             var toolbar = new qx.ui.toolbar.ToolBar();
-            var part = new qx.ui.toolbar.Part()
-                    .set({"appearance" : "toolbar-table/part"});
-            toolbar.add(part);
 
-            var bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/add.png")
-                    .set({"appearance" : "toolbar-table-button"});
-            bt.setToolTipText(this.tr("Add files"));
-            bt.addListener("execute", this.__addFiles, this);
-            part.add(bt);
+            if (this.__allowModify) {
+                var part = new qx.ui.toolbar.Part()
+                        .set({"appearance" : "toolbar-table/part"});
+                toolbar.add(part);
 
-            this.__rmBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/delete.png")
-                    .set({"appearance" : "toolbar-table-button"});
-            bt.setToolTipText(this.tr("Remove files"));
-            bt.addListener("execute", this.__rmFiles, this);
-            part.add(bt);
+                var bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/add.png")
+                        .set({"appearance" : "toolbar-table-button"});
+                bt.setToolTipText(this.tr("Add files"));
+                bt.addListener("execute", this.__addFiles, this);
+                part.add(bt);
+
+                this.__rmBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/delete.png")
+                        .set({"appearance" : "toolbar-table-button"});
+                bt.setToolTipText(this.tr("Remove files"));
+                bt.addListener("execute", this.__rmFiles, this);
+                part.add(bt);
+            }
 
             toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
 
@@ -320,17 +320,38 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             };
         },
 
+        __downloadFile : function(ev) {
+            var f = this.__table.getSelectedFile();
+            if (f == null || f.folder == null || f.name == null) {
+                return;
+            }
+            var path = (f.folder + f.name).split("/");
+            var form = document.getElementById("ncms-download-form");
+            form.action = ncms.Application.ACT.getRestUrl("media.file", path);
+            form.submit();
+        },
+
         __beforeContextmenuOpen : function(ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
 
             var selected = !this.__table.getSelectionModel().isSelectionEmpty();
+            var selectedSingle = (selected && this.__table.getSelectionModel().getSelectedCount() == 1);
+
             var bt = new qx.ui.menu.Button(this.tr("Upload files"));
             bt.addListenerOnce("execute", this.__addFiles, this);
             menu.add(bt);
 
             if (selected) {
-                if (this.__table.getSelectionModel().getSelectedCount() == 1) {
+                if (selectedSingle) {
+                    bt = new qx.ui.menu.Button(this.tr("Download file"));
+                    bt.addListener("execute", this.__downloadFile, this);
+                    menu.add(bt);
+                }
+
+                menu.add(new qx.ui.menu.Separator());
+
+                if (selectedSingle) {
                     bt = new qx.ui.menu.Button(this.tr("Rename file"));
                     bt.addListenerOnce("execute", this.__renameFile, this);
                     menu.add(bt);
@@ -348,6 +369,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             var el = this.getContentElement().getDomElement();
             el.ondrop = null;
             el.ondragover = null;
+            el.ondragenter = null;
+            el.ondragleave = null;
         }
         this.__sf = null;
         this.__table = null;
