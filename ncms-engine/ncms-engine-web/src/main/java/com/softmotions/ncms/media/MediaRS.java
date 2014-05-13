@@ -28,6 +28,8 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.ResultContext;
+import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.tika.mime.MediaType;
 import org.mybatis.guice.transactional.Transactional;
@@ -62,7 +64,6 @@ import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -71,6 +72,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@SuppressWarnings("unchecked")
 @Path("/media")
 @Produces("application/json")
 public class MediaRS extends MBDAOSupport {
@@ -229,32 +231,38 @@ public class MediaRS extends MBDAOSupport {
     public Response select(@Context final HttpServletRequest req) {
         return Response.ok(new StreamingOutput() {
             public void write(OutputStream output) throws IOException, WebApplicationException {
-                JsonFactory jf = new JsonFactory();
-                JsonGenerator gen = jf.createGenerator(output);
-                List<Map<String, ?>> rows = select("select", createSelectQ(req));
+                final JsonGenerator gen = new JsonFactory().createGenerator(output);
                 try {
                     gen.writeStartArray();
-                    for (Map<String, ?> row : rows) {
-                        gen.writeStartObject();
-                        gen.writeNumberField("id", ((Number) row.get("id")).longValue());
-                        gen.writeStringField("name", (String) row.get("name"));
-                        gen.writeStringField("folder", (String) row.get("folder"));
-                        gen.writeStringField("content_type", (String) row.get("content_type"));
-                        if (row.get("content_length") != null) {
-                            gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
+                    //noinspection InnerClassTooDeeplyNested
+                    select("select", new ResultHandler() {
+                        public void handleResult(ResultContext context) {
+                            Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                            try {
+                                gen.writeStartObject();
+                                gen.writeNumberField("id", ((Number) row.get("id")).longValue());
+                                gen.writeStringField("name", (String) row.get("name"));
+                                gen.writeStringField("folder", (String) row.get("folder"));
+                                gen.writeStringField("content_type", (String) row.get("content_type"));
+                                if (row.get("content_length") != null) {
+                                    gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
+                                }
+                                gen.writeEndObject();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
                         }
-                        gen.writeEndObject();
-                    }
+                    }, createSelectQ(req));
                 } finally {
                     gen.writeEndArray();
                 }
                 gen.flush();
             }
-        })
-                .type(javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE)
+        }).type(javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE)
                 .encoding("UTF-8")
                 .build();
     }
+
 
     @GET
     @Path("/select/count")
