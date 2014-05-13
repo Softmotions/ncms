@@ -32,10 +32,12 @@ import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.tika.mime.MediaType;
+import org.imgscalr.Scalr;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -51,7 +53,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
@@ -61,6 +65,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.sql.Blob;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -147,8 +152,7 @@ public class MediaRS extends MBDAOSupport {
     @Transactional
     public Response get(@PathParam("folder") String folder,
                         @PathParam("name") String name,
-                        @Context HttpServletRequest req,
-                        InputStream in) throws Exception {
+                        @Context HttpServletRequest req) throws Exception {
         return _get(folder, name, req, true);
     }
 
@@ -156,8 +160,7 @@ public class MediaRS extends MBDAOSupport {
     @Path("/file/{name}")
     @Transactional
     public Response get(@PathParam("name") String name,
-                        @Context HttpServletRequest req,
-                        InputStream in) throws Exception {
+                        @Context HttpServletRequest req) throws Exception {
         return _get("", name, req, true);
     }
 
@@ -166,8 +169,7 @@ public class MediaRS extends MBDAOSupport {
     @Transactional
     public Response head(@PathParam("folder") String folder,
                          @PathParam("name") String name,
-                         @Context HttpServletRequest req,
-                         InputStream in) throws Exception {
+                         @Context HttpServletRequest req) throws Exception {
         return _get(folder, name, req, false);
     }
 
@@ -175,10 +177,27 @@ public class MediaRS extends MBDAOSupport {
     @Path("/file/{name}")
     @Transactional
     public Response head(@PathParam("name") String name,
-                         @Context HttpServletRequest req,
-                         InputStream in) throws Exception {
+                         @Context HttpServletRequest req) throws Exception {
         return _get("", name, req, false);
     }
+
+    @GET
+    @Path("/thumbnail/{folder:.*}/{name}")
+    @Transactional
+    public Response thumbnail(@PathParam("folder") String folder,
+                              @PathParam("name") String name,
+                              @Context HttpServletRequest req) throws Exception {
+        return _thumbnail(folder, name, req);
+    }
+
+    @GET
+    @Path("/thumbnail/{name}")
+    @Transactional
+    public Response thumbnail(@PathParam("name") String name,
+                              @Context HttpServletRequest req) throws Exception {
+        return _thumbnail("", name, req);
+    }
+
 
     @GET
     @Path("/files/{folder:.*}")
@@ -274,6 +293,7 @@ public class MediaRS extends MBDAOSupport {
 
     @PUT
     @Path("/folder/{folder:.*}")
+    @Transactional
     public JsonNode newFolder(@PathParam("folder") String folder,
                               @Context HttpServletRequest req) throws Exception {
 
@@ -355,6 +375,7 @@ public class MediaRS extends MBDAOSupport {
 
     @DELETE
     @Path("/delete/{path:.*}")
+    @Transactional
     public void deleteResource(@PathParam("path") String path,
                                @Context HttpServletRequest req) throws Exception {
         path = StringUtils.strip(path, "/");
@@ -523,6 +544,74 @@ public class MediaRS extends MBDAOSupport {
         return res;
     }
 
+    private Response _thumbnail(String folder,
+                                String name,
+                                HttpServletRequest req) throws Exception {
+
+        if (folder.contains("..")) {
+            throw new BadRequestException(folder);
+        }
+        folder = normalizeFolder(folder);
+        String path = folder + name;
+        Map<String, ?> rec = selectOne("selectIcon", "folder", folder, "name", name);
+        if (rec == null) {
+            throw new NotFoundException(path);
+        }
+
+        String thumbFormat = cfg.impl().getString("media.thumbnails-format", "png");
+        int thumWidth = cfg.impl().getInt("media.thumbnails-width", 255);
+
+        long id = ((Number) rec.get("id")).longValue();
+        String ctype = (String) rec.get("content_type");
+        String iconCtype = (String) rec.get("icon_content_type");
+        if (ctype == null || !ctype.startsWith("image/")) {
+            throw new BadRequestException(path);
+        }
+
+        final Blob icon = (Blob) rec.get("icon");
+        if (icon != null) {
+            final byte[] icondata = icon.getBytes(0, (int) icon.length());
+            return Response.ok(new StreamingOutput() {
+                public void write(OutputStream output) throws IOException, WebApplicationException {
+                    output.write(icondata);
+                }
+            }).type(iconCtype)
+                    .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
+                    .build();
+        }
+
+        BufferedImage image;
+        try (ResourceLock l = new ResourceLock(path, false)) {
+            File f = new File(basedir, path.substring(1));
+            if (!f.exists()) {
+                throw new NotFoundException(path);
+            }
+            image = ImageIO.read(f);
+        }
+
+        //Now resize the image
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        BufferedImage thumbnail = Scalr.resize(image, thumWidth);
+        if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
+            throw new RuntimeException("Cannot find image writer for thumbFormat=" + thumbFormat);
+        }
+
+        iconCtype = "image/" + thumbFormat;
+        final byte[] icondata = bos.toByteArray();
+        update("updateIcon",
+               "id", id,
+               "icon", icondata,
+               "icon_content_type", iconCtype);
+
+        return Response.ok(new StreamingOutput() {
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                output.write(icondata);
+            }
+        }).type(iconCtype)
+                .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
+                .build();
+    }
+
 
     private Response _get(String folder,
                           String name,
@@ -605,12 +694,7 @@ public class MediaRS extends MBDAOSupport {
         if (folder.contains("..")) {
             throw new BadRequestException(folder);
         }
-        if (!folder.endsWith("/")) {
-            folder += "/";
-        }
-        if (!folder.startsWith("/")) {
-            folder = "/" + folder;
-        }
+        folder = normalizeFolder(folder);
 
         //Used in order to proper ctype detection by TIKA (mark/reset are supported by BufferedInputStream)
         BufferedInputStream bis = new BufferedInputStream(in);
@@ -815,12 +899,7 @@ public class MediaRS extends MBDAOSupport {
         if (StringUtils.isBlank(dirname)) {
             dirname = "/";
         } else {
-            if (!dirname.startsWith("/")) {
-                dirname = "/" + dirname;
-            }
-            if (!dirname.endsWith("/")) {
-                dirname += "/";
-            }
+            dirname = normalizeFolder(dirname);
         }
         return dirname;
     }
@@ -833,6 +912,16 @@ public class MediaRS extends MBDAOSupport {
             return null;
         }
         return FilenameUtils.getName(path);
+    }
+
+    private static String normalizeFolder(String folder) {
+        if (!folder.startsWith("/")) {
+            folder = "/" + folder;
+        }
+        if (!folder.endsWith("/")) {
+            folder += "/";
+        }
+        return folder;
     }
 
 

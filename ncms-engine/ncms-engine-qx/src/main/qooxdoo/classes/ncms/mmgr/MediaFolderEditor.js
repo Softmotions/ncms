@@ -35,6 +35,7 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
 
         var selector = this.__selector = new ncms.mmgr.MediaFilesSelector(true);
         this.bind("item", selector, "item");
+
         var editor = this.__editor = new ncms.mmgr.MediaFileEditor();
         selector.bind("fileSelected", editor, "fileSpec");
 

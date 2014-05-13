@@ -229,6 +229,7 @@ qx.Class.define("ncms.mmgr.MediaNav", {
                 var data = ev.getData();
                 item.setLoaded(false);
                 item.setLabel(data[0]);
+                this.__onSelected(item);
             }, this);
             d.placeToWidget(ev.getTarget(), false);
             d.show();

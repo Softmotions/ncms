@@ -32,7 +32,7 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
 
     public Response toResponse(Exception ex) {
 
-        Response.ResponseBuilder rb;
+        Response.ResponseBuilder rb = null;
         if (ex instanceof NotFoundException) {
             log.warn("HTTP 404: " + ex.getMessage());
             rb = Response.status(Response.Status.NOT_FOUND)
@@ -76,20 +76,28 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
                    ex instanceof javax.ws.rs.BadRequestException) {
 
             log.warn("", ex);
-            rb = Response.status(Response.Status.BAD_REQUEST)
-                    .header("Softmotions-Msg-Err0",
-                            ex.getMessage() != null ?
-                            StringUtils.left(ex.getMessage(), MAX_MSG_LEN) : ex.toString()
-                    );
+            try {
+                rb = Response.status(Response.Status.BAD_REQUEST)
+                        .header("Softmotions-Msg-Err0",
+                                ex.getMessage() != null ?
+                                StringUtils.left(URLEncoder.encode(ex.getMessage(), "UTF-8"), MAX_MSG_LEN) : ex.toString()
+                        );
+            } catch (UnsupportedEncodingException e) {
+                log.error("", e);
+            }
 
         } else {
             log.error("", ex);
-            rb = Response.serverError()
-                    .header("Softmotions-Msg-Err0",
-                            ex.getMessage() != null ?
-                            StringUtils.left(ex.getMessage(), MAX_MSG_LEN) : ex.toString()
-                    );
+            try {
+                rb = Response.serverError()
+                        .header("Softmotions-Msg-Err0",
+                                ex.getMessage() != null ?
+                                StringUtils.left(URLEncoder.encode(ex.getMessage(), "UTF-8"), MAX_MSG_LEN) : ex.toString()
+                        );
+            } catch (UnsupportedEncodingException e) {
+                log.error("", e);
+            }
         }
-        return rb.build();
+        return rb != null ? rb.build() : Response.serverError().build();
     }
 }

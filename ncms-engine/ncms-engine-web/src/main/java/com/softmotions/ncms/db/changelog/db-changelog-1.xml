@@ -181,6 +181,10 @@
             </column>
             <column name="TAGS" type="ARRAY">
             </column>
+            <column name="ICON" type="BLOB">
+            </column>
+            <column name="ICON_CONTENT_TYPE" type="VARCHAR(64)">
+            </column>
             <column name="DEDICATED_ACL" type="ARRAY">
             </column>
         </createTable>
