@@ -10,10 +10,11 @@ import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.web.ResponseUtils;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
 import org.apache.commons.collections.map.LRUMap;
@@ -225,21 +226,34 @@ public class MediaRS extends MBDAOSupport {
 
     @GET
     @Path("/select")
-    @Transactional
-    public JsonNode select(@Context HttpServletRequest req) {
-        ArrayNode res = mapper.createArrayNode();
-        List<Map<String, ?>> rows = select("select", createSelectQ(req));
-        for (Map<String, ?> row : rows) {
-            ObjectNode on = res.addObject();
-            on.put("id", ((Number) row.get("id")).longValue());
-            on.put("name", (String) row.get("name"));
-            on.put("folder", (String) row.get("folder"));
-            on.put("content_type", (String) row.get("content_type"));
-            if (row.get("content_length") != null) {
-                on.put("content_length", ((Number) row.get("content_length")).longValue());
+    public Response select(@Context final HttpServletRequest req) {
+        return Response.ok(new StreamingOutput() {
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                JsonFactory jf = new JsonFactory();
+                JsonGenerator gen = jf.createGenerator(output);
+                List<Map<String, ?>> rows = select("select", createSelectQ(req));
+                try {
+                    gen.writeStartArray();
+                    for (Map<String, ?> row : rows) {
+                        gen.writeStartObject();
+                        gen.writeNumberField("id", ((Number) row.get("id")).longValue());
+                        gen.writeStringField("name", (String) row.get("name"));
+                        gen.writeStringField("folder", (String) row.get("folder"));
+                        gen.writeStringField("content_type", (String) row.get("content_type"));
+                        if (row.get("content_length") != null) {
+                            gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
+                        }
+                        gen.writeEndObject();
+                    }
+                } finally {
+                    gen.writeEndArray();
+                }
+                gen.flush();
             }
-        }
-        return res;
+        })
+                .type(javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE)
+                .encoding("UTF-8")
+                .build();
     }
 
     @GET
@@ -512,48 +526,68 @@ public class MediaRS extends MBDAOSupport {
         if (!folder.endsWith("/")) {
             folder += "/";
         }
-        final File f = new File(new File(basedir, folder), name);
-        String path = folder + name;
-        if (!f.exists() || !f.isFile()) {
-            throw new NotFoundException(path);
-        }
-        if (!folder.startsWith("/")) {
-            folder = "/" + folder;
-        }
-        Map<String, ?> res = selectOne("selectByPath",
-                                       "folder", folder,
-                                       "name", name);
-        if (res == null) {
-            throw new NotFoundException(path);
-        }
-        String ctype = (String) res.get("content_type");
-        if (ctype == null) {
-            ctype = "application/octet-stream";
-        }
+        Response r;
         Response.ResponseBuilder rb = Response.ok();
-        Number clength = (Number) res.get("content_length");
-        MediaType mtype = MediaType.parse(ctype);
-        if (mtype != null) {
-            rb.type(mtype.getBaseType().toString());
-            rb.encoding(mtype.getParameters().get("charset"));
-        }
-        if (clength != null) {
-            rb.header(HttpHeaders.CONTENT_LENGTH, clength);
-        }
-        rb.header(HttpHeaders.CONTENT_DISPOSITION, ResponseUtils
-                .encodeContentDisposition(name, BooleanUtils.toBoolean(req.getParameter("inline"))));
+        String path = folder + name;
+        final ResourceLock l = new ResourceLock(path, false);
+        try {
+            final File f = new File(new File(basedir, folder), name);
+            if (!f.exists() || !f.isFile()) {
+                //noinspection ThrowCaughtLocally
+                throw new NotFoundException(path);
+            }
+            if (!folder.startsWith("/")) {
+                folder = "/" + folder;
+            }
 
-        if (transfer) {
-            return rb.entity(new StreamingOutput() {
-                public void write(OutputStream output) throws IOException, WebApplicationException {
-                    try (FileInputStream fis = new FileInputStream(f)) {
-                        IOUtils.copyLarge(fis, output);
-                    }
-                }
-            }).build();
-        } else {
-            return rb.status(Response.Status.NO_CONTENT).build();
+            Map<String, ?> res = selectOne("selectByPath",
+                                           "folder", folder,
+                                           "name", name);
+            if (res == null) {
+                //noinspection ThrowCaughtLocally
+                throw new NotFoundException(path);
+            }
+            String ctype = (String) res.get("content_type");
+            if (ctype == null) {
+                ctype = "application/octet-stream";
+            }
+            Number clength = (Number) res.get("content_length");
+            MediaType mtype = MediaType.parse(ctype);
+            if (mtype != null) {
+                rb.type(mtype.getBaseType().toString());
+                rb.encoding(mtype.getParameters().get("charset"));
+            }
+            if (clength != null) {
+                rb.header(HttpHeaders.CONTENT_LENGTH, clength);
+            }
+            rb.header(HttpHeaders.CONTENT_DISPOSITION, ResponseUtils
+                    .encodeContentDisposition(name, BooleanUtils.toBoolean(req.getParameter("inline"))));
+
+            if (transfer) {
+                l.releaseParent(); //unlock parent folder read-lock
+                rb.entity(
+                        new StreamingOutput() {
+                            public void write(OutputStream output) throws IOException, WebApplicationException {
+                                try (FileInputStream fis = new FileInputStream(f)) {
+                                    IOUtils.copyLarge(fis, output);
+                                } finally {
+                                    l.close();
+                                }
+                            }
+                        }
+                );
+            } else {
+                rb.status(Response.Status.NO_CONTENT);
+            }
+            r = rb.build();
+        } catch (Throwable e) {
+            l.close();
+            throw e;
         }
+        if (!transfer) {
+            l.close();
+        }
+        return r;
     }
 
     private void _put(String folder,
@@ -690,25 +724,34 @@ public class MediaRS extends MBDAOSupport {
             }
         }
 
+        public void releaseParent() {
+            if (parent != null) {
+                if (parentWriteLock) {
+                    parent.writeLock().unlock();
+                } else {
+                    parent.readLock().unlock();
+                }
+                parent = null;
+            }
+        }
+
+
+        public void releaseChild() {
+            if (child != null) {
+                if (childWriteLock) {
+                    child.writeLock().unlock();
+                } else {
+                    child.readLock().unlock();
+                }
+                child = null;
+            }
+        }
+
         public void close() throws IOException {
             try {
-                if (child != null) {
-                    if (childWriteLock) {
-                        child.writeLock().unlock();
-                    } else {
-                        child.readLock().unlock();
-                    }
-                    child = null;
-                }
+                releaseChild();
             } finally {
-                if (parent != null) {
-                    if (parentWriteLock) {
-                        parent.writeLock().unlock();
-                    } else {
-                        parent.readLock().unlock();
-                    }
-                    parent = null;
-                }
+                releaseParent();
             }
         }
     }
