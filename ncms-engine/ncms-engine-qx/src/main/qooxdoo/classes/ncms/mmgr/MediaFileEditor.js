@@ -105,7 +105,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 showCellFocusIndicator : false,
                 statusBarVisible : false,
                 focusCellOnMouseMove : true,
-                height : 140});
+                height : 120});
             return table;
         },
 
