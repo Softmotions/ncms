@@ -71,6 +71,12 @@ qx.Class.define("ncms.Actions", {
         //GET Download file /ncms/rs/media/file/<path to file>
         this._action("media.file", "/ncms/rs/media/file");
 
+        //GET Thumbnail of image media
+        this._action("media.thumbnail", "/ncms/rs/media/thumbnail");
+
+        //POST Save extra file meta fields
+        this._action("media.meta", "/ncms/rs/media/meta/{id}");
+
         ////////// NcmsSecurityRS
 
         //GET selects users

@@ -70,7 +70,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         if (smode == null) {
             smode = qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION;
         }
-        var table = this.__table = new ncms.mmgr.MediaFilesTable(null, smode)
+        var table = this.__table = new ncms.mmgr.MediaFilesTable(null, null, smode)
                 .set({
                     "statusBarVisible" : true,
                     "showCellFocusIndicator" : false});

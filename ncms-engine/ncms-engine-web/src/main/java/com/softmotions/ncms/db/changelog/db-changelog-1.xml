@@ -49,7 +49,7 @@
             </column>
             <column name="ASM_CORE_ID" type="BIGINT">
             </column>
-            <column name="NAME" type="VARCHAR(128)">
+            <column name="NAME" type="VARCHAR(127)">
                 <constraints nullable="false"/>
             </column>
             <column name="TYPE" type="VARCHAR(64)">
@@ -84,10 +84,10 @@
             <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="NAME" type="VARCHAR(128)">
+            <column name="NAME" type="VARCHAR(127)">
                 <constraints nullable="false"/>
             </column>
-            <column name="TYPE" type="VARCHAR(128)">
+            <column name="TYPE" type="VARCHAR(127)">
                 <constraints nullable="false"/>
             </column>
             <column name="OPTIONS" type="VARCHAR(512)"/>
@@ -157,7 +157,7 @@
             <column name="ID" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="NAME" type="VARCHAR(128)">
+            <column name="NAME" type="VARCHAR(127)">
                 <constraints nullable="false"/>
             </column>
             <column name="STATUS" type="INT">
@@ -181,11 +181,17 @@
             </column>
             <column name="TAGS" type="ARRAY">
             </column>
-            <column name="ICON" type="BLOB">
+            <column name="ICON" type="BLOB"
+                    remarks="Image media file thumbnail">
             </column>
             <column name="ICON_CONTENT_TYPE" type="VARCHAR(64)">
             </column>
             <column name="DEDICATED_ACL" type="ARRAY">
+            </column>
+            <column name="CREATOR" type="VARCHAR(127)"
+                    remarks="File cleator user id">
+            </column>
+            <column name="MD5" type="CHAR(33)">
             </column>
         </createTable>
 
@@ -203,6 +209,11 @@
             <column name="FOLDER"/>
             <column name="NAME"/>
         </createIndex>
+        <createIndex tableName="MEDIA_ENTITY"
+                     indexName="IDX_MEDIAENTITY_MD5">
+            <column name="MD5"/>
+        </createIndex>
+
 
         <!-- ================ MEDIA_ENTITY_ACL ==================== -->
 

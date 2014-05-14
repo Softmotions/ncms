@@ -4,14 +4,16 @@
 qx.Class.define("ncms.mmgr.MediaFilesTable", {
     extend : sm.table.Table,
 
-    construct : function(useColumns, smode) {
+    construct : function(useColumns, hideColumns, smode) {
+
         var tm = new sm.model.RemoteVirtualTableModel({
             "name" : this.tr("Name"),
             "content_type" : this.tr("Type"),
             "content_length" : this.tr("Length"),
-            "folder" : this.tr("Folder")
+            "folder" : this.tr("Folder"),
+            "description" : this.tr("Description")
         }).set({
-                    "useColumns" : useColumns || ["name", "content_type", "content_length"],
+                    "useColumns" : useColumns || ["name", "description", "content_type", "content_length"],
                     "rowdataUrl" : ncms.Application.ACT.getUrl("media.select"),
                     "rowcountUrl" : ncms.Application.ACT.getUrl("media.select.count")
                 });
@@ -46,6 +48,18 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
         if (cInd != null) {
             tcm.getBehavior().setWidth(cInd, "1*");
         }
+        cInd = tm.getColumnIndexById("description");
+        if (cInd != null) {
+            tcm.getBehavior().setWidth(cInd, "2*");
+        }
+
+        hideColumns = hideColumns || ["content_type", "content_length"];
+        hideColumns.forEach(function(cn) {
+            cInd = tm.getColumnIndexById(cn);
+            if (cInd != null) {
+                tcm.setColumnVisible(cInd, false);
+            }
+        }, this);
     },
 
     members : {

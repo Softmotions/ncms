@@ -36,6 +36,8 @@
         <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
         <locks-lrucache-size>127</locks-lrucache-size>
         <thumbnails-width>150</thumbnails-width>
+        <thumbnails-format>png</thumbnails-format>
+        <max-edit-text-size>524288</max-edit-text-size>
     </media>
 
     <httl extensions="*,httl,html">

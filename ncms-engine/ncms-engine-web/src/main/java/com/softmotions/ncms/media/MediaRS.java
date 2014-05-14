@@ -44,6 +44,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -51,6 +52,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.awt.image.BufferedImage;
@@ -263,9 +265,11 @@ public class MediaRS extends MBDAOSupport {
                                 gen.writeStringField("name", (String) row.get("name"));
                                 gen.writeStringField("folder", (String) row.get("folder"));
                                 gen.writeStringField("content_type", (String) row.get("content_type"));
+                                gen.writeStringField("creator", (String) row.get("creator"));
                                 if (row.get("content_length") != null) {
                                     gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
                                 }
+                                gen.writeStringField("description", (String) row.get("description"));
                                 gen.writeEndObject();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -313,6 +317,7 @@ public class MediaRS extends MBDAOSupport {
                 insert("insertEntity",
                        "folder", dirname,
                        "name", name,
+                       "creator", req.getUserPrincipal().getName(),
                        "status", 1);
             } else {
                 throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
@@ -343,7 +348,7 @@ public class MediaRS extends MBDAOSupport {
                 }
                 File f2 = new File(basedir, npath);
                 if (f2.exists()) {
-                    throw new IOException(message.get("ncms.mmgr.file.exists", req, npath));
+                    throw new NcmsMessageException(message.get("ncms.mmgr.file.exists", req, npath), true);
                 }
                 File pf = f2.getParentFile();
                 if (pf != null && !pf.exists() && !pf.mkdirs()) {
@@ -416,6 +421,31 @@ public class MediaRS extends MBDAOSupport {
             String path = files.get(i).asText();
             deleteResource(path, req);
         }
+    }
+
+    /**
+     * Update some meta fields of files.
+     */
+    @POST
+    @Path("/meta/{id}")
+    @Consumes("application/x-www-form-urlencoded")
+    public void updateMeta(@PathParam("id") Long id,
+                           @Context HttpServletRequest req,
+                           MultivaluedMap<String, String> form) throws Exception {
+
+        String tags = form.getFirst("tags");
+        String description = form.getFirst("description");
+        log.info("Save tags=" + tags + " desc=" + description);
+
+
+
+
+
+       /* update("updateMeta",
+               )*/
+
+
+        //todo
     }
 
     private boolean deleteDirectoryInternal(String path, boolean nolock) throws Exception {
@@ -752,12 +782,14 @@ public class MediaRS extends MBDAOSupport {
                        "status", 0,
                        "content_type", mtype.toString(),
                        "put_content_type", req.getContentType(),
-                       "content_length", actualLength);
+                       "content_length", actualLength,
+                       "creator", req.getUserPrincipal().getName());
             } else {
                 update("updateEntity",
                        "id", id,
                        "content_type", mtype.toString(),
-                       "content_length", actualLength);
+                       "content_length", actualLength,
+                       "creator", req.getUserPrincipal().getName());
             }
         } finally {
             if (us.getFile() != null) {

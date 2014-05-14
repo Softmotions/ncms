@@ -14,16 +14,19 @@
     <insert id="insertEntity" parameterType="map">
         insert into media_entity (
         folder, name, status, mdate,
-        content_type, put_content_type, content_length)
+        content_type, put_content_type, content_length,
+        creator)
         values (
         #{folder}, #{name}, #{status}, now(),
-        #{content_type}, #{put_content_type}, #{content_length})
+        #{content_type}, #{put_content_type}, #{content_length},
+        #{creator})
     </insert>
 
     <update id="updateEntity" parameterType="map">
         update media_entity
         set content_type = #{content_type},
         content_length = #{content_length},
+        creator = #{creator},
         icon = null,
         icon_content_type = null,
         mdate = now()
@@ -33,8 +36,8 @@
     <update id="fixResourceLocation" parameterType="map">
         update media_entity e
         set e.folder = #{nfolder},
-            e.name = #{nname},
-            mdate = now()
+        e.name = #{nname},
+        mdate = now()
         where e.folder = #{folder}
         and e.name = #{name}
     </update>
@@ -42,7 +45,7 @@
     <update id="fixFolderName" parameterType="map">
         update media_entity e
         set e.folder = #{new_prefix} || substring(e.folder, #{prefix_like_len}),
-            e.mdate = now()
+        e.mdate = now()
         where e.folder like #{prefix_like}
     </update>
 
@@ -71,7 +74,9 @@
         e.status as "status",
         e.content_type as "content_type",
         e.content_length as "content_length",
-        e.folder as "folder"
+        e.folder as "folder",
+        e.creator as "creator",
+        e.description as "description"
         from media_entity e
         <where>
             <if test="folder != null">and e.folder like #{folder}</if>
@@ -100,7 +105,9 @@
         e.status as "status",
         e.content_type as "content_type",
         e.content_length as "content_length",
-        e.folder as "folder"
+        e.folder as "folder",
+        e.creator as "creator",
+        e.description as "description"
         from media_entity e
         where
         e.folder = #{folder}
@@ -128,6 +135,15 @@
         icon = #{icon,jdbcType=BLOB},
         icon_content_type = #{icon_content_type}
         where id = #{id}
+    </update>
+
+
+    <update id="updateMeta" parameterType="map">
+        update media_entity
+        <set>
+            <if test="tags != null">tags = #{tags,jdbcType=ARRAY},</if>
+            <if test="description != null">description = #{description},</if>
+        </set>
     </update>
 
 </mapper>
