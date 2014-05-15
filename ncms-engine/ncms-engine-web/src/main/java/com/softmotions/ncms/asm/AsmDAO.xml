@@ -94,6 +94,12 @@
             <if test="location != null">and core.location = #{location}</if>
         </where>
         <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            limit ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                offset ${CQ_OFFSET}
+            </if>
+        </if>
     </select>
 
 
@@ -106,9 +112,9 @@
 
 
     <select id="asmSelectAllPlain" resultType="com.softmotions.ncms.asm.Asm">
-         select *
-         from asms
-         order by name asc
+        select *
+        from asms
+        order by name asc
     </select>
 
     <update id="asmRename" parameterType="map">
@@ -124,17 +130,17 @@
             resultMap="asmFullRM"
             parameterType="long">
         select asm.*,
-        attr.asm_id             as attr_asm_id,
-        attr.name               as attr_name,
-        attr.type               as attr_type,
-        attr.options            as attr_options,
-        attr.value              as attr_value,
-        attr.large_value        as attr_large_value,
-        core.id                 as core_id,
-        core.location           as core_location,
-        core.name               as core_name,
-        core.template_engine    as core_template_engine
-        from asm_parents        as parent
+        attr.asm_id as attr_asm_id,
+        attr.name as attr_name,
+        attr.type as attr_type,
+        attr.options as attr_options,
+        attr.value as attr_value,
+        attr.large_value as attr_large_value,
+        core.id as core_id,
+        core.location as core_location,
+        core.name as core_name,
+        core.template_engine as core_template_engine
+        from asm_parents as parent
         inner join asms asm on asm.id = parent.asm_parent_id
         left outer join asm_attrs attr on attr.asm_id = asm.id
         left outer join asm_cores core on core.id = asm.asm_core_id
@@ -167,9 +173,9 @@
     </insert>
 
     <delete id="asmRemoveParent">
-      delete
-      from asm_parents
-      where asm_id = #{asmId} and asm_parent_id = #{parentId}
+        delete
+        from asm_parents
+        where asm_id = #{asmId} and asm_parent_id = #{parentId}
     </delete>
 
     <delete id="asmRemoveParentFromAll">

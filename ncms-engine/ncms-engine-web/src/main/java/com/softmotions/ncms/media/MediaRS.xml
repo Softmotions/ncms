@@ -76,7 +76,8 @@
         e.content_length as "content_length",
         e.folder as "folder",
         e.creator as "creator",
-        e.description as "description"
+        e.description as "description",
+        e.tags as "tags"
         from media_entity e
         <where>
             <if test="folder != null">and e.folder like #{folder}</if>
@@ -84,6 +85,12 @@
             <if test="status != null">and e.status = #{status}</if>
         </where>
         <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            limit ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                offset ${CQ_OFFSET}
+            </if>
+        </if>
     </select>
 
     <select id="count" resultType="int" parameterType="map">
@@ -137,13 +144,13 @@
         where id = #{id}
     </update>
 
-
     <update id="updateMeta" parameterType="map">
         update media_entity
         <set>
             <if test="tags != null">tags = #{tags,jdbcType=ARRAY},</if>
             <if test="description != null">description = #{description},</if>
         </set>
+        where id = #{id}
     </update>
 
 </mapper>

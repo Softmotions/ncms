@@ -191,7 +191,8 @@
             <column name="CREATOR" type="VARCHAR(127)"
                     remarks="File cleator user id">
             </column>
-            <column name="MD5" type="CHAR(33)">
+            <column name="CSUM" type="VARCHAR(48)"
+                    remarks="File checksum">
             </column>
         </createTable>
 
@@ -210,8 +211,8 @@
             <column name="NAME"/>
         </createIndex>
         <createIndex tableName="MEDIA_ENTITY"
-                     indexName="IDX_MEDIAENTITY_MD5">
-            <column name="MD5"/>
+                     indexName="IDX_MEDIAENTITY_CSUM">
+            <column name="CSUM"/>
         </createIndex>
 
 

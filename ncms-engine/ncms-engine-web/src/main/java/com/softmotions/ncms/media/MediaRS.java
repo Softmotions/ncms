@@ -1,5 +1,7 @@
 package com.softmotions.ncms.media;
 
+import com.softmotions.commons.cont.ArrayUtils;
+import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
 import com.softmotions.commons.weboot.mb.MBDAOSupport;
@@ -16,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.inject.Inject;
+import com.keypoint.PngEncoderB;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -71,7 +74,9 @@ import java.sql.Blob;
 import java.text.Collator;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -270,6 +275,7 @@ public class MediaRS extends MBDAOSupport {
                                     gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
                                 }
                                 gen.writeStringField("description", (String) row.get("description"));
+                                gen.writeStringField("tags", ArrayUtils.stringJoin(row.get("tags"), ", "));
                                 gen.writeEndObject();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -433,19 +439,39 @@ public class MediaRS extends MBDAOSupport {
                            @Context HttpServletRequest req,
                            MultivaluedMap<String, String> form) throws Exception {
 
-        String tags = form.getFirst("tags");
-        String description = form.getFirst("description");
-        log.info("Save tags=" + tags + " desc=" + description);
+        Map<String, Object> qm = new TinyParamMap();
+        qm.put("id", id);
 
-
-
-
-
-       /* update("updateMeta",
-               )*/
-
-
-        //todo
+        if (form.containsKey("tags")) {
+            final Collator coll = Collator.getInstance(message.getLocale(req));
+            String tagStr = form.getFirst("tags");
+            Set<String> tagSet = new HashSet<>();
+            if (tagStr != null) {
+                String[] tagArr = tagStr.split(",");
+                for (String tag : tagArr) {
+                    tag = tag.trim();
+                    if (!tag.isEmpty()) {
+                        tagSet.add(tag);
+                    }
+                }
+            }
+            int i = 0;
+            Object[] qtags = new Object[tagSet.size()];
+            for (String tag : tagSet) {
+                qtags[i++] = tag;
+            }
+            Arrays.sort(qtags, new Comparator<Object>() {
+                public int compare(Object o1, Object o2) {
+                    return coll.compare(String.valueOf(o1), String.valueOf(o2));
+                }
+            });
+            qm.put("tags", qtags);
+        }
+        if (form.containsKey("description")) {
+            String desc = form.getFirst("description");
+            qm.put("description", StringUtils.isBlank(desc) ? "" : desc);
+        }
+        update("updateMeta", qm);
     }
 
     private boolean deleteDirectoryInternal(String path, boolean nolock) throws Exception {
@@ -588,8 +614,10 @@ public class MediaRS extends MBDAOSupport {
             throw new NotFoundException(path);
         }
 
-        String thumbFormat = cfg.impl().getString("media.thumbnails-format", "png");
-        int thumWidth = cfg.impl().getInt("media.thumbnails-width", 255);
+        XMLConfiguration xcfg = cfg.impl();
+        String thumbFormat = xcfg.getString("media.thumbnails-default-format", "jpeg");
+        thumbFormat = thumbFormat.toLowerCase();
+        int thumWidth = xcfg.getInt("media.thumbnails-width", 255);
 
         long id = ((Number) rec.get("id")).longValue();
         String ctype = (String) rec.get("content_type");
@@ -597,7 +625,13 @@ public class MediaRS extends MBDAOSupport {
         if (ctype == null || !ctype.startsWith("image/")) {
             throw new BadRequestException(path);
         }
-
+        //Trying to avoid cross-format conversions for better thumbnails quality
+        if (ctype.startsWith("image/jpeg")) {
+            thumbFormat = "jpeg";
+        }
+        if (ctype.startsWith("image/png")) {
+            thumbFormat = "png";
+        }
         final Blob icon = (Blob) rec.get("icon");
         if (icon != null) {
             final byte[] icondata = icon.getBytes(0, (int) icon.length());
@@ -622,7 +656,17 @@ public class MediaRS extends MBDAOSupport {
         //Now resize the image
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         BufferedImage thumbnail = Scalr.resize(image, thumWidth);
-        if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
+
+        if ("png".equals(thumbFormat)) { //handle PNG a bit differently on order to optimize resulted image size
+            byte[] bytes = new PngEncoderB(thumbnail, true, 0, 9).pngEncode();
+            if (bytes == null) {
+                if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
+                    throw new RuntimeException("Cannot find image writer for thumbFormat=" + thumbFormat);
+                }
+            } else {
+                bos.write(bytes);
+            }
+        } else if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
             throw new RuntimeException("Cannot find image writer for thumbFormat=" + thumbFormat);
         }
 

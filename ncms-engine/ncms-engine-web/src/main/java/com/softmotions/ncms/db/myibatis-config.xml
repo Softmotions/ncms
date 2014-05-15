@@ -6,6 +6,7 @@
 <configuration>
     <properties>
     </properties>
+
     <settings>
         <setting name="logImpl" value="SLF4J"/>
         <setting name="useGeneratedKeys" value="true"/>
@@ -15,6 +16,10 @@
         <setting name="proxyFactory" value="JAVASSIST"/>
         <setting name="aggressiveLazyLoading" value="false"/>
     </settings>
+
+    <typeHandlers>
+        <typeHandler handler="com.softmotions.commons.weboot.mb.ArrayTypeHandler"/>
+    </typeHandlers>
 
     <environments default="development">
         <environment id="development">
