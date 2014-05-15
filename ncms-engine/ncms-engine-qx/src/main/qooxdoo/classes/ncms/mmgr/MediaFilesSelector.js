@@ -148,6 +148,15 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             return this.__table;
         },
 
+        setUpdateFileMeta : function(meta) {
+            var tm = this.__table.getTableModel();
+            tm.updateCachedRows(function(ind, rowdata) {
+                if (meta["id"] === rowdata["id"]) {
+                    return meta;
+                }
+            }, this);
+        },
+
         _setupToolbar : function() {
             var toolbar = new qx.ui.toolbar.ToolBar();
 

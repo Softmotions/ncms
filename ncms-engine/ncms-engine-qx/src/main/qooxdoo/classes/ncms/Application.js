@@ -117,6 +117,8 @@ qx.Class.define("ncms.Application", {
          * Example data: {"qxClass":"ncms.pgs.PagesNav","label":"Страницы"}
          */
         "workspaceActivated" : "qx.event.type.Data"
+
+
     },
 
 

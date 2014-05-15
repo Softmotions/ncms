@@ -38,7 +38,7 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
         var tcm = this.getTableColumnModel();
         var cInd = tm.getColumnIndexById("name");
         if (cInd != null) {
-            tcm.getBehavior().setWidth(cInd, "3*");
+            tcm.getBehavior().setWidth(cInd, "2*");
         }
         cInd = tm.getColumnIndexById("content_type");
         if (cInd != null) {
@@ -50,7 +50,7 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
         }
         cInd = tm.getColumnIndexById("description");
         if (cInd != null) {
-            tcm.getBehavior().setWidth(cInd, "2*");
+            tcm.getBehavior().setWidth(cInd, "3*");
         }
 
         hideColumns = hideColumns || ["content_type", "content_length"];

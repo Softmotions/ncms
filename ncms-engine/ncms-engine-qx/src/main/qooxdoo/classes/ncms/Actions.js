@@ -72,7 +72,7 @@ qx.Class.define("ncms.Actions", {
         this._action("media.file", "/ncms/rs/media/file");
 
         //GET Thumbnail of image media
-        this._action("media.thumbnail", "/ncms/rs/media/thumbnail");
+        this._action("media.thumbnail2", "/ncms/rs/media/thumbnail2/{id}");
 
         //POST Save extra file meta fields
         this._action("media.meta", "/ncms/rs/media/meta/{id}");

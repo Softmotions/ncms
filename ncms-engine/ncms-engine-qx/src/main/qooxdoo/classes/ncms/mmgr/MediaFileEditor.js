@@ -10,6 +10,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
     },
 
     events : {
+
+        "fileMetaUpdated" : "qx.event.type.Data"
     },
 
     properties : {
@@ -131,10 +133,9 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
 
         __setupDataView : function(spec) {
             var ctype = spec["content_type"] || "";
-            var path = (spec["folder"] + spec["name"]).split("/");
             if (ncms.Utils.isImageContentType(ctype)) {
                 var thumbnail = this.__viewPane.getWidget("thumbnail", true).getChildren()[0];
-                thumbnail.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail", path));
+                thumbnail.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail2", spec));
                 this.__viewPane.showWidget("thumbnail");
             } else if (ncms.Utils.isTextualContentType(ctype)) {
                 var editor = this.__viewPane.getWidget("texteditor");
@@ -144,7 +145,6 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 this.__viewPane.showWidget("default");
             }
         },
-
 
         __setupFileForm : function(spec) {
             this.__form.reset();
@@ -169,9 +169,20 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             this.__isMetaDuty = false;
             var items = this.__form.getItems();
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.meta", {"id" : spec["id"]}), "POST", "application/json");
-            req.setParameter("description", items["description"].getValue(), true);
-            req.setParameter("tags", items["tags"].getValue(), true);
-            req.send();
+            var description = items["description"].getValue();
+            var tags = items["tags"].getValue();
+            req.setShowMessages(false);
+            req.setParameter("description", description, true);
+            req.setParameter("tags", tags, true);
+            req.send(function() {
+                if (this.hasListener("fileMetaUpdated")) {
+                    this.fireDataEvent("fileMetaUpdated", {
+                        "id" : spec["id"],
+                        "description" : description,
+                        "tags" : tags
+                    });
+                }
+            }, this);
         },
 
         __applyFileSpec : function(spec, old) {

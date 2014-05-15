@@ -189,12 +189,21 @@ public class MediaRS extends MBDAOSupport {
     }
 
     @GET
+    @Path("/thumbnail2/{id}")
+    @Transactional
+    public Response thumbnail(@PathParam("id") Long id,
+                              @Context HttpServletRequest req) throws Exception {
+        return _thumbnail(id, null, null, req);
+    }
+
+
+    @GET
     @Path("/thumbnail/{folder:.*}/{name}")
     @Transactional
     public Response thumbnail(@PathParam("folder") String folder,
                               @PathParam("name") String name,
                               @Context HttpServletRequest req) throws Exception {
-        return _thumbnail(folder, name, req);
+        return _thumbnail(null, folder, name, req);
     }
 
     @GET
@@ -202,7 +211,7 @@ public class MediaRS extends MBDAOSupport {
     @Transactional
     public Response thumbnail(@PathParam("name") String name,
                               @Context HttpServletRequest req) throws Exception {
-        return _thumbnail("", name, req);
+        return _thumbnail(null, "", name, req);
     }
 
 
@@ -451,6 +460,7 @@ public class MediaRS extends MBDAOSupport {
                 for (String tag : tagArr) {
                     tag = tag.trim();
                     if (!tag.isEmpty()) {
+                        log.info("tag='" + tag + "'");
                         tagSet.add(tag);
                     }
                 }
@@ -600,26 +610,37 @@ public class MediaRS extends MBDAOSupport {
         return res;
     }
 
-    private Response _thumbnail(String folder,
+    private Response _thumbnail(Long id,
+                                String folder,
                                 String name,
                                 HttpServletRequest req) throws Exception {
 
-        if (folder.contains("..")) {
-            throw new BadRequestException(folder);
-        }
-        folder = normalizeFolder(folder);
-        String path = folder + name;
-        Map<String, ?> rec = selectOne("selectIcon", "folder", folder, "name", name);
-        if (rec == null) {
-            throw new NotFoundException(path);
+        Map<String, ?> rec;
+        if (id != null) {
+            rec = selectOne("selectIcon2", "id", id);
+            if (rec == null) {
+                throw new NotFoundException();
+            }
+            folder = (String) rec.get("folder");
+            name = (String) rec.get("name");
+        } else {
+            if (folder.contains("..")) {
+                throw new BadRequestException(folder);
+            }
+            folder = normalizeFolder(folder);
+            rec = selectOne("selectIcon", "folder", folder, "name", name);
+            if (rec == null) {
+                throw new NotFoundException();
+            }
+            id = ((Number) rec.get("id")).longValue();
         }
 
+        String path = folder + name;
         XMLConfiguration xcfg = cfg.impl();
         String thumbFormat = xcfg.getString("media.thumbnails-default-format", "jpeg");
         thumbFormat = thumbFormat.toLowerCase();
         int thumWidth = xcfg.getInt("media.thumbnails-width", 255);
 
-        long id = ((Number) rec.get("id")).longValue();
         String ctype = (String) rec.get("content_type");
         String iconCtype = (String) rec.get("icon_content_type");
         if (ctype == null || !ctype.startsWith("image/")) {
