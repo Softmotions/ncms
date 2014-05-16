@@ -77,7 +77,10 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
             var me = this;
             var items = [];
             this.getSelectionModel().iterateSelection(function(ind) {
-                items.push(me.getTableModel().getRowData(ind));
+                var rd = me.getTableModel().getRowData(ind);
+                if (rd != null) {
+                    items.push(rd);
+                }
             });
             return items;
         },

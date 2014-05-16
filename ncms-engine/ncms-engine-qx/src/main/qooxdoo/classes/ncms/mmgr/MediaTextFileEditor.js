@@ -36,6 +36,13 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this._setLayout(new qx.ui.layout.VBox(5));
         this.__area = new qx.ui.form.TextArea();
         this._add(this.__area, {flex : 1});
+
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        hcont.setPadding([0, 5, 5, 0]);
+        var bt = new qx.ui.form.Button(this.tr("Save"));
+        bt.addListener("execute", this.__save, this);
+        hcont.add(bt);
+        this._add(hcont);
     },
 
     members : {
@@ -45,8 +52,12 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
          */
         __area : null,
 
+        __save : function() {
+            qx.log.Logger.info("Save !!!!");
+        },
+
         __applyFileSpec : function(spec) {
-            if (spec == null) {
+            if (spec == null || !ncms.Utils.isTextualContentType(spec["content_type"])) {
                 this.__cleanup();
                 return;
             }
