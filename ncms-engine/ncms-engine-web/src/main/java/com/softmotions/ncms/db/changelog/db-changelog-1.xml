@@ -31,13 +31,13 @@
         <createIndex tableName="ASM_CORES"
                      indexName="IDX_ASMCORES_LOCATION"
                      unique="true">
-            <column name="LOCATION"></column>
+            <column name="LOCATION"/>
         </createIndex>
 
         <createIndex tableName="ASM_CORES"
                      indexName="IDX_ASMCORES_NAME"
                      unique="false">
-            <column name="NAME"></column>
+            <column name="NAME"/>
         </createIndex>
 
         <!-- ===================== ASMS ========================== -->
@@ -61,13 +61,13 @@
         <createIndex tableName="ASMS"
                      indexName="IDX_ASMS_NAME"
                      unique="true">
-            <column name="NAME"></column>
+            <column name="NAME"/>
         </createIndex>
 
         <createIndex tableName="ASMS"
                      indexName="IDX_ASMS_TYPENAME">
-            <column name="TYPE"></column>
-            <column name="NAME"></column>
+            <column name="TYPE"/>
+            <column name="NAME"/>
         </createIndex>
 
         <addForeignKeyConstraint baseTableName="ASMS"
@@ -98,8 +98,8 @@
         <createIndex tableName="ASM_ATTRS"
                      indexName="IDX_ASMATTRS_UNIQ"
                      unique="true">
-            <column name="NAME"></column>
-            <column name="ASM_ID"></column>
+            <column name="NAME"/>
+            <column name="ASM_ID"/>
         </createIndex>
 
         <!-- FK ASM_ATTRS => ASM  -->
@@ -124,8 +124,8 @@
         <createIndex tableName="ASM_PARENTS"
                      indexName="IDX_ASMPARENTS_UNIQ"
                      unique="true">
-            <column name="ASM_ID"></column>
-            <column name="ASM_PARENT_ID"></column>
+            <column name="ASM_ID"/>
+            <column name="ASM_PARENT_ID"/>
         </createIndex>
 
         <addForeignKeyConstraint baseTableName="ASM_PARENTS"
@@ -141,7 +141,6 @@
                                  referencedTableName="ASMS"
                                  referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
-
 
     </changeSet>
 
@@ -186,8 +185,6 @@
             </column>
             <column name="ICON_CONTENT_TYPE" type="VARCHAR(64)">
             </column>
-            <column name="DEDICATED_ACL" type="ARRAY">
-            </column>
             <column name="CREATOR" type="VARCHAR(127)"
                     remarks="File cleator user id">
             </column>
@@ -200,42 +197,72 @@
                      indexName="IDX_MEDIAENTITY_NAME">
             <column name="NAME"/>
         </createIndex>
+
         <createIndex tableName="MEDIA_ENTITY"
                      indexName="IDX_MEDIAENTITY_FOLDER">
             <column name="FOLDER"/>
         </createIndex>
+
         <createIndex tableName="MEDIA_ENTITY"
                      indexName="IDX_MEDIAENTITY_PATH"
                      unique="true">
             <column name="FOLDER"/>
             <column name="NAME"/>
         </createIndex>
+
         <createIndex tableName="MEDIA_ENTITY"
                      indexName="IDX_MEDIAENTITY_CSUM">
             <column name="CSUM"/>
         </createIndex>
 
+        <createTable tableName="MEDIA_ENTITY_KWORDS"
+                     remarks="Media entity keywords">
+            <column name="ENTITY_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="KEYWORD" type="VARCHAR(24)"/>
+        </createTable>
+
+        <createIndex tableName="MEDIA_ENTITY_KWORDS"
+                     indexName="IDX_MEDIAENTITYKWORDS_FWD"
+                     unique="true">
+            <column name="KEYWORD"/>
+            <column name="ENTITY_ID"/>
+        </createIndex>
+
+        <createIndex tableName="MEDIA_ENTITY_KWORDS"
+                     indexName="IDX_MEDIAENTITYKWORDS_BWD"
+                     unique="true">
+            <column name="ENTITY_ID"/>
+            <column name="KEYWORD"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY_KWORDS"
+                                 baseColumnNames="ENTITY_ID"
+                                 constraintName="FK_MEDIAENTITYKWORDS"
+                                 referencedTableName="MEDIA_ENTITY"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
 
         <!-- ================ MEDIA_ENTITY_ACL ==================== -->
 
-        <createTable tableName="MEDIA_ENTITY_ACL">
+        <!--<createTable tableName="MEDIA_ENTITY_ACL">
             <column name="OWNER_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="ACL" type="ARRAY">
             </column>
-        </createTable>
-
+        </createTable>-->
 
         <!-- ==================== FK ============================= -->
 
 
-        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY_ACL"
+        <!--<addForeignKeyConstraint baseTableName="MEDIA_ENTITY_ACL"
                                  baseColumnNames="OWNER_ID"
                                  constraintName="FK_ACL_OWNER"
                                  referencedTableName="MEDIA_ENTITY"
                                  referencedColumnNames="ID"
-                                 onDelete="CASCADE"/>
+                                 onDelete="CASCADE"/>-->
 
 
     </changeSet>

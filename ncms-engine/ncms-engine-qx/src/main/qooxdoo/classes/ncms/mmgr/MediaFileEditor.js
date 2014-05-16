@@ -172,8 +172,12 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             var description = items["description"].getValue();
             var tags = items["tags"].getValue();
             req.setShowMessages(false);
-            req.setParameter("description", description, true);
-            req.setParameter("tags", tags, true);
+            if (description != null) {
+                req.setParameter("description", description, true);
+            }
+            if (tags != null) {
+                req.setParameter("tags", tags, true);
+            }
             req.send(function() {
                 if (this.hasListener("fileMetaUpdated")) {
                     this.fireDataEvent("fileMetaUpdated", {

@@ -11,7 +11,7 @@
         where folder = #{folder} and name = #{name}
     </select>
 
-    <insert id="insertEntity" parameterType="map">
+    <insert id="insertEntity" parameterType="map" useGeneratedKeys="true" keyProperty="id">
         insert into media_entity (
         folder, name, status, mdate,
         content_type, put_content_type, content_length,
@@ -105,6 +105,31 @@
     </select>
 
 
+    <!--<select id="selectByTokens" resultType="map" parameterType="map">
+        select
+        e.id as "id",
+        e.name as "name",
+        e.status as "status",
+        e.content_type as "content_type",
+        e.content_length as "content_length",
+        e.folder as "folder",
+        e.creator as "creator",
+        e.description as "description",
+        e.tags as "tags"
+        from media_entity e
+        where
+        #{token} in (e.tokens)
+        and e.status = #{status}
+        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            limit ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                offset ${CQ_OFFSET}
+            </if>
+        </if>
+    </select>-->
+
+
     <select id="selectByPath" resultType="map" parameterType="map">
         select
         e.id as "id",
@@ -165,5 +190,26 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="selectMeta" resultType="map">
+        select
+        name as "name",
+        description as "description",
+        tags as "tags",
+        content_type as "content_type"
+        from media_entity
+        where id = #{id}
+    </select>
+
+    <delete id="dropKeywords" parameterType="map">
+        delete from media_entity_kwords
+        where entity_id = #{id}
+    </delete>
+
+    <insert id="insertKeyword" parameterType="map">
+        insert into media_entity_kwords
+        (entity_id, keyword)
+        values (#{id}, #{keyword})
+    </insert>
 
 </mapper>

@@ -7,6 +7,7 @@ import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
 import com.softmotions.commons.weboot.mb.MBDAOSupport;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.fts.FTSUtils;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.inject.Inject;
 import com.keypoint.PngEncoderB;
 
+import org.apache.commons.collections.iterators.ArrayIterator;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -73,8 +75,12 @@ import java.nio.charset.Charset;
 import java.sql.Blob;
 import java.text.Collator;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -139,7 +145,7 @@ public class MediaRS extends MBDAOSupport {
     public void put(@PathParam("folder") String folder,
                     @PathParam("name") String name,
                     @Context HttpServletRequest req,
-                    InputStream in) throws IOException {
+                    InputStream in) throws Exception {
         _put(folder, name, req, in);
     }
 
@@ -149,7 +155,7 @@ public class MediaRS extends MBDAOSupport {
     @Transactional
     public void put(@PathParam("name") String name,
                     @Context HttpServletRequest req,
-                    InputStream in) throws IOException {
+                    InputStream in) throws Exception {
         _put("", name, req, in);
     }
 
@@ -380,12 +386,21 @@ public class MediaRS extends MBDAOSupport {
                            "prefix_like", like);
                     FileUtils.moveDirectory(f1, f2);
                 } else if (f1.isFile()) {
+                    String nname = getResourceName(npath);
+                    String nfolder = getResourceParentFolder(npath);
                     update("fixResourceLocation",
-                           "nfolder", getResourceParentFolder(npath),
-                           "nname", getResourceName(npath),
+                           "nfolder", nfolder,
+                           "nname", nname,
                            "folder", getResourceParentFolder(path),
                            "name", getResourceName(path));
                     FileUtils.moveFile(f1, f2);
+
+                    Long id = selectOne("selectEntityIdByPath",
+                                        "name", nname,
+                                        "folder", nfolder);
+                    if (id != null) {
+                        updateFTSKeywords(id, req);
+                    }
                 } else {
                     throw new IOException("Unsupported file type");
                 }
@@ -444,6 +459,7 @@ public class MediaRS extends MBDAOSupport {
     @POST
     @Path("/meta/{id}")
     @Consumes("application/x-www-form-urlencoded")
+    @Transactional
     public void updateMeta(@PathParam("id") Long id,
                            @Context HttpServletRequest req,
                            MultivaluedMap<String, String> form) throws Exception {
@@ -460,7 +476,6 @@ public class MediaRS extends MBDAOSupport {
                 for (String tag : tagArr) {
                     tag = tag.trim();
                     if (!tag.isEmpty()) {
-                        log.info("tag='" + tag + "'");
                         tagSet.add(tag);
                     }
                 }
@@ -482,6 +497,61 @@ public class MediaRS extends MBDAOSupport {
             qm.put("description", StringUtils.isBlank(desc) ? "" : desc);
         }
         update("updateMeta", qm);
+        updateFTSKeywords(id, req);
+    }
+
+    /**
+     * Update media item search tokens
+     */
+    private void updateFTSKeywords(Long id, HttpServletRequest req) throws Exception {
+        Map<String, Object> row = selectOne("selectMeta", "id", id);
+        if (row == null) {
+            return;
+        }
+        Locale locale = message.getLocale(req);
+        Set<String> keywords = new HashSet<>();
+        String name = (String) row.get("name");
+        String ctype = (String) row.get("content_type");
+
+        String val = null;
+        if (row.get("description") != null) {
+            val = (String) row.get("description");
+        }
+        if (!StringUtils.isBlank(val)) {
+            Collections.addAll(keywords, FTSUtils.stemWordsLangAware(val, locale, 3));
+        }
+        if (row.get("tags") != null) {
+            StringBuilder tags = new StringBuilder();
+            Iterator it = new ArrayIterator(row.get("tags"));
+            while (it.hasNext()) {
+                String tag = (String) it.next();
+                tags.append(' ').append(tag);
+            }
+            Collections.addAll(keywords, FTSUtils.stemWordsLangAware(tags.toString(), locale, 3));
+        }
+        val = FilenameUtils.getName(name);
+        if (!StringUtils.isBlank(val) && val.length() > 2) {
+            Collections.addAll(keywords, FTSUtils.stemWordsLangAware(val, Locale.ENGLISH, 3));
+        }
+        val = FilenameUtils.getExtension(name);
+        if (!StringUtils.isBlank(val) && val.length() > 2) {
+            keywords.add(val);
+        }
+        MediaType mtype = MediaType.parse(ctype);
+        if (mtype != null) {
+            mtype = mtype.getBaseType();
+            keywords.add(mtype.getType());
+            keywords.add(mtype.getSubtype());
+        }
+        delete("dropKeywords", "id", id);
+        for (String k : keywords) {
+            if (k.length() > 24) { //VARCHAR(24)
+                continue;
+            }
+            insert("insertKeyword",
+                   "id", id,
+                   "keyword", k);
+        }
     }
 
     private boolean deleteDirectoryInternal(String path, boolean nolock) throws Exception {
@@ -785,7 +855,7 @@ public class MediaRS extends MBDAOSupport {
     private void _put(String folder,
                       String name,
                       HttpServletRequest req,
-                      InputStream in) throws IOException {
+                      InputStream in) throws Exception {
         if (folder.contains("..")) {
             throw new BadRequestException(folder);
         }
@@ -841,21 +911,31 @@ public class MediaRS extends MBDAOSupport {
                                   "folder", folder,
                                   "name", name);
             if (id == null) {
-                insert("insertEntity",
-                       "folder", folder,
-                       "name", name,
-                       "status", 0,
-                       "content_type", mtype.toString(),
-                       "put_content_type", req.getContentType(),
-                       "content_length", actualLength,
-                       "creator", req.getUserPrincipal().getName());
+
+                Map<String, Object> args = new HashMap<>();
+                args.put("folder", folder);
+                args.put("name", name);
+                args.put("status", 0);
+                args.put("content_type", mtype.toString());
+                args.put("put_content_type", req.getContentType());
+                args.put("content_length", actualLength);
+                args.put("creator", req.getUserPrincipal().getName());
+                insert("insertEntity", args);
+                id = (Number) args.get("id");
+
             } else {
+
                 update("updateEntity",
                        "id", id,
                        "content_type", mtype.toString(),
                        "content_length", actualLength,
                        "creator", req.getUserPrincipal().getName());
             }
+
+            if (id != null) {
+                updateFTSKeywords(id.longValue(), req);
+            }
+
         } finally {
             if (us.getFile() != null) {
                 us.getFile().delete();
