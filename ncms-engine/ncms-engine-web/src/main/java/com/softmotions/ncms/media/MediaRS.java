@@ -628,7 +628,7 @@ public class MediaRS extends MBDAOSupport {
         if (!StringUtils.isBlank(val)) {
             val = val.toLowerCase();
             if (BooleanUtils.toBoolean(req.getParameter("fts"))) {
-                String[] stemWords = FTSUtils.stemWordsLangAware(val, locale, 2);
+                String[] stemWords = FTSUtils.stemWordsLangAware(val, locale, 3);
                 if (stemWords.length == 0) { //no keywords fetched fallback to plain query
                     val = val.toLowerCase(locale).trim() + '%';
                     cq.withParam("name", val);
