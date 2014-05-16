@@ -46,7 +46,7 @@ public class FTSUtils {
                                               Locale fallback,
                                               int minimalTermChars) {
         StringTokenizer st = new StringTokenizer(words,
-                                                 " \t\n\r\f,;.!?()$%#@*&-+'\"/\\<>|'`~");
+                                                 " \t\n\r\f,;.!?()$%#@*&-+=*^'\"/\\<>|'`~");
         Set<String> wset = new HashSet<>();
         while (st.hasMoreTokens()) {
             wset.add(st.nextToken());

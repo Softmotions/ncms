@@ -80,6 +80,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -274,9 +275,10 @@ public class MediaRS extends MBDAOSupport {
             public void write(OutputStream output) throws IOException, WebApplicationException {
                 final JsonGenerator gen = new JsonFactory().createGenerator(output);
                 try {
+                    MBCriteriaQuery cq = createSelectQ(req, false);
                     gen.writeStartArray();
                     //noinspection InnerClassTooDeeplyNested
-                    select("select", new ResultHandler() {
+                    select(cq.getStatement(), new ResultHandler() {
                         public void handleResult(ResultContext context) {
                             Map<String, ?> row = (Map<String, ?>) context.getResultObject();
                             try {
@@ -296,7 +298,7 @@ public class MediaRS extends MBDAOSupport {
                                 throw new RuntimeException(e);
                             }
                         }
-                    }, createSelectQ(req));
+                    }, cq);
                 } finally {
                     gen.writeEndArray();
                 }
@@ -313,7 +315,8 @@ public class MediaRS extends MBDAOSupport {
     @Produces("text/plain")
     @Transactional
     public Integer selectCount(@Context HttpServletRequest req) {
-        return selectOne("count", createSelectQ(req));
+        MBCriteriaQuery cq = createSelectQ(req, true);
+        return selectOne(cq.getStatement(), cq);
     }
 
     @PUT
@@ -515,9 +518,7 @@ public class MediaRS extends MBDAOSupport {
 
         String val = null;
         if (row.get("description") != null) {
-            val = (String) row.get("description");
-        }
-        if (!StringUtils.isBlank(val)) {
+            val = ((String) row.get("description")).toLowerCase();
             Collections.addAll(keywords, FTSUtils.stemWordsLangAware(val, locale, 3));
         }
         if (row.get("tags") != null) {
@@ -525,17 +526,18 @@ public class MediaRS extends MBDAOSupport {
             Iterator it = new ArrayIterator(row.get("tags"));
             while (it.hasNext()) {
                 String tag = (String) it.next();
-                tags.append(' ').append(tag);
+                tags.append(' ').append(tag.toLowerCase());
             }
             Collections.addAll(keywords, FTSUtils.stemWordsLangAware(tags.toString(), locale, 3));
         }
         val = FilenameUtils.getName(name);
         if (!StringUtils.isBlank(val) && val.length() > 2) {
+            val = val.toLowerCase();
             Collections.addAll(keywords, FTSUtils.stemWordsLangAware(val, Locale.ENGLISH, 3));
         }
         val = FilenameUtils.getExtension(name);
         if (!StringUtils.isBlank(val) && val.length() > 2) {
-            keywords.add(val);
+            keywords.add(val.toLowerCase());
         }
         MediaType mtype = MediaType.parse(ctype);
         if (mtype != null) {
@@ -590,16 +592,21 @@ public class MediaRS extends MBDAOSupport {
     }
 
 
-    private MBCriteriaQuery createSelectQ(HttpServletRequest req) {
+    private MBCriteriaQuery createSelectQ(HttpServletRequest req, boolean count) {
+        Locale locale = message.getLocale(req);
         MBCriteriaQuery cq = createCriteria();
-        String val = req.getParameter("firstRow");
-        if (val != null) {
-            Integer frow = Integer.valueOf(val);
-            cq.offset(frow);
-            val = req.getParameter("lastRow");
+        String val = null;
+
+        if (!count) {
+            val = req.getParameter("firstRow");
             if (val != null) {
-                Integer lrow = Integer.valueOf(val);
-                cq.limit(Math.abs(frow - lrow) + 1);
+                Integer frow = Integer.valueOf(val);
+                cq.offset(frow);
+                val = req.getParameter("lastRow");
+                if (val != null) {
+                    Integer lrow = Integer.valueOf(val);
+                    cq.limit(Math.abs(frow - lrow) + 1);
+                }
             }
         }
         val = req.getParameter("status");
@@ -616,21 +623,50 @@ public class MediaRS extends MBDAOSupport {
             }
             cq.withParam("folder", val);
         }
+
         val = req.getParameter("stext");
         if (!StringUtils.isBlank(val)) {
-            val = val.toLowerCase(message.getLocale(req)).trim() + '%';
-            cq.withParam("name", val);
+            val = val.toLowerCase();
+            if (BooleanUtils.toBoolean(req.getParameter("fts"))) {
+                String[] stemWords = FTSUtils.stemWordsLangAware(val, locale, 2);
+                if (stemWords.length == 0) { //no keywords fetched fallback to plain query
+                    val = val.toLowerCase(locale).trim() + '%';
+                    cq.withParam("name", val);
+                    cq.withStatement(count ? "count" : "select");
+                } else {
+                    for (int i = 0; i < stemWords.length; ++i) {
+                        stemWords[i] += '%';
+                    }
+                    List<String> keywords = Arrays.asList(stemWords);
+                    while (keywords.size() > 10) { //limit to 10 keywords
+                        keywords.remove(keywords.size() - 1);
+                    }
+                    cq.withParam("keywords", keywords);
+                    cq.withParam("keywordsSize", keywords.size());
+                    cq.withStatement(count ? "countByKeywords" : "selectByKeywords");
+                }
+            } else {
+                val = val.toLowerCase(locale).trim() + '%';
+                cq.withParam("name", val);
+                cq.withStatement(count ? "count" : "select");
+            }
+        } else {
+            cq.withStatement(count ? "count" : "select");
         }
-        val = req.getParameter("sortAsc");
-        if (!StringUtils.isBlank(val)) {
-            cq.orderBy("e." + val).asc();
-        }
-        val = req.getParameter("sortDesc");
-        if (!StringUtils.isBlank(val)) {
-            cq.orderBy("e." + val).desc();
+
+        if (!count) {
+            val = req.getParameter("sortAsc");
+            if (!StringUtils.isBlank(val)) {
+                cq.orderBy("e." + val).asc();
+            }
+            val = req.getParameter("sortDesc");
+            if (!StringUtils.isBlank(val)) {
+                cq.orderBy("e." + val).desc();
+            }
         }
         return cq.finish();
     }
+
 
     /**
      * GET list of files in the specified directory(folder).

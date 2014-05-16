@@ -105,7 +105,7 @@
     </select>
 
 
-    <!--<select id="selectByTokens" resultType="map" parameterType="map">
+    <select id="selectByKeywords" resultType="map" parameterType="map">
         select
         e.id as "id",
         e.name as "name",
@@ -116,10 +116,18 @@
         e.creator as "creator",
         e.description as "description",
         e.tags as "tags"
-        from media_entity e
+        from media_entity e, media_entity_kwords kw
         where
-        #{token} in (e.tokens)
-        and e.status = #{status}
+        kw.entity_id = e.id
+        <if test="status != null">and e.status = #{status}</if>
+        <if test="folder != null">and e.folder like #{folder}</if>
+        and
+        <foreach item="k" index="index" collection="keywords"
+                 open="(" separator="OR" close=")">
+            kw.keyword like #{k}
+        </foreach>
+        group by e.id
+        having count(e.id) = #{keywordsSize}
         <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">
             limit ${CQ_LIMIT}
@@ -127,7 +135,27 @@
                 offset ${CQ_OFFSET}
             </if>
         </if>
-    </select>-->
+    </select>
+
+
+    <select id="countByKeywords" resultType="int" parameterType="map">
+        select count(*)
+        from (
+        select e.id
+        from media_entity e, media_entity_kwords kw
+        where
+        kw.ENTITY_ID = e.id
+        <if test="status != null">and e.status = #{status}</if>
+        <if test="folder != null">and e.folder like #{folder}</if>
+        and
+        <foreach item="k" index="index" collection="keywords"
+                 open="(" separator="OR" close=")">
+            kw.keyword like #{k}
+        </foreach>
+        group by e.id
+        having count(e.id) = #{keywordsSize}
+        )
+    </select>
 
 
     <select id="selectByPath" resultType="map" parameterType="map">
