@@ -784,7 +784,7 @@ public class MediaRS extends MBDAOSupport {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         BufferedImage thumbnail = Scalr.resize(image, thumWidth);
 
-        if ("png".equals(thumbFormat)) { //handle PNG a bit differently on order to optimize resulted image size
+        if ("png".equals(thumbFormat)) { //handle PNG a bit differently in order to optimize resulted image size
             byte[] bytes = new PngEncoderB(thumbnail, true, 0, 9).pngEncode();
             if (bytes == null) {
                 if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
@@ -991,7 +991,6 @@ public class MediaRS extends MBDAOSupport {
 
         final boolean childWriteLock;
 
-
         private ResourceLock(String path, boolean childWriteLock) {
             this(path, false, childWriteLock);
         }
@@ -1039,7 +1038,6 @@ public class MediaRS extends MBDAOSupport {
                 parent = null;
             }
         }
-
 
         public void releaseChild() {
             if (child != null) {
@@ -1138,7 +1136,7 @@ public class MediaRS extends MBDAOSupport {
     }
 
 
-    private static class RWLocksLRUCache extends LRUMap {
+    private static final class RWLocksLRUCache extends LRUMap {
 
         private RWLocksLRUCache(int maxSize) {
             super(maxSize, 0.75f, true);
@@ -1156,7 +1154,7 @@ public class MediaRS extends MBDAOSupport {
     }
 
 
-    private static class FileUploadStream extends DeferredFileOutputStream {
+    private static final class FileUploadStream extends DeferredFileOutputStream {
 
         final int hardThreshould;
 

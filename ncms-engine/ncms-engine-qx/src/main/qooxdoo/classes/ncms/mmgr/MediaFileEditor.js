@@ -24,13 +24,14 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
          *   "content_type":"image/png",
          *   "content_length":10736,
          *   "creator" : "adam",
-         *   "tags" :
+         *   "tags" : "foo, bar"
          *   }
          * or null
          */
         "fileSpec" : {
             check : "Object",
             nullable : true,
+            event : "changeFileSpec",
             apply : "__applyFileSpec"
         }
     },
@@ -61,7 +62,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         topPane.add(fr);
 
         this.__infoTable = this.__createInfoTable();
-        topPane.add(this.__infoTable);
+        topPane.add(this.__infoTable, {flex : 1});
 
         var viewPane = this.__viewPane = new sm.ui.cont.LazyStack();
 
@@ -78,8 +79,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         });
 
         viewPane.registerWidget("texteditor", function() {
-            return new qx.ui.core.Widget().set({backgroundColor : "red"});
-        });
+            return new ncms.mmgr.MediaTextFileEditor();
+        }, null, this);
 
         var sp = new qx.ui.splitpane.Pane("vertical");
         sp.add(topPane, 0);
@@ -107,7 +108,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 showCellFocusIndicator : false,
                 statusBarVisible : false,
                 focusCellOnMouseMove : true,
-                height : 120});
+                height : 120,
+                allowGrowY : true});
             return table;
         },
 
@@ -138,8 +140,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 thumbnail.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail2", spec));
                 this.__viewPane.showWidget("thumbnail");
             } else if (ncms.Utils.isTextualContentType(ctype)) {
-                var editor = this.__viewPane.getWidget("texteditor");
-                //todo init editor
+                var editor = this.__viewPane.getWidget("texteditor", true);
+                editor.setFileSpec(this.getFileSpec());
                 this.__viewPane.showWidget("texteditor");
             } else {
                 this.__viewPane.showWidget("default");
@@ -231,5 +233,6 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         this.__viewPane = null;
         this.__infoTable = null;
         this._disposeObjects("__form");
+        this.removeAllBindings();
     }
 });

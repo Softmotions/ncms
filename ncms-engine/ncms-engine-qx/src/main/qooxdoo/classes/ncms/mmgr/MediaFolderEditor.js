@@ -58,5 +58,6 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
     destruct : function() {
         this.__selector = null;
         this.__editor = null;
+        this.removeAllBindings();
     }
 });
