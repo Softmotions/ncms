@@ -19,26 +19,26 @@ public class JAXRSExceptionHandlingTest extends NcmsWebTest {
         //
         HttpTestResponse resp = testBrowser.makeGET(getServerAddress() + "/ncms/rs/test/runtime-exception");
         assertEquals(500, resp.statusCode);
-        assertEquals("Softmotions-Msg-Err0: a2d01be21ed4449ba48d0ba2019fa8fd",
-                     String.valueOf(resp.resp.getFirstHeader("Softmotions-Msg-Err0")));
+        assertEquals("X-Softmotions-Err0: a2d01be21ed4449ba48d0ba2019fa8fd",
+                     String.valueOf(resp.resp.getFirstHeader("X-Softmotions-Err0")));
         assertEquals(0, resp.rawData.size());
 
         //
         resp = testBrowser.makeGET(getServerAddress() + "/ncms/rs/test/message-exception");
         assertEquals(500, resp.statusCode);
-        assertEquals("Softmotions-Msg-Err0: 37e871c1226f425e8b0b774f276c3fa4",
-                     String.valueOf(resp.resp.getFirstHeader("Softmotions-Msg-Err0")));
-        assertEquals("Softmotions-Msg-Err1: 3635166bb1d940cd868b6cd744ee8cb3",
-                     String.valueOf(resp.resp.getFirstHeader("Softmotions-Msg-Err1")));
-        assertEquals("Softmotions-Msg-Reg0: 11264600f10d455283c5a13de2beb0ac",
-                     String.valueOf(resp.resp.getFirstHeader("Softmotions-Msg-Reg0")));
+        assertEquals("X-Softmotions-Err0: 37e871c1226f425e8b0b774f276c3fa4",
+                     String.valueOf(resp.resp.getFirstHeader("X-Softmotions-Err0")));
+        assertEquals("X-Softmotions-Err1: 3635166bb1d940cd868b6cd744ee8cb3",
+                     String.valueOf(resp.resp.getFirstHeader("X-Softmotions-Err1")));
+        assertEquals("X-Softmotions-Msg0: 11264600f10d455283c5a13de2beb0ac",
+                     String.valueOf(resp.resp.getFirstHeader("X-Softmotions-Msg0")));
         assertEquals(0, resp.rawData.size());
 
         //
         resp = testBrowser.makeGET(getServerAddress() + "/ncms/rs/test/message-regular-exception");
         assertEquals(200, resp.statusCode);
-        assertEquals("Softmotions-Msg-Reg0: 5fb3c71bf81441c492ac3d7e784c8701",
-                     String.valueOf(resp.resp.getFirstHeader("Softmotions-Msg-Reg0")));
+        assertEquals("X-Softmotions-Msg0: 5fb3c71bf81441c492ac3d7e784c8701",
+                     String.valueOf(resp.resp.getFirstHeader("X-Softmotions-Msg0")));
         assertEquals(0, resp.rawData.size());
 
 

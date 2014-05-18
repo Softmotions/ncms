@@ -34,12 +34,17 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
     construct : function() {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(5));
+        this.__broadcaster = sm.event.Broadcaster.create({"enabled" : false});
         this.__area = new qx.ui.form.TextArea();
         this._add(this.__area, {flex : 1});
+        this.__area.addListener("input", function() {
+            this.__broadcaster.setEnabled(true);
+        }, this);
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
         hcont.setPadding([0, 5, 5, 0]);
         var bt = new qx.ui.form.Button(this.tr("Save"));
+        this.__broadcaster.attach(bt, "enabled");
         bt.addListener("execute", this.__save, this);
         hcont.add(bt);
         this._add(hcont);
@@ -52,8 +57,29 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
          */
         __area : null,
 
+        __broadcaster : null,
+
+
         __save : function() {
-            qx.log.Logger.info("Save !!!!");
+            var spec = this.getFileSpec();
+            if (spec == null || !ncms.Utils.isTextualContentType(spec["content_type"])) {
+                return;
+            }
+            var text = this.__area.getValue();
+            var path = (spec["folder"] + spec["name"]).split("/");
+            var url = ncms.Application.ACT.getRestUrl("media.upload", path);
+            var ctype = spec["content_type"] || "text/plain";
+            ctype = ctype.split(";")[0];
+            var req = new sm.io.Request(url, "PUT", "application/json");
+            req.setRequestContentType(ctype);
+            req.setData(text);
+            this.__broadcaster.setEnabled(false);
+            req.addListenerOnce("finished", function() {
+                this.__broadcaster.setEnabled(false);
+            }, this);
+            req.send(function(resp) {
+                this.__broadcaster.setEnabled(true);
+            }, this);
         },
 
         __applyFileSpec : function(spec) {
@@ -71,9 +97,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 }
                 this.__area.setValue(text);
             }, this);
-
-
-            //qx.log.Logger.info("spec=" + JSON.stringify(spec));
         },
 
         __cleanup : function() {
@@ -84,6 +107,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
     destruct : function() {
         this.__area = null;
-        //this._disposeObjects("__field_name");                                
+        this.__broadcaster.destruct();
+        //this._disposeObjects("__field_name");
     }
 });

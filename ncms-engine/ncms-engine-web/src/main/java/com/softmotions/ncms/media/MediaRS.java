@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.inject.Inject;
-import com.keypoint.PngEncoderB;
 
 import org.apache.commons.collections.iterators.ArrayIterator;
 import org.apache.commons.collections.map.LRUMap;
@@ -784,7 +783,7 @@ public class MediaRS extends MBDAOSupport {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         BufferedImage thumbnail = Scalr.resize(image, thumWidth);
 
-        if ("png".equals(thumbFormat)) { //handle PNG a bit differently in order to optimize resulted image size
+        /*if ("png".equals(thumbFormat)) { //handle PNG a bit differently in order to optimize resulted image size
             byte[] bytes = new PngEncoderB(thumbnail, true, 0, 9).pngEncode();
             if (bytes == null) {
                 if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
@@ -793,7 +792,8 @@ public class MediaRS extends MBDAOSupport {
             } else {
                 bos.write(bytes);
             }
-        } else if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
+        } else */
+        if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
             throw new RuntimeException("Cannot find image writer for thumbFormat=" + thumbFormat);
         }
 

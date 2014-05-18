@@ -53,7 +53,7 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
             List<String> messages = mex.getErrorMessages();
             for (int i = 0, l = messages.size(); i < l; ++i) {
                 try {
-                    rb.header("Softmotions-Msg-Err" + i,
+                    rb.header("X-Softmotions-Err" + i,
                               StringUtils.left(URLEncoder.encode(messages.get(i), "UTF-8"), MAX_MSG_LEN));
                 } catch (UnsupportedEncodingException e) {
                     log.error("", e);
@@ -62,7 +62,7 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
             messages = mex.getRegularMessages();
             for (int i = 0, l = messages.size(); i < l; ++i) {
                 try {
-                    rb.header("Softmotions-Msg-Reg" + i,
+                    rb.header("X-Softmotions-Msg" + i,
                               StringUtils.left(URLEncoder.encode(messages.get(i), "UTF-8"), MAX_MSG_LEN));
                 } catch (UnsupportedEncodingException e) {
                     log.error("", e);
@@ -78,7 +78,7 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
             log.warn("", ex);
             try {
                 rb = Response.status(Response.Status.BAD_REQUEST)
-                        .header("Softmotions-Msg-Err0",
+                        .header("X-Softmotions-Err0",
                                 ex.getMessage() != null ?
                                 StringUtils.left(URLEncoder.encode(ex.getMessage(), "UTF-8"), MAX_MSG_LEN) : ex.toString()
                         );
@@ -90,7 +90,7 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
             log.error("", ex);
             try {
                 rb = Response.serverError()
-                        .header("Softmotions-Msg-Err0",
+                        .header("X-Softmotions-Err0",
                                 ex.getMessage() != null ?
                                 StringUtils.left(URLEncoder.encode(ex.getMessage(), "UTF-8"), MAX_MSG_LEN) : ex.toString()
                         );
