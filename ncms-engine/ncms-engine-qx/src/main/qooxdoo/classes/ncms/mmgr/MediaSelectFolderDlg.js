@@ -15,8 +15,8 @@ qx.Class.define("ncms.mmgr.MediaSelectFolderDlg", {
     properties : {
     },
 
-    construct : function() {
-        this.base(arguments);
+    construct : function(caption, icon) {
+        this.base(arguments, caption, icon);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
             modal : true,

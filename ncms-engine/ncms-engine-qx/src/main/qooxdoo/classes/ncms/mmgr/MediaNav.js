@@ -149,7 +149,10 @@ qx.Class.define("ncms.mmgr.MediaNav", {
             }
             var path = this._getItemPathSegments(item);
             var parent = this._tree.getParent(item) || this._tree.getModel();
-            var d = new ncms.mmgr.MediaSelectFolderDlg();
+
+            var d = new ncms.mmgr.MediaSelectFolderDlg(
+                    this.tr("Move '%1' to another folder", path.join("/"))
+            );
             d.addListener("completed", function(ev) {
                 var target = ev.getData();
                 var npath = [].concat(target, item.getLabel());
