@@ -347,13 +347,13 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             var selected = !this.__table.getSelectionModel().isSelectionEmpty();
             var selectedSingle = (selected && this.__table.getSelectionModel().getSelectedCount() == 1);
 
-            var bt = new qx.ui.menu.Button(this.tr("Upload files"));
+            var bt = new qx.ui.menu.Button(this.tr("Upload"));
             bt.addListenerOnce("execute", this.__addFiles, this);
             menu.add(bt);
 
             if (selected) {
                 if (selectedSingle) {
-                    bt = new qx.ui.menu.Button(this.tr("Download file"));
+                    bt = new qx.ui.menu.Button(this.tr("Download"));
                     bt.addListener("execute", this.__downloadFile, this);
                     menu.add(bt);
                 }
@@ -361,11 +361,11 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 menu.add(new qx.ui.menu.Separator());
 
                 if (selectedSingle) {
-                    bt = new qx.ui.menu.Button(this.tr("Rename file"));
+                    bt = new qx.ui.menu.Button(this.tr("Rename"));
                     bt.addListenerOnce("execute", this.__renameFile, this);
                     menu.add(bt);
                 }
-                bt = new qx.ui.menu.Button(this.tr("Remove selected files"));
+                bt = new qx.ui.menu.Button(this.tr("Remove"));
                 bt.addListenerOnce("execute", this.__rmFiles, this);
                 menu.add(bt);
             }

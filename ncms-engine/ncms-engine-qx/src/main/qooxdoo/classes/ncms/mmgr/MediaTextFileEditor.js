@@ -41,12 +41,12 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             this.__broadcaster.setEnabled(true);
         }, this);
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
         hcont.setPadding([0, 5, 5, 0]);
         var bt = new qx.ui.form.Button(this.tr("Save"));
         this.__broadcaster.attach(bt, "enabled");
         bt.addListener("execute", this.__save, this);
-        hcont.add(bt);
+        hcont.add(bt, {flex : 1});
         this._add(hcont);
     },
 

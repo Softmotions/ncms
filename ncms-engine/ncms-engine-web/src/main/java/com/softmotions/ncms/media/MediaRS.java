@@ -852,7 +852,7 @@ public class MediaRS extends MBDAOSupport {
             Number clength = (Number) res.get("content_length");
             MediaType mtype = MediaType.parse(ctype);
             if (mtype != null) {
-                rb.type(mtype.getBaseType().toString());
+                rb.type(mtype.toString());
                 rb.encoding(mtype.getParameters().get("charset"));
             }
             if (clength != null) {

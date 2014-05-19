@@ -74,7 +74,10 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             var comp = new qx.ui.container.Composite(
                     new qx.ui.layout.HBox().set({alignX : "center", alignY : "middle"})
             );
-            comp.add(new qx.ui.basic.Image().set({allowGrowX : false, allowGrowY : false, decorator : "main"}));
+            comp.add(new qx.ui.basic.Image().set(
+                    {allowGrowX : false, allowGrowY : false,
+                        allowShrinkX : true, allowShrinkY : true,
+                        decorator : "main"}), {flex : 1});
             return comp;
         });
 
@@ -137,8 +140,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             var ctype = spec["content_type"] || "";
             if (ncms.Utils.isImageContentType(ctype)) {
                 var thumbnail = this.__viewPane.getWidget("thumbnail", true).getChildren()[0];
-                thumbnail.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail2", spec));
                 this.__viewPane.showWidget("thumbnail");
+                thumbnail.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail2", spec));
             } else if (ncms.Utils.isTextualContentType(ctype)) {
                 var editor = this.__viewPane.getWidget("texteditor", true);
                 editor.setFileSpec(this.getFileSpec());
