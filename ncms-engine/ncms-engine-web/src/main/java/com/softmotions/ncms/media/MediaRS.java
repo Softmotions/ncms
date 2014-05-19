@@ -432,6 +432,9 @@ public class MediaRS extends MBDAOSupport {
                 deleteDirectoryInternal(path, true);
                 delete("deleteFolder",
                        "prefix_like", "/" + path + "/%");
+                delete("deleteFile",
+                       "folder", getResourceParentFolder(path),
+                       "name", getResourceName(path));
             } else {
                 boolean exists = f.exists();
                 if (f.delete() || !exists) {
