@@ -22,22 +22,9 @@ qx.Mixin.define("ncms.mmgr.MMediaItemTree", {
     },
 
     properties : {
-
-//        /**
-//         * List folders only
-//         */
-//        foldersOnly : {
-//            check : "Boolean",
-//            init : true,
-//            nullable : false
-//        }
     },
 
-    construct : function(opts) {
-//        opts = opts || {};
-//        if (opts["foldersOnly"] != null) {
-//            this.setFoldersOnly(!!opts["foldersOnly"]);
-//        }
+    construct : function() {
         this._initTree();
     },
 
