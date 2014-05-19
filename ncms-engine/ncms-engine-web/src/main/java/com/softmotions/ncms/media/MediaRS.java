@@ -363,6 +363,9 @@ public class MediaRS extends MBDAOSupport {
         if (npath.contains("..") || path.contains("..") || StringUtils.isBlank(npath)) {
             throw new BadRequestException();
         }
+        if (npath.equals(path)) {
+            return;
+        }
         try (ResourceLock l1 = new ResourceLock(path, true)) {
             try (ResourceLock l2 = new ResourceLock(npath, true)) {
                 File f1 = new File(basedir, path);
@@ -381,13 +384,31 @@ public class MediaRS extends MBDAOSupport {
                     log.debug("Moving " + f1 + " => " + f2);
                 }
                 if (f1.isDirectory()) {
+
+                    String p1 = f1.getCanonicalPath();
+                    String p2 = f2.getCanonicalPath();
+                    if (p2.startsWith(p1)) {
+                        String msg = message.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req, path, npath);
+                        throw new NcmsMessageException(msg, true);
+                    }
                     String like = "/" + path + "/%";
                     update("fixFolderName",
                            "new_prefix", "/" + npath + "/",
                            "prefix_like_len", like.length(),
                            "prefix_like", like);
+
+                    String nname = getResourceName(npath);
+                    String nfolder = getResourceParentFolder(npath);
+                    update("fixResourceLocation",
+                           "nfolder", nfolder,
+                           "nname", nname,
+                           "folder", getResourceParentFolder(path),
+                           "name", getResourceName(path));
+
                     FileUtils.moveDirectory(f1, f2);
+
                 } else if (f1.isFile()) {
+
                     String nname = getResourceName(npath);
                     String nfolder = getResourceParentFolder(npath);
                     update("fixResourceLocation",
@@ -403,6 +424,7 @@ public class MediaRS extends MBDAOSupport {
                     if (id != null) {
                         updateFTSKeywords(id, req);
                     }
+
                 } else {
                     throw new IOException("Unsupported file type");
                 }

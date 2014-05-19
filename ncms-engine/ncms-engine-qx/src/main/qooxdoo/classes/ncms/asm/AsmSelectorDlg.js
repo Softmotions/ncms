@@ -36,7 +36,7 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
                                 .set({selectionMode : qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION}));
         selector.getTable().addListener("cellDblclick", this.__ok, this);
 
-        this._add(selector, {flex : 1});
+        this.add(selector, {flex : 1});
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
         hcont.setPadding(5);
@@ -48,7 +48,7 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
         bt = new qx.ui.form.Button(this.tr("Cancel"));
         bt.addListener("execute", this.close, this);
         hcont.add(bt);
-        this._add(hcont);
+        this.add(hcont);
 
         this.__closeCmd = new qx.ui.core.Command("Esc");
         this.__closeCmd.addListener("execute", this.close, this);

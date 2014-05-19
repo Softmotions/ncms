@@ -52,7 +52,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
 
         this.__table = new ncms.asm.AsmTable().set({
-            "statusBarVisible" : false,
+            "statusBarVisible" : true,
             "showCellFocusIndicator" : false});
 
         if (smodel != null) {
