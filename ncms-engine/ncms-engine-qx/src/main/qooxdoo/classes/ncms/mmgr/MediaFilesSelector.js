@@ -305,7 +305,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             var dlg = new sm.ui.upload.FileUploadProgressDlg(function(f) {
                 return ncms.Application.ACT.getRestUrl("media.upload", path.concat(f.name));
             }, files);
-            dlg.addListener("completed", function() {
+            dlg.addListenerOnce("completed", function() {
                 dlg.close();
                 this.reload();
                 if (cb != null) {

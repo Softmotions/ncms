@@ -23,21 +23,21 @@ qx.Mixin.define("ncms.mmgr.MMediaItemTree", {
 
     properties : {
 
-        /**
-         * List folders only
-         */
-        foldersOnly : {
-            check : "Boolean",
-            init : true,
-            nullable : false
-        }
+//        /**
+//         * List folders only
+//         */
+//        foldersOnly : {
+//            check : "Boolean",
+//            init : true,
+//            nullable : false
+//        }
     },
 
     construct : function(opts) {
-        opts = opts || {};
-        if (opts["foldersOnly"] != null) {
-            this.setFoldersOnly(!!opts["foldersOnly"]);
-        }
+//        opts = opts || {};
+//        if (opts["foldersOnly"] != null) {
+//            this.setFoldersOnly(!!opts["foldersOnly"]);
+//        }
         this._initTree();
     },
 

@@ -98,7 +98,9 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
         el = new sm.ui.form.ButtonField(null, "ncms/icon/16/actions/core_link.png");
         el.setReadOnly(true);
+        el.addListener("execute", this.__selectCore, this);
         form.add(el, this.tr("Core"), null, "core");
+
 
         el = new ncms.asm.AsmParentsTable();
         el.addListener("parentsChanged", function() {
@@ -121,6 +123,17 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
         __form : null,
 
+
+        __selectCore : function() {
+            var spec = this.getAsmSpec();
+            var d = new ncms.mmgr.MediaSelectFileDlg(
+                    true,
+                    this.tr("Select core file for '%1' assembly", spec["name"] || ''));
+            d.addListenerOnce("completed", function(ev) {
+
+            }, this);
+            d.show();
+        },
 
         __applyAsmId : function(value, old) {
             if (value == null) {
