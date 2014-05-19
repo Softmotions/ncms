@@ -151,15 +151,18 @@ qx.Class.define("ncms.mmgr.MediaNav", {
             var parent = this._tree.getParent(item) || this._tree.getModel();
             var d = new ncms.mmgr.MediaSelectFolderDlg();
             d.addListener("completed", function(ev) {
-                var npath = ev.getData();
-                npath.push(item.getLabel());
+                var target = ev.getData();
+                var npath = [].concat(target, item.getLabel());
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.move", path),
                         "PUT", "application/json");
                 req.setData(npath.join("/"));
-                req.send(function(resp) {
+                req.send(function() {
                     d.close();
                     this._refreshNode(parent, function() {
-                        //todo refresh target !!! !!! !!!
+                        target = this.findLoadedNodeByPath(target);
+                        if (target != null) {
+                            this._refreshNode(target);
+                        }
                     }, this);
                 }, this);
             }, this);

@@ -45,6 +45,32 @@ qx.Mixin.define("ncms.mmgr.MMediaItemTree", {
 
         _tree : null,
 
+        findLoadedNodeByPath : function(path) {
+            if (typeof path === "string") {
+                path = path.split("/");
+            }
+            if (path.length === 0) {
+                return this._tree.getModel();
+            }
+            var lt = this._tree.getLookupTable();
+            for (var i = 0, l = lt.length; i < l; ++i) {
+                var j = path.length;
+                var item = lt.getItem(i);
+                var parent = item;
+                while (j > 0 && parent != null) {
+                    if (parent.getLabel() == path[--j]) {
+                        parent = this._tree.getParent(parent);
+                        if (j === 0) {
+                            return item;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+            return null;
+        },
+
         _initTree : function() {
             var me = this;
             var root = qx.data.marshal.Json.createModel({
