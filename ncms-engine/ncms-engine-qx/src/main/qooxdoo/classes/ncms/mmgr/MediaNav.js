@@ -159,7 +159,7 @@ qx.Class.define("ncms.mmgr.MediaNav", {
                 req.send(function() {
                     d.close();
                     this._refreshNode(parent, function() {
-                        target = this.findLoadedNodeByPath(target);
+                        target = this._tree.findCachedNodeByPath(target, "label");
                         if (target != null) {
                             this._refreshNode(target);
                         }
