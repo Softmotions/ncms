@@ -240,4 +240,11 @@
         values (#{id}, #{keyword})
     </insert>
 
+    <update id="updateSysFlag" parameterType="map">
+       update media_entity
+       set
+       sys = #{sys}
+       where id = #{id}
+    </update>
+
 </mapper>

@@ -535,6 +535,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
 
+    @Transactional
     public void importDirectory(File dir) throws IOException {
         if (dir == null || !dir.isDirectory()) {
             throw new IOException(dir + " is not a directory");
@@ -554,9 +555,25 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             } else if (f.isFile()) {
                 String fpath = f.getCanonicalPath();
                 fpath = fpath.substring(prefix.length());
-                String resourceName = getResourceName(fpath);
-                String resourceFolder = getResourceParentFolder(fpath);
-                log.info("rf=" + resourceFolder + " rn=" + resourceName);
+                File tgt = new File(basedir, fpath);
+                if (tgt.exists() && !FileUtils.isFileNewer(f, tgt)) {
+                    continue;
+                }
+                String name = getResourceName(fpath);
+                String folder = getResourceParentFolder(fpath);
+                log.info("Importing " + fpath);
+                try (FileInputStream fis = new FileInputStream(f)) {
+                    try {
+                        Long id = _put(folder, name, req, fis);
+                        if (id != null) {
+                            update("updateSysFlag",
+                                   "id", id,
+                                   "sys", 1);
+                        }
+                    } catch (Exception e) {
+                        throw new IOException(e);
+                    }
+                }
             }
         }
     }
@@ -947,13 +964,16 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return r;
     }
 
-    private void _put(String folder,
+    private Long _put(String folder,
                       String name,
                       HttpServletRequest req,
                       InputStream in) throws Exception {
+
+
         if (folder.contains("..")) {
             throw new BadRequestException(folder);
         }
+        Number id;
         folder = normalizeFolder(folder);
 
         //Used in order to proper ctype detection by TIKA (mark/reset are supported by BufferedInputStream)
@@ -1002,9 +1022,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 us.writeTo(fos);
                 fos.flush();
             }
-            Number id = selectOne("selectEntityIdByPath",
-                                  "folder", folder,
-                                  "name", name);
+            id = selectOne("selectEntityIdByPath",
+                           "folder", folder,
+                           "name", name);
             if (id == null) {
 
                 Map<String, Object> args = new HashMap<>();
@@ -1037,6 +1057,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
             bis.close();
         }
+
+        return id != null ? id.longValue() : null;
     }
 
 
@@ -1269,6 +1291,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
         public ServletContext getServletContext() {
             return sctx;
+        }
+
+        public String getCharacterEncoding() {
+            return "UTF-8";
         }
     }
 }

@@ -65,7 +65,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
                     allowShrinkX : false, allowShrinkY : false,
                     alignX : "center",
                     alignY : "middle",
-                    height : 128, width : 128,
+                    maxHeight : 128, maxWidth : 128,
                     scale : true});
 
         leftSide.add(thumbnail);
