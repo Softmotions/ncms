@@ -15,7 +15,7 @@
         </resource>
     </jar-web-resources>
 
-    <mybatis config="com/softmotions/ncms/db/myibatis-config.xml"
+    <mybatis config="com/softmotions/ncms/db/mybatis-config.xml"
              bindDatasource="true"
              shutdownSQL="SHUTDOWN">
         JDBC.driver=org.h2.Driver
