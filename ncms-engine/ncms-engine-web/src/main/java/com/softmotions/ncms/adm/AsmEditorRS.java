@@ -1,6 +1,6 @@
 package com.softmotions.ncms.adm;
 
-import com.softmotions.commons.weboot.mb.MBDAOSupport;
+import com.softmotions.weboot.mb.MBDAOSupport;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;

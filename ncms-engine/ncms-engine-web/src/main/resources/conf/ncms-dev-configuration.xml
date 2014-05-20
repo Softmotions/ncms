@@ -37,6 +37,7 @@
         <thumbnails-width>250</thumbnails-width>
         <thumbnails-default-format>jpeg</thumbnails-default-format>
         <max-edit-text-size>524288</max-edit-text-size>
+        <import-directory>${project.build.testSourceDirectory}</import-directory>
     </media>
 
     <httl extensions="*,httl,html">

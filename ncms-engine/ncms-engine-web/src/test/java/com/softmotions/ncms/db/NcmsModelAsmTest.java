@@ -1,6 +1,6 @@
 package com.softmotions.ncms.db;
 
-import com.softmotions.commons.weboot.mb.MBAction;
+import com.softmotions.weboot.mb.MBAction;
 import com.softmotions.ncms.NcmsWebTest;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;

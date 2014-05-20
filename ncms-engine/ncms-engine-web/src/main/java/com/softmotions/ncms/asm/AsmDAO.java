@@ -1,9 +1,9 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.commons.weboot.mb.MBAction;
-import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
-import com.softmotions.commons.weboot.mb.MBDAOSupport;
+import com.softmotions.weboot.mb.MBAction;
+import com.softmotions.weboot.mb.MBCriteriaQuery;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

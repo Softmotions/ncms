@@ -1,7 +1,7 @@
 package com.softmotions.ncms.security;
 
-import com.softmotions.commons.weboot.WBServletInitializerModule;
-import com.softmotions.commons.weboot.WBServletModule;
+import com.softmotions.weboot.WBServletInitializerModule;
+import com.softmotions.weboot.WBServletModule;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.web.AccessControlHDRFilter;
 import com.softmotions.web.security.SecurityFakeEnvFilter;

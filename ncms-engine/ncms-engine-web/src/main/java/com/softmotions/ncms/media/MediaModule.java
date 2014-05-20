@@ -12,5 +12,6 @@ public class MediaModule extends AbstractModule {
 
     protected void configure() {
         bind(MediaRS.class).in(Singleton.class);
+        bind(MediaService.class).to(MediaRS.class);
     }
 }

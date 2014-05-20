@@ -19,7 +19,7 @@
     </settings>
 
     <typeHandlers>
-        <typeHandler handler="com.softmotions.commons.weboot.mb.ArrayTypeHandler"/>
+        <typeHandler handler="com.softmotions.weboot.mb.ArrayTypeHandler"/>
     </typeHandlers>
 
     <environments default="development">

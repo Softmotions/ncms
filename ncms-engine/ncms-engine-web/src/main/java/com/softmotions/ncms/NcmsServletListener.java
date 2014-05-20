@@ -1,7 +1,7 @@
 package com.softmotions.ncms;
 
 import ninja.utils.NinjaProperties;
-import com.softmotions.commons.weboot.WBServletListener;
+import com.softmotions.weboot.WBServletListener;
 import com.softmotions.web.CharsetFilter;
 
 import com.google.inject.servlet.GuiceFilter;

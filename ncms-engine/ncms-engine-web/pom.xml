@@ -246,7 +246,7 @@
                 </excludes>
             </testResource>
             <testResource>
-                <directory>src/test/resources</directory>
+                <directory>src/test/import</directory>
                 <includes>
                     <include>**/*</include>
                 </includes>

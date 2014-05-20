@@ -3,7 +3,7 @@ package com.softmotions.ncms;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaMode;
 import ninja.utils.NinjaPropertiesImpl;
-import com.softmotions.commons.weboot.WBServletListener;
+import com.softmotions.weboot.WBServletListener;
 
 import com.google.inject.Injector;
 

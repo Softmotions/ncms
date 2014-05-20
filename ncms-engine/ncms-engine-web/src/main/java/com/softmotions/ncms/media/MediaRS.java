@@ -3,15 +3,16 @@ package com.softmotions.ncms.media;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.io.DirUtils;
-import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
-import com.softmotions.commons.weboot.mb.MBDAOSupport;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.fts.FTSUtils;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.web.HttpServletRequestAdapter;
 import com.softmotions.web.ResponseUtils;
+import com.softmotions.weboot.mb.MBCriteriaQuery;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -42,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -71,6 +73,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.security.Principal;
 import java.sql.Blob;
 import java.text.Collator;
 import java.util.Arrays;
@@ -93,7 +96,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @SuppressWarnings("unchecked")
 @Path("/media")
 @Produces("application/json")
-public class MediaRS extends MBDAOSupport {
+public class MediaRS extends MBDAOSupport implements MediaService {
 
     private static final Logger log = LoggerFactory.getLogger(MediaRS.class);
 
@@ -111,11 +114,14 @@ public class MediaRS extends MBDAOSupport {
 
     private final NcmsMessages message;
 
+    private final ServletContext sctx;
+
     @Inject
     public MediaRS(NcmsConfiguration cfg,
                    SqlSession sess,
                    ObjectMapper mapper,
-                   NcmsMessages message) throws IOException {
+                   NcmsMessages message,
+                   ServletContext sctx) throws IOException {
 
         super(MediaRS.class.getName(), sess);
         this.cfg = cfg;
@@ -130,6 +136,7 @@ public class MediaRS extends MBDAOSupport {
         locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 0x7f));
         this.mapper = mapper;
         this.message = message;
+        this.sctx = sctx;
     }
 
     /**
@@ -525,6 +532,33 @@ public class MediaRS extends MBDAOSupport {
         }
         update("updateMeta", qm);
         updateFTSKeywords(id, req);
+    }
+
+
+    public void importDirectory(File dir) throws IOException {
+        if (dir == null || !dir.isDirectory()) {
+            throw new IOException(dir + " is not a directory");
+        }
+        importDirectoryInternal(dir, dir, new LocalPUTRequest());
+    }
+
+    private void importDirectoryInternal(File bdir, File dir, HttpServletRequest req) throws IOException {
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
+        String prefix = bdir.getCanonicalPath();
+        for (final File f : files) {
+            if (f.isDirectory()) {
+                importDirectoryInternal(bdir, f, req);
+            } else if (f.isFile()) {
+                String fpath = f.getCanonicalPath();
+                fpath = fpath.substring(prefix.length());
+                String resourceName = getResourceName(fpath);
+                String resourceFolder = getResourceParentFolder(fpath);
+                log.info("rf=" + resourceFolder + " rn=" + resourceName);
+            }
+        }
     }
 
     /**
@@ -980,7 +1014,7 @@ public class MediaRS extends MBDAOSupport {
                 args.put("content_type", mtype.toString());
                 args.put("put_content_type", req.getContentType());
                 args.put("content_length", actualLength);
-                args.put("creator", req.getUserPrincipal().getName());
+                args.put("creator", req.getRemoteUser());
                 insert("insertEntity", args);
                 id = (Number) args.get("id");
 
@@ -990,7 +1024,7 @@ public class MediaRS extends MBDAOSupport {
                        "id", id,
                        "content_type", mtype.toString(),
                        "content_length", actualLength,
-                       "creator", req.getUserPrincipal().getName());
+                       "creator", req.getRemoteUser());
             }
 
             if (id != null) {
@@ -1211,6 +1245,30 @@ public class MediaRS extends MBDAOSupport {
         public void write(byte[] b, int off, int len) throws IOException {
             check(len);
             super.write(b, off, len);
+        }
+    }
+
+
+    private final class LocalPUTRequest extends HttpServletRequestAdapter {
+
+        public String getMethod() {
+            return "PUT";
+        }
+
+        public String getRemoteUser() {
+            return "system";
+        }
+
+        public Principal getUserPrincipal() {
+            return new Principal() {
+                public String getName() {
+                    return getRemoteUser();
+                }
+            };
+        }
+
+        public ServletContext getServletContext() {
+            return sctx;
         }
     }
 }

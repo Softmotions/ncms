@@ -1,7 +1,7 @@
 package com.softmotions.ncms.adm;
 
-import com.softmotions.commons.weboot.mb.MBCriteriaQuery;
-import com.softmotions.commons.weboot.mb.MBDAOSupport;
+import com.softmotions.weboot.mb.MBCriteriaQuery;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;

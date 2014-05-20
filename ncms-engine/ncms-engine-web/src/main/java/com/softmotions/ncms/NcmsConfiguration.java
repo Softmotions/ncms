@@ -3,7 +3,7 @@ package com.softmotions.ncms;
 import ninja.lifecycle.Dispose;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.io.DirUtils;
-import com.softmotions.commons.weboot.WBConfiguration;
+import com.softmotions.weboot.WBConfiguration;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;

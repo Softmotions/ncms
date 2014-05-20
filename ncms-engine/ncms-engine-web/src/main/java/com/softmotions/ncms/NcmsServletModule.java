@@ -3,7 +3,7 @@ package com.softmotions.ncms;
 import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.commons.weboot.WBServletModule;
+import com.softmotions.weboot.WBServletModule;
 import com.softmotions.ncms.asm.render.AsmServlet;
 import com.softmotions.ncms.jaxrs.NcmsJsonNodeReader;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
