@@ -134,6 +134,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
             });
             d.addListenerOnce("completed", function(ev) {
                 var spec = ev.getData();
+                qx.log.Logger.info("spec=" + JSON.stringify(spec));
                 //todo
                 d.close();
             }, this);
@@ -178,7 +179,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
             req.send(function(resp) {
                 var asmSpec = resp.getContent();
                 //Prevent overiding of non related form values in `__applyAsmSpec`
-                // if we loading the specific 'part' of data
+                //if we are loading the specific 'part' of data
                 asmSpec._part = part;
                 this.setAsmSpec(asmSpec);
                 asmSpec._part = null;
