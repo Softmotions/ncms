@@ -129,8 +129,13 @@ qx.Class.define("ncms.asm.AsmEditor", {
             var d = new ncms.mmgr.MediaSelectFileDlg(
                     true,
                     this.tr("Select core file for '%1' assembly", spec["name"] || ''));
+            d.setCtypeAcceptor(function(ctype) {
+                return ncms.Utils.isTextualContentType(ctype);
+            });
             d.addListenerOnce("completed", function(ev) {
-
+                var spec = ev.getData();
+                //todo
+                d.close();
             }, this);
             d.show();
         },

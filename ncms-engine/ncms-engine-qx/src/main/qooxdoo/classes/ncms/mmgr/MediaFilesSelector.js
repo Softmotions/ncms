@@ -157,6 +157,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }, this);
         },
 
+        getSelectedFile : function() {
+            return this.__table.getSelectedFile()
+        },
+
         _setupToolbar : function() {
             var toolbar = new qx.ui.toolbar.ToolBar();
 

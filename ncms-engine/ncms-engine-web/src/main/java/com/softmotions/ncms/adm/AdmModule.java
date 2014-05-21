@@ -8,12 +8,10 @@ import com.google.inject.Singleton;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AdmRestModule extends AbstractModule {
+public class AdmModule extends AbstractModule {
 
     protected void configure() {
         bind(WorkspaceRS.class).in(Singleton.class);
         bind(UIResourcesRS.class).in(Singleton.class);
-        bind(AsmSelectorRS.class).in(Singleton.class);
-        bind(AsmEditorRS.class).in(Singleton.class);
     }
 }
