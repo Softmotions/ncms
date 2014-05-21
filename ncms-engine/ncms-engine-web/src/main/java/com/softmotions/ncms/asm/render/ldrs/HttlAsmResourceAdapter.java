@@ -42,6 +42,10 @@ public final class HttlAsmResourceAdapter implements AsmResource {
         return res.getLength();
     }
 
+    public String getContentType() {
+        return "text/plain";
+    }
+
     public String getSource() throws IOException {
         try {
             return IOUtils.readToString(openReader());

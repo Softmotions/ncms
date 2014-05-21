@@ -79,6 +79,7 @@ import java.text.Collator;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -104,17 +105,17 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     private static final File[] EMPTY_FILES_ARRAY = new File[0];
 
-    private final NcmsConfiguration cfg;
+    final NcmsConfiguration cfg;
 
-    private final File basedir;
+    final File basedir;
 
-    private final RWLocksLRUCache locksCache;
+    final RWLocksLRUCache locksCache;
 
-    private final ObjectMapper mapper;
+    final ObjectMapper mapper;
 
-    private final NcmsMessages message;
+    final NcmsMessages message;
 
-    private final ServletContext sctx;
+    final ServletContext sctx;
 
     @Inject
     public MediaRS(NcmsConfiguration cfg,
@@ -398,9 +399,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                         String msg = message.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req, path, npath);
                         throw new NcmsMessageException(msg, true);
                     }
-                    String like = "/" + path + "/%";
+                    String like = '/' + path + "/%";
                     update("fixFolderName",
-                           "new_prefix", "/" + npath + "/",
+                           "new_prefix", '/' + npath + '/',
                            "prefix_like_len", like.length(),
                            "prefix_like", like);
 
@@ -460,7 +461,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (isdir) {
                 deleteDirectoryInternal(path, true);
                 delete("deleteFolder",
-                       "prefix_like", "/" + path + "/%");
+                       "prefix_like", '/' + path + "/%");
                 delete("deleteFile",
                        "folder", getResourceParentFolder(path),
                        "name", getResourceName(path));
@@ -541,6 +542,44 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             throw new IOException(dir + " is not a directory");
         }
         importDirectoryInternal(dir, dir, new LocalPUTRequest());
+    }
+
+    @Transactional
+    public MediaResource findMediaResource(String path) {
+        Map<String, Object> res;
+        if (path.startsWith("entity:")) {
+            Long id;
+            try {
+                id = Long.parseLong(path.substring("entity:".length()));
+            } catch (NumberFormatException e) {
+                log.error("", e);
+                return null;
+            }
+            res = selectOne("selectResourceAttrsById",
+                            "id", id);
+        } else {
+            res = selectOne("selectResourceAttrsByPath",
+                            "folder", getResourceParentFolder(path),
+                            "name", getResourceName(path));
+        }
+        if (res == null) {
+            return null;
+        }
+        String folder = (String) res.get("folder");
+        String name = (String) res.get("name");
+        Date mdate = (Date) res.get("mdate");
+        Number length = (Number) res.get("content_length");
+
+        return new MediaResourceImpl(this,
+                                     ((Number) res.get("id")).longValue(),
+                                     (folder + name),
+                                     (String) res.get("content_type"),
+                                     (mdate != null ? mdate.getTime() : 0),
+                                     (length != null ? length.longValue() : -1L));
+    }
+
+    public File getBasedir() {
+        return basedir;
     }
 
     private void importDirectoryInternal(File bdir, File dir, HttpServletRequest req) throws IOException {
@@ -646,7 +685,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
             for (File sf : flist) {
                 if (sf.isDirectory()) {
-                    deleteDirectoryInternal(path + "/" + sf.getName(), false);
+                    deleteDirectoryInternal(path + '/' + sf.getName(), false);
                 } else {
                     boolean exists = sf.exists();
                     if (!sf.delete() && exists) {
@@ -691,10 +730,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         val = req.getParameter("folder");
         if (!StringUtils.isBlank(val)) {
             if (!val.endsWith("/")) {
-                val += "/";
+                val += '/';
             }
             if (BooleanUtils.toBoolean(req.getParameter("subfolders"))) {
-                val += "%";
+                val += '%';
             }
             cq.withParam("folder", val);
         }
@@ -898,7 +937,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             throw new BadRequestException(folder);
         }
         if (!folder.endsWith("/")) {
-            folder += "/";
+            folder += '/';
         }
         Response r;
         Response.ResponseBuilder rb = Response.ok();
@@ -910,8 +949,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 //noinspection ThrowCaughtLocally
                 throw new NotFoundException(path);
             }
-            if (!folder.startsWith("/")) {
-                folder = "/" + folder;
+            if (folder.charAt(0) != '/') {
+                folder = '/' + folder;
             }
 
             Map<String, ?> res = selectOne("selectByPath",
@@ -1061,8 +1100,16 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return id != null ? id.longValue() : null;
     }
 
+    public Closeable acquireReadResourceLock(String path) {
+        return new ResourceLock(path, false);
+    }
 
-    private final class ResourceLock implements Closeable {
+    public Closeable acquireWriteResourceLock(String path) {
+        return new ResourceLock(path, true);
+    }
+
+
+    final class ResourceLock implements Closeable {
 
         ReentrantReadWriteLock parent;
 
@@ -1077,8 +1124,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
 
         private ResourceLock(String path, boolean parentWriteLock, boolean childWriteLock) {
-            if (!path.startsWith("/")) {
-                path = "/" + path;
+            if (path.charAt(0) != '/') {
+                path = '/' + path;
             }
             if (path.length() > 1 && path.endsWith("/")) {
                 path = path.substring(0, path.length() - 1);
@@ -1141,8 +1188,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     private ReentrantReadWriteLock acquirePathRWLock(String path, boolean acquireWrite) {
-        if (!path.startsWith("/")) {
-            path = "/" + path;
+        if (path.charAt(0) != '/') {
+            path = '/' + path;
         }
         if (path.length() > 1 && path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
@@ -1207,11 +1254,11 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     private static String normalizeFolder(String folder) {
-        if (!folder.startsWith("/")) {
-            folder = "/" + folder;
+        if (folder.charAt(0) != '/') {
+            folder = '/' + folder;
         }
         if (!folder.endsWith("/")) {
-            folder += "/";
+            folder += '/';
         }
         return folder;
     }

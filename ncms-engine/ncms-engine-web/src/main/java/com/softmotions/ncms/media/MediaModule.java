@@ -54,5 +54,4 @@ public class MediaModule extends AbstractModule {
 
         }
     }
-
 }
