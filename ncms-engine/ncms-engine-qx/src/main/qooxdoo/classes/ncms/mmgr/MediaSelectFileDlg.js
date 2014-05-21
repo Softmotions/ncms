@@ -55,7 +55,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
 
 
         var rightSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-        var files = this.__files = new ncms.mmgr.MediaFilesSelector(allowModify);
+        var files = this.__files = new ncms.mmgr.MediaFilesSelector(allowModify, {status : 0});
         folders.bind("itemSelected", files, "item");
         rightSide.add(files, {flex : 1});
 

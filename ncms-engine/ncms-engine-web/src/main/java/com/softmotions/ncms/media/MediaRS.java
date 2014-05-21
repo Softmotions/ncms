@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.apache.commons.collections.iterators.ArrayIterator;
 import org.apache.commons.collections.map.LRUMap;
@@ -115,14 +116,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     final NcmsMessages message;
 
-    final ServletContext sctx;
+    final Provider<ServletContext> sctx;
 
     @Inject
     public MediaRS(NcmsConfiguration cfg,
                    SqlSession sess,
                    ObjectMapper mapper,
                    NcmsMessages message,
-                   ServletContext sctx) throws IOException {
+                   Provider<ServletContext> sctx) throws IOException {
 
         super(MediaRS.class.getName(), sess);
         this.cfg = cfg;
@@ -1338,7 +1339,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
 
         public ServletContext getServletContext() {
-            return sctx;
+            return sctx.get();
         }
 
         public String getCharacterEncoding() {
