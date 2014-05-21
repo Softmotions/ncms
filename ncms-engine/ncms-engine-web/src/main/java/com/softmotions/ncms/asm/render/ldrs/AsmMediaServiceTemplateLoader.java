@@ -30,7 +30,7 @@ public class AsmMediaServiceTemplateLoader implements AsmTemplateLoader {
         return (res != null);
     }
 
-    public MediaResource load(String name, Locale locale, String encoding) throws IOException {
+    public MediaResource load(String name, Locale locale) throws IOException {
         return mediaService.findMediaResource(name, locale);
     }
 }

@@ -25,8 +25,8 @@ public class AsmClasspathTemplateLoader implements AsmTemplateLoader {
         return loader.exists(name, locale);
     }
 
-    public MediaResource load(String name, Locale locale, String encoding) throws IOException {
-        return new HttlMediaResourceAdapter(loader.load(name, locale, encoding));
+    public MediaResource load(String name, Locale locale) throws IOException {
+        return new HttlMediaResourceAdapter(loader.load(name, locale, null));
     }
 }
 

@@ -22,10 +22,9 @@ public interface AsmTemplateLoader {
     /**
      * load resource.
      *
-     * @param name     - resource name
-     * @param locale   - resource locale
-     * @param encoding - resource encoding
+     * @param name   - resource name
+     * @param locale - resource locale
      * @return resource
      */
-    MediaResource load(String name, Locale locale, String encoding) throws IOException;
+    MediaResource load(String name, Locale locale) throws IOException;
 }

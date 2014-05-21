@@ -43,7 +43,7 @@ public class HttlLoaderAdapter implements Loader {
         if (ctx == null) {
             return null;
         }
-        MediaResource asmres = ctx.getLoader().load(name, locale, encoding);
+        MediaResource asmres = ctx.getLoader().load(name, locale);
         return (asmres != null ? new HttlResourceAsmAdapter(asmres, engine) : null);
     }
 
