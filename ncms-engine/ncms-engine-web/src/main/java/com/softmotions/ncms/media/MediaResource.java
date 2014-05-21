@@ -3,6 +3,7 @@ package com.softmotions.ncms.media;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Locale;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -46,7 +47,7 @@ public interface MediaResource {
     String getSource() throws IOException;
 
     /**
-     * Get the template source reader.
+     * Get the resource source reader.
      * <p/>
      * NOTE: Don't forget close the reader.
      * <p/>
@@ -65,7 +66,7 @@ public interface MediaResource {
     Reader openReader() throws IOException;
 
     /**
-     * Get the template source input stream.
+     * Get the resource source input stream.
      * <p/>
      * NOTE: Don't forget close the input stream.
      * <p/>
@@ -82,4 +83,11 @@ public interface MediaResource {
      * @throws IOException - If an I/O error occurs
      */
     InputStream openStream() throws IOException;
+
+    /**
+     * Get the resource locale.
+     *
+     * @return locale
+     */
+    Locale getLocale();
 }

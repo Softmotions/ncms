@@ -1,5 +1,7 @@
 package com.softmotions.ncms.asm.render;
 
+import com.softmotions.ncms.media.MediaResource;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -34,5 +36,5 @@ public interface AsmTemplateLoader {
      * @param encoding - resource encoding
      * @return resource
      */
-    AsmResource load(String name, Locale locale, String encoding) throws IOException;
+    MediaResource load(String name, Locale locale, String encoding) throws IOException;
 }

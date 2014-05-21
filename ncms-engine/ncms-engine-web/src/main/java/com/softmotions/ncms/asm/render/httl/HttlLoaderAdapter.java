@@ -4,7 +4,7 @@ import httl.Engine;
 import httl.Resource;
 import httl.spi.Loader;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
-import com.softmotions.ncms.asm.render.AsmResource;
+import com.softmotions.ncms.media.MediaResource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,16 +44,17 @@ public class HttlLoaderAdapter implements Loader {
         if (ctx == null) {
             return null;
         }
-        return new HttlResourceAsmAdapter(ctx.getLoader().load(name, locale, encoding), engine);
+        MediaResource asmres = ctx.getLoader().load(name, locale, encoding);
+        return (asmres != null ? new HttlResourceAsmAdapter(asmres, engine) : null);
     }
 
     private static final class HttlResourceAsmAdapter implements Resource {
 
-        private final AsmResource res;
+        private final MediaResource res;
 
         private final Engine engine;
 
-        private HttlResourceAsmAdapter(AsmResource res, Engine engine) {
+        private HttlResourceAsmAdapter(MediaResource res, Engine engine) {
             this.res = res;
             this.engine = engine;
         }

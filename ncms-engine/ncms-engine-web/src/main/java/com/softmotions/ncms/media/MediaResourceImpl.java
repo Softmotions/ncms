@@ -2,7 +2,6 @@ package com.softmotions.ncms.media;
 
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.io.InputStreamWrapper;
-import com.softmotions.commons.io.ReaderWrapper;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.mime.MediaType;
@@ -10,11 +9,12 @@ import org.apache.tika.mime.MediaType;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.util.Locale;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -35,19 +35,23 @@ class MediaResourceImpl implements MediaResource {
 
     private final long length;
 
+    private final Locale locale;
+
 
     MediaResourceImpl(MediaRS rs,
                       long id,
                       String path,
                       String contentType,
                       long lastModified,
-                      long length) {
+                      long length,
+                      Locale locale) {
         this.rs = rs;
         this.id = id;
         this.path = path;
         this.contentType = contentType;
         this.lastModified = lastModified;
         this.length = length;
+        this.locale = locale;
         if (contentType != null) {
             MediaType mt = MediaType.parse(contentType);
             this.encoding = mt.getParameters().get("charset");
@@ -103,12 +107,17 @@ class MediaResourceImpl implements MediaResource {
         Reader reader;
         Closeable lock = rs.acquireReadResourceLock(path);
         try {
-            reader = new ReaderSession(lock, new FileReader(new File(rs.getBasedir(), spath)));
+            InputStream is = new InputStreamSession(lock, new FileInputStream(new File(rs.getBasedir(), spath)));
+            reader = (getEncoding() != null) ? new InputStreamReader(is, getEncoding()) : new InputStreamReader(is);
         } catch (Throwable t) {
             lock.close();
             throw new IOException(t);
         }
         return reader;
+    }
+
+    public Locale getLocale() {
+        return locale;
     }
 
     public InputStream openStream() throws IOException {
@@ -134,25 +143,6 @@ class MediaResourceImpl implements MediaResource {
 
         private InputStreamSession(Closeable lock, InputStream is) {
             super(is);
-            this.lock = lock;
-        }
-
-        public void close() throws IOException {
-            try {
-                super.close();
-            } finally {
-                lock.close();
-            }
-        }
-    }
-
-    private static class ReaderSession extends ReaderWrapper {
-
-        @SuppressWarnings("FieldNameHidesFieldInSuperclass")
-        private final Closeable lock;
-
-        private ReaderSession(Closeable lock, Reader r) {
-            super(r);
             this.lock = lock;
         }
 

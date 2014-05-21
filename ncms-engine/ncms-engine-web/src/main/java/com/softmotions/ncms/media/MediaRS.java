@@ -545,7 +545,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @Transactional
-    public MediaResource findMediaResource(String path) {
+    public MediaResource findMediaResource(String path, Locale locale) {
         Map<String, Object> res;
         if (path.startsWith("entity:")) {
             Long id;
@@ -575,7 +575,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                                      (folder + name),
                                      (String) res.get("content_type"),
                                      (mdate != null ? mdate.getTime() : 0),
-                                     (length != null ? length.longValue() : -1L));
+                                     (length != null ? length.longValue() : -1L),
+                                     locale);
     }
 
     public File getBasedir() {

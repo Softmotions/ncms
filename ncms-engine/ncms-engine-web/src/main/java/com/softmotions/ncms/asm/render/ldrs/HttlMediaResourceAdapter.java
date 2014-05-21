@@ -2,8 +2,8 @@ package com.softmotions.ncms.asm.render.ldrs;
 
 import httl.Resource;
 import httl.util.IOUtils;
-import com.softmotions.ncms.asm.render.AsmResource;
 import com.softmotions.ncms.asm.render.AsmResourceNotFoundException;
+import com.softmotions.ncms.media.MediaResource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,11 +14,11 @@ import java.util.Locale;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public final class HttlAsmResourceAdapter implements AsmResource {
+public final class HttlMediaResourceAdapter implements MediaResource {
 
     private final Resource res;
 
-    public HttlAsmResourceAdapter(Resource res) {
+    public HttlMediaResourceAdapter(Resource res) {
         this.res = res;
     }
 

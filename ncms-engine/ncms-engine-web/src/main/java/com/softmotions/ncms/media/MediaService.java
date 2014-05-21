@@ -1,8 +1,8 @@
 package com.softmotions.ncms.media;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Generic media service.
@@ -10,12 +10,6 @@ import java.io.IOException;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public interface MediaService {
-
-    File getBasedir();
-
-    Closeable acquireReadResourceLock(String path);
-
-    Closeable acquireWriteResourceLock(String path);
 
     /**
      * Import given directory
@@ -32,9 +26,10 @@ public interface MediaService {
      * 1. Full path: /foo/bar
      * 2. URI form: entity:{id} eg: entity:123
      *
-     * @param path Media resource specification.
+     * @param path   Media resource specification.
+     * @param locale Desired locale, can be null.
      * @return
      */
-    MediaResource findMediaResource(String path);
+    MediaResource findMediaResource(String path, Locale locale);
 
 }

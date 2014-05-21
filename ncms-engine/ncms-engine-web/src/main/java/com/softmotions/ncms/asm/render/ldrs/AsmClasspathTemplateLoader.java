@@ -1,8 +1,8 @@
 package com.softmotions.ncms.asm.render.ldrs;
 
 import httl.spi.loaders.ClasspathLoader;
-import com.softmotions.ncms.asm.render.AsmResource;
 import com.softmotions.ncms.asm.render.AsmTemplateLoader;
+import com.softmotions.ncms.media.MediaResource;
 
 import com.google.inject.Singleton;
 
@@ -30,8 +30,8 @@ public class AsmClasspathTemplateLoader implements AsmTemplateLoader {
         return loader.exists(name, locale);
     }
 
-    public AsmResource load(String name, Locale locale, String encoding) throws IOException {
-        return new HttlAsmResourceAdapter(loader.load(name, locale, encoding));
+    public MediaResource load(String name, Locale locale, String encoding) throws IOException {
+        return new HttlMediaResourceAdapter(loader.load(name, locale, encoding));
     }
 }
 
