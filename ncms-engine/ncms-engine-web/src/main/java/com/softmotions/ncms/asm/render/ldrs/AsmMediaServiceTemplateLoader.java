@@ -8,8 +8,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -25,10 +23,6 @@ public class AsmMediaServiceTemplateLoader implements AsmTemplateLoader {
     @Inject
     public AsmMediaServiceTemplateLoader(MediaService mediaService) {
         this.mediaService = mediaService;
-    }
-
-    public List<String> list(String suffix) throws IOException {
-        return Collections.EMPTY_LIST;
     }
 
     public boolean exists(String name, Locale locale) {

@@ -7,7 +7,6 @@ import com.softmotions.ncms.media.MediaResource;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -20,10 +19,6 @@ public class AsmClasspathTemplateLoader implements AsmTemplateLoader {
 
     public AsmClasspathTemplateLoader() {
         this.loader = new ClasspathLoader();
-    }
-
-    public List<String> list(String suffix) throws IOException {
-        return loader.list(suffix);
     }
 
     public boolean exists(String name, Locale locale) {

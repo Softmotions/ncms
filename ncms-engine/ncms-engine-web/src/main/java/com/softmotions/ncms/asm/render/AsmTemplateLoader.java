@@ -3,21 +3,12 @@ package com.softmotions.ncms.asm.render;
 import com.softmotions.ncms.media.MediaResource;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public interface AsmTemplateLoader {
-
-    /**
-     * list resource names.
-     *
-     * @param suffix resource suffix
-     * @return resource names.
-     */
-    List<String> list(String suffix) throws IOException;
 
     /**
      * is exists resource.

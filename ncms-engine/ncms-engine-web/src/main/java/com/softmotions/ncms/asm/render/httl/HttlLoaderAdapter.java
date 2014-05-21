@@ -30,8 +30,7 @@ public class HttlLoaderAdapter implements Loader {
 
     @SuppressWarnings("unchecked")
     public List<String> list(String suffix) throws IOException {
-        AsmRendererContext ctx = AsmRendererContext.get();
-        return ctx != null ? ctx.getLoader().list(suffix) : Collections.EMPTY_LIST;
+        return Collections.EMPTY_LIST;
     }
 
     public boolean exists(String name, Locale locale) {
