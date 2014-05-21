@@ -8,10 +8,10 @@ import java.util.Locale;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public interface AsmTemplateLoader {
+public interface AsmResourceLoader {
 
     /**
-     * is exists resource.
+     * Return true if given resource exists.
      *
      * @param name   - resource name
      * @param locale - resource locale
@@ -20,7 +20,7 @@ public interface AsmTemplateLoader {
     boolean exists(String name, Locale locale);
 
     /**
-     * load resource.
+     * Load the specified resource.
      *
      * @param name   - resource name
      * @param locale - resource locale

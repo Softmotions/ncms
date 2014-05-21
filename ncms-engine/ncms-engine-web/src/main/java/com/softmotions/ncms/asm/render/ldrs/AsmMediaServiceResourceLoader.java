@@ -1,6 +1,6 @@
 package com.softmotions.ncms.asm.render.ldrs;
 
-import com.softmotions.ncms.asm.render.AsmTemplateLoader;
+import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.ncms.media.MediaService;
 
@@ -16,12 +16,12 @@ import java.util.Locale;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-public class AsmMediaServiceTemplateLoader implements AsmTemplateLoader {
+public class AsmMediaServiceResourceLoader implements AsmResourceLoader {
 
     final MediaService mediaService;
 
     @Inject
-    public AsmMediaServiceTemplateLoader(MediaService mediaService) {
+    public AsmMediaServiceResourceLoader(MediaService mediaService) {
         this.mediaService = mediaService;
     }
 

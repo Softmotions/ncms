@@ -4,10 +4,10 @@ import com.softmotions.ncms.asm.render.AsmAttributeRenderer;
 import com.softmotions.ncms.asm.render.AsmRefAttributeRenderer;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmResourceAttributeRenderer;
+import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.AsmStringAttributeRenderer;
-import com.softmotions.ncms.asm.render.AsmTemplateLoader;
 import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
-import com.softmotions.ncms.asm.render.ldrs.AsmClasspathTemplateLoader;
+import com.softmotions.ncms.asm.render.ldrs.AsmClasspathResourceLoader;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
@@ -29,7 +29,7 @@ public class AsmModule extends AbstractModule {
         attrBinder.addBinding().to(AsmResourceAttributeRenderer.class);
 
         //Resource loaders
-        bind(AsmTemplateLoader.class).to(AsmClasspathTemplateLoader.class);
+        bind(AsmResourceLoader.class).to(AsmClasspathResourceLoader.class);
 
 
         //Asm REST

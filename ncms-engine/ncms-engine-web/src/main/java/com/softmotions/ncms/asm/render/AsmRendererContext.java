@@ -105,6 +105,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     /**
      * Return true is current context is subcontext.
+     *
      * @return
      */
     public abstract boolean isSubcontext();
@@ -139,7 +140,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public abstract String renderAttribute(String attributeName, Map<String, String> opts);
 
-    public abstract AsmTemplateLoader getLoader();
+    public abstract AsmResourceLoader getLoader();
 
     public String toString() {
         return "AsmRendererContext{asm=" + getAsm() + ", context=" + super.toString() + '}';
