@@ -20,7 +20,7 @@ qx.Class.define("ncms.usr.UsersTable", {
             }
         };
 
-        this.base(arguments, tm, custom, true);
+        this.base(arguments, tm, custom);
 
         var rr = new sm.table.renderer.CustomRowRenderer();
         var colorm = qx.theme.manager.Color.getInstance();
