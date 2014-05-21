@@ -250,6 +250,31 @@
                                  referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
 
+
+        <!-- ================ MEDIA_ENTITY_REFS ==================== -->
+
+        <createTable tableName="MEDIA_ENTITY_REFS"
+                     remarks="References to media entities">
+            <column name="ENTITY_ID" type="BIGINT"/>
+            <column name="REFERER_ID" type="BIGINT"/>
+            <column name="REFERER_TYPE" type="VARCHAR(127)"/>
+        </createTable>
+
+        <createIndex tableName="MEDIA_ENTITY_REFS"
+                     indexName="IDX_MEDIAENTITYREFS_ALL"
+                     unique="true">
+            <column name="ENTITY_ID"/>
+            <column name="REFERER_TYPE"/>
+            <column name="REFERER_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="MEDIA_ENTITY_REFS"
+                                 baseColumnNames="ENTITY_ID"
+                                 constraintName="FK_MEDIAENTITYREFS"
+                                 referencedTableName="MEDIA_ENTITY"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
         <!-- ================ MEDIA_ENTITY_ACL ==================== -->
 
         <!--<createTable tableName="MEDIA_ENTITY_ACL">

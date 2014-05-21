@@ -10,6 +10,7 @@ import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
 import com.softmotions.ncms.asm.render.ldrs.AsmClasspathTemplateLoader;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
 
 /**
@@ -29,5 +30,9 @@ public class AsmModule extends AbstractModule {
 
         //Resource loaders
         bind(AsmTemplateLoader.class).to(AsmClasspathTemplateLoader.class);
+
+
+        //Asm REST
+        bind(AsmRS.class).in(Singleton.class);
     }
 }

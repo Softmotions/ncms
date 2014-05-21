@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.softmotions.ncms.adm.AsmSelectorRS">
+<mapper namespace="com.softmotions.ncms.asm.AsmRS">
 
-    <select id="select" resultType="map" parameterType="map">
+<select id="select" resultType="map" parameterType="map">
         select
         asm.id as "id",
         asm.name as "name",

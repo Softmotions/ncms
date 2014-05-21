@@ -1,17 +1,17 @@
-package com.softmotions.ncms.adm;
+package com.softmotions.ncms.asm;
 
-import com.softmotions.weboot.mb.MBDAOSupport;
 import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.ncms.asm.Asm;
-import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.weboot.mb.MBCriteriaQuery;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -28,6 +28,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,9 +39,9 @@ import java.util.Set;
  */
 @Path("adm/asms")
 @Produces("application/json")
-public class AsmEditorRS extends MBDAOSupport {
+public class AsmRS extends MBDAOSupport {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmEditorRS.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmRS.class);
 
     final AsmDAO adao;
 
@@ -49,10 +51,10 @@ public class AsmEditorRS extends MBDAOSupport {
 
 
     @Inject
-    public AsmEditorRS(SqlSession sess,
-                       AsmDAO adao, ObjectMapper mapper,
-                       NcmsMessages messages) {
-        super(AsmEditorRS.class.getName(), sess);
+    public AsmRS(SqlSession sess,
+                 AsmDAO adao, ObjectMapper mapper,
+                 NcmsMessages messages) {
+        super(AsmRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
@@ -189,4 +191,48 @@ public class AsmEditorRS extends MBDAOSupport {
         return asm.getParentRefs();
     }
 
+
+    @GET
+    @Path("select")
+    @Produces("application/json")
+    @Transactional
+    public List<Map> select(@Context HttpServletRequest req) {
+        return selectByCriteria(createQ(req).withStatement("select"));
+    }
+
+    @GET
+    @Path("select/count")
+    @Produces("text/plain")
+    @Transactional
+    public Integer count(@Context HttpServletRequest req) {
+        return selectOneByCriteria(createQ(req).withStatement("count"));
+    }
+
+    private MBCriteriaQuery createQ(HttpServletRequest req) {
+        MBCriteriaQuery cq = createCriteria();
+        String val = req.getParameter("firstRow");
+        if (val != null) {
+            Integer frow = Integer.valueOf(val);
+            cq.offset(frow);
+            val = req.getParameter("lastRow");
+            if (val != null) {
+                Integer lrow = Integer.valueOf(val);
+                cq.limit(Math.abs(frow - lrow) + 1);
+            }
+        }
+        val = req.getParameter("stext");
+        if (!StringUtils.isBlank(val)) {
+            val = val.trim() + '%';
+            cq.withParam("name", val);
+        }
+        val = req.getParameter("sortAsc");
+        if (!StringUtils.isBlank(val)) {
+            cq.orderBy("asm." + val).asc();
+        }
+        val = req.getParameter("sortDesc");
+        if (!StringUtils.isBlank(val)) {
+            cq.orderBy("asm." + val).desc();
+        }
+        return cq;
+    }
 }

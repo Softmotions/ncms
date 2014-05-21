@@ -57,7 +57,7 @@
         <module class="com.softmotions.ncms.security.NcmsSecurityModule"/>
         <module class="com.softmotions.ncms.asm.AsmModule"/>
         <module class="com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule"/>
-        <module class="com.softmotions.ncms.adm.AdmRestModule"/>
+        <module class="com.softmotions.ncms.adm.AdmModule"/>
         <module class="com.softmotions.ncms.jaxrs.JAXRSExceptionHandlingModule"/>
     </modules>
 

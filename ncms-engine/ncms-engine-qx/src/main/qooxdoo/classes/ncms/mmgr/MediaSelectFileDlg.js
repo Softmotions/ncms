@@ -21,6 +21,18 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         "completed" : "qx.event.type.Data"
     },
 
+    properties : {
+
+        /**
+         * Accept content type filter function.
+         * Function signature: (ctype {String}) => Boolean
+         */
+        ctypeAcceptor : {
+            "check" : "Function",
+            nullable : true
+        }
+    },
+
     construct : function(allowModify, caption, icon) {
         allowModify = !!allowModify;
         this.base(arguments, caption, icon);
@@ -30,6 +42,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
             showMinimize : false,
             showMaximize : true,
             allowMaximize : true,
+            showStatusbar : true,
             width : 620,
             height : 450
         });
@@ -42,7 +55,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
 
 
         var rightSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-        var files = new ncms.mmgr.MediaFilesSelector(allowModify);
+        var files = this.__files = new ncms.mmgr.MediaFilesSelector(allowModify);
         folders.bind("itemSelected", files, "item");
         rightSide.add(files, {flex : 1});
 
@@ -51,7 +64,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         hcont.setPadding(5);
 
         var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Ok")).set({enabled : false});
-        bt.addListener("execute", this._ok, this);
+        bt.addListener("execute", this.__ok, this);
         hcont.add(bt);
 
         bt = new qx.ui.form.Button(this.tr("Cancel"));
@@ -88,12 +101,21 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
             } else {
                 thumbnail.exclude();
             }
-        });
+            var ff = this.getCtypeAcceptor() || function() {
+                return true;
+            };
+            this.__saveBt.setEnabled((ctype != null && ff(ctype)));
+            if (spec) {
+                this.setStatus(spec["folder"] + spec["name"]);
+            } else {
+                this.setStatus("");
+            }
+        }, this);
     },
 
     members : {
 
-        __folders : null,
+        __files : null,
 
         __saveBt : null,
 
@@ -104,13 +126,24 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
             this.__dispose();
         },
 
+        __ok : function() {
+            var spec = this.__files.getSelectedFile();
+            var ctype = spec ? spec["content_type"] : null;
+            var ff = this.getCtypeAcceptor() || function() {
+                return true;
+            };
+            if (ctype && ff(ctype)) {
+                this.fireDataEvent("completed", spec);
+            }
+        },
+
         __dispose : function() {
             if (this.__closeCmd) {
                 this.__closeCmd.setEnabled(false);
             }
             this._disposeObjects("__closeCmd");
             this.__saveBt = null;
-            this.__folders = null;
+            this.__files = null;
         }
     },
 
