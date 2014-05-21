@@ -1,8 +1,21 @@
 package com.softmotions.ncms.security;
 
-import java.util.Iterator;
+import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.web.security.WSGroup;
+import com.softmotions.web.security.WSRole;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.web.security.WSUserDatabase;
 
-import javax.servlet.http.HttpServletRequest;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -11,26 +24,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.web.security.WSGroup;
-import com.softmotions.web.security.WSRole;
-import com.softmotions.web.security.WSUser;
-import com.softmotions.web.security.WSUserDatabase;
+import java.util.Iterator;
 
 /**
  * Rest service for operations on users database.
- * 
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Path("adm/security")
@@ -55,7 +53,7 @@ public class NcmsSecurityRS {
 	 * <p/>
 	 * Sample JSON output:
 	 * <p/>
-	 * 
+	 *
 	 * <pre>
 	 *    {
 	 *      "name" : "admin",
@@ -65,7 +63,7 @@ public class NcmsSecurityRS {
 	 *      "groups" : [array of users groups]
 	 *    }
 	 * </pre>
-	 * 
+	 *
 	 * @param name
 	 *            Name of user
 	 * @return
@@ -99,14 +97,14 @@ public class NcmsSecurityRS {
 	@GET
 	@Path("users/count")
 	@Produces("text/plain")
-	public Integer usersCount() {
-		return userDatabase.getUsersCount();
+	public Integer usersCount(@QueryParam("stext") String stext) {
+		return userDatabase.getUsersCount(stext);
 	}
 
 	/**
 	 * Get group info list
 	 * <p/>
-	 * 
+	 *
 	 * <pre>
 	 *  [{
 	 *      "name":"admins",
@@ -114,7 +112,7 @@ public class NcmsSecurityRS {
 	 *      "roles":[array of groups rolenames]
 	 *  }]
 	 * </pre>
-	 * 
+	 *
 	 * @return
 	 */
 	@GET
@@ -140,14 +138,14 @@ public class NcmsSecurityRS {
 	/**
 	 * Get role info list user
 	 * <p/>
-	 * 
+	 *
 	 * <pre>
 	 *  [{
 	 *      "name":"admins",
 	 *      "description":"Superuser group"
 	 *  }]
 	 * </pre>
-	 * 
+	 *
 	 * @return(name == null)
 	 */
 	@GET
@@ -164,65 +162,33 @@ public class NcmsSecurityRS {
 	}
 
 	/**
-	 * Get users info list
+	 * Get users info list with specified query
 	 * <p/>
-	 * 
+	 *
 	 * <pre>
 	 *  [{
 	 *      "name":"admins",
 	 *      "description":"Superuser group"
 	 *  }]
 	 * </pre>
-	 * 
+	 *
 	 * @return
 	 */
-	@GET
+    @GET
 	@Path("users")
-	public JsonNode users() {
-		Iterator<WSUser> users = userDatabase.getUsers();
+    public JsonNode users(@QueryParam("firstRow") int firstRow,
+                          @QueryParam("lastRow") int lastRow,
+                          @QueryParam("ascField") String ascField,
+                          @QueryParam("descField") String descField,
+                          @QueryParam("stext") String stext) {
+        String sortField = (!StringUtils.isBlank(ascField)) ? ascField : (!StringUtils.isBlank(descField)) ? descField : null;
+        int limit = firstRow == 0 && lastRow == 0 ? Integer.MAX_VALUE : Math.abs(lastRow - firstRow) + 1;
+        Iterator<WSUser> users = userDatabase.getUsers(stext, sortField, !StringUtils.isBlank(descField), firstRow, limit);
 		ArrayNode res = mapper.createArrayNode();
 		while (users.hasNext()) {
 			WSUser user = users.next();
-			res.addObject().put("name", user.getName())
-			        .put("email", user.getEmail())
-			        .put("fullName", user.getFullName());
-		}
-		return res;
-	}
-
-	/**
-	 * Get users info list from firstRow to firstRow+count
-	 * <p/>
-	 * 
-	 * <pre>
-	 *  [{
-	 *      "name":"admins",
-	 *      "description":"Superuser group"RestEasyClient
-	 *  }]
-	 * </pre>
-	 * 
-	 * @return
-	 */
-	@POST
-	@Path("users")
-	public JsonNode users(@Context HttpServletRequest request,
-	        @QueryParam("firstRow") int firstRow,
-	        @QueryParam("lastRow") int lastRow) {
-		if (log.isDebugEnabled()) {
-			log.debug("users?firstRow=" + firstRow + "&lastRow=" + lastRow);
-		}
-		String ascField = request.getParameter("sortAsc");
-		String descField = request.getParameter("sortDesc");
-		String sortField = (!StringUtils.isBlank(ascField)) ? ascField
-		        : (!StringUtils.isBlank(descField)) ? descField : null;
-		String stext = request.getParameter("stext");
-		Iterator<WSUser> users = userDatabase.getUsers(stext, sortField,
-		        !StringUtils.isBlank(descField), firstRow,
-		        Math.abs(lastRow - firstRow) + 1);
-		ArrayNode res = mapper.createArrayNode();
-		while (users.hasNext()) {
-			WSUser user = users.next();
-			res.addObject().put("name", user.getName())
+			res.addObject()
+                    .put("name", user.getName())
 			        .put("email", user.getEmail())
 			        .put("fullName", user.getFullName());
 		}
@@ -231,7 +197,7 @@ public class NcmsSecurityRS {
 
 	/**
 	 * Creates group with name and description
-	 * 
+	 *
 	 * @return <pre>
 	 *  {
 	 *      "name":"admins",
@@ -249,15 +215,14 @@ public class NcmsSecurityRS {
 		}
 		assertion(name != null, "Parameter 'name' of group can not be empty");
 		WSGroup group = userDatabase.createGroup(name, description);
-		ObjectNode res = mapper.createObjectNode();
-		res.put("name", group.getName());
-		res.put("description", group.getDescription());
-		return res;
+        return mapper.createObjectNode()
+                .put("name", group.getName())
+                .put("description", group.getDescription());
 	}
 
 	/**
 	 * Creates role with name and description
-	 * 
+	 *
 	 * @return <pre>
 	 *  {
 	 *      "name":"admins",
@@ -274,15 +239,15 @@ public class NcmsSecurityRS {
 		}
 		assertion(name != null, "Parameter 'name' of role can not be empty");
 		WSRole role = userDatabase.createRole(name, description);
-		ObjectNode res = mapper.createObjectNode();
-		res.put("name", role.getName());
-		res.put("description", role.getDescription());
-		return res;
-	}
+
+        return mapper.createObjectNode()
+                .put("name", role.getName())
+                .put("description", role.getDescription());
+    }
 
 	/**
 	 * Creates user with name, password and full name
-	 * 
+	 *
 	 * @return <pre>
 	 *  {
 	 *      "name":"admin",
@@ -300,27 +265,25 @@ public class NcmsSecurityRS {
 			log.debug("createuser/{" + name + "}?password=" + password
 			        + "&fullName=" + fullName);
 		}
-		assertion(name != null && password != null,
-		        "Parameters 'name' and 'password' of user can not be empty");
+		assertion(name != null && password != null, "Parameters 'name' and 'password' of user can not be empty");
 		WSUser user = userDatabase.createUser(name, password, fullName);
-		ObjectNode res = mapper.createObjectNode();
-		res.put("name", user.getName());
-		res.put("password", user.getPassword());
-		res.put("fullName", user.getFullName());
-		return res;
-	}
+        return mapper.createObjectNode()
+                .put("name", user.getName())
+                .put("password", user.getPassword())
+                .put("fullName", user.getFullName());
+    }
 
 	/**
 	 * Finds group of the name groupName
 	 * <p/>
-	 * 
+	 *
 	 * <pre>
 	 *  {
 	 *      "name":"admins",PUT
 	 *      "description":"Superuser group"
 	 *  }
 	 * </pre>
-	 * 
+	 *
 	 * @return
 	 */
 	@GET
@@ -333,8 +296,8 @@ public class NcmsSecurityRS {
 		ObjectNode res = null;
 		if (group != null) {
 			res = mapper.createObjectNode();
-			res.put("name", group.getName()).put("description",
-			        group.getDescription());
+			res.put("name", group.getName())
+                    .put("description", group.getDescription());
 		}
 		return res;
 	}
@@ -342,14 +305,14 @@ public class NcmsSecurityRS {
 	/**
 	 * Finds role of the name rolename
 	 * <p/>
-	 * 
+	 *
 	 * <pre>
 	 *  {
 	 *      "name":"admins",com.softmotions.ncms.security.NcmsSecurityRSTest
 	 *      "description":"Superuser role"
 	 *  }
 	 * </pre>
-	 * 
+	 *
 	 * @return
 	 */
 	@GET
@@ -371,14 +334,14 @@ public class NcmsSecurityRS {
 	/**
 	 * Finds user of the name username
 	 * <p/>
-	 * 
+	 *
 	 * <pre>
 	 * {
 	 * "name":"admin",removegroup
 	 * "description":"Superuser"
 	 * }
 	 * </pre>
-	 * 
+	 *
 	 * @return
 	 */
 	@GET
