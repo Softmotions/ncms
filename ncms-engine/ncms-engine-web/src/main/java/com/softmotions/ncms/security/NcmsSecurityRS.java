@@ -178,8 +178,8 @@ public class NcmsSecurityRS {
 	@Path("users")
     public JsonNode users(@QueryParam("firstRow") int firstRow,
                           @QueryParam("lastRow") int lastRow,
-                          @QueryParam("ascField") String ascField,
-                          @QueryParam("descField") String descField,
+                          @QueryParam("sortAsc") String ascField,
+                          @QueryParam("sortDesc") String descField,
                           @QueryParam("stext") String stext) {
         String sortField = (!StringUtils.isBlank(ascField)) ? ascField : (!StringUtils.isBlank(descField)) ? descField : null;
         int limit = firstRow == 0 && lastRow == 0 ? Integer.MAX_VALUE : Math.abs(lastRow - firstRow) + 1;

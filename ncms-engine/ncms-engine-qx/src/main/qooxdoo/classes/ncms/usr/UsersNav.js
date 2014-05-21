@@ -63,6 +63,10 @@ qx.Class.define("ncms.usr.UsersNav", {
         this._add(this.__table, {edge : "center"});
 
         this.setConstViewSpec(constViewSpec || null);
+
+        this.setContextMenu(new qx.ui.menu.Menu());
+        this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+
     },
 
     members : {
@@ -139,7 +143,49 @@ qx.Class.define("ncms.usr.UsersNav", {
 
         __applyConstViewSpec : function() {
             this.__search();
+        },
+
+        __beforeContextmenuOpen : function(ev) {
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+
+            var bt = new qx.ui.menu.Button(this.tr("New user"));
+            bt.addListenerOnce("execute", this.__onNewUser, this);
+            menu.add(bt);
+
+            var user = this.getSelectedUser();
+            if (user !== null) {
+                bt = new qx.ui.menu.Button(this.tr("Remove"));
+                bt.addListenerOnce("execute", this.__onRemoveUser, this);
+                menu.add(bt);
+            }
+        },
+
+        __onNewUser : function(ev) {
+            var d = new ncms.usr.UserNewDlg();
+            d.addListenerOnce("completed", function(ev) {
+                d.close();
+                this.reload();
+            }, this);
+            d.show();
+        },
+
+        __onRemoveUser : function(ev) {
+            var user = this.getSelectedUser();
+            if (user == null) {
+                return;
+            }
+            ncms.Application.confirm(
+                    this.tr("Are you sure to remove user: \"%1\"?", user["name"]),
+                    function(yes) {
+                        if (!yes) return;
+                        var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : user["name"]}), "DELETE");
+                        req.send(function(resp) {
+                            this.reload();
+                        }, this);
+                    }, this);
         }
+
     },
 
     destruct : function() {

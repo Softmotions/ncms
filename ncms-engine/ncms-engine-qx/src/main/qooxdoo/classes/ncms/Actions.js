@@ -79,6 +79,9 @@ qx.Class.define("ncms.Actions", {
 
         ////////// NcmsSecurityRS
 
+        // GET/PUT/DELETE
+        this._action("security.user", "/ncms/rs/adm/security/user/{name}");
+
         //GET selects users
         this._action("security.users", "/ncms/rs/adm/security/users");
 
