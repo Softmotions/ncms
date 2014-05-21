@@ -26,12 +26,6 @@ qx.Class.define("ncms.asm.AsmSelector", {
         appearance : {
             refine : true,
             init : "asm-selector"
-        },
-
-        constViewSpec : {
-            check : "Object",
-            nullable : true,
-            apply : "__applyConstViewSpec"
         }
     },
 
@@ -84,12 +78,19 @@ qx.Class.define("ncms.asm.AsmSelector", {
         __table : null,
 
 
-        setViewSpec : function(vspec) {
-            this.__table.getTableModel().setViewSpec(this.__createViewSpec(vspec));
+        setViewSpec : function(vs) {
+            this.__table.resetSelection();
+            this.__table.getTableModel().setViewSpec(vs);
         },
 
-        updateViewSpec : function(vspec) {
-            this.__table.getTableModel().updateViewSpec(this.__createViewSpec(vspec));
+        updateViewSpec : function(vs) {
+            this.__table.resetSelection();
+            this.__table.getTableModel().updateViewSpec(vs);
+        },
+
+        setConstViewSpec : function(vs) {
+            this.__table.resetSelection();
+            this.__table.getTableModel().setConstViewSpec(vs);
         },
 
         reload : function(vspec) {
@@ -125,20 +126,8 @@ qx.Class.define("ncms.asm.AsmSelector", {
             return this.__sf;
         },
 
-        __createViewSpec : function(vspec) {
-            if (this.getConstViewSpec() == null) {
-                return vspec;
-            }
-            var nspec = {};
-            qx.Bootstrap.objectMergeWith(nspec, this.getConstViewSpec(), false);
-            qx.Bootstrap.objectMergeWith(nspec, vspec, false);
-            return nspec;
-        },
-
         __search : function(val) {
-            this.__table.resetSelection();
-            var vspec = (val != null && val != "" ? {stext : val} : {});
-            this.setViewSpec(this.__createViewSpec(vspec));
+            this.updateViewSpec({stext : val || ""});
         },
 
         __applyConstViewSpec : function() {
