@@ -1,4 +1,4 @@
-package com.softmotions.ncms.asm.render;
+package com.softmotions.ncms.media;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,40 +8,33 @@ import java.util.Locale;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public interface AsmResource {
+public interface MediaResource {
 
     /**
-     * Get the template name.
-     *
-     * @return name
+     * Get the resource name.
      */
     String getName();
 
     /**
-     * Get the the template encoding.
-     *
-     * @return encoding
+     * Get the the resource encoding.
      */
     String getEncoding();
 
     /**
-     * Get the the template locale.
-     *
-     * @return locale
+     * Get resource content type.
+     * Return <code>null</code> if content type is not known
      */
-    Locale getLocale();
+    String getContentType();
 
     /**
      * Get the the template last modified time.
-     *
-     * @return last modified time
+     * Return <code>-1L</code> if last modified time is not known.
      */
     long getLastModified();
 
     /**
-     * Get the the template length.
-     *
-     * @return source length
+     * Get resource length.
+     * Returns <code>-1L</code> if length is not known.
      */
     long getLength();
 
@@ -54,10 +47,10 @@ public interface AsmResource {
     String getSource() throws IOException;
 
     /**
-     * Get the template source reader.
-     * <p>
+     * Get the resource source reader.
+     * <p/>
      * NOTE: Don't forget close the reader.
-     * <p>
+     * <p/>
      * <pre>
      * Reader reader = resource.openReader();
      * try {
@@ -73,10 +66,10 @@ public interface AsmResource {
     Reader openReader() throws IOException;
 
     /**
-     * Get the template source input stream.
-     * <p>
+     * Get the resource source input stream.
+     * <p/>
      * NOTE: Don't forget close the input stream.
-     * <p>
+     * <p/>
      * <pre>
      * InputStream stream = resource.openStream();
      * try {
@@ -91,4 +84,10 @@ public interface AsmResource {
      */
     InputStream openStream() throws IOException;
 
+    /**
+     * Get the resource locale.
+     *
+     * @return locale
+     */
+    Locale getLocale();
 }

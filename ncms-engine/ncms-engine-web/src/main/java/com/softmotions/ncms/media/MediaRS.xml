@@ -219,7 +219,7 @@
         where id = #{id}
     </update>
 
-    <select id="selectMeta" resultType="map">
+    <select id="selectMeta" resultType="map" parameterType="map">
         select
         name as "name",
         description as "description",
@@ -241,10 +241,35 @@
     </insert>
 
     <update id="updateSysFlag" parameterType="map">
-       update media_entity
-       set
-       sys = #{sys}
-       where id = #{id}
+        update media_entity
+        set
+        sys = #{sys}
+        where id = #{id}
     </update>
+
+    <select id="selectResourceAttrsByPath" parameterType="map" resultType="map">
+        select
+        id as "id",
+        name as "name",
+        folder as "folder",
+        content_type as "content_type",
+        content_length as "content_length",
+        mdate as "mdate"
+        from media_entity
+        where folder = #{folder}
+        and name = #{name}
+    </select>
+
+    <select id="selectResourceAttrsById" parameterType="map" resultType="map">
+        select
+        id as "id",
+        name as "name",
+        folder as "folder",
+        content_type as "content_type",
+        content_length as "content_length",
+        mdate as "mdate"
+        from media_entity
+        where id = #{id}
+    </select>
 
 </mapper>

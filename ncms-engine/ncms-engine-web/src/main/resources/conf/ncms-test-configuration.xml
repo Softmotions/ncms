@@ -48,6 +48,13 @@
         value.filters=com.softmotions.ncms.asm.render.httl.HttlValueFilter
     </httl>
 
+    <asm>
+        <resource-loaders>
+            <loader class="com.softmotions.ncms.asm.render.ldrs.AsmClasspathResourceLoader"/>
+            <loader class="com.softmotions.ncms.asm.render.ldrs.AsmMediaServiceResourceLoader"/>
+        </resource-loaders>
+    </asm>
+
     <security dbJndiName="java:comp/env/WSUserDatabase">
         <web-fakeuser>admin</web-fakeuser>
         <web-access-control-allow>*</web-access-control-allow>

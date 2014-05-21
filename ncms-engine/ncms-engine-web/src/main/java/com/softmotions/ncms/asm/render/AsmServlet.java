@@ -36,7 +36,7 @@ public class AsmServlet extends HttpServlet {
     Provider<AsmRenderer> rendererProvider;
 
     @Inject
-    Provider<AsmTemplateLoader> loaderProvider;
+    Provider<AsmResourceLoader> loaderProvider;
 
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -76,7 +76,7 @@ public class AsmServlet extends HttpServlet {
             asmRef = ref;
         }
         AsmRenderer renderer = rendererProvider.get();
-        AsmTemplateLoader loader = loaderProvider.get();
+        AsmResourceLoader loader = loaderProvider.get();
         AsmRendererContext ctx;
         HttpServletResponse renderResp = resp;
         StringWriter out = null;
@@ -103,6 +103,7 @@ public class AsmServlet extends HttpServlet {
         try {
             ctx.render();
             if (!transfer) {
+                resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 resp.setContentLength(out.getBuffer().length());
             }
         } catch (AsmResourceNotFoundException e) {

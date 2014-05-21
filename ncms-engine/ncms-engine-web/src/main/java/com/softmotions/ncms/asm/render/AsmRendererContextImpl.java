@@ -34,7 +34,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final AsmRenderer renderer;
 
-    final AsmTemplateLoader loader;
+    final AsmResourceLoader loader;
 
     final ClassLoader classLoader;
 
@@ -48,7 +48,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     private AsmRendererContextImpl(Injector injector,
                                    ClassLoader classLoader,
                                    AsmRenderer renderer,
-                                   AsmTemplateLoader loader,
+                                   AsmResourceLoader loader,
                                    HttpServletRequest req, HttpServletResponse resp,
                                    Asm asm) {
         this.injector = injector;
@@ -63,7 +63,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     public AsmRendererContextImpl(Injector injector,
                                   AsmRenderer renderer,
-                                  AsmTemplateLoader loader,
+                                  AsmResourceLoader loader,
                                   HttpServletRequest req, HttpServletResponse resp,
                                   Object asmRef)
             throws AsmRenderingException {
@@ -179,7 +179,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         renderer.renderAsm(this);
     }
 
-    public AsmTemplateLoader getLoader() {
+    public AsmResourceLoader getLoader() {
         return loader;
     }
 }
