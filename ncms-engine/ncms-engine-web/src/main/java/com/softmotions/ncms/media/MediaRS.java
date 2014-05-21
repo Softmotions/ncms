@@ -950,7 +950,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 //noinspection ThrowCaughtLocally
                 throw new NotFoundException(path);
             }
-            if (folder.charAt(0) != '/') {
+            if (folder.isEmpty() || folder.charAt(0) != '/') {
                 folder = '/' + folder;
             }
 
@@ -1125,7 +1125,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
 
         private ResourceLock(String path, boolean parentWriteLock, boolean childWriteLock) {
-            if (path.charAt(0) != '/') {
+            if (path.isEmpty() || path.charAt(0) != '/') {
                 path = '/' + path;
             }
             if (path.length() > 1 && path.endsWith("/")) {
@@ -1189,7 +1189,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     private ReentrantReadWriteLock acquirePathRWLock(String path, boolean acquireWrite) {
-        if (path.charAt(0) != '/') {
+        if (path.isEmpty() || path.charAt(0) != '/') {
             path = '/' + path;
         }
         if (path.length() > 1 && path.endsWith("/")) {
@@ -1255,7 +1255,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     private static String normalizeFolder(String folder) {
-        if (folder.charAt(0) != '/') {
+        if (folder.isEmpty() || folder.charAt(0) != '/') {
             folder = '/' + folder;
         }
         if (!folder.endsWith("/")) {
