@@ -87,10 +87,13 @@
             <column name="NAME" type="VARCHAR(127)">
                 <constraints nullable="false"/>
             </column>
+            <column name="LABEL" type="VARCHAR(64)"
+                    remarks="Attribute label displayed in page GUI">
+            </column>
             <column name="TYPE" type="VARCHAR(127)">
                 <constraints nullable="false"/>
             </column>
-            <column name="OPTIONS" type="VARCHAR(512)"/>
+            <column name="OPTIONS" type="VARCHAR(1024)"/>
             <column name="VALUE" type="VARCHAR(1024)"/>
             <column name="LARGE_VALUE" type="CLOB"/>
         </createTable>

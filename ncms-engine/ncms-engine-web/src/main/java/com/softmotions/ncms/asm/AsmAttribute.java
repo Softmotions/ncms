@@ -34,6 +34,9 @@ public class AsmAttribute implements Serializable {
     @JsonProperty
     String options;
 
+    @JsonProperty
+    String label;
+
     public AsmAttribute() {
     }
 
@@ -93,6 +96,14 @@ public class AsmAttribute implements Serializable {
         return (largeValue != null) ? largeValue : value;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     @JsonProperty
     public boolean isHasLargeValue() {
         return (getLargeValue() != null);
@@ -114,6 +125,7 @@ public class AsmAttribute implements Serializable {
         attr.value = value;
         attr.largeValue = largeValue;
         attr.options = options;
+        attr.label = label;
         return attr;
     }
 
