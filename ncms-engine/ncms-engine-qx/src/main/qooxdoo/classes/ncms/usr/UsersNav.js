@@ -24,11 +24,6 @@ qx.Class.define("ncms.usr.UsersNav", {
 
     properties : {
 
-        appearance : {
-            refine : true,
-            init : "user-selector"
-    	},
-
         constViewSpec : {
             check : "Object",
             nullable : true,
@@ -64,8 +59,8 @@ qx.Class.define("ncms.usr.UsersNav", {
             this.fireDataEvent("userSelected", user ? user : null);
         }, this);
 
-        this._add(this.__sf, {edge:"north"});
-        this._add(this.__table, {edge:"center"});
+        this._add(this.__sf, {edge : "north"});
+        this._add(this.__table, {edge : "center"});
 
         this.setConstViewSpec(constViewSpec || null);
     },
