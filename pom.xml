@@ -52,6 +52,7 @@
         <jackson.version>2.3.2</jackson.version>
         <resteasy.version>3.0.7.Final</resteasy.version>
         <commons.collection.version>3.2.1</commons.collection.version>
+        <commons.validator.version>1.4.0</commons.validator.version>
         <httpcomponents.version>4.3.3</httpcomponents.version>
         <tomcat.version>7.0.52</tomcat.version>
         <httl.version>1.0.11</httl.version>
@@ -203,6 +204,11 @@
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>${commons.collection.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-validator</groupId>
+                <artifactId>commons-validator</artifactId>
+                <version>${commons.validator.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
