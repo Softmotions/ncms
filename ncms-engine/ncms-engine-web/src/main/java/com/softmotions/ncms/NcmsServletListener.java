@@ -1,7 +1,6 @@
 package com.softmotions.ncms;
 
 import ninja.utils.NinjaProperties;
-import com.softmotions.weboot.WBServletListener;
 import com.softmotions.web.CharsetFilter;
 
 import com.google.inject.servlet.GuiceFilter;
@@ -12,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
+
+tener;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

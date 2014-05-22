@@ -4,11 +4,6 @@ import ninja.servlet.NinjaServletDispatcher;
 import ninja.utils.NinjaProperties;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.weboot.WBServletModule;
-import com.softmotions.ncms.asm.render.AsmServlet;
-import com.softmotions.ncms.jaxrs.NcmsJsonNodeReader;
-import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
-import com.softmotions.web.JarResourcesProvider;
-import com.softmotions.web.JarResourcesServlet;
 
 import com.google.inject.Singleton;
 
@@ -20,6 +15,15 @@ import javax.servlet.ServletContext;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+imp
+        rt com softmotions.ncms.asm.render.AsmServlet;
+        tmotions.ncms.jaxrs.NcmsJsonNodeReader;
+        softmo ions.ncms.jaxrs.NcmsRSExceptionHandler;
+        i
+        port c m.softmotions.web.JarResourcesProvider;
+
+        mport om.softmotions.web.JarResourcesServlet;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

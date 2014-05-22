@@ -1,12 +1,12 @@
 package com.softmotions.ncms.security;
 
-import com.softmotions.weboot.WBServletInitializerModule;
-import com.softmotions.weboot.WBServletModule;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.web.AccessControlHDRFilter;
 import com.softmotions.web.security.SecurityFakeEnvFilter;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.WBServletInitializerModule;
+import com.softmotions.weboot.WBServletModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
