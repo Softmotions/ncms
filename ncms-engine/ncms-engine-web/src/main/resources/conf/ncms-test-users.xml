@@ -24,12 +24,12 @@
           fullName="Дмитрий Савельев"
           groups="users">
     </user>
-    
+
     <user name="kdima"
           password="password"
           email="kurbatov@gmail.com"
           fullName="Дмитрий Курбатов"
           groups="users">
     </user>
-    
+
 </database>

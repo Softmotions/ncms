@@ -36,6 +36,10 @@ public class AsmCore implements Serializable {
         this.id = id;
     }
 
+    public AsmCore(String location) {
+        this.location = location;
+    }
+
     public AsmCore(String location, String name) {
         this.location = location;
         this.name = name;

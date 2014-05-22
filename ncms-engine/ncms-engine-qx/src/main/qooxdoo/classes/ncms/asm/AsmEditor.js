@@ -93,14 +93,15 @@ qx.Class.define("ncms.asm.AsmEditor", {
         el.setEnabled(false);
         form.add(el, this.tr("Name"), null, "name");
 
-        el = new qx.ui.form.TextField();
-        form.add(el, this.tr("Description"), null, "description");
-
         el = new sm.ui.form.ButtonField(null, "ncms/icon/16/actions/core_link.png");
         el.setReadOnly(true);
-        el.addListener("execute", this.__selectCore, this);
+        el.setShowResetButton(true);
+        el.addListener("execute", this.__setCore, this);
+        el.addListener("reset", this.__resetCore, this);
         form.add(el, this.tr("Core"), null, "core");
 
+        el = new qx.ui.form.TextField();
+        form.add(el, this.tr("Description"), null, "description");
 
         el = new ncms.asm.AsmParentsTable();
         el.addListener("parentsChanged", function() {
@@ -123,8 +124,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
         __form : null,
 
-
-        __selectCore : function() {
+        __setCore : function() {
             var spec = this.getAsmSpec();
             var d = new ncms.mmgr.MediaSelectFileDlg(
                     true,
@@ -133,12 +133,40 @@ qx.Class.define("ncms.asm.AsmEditor", {
                 return ncms.Utils.isTextualContentType(ctype);
             });
             d.addListenerOnce("completed", function(ev) {
-                var spec = ev.getData();
-                qx.log.Logger.info("spec=" + JSON.stringify(spec));
-                //todo
-                d.close();
+                var fspec = ev.getData();
+                var url = ncms.Application.ACT.getRestUrl("asms.core", spec);
+                var req = new sm.io.Request(url, "PUT", "application/json");
+                req.setRequestContentType("application/json");
+                req.setData(JSON.stringify({
+                    location : fspec["folder"] + fspec["name"]
+                }));
+                req.send(function(resp) {
+                    var specPart = resp.getContent();
+                    qx.lang.Object.mergeWith(spec, specPart, true);
+                    d.close();
+                    //clone needed to force execution of __applyAsmSpec
+                    this.setAsmSpec(sm.lang.Object.shallowClone(spec));
+                }, this);
             }, this);
             d.show();
+        },
+
+
+        __resetCore : function() {
+            ncms.Application.confirm(this.tr("Are you sure to remove local assembly core?"), function(ok) {
+                if (!ok) {
+                    return;
+                }
+                var spec = this.getAsmSpec();
+                var url = ncms.Application.ACT.getRestUrl("asms.core", spec);
+                var req = new sm.io.Request(url, "DELETE", "application/json");
+                req.send(function(resp) {
+                    var specPart = resp.getContent();
+                    qx.lang.Object.mergeWith(spec, specPart, true);
+                    //clone needed to force execution of __applyAsmSpec
+                    this.setAsmSpec(sm.lang.Object.shallowClone(spec));
+                }, this);
+            }, this);
         },
 
         __applyAsmId : function(value, old) {
@@ -155,7 +183,6 @@ qx.Class.define("ncms.asm.AsmEditor", {
                 return;
             }
             var ctls = this.__form.getItems();
-
             if (spec._part == null) {
                 ctls["name"].setValue(spec["name"]);
                 ctls["description"].setValue(spec["description"]);
@@ -163,11 +190,12 @@ qx.Class.define("ncms.asm.AsmEditor", {
             if (spec["effectiveCore"] != null) {
                 var ecore = spec["effectiveCore"];
                 var ecoreVal = ecore["location"];
-                if (ecore["templateEngine"] != null) {
-                    ecoreVal += (";" + ecore["templateEngine"]);
-                }
                 ctls["core"].setValue(ecoreVal);
+            } else {
+                ctls["core"].setValue(null);
             }
+            ctls["core"].setShowResetButton(spec["core"] != null);
+
             ctls["parents"].setAsmSpec(spec);
             ctls["attributes"].setAsmSpec(spec);
         },

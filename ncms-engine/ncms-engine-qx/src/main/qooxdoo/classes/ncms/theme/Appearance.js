@@ -1,5 +1,6 @@
 /**
  * @asset(ncms/icon/16/actions/search.png)
+ * @asset(ncms/icon/16/misc/cross-script.png)
  * @asset(qx/icon/${qx.icontheme}/16/actions/edit-clear.png)
  */
 
@@ -82,6 +83,16 @@ qx.Theme.define("ncms.theme.Appearance", {
             alias : "button",
             style : function(states) {
                 return {
+                }
+            }
+        },
+
+        "sm-bt-field/reset" : {
+            include : "button",
+            alias : "button",
+            style : function(states) {
+                return {
+                    icon : "ncms/icon/16/misc/cross-script.png"
                 }
             }
         },

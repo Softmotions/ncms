@@ -9,6 +9,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -113,6 +114,48 @@ public class AsmRS extends MBDAOSupport {
     public void save(@PathParam("id") Long id) {
 
     }
+
+    @PUT
+    @Path("/{id}/core")
+    public ObjectNode corePut(@PathParam("id") Long id, ObjectNode coreSpec) {
+        Asm asm = adao.asmSelectById(id);
+        if (asm == null) {
+            throw new NotFoundException();
+        }
+        ObjectNode res = mapper.createObjectNode();
+        String locaton = coreSpec.get("location").asText();
+        if (StringUtils.isBlank(locaton)) {
+            if (asm.getCore() != null) {
+                adao.coreDelete(asm.getCore().getId(), null);
+                asm.setCore(null);
+            }
+        }
+        AsmCore core = adao.selectOne("selectAsmCore", "location", locaton);
+        if (core == null) {
+            core = new AsmCore(locaton);
+            adao.coreInsert(core);
+        }
+        adao.update("asmUpdateCore",
+                    "id", id,
+                    "coreId", core.getId());
+        res.putPOJO("core", core);
+        res.putPOJO("effectiveCore", core);
+        return res;
+    }
+
+    @DELETE
+    @Path("/{id}/core")
+    public ObjectNode coreDelete(@PathParam("id") Long id) {
+        ObjectNode res = mapper.createObjectNode();
+        adao.update("asmUpdateCore",
+                    "id", id,
+                    "coreId", null);
+        Asm asm = get(id);
+        res.putPOJO("core", asm.getCore());
+        res.putPOJO("effectiveCore", asm.getEffectiveCore());
+        return res;
+    }
+
 
     @GET
     @Path("/{id}")

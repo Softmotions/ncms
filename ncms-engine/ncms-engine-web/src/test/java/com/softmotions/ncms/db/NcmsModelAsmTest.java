@@ -1,11 +1,11 @@
 package com.softmotions.ncms.db;
 
-import com.softmotions.weboot.mb.MBAction;
 import com.softmotions.ncms.NcmsWebTest;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.weboot.mb.MBAction;
 
 import com.google.inject.Inject;
 

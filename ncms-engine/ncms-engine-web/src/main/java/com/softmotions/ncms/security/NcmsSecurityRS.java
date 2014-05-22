@@ -36,104 +36,104 @@ import java.util.Iterator;
 @Produces("application/json")
 public class NcmsSecurityRS {
 
-	private static final Logger log = LoggerFactory
-	        .getLogger(NcmsSecurityRS.class);
+    private static final Logger log = LoggerFactory
+            .getLogger(NcmsSecurityRS.class);
 
-	final ObjectMapper mapper;
+    final ObjectMapper mapper;
 
-	final WSUserDatabase userDatabase;
+    final WSUserDatabase userDatabase;
 
-	@Inject
-	public NcmsSecurityRS(WSUserDatabase userDatabase, ObjectMapper mapper) {
-		this.userDatabase = userDatabase;
-		this.mapper = mapper;
-	}
+    @Inject
+    public NcmsSecurityRS(WSUserDatabase userDatabase, ObjectMapper mapper) {
+        this.userDatabase = userDatabase;
+        this.mapper = mapper;
+    }
 
-	/**
-	 * Return number of users stored in users database.
-	 */
-	@GET
-	@Path("users/count")
-	@Produces("text/plain")
-	public Integer usersCount(@QueryParam("stext") String stext) {
-		return userDatabase.getUsersCount(stext);
-	}
-
-	/**
-	 * Get group info list
-	 * <p/>
-	 *
-	 * <pre>
-	 *  [{
-	 *      "name":"admins",
-	 *      "description":"Superuser group",
-	 *      "roles":[array of groups rolenames]
-	 *  }]
-	 * </pre>
-	 *
-	 * @return
-	 */
-	@GET
-	@Path("groups")
-	public JsonNode groups() {
-		Iterator<WSGroup> groups = userDatabase.getGroups();
-		ArrayNode res = mapper.createArrayNode();
-		while (groups.hasNext()) {
-			WSGroup g = groups.next();
-			ObjectNode node = res.addObject();
-			node.put("name", g.getName())
-			        .put("description", g.getDescription());
-			ArrayNode roles = node.putArray("roles");
-			Iterator<WSRole> rolesit = g.getRoles();
-			while (rolesit.hasNext()) {
-				roles.add(rolesit.next().getName());
-			}
-
-		}
-		return res;
-	}
-
-	/**
-	 * Get role info list user
-	 * <p/>
-	 *
-	 * <pre>
-	 *  [{
-	 *      "name":"admins",
-	 *      "description":"Superuser group"
-	 *  }]
-	 * </pre>
-	 *
-	 * @return(name == null)
-	 */
-	@GET
-	@Path("roles")
-	public JsonNode roles() {
-		Iterator<WSRole> roles = userDatabase.getRoles();
-		ArrayNode res = mapper.createArrayNode();
-		while (roles.hasNext()) {
-			WSRole role = roles.next();
-			res.addObject().put("name", role.getName())
-			        .put("description", role.getDescription());
-		}
-		return res;
-	}
-
-	/**
-	 * Get users info list with specified query
-	 * <p/>
-	 *
-	 * <pre>
-	 *  [{
-	 *      "name":"admins",
-	 *      "description":"Superuser group"
-	 *  }]
-	 * </pre>
-	 *
-	 * @return
-	 */
+    /**
+     * Return number of users stored in users database.
+     */
     @GET
-	@Path("users")
+    @Path("users/count")
+    @Produces("text/plain")
+    public Integer usersCount(@QueryParam("stext") String stext) {
+        return userDatabase.getUsersCount(stext);
+    }
+
+    /**
+     * Get group info list
+     * <p/>
+     * <p/>
+     * <pre>
+     *  [{
+     *      "name":"admins",
+     *      "description":"Superuser group",
+     *      "roles":[array of groups rolenames]
+     *  }]
+     * </pre>
+     *
+     * @return
+     */
+    @GET
+    @Path("groups")
+    public JsonNode groups() {
+        Iterator<WSGroup> groups = userDatabase.getGroups();
+        ArrayNode res = mapper.createArrayNode();
+        while (groups.hasNext()) {
+            WSGroup g = groups.next();
+            ObjectNode node = res.addObject();
+            node.put("name", g.getName())
+                    .put("description", g.getDescription());
+            ArrayNode roles = node.putArray("roles");
+            Iterator<WSRole> rolesit = g.getRoles();
+            while (rolesit.hasNext()) {
+                roles.add(rolesit.next().getName());
+            }
+
+        }
+        return res;
+    }
+
+    /**
+     * Get role info list user
+     * <p/>
+     * <p/>
+     * <pre>
+     *  [{
+     *      "name":"admins",
+     *      "description":"Superuser group"
+     *  }]
+     * </pre>
+     *
+     * @return(name == null)
+     */
+    @GET
+    @Path("roles")
+    public JsonNode roles() {
+        Iterator<WSRole> roles = userDatabase.getRoles();
+        ArrayNode res = mapper.createArrayNode();
+        while (roles.hasNext()) {
+            WSRole role = roles.next();
+            res.addObject().put("name", role.getName())
+                    .put("description", role.getDescription());
+        }
+        return res;
+    }
+
+    /**
+     * Get users info list with specified query
+     * <p/>
+     * <p/>
+     * <pre>
+     *  [{
+     *      "name":"admins",
+     *      "description":"Superuser group"
+     *  }]
+     * </pre>
+     *
+     * @return
+     */
+    @GET
+    @Path("users")
     public JsonNode users(@QueryParam("firstRow") int firstRow,
                           @QueryParam("lastRow") int lastRow,
                           @QueryParam("sortAsc") String ascField,
@@ -142,90 +142,90 @@ public class NcmsSecurityRS {
         String sortField = (!StringUtils.isBlank(ascField)) ? ascField : (!StringUtils.isBlank(descField)) ? descField : null;
         int limit = firstRow == 0 && lastRow == 0 ? Integer.MAX_VALUE : Math.abs(lastRow - firstRow) + 1;
         Iterator<WSUser> users = userDatabase.getUsers(stext, sortField, !StringUtils.isBlank(descField), firstRow, limit);
-		ArrayNode res = mapper.createArrayNode();
-		while (users.hasNext()) {
-			WSUser user = users.next();
-			res.addObject()
+        ArrayNode res = mapper.createArrayNode();
+        while (users.hasNext()) {
+            WSUser user = users.next();
+            res.addObject()
                     .put("name", user.getName())
-			        .put("email", user.getEmail())
-			        .put("fullName", user.getFullName());
-		}
-		return res;
-	}
+                    .put("email", user.getEmail())
+                    .put("fullName", user.getFullName());
+        }
+        return res;
+    }
 
-	/**
-	 * Creates group with name and description
-	 *
-	 * @return <pre>
-	 *  {
-	 *      "name":"admins",
-	 *      "description":"Superuser group"
-	 *  }
-	 * </pre>
-	 */
-	@POST
-	@Path("group/{name}")
-	public JsonNode createGroup(@PathParam("name") String name,
-	        @QueryParam("description") String description) {
-		if (log.isDebugEnabled()) {
-			log.debug("createGroup: creategroup/{" + name + "}?description="
-			        + description);
-		}
-		assertion(name != null, "Parameter 'name' of group can not be empty");
-		WSGroup group = userDatabase.createGroup(name, description);
+    /**
+     * Creates group with name and description
+     *
+     * @return <pre>
+     *  {
+     *      "name":"admins",
+     *      "description":"Superuser group"
+     *  }
+     * </pre>
+     */
+    @POST
+    @Path("group/{name}")
+    public JsonNode createGroup(@PathParam("name") String name,
+                                @QueryParam("description") String description) {
+        if (log.isDebugEnabled()) {
+            log.debug("createGroup: creategroup/{" + name + "}?description="
+                      + description);
+        }
+        assertion(name != null, "Parameter 'name' of group can not be empty");
+        WSGroup group = userDatabase.createGroup(name, description);
         return mapper.createObjectNode()
                 .put("name", group.getName())
                 .put("description", group.getDescription());
-	}
+    }
 
-	/**
-	 * Creates role with name and description
-	 *
-	 * @return <pre>
-	 *  {
-	 *      "name":"admins",
-	 *      "description":"Description of role"
-	 *  }RestEasyClient
-	 * </pre>
-	 */
-	@POST
-	@Path("role/{name}")
-	public JsonNode createRole(@PathParam("name") String name,
-	        @QueryParam("description") String description) {
-		if (log.isDebugEnabled()) {
-			log.debug("createrole/{" + name + "}?description=" + description);
-		}
-		assertion(name != null, "Parameter 'name' of role can not be empty");
-		WSRole role = userDatabase.createRole(name, description);
+    /**
+     * Creates role with name and description
+     *
+     * @return <pre>
+     *  {
+     *      "name":"admins",
+     *      "description":"Description of role"
+     *  }RestEasyClient
+     * </pre>
+     */
+    @POST
+    @Path("role/{name}")
+    public JsonNode createRole(@PathParam("name") String name,
+                               @QueryParam("description") String description) {
+        if (log.isDebugEnabled()) {
+            log.debug("createrole/{" + name + "}?description=" + description);
+        }
+        assertion(name != null, "Parameter 'name' of role can not be empty");
+        WSRole role = userDatabase.createRole(name, description);
 
         return mapper.createObjectNode()
                 .put("name", role.getName())
                 .put("description", role.getDescription());
     }
 
-	/**
-	 * Updates user with name, password, full name and email
+    /**
+     * Updates user with name, password, full name and email
      * Creates new user if not exists
-	 *
-	 * @return <pre>
-	 *  {
-	 *      "name":"admin",
-	 *      "fullName":"Иванов Иван Иванович",
+     *
+     * @return <pre>
+     *  {
+     *      "name":"admin",
+     *      "fullName":"Иванов Иван Иванович",
      *      "email":"email@email.com"
-	 *  }
-	 * </pre>
-	 */
-	@POST
-	@Path("user/{name}")
-	public JsonNode updateUser(@PathParam("name") String name,
+     *  }
+     * </pre>
+     */
+    @POST
+    @Path("user/{name}")
+    public JsonNode updateUser(@PathParam("name") String name,
                                @QueryParam("password") String password,
                                @QueryParam("fullname") String fullName,
                                @QueryParam("email") String email) {
-		if (log.isDebugEnabled()) {
-			log.debug("updateuser/{" + name + "}?password=" + password + "&fullName=" + fullName);
-		}
-		assertion(name != null && password != null, "Parameters 'name' and 'password' of user can not be empty");
-		WSUser user = userDatabase.createUser(name, password, fullName);
+        if (log.isDebugEnabled()) {
+            log.debug("updateuser/{" + name + "}?password=" + password + "&fullName=" + fullName);
+        }
+        assertion(name != null && password != null, "Parameters 'name' and 'password' of user can not be empty");
+        WSUser user = userDatabase.createUser(name, password, fullName);
         // force update fields if user already exists
         user.setPassword(password);
         user.setFullName(fullName);
@@ -239,161 +239,160 @@ public class NcmsSecurityRS {
                 .put("fullName", user.getFullName());
     }
 
-	/**
-	 * Finds group of the name groupName
-	 * <p/>
-	 *
-	 * <pre>
-	 *  {
-	 *      "name":"admins",
-	 *      "description":"Superuser group"
-	 *  }
-	 * </pre>
-	 *
-	 * @return
-	 */
-	@GET
-	@Path("group/{name}")
-	public JsonNode findGroup(@PathParam("name") String name) {
-		if (log.isDebugEnabled()) {
-			log.debug("findgroup/{" + name + "}");
-		}
-		WSGroup group = userDatabase.findGroup(name);
-		ObjectNode res = null;
-		if (group != null) {
-			res = mapper.createObjectNode();
-			res.put("name", group.getName())
+    /**
+     * Finds group of the name groupName
+     * <p/>
+     * <p/>
+     * <pre>
+     *  {
+     *      "name":"admins",
+     *      "description":"Superuser group"
+     *  }
+     * </pre>
+     *
+     * @return
+     */
+    @GET
+    @Path("group/{name}")
+    public JsonNode findGroup(@PathParam("name") String name) {
+        if (log.isDebugEnabled()) {
+            log.debug("findgroup/{" + name + "}");
+        }
+        WSGroup group = userDatabase.findGroup(name);
+        ObjectNode res = null;
+        if (group != null) {
+            res = mapper.createObjectNode();
+            res.put("name", group.getName())
                     .put("description", group.getDescription());
-		}
-		return res;
-	}
-
-	/**
-	 * Finds role of the name rolename
-	 * <p/>
-	 *
-	 * <pre>
-	 *  {
-	 *      "name":"admins",
-	 *      "description":"Superuser role"
-	 *  }
-	 * </pre>
-	 *
-	 * @return
-	 */
-	@GET
-	@Path("role/{name}")
-	public JsonNode findRole(@PathParam("name") String name) {
-		if (log.isDebugEnabled()) {
-			log.debug("findrole/{" + name + "}");
-		}
-		WSRole role = userDatabase.findRole(name);
-		ObjectNode res = null;
-		if (role != null) {
-			res = mapper.createObjectNode();
-			res.put("name", role.getName()).put("description",
-			        role.getDescription());
-		}
-		return res;
-	}
+        }
+        return res;
+    }
 
     /**
-   	 * Get user info with specified username
-   	 * <p/>
-   	 * Sample JSON output:
-   	 * <p/>
-   	 *
-   	 * <pre>
-   	 *    {
-   	 *      "name" : "admin",
-   	 *      "email" : "adamansky@gmail.com",
-   	 *      "fullName" : "Антон Адаманский",
-   	 *      "roles" : ["admin.asm", "admin", "user"],
-   	 *      "groups" : [array of users groups]
-   	 *    }
-   	 * </pre>
-   	 *
-   	 * @param name
-   	 *            Name of user
-   	 * @return
-   	 */
-   	@GET
-   	@Path("user/{name}")
-   	public JsonNode userGet(@PathParam("name") String name) {
-   		WSUser user = userDatabase.findUser(name);
-   		if (user == null) {
-   			throw new NotFoundException(name);
-   		}
+     * Finds role of the name rolename
+     * <p/>
+     * <p/>
+     * <pre>
+     *  {
+     *      "name":"admins",
+     *      "description":"Superuser role"
+     *  }
+     * </pre>
+     *
+     * @return
+     */
+    @GET
+    @Path("role/{name}")
+    public JsonNode findRole(@PathParam("name") String name) {
+        if (log.isDebugEnabled()) {
+            log.debug("findrole/{" + name + "}");
+        }
+        WSRole role = userDatabase.findRole(name);
+        ObjectNode res = null;
+        if (role != null) {
+            res = mapper.createObjectNode();
+            res.put("name", role.getName()).put("description",
+                                                role.getDescription());
+        }
+        return res;
+    }
+
+    /**
+     * Get user info with specified username
+     * <p/>
+     * Sample JSON output:
+     * <p/>
+     * <p/>
+     * <pre>
+     *    {
+     *      "name" : "admin",
+     *      "email" : "adamansky@gmail.com",
+     *      "fullName" : "Антон Адаманский",
+     *      "roles" : ["admin.asm", "admin", "user"],
+     *      "groups" : [array of users groups]
+     *    }
+     * </pre>
+     *
+     * @param name Name of user
+     * @return
+     */
+    @GET
+    @Path("user/{name}")
+    public JsonNode userGet(@PathParam("name") String name) {
+        WSUser user = userDatabase.findUser(name);
+        if (user == null) {
+            throw new NotFoundException(name);
+        }
         ObjectNode res = mapper.createObjectNode()
                 .put("name", user.getName())
                 .put("email", user.getEmail())
                 .put("fullName", user.getFullName());
 
         ArrayNode roles = res.putArray("roles");
-   		for (final String r : user.getRoleNames()) {
-   			roles.add(r);
-   		}
+        for (final String r : user.getRoleNames()) {
+            roles.add(r);
+        }
 
-   		ArrayNode groups = res.putArray("groups");
-   		Iterator<WSGroup> grpiter = user.getGroups();
-   		while (grpiter.hasNext()) {
-   			groups.add(grpiter.next().getName());
-   		}
-   		return res;
-   	}
+        ArrayNode groups = res.putArray("groups");
+        Iterator<WSGroup> grpiter = user.getGroups();
+        while (grpiter.hasNext()) {
+            groups.add(grpiter.next().getName());
+        }
+        return res;
+    }
 
-	/**
-	 * Removes group of the name groupname
-	 */
-	@DELETE
-	@Path("group/{name}")
-	public void removeGroup(@PathParam("name") String name) {
-		if (log.isDebugEnabled()) {
-			log.debug("removegroup/{" + name + "}");
-		}
-		assertion(name != null, "Parameter 'name' of group can not be empty");
-		WSGroup group = userDatabase.findGroup(name);
-		if (group != null) {
-			userDatabase.removeGroup(group);
-		}
-	}
+    /**
+     * Removes group of the name groupname
+     */
+    @DELETE
+    @Path("group/{name}")
+    public void removeGroup(@PathParam("name") String name) {
+        if (log.isDebugEnabled()) {
+            log.debug("removegroup/{" + name + "}");
+        }
+        assertion(name != null, "Parameter 'name' of group can not be empty");
+        WSGroup group = userDatabase.findGroup(name);
+        if (group != null) {
+            userDatabase.removeGroup(group);
+        }
+    }
 
-	/**
-	 * Removes role of the name rolename
-	 */
-	@DELETE
-	@Path("role/{name}")
-	public void removeRole(@PathParam("name") String name) {
-		if (log.isDebugEnabled()) {
-			log.debug("removerole/{" + name + "}");
-		}
-		assertion(name != null, "Parameter 'name' of role can not be empty");
-		WSRole role = userDatabase.findRole(name);
-		if (role != null) {
-			userDatabase.removeRole(role);
-		}
-	}
+    /**
+     * Removes role of the name rolename
+     */
+    @DELETE
+    @Path("role/{name}")
+    public void removeRole(@PathParam("name") String name) {
+        if (log.isDebugEnabled()) {
+            log.debug("removerole/{" + name + "}");
+        }
+        assertion(name != null, "Parameter 'name' of role can not be empty");
+        WSRole role = userDatabase.findRole(name);
+        if (role != null) {
+            userDatabase.removeRole(role);
+        }
+    }
 
-	/**
-	 * Removes user of the name username
-	 */
-	@DELETE
-	@Path("user/{name}")
-	public void removeUser(@PathParam("name") String name) {
-		if (log.isDebugEnabled()) {
-			log.debug("removeuser/{" + name + "}");
-		}
-		assertion(name != null, "Parameter 'name' of role can not be empty");
-		WSUser user = userDatabase.findUser(name);
-		if (user != null) {
-			userDatabase.removeUser(user);
-		}
-	}
+    /**
+     * Removes user of the name username
+     */
+    @DELETE
+    @Path("user/{name}")
+    public void removeUser(@PathParam("name") String name) {
+        if (log.isDebugEnabled()) {
+            log.debug("removeuser/{" + name + "}");
+        }
+        assertion(name != null, "Parameter 'name' of role can not be empty");
+        WSUser user = userDatabase.findUser(name);
+        if (user != null) {
+            userDatabase.removeUser(user);
+        }
+    }
 
-	private void assertion(boolean noError, String message) {
-		if (!noError) {
-			throw new BadRequestException(message);
-		}
-	}
+    private void assertion(boolean noError, String message) {
+        if (!noError) {
+            throw new BadRequestException(message);
+        }
+    }
 
 }

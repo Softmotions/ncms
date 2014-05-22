@@ -62,8 +62,16 @@
             <if test="name != null">name = #{name},</if>
             <if test="type != null">type = #{type},</if>
             <if test="description != null">description = #{description},</if>
-            <if test="core != null">asm_core_id = #{core.id}</if>
+            <if test="core != null">asm_core_id = #{core.id,jdbcType=BIGINT}</if>
         </set>
+        where id = #{id}
+    </update>
+
+
+    <update id="asmUpdateCore"
+            parameterType="map">
+        update asms
+        set asm_core_id = #{coreId,jdbcType=BIGINT}
         where id = #{id}
     </update>
 

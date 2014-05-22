@@ -22,7 +22,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="NAME" type="VARCHAR(255)">
-                <constraints nullable="false"/>
             </column>
             <column name="TEMPLATE_ENGINE" type="VARCHAR(255)">
             </column>
@@ -34,11 +33,6 @@
             <column name="LOCATION"/>
         </createIndex>
 
-        <createIndex tableName="ASM_CORES"
-                     indexName="IDX_ASMCORES_NAME"
-                     unique="false">
-            <column name="NAME"/>
-        </createIndex>
 
         <!-- ===================== ASMS ========================== -->
 
