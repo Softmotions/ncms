@@ -58,7 +58,12 @@
         <web-access-control-allow>*</web-access-control-allow>
     </security>
 
+    <events>
+        <num-workers>3</num-workers>
+    </events>
+
     <modules>
+        <module class="com.softmotions.ncms.events.EventsModule"/>
         <module class="com.softmotions.ncms.db.DevDBInitializerModule"/>
         <module class="com.softmotions.ncms.security.NcmsSecurityModule"/>
         <module class="com.softmotions.ncms.asm.AsmModule"/>
