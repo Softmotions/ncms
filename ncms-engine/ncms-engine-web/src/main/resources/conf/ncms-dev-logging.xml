@@ -14,10 +14,7 @@
     <logger name="com.softmotions.ncms.asm.render" level="DEBUG"/>
     <logger name="com.softmotions.ncms.media" level="INFO"/>
     <!--<logger name="org.apache.ibatis.datasource" level="DEBUG"/>-->
-
-    <!-- Set it to TRACE in order view MyBatis SQL statements -->
-    <logger name="com.softmotions.ncms.asm.AsmDAO" level="INFO"/>
-    <logger name="com.softmotions.ncms.asm.AsmSelectorRS" level="INFO"/>
+    <logger name="com.softmotions.ncms.asm.AsmDAO" level="DEBUG"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

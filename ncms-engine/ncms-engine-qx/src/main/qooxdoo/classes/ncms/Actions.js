@@ -36,6 +36,10 @@ qx.Class.define("ncms.Actions", {
         //PUT Assembly parents
         this._action("asms.parents", "/ncms/rs/adm/asms/{id}/parents");
 
+        //PUT Assembly core
+        //Payload: JSON core spec
+        this._action("asms.core", "/ncms/rs/adm/asms/{id}/core");
+
         /////////// MediaRS
 
         //GET files only /ncms/rs/media/files/<path to folder>

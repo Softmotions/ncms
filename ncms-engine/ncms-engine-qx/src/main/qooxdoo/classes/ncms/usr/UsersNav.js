@@ -79,7 +79,7 @@ qx.Class.define("ncms.usr.UsersNav", {
 
         /**
          * Users virtual table
-         * @type {ncms.usr.UserTable}
+         * @type {ncms.usr.UsersTable}
          */
         __table : null,
 
