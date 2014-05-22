@@ -3,7 +3,6 @@ package com.softmotions.ncms.events;
 import com.softmotions.ncms.NcmsConfiguration;
 
 import com.google.common.eventbus.AsyncEventBus;
-import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,13 +17,18 @@ import java.util.concurrent.Executors;
 public class EventsModule extends AbstractModule {
 
     protected void configure() {
-        bind(EventBus.class).to(LocalEventBus.class).in(Singleton.class);
+        bind(NcmsEventBus.class).to(LocalEventBus.class).in(Singleton.class);
     }
 
-    static class LocalEventBus extends AsyncEventBus {
+    static class LocalEventBus extends AsyncEventBus implements NcmsEventBus {
         @Inject
         LocalEventBus(NcmsConfiguration cfg) {
-            super(Executors.newFixedThreadPool(cfg.impl().getInt("events.num-workers", 3)));
+            super(Executors.newFixedThreadPool(cfg.impl().getInt("events.num-workers", 1)));
+        }
+
+        public void postOnSuccessTx(Object event) {
+            //todo check mybatis TX!!!
+            post(event);
         }
     }
 }

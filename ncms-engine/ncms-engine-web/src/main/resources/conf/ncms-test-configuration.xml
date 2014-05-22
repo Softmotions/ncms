@@ -61,7 +61,7 @@
     </security>
 
     <events>
-        <num-workers>3</num-workers>
+        <num-workers>1</num-workers>
     </events>
 
     <modules>

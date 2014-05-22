@@ -5,6 +5,7 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.fts.FTSUtils;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
@@ -118,11 +119,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     final Provider<ServletContext> sctx;
 
+    final NcmsEventBus eventBus;
+
     @Inject
     public MediaRS(NcmsConfiguration cfg,
                    SqlSession sess,
                    ObjectMapper mapper,
                    NcmsMessages message,
+                   NcmsEventBus eventBus,
                    Provider<ServletContext> sctx) throws IOException {
 
         super(MediaRS.class.getName(), sess);
@@ -138,6 +142,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 0x7f));
         this.mapper = mapper;
         this.message = message;
+        this.eventBus = eventBus;
         this.sctx = sctx;
     }
 
@@ -375,6 +380,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (npath.equals(path)) {
             return;
         }
+        Long id = null;
+        boolean isFolder;
+
         try (ResourceLock l1 = new ResourceLock(path, true)) {
             try (ResourceLock l2 = new ResourceLock(npath, true)) {
                 File f1 = new File(basedir, path);
@@ -394,6 +402,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 }
                 if (f1.isDirectory()) {
 
+                    isFolder = true;
                     String p1 = f1.getCanonicalPath();
                     String p2 = f2.getCanonicalPath();
                     if (p2.startsWith(p1)) {
@@ -418,6 +427,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
                 } else if (f1.isFile()) {
 
+                    isFolder = false;
                     String nname = getResourceName(npath);
                     String nfolder = getResourceParentFolder(npath);
                     update("fixResourceLocation",
@@ -425,11 +435,12 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                            "nname", nname,
                            "folder", getResourceParentFolder(path),
                            "name", getResourceName(path));
+
                     FileUtils.moveFile(f1, f2);
 
-                    Long id = selectOne("selectEntityIdByPath",
-                                        "name", nname,
-                                        "folder", nfolder);
+                    id = selectOne("selectEntityIdByPath",
+                                   "name", nname,
+                                   "folder", nfolder);
                     if (id != null) {
                         updateFTSKeywords(id, req);
                     }
@@ -438,6 +449,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     throw new IOException("Unsupported file type");
                 }
             }
+
+            eventBus.postOnSuccessTx(new MediaMoveEvent(this, id, isFolder, path, npath));
         }
     }
 
@@ -453,12 +466,13 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (log.isDebugEnabled()) {
             log.debug("deleteResource: " + path);
         }
+        boolean isdir;
         try (ResourceLock l = new ResourceLock(path, true)) {
             File f = new File(basedir, path);
             if (!f.exists()) {
                 throw new NotFoundException(path);
             }
-            boolean isdir = f.isDirectory();
+            isdir = f.isDirectory();
             if (isdir) {
                 deleteDirectoryInternal(path, true);
                 delete("deleteFolder",
@@ -477,6 +491,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 }
             }
         }
+
+        eventBus.postOnSuccessTx(new MediaDeleteEvent(this, isdir, path));
     }
 
     @DELETE
