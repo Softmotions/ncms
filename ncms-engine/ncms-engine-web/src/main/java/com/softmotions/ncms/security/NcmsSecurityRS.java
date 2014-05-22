@@ -12,7 +12,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,49 +47,6 @@ public class NcmsSecurityRS {
 	public NcmsSecurityRS(WSUserDatabase userDatabase, ObjectMapper mapper) {
 		this.userDatabase = userDatabase;
 		this.mapper = mapper;
-	}
-
-	/**
-	 * Get user info with specified username
-	 * <p/>
-	 * Sample JSON output:
-	 * <p/>
-	 *
-	 * <pre>
-	 *    {
-	 *      "name" : "admin",
-	 *      "email" : "adamansky@gmail.com",
-	 *      "fullName" : "Антон Адаманский",
-	 *      "roles" : ["admin.asm", "admin", "user"],
-	 *      "groups" : [array of users groups]
-	 *    }
-	 * </pre>
-	 *
-	 * @param name
-	 *            Name of user
-	 * @return
-	 */
-	@GET
-	@Path("user/{name}")
-	public JsonNode userGet(@PathParam("name") String name) {
-		WSUser user = userDatabase.findUser(name);
-		if (user == null) {
-			throw new NotFoundException(name);
-		}
-		ObjectNode res = mapper.createObjectNode();
-		res.put("name", user.getName());
-		res.put("email", user.getEmail());
-		res.put("fullName", user.getFullName());
-		ArrayNode roles = res.putArray("roles");
-		for (final String r : user.getRoleNames()) {
-			roles.add(r);
-		}
-		ArrayNode groups = res.putArray("groups");
-		Iterator<WSGroup> grpiter = user.getGroups();
-		while (grpiter.hasNext()) {
-			groups.add(grpiter.next().getName());
-		}
-		return res;
 	}
 
 	/**
@@ -246,30 +204,38 @@ public class NcmsSecurityRS {
     }
 
 	/**
-	 * Creates user with name, password and full name
+	 * Updates user with name, password, full name and email
+     * Creates new user if not exists
 	 *
 	 * @return <pre>
 	 *  {
 	 *      "name":"admin",
-	 *      "password":"password",
-	 *      "fullName":"Иванов Иван Иванович"
+	 *      "fullName":"Иванов Иван Иванович",
+     *      "email":"email@email.com"
 	 *  }
 	 * </pre>
 	 */
 	@POST
 	@Path("user/{name}")
-	public JsonNode createUser(@PathParam("name") String name,
-	        @QueryParam("password") String password,
-	        @QueryParam("fullname") String fullName) {
+	public JsonNode updateUser(@PathParam("name") String name,
+                               @QueryParam("password") String password,
+                               @QueryParam("fullname") String fullName,
+                               @QueryParam("email") String email) {
 		if (log.isDebugEnabled()) {
-			log.debug("createuser/{" + name + "}?password=" + password
-			        + "&fullName=" + fullName);
+			log.debug("updateuser/{" + name + "}?password=" + password + "&fullName=" + fullName);
 		}
 		assertion(name != null && password != null, "Parameters 'name' and 'password' of user can not be empty");
 		WSUser user = userDatabase.createUser(name, password, fullName);
+        // force update fields if user already exists
+        user.setPassword(password);
+        user.setFullName(fullName);
+        if (EmailValidator.getInstance().isValid(email)) {
+            user.setEmail(email.toLowerCase());
+        }
+
         return mapper.createObjectNode()
                 .put("name", user.getName())
-                .put("password", user.getPassword())
+                .put("email", user.getEmail())
                 .put("fullName", user.getFullName());
     }
 
@@ -279,7 +245,7 @@ public class NcmsSecurityRS {
 	 *
 	 * <pre>
 	 *  {
-	 *      "name":"admins",PUT
+	 *      "name":"admins",
 	 *      "description":"Superuser group"
 	 *  }
 	 * </pre>
@@ -308,7 +274,7 @@ public class NcmsSecurityRS {
 	 *
 	 * <pre>
 	 *  {
-	 *      "name":"admins",com.softmotions.ncms.security.NcmsSecurityRSTest
+	 *      "name":"admins",
 	 *      "description":"Superuser role"
 	 *  }
 	 * </pre>
@@ -331,34 +297,50 @@ public class NcmsSecurityRS {
 		return res;
 	}
 
-	/**
-	 * Finds user of the name username
-	 * <p/>
-	 *
-	 * <pre>
-	 * {
-	 * "name":"admin",removegroup
-	 * "description":"Superuser"
-	 * }
-	 * </pre>
-	 *
-	 * @return
-	 */
-	@GET
-	@Path("user/{name}")
-	public JsonNode findUser(@PathParam("name") String name) {
-		if (log.isDebugEnabled()) {
-			log.debug("finduser/{" + name + "}");
-		}
-		WSUser user = userDatabase.findUser(name);
-		ObjectNode res = null;
-		if (user != null) {
-			res = mapper.createObjectNode();
-			res.put("name", user.getName()).put("fullName", user.getFullName())
-			        .put("email", user.getEmail());
-		}
-		return res;
-	}
+    /**
+   	 * Get user info with specified username
+   	 * <p/>
+   	 * Sample JSON output:
+   	 * <p/>
+   	 *
+   	 * <pre>
+   	 *    {
+   	 *      "name" : "admin",
+   	 *      "email" : "adamansky@gmail.com",
+   	 *      "fullName" : "Антон Адаманский",
+   	 *      "roles" : ["admin.asm", "admin", "user"],
+   	 *      "groups" : [array of users groups]
+   	 *    }
+   	 * </pre>
+   	 *
+   	 * @param name
+   	 *            Name of user
+   	 * @return
+   	 */
+   	@GET
+   	@Path("user/{name}")
+   	public JsonNode userGet(@PathParam("name") String name) {
+   		WSUser user = userDatabase.findUser(name);
+   		if (user == null) {
+   			throw new NotFoundException(name);
+   		}
+        ObjectNode res = mapper.createObjectNode()
+                .put("name", user.getName())
+                .put("email", user.getEmail())
+                .put("fullName", user.getFullName());
+
+        ArrayNode roles = res.putArray("roles");
+   		for (final String r : user.getRoleNames()) {
+   			roles.add(r);
+   		}
+
+   		ArrayNode groups = res.putArray("groups");
+   		Iterator<WSGroup> grpiter = user.getGroups();
+   		while (grpiter.hasNext()) {
+   			groups.add(grpiter.next().getName());
+   		}
+   		return res;
+   	}
 
 	/**
 	 * Removes group of the name groupname

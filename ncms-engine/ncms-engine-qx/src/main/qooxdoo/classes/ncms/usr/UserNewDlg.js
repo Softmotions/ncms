@@ -1,5 +1,5 @@
 /**
- * Created by tve on 5/21/14.
+ * New user dialog
  */
 qx.Class.define("ncms.usr.UserNewDlg", {
     extend : qx.ui.window.Window,
@@ -9,7 +9,7 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
     events : {
         /**
-         * Data: [] array of selected asms.
+         * Data: created user.
          */
         "completed" : "qx.event.type.Data"
     },
@@ -42,6 +42,10 @@ qx.Class.define("ncms.usr.UserNewDlg", {
         el.setRequired(true);
         form.add(el, this.tr("Full name"), null, "fullname");
 
+        el = new qx.ui.form.TextField();
+        el.setRequired(true);
+        form.add(el, this.tr("E-Mail"), qx.util.Validate.email(), "email");
+
         el = new qx.ui.form.PasswordField();
         el.setRequired(true);
         form.add(el, this.tr("Password"), null, "password");
@@ -53,7 +57,7 @@ qx.Class.define("ncms.usr.UserNewDlg", {
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
         hcont.setPadding(5);
 
-        var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Ok"));
+        var bt = new qx.ui.form.Button(this.tr("Ok"));
         bt.addListener("execute", this.__ok, this);
         hcont.add(bt);
 
@@ -65,15 +69,22 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
         this.__closeCmd = new qx.ui.core.Command("Esc");
         this.__closeCmd.addListener("execute", this.close, this);
+
         this.addListenerOnce("resize", this.center, this);
     },
 
     members : {
         __form : null,
 
-        __saveBt : null,
-
         __closeCmd : null,
+
+        __dispose : function() {
+            if (this.__closeCmd) {
+                this.__closeCmd.setEnabled(false);
+            }
+            this._disposeObjects("__closeCmd");
+            this.__closeCmd = null;
+        },
 
         __ok : function(ev) {
             if (!this.__form.validate()) {
@@ -82,6 +93,7 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
             var fitems = this.__form.getItems();
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : fitems["name"].getValue()}), "POST", "application/json");
+            req.setParameter("email", fitems["email"].getValue());
             req.setParameter("fullname", fitems["fullname"].getValue());
             req.setParameter("password", fitems["password"].getValue());
 
@@ -92,6 +104,7 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
         close : function() {
             this.base(arguments);
+            this.__dispose();
         }
     },
 
