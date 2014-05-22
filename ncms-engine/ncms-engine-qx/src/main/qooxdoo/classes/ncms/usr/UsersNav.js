@@ -1,5 +1,5 @@
 /**
- * Users selector pane.
+ * Users navigation pane.
  */
 qx.Class.define("ncms.usr.UsersNav", {
     extend : qx.ui.core.Widget,
