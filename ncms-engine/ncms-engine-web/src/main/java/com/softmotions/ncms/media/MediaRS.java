@@ -35,6 +35,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
@@ -119,14 +120,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     final Provider<ServletContext> sctx;
 
-    final NcmsEventBus eventBus;
+    final NcmsEventBus ebus;
 
     @Inject
     public MediaRS(NcmsConfiguration cfg,
                    SqlSession sess,
                    ObjectMapper mapper,
                    NcmsMessages message,
-                   NcmsEventBus eventBus,
+                   NcmsEventBus ebus,
                    Provider<ServletContext> sctx) throws IOException {
 
         super(MediaRS.class.getName(), sess);
@@ -142,7 +143,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 0x7f));
         this.mapper = mapper;
         this.message = message;
-        this.eventBus = eventBus;
+        this.ebus = ebus;
         this.sctx = sctx;
     }
 
@@ -155,7 +156,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @PUT
     @Consumes("*/*")
     @Path("/file/{folder:.*}/{name}")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void put(@PathParam("folder") String folder,
                     @PathParam("name") String name,
                     @Context HttpServletRequest req,
@@ -166,7 +167,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @PUT
     @Consumes("*/*")
     @Path("/file/{name}")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void put(@PathParam("name") String name,
                     @Context HttpServletRequest req,
                     InputStream in) throws Exception {
@@ -283,6 +284,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     @GET
     @Path("/select")
+    @Transactional
     public Response select(@Context final HttpServletRequest req) {
         return Response.ok(new StreamingOutput() {
             public void write(OutputStream output) throws IOException, WebApplicationException {
@@ -367,7 +369,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     @PUT
     @Path("/move/{path:.*}")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void move(@PathParam("path") String path,
                      @Context HttpServletRequest req,
                      String npath) throws Exception {
@@ -450,13 +452,13 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 }
             }
 
-            eventBus.postOnSuccessTx(new MediaMoveEvent(this, id, isFolder, path, npath));
+            ebus.postOnSuccessCommit(new MediaMoveEvent(this, id, isFolder, path, npath));
         }
     }
 
     @DELETE
     @Path("/delete/{path:.*}")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void deleteResource(@PathParam("path") String path,
                                @Context HttpServletRequest req) throws Exception {
         path = StringUtils.strip(path, "/");
@@ -492,7 +494,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
         }
 
-        eventBus.postOnSuccessTx(new MediaDeleteEvent(this, isdir, path));
+        ebus.postOnSuccessCommit(new MediaDeleteEvent(this, isdir, path));
     }
 
     @DELETE
@@ -511,7 +513,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @POST
     @Path("/meta/{id}")
     @Consumes("application/x-www-form-urlencoded")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void updateMeta(@PathParam("id") Long id,
                            @Context HttpServletRequest req,
                            MultivaluedMap<String, String> form) throws Exception {
@@ -553,7 +555,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
 
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void importDirectory(File dir) throws IOException {
         if (dir == null || !dir.isDirectory()) {
             throw new IOException(dir + " is not a directory");

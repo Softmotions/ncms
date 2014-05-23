@@ -7,7 +7,9 @@ public interface NcmsEventBus {
 
     void post(Object event);
 
-    void postOnSuccessTx(Object event);
+    void postOnSuccessCommit(Object event);
+
+    void postOnRollback(Object event);
 
     void register(Object object);
 
