@@ -12,6 +12,6 @@ public class AdmModule extends AbstractModule {
 
     protected void configure() {
         bind(WorkspaceRS.class).in(Singleton.class);
-        bind(UIResourcesRS.class).in(Singleton.class);
+        bind(AdmUIResourcesRS.class).in(Singleton.class);
     }
 }

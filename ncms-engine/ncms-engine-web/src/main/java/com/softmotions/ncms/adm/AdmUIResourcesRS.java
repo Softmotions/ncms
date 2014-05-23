@@ -29,7 +29,7 @@ import javax.ws.rs.core.SecurityContext;
 
 @Path("adm/ui")
 @Produces("application/json")
-public class UIResourcesRS {
+public class AdmUIResourcesRS {
 
     @Inject
     NcmsConfiguration cfg;
