@@ -134,6 +134,11 @@ qx.Class.define("ncms.Application", {
         __nav : null,
 
         main : function() {
+
+            //load AsmAttrManagersRegistry
+            ncms.asm.AsmAttrManagersRegistry
+
+
             // Enable logging in debug variant
             if (qx.core.Environment.get("ncms.debug")) {
                 qx.log.appender.Native;
