@@ -31,6 +31,10 @@ public class EventsModule extends AbstractModule {
 
         final MBSqlSessionManager sessionManager;
 
+        public void fire(Object event) {
+            post(event);
+        }
+
         @Inject
         LocalEventBus(NcmsConfiguration cfg,
                       MBSqlSessionManager sessionManager) {
@@ -38,17 +42,17 @@ public class EventsModule extends AbstractModule {
             this.sessionManager = sessionManager;
         }
 
-        public void postOnSuccessCommit(final Object event) {
+        public void fireOnSuccessCommit(final Object event) {
             sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
                 public void commit(boolean success) {
                     if (success) {
-                        post(event);
+                        fire(event);
                     }
                 }
 
                 public void close(boolean success) {
                     if (success) {
-                        post(event);
+                        fire(event);
                     }
                 }
 
@@ -58,22 +62,22 @@ public class EventsModule extends AbstractModule {
             });
         }
 
-        public void postOnRollback(final Object event) {
+        public void fireOnRollback(final Object event) {
             sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
                 public void commit(boolean success) {
                     if (!success) {
-                        post(event);
+                        fire(event);
                     }
                 }
 
                 public void close(boolean success) {
                     if (!success) {
-                        post(event);
+                        fire(event);
                     }
                 }
 
                 public void rollback() {
-                    post(event);
+                    fire(event);
                 }
             });
         }

@@ -5,11 +5,11 @@ package com.softmotions.ncms.events;
  */
 public interface NcmsEventBus {
 
-    void post(Object event);
+    void fire(Object event);
 
-    void postOnSuccessCommit(Object event);
+    void fireOnSuccessCommit(Object event);
 
-    void postOnRollback(Object event);
+    void fireOnRollback(Object event);
 
     void register(Object object);
 

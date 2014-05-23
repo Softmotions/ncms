@@ -2,6 +2,10 @@ package com.softmotions.ncms.media;
 
 import com.softmotions.ncms.events.BasicEvent;
 
+import static com.softmotions.ncms.media.MediaRS.normalizeFolder;
+import static com.softmotions.ncms.media.MediaRS.normalizePath;
+
+
 /**
  * Fired if media item was moved.
  *
@@ -18,12 +22,12 @@ public class MediaMoveEvent extends BasicEvent {
     final String newPath;
 
     public MediaMoveEvent(Object source,
-                          Long id, boolean isFolder,
+                          Number id, boolean isFolder,
                           String oldPath, String newPath) {
         super(source);
-        this.id = id;
-        this.oldPath = oldPath;
-        this.newPath = newPath;
+        this.id = id != null ? id.longValue() : null;
+        this.oldPath = isFolder ? normalizeFolder(oldPath) : normalizePath(oldPath);
+        this.newPath = isFolder ? normalizeFolder(newPath) : normalizePath(newPath);
         this.isFolder = isFolder;
     }
 

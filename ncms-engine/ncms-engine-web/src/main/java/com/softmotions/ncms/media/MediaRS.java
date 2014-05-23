@@ -353,11 +353,16 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                                   "folder", dirname,
                                   "name", name);
             if (id == null) {
-                insert("insertEntity",
-                       "folder", dirname,
-                       "name", name,
-                       "creator", req.getUserPrincipal().getName(),
-                       "status", 1);
+                Map params = new HashMap();
+                params.put("folder", dirname);
+                params.put("name", name);
+                params.put("creator", req.getRemoteUser());
+                params.put("status", 1);
+                insert("insertEntity", params);
+
+                id = (Number) params.get("id");
+                ebus.fireOnSuccessCommit(
+                        new MediaCreateEvent(this, true, id, dirname + name));
             } else {
                 throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
             }
@@ -382,8 +387,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (npath.equals(path)) {
             return;
         }
-        Long id = null;
-        boolean isFolder;
+        Long id;
 
         try (ResourceLock l1 = new ResourceLock(path, true)) {
             try (ResourceLock l2 = new ResourceLock(npath, true)) {
@@ -404,10 +408,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 }
                 if (f1.isDirectory()) {
 
-                    isFolder = true;
                     String p1 = f1.getCanonicalPath();
                     String p2 = f2.getCanonicalPath();
-                    if (p2.startsWith(p1)) {
+                    if (p2.startsWith(p1 + '/')) {
                         String msg = message.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req, path, npath);
                         throw new NcmsMessageException(msg, true);
                     }
@@ -427,9 +430,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
                     FileUtils.moveDirectory(f1, f2);
 
+                    ebus.fireOnSuccessCommit(new MediaMoveEvent(this, null, true, path, npath));
+
                 } else if (f1.isFile()) {
 
-                    isFolder = false;
                     String nname = getResourceName(npath);
                     String nfolder = getResourceParentFolder(npath);
                     update("fixResourceLocation",
@@ -444,6 +448,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                                    "name", nname,
                                    "folder", nfolder);
                     if (id != null) {
+                        ebus.fireOnSuccessCommit(new MediaMoveEvent(this, id, false, path, npath));
                         updateFTSKeywords(id, req);
                     }
 
@@ -451,8 +456,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     throw new IOException("Unsupported file type");
                 }
             }
-
-            ebus.postOnSuccessCommit(new MediaMoveEvent(this, id, isFolder, path, npath));
         }
     }
 
@@ -494,7 +497,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
         }
 
-        ebus.postOnSuccessCommit(new MediaDeleteEvent(this, isdir, path));
+        ebus.fireOnSuccessCommit(new MediaDeleteEvent(this, isdir, path));
     }
 
     @DELETE
@@ -1107,6 +1110,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
 
             if (id != null) {
+                ebus.fireOnSuccessCommit(new MediaCreateEvent(this, false, id.longValue(), folder + name));
                 updateFTSKeywords(id.longValue(), req);
             }
 
@@ -1253,7 +1257,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return rwlock;
     }
 
-    private static String getResourceParentFolder(String path) {
+    public static String getResourceParentFolder(String path) {
         String dirname = FilenameUtils.getPath(path);
         if (StringUtils.isBlank(dirname)) {
             dirname = "/";
@@ -1263,7 +1267,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return dirname;
     }
 
-    private static String getResourceName(String path) {
+    public static String getResourceName(String path) {
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
@@ -1273,7 +1277,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return FilenameUtils.getName(path);
     }
 
-    private static String normalizeFolder(String folder) {
+    public static String normalizeFolder(String folder) {
         if (folder.isEmpty() || folder.charAt(0) != '/') {
             folder = '/' + folder;
         }
@@ -1281,6 +1285,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             folder += '/';
         }
         return folder;
+    }
+
+
+    public static String normalizePath(String path) {
+        if (path.isEmpty() || path.charAt(0) != '/') {
+            path = '/' + path;
+        }
+        return path;
     }
 
 

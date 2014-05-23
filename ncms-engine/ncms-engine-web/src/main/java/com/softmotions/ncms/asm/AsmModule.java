@@ -48,18 +48,19 @@ public class AsmModule extends AbstractModule {
 
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);
+        bind(AsmEventsListener.class).asEagerSingleton();
 
         //Asm REST
         bind(AsmRS.class).in(Singleton.class);
     }
 
 
-    public static class AsmResourceLoaderImpl implements AsmResourceLoader {
+    static class AsmResourceLoaderImpl implements AsmResourceLoader {
 
         final AsmResourceLoader[] loaders;
 
         @Inject
-        public AsmResourceLoaderImpl(NcmsConfiguration cfg, Injector injector) throws Exception {
+        AsmResourceLoaderImpl(NcmsConfiguration cfg, Injector injector) throws Exception {
             XMLConfiguration xcfg = cfg.impl();
             List<AsmResourceLoader> ldrs = new ArrayList<>();
             List<HierarchicalConfiguration> hcl = xcfg.configurationsAt("asm.resource-loaders");

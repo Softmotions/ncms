@@ -51,7 +51,6 @@ public class MediaModule extends AbstractModule {
                 String directory = hc.getString(".");
                 mediaService.importDirectory(new File(directory));
             }
-
         }
     }
 }
