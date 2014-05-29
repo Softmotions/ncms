@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,28 +30,14 @@ public class DefaultAsmRenderer implements AsmRenderer {
      */
     final Set<AsmTemplateEngineAdapter> templateEgines;
 
-    /**
-     * Set of attribute renderers
-     */
-    final Set<AsmAttributeRenderer> attributeRenderers;
-
-    /**
-     * Set type => AsmAttributeRenderer
-     */
-    final Map<String, AsmAttributeRenderer> typeAttributeRenderersMap;
+    final AsmAttributeManagersRegistry amRegistry;
 
 
     @Inject
     public DefaultAsmRenderer(Set<AsmTemplateEngineAdapter> templateEgines,
-                              Set<AsmAttributeRenderer> attributeRenderers) {
+                              AsmAttributeManagersRegistry amRegistry) {
         this.templateEgines = templateEgines;
-        this.attributeRenderers = attributeRenderers;
-        this.typeAttributeRenderersMap = new HashMap<>();
-        for (final AsmAttributeRenderer ar : attributeRenderers) {
-            for (final String atype : ar.getSupportedAttributeTypes()) {
-                typeAttributeRenderersMap.put(atype, ar);
-            }
-        }
+        this.amRegistry = amRegistry;
     }
 
     public void renderAsm(AsmRendererContext ctx) throws AsmRenderingException, IOException {
@@ -95,9 +80,9 @@ public class DefaultAsmRenderer implements AsmRenderer {
         if (type == null) {
             type = "*";
         }
-        AsmAttributeRenderer arend = typeAttributeRenderersMap.get(type);
+        AsmAttributeManager arend = amRegistry.getByType(type);
         if (arend == null) {
-            arend = typeAttributeRenderersMap.get("*");
+            arend = amRegistry.getByType("*");
         }
         if (arend == null) {
             throw new AsmRenderingException("Unable to find attribute renderer for: " +

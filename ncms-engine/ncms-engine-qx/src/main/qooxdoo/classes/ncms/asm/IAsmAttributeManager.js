@@ -48,6 +48,15 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
             this.assertMap(attrSpec);
         },
 
+
+        /**
+         * @param optionsWidget {qx.ui.core.Widget} Options windget created by #createOptionsWidget
+         * @param attrSpec {Object}
+         * @returns {Object}
+         */
+        optionsAsJSON : function(optionsWidget, attrSpec) {
+        },
+
         /**
          * Create attribute-value editor widget.
          *
@@ -56,6 +65,9 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
          */
         createValueEditorWidget : function(attrSpec) {
             this.assertMap(attrSpec);
+        },
+
+        valueAsJSON : function(valueWidget, attrSpec) {
         }
     }
 });

@@ -3,6 +3,8 @@ package com.softmotions.ncms.asm.render;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,9 +15,9 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmRefAttributeRenderer implements AsmAttributeRenderer {
+public class AsmRefAttributeManager implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmRefAttributeRenderer.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmRefAttributeManager.class);
 
     public static final String[] TYPES = new String[]{"asmref"};
 
@@ -60,5 +62,13 @@ public class AsmRefAttributeRenderer implements AsmAttributeRenderer {
         //Schedule skip escaping on this attribute
         ctx.setNextEscapeSkipping(true);
         return out.toString();
+    }
+
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode options) {
+        return attr;
+    }
+
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode value) {
+        return attr;
     }
 }

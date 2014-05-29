@@ -6,6 +6,7 @@ import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.web.GenericResponseWrapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Singleton;
 
 import org.apache.commons.collections.IteratorUtils;
@@ -43,9 +44,9 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 @Singleton
-public class AsmResourceAttributeRenderer implements AsmAttributeRenderer {
+public class AsmResourceAttributeManager implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmResourceAttributeRenderer.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmResourceAttributeManager.class);
 
     public static final String[] TYPES = new String[]{"resource"};
 
@@ -182,6 +183,14 @@ public class AsmResourceAttributeRenderer implements AsmAttributeRenderer {
         }
     }
 
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode options) {
+        return attr;
+    }
+
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode value) {
+        return attr;
+    }
+
 
     @Start(order = 10)
     public void start() {
@@ -199,6 +208,7 @@ public class AsmResourceAttributeRenderer implements AsmAttributeRenderer {
             httpclient = null;
         }
     }
+
 
     @SuppressWarnings("unchecked")
     static final class InternalHttpRequest extends HttpServletRequestWrapper {
