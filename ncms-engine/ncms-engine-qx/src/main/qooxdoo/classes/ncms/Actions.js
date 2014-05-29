@@ -86,11 +86,20 @@ qx.Class.define("ncms.Actions", {
         // GET/PUT/DELETE
         this._action("security.user", "/ncms/rs/adm/security/user/{name}");
 
+        //GET selects users count
+        this._action("security.users.count", "/ncms/rs/adm/security/users/count");
+
         //GET selects users
         this._action("security.users", "/ncms/rs/adm/security/users");
 
-        //GET selects users count
-        this._action("security.users.count", "/ncms/rs/adm/security/users/count");
+        // PUT/DELETE role/group for user
+        this._action("security.user.role", "/ncms/rs/adm/security/user/{name}/role/{role}");
+        this._action("security.user.group", "/ncms/rs/adm/security/user/{name}/group/{group}");
+
+
+        //GET selects roles/groups
+        this._action("security.roles", "/ncms/rs/adm/security/roles");
+        this._action("security.groups", "/ncms/rs/adm/security/groups");
     },
 
     members : {

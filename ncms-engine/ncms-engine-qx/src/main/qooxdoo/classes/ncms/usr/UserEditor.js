@@ -24,16 +24,24 @@ qx.Class.define("ncms.usr.UserEditor", {
     construct : function() {
         this.base(arguments, "top");
 
-        this.add(new qx.ui.tabview.Page(this.tr("Roles/Groups")));
-        this.add(new qx.ui.tabview.Page(this.tr("General")));
+        var epage = new qx.ui.tabview.Page(this.tr("Roles/Groups"));
+        epage.setLayout(new qx.ui.layout.VBox());
+        var urTable = this.__userRoles = new ncms.usr.UserRolesTable();
+        epage.add(urTable);
 
-        // TODO:
+        this.add(epage);
+
+        this.add(new qx.ui.tabview.Page(this.tr("General")));
+        // TODO: general tab
 
     },
 
     members : {
+        __userRoles : null,
+
         __applyUserName : function(userName) {
-            // TODO:
+            this.__userRoles.setUser(userName);
+            // TODO: set user in general tab
         }
     },
 

@@ -11,6 +11,10 @@
            roles="admin,admin.asm,admin.users,user">
     </group>
 
+    <group name="users" description="User group"
+           roles="user">
+    </group>
+
     <user name="admin"
           password="admin"
           email="adamansky@gmail.com"
