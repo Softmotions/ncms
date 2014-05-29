@@ -278,14 +278,7 @@ qx.Class.define("ncms.Application", {
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
         },
 
-        __construct : function(constructor, args) {
-            function F() {
-                return constructor.apply(this, args);
-            }
-
-            F.prototype = constructor.prototype;
-            return new F();
-        }
+        __construct : sm.lang.Object.newInstance
     },
 
     defer : function(statics) {

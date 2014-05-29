@@ -1,16 +1,32 @@
 /**
  * Assembly attribute settings and value manager.
+ *
+ * Implementors must define the following static methods:
+ *
+ *      getDescription
+ *      getSupportedAttributeTypes
+ *
  */
 qx.Interface.define("ncms.asm.IAsmAttributeManager", {
 
-    members : {
+    statics : {
 
         /**
-         * Array of assembly attribute types supported by
-         * this attribute manager.
+         * Returns short human readable editor description.
+         * @returns {String}
+         */
+        getDescription : function() {
+        },
+
+        /**
+         * Return list of supported asm types by this editor
+         * @returns {Array}
          */
         getSupportedAttributeTypes : function() {
-        },
+        }
+    },
+
+    members : {
 
         /**
          * Return attribute-options editor widget.
@@ -25,7 +41,7 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
          *   "hasLargeValue" : false
          * }
          *
-         * @param attrSpec
+         * @param attrSpec {Object}
          * @return {qx.ui.core.Widget} settings editor widget.
          */
         createOptionsWidget : function(attrSpec) {
@@ -34,6 +50,8 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
 
         /**
          * Create attribute-value editor widget.
+         *
+         * @param attrSpec {Object}
          * @return {qx.ui.core.Widget} value editor widget.
          */
         createValueEditorWidget : function(attrSpec) {

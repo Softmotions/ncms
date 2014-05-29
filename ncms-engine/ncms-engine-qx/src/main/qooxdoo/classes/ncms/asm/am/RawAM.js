@@ -6,6 +6,15 @@ qx.Class.define("ncms.asm.am.RawAM", {
     implement : [ ncms.asm.IAsmAttributeManager ],
 
     statics : {
+
+        getDescription : function() {
+            return qx.locale.Manager.tr("Raw attribute data manager");
+        },
+
+
+        getSupportedAttributeTypes : function() {
+            return [ "raw" ];
+        }
     },
 
     events : {
@@ -21,16 +30,12 @@ qx.Class.define("ncms.asm.am.RawAM", {
 
     members : {
 
-        getSupportedAttributeTypes : function() {
-            return [ "raw" ];
-        },
-
         createOptionsWidget : function(attrSpec) {
-
+            return new qx.ui.core.Widget().set({backgroundColor : "red"});
         },
 
         createValueEditorWidget : function(attrSpec) {
-
+            return new qx.ui.core.Widget().set({backgroundColor : "red"});
         }
     },
 

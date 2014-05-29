@@ -6,6 +6,14 @@ qx.Class.define("ncms.asm.am.StringAM", {
     implement : [ ncms.asm.IAsmAttributeManager ],
 
     statics : {
+
+        getDescription : function() {
+            return qx.locale.Manager.tr("String attribute manager");
+        },
+
+        getSupportedAttributeTypes : function() {
+            return [ "string" ];
+        }
     },
 
     events : {
@@ -21,16 +29,13 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
     members : {
 
-        getSupportedAttributeTypes : function() {
-            return [ "string" ];
-        },
 
         createOptionsWidget : function(attrSpec) {
-
+            return new qx.ui.core.Widget().set({backgroundColor : "green"});
         },
 
         createValueEditorWidget : function(attrSpec) {
-
+            return new qx.ui.core.Widget().set({backgroundColor : "green"});
         }
     },
 
