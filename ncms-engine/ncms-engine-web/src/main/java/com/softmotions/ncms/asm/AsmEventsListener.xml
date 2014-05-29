@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.asm.AsmEventsListener">
+
+    <update id="fixCoreFolderLocation" parameterType="map">
+        update asm_cores c
+        set c.location = #{new_prefix} || substring(c.location, #{prefix_like_len})
+        where c.location like #{prefix_like}
+    </update>
+
+    <update id="fixCoreLocation" parameterType="map">
+        update asm_cores c
+        set c.location = #{new_location}
+        where c.location = #{old_location}
+    </update>
+
+</mapper>

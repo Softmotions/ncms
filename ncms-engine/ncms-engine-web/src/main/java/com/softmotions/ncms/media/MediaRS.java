@@ -5,6 +5,7 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.fts.FTSUtils;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
@@ -34,6 +35,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
@@ -118,11 +120,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     final Provider<ServletContext> sctx;
 
+    final NcmsEventBus ebus;
+
     @Inject
     public MediaRS(NcmsConfiguration cfg,
                    SqlSession sess,
                    ObjectMapper mapper,
                    NcmsMessages message,
+                   NcmsEventBus ebus,
                    Provider<ServletContext> sctx) throws IOException {
 
         super(MediaRS.class.getName(), sess);
@@ -138,6 +143,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 0x7f));
         this.mapper = mapper;
         this.message = message;
+        this.ebus = ebus;
         this.sctx = sctx;
     }
 
@@ -150,7 +156,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @PUT
     @Consumes("*/*")
     @Path("/file/{folder:.*}/{name}")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void put(@PathParam("folder") String folder,
                     @PathParam("name") String name,
                     @Context HttpServletRequest req,
@@ -161,7 +167,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @PUT
     @Consumes("*/*")
     @Path("/file/{name}")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void put(@PathParam("name") String name,
                     @Context HttpServletRequest req,
                     InputStream in) throws Exception {
@@ -278,6 +284,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     @GET
     @Path("/select")
+    @Transactional
     public Response select(@Context final HttpServletRequest req) {
         return Response.ok(new StreamingOutput() {
             public void write(OutputStream output) throws IOException, WebApplicationException {
@@ -346,11 +353,16 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                                   "folder", dirname,
                                   "name", name);
             if (id == null) {
-                insert("insertEntity",
-                       "folder", dirname,
-                       "name", name,
-                       "creator", req.getUserPrincipal().getName(),
-                       "status", 1);
+                Map params = new HashMap();
+                params.put("folder", dirname);
+                params.put("name", name);
+                params.put("creator", req.getRemoteUser());
+                params.put("status", 1);
+                insert("insertEntity", params);
+
+                id = (Number) params.get("id");
+                ebus.fireOnSuccessCommit(
+                        new MediaCreateEvent(this, true, id, dirname + name));
             } else {
                 throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
             }
@@ -362,7 +374,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     @PUT
     @Path("/move/{path:.*}")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void move(@PathParam("path") String path,
                      @Context HttpServletRequest req,
                      String npath) throws Exception {
@@ -375,6 +387,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (npath.equals(path)) {
             return;
         }
+        Long id;
+
         try (ResourceLock l1 = new ResourceLock(path, true)) {
             try (ResourceLock l2 = new ResourceLock(npath, true)) {
                 File f1 = new File(basedir, path);
@@ -396,7 +410,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
                     String p1 = f1.getCanonicalPath();
                     String p2 = f2.getCanonicalPath();
-                    if (p2.startsWith(p1)) {
+                    if (p2.startsWith(p1 + '/')) {
                         String msg = message.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req, path, npath);
                         throw new NcmsMessageException(msg, true);
                     }
@@ -416,6 +430,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
                     FileUtils.moveDirectory(f1, f2);
 
+                    ebus.fireOnSuccessCommit(new MediaMoveEvent(this, null, true, path, npath));
+
                 } else if (f1.isFile()) {
 
                     String nname = getResourceName(npath);
@@ -425,12 +441,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                            "nname", nname,
                            "folder", getResourceParentFolder(path),
                            "name", getResourceName(path));
+
                     FileUtils.moveFile(f1, f2);
 
-                    Long id = selectOne("selectEntityIdByPath",
-                                        "name", nname,
-                                        "folder", nfolder);
+                    id = selectOne("selectEntityIdByPath",
+                                   "name", nname,
+                                   "folder", nfolder);
                     if (id != null) {
+                        ebus.fireOnSuccessCommit(new MediaMoveEvent(this, id, false, path, npath));
                         updateFTSKeywords(id, req);
                     }
 
@@ -443,7 +461,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     @DELETE
     @Path("/delete/{path:.*}")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void deleteResource(@PathParam("path") String path,
                                @Context HttpServletRequest req) throws Exception {
         path = StringUtils.strip(path, "/");
@@ -453,12 +471,13 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (log.isDebugEnabled()) {
             log.debug("deleteResource: " + path);
         }
+        boolean isdir;
         try (ResourceLock l = new ResourceLock(path, true)) {
             File f = new File(basedir, path);
             if (!f.exists()) {
                 throw new NotFoundException(path);
             }
-            boolean isdir = f.isDirectory();
+            isdir = f.isDirectory();
             if (isdir) {
                 deleteDirectoryInternal(path, true);
                 delete("deleteFolder",
@@ -477,6 +496,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 }
             }
         }
+
+        ebus.fireOnSuccessCommit(new MediaDeleteEvent(this, isdir, path));
     }
 
     @DELETE
@@ -495,7 +516,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @POST
     @Path("/meta/{id}")
     @Consumes("application/x-www-form-urlencoded")
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void updateMeta(@PathParam("id") Long id,
                            @Context HttpServletRequest req,
                            MultivaluedMap<String, String> form) throws Exception {
@@ -537,7 +558,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
 
-    @Transactional
+    @Transactional(executorType = ExecutorType.BATCH)
     public void importDirectory(File dir) throws IOException {
         if (dir == null || !dir.isDirectory()) {
             throw new IOException(dir + " is not a directory");
@@ -1017,7 +1038,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         Number id;
         folder = normalizeFolder(folder);
 
-        //Used in order to proper ctype detection by TIKA (mark/reset are supported by BufferedInputStream)
+        //Used in order to detect ctype with TIKA (mark/reset are supported by BufferedInputStream)
         BufferedInputStream bis = new BufferedInputStream(in);
 
         String rctype = req.getContentType();
@@ -1077,7 +1098,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 args.put("content_length", actualLength);
                 args.put("creator", req.getRemoteUser());
                 insert("insertEntity", args);
-                id = (Number) args.get("id");
+                id = (Number) args.get("id"); //autogenerated
 
             } else {
 
@@ -1089,6 +1110,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
 
             if (id != null) {
+                ebus.fireOnSuccessCommit(new MediaCreateEvent(this, false, id, folder + name));
                 updateFTSKeywords(id.longValue(), req);
             }
 
@@ -1235,7 +1257,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return rwlock;
     }
 
-    private static String getResourceParentFolder(String path) {
+    public static String getResourceParentFolder(String path) {
         String dirname = FilenameUtils.getPath(path);
         if (StringUtils.isBlank(dirname)) {
             dirname = "/";
@@ -1245,7 +1267,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return dirname;
     }
 
-    private static String getResourceName(String path) {
+    public static String getResourceName(String path) {
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
@@ -1255,7 +1277,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return FilenameUtils.getName(path);
     }
 
-    private static String normalizeFolder(String folder) {
+    public static String normalizeFolder(String folder) {
         if (folder.isEmpty() || folder.charAt(0) != '/') {
             folder = '/' + folder;
         }
@@ -1263,6 +1285,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             folder += '/';
         }
         return folder;
+    }
+
+
+    public static String normalizePath(String path) {
+        if (path.isEmpty() || path.charAt(0) != '/') {
+            path = '/' + path;
+        }
+        return path;
     }
 
 
