@@ -57,6 +57,7 @@ qx.Class.define("ncms.usr.UsersNav", {
                 return;
             }
             app.getWSA(eclazz).setUserName(data["name"]);
+            app.getWSA(eclazz).addListener("userUpdated", this.__userUpdated, this);
             app.showWSA(eclazz);
         },
 
@@ -99,8 +100,11 @@ qx.Class.define("ncms.usr.UsersNav", {
                             this.__selector.reload();
                         }, this);
                     }, this);
-        }
+        },
 
+        __userUpdated : function(ev) {
+            this.__selector.reloadData();
+        }
     },
 
     destruct : function() {

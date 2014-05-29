@@ -86,6 +86,10 @@ qx.Class.define("ncms.usr.UserSelector", {
             this.__table.getTableModel().updateViewSpec(this.__createViewSpec(vspec));
         },
 
+        reloadData : function(vspec) {
+            this.__table.getTableModel().reloadData();
+        },
+
         reload : function(vspec) {
             this.__table.getTableModel().reloadData();
             this.__table.resetSelection();

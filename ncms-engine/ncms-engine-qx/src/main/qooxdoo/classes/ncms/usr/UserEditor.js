@@ -8,6 +8,10 @@ qx.Class.define("ncms.usr.UserEditor", {
     },
 
     events : {
+        /**
+         * Data: updated user data.
+         */
+        "userUpdated" : "qx.event.type.Data"
     },
 
     properties : {
@@ -31,17 +35,26 @@ qx.Class.define("ncms.usr.UserEditor", {
 
         this.add(epage);
 
-        this.add(new qx.ui.tabview.Page(this.tr("General")));
-        // TODO: general tab
+        epage = new qx.ui.tabview.Page(this.tr("General"));
+        epage.setLayout(new qx.ui.layout.VBox());
+        var uiForm = this.__userInfoForm = new ncms.usr.UserEditForm();
+        uiForm.addListener("userUpdated", this.__userUpdated, this);
+        epage.add(uiForm);
 
+        this.add(epage);
     },
 
     members : {
         __userRoles : null,
+        __userInfoForm : null,
 
         __applyUserName : function(userName) {
             this.__userRoles.setUser(userName);
-            // TODO: set user in general tab
+            this.__userInfoForm.setUser(userName);
+        },
+
+        __userUpdated : function(ev) {
+            this.fireDataEvent("userUpdated", ev.getData());
         }
     },
 

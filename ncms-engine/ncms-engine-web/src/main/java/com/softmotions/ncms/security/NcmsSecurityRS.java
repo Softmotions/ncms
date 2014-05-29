@@ -225,10 +225,15 @@ public class NcmsSecurityRS {
         if (log.isDebugEnabled()) {
             log.debug("updateuser/{" + name + "}?password=" + password + "&fullName=" + fullName);
         }
-        assertion(name != null && password != null, "Parameters 'name' and 'password' of user can not be empty");
+        // if user already exists it will be returned
         WSUser user = userDatabase.createUser(name, password, fullName);
+
+        // check for non empty password
+        assertion(!StringUtils.isBlank(user.getPassword()) || !StringUtils.isBlank(password), "Can't save user without password");
+        if (!StringUtils.isBlank(password)) {
+            user.setPassword(StringUtils.trim(password));
+        }
         // force update fields if user already exists
-        user.setPassword(password);
         user.setFullName(fullName);
         if (EmailValidator.getInstance().isValid(email)) {
             user.setEmail(email.toLowerCase());
