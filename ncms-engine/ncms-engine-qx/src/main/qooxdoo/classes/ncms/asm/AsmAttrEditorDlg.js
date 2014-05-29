@@ -116,6 +116,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         __createTypeWidgetStack : function() {
             var ts = new sm.ui.cont.LazyStack();
+            ts.setNoCache(true);
             var me = this;
             ts.setOnDemandFactoryFunctionProvider(function() {
                 return function(id) {
@@ -157,7 +158,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             this.__asmSpec = null;
             this.__attrName = null;
             this.__typeEditorStack = null;
-            this._disposeObjects("__form", "__closeCmd");
+            this._disposeObjects("__form", "__closeCmd", "__typeEditorStack");
         },
 
         __ok : function() {

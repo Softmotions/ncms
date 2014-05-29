@@ -267,6 +267,7 @@ qx.Class.define("ncms.Application", {
 
         __createRightStack : function() {
             var rs = new sm.ui.cont.LazyStack();
+            rs.setExcludeWidgets(true);
             rs.registerWidget("ncms.wsa.WSAPlaceholder", function() {
                 return new ncms.wsa.WSAPlaceholder()
             }, null, this);
