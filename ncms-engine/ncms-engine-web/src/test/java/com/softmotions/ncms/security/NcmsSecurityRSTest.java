@@ -110,8 +110,8 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
         wt = ClientBuilder.newClient().target(
                 address + PREFIX_URI + "/users/count");
         resp = wt.request().buildGet().invoke();
-        userCount = userCount - resp.readEntity(Long.class);
         assertEquals(200, resp.getStatus());
+        userCount -= resp.readEntity(Long.class);
         assertTrue(userCount == 1);
 
 		/* ------------ role --------------- */
