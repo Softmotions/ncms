@@ -27,6 +27,7 @@ qx.Class.define("ncms.usr.UserEditor", {
 
     construct : function() {
         this.base(arguments, "top");
+        this.setPadding(5);
 
         var epage = new qx.ui.tabview.Page(this.tr("Roles/Groups"));
         epage.setLayout(new qx.ui.layout.VBox());

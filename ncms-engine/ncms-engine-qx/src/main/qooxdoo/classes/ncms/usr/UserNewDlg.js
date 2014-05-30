@@ -50,6 +50,10 @@ qx.Class.define("ncms.usr.UserNewDlg", {
         el.setRequired(true);
         form.add(el, this.tr("Password"), null, "password");
 
+        el = new qx.ui.form.PasswordField();
+        el.setRequired(true);
+        form.add(el, this.tr("Password confirm"), this.__passwordCfrmValidator, "passwordCfrm", this);
+
         var fr = new sm.ui.form.FlexFormRenderer(form);
         fr._getLayout().setRowFlex(fr._row - 1, 1);
         this.add(fr, {flex : 1});
@@ -100,6 +104,20 @@ qx.Class.define("ncms.usr.UserNewDlg", {
             req.send(function(resp) {
                 this.fireDataEvent("completed", resp.getContent());
             }, this);
+        },
+
+        __passwordCfrmValidator : function(value, item) {
+            var password = this.__form.getItems()["password"].getValue();
+            if (item.isRequired() && !value) {
+                item.setValid(false);
+                item.setInvalidMessage(this.__form.getValidationManager().getRequiredFieldMessage());
+                return false;
+            } else if (value != password) {
+                item.setValid(false);
+                item.setInvalidMessage(this.tr("Not matching with password."));
+                return false;
+            }
+            return true;
         },
 
         close : function() {

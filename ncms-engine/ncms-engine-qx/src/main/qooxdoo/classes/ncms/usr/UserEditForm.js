@@ -35,6 +35,9 @@ qx.Class.define("ncms.usr.UserEditForm", {
         el = new qx.ui.form.PasswordField();
         form.add(el, this.tr("Password"), null, "password");
 
+        el = new qx.ui.form.PasswordField();
+        form.add(el, this.tr("Password confirm"), this.__passwordCfrmValidator, "passwordCfrm", this);
+
         var fr = new sm.ui.form.FlexFormRenderer(form);
         fr._getLayout().setRowFlex(fr._row - 1, 1);
         this.add(fr, {flex : 1});
@@ -60,6 +63,7 @@ qx.Class.define("ncms.usr.UserEditForm", {
 
         setUser : function(name) {
             this.__user = name;
+            this.__form.reset();
             var fitems = this.__form.getItems();
 
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : this.__user}), "GET", "application/json");
@@ -71,6 +75,8 @@ qx.Class.define("ncms.usr.UserEditForm", {
                 fitems["email"].setValue(data["email"]);
                 fitems["password"].setRequired(false);
                 fitems["password"].setValue(null);
+                fitems["passwordCfrm"].setRequired(false);
+                fitems["passwordCfrm"].setValue(null);
             }, this);
         },
 
@@ -83,7 +89,7 @@ qx.Class.define("ncms.usr.UserEditForm", {
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : fitems["name"].getValue()}), "POST", "application/json");
             req.setParameter("email", fitems["email"].getValue());
             req.setParameter("fullname", fitems["fullName"].getValue());
-            if (fitems["password"].getValue() != null && qx.lang.String.trimLeft(fitems["password"].getValue()) != "") {
+            if (!!fitems["password"].getValue() && qx.lang.String.trimLeft(fitems["password"].getValue()) != "") {
                 req.setParameter("password", fitems["password"].getValue());
             }
 
@@ -95,6 +101,20 @@ qx.Class.define("ncms.usr.UserEditForm", {
 
         __cancel : function() {
             this.setUser(this.__user);
+        },
+
+        __passwordCfrmValidator : function(value, item) {
+            var password = this.__form.getItems()["password"].getValue();
+            if (!!password && !value) {
+                item.setValid(false);
+                item.setInvalidMessage(this.__form.getValidationManager().getRequiredFieldMessage());
+                return false;
+            } else if (value != password) {
+                item.setValid(false);
+                item.setInvalidMessage(this.tr("Not matching with password."));
+                return false;
+            }
+            return true;
         }
     },
 

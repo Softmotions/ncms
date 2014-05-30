@@ -17,7 +17,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
             var role = tm.getRowAssociatedData(data.row);
             if (role["activeInGroup"]) {
                 var tmdata = tm.getData();
-                tmdata[data.row][2] = data.oldValue;
+                tmdata[data.row][data.col] = data.oldValue;
                 tm.setData(tmdata);
                 return;
             }
@@ -62,6 +62,10 @@ qx.Class.define("ncms.usr.UserRolesTable", {
             uroles = uroles || [];
             ugroups = ugroups || [];
 
+            var rolesComparator = function(a, b) {
+                return a["name"] < b["name"] ? -1 : (a["name"] > b["name"] ? 1 : 0)
+            };
+
             var roles = [];
             var groups = [];
 
@@ -73,6 +77,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
                     roles.push(qx.lang.Object.mergeWith(data[i], {type: "role"}));
                 }
             }, this);
+            roles.sort(rolesComparator);
 
             req = new sm.io.Request(ncms.Application.ACT.getUrl("security.groups"), "GET", "application/json");
             req.setAsynchronous(false);
@@ -82,14 +87,15 @@ qx.Class.define("ncms.usr.UserRolesTable", {
                     groups.push(qx.lang.Object.mergeWith(data[i], {type: "group"}));
                 }
             }, this);
+            groups.sort(rolesComparator);
 
-            var items = [].concat(roles).concat(groups);
+            var items = [].concat(groups).concat(roles);
             var data = [];
             var dataMap = {};
             var i, dataItem;
             for (i = 0; i < items.length; ++i) {
                 var item = items[i];
-                dataItem = [[item["name"], item["description"], false], item];
+                dataItem = [[item["name"], item["type"], item["description"], false], item];
                 data[i] = dataItem;
                 dataMap[item["name"]] = dataItem; // cache
             }
@@ -98,13 +104,13 @@ qx.Class.define("ncms.usr.UserRolesTable", {
             for (i = 0; i < uroles.length; ++i) {
                 dataItem = dataMap[uroles[i]];
                 if (dataItem) {
-                    dataItem[0][2] = dataItem[1]["active"] = true;
+                    dataItem[0][3] = dataItem[1]["active"] = true;
                 }
             }
             for (i = 0; i < ugroups.length; ++i) {
                 var groupItem = dataMap[ugroups[i]];
                 if (groupItem) {
-                    groupItem[0][2] = groupItem[1]["active"] = true;
+                    groupItem[0][3] = groupItem[1]["active"] = true;
                     var groles = groupItem[1]["roles"] || [];
                     for(var j = 0; j < groles.length; ++j) {
                         dataItem = dataMap[groles[j]];
@@ -129,17 +135,22 @@ qx.Class.define("ncms.usr.UserRolesTable", {
                 "title" : "",
                 "columns" : [
                     {
-                        "title" : this.tr("Role ID").toString(),
+                        "title" : this.tr("Role/Group").toString(),
                         "id" : "id",
                         "width" : "1*"
                     },
                     {
-                        "title" : this.tr("Role description").toString(),
+                        "title" : this.tr("Type").toString(),
+                        "id" : "type",
+                        "width" : 150
+                    },
+                    {
+                        "title" : this.tr("Description").toString(),
                         "id" : "description",
                         "width" : "2*"
                     },
                     {
-                        "title" : this.tr("Assign to").toString(),
+                        "title" : this.tr("Assign").toString(),
                         "id" : "active",
                         "type" : "boolean",
                         "editable" : true,
