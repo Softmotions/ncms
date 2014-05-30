@@ -95,9 +95,7 @@ public class NcmsSecurityRSTest extends NcmsWebTest {
 		/* ------------ test users ------------------- */
         wt = ClientBuilder.newClient().target(address + PREFIX_URI + "/users");
         wt = wt.queryParam("firstRow", 0).queryParam("lastRow", userCount);
-        resp = wt.request()
-                .buildPost(Entity.entity(String.class, MediaType.TEXT_PLAIN))
-                .invoke();
+        resp = wt.request().buildGet().invoke();
         data = resp.readEntity(String.class);
         assertEquals(200, resp.getStatus());
         assertTrue(data.contains("test-user"));
