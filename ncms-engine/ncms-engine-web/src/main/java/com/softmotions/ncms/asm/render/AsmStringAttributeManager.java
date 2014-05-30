@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm.render;
 
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmOptions;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Singleton;
@@ -36,7 +37,10 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode opts) {
-        log.info("opts=" + opts);
+        //opts={"display":"field","value":"нлеглгн"}
+        AsmOptions asmOpts = new AsmOptions();
+
+
         return attr;
     }
 

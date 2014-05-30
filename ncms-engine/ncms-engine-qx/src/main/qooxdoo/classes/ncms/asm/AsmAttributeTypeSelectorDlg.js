@@ -27,7 +27,7 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             showMinimize : false,
             showMaximize : true,
             allowMaximize : true,
-            width : 620
+            width : 580
         });
 
         this.__table = this.__createTable();
