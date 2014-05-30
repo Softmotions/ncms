@@ -558,7 +558,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
 
-    @Transactional(executorType = ExecutorType.BATCH)
+    @Transactional(executorType = ExecutorType.SIMPLE)
     public void importDirectory(File dir) throws IOException {
         if (dir == null || !dir.isDirectory()) {
             throw new IOException(dir + " is not a directory");
