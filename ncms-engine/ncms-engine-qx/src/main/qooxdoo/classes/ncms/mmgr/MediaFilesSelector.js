@@ -333,6 +333,16 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             };
         },
 
+        __previewFile : function(ev) {
+            var f = this.__table.getSelectedFile();
+            if (f == null || f.folder == null || f.name == null) {
+                return;
+            }
+            var path = (f.folder + f.name).split("/");
+            var url = ncms.Application.ACT.getRestUrl("media.file", path);
+            qx.bom.Window.open(url + "?inline=true");
+        },
+
         __downloadFile : function(ev) {
             var f = this.__table.getSelectedFile();
             if (f == null || f.folder == null || f.name == null) {
@@ -357,6 +367,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
             if (selected) {
                 if (selectedSingle) {
+                    bt = new qx.ui.menu.Button(this.tr("Preview"));
+                    bt.addListener("execute", this.__previewFile, this);
+                    menu.add(bt);
+
                     bt = new qx.ui.menu.Button(this.tr("Download"));
                     bt.addListener("execute", this.__downloadFile, this);
                     menu.add(bt);

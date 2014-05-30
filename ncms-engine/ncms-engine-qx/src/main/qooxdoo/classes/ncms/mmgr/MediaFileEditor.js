@@ -85,6 +85,9 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             return new ncms.mmgr.MediaTextFileEditor();
         }, null, this);
 
+        viewPane.setContextMenu(new qx.ui.menu.Menu());
+        viewPane.addListener("beforeContextmenuOpen", this.__beforeViewPaneContextMenuOpen, this);
+
         var sp = new qx.ui.splitpane.Pane("vertical");
         sp.add(topPane, 0);
         sp.add(viewPane, 1);
@@ -217,6 +220,40 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             this.__setJsonInfoTableData(this.__infoTable.getTableModel(), attrs);
             this.__setupDataView(spec);
             this.show();
+        },
+
+        __beforeViewPaneContextMenuOpen : function(ev) {
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+
+            var bt = new qx.ui.menu.Button(this.tr("Preview"));
+            bt.addListenerOnce("execute", this.__previewFile, this);
+            menu.add(bt);
+
+            bt = new qx.ui.menu.Button(this.tr("Download"));
+            bt.addListenerOnce("execute", this.__downloadFile, this);
+            menu.add(bt);
+        },
+
+        __previewFile : function(ev) {
+            var f = this.getFileSpec();
+            if (f == null || f.folder == null || f.name == null) {
+                return;
+            }
+            var path = (f.folder + f.name).split("/");
+            var url = ncms.Application.ACT.getRestUrl("media.file", path);
+            qx.bom.Window.open(url + "?inline=true");
+        },
+
+        __downloadFile : function(ev) {
+            var f = this.getFileSpec();
+            if (f == null || f.folder == null || f.name == null) {
+                return;
+            }
+            var path = (f.folder + f.name).split("/");
+            var form = document.getElementById("ncms-download-form");
+            form.action = ncms.Application.ACT.getRestUrl("media.file", path);
+            form.submit();
         }
     },
 
