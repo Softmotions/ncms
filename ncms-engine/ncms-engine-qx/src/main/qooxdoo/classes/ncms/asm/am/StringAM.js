@@ -99,14 +99,14 @@ qx.Class.define("ncms.asm.am.StringAM", {
             return fr;
         },
 
-        optionsAsJSON : function(valueWidget, attrSpec) {
+        optionsAsJSON : function(w, attrSpec) {
         },
 
         createValueEditorWidget : function(attrSpec) {
             return new qx.ui.core.Widget().set({backgroundColor : "green"});
         },
 
-        valueAsJSON : function(valueWidget, attrSpec) {
+        valueAsJSON : function(w, attrSpec) {
         }
     },
 

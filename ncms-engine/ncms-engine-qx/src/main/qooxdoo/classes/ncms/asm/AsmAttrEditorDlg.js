@@ -121,8 +121,10 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             ts.setOnDemandFactoryFunctionProvider(function() {
                 return function(id) {
                     var editor = ncms.asm.AsmAttrManagersRegistry.createAttrManagerInstance(id);
-                    var w = editor.createOptionsWidget(me.__getAttributeSpec());
+                    var aspec = me.__getAttributeSpec();
+                    var w = editor.createOptionsWidget(aspec);
                     w.setUserData("eidtor", editor);
+                    return w;
                 }
             });
             return ts;
