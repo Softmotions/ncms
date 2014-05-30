@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -243,7 +244,7 @@ public class AsmRS extends MBDAOSupport {
      * GET asm attribute
      */
     @GET
-    @Path("/{id}/{name}")
+    @Path("/{id}/attribute/{name}")
     public Response getAsmAttributeValue(@PathParam("id") Long asmId,
                                          @PathParam("name") String name) {
 
@@ -264,6 +265,34 @@ public class AsmRS extends MBDAOSupport {
                 .encoding("UTF-8")
                 .type(MediaType.APPLICATION_JSON_TYPE)
                 .build();
+
+    }
+
+
+    /**
+     * PUT asm attributes values/options
+     * <p/>
+     * Attributes JSON data spec:
+     * <pre>
+     *     {
+     *        {attr name} : {
+     *           asmId : {Long?} optional id of attribute owner assembly
+     *           type : {String?} attribute type,
+     *           value : { attr json value representation ?},
+     *           options : { attr json options representation ?}
+     *        },
+     *              ...
+     *     }
+     * </pre>
+     */
+    @PUT
+    @Path("/{id}/attributes")
+    @Consumes("application/json")
+    @Transactional
+    public void putAsmAttributes(@PathParam("id") Long asmId,
+                                 JsonNode spec) {
+
+        log.info("putAsmAttributes id=" + asmId + " spec=" + spec);
 
     }
 

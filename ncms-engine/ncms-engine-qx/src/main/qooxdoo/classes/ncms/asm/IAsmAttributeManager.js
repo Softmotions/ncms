@@ -44,17 +44,14 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
          * @param attrSpec {Object}
          * @return {qx.ui.core.Widget} settings editor widget.
          */
-        createOptionsWidget : function(attrSpec) {
+        activateOptionsWidget : function(attrSpec) {
             this.assertMap(attrSpec);
         },
 
-
         /**
-         * @param optionsWidget {qx.ui.core.Widget} Options windget created by #createOptionsWidget
-         * @param attrSpec {Object}
          * @returns {Object}
          */
-        optionsAsJSON : function(optionsWidget, attrSpec) {
+        optionsAsJSON : function() {
         },
 
         /**
@@ -63,11 +60,11 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
          * @param attrSpec {Object}
          * @return {qx.ui.core.Widget} value editor widget.
          */
-        createValueEditorWidget : function(attrSpec) {
+        activateValueEditorWidget : function(attrSpec) {
             this.assertMap(attrSpec);
         },
 
-        valueAsJSON : function(valueWidget, attrSpec) {
+        valueAsJSON : function() {
         }
     }
 });

@@ -19,12 +19,6 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         "attributesChanged" : "qx.event.type.Event"
     },
 
-    properties : {
-        "value" : {
-            apply : "__applyValue"
-        }
-    },
-
     construct : function() {
         this.base(arguments);
         this.set({allowGrowX : true, allowGrowY : false, height : 200});
@@ -150,17 +144,14 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                     this.__spec
             );
             dlg.addListener("completed", function(ev) {
-                var aspec = ev.getData();
-                qx.log.Logger.info("Aspec=" + JSON.stringify(aspec));
+                dlg.close();
+                this.fireEvent("attributesChanged");
             }, this);
             dlg.open();
         },
 
         __onRemove : function() {
             qx.log.Logger.info("remove attribute");
-        },
-
-        __applyValue : function(val) {
         }
     },
 

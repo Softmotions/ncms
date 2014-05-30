@@ -30,19 +30,20 @@ qx.Class.define("ncms.asm.am.RawAM", {
 
     members : {
 
-        createOptionsWidget : function(attrSpec) {
+        activateOptionsWidget : function(attrSpec) {
             return new qx.ui.core.Widget().set({backgroundColor : "red"});
         },
 
-        optionsAsJSON : function(optionsWidget, attrSpec) {
+        optionsAsJSON : function() {
             return {};
         },
 
-        createValueEditorWidget : function(attrSpec) {
+        activateValueEditorWidget : function() {
             return new qx.ui.core.Widget().set({backgroundColor : "red"});
         },
 
-        valueAsJSON : function(valueWidget, attrSpec) {
+        valueAsJSON : function() {
+            return {};
         }
     },
 

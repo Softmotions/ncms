@@ -75,21 +75,14 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             var tm = new sm.model.JsonTableModel();
 
             var items = [];
-            sm.lang.Object.forEachClass(function(clazz) {
-                if (!qx.Class.hasInterface(clazz, ncms.asm.IAsmAttributeManager) ||
-                        typeof clazz.getSupportedAttributeTypes !== "function" ||
-                        typeof clazz.getDescription !== "function") {
-                    return;
-                }
-                var types = clazz.getSupportedAttributeTypes() || [];
-                for (var i = 0; i < types.length; ++i) {
-                    var type = types[i];
-                    items.push([
-                        [type, (clazz.getDescription() || ""), (clazz.classname || clazz.toString())],
-                        clazz
-                    ]);
-                }
-            }, this);
+            ncms.asm.AsmAttrManagersRegistry.forEachAttributeManagerTypeClassPair(
+                    function(type, clazz) {
+                        items.push([
+                            [type, (clazz.getDescription() || ""), (clazz.classname || clazz.toString())],
+                            clazz
+                        ]);
+                    }
+            );
 
             this.__setTableData(tm, items);
 

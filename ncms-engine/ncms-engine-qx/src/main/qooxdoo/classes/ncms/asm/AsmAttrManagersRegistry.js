@@ -13,21 +13,38 @@ qx.Class.define("ncms.asm.AsmAttrManagersRegistry", {
             ncms.asm.am.StringAM
         ],
 
-        /**
-         * Assembly managers instances cache
-         */
-        INSTANCES : {},
 
         createAttrManagerInstance : function(amClassName) {
-            if (this.INSTANCES[amClassName] != null) {
-                return this.INSTANCES[amClassName];
-            }
             var clazz = qx.Class.getByName(amClassName);
             qx.core.Assert.assertTrue(clazz != null);
             qx.core.Assert.assertTrue(qx.Class.hasInterface(clazz, ncms.asm.IAsmAttributeManager));
-            var am = sm.lang.Object.newInstance(clazz);
-            this.INSTANCES[amClassName] = am;
-            return am;
+            return sm.lang.Object.newInstance(clazz);
+        },
+
+
+        /**
+         * Iterates over all attribute managers classes
+         * in projection of supported types.
+         *
+         * @param cb {forEachAttributeManagerClassCB}
+         *
+         * @callback forEachAttributeManagerClassCB
+         * @param type {String}
+         * @param clazz {qx.Class}
+         */
+        forEachAttributeManagerTypeClassPair : function(cb) {
+            sm.lang.Object.forEachClass(function(clazz) {
+                if (!qx.Class.hasInterface(clazz, ncms.asm.IAsmAttributeManager) ||
+                        typeof clazz.getSupportedAttributeTypes !== "function" ||
+                        typeof clazz.getDescription !== "function") {
+                    return;
+                }
+                var types = clazz.getSupportedAttributeTypes() || [];
+                for (var i = 0; i < types.length; ++i) {
+                    var type = types[i];
+                    cb(type, clazz);
+                }
+            }, this);
         }
 
     }

@@ -40,11 +40,14 @@ qx.Class.define("ncms.Actions", {
         //Payload: JSON core spec
         this._action("asms.core", "/ncms/rs/adm/asms/{id}/core");
 
-
         //GET Assembly attribute
         // id: assembly id
         // name: attribute name
-        this._action("asms.attribute", "/ncms/rs/adm/{id}/{name}");
+        this._action("asms.attribute", "/ncms/rs/adm/asms/{id}/attribute/{name}");
+
+        //PUT Assembly attribute values/options
+        // id: assembly id
+        this._action("asms.attributes", "/ncms/rs/adm/asms/{id}/attributes");
 
         /////////// MediaRS
 

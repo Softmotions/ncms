@@ -25,10 +25,14 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
     construct : function() {
         this.base(arguments);
-
     },
 
     members : {
+
+
+        __optionsWidget : null,
+
+        __valueWidget : null,
 
 
         _fetchAttrValue : function(attrSpec, cb) {
@@ -64,19 +68,19 @@ qx.Class.define("ncms.asm.am.StringAM", {
          *   "hasLargeValue" : false
          * },
          */
-        createOptionsWidget : function(attrSpec) {
-            var form = new qx.ui.form.Form();
+        activateOptionsWidget : function(attrSpec) {
 
+            var form = new qx.ui.form.Form();
             //---------- Options
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(4));
 
             var fieldRb = new qx.ui.form.RadioButton(this.tr("field"));
-            fieldRb.setUserData("mode", "field");
+            fieldRb.setUserData("display", "field");
 
             var areaRb = new qx.ui.form.RadioButton(this.tr("area"));
-            areaRb.setUserData("mode", "area");
+            areaRb.setUserData("display", "area");
 
             el.add(fieldRb);
             el.add(areaRb);
@@ -96,21 +100,54 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
             var fr = new sm.ui.form.FlexFormRenderer(form);
             fr.setLastRowFlexible();
+            fr.setUserData("form", form);
+
+            this.__optionsWidget = fr;
             return fr;
         },
 
-        optionsAsJSON : function(w, attrSpec) {
+        optionsAsJSON : function() {
+            if (this.__optionsWidget == null) {
+                return null;
+            }
+            var opts = {};
+            var form = this.__optionsWidget.getUserData("form");
+            if (!form.validate()) {
+                return;
+            }
+            var items = form.getItems();
+            for (var k in items) {
+                var item = items[k];
+                if (k === "display") {
+                    var rb = item.getSelection()[0];
+                    opts["display"] = rb.getUserData("display");
+                } else {
+                    opts[k] = item.getValue();
+                }
+            }
+            return opts;
         },
 
-        createValueEditorWidget : function(attrSpec) {
+        activateValueEditorWidget : function(attrSpec) {
             return new qx.ui.core.Widget().set({backgroundColor : "green"});
         },
 
-        valueAsJSON : function(w, attrSpec) {
+        valueAsJSON : function() {
+            return {};
+        },
+
+        __disposeWidget : function(w) {
+            if (w) {
+                w.setUserData("form", null);
+                w.destroy();
+            }
         }
     },
 
     destruct : function() {
-        //this._disposeObjects("__field_name");                                
+        this.__disposeWidget(this.__optionsWidget);
+        this.__disposeWidget(this.__valueWidget);
+        this.__optionsWidget = null;
+        this.__valueWidget = null;
     }
 });

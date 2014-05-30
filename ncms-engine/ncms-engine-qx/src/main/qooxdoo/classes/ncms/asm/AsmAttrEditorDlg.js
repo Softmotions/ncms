@@ -12,6 +12,15 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
     events : {
         /**
          * Data: assembly attribute JSON representation.
+         * Example:
+         *
+         *  {
+         *    "name" : "foo",
+         *    "type" : "string",
+         *    "label" : null,
+         *    "asmId" : 2,
+         *    "options" : {"display" : "field", "value" : "some text"}
+         *  }
          */
         "completed" : "qx.event.type.Data"
     },
@@ -44,7 +53,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         //-------------- Main attribute properties
 
-        var form = this.__form = new qx.ui.form.Form();
+        var form = this.__form = new sm.ui.form.ExtendedForm();
         var vmgr = form.getValidationManager();
         vmgr.setRequiredFieldMessage(this.tr("This field is required"));
 
@@ -116,14 +125,14 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         __createTypeWidgetStack : function() {
             var ts = new sm.ui.cont.LazyStack();
-            ts.setWidgetsHidePolicy("destroy");
+            ts.setWidgetsHidePolicy("exclude");
             var me = this;
             ts.setOnDemandFactoryFunctionProvider(function() {
                 return function(id) {
                     var editor = ncms.asm.AsmAttrManagersRegistry.createAttrManagerInstance(id);
                     var aspec = me.__getAttributeSpec();
-                    var w = editor.createOptionsWidget(aspec);
-                    w.setUserData("eidtor", editor);
+                    var w = editor.activateOptionsWidget(aspec);
+                    w.setUserData("editor", editor);
                     return w;
                 }
             });
@@ -157,17 +166,49 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             if (this.__closeCmd) {
                 this.__closeCmd.setEnabled(false);
             }
+            this.__typeEditorStack.getActivatedWidgets().forEach(function(w) {
+                var editor = w.getUserData("eidtor");
+                if (editor) {
+                    w.setUserData("editor", null);
+                    editor.dispose();
+                }
+            });
+            this._disposeObjects("__form", "__closeCmd", "__typeEditorStack");
             this.__asmSpec = null;
             this.__attrName = null;
-            this.__typeEditorStack = null;
-            this._disposeObjects("__form", "__closeCmd", "__typeEditorStack");
         },
 
         __ok : function() {
             if (!this.__form.validate()) {
                 return;
             }
+            var w = this.__typeEditorStack.getActiveWidget();
+            if (w == null) {
+                return;
+            }
+            var editor = w.getUserData("editor");
+            if (editor == null) {
+                return;
+            }
+            var optsJson = editor.optionsAsJSON();
+            if (optsJson == null) { //attribute manager prohibited farther saving and reported error
+                return;
+            }
+            var attrSpec = this.__getAttributeSpec();
+            var sobj = this.__form.populateJSONObject({});
+            sobj["asmId"] = attrSpec["asmId"] || this.__asmSpec["id"];
+            sobj["old_name"] = attrSpec["name"];
+            sobj["old_type"] = attrSpec["type"];
+            sobj["options"] = optsJson;
 
+            var req = new sm.io.Request(
+                    ncms.Application.ACT.getRestUrl("asms.attributes", {id : sobj["asmId"]}),
+                    "PUT", "application/json");
+            req.setRequestContentType("application/json");
+            req.setData(JSON.stringify(sobj));
+            req.send(function(resp) {
+                this.fireDataEvent("completed", sobj);
+            }, this);
         },
 
         close : function() {
