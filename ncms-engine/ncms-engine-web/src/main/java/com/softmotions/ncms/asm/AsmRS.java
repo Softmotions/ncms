@@ -1,6 +1,8 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.asm.render.AsmAttributeManager;
+import com.softmotions.ncms.asm.render.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
@@ -56,16 +58,19 @@ public class AsmRS extends MBDAOSupport {
 
     final NcmsMessages messages;
 
+    final AsmAttributeManagersRegistry amRegistry;
+
 
     @Inject
     public AsmRS(SqlSession sess,
                  AsmDAO adao, ObjectMapper mapper,
+                 AsmAttributeManagersRegistry amRegistry,
                  NcmsMessages messages) {
         super(AsmRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
-
+        this.amRegistry = amRegistry;
     }
 
     /**
@@ -290,10 +295,50 @@ public class AsmRS extends MBDAOSupport {
     @Consumes("application/json")
     @Transactional
     public void putAsmAttributes(@PathParam("id") Long asmId,
-                                 JsonNode spec) {
+                                 ObjectNode spec) {
+
 
         log.info("putAsmAttributes id=" + asmId + " spec=" + spec);
+        String oldName = spec.hasNonNull("old_name") ? spec.get("old_name").asText() : null;
+        String name = spec.get("name").asText();
 
+        if (oldName != null && !oldName.equals(name)) { //attribute renamed
+            update("renameAttribute",
+                   "asm_id", asmId,
+                   "new_name", name,
+                   "old_name", oldName);
+        }
+        AsmAttribute attr = selectOne("selectAttrByName",
+                                      "asm_id", asmId,
+                                      "name", name);
+        if (attr == null) {
+            attr = new AsmAttribute();
+            attr.setName(name);
+        }
+        if (spec.hasNonNull("type")) {
+            attr.setType(spec.get("type").asText());
+        }
+        if (spec.hasNonNull("label")) {
+            attr.setLabel(spec.get("label").asText());
+        }
+        AsmAttributeManager am = amRegistry.getByType(attr.getType());
+        if (am != null) {
+            if (spec.hasNonNull("options")) {
+                attr = am.applyAttributeOptions(attr, spec.get("options"));
+            }
+            if (spec.hasNonNull("value")) {
+                attr = am.applyAttributeValue(attr, spec.get("value"));
+            }
+        } else {
+            log.warn("Missing atribute manager for given type: '" + attr.getType() + '\'');
+        }
+
+        if (attr.asmId == 0L) { //insert
+            attr.asmId = asmId;
+            insert("insertAttribute", attr);
+        } else {  //update
+            update("updateAttribute", attr);
+        }
     }
 
 

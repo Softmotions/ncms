@@ -184,7 +184,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 bt.addListener("execute", this.__rmFiles, this);
                 part.add(bt);
 
-                part.add(new qx.ui.toolbar.Separator().set({width: 5}));
+                //part.add(new qx.ui.toolbar.Separator().set({width: 5}));
 
                 this.__mvBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/file-move.png")
                         .set({"appearance" : "toolbar-table-button"});
@@ -375,12 +375,12 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
 
             var d = new ncms.mmgr.MediaSelectFolderDlg(
-                    sfiles.length == 1 ?  this.tr("Move '%1' to another folder", sfiles[0].folder + sfiles[0].name) : this.tr("Move %1 files to another folder", sfiles.length)
+                            sfiles.length == 1 ? this.tr("Move '%1' to another folder", sfiles[0].folder + sfiles[0].name) : this.tr("Move %1 files to another folder", sfiles.length)
             );
 
             var moveFiles = function(files, target, iter, cb, self) {
                 if (files.length == 0) {
-                    cb.call(self||this);
+                    cb.call(self || this);
                     return;
                 }
 

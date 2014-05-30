@@ -57,6 +57,10 @@ public class AsmAttribute implements Serializable {
         this.type = type;
     }
 
+    public long getAsmId() {
+        return asmId;
+    }
+
     public String getName() {
         return name;
     }
@@ -101,6 +105,10 @@ public class AsmAttribute implements Serializable {
     @JsonIgnore
     public String getEffectiveValue() {
         return (largeValue != null) ? largeValue : value;
+    }
+
+    public void setEffectiveValue(String val) {
+
     }
 
     public String getLabel() {

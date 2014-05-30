@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +14,6 @@ import java.util.Set;
  */
 @Singleton
 public class AsmAttributeManagersRegistry {
-
 
     /**
      * Set of attribute renderers
@@ -38,10 +38,13 @@ public class AsmAttributeManagersRegistry {
     }
 
     public AsmAttributeManager getByType(String type) {
+        if (type == null) {
+            return null;
+        }
         return typeAttributeManagersMap.get(type);
     }
 
     public Collection<AsmAttributeManager> getAll() {
-        return attributeManagers;
+        return Collections.unmodifiableCollection(attributeManagers);
     }
 }

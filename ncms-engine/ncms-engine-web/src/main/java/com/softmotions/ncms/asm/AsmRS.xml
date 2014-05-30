@@ -5,25 +5,66 @@
 
 <mapper namespace="com.softmotions.ncms.asm.AsmRS">
 
-<select id="select" resultType="map" parameterType="map">
-        select
-        asm.id as "id",
-        asm.name as "name",
-        asm.type as "type"
-        from asms asm
+    <select id="select" resultType="map" parameterType="map">
+        SELECT
+        asm.id AS "id",
+        asm.name AS "name",
+        asm.type AS "type"
+        FROM asms asm
         <where>
-            <if test="type != null">and asm.type = #{type}</if>
-            <if test="name != null">and asm.name like #{name}</if>
+            <if test="type != null">AND asm.type = #{type}</if>
+            <if test="name != null">AND asm.name LIKE #{name}</if>
         </where>
-        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
     </select>
 
     <select id="count" resultType="int" parameterType="map">
-        select count(*) from asms
+        SELECT COUNT(*) FROM asms
         <where>
-            <if test="type != null">and type = #{type}</if>
-            <if test="name != null">and name like #{name}</if>
+            <if test="type != null">AND TYPE = #{type}</if>
+            <if test="name != null">AND NAME LIKE #{name}</if>
         </where>
     </select>
+
+    <select id="selectAttrByName"
+            parameterType="map"
+            resultType="com.softmotions.ncms.asm.AsmAttribute">
+        SELECT
+        attr.*
+        FROM asm_attrs attr
+        WHERE attr.asm_id = #{asm_id}
+        AND attr.name = #{name}
+    </select>
+
+    <update id="renameAttribute"
+            parameterType="map">
+        UPDATE asm_attrs
+        SET name = #{new_name}
+        WHERE name = #{old_name}
+        AND asm_id = #{asm_id}
+    </update>
+
+
+    <insert id="insertAttribute"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        INSERT INTO asm_attrs
+        (asm_id, name, label, type, options, value, large_value)
+        VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{value}, #{largeValue})
+    </insert>
+
+
+    <update id="updateAttribute"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        UPDATE asm_attrs
+        SET
+        label = #{label},
+        type = #{type},
+        options = #{options},
+        value = #{value},
+        large_value = #{largeValue}
+        WHERE asm_id = #{asmId}
+        AND name = #{name}
+    </update>
+
 
 </mapper>

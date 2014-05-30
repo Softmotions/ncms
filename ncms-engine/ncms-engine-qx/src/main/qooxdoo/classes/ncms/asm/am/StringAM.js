@@ -134,19 +134,10 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
         valueAsJSON : function() {
             return {};
-        },
-
-        __disposeWidget : function(w) {
-            if (w) {
-                w.setUserData("form", null);
-                w.destroy();
-            }
         }
     },
 
     destruct : function() {
-        this.__disposeWidget(this.__optionsWidget);
-        this.__disposeWidget(this.__valueWidget);
         this.__optionsWidget = null;
         this.__valueWidget = null;
     }

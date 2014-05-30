@@ -9,25 +9,25 @@
 
     <insert id="coreInsert" parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id" useGeneratedKeys="true">
-        insert into asm_cores
+        INSERT INTO asm_cores
         (location, name, template_engine)
-        values (#{location}, #{name}, #{templateEngine})
+        VALUES (#{location}, #{name}, #{templateEngine})
     </insert>
 
     <update id="coreUpdate" parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id">
-        update asm_cores
+        UPDATE asm_cores
         <set>
             <if test="name != null">name = #{name},</if>
             <if test="location != null">location = #{location},</if>
             <if test="templateEngine != null">template_engine = #{templateEngine}</if>
         </set>
-        where id = #{id}
+        WHERE id = #{id}
     </update>
 
     <delete id="coreDelete">
-        delete
-        from asm_cores
+        DELETE
+        FROM asm_cores
         <where>
             <if test="id != null">#{id}</if>
             <if test="location != null">#{location}</if>
@@ -37,42 +37,42 @@
     <select id="selectAsmCore"
             resultType="com.softmotions.ncms.asm.AsmCore"
             resultMap="coreRM">
-        select *
-        from asm_cores
+        SELECT *
+        FROM asm_cores
         <where>
             <if test="id != null">id = #{id}</if>
-            <if test="location != null">and location = #{location}</if>
-            <if test="name != null">and name = #{name}</if>
-            <if test="templateEngine != null">and template_engine = #{templateEngine}</if>
+            <if test="location != null">AND location = #{location}</if>
+            <if test="name != null">AND name = #{name}</if>
+            <if test="templateEngine != null">AND template_engine = #{templateEngine}</if>
         </where>
     </select>
 
     <insert id="asmInsert" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
-        insert into asms
+        INSERT INTO asms
         (name, type, description<if test="core != null">, asm_core_id</if>)
-        values (#{name}, #{type}, #{description}<if test="core != null">, #{core.id}</if>)
+        VALUES (#{name}, #{type}, #{description}<if test="core != null">, #{core.id}</if>)
     </insert>
 
     <update id="asmUpdate"
             parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id">
-        update asms
+        UPDATE asms
         <set>
             <if test="name != null">name = #{name},</if>
             <if test="type != null">type = #{type},</if>
             <if test="description != null">description = #{description},</if>
             <if test="core != null">asm_core_id = #{core.id,jdbcType=BIGINT}</if>
         </set>
-        where id = #{id}
+        WHERE id = #{id}
     </update>
 
 
     <update id="asmUpdateCore"
             parameterType="map">
-        update asms
-        set asm_core_id = #{coreId,jdbcType=BIGINT}
-        where id = #{id}
+        UPDATE asms
+        SET asm_core_id = #{coreId,jdbcType=BIGINT}
+        WHERE id = #{id}
     </update>
 
     <select id="selectAsmByCriteria"
@@ -80,32 +80,32 @@
             parameterType="java.util.Map"
             resultMap="asmFullRM"
             useCache="true">
-        select asm.*,
-        attr.asm_id as attr_asm_id,
-        attr.name as attr_name,
-        attr.type as attr_type,
-        attr.options as attr_options,
-        attr.value as attr_value,
-        attr.large_value as attr_large_value,
-        core.id as core_id,
-        core.location as core_location,
-        core.name as core_name,
-        core.template_engine as core_template_engine
-        from asms as asm
-        left outer join asm_attrs attr on attr.asm_id = asm.id
-        left outer join asm_cores core on core.id = asm.asm_core_id
+        SELECT asm.*,
+        attr.asm_id AS attr_asm_id,
+        attr.name AS attr_name,
+        attr.type AS attr_type,
+        attr.options AS attr_options,
+        attr.value AS attr_value,
+        attr.large_value AS attr_large_value,
+        core.id AS core_id,
+        core.location AS core_location,
+        core.name AS core_name,
+        core.template_engine AS core_template_engine
+        FROM asms AS asm
+        LEFT OUTER JOIN asm_attrs attr ON attr.asm_id = asm.id
+        LEFT OUTER JOIN asm_cores core ON core.id = asm.asm_core_id
         <where>
             <if test="CQ_PK != null">asm.id = #{CQ_PK}</if>
             <if test="id != null">asm.id = #{id}</if>
             <if test="name != null">asm.name = #{name}</if>
-            <if test="type != null">and asm.type = #{type}</if>
-            <if test="location != null">and core.location = #{location}</if>
+            <if test="type != null">AND asm.type = #{type}</if>
+            <if test="location != null">AND core.location = #{location}</if>
         </where>
-        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">
-            limit ${CQ_LIMIT}
+            LIMIT ${CQ_LIMIT}
             <if test="CQ_OFFSET">
-                offset ${CQ_OFFSET}
+                OFFSET ${CQ_OFFSET}
             </if>
         </if>
     </select>
@@ -113,22 +113,23 @@
 
     <insert id="asmSetAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        insert into asm_attrs
-        (asm_id, name, type, value)
-        values (#{asmId}, #{name}, #{type}, #{value})
+        INSERT INTO asm_attrs
+        (asm_id, name, type, label, options, value, large_value)
+        VALUES (#{asmId}, #{name}, #{type}, #{label}, #{options}, #{value}, #{largeValue})
     </insert>
 
 
     <select id="asmSelectAllPlain" resultType="com.softmotions.ncms.asm.Asm">
-        select *
-        from asms
-        order by name asc
+        SELECT
+        *
+        FROM asms
+        ORDER BY name ASC
     </select>
 
     <update id="asmRename" parameterType="map">
-        update asms
-        set name = #{name}
-        where id = #{id}
+        UPDATE asms
+        SET name = #{name}
+        WHERE id = #{id}
     </update>
 
     <!-- ======================= Nested selects =========================== -->
@@ -137,22 +138,23 @@
             resultType="com.softmotions.ncms.asm.Asm"
             resultMap="asmFullRM"
             parameterType="long">
-        select asm.*,
-        attr.asm_id as attr_asm_id,
-        attr.name as attr_name,
-        attr.type as attr_type,
-        attr.options as attr_options,
-        attr.value as attr_value,
-        attr.large_value as attr_large_value,
-        core.id as core_id,
-        core.location as core_location,
-        core.name as core_name,
-        core.template_engine as core_template_engine
-        from asm_parents as parent
-        inner join asms asm on asm.id = parent.asm_parent_id
-        left outer join asm_attrs attr on attr.asm_id = asm.id
-        left outer join asm_cores core on core.id = asm.asm_core_id
-        where parent.asm_id = #{id}
+        SELECT
+        asm.*,
+        attr.asm_id AS attr_asm_id,
+        attr.name AS attr_name,
+        attr.type AS attr_type,
+        attr.options AS attr_options,
+        attr.value AS attr_value,
+        attr.large_value AS attr_large_value,
+        core.id AS core_id,
+        core.location AS core_location,
+        core.name AS core_name,
+        core.template_engine AS core_template_engine
+        FROM asm_parents AS parent
+        INNER JOIN asms asm ON asm.id = parent.asm_parent_id
+        LEFT OUTER JOIN asm_attrs attr ON attr.asm_id = asm.id
+        LEFT OUTER JOIN asm_cores core ON core.id = asm.asm_core_id
+        WHERE parent.asm_id = #{id}
     </select>
 
 
@@ -161,51 +163,54 @@
     <select id="asmHasSpecificParent"
             resultType="int"
             parameterType="map">
-        select count(*)
-        from asm_parents as p
-        where p.asm_id = #{asmId}
-        and p.asm_parent_id = #{parentId}
+        SELECT
+        count(*)
+        FROM asm_parents AS p
+        WHERE p.asm_id = #{asmId}
+        AND p.asm_parent_id = #{parentId}
     </select>
 
 
     <select id="asmIDByName" parameterType="string" resultType="int">
-        select id
-        from asms
-        where name = #{name}
+        SELECT
+        id
+        FROM asms
+        WHERE name = #{name}
     </select>
 
     <insert id="asmSetParent">
-        insert into asm_parents
+        INSERT INTO asm_parents
         (asm_id, asm_parent_id)
-        values(#{asmId}, #{parentId})
+        VALUES (#{asmId}, #{parentId})
     </insert>
 
     <delete id="asmRemoveParent">
-        delete
-        from asm_parents
-        where asm_id = #{asmId} and asm_parent_id = #{parentId}
+        DELETE
+        FROM asm_parents
+        WHERE asm_id = #{asmId} AND asm_parent_id = #{parentId}
     </delete>
 
     <delete id="asmRemoveParentFromAll">
-        delete
-        from asm_parents
-        where asm_parent_id = #{parentId}
+        DELETE
+        FROM asm_parents
+        WHERE asm_parent_id = #{parentId}
     </delete>
 
     <delete id="asmRemove">
-        delete
-        from asms
-        where id = #{id}
+        DELETE
+        FROM asms
+        WHERE id = #{id}
     </delete>
 
     <select id="attrByAsmAndName"
             resultType="com.softmotions.ncms.asm.AsmAttribute"
             resultMap="attrFullRM"
             parameterType="map">
-        select attr.*
-        from asm_attrs attr
-        where attr.asm_id = #{asm_id}
-        and attr.name = #{name}
+        SELECT
+        attr.*
+        FROM asm_attrs attr
+        WHERE attr.asm_id = #{asm_id}
+        AND attr.name = #{name}
     </select>
 
 

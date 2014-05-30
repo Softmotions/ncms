@@ -169,7 +169,6 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             this.__typeEditorStack.getActivatedWidgets().forEach(function(w) {
                 var editor = w.getUserData("eidtor");
                 if (editor) {
-                    w.setUserData("editor", null);
                     editor.dispose();
                 }
             });

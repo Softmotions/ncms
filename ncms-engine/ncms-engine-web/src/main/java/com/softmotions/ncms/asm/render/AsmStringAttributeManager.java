@@ -6,6 +6,9 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Singleton;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 /**
@@ -13,6 +16,8 @@ import java.util.Map;
  */
 @Singleton
 public class AsmStringAttributeManager implements AsmAttributeManager {
+
+    private static final Logger log = LoggerFactory.getLogger(AsmStringAttributeManager.class);
 
     public static final String[] TYPES = new String[]{"*", "string"};
 
@@ -30,11 +35,12 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
         return attr.getEffectiveValue();
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode options) {
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode opts) {
+        log.info("opts=" + opts);
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode value) {
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
         return attr;
     }
 }

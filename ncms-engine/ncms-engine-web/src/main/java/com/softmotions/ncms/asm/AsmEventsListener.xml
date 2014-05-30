@@ -6,15 +6,15 @@
 <mapper namespace="com.softmotions.ncms.asm.AsmEventsListener">
 
     <update id="fixCoreFolderLocation" parameterType="map">
-        update asm_cores c
-        set c.location = #{new_prefix} || substring(c.location, #{prefix_like_len})
-        where c.location like #{prefix_like}
+        UPDATE asm_cores c
+        SET c.location = #{new_prefix} || SUBSTRING(c.location, #{prefix_like_len})
+        WHERE c.location LIKE #{prefix_like}
     </update>
 
     <update id="fixCoreLocation" parameterType="map">
-        update asm_cores c
-        set c.location = #{new_location}
-        where c.location = #{old_location}
+        UPDATE asm_cores c
+        SET c.location = #{new_location}
+        WHERE c.location = #{old_location}
     </update>
 
 </mapper>
