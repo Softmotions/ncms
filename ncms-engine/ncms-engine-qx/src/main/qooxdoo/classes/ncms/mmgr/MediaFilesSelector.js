@@ -6,6 +6,7 @@
  * @asset(ncms/icon/16/actions/delete.png)
  * @asset(ncms/icon/16/misc/folder-tree.png)
  * @asset(ncms/icon/16/misc/folder-tree-bw.png)
+ * @asset(ncms/icon/16/misc/file-move.png)
  */
 qx.Class.define("ncms.mmgr.MediaFilesSelector", {
     extend : qx.ui.core.Widget,
@@ -118,6 +119,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         __rmBt : null,
 
+        __mvBt : null,
+
         __subfoldersBt : null,
 
         setViewSpec : function(vs) {
@@ -179,6 +182,14 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                         .set({"appearance" : "toolbar-table-button"});
                 bt.setToolTipText(this.tr("Remove files"));
                 bt.addListener("execute", this.__rmFiles, this);
+                part.add(bt);
+
+                part.add(new qx.ui.toolbar.Separator().set({width: 5}));
+
+                this.__mvBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/file-move.png")
+                        .set({"appearance" : "toolbar-table-button"});
+                bt.setToolTipText(this.tr("Move files"));
+                bt.addListener("execute", this.__moveFiles, this);
                 part.add(bt);
             }
 
@@ -282,6 +293,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             if (this.__rmBt) {
                 this.__rmBt.setEnabled(selected);
             }
+            if (this.__mvBt) {
+                this.__mvBt.setEnabled(selected);
+            }
         },
 
         __handleFormUploadFiles : function(ev) {
@@ -354,6 +368,43 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             form.submit();
         },
 
+        __moveFiles : function(ev) {
+            var sfiles = this.__table.getSelectedFiles();
+            if (sfiles.length == 0) {
+                return;
+            }
+
+            var d = new ncms.mmgr.MediaSelectFolderDlg(
+                    sfiles.length == 1 ?  this.tr("Move '%1' to another folder", sfiles[0].folder + sfiles[0].name) : this.tr("Move %1 files to another folder", sfiles.length)
+            );
+
+            var moveFiles = function(files, target, iter, cb, self) {
+                if (files.length == 0) {
+                    cb.call(self||this);
+                    return;
+                }
+
+                var file = files.pop();
+                var path = [].concat(file.folder.split('/').splice(0), file.name);
+                var npath = [].concat(target, file.name);
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.move", path), "PUT", "application/json");
+                req.setData(npath.join("/"));
+                req.send(function() {
+                    iter.call(self || this, files, target, iter, cb, self);
+                }, this);
+            };
+
+            d.addListenerOnce("completed", function(ev) {
+                var target = ev.getData();
+                moveFiles.call(this, sfiles, target, moveFiles, function() {
+                    this.reload();
+                    d.close();
+                }, this);
+            }, this);
+            d.show();
+
+        },
+
         __beforeContextmenuOpen : function(ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
@@ -383,6 +434,11 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     bt.addListenerOnce("execute", this.__renameFile, this);
                     menu.add(bt);
                 }
+
+                bt = new qx.ui.menu.Button(this.tr("Move to another folder"));
+                bt.addListenerOnce("execute", this.__moveFiles, this);
+                menu.add(bt);
+
                 bt = new qx.ui.menu.Button(this.tr("Remove"));
                 bt.addListenerOnce("execute", this.__rmFiles, this);
                 menu.add(bt);
@@ -403,6 +459,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__table = null;
         this.__dropFun = null;
         this.__rmBt = null;
+        this.__mvBt = null;
         this.__subfoldersBt = null;
     }
 });
