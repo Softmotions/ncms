@@ -95,7 +95,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
             var i, dataItem;
             for (i = 0; i < items.length; ++i) {
                 var item = items[i];
-                dataItem = [[item["name"], item["type"], item["description"], false], item];
+                dataItem = [[false, item["name"], item["type"], item["description"]], item];
                 data[i] = dataItem;
                 dataMap[item["name"]] = dataItem; // cache
             }
@@ -104,13 +104,13 @@ qx.Class.define("ncms.usr.UserRolesTable", {
             for (i = 0; i < uroles.length; ++i) {
                 dataItem = dataMap[uroles[i]];
                 if (dataItem) {
-                    dataItem[0][3] = dataItem[1]["active"] = true;
+                    dataItem[0][0] = dataItem[1]["active"] = true;
                 }
             }
             for (i = 0; i < ugroups.length; ++i) {
                 var groupItem = dataMap[ugroups[i]];
                 if (groupItem) {
-                    groupItem[0][3] = groupItem[1]["active"] = true;
+                    groupItem[0][0] = groupItem[1]["active"] = true;
                     var groles = groupItem[1]["roles"] || [];
                     for(var j = 0; j < groles.length; ++j) {
                         dataItem = dataMap[groles[j]];
@@ -135,6 +135,13 @@ qx.Class.define("ncms.usr.UserRolesTable", {
                 "title" : "",
                 "columns" : [
                     {
+                        "title" : this.tr("Assign").toString(),
+                        "id" : "active",
+                        "type" : "boolean",
+                        "editable" : true,
+                        "width" : 75
+                    },
+                    {
                         "title" : this.tr("Role/Group").toString(),
                         "id" : "id",
                         "width" : "1*"
@@ -148,15 +155,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
                         "title" : this.tr("Description").toString(),
                         "id" : "description",
                         "width" : "2*"
-                    },
-                    {
-                        "title" : this.tr("Assign").toString(),
-                        "id" : "active",
-                        "type" : "boolean",
-                        "editable" : true,
-                        "width" : "1*"
                     }
-
                 ],
                 "items" : items ? items : []
             };
