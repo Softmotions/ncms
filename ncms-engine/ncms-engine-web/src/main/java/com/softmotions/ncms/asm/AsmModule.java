@@ -1,12 +1,13 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.ncms.NcmsConfiguration;
-import com.softmotions.ncms.asm.render.AsmAttributeRenderer;
-import com.softmotions.ncms.asm.render.AsmRefAttributeRenderer;
+import com.softmotions.ncms.asm.render.AsmAttributeManager;
+import com.softmotions.ncms.asm.render.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.render.AsmRefAttributeManager;
 import com.softmotions.ncms.asm.render.AsmRenderer;
-import com.softmotions.ncms.asm.render.AsmResourceAttributeRenderer;
+import com.softmotions.ncms.asm.render.AsmResourceAttributeManager;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
-import com.softmotions.ncms.asm.render.AsmStringAttributeRenderer;
+import com.softmotions.ncms.asm.render.AsmStringAttributeManager;
 import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
 import com.softmotions.ncms.asm.render.ldrs.AsmClasspathResourceLoader;
 import com.softmotions.ncms.media.MediaResource;
@@ -39,12 +40,13 @@ public class AsmModule extends AbstractModule {
     protected void configure() {
         bind(AsmDAO.class);
         bind(AsmRenderer.class).to(DefaultAsmRenderer.class);
+        bind(AsmAttributeManagersRegistry.class).in(Singleton.class);
 
-        Multibinder<AsmAttributeRenderer> attrBinder =
-                Multibinder.newSetBinder(binder(), AsmAttributeRenderer.class);
-        attrBinder.addBinding().to(AsmStringAttributeRenderer.class);
-        attrBinder.addBinding().to(AsmRefAttributeRenderer.class);
-        attrBinder.addBinding().to(AsmResourceAttributeRenderer.class);
+        Multibinder<AsmAttributeManager> attrBinder =
+                Multibinder.newSetBinder(binder(), AsmAttributeManager.class);
+        attrBinder.addBinding().to(AsmStringAttributeManager.class);
+        attrBinder.addBinding().to(AsmRefAttributeManager.class);
+        attrBinder.addBinding().to(AsmResourceAttributeManager.class);
 
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);

@@ -1,5 +1,7 @@
 /**
  * Attribute editor dialog
+ *
+ * @asset(ncms/icon/16/misc/application-form.png)
  */
 qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
     extend : qx.ui.window.Window,
@@ -17,20 +19,9 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
     properties : {
     },
 
-    /**
-     * attrSpec example:
-     * {
-     *  "asmId" : 1,
-     *  "name" : "copyright",
-     *  "type" : "string",
-     *  "value" : "My company (c)",
-     *  "options" : null,
-     *   "hasLargeValue" : false
-     * }
-     *
-     */
-    construct : function(caption, icon, attrSpec) {
-        this.base(arguments, caption != null ? caption : this.tr("Edit assembly attribute"), icon);
+
+    construct : function(caption, asmSpec, attrName) {
+        this.base(arguments, caption != null ? caption : this.tr("Edit assembly attribute"));
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
             modal : true,
@@ -41,34 +32,54 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             height : 400
         });
 
-        var aspec = this.__attrSpec = attrSpec;
+        qx.core.Assert.assertMap(asmSpec, "Missing 'asmSpec' constructor argument");
+
+        this.__attrName = attrName;
+        this.__asmSpec = asmSpec;
+        var attrSpec = null;
+
+        if (attrName != null) {
+            attrSpec = (asmSpec["effectiveAttributes"] || {})[attrName];
+        }
+
+        //-------------- Main attribute properties
 
         var form = this.__form = new qx.ui.form.Form();
         var vmgr = form.getValidationManager();
         vmgr.setRequiredFieldMessage(this.tr("This field is required"));
 
-        //attribute name
+        //name
         var el = new qx.ui.form.TextField();
         el.setRequired(true);
+        el.setMaxLength(127);
         el.tabFocus();
         form.add(el, this.tr("Name"), null, "name");
 
-        el = new qx.ui.form.TextField();
-        form.add(el, this.tr("Options"), null, "options");
-
-        el = new qx.ui.form.SelectBox();
-        el.add(new qx.ui.form.ListItem(this.tr("String"), null, "string"));
-        el.add(new qx.ui.form.ListItem(this.tr("Assembly reference"), null, "asmref"));
-        el.add(new qx.ui.form.ListItem(this.tr("Resource"), null, "resource"));
+        //Attribute type
+        el = new sm.ui.form.ButtonField(this.tr("Type"), "ncms/icon/16/misc/application-form.png");
+        el.setPlaceholder(this.tr("Choose the attribute type"));
+        el.setReadOnly(true);
+        el.setRequired(true);
+        if (attrSpec != null) {
+            el.setValue(attrSpec["type"]);
+        }
+        el.addListener("execute", this.__selectType, this);
         form.add(el, this.tr("Type"), null, "type");
 
-        el = new qx.ui.form.TextArea();
-        form.add(el, this.tr("Value"), null, "value");
+        //GUI label
+        el = new qx.ui.form.TextField();
+        el.setMaxLength(32);
+        form.add(el, this.tr("Label"), null, "label");
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
-        fr._getLayout().setRowFlex(fr._row - 1, 1);
-        this.add(fr, {flex : 1});
+        this.add(fr);
 
+        //---------------- Type-specific editor placeholder
+
+        this.__typeEditorStack = this.__createTypeWidgetStack();
+        this.add(this.__typeEditorStack, {flex : 1});
+
+        //----------------- Footer
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
         hcont.setPadding(5);
@@ -93,19 +104,68 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         __closeCmd : null,
 
-        __attrSpec : null,
+        __attrName : null,
+
+        __asmSpec : null,
+
+        __typeEditorStack : null,
+
+        __getAttributeSpec : function() {
+            return ((this.__asmSpec["effectiveAttributes"] || {})[this.__attrName]) || {};
+        },
+
+        __createTypeWidgetStack : function() {
+            var ts = new sm.ui.cont.LazyStack();
+            ts.setWidgetsHidePolicy("destroy");
+            var me = this;
+            ts.setOnDemandFactoryFunctionProvider(function() {
+                return function(id) {
+                    var editor = ncms.asm.AsmAttrManagersRegistry.createAttrManagerInstance(id);
+                    var w = editor.createOptionsWidget(me.__getAttributeSpec());
+                    w.setUserData("eidtor", editor);
+                }
+            });
+            return ts;
+        },
+
+        __selectType : function() {
+            var dlg = new ncms.asm.AsmAttributeTypeSelectorDlg();
+            dlg.addListenerOnce("appear", function() {
+                this.__closeCmd.setEnabled(false);
+            }, this);
+            dlg.addListenerOnce("disappear", function() {
+                this.__closeCmd.setEnabled(true);
+            }, this);
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                dlg.hide();
+                //Data: [type, editor clazz]
+                this.__setType(data[0], data[1]);
+            }, this);
+            dlg.show();
+        },
+
+        __setType : function(type, editorClazz) {
+            var items = this.__form.getItems();
+            items["type"].setValue(type);
+            this.__typeEditorStack.showWidget(editorClazz.classname);
+        },
 
         __dispose : function() {
             if (this.__closeCmd) {
                 this.__closeCmd.setEnabled(false);
             }
-            this._disposeObjects("__form", "__closeCmd");
+            this.__asmSpec = null;
+            this.__attrName = null;
+            this.__typeEditorStack = null;
+            this._disposeObjects("__form", "__closeCmd", "__typeEditorStack");
         },
 
         __ok : function() {
             if (!this.__form.validate()) {
                 return;
             }
+
         },
 
         close : function() {

@@ -198,6 +198,16 @@
         where id = #{id}
     </delete>
 
+    <select id="attrByAsmAndName"
+            resultType="com.softmotions.ncms.asm.AsmAttribute"
+            resultMap="attrFullRM"
+            parameterType="map">
+        select attr.*
+        from asm_attrs attr
+        where attr.asm_id = #{asm_id}
+        and attr.name = #{name}
+    </select>
+
 
     <!-- ======================== Result maps ============================= -->
 

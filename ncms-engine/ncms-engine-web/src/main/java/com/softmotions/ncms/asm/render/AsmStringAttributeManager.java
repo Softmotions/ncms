@@ -3,6 +3,7 @@ package com.softmotions.ncms.asm.render;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Singleton;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-public class AsmStringAttributeRenderer implements AsmAttributeRenderer {
+public class AsmStringAttributeManager implements AsmAttributeManager {
 
     public static final String[] TYPES = new String[]{"*", "string"};
 
@@ -27,5 +28,13 @@ public class AsmStringAttributeRenderer implements AsmAttributeRenderer {
             return null;
         }
         return attr.getEffectiveValue();
+    }
+
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode options) {
+        return attr;
+    }
+
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode value) {
+        return attr;
     }
 }

@@ -1,7 +1,9 @@
 package com.softmotions.ncms.asm;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -16,6 +18,9 @@ import java.io.Serializable;
 @JsonRootName("attribute")
 @XmlAccessorType(XmlAccessType.NONE)
 public class AsmAttribute implements Serializable {
+
+    interface ViewFull {
+    }
 
     @JsonProperty
     long asmId;
@@ -76,6 +81,7 @@ public class AsmAttribute implements Serializable {
         this.value = value;
     }
 
+    @JsonView(ViewFull.class)
     public String getLargeValue() {
         return largeValue;
     }
@@ -92,6 +98,7 @@ public class AsmAttribute implements Serializable {
         this.options = options;
     }
 
+    @JsonIgnore
     public String getEffectiveValue() {
         return (largeValue != null) ? largeValue : value;
     }

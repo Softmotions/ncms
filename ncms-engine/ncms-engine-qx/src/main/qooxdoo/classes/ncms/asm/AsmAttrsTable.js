@@ -146,7 +146,9 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
 
         __onAdd : function() {
             var dlg = new ncms.asm.AsmAttrEditorDlg(
-                    this.tr("New attribute for assembly: %1", this.__spec["name"]));
+                    this.tr("New attribute for assembly: %1", this.__spec["name"]),
+                    this.__spec
+            );
             dlg.addListener("completed", function(ev) {
                 var aspec = ev.getData();
                 qx.log.Logger.info("Aspec=" + JSON.stringify(aspec));

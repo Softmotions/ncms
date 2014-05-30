@@ -267,6 +267,7 @@ qx.Class.define("ncms.Application", {
 
         __createRightStack : function() {
             var rs = new sm.ui.cont.LazyStack();
+            rs.setWidgetsHidePolicy("exclude");
             rs.registerWidget("ncms.wsa.WSAPlaceholder", function() {
                 return new ncms.wsa.WSAPlaceholder()
             }, null, this);
@@ -278,14 +279,7 @@ qx.Class.define("ncms.Application", {
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
         },
 
-        __construct : function(constructor, args) {
-            function F() {
-                return constructor.apply(this, args);
-            }
-
-            F.prototype = constructor.prototype;
-            return new F();
-        }
+        __construct : sm.lang.Object.newInstance
     },
 
     defer : function(statics) {

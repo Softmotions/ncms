@@ -26,8 +26,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -232,6 +237,34 @@ public class AsmRS extends MBDAOSupport {
         }
         asm = adao.asmSelectById(id); //refresh
         return asm.getParentRefs();
+    }
+
+    /**
+     * GET asm attribute
+     */
+    @GET
+    @Path("/{id}/{name}")
+    public Response getAsmAttributeValue(@PathParam("id") Long asmId,
+                                         @PathParam("name") String name) {
+
+        final AsmAttribute attr = adao.selectOne("attrByAsmAndName",
+                                                 "asm_id", asmId,
+                                                 "name", name);
+        if (attr == null) {
+            throw new NotFoundException();
+        }
+
+        return Response
+                .ok(new StreamingOutput() {
+                    public void write(OutputStream output) throws IOException, WebApplicationException {
+                        mapper.writerWithView(AsmAttribute.ViewFull.class)
+                                .writeValue(output, attr);
+                    }
+                })
+                .encoding("UTF-8")
+                .type(MediaType.APPLICATION_JSON_TYPE)
+                .build();
+
     }
 
 
