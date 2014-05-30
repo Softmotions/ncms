@@ -21,6 +21,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -224,10 +225,15 @@ public class NcmsSecurityRS {
         if (log.isDebugEnabled()) {
             log.debug("updateuser/{" + name + "}?password=" + password + "&fullName=" + fullName);
         }
-        assertion(name != null && password != null, "Parameters 'name' and 'password' of user can not be empty");
+        // if user already exists it will be returned
         WSUser user = userDatabase.createUser(name, password, fullName);
+
+        // check for non empty password
+        assertion(!StringUtils.isBlank(user.getPassword()) || !StringUtils.isBlank(password), "Can't save user without password");
+        if (!StringUtils.isBlank(password)) {
+            user.setPassword(StringUtils.trim(password));
+        }
         // force update fields if user already exists
-        user.setPassword(password);
         user.setFullName(fullName);
         if (EmailValidator.getInstance().isValid(email)) {
             user.setEmail(email.toLowerCase());
@@ -386,6 +392,58 @@ public class NcmsSecurityRS {
         WSUser user = userDatabase.findUser(name);
         if (user != null) {
             userDatabase.removeUser(user);
+        }
+    }
+
+    /**
+     * Add role for user
+     */
+    @PUT
+    @Path("user/{name}/role/{role}")
+    public void setUserRole(@PathParam("name") String name, @PathParam("role") String roleName) {
+        WSUser user = userDatabase.findUser(name);
+        WSRole role = userDatabase.findRole(roleName);
+        if (user != null && role != null) {
+            user.addRole(role);
+        }
+    }
+
+    /**
+     * Unset role for user
+     */
+    @DELETE
+    @Path("user/{name}/role/{role}")
+    public void removeUserRole(@PathParam("name") String name, @PathParam("role") String roleName) {
+        WSUser user = userDatabase.findUser(name);
+        WSRole role = userDatabase.findRole(roleName);
+        if (user != null && role != null) {
+            user.removeRole(role);
+        }
+    }
+
+    /**
+     * Add group for user
+     */
+    @PUT
+    @Path("user/{name}/group/{group}")
+    public void setUserGroup(@PathParam("name") String name, @PathParam("group") String groupName) {
+        WSUser user = userDatabase.findUser(name);
+        WSGroup group = userDatabase.findGroup(groupName);
+        if (user != null && group != null) {
+            user.addGroup(group);
+        }
+    }
+
+    /**
+     * Unset group for user
+     */
+    @DELETE
+    @Path("user/{name}/group/{group}")
+    public void removeUserGroup(@PathParam("name") String name, @PathParam("group") String groupName) {
+        WSUser user = userDatabase.findUser(name);
+        WSGroup group = userDatabase.findGroup(groupName);
+        if (user != null && group != null) {
+            user.removeGroup(group);
         }
     }
 
