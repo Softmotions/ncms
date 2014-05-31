@@ -151,7 +151,18 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         },
 
         __onRemove : function() {
-            qx.log.Logger.info("remove attribute");
+            var rd = this.getSelectedRowData();
+            if (rd == null || rd["asmId"] != this.__spec["id"]) {
+                return;
+            }
+            var req = new sm.io.Request(
+                    ncms.Application.ACT.getRestUrl("asms.attribute",
+                            {id : rd["asmId"], name : rd["name"]}),
+                    "DELETE", "application/json");
+            req.send(function() {
+                this.fireEvent("attributesChanged");
+            }, this);
+
         }
     },
 

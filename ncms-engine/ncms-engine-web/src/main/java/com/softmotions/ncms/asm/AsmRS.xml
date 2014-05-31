@@ -45,6 +45,14 @@
     </update>
 
 
+    <delete id="deleteAttribute"
+            parameterType="map">
+        DELETE FROM asm_attrs
+        WHERE name = #{name}
+              AND asm_id = #{asm_id}
+    </delete>
+
+
     <insert id="insertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         INSERT INTO asm_attrs

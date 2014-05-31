@@ -250,8 +250,8 @@ public class AsmRS extends MBDAOSupport {
      */
     @GET
     @Path("/{id}/attribute/{name}")
-    public Response getAsmAttributeValue(@PathParam("id") Long asmId,
-                                         @PathParam("name") String name) {
+    public Response getAsmAttribute(@PathParam("id") Long asmId,
+                                    @PathParam("name") String name) {
 
         final AsmAttribute attr = adao.selectOne("attrByAsmAndName",
                                                  "asm_id", asmId,
@@ -271,6 +271,16 @@ public class AsmRS extends MBDAOSupport {
                 .type(MediaType.APPLICATION_JSON_TYPE)
                 .build();
 
+    }
+
+
+    @DELETE
+    @Path("/{id}/attribute/{name}")
+    public void rmAsmAttribute(@PathParam("id") Long asmId,
+                               @PathParam("name") String name) {
+        delete("deleteAttribute",
+               "name", name,
+               "asm_id", asmId);
     }
 
 

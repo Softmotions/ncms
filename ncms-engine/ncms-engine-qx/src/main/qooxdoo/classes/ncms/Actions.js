@@ -40,7 +40,7 @@ qx.Class.define("ncms.Actions", {
         //Payload: JSON core spec
         this._action("asms.core", "/ncms/rs/adm/asms/{id}/core");
 
-        //GET Assembly attribute
+        //GET|DELETE Assembly attribute
         // id: assembly id
         // name: attribute name
         this._action("asms.attribute", "/ncms/rs/adm/asms/{id}/attribute/{name}");

@@ -7,9 +7,6 @@ import com.softmotions.ncms.asm.AsmOptions;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Singleton;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Map;
 
 /**
@@ -17,8 +14,6 @@ import java.util.Map;
  */
 @Singleton
 public class AsmStringAttributeManager implements AsmAttributeManager {
-
-    private static final Logger log = LoggerFactory.getLogger(AsmStringAttributeManager.class);
 
     public static final String[] TYPES = new String[]{"*", "string"};
 
@@ -36,15 +31,18 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
         return attr.getEffectiveValue();
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode opts) {
-        //opts={"display":"field","value":"нлеглгн"}
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
-
-
+        if (val.hasNonNull("display")) {
+            asmOpts.put("display", val.get("display").asText());
+        }
+        attr.setOptions(asmOpts.toString());
+        attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
         return attr;
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+        attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
         return attr;
     }
 }

@@ -108,7 +108,18 @@ public class AsmAttribute implements Serializable {
     }
 
     public void setEffectiveValue(String val) {
-
+        if (val == null) {
+            setValue(null);
+            setLargeValue(null);
+            return;
+        }
+        if (val.length() <= 1024) {
+            setValue(val);
+            setLargeValue(null);
+        } else {
+            setValue(null);
+            setLargeValue(val);
+        }
     }
 
     public String getLabel() {
