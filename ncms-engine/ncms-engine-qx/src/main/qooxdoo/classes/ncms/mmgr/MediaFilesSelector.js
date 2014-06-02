@@ -64,8 +64,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         sf.addListener("input", function(ev) {
             this.__search(ev.getData());
         }, this);
-        sf.addListener("changeValue", function(ev) {
-            this.__search(ev.getData());
+        sf.addListener("keypress", function(ev) {
+            if ("Down" == ev.getKeyIdentifier()) {
+                this.__table.handleFocus();
+            }
         }, this);
 
         if (smode == null) {
