@@ -29,7 +29,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
     },
 
 
-    construct : function(caption, asmSpec, attrName) {
+    construct : function(caption, asmSpec, attrSpec) {
         this.base(arguments, caption != null ? caption : this.tr("Edit assembly attribute"));
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
@@ -43,13 +43,8 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         qx.core.Assert.assertMap(asmSpec, "Missing 'asmSpec' constructor argument");
 
-        this.__attrName = attrName;
+        this.__attrSpec = attrSpec;
         this.__asmSpec = asmSpec;
-        var attrSpec = null;
-
-        if (attrName != null) {
-            attrSpec = (asmSpec["effectiveAttributes"] || {})[attrName];
-        }
 
         //-------------- Main attribute properties
 
@@ -61,7 +56,9 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         var el = new qx.ui.form.TextField();
         el.setRequired(true);
         el.setMaxLength(127);
-        el.tabFocus();
+        if (attrSpec != null) {
+            el.setValue(attrSpec["name"]);
+        }
         form.add(el, this.tr("Name"), null, "name");
 
         //Attribute type
@@ -78,6 +75,9 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         //GUI label
         el = new qx.ui.form.TextField();
         el.setMaxLength(32);
+        if (attrSpec != null) {
+            el.setValue(attrSpec["label"])
+        }
         form.add(el, this.tr("Label"), null, "label");
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
@@ -105,6 +105,13 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         this.__closeCmd = new qx.ui.core.Command("Esc");
         this.__closeCmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
+
+        if (attrSpec != null) {
+            var clazz = ncms.asm.AsmAttrManagersRegistry.findEditorClassForType(attrSpec["type"]);
+            if (clazz != null) {
+                this.__setType(attrSpec["type"], clazz);
+            }
+        }
     },
 
     members : {
@@ -113,14 +120,14 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         __closeCmd : null,
 
-        __attrName : null,
+        __attrSpec : null,
 
         __asmSpec : null,
 
         __typeEditorStack : null,
 
         __getAttributeSpec : function() {
-            return ((this.__asmSpec["effectiveAttributes"] || {})[this.__attrName]) || {};
+            return this.__attrSpec || {};
         },
 
         __createTypeWidgetStack : function() {
@@ -174,7 +181,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             });
             this._disposeObjects("__form", "__closeCmd", "__typeEditorStack");
             this.__asmSpec = null;
-            this.__attrName = null;
+            this.__attrSpec = null;
         },
 
         __ok : function() {
@@ -193,7 +200,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             if (optsJson == null) { //attribute manager prohibited farther saving and reported error
                 return;
             }
-            var attrSpec = this.__getAttributeSpec();
+            var attrSpec = this.__attrSpec || {};
             var sobj = this.__form.populateJSONObject({});
             sobj["asmId"] = attrSpec["asmId"] || this.__asmSpec["id"];
             sobj["old_name"] = attrSpec["name"];

@@ -26,6 +26,9 @@ qx.Class.define("ncms.asm.AsmAttrManagersRegistry", {
          * Iterates over all attribute managers classes
          * in projection of supported types.
          *
+         * The iteration process will be aborted
+         * if `cb` function return `false` boolean value.
+         *
          * @param cb {forEachAttributeManagerClassCB}
          *
          * @callback forEachAttributeManagerClassCB
@@ -42,9 +45,30 @@ qx.Class.define("ncms.asm.AsmAttrManagersRegistry", {
                 var types = clazz.getSupportedAttributeTypes() || [];
                 for (var i = 0; i < types.length; ++i) {
                     var type = types[i];
-                    cb(type, clazz);
+                    if (cb(type, clazz) === false) {
+                        return false; //abort iteration
+                    }
                 }
             }, this);
+        },
+
+
+        /**
+         * Find class of editor which supports the specified
+         * attribute `type`.
+         *
+         * @param type {String} Type supported by editor
+         * @return {qx.Class|null} Editor class for specified attribute type.
+         */
+        findEditorClassForType : function(type) {
+            var ret = null;
+            this.forEachAttributeManagerTypeClassPair(function(itype, clazz) {
+                if (itype === type) {
+                    ret = clazz;
+                    return false;
+                }
+            });
+            return ret;
         }
 
     }
