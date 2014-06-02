@@ -3,7 +3,7 @@
  */
 qx.Class.define("ncms.mmgr.MediaSelectFolderDlg", {
     extend : qx.ui.window.Window,
-    include : [ ncms.mmgr.MMediaItemTree ],
+    include : [ ncms.cc.tree.MFolderTree ],
 
     events : {
         /**
@@ -26,7 +26,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFolderDlg", {
             width : 620,
             height : 400
         });
-
+        this._initTree({"action" : "media.folders"});
         this.__closeCmd = new qx.ui.core.Command("Esc");
         this.__closeCmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);

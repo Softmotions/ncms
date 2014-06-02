@@ -1,19 +1,19 @@
 /**
- * Media manager directories selector.
+ * Hierachical folder-like navigation tree support mixin.
  *
  * @asset(qx/icon/${qx.icontheme}/22/places/folder.png)
  * @asset(qx/icon/${qx.icontheme}/22/places/folder-open.png)
  * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
  * @asset(ncms/icon/22/state/loading.gif)
  */
-qx.Mixin.define("ncms.mmgr.MMediaItemTree", {
+qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
     events : {
 
         /**
          * DATA: var item = {
          *        "label"  : {String} Item name.
-         *        "status" : {Number} Item status. (1 - folder, 0 - file)
+         *        "status" : {Number} (statis & 1) != 0 - it is folder, 0 - otherwise
          *        "path"   : {String} Path to the item (from tree root)
          *       };
          * or null if selection cleared
@@ -22,21 +22,31 @@ qx.Mixin.define("ncms.mmgr.MMediaItemTree", {
     },
 
     properties : {
+
+        /**
+         * {
+         *   action : {String} Action name (defined in ncms.Actions) used to load childen (required)
+         * }
+         */
+        treeConfig : {
+            check : "Object",
+            nullable : false
+        }
     },
 
-    construct : function() {
-        this._initTree();
-    },
 
     members : {
 
         _tree : null,
 
-        _initTree : function() {
+        _initTree : function(cfg) {
+            if (cfg != null) {
+                this.setTreeConfig(cfg);
+            }
             var me = this;
             var root = qx.data.marshal.Json.createModel({
                 "label" : "root",   // node name
-                "status" : 1,       // 1 - it is folder, 0 - otherwise
+                "status" : 1,       // (statis & 1) != 0 - it is folder, 0 - otherwise
                 "icon" : "default", // icon alias
                 "loaded" : true,    // is loaded
                 "children" : []     // node children
@@ -146,7 +156,9 @@ qx.Mixin.define("ncms.mmgr.MMediaItemTree", {
         },
 
         _loadChildren : function(parent, cb, self) {
-            var url = ncms.Application.ACT.getRestUrl("media.folders", this._getItemPathSegments(parent));
+            var cfg = this.getTreeConfig();
+            var url = ncms.Application.ACT.getRestUrl(cfg["action"],
+                    this._getItemPathSegments(parent));
             var req = new sm.io.Request(url, "GET", "application/json");
             req.send(function(resp) {
                 var data = resp.getContent();
@@ -155,7 +167,7 @@ qx.Mixin.define("ncms.mmgr.MMediaItemTree", {
                 for (var i = 0, l = data.length; i < l; ++i) {
                     var node = data[i];
                     node["icon"] = "default";
-                    if (node["status"] == 1) {
+                    if ((node["status"] & 1)) {
                         node["loaded"] = false;
                         node["children"] = [
                             {

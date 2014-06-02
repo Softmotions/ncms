@@ -308,7 +308,6 @@ public class AsmRS extends MBDAOSupport {
                                  ObjectNode spec) {
 
 
-        log.info("putAsmAttributes id=" + asmId + " spec=" + spec);
         String oldName = spec.hasNonNull("old_name") ? spec.get("old_name").asText() : null;
         String name = spec.get("name").asText();
 
@@ -385,6 +384,10 @@ public class AsmRS extends MBDAOSupport {
             val = val.trim() + '%';
             cq.withParam("name", val);
         }
+        val = req.getParameter("type");
+        if (!StringUtils.isBlank(val)) {
+            cq.withParam("type", val);
+        }
         val = req.getParameter("sortAsc");
         if (!StringUtils.isBlank(val)) {
             cq.orderBy("asm." + val).asc();
@@ -393,6 +396,8 @@ public class AsmRS extends MBDAOSupport {
         if (!StringUtils.isBlank(val)) {
             cq.orderBy("asm." + val).desc();
         }
+
+
         return cq;
     }
 }

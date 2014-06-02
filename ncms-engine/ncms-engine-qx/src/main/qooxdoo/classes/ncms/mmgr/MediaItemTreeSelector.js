@@ -3,12 +3,12 @@
  */
 qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
     extend : qx.ui.core.Widget,
-    include : [ ncms.mmgr.MMediaItemTree ],
+    include : [ ncms.cc.tree.MFolderTree ],
 
     construct : function(allowModify) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
-
+        this._initTree({"action" : "media.folders"});
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);

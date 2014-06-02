@@ -29,7 +29,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
         }
     },
 
-    construct : function(constViewSpec, smodel) {
+    construct : function(constViewSpec, smodel, useColumns) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
 
@@ -43,7 +43,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
         sf.addListener("keypress", this.__searchKeypress, this);
 
 
-        this.__table = new ncms.asm.AsmTable().set({
+        this.__table = new ncms.asm.AsmTable(useColumns).set({
             "statusBarVisible" : true,
             "showCellFocusIndicator" : false});
 

@@ -6,10 +6,10 @@ qx.Class.define("ncms.usr.UsersTable", {
 
     construct : function(useColumns) {
         var tm = new sm.model.RemoteVirtualTableModel({
-            "name" : this.tr("Name"),
-            "fullName" : this.tr("Full Name")
+            "name" : this.tr("Login"),
+            "fullName" : this.tr("Name")
         }).set({
-                    "useColumns" : useColumns || ["name", "fullName"],                    
+                    "useColumns" : useColumns || ["name", "fullName"],
                     "rowdataUrl" : ncms.Application.ACT.getUrl("security.users"),
                     "rowcountUrl" : ncms.Application.ACT.getUrl("security.users.count")
                 });
