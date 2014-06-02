@@ -40,9 +40,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
         sf.addListener("input", function(ev) {
             this.__search(ev.getData());
         }, this);
-        sf.addListener("changeValue", function(ev) {
-            this.__search(ev.getData());
-        }, this);
+        sf.addListener("keypress", this.__searchKeypress, this);
 
 
         this.__table = new ncms.asm.AsmTable().set({
@@ -79,16 +77,19 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
 
         setViewSpec : function(vs) {
+            this.__table.resetCellFocus();
             this.__table.resetSelection();
             this.__table.getTableModel().setViewSpec(vs);
         },
 
         updateViewSpec : function(vs) {
+            this.__table.resetCellFocus();
             this.__table.resetSelection();
             this.__table.getTableModel().updateViewSpec(vs);
         },
 
         setConstViewSpec : function(vs) {
+            this.__table.resetCellFocus();
             this.__table.resetSelection();
             this.__table.getTableModel().setConstViewSpec(vs);
         },
@@ -96,6 +97,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
         reload : function(vspec) {
             this.__table.getTableModel().reloadData();
             this.__table.resetSelection();
+            this.__table.resetCellFocus();
         },
 
         resetSelection : function() {
@@ -132,6 +134,16 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
         __applyConstViewSpec : function() {
             this.__search();
+        },
+
+        __searchKeypress : function(ev) {
+            if ("Down" == ev.getKeyIdentifier() && this.__table.getTableModel().getRowCount() > 0) {
+                var focusedCol = this.__table.getFocusedColumn() == null ? 0 : this.__table.getFocusedColumn();
+                var focusedRow = this.__table.getFocusedRow() == null ? 0 : this.__table.getFocusedRow();
+                this.__table.setFocusedCell(focusedCol, focusedRow, true);
+                this.__table.getSelectionModel().setSelectionInterval(focusedRow, focusedRow);
+                this.__table.focus();
+            }
         }
     },
 
