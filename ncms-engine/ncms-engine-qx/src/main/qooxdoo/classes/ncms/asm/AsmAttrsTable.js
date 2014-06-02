@@ -3,6 +3,7 @@
  *
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
+ * @asset(ncms/icon/16/actions/application_form_edit.png)
  */
 qx.Class.define("ncms.asm.AsmAttrsTable", {
     extend : sm.table.ToolbarLocalTable,
@@ -26,6 +27,10 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
     },
 
     members : {
+
+        __editBt : null,
+
+        __delBt : null,
 
         __spec : null,
 
@@ -54,11 +59,18 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         _createToolbarItems : function(toolbar) {
             var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
             toolbar.add(part);
-            part.add(this._createButton(null, "ncms/icon/16/actions/add.png",
-                    this.__onAdd, this));
+            var el = this._createButton(null, "ncms/icon/16/actions/add.png",
+                    this.__onAdd, this);
+            el.setToolTipText(this.tr("Add new attribute"));
+            part.add(el);
+
+            this.__editBt = this._createButton(null, "ncms/icon/16/actions/application_form_edit.png",
+                    this.__onEditOrOverride, this);
+            part.add(this.__editBt);
 
             this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png",
                     this.__onRemove, this);
+            this.__delBt.setToolTipText(this.tr("Drop attribute"));
             part.add(this.__delBt);
             return toolbar;
         },
@@ -122,7 +134,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                 }
             }, this));
             table.setDataRowRenderer(rr);
-
+            table.addListener("cellDblclick", this.__onEditOrOverride, this);
             table.set({
                 showCellFocusIndicator : false,
                 statusBarVisible : true,
@@ -130,12 +142,58 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
 
             table.getSelectionModel()
                     .addListener("changeSelection", this._syncState, this);
+
+
+            this.setContextMenu(new qx.ui.menu.Menu());
+            this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+
             return table;
         },
 
         _syncState : function() {
             var rd = this.getSelectedRowData();
             this.__delBt.setEnabled(rd != null && rd["asmId"] == this.__spec["id"]);
+            this.__editBt.setEnabled(rd != null);
+            if (rd) {
+                if (rd["asmId"] === this.__spec["id"]) {
+                    this.__editBt.setToolTipText(this.tr("Edit attribute"));
+                } else {
+                    this.__editBt.setToolTipText(this.tr("Override attribute"));
+                }
+            }
+        },
+
+        __beforeContextmenuOpen : function(ev) {
+            var rd = this.getSelectedRowData();
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+            var bt = new qx.ui.menu.Button(this.tr("New"));
+            bt.addListenerOnce("execute", this.__onAdd, this);
+            menu.add(bt);
+
+            if (rd != null) {
+
+                if (rd["asmId"] === this.__spec["id"]) {
+
+                    bt = new qx.ui.menu.Button(this.tr("Edit"));
+                    bt.addListenerOnce("execute", this.__onEdit, this);
+                    menu.add(bt);
+
+                    bt = new qx.ui.menu.Button(this.tr("Remove"));
+                    bt.addListenerOnce("execute", this.__onRemove, this);
+                    menu.add(bt);
+
+                } else {
+
+                    bt = new qx.ui.menu.Button(this.tr("Override"));
+                    bt.addListenerOnce("execute", this.__onEditOrOverride, this);
+                    menu.add(bt);
+
+                    bt = new qx.ui.menu.Button(this.tr("Edit in parent"));
+                    bt.addListenerOnce("execute", this.__onEdit, this);
+                    menu.add(bt);
+                }
+            }
         },
 
         __onAdd : function() {
@@ -143,7 +201,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                     this.tr("New attribute for assembly: %1", this.__spec["name"]),
                     this.__spec
             );
-            dlg.addListener("completed", function(ev) {
+            dlg.addListenerOnce("completed", function(ev) {
                 dlg.close();
                 this.fireEvent("attributesChanged");
             }, this);
@@ -162,12 +220,50 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             req.send(function() {
                 this.fireEvent("attributesChanged");
             }, this);
+        },
 
+        __onEdit : function(ev, rd) {
+            rd = (rd == null) ? this.getSelectedRowData() : rd;
+            if (rd == null) {
+                return;
+            }
+            var caption;
+            if (rd.override === true) {
+                caption = this.tr("Override the parent assembly attribute: '%1'", rd["name"]);
+            } else if (rd["asmId"] != this.__spec["id"]) {
+                caption = this.tr("Edit the parent assembly attribute: '%1'", rd["name"]);
+            } else {
+                caption = this.tr("Edit attribute: '%1'", rd["name"]);
+            }
+
+            var dlg = new ncms.asm.AsmAttrEditorDlg(caption, this.__spec, rd);
+            dlg.addListenerOnce("completed", function(ev) {
+                dlg.close();
+                this.fireEvent("attributesChanged");
+            }, this);
+            dlg.open();
+        },
+
+
+        __onEditOrOverride : function(ev) {
+            var rd = this.getSelectedRowData();
+            if (rd == null) {
+                return;
+            }
+            if (rd["asmId"] != this.__spec["id"]) {
+                rd = sm.lang.Object.shallowClone(rd);
+                rd["asmId"] = this.__spec["id"];
+                rd.override = true;
+            }
+            this.__onEdit(ev, rd);
         }
+
     },
 
     destruct : function() {
         this.__spec = null;
+        this.__delBt = null;
+        this.__editBt = null;
         //this._disposeObjects("__field_name");
     }
 });

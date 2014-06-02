@@ -63,10 +63,12 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             toolbar.add(part);
 
             var bt = this._createButton(null, "ncms/icon/16/actions/add.png");
+            bt.setToolTipText(this.tr("Extend from parent"));
             bt.addListener("execute", this.__addParents, this);
 
             part.add(bt);
             bt = this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png").set({enabled : false});
+            bt.setToolTipText(this.tr("Remove parent"));
             bt.addListener("execute", this.__removeParent, this);
 
             part.add(bt);
