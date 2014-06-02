@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
@@ -50,12 +50,16 @@
             </column>
             <column name="OPTIONS" type="VARCHAR(512)"/>
             <column name="DESCRIPTION" type="VARCHAR(255)"/>
+            <column name="NAV_PARENT_ID" type="BIGINT"
+                    remarks="Navigation parent ref for assemblies whose type is `page`">
+            </column>
         </createTable>
 
         <createIndex tableName="ASMS"
-                     indexName="IDX_ASMS_NAME"
+                     indexName="IDX_ASMS_NAMETYPE"
                      unique="true">
             <column name="NAME"/>
+            <column name="TYPE"/>
         </createIndex>
 
         <createIndex tableName="ASMS"
@@ -64,12 +68,58 @@
             <column name="NAME"/>
         </createIndex>
 
+        <createIndex tableName="ASMS" indexName="IDX_ASMS_NAVPARENT">
+            <column name="NAV_PARENT_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="ASMS"
+                                 baseColumnNames="NAV_PARENT_ID"
+                                 constraintName="FK_ASMS_NAVPARENT"
+                                 referencedTableName="ASMS"
+                                 referencedColumnNames="ID"
+                                 onDelete="SET NULL"/>
+
         <addForeignKeyConstraint baseTableName="ASMS"
                                  baseColumnNames="ASM_CORE_ID"
                                  constraintName="FK_ASMS_ASMCORES"
                                  referencedTableName="ASM_CORES"
                                  referencedColumnNames="ID"
                                  onDelete="SET NULL"/>
+
+        <!-- ==================== ASM_SYSTAGS ==================== -->
+
+        <createTable tableName="ASM_SYSPROPS"
+                     remarks="System tags assigned to assembly">
+            <column name="ASM_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PROPERTY" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="ASM_SYSPROPS" indexName="IDX_ASMSYSPROPS_FWD"
+                     unique="true">
+            <column name="ASM_ID"/>
+            <column name="PROPERTY"/>
+            <column name="VALUE"/>
+        </createIndex>
+
+        <createIndex tableName="ASM_SYSPROPS" indexName="IDX_ASMSYSPROPS_BWD"
+                     unique="true">
+            <column name="PROPERTY"/>
+            <column name="ASM_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="ASM_SYSPROPS"
+                                 baseColumnNames="ASM_ID"
+                                 constraintName="FK_ASMSYSPROPS_ASMS"
+                                 referencedTableName="ASMS"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
 
         <!-- ==================== ASM_ATTRS ======================= -->
 

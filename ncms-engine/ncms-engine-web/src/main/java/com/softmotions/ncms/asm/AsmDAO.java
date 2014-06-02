@@ -214,6 +214,37 @@ public class AsmDAO extends MBDAOSupport {
     }
 
 
+    @Transactional
+    public void asmSetSysprop(Long asmId, String property, String value) {
+        delete("asmDropSysprop",
+               "asmId", asmId,
+               "property", property);
+        insert("asmInsertSysprop",
+               "asmId", asmId,
+               "property", property,
+               "value", value);
+    }
+
+    @Transactional
+    public void asmDropSysprop(Long asmId, String property) {
+        delete("asmDropSysprop",
+               "asmId", asmId,
+               "property", property);
+    }
+
+    @Transactional
+    public void asmDropAllSysprops(Long asmId) {
+        delete("asmDropAllSysprops",
+               "asmId", asmId);
+    }
+
+    @Transactional
+    public String asmSelectSysprop(Long asmId, String property) {
+        return selectOne("asmSelectSysprop",
+                         "asmId", asmId,
+                         "property", property);
+    }
+
     @SuppressWarnings("unchecked")
     static class CriteriaBase<T extends CriteriaBase> extends MBCriteriaQuery<T> {
 

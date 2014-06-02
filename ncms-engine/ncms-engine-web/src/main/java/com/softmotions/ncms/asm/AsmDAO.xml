@@ -214,6 +214,29 @@
     </select>
 
 
+    <insert id="asmInsertSysprop" parameterType="map">
+        INSERT INTO ASM_SYSPROPS
+        (asm_id, property, value)
+        VALUES (#{asmId}, #{property}, #{value})
+    </insert>
+
+    <delete id="asmDropSysprop" parameterType="map">
+        DELETE FROM ASM_SYSPROPS
+        WHERE asm_id = #{asmId} AND property = #{property}
+    </delete>
+
+    <delete id="asmDropAllSysprops" parameterType="map">
+        DELETE FROM ASM_SYSPROPS
+        WHERE asm_id = #{asmId}
+    </delete>
+
+    <select id="asmSelectSysprop" resultType="string" parameterType="map">
+        SELECT
+            sp.value
+        FROM ASM_SYSPROPS sp
+        WHERE sp.asm_id = #{asmId} AND sp.property = #{property}
+    </select>
+
     <!-- ======================== Result maps ============================= -->
 
     <resultMap id="coreRM"
