@@ -27,39 +27,28 @@ qx.Class.define("ncms.Application", {
         ///////////////////////////////////////////////////////////
 
         confirm : function(message, callback, context) {
-            var root = qx.core.Init.getApplication().getRoot();
-            (new dialog.Confirm({
+            (new sm.dialog.Confirm({
                 "message" : message,
                 "callback" : callback || null,
-                "context" : context || null,
-                "blockerOpacity" : root.getBlockerOpacity(),
-                "blockerColor" : root.getBlockerColor() || "transparent",
-                "yesButtonLabel" : root.tr("Yes"),
-                "noButtonLabel" : root.tr("No")
-            })).show();
+                "context" : context || null
+            })).open();
         },
 
         alert : function(message, callback, context) {
-            var root = qx.core.Init.getApplication().getRoot();
-            (new dialog.Alert({
+            (new sm.dialog.Message({
                 "message" : message,
                 "callback" : callback || null,
-                "context" : context || null,
-                "blockerOpacity" : root.getBlockerOpacity(),
-                "blockerColor" : root.getBlockerColor() || "transparent"
-            })).show();
+                "context" : context || null
+            })).open();
         },
 
         warning : function(message, callback, context) {
-            var root = qx.core.Init.getApplication().getRoot();
-            (new dialog.Alert({
+            (new sm.dialog.Message({
                 "message" : message,
                 "callback" : callback || null,
                 "context" : context || null,
-                "blockerOpacity" : root.getBlockerOpacity(),
-                "blockerColor" : root.getBlockerColor() || "transparent",
                 "image" : "icon/48/status/dialog-warning.png"
-            })).show();
+            })).open();
         },
 
         prompt : function(message, callback, context) {
