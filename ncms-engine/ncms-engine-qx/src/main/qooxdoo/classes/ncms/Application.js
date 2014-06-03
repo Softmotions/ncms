@@ -51,17 +51,6 @@ qx.Class.define("ncms.Application", {
             })).open();
         },
 
-        prompt : function(message, callback, context) {
-            var root = qx.core.Init.getApplication().getRoot();
-            (new dialog.Prompt({
-                "message" : message,
-                "callback" : callback || null,
-                "context" : context || null,
-                "blockerOpacity" : root.getBlockerOpacity(),
-                "blockerColor" : root.getBlockerColor() || "transparent"
-            })).show();
-        },
-
         getComponent : function(name) {
             return ncms.Application.INSTANCE.getComponent(name);
         },
