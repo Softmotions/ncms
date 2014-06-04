@@ -20,6 +20,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         this._setLayout(new qx.ui.layout.Grow());
         this._initTree(
                 {"action" : "pages.layer",
+                    "idPathSegments" : true,
                     "rootLabel" : this.tr("Pages")});
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
@@ -48,7 +49,9 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         },
 
         __onNewPage : function(ev) {
-            var d = new ncms.pgs.PageNewDlg();
+            var item = this._tree.getSelection().getItem(0);
+            var parentId = this._getItemParentId(item);
+            var d = new ncms.pgs.PageNewDlg(parentId);
             d.addListenerOnce("completed", function(ev) {
                 var spec = ev.getData();
                 d.destroy();
@@ -56,7 +59,6 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             d.placeToWidget(ev.getTarget(), false);
             d.show();
         }
-
     },
 
     destruct : function() {

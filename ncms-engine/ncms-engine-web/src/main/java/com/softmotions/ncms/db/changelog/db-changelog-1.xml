@@ -46,6 +46,9 @@
             <column name="NAME" type="VARCHAR(127)">
                 <constraints nullable="false"/>
             </column>
+            <column name="HNAME" type="VARCHAR(127)"
+                    remarks="Human name for page assemblies">
+            </column>
             <column name="TYPE" type="VARCHAR(64)">
             </column>
             <column name="OPTIONS" type="VARCHAR(512)"/>

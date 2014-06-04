@@ -9,9 +9,11 @@
     <select id="selectChildLayer" resultType="map" parameterType="map">
         SELECT
         p.id AS "id",
-        p.name AS "name",
+        p.name AS "guid",
+        p.hname AS "name",
         p.description AS "description",
-        p.type AS "type"
+        p.type AS "type",
+        p.options AS "options"
         FROM ASMS AS p
         WHERE p.nav_parent_id = #{nav_parent_id}
         AND p.type LIKE 'page%'
@@ -21,12 +23,20 @@
     <select id="selectRootLayer" resultType="map" parameterType="map">
         SELECT
         p.id AS "id",
-        p.name AS "name",
+        p.name AS "guid",
+        p.hname AS "name",
         p.description AS "description",
-        p.type AS "type"
+        p.type AS "type",
+        p.options AS "options"
         FROM ASMS AS p
         WHERE p.nav_parent_id IS NULL
         AND p.type LIKE 'page%'
     </select>
+
+
+    <insert id="insertNewPage" parameterType="map">
+        INSERT INTO ASMS (name, hname, type, nav_parent_id, options)
+        VALUES (#{guid}, #{name}, #{type}, #{nav_parent_id,jdbcType=BIGINT}, #{options,jdbcType=VARCHAR})
+    </insert>
 
 </mapper>

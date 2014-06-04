@@ -114,8 +114,17 @@ qx.Class.define("ncms.Actions", {
         //================== PagesRS
 
         //GET Pages tree layer
-        //Query param: 'nav_parent_id'
-        this._action("pages.layer", "/ncms/rs/adm/pages/layer")
+        ///ncms/rs/adm/pages/layer/{path:.*}
+        this._action("pages.layer", "/ncms/rs/adm/pages/layer");
+
+        //PUT Create new page
+        // {
+        //  name : {String} Page name
+        //  parent : {Number?null} Parent page ID
+        //  type: {String} Page type
+        // }
+        this._action("pages.new", "/ncms/rs/adm/pages/new")
+
     },
 
     members : {

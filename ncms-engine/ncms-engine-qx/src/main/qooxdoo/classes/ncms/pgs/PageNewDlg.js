@@ -13,25 +13,34 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
     properties : {
     },
 
-    construct : function() {
+    construct : function(parentId) {
         this.base(arguments);
+        this.__parentId = parentId;
     },
 
     members : {
 
+        __parentId : null,
+
         _configureForm : function() {
-            var name = new qx.ui.form.TextField().set({allowGrowY : true, maxLength : 64, required : true});
-            name.addListener("keypress", function(ev) {
+            var el = new qx.ui.form.TextField().set({allowGrowY : true, maxLength : 64, required : true});
+            el.addListener("keypress", function(ev) {
                 if (ev.getKeyIdentifier() == "Enter") {
                     this.save();
                 }
             }, this);
-            this._form.add(name, this.tr("Page name"), null, "name");
-            name.focus();
+            el.setToolTipText(this.tr("Page name"));
+            this._form.add(el, this.tr("Page name"), null, "name");
+            el.focus();
+
+            el = new qx.ui.form.CheckBox();
+            el.setToolTipText(this.tr("Page is container folder for other pages"));
+            this._form.add(el, this.tr("Container"), null, "container");
         },
 
         _save : function() {
             var items = this._form.getItems();
+
 
             /*var req = new sm.io.Request(
              ncms.Application.ACT.getRestUrl("asms.new", {name : fitems["name"].getValue()}),

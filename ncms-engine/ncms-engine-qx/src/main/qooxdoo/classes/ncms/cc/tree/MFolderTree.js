@@ -12,6 +12,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
         /**
          * DATA: var item = {
+         *        "id"     : {Object} Optional Node ID
          *        "label"  : {String} Item name.
          *        "status" : {Number} (statis & 1) != 0 - it is folder, == 0 - otherwise
          *        "path"   : {String} Path to the item (from tree root)
@@ -21,35 +22,31 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
         itemSelected : "qx.event.type.Data"
     },
 
-    properties : {
+    members : {
+
+        _treeConfig : null,
+
+        _tree : null,
+
 
         /**
+         *
+         * cfg:
          * {
          *   action : {String} Action name (defined in ncms.Actions) used to load childen (required),
          *
          *   delegate : {Object?null} VirtualTree delegate used to customize tree.
          *
-         *   rootLabel : {String?'root'}
+         *   rootLabel : {String?'root'},
+         *
+         *   idPathSegments : {Boolean?false} If true Node IDs will be used in path segments
          * }
          */
-        treeConfig : {
-            check : "Object",
-            nullable : false
-        }
-    },
-
-
-    members : {
-
-        _tree : null,
-
         _initTree : function(cfg) {
-            if (cfg != null) {
-                this.setTreeConfig(cfg);
-            }
-            cfg = cfg || {};
+            cfg = this._treeConfig = cfg || {};
             var me = this;
             var root = qx.data.marshal.Json.createModel({
+                "id" : null, //generic node ID
                 "label" : (cfg["rootLabel"] || this.tr("Root")),   // node name
                 "status" : 1,       // (statis & 1) != 0 - it is folder, == 0 - otherwise
                 "icon" : "default", // icon alias
@@ -127,15 +124,33 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                     item == this._tree.getModel()) {
                 return [];
             }
+            var cfg = this._treeConfig;
             var root = this._tree.getModel();
-            var path = [item.getLabel()];
+            var path = (cfg["idPathSegments"] === true) ? [item.getId()] : [item.getLabel()];
             var pp = this._tree.getParent(item);
             while (pp != null && pp != root) {
-                path.push(pp.getLabel());
+                path.push((cfg["idPathSegments"] === true) ? pp.getId() : pp.getLabel());
                 pp = this._tree.getParent(pp);
             }
             path.reverse();
             return path;
+        },
+
+        _getItemParentId : function(item) {
+            if (item == null) {
+                return null;
+            }
+            var pp = this._tree.getParent(item);
+            return pp != null ? pp.getId() : null;
+
+        },
+
+        _getItemParentLabel : function(item) {
+            if (item == null) {
+                return null;
+            }
+            var pp = this._tree.getParent(item);
+            return pp != null ? pp.getId() : null;
         },
 
         _refreshNode : function(node, cb, self) {
@@ -155,6 +170,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
         _onSelected : function(item) {
             var data = (item == null) ? null : {
+                "id" : item.getId(),
                 "label" : item.getLabel(),
                 "status" : item.getStatus(),
                 "path" : this._getItemPathSegments(item)
@@ -166,7 +182,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
         },
 
         _loadChildren : function(parent, cb, self) {
-            var cfg = this.getTreeConfig();
+            var cfg = this._treeConfig;
             var url = ncms.Application.ACT.getRestUrl(cfg["action"],
                     this._getItemPathSegments(parent));
             var req = new sm.io.Request(url, "GET", "application/json");
@@ -176,6 +192,9 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                 children.removeAll();
                 for (var i = 0, l = data.length; i < l; ++i) {
                     var node = data[i];
+                    if (node["id"] === undefined) {
+                        node["id"] = null;
+                    }
                     node["icon"] = "default";
                     if ((node["status"] & 1) !== 0) {
                         node["loaded"] = false;
