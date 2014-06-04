@@ -106,7 +106,7 @@ qx.Class.define("ncms.asm.AsmNav", {
             var d = new ncms.asm.AsmRenameDlg(asm["id"], asm["name"]);
             d.setPosition("bottom-right");
             d.addListenerOnce("completed", function(ev) {
-                d.hide();
+                d.destroy();
                 qx.log.Logger.info("Rename completed");
                 this.__selector.reload();
             }, this);
@@ -119,9 +119,9 @@ qx.Class.define("ncms.asm.AsmNav", {
             var d = new ncms.asm.AsmNewDlg();
             d.setPosition("bottom-right");
             d.addListenerOnce("completed", function(ev) {
-                d.hide();
+                d.destroy();
                 var spec = ev.getData();
-                this.__selector.getSearchField().setValue(spec["name"]);
+                this.__selector.setSearchBoxValue(spec["name"]);
             }, this);
             d.placeToWidget(ev.getTarget(), false);
             d.show();

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.asm.PageRS">
+
+
+    <select id="selectChildLayer" resultType="map" parameterType="map">
+        SELECT
+        p.id AS "id",
+        p.name AS "name",
+        p.description AS "description",
+        p.type AS "type"
+        FROM ASMS AS p
+        WHERE p.nav_parent_id = #{nav_parent_id}
+        AND p.type LIKE 'page%'
+    </select>
+
+
+    <select id="selectRootLayer" resultType="map" parameterType="map">
+        SELECT
+        p.id AS "id",
+        p.name AS "name",
+        p.description AS "description",
+        p.type AS "type"
+        FROM ASMS AS p
+        WHERE p.nav_parent_id IS NULL
+        AND p.type LIKE 'page%'
+    </select>
+
+</mapper>

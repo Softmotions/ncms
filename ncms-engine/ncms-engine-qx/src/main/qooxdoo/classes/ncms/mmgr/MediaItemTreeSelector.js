@@ -95,7 +95,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             var d = new ncms.mmgr.MediaItemRenameDlg(path, item.getLabel());
             d.setPosition("bottom-right");
             d.addListenerOnce("completed", function(ev) {
-                d.hide();
+                d.destroy();
                 var data = ev.getData();
                 item.setLoaded(false);
                 item.setLabel(data[0]);
@@ -148,7 +148,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             var d = new ncms.mmgr.MediaFolderNewDlg(path);
             d.setPosition("bottom-right");
             d.addListenerOnce("completed", function(ev) {
-                d.hide();
+                d.destroy();
                 this._refreshNode(parent);
             }, this);
             d.placeToWidget(ev.getTarget(), false);

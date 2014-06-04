@@ -49,7 +49,7 @@ qx.Class.define("ncms.Actions", {
         // id: assembly id
         this._action("asms.attributes", "/ncms/rs/adm/asms/{id}/attributes");
 
-        /////////// MediaRS
+        //==================== MediaRS
 
         //GET files only /ncms/rs/media/files/<path to folder>
         this._action("media.files", "/ncms/rs/media/files");
@@ -90,7 +90,7 @@ qx.Class.define("ncms.Actions", {
         //POST Save extra file meta fields
         this._action("media.meta", "/ncms/rs/media/meta/{id}");
 
-        ////////// NcmsSecurityRS
+        //================== NcmsSecurityRS
 
         // GET/PUT/DELETE
         this._action("security.user", "/ncms/rs/adm/security/user/{name}");
@@ -109,6 +109,13 @@ qx.Class.define("ncms.Actions", {
         //GET selects roles/groups
         this._action("security.roles", "/ncms/rs/adm/security/roles");
         this._action("security.groups", "/ncms/rs/adm/security/groups");
+
+
+        //================== PagesRS
+
+        //GET Pages tree layer
+        //Query param: 'nav_parent_id'
+        this._action("pages.layer", "/ncms/rs/adm/pages/layer")
     },
 
     members : {

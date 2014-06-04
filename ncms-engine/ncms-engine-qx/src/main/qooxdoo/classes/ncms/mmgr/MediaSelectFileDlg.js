@@ -124,7 +124,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
 
         close : function() {
             this.base(arguments);
-            this.__dispose();
+            this.destroy();
         },
 
         __ok : function() {

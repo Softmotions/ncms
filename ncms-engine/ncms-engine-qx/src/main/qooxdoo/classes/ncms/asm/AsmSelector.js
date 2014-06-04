@@ -76,6 +76,11 @@ qx.Class.define("ncms.asm.AsmSelector", {
         __table : null,
 
 
+        setSearchBoxValue : function(val) {
+            this.__sf.setValue(val);
+            this.__search(val);
+        },
+
         setViewSpec : function(vs) {
             this.__table.resetSelection();
             this.__table.getTableModel().setViewSpec(vs);
@@ -118,10 +123,6 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
         cleanup : function() {
             this.__table.cleanup();
-        },
-
-        getSearchField : function() {
-            return this.__sf;
         },
 
         __search : function(val) {

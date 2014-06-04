@@ -156,7 +156,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             }, this);
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();
-                dlg.hide();
+                dlg.destroy();
                 //Data: [type, editor clazz]
                 this.__setType(data[0], data[1]);
             }, this);
@@ -219,7 +219,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         close : function() {
             this.base(arguments);
-            this.__dispose();
+            this.destroy();
         }
     },
 

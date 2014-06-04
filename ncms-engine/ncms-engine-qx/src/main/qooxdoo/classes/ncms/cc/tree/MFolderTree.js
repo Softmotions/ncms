@@ -13,7 +13,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
         /**
          * DATA: var item = {
          *        "label"  : {String} Item name.
-         *        "status" : {Number} (statis & 1) != 0 - it is folder, 0 - otherwise
+         *        "status" : {Number} (statis & 1) != 0 - it is folder, == 0 - otherwise
          *        "path"   : {String} Path to the item (from tree root)
          *       };
          * or null if selection cleared
@@ -25,7 +25,11 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
         /**
          * {
-         *   action : {String} Action name (defined in ncms.Actions) used to load childen (required)
+         *   action : {String} Action name (defined in ncms.Actions) used to load childen (required),
+         *
+         *   delegate : {Object?null} VirtualTree delegate used to customize tree.
+         *
+         *   rootLabel : {String?'root'}
          * }
          */
         treeConfig : {
@@ -43,10 +47,11 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             if (cfg != null) {
                 this.setTreeConfig(cfg);
             }
+            cfg = cfg || {};
             var me = this;
             var root = qx.data.marshal.Json.createModel({
-                "label" : "root",   // node name
-                "status" : 1,       // (statis & 1) != 0 - it is folder, 0 - otherwise
+                "label" : (cfg["rootLabel"] || this.tr("Root")),   // node name
+                "status" : 1,       // (statis & 1) != 0 - it is folder, == 0 - otherwise
                 "icon" : "default", // icon alias
                 "loaded" : true,    // is loaded
                 "children" : []     // node children
@@ -98,6 +103,11 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                         }, item, index);
                     }
                 };
+
+                if (cfg["delegate"] != null) { //apply delegate properties from config
+                    qx.lang.Object.mergeWith(delegate, cfg["delegate"], true);
+                }
+
                 tree.setDelegate(delegate);
                 tree.getSelection().addListener("change", function(e) {
                     this._onSelected(e.getTarget().getItem(0));
@@ -167,7 +177,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                 for (var i = 0, l = data.length; i < l; ++i) {
                     var node = data[i];
                     node["icon"] = "default";
-                    if ((node["status"] & 1)) {
+                    if ((node["status"] & 1) !== 0) {
                         node["loaded"] = false;
                         node["children"] = [
                             {

@@ -2,7 +2,7 @@
  * Pages selector.
  */
 qx.Class.define("ncms.pgs.PagesNav", {
-    extend : qx.ui.core.Widget,
+    extend : ncms.pgs.PagesSelector,
 
     statics : {
         PAGE_EDITOR_CLAZZ : "ncms.pgs.PagesEditor"
@@ -15,23 +15,15 @@ qx.Class.define("ncms.pgs.PagesNav", {
     },
 
     construct : function() {
-        this.base(arguments);
-        this._setLayout(new qx.ui.layout.Grow());
-        this.__selector = new ncms.pgs.PagesTreeSelector(true);
-        this._add(this.__selector);
+        this.base(arguments, true);
+        this.set({paddingTop : 5});
     },
 
     members : {
 
-        /**
-         * Pages selector
-         */
-        __selector : null
 
     },
 
     destruct : function() {
-        this.__selector = null;
-        //this._disposeObjects("__field_name");                                
     }
 });

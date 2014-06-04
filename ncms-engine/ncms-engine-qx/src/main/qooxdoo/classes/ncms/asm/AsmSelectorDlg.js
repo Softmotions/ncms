@@ -86,7 +86,7 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
 
         close : function() {
             this.base(arguments);
-            this.__dispose();
+            this.destroy();
         }
 
     },

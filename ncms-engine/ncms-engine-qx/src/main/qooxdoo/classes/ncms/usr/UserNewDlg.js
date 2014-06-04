@@ -73,7 +73,6 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
         this.__closeCmd = new qx.ui.core.Command("Esc");
         this.__closeCmd.addListener("execute", this.close, this);
-
         this.addListenerOnce("resize", this.center, this);
     },
 
@@ -122,7 +121,7 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
         close : function() {
             this.base(arguments);
-            this.__dispose();
+            this.destroy();
         }
     },
 

@@ -52,8 +52,9 @@ public class AsmModule extends AbstractModule {
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);
         bind(AsmEventsListener.class).asEagerSingleton();
 
-        //Asm REST
+
         bind(AsmRS.class).in(Singleton.class);
+        bind(PageRS.class).in(Singleton.class);
     }
 
 

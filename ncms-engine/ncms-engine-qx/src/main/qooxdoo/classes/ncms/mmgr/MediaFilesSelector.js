@@ -215,7 +215,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         },
 
         __applyItem : function(item) {
-            if (item != null && item["status"] == 1) { //folder
+            if (item != null && (item["status"] & 1) != 0) { //folder
                 var folder = "/" + item["path"].join("/");
                 this.setConstViewSpec({"folder" : folder, "status" : 0, fts : true});
             } else {
@@ -241,7 +241,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             var d = new ncms.mmgr.MediaItemRenameDlg(path, f.name);
             d.setPosition("bottom-center");
             d.addListenerOnce("completed", function() {
-                d.hide();
+                d.destroy();
                 this.reload();
             }, this);
             d.placeToWidget(ev.getTarget(), false);

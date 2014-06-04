@@ -50,7 +50,6 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
         this.__closeCmd = new qx.ui.core.Command("Esc");
         this.__closeCmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
-
     },
 
     members : {
@@ -140,7 +139,7 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
 
         close : function() {
             this.base(arguments);
-            this.__dispose();
+            this.destroy();
         }
     },
 
