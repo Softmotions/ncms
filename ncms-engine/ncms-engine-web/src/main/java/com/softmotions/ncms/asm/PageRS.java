@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -63,10 +64,8 @@ public class PageRS extends MBDAOSupport {
     @PUT
     @Path("/new")
     @Transactional
-    public void newpage(@Context HttpServletRequest req,
+    public void newPage(@Context HttpServletRequest req,
                         ObjectNode spec) {
-
-        log.info("new page=" + spec);
 
         String name = spec.hasNonNull("name") ? spec.get("name").asText() : null;
         Long parent = spec.hasNonNull("parent") ? spec.get("parent").asLong() : null;
@@ -92,6 +91,14 @@ public class PageRS extends MBDAOSupport {
                    "type", type,
                    "nav_parent_id", parent);
         }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public void dropPage(@Context HttpServletRequest req,
+                         @PathParam("id") Long id) {
+        delete("deletePage", "id", id);
     }
 
     @Path("/layer")
@@ -122,8 +129,7 @@ public class PageRS extends MBDAOSupport {
                                 gen.writeStartObject();
                                 gen.writeNumberField("id", ((Number) row.get("id")).longValue());
                                 gen.writeStringField("guid", (String) row.get("guid"));
-                                gen.writeStringField("name", (String) row.get("name"));
-
+                                gen.writeStringField("label", (String) row.get("name"));
                                 gen.writeStringField("description", (String) row.get("description"));
                                 String type = (String) row.get("type");
                                 int status = 0;
@@ -149,12 +155,23 @@ public class PageRS extends MBDAOSupport {
                 .build();
     }
 
+    Long getPathLastIdSegment(String path) {
+        if (path == null) {
+            return null;
+        }
+        int idx = path.lastIndexOf('/');
+        if (idx == -1 || idx == path.length() - 1) {
+            return Long.valueOf(path);
+        }
+        return Long.valueOf(path.substring(idx + 1));
+    }
+
 
     Map createSelectLayerQ(String path) {
+        Long pId = getPathLastIdSegment(path);
         Map<String, Object> ret = new TinyParamMap();
-        if (path != null) {
-            //todo
-            //ret.put("nav_parent_id", Long.parseLong(req.getParameter("nav_parent_id")));
+        if (pId != null) {
+            ret.put("nav_parent_id", pId);
         }
         return ret;
     }

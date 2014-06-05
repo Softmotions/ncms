@@ -39,4 +39,11 @@
         VALUES (#{guid}, #{name}, #{type}, #{nav_parent_id,jdbcType=BIGINT}, #{options,jdbcType=VARCHAR})
     </insert>
 
+
+    <delete id="deletePage" parameterType="map">
+        DELETE
+        FROM asms
+        WHERE id = #{id}
+    </delete>
+
 </mapper>

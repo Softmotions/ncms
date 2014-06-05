@@ -110,7 +110,6 @@ qx.Class.define("ncms.Actions", {
         this._action("security.roles", "/ncms/rs/adm/security/roles");
         this._action("security.groups", "/ncms/rs/adm/security/groups");
 
-
         //================== PagesRS
 
         //GET Pages tree layer
@@ -125,6 +124,8 @@ qx.Class.define("ncms.Actions", {
         // }
         this._action("pages.new", "/ncms/rs/adm/pages/new")
 
+        //DELETE The specified page
+        this._action("pages.delete", "/ncms/rs/adm/pages/{id}")
     },
 
     members : {
