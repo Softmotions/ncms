@@ -6,17 +6,22 @@ qx.Class.define("ncms.pgs.PagesSelector", {
 
     events : {
 
-        /**
-         * Data:
-         * {
-         *    id : {Number} Page ID,
-         *    name : {String} Page name,
-         * }
-         */
-        "pageSelected" : "qx.event.type.Data"
     },
 
     properties : {
+
+        /**
+         * Page selected.
+         * Data: {
+         *   id : {Number} Page ID,
+         *   name : {String} Page name
+         * }
+         */
+        selectedPage : {
+            check : "Object",
+            nullable : true,
+            event : "pageSelected"
+        }
     },
 
     construct : function(allowModify) {
@@ -25,6 +30,17 @@ qx.Class.define("ncms.pgs.PagesSelector", {
         var page = new qx.ui.tabview.Page(this.tr("Structure"));
         page.setLayout(new qx.ui.layout.Grow());
         var ts = this._treeSelector = new ncms.pgs.PagesTreeSelector(allowModify);
+        ts.addListener("itemSelected", function(ev) {
+            var edata = ev.getData();
+            var data = null;
+            if (edata != null) {
+                data = {
+                    id : edata["id"],
+                    name : edata["label"]
+                }
+            }
+            this.setSelectedPage(data);
+        }, this);
         page.add(ts);
         this.add(page);
 

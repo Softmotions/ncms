@@ -49,6 +49,14 @@
             <column name="HNAME" type="VARCHAR(127)"
                     remarks="Human name for page assemblies">
             </column>
+            <column name="MDATE" type="TIMESTAMP"
+                    remarks="Assembly modification date"/>
+            <column name="MUSER" type="VARCHAR(64)"
+                    remarks="Username which modified this assembly"/>
+            <column name="OWNER" type="VARCHAR(64)"
+                    remarks="Username of page assembly owner"/>
+            <column name="STATE" type="INT"
+                    remarks="State INT mask for varioius purposes"/>
             <column name="TYPE" type="VARCHAR(64)">
             </column>
             <column name="OPTIONS" type="VARCHAR(512)"/>
@@ -141,6 +149,8 @@
                 <constraints nullable="false"/>
             </column>
             <column name="OPTIONS" type="VARCHAR(1024)"/>
+            <column name="ORDINAL" type="INT"
+                    remarks="Attribute sort ordinal in GUI interfaces"/>
             <column name="VALUE" type="VARCHAR(1024)"/>
             <column name="LARGE_VALUE" type="CLOB"/>
         </createTable>

@@ -70,6 +70,10 @@ qx.Class.define("ncms.asm.AsmNav", {
             bt.addListenerOnce("execute", this.__onNewAssembly, this);
             menu.add(bt);
 
+            bt = new qx.ui.menu.Button(this.tr("Refresh"));
+            bt.addListenerOnce("execute", this.__onRefresh, this);
+            menu.add(bt);
+
             var rind = this.__selector.getSelectedAsmInd();
             if (rind !== -1) {
                 bt = new qx.ui.menu.Button(this.tr("Rename"));
@@ -113,6 +117,10 @@ qx.Class.define("ncms.asm.AsmNav", {
             d.placeToWidget(ev.getTarget(), false);
             d.show();
 
+        },
+
+        __onRefresh : function() {
+            this.__selector.reload();
         },
 
         __onNewAssembly : function(ev) {

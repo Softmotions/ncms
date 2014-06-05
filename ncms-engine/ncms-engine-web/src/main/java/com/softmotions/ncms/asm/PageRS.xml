@@ -12,8 +12,7 @@
         p.name AS "guid",
         p.hname AS "name",
         p.description AS "description",
-        p.type AS "type",
-        p.options AS "options"
+        p.type AS "type"
         FROM ASMS AS p
         WHERE p.nav_parent_id = #{nav_parent_id}
         AND p.type LIKE 'page%'
@@ -26,8 +25,7 @@
         p.name AS "guid",
         p.hname AS "name",
         p.description AS "description",
-        p.type AS "type",
-        p.options AS "options"
+        p.type AS "type"
         FROM ASMS AS p
         WHERE p.nav_parent_id IS NULL
         AND p.type LIKE 'page%'
@@ -35,15 +33,35 @@
 
 
     <insert id="insertNewPage" parameterType="map">
-        INSERT INTO ASMS (name, hname, type, nav_parent_id, options)
-        VALUES (#{guid}, #{name}, #{type}, #{nav_parent_id,jdbcType=BIGINT}, #{options,jdbcType=VARCHAR})
+        INSERT INTO ASMS (name, hname, type,
+        nav_parent_id, options,
+        mdate, muser, owner)
+        VALUES (#{guid}, #{name}, #{type},
+        #{nav_parent_id,jdbcType=BIGINT}, #{options,jdbcType=VARCHAR},
+        now(), #{user}, #{user})
     </insert>
 
 
-    <delete id="deletePage" parameterType="map">
-        DELETE
+    <delete id="dropPage" parameterType="map">
+    DELETE
         FROM asms
         WHERE id = #{id}
     </delete>
+
+
+    <select id="selectPageInfo" resultType="map" parameterType="map">
+        SELECT
+            p.id      AS "id",
+            p.hname   AS "name",
+            p.name    AS "guid",
+            p.type    AS "type",
+            p.mdate   AS "mdate",
+            p.owner   AS "owner",
+            p.state   AS "state",
+            p.options AS "options"
+        FROM ASMS AS p
+        WHERE p.id = #{id}
+              AND p.type LIKE 'page%'
+    </select>
 
 </mapper>
