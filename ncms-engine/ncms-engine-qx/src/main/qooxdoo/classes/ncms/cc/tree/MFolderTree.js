@@ -40,6 +40,8 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          *   rootLabel : {String?'root'},
          *
          *   idPathSegments : {Boolean?false} If true Node IDs will be used in path segments
+         *
+         *   selectRootAsNull : {Boolean} If true, root selection will be fired as `null`
          * }
          */
         _initTree : function(cfg) {
@@ -169,7 +171,11 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
         },
 
         _onSelected : function(item) {
-            var data = (item == null) ? null : {
+            var cfg = this._treeConfig;
+            if (cfg["selectRootAsNull"]) {
+
+            }
+            var data = (item == null || (cfg["selectRootAsNull"] && item == this._tree.getModel())) ? null : {
                 "id" : item.getId(),
                 "label" : item.getLabel(),
                 "status" : item.getStatus(),

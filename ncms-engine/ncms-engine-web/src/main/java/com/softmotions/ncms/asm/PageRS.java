@@ -77,7 +77,7 @@ public class PageRS extends MBDAOSupport {
      */
     @GET
     @Path("/info/{id}")
-    public ObjectNode selectPageInfo(@PathParam("id") Long id) {
+    public ObjectNode selectPageInfo(@Context HttpServletRequest req, @PathParam("id") Long id) {
         Map<String, Object> row = selectOne("selectPageInfo", "id", id);
         if (row == null) {
             throw new NotFoundException();
@@ -91,6 +91,7 @@ public class PageRS extends MBDAOSupport {
             JsonUtils.populateObjectNode(owner, res.putObject("owner"),
                                          "email", "name", "fullName");
         }
+        res.put("accessmask", getPageAccessMask(req, row));
         return res;
     }
 
@@ -225,6 +226,21 @@ public class PageRS extends MBDAOSupport {
             ret.put("nav_parent_id", pId);
         }
         return ret;
+    }
+
+
+    private String getPageAccessMask(HttpServletRequest req, Map<String, Object> row) {
+        String user = req.getRemoteUser();
+        if (user == null) {
+            return "r";
+        }
+        String owner = (String) row.get("owner");
+        if (user.equals(owner) || req.isUserInRole("admin.structure")) {
+            return "rws";
+        }
+
+        //todo check access list
+        return "r";
     }
 
 

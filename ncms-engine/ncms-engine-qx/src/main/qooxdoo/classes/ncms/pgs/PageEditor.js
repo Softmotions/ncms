@@ -48,26 +48,24 @@ qx.Class.define("ncms.pgs.PageEditor", {
         __editPane : null,
 
         __createInfoPage : function() {
-            var page = new qx.ui.tabview.Page(this.tr("Info"));
-            page.setLayout(new qx.ui.layout.VBox());
+            var page = new ncms.pgs.PageEditorInfoPage();
+            this.bind("pageSpec", page, "pageSpec");
+            this.__infoPane = page;
             return page;
         },
 
         __createEditPage : function() {
-            var page = new qx.ui.tabview.Page(this.tr("Edit"));
-            page.setLayout(new qx.ui.layout.VBox(5, "middle"));
-            page.add(new qx.ui.basic.Label(this.tr("Loading...")).set({alignX : "center"}));
-            page.addListenerOnce("appear", function() {
-                qx.log.Logger.info("Edit TAB appeared");
-            });
+            var page = new ncms.pgs.PageEditorEditPage();
+            this.bind("pageSpec", page, "pageSpec");
+            this.__editPane = page;
             return page;
         },
 
         __applyPageSpec : function(spec) {
-            qx.log.Logger.info("apply page spec=" + JSON.stringify(spec));
-            if (spec == null) {
-                return;
-            }
+        },
+
+        __populateInfo : function(spec) {
+
         }
     },
 

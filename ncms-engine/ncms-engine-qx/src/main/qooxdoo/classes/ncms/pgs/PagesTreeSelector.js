@@ -20,7 +20,8 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         this._initTree(
                 {"action" : "pages.layer",
                     "idPathSegments" : true,
-                    "rootLabel" : this.tr("Pages")});
+                    "rootLabel" : this.tr("Pages"),
+                    "selectRootAsNull" : true});
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
