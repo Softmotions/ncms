@@ -57,6 +57,8 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(4));
 
+        this.__editorControls = []; // cache for controls
+
         this.getChildControl("toolbar");
         var ta = this.getChildControl("textarea");
 
@@ -90,6 +92,8 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
     members : {
         __lastToolbarItem : null,
+
+        __editorControls : null,
 
         __lastSStart : 0,
 
@@ -126,7 +130,9 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         },
 
         _applyType : function(value, old) {
-            // TODO change wiki edtor type. may be hide/show controls applied only for selected editor type?
+            for(var i = 0; i < this.__editorControls.length; ++i) {
+                this.__updateControl(this.__editorControls[i]);
+            }
         },
 
         //overriden
@@ -160,9 +166,27 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         _addToolbarControl : function(toolbar, options) {
             var callback = this.__buildToolbarControlAction(options);
 
-            this.__createToolbarControl(toolbar, this.__lastToolbarItem, qx.ui.toolbar.Button, callback, options);
+            var cmeta = this.__editorControls[this.__editorControls.length] = {
+                options : options,
+                buttons : []
+            };
+
+            cmeta.buttons[0] = this.__createToolbarControl(toolbar, this.__lastToolbarItem, qx.ui.toolbar.Button, callback, options);
             if (toolbar.getOverflowIndicator()) {
-                this.__createToolbarControl(toolbar.getOverflowIndicator().getMenu(), null, qx.ui.menu.Button, callback, options);
+                cmeta.buttons[1] = this.__createToolbarControl(toolbar.getOverflowIndicator().getMenu(), null, qx.ui.menu.Button, callback, options);
+            }
+
+            this.__updateControl(cmeta);
+        },
+
+        __updateControl: function(cmeta) {
+            var applied = !!cmeta.options[("insert" + qx.lang.String.capitalize(this.getType()))];
+            for(var i = 0; i < cmeta.buttons.length; ++i) {
+                if (applied) {
+                    cmeta.buttons[i].show();
+                } else {
+                    cmeta.buttons[i].exclude();
+                }
             }
         },
 
@@ -320,7 +344,19 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             });
             this._addToolbarControl(toolbar, {
                 icon : "ncms/icon/16/wiki/tree_add.png",
-                tooltipText : this.tr("Add tree")
+                tooltipText : this.tr("Add tree"),
+                insertMediaWiki : function(cb, data) {
+                    var val = [];
+                    val.push("");
+                    val.push("<tree open=\"true\">");
+                    val.push("- Корень");
+                    val.push("-- Потомок 1");
+                    val.push("--- Потомок третьего уровня");
+                    val.push("-- Потомок 2");
+                    val.push("</tree>");
+                    val.push("");
+                    cb.call(this, val.join("\n"))
+                }
             });
             this._addToolbarControl(toolbar, {
                 icon : "ncms/icon/16/wiki/note_add.png",
@@ -338,7 +374,6 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             var sEnd = this.getChildControl("textarea").getTextSelectionEnd();
             return (sEnd == null || sEnd == -1 || sEnd == 0) ? this.__lastSEnd : sEnd;
         },
-
 
         __insertText : function(text) {
             var ta = this.getChildControl("textarea");
@@ -364,5 +399,6 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
     },
 
     destruct : function() {
+        this._disposeArray("__editorControls");
     }
 });
