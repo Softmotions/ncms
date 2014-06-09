@@ -188,7 +188,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
          *         function(cb, promptData) {}
          *                  - cb : function(text) - callback for chain. text will be inserted instead selected text
          *                  - promptData - data from prompt function execution (if specifyed) or selected text in other case
-         *         <type> - captalized wiki editor type. If function for current editor type not specifyed, control for this type will not be shown.
+         *         <type> - captalized wiki editor type. If function for current editor type not specified, control for this type will not be shown.
          * }
          */
         addToolbarControl : function(options) {
