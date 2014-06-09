@@ -32,10 +32,10 @@
             parameterType="map"
             resultType="com.softmotions.ncms.asm.AsmAttribute">
         SELECT
-        attr.*
+            attr.*
         FROM asm_attrs attr
         WHERE attr.asm_id = #{asm_id}
-        AND attr.name = #{name}
+              AND attr.name = #{name}
     </select>
 
     <update id="renameAttribute"
@@ -43,7 +43,7 @@
         UPDATE asm_attrs
         SET name = #{new_name}
         WHERE name = #{old_name}
-        AND asm_id = #{asm_id}
+              AND asm_id = #{asm_id}
     </update>
 
 
@@ -67,13 +67,13 @@
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         UPDATE asm_attrs
         SET
-        label = #{label},
-        type = #{type},
-        options = #{options},
-        value = #{value},
-        large_value = #{largeValue}
+            label       = #{label},
+            type        = #{type},
+            options     = #{options},
+            value       = #{value},
+            large_value = #{largeValue}
         WHERE asm_id = #{asmId}
-        AND name = #{name}
+              AND name = #{name}
     </update>
 
 

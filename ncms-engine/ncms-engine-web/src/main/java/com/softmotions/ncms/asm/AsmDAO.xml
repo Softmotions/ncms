@@ -121,7 +121,7 @@
 
     <select id="asmSelectAllPlain" resultType="com.softmotions.ncms.asm.Asm">
         SELECT
-        *
+            *
         FROM asms
         ORDER BY name ASC
     </select>
@@ -139,21 +139,21 @@
             resultMap="asmFullRM"
             parameterType="long">
         SELECT
-        asm.*,
-        attr.asm_id AS attr_asm_id,
-        attr.name AS attr_name,
-        attr.type AS attr_type,
-        attr.options AS attr_options,
-        attr.value AS attr_value,
-        attr.large_value AS attr_large_value,
-        core.id AS core_id,
-        core.location AS core_location,
-        core.name AS core_name,
-        core.template_engine AS core_template_engine
+            asm.*,
+            attr.asm_id          AS attr_asm_id,
+            attr.name            AS attr_name,
+            attr.type            AS attr_type,
+            attr.options         AS attr_options,
+            attr.value           AS attr_value,
+            attr.large_value     AS attr_large_value,
+            core.id              AS core_id,
+            core.location        AS core_location,
+            core.name            AS core_name,
+            core.template_engine AS core_template_engine
         FROM asm_parents AS parent
-        INNER JOIN asms asm ON asm.id = parent.asm_parent_id
-        LEFT OUTER JOIN asm_attrs attr ON attr.asm_id = asm.id
-        LEFT OUTER JOIN asm_cores core ON core.id = asm.asm_core_id
+            INNER JOIN asms asm ON asm.id = parent.asm_parent_id
+            LEFT OUTER JOIN asm_attrs attr ON attr.asm_id = asm.id
+            LEFT OUTER JOIN asm_cores core ON core.id = asm.asm_core_id
         WHERE parent.asm_id = #{id}
     </select>
 
@@ -164,16 +164,16 @@
             resultType="int"
             parameterType="map">
         SELECT
-        count(*)
+            count(*)
         FROM asm_parents AS p
         WHERE p.asm_id = #{asmId}
-        AND p.asm_parent_id = #{parentId}
+              AND p.asm_parent_id = #{parentId}
     </select>
 
 
     <select id="asmIDByName" parameterType="string" resultType="int">
         SELECT
-        id
+            id
         FROM asms
         WHERE name = #{name}
     </select>
@@ -207,10 +207,10 @@
             resultMap="attrFullRM"
             parameterType="map">
         SELECT
-        attr.*
+            attr.*
         FROM asm_attrs attr
         WHERE attr.asm_id = #{asm_id}
-        AND attr.name = #{name}
+              AND attr.name = #{name}
     </select>
 
 

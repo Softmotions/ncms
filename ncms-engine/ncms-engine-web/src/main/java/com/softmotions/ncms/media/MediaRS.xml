@@ -7,46 +7,46 @@
 
     <select id="selectEntityIdByPath" parameterType="map" resultType="long">
         SELECT
-        id
+            id
         FROM media_entity
         WHERE folder = #{folder} AND name = #{name}
     </select>
 
     <insert id="insertEntity" parameterType="map" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO media_entity (
-        folder, name, status, mdate,
-        content_type, put_content_type, content_length,
-        creator)
+            folder, name, status, mdate,
+            content_type, put_content_type, content_length,
+            creator)
         VALUES (
-        #{folder}, #{name}, #{status}, now(),
-        #{content_type}, #{put_content_type}, #{content_length},
-        #{creator})
+            #{folder}, #{name}, #{status}, now(),
+            #{content_type}, #{put_content_type}, #{content_length},
+            #{creator})
     </insert>
 
     <update id="updateEntity" parameterType="map">
         UPDATE media_entity
-        SET content_type = #{content_type},
-        content_length = #{content_length},
-        creator = #{creator},
-        icon = NULL,
-        icon_content_type = NULL,
-        mdate = now()
+        SET content_type      = #{content_type},
+            content_length    = #{content_length},
+            creator           = #{creator},
+            icon              = NULL,
+            icon_content_type = NULL,
+            mdate             = now()
         WHERE id = #{id}
     </update>
 
     <update id="fixResourceLocation" parameterType="map">
         UPDATE media_entity e
         SET e.folder = #{nfolder},
-        e.name = #{nname},
-        mdate = now()
+            e.name   = #{nname},
+            mdate    = now()
         WHERE e.folder = #{folder}
-        AND e.name = #{name}
+              AND e.name = #{name}
     </update>
 
     <update id="fixFolderName" parameterType="map">
         UPDATE media_entity e
         SET e.folder = #{new_prefix} || substring(e.folder, #{prefix_like_len}),
-        e.mdate = now()
+            e.mdate  = now()
         WHERE e.folder LIKE #{prefix_like}
     </update>
 
@@ -58,12 +58,12 @@
     <delete id="deleteFile" parameterType="map">
         DELETE FROM media_entity e
         WHERE e.folder = #{folder}
-        AND e.name = #{name}
+              AND e.name = #{name}
     </delete>
 
     <select id="selectInFolder" parameterType="map" resultType="map">
         SELECT
-        e.*
+            e.*
         FROM media_entity AS e
         WHERE e.folder = #{folder}
         ORDER BY e.status DESC, e.name ASC
@@ -162,53 +162,53 @@
 
     <select id="selectByPath" resultType="map" parameterType="map">
         SELECT
-        e.id AS "id",
-        e.name AS "name",
-        e.status AS "status",
-        e.content_type AS "content_type",
-        e.content_length AS "content_length",
-        e.folder AS "folder",
-        e.creator AS "creator",
-        e.description AS "description"
+            e.id             AS "id",
+            e.name           AS "name",
+            e.status         AS "status",
+            e.content_type   AS "content_type",
+            e.content_length AS "content_length",
+            e.folder         AS "folder",
+            e.creator        AS "creator",
+            e.description    AS "description"
         FROM media_entity e
         WHERE
-        e.folder = #{folder}
-        AND e.name = #{name}
+            e.folder = #{folder}
+            AND e.name = #{name}
     </select>
 
 
     <select id="selectIcon" resultType="map" parameterType="map">
         SELECT
-        e.id AS "id",
-        e.icon AS "icon",
-        e.content_type AS "content_type",
-        e.icon_content_type AS "icon_content_type"
+            e.id                AS "id",
+            e.icon              AS "icon",
+            e.content_type      AS "content_type",
+            e.icon_content_type AS "icon_content_type"
         FROM media_entity e
         WHERE
-        e.folder = #{folder}
-        AND e.name = #{name}
-        AND e.status = 0
+            e.folder = #{folder}
+            AND e.name = #{name}
+            AND e.status = 0
     </select>
 
     <select id="selectIcon2" resultType="map" parameterType="map">
         SELECT
-        e.id AS "id",
-        e.folder AS "folder",
-        e.name AS "name",
-        e.icon AS "icon",
-        e.content_type AS "content_type",
-        e.icon_content_type AS "icon_content_type"
+            e.id                AS "id",
+            e.folder            AS "folder",
+            e.name              AS "name",
+            e.icon              AS "icon",
+            e.content_type      AS "content_type",
+            e.icon_content_type AS "icon_content_type"
         FROM media_entity e
         WHERE
-        e.id = #{id}
+            e.id = #{id}
     </select>
 
 
     <update id="updateIcon" parameterType="map">
         UPDATE media_entity
         SET
-        icon = #{icon,jdbcType=BLOB},
-        icon_content_type = #{icon_content_type}
+            icon              = #{icon,jdbcType=BLOB},
+            icon_content_type = #{icon_content_type}
         WHERE id = #{id}
     </update>
 
@@ -223,10 +223,10 @@
 
     <select id="selectMeta" resultType="map" parameterType="map">
         SELECT
-        name AS "name",
-        description AS "description",
-        tags AS "tags",
-        content_type AS "content_type"
+            name         AS "name",
+            description  AS "description",
+            tags         AS "tags",
+            content_type AS "content_type"
         FROM media_entity
         WHERE id = #{id}
     </select>
@@ -245,31 +245,31 @@
     <update id="updateSysFlag" parameterType="map">
         UPDATE media_entity
         SET
-        sys = #{sys}
+            sys = #{sys}
         WHERE id = #{id}
     </update>
 
     <select id="selectResourceAttrsByPath" parameterType="map" resultType="map">
         SELECT
-        id AS "id",
-        name AS "name",
-        folder AS "folder",
-        content_type AS "content_type",
-        content_length AS "content_length",
-        mdate AS "mdate"
+            id             AS "id",
+            name           AS "name",
+            folder         AS "folder",
+            content_type   AS "content_type",
+            content_length AS "content_length",
+            mdate          AS "mdate"
         FROM media_entity
         WHERE folder = #{folder}
-        AND name = #{name}
+              AND name = #{name}
     </select>
 
     <select id="selectResourceAttrsById" parameterType="map" resultType="map">
         SELECT
-        id AS "id",
-        name AS "name",
-        folder AS "folder",
-        content_type AS "content_type",
-        content_length AS "content_length",
-        mdate AS "mdate"
+            id             AS "id",
+            name           AS "name",
+            folder         AS "folder",
+            content_type   AS "content_type",
+            content_length AS "content_length",
+            mdate          AS "mdate"
         FROM media_entity
         WHERE id = #{id}
     </select>
