@@ -159,6 +159,17 @@ qx.Theme.define("ncms.theme.Appearance", {
                     padding : [0, 0, 0, 0]
                 }
             }
+        },
+
+        "wiki-editor-toolbar-button" : {
+            alias : "toolbar-button",
+            include : "toolbar-button",
+            style : function(states) {
+                return {
+                    marginLeft : 0,
+                    marginRight : 0
+                };
+            }
         }
     }
 });

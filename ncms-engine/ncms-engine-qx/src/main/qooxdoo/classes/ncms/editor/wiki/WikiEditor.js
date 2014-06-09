@@ -50,6 +50,12 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             check : ["mediaWiki", "markdown"],
             init : "mediaWiki",
             apply : "_applyType"
+        },
+
+        "helpSite" : {
+            check : "String",
+            nullable : true,
+            apply : "_applyHelpSite"
         }
     },
 
@@ -98,6 +104,8 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         __lastSStart : 0,
 
         __lastSEnd : 0,
+
+        __helpControls : null,
 
         addListener : function(type, listener, self, capture) {
             switch (type) {
@@ -165,7 +173,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
         /**
          * Add new toolbar control.
-         * @param options control configuration:
+         * @param options {Object} control configuration:
          * {
          *  "id" : String, optional. Uses for showing/excluding controls
          *  "title" : String. optional. Title for control in toobar overflow menu
@@ -191,9 +199,9 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
          * Set "excluded" state for all toolbar controls with given id.
          */
         excludeToolbarControl : function(id) {
-            for(var i = 0; i < this.__editorControls.length; ++i) {
+            for (var i = 0; i < this.__editorControls.length; ++i) {
                 var cmeta = this.__editorControls[i];
-                if (cmeta["id"] === id) {
+                if (cmeta.options["id"] == id) {
                     cmeta.options["excluded"] = true;
                     this.__updateControl(cmeta);
                 }
@@ -204,9 +212,9 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
          * Reset "excluded" state for all toolbar controls with given id.
          */
         showToolbarControl : function(id) {
-            for(var i = 0; i < this.__editorControls.length; ++i) {
+            for (var i = 0; i < this.__editorControls.length; ++i) {
                 var cmeta = this.__editorControls[i];
-                if (cmeta["id"] === id) {
+                if (cmeta.options["id"] == id) {
                     cmeta.options["excluded"] = false;
                     this.__updateControl(cmeta);
                 }
@@ -217,12 +225,24 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
          * Reset "excluded" state for all toolbar controls
          */
         resetToolbarControls : function() {
-            for(var i = 0; i < this.__editorControls.length; ++i) {
+            for (var i = 0; i < this.__editorControls.length; ++i) {
                 this.__editorControls[i].options["excluded"] = false;
                 this.__updateControl(this.__editorControls[i]);
             }
         },
 
+        /**
+         * Check for existing toolbar control with given id.
+         */
+        hasToolbarControl : function(id) {
+            for (var i = 0; i < this.__editorControls.length; ++i) {
+                var cmeta = this.__editorControls[i];
+                if (cmeta.options["id"] == id) {
+                    return true;
+                }
+            }
+            return false;
+        },
 
         _addToolbarControl : function(toolbar, options) {
             var callback = this.__buildToolbarControlAction(options);
@@ -232,8 +252,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 buttons : []
             };
 
-            cmeta.buttons[0] = this.__createToolbarControl(toolbar, this.__lastToolbarItem, qx.ui.toolbar.Button, callback, options);
-            cmeta.buttons[0].set({marginLeft : 0, marginRight : 0});
+            cmeta.buttons[0] = this.__createToolbarControl(toolbar, this.__lastToolbarItem, qx.ui.toolbar.Button, callback, options, "wiki-editor-toolbar-button");
             if (toolbar.getOverflowIndicator()) {
                 cmeta.buttons[1] = this.__createToolbarControl(toolbar.getOverflowIndicator().getMenu(), null, qx.ui.menu.Button, callback, options);
             }
@@ -252,6 +271,19 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             }
         },
 
+        __updateHelpControls : function() {
+            var ha = !sm.lang.String.isEmpty(this.getHelpSite());
+            var keys = Object.keys(this.__helpControls);
+
+            for (var i = 0, l = keys.length; i < l; i++) {
+                if (ha) {
+                    this.__helpControls[keys[i]].show();
+                } else {
+                    this.__helpControls[keys[i]].exclude();
+                }
+            }
+        },
+
         __buildToolbarControlAction : function(options) {
             var me = this;
             return function() {
@@ -262,7 +294,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
                 var selectedText = this._getTextArea().getContentElement().getTextSelection();
                 if (options["prompt"]) {
-                    options["prompt"].call(this, function(text) {
+                    options["prompt"].call(me, function(text) {
                         icb.call(me, me._insertText, text);
                     }, this, selectedText);
                 } else {
@@ -271,9 +303,9 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             };
         },
 
-        __createToolbarControl : function(toolbar, before, btclass, callback, options) {
-            var bt = new btclass(options["title"], options["icon"]);
-            if (options["tooltip"]) {
+        __createToolbarControl : function(toolbar, before, btclass, callback, options, appearance) {
+            var bt = new btclass(options["title"], options["icon"]).set(appearance ? {appearance : appearance} : {});
+            if (options["tooltipText"]) {
                 bt.setToolTip(new qx.ui.tooltip.ToolTip(options["tooltipText"]));
             }
             bt.addListener("execute", callback, this);
@@ -287,15 +319,31 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             return bt;
         },
 
-        __initToolbar : function(toolbar) {
-            if (true/* TODO: wiki help */) {
-                var helpButton = new qx.ui.toolbar.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
-                toolbar.addAfter(helpButton, this.__lastToolbarItem);
-                helpButton.addListener("execute", function() {
-                    ncms.Application.alert("TODO: help");
-                });
+        __initHelpControls : function(toolbar) {
+            this.__helpControls = {};
+            var helpCallback = function() {
+                if (sm.lang.String.isEmpty(this.getHelpSite())) {
+                    return;
+                }
+                qx.bom.Window.open(this.getHelpSite(), "NCMS:WikiHelp");
+            };
+
+            var hbm = this.__helpControls["toolbar-main"] = new qx.ui.toolbar.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
+            hbm.addListener("execute", helpCallback, this);
+            hbm.setToolTip(new qx.ui.tooltip.ToolTip(this.tr("Help")));
+            toolbar.addAfter(hbm, this.__lastToolbarItem);
+            if (toolbar.getOverflowIndicator() && toolbar.getOverflowIndicator().getMenu()) {
+                var hbo = this.__helpControls["toolbar-overflow"] = new qx.ui.menu.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
+                hbo.addListener("execute", helpCallback, this);
+                hbo.setToolTip(new qx.ui.tooltip.ToolTip(this.tr("Help")));
+                toolbar.getOverflowIndicator().getMenu().addAt(hbo, 0);
             }
 
+            this.__updateHelpControls();
+        },
+
+        __initToolbar : function(toolbar) {
+            var self = this.self(arguments);
             var cprompt = function(title) {
                 return function(cb, editor, sText) {
                     if (!sText) {
@@ -308,7 +356,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             };
             var csurround = function(level, pattern, trails) {
                 return function(cb, data) {
-                    cb.call(this, ncms.editor.wiki.WikiEditor.createTextSurround(data, level, pattern, trails));
+                    cb.call(this, self.createTextSurround(data, level, pattern, trails));
                 }
             };
             var cscall = function(func) {
@@ -316,6 +364,8 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                     cb.call(this, func.call(this, data));
                 }
             };
+
+            this.__initHelpControls(toolbar);
 
             this._addToolbarControl(toolbar, {
                 id : "H1",
@@ -372,6 +422,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 insertMediaWiki : cscall(this.__mediaWikiOL),
                 insertMarkdown : cscall(this.__markdownOL)
             });
+            // TODO: init buttons: link, image, table
             this._addToolbarControl(toolbar, {
                 icon : "ncms/icon/16/wiki/link_add.png",
                 tooltipText : this.tr("Link to another page")
@@ -429,6 +480,10 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             var finishPos = sStart + text.length;
             ta.setTextSelection(finishPos, finishPos);
             tel.scrollToY(scrollY);
+        },
+
+        _applyHelpSite : function(value, old) {
+            this.__updateHelpControls();
         },
 
         //////////////////////////////////////////////////////////////////////////
@@ -514,5 +569,6 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
     destruct : function() {
         this._disposeArray("__editorControls");
+        this._disposeMap("__helpControls");
     }
 });
