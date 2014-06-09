@@ -116,10 +116,6 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             }
         },
 
-        _getTextArea : function() {
-            return this.getChildControl("textarea");
-        },
-
         // overridden
         setValue : function(value) {
             this._getTextArea().setValue(value);
@@ -133,6 +129,10 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         // overridden
         getValue : function() {
             return this._getTextArea().getValue();
+        },
+
+        _getTextArea : function() {
+            return this.getChildControl("textarea");
         },
 
         //overriden
