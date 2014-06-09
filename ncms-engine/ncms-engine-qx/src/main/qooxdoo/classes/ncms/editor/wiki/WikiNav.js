@@ -51,10 +51,10 @@ qx.Class.define("ncms.editor.wiki.WikiNav", {
         var table = new sm.table.Table(tm, tm.getCustom());
         this._add(table);
 
-        var eclazz = "ncms.editor.wiki.WikiEditor";
+        var eclazz = "ncms.editor.wiki.WikiEditorTest";
         var app = ncms.Application.INSTANCE;
         app.registerWSA(eclazz, function() {
-            return new ncms.editor.wiki.WikiEditor();
+            return new ncms.editor.wiki.WikiEditorTest();
         }, null, this);
 
         table.getSelectionModel().addListener("changeSelection", function(ev){
@@ -66,32 +66,8 @@ qx.Class.define("ncms.editor.wiki.WikiNav", {
             }
 
             var we = app.getWSA(eclazz);
-            we.setType(data["type"]);
-            we.setHelpSite(data["helpSite"] ? data["helpSite"] : null);
-            if (data["additionalBtn"]) {
-                var bid = "ABTN" + (data["prompt"] ? "P" : "");
-                if (!we.hasToolbarControl(bid)) {
-                    we.addToolbarControl({
-                        "id" : bid,
-                        "tooltipText" : title,
-                        "icon" : "ncms/icon/16/misc/cross-script.png",
-                        "prompt" : data["prompt"] ? function(cb, editor, stext) {
-                            cb.call(this, stext ? stext : prompt());
-                        } : null,
-                        "insertMediaWiki" : function(cb, data) {
-                            cb.call(this, "\n--testW-- " + data + " --testW--\n")
-                        },
-                        "insertMarkdown" : function(cb, data) {
-                            cb.call(this, "\n--testM-- " + data + " --testM--\n")
-                        }
-                    });
-                }
-            }
-            we.resetToolbarControls();
-            if (data["exclude"]) {
-                we.excludeToolbarControl(data["exclude"]);
-            }
-
+            qx.log.Logger.debug(we.validate());
+            we.setOptions(qx.lang.Object.mergeWith(data, {title: title}));
             app.showWSA(eclazz);
         }, this);
     },

@@ -487,7 +487,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             nval.push(value.substring(0, sStart));
             nval.push(text);
             nval.push(value.substring(sEnd));
-            ta.setValue(nval.join(""));
+            this.setValue(nval.join(""));
 
             var finishPos = sStart + text.length;
             ta.setTextSelection(finishPos, finishPos);
