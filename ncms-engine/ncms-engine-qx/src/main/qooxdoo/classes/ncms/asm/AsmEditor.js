@@ -107,6 +107,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
         form.add(el, this.tr("Description"), null, "description");
 
         el = new qx.ui.form.CheckBox();
+        el.setToolTipText(this.tr("Use this assembly as base template for other pages"));
         el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Template"), null, "template");
 
