@@ -1,11 +1,14 @@
 /**
- * Common page editor tabs code.
+ * Common page editor tab-pane code.
+ *
+ * Supports lazy loading of pane content.
+ * Pane data can loaded on `loadPane` event.
  */
 qx.Mixin.define("ncms.pgs.MPageEditorPane", {
 
     events : {
         /**
-         * Fired if tab should be popuulated by page specific data
+         * Fired if pane should be populated by page specific data
          *
          * Data: pageSpec property value.
          */
@@ -19,6 +22,15 @@ qx.Mixin.define("ncms.pgs.MPageEditorPane", {
 
     properties : {
 
+        /**
+         * pageSpec:
+         * {
+         *   id : {Number} Page ID,
+         *   name : {String} Page name
+         * }
+         *
+         * @see ncms.pgs.PageEditor
+         */
         "pageSpec" : {
             check : "Object",
             nullable : true,

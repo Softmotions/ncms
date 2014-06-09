@@ -52,8 +52,15 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         },
 
         __onNewPage : function(ev) {
-            var parent = this._tree.getSelection().getItem(0) || this._tree.getModel();
-            var parentId = parent != null ? parent.getId() : null;
+            var parent = this._tree.getSelection().getItem(0);
+            while (parent && (parent.getStatus() & 1) === 0) {
+                parent = this._tree.getParent(parent);
+            }
+            if (parent == null) {
+                parent = this._tree.getModel();
+            }
+            var parentId = parent.getId();
+            qx.log.Logger.info("parentId=" + parentId);
             var d = new ncms.pgs.PageNewDlg(parentId);
             d.addListenerOnce("completed", function(ev) {
                 this._refreshNode(parent);

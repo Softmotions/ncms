@@ -55,8 +55,8 @@
                     remarks="Username which modified this assembly"/>
             <column name="OWNER" type="VARCHAR(64)"
                     remarks="Username of page assembly owner"/>
-            <column name="STATE" type="INT"
-                    remarks="State INT mask for varioius purposes"/>
+            <column name="PUBLISHED" type="INT"
+                    remarks="Published flag for page assemblies"/>
             <column name="TYPE" type="VARCHAR(64)">
             </column>
             <column name="OPTIONS" type="VARCHAR(512)"/>

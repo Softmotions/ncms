@@ -11,6 +11,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
@@ -84,20 +85,28 @@ public class PageRS extends MBDAOSupport {
         }
         ObjectNode res = mapper.createObjectNode();
         JsonUtils.populateObjectNode(row, res);
-        String sOwner = (String) row.get("owner");
 
-        WSUser owner = userdb.findUser(sOwner);
-        if (owner != null) {
-            JsonUtils.populateObjectNode(owner, res.putObject("owner"),
-                                         "email", "name", "fullName");
+        String username = (String) row.get("owner");
+        WSUser user = (username != null) ? userdb.findUser(username) : null;
+        if (user != null) {
+            JsonUtils.populateObjectNode(user, res.putObject("owner"),
+                                         "name", "fullName");
         }
+
+        username = (String) row.get("muser");
+        user = (username != null) ? userdb.findUser(username) : null;
+        if (user != null) {
+            JsonUtils.populateObjectNode(user, res.putObject("muser"),
+                                         "name", "fullName");
+        }
+
         res.put("accessmask", getPageAccessMask(req, row));
         return res;
     }
 
 
     /**
-     * Gte page info for edit pane
+     * Get page info for edit pane
      *
      * @param id
      * @return
@@ -108,6 +117,33 @@ public class PageRS extends MBDAOSupport {
         ObjectNode res = mapper.createObjectNode();
 
 
+        return res;
+    }
+
+
+    /**
+     * Set the page owner
+     *
+     * @param id    Page ID
+     * @param owner Owner username
+     */
+    @PUT
+    @Path("/owner/{id}/{owner}")
+    @Transactional
+    public JsonNode setPageOwner(@PathParam("id") String id,
+                                 @PathParam("owner") String owner) {
+
+        WSUser user = userdb.findUser(owner);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        update("setPageOwner",
+               "id", id,
+               "owner", owner);
+
+        ObjectNode res = mapper.createObjectNode();
+        JsonUtils.populateObjectNode(user, res.putObject("owner"),
+                                     "name", "fullName");
         return res;
     }
 
@@ -191,6 +227,9 @@ public class PageRS extends MBDAOSupport {
                                 gen.writeNumberField("status", status);
                                 gen.writeStringField("type", type);
                                 gen.writeStringField("options", (String) row.get("options"));
+
+                                //todo load page access rights?
+
                                 gen.writeEndObject();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);

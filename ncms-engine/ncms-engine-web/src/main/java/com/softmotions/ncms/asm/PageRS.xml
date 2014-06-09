@@ -16,6 +16,7 @@
         FROM ASMS AS p
         WHERE p.nav_parent_id = #{nav_parent_id}
         AND p.type LIKE 'page%'
+        ORDER BY p.hname ASC
     </select>
 
 
@@ -29,6 +30,7 @@
         FROM ASMS AS p
         WHERE p.nav_parent_id IS NULL
         AND p.type LIKE 'page%'
+        ORDER BY p.hname ASC
     </select>
 
 
@@ -43,22 +45,30 @@
 
 
     <delete id="dropPage" parameterType="map">
-    DELETE
+        DELETE
         FROM asms
         WHERE id = #{id}
     </delete>
 
 
+    <update id="setPageOwner" parameterType="map">
+        UPDATE asms
+        SET owner = #{owner}
+        WHERE id = #{id}
+    </update>
+
+
     <select id="selectPageInfo" resultType="map" parameterType="map">
         SELECT
-            p.id      AS "id",
-            p.hname   AS "name",
-            p.name    AS "guid",
-            p.type    AS "type",
-            p.mdate   AS "mdate",
-            p.owner   AS "owner",
-            p.state   AS "state",
-            p.options AS "options"
+        p.id AS "id",
+        p.hname AS "name",
+        p.name AS "guid",
+        p.type AS "type",
+        p.mdate AS "mdate",
+        p.muser AS "muser",
+        p.owner AS "owner",
+        p.published AS "published",
+        p.options AS "options"
         FROM ASMS AS p
         WHERE p.id = #{id}
               AND p.type LIKE 'page%'

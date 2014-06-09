@@ -77,6 +77,20 @@ qx.Class.define("ncms.Application", {
 
         registerWorkspaces : function(wsSpec) {
             return ncms.Application.INSTANCE.registerWorkspaces(wsSpec);
+        },
+
+        formatDate : function(date, formatName) {
+            if (typeof date === "number") {
+                date = new Date(date);
+            } else if (typeof date === "string") {
+                date = new Date(date);
+            }
+            var format = qx.locale.Date.getDateFormat(formatName || "medium").toString();
+            if (format == null) {
+                format = qx.locale.Date.getDateFormat("medium").toString();
+            }
+            var df = new qx.util.format.DateFormat(format);
+            return df.format(date);
         }
     },
 

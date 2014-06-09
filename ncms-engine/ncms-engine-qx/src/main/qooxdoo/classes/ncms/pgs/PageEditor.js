@@ -39,6 +39,10 @@ qx.Class.define("ncms.pgs.PageEditor", {
         if (page != null) {
             this.add(page);
         }
+        page = this.__createAccessPane();
+        if (page != null) {
+            this.add(page);
+        }
     },
 
     members : {
@@ -46,6 +50,8 @@ qx.Class.define("ncms.pgs.PageEditor", {
         __infoPane : null,
 
         __editPane : null,
+
+        __accessPane : null,
 
         __createInfoPage : function() {
             var page = new ncms.pgs.PageEditorInfoPage();
@@ -61,17 +67,21 @@ qx.Class.define("ncms.pgs.PageEditor", {
             return page;
         },
 
-        __applyPageSpec : function(spec) {
+        __createAccessPane : function() {
+            var page = new ncms.pgs.PageEditorAccessPane();
+            this.bind("pageSpec", page, "pageSpec");
+            this.__accessPane = page;
+            return page;
         },
 
-        __populateInfo : function(spec) {
-
+        __applyPageSpec : function(spec) {
         }
     },
 
     destruct : function() {
         this.__infoPane = null;
         this.__editPane = null;
+        this.__accessPane = null;
         //this._disposeObjects("__field_name");                                
     }
 });

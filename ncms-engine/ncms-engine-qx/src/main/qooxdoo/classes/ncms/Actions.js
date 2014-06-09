@@ -122,10 +122,19 @@ qx.Class.define("ncms.Actions", {
         //  parent : {Number?null} Parent page ID
         //  type: {String} Page type
         // }
-        this._action("pages.new", "/ncms/rs/adm/pages/new")
+        this._action("pages.new", "/ncms/rs/adm/pages/new");
 
         //DELETE The specified page
-        this._action("pages.delete", "/ncms/rs/adm/pages/{id}")
+        this._action("pages.delete", "/ncms/rs/adm/pages/{id}");
+
+        //GET Get generic page info
+        this._action("pages.info", "/ncms/rs/adm/pages/info/{id}");
+
+        //PUT set page owner
+        // id: Page ID
+        // owner: Owner user ID
+        this._action("pages.owner", "/ncms/rs/adm/pages/owner/{id}/{owner}")
+
     },
 
     members : {
