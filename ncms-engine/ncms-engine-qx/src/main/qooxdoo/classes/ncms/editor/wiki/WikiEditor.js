@@ -33,9 +33,9 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
             var hfix = qx.lang.String.repeat(pattern, level < 1 ? 1 : level);
             nval.push(hfix);
-            nval.push(trails||"");
+            nval.push(trails || "");
             nval.push(text);
-            nval.push(trails||"");
+            nval.push(trails || "");
             nval.push(hfix);
 
             return nval.join("");
@@ -47,7 +47,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
     properties : {
         "type" : {
-            check: ["mediaWiki", "markdown"],
+            check : ["mediaWiki", "markdown"],
             init : "mediaWiki",
             apply : "_applyType"
         }
@@ -130,7 +130,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         },
 
         _applyType : function(value, old) {
-            for(var i = 0; i < this.__editorControls.length; ++i) {
+            for (var i = 0; i < this.__editorControls.length; ++i) {
                 this.__updateControl(this.__editorControls[i]);
             }
         },
@@ -159,9 +159,66 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             return control || this.base(arguments, id);
         },
 
+        /**
+         * Add new toolbar control.
+         * @param options control configuration:
+         * {
+         *  "id" : String, optional. Uses for showing/excluding controls
+         *  "title" : String. optional. Title for control in toobar overflow menu
+         *  "icon" : String. required. Icon for control in toobar and toolbar overflow menu
+         *  "tooltipText" : String. optional. Text for control tooltip
+         *  "prompt" : Function. optional. Callback for prompt additional params by user
+         *          function(cb, editor, stext) {}
+         *                  - cb : function(promptData) - callback for chain
+         *                  - editor - current WikiEditor instance
+         *                  - stext - selected text
+         *  "insert<type>": Function. optional-required. Callback for processing prompt data and modifying editor text.
+         *         function(cb, promptData) {}
+         *                  - cb : function(text) - callback for chain. text will be inserted instead selected text
+         *                  - promptData - data from prompt function execution (if specifyed) or selected text in other case
+         *         <type> - captalized wiki editor type. If function for current editor type not specifyed, control for this type will not be shown.
+         * }
+         */
         addToolbarControl : function(options) {
             this._addToolbarControl(this.getChildControl("toolbar"), options);
         },
+
+        /**
+         * Set "excluded" state for all toolbar controls with given id.
+         */
+        excludeToolbarControl : function(id) {
+            for(var i = 0; i < this.__editorControls.length; ++i) {
+                var cmeta = this.__editorControls[i];
+                if (cmeta["id"] === id) {
+                    cmeta.options["excluded"] = true;
+                    this.__updateControl(cmeta);
+                }
+            }
+        },
+
+        /**
+         * Reset "excluded" state for all toolbar controls with given id.
+         */
+        showToolbarControl : function(id) {
+            for(var i = 0; i < this.__editorControls.length; ++i) {
+                var cmeta = this.__editorControls[i];
+                if (cmeta["id"] === id) {
+                    cmeta.options["excluded"] = false;
+                    this.__updateControl(cmeta);
+                }
+            }
+        },
+
+        /**
+         * Reset "excluded" state for all toolbar controls
+         */
+        resetToolbarControls : function() {
+            for(var i = 0; i < this.__editorControls.length; ++i) {
+                this.__editorControls[i].options["excluded"] = false;
+                this.__updateControl(this.__editorControls[i]);
+            }
+        },
+
 
         _addToolbarControl : function(toolbar, options) {
             var callback = this.__buildToolbarControlAction(options);
@@ -172,6 +229,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             };
 
             cmeta.buttons[0] = this.__createToolbarControl(toolbar, this.__lastToolbarItem, qx.ui.toolbar.Button, callback, options);
+            cmeta.buttons[0].set({marginLeft : 0, marginRight : 0});
             if (toolbar.getOverflowIndicator()) {
                 cmeta.buttons[1] = this.__createToolbarControl(toolbar.getOverflowIndicator().getMenu(), null, qx.ui.menu.Button, callback, options);
             }
@@ -179,9 +237,9 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             this.__updateControl(cmeta);
         },
 
-        __updateControl: function(cmeta) {
-            var applied = !!cmeta.options[("insert" + qx.lang.String.capitalize(this.getType()))];
-            for(var i = 0; i < cmeta.buttons.length; ++i) {
+        __updateControl : function(cmeta) {
+            var applied = !!cmeta.options[("insert" + qx.lang.String.capitalize(this.getType()))] && !cmeta.options["excluded"];
+            for (var i = 0; i < cmeta.buttons.length; ++i) {
                 if (applied) {
                     cmeta.buttons[i].show();
                 } else {
@@ -192,18 +250,19 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
         __buildToolbarControlAction : function(options) {
             var me = this;
-            var callback = function(data) {
-                var cbname = "insert" + qx.lang.String.capitalize(me.getType());
-                if (options[cbname]) {
-                    options[cbname].call(me, me.__insertText, data);
-                }
-            };
             return function() {
+                var icb = options[("insert" + qx.lang.String.capitalize(me.getType()))];
+                if (!icb) {
+                    return;
+                }
+
                 var selectedText = this.getChildControl("textarea").getContentElement().getTextSelection();
                 if (options["prompt"]) {
-                    options["prompt"].call(this, this, selectedText, callback);
+                    options["prompt"].call(this, function(text) {
+                        icb.call(me, me._insertText, text);
+                    }, this, selectedText);
                 } else {
-                    callback.call(this, selectedText);
+                    icb.call(me, me._insertText, selectedText);
                 }
             };
         },
@@ -229,12 +288,12 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 var helpButton = new qx.ui.toolbar.Button("Help", "ncms/icon/16/help/help.png");
                 toolbar.add(helpButton);
                 helpButton.addListener("execute", function() {
-                    ncms.Application.alert("TODO");
+                    ncms.Application.alert("TODO: help");
                 });
             }
 
             var cprompt = function(title) {
-                return function(editor, sText, cb) {
+                return function(cb, editor, sText) {
                     cb.call(this, sText ? sText : prompt(title));
                 }
             };
@@ -245,6 +304,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             };
 
             this._addToolbarControl(toolbar, {
+                id : "H1",
                 icon : "ncms/icon/16/wiki/text_heading_1.png",
                 tooltipText : this.tr("Heading 1"),
                 prompt : cprompt(this.tr("Header text")),
@@ -252,6 +312,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 insertMarkdown : csurround(1, "#", " ")
             });
             this._addToolbarControl(toolbar, {
+                id : "H2",
                 icon : "ncms/icon/16/wiki/text_heading_2.png",
                 tooltipText : this.tr("Heading 2"),
                 prompt : cprompt(this.tr("Header text")),
@@ -259,6 +320,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 insertMarkdown : csurround(2, "#", " ")
             });
             this._addToolbarControl(toolbar, {
+                id : "H3",
                 icon : "ncms/icon/16/wiki/text_heading_3.png",
                 tooltipText : this.tr("Heading 3"),
                 prompt : cprompt(this.tr("Header text")),
@@ -266,6 +328,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 insertMarkdown : csurround(3, "#", " ")
             });
             this._addToolbarControl(toolbar, {
+                id : "Bold",
                 icon : "ncms/icon/16/wiki/text_bold.png",
                 tooltipText : this.tr("Bold"),
                 prompt : cprompt(this.tr("Bold text")),
@@ -273,6 +336,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 insertMarkdown : csurround(2, "*", "")
             });
             this._addToolbarControl(toolbar, {
+                id : "Italic",
                 icon : "ncms/icon/16/wiki/text_italic.png",
                 tooltipText : this.tr("Italic"),
                 prompt : cprompt(this.tr("Italics text")),
@@ -281,6 +345,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             });
 
             this._addToolbarControl(toolbar, {
+                id : "UL",
                 icon : "ncms/icon/16/wiki/text_list_bullets.png",
                 tooltipText : this.tr("Bullet list"),
                 insertMediaWiki : function(cb, data) {
@@ -306,6 +371,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 }
             });
             this._addToolbarControl(toolbar, {
+                id : "OL",
                 icon : "ncms/icon/16/wiki/text_list_numbers.png",
                 tooltipText : this.tr("Numbered list"),
                 insertMediaWiki : function(cb, data) {
@@ -343,6 +409,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 tooltipText : this.tr("Add table")
             });
             this._addToolbarControl(toolbar, {
+                id : "Tree",
                 icon : "ncms/icon/16/wiki/tree_add.png",
                 tooltipText : this.tr("Add tree"),
                 insertMediaWiki : function(cb, data) {
@@ -359,8 +426,27 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 }
             });
             this._addToolbarControl(toolbar, {
+                id : "Note",
                 icon : "ncms/icon/16/wiki/note_add.png",
-                tooltipText : this.tr("Create note")
+                tooltipText : this.tr("Create note"),
+                insertMediaWiki : function(cb, data) {
+                    var val = [];
+                    val.push("");
+                    val.push("<note>");
+                    val.push("Текст заметки");
+                    val.push("</note>");
+                    val.push("");
+                    cb.call(this, val.join("\n"))
+                },
+                insertMarkdown : function(cb, data) {
+                    var val = [];
+                    val.push("");
+                    val.push("<note>");
+                    val.push("Текст заметки");
+                    val.push("</note>");
+                    val.push("");
+                    cb.call(this, val.join("\n"))
+                }
             });
         },
 
@@ -375,7 +461,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             return (sEnd == null || sEnd == -1 || sEnd == 0) ? this.__lastSEnd : sEnd;
         },
 
-        __insertText : function(text) {
+        _insertText : function(text) {
             var ta = this.getChildControl("textarea");
             var tel = ta.getContentElement();
             var scrollY = tel.getScrollY();
