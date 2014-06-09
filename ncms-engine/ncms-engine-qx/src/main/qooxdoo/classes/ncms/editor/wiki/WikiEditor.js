@@ -273,13 +273,11 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
         __updateHelpControls : function() {
             var ha = !sm.lang.String.isEmpty(this.getHelpSite());
-            var keys = Object.keys(this.__helpControls);
-
-            for (var i = 0, l = keys.length; i < l; i++) {
+            for (var i = 0; i < this.__helpControls.length; ++i) {
                 if (ha) {
-                    this.__helpControls[keys[i]].show();
+                    this.__helpControls[i].show();
                 } else {
-                    this.__helpControls[keys[i]].exclude();
+                    this.__helpControls[i].exclude();
                 }
             }
         },
@@ -320,7 +318,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         },
 
         __initHelpControls : function(toolbar) {
-            this.__helpControls = {};
+            this.__helpControls = [];
             var helpCallback = function() {
                 if (sm.lang.String.isEmpty(this.getHelpSite())) {
                     return;
@@ -328,12 +326,12 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 qx.bom.Window.open(this.getHelpSite(), "NCMS:WikiHelp");
             };
 
-            var hbm = this.__helpControls["toolbar-main"] = new qx.ui.toolbar.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
+            var hbm = this.__helpControls[this.__helpControls.length] = new qx.ui.toolbar.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
             hbm.addListener("execute", helpCallback, this);
             hbm.setToolTip(new qx.ui.tooltip.ToolTip(this.tr("Help")));
             toolbar.addAfter(hbm, this.__lastToolbarItem);
             if (toolbar.getOverflowIndicator() && toolbar.getOverflowIndicator().getMenu()) {
-                var hbo = this.__helpControls["toolbar-overflow"] = new qx.ui.menu.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
+                var hbo = this.__helpControls[this.__helpControls.length] = new qx.ui.menu.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
                 hbo.addListener("execute", helpCallback, this);
                 hbo.setToolTip(new qx.ui.tooltip.ToolTip(this.tr("Help")));
                 toolbar.getOverflowIndicator().getMenu().addAt(hbo, 0);
@@ -569,6 +567,6 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
     destruct : function() {
         this._disposeArray("__editorControls");
-        this._disposeMap("__helpControls");
+        this._disposeArray("__helpControls");
     }
 });
