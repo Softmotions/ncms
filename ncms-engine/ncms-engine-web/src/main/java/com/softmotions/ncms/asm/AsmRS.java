@@ -388,13 +388,20 @@ public class AsmRS extends MBDAOSupport {
         if (!StringUtils.isBlank(val)) {
             cq.withParam("type", val);
         }
+        boolean orderUsed = false;
         val = req.getParameter("sortAsc");
         if (!StringUtils.isBlank(val)) {
+            orderUsed = true;
             cq.orderBy("asm." + val).asc();
         }
         val = req.getParameter("sortDesc");
         if (!StringUtils.isBlank(val)) {
+            orderUsed = true;
             cq.orderBy("asm." + val).desc();
+        }
+        if (!orderUsed) {
+            cq.orderBy("asm.type").asc();
+            cq.orderBy("asm.name").asc();
         }
 
 

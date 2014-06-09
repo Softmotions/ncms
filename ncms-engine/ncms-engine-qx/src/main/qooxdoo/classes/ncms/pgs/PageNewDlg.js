@@ -4,15 +4,6 @@
 qx.Class.define("ncms.pgs.PageNewDlg", {
     extend : sm.ui.form.BaseSavePopupDlg,
 
-    statics : {
-    },
-
-    events : {
-    },
-
-    properties : {
-    },
-
     construct : function(parentId) {
         this.base(arguments);
         this.__parentId = parentId;
@@ -40,14 +31,17 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
 
         _save : function() {
             var items = this._form.getItems();
-
-
-            /*var req = new sm.io.Request(
-             ncms.Application.ACT.getRestUrl("asms.new", {name : fitems["name"].getValue()}),
-             "PUT", "application/json");
-             req.send(function(resp) {
-             this.fireDataEvent("completed", resp.getContent());
-             }, this);*/
+            var data = {
+                name : items["name"].getValue(),
+                parent : this.__parentId,
+                type : items["container"].getValue() ? "page.folder" : "page"
+            };
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.new"), "PUT");
+            req.setRequestContentType("application/json");
+            req.setData(JSON.stringify(data));
+            req.send(function(resp) {
+                this.fireDataEvent("completed", data);
+            }, this);
         }
     },
 

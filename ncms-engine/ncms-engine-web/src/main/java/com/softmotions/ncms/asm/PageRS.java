@@ -2,12 +2,16 @@ package com.softmotions.ncms.asm;
 
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.guid.RandomGUID;
+import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
@@ -20,7 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -49,24 +55,104 @@ public class PageRS extends MBDAOSupport {
 
     final NcmsMessages messages;
 
+    final WSUserDatabase userdb;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao, ObjectMapper mapper,
-                  NcmsMessages messages) {
+                  NcmsMessages messages,
+                  WSUserDatabase userdb) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
+        this.userdb = userdb;
+    }
+
+
+    /**
+     * Get page info for info pane.
+     *
+     * @param id Page ID
+     * @return
+     */
+    @GET
+    @Path("/info/{id}")
+    public ObjectNode selectPageInfo(@Context HttpServletRequest req, @PathParam("id") Long id) {
+        Map<String, Object> row = selectOne("selectPageInfo", "id", id);
+        if (row == null) {
+            throw new NotFoundException();
+        }
+        ObjectNode res = mapper.createObjectNode();
+        JsonUtils.populateObjectNode(row, res);
+
+        String username = (String) row.get("owner");
+        WSUser user = (username != null) ? userdb.findUser(username) : null;
+        if (user != null) {
+            JsonUtils.populateObjectNode(user, res.putObject("owner"),
+                                         "name", "fullName");
+        }
+
+        username = (String) row.get("muser");
+        user = (username != null) ? userdb.findUser(username) : null;
+        if (user != null) {
+            JsonUtils.populateObjectNode(user, res.putObject("muser"),
+                                         "name", "fullName");
+        }
+
+        res.put("accessmask", getPageAccessMask(req, row));
+        return res;
+    }
+
+
+    /**
+     * Get page info for edit pane
+     *
+     * @param id
+     * @return
+     */
+    @GET
+    @Path("/edit/{id}")
+    public ObjectNode pageEditInfo(@PathParam("id") Long id) {
+        ObjectNode res = mapper.createObjectNode();
+
+
+        return res;
+    }
+
+
+    /**
+     * Set the page owner
+     *
+     * @param id    Page ID
+     * @param owner Owner username
+     */
+    @PUT
+    @Path("/owner/{id}/{owner}")
+    @Transactional
+    public JsonNode setPageOwner(@PathParam("id") String id,
+                                 @PathParam("owner") String owner) {
+
+        WSUser user = userdb.findUser(owner);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        update("setPageOwner",
+               "id", id,
+               "owner", owner);
+
+        ObjectNode res = mapper.createObjectNode();
+        JsonUtils.populateObjectNode(user, res.putObject("owner"),
+                                     "name", "fullName");
+        return res;
     }
 
 
     @PUT
     @Path("/new")
     @Transactional
-    public void newpage(@Context HttpServletRequest req,
+    public void newPage(@Context HttpServletRequest req,
                         ObjectNode spec) {
-
-        log.info("new page=" + spec);
 
         String name = spec.hasNonNull("name") ? spec.get("name").asText() : null;
         Long parent = spec.hasNonNull("parent") ? spec.get("parent").asLong() : null;
@@ -90,8 +176,17 @@ public class PageRS extends MBDAOSupport {
                    "guid", guid,
                    "name", name,
                    "type", type,
+                   "user", req.getRemoteUser(),
                    "nav_parent_id", parent);
         }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public void dropPage(@Context HttpServletRequest req,
+                         @PathParam("id") Long id) {
+        delete("dropPage", "id", id);
     }
 
     @Path("/layer")
@@ -122,8 +217,7 @@ public class PageRS extends MBDAOSupport {
                                 gen.writeStartObject();
                                 gen.writeNumberField("id", ((Number) row.get("id")).longValue());
                                 gen.writeStringField("guid", (String) row.get("guid"));
-                                gen.writeStringField("name", (String) row.get("name"));
-
+                                gen.writeStringField("label", (String) row.get("name"));
                                 gen.writeStringField("description", (String) row.get("description"));
                                 String type = (String) row.get("type");
                                 int status = 0;
@@ -133,6 +227,9 @@ public class PageRS extends MBDAOSupport {
                                 gen.writeNumberField("status", status);
                                 gen.writeStringField("type", type);
                                 gen.writeStringField("options", (String) row.get("options"));
+
+                                //todo load page access rights?
+
                                 gen.writeEndObject();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -149,14 +246,40 @@ public class PageRS extends MBDAOSupport {
                 .build();
     }
 
+    Long getPathLastIdSegment(String path) {
+        if (path == null) {
+            return null;
+        }
+        int idx = path.lastIndexOf('/');
+        if (idx == -1 || idx == path.length() - 1) {
+            return Long.valueOf(path);
+        }
+        return Long.valueOf(path.substring(idx + 1));
+    }
+
 
     Map createSelectLayerQ(String path) {
+        Long pId = getPathLastIdSegment(path);
         Map<String, Object> ret = new TinyParamMap();
-        if (path != null) {
-            //todo
-            //ret.put("nav_parent_id", Long.parseLong(req.getParameter("nav_parent_id")));
+        if (pId != null) {
+            ret.put("nav_parent_id", pId);
         }
         return ret;
+    }
+
+
+    private String getPageAccessMask(HttpServletRequest req, Map<String, Object> row) {
+        String user = req.getRemoteUser();
+        if (user == null) {
+            return "r";
+        }
+        String owner = (String) row.get("owner");
+        if (user.equals(owner) || req.isUserInRole("admin.structure")) {
+            return "rws";
+        }
+
+        //todo check access list
+        return "r";
     }
 
 

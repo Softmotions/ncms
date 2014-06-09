@@ -1,7 +1,7 @@
 /**
- * Assembly selector dialog window.
+ * User selector
  */
-qx.Class.define("ncms.asm.AsmSelectorDlg", {
+qx.Class.define("ncms.usr.UserSelectorDlg", {
     extend : qx.ui.window.Window,
 
     statics : {
@@ -9,8 +9,8 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
 
     events : {
         /**
-         * Data: [] array of selected asms.
-         * @see ncms.asm.AsmSelector
+         * Data: [] array of selected users.
+         * @see ncms.usr.UserSelector
          */
         "completed" : "qx.event.type.Data"
     },
@@ -18,8 +18,8 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
     properties : {
     },
 
-    construct : function(caption, icon, constViewSpec) {
-        this.base(arguments, caption != null ? caption : this.tr("Select assembly"), icon);
+    construct : function(caption, icon, constViewSpec, smodel) {
+        this.base(arguments, caption, icon);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
             modal : true,
@@ -29,20 +29,13 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
             width : 620,
             height : 400
         });
-
-        var selector = this.__selector =
-                new ncms.asm.AsmSelector(
-                        constViewSpec,
-                        new qx.ui.table.selection.Model()
-                                .set({selectionMode : qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION}));
-        selector.getTable().addListener("cellDblclick", this.__ok, this);
-
+        var selector = this.__selector = new ncms.usr.UserSelector(constViewSpec, smodel);
         this.add(selector, {flex : 1});
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
         hcont.setPadding(5);
 
-        var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Ok"));
+        var bt = this.__okBt = new qx.ui.form.Button(this.tr("Ok"));
         bt.addListener("execute", this.__ok, this);
         hcont.add(bt);
 
@@ -55,46 +48,51 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
         this.__closeCmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
 
-        selector.addListener("asmSelected", this.__syncState, this);
+        selector.addListener("userSelected", this.__syncState, this);
+        selector.getTable().addListener("cellDblclick", this.__ok, this);
+
         this.__syncState();
     },
 
     members : {
-
-        __saveBt : null,
-
+        /**
+         * Users selector
+         */
         __selector : null,
 
+        /**
+         * Okay button
+         */
+        __okBt : null,
+
+        /**
+         * Escape key command
+         */
         __closeCmd : null,
 
-        __dispose : function() {
-            if (this.__closeCmd) {
-                this.__closeCmd.setEnabled(false);
-            }
-            this._disposeObjects("__closeCmd");
-            this.__selector = null;
-            this.__closeCmd = null;
-            this.__saveBt = null;
-        },
 
         __ok : function() {
-            this.fireDataEvent("completed", this.__selector.getSelectedAsms())
+            this.fireDataEvent("completed", this.__selector.getSelectedUsers())
         },
 
         __syncState : function() {
-            var asms = this.__selector.getSelectedAsms();
-            this.__saveBt.setEnabled(asms.length > 0);
+            var user = this.__selector.getSelectedUser();
+            this.__okBt.setEnabled(user != null);
         },
 
         close : function() {
             this.base(arguments);
             this.destroy();
         }
-
     },
 
     destruct : function() {
-        this.__dispose();
-
+        if (this.__closeCmd) {
+            this.__closeCmd.setEnabled(false);
+        }
+        this._disposeObjects("__closeCmd");
+        this.__selector = null;
+        this.__closeCmd = null;
+        this.__okBt = null;
     }
 });

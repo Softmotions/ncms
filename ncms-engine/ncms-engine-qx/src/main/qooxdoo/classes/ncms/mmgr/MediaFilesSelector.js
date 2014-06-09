@@ -34,7 +34,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         appearance : {
             refine : true,
-            init : "mf-selector"
+            init : "ncms-mf-selector"
         },
 
         /**

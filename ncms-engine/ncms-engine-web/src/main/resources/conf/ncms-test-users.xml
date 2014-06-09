@@ -6,9 +6,10 @@
     <role name="user" description="Simple user"/>
     <role name="admin.asm" description="Assemblies administrator"/>
     <role name="admin.users" description="Users administrator"/>
+    <role name="admin.structure" description="Site atructure administrator"/>
 
     <group name="admins" description="Superuser group"
-           roles="admin,admin.asm,admin.users,user">
+           roles="admin,admin.asm,admin.users,user,admin.structure">
     </group>
 
     <group name="users" description="User group"

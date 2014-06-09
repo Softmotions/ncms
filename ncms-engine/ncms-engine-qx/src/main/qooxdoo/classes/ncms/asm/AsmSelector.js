@@ -25,7 +25,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
 
         appearance : {
             refine : true,
-            init : "asm-selector"
+            init : "ncms-asm-selector"
         }
     },
 

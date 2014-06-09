@@ -8,7 +8,10 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
     construct : function(allowModify) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
-        this._initTree({"action" : "media.folders"});
+        this._initTree({
+            "action" : "media.folders",
+            "rootLabel" : this.tr("Files")
+        });
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
