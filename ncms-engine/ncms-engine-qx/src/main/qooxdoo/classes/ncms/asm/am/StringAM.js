@@ -77,10 +77,10 @@ qx.Class.define("ncms.asm.am.StringAM", {
             var el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(4));
 
             var fieldRb = new qx.ui.form.RadioButton(this.tr("field"));
-            fieldRb.setUserData("display", "field");
+            fieldRb.setModel("field");
 
             var areaRb = new qx.ui.form.RadioButton(this.tr("area"));
-            areaRb.setUserData("display", "area");
+            areaRb.setModel("area");
 
             el.add(fieldRb);
             el.add(areaRb);
@@ -116,15 +116,11 @@ qx.Class.define("ncms.asm.am.StringAM", {
                 return;
             }
             var items = form.getItems();
-            for (var k in items) {
-                var item = items[k];
-                if (k === "display") {
-                    var rb = item.getSelection()[0];
-                    opts["display"] = rb.getUserData("display");
-                } else {
-                    opts[k] = item.getValue();
-                }
-            }
+
+            //display
+            var rb = items["display"].getSelection()[0];
+            opts["display"] = rb.getModel();
+            opts["value"] = items["value"].getValue();
             return opts;
         },
 

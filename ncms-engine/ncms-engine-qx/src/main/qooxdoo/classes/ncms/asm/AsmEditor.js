@@ -224,6 +224,8 @@ qx.Class.define("ncms.asm.AsmEditor", {
                 ctls["core"].setShowResetButton(spec["core"] != null);
                 ctls["parents"].setAsmSpec(spec);
                 ctls["attributes"].setAsmSpec(spec);
+            } catch (e) {
+                throw e;
             } finally {
                 this.__applyProgress = false;
             }

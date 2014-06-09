@@ -37,7 +37,7 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
             asmOpts.put("display", val.get("display").asText());
         }
         attr.setOptions(asmOpts.toString());
-        attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
+        attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText() : null);
         return attr;
     }
 
