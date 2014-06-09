@@ -72,6 +72,8 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                     this.__onRemove, this);
             this.__delBt.setToolTipText(this.tr("Drop attribute"));
             part.add(this.__delBt);
+
+
             return toolbar;
         },
 

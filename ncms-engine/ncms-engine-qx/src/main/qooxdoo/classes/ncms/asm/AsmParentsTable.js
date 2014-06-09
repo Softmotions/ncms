@@ -19,12 +19,6 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
         "parentsChanged" : "qx.event.type.Event"
     },
 
-    properties : {
-        "value" : {
-            apply : "__applyValue"
-        }
-    },
-
     construct : function() {
         this.base(arguments);
         this.set({allowGrowX : true, allowGrowY : false, height : 100});
@@ -121,9 +115,6 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
         _syncState : function() {
             var ri = this.getSelectedRowIndex();
             this.__delBt.setEnabled(ri != null && ri !== -1);
-        },
-
-        __applyValue : function(val) {
         },
 
         __removeParent : function() {

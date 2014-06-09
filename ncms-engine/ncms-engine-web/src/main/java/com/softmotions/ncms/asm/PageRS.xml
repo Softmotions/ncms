@@ -12,7 +12,9 @@
         p.name AS "guid",
         p.hname AS "name",
         p.description AS "description",
-        p.type AS "type"
+        p.type AS "type",
+        p.published AS "published",
+        p.template AS "template"
         FROM ASMS AS p
         WHERE p.nav_parent_id = #{nav_parent_id}
         AND p.type LIKE 'page%'
@@ -26,7 +28,9 @@
         p.name AS "guid",
         p.hname AS "name",
         p.description AS "description",
-        p.type AS "type"
+        p.type AS "type",
+        p.published AS "published",
+        p.template AS "template"
         FROM ASMS AS p
         WHERE p.nav_parent_id IS NULL
         AND p.type LIKE 'page%'
@@ -68,6 +72,7 @@
         p.muser AS "muser",
         p.owner AS "owner",
         p.published AS "published",
+        p.template AS "template",
         p.options AS "options"
         FROM ASMS AS p
         WHERE p.id = #{id}

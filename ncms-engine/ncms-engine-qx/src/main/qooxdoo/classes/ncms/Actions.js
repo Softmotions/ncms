@@ -49,6 +49,11 @@ qx.Class.define("ncms.Actions", {
         // id: assembly id
         this._action("asms.attributes", "/ncms/rs/adm/asms/{id}/attributes");
 
+        //PUT Save assembly
+        // id: assembly id
+        this._action("asms.props", "/ncms/rs/adm/asms/{id}/props");
+
+
         //==================== MediaRS
 
         //GET files only /ncms/rs/media/files/<path to folder>

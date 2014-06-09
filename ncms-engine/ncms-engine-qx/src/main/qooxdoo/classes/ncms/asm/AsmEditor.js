@@ -13,6 +13,8 @@
  *                "options" : null,
  *                "parentRefs" : ["2:pub.main"],
  *                "core" : null,
+ *                "published" : 0,
+ *                "template" : 0,
  *                "effectiveCore" : {
  *                    "id" : 1,
  *                    "location" : "foo/bar",
@@ -71,7 +73,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
         /**
          * Set assembly JSON representation
-         * ofcom.softmotions.ncms.asm.Asm
+         * of com.softmotions.ncms.asm.Asm
          */
         "asmSpec" : {
             apply : "__applyAsmSpec",
@@ -84,7 +86,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
 
-        var form = this.__form = new qx.ui.form.Form();
+        var form = this.__form = new sm.ui.form.ExtendedForm();
         var vmgr = form.getValidationManager();
         vmgr.setRequiredFieldMessage(this.tr("This field is required"));
 
@@ -101,7 +103,12 @@ qx.Class.define("ncms.asm.AsmEditor", {
         form.add(el, this.tr("Core"), null, "core");
 
         el = new qx.ui.form.TextField();
+        el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Description"), null, "description");
+
+        el = new qx.ui.form.CheckBox();
+        el.addListener("changeValue", this.__saveSimpleProps, this);
+        form.add(el, this.tr("Template"), null, "template");
 
         el = new ncms.asm.AsmParentsTable();
         el.addListener("parentsChanged", function() {
@@ -123,6 +130,22 @@ qx.Class.define("ncms.asm.AsmEditor", {
     members : {
 
         __form : null,
+
+
+        __applyProgress : false,
+
+
+        __saveSimpleProps : function() {
+            if (this.__applyProgress === true || !this.__form.validate()) {
+                return;
+            }
+            var data = {};
+            this.__form.populateJSONObject(data, false, true);
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.props", this.getAsmSpec()), "PUT");
+            req.setRequestContentType("application/json");
+            req.setData(JSON.stringify(data));
+            req.send();
+        },
 
         __setCore : function() {
             var spec = this.getAsmSpec();
@@ -178,26 +201,31 @@ qx.Class.define("ncms.asm.AsmEditor", {
         },
 
         __applyAsmSpec : function(spec) {
-            if (spec == null) {
-                this.__form.reset();
-                return;
+            this.__applyProgress = true;
+            try {
+                if (spec == null) {
+                    this.__form.reset();
+                    return;
+                }
+                var ctls = this.__form.getItems();
+                if (spec._part == null) {
+                    ctls["name"].setValue(spec["name"]);
+                    ctls["description"].setValue(spec["description"]);
+                    ctls["template"].setValue(!!spec["template"]);
+                }
+                if (spec["effectiveCore"] != null) {
+                    var ecore = spec["effectiveCore"];
+                    var ecoreVal = ecore["location"];
+                    ctls["core"].setValue(ecoreVal);
+                } else {
+                    ctls["core"].setValue(null);
+                }
+                ctls["core"].setShowResetButton(spec["core"] != null);
+                ctls["parents"].setAsmSpec(spec);
+                ctls["attributes"].setAsmSpec(spec);
+            } finally {
+                this.__applyProgress = false;
             }
-            var ctls = this.__form.getItems();
-            if (spec._part == null) {
-                ctls["name"].setValue(spec["name"]);
-                ctls["description"].setValue(spec["description"]);
-            }
-            if (spec["effectiveCore"] != null) {
-                var ecore = spec["effectiveCore"];
-                var ecoreVal = ecore["location"];
-                ctls["core"].setValue(ecoreVal);
-            } else {
-                ctls["core"].setValue(null);
-            }
-            ctls["core"].setShowResetButton(spec["core"] != null);
-
-            ctls["parents"].setAsmSpec(spec);
-            ctls["attributes"].setAsmSpec(spec);
         },
 
         __reload : function(part) {

@@ -55,15 +55,21 @@
                     remarks="Username which modified this assembly"/>
             <column name="OWNER" type="VARCHAR(64)"
                     remarks="Username of page assembly owner"/>
-            <column name="PUBLISHED" type="INT"
-                    remarks="Published flag for page assemblies"/>
+            <column name="PUBLISHED" type="TINYINT"
+                    defaultValueNumeric="0"
+                    remarks="Published boolean flag for page assemblies"/>
+            <column name="TEMPLATE" type="TINYINT"
+                    defaultValueNumeric="0"
+                    remarks="Use this page assembly as template for other pages"/>
             <column name="TYPE" type="VARCHAR(64)">
             </column>
             <column name="OPTIONS" type="VARCHAR(512)"/>
             <column name="DESCRIPTION" type="VARCHAR(255)"/>
             <column name="NAV_PARENT_ID" type="BIGINT"
-                    remarks="Navigation parent ref for assemblies whose type is `page`">
+                    remarks="Navigation parent ref for assemblies of `page` type">
             </column>
+            <column name="SORTED_ATTR_REFS" type="VARBINARY(1024)"
+                    remarks="Contains an attribute IDs sorted accordingly to the admin GUI editors sort order"/>
         </createTable>
 
         <createIndex tableName="ASMS"

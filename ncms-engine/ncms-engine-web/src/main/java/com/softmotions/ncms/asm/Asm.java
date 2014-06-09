@@ -50,6 +50,12 @@ public class Asm implements Serializable {
     @JsonProperty
     String options;
 
+    @JsonProperty
+    boolean template;
+
+    @JsonProperty
+    boolean published;
+
     KVOptions parsedOptions;
 
     List<Asm> parents;
@@ -128,6 +134,22 @@ public class Asm implements Serializable {
         }
         this.parsedOptions = new KVOptions(opts);
         return parsedOptions;
+    }
+
+    public boolean isTemplate() {
+        return template;
+    }
+
+    public void setTemplate(boolean template) {
+        this.template = template;
+    }
+
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 
     public AsmCore getCore() {

@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm;
 
+import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.render.AsmAttributeManager;
 import com.softmotions.ncms.asm.render.AsmAttributeManagersRegistry;
@@ -244,6 +245,24 @@ public class AsmRS extends MBDAOSupport {
         asm = adao.asmSelectById(id); //refresh
         return asm.getParentRefs();
     }
+
+
+    @PUT
+    @Path("/{id}/props")
+    public void updateAssemblyProps(@PathParam("id") Long asmId,
+                                    ObjectNode props) {
+
+        TinyParamMap args = new TinyParamMap();
+        args.param("id", asmId);
+        if (props.hasNonNull("description")) {
+            args.param("description", props.get("description").asText());
+        }
+        if (props.hasNonNull("template")) {
+            args.param("template", props.get("template").asBoolean() ? 1 : 0);
+        }
+        update("updateAssemblyProps", args);
+    }
+
 
     /**
      * GET asm attribute

@@ -60,7 +60,6 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 parent = this._tree.getModel();
             }
             var parentId = parent.getId();
-            qx.log.Logger.info("parentId=" + parentId);
             var d = new ncms.pgs.PageNewDlg(parentId);
             d.addListenerOnce("completed", function(ev) {
                 this._refreshNode(parent);

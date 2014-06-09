@@ -169,21 +169,6 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             this.__typeEditorStack.showWidget(editorClazz.classname);
         },
 
-        __dispose : function() {
-            if (this.__closeCmd) {
-                this.__closeCmd.setEnabled(false);
-            }
-            this.__typeEditorStack.getActivatedWidgets().forEach(function(w) {
-                var editor = w.getUserData("eidtor");
-                if (editor) {
-                    editor.dispose();
-                }
-            });
-            this._disposeObjects("__form", "__closeCmd", "__typeEditorStack");
-            this.__asmSpec = null;
-            this.__attrSpec = null;
-        },
-
         __ok : function() {
             if (!this.__form.validate()) {
                 return;
@@ -224,6 +209,20 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
     },
 
     destruct : function() {
-        this.__dispose();
+        if (this.__closeCmd) {
+            this.__closeCmd.setEnabled(false);
+        }
+        if (this.__typeEditorStack) {
+            this.__typeEditorStack.getActivatedWidgets().forEach(function(w) {
+                var editor = w.getUserData("eidtor");
+                if (editor) {
+                    editor.dispose();
+                }
+            });
+        }
+        this._disposeObjects("__form", "__closeCmd");
+        this.__asmSpec = null;
+        this.__attrSpec = null;
+        this.__typeEditorStack = null;
     }
 });

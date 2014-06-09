@@ -81,14 +81,6 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
         __closeCmd : null,
 
-        __dispose : function() {
-            if (this.__closeCmd) {
-                this.__closeCmd.setEnabled(false);
-            }
-            this._disposeObjects("__closeCmd");
-            this.__closeCmd = null;
-        },
-
         __ok : function(ev) {
             if (!this.__form.validate()) {
                 return;
@@ -126,6 +118,9 @@ qx.Class.define("ncms.usr.UserNewDlg", {
     },
 
     destruct : function() {
-        this.__dispose();
+        if (this.__closeCmd) {
+            this.__closeCmd.setEnabled(false);
+        }
+        this._disposeObjects("__closeCmd", "__form");
     }
 });

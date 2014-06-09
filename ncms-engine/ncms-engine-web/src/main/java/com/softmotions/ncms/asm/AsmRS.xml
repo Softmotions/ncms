@@ -9,7 +9,9 @@
         SELECT
         asm.id AS "id",
         asm.name AS "name",
-        asm.type AS "type"
+        asm.type AS "type",
+        asm.published AS "published",
+        asm.template AS "template"
         FROM asms asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
@@ -72,6 +74,17 @@
         large_value = #{largeValue}
         WHERE asm_id = #{asmId}
         AND name = #{name}
+    </update>
+
+
+    <update id="updateAssemblyProps"
+            parameterType="map">
+        UPDATE asms
+        <set>
+            <if test="template != null">template = #{template},</if>
+            <if test="description != null">description = #{description},</if>
+        </set>
+        WHERE id = #{id}
     </update>
 
 

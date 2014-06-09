@@ -56,7 +56,7 @@
         "prerelease" : {
             "extend" : ["build", "ncms-common"],
             "environment" : {
-                "qx.debug" : false,
+                "qx.debug" : true,
                 "ncms.debug" : false,
                 "ncms.testing.urls" : false
             },

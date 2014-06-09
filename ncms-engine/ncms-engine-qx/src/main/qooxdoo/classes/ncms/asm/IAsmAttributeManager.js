@@ -1,6 +1,7 @@
 /**
  * Assembly attribute settings and value manager.
  *
+ * NOTE:
  * Implementors must define the following static methods:
  *
  *      getDescription
@@ -9,22 +10,22 @@
  */
 qx.Interface.define("ncms.asm.IAsmAttributeManager", {
 
-    statics : {
-
-        /**
-         * Returns short human readable editor description.
-         * @returns {String}
-         */
-        getDescription : function() {
-        },
-
-        /**
-         * Return list of supported asm types by this editor
-         * @returns {Array}
-         */
-        getSupportedAttributeTypes : function() {
-        }
-    },
+//    statics : {
+//
+//        /**
+//         * Returns short human readable editor description.
+//         * @returns {String}
+//         */
+//        getDescription : function() {
+//        },
+//
+//        /**
+//         * Return list of supported asm types by this editor
+//         * @returns {Array}
+//         */
+//        getSupportedAttributeTypes : function() {
+//        }
+//    },
 
     members : {
 
