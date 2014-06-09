@@ -311,6 +311,11 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                     cb.call(this, ncms.editor.wiki.WikiEditor.createTextSurround(data, level, pattern, trails));
                 }
             };
+            var cscall = function(func) {
+                return function(cb, data) {
+                    cb.call(this, func.call(this, data));
+                }
+            };
 
             this._addToolbarControl(toolbar, {
                 id : "H1",
@@ -357,53 +362,15 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 id : "UL",
                 icon : "ncms/icon/16/wiki/text_list_bullets.png",
                 tooltipText : this.tr("Bullet list"),
-                insertMediaWiki : function(cb, data) {
-                    var val = [];
-                    val.push("");
-                    val.push("* Один");
-                    val.push("* Два");
-                    val.push("** Первый у второго");
-                    val.push("* Три");
-                    val.push("");
-                    cb.call(this, val.join("\n"))
-                },
-                insertMarkdown : function(cb, data) {
-                    var val = [];
-                    val.push("");
-                    val.push("* Один");
-                    val.push("* Два");
-                    val.push("    * Первый у второго");
-                    val.push("* Три");
-                    val.push("");
-
-                    cb.call(this, val.join("\n"))
-                }
+                insertMediaWiki : cscall(this.__mediaWikiUL),
+                insertMarkdown : cscall(this.__markdownUL)
             });
             this._addToolbarControl(toolbar, {
                 id : "OL",
                 icon : "ncms/icon/16/wiki/text_list_numbers.png",
                 tooltipText : this.tr("Numbered list"),
-                insertMediaWiki : function(cb, data) {
-                    var val = [];
-                    val.push("");
-                    val.push("# Один");
-                    val.push("# Два");
-                    val.push("## Первый у второго");
-                    val.push("# Три");
-                    val.push("");
-                    cb.call(this, val.join("\n"))
-                },
-                insertMarkdown : function(cb, data) {
-                    var val = [];
-                    val.push("");
-                    val.push("1. Один");
-                    val.push("1. Два");
-                    val.push("    1. Первый у второго");
-                    val.push("1. Три");
-                    val.push("");
-
-                    cb.call(this, val.join("\n"))
-                }
+                insertMediaWiki : cscall(this.__mediaWikiOL),
+                insertMarkdown : cscall(this.__markdownOL)
             });
             this._addToolbarControl(toolbar, {
                 icon : "ncms/icon/16/wiki/link_add.png",
@@ -421,45 +388,17 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 id : "Tree",
                 icon : "ncms/icon/16/wiki/tree_add.png",
                 tooltipText : this.tr("Add tree"),
-                insertMediaWiki : function(cb, data) {
-                    var val = [];
-                    val.push("");
-                    val.push("<tree open=\"true\">");
-                    val.push("- Корень");
-                    val.push("-- Потомок 1");
-                    val.push("--- Потомок третьего уровня");
-                    val.push("-- Потомок 2");
-                    val.push("</tree>");
-                    val.push("");
-                    cb.call(this, val.join("\n"))
-                }
+                insertMediaWiki : cscall(this.__mediaWikiTree)
             });
             this._addToolbarControl(toolbar, {
                 id : "Note",
                 icon : "ncms/icon/16/wiki/note_add.png",
                 tooltipText : this.tr("Create note"),
-                insertMediaWiki : function(cb, data) {
-                    var val = [];
-                    val.push("");
-                    val.push("<note>");
-                    val.push("Текст заметки");
-                    val.push("</note>");
-                    val.push("");
-                    cb.call(this, val.join("\n"))
-                },
-                insertMarkdown : function(cb, data) {
-                    var val = [];
-                    val.push("");
-                    val.push("<note>");
-                    val.push("Текст заметки");
-                    val.push("</note>");
-                    val.push("");
-                    cb.call(this, val.join("\n"))
-                }
+                insertMediaWiki : cscall(this.__mediaWikiNote),
+                insertMarkdown : cscall(this.__markdownNote)
             });
         },
 
-        // TODO: copied
         _getSelectionStart : function() {
             var sStart = this._getTextArea().getTextSelectionStart();
             return (sStart == null || sStart == -1 || sStart == 0) ? this.__lastSStart : sStart;
@@ -490,6 +429,86 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             var finishPos = sStart + text.length;
             ta.setTextSelection(finishPos, finishPos);
             tel.scrollToY(scrollY);
+        },
+
+        //////////////////////////////////////////////////////////////////////////
+        /////////////////////////   Helpers    ///////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
+        __mediaWikiUL : function(data) {
+            var val = [];
+            val.push("");
+            val.push("* Один");
+            val.push("* Два");
+            val.push("** Первый у второго");
+            val.push("* Три");
+            val.push("");
+            return val.join("\n");
+        },
+
+        __markdownUL : function(data) {
+            var val = [];
+            val.push("");
+            val.push("* Один");
+            val.push("* Два");
+            val.push("    * Первый у второго");
+            val.push("* Три");
+            val.push("");
+            return val.join("\n");
+        },
+
+        __mediaWikiOL : function(data) {
+            var val = [];
+            val.push("");
+            val.push("# Один");
+            val.push("# Два");
+            val.push("## Первый у второго");
+            val.push("# Три");
+            val.push("");
+            return val.join("\n");
+        },
+
+        __markdownOL : function(data) {
+            var val = [];
+            val.push("");
+            val.push("1. Один");
+            val.push("1. Два");
+            val.push("    1. Первый у второго");
+            val.push("1. Три");
+            val.push("");
+            return val.join("\n");
+        },
+
+        __mediaWikiTree : function(data) {
+            var val = [];
+            val.push("");
+            val.push("<tree open=\"true\">");
+            val.push("- Корень");
+            val.push("-- Потомок 1");
+            val.push("--- Потомок третьего уровня");
+            val.push("-- Потомок 2");
+            val.push("</tree>");
+            val.push("");
+            return val.join("\n");
+        },
+
+        __mediaWikiNote : function(data) {
+            var val = [];
+            val.push("");
+            val.push("<note>");
+            val.push("Текст заметки");
+            val.push("</note>");
+            val.push("");
+            return val.join("\n");
+        },
+
+        __markdownNote : function(data) {
+            var val = [];
+            val.push("");
+            val.push("<note>");
+            val.push("Текст заметки");
+            val.push("</note>");
+            val.push("");
+            return val.join("\n");
         }
     },
 
