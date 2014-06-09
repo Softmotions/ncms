@@ -103,30 +103,34 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             switch (type) {
                 default:
                     //todo scary hack
-                    this.getChildControl("textarea").addListener(type, listener, self, capture);
+                    this._getTextArea().addListener(type, listener, self, capture);
                     break;
             }
         },
 
+        _getTextArea : function() {
+            return this.getChildControl("textarea");
+        },
+
         // overridden
         setValue : function(value) {
-            this.getChildControl("textarea").setValue(value);
+            this._getTextArea().setValue(value);
         },
 
         // overridden
         resetValue : function() {
-            this.getChildControl("textarea").resetValue();
+            this._getTextArea().resetValue();
         },
 
         // overridden
         getValue : function() {
-            return this.getChildControl("textarea").getValue();
+            return this._getTextArea().getValue();
         },
 
         //overriden
         _applyEnabled : function(value, old) {
             this.base(arguments, value, old);
-            this.getChildControl("textarea").setEnabled(value);
+            this._getTextArea().setEnabled(value);
         },
 
         _applyType : function(value, old) {
@@ -256,7 +260,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                     return;
                 }
 
-                var selectedText = this.getChildControl("textarea").getContentElement().getTextSelection();
+                var selectedText = this._getTextArea().getContentElement().getTextSelection();
                 if (options["prompt"]) {
                     options["prompt"].call(this, function(text) {
                         icb.call(me, me._insertText, text);
@@ -285,8 +289,8 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
         __initToolbar : function(toolbar) {
             if (true/* TODO: wiki help */) {
-                var helpButton = new qx.ui.toolbar.Button("Help", "ncms/icon/16/help/help.png");
-                toolbar.add(helpButton);
+                var helpButton = new qx.ui.toolbar.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
+                toolbar.addAfter(helpButton, this.__lastToolbarItem);
                 helpButton.addListener("execute", function() {
                     ncms.Application.alert("TODO: help");
                 });
@@ -294,7 +298,12 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
             var cprompt = function(title) {
                 return function(cb, editor, sText) {
-                    cb.call(this, sText ? sText : prompt(title));
+                    if (!sText) {
+                        sText = prompt(title);
+                    }
+                    if (sText != null && sText != undefined) {
+                        cb.call(this, sText);
+                    }
                 }
             };
             var csurround = function(level, pattern, trails) {
@@ -452,17 +461,17 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
         // TODO: copied
         _getSelectionStart : function() {
-            var sStart = this.getChildControl("textarea").getTextSelectionStart();
+            var sStart = this._getTextArea().getTextSelectionStart();
             return (sStart == null || sStart == -1 || sStart == 0) ? this.__lastSStart : sStart;
         },
 
         _getSelectionEnd : function() {
-            var sEnd = this.getChildControl("textarea").getTextSelectionEnd();
+            var sEnd = this._getTextArea().getTextSelectionEnd();
             return (sEnd == null || sEnd == -1 || sEnd == 0) ? this.__lastSEnd : sEnd;
         },
 
         _insertText : function(text) {
-            var ta = this.getChildControl("textarea");
+            var ta = this._getTextArea();
             var tel = ta.getContentElement();
             var scrollY = tel.getScrollY();
 
