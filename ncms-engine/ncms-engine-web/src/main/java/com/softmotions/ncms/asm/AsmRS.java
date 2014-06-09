@@ -249,6 +249,7 @@ public class AsmRS extends MBDAOSupport {
 
     @PUT
     @Path("/{id}/props")
+    @Transactional
     public void updateAssemblyProps(@PathParam("id") Long asmId,
                                     ObjectNode props) {
 
