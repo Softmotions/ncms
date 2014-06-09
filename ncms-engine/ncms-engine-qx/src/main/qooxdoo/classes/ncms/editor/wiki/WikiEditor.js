@@ -244,6 +244,10 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             return false;
         },
 
+        setPlaceholder : function(value) {
+            this._getTextArea().setPlaceholder(value);
+        },
+
         _addToolbarControl : function(toolbar, options) {
             var callback = this.__buildToolbarControlAction(options);
 
