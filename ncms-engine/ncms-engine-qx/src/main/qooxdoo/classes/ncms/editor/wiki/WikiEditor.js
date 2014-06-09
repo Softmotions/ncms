@@ -420,7 +420,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 insertMediaWiki : cscall(this.__mediaWikiOL),
                 insertMarkdown : cscall(this.__markdownOL)
             });
-            // TODO: init buttons: link, image, table
+            // TODO: init buttons: link, image
             this._addToolbarControl(toolbar, {
                 icon : "ncms/icon/16/wiki/link_add.png",
                 tooltipText : this.tr("Link to another page")
@@ -430,8 +430,18 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 tooltipText : this.tr("Add image|link to file")
             });
             this._addToolbarControl(toolbar, {
+                id : "Table",
                 icon : "ncms/icon/16/wiki/table_add.png",
-                tooltipText : this.tr("Add table")
+                tooltipText : this.tr("Add table"),
+                prompt : function(cb, editor, stext) {
+                    var dlg = new ncms.editor.wiki.TableDlg();
+                    dlg.addListener("insertTable", function(ev){
+                        dlg.close();
+                        cb.call(this, ev.getData());
+                    }, this);
+                    dlg.open();
+                },
+                insertMediaWiki: cscall(this.__mediaWikiTable)
             });
             this._addToolbarControl(toolbar, {
                 id : "Tree",
@@ -562,6 +572,45 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             val.push("</note>");
             val.push("");
             return val.join("\n");
+        },
+
+        __mediaWikiTable : function(data) {
+            var tm = data[0];
+            var isWide = data[1];
+            /*
+             {| class="table01"
+             |-
+             ! Header 1
+             ! Header 2
+             ! Header 3
+             |-
+             | row 1, cell 1
+             | row 1, cell 2
+             | row 1, cell 3
+             |-
+             | row 2, cell 1
+             | row 2, cell 2
+             | row 2, cell 3
+             |}
+            */
+
+            var tspec = [];
+            tspec.push("");
+            tspec.push("{| class=" + (isWide == true ? "'tableWide'" : "'tableShort'"));
+            var cc = tm.getColumnCount();
+            var rc = tm.getRowCount();
+            for (var i = 0; i < rc; ++i) {
+                tspec.push("|-");
+                var rdata = tm.getRowData(i);
+                for (var j = 0; j < cc; ++j) {
+                    var cval = (rdata != null && rdata[j] != null) ? rdata[j] : "";
+                    tspec.push((i == 0 ? "! " : "| ") + cval);
+                }
+            }
+            tspec.push("|}");
+            tspec.push("");
+
+            return tspec.join("\n");
         }
     },
 
