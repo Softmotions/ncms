@@ -292,6 +292,23 @@ public class AsmRS extends MBDAOSupport {
 
 
     /**
+     * Reorder assembly attributes.
+     *
+     * @param ordinalForm Assembly attribute ordinal
+     * @param ordinalTo   Ordinal of another assembly attribute
+     */
+    @PUT
+    @Path("/attributes/reorder/{ordinal1}/{ordinal2}")
+    @Transactional
+    public void exchangeAttributesOrdinal(@PathParam("ordinal1") Long ordinal1,
+                                          @PathParam("ordinal2") Long ordinal2) {
+        update("exchangeAttributesOrdinal",
+               "ordinal1", ordinal1,
+               "ordinal2", ordinal2);
+    }
+
+
+    /**
      * PUT asm attributes values/options
      * <p/>
      * Attributes JSON data spec:

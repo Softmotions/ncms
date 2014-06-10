@@ -52,7 +52,7 @@
  * @asset(ncms/icon/16/actions/core_link.png)
  */
 qx.Class.define("ncms.asm.AsmEditor", {
-    extend : qx.ui.core.Widget,
+    extend : qx.ui.container.Scroll,
 
     statics : {
     },
@@ -84,7 +84,6 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
     construct : function() {
         this.base(arguments);
-        this._setLayout(new qx.ui.layout.VBox());
 
         var form = this.__form = new sm.ui.form.ExtendedForm();
         var vmgr = form.getValidationManager();
@@ -125,7 +124,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
         fr.setAppearance("ncms-wsa-form");
-        this._add(fr);
+        this.add(fr);
     },
 
     members : {

@@ -88,4 +88,16 @@
     </update>
 
 
+    <update id="exchangeAttributesOrdinal"
+            parameterType="map">
+        UPDATE asm_attrs a1
+        SET a1.ordinal = (SELECT
+                              a2.ordinal
+                          FROM asm_attrs a2
+                          WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
+                                AND a1.ordinal != a2.ordinal)
+        WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
+    </update>
+
+
 </mapper>

@@ -53,6 +53,9 @@ qx.Class.define("ncms.Actions", {
         // id: assembly id
         this._action("asms.props", "/ncms/rs/adm/asms/{id}/props");
 
+        //PUT Exchange attributes ordinals
+        this._action("asms.attributes.exchange", "/ncms/rs/adm/asms/attributes/reorder/{ordinal1}/{ordinal2}");
+
 
         //==================== MediaRS
 

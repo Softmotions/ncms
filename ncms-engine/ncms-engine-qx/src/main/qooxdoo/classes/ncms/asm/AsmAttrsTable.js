@@ -4,7 +4,9 @@
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
  * @asset(ncms/icon/16/actions/application_form_edit.png)
- * @asset(ncms/icon/16/misc/flow_block.png)
+ * @asset(ncms/icon/16/misc/asterisk.png)
+ * @asset(ncms/icon/16/misc/arrow_up.png)
+ * @asset(ncms/icon/16/misc/arrow_down.png)
  */
 qx.Class.define("ncms.asm.AsmAttrsTable", {
     extend : sm.table.ToolbarLocalTable,
@@ -23,7 +25,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
 
     construct : function() {
         this.base(arguments);
-        this.set({allowGrowX : true, allowGrowY : false, height : 200});
+        this.set({allowGrowX : true, allowGrowY : false, height : 300});
         this._reload([]);
     },
 
@@ -44,7 +46,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             }
             var attrs = spec["effectiveAttributes"];
             attrs.forEach(function(el) {
-                var icon = el["overriden"] ? "ncms/icon/16/misc/flow_block.png" : "";
+                var icon = el["overriden"] ? "ncms/icon/16/misc/asterisk.png" : "";
                 var row = [icon, el["name"], el["value"], el["type"]];
                 items.push([row, el]);
             }, this);
@@ -60,15 +62,28 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             el.setToolTipText(this.tr("Add new attribute"));
             part.add(el);
 
-            this.__editBt = this._createButton(null, "ncms/icon/16/actions/application_form_edit.png",
-                    this.__onEditOrOverride, this);
-            part.add(this.__editBt);
-
             this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png",
                     this.__onRemove, this);
             this.__delBt.setToolTipText(this.tr("Drop attribute"));
             part.add(this.__delBt);
 
+            this.__editBt = this._createButton(null, "ncms/icon/16/actions/application_form_edit.png",
+                    this.__onEditOrOverride, this);
+            part.add(this.__editBt);
+
+            toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
+
+            part = new qx.ui.toolbar.Part()
+                    .set({"appearance" : "toolbar-table/part"});
+            toolbar.add(part);
+
+            this.__upBt = this._createButton(null, "ncms/icon/16/misc/arrow_up.png",
+                    this.__onMoveUp, this);
+            part.add(this.__upBt);
+
+            this.__downBt = this._createButton(null, "ncms/icon/16/misc/arrow_down.png",
+                    this.__onMoveDown, this);
+            part.add(this.__downBt);
 
             return toolbar;
         },
@@ -150,6 +165,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         },
 
         _syncState : function() {
+            var sInd = this.getSelectedRowIndex();
             var rd = this.getSelectedRowData();
             this.__delBt.setEnabled(rd != null && rd["asmId"] == this.__spec["id"]);
             this.__editBt.setEnabled(rd != null);
@@ -160,6 +176,8 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                     this.__editBt.setToolTipText(this.tr("Override attribute"));
                 }
             }
+            this.__upBt.setEnabled(!!this.__canMove(sInd, 1));
+            this.__downBt.setEnabled(!!this.__canMove(sInd, -1));
         },
 
         __beforeContextmenuOpen : function(ev) {
@@ -193,6 +211,73 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                     menu.add(bt);
                 }
             }
+        },
+
+        __onMoveUp : function() {
+            this.__move(this.getSelectedRowIndex(), 1);
+        },
+
+        __onMoveDown : function() {
+            this.__move(this.getSelectedRowIndex(), -1);
+        },
+
+        __move : function(sInd, dir) {
+            var rd = this.getRowData(sInd);
+            var buddy = this.__canMove(sInd, dir);
+            if (!buddy) {
+                return;
+            }
+            var buddyInd = (dir == 1) ? sInd - 1 : sInd + 1;
+            var url = ncms.Application.ACT.getRestUrl("asms.attributes.exchange",
+                    {
+                        "ordinal1" : rd["ordinal"],
+                        "ordinal2" : buddy["ordinal"]
+                    });
+            var req = new sm.io.Request(url, "PUT");
+            req.send(function() {
+                var data = this.getTableModel().getData();
+                qx.core.Assert.assertTrue(data[sInd] != null && data[buddyInd] != null);
+                var tmp = data[sInd];
+                data[sInd] = data[buddyInd];
+                data[buddyInd] = tmp;
+                this.getTableModel().setData(data);
+                this.getSelectionModel().setSelectionInterval(buddyInd, buddyInd);
+            }, this);
+        },
+
+
+        __canMove : function(sInd, dir) {
+            if (sInd == null || sInd === -1) {
+                return false;
+            }
+            var rd = this.getRowData(sInd);
+            if (rd == null) {
+                return false;
+            }
+            var isValidBuddy = function(buddy) {
+                return !(buddy["asmId"] !== this.__spec["id"] || buddy["overriden"]);
+            }.bind(this);
+
+            if (!isValidBuddy(rd)) {
+                return false;
+            }
+            var data = this.getTableModel().getData();
+            var buddy;
+            if (dir === 1) {
+                if (sInd === 0) {
+                    return false;
+                }
+                buddy = this.getRowData(sInd - 1);
+            } else {
+                if (sInd === data.length - 1) {
+                    return false;
+                }
+                buddy = this.getRowData(sInd + 1);
+            }
+            if (isValidBuddy(buddy)) {
+                return buddy;
+            }
+            return false;
         },
 
         __onAdd : function() {
@@ -263,6 +348,8 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         this.__spec = null;
         this.__delBt = null;
         this.__editBt = null;
+        this.__upBt = null;
+        this.__downBt = null;
         //this._disposeObjects("__field_name");
     }
 });

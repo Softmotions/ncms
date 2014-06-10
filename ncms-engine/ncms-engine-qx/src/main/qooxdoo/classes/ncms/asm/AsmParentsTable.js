@@ -45,7 +45,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
                 if (ind === -1) return;
                 var id = el.substring(0, ind);
                 var name = el.substring(ind + 1);
-                var row = [id, name];
+                var row = [name];
                 items.push([row, {"id" : id, "name" : name}]);
             }, this);
             this._reload(items);
@@ -91,14 +91,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
         //overriden
         _setJsonTableData : function(tm, items) {
             var data = {
-                "title" : "",
                 "columns" : [
-                    {
-                        "title" : this.tr("#").toString(),
-                        "id" : "id",
-                        "sortable" : false,
-                        "width" : 40
-                    },
                     {
                         "title" : this.tr("Name").toString(),
                         "id" : "name",

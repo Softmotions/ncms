@@ -169,6 +169,13 @@
             <column name="ASM_ID"/>
         </createIndex>
 
+        <createIndex tableName="ASM_ATTRS"
+                     indexName="IDX_ASMATTRS_ORDINAL"
+                     unique="false">
+            <column name="ORDINAL"/>
+        </createIndex>
+
+
         <!-- FK ASM_ATTRS => ASM  -->
         <addForeignKeyConstraint baseTableName="ASM_ATTRS"
                                  baseColumnNames="ASM_ID"
