@@ -17,7 +17,7 @@ import java.io.Serializable;
  */
 @JsonRootName("attribute")
 @XmlAccessorType(XmlAccessType.NONE)
-public class AsmAttribute implements Serializable {
+public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
     interface ViewFull {
     }
@@ -34,13 +34,20 @@ public class AsmAttribute implements Serializable {
     @JsonProperty
     String value;
 
-    String largeValue;
-
     @JsonProperty
     String options;
 
     @JsonProperty
     String label;
+
+    @JsonView(ViewFull.class)
+    String largeValue;
+
+    @JsonView(ViewFull.class)
+    boolean overriden;
+
+    @JsonView(ViewFull.class)
+    long ordinal;
 
     public AsmAttribute() {
     }
@@ -85,7 +92,6 @@ public class AsmAttribute implements Serializable {
         this.value = value;
     }
 
-    @JsonView(ViewFull.class)
     public String getLargeValue() {
         return largeValue;
     }
@@ -100,6 +106,22 @@ public class AsmAttribute implements Serializable {
 
     public void setOptions(String options) {
         this.options = options;
+    }
+
+    public long getOrdinal() {
+        return ordinal;
+    }
+
+    public void setOrdinal(long ordinal) {
+        this.ordinal = ordinal;
+    }
+
+    public boolean isOverriden() {
+        return overriden;
+    }
+
+    public void setOverriden(boolean overriden) {
+        this.overriden = overriden;
     }
 
     @JsonIgnore
@@ -130,7 +152,6 @@ public class AsmAttribute implements Serializable {
         this.label = label;
     }
 
-    @JsonProperty
     public boolean isHasLargeValue() {
         return (getLargeValue() != null);
     }
@@ -153,6 +174,13 @@ public class AsmAttribute implements Serializable {
         attr.options = options;
         attr.label = label;
         return attr;
+    }
+
+    public int compareTo(AsmAttribute o) {
+        if (o == null) {
+            return 1;
+        }
+        return Long.compare(ordinal, o.ordinal);
     }
 
     public String toString() {

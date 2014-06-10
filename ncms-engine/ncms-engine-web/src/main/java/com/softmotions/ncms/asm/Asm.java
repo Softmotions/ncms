@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -14,6 +16,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,8 @@ import java.util.Set;
 @JsonRootName("asm")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Asm implements Serializable {
+
+    private static final Logger log = LoggerFactory.getLogger(Asm.class);
 
     public static final String ASM_HANDLER_CLASS_ATTR_NAME = "NCMS__ASM_HANDLER_CLASS";
 
@@ -278,20 +283,48 @@ public class Asm implements Serializable {
         return anames;
     }
 
-    @JsonProperty(required = true)
+    @JsonProperty
     public Collection<AsmAttribute> getEffectiveAttributes() {
-        final Set<AsmAttribute> attrs = new HashSet<>();
-        if (getAttributes() != null) {
-            for (final AsmAttribute a : attributes) {
-                attrs.add(a);
+        Collection<AsmAttribute> attrs = getAttributes();
+        ArrayList<AsmAttribute> res =
+                new ArrayList<>(attrs != null && attrs.size() > 10 ?
+                                attrs.size() * 2 : 10);
+        addSortedChainAttributes(res, this);
+        Map<String, Integer> overriden = new HashMap<>();
+        for (int i = res.size() - 1; i >= 0; --i) {
+            AsmAttribute a = res.get(i);
+            Integer overInd = overriden.get(a.getName());
+            if (overInd == null) {
+                overriden.put(a.getName(), i);
+            } else {
+                AsmAttribute over = res.get(overInd);
+                over.setOverriden(true);
+                res.set(i, over);
+                res.remove(overInd.intValue());
+                overriden.put(over.getName(), i);
             }
         }
+        return res;
+    }
+
+    private void addSortedChainAttributes(ArrayList<AsmAttribute> res, Asm asm) {
+        List<AsmAttribute> slist = asm.getSortedLocalAttributes();
+        res.addAll(0, slist);
         if (getParents() != null) {
-            for (final Asm p : getParents()) {
-                attrs.addAll(p.getEffectiveAttributes());
+            for (final Asm p : asm.getParents()) {
+                addSortedChainAttributes(res, p);
             }
         }
-        return attrs;
+    }
+
+    private List<AsmAttribute> getSortedLocalAttributes() {
+        if (getAttributes() == null) {
+            return Collections.EMPTY_LIST;
+        }
+        List<AsmAttribute> local = new ArrayList<>(getAttributes().size());
+        local.addAll(getAttributes());
+        Collections.sort(local);
+        return local;
     }
 
     public static class AttrsList extends AbstractIndexedCollection<String, AsmAttribute> implements Serializable {

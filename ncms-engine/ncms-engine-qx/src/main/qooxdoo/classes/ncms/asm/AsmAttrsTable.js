@@ -4,6 +4,7 @@
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
  * @asset(ncms/icon/16/actions/application_form_edit.png)
+ * @asset(ncms/icon/16/misc/flow_block.png)
  */
 qx.Class.define("ncms.asm.AsmAttrsTable", {
     extend : sm.table.ToolbarLocalTable,
@@ -43,15 +44,10 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             }
             var attrs = spec["effectiveAttributes"];
             attrs.forEach(function(el) {
-                var row = [el["asmId"], el["name"], el["value"], el["type"]];
+                var icon = el["overriden"] ? "ncms/icon/16/misc/flow_block.png" : "";
+                var row = [icon, el["name"], el["value"], el["type"]];
                 items.push([row, el]);
             }, this);
-
-            items.sort(function(o1, o2) {
-                var id1 = o1[0][0];
-                var id2 = o2[0][0];
-                return (id1 < id2) ? -1 : ((id1 === id2) ? 0 : 1);
-            });
             this._reload(items);
         },
 
@@ -91,27 +87,28 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                 "title" : "",
                 "columns" : [
                     {
-                        "title" : "#",
-                        "id" : "id",
-                        "sortable" : true,
-                        "width" : 40
+                        "title" : "",
+                        "id" : "icon",
+                        "sortable" : false,
+                        "width" : 40,
+                        "type" : "image"
                     },
                     {
                         "title" : this.tr("Name").toString(),
                         "id" : "name",
-                        "sortable" : true,
+                        "sortable" : false,
                         "width" : "1*"
                     },
                     {
                         "title" : this.tr("Value").toString(),
                         "id" : "value",
-                        "sortable" : true,
+                        "sortable" : false,
                         "width" : "3*"
                     },
                     {
                         "title" : this.tr("Type").toString(),
                         "id" : "type",
-                        "sortable" : true,
+                        "sortable" : false,
                         "width" : "1*"
                     }
                 ],
@@ -128,8 +125,8 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             var colorm = qx.theme.manager.Color.getInstance();
             var rr = new sm.table.renderer.CustomRowRenderer();
             rr.setBgColorInterceptor(qx.lang.Function.bind(function(rowInfo) {
-                var rdata = rowInfo.rowData;
-                if (rdata[0] !== this.__spec["id"]) {
+                var rdata = rowInfo.rowData.rowData;
+                if (rdata["asmId"] !== this.__spec["id"]) {
                     return colorm.resolve("table-row-gray");
                 } else {
                     return colorm.resolve("background");

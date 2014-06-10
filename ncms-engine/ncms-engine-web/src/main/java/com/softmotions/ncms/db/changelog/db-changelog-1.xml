@@ -68,8 +68,6 @@
             <column name="NAV_PARENT_ID" type="BIGINT"
                     remarks="Navigation parent ref for assemblies of `page` type">
             </column>
-            <column name="SORTED_ATTR_REFS" type="VARBINARY(1024)"
-                    remarks="Contains an attribute IDs sorted accordingly to the admin GUI editors sort order"/>
         </createTable>
 
         <createIndex tableName="ASMS"
@@ -155,10 +153,13 @@
                 <constraints nullable="false"/>
             </column>
             <column name="OPTIONS" type="VARCHAR(1024)"/>
-            <column name="ORDINAL" type="INT"
-                    remarks="Attribute sort ordinal in GUI interfaces"/>
             <column name="VALUE" type="VARCHAR(1024)"/>
             <column name="LARGE_VALUE" type="CLOB"/>
+            <column name="ORDINAL" type="INT"
+                    remarks="Attributes sorting ordinal"
+                    autoIncrement="true">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <createIndex tableName="ASM_ATTRS"
