@@ -319,6 +319,7 @@ public class AsmRS extends MBDAOSupport {
      *           type : {String?} attribute type,
      *           value : { attr json value representation ?},
      *           options : { attr json options representation ?}
+     *           required {Boolean?}
      *        },
      *              ...
      *     }
@@ -353,6 +354,9 @@ public class AsmRS extends MBDAOSupport {
         }
         if (spec.hasNonNull("label")) {
             attr.setLabel(spec.get("label").asText());
+        }
+        if (spec.hasNonNull("required")) {
+            attr.setRequired(spec.get("required").asBoolean());
         }
         AsmAttributeManager am = amRegistry.getByType(attr.getType());
         if (am != null) {

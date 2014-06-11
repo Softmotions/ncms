@@ -4,27 +4,17 @@
 qx.Class.define("ncms.asm.am.StringAM", {
     extend : qx.core.Object,
     implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation ],
+    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
 
     statics : {
 
         getDescription : function() {
-            return qx.locale.Manager.tr("String attribute manager");
+            return qx.locale.Manager.tr("Simple string");
         },
 
         getSupportedAttributeTypes : function() {
             return [ "string" ];
         }
-    },
-
-    events : {
-    },
-
-    properties : {
-    },
-
-    construct : function() {
-        this.base(arguments);
     },
 
     members : {
@@ -33,27 +23,6 @@ qx.Class.define("ncms.asm.am.StringAM", {
         __optionsWidget : null,
 
         __valueWidget : null,
-
-
-        _fetchAttrValue : function(attrSpec, cb) {
-            if (attrSpec == null) {
-                cb(null);
-                return;
-            }
-            if (!attrSpec["hasLargeValue"]) {
-                cb(attrSpec["value"] === undefined ? null : attrSpec["value"]);
-                return;
-            }
-            //make attribute value request
-            var req = new sm.io.Request(
-                    ncms.Application.ACT.getRestUrl("asms.attribute"),
-                    "GET", "application/json");
-            req.send(function(resp) {
-                var attr = resp.getContent();
-                var eval = attr["hasLargeValue"] ? attr["largeValue"] : attr["value"];
-                cb(eval === undefined ? null : eval);
-            });
-        },
 
 
         /**
@@ -93,10 +62,16 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
             //---------- Text value
             var ta = new qx.ui.form.TextArea();
-            this._fetchAttrValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function(val) {
                 ta.setValue(val);
             });
             form.add(ta, this.tr("Value"), null, "value");
+
+            var ph = new qx.ui.form.TextField();
+            if (opts["placeholder"] != null) {
+                ph.setValue(opts["placeholder"]);
+            }
+            form.add(ph, this.tr("Placeholder"), null, "placeholder");
 
             var fr = new sm.ui.form.FlexFormRenderer(form);
             fr.setLastRowFlexible();
@@ -116,20 +91,30 @@ qx.Class.define("ncms.asm.am.StringAM", {
                 return;
             }
             var items = form.getItems();
-
             //display
             var rb = items["display"].getSelection()[0];
             opts["display"] = rb.getModel();
             opts["value"] = items["value"].getValue();
+            opts["placeholder"] = items["placeholder"].getValue();
             return opts;
         },
 
         activateValueEditorWidget : function(attrSpec) {
-            return new qx.ui.core.Widget().set({backgroundColor : "green"});
+            var opts = ncms.Utils.parseOptions(attrSpec["options"]);
+            var display = opts["display"] || "field";
+            var w = (display === "area") ? qx.ui.form.TextArea() : qx.ui.form.TextField();
+            this._fetchAttributeValue(attrSpec, function(val) {
+                w.setValue(val);
+            });
+            w.setRequired(!!attrSpec["required"]);
+            if (opts["placeholder"] != null) {
+                w.setPlaceholder(opts["placeholder"]);
+            }
+            return w;
         },
 
         valueAsJSON : function() {
-            return {};
+            return this.__valueWidget.getValue();
         }
     },
 

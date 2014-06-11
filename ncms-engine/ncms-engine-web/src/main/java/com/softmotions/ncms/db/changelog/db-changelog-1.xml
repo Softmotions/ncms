@@ -55,10 +55,10 @@
                     remarks="Username which modified this assembly"/>
             <column name="OWNER" type="VARCHAR(64)"
                     remarks="Username of page assembly owner"/>
-            <column name="PUBLISHED" type="TINYINT"
+            <column name="PUBLISHED" type="TINYINT(1)"
                     defaultValueNumeric="0"
                     remarks="Published boolean flag for page assemblies"/>
-            <column name="TEMPLATE" type="TINYINT"
+            <column name="TEMPLATE" type="TINYINT(1)"
                     defaultValueNumeric="0"
                     remarks="Use this page assembly as template for other pages"/>
             <column name="TYPE" type="VARCHAR(64)">
@@ -158,6 +158,11 @@
             <column name="ORDINAL" type="INT"
                     remarks="Attributes sorting ordinal"
                     autoIncrement="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REQUIRED" type="TINYINT(1)"
+                    defaultValueNumeric="0"
+                    remarks="Required boolean flag for page assembly attributes">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -49,6 +49,9 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
     @JsonView(ViewFull.class)
     long ordinal;
 
+    @JsonView(ViewFull.class)
+    boolean required;
+
     public AsmAttribute() {
     }
 
@@ -122,6 +125,14 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
     public void setOverriden(boolean overriden) {
         this.overriden = overriden;
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 
     @JsonIgnore

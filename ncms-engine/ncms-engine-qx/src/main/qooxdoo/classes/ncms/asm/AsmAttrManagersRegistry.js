@@ -8,9 +8,9 @@ qx.Class.define("ncms.asm.AsmAttrManagersRegistry", {
 
         CLASSES : [
 
-            //Simple string editor
             ncms.asm.am.RawAM,
-            ncms.asm.am.StringAM
+            ncms.asm.am.StringAM,
+            ncms.asm.am.SelectAM
         ],
 
 

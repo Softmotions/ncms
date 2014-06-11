@@ -1,10 +1,12 @@
 package com.softmotions.ncms.asm.render;
 
+import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
 
 import java.util.Map;
@@ -33,9 +35,8 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
-        if (val.hasNonNull("display")) {
-            asmOpts.put("display", val.get("display").asText());
-        }
+        JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
+                                        "display", "placeholder");
         attr.setOptions(asmOpts.toString());
         attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText() : null);
         return attr;

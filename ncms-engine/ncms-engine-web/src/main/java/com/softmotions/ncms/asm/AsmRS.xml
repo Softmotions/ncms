@@ -58,8 +58,8 @@
     <insert id="insertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         INSERT INTO asm_attrs
-        (asm_id, name, label, type, options, value, large_value)
-        VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{value}, #{largeValue})
+        (asm_id, name, label, type, options, required, value, large_value)
+        VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue})
     </insert>
 
 
@@ -71,7 +71,8 @@
             type        = #{type},
             options     = #{options},
             value       = #{value},
-            large_value = #{largeValue}
+            large_value = #{largeValue},
+            required    = #{required}
         WHERE asm_id = #{asmId}
               AND name = #{name}
     </update>

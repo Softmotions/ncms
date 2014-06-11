@@ -19,7 +19,8 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
          *    "type" : "string",
          *    "label" : null,
          *    "asmId" : 2,
-         *    "options" : {"display" : "field", "value" : "some text"}
+         *    "options" : {"display" : "field", "value" : "some text"},
+         *    "required" : true
          *  }
          */
         "completed" : "qx.event.type.Data"
@@ -31,7 +32,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
     construct : function(caption, asmSpec, attrSpec) {
         this.base(arguments, caption != null ? caption : this.tr("Edit assembly attribute"));
-        this.setLayout(new qx.ui.layout.VBox(5));
+        this.setLayout(new qx.ui.layout.VBox(5, "top", "separator-vertical"));
         this.set({
             modal : true,
             showMinimize : false,
@@ -78,14 +79,25 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         if (attrSpec != null) {
             el.setValue(attrSpec["label"])
         }
-        form.add(el, this.tr("Label"), null, "label");
+        form.add(el, this.tr("GUI Label"), null, "label");
+
+        qx.log.Logger.info("aspec=" + JSON.stringify(attrSpec));
+
+        //GUI required checkbox
+        el = new qx.ui.form.CheckBox(this.tr("Required"));
+        if (attrSpec != null) {
+            el.setValue(!!attrSpec["required"]);
+        }
+        form.add(el, this.tr("GUI Required"), null, "required");
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
+        fr.setPaddingBottom(10);
         this.add(fr);
 
         //---------------- Type-specific editor placeholder
 
         this.__typeEditorStack = this.__createTypeWidgetStack();
+        this.__typeEditorStack.setPaddingBottom(10);
         this.add(this.__typeEditorStack, {flex : 1});
 
         //----------------- Footer
