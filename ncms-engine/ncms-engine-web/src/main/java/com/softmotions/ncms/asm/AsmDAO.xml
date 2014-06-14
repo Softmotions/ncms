@@ -194,6 +194,12 @@
         WHERE asm_id = #{asmId} AND asm_parent_id = #{parentId}
     </delete>
 
+    <delete id="asmRemoveAllParents">
+        DELETE
+        FROM asm_parents
+        WHERE asm_id = #{asmId}
+    </delete>
+
     <delete id="asmRemoveParentFromAll">
         DELETE
         FROM asm_parents

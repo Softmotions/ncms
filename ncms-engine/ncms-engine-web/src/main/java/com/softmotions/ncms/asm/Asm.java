@@ -2,9 +2,11 @@ package com.softmotions.ncms.asm;
 
 import com.softmotions.commons.cont.AbstractIndexedCollection;
 import com.softmotions.commons.cont.KVOptions;
+import com.softmotions.commons.cont.Pair;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.google.common.collect.AbstractIterator;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -13,11 +15,14 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +49,9 @@ public class Asm implements Serializable {
     String name;
 
     @JsonProperty
+    String hname;
+
+    @JsonProperty
     String type;
 
     @JsonProperty
@@ -66,6 +74,7 @@ public class Asm implements Serializable {
     List<Asm> parents;
 
     AttrsList attributes;
+
 
     public Asm() {
     }
@@ -105,6 +114,14 @@ public class Asm implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getHname() {
+        return hname;
+    }
+
+    public void setHname(String hname) {
+        this.hname = hname;
     }
 
     public String getType() {
@@ -188,7 +205,42 @@ public class Asm implements Serializable {
         this.parents = parents;
     }
 
-    public Set<String> getCumulativeParentNames() {
+    public Iterator<Asm> getAllParentsIterator() {
+        List<Pair<Asm, Integer>> plist = new ArrayList<>();
+        fetchParentsCumulative(plist, 0);
+        Collections.sort(plist, new Comparator<Pair<Asm, Integer>>() {
+            public int compare(Pair<Asm, Integer> o1, Pair<Asm, Integer> o2) {
+                int res = Integer.compare(o1.getTwo(), o2.getTwo());
+                if (res == 0) {
+                    Collator coll = Collator.getInstance();
+                    res = coll.compare(o1.getOne().getName(), o2.getOne().getName());
+                }
+                return res;
+            }
+        });
+        final Iterator<Pair<Asm, Integer>> pit = plist.iterator();
+        return new AbstractIterator<Asm>() {
+            protected Asm computeNext() {
+                if (pit.hasNext()) {
+                    return pit.next().getOne();
+                }
+                return endOfData();
+            }
+        };
+    }
+
+    private void fetchParentsCumulative(List<Pair<Asm, Integer>> pcont, Integer level) {
+        List<Asm> plist = getParents();
+        if (plist == null || plist.isEmpty()) {
+            return;
+        }
+        for (final Asm p : getParents()) {
+            pcont.add(new Pair<>(p, level));
+            p.fetchParentsCumulative(pcont, level + 1);
+        }
+    }
+
+    public Set<String> getAllParentNames() {
         List<Asm> plist = getParents();
         if (plist == null || plist.isEmpty()) {
             return Collections.EMPTY_SET;
@@ -196,7 +248,7 @@ public class Asm implements Serializable {
         Set<String> cparents = new HashSet<>();
         for (final Asm p : getParents()) {
             cparents.add(p.getName());
-            cparents.addAll(p.getCumulativeParentNames());
+            cparents.addAll(p.getAllParentNames());
         }
         return cparents;
 

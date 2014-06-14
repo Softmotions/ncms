@@ -81,8 +81,6 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         }
         form.add(el, this.tr("GUI Label"), null, "label");
 
-        qx.log.Logger.info("aspec=" + JSON.stringify(attrSpec));
-
         //GUI required checkbox
         el = new qx.ui.form.CheckBox(this.tr("Required"));
         if (attrSpec != null) {

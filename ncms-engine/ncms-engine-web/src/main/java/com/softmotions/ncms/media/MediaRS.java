@@ -916,21 +916,15 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
             image = ImageIO.read(f);
         }
+        if (image == null) {
+            log.warn("Unable to generated thumbnail. Content type: " + ctype +
+                     " cannot read source image: " + path);
+            return Response.serverError().build();
+        }
 
         //Now resize the image
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         BufferedImage thumbnail = Scalr.resize(image, thumWidth);
-
-        /*if ("png".equals(thumbFormat)) { //handle PNG a bit differently in order to optimize resulted image size
-            byte[] bytes = new PngEncoderB(thumbnail, true, 0, 9).pngEncode();
-            if (bytes == null) {
-                if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
-                    throw new RuntimeException("Cannot find image writer for thumbFormat=" + thumbFormat);
-                }
-            } else {
-                bos.write(bytes);
-            }
-        } else */
         if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
             throw new RuntimeException("Cannot find image writer for thumbFormat=" + thumbFormat);
         }

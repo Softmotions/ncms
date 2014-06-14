@@ -9,6 +9,7 @@
         SELECT
         asm.id AS "id",
         asm.name AS "name",
+        asm.description AS "description",
         asm.type AS "type",
         asm.published AS "published",
         asm.template AS "template"
@@ -16,15 +17,17 @@
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
             <if test="name != null">AND asm.name LIKE #{name}</if>
+            <if test="template != null">AND asm.template = #{template}</if>
         </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
     </select>
 
     <select id="count" resultType="int" parameterType="map">
-        SELECT COUNT(*) FROM asms
+        SELECT COUNT(*) FROM asms AS asm
         <where>
-            <if test="type != null">AND TYPE = #{type}</if>
-            <if test="name != null">AND NAME LIKE #{name}</if>
+            <if test="type != null">AND asm.type = #{type}</if>
+            <if test="name != null">AND asm.name LIKE #{name}</if>
+            <if test="template != null">AND asm.template = #{template}</if>
         </where>
     </select>
 

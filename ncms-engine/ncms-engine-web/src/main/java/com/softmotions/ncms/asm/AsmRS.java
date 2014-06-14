@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
@@ -214,7 +215,7 @@ public class AsmRS extends MBDAOSupport {
         }
 
         ArrayNode an = (ArrayNode) jsdata;
-        Set<String> currParents = asm.getCumulativeParentNames();
+        Set<String> currParents = asm.getAllParentNames();
         Set<Asm> newParents = new HashSet<>();
 
         for (int i = 0, l = an.size(); i < l; ++i) {
@@ -230,7 +231,7 @@ public class AsmRS extends MBDAOSupport {
             if (pasm == null || !pasm.getName().equals(pname)) {
                 continue;
             }
-            Set<String> pparents = pasm.getCumulativeParentNames();
+            Set<String> pparents = pasm.getAllParentNames();
             if (pparents.contains(asm.getName())) { //cyclic dependency
                 continue;
             }
@@ -415,6 +416,10 @@ public class AsmRS extends MBDAOSupport {
         val = req.getParameter("type");
         if (!StringUtils.isBlank(val)) {
             cq.withParam("type", val);
+        }
+        val = req.getParameter("template");
+        if (BooleanUtils.toBoolean(val)) {
+            cq.withParam("template", 1);
         }
         boolean orderUsed = false;
         val = req.getParameter("sortAsc");

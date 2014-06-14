@@ -37,6 +37,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -69,9 +70,8 @@ public class PageRS extends MBDAOSupport {
         this.userdb = userdb;
     }
 
-
     /**
-     * Get page info for info pane.
+     * Get page data for info pane.
      *
      * @param id Page ID
      * @return
@@ -105,19 +105,55 @@ public class PageRS extends MBDAOSupport {
     }
 
 
-    /**
-     * Get page info for edit pane
-     *
-     * @param id
-     * @return
-     */
     @GET
     @Path("/edit/{id}")
-    public ObjectNode pageEditInfo(@PathParam("id") Long id) {
+    public ObjectNode selectPageEdit(@Context HttpServletRequest req, @PathParam("id") Long id) {
         ObjectNode res = mapper.createObjectNode();
-
+        Asm page = adao.asmSelectById(id);
+        if (page == null) {
+            throw new NotFoundException();
+        }
+        Asm template = null;
+        Iterator<Asm> piter = page.getAllParentsIterator();
+        while (piter.hasNext()) {
+            Asm next = piter.next();
+            if (next.isTemplate()) {
+                template = next;
+                break;
+            }
+        }
+        res.put("id", page.getId());
+        if (template == null) {
+            res.putNull("template");
+        } else {
+            res.putObject("template")
+                    .put("id", template.getId())
+                    .put("name", template.getName())
+                    .put("description", template.getDescription());
+        }
+        res.putPOJO("attributes",
+                    page.getEffectiveAttributes());
 
         return res;
+    }
+
+
+    /**
+     * Set template page for page assembly.
+     *
+     * @param id
+     */
+    @PUT
+    @Path("/template/{id}/{templateId}")
+    @Transactional
+    public void setTemplate(@PathParam("id") Long id, @PathParam("templateId") Long templateId) {
+        Integer ts = selectOne("selectPageTemplateStatus", templateId);
+        if (ts == null || ts.intValue() == 0) {
+            log.warn("Assembly: " + templateId + " is not page template");
+            throw new BadRequestException();
+        }
+        adao.asmRemoveAllParents(id);
+        adao.asmSetParent(id, templateId);
     }
 
 

@@ -127,7 +127,12 @@ public class AsmDAO extends MBDAOSupport {
         TinyParamMap params = new TinyParamMap()
                 .param("asmId", asmId)
                 .param("parentId", parent);
-        return sess.delete("asmRemoveParent", params);
+        return sess.delete(toStatementId("asmRemoveParent"), params);
+    }
+
+    @Transactional
+    public int asmRemoveAllParents(long asmId) {
+        return delete("asmRemoveAllParents", "asmId", asmId);
     }
 
     @Transactional

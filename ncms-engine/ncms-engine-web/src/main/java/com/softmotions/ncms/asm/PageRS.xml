@@ -79,4 +79,12 @@
               AND p.type LIKE 'page%'
     </select>
 
+
+    <select id="selectPageTemplateStatus" resultType="int" parameterType="long">
+        SELECT
+            p.template
+        FROM ASMS AS p
+        WHERE p.id = #{id}
+    </select>
+
 </mapper>

@@ -135,14 +135,21 @@ qx.Class.define("ncms.Actions", {
         //DELETE The specified page
         this._action("pages.delete", "/ncms/rs/adm/pages/{id}");
 
-        //GET Get generic page info
+        //GET Get page data for page-info pane.
         this._action("pages.info", "/ncms/rs/adm/pages/info/{id}");
+
+        //GET Get page data for page-edit pane.
+        this._action("pages.edit", "/ncms/rs/adm/pages/edit/{id}");
 
         //PUT set page owner
         // id: Page ID
         // owner: Owner user ID
-        this._action("pages.owner", "/ncms/rs/adm/pages/owner/{id}/{owner}")
+        this._action("pages.owner", "/ncms/rs/adm/pages/owner/{id}/{owner}");
 
+        //PUT page set template
+        // {id}: Page ID
+        // {templateId} Template ID
+        this._action("pages.set.template", "/ncms/rs/adm/pages/template/{id}/{templateId}");
     },
 
     members : {
