@@ -85,10 +85,12 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __applyPageEditSpec : function(spec) {
             //{"id":4,"template":null,"attributes":[]}
-            //qx.log.Logger.info("Edit spec=" + JSON.stringify(spec));
+
+            qx.log.Logger.info("Edit spec=" + JSON.stringify(spec));
             var t = spec["template"];
             if (t == null) {
                 this.__templateBf.resetValue();
+                this.__cleanupFormPane();
                 return;
             }
             var sb = [];
@@ -108,13 +110,19 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             attrs.forEach(function(aspec) {
                 this.__processAttribute(aspec, form);
             }, this);
+
+            this.__cleanupFormPane();
+            var fr = new sm.ui.form.FlexFormRenderer(form);
+            this.__scroll.add(fr);
+        },
+
+
+        __cleanupFormPane : function() {
             if (this.__scroll) {
                 this.__scroll.getChildren().forEach(function(c) {
                     c.destroy();
                 });
             }
-            var fr = new sm.ui.form.FlexFormRenderer(form);
-            this.__scroll.add(fr);
         },
 
         __processAttribute : function(aspec, form) {
