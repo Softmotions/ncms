@@ -39,8 +39,8 @@ public class DevDBInitializerModule extends AbstractModule {
             Asm asm = adao.asmSelectByName("base");
             if (asm == null) {
                 asm = new Asm("base");
-                asm.addAttribute(new AsmAttribute("title", "string", "Hello world"));
-                asm.addAttribute(new AsmAttribute("copyright", "string", "My company (c)"));
+                asm.addAttribute(new AsmAttribute("title", "Заголовок", "string", "Hello world"));
+                asm.addAttribute(new AsmAttribute("copyright", "Copyright", "string", "My company (c)"));
                 adao.asmInsert(asm);
             }
             asm = adao.asmSelectByName("main");
@@ -52,7 +52,9 @@ public class DevDBInitializerModule extends AbstractModule {
             asm = adao.asmSelectByName("content");
             if (asm == null) {
                 asm = new Asm("content");
-                asm.addAttribute(new AsmAttribute("content", "string", "Simple text"));
+                asm.setDescription("Основная страница портала");
+                asm.setTemplate(true);
+                asm.addAttribute(new AsmAttribute("content", "Контент", "string", "Simple text"));
                 adao.asmInsert(asm);
                 adao.asmSetParent(asm, adao.asmSelectByName("main"));
             }

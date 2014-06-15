@@ -47,7 +47,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             var attrs = spec["effectiveAttributes"];
             attrs.forEach(function(el) {
                 var icon = el["overriden"] ? "ncms/icon/16/misc/asterisk.png" : "";
-                var row = [icon, el["name"], el["value"], el["type"]];
+                var row = [icon, el["name"], el["label"], el["type"], el["value"]];
                 items.push([row, el]);
             }, this);
             this._reload(items);
@@ -115,16 +115,22 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                         "width" : "1*"
                     },
                     {
-                        "title" : this.tr("Value").toString(),
-                        "id" : "value",
+                        "title" : this.tr("Label").toString(),
+                        "id" : "label",
                         "sortable" : false,
-                        "width" : "3*"
+                        "width" : "1*"
                     },
                     {
                         "title" : this.tr("Type").toString(),
                         "id" : "type",
                         "sortable" : false,
                         "width" : "1*"
+                    },
+                    {
+                        "title" : this.tr("Value").toString(),
+                        "id" : "value",
+                        "sortable" : false,
+                        "width" : "3*"
                     }
                 ],
                 "items" : items

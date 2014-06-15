@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
@@ -37,6 +38,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -131,9 +134,14 @@ public class PageRS extends MBDAOSupport {
                     .put("name", template.getName())
                     .put("description", template.getDescription());
         }
-        res.putPOJO("attributes",
-                    page.getEffectiveAttributes());
-
+        Collection<AsmAttribute> eattrs = page.getEffectiveAttributes();
+        Collection<AsmAttribute> gattrs = new ArrayList<>(eattrs.size());
+        for (AsmAttribute a : eattrs) {
+            if (!StringUtils.isBlank(a.getLabel())) {
+                gattrs.add(a);
+            }
+        }
+        res.putPOJO("attributes", gattrs);
         return res;
     }
 

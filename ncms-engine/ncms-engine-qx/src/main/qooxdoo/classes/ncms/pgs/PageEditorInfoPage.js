@@ -76,9 +76,6 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
             req.send(function(resp) {
                 var info = resp.getContent();
                 this.__info = info;
-
-                qx.log.Logger.info("info=" + JSON.stringify(info));
-
                 if (info["mdate"] != null) {
                     this.__mdateLabel.setValue(this.tr("Last modification: %1, %2",
                                     ncms.Application.formatDate(info["mdate"]),

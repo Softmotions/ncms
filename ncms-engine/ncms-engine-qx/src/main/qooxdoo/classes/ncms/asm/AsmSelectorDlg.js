@@ -18,7 +18,7 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
     properties : {
     },
 
-    construct : function(caption, icon, constViewSpec) {
+    construct : function(caption, icon, constViewSpec, useColumns) {
         this.base(arguments, caption != null ? caption : this.tr("Select assembly"), icon);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
@@ -34,7 +34,8 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
                 new ncms.asm.AsmSelector(
                         constViewSpec,
                         new qx.ui.table.selection.Model()
-                                .set({selectionMode : qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION}));
+                                .set({selectionMode : qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION}),
+                        useColumns);
         selector.getTable().addListener("cellDblclick", this.__ok, this);
 
         this.add(selector, {flex : 1});

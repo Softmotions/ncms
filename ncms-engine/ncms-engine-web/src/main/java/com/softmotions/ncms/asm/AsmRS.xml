@@ -16,7 +16,7 @@
         FROM asms asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
-            <if test="name != null">AND asm.name LIKE #{name}</if>
+            <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
         </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
@@ -26,7 +26,7 @@
         SELECT COUNT(*) FROM asms AS asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
-            <if test="name != null">AND asm.name LIKE #{name}</if>
+            <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
         </where>
     </select>

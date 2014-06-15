@@ -67,6 +67,14 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.type = type;
     }
 
+    public AsmAttribute(String name, String label, String type, String value) {
+        this.name = name;
+        this.label = label;
+        this.value = value;
+        this.type = type;
+    }
+
+
     public long getAsmId() {
         return asmId;
     }

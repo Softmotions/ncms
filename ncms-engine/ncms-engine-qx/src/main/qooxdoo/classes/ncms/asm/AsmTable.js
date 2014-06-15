@@ -7,9 +7,10 @@ qx.Class.define("ncms.asm.AsmTable", {
     construct : function(useColumns) {
         var tm = new sm.model.RemoteVirtualTableModel({
             "name" : this.tr("Name"),
-            "type" : this.tr("Type")
+            "type" : this.tr("Type"),
+            "description" : this.tr("Description")
         }).set({
-                    "useColumns" : useColumns || ["name", "type"],
+                    "useColumns" : useColumns || ["name", "type", "description"],
                     "rowdataUrl" : ncms.Application.ACT.getUrl("asms.select"),
                     "rowcountUrl" : ncms.Application.ACT.getUrl("asms.select.count")
                 });
@@ -38,6 +39,10 @@ qx.Class.define("ncms.asm.AsmTable", {
         cInd = tm.getColumnIndexById("type");
         if (cInd != null) {
             tcm.getBehavior().setWidth(cInd, "1*");
+        }
+        cInd = tm.getColumnIndexById("description");
+        if (cInd != null) {
+            tcm.getBehavior().setWidth(cInd, "3*");
         }
     },
 

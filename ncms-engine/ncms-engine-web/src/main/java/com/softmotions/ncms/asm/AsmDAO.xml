@@ -50,8 +50,10 @@
     <insert id="asmInsert" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
         INSERT INTO asms
-        (name, type, description<if test="core != null">, asm_core_id</if>)
-        VALUES (#{name}, #{type}, #{description}<if test="core != null">, #{core.id}</if>)
+        (name, type, description, template
+        <if test="core != null">, asm_core_id</if>)
+        VALUES (#{name}, #{type}, #{description}, #{template}
+        <if test="core != null">, #{core.id}</if>)
     </insert>
 
     <update id="asmUpdate"
@@ -62,7 +64,8 @@
             <if test="name != null">name = #{name},</if>
             <if test="type != null">type = #{type},</if>
             <if test="description != null">description = #{description},</if>
-            <if test="core != null">asm_core_id = #{core.id,jdbcType=BIGINT}</if>
+            <if test="core != null">asm_core_id = #{core.id,jdbcType=BIGINT},</if>
+            template = #{template}
         </set>
         WHERE id = #{id}
     </update>
@@ -83,6 +86,7 @@
         SELECT asm.*,
         attr.asm_id AS attr_asm_id,
         attr.name AS attr_name,
+        attr.label AS attr_label,
         attr.type AS attr_type,
         attr.options AS attr_options,
         attr.value AS attr_value,
@@ -144,6 +148,7 @@
             asm.*,
             attr.asm_id          AS attr_asm_id,
             attr.name            AS attr_name,
+            attr.label           AS attr_label,
             attr.type            AS attr_type,
             attr.options         AS attr_options,
             attr.value           AS attr_value,

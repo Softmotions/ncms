@@ -102,7 +102,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
         activateValueEditorWidget : function(attrSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var display = opts["display"] || "field";
-            var w = (display === "area") ? qx.ui.form.TextArea() : qx.ui.form.TextField();
+            var w = (display === "area") ? new qx.ui.form.TextArea() : new qx.ui.form.TextField();
             this._fetchAttributeValue(attrSpec, function(val) {
                 w.setValue(val);
             });

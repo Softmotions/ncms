@@ -37,6 +37,25 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.add(this.__templateBf);
 
 
+        this.__scroll = new qx.ui.container.Scroll().set({marginTop : 20});
+        this.add(this.__scroll, {flex : 1});
+
+
+        //----------------- Footer
+
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        hcont.setPadding(5);
+
+        var bt = new qx.ui.form.Button(this.tr("Save"));
+        bt.addListener("execute", this.__save, this);
+        hcont.add(bt);
+
+        bt = new qx.ui.form.Button(this.tr("Reset"));
+        bt.addListener("execute", this.__reset, this);
+        hcont.add(bt);
+        this.add(hcont);
+
+
         this.addListener("loadPane", this.__onLoadPane, this);
     },
 
@@ -46,6 +65,12 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
          * Page template selector
          */
         __templateBf : null,
+
+        /**
+         * Page controls container
+         */
+        __scroll : null,
+
 
         __onLoadPane : function(ev) {
             var spec = ev.getData();
@@ -60,7 +85,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __applyPageEditSpec : function(spec) {
             //{"id":4,"template":null,"attributes":[]}
-            qx.log.Logger.info("Edit spec=" + JSON.stringify(spec));
+            //qx.log.Logger.info("Edit spec=" + JSON.stringify(spec));
             var t = spec["template"];
             if (t == null) {
                 this.__templateBf.resetValue();
@@ -74,13 +99,52 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 sb.push(t["name"]);
             }
             this.__templateBf.setValue(sb.join(" | "));
+
+            var attrs = spec["attributes"] || [];
+            var form = new sm.ui.form.ExtendedForm();
+            var vmgr = form.getValidationManager();
+            vmgr.setRequiredFieldMessage(this.tr("This field is required"));
+
+            attrs.forEach(function(aspec) {
+                this.__processAttribute(aspec, form);
+            }, this);
+            if (this.__scroll) {
+                this.__scroll.getChildren().forEach(function(c) {
+                    c.destroy();
+                });
+            }
+            var fr = new sm.ui.form.FlexFormRenderer(form);
+            this.__scroll.add(fr);
+        },
+
+        __processAttribute : function(aspec, form) {
+            qx.log.Logger.info("Process attribute=" + JSON.stringify(aspec));
+            var am = ncms.asm.AsmAttrManagersRegistry.createAttrManagerInstanceForType(aspec["type"]);
+            if (am == null) {
+                qx.log.Logger.warn("Missing attribute manager for type: " + aspec["type"]);
+                return;
+            }
+            var w = am.activateValueEditorWidget(aspec);
+            if (w == null) {
+                qx.log.Logger.warn("Attribute manager used for type: " + aspec["type"] + " produced invalid widget: null");
+                return;
+            }
+            var wclass = qx.Class.getByName(w.classname);
+            if (wclass == null) {
+                qx.log.Logger.warn("Attribute manager used for type: " + aspec["type"] + " produced invalid widget: " + w);
+                return;
+            }
+            /*if (!qx.Class.hasInterface(qx.ui.form.IForm)) {
+             w = new sm.ui.form.FormWidgetAdapter(w);
+             }*/
+            form.add(w, aspec["label"], null, aspec["name"]);
         },
 
         __onChangeTemplate : function() {
             var pspec = this.getPageSpec();
             var dlg = new ncms.asm.AsmSelectorDlg(this.tr("Please select the template page"), null, {
                 "template" : true
-            });
+            }, ["description", "name"]);
             dlg.addListener("completed", function(ev) {
                 var t = ev.getData()[0];
                 var url = ncms.Application.ACT.getRestUrl("pages.set.template", {
@@ -96,6 +160,14 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 }, this);
             }, this);
             dlg.open();
+        },
+
+        __save : function() {
+            //todo
+        },
+
+        __reset : function() {
+            //todo
         }
     },
 

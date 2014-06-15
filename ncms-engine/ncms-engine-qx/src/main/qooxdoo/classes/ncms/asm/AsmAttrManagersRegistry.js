@@ -14,8 +14,17 @@ qx.Class.define("ncms.asm.AsmAttrManagersRegistry", {
         ],
 
 
+        createAttrManagerInstanceForType : function(type) {
+            var clazz = this.findEditorClassForType(type);
+            if (clazz == null) {
+                return null;
+            }
+            return this.createAttrManagerInstance(clazz);
+        },
+
+
         createAttrManagerInstance : function(amClassName) {
-            var clazz = qx.Class.getByName(amClassName);
+            var clazz = (typeof amClassName === "string") ? qx.Class.getByName(amClassName) : amClassName;
             qx.core.Assert.assertTrue(clazz != null);
             qx.core.Assert.assertTrue(qx.Class.hasInterface(clazz, ncms.asm.IAsmAttributeManager));
             return sm.lang.Object.newInstance(clazz);
