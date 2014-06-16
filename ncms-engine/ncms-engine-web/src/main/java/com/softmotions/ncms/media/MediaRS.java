@@ -395,6 +395,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 if (!f1.exists()) {
                     throw new NotFoundException(path);
                 }
+
+                checkEditAccess(path, req);
+
                 File f2 = new File(basedir, npath);
                 if (f2.exists()) {
                     throw new NcmsMessageException(message.get("ncms.mmgr.file.exists", req, npath), true);
@@ -407,7 +410,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     log.debug("Moving " + f1 + " => " + f2);
                 }
                 if (f1.isDirectory()) {
-
                     String p1 = f1.getCanonicalPath();
                     String p2 = f2.getCanonicalPath();
                     if (p2.startsWith(p1 + '/')) {
@@ -477,6 +479,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (!f.exists()) {
                 throw new NotFoundException(path);
             }
+
+            checkEditAccess(path, req);
+
             isdir = f.isDirectory();
             if (isdir) {
                 deleteDirectoryInternal(path, true);
@@ -1249,6 +1254,19 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
         }
         return rwlock;
+    }
+
+    private void checkEditAccess(String path, HttpServletRequest req) {
+        if (!req.isUserInRole("admin")) {
+            Map<String, Object> fmeta = selectOne("selectByPath",
+                                                  "folder", getResourceParentFolder(path),
+                                                  "name", getResourceName(path));
+            // TODO: fmeta == null - meta not found? Now skip checking.
+            if (fmeta != null && !req.getRemoteUser().equals(fmeta.get("owner"))) {
+                String msg = message.get("ncms.mmgr.access.denied", req, path);
+                throw new NcmsMessageException(msg, true);
+            }
+        }
     }
 
     public static String getResourceParentFolder(String path) {
