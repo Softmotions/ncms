@@ -56,7 +56,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
             form.add(el, this.tr("Display as"), null, "display");
 
-            if (opts["view"] === "area") {
+            if (opts["display"] === "area") {
                 areaRb.setValue(true);
             }
 
@@ -110,11 +110,17 @@ qx.Class.define("ncms.asm.am.StringAM", {
             if (opts["placeholder"] != null) {
                 w.setPlaceholder(opts["placeholder"]);
             }
+            this.__valueWidget = w;
             return w;
         },
 
         valueAsJSON : function() {
-            return this.__valueWidget.getValue();
+            if (this.__valueWidget == null) {
+                return;
+            }
+            return {
+                value : this.__valueWidget.getValue()
+            }
         }
     },
 

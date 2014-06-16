@@ -146,15 +146,28 @@ public class PageRS extends MBDAOSupport {
     }
 
 
+    @PUT
+    @Path("/edit/{id}")
+    public void savePage(@Context HttpServletRequest req,
+                         @PathParam("id") Long id,
+                         ObjectNode data) {
+
+        log.info("Page: " + id + " Page data=" + data);
+
+    }
+
     /**
      * Set template page for page assembly.
+     * Return the same data
      *
      * @param id
      */
     @PUT
     @Path("/template/{id}/{templateId}")
     @Transactional
-    public void setTemplate(@PathParam("id") Long id, @PathParam("templateId") Long templateId) {
+    public ObjectNode setTemplate(@Context HttpServletRequest req,
+                                  @PathParam("id") Long id,
+                                  @PathParam("templateId") Long templateId) {
         Integer ts = selectOne("selectPageTemplateStatus", templateId);
         if (ts == null || ts.intValue() == 0) {
             log.warn("Assembly: " + templateId + " is not page template");
@@ -162,6 +175,7 @@ public class PageRS extends MBDAOSupport {
         }
         adao.asmRemoveAllParents(id);
         adao.asmSetParent(id, templateId);
+        return selectPageEdit(req, id);
     }
 
 

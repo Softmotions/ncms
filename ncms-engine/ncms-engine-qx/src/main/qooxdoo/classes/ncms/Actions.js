@@ -138,7 +138,7 @@ qx.Class.define("ncms.Actions", {
         //GET Get page data for page-info pane.
         this._action("pages.info", "/ncms/rs/adm/pages/info/{id}");
 
-        //GET Get page data for page-edit pane.
+        //GET|PUT page data for page-edit pane.
         this._action("pages.edit", "/ncms/rs/adm/pages/edit/{id}");
 
         //PUT set page owner
