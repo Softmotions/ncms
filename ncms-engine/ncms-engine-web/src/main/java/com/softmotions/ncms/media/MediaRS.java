@@ -518,6 +518,24 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     /**
+     * Update some meta fields of files (by path).
+     */
+    @POST
+    @Path("/meta/path/{path:.*}")
+    @Consumes("application/x-www-form-urlencoded")
+    @Transactional(executorType = ExecutorType.BATCH)
+    public void updateMeta(@PathParam("path") String path,
+                           @Context HttpServletRequest req,
+                           MultivaluedMap<String, String> form) throws Exception {
+        Long id = selectOne("selectEntityIdByPath", "folder", getResourceParentFolder(path), "name", getResourceName(path));
+        if (id == null) {
+            String msg = message.get("ncms.mmgr.meta.notExists", req, path);
+            throw new NcmsMessageException(msg, true);
+        }
+
+        updateMeta(id, req, form);
+    }
+    /**
      * Update some meta fields of files.
      */
     @POST
@@ -560,8 +578,19 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             String desc = form.getFirst("description");
             qm.put("description", StringUtils.isBlank(desc) ? "" : desc);
         }
-        update("updateMeta", qm);
-        updateFTSKeywords(id, req);
+        if (form.containsKey("owner")) {
+            checkEditAccess(id, req);
+            String owner = form.getFirst("owner");
+            if (StringUtils.isBlank(owner)) {
+                throw new BadRequestException();
+            }
+            qm.put("owner", owner);
+        }
+        // if qm.size() < 2: only .put(id) called - update query is empty!
+        if (qm.size() > 1) {
+            update("updateMeta", qm);
+            updateFTSKeywords(id, req);
+        }
     }
 
 
@@ -1277,9 +1306,21 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return rwlock;
     }
 
+    private void checkEditAccess(Long id, HttpServletRequest req) {
+        if (!req.isUserInRole("admin")) {
+            Map<String, ?> fmeta = selectOne("selectResourceAttrsById",
+                                             "id", id);
+            // fmeta == null - meta not found! Access denied.
+            if (fmeta == null || !req.getRemoteUser().equals(fmeta.get("owner"))) {
+                String msg = message.get("ncms.mmgr.access.denied", req, "");
+                throw new NcmsMessageException(msg, true);
+            }
+        }
+    }
+
     private void checkEditAccess(String path, HttpServletRequest req) {
         if (!req.isUserInRole("admin")) {
-            Map<String, ?> fmeta = selectOne("selectByPath",
+            Map<String, ?> fmeta = selectOne("selectResourceAttrsByPath",
                                              "folder", getResourceParentFolder(path),
                                              "name", getResourceName(path));
             // fmeta == null - meta not found! Access denied.

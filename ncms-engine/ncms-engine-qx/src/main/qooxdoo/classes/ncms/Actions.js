@@ -98,6 +98,9 @@ qx.Class.define("ncms.Actions", {
         //POST Save extra file meta fields
         this._action("media.meta", "/ncms/rs/media/meta/{id}");
 
+        //POST Save extra file meta fields (by path)
+        this._action("media.path.meta", "/ncms/rs/media/meta/path");
+
         //================== NcmsSecurityRS
 
         // GET/PUT/DELETE

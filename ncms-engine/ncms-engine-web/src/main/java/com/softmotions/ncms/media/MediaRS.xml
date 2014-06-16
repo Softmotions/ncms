@@ -217,6 +217,7 @@
         <set>
             <if test="tags != null">tags = #{tags,jdbcType=ARRAY},</if>
             <if test="description != null">description = #{description},</if>
+            <if test="owner != null">owner = #{owner},</if>
         </set>
         WHERE id = #{id}
     </update>
@@ -256,7 +257,8 @@
             folder         AS "folder",
             content_type   AS "content_type",
             content_length AS "content_length",
-            mdate          AS "mdate"
+            mdate          AS "mdate",
+            owner          AS "owner"
         FROM media_entity
         WHERE folder = #{folder}
               AND name = #{name}
@@ -269,7 +271,8 @@
             folder         AS "folder",
             content_type   AS "content_type",
             content_length AS "content_length",
-            mdate          AS "mdate"
+            mdate          AS "mdate",
+            owner          AS "owner"
         FROM media_entity
         WHERE id = #{id}
     </select>

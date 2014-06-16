@@ -55,6 +55,12 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
                     bt = new qx.ui.menu.Button(this.tr("Delete"));
                     bt.addListenerOnce("execute", this.__onDelete, this);
                     menu.add(bt);
+
+                    menu.add(new qx.ui.menu.Separator());
+
+                    bt = new qx.ui.menu.Button(this.tr("Change owner"));
+                    bt.addListenerOnce("execute", this.__onChangeOwner, this);
+                    menu.add(bt);
                 }
             }
 
@@ -156,6 +162,24 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             }, this);
             d.placeToWidget(ev.getTarget(), false);
             d.show();
+        },
+
+        __onChangeOwner : function(ev) {
+            var item = this._tree.getSelection().getItem(0);
+            if (item == null) {
+                return;
+            }
+            var path = this._getItemPathSegments(item);
+            var dlg = new ncms.usr.UserSelectorDlg();
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.path.meta", path), "POST", "application/json");
+                req.setParameter("owner", data[0]["name"], true);
+                req.send(function() {
+                    dlg.destroy();
+                }, this);
+            }, this);
+            dlg.show();
         },
 
         __checkEditAccess : function(selected) {

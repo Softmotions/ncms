@@ -51,12 +51,23 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         el.setPlaceholder(this.tr("Short file description").toString());
         form.add(el, this.tr("Description"), null, "description");
 
-        el.setMaxLength(255);
         el = new qx.ui.form.TextField();
         el.addListener("input", this.__setMetaDuty, this);
         el.addListener("changeValue", this.__flushMeta, this);
+        el.setMaxLength(255);
         el.setPlaceholder(this.tr("Comma separated tags").toString());
         form.add(el, this.tr("Tags"), null, "tags");
+
+        el = new sm.ui.form.ButtonField(this.tr("Change"));
+        el.addListener("changeValue", function(ev) {
+            this.__setMetaDuty();
+            this.__flushMeta();
+        }, this);
+        el.setPlaceholder(this.tr("Choose the new file owner"));
+        el.setReadOnly(true);
+        el.addListener("execute", this.__selectOwner, this);
+        form.add(el, this.tr("Owner"), null, "owner");
+
 
         var fr = new sm.ui.form.FlexFormRenderer(form).set({padding : [10, 5, 0, 5]});
         topPane.add(fr);
@@ -163,6 +174,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             if (spec["tags"] != null) {
                 items["tags"].setValue(spec["tags"]);
             }
+            items["owner"].setValue(spec["owner"] || "");
         },
 
         __setMetaDuty : function(val) {
@@ -179,6 +191,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.meta", {"id" : spec["id"]}), "POST", "application/json");
             var description = items["description"].getValue();
             var tags = items["tags"].getValue();
+            var owner = items["owner"].getValue();
             req.setShowMessages(false);
             if (description != null) {
                 req.setParameter("description", description, true);
@@ -186,12 +199,17 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             if (tags != null) {
                 req.setParameter("tags", tags, true);
             }
+            if (owner != null) {
+                req.setParameter("owner", owner, true);
+            }
+
             req.send(function() {
                 if (this.hasListener("fileMetaUpdated")) {
                     this.fireDataEvent("fileMetaUpdated", {
                         "id" : spec["id"],
                         "description" : description,
-                        "tags" : tags
+                        "tags" : tags,
+                        "owner" : owner
                     });
                 }
             }, this);
@@ -254,6 +272,22 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             var form = document.getElementById("ncms-download-form");
             form.action = ncms.Application.ACT.getRestUrl("media.file", path);
             form.submit();
+        },
+
+        __selectOwner : function() {
+            var dlg = new ncms.usr.UserSelectorDlg();
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                dlg.destroy();
+                //Data: [{}]
+                this.__setOwner(data[0]["name"]);
+            }, this);
+            dlg.show();
+        },
+
+        __setOwner : function(user) {
+            var items = this.__form.getItems();
+            items["owner"].setValue(user);
         }
     },
 
