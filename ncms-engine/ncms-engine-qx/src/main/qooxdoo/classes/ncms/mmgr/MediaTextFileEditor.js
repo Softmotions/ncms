@@ -19,7 +19,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
          *   "folder":"/test/",
          *   "content_type":"image/png",
          *   "content_length":10736,
-         *   "creator" : "adam",
+         *   "owner" : "adam",
          *   "tags" : "foo, bar"
          *   }
          * or null

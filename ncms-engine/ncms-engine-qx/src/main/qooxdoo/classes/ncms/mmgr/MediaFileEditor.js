@@ -262,7 +262,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         statics.ATTR_ALIASES = {
             "content_type" : lm.tr("Content type").toString(),
             "content_length" : lm.tr("Size").toString(),
-            "creator" : lm.tr("Creator").toString(),
+            "owner" : lm.tr("Owner").toString(),
             "folder" : lm.tr("Folder").toString(),
             "name" : lm.tr("Name").toString(),
             "imageSize" : lm.tr("Image size").toString()

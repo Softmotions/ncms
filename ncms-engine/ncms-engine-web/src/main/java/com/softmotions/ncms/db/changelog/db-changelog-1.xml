@@ -264,7 +264,7 @@
             </column>
             <column name="ICON_CONTENT_TYPE" type="VARCHAR(64)">
             </column>
-            <column name="CREATOR" type="VARCHAR(127)"
+            <column name="OWNER" type="VARCHAR(127)"
                     remarks="File cleator user id">
             </column>
             <column name="CSUM" type="VARCHAR(48)"

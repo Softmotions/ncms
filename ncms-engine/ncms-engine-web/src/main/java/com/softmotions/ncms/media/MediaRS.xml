@@ -16,18 +16,18 @@
         INSERT INTO media_entity (
             folder, name, status, mdate,
             content_type, put_content_type, content_length,
-            creator)
+            owner)
         VALUES (
             #{folder}, #{name}, #{status}, now(),
             #{content_type}, #{put_content_type}, #{content_length},
-            #{creator})
+            #{owner})
     </insert>
 
     <update id="updateEntity" parameterType="map">
         UPDATE media_entity
         SET content_type      = #{content_type},
             content_length    = #{content_length},
-            creator           = #{creator},
+            owner             = #{owner},
             icon              = NULL,
             icon_content_type = NULL,
             mdate             = now()
@@ -77,7 +77,7 @@
         e.content_type AS "content_type",
         e.content_length AS "content_length",
         e.folder AS "folder",
-        e.creator AS "creator",
+        e.owner AS "owner",
         e.description AS "description",
         e.tags AS "tags"
         FROM media_entity e
@@ -115,7 +115,7 @@
         e.content_type AS "content_type",
         e.content_length AS "content_length",
         e.folder AS "folder",
-        e.creator AS "creator",
+        e.owner AS "owner",
         e.description AS "description",
         e.tags AS "tags"
         FROM media_entity e, media_entity_kwords kw
@@ -168,7 +168,7 @@
             e.content_type   AS "content_type",
             e.content_length AS "content_length",
             e.folder         AS "folder",
-            e.creator        AS "creator",
+            e.owner          AS "owner",
             e.description    AS "description"
         FROM media_entity e
         WHERE

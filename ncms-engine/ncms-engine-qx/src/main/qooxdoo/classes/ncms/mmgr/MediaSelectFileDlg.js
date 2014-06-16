@@ -13,7 +13,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
          *   "folder":"/test/",
          *   "content_type":"image/png",
          *   "content_length":10736,
-         *   "creator" : "adam",
+         *   "owner" : "adam",
          *   "tags" : "foo, bar"
          *   }
          * or null
