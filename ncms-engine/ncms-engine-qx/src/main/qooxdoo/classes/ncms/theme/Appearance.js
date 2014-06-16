@@ -43,6 +43,17 @@ qx.Theme.define("ncms.theme.Appearance", {
                     maxWidth : 600
                 }
             }
+        },
+
+        "wiki-editor-toolbar-button" : {
+            alias : "toolbar-button",
+            include : "toolbar-button",
+            style : function(states) {
+                return {
+                    marginLeft : 0,
+                    marginRight : 0
+                };
+            }
         }
     }
 });
