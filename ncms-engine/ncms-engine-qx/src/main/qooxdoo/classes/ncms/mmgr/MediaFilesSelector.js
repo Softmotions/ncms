@@ -429,24 +429,41 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     menu.add(bt);
                 }
 
-                menu.add(new qx.ui.menu.Separator());
+                if (this.__checkEditAccess(this.__table.getSelectedFiles())) {
+                    menu.add(new qx.ui.menu.Separator());
 
-                if (selectedSingle) {
-                    bt = new qx.ui.menu.Button(this.tr("Rename"));
-                    bt.addListenerOnce("execute", this.__renameFile, this);
+                    if (selectedSingle) {
+                        bt = new qx.ui.menu.Button(this.tr("Rename"));
+                        bt.addListenerOnce("execute", this.__renameFile, this);
+                        menu.add(bt);
+                    }
+
+                    bt = new qx.ui.menu.Button(this.tr("Move to another folder"));
+                    bt.addListenerOnce("execute", this.__moveFiles, this);
+                    menu.add(bt);
+
+                    bt = new qx.ui.menu.Button(this.tr("Remove"));
+                    bt.addListenerOnce("execute", this.__rmFiles, this);
                     menu.add(bt);
                 }
-
-                bt = new qx.ui.menu.Button(this.tr("Move to another folder"));
-                bt.addListenerOnce("execute", this.__moveFiles, this);
-                menu.add(bt);
-
-                bt = new qx.ui.menu.Button(this.tr("Remove"));
-                bt.addListenerOnce("execute", this.__rmFiles, this);
-                menu.add(bt);
             }
             return true;
+        },
+
+        __checkEditAccess : function(selected) {
+            var appState = ncms.Application.APP_STATE;
+            var user = appState.getUserLogin();
+            for(var i = 0; i < selected.length; ++i) {
+                var file = selected[i];
+                // TODO: admin  role name to config/constant
+                if (file["owner"] != user && !appState.userHasRole("admin")) {
+                    return false;
+                }
+            }
+
+            return true;
         }
+
     },
 
     destruct : function() {
