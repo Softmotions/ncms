@@ -79,6 +79,7 @@ public class WorkspaceRS {
             put("userId", user.getName());
             put("userLogin", user.getName());
             put("userFullName", user.getFullName());
+            put("roles", user.getRoleNames());
             put("email", user.getEmail());
             put("time", new Date());
             put("helpSite", cfg.getHelpSite());
