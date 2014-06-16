@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -368,7 +369,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
             return mapper.createObjectNode()
                     .put("label", name)
-                    .put("status", 1);
+                    .put("status", 1)
+                    .put("owner", req.getRemoteUser());
         }
     }
 
@@ -817,7 +819,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
      * <p/>
      * <pre>
      *     [
-     *       {"label" : file name, "status" : 1 if it is folder 0 otherwise },
+     *       {"label" : file name, "status" : 1 if it is folder 0 otherwise, "owner" : owner name },
      *       ...
      *     ]
      * </pre>
@@ -847,10 +849,29 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     return res;
                 }
             });
+            final Map<String, ObjectNode> fnodes = new HashMap<>(files.length);
             for (int i = 0, l = files.length; i < l; ++i) {
-                res.addObject()
-                        .put("label", files[i].getName())
-                        .put("status", files[i].isDirectory() ? 1 : 0);
+                fnodes.put(files[i].getName(),
+                           res.addObject()
+                                   .put("label", files[i].getName())
+                                   .put("status", files[i].isDirectory() ? 1 : 0)
+                );
+            }
+
+            // load owners for selected files/folders (for checking user rights on client side)
+            if (!fnodes.isEmpty()) {
+                select("selectOwnersByFolderNames",
+                       new ResultHandler() {
+                           public void handleResult(ResultContext context) {
+                               Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                               String name = (String) row.get("name");
+                               if (fnodes.containsKey(name)) {
+                                   fnodes.get(name).put("owner", (String) row.get("owner"));
+                               }
+                           }
+                       },
+                       "folder", normalizeFolder(folder),
+                       "names", fnodes.keySet());
             }
         } finally {
             rwlock.readLock().unlock();
@@ -1258,11 +1279,11 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     private void checkEditAccess(String path, HttpServletRequest req) {
         if (!req.isUserInRole("admin")) {
-            Map<String, Object> fmeta = selectOne("selectByPath",
-                                                  "folder", getResourceParentFolder(path),
-                                                  "name", getResourceName(path));
-            // TODO: fmeta == null - meta not found? Now skip checking.
-            if (fmeta != null && !req.getRemoteUser().equals(fmeta.get("owner"))) {
+            Map<String, ?> fmeta = selectOne("selectByPath",
+                                             "folder", getResourceParentFolder(path),
+                                             "name", getResourceName(path));
+            // fmeta == null - meta not found! Access denied.
+            if (fmeta == null || !req.getRemoteUser().equals(fmeta.get("owner"))) {
                 String msg = message.get("ncms.mmgr.access.denied", req, path);
                 throw new NcmsMessageException(msg, true);
             }

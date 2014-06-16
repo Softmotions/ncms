@@ -41,7 +41,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             menu.add(bt);
 
             if (sel != null) {
-                if (sel != root) {
+                if (sel != root && this.__checkEditAccess(sel)) {
                     menu.add(new qx.ui.menu.Separator());
 
                     bt = new qx.ui.menu.Button(this.tr("Rename"));
@@ -156,6 +156,11 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             }, this);
             d.placeToWidget(ev.getTarget(), false);
             d.show();
+        },
+
+        __checkEditAccess : function(selected) {
+            var appState = ncms.Application.APP_STATE;
+            return appState.userHasRole("admin") || (selected.getOwner != undefined && appState.getUserLogin() == selected.getOwner());
         }
     },
 

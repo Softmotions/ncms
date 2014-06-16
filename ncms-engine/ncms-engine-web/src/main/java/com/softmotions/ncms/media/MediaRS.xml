@@ -274,4 +274,16 @@
         WHERE id = #{id}
     </select>
 
+    <select id="selectOwnersByFolderNames" parameterType="map" resultType="map">
+        SELECT
+            name           AS "name",
+            owner          AS "owner"
+        FROM media_entity
+        WHERE folder = #{folder}
+            AND name in
+            <foreach item="name" index="index" collection="names" open="(" separator="," close=")">
+                #{name}
+            </foreach>
+    </select>
+
 </mapper>

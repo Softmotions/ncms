@@ -456,7 +456,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             for(var i = 0; i < selected.length; ++i) {
                 var file = selected[i];
                 // TODO: admin  role name to config/constant
-                if (file["owner"] != user && !appState.userHasRole("admin")) {
+                if (!appState.userHasRole("admin") && file["owner"] != user) {
                     return false;
                 }
             }
