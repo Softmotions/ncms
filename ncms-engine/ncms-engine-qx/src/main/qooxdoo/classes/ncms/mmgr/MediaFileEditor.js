@@ -159,6 +159,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             } else if (ncms.Utils.isTextualContentType(ctype)) {
                 var editor = this.__viewPane.getWidget("texteditor", true);
                 editor.setFileSpec(this.getFileSpec());
+                editor.setReadOnly(!this.__checkEditAccess(spec));
                 this.__viewPane.showWidget("texteditor");
             } else {
                 this.__viewPane.showWidget("default");
@@ -174,7 +175,14 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             if (spec["tags"] != null) {
                 items["tags"].setValue(spec["tags"]);
             }
-            items["owner"].setValue(spec["owner"] || "");
+            if (spec["owner"]) {
+                items["owner"].setValue(spec["owner"] || "");
+            }
+
+            var editAccess = this.__checkEditAccess(spec);
+            items["description"].setReadOnly(!editAccess);
+            items["tags"].setReadOnly(!editAccess);
+            items["owner"].setEnabled(editAccess);
         },
 
         __setMetaDuty : function(val) {
@@ -186,6 +194,10 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             if (spec == null || !this.__isMetaDuty) {
                 return;
             }
+            if (!this.__checkEditAccess(spec)) {
+                return;
+            }
+
             this.__isMetaDuty = false;
             var items = this.__form.getItems();
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.meta", {"id" : spec["id"]}), "POST", "application/json");
@@ -288,6 +300,17 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         __setOwner : function(user) {
             var items = this.__form.getItems();
             items["owner"].setValue(user);
+        },
+
+        __checkEditAccess : function(spec) {
+            var appState = ncms.Application.APP_STATE;
+            var user = appState.getUserLogin();
+            // TODO: admin  role name to config/constant
+            if (!appState.userHasRole("admin") && spec["owner"] != user) {
+                return false;
+            }
+
+            return true;
         }
     },
 
@@ -296,7 +319,6 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         statics.ATTR_ALIASES = {
             "content_type" : lm.tr("Content type").toString(),
             "content_length" : lm.tr("Size").toString(),
-            "owner" : lm.tr("Owner").toString(),
             "folder" : lm.tr("Folder").toString(),
             "name" : lm.tr("Name").toString(),
             "imageSize" : lm.tr("Image size").toString()

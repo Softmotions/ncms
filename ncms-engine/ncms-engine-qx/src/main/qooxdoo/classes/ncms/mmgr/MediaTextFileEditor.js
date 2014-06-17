@@ -59,6 +59,10 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
         __broadcaster : null,
 
+        setReadOnly : function(state) {
+            this.__area.setReadOnly(state);
+            this.__broadcaster.setEnabled(false);
+        },
 
         __save : function() {
             var spec = this.getFileSpec();

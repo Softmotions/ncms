@@ -20,7 +20,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -369,8 +368,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
             return mapper.createObjectNode()
                     .put("label", name)
-                    .put("status", 1)
-                    .put("owner", req.getRemoteUser());
+                    .put("status", 1);
         }
     }
 
@@ -481,11 +479,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (!f.exists()) {
                 throw new NotFoundException(path);
             }
-
-            checkEditAccess(path, req);
-
             isdir = f.isDirectory();
             if (isdir) {
+                // TODO: check rights
                 deleteDirectoryInternal(path, true);
                 delete("deleteFolder",
                        "prefix_like", '/' + path + "/%");
@@ -493,6 +489,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                        "folder", getResourceParentFolder(path),
                        "name", getResourceName(path));
             } else {
+                checkEditAccess(path, req);
+
                 boolean exists = f.exists();
                 if (f.delete() || !exists) {
                     delete("deleteFile",
@@ -518,24 +516,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     /**
-     * Update some meta fields of files (by path).
-     */
-    @POST
-    @Path("/meta/path/{path:.*}")
-    @Consumes("application/x-www-form-urlencoded")
-    @Transactional(executorType = ExecutorType.BATCH)
-    public void updateMeta(@PathParam("path") String path,
-                           @Context HttpServletRequest req,
-                           MultivaluedMap<String, String> form) throws Exception {
-        Long id = selectOne("selectEntityIdByPath", "folder", getResourceParentFolder(path), "name", getResourceName(path));
-        if (id == null) {
-            String msg = message.get("ncms.mmgr.meta.notExists", req, path);
-            throw new NcmsMessageException(msg, true);
-        }
-
-        updateMeta(id, req, form);
-    }
-    /**
      * Update some meta fields of files.
      */
     @POST
@@ -545,6 +525,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     public void updateMeta(@PathParam("id") Long id,
                            @Context HttpServletRequest req,
                            MultivaluedMap<String, String> form) throws Exception {
+
+        checkEditAccess(id, req);
 
         Map<String, Object> qm = new TinyParamMap();
         qm.put("id", id);
@@ -579,7 +561,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             qm.put("description", StringUtils.isBlank(desc) ? "" : desc);
         }
         if (form.containsKey("owner")) {
-            checkEditAccess(id, req);
             String owner = form.getFirst("owner");
             if (StringUtils.isBlank(owner)) {
                 throw new BadRequestException();
@@ -848,7 +829,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
      * <p/>
      * <pre>
      *     [
-     *       {"label" : file name, "status" : 1 if it is folder 0 otherwise, "owner" : owner name },
+     *       {"label" : file name, "status" : 1 if it is folder 0 otherwise},
      *       ...
      *     ]
      * </pre>
@@ -878,29 +859,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     return res;
                 }
             });
-            final Map<String, ObjectNode> fnodes = new HashMap<>(files.length);
             for (int i = 0, l = files.length; i < l; ++i) {
-                fnodes.put(files[i].getName(),
-                           res.addObject()
-                                   .put("label", files[i].getName())
-                                   .put("status", files[i].isDirectory() ? 1 : 0)
-                );
-            }
-
-            // load owners for selected files/folders (for checking user rights on client side)
-            if (!fnodes.isEmpty()) {
-                select("selectOwnersByFolderNames",
-                       new ResultHandler() {
-                           public void handleResult(ResultContext context) {
-                               Map<String, ?> row = (Map<String, ?>) context.getResultObject();
-                               String name = (String) row.get("name");
-                               if (fnodes.containsKey(name)) {
-                                   fnodes.get(name).put("owner", (String) row.get("owner"));
-                               }
-                           }
-                       },
-                       "folder", normalizeFolder(folder),
-                       "names", fnodes.keySet());
+                res.addObject()
+                        .put("label", files[i].getName())
+                        .put("status", files[i].isDirectory() ? 1 : 0);
             }
         } finally {
             rwlock.readLock().unlock();
@@ -1110,6 +1072,13 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         FileUploadStream us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", cfg.getTmpdir());
 
         try (ResourceLock l = new ResourceLock(folder + name, true)) {
+            id = selectOne("selectEntityIdByPath",
+                           "folder", folder,
+                           "name", name);
+            if (id != null) {
+                checkEditAccess(id.longValue(), req);
+            }
+
             long actualLength = IOUtils.copyLarge(bis, us);
             us.close();
             if (req.getContentLength() != -1 && req.getContentLength() != actualLength) {
@@ -1133,9 +1102,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 us.writeTo(fos);
                 fos.flush();
             }
-            id = selectOne("selectEntityIdByPath",
-                           "folder", folder,
-                           "name", name);
+
             if (id == null) {
 
                 Map<String, Object> args = new HashMap<>();
