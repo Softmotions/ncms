@@ -159,7 +159,6 @@ public class PageRS extends MBDAOSupport {
                          @PathParam("id") Long id,
                          ObjectNode data) {
 
-        log.info("Page: " + id + " Page data=" + data);
         Asm page = adao.asmSelectById(id);
         if (page == null) {
             throw new NotFoundException();
@@ -182,14 +181,17 @@ public class PageRS extends MBDAOSupport {
             if (attr == null) {
                 continue;
             }
-
             AsmAttributeManager am = amRegistry.getByType(attr.getType());
             if (am == null) {
                 log.warn("Missing attribute manager for type: " + attr.getType());
                 continue;
             }
+            if (attr.getAsmId() != id) { //parent attr
+                attr = attr.cloneDeep();
+                attr.asmId = id;
+            }
             am.applyAttributeValue(attr, data.get(fname));
-            update("updateAttribute", attr);
+            update("upsertAttribute", attr);
         }
     }
 

@@ -98,5 +98,12 @@
               AND name = #{name}
     </update>
 
+    <update id="upsertAttribute"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        MERGE INTO asm_attrs (asm_id, name, label, type, options, required, value, large_value)
+        KEY (asm_id, name)
+        VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue})
+    </update>
+
 
 </mapper>
