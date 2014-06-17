@@ -27,7 +27,15 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
          * }
          * or null
          */
-        "fileSelected" : "qx.event.type.Data"
+        "fileSelected" : "qx.event.type.Data",
+
+        /**
+         *  {
+         *      id : {String} file attribute name
+         *      value : {String} new value
+         *  }
+         */
+        "fileMetaEdited" : "qx.event.type.Data"
     },
 
     properties : {
@@ -73,7 +81,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         if (smode == null) {
             smode = qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION;
         }
-        var table = this.__table = new ncms.mmgr.MediaFilesTable(null, null, smode)
+
+        this.__allowModify = !!allowModify;
+        var ecolumns = this.__allowModify ? ["description"] : null;
+        var table = this.__table = new ncms.mmgr.MediaFilesTable(null, null, ecolumns, smode)
                 .set({
                     "statusBarVisible" : true,
                     "showCellFocusIndicator" : false});
@@ -85,7 +96,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         }, this);
 
 
-        this.__allowModify = !!allowModify;
         this.__dropFun = this.__handleDropFiles.bind(this);
 
         this._add(this.__sf);
@@ -106,6 +116,25 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         if (this.__allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+        }
+
+        if (this.__allowModify) {
+            table.addListener("dataEdited", function(ev) {
+                var tm = table.getTableModel();
+                var data = ev.getData();
+                var fileSpec = tm.getRowData(data.row);
+                var attrName = table.getTableModel().getColumnId(data.col);
+                if (!this.__checkEditAccess([fileSpec])) {
+                    tm.updateCachedRows(function(ind, rowdata) {
+                        if (fileSpec["id"] === rowdata["id"]) {
+                            rowdata[attrName] = data.oldValue;
+                            return rowdata;
+                        }
+                    }, this);
+                } else {
+                    this.__updateMetaAttribute(fileSpec, attrName, data.value);
+                }
+            }, this);
         }
     },
 
@@ -462,8 +491,18 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
 
             return true;
-        }
+        },
 
+        __updateMetaAttribute : function(spec, attr, value) {
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.meta", {"id" : spec["id"]}), "POST", "application/json");
+            req.setParameter(attr, value, true);
+
+            req.send(function() {
+                if (this.hasListener("fileMetaEdited")) {
+                    this.fireDataEvent("fileMetaEdited", {id : attr, value : value});
+                }
+            }, this);
+        }
     },
 
     destruct : function() {

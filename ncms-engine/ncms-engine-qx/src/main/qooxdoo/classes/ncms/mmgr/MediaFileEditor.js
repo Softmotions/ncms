@@ -114,6 +114,13 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
 
         __viewPane : null,
 
+        setUpdateFileMeta : function(update) {
+            var items = this.__form.getItems();
+            if (items[update["id"]]) {
+                items[update["id"]].setValue(update["value"]);
+            }
+        },
+
         __createInfoTable : function() {
             var tm = new sm.model.JsonTableModel();
             this.__setJsonInfoTableData(tm, []);

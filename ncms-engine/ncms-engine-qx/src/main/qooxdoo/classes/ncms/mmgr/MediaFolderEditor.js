@@ -38,6 +38,7 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
 
         var editor = this.__editor = new ncms.mmgr.MediaFileEditor();
         selector.bind("fileSelected", editor, "fileSpec");
+        selector.bind("fileMetaEdited", editor, "updateFileMeta");
         editor.bind("fileMetaUpdated", selector, "updateFileMeta");
 
         var hsp = new qx.ui.splitpane.Pane("horizontal");

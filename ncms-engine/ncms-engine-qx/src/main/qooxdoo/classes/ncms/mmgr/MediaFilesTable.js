@@ -4,8 +4,7 @@
 qx.Class.define("ncms.mmgr.MediaFilesTable", {
     extend : sm.table.Table,
 
-    construct : function(useColumns, hideColumns, smode) {
-
+    construct : function(useColumns, hideColumns, editableColumns, smode) {
         var tm = new sm.model.RemoteVirtualTableModel({
             "name" : this.tr("Name"),
             "content_type" : this.tr("Type"),
@@ -58,6 +57,15 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
             cInd = tm.getColumnIndexById(cn);
             if (cInd != null) {
                 tcm.setColumnVisible(cInd, false);
+            }
+        }, this);
+
+        editableColumns = editableColumns || [];
+        editableColumns.forEach(function(cn) {
+            cInd = tm.getColumnIndexById(cn);
+            if (cInd != null) {
+                tcm.setCellEditorFactory(cInd, new sm.model.TextFieldCellEditor());
+                tm.setColumnEditable(cInd, true);
             }
         }, this);
     },
