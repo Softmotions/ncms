@@ -165,7 +165,7 @@ public class PageRS extends MBDAOSupport {
         if (page == null) {
             throw new NotFoundException();
         }
-        if (page.getType() == null || !page.getType().startsWith("page")) {
+        if (!page.getType().startsWith("page")) {
             throw new BadRequestException();
         }
 

@@ -33,6 +33,8 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
         return attr.getEffectiveValue();
     }
 
+
+
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
