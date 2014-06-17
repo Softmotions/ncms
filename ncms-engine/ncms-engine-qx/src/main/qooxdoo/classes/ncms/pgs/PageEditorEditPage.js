@@ -2,6 +2,8 @@
  * Edit page tab of page editor tabbox.
  *
  * @asset(ncms/icon/16/misc/document-template.png)
+ * @asset(ncms/icon/16/misc/tick.png)
+ * @asset(ncms/icon/16/misc/monitor.png)
  */
 qx.Class.define("ncms.pgs.PageEditorEditPage", {
     extend : qx.ui.tabview.Page,
@@ -28,32 +30,29 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__pageNameLabel.setFont("headline");
         this.add(this.__pageNameLabel);
 
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
+        hcont.setPadding(5);
+
         this.__templateBf =
                 new sm.ui.form.ButtonField(this.tr("Template"),
                         "ncms/icon/16/misc/document-template.png",
                         true).set({readOnly : true});
         this.__templateBf.setPlaceholder(this.tr("Please select the page template"));
         this.__templateBf.addListener("execute", this.__onChangeTemplate, this);
-        this.add(this.__templateBf);
+        hcont.add(this.__templateBf, {flex : 1});
 
+        bt = this.__previewBt = new qx.ui.form.Button(this.tr("Preview"), "ncms/icon/16/misc/monitor.png");
+        bt.addListener("execute", this.__preview, this);
+        hcont.add(bt);
 
-        this.__scroll = new qx.ui.container.Scroll().set({marginTop : 20});
-        this.add(this.__scroll, {flex : 1});
-
-
-        //----------------- Footer
-
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
-        hcont.setPadding(5);
-
-        var bt = new qx.ui.form.Button(this.tr("Save"));
+        var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png");
         bt.addListener("execute", this.__save, this);
         hcont.add(bt);
 
-        bt = new qx.ui.form.Button(this.tr("Reset"));
-        bt.addListener("execute", this.__reset, this);
-        hcont.add(bt);
         this.add(hcont);
+
+        this.__scroll = new qx.ui.container.Scroll().set({marginTop : 20});
+        this.add(this.__scroll, {flex : 1});
 
 
         this.addListener("loadPane", this.__onLoadPane, this);
@@ -71,6 +70,14 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
          */
         __scroll : null,
 
+        /**
+         * Current page form
+         */
+        __form : null,
+
+        __saveBt : null,
+
+        __previewBt : null,
 
         __onLoadPane : function(ev) {
             var spec = ev.getData();
@@ -84,13 +91,11 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __applyPageEditSpec : function(spec) {
-            //{"id":4,"template":null,"attributes":[]}
-
-            qx.log.Logger.info("Edit spec=" + JSON.stringify(spec));
             var t = spec["template"];
             if (t == null) {
                 this.__templateBf.resetValue();
                 this.__cleanupFormPane();
+                this.__syncState();
                 return;
             }
             var sb = [];
@@ -113,7 +118,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
             this.__cleanupFormPane();
             var fr = new sm.ui.form.FlexFormRenderer(form);
+            this.__form = form;
             this.__scroll.add(fr);
+            this.__syncState();
         },
 
 
@@ -123,10 +130,25 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     c.destroy();
                 });
             }
+            if (this.__form != null) {
+                var items = this.__form.getItems();
+                for (var k in items) {
+                    var w = items[k];
+                    var am = w.getUserData("attributeManager");
+                    w.setUserData("attributeManager", null);
+                    if (am) {
+                        try {
+                            am.dispose();
+                        } catch (e) {
+                            qx.log.Logger.error(e);
+                        }
+                    }
+                }
+                this.__form = null;
+            }
         },
 
         __processAttribute : function(aspec, form) {
-            qx.log.Logger.info("Process attribute=" + JSON.stringify(aspec));
             var am = ncms.asm.AsmAttrManagersRegistry.createAttrManagerInstanceForType(aspec["type"]);
             if (am == null) {
                 qx.log.Logger.warn("Missing attribute manager for type: " + aspec["type"]);
@@ -142,10 +164,15 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 qx.log.Logger.warn("Attribute manager used for type: " + aspec["type"] + " produced invalid widget: " + w);
                 return;
             }
-            /*if (!qx.Class.hasInterface(qx.ui.form.IForm)) {
-             w = new sm.ui.form.FormWidgetAdapter(w);
-             }*/
-            form.add(w, aspec["label"], null, aspec["name"]);
+            if (!qx.Class.hasInterface(wclass, qx.ui.form.IForm)) {
+                w = new sm.ui.form.FormWidgetAdapter(w);
+            }
+            w.setUserData("attributeManager", am);
+            var validator = null;
+            if (typeof w.validator === "function") {
+                validator = w.validator;
+            }
+            form.add(w, aspec["label"], validator, aspec["name"]);
         },
 
         __onChangeTemplate : function() {
@@ -159,27 +186,55 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     id : pspec["id"],
                     templateId : t["id"]
                 });
-                var req = new sm.io.Request(url, "PUT");
-                req.send(function() {
-                    var espec = sm.lang.Object.shallowClone(this.getPageEditSpec());
-                    espec["template"] = t;
-                    this.setPageEditSpec(espec);
+                var req = new sm.io.Request(url, "PUT", "application/json");
+                req.send(function(resp) {
+                    this.setPageEditSpec(resp.getContent());
                     dlg.close();
                 }, this);
             }, this);
             dlg.open();
         },
 
-        __save : function() {
-            //todo
+        __syncState : function() {
+            this.__previewBt.setEnabled(this.__form != null);
+            this.__saveBt.setEnabled(this.__form != null);
         },
 
-        __reset : function() {
+        __save : function() {
+            if (this.__form == null || !this.__form.validate()) {
+                return;
+            }
+            var data = {};
+            var items = this.__form.getItems();
+            for (var k in items) {
+                var w = items[k];
+                var am = w.getUserData("attributeManager");
+                if (am == null) {
+                    continue;
+                }
+                data[k] = am.valueAsJSON();
+            }
+
+            var spec = this.getPageSpec();
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec), "PUT");
+            req.setRequestContentType("application/json");
+            req.setData(JSON.stringify(data));
+            req.send(function(resp) {
+                ncms.Application.alert(this.tr("Page '%1' saved successfully", spec["name"]));
+            }, this);
+        },
+
+        __preview : function() {
             //todo
         }
     },
 
     destruct : function() {
+        this.__cleanupFormPane();
         this.__templateBf = null;
+        this.__form = null;
+        this.__scroll = null;
+        this.__previewBt = null;
+        this.__saveBt = null;
     }
 });

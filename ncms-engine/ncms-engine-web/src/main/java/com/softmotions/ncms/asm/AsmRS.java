@@ -370,13 +370,8 @@ public class AsmRS extends MBDAOSupport {
         } else {
             log.warn("Missing atribute manager for given type: '" + attr.getType() + '\'');
         }
-
-        if (attr.asmId == 0L) { //insert
-            attr.asmId = asmId;
-            insert("insertAttribute", attr);
-        } else {  //update
-            update("updateAttribute", attr);
-        }
+        attr.asmId = asmId;
+        update("upsertAttribute", attr);
     }
 
 

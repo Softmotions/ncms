@@ -4,6 +4,8 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.guid.RandomGUID;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.asm.render.AsmAttributeManager;
+import com.softmotions.ncms.asm.render.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -40,8 +42,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -61,16 +66,20 @@ public class PageRS extends MBDAOSupport {
 
     final WSUserDatabase userdb;
 
+    final AsmAttributeManagersRegistry amRegistry;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao, ObjectMapper mapper,
                   NcmsMessages messages,
-                  WSUserDatabase userdb) {
+                  WSUserDatabase userdb,
+                  AsmAttributeManagersRegistry amRegistry) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
         this.userdb = userdb;
+        this.amRegistry = amRegistry;
     }
 
     /**
@@ -146,15 +155,60 @@ public class PageRS extends MBDAOSupport {
     }
 
 
+    @PUT
+    @Path("/edit/{id}")
+    public void savePage(@Context HttpServletRequest req,
+                         @PathParam("id") Long id,
+                         ObjectNode data) {
+
+        Asm page = adao.asmSelectById(id);
+        if (page == null) {
+            throw new NotFoundException();
+        }
+        if (page.getType() == null || !page.getType().startsWith("page")) {
+            throw new BadRequestException();
+        }
+
+        Map<String, AsmAttribute> attrIdx = new HashMap<>();
+        for (AsmAttribute attr : page.getEffectiveAttributes()) {
+            if (attr.getLabel() == null || attr.getLabel().isEmpty()) {
+                continue; //no gui label, skipping
+            }
+            attrIdx.put(attr.getName(), attr);
+        }
+        Iterator<String> fnamesIt = data.fieldNames();
+        while (fnamesIt.hasNext()) {
+            String fname = fnamesIt.next();
+            AsmAttribute attr = attrIdx.get(fname);
+            if (attr == null) {
+                continue;
+            }
+            AsmAttributeManager am = amRegistry.getByType(attr.getType());
+            if (am == null) {
+                log.warn("Missing attribute manager for type: " + attr.getType());
+                continue;
+            }
+            if (attr.getAsmId() != id) { //parent attr
+                attr = attr.cloneDeep();
+                attr.asmId = id;
+            }
+            am.applyAttributeValue(attr, data.get(fname));
+            update("upsertAttribute", attr);
+        }
+    }
+
     /**
      * Set template page for page assembly.
+     * Return the same data
      *
      * @param id
      */
     @PUT
     @Path("/template/{id}/{templateId}")
     @Transactional
-    public void setTemplate(@PathParam("id") Long id, @PathParam("templateId") Long templateId) {
+    public ObjectNode setTemplate(@Context HttpServletRequest req,
+                                  @PathParam("id") Long id,
+                                  @PathParam("templateId") Long templateId) {
         Integer ts = selectOne("selectPageTemplateStatus", templateId);
         if (ts == null || ts.intValue() == 0) {
             log.warn("Assembly: " + templateId + " is not page template");
@@ -162,6 +216,28 @@ public class PageRS extends MBDAOSupport {
         }
         adao.asmRemoveAllParents(id);
         adao.asmSetParent(id, templateId);
+
+        //Strore incompatible attribute names to clean-up
+        List<String> attrsToRemove = new ArrayList<>();
+        Asm page = adao.asmSelectById(id);
+        Collection<AsmAttribute> attrs = page.getEffectiveAttributes();
+
+        for (AsmAttribute a : attrs) {
+            AsmAttribute oa = a.getOverridenParent();
+            if (oa != null &&
+                a.getAsmId() == id.longValue() &&
+                Objects.equals(oa.getType(), a.getType())) { //types incompatible
+                attrsToRemove.add(a.getName());
+            }
+        }
+
+        if (!attrsToRemove.isEmpty()) {
+            delete("deleteAttrsByNames",
+                   "asmId", id,
+                   "names", attrsToRemove);
+        }
+
+        return selectPageEdit(req, id);
     }
 
 

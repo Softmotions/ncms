@@ -51,14 +51,14 @@
     </update>
 
     <delete id="deleteFolder" parameterType="map">
-        DELETE FROM media_entity e
-        WHERE e.folder LIKE #{prefix_like}
+        DELETE FROM media_entity
+        WHERE folder LIKE #{prefix_like}
     </delete>
 
     <delete id="deleteFile" parameterType="map">
-        DELETE FROM media_entity e
-        WHERE e.folder = #{folder}
-              AND e.name = #{name}
+        DELETE FROM media_entity
+        WHERE folder = #{folder}
+              AND name = #{name}
     </delete>
 
     <select id="selectInFolder" parameterType="map" resultType="map">
