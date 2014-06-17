@@ -13,7 +13,7 @@ public interface AsmAttributeManager {
 
     String[] getSupportedAttributeTypes();
 
-    String renderAsmAttribute(AsmRendererContext ctx, String attrname,
+    Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                               Map<String, String> options) throws AsmRenderingException;
 
     AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode options);

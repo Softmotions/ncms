@@ -25,7 +25,7 @@ public class AsmRefAttributeManager implements AsmAttributeManager {
         return TYPES;
     }
 
-    public String renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
+    public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
 
         StringWriter out;
         Asm asm = ctx.getAsm();

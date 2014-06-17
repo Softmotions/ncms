@@ -67,7 +67,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
     }
 
-    public String renderAsmAttribute(AsmRendererContext ctx, String attributeName,
+    public Object renderAsmAttribute(AsmRendererContext ctx, String attributeName,
                                      Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attributeName);

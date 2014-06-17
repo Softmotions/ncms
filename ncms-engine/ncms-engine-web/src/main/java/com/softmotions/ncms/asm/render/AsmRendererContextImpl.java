@@ -171,7 +171,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return Locale.getDefault();
     }
 
-    public String renderAttribute(String attributeName, Map<String, String> opts) {
+    public Object renderAttribute(String attributeName, Map<String, String> opts) {
         return renderer.renderAsmAttribute(this, attributeName, opts);
     }
 

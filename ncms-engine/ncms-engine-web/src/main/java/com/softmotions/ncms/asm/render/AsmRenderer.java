@@ -12,6 +12,6 @@ public interface AsmRenderer {
 
     void renderAsm(AsmRendererContext ctx) throws AsmRenderingException, IOException;
 
-    String renderAsmAttribute(AsmRendererContext ctx,
+    Object renderAsmAttribute(AsmRendererContext ctx,
                               String attributeName, Map<String, String> opts) throws AsmRenderingException;
 }

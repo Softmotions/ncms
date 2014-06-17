@@ -14,7 +14,7 @@ public class HttlAsmMethods {
     private HttlAsmMethods() {
     }
 
-    public static String asm(String val) {
+    public static Object asm(String val) {
         String attrName;
         Map<String, String> opts;
         AsmRendererContext ctx = AsmRendererContext.getSafe();
@@ -29,11 +29,11 @@ public class HttlAsmMethods {
         return ctx.renderAttribute(attrName, opts);
     }
 
-    public static String asm(String attrName, String ok, String ov) {
+    public static Object asm(String attrName, String ok, String ov) {
         return asmIntern(attrName, ok, ov);
     }
 
-    public static String asm(String attrName,
+    public static Object asm(String attrName,
                              String ok, String ov,
                              String ok1, String ov1) {
         return asmIntern(attrName,
@@ -42,7 +42,7 @@ public class HttlAsmMethods {
     }
 
     @SuppressWarnings("MethodWithTooManyParameters")
-    public static String asm(String attrName,
+    public static Object asm(String attrName,
                              String ok, String ov,
                              String ok1, String ov1,
                              String ok2, String ov2) {
@@ -53,7 +53,7 @@ public class HttlAsmMethods {
     }
 
     @SuppressWarnings("MethodWithTooManyParameters")
-    public static String asm(String attrName,
+    public static Object asm(String attrName,
                              String ok, String ov,
                              String ok1, String ov1,
                              String ok2, String ov2,
@@ -65,7 +65,7 @@ public class HttlAsmMethods {
                          ok3, ov3);
     }
 
-    private static String asmIntern(String attrName, String... extraOpts) {
+    private static Object asmIntern(String attrName, String... extraOpts) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         KVOptions opts = null;
         if (extraOpts.length > 0) {

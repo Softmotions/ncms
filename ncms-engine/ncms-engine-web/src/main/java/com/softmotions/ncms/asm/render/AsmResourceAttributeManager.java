@@ -56,7 +56,7 @@ public class AsmResourceAttributeManager implements AsmAttributeManager {
         return TYPES;
     }
 
-    public String renderAsmAttribute(AsmRendererContext ctx, String attrname,
+    public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
 
         Asm asm = ctx.getAsm();
