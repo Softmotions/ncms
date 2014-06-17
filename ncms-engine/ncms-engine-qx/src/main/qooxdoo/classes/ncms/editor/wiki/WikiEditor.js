@@ -1,7 +1,6 @@
 /**
  * Wiki editor
  *
- * @asset(ncms/icon/16/wiki/note_add.png)
  * @asset(ncms/icon/16/wiki/text_heading_1.png)
  * @asset(ncms/icon/16/wiki/text_heading_2.png)
  * @asset(ncms/icon/16/wiki/text_heading_3.png)
