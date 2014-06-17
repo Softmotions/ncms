@@ -1,6 +1,8 @@
-package com.softmotions.ncms.asm.render;
+package com.softmotions.ncms.asm.am;
 
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

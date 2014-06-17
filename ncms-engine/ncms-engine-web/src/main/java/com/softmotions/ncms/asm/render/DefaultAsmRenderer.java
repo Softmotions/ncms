@@ -3,6 +3,8 @@ package com.softmotions.ncms.asm.render;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
+import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

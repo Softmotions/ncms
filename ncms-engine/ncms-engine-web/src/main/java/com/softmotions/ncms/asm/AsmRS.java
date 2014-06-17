@@ -2,8 +2,8 @@ package com.softmotions.ncms.asm;
 
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.ncms.asm.render.AsmAttributeManager;
-import com.softmotions.ncms.asm.render.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
