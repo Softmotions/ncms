@@ -395,6 +395,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 if (!f1.exists()) {
                     throw new NotFoundException(path);
                 }
+
+                checkEditAccess(path, req);
+
                 File f2 = new File(basedir, npath);
                 if (f2.exists()) {
                     throw new NcmsMessageException(message.get("ncms.mmgr.file.exists", req, npath), true);
@@ -407,7 +410,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     log.debug("Moving " + f1 + " => " + f2);
                 }
                 if (f1.isDirectory()) {
-
                     String p1 = f1.getCanonicalPath();
                     String p2 = f2.getCanonicalPath();
                     if (p2.startsWith(p1 + '/')) {
@@ -477,6 +479,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (!f.exists()) {
                 throw new NotFoundException(path);
             }
+
+            checkEditAccess(path, req);
+
             isdir = f.isDirectory();
             if (isdir) {
                 deleteDirectoryInternal(path, true);
@@ -521,6 +526,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                            @Context HttpServletRequest req,
                            MultivaluedMap<String, String> form) throws Exception {
 
+        checkEditAccess(id, req);
+
         Map<String, Object> qm = new TinyParamMap();
         qm.put("id", id);
 
@@ -553,8 +560,18 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             String desc = form.getFirst("description");
             qm.put("description", StringUtils.isBlank(desc) ? "" : desc);
         }
-        update("updateMeta", qm);
-        updateFTSKeywords(id, req);
+        if (form.containsKey("owner")) {
+            String owner = form.getFirst("owner");
+            if (StringUtils.isBlank(owner)) {
+                throw new BadRequestException();
+            }
+            qm.put("owner", owner);
+        }
+        // if qm.size() < 2: only .put(id) called - update query is empty!
+        if (qm.size() > 1) {
+            update("updateMeta", qm);
+            updateFTSKeywords(id, req);
+        }
     }
 
 
@@ -812,7 +829,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
      * <p/>
      * <pre>
      *     [
-     *       {"label" : file name, "status" : 1 if it is folder 0 otherwise },
+     *       {"label" : file name, "status" : 1 if it is folder 0 otherwise},
      *       ...
      *     ]
      * </pre>
@@ -1055,6 +1072,13 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         FileUploadStream us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", cfg.getTmpdir());
 
         try (ResourceLock l = new ResourceLock(folder + name, true)) {
+            id = selectOne("selectEntityIdByPath",
+                           "folder", folder,
+                           "name", name);
+            if (id != null) {
+                checkEditAccess(id.longValue(), req);
+            }
+
             long actualLength = IOUtils.copyLarge(bis, us);
             us.close();
             if (req.getContentLength() != -1 && req.getContentLength() != actualLength) {
@@ -1078,9 +1102,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 us.writeTo(fos);
                 fos.flush();
             }
-            id = selectOne("selectEntityIdByPath",
-                           "folder", folder,
-                           "name", name);
+
             if (id == null) {
 
                 Map<String, Object> args = new HashMap<>();
@@ -1249,6 +1271,61 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
         }
         return rwlock;
+    }
+
+    private void checkEditAccess(Long id, HttpServletRequest req) {
+        if (req.isUserInRole("admin")) {
+            return;
+        }
+
+        Map<String, ?> fmeta = selectOne("selectResourceAttrsById", "id", id);
+        if (fmeta == null) {
+            // O_o meta not found by id? it isn't possible!
+            String msg = message.get("ncms.mmgr.access.denied", req, "");
+            throw new NcmsMessageException(msg, true);
+        }
+
+
+        _checkEditAccess(fmeta, StringUtils.strip((String) fmeta.get("folder") + fmeta.get("name"), "/"), req);
+    }
+
+    private void checkEditAccess(String path, HttpServletRequest req) {
+        if (req.isUserInRole("admin")) {
+            return;
+        }
+
+        Map<String, ?> fmeta = selectOne("selectResourceAttrsByPath",
+                                         "folder", getResourceParentFolder(path),
+                                         "name", getResourceName(path));
+
+        _checkEditAccess(fmeta, path, req);
+    }
+
+    private void _checkEditAccess(Map<String, ?> fmeta, String path, HttpServletRequest req) {
+        boolean isFile = fmeta != null && 0 == (Integer) fmeta.get("status");
+        if (isFile) {
+            if (!req.getRemoteUser().equals(fmeta.get("owner"))) {
+                String msg = message.get("ncms.mmgr.access.denied", req, path);
+                throw new NcmsMessageException(msg, true);
+            }
+        } else {
+            File f = new File(basedir, path);
+            if (!f.isDirectory()) {
+                return;
+            }
+
+            // check contains file entities in directory
+            int count = selectOne("count", "folder", normalizeFolder(path));
+            if (count > 0) {
+                throw new NcmsMessageException(message.get("ncms.mmgr.access.dened.folder.notEmpty", req), true);
+            }
+
+            // check contains subfolders in directory
+            File[] files = f.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
+            if (files != null && files.length > 0) {
+                throw new NcmsMessageException(message.get("ncms.mmgr.access.dened.folder.notEmpty", req), true);
+            }
+        }
     }
 
     public static String getResourceParentFolder(String path) {
