@@ -258,7 +258,8 @@
             content_type   AS "content_type",
             content_length AS "content_length",
             mdate          AS "mdate",
-            owner          AS "owner"
+            owner          AS "owner",
+            status         AS "status"
         FROM media_entity
         WHERE folder = #{folder}
               AND name = #{name}
@@ -272,7 +273,8 @@
             content_type   AS "content_type",
             content_length AS "content_length",
             mdate          AS "mdate",
-            owner          AS "owner"
+            owner          AS "owner",
+            status         AS "status"
         FROM media_entity
         WHERE id = #{id}
     </select>

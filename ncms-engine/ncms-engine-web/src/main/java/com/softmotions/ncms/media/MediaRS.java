@@ -479,9 +479,11 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (!f.exists()) {
                 throw new NotFoundException(path);
             }
+
+            checkEditAccess(path, req);
+
             isdir = f.isDirectory();
             if (isdir) {
-                // TODO: check rights
                 deleteDirectoryInternal(path, true);
                 delete("deleteFolder",
                        "prefix_like", '/' + path + "/%");
@@ -489,8 +491,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                        "folder", getResourceParentFolder(path),
                        "name", getResourceName(path));
             } else {
-                checkEditAccess(path, req);
-
                 boolean exists = f.exists();
                 if (f.delete() || !exists) {
                     delete("deleteFile",
@@ -1274,26 +1274,56 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     private void checkEditAccess(Long id, HttpServletRequest req) {
-        if (!req.isUserInRole("admin")) {
-            Map<String, ?> fmeta = selectOne("selectResourceAttrsById",
-                                             "id", id);
-            // fmeta == null - meta not found! Access denied.
-            if (fmeta == null || !req.getRemoteUser().equals(fmeta.get("owner"))) {
-                String msg = message.get("ncms.mmgr.access.denied", req, "");
-                throw new NcmsMessageException(msg, true);
-            }
+        if (req.isUserInRole("admin")) {
+            return;
         }
+
+        Map<String, ?> fmeta = selectOne("selectResourceAttrsById", "id", id);
+        if (fmeta == null) {
+            // O_o meta not found by id? it isn't possible!
+            String msg = message.get("ncms.mmgr.access.denied", req, "");
+            throw new NcmsMessageException(msg, true);
+        }
+
+
+        _checkEditAccess(fmeta, StringUtils.strip((String) fmeta.get("folder") + fmeta.get("name"), "/"), req);
     }
 
     private void checkEditAccess(String path, HttpServletRequest req) {
-        if (!req.isUserInRole("admin")) {
-            Map<String, ?> fmeta = selectOne("selectResourceAttrsByPath",
-                                             "folder", getResourceParentFolder(path),
-                                             "name", getResourceName(path));
-            // fmeta == null - meta not found! Access denied.
-            if (fmeta == null || !req.getRemoteUser().equals(fmeta.get("owner"))) {
+        if (req.isUserInRole("admin")) {
+            return;
+        }
+
+        Map<String, ?> fmeta = selectOne("selectResourceAttrsByPath",
+                                         "folder", getResourceParentFolder(path),
+                                         "name", getResourceName(path));
+
+        _checkEditAccess(fmeta, path, req);
+    }
+
+    private void _checkEditAccess(Map<String, ?> fmeta, String path, HttpServletRequest req) {
+        boolean isFile = fmeta != null && 0 == (Integer) fmeta.get("status");
+        if (isFile) {
+            if (!req.getRemoteUser().equals(fmeta.get("owner"))) {
                 String msg = message.get("ncms.mmgr.access.denied", req, path);
                 throw new NcmsMessageException(msg, true);
+            }
+        } else {
+            File f = new File(basedir, path);
+            if (!f.isDirectory()) {
+                return;
+            }
+
+            // check contains file entities in directory
+            int count = selectOne("count", "folder", normalizeFolder(path));
+            if (count > 0) {
+                throw new NcmsMessageException(message.get("ncms.mmgr.access.dened.folder.notEmpty", req), true);
+            }
+
+            // check contains subfolders in directory
+            File[] files = f.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
+            if (files != null && files.length > 0) {
+                throw new NcmsMessageException(message.get("ncms.mmgr.access.dened.folder.notEmpty", req), true);
             }
         }
     }
