@@ -4,8 +4,8 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.guid.RandomGUID;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.ncms.asm.render.AsmAttributeManager;
-import com.softmotions.ncms.asm.render.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -165,7 +165,7 @@ public class PageRS extends MBDAOSupport {
         if (page == null) {
             throw new NotFoundException();
         }
-        if (page.getType() == null || !page.getType().startsWith("page")) {
+        if (!page.getType().startsWith("page")) {
             throw new BadRequestException();
         }
 

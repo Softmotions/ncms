@@ -61,7 +61,8 @@
             <column name="TEMPLATE" type="TINYINT(1)"
                     defaultValueNumeric="0"
                     remarks="Use this page assembly as template for other pages"/>
-            <column name="TYPE" type="VARCHAR(64)">
+            <column name="TYPE" type="VARCHAR(64)" defaultValue="">
+                <constraints nullable="false"/>
             </column>
             <column name="OPTIONS" type="VARCHAR(512)"/>
             <column name="DESCRIPTION" type="VARCHAR(255)"/>

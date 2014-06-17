@@ -3,6 +3,8 @@ package com.softmotions.ncms.asm.render;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
+import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -67,7 +69,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
     }
 
-    public String renderAsmAttribute(AsmRendererContext ctx, String attributeName,
+    public Object renderAsmAttribute(AsmRendererContext ctx, String attributeName,
                                      Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attributeName);

@@ -1,9 +1,11 @@
-package com.softmotions.ncms.asm.render;
+package com.softmotions.ncms.asm.am;
 
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,7 +25,7 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
         return TYPES;
     }
 
-    public String renderAsmAttribute(AsmRendererContext ctx, String attrname,
+    public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
@@ -32,6 +34,7 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
         }
         return attr.getEffectiveValue();
     }
+
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();

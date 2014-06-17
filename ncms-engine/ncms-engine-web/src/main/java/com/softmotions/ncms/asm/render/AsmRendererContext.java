@@ -138,7 +138,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public abstract void render() throws AsmRenderingException, IOException;
 
-    public abstract String renderAttribute(String attributeName, Map<String, String> opts);
+    public abstract Object renderAttribute(String attributeName, Map<String, String> opts);
 
     public abstract AsmResourceLoader getLoader();
 

@@ -1,13 +1,13 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.ncms.NcmsConfiguration;
-import com.softmotions.ncms.asm.render.AsmAttributeManager;
-import com.softmotions.ncms.asm.render.AsmAttributeManagersRegistry;
-import com.softmotions.ncms.asm.render.AsmRefAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.am.AsmRefAttributeManager;
+import com.softmotions.ncms.asm.am.AsmResourceAttributeManager;
+import com.softmotions.ncms.asm.am.AsmStringAttributeManager;
 import com.softmotions.ncms.asm.render.AsmRenderer;
-import com.softmotions.ncms.asm.render.AsmResourceAttributeManager;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
-import com.softmotions.ncms.asm.render.AsmStringAttributeManager;
 import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
 import com.softmotions.ncms.asm.render.ldrs.AsmClasspathResourceLoader;
 import com.softmotions.ncms.media.MediaResource;

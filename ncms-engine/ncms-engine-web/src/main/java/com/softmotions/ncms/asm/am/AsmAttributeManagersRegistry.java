@@ -1,4 +1,4 @@
-package com.softmotions.ncms.asm.render;
+package com.softmotions.ncms.asm.am;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

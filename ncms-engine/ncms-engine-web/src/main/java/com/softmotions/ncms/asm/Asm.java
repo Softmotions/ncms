@@ -125,7 +125,7 @@ public class Asm implements Serializable {
     }
 
     public String getType() {
-        return type;
+        return type != null ? type : "";
     }
 
     public void setType(String type) {
