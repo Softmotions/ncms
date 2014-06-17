@@ -117,7 +117,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         this.addListenerOnce("resize", this.center, this);
 
         if (attrSpec != null) {
-            var clazz = ncms.asm.AsmAttrManagersRegistry.findEditorClassForType(attrSpec["type"]);
+            var clazz = ncms.asm.am.AsmAttrManagersRegistry.findEditorClassForType(attrSpec["type"]);
             if (clazz != null) {
                 this.__setType(attrSpec["type"], clazz);
             }
@@ -146,9 +146,9 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             var me = this;
             ts.setOnDemandFactoryFunctionProvider(function() {
                 return function(id) {
-                    var editor = ncms.asm.AsmAttrManagersRegistry.createAttrManagerInstance(id);
+                    var editor = ncms.asm.am.AsmAttrManagersRegistry.createAttrManagerInstance(id);
                     var aspec = me.__getAttributeSpec();
-                    var w = editor.activateOptionsWidget(aspec);
+                    var w = editor.activateOptionsWidget(aspec, me.__asmSpec);
                     w.setUserData("editor", editor);
                     return w;
                 }

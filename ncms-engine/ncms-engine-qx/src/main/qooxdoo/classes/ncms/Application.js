@@ -128,7 +128,7 @@ qx.Class.define("ncms.Application", {
         main : function() {
 
             //load AsmAttrManagersRegistry
-            ncms.asm.AsmAttrManagersRegistry
+            ncms.asm.am.AsmAttrManagersRegistry
 
 
             // Enable logging in debug variant

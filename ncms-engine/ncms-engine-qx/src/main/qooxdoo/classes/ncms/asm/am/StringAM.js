@@ -19,11 +19,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
     members : {
 
-
-        __optionsWidget : null,
-
-        __valueWidget : null,
-
+        _form : null,
 
         /**
          * attrSpec example:
@@ -37,7 +33,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
          *   "hasLargeValue" : false
          * },
          */
-        activateOptionsWidget : function(attrSpec) {
+        activateOptionsWidget : function(attrSpec, asmSpec) {
 
             var form = new qx.ui.form.Form();
             //---------- Options
@@ -75,21 +71,16 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
             var fr = new sm.ui.form.FlexFormRenderer(form);
             fr.setLastRowFlexible();
-            fr.setUserData("form", form);
-
-            this.__optionsWidget = fr;
+            this._form = form;
             return fr;
         },
 
         optionsAsJSON : function() {
-            if (this.__optionsWidget == null) {
+            if (this._form == null || !this._form.validate()) {
                 return null;
             }
             var opts = {};
-            var form = this.__optionsWidget.getUserData("form");
-            if (!form.validate()) {
-                return;
-            }
+            var form = this._form;
             var items = form.getItems();
             //display
             var rb = items["display"].getSelection()[0];
@@ -99,7 +90,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
             return opts;
         },
 
-        activateValueEditorWidget : function(attrSpec) {
+        activateValueEditorWidget : function(attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var display = opts["display"] || "field";
             var w = (display === "area") ? new qx.ui.form.TextArea() : new qx.ui.form.TextField();
@@ -110,22 +101,21 @@ qx.Class.define("ncms.asm.am.StringAM", {
             if (opts["placeholder"] != null) {
                 w.setPlaceholder(opts["placeholder"]);
             }
-            this.__valueWidget = w;
+            this._valueWidget = w;
             return w;
         },
 
         valueAsJSON : function() {
-            if (this.__valueWidget == null) {
+            if (this._valueWidget == null) {
                 return;
             }
             return {
-                value : this.__valueWidget.getValue()
+                value : this._valueWidget.getValue()
             }
         }
     },
 
     destruct : function() {
-        this.__optionsWidget = null;
-        this.__valueWidget = null;
+        this._disposeObjects("_form");
     }
 });

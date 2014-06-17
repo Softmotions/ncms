@@ -112,8 +112,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             var vmgr = form.getValidationManager();
             vmgr.setRequiredFieldMessage(this.tr("This field is required"));
 
-            attrs.forEach(function(aspec) {
-                this.__processAttribute(aspec, form);
+            attrs.forEach(function(attrSpec) {
+                this.__processAttribute(attrSpec, spec, form);
             }, this);
 
             this.__cleanupFormPane();
@@ -148,20 +148,20 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             }
         },
 
-        __processAttribute : function(aspec, form) {
-            var am = ncms.asm.AsmAttrManagersRegistry.createAttrManagerInstanceForType(aspec["type"]);
+        __processAttribute : function(attrSpec, asmSpec, form) {
+            var am = ncms.asm.am.AsmAttrManagersRegistry.createAttrManagerInstanceForType(attrSpec["type"]);
             if (am == null) {
-                qx.log.Logger.warn("Missing attribute manager for type: " + aspec["type"]);
+                qx.log.Logger.warn("Missing attribute manager for type: " + attrSpec["type"]);
                 return;
             }
-            var w = am.activateValueEditorWidget(aspec);
+            var w = am.activateValueEditorWidget(attrSpec, asmSpec);
             if (w == null) {
-                qx.log.Logger.warn("Attribute manager used for type: " + aspec["type"] + " produced invalid widget: null");
+                qx.log.Logger.warn("Attribute manager used for type: " + attrSpec["type"] + " produced invalid widget: null");
                 return;
             }
             var wclass = qx.Class.getByName(w.classname);
             if (wclass == null) {
-                qx.log.Logger.warn("Attribute manager used for type: " + aspec["type"] + " produced invalid widget: " + w);
+                qx.log.Logger.warn("Attribute manager used for type: " + attrSpec["type"] + " produced invalid widget: " + w);
                 return;
             }
             if (!qx.Class.hasInterface(wclass, qx.ui.form.IForm)) {
@@ -172,7 +172,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             if (typeof w.validator === "function") {
                 validator = w.validator;
             }
-            form.add(w, aspec["label"], validator, aspec["name"]);
+            form.add(w, attrSpec["label"], validator, attrSpec["name"]);
         },
 
         __onChangeTemplate : function() {

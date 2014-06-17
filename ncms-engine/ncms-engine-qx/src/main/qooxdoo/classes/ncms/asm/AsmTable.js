@@ -7,10 +7,10 @@ qx.Class.define("ncms.asm.AsmTable", {
     construct : function(useColumns) {
         var tm = new sm.model.RemoteVirtualTableModel({
             "name" : this.tr("Name"),
-            "type" : this.tr("Type"),
-            "description" : this.tr("Description")
+            "description" : this.tr("Description"),
+            "type" : this.tr("Type")
         }).set({
-                    "useColumns" : useColumns || ["name", "type", "description"],
+                    "useColumns" : useColumns || ["name", "description", "type"],
                     "rowdataUrl" : ncms.Application.ACT.getUrl("asms.select"),
                     "rowcountUrl" : ncms.Application.ACT.getUrl("asms.select.count")
                 });

@@ -17,7 +17,7 @@ qx.Class.define("ncms.asm.am.SelectAM", {
 
     members : {
 
-        activateOptionsWidget : function(attrSpec) {
+        activateOptionsWidget : function(attrSpec, asmSpec) {
             return new qx.ui.core.Widget();
         },
 
@@ -25,7 +25,7 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             return {};
         },
 
-        activateValueEditorWidget : function() {
+        activateValueEditorWidget : function(attrSpec, asmSpec) {
             return new qx.ui.core.Widget();
         },
 

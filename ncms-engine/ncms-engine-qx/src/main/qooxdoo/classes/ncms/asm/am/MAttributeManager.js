@@ -5,6 +5,11 @@ qx.Mixin.define("ncms.asm.am.MAttributeManager", {
 
     members : {
 
+        _optionsWidget : null,
+
+        _valueWidget : null,
+
+
         _fetchAttributeValue : function(attrSpec, cb) {
             if (attrSpec == null) {
                 cb(null);
@@ -24,5 +29,10 @@ qx.Mixin.define("ncms.asm.am.MAttributeManager", {
                 cb(eval === undefined ? null : eval);
             });
         }
+    },
+
+    destruct : function() {
+        this._optionsWidget = null;
+        this._valueWidget = null;
     }
 });

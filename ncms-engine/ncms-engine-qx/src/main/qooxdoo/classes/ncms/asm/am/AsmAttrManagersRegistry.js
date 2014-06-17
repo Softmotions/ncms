@@ -1,16 +1,15 @@
 /**
  *  Registry of available assembly attrubute managers.
  */
-qx.Class.define("ncms.asm.AsmAttrManagersRegistry", {
+qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
     type : "static",
 
     statics : {
 
         CLASSES : [
-
-            ncms.asm.am.RawAM,
             ncms.asm.am.StringAM,
-            ncms.asm.am.SelectAM
+            ncms.asm.am.SelectAM,
+            ncms.asm.am.RefAM
         ],
 
 

@@ -18,6 +18,7 @@
             <if test="type != null">AND asm.type = #{type}</if>
             <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
+            <if test="exclude != null">AND asm.id != #{exclude}</if>
         </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
     </select>
@@ -28,6 +29,7 @@
             <if test="type != null">AND asm.type = #{type}</if>
             <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
+            <if test="exclude != null">AND asm.id != #{exclude}</if>
         </where>
     </select>
 

@@ -32,11 +32,13 @@ public class AsmRefAttributeManager implements AsmAttributeManager {
         StringWriter out;
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
+        if (attr == null) {
+            return null;
+        }
         String asmName = attr.getEffectiveValue();
-        AsmRendererContext subcontext = null;
+        AsmRendererContext subcontext;
         HttpServletResponse resp;
-
-        if (attr == null || attr.getEffectiveValue() == null) {
+        if (attr.getEffectiveValue() == null) {
             return null;
         }
 
@@ -51,15 +53,13 @@ public class AsmRefAttributeManager implements AsmAttributeManager {
                      " attribute: " + attr.getName(), e);
             return null;
         }
-        if (subcontext != null) {
-            resp = subcontext.getServletResponse();
-            if (resp.getStatus() != HttpServletResponse.SC_OK) {
-                log.warn("Unexpected status code: " + resp.getStatus() +
-                         " during sub-assembly rendering: " + asmName +
-                         " of assembly: " + asm.getName() +
-                         " attribute: " + attr.getName());
-                return null;
-            }
+        resp = subcontext.getServletResponse();
+        if (resp.getStatus() != HttpServletResponse.SC_OK) {
+            log.warn("Unexpected status code: " + resp.getStatus() +
+                     " during sub-assembly rendering: " + asmName +
+                     " of assembly: " + asm.getName() +
+                     " attribute: " + attr.getName());
+            return null;
         }
         //Schedule skip escaping on this attribute
         ctx.setNextEscapeSkipping(true);

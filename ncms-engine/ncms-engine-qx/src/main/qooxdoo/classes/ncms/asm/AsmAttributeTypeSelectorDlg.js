@@ -74,7 +74,7 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             var tm = new sm.model.JsonTableModel();
 
             var items = [];
-            ncms.asm.AsmAttrManagersRegistry.forEachAttributeManagerTypeClassPair(
+            ncms.asm.am.AsmAttrManagersRegistry.forEachAttributeManagerTypeClassPair(
                     function(type, clazz) {
                         items.push([
                             [type, (clazz.getDescription() || ""), (clazz.classname || clazz.toString())],

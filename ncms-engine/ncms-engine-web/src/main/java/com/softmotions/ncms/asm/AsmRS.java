@@ -409,8 +409,12 @@ public class AsmRS extends MBDAOSupport {
             cq.withParam("name", val);
         }
         val = req.getParameter("type");
-        if (!StringUtils.isBlank(val)) {
+        if (val != null) {
             cq.withParam("type", val);
+        }
+        val = req.getParameter("exclude");
+        if (val != null) {
+            cq.withParam("exclude", Long.parseLong(val));
         }
         val = req.getParameter("template");
         if (BooleanUtils.toBoolean(val)) {
