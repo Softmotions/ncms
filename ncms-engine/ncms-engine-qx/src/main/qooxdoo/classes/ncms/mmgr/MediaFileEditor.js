@@ -119,6 +119,11 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             if (items[update["id"]]) {
                 items[update["id"]].setValue(update["value"]);
             }
+
+            var spec = {};
+            spec[update["id"]] = update["value"];
+            qx.lang.Object.mergeWith(spec, this.getFileSpec(), false);
+            this.__updateInfoTable(spec);
         },
 
         __createInfoTable : function() {
@@ -242,6 +247,14 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 this.hide();
                 return;
             }
+
+            this.__setupFileForm(spec);
+            this.__updateInfoTable(spec)
+            this.__setupDataView(spec);
+            this.show();
+        },
+
+        __updateInfoTable : function(spec) {
             var aliases = ncms.mmgr.MediaFileEditor.ATTR_ALIASES;
             var attrs = [];
             Object.keys(spec).forEach(function(k) {
@@ -255,10 +268,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 ]);
             }, this);
 
-            this.__setupFileForm(spec);
             this.__setJsonInfoTableData(this.__infoTable.getTableModel(), attrs);
-            this.__setupDataView(spec);
-            this.show();
         },
 
         __beforeViewPaneContextMenuOpen : function(ev) {

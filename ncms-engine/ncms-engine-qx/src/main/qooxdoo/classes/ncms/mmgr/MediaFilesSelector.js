@@ -83,7 +83,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         }
 
         this.__allowModify = !!allowModify;
-        var ecolumns = this.__allowModify ? ["description"] : null;
+        var ecolumns = this.__allowModify ? ["name", "description"] : null;
         var table = this.__table = new ncms.mmgr.MediaFilesTable(null, null, ecolumns, smode)
                 .set({
                     "statusBarVisible" : true,
@@ -132,7 +132,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                         }
                     }, this);
                 } else {
-                    this.__updateMetaAttribute(fileSpec, attrName, data.value);
+                    this.__updateMetaAttribute(fileSpec, attrName, data.value, data.oldValue);
                 }
             }, this);
         }
@@ -493,9 +493,20 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             return true;
         },
 
-        __updateMetaAttribute : function(spec, attr, value) {
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.meta", {"id" : spec["id"]}), "POST", "application/json");
-            req.setParameter(attr, value, true);
+        __updateMetaAttribute : function(spec, attr, value, oldValue) {
+            var req;
+            if ("name" == attr) {
+                if (spec.folder == null || spec.name == null) {
+                    return;
+                }
+
+                var npath = (spec.folder + spec.name).split("/");
+                req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.move", npath.slice(0, -1).concat(oldValue)), "PUT", "application/json");
+                req.setData(npath.join("/"));
+            } else {
+                req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.meta", {"id" : spec["id"]}), "POST", "application/json");
+                req.setParameter(attr, value, true);
+            }
 
             req.send(function() {
                 if (this.hasListener("fileMetaEdited")) {
