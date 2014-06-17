@@ -342,18 +342,16 @@ public class Asm implements Serializable {
                 new ArrayList<>(attrs != null && attrs.size() > 10 ?
                                 attrs.size() * 2 : 10);
         addSortedChainAttributes(res, this);
-        Map<String, Integer> overriden = new HashMap<>();
-        for (int i = res.size() - 1; i >= 0; --i) {
+        Map<String, Integer> pmap = new HashMap<>();
+        for (int i = 0; i < res.size(); ++i) {
             AsmAttribute a = res.get(i);
-            Integer overInd = overriden.get(a.getName());
-            if (overInd == null) {
-                overriden.put(a.getName(), i);
+            Integer pind = pmap.get(a.getName());
+            if (pind != null) {
+                res.set(pind, a);
+                res.remove(i);
+                --i;
             } else {
-                AsmAttribute over = res.get(overInd);
-                over.setOverriden(true);
-                res.set(i, over);
-                res.remove(overInd.intValue());
-                overriden.put(over.getName(), i);
+                pmap.put(a.getName(), i);
             }
         }
         return res;

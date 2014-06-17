@@ -149,7 +149,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __processAttribute : function(aspec, form) {
-            qx.log.Logger.info("Process attribute=" + JSON.stringify(aspec));
             var am = ncms.asm.AsmAttrManagersRegistry.createAttrManagerInstanceForType(aspec["type"]);
             if (am == null) {
                 qx.log.Logger.warn("Missing attribute manager for type: " + aspec["type"]);

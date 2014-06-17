@@ -192,6 +192,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         attr.largeValue = largeValue;
         attr.options = options;
         attr.label = label;
+        attr.required = required;
         return attr;
     }
 

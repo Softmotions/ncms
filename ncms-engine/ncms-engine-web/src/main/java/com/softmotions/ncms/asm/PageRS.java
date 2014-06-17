@@ -4,6 +4,8 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.guid.RandomGUID;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.asm.render.AsmAttributeManager;
+import com.softmotions.ncms.asm.render.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -40,6 +42,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -61,16 +64,20 @@ public class PageRS extends MBDAOSupport {
 
     final WSUserDatabase userdb;
 
+    final AsmAttributeManagersRegistry amRegistry;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao, ObjectMapper mapper,
                   NcmsMessages messages,
-                  WSUserDatabase userdb) {
+                  WSUserDatabase userdb,
+                  AsmAttributeManagersRegistry amRegistry) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
         this.userdb = userdb;
+        this.amRegistry = amRegistry;
     }
 
     /**
@@ -153,7 +160,37 @@ public class PageRS extends MBDAOSupport {
                          ObjectNode data) {
 
         log.info("Page: " + id + " Page data=" + data);
+        Asm page = adao.asmSelectById(id);
+        if (page == null) {
+            throw new NotFoundException();
+        }
+        if (page.getType() == null || !page.getType().startsWith("page")) {
+            throw new BadRequestException();
+        }
 
+        Map<String, AsmAttribute> attrIdx = new HashMap<>();
+        for (AsmAttribute attr : page.getEffectiveAttributes()) {
+            if (attr.getLabel() == null || attr.getLabel().isEmpty()) {
+                continue; //no gui label, skipping
+            }
+            attrIdx.put(attr.getName(), attr);
+        }
+        Iterator<String> fnamesIt = data.fieldNames();
+        while (fnamesIt.hasNext()) {
+            String fname = fnamesIt.next();
+            AsmAttribute attr = attrIdx.get(fname);
+            if (attr == null) {
+                continue;
+            }
+
+            AsmAttributeManager am = amRegistry.getByType(attr.getType());
+            if (am == null) {
+                log.warn("Missing attribute manager for type: " + attr.getType());
+                continue;
+            }
+            am.applyAttributeValue(attr, data.get(fname));
+            update("updateAttribute", attr);
+        }
     }
 
     /**

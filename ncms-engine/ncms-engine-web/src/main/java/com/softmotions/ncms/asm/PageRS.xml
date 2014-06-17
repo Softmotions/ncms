@@ -79,12 +79,24 @@
               AND p.type LIKE 'page%'
     </select>
 
-
     <select id="selectPageTemplateStatus" resultType="int" parameterType="long">
         SELECT
             p.template
         FROM ASMS AS p
         WHERE p.id = #{id}
     </select>
+
+
+    <update id="updateAttribute"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        UPDATE asm_attrs
+        SET
+            options     = #{options},
+            value       = #{value},
+            large_value = #{largeValue}
+        WHERE asm_id = #{asmId}
+              AND name = #{name}
+    </update>
+
 
 </mapper>
