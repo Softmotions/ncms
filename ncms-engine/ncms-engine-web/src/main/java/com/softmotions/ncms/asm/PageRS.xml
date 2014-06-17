@@ -5,7 +5,6 @@
 
 <mapper namespace="com.softmotions.ncms.asm.PageRS">
 
-
     <select id="selectChildLayer" resultType="map" parameterType="map">
         SELECT
             p.id          AS "id",
@@ -105,5 +104,16 @@
         VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue})
     </update>
 
+
+    <delete id="deleteAttrsByNames"
+            parameterType="map">
+        DELETE FROM asm_attrs
+        WHERE asm_id = #{asmId}
+        AND name IN
+        <foreach item="name" index="index" collection="names"
+                 open="(" separator="," close=")">
+            #{name}
+        </foreach>
+    </delete>
 
 </mapper>
