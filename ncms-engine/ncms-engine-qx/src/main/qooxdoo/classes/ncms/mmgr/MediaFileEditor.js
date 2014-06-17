@@ -59,10 +59,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         form.add(el, this.tr("Tags"), null, "tags");
 
         el = new sm.ui.form.ButtonField(this.tr("Change"));
-        el.addListener("changeValue", function(ev) {
-            this.__setMetaDuty();
-            this.__flushMeta();
-        }, this);
+        el.addListener("changeValue", this.__flushMeta, this);
         el.setPlaceholder(this.tr("Choose the new file owner"));
         el.setReadOnly(true);
         el.addListener("execute", this.__selectOwner, this);
@@ -216,14 +213,19 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             }
 
             req.send(function() {
+                var newSpec = {};
+                qx.lang.Object.mergeWith(newSpec, spec);
+                qx.lang.Object.mergeWith(newSpec, {
+                    "description" : description,
+                    "tags" : tags,
+                    "owner" : owner
+                });
+
                 if (this.hasListener("fileMetaUpdated")) {
-                    this.fireDataEvent("fileMetaUpdated", {
-                        "id" : spec["id"],
-                        "description" : description,
-                        "tags" : tags,
-                        "owner" : owner
-                    });
+                    this.fireDataEvent("fileMetaUpdated", newSpec);
                 }
+
+                this.setFileSpec(newSpec);
             }, this);
         },
 
@@ -299,6 +301,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
 
         __setOwner : function(user) {
             var items = this.__form.getItems();
+            this.__setMetaDuty(true);
             items["owner"].setValue(user);
         },
 

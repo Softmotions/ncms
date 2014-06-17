@@ -54,7 +54,7 @@
     </asm>
 
     <security dbJndiName="java:comp/env/WSUserDatabase">
-        <web-fakeuser>admin</web-fakeuser>
+        <web-fakeuser>dimad</web-fakeuser>
         <web-access-control-allow>*</web-access-control-allow>
     </security>
 
