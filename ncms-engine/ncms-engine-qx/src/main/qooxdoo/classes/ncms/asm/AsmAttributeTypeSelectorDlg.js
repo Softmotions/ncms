@@ -67,7 +67,7 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             if (clazz == null || row == null) {
                 return;
             }
-            this.fireDataEvent("completed", [row[0], clazz]);
+            this.fireDataEvent("completed", [row[1], clazz]);
         },
 
         __createTable : function() {
@@ -77,7 +77,7 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             ncms.asm.am.AsmAttrManagersRegistry.forEachAttributeManagerTypeClassPair(
                     function(type, clazz) {
                         items.push([
-                            [type, (clazz.getDescription() || ""), (clazz.classname || clazz.toString())],
+                            [(clazz.getDescription() || ""), type, (clazz.classname || clazz.toString())],
                             clazz
                         ]);
                     }
@@ -107,16 +107,16 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             tm.setJsonData({
                 "columns" : [
                     {
-                        "title" : this.tr("Type").toString(),
-                        "id" : "type",
-                        "sortable" : true,
-                        "width" : "1*"
-                    },
-                    {
                         "title" : this.tr("Description").toString(),
                         "id" : "description",
                         "sortable" : true,
                         "width" : "2*"
+                    },
+                    {
+                        "title" : this.tr("Type").toString(),
+                        "id" : "type",
+                        "sortable" : true,
+                        "width" : "1*"
                     },
                     {
                         "title" : this.tr("Class").toString(),

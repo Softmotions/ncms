@@ -42,6 +42,9 @@ public class Asm implements Serializable {
 
     public static final String ASM_HANDLER_CLASS_ATTR_NAME = "NCMS__ASM_HANDLER_CLASS";
 
+    interface ViewFull {
+    }
+
     @JsonProperty
     Long id;
 

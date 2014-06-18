@@ -19,9 +19,6 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.NONE)
 public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
-    interface ViewFull {
-    }
-
     @JsonProperty
     long asmId;
 
@@ -40,17 +37,17 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
     @JsonProperty
     String label;
 
-    @JsonView(ViewFull.class)
+    @JsonView(Asm.ViewFull.class)
     String largeValue;
 
     @JsonIgnore
     transient
     AsmAttribute overridenParent;
 
-    @JsonView(ViewFull.class)
+    @JsonView(Asm.ViewFull.class)
     long ordinal;
 
-    @JsonView(ViewFull.class)
+    @JsonView(Asm.ViewFull.class)
     boolean required;
 
     public AsmAttribute() {
@@ -128,7 +125,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.ordinal = ordinal;
     }
 
-    @JsonView(ViewFull.class)
+    @JsonView(Asm.ViewFull.class)
     public boolean isOverriden() {
         return (this.overridenParent != null);
     }

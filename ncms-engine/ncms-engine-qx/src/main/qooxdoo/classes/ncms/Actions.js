@@ -24,8 +24,12 @@ qx.Class.define("ncms.Actions", {
 
         //Asm editor
 
-        //GET/PUT/DELETE assembly
+        //GET/DELETE assembly
         this._action("asms", "/ncms/rs/adm/asms/{id}");
+
+        //GET Get basic assembly info
+        // name: assembly name
+        this._action("asms.basic", "/ncms/rs/adm/asms/basic/{name}");
 
         //PUT create new assembly with specified name
         this._action("asms.new", "/ncms/rs/adm/asms/new/{name}");

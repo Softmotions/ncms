@@ -180,11 +180,19 @@
     </select>
 
 
-    <select id="asmIDByName" parameterType="string" resultType="int">
+    <select id="asmIDByName" parameterType="string" resultType="long">
         SELECT
             id
         FROM asms
         WHERE name = #{name}
+    </select>
+
+
+    <select id="asmNameByID" parameterType="long" resultType="string">
+        SELECT
+            name
+        FROM asms
+        WHERE id = #{id}
     </select>
 
     <insert id="asmSetParent">

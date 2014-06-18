@@ -2,10 +2,12 @@ package com.softmotions.ncms.asm.am;
 
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,13 @@ public class AsmRefAttributeManager implements AsmAttributeManager {
     private static final Logger log = LoggerFactory.getLogger(AsmRefAttributeManager.class);
 
     public static final String[] TYPES = new String[]{"asmref"};
+
+    final AsmDAO adao;
+
+    @Inject
+    public AsmRefAttributeManager(AsmDAO adao) {
+        this.adao = adao;
+    }
 
     public String[] getSupportedAttributeTypes() {
         return TYPES;
@@ -66,11 +75,17 @@ public class AsmRefAttributeManager implements AsmAttributeManager {
         return out.toString();
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode options) {
-        return attr;
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
+        return applyAttributeValue(attr, val);
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode value) {
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+        if (!val.get("value").canConvertToLong()) {
+            attr.setEffectiveValue(null);
+            return attr;
+        }
+        String name = adao.asmSelectNameById(val.get("value").asLong());
+        attr.setEffectiveValue(name);
         return attr;
     }
 }

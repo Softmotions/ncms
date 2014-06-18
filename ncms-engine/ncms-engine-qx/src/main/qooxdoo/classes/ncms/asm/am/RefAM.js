@@ -13,7 +13,7 @@ qx.Class.define("ncms.asm.am.RefAM", {
     statics : {
 
         getDescription : function() {
-            return qx.locale.Manager.tr("Assembly include");
+            return qx.locale.Manager.tr("Include assembly");
         },
 
         getSupportedAttributeTypes : function() {
@@ -25,11 +25,19 @@ qx.Class.define("ncms.asm.am.RefAM", {
 
         _form : null,
 
-        _attrSpec : null,
+        _bf : null,
 
         activateOptionsWidget : function(attrSpec, asmSpec) {
             var form = new qx.ui.form.Form();
-            var bf = new sm.ui.form.ButtonField(this.tr("Select assembly"),
+            var bf = this.__createBf(attrSpec, asmSpec);
+            form.add(bf, this.tr("Assembly"), null, "assembly");
+            this._form = form;
+            return new sm.ui.form.FlexFormRenderer(form);
+        },
+
+
+        __createBf : function(attrSpec, asmSpec) {
+            var bf = this._bf = new sm.ui.form.ButtonField(this.tr("Select assembly"),
                     "ncms/icon/16/misc/document-import.png");
             bf.setPlaceholder(this.tr("Please select template to include"));
             bf.setReadOnly(true);
@@ -37,13 +45,27 @@ qx.Class.define("ncms.asm.am.RefAM", {
                 this.__onSelectAssembly(attrSpec, asmSpec);
             }, this);
             this._fetchAttributeValue(attrSpec, function(val) {
-                bf.setValue(val);
-            });
+                if (val == null || val == "") {
+                    bf.setValue(val);
+                    return;
+                }
+                var req = new sm.io.Request(
+                        ncms.Application.ACT.getRestUrl("asms.basic", {"name" : val}),
+                        "GET", "application/json");
+                req.send(function(resp) {
+                    var data = resp.getContent();
+                    var sb = [];
+                    if (data["description"]) {
+                        sb.push(data["description"]);
+                        sb.push("|");
+                    }
+                    sb.push(data["name"]);
+                    this._bf.setValue(sb.join(" "));
+                    this._bf.setUserData("ref", data);
+                }, this);
+            }, this);
             bf.setRequired(true);
-            form.add(bf, this.tr("Assembly"), null, "assembly");
-
-            this._form = form;
-            return new sm.ui.form.FlexFormRenderer(form);
+            return bf;
         },
 
         __onSelectAssembly : function(attrSpec, asmSpec) {
@@ -53,29 +75,46 @@ qx.Class.define("ncms.asm.am.RefAM", {
                     ["name", "description"]);
             dlg.open();
             dlg.addListener("completed", function(ev) {
-                var data = ev.getData();
-                qx.log.Logger.info("data=" + JSON.stringify(data));
+                var data = ev.getData()[0];
+                var sb = [];
+                if (data["description"]) {
+                    sb.push(data["description"]);
+                    sb.push("|");
+                }
+                sb.push(data["name"]);
+                this._bf.setValue(sb.join(" "));
+                this._bf.setUserData("ref", data);
                 dlg.close();
             }, this);
         },
 
         optionsAsJSON : function() {
-            if (this._form == null || !this._form.validate()) {
+            if (this._form == null || this._bf == null || !this._form.validate()) {
                 return null;
             }
-            return {};
+            var ref = this._bf.getUserData("ref");
+            return {
+                value : ref["id"]
+            };
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
-            return new qx.ui.core.Widget();
+            return this.__createBf(attrSpec, asmSpec);
         },
 
         valueAsJSON : function() {
-            return {};
+            if (this._bf == null) {
+                return null;
+            }
+            var ref = this._bf.getUserData("ref");
+            return {
+                value : ref["id"]
+            };
         }
     },
 
     destruct : function() {
+        this._bf = null;
         this._disposeObjects("_form");
     }
 });

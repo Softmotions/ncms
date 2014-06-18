@@ -118,13 +118,6 @@ public class AsmRS extends MBDAOSupport {
     }
 
     @PUT
-    @Path("/{id}")
-    @Transactional
-    public void save(@PathParam("id") Long id) {
-
-    }
-
-    @PUT
     @Path("/{id}/core")
     public ObjectNode corePut(@PathParam("id") Long id, ObjectNode coreSpec) {
         Asm asm = adao.asmSelectById(id);
@@ -168,7 +161,7 @@ public class AsmRS extends MBDAOSupport {
 
     @GET
     @Path("/{id}")
-    @JsonView(AsmAttribute.ViewFull.class)
+    @JsonView(Asm.ViewFull.class)
     @Transactional
     public Asm get(@PathParam("id") Long id) {
         Asm asm = adao.asmSelectById(id);
@@ -177,6 +170,24 @@ public class AsmRS extends MBDAOSupport {
         }
         return asm;
     }
+
+
+    @GET
+    @Path("/basic/{name}")
+    @JsonView(Asm.ViewFull.class)
+    @Transactional
+    public ObjectNode getBasic(@PathParam("name") String name) {
+        ObjectNode res = mapper.createObjectNode();
+        Asm asm = adao.asmSelectByName(name);
+        if (asm == null) {
+            throw new NotFoundException();
+        }
+        res.put("id", asm.getId());
+        res.put("name", asm.getName());
+        res.put("description", asm.getDescription());
+        return res;
+    }
+
 
     @DELETE
     @Path("/{id}/parents")
@@ -268,7 +279,7 @@ public class AsmRS extends MBDAOSupport {
      */
     @GET
     @Path("/{id}/attribute/{name}")
-    @JsonView(AsmAttribute.ViewFull.class)
+    @JsonView(Asm.ViewFull.class)
     public AsmAttribute getAsmAttribute(@PathParam("id") Long asmId,
                                         @PathParam("name") String name) {
 

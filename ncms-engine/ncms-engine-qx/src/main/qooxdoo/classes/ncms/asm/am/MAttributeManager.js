@@ -10,13 +10,13 @@ qx.Mixin.define("ncms.asm.am.MAttributeManager", {
         _valueWidget : null,
 
 
-        _fetchAttributeValue : function(attrSpec, cb) {
+        _fetchAttributeValue : function(attrSpec, cb, cbContext) {
             if (attrSpec == null) {
                 cb(null);
                 return;
             }
             if (!attrSpec["hasLargeValue"]) {
-                cb(attrSpec["value"] === undefined ? null : attrSpec["value"]);
+                cb.call(cbContext, (attrSpec["value"] === undefined ? null : attrSpec["value"]));
                 return;
             }
             //make attribute value request
@@ -26,7 +26,7 @@ qx.Mixin.define("ncms.asm.am.MAttributeManager", {
             req.send(function(resp) {
                 var attr = resp.getContent();
                 var eval = attr["hasLargeValue"] ? attr["largeValue"] : attr["value"];
-                cb(eval === undefined ? null : eval);
+                cb.call(cbContext, (eval === undefined ? null : eval));
             });
         }
     },
