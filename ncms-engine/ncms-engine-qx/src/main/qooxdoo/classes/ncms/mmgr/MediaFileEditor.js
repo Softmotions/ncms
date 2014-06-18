@@ -1,5 +1,7 @@
 /**
  * Media item editor/info panel
+ *
+ * @asset(ncms/icon/16/user/user-blue.png)
  */
 qx.Class.define("ncms.mmgr.MediaFileEditor", {
     extend : qx.ui.core.Widget,
@@ -58,7 +60,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         el.setPlaceholder(this.tr("Comma separated tags").toString());
         form.add(el, this.tr("Tags"), null, "tags");
 
-        el = new sm.ui.form.ButtonField(this.tr("Change"));
+        el = new sm.ui.form.ButtonField(this.tr("Change"), "ncms/icon/16/user/user-blue.png");
         el.addListener("changeValue", this.__flushMeta, this);
         el.setPlaceholder(this.tr("Choose the new file owner"));
         el.setReadOnly(true);
