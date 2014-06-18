@@ -379,7 +379,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
             return mapper.createObjectNode()
                     .put("label", name)
-                    .put("status", 1);
+                    .put("status", 1)
+                    .put("system", isInSystemFolder(dirname + name));
         }
     }
 
@@ -840,7 +841,11 @@ public class MediaRS extends MBDAOSupport implements MediaService {
      * <p/>
      * <pre>
      *     [
-     *       {"label" : file name, "status" : 1 if it is folder 0 otherwise},
+     *       {
+     *          "label" : file name,
+     *          "status" : 1 if it is folder 0 otherwise,
+     *          "system" : 1 if it is in system folder 0 otherwise
+     *       },
      *       ...
      *     ]
      * </pre>
@@ -848,6 +853,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     private JsonNode _list(String folder,
                            FileFilter filter,
                            HttpServletRequest req) throws IOException {
+        // it will be list of strings (List<String>)
+        List<Object> systemFolders = cfg.impl().getList("media.system-directories.directory");
+
         ArrayNode res = mapper.createArrayNode();
         ReentrantReadWriteLock rwlock = acquirePathRWLock(folder, false);
         try {
@@ -870,10 +878,20 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     return res;
                 }
             });
+            folder = normalizeFolder(folder);
+            boolean parentInSystem = isInSystemFolder(folder);
             for (int i = 0, l = files.length; i < l; ++i) {
+                File file = files[i];
+
+                boolean inSystem = parentInSystem || isInSystemFolder(folder + file.getName());
+                if (file.isDirectory() && inSystem && !req.isUserInRole("admin")) {
+                    continue;
+                }
+
                 res.addObject()
-                        .put("label", files[i].getName())
-                        .put("status", files[i].isDirectory() ? 1 : 0);
+                        .put("label", file.getName())
+                        .put("status", file.isDirectory() ? 1 : 0)
+                        .put("system", inSystem ? 1 : 0);
             }
         } finally {
             rwlock.readLock().unlock();
@@ -1337,6 +1355,19 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 throw new NcmsMessageException(message.get("ncms.mmgr.access.dened.folder.notEmpty", req), true);
             }
         }
+    }
+
+    private boolean isInSystemFolder(String path) {
+        path = normalizeFolder(path);
+        List<Object> sdirs = cfg.impl().getList("media.system-directories.directory");
+        for (Object sdirObj : sdirs) {
+            String sdir = String.valueOf(sdirObj);
+            if (path.startsWith(normalizeFolder(sdir))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static String getResourceParentFolder(String path) {

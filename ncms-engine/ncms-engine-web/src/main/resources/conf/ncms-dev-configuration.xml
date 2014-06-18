@@ -38,6 +38,10 @@
         <thumbnails-default-format>jpeg</thumbnails-default-format>
         <max-edit-text-size>524288</max-edit-text-size>
         <import-directory>${basedir}/src/test/media</import-directory>
+        <system-directories>
+            <directory>/system</directory>
+            <directory>/core</directory>
+        </system-directories>
     </media>
 
     <httl extensions="*,httl,html">

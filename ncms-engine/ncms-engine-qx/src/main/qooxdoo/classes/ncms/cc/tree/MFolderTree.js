@@ -1,8 +1,10 @@
 /**
  * Hierachical folder-like navigation tree support mixin.
  *
- * @asset(qx/icon/${qx.icontheme}/22/places/folder.png)
- * @asset(qx/icon/${qx.icontheme}/22/places/folder-open.png)
+ * @asset(ncms/icon/22/places/folder.png)
+ * @asset(ncms/icon/22/places/folder-open.png)
+ * @asset(ncms/icon/22/places/system-folder.png)
+ * @asset(ncms/icon/22/places/system-folder-open.png)
  * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
  * @asset(ncms/icon/22/state/loading.gif)
  */
@@ -15,6 +17,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          *        "id"     : {Object} Optional Node ID
          *        "label"  : {String} Item name.
          *        "status" : {Number} (statis & 1) != 0 - it is folder, == 0 - otherwise
+         *        "system" : {Number} (system & 1) != 0 - it is system folder, == 0 otherwise
          *        "path"   : {String} Path to the item (from tree root)
          *       };
          * or null if selection cleared
@@ -61,11 +64,14 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                 tree.setHideRoot(false);
                 tree.setIconPath("icon");
                 tree.setIconOptions({
-                    converter : function(value, model) {
+                    converter : function(value, model, source, target) {
                         switch (value) {
                             case "default":
                                 if (model.getChildren != null) {
-                                    return "icon/22/places/folder.png";
+                                    var fdPreffix = model.getSystem && model.getSystem() == 1 ? "system-" : "";
+                                    var fdSuffix = target.isOpen() ? "-open" : "";
+
+                                    return "ncms/icon/22/places/" + fdPreffix + "folder" + fdSuffix + ".png";
                                 } else {
                                     return "icon/22/mimetypes/office-document.png";
                                 }
@@ -84,7 +90,6 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
                     configureItem : function(item) {
                         item.setOpenSymbolMode("always");
-                        item.setIconOpened("icon/22/places/folder-open.png");
                     },
 
                     bindItem : function(controller, item, index) {
