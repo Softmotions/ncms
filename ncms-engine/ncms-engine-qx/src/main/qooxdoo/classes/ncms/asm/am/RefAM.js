@@ -49,6 +49,7 @@ qx.Class.define("ncms.asm.am.RefAM", {
                     bf.setValue(val);
                     return;
                 }
+                bf.setValue(val);
                 var req = new sm.io.Request(
                         ncms.Application.ACT.getRestUrl("asms.basic", {"name" : val}),
                         "GET", "application/json");
