@@ -40,21 +40,10 @@ qx.Class.define("ncms.asm.am.StringAM", {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(4));
-
-            var fieldRb = new qx.ui.form.RadioButton(this.tr("field"));
-            fieldRb.setModel("field");
-
-            var areaRb = new qx.ui.form.RadioButton(this.tr("area"));
-            areaRb.setModel("area");
-
-            el.add(fieldRb);
-            el.add(areaRb);
-
+            el.add(new qx.ui.form.RadioButton(this.tr("field")).set({"model" : "field"}));
+            el.add(new qx.ui.form.RadioButton(this.tr("area")).set({"model" : "area"}));
+            el.setModelSelection(opts["display"] ? [opts["display"]] : ["field"]);
             form.add(el, this.tr("Display as"), null, "display");
-
-            if (opts["display"] === "area") {
-                areaRb.setValue(true);
-            }
 
             //---------- Text value
             var ta = new qx.ui.form.TextArea();

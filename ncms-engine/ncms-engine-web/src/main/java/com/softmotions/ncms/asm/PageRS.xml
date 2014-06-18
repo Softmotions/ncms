@@ -36,16 +36,27 @@
         ORDER BY p.hname ASC
     </select>
 
+    <select id="selectParentID" resultType="long" parameterType="long">
+        SELECT
+            nav_parent_id
+        FROM ASMS
+        WHERE id = #{id}
+    </select>
 
-    <insert id="insertNewPage" parameterType="map">
-        INSERT INTO ASMS (name, hname, type,
-                          nav_parent_id, options,
-                          mdate, muser, owner)
+
+    <update id="mergeNewPage" parameterType="map">
+        MERGE INTO ASMS (name, hname, type,
+                         nav_parent_id,
+                         nav_cached_path,
+                         options,
+                         mdate, muser, owner)
+        KEY (name)
         VALUES (#{guid}, #{name}, #{type},
-                #{nav_parent_id,jdbcType=BIGINT}, #{options,jdbcType=VARCHAR},
+                #{nav_parent_id,jdbcType=BIGINT},
+                #{nav_cached_path},
+                #{options,jdbcType=VARCHAR},
                 now(), #{user}, #{user})
-    </insert>
-
+    </update>
 
     <delete id="dropPage" parameterType="map">
         DELETE
@@ -99,9 +110,11 @@
 
     <update id="upsertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        MERGE INTO asm_attrs (asm_id, name, label, type, options, required, value, large_value)
+        MERGE INTO asm_attrs (asm_id, name, label, type,
+                              options, required, value, large_value)
         KEY (asm_id, name)
-        VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue})
+        VALUES (#{asmId}, #{name}, #{label}, #{type},
+                #{options}, #{required}, #{value}, #{largeValue})
     </update>
 
 

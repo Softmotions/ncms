@@ -647,11 +647,17 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 String fpath = f.getCanonicalPath();
                 fpath = fpath.substring(prefix.length());
                 File tgt = new File(basedir, fpath);
-                if (tgt.exists() && !FileUtils.isFileNewer(f, tgt)) {
-                    continue;
-                }
                 String name = getResourceName(fpath);
                 String folder = getResourceParentFolder(fpath);
+                if (tgt.exists() && !FileUtils.isFileNewer(f, tgt)) {
+                    //check db
+                    Long id = selectOne("selectEntityIdByPath",
+                                        "name", name,
+                                        "folder", folder);
+                    if (id != null) {
+                        continue;
+                    }
+                }
                 log.info("Importing " + fpath);
                 try (FileInputStream fis = new FileInputStream(f)) {
                     try {

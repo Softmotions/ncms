@@ -37,7 +37,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
     @JsonProperty
     String label;
 
-    @JsonView(Asm.ViewFull.class)
+    @JsonView(Asm.ViewLarge.class)
     String largeValue;
 
     @JsonIgnore

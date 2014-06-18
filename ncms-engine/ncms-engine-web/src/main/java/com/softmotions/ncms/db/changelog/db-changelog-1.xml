@@ -69,6 +69,9 @@
             <column name="NAV_PARENT_ID" type="BIGINT"
                     remarks="Navigation parent ref for assemblies of `page` type">
             </column>
+            <column name="NAV_CACHED_PATH" type="VARCHAR(255)"
+                    remarks="Cached path of IDs joined with / eg.: /123/12/334/">
+            </column>
         </createTable>
 
         <createIndex tableName="ASMS"
@@ -88,12 +91,16 @@
             <column name="NAV_PARENT_ID"/>
         </createIndex>
 
+        <createIndex tableName="ASMS" indexName="IDX_ASMS_NAVCACHEDPATH">
+            <column name="NAV_CACHED_PATH"/>
+        </createIndex>
+
         <addForeignKeyConstraint baseTableName="ASMS"
                                  baseColumnNames="NAV_PARENT_ID"
                                  constraintName="FK_ASMS_NAVPARENT"
                                  referencedTableName="ASMS"
                                  referencedColumnNames="ID"
-                                 onDelete="SET NULL"/>
+                                 onDelete="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="ASMS"
                                  baseColumnNames="ASM_CORE_ID"
@@ -352,15 +359,6 @@
                                  referencedColumnNames="ID"
                                  onDelete="CASCADE"/>
 
-        <!-- ================ MEDIA_ENTITY_ACL ==================== -->
-
-        <!--<createTable tableName="MEDIA_ENTITY_ACL">
-            <column name="OWNER_ID" type="BIGINT">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="ACL" type="ARRAY">
-            </column>
-        </createTable>-->
 
         <!-- ==================== FK ============================= -->
 

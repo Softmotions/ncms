@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm;
 
+import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.guid.RandomGUID;
 import com.softmotions.commons.json.JsonUtils;
@@ -42,6 +43,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -281,25 +283,40 @@ public class PageRS extends MBDAOSupport {
         if (name == null) {
             throw new BadRequestException("name");
         }
+        String guid;
+        Long id;
+        do {
+            guid = new RandomGUID().toString();
+            id = adao.asmSelectIdByName(name);
+        } while (id != null); //very uncommon
 
-        synchronized (Asm.class) {
-
-            String guid;
-            Long id;
-
-            do {
-                guid = new RandomGUID().toString();
-                id = adao.asmSelectIdByName(name);
-            } while (id != null); //very uncommon
-
-            insert("insertNewPage",
-                   "guid", guid,
-                   "name", name,
-                   "type", type,
-                   "user", req.getRemoteUser(),
-                   "nav_parent_id", parent);
-        }
+        update("mergeNewPage",
+               "guid", guid,
+               "name", name,
+               "type", type,
+               "user", req.getRemoteUser(),
+               "nav_parent_id", parent,
+               "nav_cached_path", getPageIDsPath(parent));
     }
+
+
+    private String getPageIDsPath(Long id) {
+        if (id == null) {
+            return "/";
+        }
+        List<Long> alist = new ArrayList<>();
+        alist.add(id);
+        Long pid;
+        do {
+            pid = selectOne("selectParentID", id);
+            if (pid != null) {
+                alist.add(pid);
+            }
+        } while (pid != null);
+        Collections.reverse(alist);
+        return "/" + CollectionUtils.join("/", alist) + "/";
+    }
+
 
     @DELETE
     @Path("/{id}")

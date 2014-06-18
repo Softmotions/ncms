@@ -279,7 +279,7 @@ public class AsmRS extends MBDAOSupport {
      */
     @GET
     @Path("/{id}/attribute/{name}")
-    @JsonView(Asm.ViewFull.class)
+    @JsonView(Asm.ViewLarge.class)
     public AsmAttribute getAsmAttribute(@PathParam("id") Long asmId,
                                         @PathParam("name") String name) {
 

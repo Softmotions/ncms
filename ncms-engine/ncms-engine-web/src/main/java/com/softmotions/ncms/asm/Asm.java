@@ -45,6 +45,10 @@ public class Asm implements Serializable {
     interface ViewFull {
     }
 
+    interface ViewLarge extends ViewFull {
+
+    }
+
     @JsonProperty
     Long id;
 

@@ -28,7 +28,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
 
         //Page owner
         this.__ownerSelector =
-                new sm.ui.form.ButtonField(this.tr("Владелец"),
+                new sm.ui.form.ButtonField(this.tr("Owner"),
                         "ncms/icon/16/user/user-blue.png",
                         true);
         this.__ownerSelector.setReadOnly(true);
