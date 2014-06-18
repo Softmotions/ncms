@@ -116,6 +116,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
 
         __viewPane : null,
 
+        __owner : null,
+
         setUpdateFileMeta : function(update) {
             var items = this.__form.getItems();
             if (items[update["id"]]) {
@@ -186,8 +188,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             if (spec["tags"] != null) {
                 items["tags"].setValue(spec["tags"]);
             }
-            if (spec["owner"]) {
-                items["owner"].setValue(spec["owner"] || "");
+            if (this.__owner) {
+                items["owner"].setValue(this.__buildUserInfo(this.__owner));
             }
 
             var editAccess = this.__checkEditAccess(spec);
@@ -214,7 +216,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.meta", {"id" : spec["id"]}), "POST", "application/json");
             var description = items["description"].getValue();
             var tags = items["tags"].getValue();
-            var owner = items["owner"].getValue();
+            var owner = this.__owner;
             req.setShowMessages(false);
             if (description != null) {
                 req.setParameter("description", description, true);
@@ -222,8 +224,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             if (tags != null) {
                 req.setParameter("tags", tags, true);
             }
-            if (owner != null) {
-                req.setParameter("owner", owner, true);
+            if (owner != null && owner["name"]) {
+                req.setParameter("owner", owner["name"], true);
             }
 
             req.send(function() {
@@ -232,7 +234,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 qx.lang.Object.mergeWith(newSpec, {
                     "description" : description,
                     "tags" : tags,
-                    "owner" : owner
+                    "owner" : owner["name"],
+                    "owner_fullName" : owner["fullName"]
                 });
 
                 if (this.hasListener("fileMetaUpdated")) {
@@ -249,6 +252,11 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 this.hide();
                 return;
             }
+
+            this.__owner = {
+                name: spec["owner"],
+                fullName : spec["owner_fullName"]
+            };
 
             this.__setupFileForm(spec);
             this.__updateInfoTable(spec)
@@ -312,8 +320,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();
                 dlg.destroy();
-                //Data: [{}]
-                this.__setOwner(data[0]["name"]);
+                this.__setOwner(data[0]);
             }, this);
             dlg.show();
         },
@@ -321,7 +328,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         __setOwner : function(user) {
             var items = this.__form.getItems();
             this.__setMetaDuty(true);
-            items["owner"].setValue(user);
+            this.__owner = user;
+            items["owner"].setValue(this.__buildUserInfo(this.__owner));
         },
 
         __checkEditAccess : function(spec) {
@@ -333,6 +341,16 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             }
 
             return true;
+        },
+
+        __buildUserInfo : function(udata) {
+            var user = [udata["name"]];
+            if (udata["fullName"]) {
+                user.push("|");
+                user.push(udata["fullName"]);
+            }
+
+            return user.join(" ");
         }
     },
 
@@ -350,6 +368,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
     destruct : function() {
         this.__viewPane = null;
         this.__infoTable = null;
+        this.__owner  = null;
         this._disposeObjects("__form");
         this.removeAllBindings();
     }

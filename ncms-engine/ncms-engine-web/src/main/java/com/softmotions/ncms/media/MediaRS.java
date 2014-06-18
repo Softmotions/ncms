@@ -12,6 +12,8 @@ import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.web.HttpServletRequestAdapter;
 import com.softmotions.web.ResponseUtils;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
@@ -122,12 +124,15 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     final NcmsEventBus ebus;
 
+    final WSUserDatabase userdb;
+
     @Inject
     public MediaRS(NcmsConfiguration cfg,
                    SqlSession sess,
                    ObjectMapper mapper,
                    NcmsMessages message,
                    NcmsEventBus ebus,
+                   WSUserDatabase userdb,
                    Provider<ServletContext> sctx) throws IOException {
 
         super(MediaRS.class.getName(), sess);
@@ -144,6 +149,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         this.mapper = mapper;
         this.message = message;
         this.ebus = ebus;
+        this.userdb = userdb;
         this.sctx = sctx;
     }
 
@@ -303,6 +309,11 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                                 gen.writeStringField("folder", (String) row.get("folder"));
                                 gen.writeStringField("content_type", (String) row.get("content_type"));
                                 gen.writeStringField("owner", (String) row.get("owner"));
+                                String username = (String) row.get("owner");
+                                WSUser user = (username != null) ? userdb.findUser(username) : null;
+                                if (user != null) {
+                                    gen.writeStringField("owner_fullName", user.getFullName());
+                                }
                                 if (row.get("content_length") != null) {
                                     gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
                                 }
