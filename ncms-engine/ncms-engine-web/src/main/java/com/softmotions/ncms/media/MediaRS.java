@@ -853,9 +853,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     private JsonNode _list(String folder,
                            FileFilter filter,
                            HttpServletRequest req) throws IOException {
-        // it will be list of strings (List<String>)
-        List<Object> systemFolders = cfg.impl().getList("media.system-directories.directory");
-
         ArrayNode res = mapper.createArrayNode();
         ReentrantReadWriteLock rwlock = acquirePathRWLock(folder, false);
         try {
