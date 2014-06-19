@@ -128,6 +128,10 @@
             <column name="USER" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
+            <column name="RIGHTS" type="VARCHAR(4)"
+                    remarks="Access rights mask, eg: rw (read-write)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
 
