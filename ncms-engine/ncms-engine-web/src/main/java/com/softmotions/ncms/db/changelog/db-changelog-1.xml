@@ -72,6 +72,12 @@
             <column name="NAV_CACHED_PATH" type="VARCHAR(255)"
                     remarks="Cached path of IDs joined with / eg.: /123/12/334/">
             </column>
+            <column name="RECURSIVE_ACL_ID" type="BIGINT"
+                    remarks="ID of recursive Access list (ASM_ACL_ENTITY.ACL_ID)">
+            </column>
+            <column name="LOCAL_ACK_ID" type="BIGINT"
+                    remarks="ID of local Access list (ASM_ACL_ENTITY.ACL_ID)">
+            </column>
         </createTable>
 
         <createIndex tableName="ASMS"
@@ -108,6 +114,22 @@
                                  referencedTableName="ASM_CORES"
                                  referencedColumnNames="ID"
                                  onDelete="SET NULL"/>
+
+        <!-- ====================== ASM_ACL ====================== -->
+
+
+        <createSequence sequenceName="SEQ_ACL_ID"/>
+
+        <createTable tableName="ASM_ACL_ENTITY">
+            <column name="ACL_ID" type="BIGINT"
+                    remarks="ACL ID created by: CALL NEXT VALUE FOR SEQ_ACL_ID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
 
         <!-- ==================== ASM_SYSTAGS ==================== -->
 
