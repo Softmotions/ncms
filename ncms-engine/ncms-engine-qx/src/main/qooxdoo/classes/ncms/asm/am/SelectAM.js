@@ -23,6 +23,7 @@ qx.Class.define("ncms.asm.am.SelectAM", {
         _form : null,
 
         activateOptionsWidget : function(attrSpec, asmSpec) {
+
             var form = new qx.ui.form.Form();
 
             //---------- Options
@@ -33,15 +34,26 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             el.setModelSelection(opts["display"] ? [opts["display"]] : ["selectbox"]);
             form.add(el, this.tr("Display as"), null, "display");
 
+            var table = new ncms.asm.am.SelectAMTable();
+
             el = new qx.ui.form.CheckBox();
             el.addListener("changeValue", function(ev) {
                 var val = ev.getData();
                 table.setCheckMode(val ? "multiply" : "single");
             });
+            if (opts["multiselect"] != null) {
+                el.setValue(opts["multiselect"] == "true" || opts["multiselect"] === true);
+            }
             form.add(el, this.tr("Multi select"), null, "multiselect");
 
             //---------- Table
-            var table = new ncms.asm.am.SelectAMTable();
+            if (attrSpec["value"]) {
+                try {
+                    table.setData(JSON.parse(attrSpec["value"]));
+                } catch (e) {
+                    qx.log.Logger.error("Failed to apply table value", e);
+                }
+            }
             form.add(table, this.tr("Items"), null, "table");
             this._form = form;
             return new sm.ui.form.FlexFormRenderer(form);
@@ -52,11 +64,14 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             var table = items["table"];
             var value = table.toJSONValue();
             return {
+                multiselect : items["multiselect"].getValue(),
+                display : items["display"].getModelSelection().getItem(0),
                 value : value
             };
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
+            //todo
             return new qx.ui.core.Widget();
         },
 

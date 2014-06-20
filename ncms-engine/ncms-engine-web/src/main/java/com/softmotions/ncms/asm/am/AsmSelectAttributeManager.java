@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm.am;
 
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 
@@ -33,12 +34,27 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
+        String value = attr.getValue();
+
 
 
         return null;
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
+        //options
+        JsonNode optsVal = val.get("display");
+        AsmOptions opts = new AsmOptions();
+        if (optsVal.isTextual()) {
+            opts.put("display", optsVal.asText());
+        }
+        optsVal = val.get("multiselect");
+        if (optsVal.isBoolean()) {
+            opts.put("multiselect", optsVal.asBoolean());
+        }
+        attr.setOptions(opts.toString());
+
+        //value
         JsonNode value = val.get("value");
         if (value.isContainerNode()) {
             attr.setEffectiveValue(value.toString());
