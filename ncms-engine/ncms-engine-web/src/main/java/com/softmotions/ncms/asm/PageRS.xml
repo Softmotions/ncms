@@ -129,4 +129,43 @@
         </foreach>
     </delete>
 
+    <select id="selectAclUserRights" resultType="map" parameterType="map">
+        SELECT
+          0       AS "recursive",
+          user    AS "user",
+          rights  AS "rights"
+        FROM asm_acl_entity
+        WHERE acl_id = (SELECT local_acl_id FROM asms WHERE id = #{id})
+        UNION
+        SELECT
+          1       AS "recursive",
+          user    AS "user",
+          rights  AS "rights"
+        FROM asm_acl_entity
+        WHERE acl_id = (SELECT recursive_acl_id FROM asms WHERE id = #{id})
+    </select>
+
+    <select id="selectAclIds" resultType="map" parameterType="map">
+        SELECT
+          local_acl_id      AS "local_acl",
+          recursive_acl_id  AS "recursive_acl"
+        FROM asms
+        WHERE id = #{id}
+    </select>
+
+    <select id="newAclId" resultType="long">
+        CALL NEXT VALUE FOR SEQ_ACL_ID
+    </select>
+
+    <update id="setLocalAcl" parameterType="map">
+        UPDATE asms
+        SET local_acl_id = #{acl}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateAclUserRights" parameterType="map">
+        MERGE INTO asm_acl_entity (acl_id, user, rights)
+        KEY (acl_id, user)
+        VALUES (#{acl}, #{user}, #{rights})
+    </update>
 </mapper>

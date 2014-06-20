@@ -75,7 +75,7 @@
             <column name="RECURSIVE_ACL_ID" type="BIGINT"
                     remarks="ID of recursive Access list (ASM_ACL_ENTITY.ACL_ID)">
             </column>
-            <column name="LOCAL_ACK_ID" type="BIGINT"
+            <column name="LOCAL_ACL_ID" type="BIGINT"
                     remarks="ID of local Access list (ASM_ACL_ENTITY.ACL_ID)">
             </column>
         </createTable>

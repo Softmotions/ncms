@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
@@ -383,6 +384,56 @@ public class PageRS extends MBDAOSupport {
                 .build();
     }
 
+    @Path("/acl/{id}")
+    @GET
+    public JsonNode getAcl(@PathParam("id") String id) {
+        List<Map<String, ?>> acl = select("selectAclUserRights",
+                                          "id", id);
+        ArrayNode res = mapper.createArrayNode();
+        for (Map<String, ?> user : acl) {
+            WSUser wsUser = userdb.findUser((String) user.get("user"));
+            if (wsUser == null) {
+                continue;
+            }
+            res.addObject()
+                    .put("recursive", (Integer)user.get("recursive"))
+                    .put("user", wsUser.getName())
+                    .put("userFullName", wsUser.getFullName())
+                    .put("rights", (String) user.get("rights"));
+        }
+
+        return res;
+    }
+
+    @Path("/acl/{id}/add/{user}")
+    @PUT
+    public JsonNode addToAcl(@Context final HttpServletRequest req,
+                             @PathParam("id") String id,
+                             @PathParam("user") String user) {
+        WSUser wsUser = userdb.findUser(user);
+        if(wsUser == null) {
+            throw new BadRequestException("User not found");
+        }
+
+        Map<String, ?> aclIds = selectOne("selectAclIds", "id", id);
+
+        // TODO: check user rights already exists
+
+        Number localAcl = aclIds != null ? (Number) aclIds.get("local_acl") : null;
+        if (localAcl == null) {
+            localAcl = selectOne("newAclId");
+            update("setLocalAcl", "id", id, "acl", localAcl);
+        }
+
+        update("updateAclUserRights", "acl", localAcl, "user", wsUser.getName(), "rights", "");
+
+        return mapper.createObjectNode()
+                .put("recursive", 0)
+                .put("user", wsUser.getName())
+                .put("userFullName", wsUser.getFullName())
+                .put("rights", "");
+    }
+
     Long getPathLastIdSegment(String path) {
         if (path == null) {
             return null;
@@ -406,6 +457,7 @@ public class PageRS extends MBDAOSupport {
 
 
     private String getPageAccessMask(HttpServletRequest req, Map<String, Object> row) {
+        // TODO
         String user = req.getRemoteUser();
         if (user == null) {
             return "r";
