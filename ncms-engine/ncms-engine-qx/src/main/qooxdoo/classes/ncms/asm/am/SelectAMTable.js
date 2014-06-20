@@ -88,7 +88,7 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
 
             table.addListener("dataEdited", function(ev) {
                 var data = ev.getData();
-                if (data.col != 2) {
+                if (data.col != 2 || this.getCheckMode() === "multiply") {
                     return;
                 }
                 var val = data.value;
@@ -215,7 +215,7 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             }
         },
 
-        toJSONArray : function() {
+        toJSONValue : function() {
             var rc = this.getTableModel().getRowCount();
             var arr = [];
             while (--rc >= 0) {
@@ -229,6 +229,9 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
     },
 
     destruct : function() {
-        //this._disposeObjects("__field_name");                                
+        if (this.__broadcaster) {
+            this.__broadcaster.destruct();
+            this.__broadcaster = null;
+        }
     }
 });

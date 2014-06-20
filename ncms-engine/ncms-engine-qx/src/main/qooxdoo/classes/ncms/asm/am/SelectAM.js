@@ -34,17 +34,26 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             form.add(el, this.tr("Display as"), null, "display");
 
             el = new qx.ui.form.CheckBox();
+            el.addListener("changeValue", function(ev) {
+                var val = ev.getData();
+                table.setCheckMode(val ? "multiply" : "single");
+            });
             form.add(el, this.tr("Multi select"), null, "multiselect");
 
             //---------- Table
             var table = new ncms.asm.am.SelectAMTable();
-            form.add(table, this.tr("Items"), null, "items");
+            form.add(table, this.tr("Items"), null, "table");
             this._form = form;
             return new sm.ui.form.FlexFormRenderer(form);
         },
 
         optionsAsJSON : function() {
-            return {};
+            var items = this._form.getItems();
+            var table = items["table"];
+            var value = table.toJSONValue();
+            return {
+                value : value
+            };
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
