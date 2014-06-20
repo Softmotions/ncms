@@ -86,13 +86,13 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             this.__setTableData(tm, items);
 
             var table = new sm.table.Table(tm, tm.getCustom());
-            table.addListener("cellDblclick", this.__ok, this);
+            table.addListener("cellDbltap", this.__ok, this);
             table.getSelectionModel().addListener("changeSelection", this.__syncState, this);
 
             table.set({
                 showCellFocusIndicator : false,
                 statusBarVisible : true,
-                focusCellOnMouseMove : true,
+                focusCellOnPointerMove : true,
                 height : 150,
                 allowGrowY : true});
             return table;

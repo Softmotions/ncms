@@ -49,7 +49,7 @@ qx.Class.define("ncms.usr.UserSelectorDlg", {
         this.addListenerOnce("resize", this.center, this);
 
         selector.addListener("userSelected", this.__syncState, this);
-        selector.getTable().addListener("cellDblclick", this.__ok, this);
+        selector.getTable().addListener("cellDbltap", this.__ok, this);
 
         this.__syncState();
     },

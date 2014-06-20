@@ -45,7 +45,7 @@
         <maven.war.plugin.version>2.4</maven.war.plugin.version>
         <servlet.api.version>3.1.0</servlet.api.version>
         <softmotions.commons.version>1.0-SNAPSHOT</softmotions.commons.version>
-        <qooxdoo.sdk.version>3.5</qooxdoo.sdk.version>
+        <qooxdoo.sdk.version>4.0</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
         <ninjaframework.version>3.1.5</ninjaframework.version>
