@@ -100,9 +100,8 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
-        //value
         JsonNode value = val.get("value");
-        if (value.isContainerNode()) {
+        if (value != null && value.isContainerNode()) {
             attr.setEffectiveValue(value.toString());
         } else {
             attr.setEffectiveValue(null);
