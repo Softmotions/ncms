@@ -54,6 +54,14 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             var data = {
                 "columns" : [
                     {
+                        "title" : this.tr("Selected").toString(),
+                        "id" : "checked",
+                        "sortable" : false,
+                        "type" : "boolean",
+                        "editable" : true,
+                        "width" : 60
+                    },
+                    {
                         "title" : this.tr("Name").toString(),
                         "id" : "name",
                         "sortable" : false,
@@ -66,14 +74,6 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
                         "sortable" : false,
                         "editable" : true,
                         "width" : "1*"
-                    },
-                    {
-                        "title" : this.tr("Selected").toString(),
-                        "id" : "checked",
-                        "sortable" : false,
-                        "type" : "boolean",
-                        "editable" : true,
-                        "width" : 60
                     }
                 ],
                 "items" : items
@@ -88,15 +88,15 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
 
             table.addListener("dataEdited", function(ev) {
                 var data = ev.getData();
-                if (data.col != 2 || this.getCheckMode() === "multiply") {
+                if (data.col !== 0 || this.getCheckMode() === "multiply") {
                     return;
                 }
                 var val = data.value;
                 if (val == true) {
                     var rc = this.getTableModel().getRowCount();
                     while (--rc >= 0) {
-                        if (rc != data.row && this.getCellValue(rc, 2) == true) {
-                            this.setCellValue(rc, 2, false);
+                        if (rc != data.row && this.getCellValue(rc, 0) === true) {
+                            this.setCellValue(rc, 0, false);
                         }
                     }
                 }
@@ -161,7 +161,7 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             var items = [];
             data.forEach(function(el) {
                 items.push([
-                    [el[0], el[1], !!el[2]],
+                    [!!el[0], el[1], el[2]],
                     {}
                 ]);
             });
@@ -169,7 +169,7 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
         },
 
         __onAdd : function(ev) {
-            this.addRow({}, ["", "", false]);
+            this.addRow({}, [false, "", ""]);
         },
 
         __onRemove : function(ev) {
@@ -193,8 +193,8 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             if (val == "single") {
                 var rc = this.getTableModel().getRowCount();
                 while (--rc >= 0) {
-                    if (this.getCellValue(rc, 2) == true) {
-                        this.setCellValue(rc, 2, false);
+                    if (this.getCellValue(rc, 0) == true) {
+                        this.setCellValue(rc, 0, false);
                     }
                 }
             }
@@ -218,8 +218,8 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
         toJSONValue : function() {
             var rc = this.getTableModel().getRowCount();
             var arr = [];
-            while (--rc >= 0) {
-                var rd = this._table.getRowData2(rc);
+            for (var i = 0; i < rc; ++i) {
+                var rd = this._table.getRowData2(i);
                 if (rd != null) {
                     arr.push(rd);
                 }
