@@ -93,6 +93,7 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
         if (optsVal.isBoolean()) {
             opts.put("multiselect", optsVal.asBoolean());
         }
+
         attr.setOptions(opts.toString());
         applyAttributeValue(attr, val);
 

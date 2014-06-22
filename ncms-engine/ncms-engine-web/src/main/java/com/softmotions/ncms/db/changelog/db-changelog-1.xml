@@ -199,6 +199,8 @@
                     remarks="Required boolean flag for page assembly attributes">
                 <constraints nullable="false"/>
             </column>
+            <column name="MDATE" type="TIMESTAMP"
+                    remarks="Attribute modification date"/>
         </createTable>
 
         <createIndex tableName="ASM_ATTRS"

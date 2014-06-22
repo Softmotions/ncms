@@ -293,6 +293,7 @@ public class PageRS extends MBDAOSupport {
         update("mergeNewPage",
                "guid", guid,
                "name", name,
+               "description", name,
                "type", type,
                "user", req.getRemoteUser(),
                "nav_parent_id", parent,
