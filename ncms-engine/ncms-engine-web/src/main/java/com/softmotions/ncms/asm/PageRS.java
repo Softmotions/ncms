@@ -228,7 +228,7 @@ public class PageRS extends MBDAOSupport {
             AsmAttribute oa = a.getOverridenParent();
             if (oa != null &&
                 a.getAsmId() == id.longValue() &&
-                Objects.equals(oa.getType(), a.getType())) { //types incompatible
+                !Objects.equals(oa.getType(), a.getType())) { //types incompatible
                 attrsToRemove.add(a.getName());
             }
         }
