@@ -25,6 +25,10 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
         return TYPES;
     }
 
+    public AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+        return attr;
+    }
+
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();

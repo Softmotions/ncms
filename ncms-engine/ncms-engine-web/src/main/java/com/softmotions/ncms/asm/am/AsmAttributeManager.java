@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm.am;
 
+import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
@@ -14,6 +15,8 @@ import java.util.Map;
 public interface AsmAttributeManager {
 
     String[] getSupportedAttributeTypes();
+
+    AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr);
 
     Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                               Map<String, String> options) throws AsmRenderingException;

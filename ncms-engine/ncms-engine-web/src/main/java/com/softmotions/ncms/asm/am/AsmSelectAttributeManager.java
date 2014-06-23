@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -21,8 +22,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Select box controller
@@ -45,6 +48,47 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
 
     public String[] getSupportedAttributeTypes() {
         return TYPES;
+    }
+
+    public AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+        if (tmplAttr == null) {
+            return attr;
+        }
+        try {
+            if (StringUtils.isBlank(attr.getEffectiveValue())) {
+                attr.setEffectiveValue("[]");
+            }
+            Set<String> selectedKeys = new HashSet<>();
+            ArrayNode vArr = (ArrayNode) mapper.readTree(attr.getEffectiveValue());
+            for (JsonNode n : vArr) {
+                if (!n.isArray()) {
+                    continue;
+                }
+                ArrayNode aNode = (ArrayNode) n;
+                boolean selected = aNode.get(0).asBoolean();
+                if (selected) {
+                    JsonNode key = aNode.get(1);
+                    if (key != null) {
+                        selectedKeys.add(key.asText());
+                    }
+                }
+            }
+            ArrayNode tArr = (ArrayNode) mapper.readTree(tmplAttr.getEffectiveValue());
+            for (JsonNode n : tArr) {
+                if (!n.isArray()) {
+                    continue;
+                }
+                ArrayNode aNode = (ArrayNode) n;
+                JsonNode key = aNode.get(1);
+                if (key != null) {
+                    aNode.set(0, mapper.getNodeFactory().booleanNode(selectedKeys.contains(key.asText())));
+                }
+            }
+            attr.setEffectiveValue(tArr.toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return attr;
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
@@ -82,6 +126,7 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
         return nodes;
     }
 
+
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         //options
         JsonNode optsVal = val.get("display");
@@ -102,7 +147,7 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
         JsonNode value = val.get("value");
-        if (value != null && value.isContainerNode()) {
+        if (value != null && value.isArray()) {
             attr.setEffectiveValue(value.toString());
         } else {
             attr.setEffectiveValue(null);

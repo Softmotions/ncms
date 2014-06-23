@@ -111,6 +111,17 @@
               AND name = #{name}
     </update>
 
+
+    <update id="updateAttributeOptions"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        UPDATE asm_attrs
+        SET
+            options = #{options}
+        WHERE asm_id = #{asmId}
+              AND name = #{name}
+    </update>
+
+
     <update id="upsertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         MERGE INTO asm_attrs (asm_id, name, label, type,
