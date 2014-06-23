@@ -21,8 +21,8 @@ public interface AsmAttributeManager {
     Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                               Map<String, String> options) throws AsmRenderingException;
 
-    AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode options);
+    AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val);
 
-    AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode value);
+    AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val);
 
 }

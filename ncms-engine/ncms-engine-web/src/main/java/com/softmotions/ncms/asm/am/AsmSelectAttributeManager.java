@@ -16,8 +16,6 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,8 +33,6 @@ import java.util.Set;
 @Singleton
 public class AsmSelectAttributeManager implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmSelectAttributeManager.class);
-
     public static final String[] TYPES = new String[]{"select"};
 
     private final ObjectMapper mapper;
@@ -52,6 +48,9 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
 
     public AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
         if (tmplAttr == null) {
+            if (StringUtils.isBlank(attr.getEffectiveValue())) {
+                attr.setEffectiveValue("[]");
+            }
             return attr;
         }
         try {
