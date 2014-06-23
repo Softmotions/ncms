@@ -9,7 +9,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
     statics : {
 
         getDescription : function() {
-            return qx.locale.Manager.tr("Simple string");
+            return qx.locale.Manager.tr("String");
         },
 
         getSupportedAttributeTypes : function() {
