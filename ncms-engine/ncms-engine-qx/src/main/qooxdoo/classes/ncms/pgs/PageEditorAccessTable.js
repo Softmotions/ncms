@@ -32,7 +32,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
         this._reload([]);
         this._table.set({statusBarVisible : false});
 
-        // TODO: dataEdited
+        this._table.addListener("dataEdited", this.__dataEdited, this);
     },
 
     members : {
@@ -44,7 +44,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
 
         _load : function() {
             var spec = this.getPageSpec();
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl", {id : spec["id"]}), "GET", "application/json");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl", {pid : spec["id"]}), "GET", "application/json");
             req.send(function(resp){
                 var data = resp.getContent() || [];
                 this._reload(data);
@@ -57,8 +57,14 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
             toolbar.add(part);
 
-            var bt = this._createButton(null, "ncms/icon/16/actions/add.png", this.__addUser, this);
+            var bt;
+
+            bt = this._createButton(null, "ncms/icon/16/actions/add.png", this.__addUser, this);
             bt.setToolTipText(this.tr("Add user"));
+            part.add(bt);
+
+            bt = this._createButton(null, "ncms/icon/16/actions/delete.png", this.__deleteUser, this);
+            bt.setToolTipText(this.tr("Delete user"));
             part.add(bt);
 
             return toolbar;
@@ -107,7 +113,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
                     },
                     {
                         "title" : this.tr("Editing").toString(),
-                        "id" : "role.edit",
+                        "id" : "role.write",
                         "type" : "boolean",
                         "editable" : true,
                         "width" : "1*"
@@ -121,7 +127,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
                     },
                     {
                         "title" : this.tr("Deleting").toString(),
-                        "id" : "role.del",
+                        "id" : "role.delete",
                         "type" : "boolean",
                         "editable" : true,
                         "width" : "1*"
@@ -146,14 +152,75 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
                 var data = ev.getData()[0];
                 dlg.destroy();
 
-                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.add.user", {id : spec["id"], user: data["name"]}), "PUT", "application/json");
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: data["name"]}), "PUT", "application/json");
                 req.send(function(resp){
                     this._load();
                 }, this);
             }, this);
             dlg.show();
-        }
+        },
 
+        __deleteUser : function() {
+            var me = this;
+            var users = [];
+            this.getSelectionModel().iterateSelection(function(ind) {
+                users.push(me.getTableModel().getRowData(ind));
+            });
+
+            if (users.length < 1) {
+                return;
+            }
+
+            // TODO: iterate
+
+            var spec = this.getPageSpec();
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: users[0].rowData["user"]}), "DELETE", "application/json");
+            req.send(function(resp){
+                this._load();
+            }, this);
+        },
+
+        __dataEdited : function(ev) {
+            var spec = this.getPageSpec();
+            var data = ev.getData();
+            if (data.value == data.oldValue) {
+                return;
+            }
+
+            var user = this.getTableModel().getRowData(data.row);
+            var parameter = this.getTableModel().getColumnId(data.col);
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user.rowData["user"]}), "POST", "application/json");
+            req.setParameter("recursive", user.rowData["recursive"] == 1, true);
+            if (parameter == "role.recursive") {
+                req.setParameter(parameter, data.value, true);
+            } else {
+                req.setParameter("rights", this.__populateUserRights(user.rowData, parameter, data.value), true);
+            }
+            req.send(function(resp){
+                this._load();
+            }, this);
+        },
+
+        __populateUserRights : function(user, role, isset) {
+            var am = user["rights"];
+            var roleChar = this.__getRoleCharByName(role);
+            if (roleChar == "") {
+                return am;
+            } else if (isset) {
+                return am.indexOf(roleChar) != -1 ? am : am + roleChar;
+            } else {
+                return am.replace(roleChar, "");
+            }
+        },
+
+        __getRoleCharByName : function(cname) {
+            switch (cname) {
+                case "role.write": return "w";
+                case "role.news": return "n";
+                case "role.delete": return "d";
+                default : return "";
+            }
+        }
     },
 
     destruct : function() {

@@ -159,13 +159,15 @@ qx.Class.define("ncms.Actions", {
         this._action("pages.set.template", "/ncms/rs/adm/pages/template/{id}/{templateId}");
 
         // GET page acl
-        // id: page id
-        this._action("pages.acl", "/ncms/rs/adm/pages/acl/{id}");
+        // pid: page id
+        this._action("pages.acl", "/ncms/rs/adm/pages/acl/{pid}");
 
         // PUT add new user to acl
-        // id: page id
+        // DELETE delete user from acls for this page
+        // POST update user rights
+        // pid: page id
         // user: user login
-        this._action("pages.acl.add.user", "/ncms/rs/adm/pages/acl/{id}/add/{user}");
+        this._action("pages.acl.user", "/ncms/rs/adm/pages/acl/{pid}/{user}");
     },
 
     members : {
