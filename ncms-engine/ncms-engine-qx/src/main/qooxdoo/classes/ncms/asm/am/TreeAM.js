@@ -28,19 +28,29 @@ qx.Class.define("ncms.asm.am.TreeAM", {
 
             var el = new qx.ui.form.CheckBox();
             form.add(el, this.tr("Allow pages"), null, "allowPages");
+            el.setValue(opts["allowPages"] == "true");
 
             el = new qx.ui.form.CheckBox();
             form.add(el, this.tr("Allow files"), null, "allowFiles");
+            el.setValue(opts["allowFiles"] == "true");
 
             return new sm.ui.form.FlexFormRenderer(form);
         },
 
         optionsAsJSON : function() {
-            var res = {};
-            return res;
+            var items = this._form.getItems();
+            return {
+                "allowPages" : items["allowPages"].getValue(),
+                "allowFiles" : items["allowFiles"].getValue()
+            };
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
+
+
+
+
+
             return new qx.ui.core.Widget();
         },
 
