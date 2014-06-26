@@ -666,8 +666,13 @@ public class PageRS extends MBDAOSupport {
             return "wnds";
         }
 
-        //todo check access list
-        return "";
+        String rights = "";
+        List<Map<String, ?>> arights = select("selectAclUserRights", "pid", row.get("id"), "user", req.getRemoteUser());
+        for (Map<String, ?> aright : arights) {
+            rights = mergeRights(rights, (String) aright.get("rights"));
+        }
+
+        return rights;
     }
 
 

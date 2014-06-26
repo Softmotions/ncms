@@ -137,14 +137,14 @@
           user    AS "user",
           rights  AS "rights"
         FROM asm_acl_entity
-        WHERE acl_id = (SELECT local_acl_id FROM asms WHERE id = #{pid})
+        WHERE acl_id = (SELECT local_acl_id FROM asms WHERE id = #{pid}) <if test="user != null"> AND user = #{user}</if>
         UNION
         SELECT
           1       AS "recursive",
           user    AS "user",
           rights  AS "rights"
         FROM asm_acl_entity
-        WHERE acl_id = (SELECT recursive_acl_id FROM asms WHERE id = #{pid})
+        WHERE acl_id = (SELECT recursive_acl_id FROM asms WHERE id = #{pid}) <if test="user != null"> AND user = #{user}</if>
     </select>
 
     <select id="selectPageAclInfo" resultType="map" parameterType="map">
