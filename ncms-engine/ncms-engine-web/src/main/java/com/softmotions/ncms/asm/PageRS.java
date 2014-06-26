@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ResultContext;
@@ -40,6 +39,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MultivaluedMap;
@@ -303,7 +303,8 @@ public class PageRS extends MBDAOSupport {
                "type", type,
                "user", req.getRemoteUser(),
                "nav_parent_id", parent,
-               "nav_cached_path", getPageIDsPath(parent));
+               "nav_cached_path", getPageIDsPath(parent),
+               "recursive_acl", selectOne("getRecursiveAcl", "pid", parent));
     }
 
 
@@ -313,9 +314,9 @@ public class PageRS extends MBDAOSupport {
         }
         List<Long> alist = new ArrayList<>();
         alist.add(id);
-        Long pid;
+        Long pid = id;
         do {
-            pid = selectOne("selectParentID", id);
+            pid = selectOne("selectParentID", pid);
             if (pid != null) {
                 alist.add(pid);
             }
@@ -392,7 +393,7 @@ public class PageRS extends MBDAOSupport {
 
     @Path("/acl/{pid}")
     @GET
-    public JsonNode getAcl(@PathParam("pid") String pid) {
+    public JsonNode getAcl(@PathParam("pid") Long pid) {
         List<Map<String, ?>> acl = select("selectAclUserRights", "pid", pid);
         Collections.sort(acl, new Comparator<Map<String, ?>>() {
             public int compare(Map<String, ?> a1, Map<String, ?> a2) {
@@ -420,10 +421,10 @@ public class PageRS extends MBDAOSupport {
     @Path("/acl/{pid}/{user}")
     @PUT
     public JsonNode addToAcl(@Context final HttpServletRequest req,
-                             @PathParam("pid") String pid,
+                             @PathParam("pid") Long pid,
                              @PathParam("user") String user) {
         WSUser wsUser = userdb.findUser(user);
-        if(wsUser == null) {
+        if (wsUser == null) {
             throw new BadRequestException("User not found");
         }
 
@@ -432,24 +433,15 @@ public class PageRS extends MBDAOSupport {
         String defaultRights = "";
         if (StringUtils.equals(wsUser.getName(), (CharSequence) aclInfo.get("owner"))) {
             defaultRights = "wnd";
-//            throw new BadRequestException("User is owner");
         }
 
         Number localAcl = aclInfo != null ? (Number) aclInfo.get("local_acl") : null;
-//        List<Number> aids = new ArrayList<>(2);
         if (localAcl != null) {
-//            aids.add((Number) aclInfo.get("local_acl"));
-//        }
-//        if (aclInfo.get("recursive_acl") != null) {
-//            aids.add((Number) aclInfo.get("recursive_acl"));
-//        }
-//        if (!aids.isEmpty()) {
             Integer count = selectOne("checkUserInAcl", "user", wsUser.getName(), "aids", new Number[]{localAcl});
             if (count > 0) {
                 throw new BadRequestException("User already in local ACL");
             }
         } else {
-//        if (localAcl == null) {
             localAcl = selectOne("newAclId");
             update("setLocalAcl", "pid", pid, "acl", localAcl);
         }
@@ -467,7 +459,7 @@ public class PageRS extends MBDAOSupport {
     @POST
     @Consumes("application/x-www-form-urlencoded")
     public JsonNode updateAcl(@Context final HttpServletRequest req,
-                              @PathParam("pid") String pid,
+                              @PathParam("pid") Long pid,
                               @PathParam("user") String user,
                               MultivaluedMap<String, String> form) {
         WSUser wsUser = userdb.findUser(user);
@@ -485,44 +477,27 @@ public class PageRS extends MBDAOSupport {
         Map<String, ?> aclInfo = selectOne("selectPageAclInfo", "pid", pid);
         Number recAcl = aclInfo != null ? (Number) aclInfo.get("recursive_acl") : null;
         Number locAcl = aclInfo != null ? (Number) aclInfo.get("local_acl") : null;
-        String recURights = recAcl != null ? (String) selectOne("selectUserRights", "user", wsUser.getName(), "acl", recAcl) : null;
-        String locURights = locAcl != null ? (String) selectOne("selectUserRights", "user", wsUser.getName(), "acl", locAcl) : null;
 
         List<String> rrParams = form.containsKey("role.recursive") ? form.get("role.recursive") : null;
         List<String> nRights = form.containsKey("rights") ? form.get("rights") : null;
         if (rrParams != null && !rrParams.isEmpty()) {
             boolean isSet = BooleanUtils.toBoolean(rrParams.get(0));
             if (isSet) {
-                Number newRecAcl = updateRecursiveAclUser(pid, navPath, wsUser.getName(), StringUtils.isBlank(locURights) ? "" : locURights, recAcl, true);
+                String locURights = locAcl != null ? (String) selectOne("selectUserRights", "user", wsUser.getName(), "acl", locAcl) : null;
 
-                if (!StringUtils.isBlank(locURights)) {
-                    update("updateUserAcl", "prev_acl", locAcl, "new_acl", newRecAcl, "user", user);
-                } else {
-                    update("updateAclUserRights", "acl", newRecAcl, "user", user, "rights", "");
+                updateRecursiveAclUser(pid, navPath, wsUser.getName(), StringUtils.isBlank(locURights) ? "" : locURights, recAcl, true);
+
+                if (locAcl != null) {
+                    delete("deleteAclUser", "acl", locAcl, "user", wsUser.getName());
                 }
             } else {
-                if (recURights == null) {
-                    // noop; user doesn't have recursive rights
-                } else {
-                    String rights = mergeRights(recURights, locURights);
+                unsetRecursiveForParents(pid, wsUser.getName(), navPath, true);
 
-                    Number newRecAcl = selectOne("newAclId");
-                    update("copyAcl", "prev_acl", recAcl, "new_acl", newRecAcl);
-
-                    update("updateChildRecursiveAcl",
-//                           "pid", pid,
-                           "nav_path", navPath + pid + "/%",
-                           "prev_acl", recAcl,
-                           "new_acl", newRecAcl);
-
-                    update("deleteAclUser", "acl", recAcl, "user", wsUser.getName());
-                    update("updateAclUserRights", "acl", locAcl, "user", wsUser.getName(), "rights", rights);
-                }
+                // TODO: unset current rights from childs?
             }
         } else if (nRights != null && !nRights.isEmpty()) {
             String rights = nRights.get(0);
             if (!cr) {
-                // todo: check owner
                 // update local acl
                 if (locAcl == null) {
                     locAcl = selectOne("newAclId");
@@ -530,16 +505,68 @@ public class PageRS extends MBDAOSupport {
                 }
                 update("updateAclUserRights", "acl", locAcl, "user", wsUser.getName(), "rights", rights);
             } else {
-                Number newRecAcl = updateRecursiveAclUser(pid, navPath, wsUser.getName(), rights, recAcl, false);
-                update("updateAclUserRights", "acl", newRecAcl, "user", user, "rights", rights);
+                updateRecursiveAclUser(pid, navPath, wsUser.getName(), rights, recAcl, false);
             }
         }
 
         return mapper.createObjectNode();
     }
 
-    private Number updateRecursiveAclUser(String pid, String navPath, String user, String rights, Number recAcl, boolean isSet) {
-        // TODO: optimize. do not create new ACL if it not used by not childs
+    @Path("/acl/{pid}/{user}")
+    @DELETE
+    public void deleteFromAcl(@Context final HttpServletRequest req,
+                              @PathParam("pid") Long pid,
+                              @PathParam("user") String user,
+                              @QueryParam("recursive") boolean recursive) {
+
+        WSUser wsUser = userdb.findUser(user);
+        if (wsUser == null) {
+            throw new BadRequestException("User not found");
+        }
+
+        Map<String, ?> aclInfo = selectOne("selectPageAclInfo", "pid", pid);
+
+        Number locAcl = aclInfo != null ? (Number) aclInfo.get("local_acl") : null;
+        Number recAcl = aclInfo != null ? (Number) aclInfo.get("recursive_acl") : null;
+        if (!recursive && locAcl != null) {
+            delete("deleteAclUser", "user", wsUser.getName(), "acl", locAcl);
+        } else if (recursive && recAcl != null) {
+            String navPath = selectOne("selectNavPagePath", "pid", pid);
+
+            Number newRecAcl = selectOne("newAclId");
+            update("copyAcl", "prev_acl", recAcl, "new_acl", newRecAcl);
+
+            update("updateChildRecursiveAcl",
+                   "pid", pid,
+                   "nav_path", navPath + pid + "/%",
+                   "prev_acl", recAcl,
+                   "new_acl", newRecAcl);
+
+            delete("deleteAclUser", "acl", newRecAcl, "user", wsUser.getName());
+
+            // TODO: unset current rights from childs?
+
+            unsetRecursiveForParents(pid, user, navPath, false);
+        }
+    }
+
+    private String mergeRights(String r1, String r2) {
+        String res = r1 != null ? r1 : "";
+        for (char r : (r2 != null ? r2 : "").toCharArray()) {
+            if (!StringUtils.contains(res, r)) {
+                res += r;
+            }
+        }
+
+        return res;
+    }
+
+    private String unsetRights(String from, String r) {
+        return (from != null ? from : "").replaceAll("[" + (r != null ? r : "") + "]", "");
+    }
+
+
+    private Number updateRecursiveAclUser(Long pid, String navPath, String user, String rights, Number recAcl, boolean isSet) {
         Number newRecAcl = selectOne("newAclId");
         if (recAcl != null) {
             if (isSet) {
@@ -557,51 +584,52 @@ public class PageRS extends MBDAOSupport {
                "nav_path", navPath + pid + "/%",
                "prev_acl", recAcl,
                "new_acl", newRecAcl);
-        update("updateChildRecursiveAcl2",
-               "nav_path", navPath + pid + "/%",
-               "acl", newRecAcl,
-               "user", user,
-               "rights", rights);
+        update("updateAclUserRights", "acl", newRecAcl, "user", user, "rights", rights);
+
+        List<Number> racls = select("childRecursiveAcls", "nav_path", navPath + pid + "/%", "exclude_acl", newRecAcl);
+        for (Number racl : racls) {
+            String rrights = selectOne("selectUserRights", "user", user, "acl", racl);
+            mergeRights(rrights, rights);
+
+            Number nracl= selectOne("newAclId");
+            update("copyAcl", "prev_acl", racl, "new_acl", nracl);
+            update("updateChildRecursiveAcl",
+                   "nav_path", navPath + pid + "/%",
+                   "prev_acl", racl,
+                   "new_acl", nracl);
+
+            update("updateAclUserRights", "acl", nracl, "user", user, "rights", mergeRights(rights, rrights));
+        }
 
         return newRecAcl;
     }
 
-    private String mergeRights(String r1, String r2) {
-        String res = r1 != null ? r1 : "";
-        for (char r : (r2 != null ? r2 : "").toCharArray()) {
-            if (!StringUtils.contains(res, r)) {
-                res += r;
+    private void unsetRecursiveForParents(Long pid, String user, String navPath, boolean includeCurrent) {
+        List<Map<String, ?>> ptus = select("parentAcls", "nav_path", navPath + (includeCurrent ? pid + "/" : ""));
+        for (Map<String, ?> ptu : ptus) {
+            Number pra = (Number) ptu.get("recursive_acl");
+            String prur = pra != null ? (String) selectOne("selectUserRights", "user", user, "acl", pra) : null;
+            if (prur == null) {
+                // noop; user doesn't have recursive rights for this page.
+                break;
             }
-        }
 
-        return res;
-    }
+            Number cpid = (Number) ptu.get("id");
+            Number pla = (Number) ptu.get("local_acl");
+            String plur = "";
 
-    @Path("/acl/{pid}/{user}")
-    @DELETE
-    public void deleteFromAcl(@Context final HttpServletRequest req,
-                              @PathParam("pid") String pid,
-                              @PathParam("user") String user) {
+            if (pla == null) {
+                pla = selectOne("newAclId");
+                update("setLocalAcl", "pid", cpid, "acl", pla);
+            } else {
+                plur = selectOne("selectUserRights", "user", user, "acl", pla);
+            }
+            update("updateAclUserRights", "acl", pla, "user", user, "rights", mergeRights(prur, plur));
 
-        WSUser wsUser = userdb.findUser(user);
-        if(wsUser == null) {
-            throw new BadRequestException("User not found");
-        }
-
-        Map<String, ?> aclInfo = selectOne("selectPageAclInfo", "pid", pid);
-
-//        if (StringUtils.equals(wsUser.getName(), (CharSequence) aclInfo.get("owner"))) {
-//            throw new BadRequestException("User is owner");
-//        }
-
-        Number localAcl = aclInfo != null ? (Number) aclInfo.get("local_acl") : null;
-        if (localAcl != null) {
-            update("deleteAclUser", "user", wsUser.getName(), "acl", localAcl);
-        }
-
-        Number recursiveAcl = aclInfo != null ? (Number) aclInfo.get("recursive_acl") : null;
-        if (recursiveAcl != null) {
-            // TODO: check & delete user from recursive acl
+            Number npra = selectOne("newAclId");
+            update("copyAcl", "prev_acl", pra, "new_acl", npra);
+            delete("deleteAclUser", "acl", npra, "user", user);
+            update("setRecursiveAcl", "pid", cpid, "acl", npra);
         }
     }
 

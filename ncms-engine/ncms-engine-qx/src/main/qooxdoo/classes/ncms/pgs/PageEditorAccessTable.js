@@ -30,15 +30,12 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
         this.base(arguments);
 
         this._reload([]);
-        this._table.set({statusBarVisible : false});
-
-        this._table.addListener("dataEdited", this.__dataEdited, this);
     },
 
     members : {
+        __delBt : null,
 
         __applyPageSpec : function(spec) {
-            // TODO:
             this._load();
         },
 
@@ -52,8 +49,17 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
         },
 
         //overriden
+        _createTable : function(tm) {
+            var table = new sm.table.Table(tm, tm.getCustom());
+            table.set({statusBarVisible : false});
+            table.getSelectionModel().addListener("changeSelection", this._syncState, this);
+            table.addListener("dataEdited", this.__dataEdited, this);
+
+            return table;
+        },
+
+        //overriden
         _createToolbarItems : function(toolbar) {
-            // TODO:
             var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
             toolbar.add(part);
 
@@ -63,11 +69,16 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             bt.setToolTipText(this.tr("Add user"));
             part.add(bt);
 
-            bt = this._createButton(null, "ncms/icon/16/actions/delete.png", this.__deleteUser, this);
+            this.__delBt = bt = this._createButton(null, "ncms/icon/16/actions/delete.png", this.__deleteUser, this);
             bt.setToolTipText(this.tr("Delete user"));
             part.add(bt);
 
             return toolbar;
+        },
+
+        _syncState : function() {
+            var ri = this.getSelectedRowIndex();
+            this.__delBt.setEnabled(ri != null && ri !== -1);
         },
 
         _createButton : function(label, icon, handler, self) {
@@ -143,9 +154,12 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
                 "items" : items
             };
             tm.setJsonData(jdata);
+            this._syncState();
         },
 
         __addUser : function() {
+            this.getTable().cancelEditing();
+
             var spec = this.getPageSpec();
             var dlg = new ncms.usr.UserSelectorDlg();
             dlg.addListener("completed", function(ev) {
@@ -161,20 +175,16 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
         },
 
         __deleteUser : function() {
-            var me = this;
-            var users = [];
-            this.getSelectionModel().iterateSelection(function(ind) {
-                users.push(me.getTableModel().getRowData(ind));
-            });
+            this.getTable().cancelEditing();
 
-            if (users.length < 1) {
+            var user = this.getSelectedRowData();
+            if (!user) {
                 return;
             }
 
-            // TODO: iterate
-
             var spec = this.getPageSpec();
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: users[0].rowData["user"]}), "DELETE", "application/json");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user["user"]}), "DELETE", "application/json");
+            req.setParameter("recursive", user["recursive"] == 1, false);
             req.send(function(resp){
                 this._load();
             }, this);
@@ -224,5 +234,6 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
     },
 
     destruct : function() {
+        this.__delBt = null;
     }
 });

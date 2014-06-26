@@ -49,13 +49,15 @@
                          nav_parent_id,
                          nav_cached_path,
                          options,
-                         mdate, muser, owner)
+                         mdate, muser, owner,
+                         recursive_acl_id)
         KEY (name)
         VALUES (#{guid}, #{name}, #{type},
                 #{nav_parent_id,jdbcType=BIGINT},
                 #{nav_cached_path},
                 #{options,jdbcType=VARCHAR},
-                now(), #{user}, #{user})
+                now(), #{user}, #{user},
+                #{recursive_acl})
     </update>
 
     <delete id="dropPage" parameterType="map">
@@ -215,7 +217,7 @@
         WHERE
           (<if test="prev_acl != null">recursive_acl_id = #{prev_acl} OR </if> recursive_acl_id IS NULL)
           AND
-          (nav_cached_path LIKE #{nav_path} <if test="pid != null">OR id = #{pid}</if>)
+          (nav_cached_path LIKE #{nav_path} <if test="pid != null"> OR id = #{pid}</if>)
     </update>
 
     <update id="updateChildRecursiveAcl2" parameterType="map">
@@ -228,10 +230,38 @@
               AND nav_cached_path LIKE #{nav_path}
     </update>
 
+    <update id="updateParentRecursiveAcl" parameterType="map">
+        UPDATE asms
+        SET recursive_acl_id = #{new_acl}
+        WHERE recursive_acl_id = #{prev_acl} AND #{nav_path} LIKE (nav_cached_path || id || '/%')
+    </update>
+
     <update id="updateUserAcl" parameterType="map">
         UPDATE asm_acl_entity
         SET acl_id = #{new_acl}
         WHERE acl_id = #{prev_acl} AND user = #{user}
     </update>
+
+    <select id="parentAcls" resultType="map" parameterType="map">
+        SELECT
+          id                AS "id",
+          local_acl_id      AS "local_acl",
+          recursive_acl_id  AS "recursive_acl"
+        FROM asms
+        WHERE #{nav_path} LIKE (nav_cached_path || id || '/%')
+        ORDER BY nav_cached_path DESC
+    </select>
+
+    <select id="childRecursiveAcls" resultType="long" parameterType="map">
+        SELECT recursive_acl_id
+        FROM asms
+        WHERE recursive_acl_id != #{exclude_acl} AND nav_cached_path LIKE #{nav_path}
+    </select>
+
+    <select id="getRecursiveAcl" resultType="long" parameterType="map">
+        SELECT recursive_acl_id
+        FROM asms
+        WHERE id = #{pid}
+    </select>
 
 </mapper>
