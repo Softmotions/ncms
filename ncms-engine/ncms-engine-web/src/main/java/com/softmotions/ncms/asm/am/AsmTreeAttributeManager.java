@@ -68,7 +68,8 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
-                                        "allowPages", "allowFiles");
+                                        "allowPages", "allowFiles", "allowExternal",
+                                        "nestingLevel");
         attr.setOptions(asmOpts.toString());
         return attr;
     }

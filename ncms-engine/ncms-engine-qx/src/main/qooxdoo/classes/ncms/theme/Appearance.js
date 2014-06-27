@@ -10,6 +10,12 @@ qx.Theme.define("ncms.theme.Appearance", {
 
     appearances : {
 
+        "ncms-tree-am" : {
+        },
+
+        "ncms-tree-am/tree" : "virtual-tree",
+
+
         /* Assemblies selector */
         "ncms-asm-selector" : {
             style : function(states) {
