@@ -269,7 +269,7 @@
     <select id="childRecursiveAcls" resultType="long" parameterType="map">
         SELECT recursive_acl_id
         FROM asms
-        WHERE recursive_acl_id != #{exclude_acl} AND nav_cached_path LIKE #{nav_path}
+        WHERE <if test="exclude_acl != null">recursive_acl_id != #{exclude_acl} AND </if> nav_cached_path LIKE #{nav_path}
     </select>
 
     <select id="getRecursiveAcl" resultType="long" parameterType="map">

@@ -514,7 +514,17 @@ public class PageRS extends MBDAOSupport {
             } else {
                 unsetRecursiveForParents(pid, wsUser.getName(), navPath, true);
 
-                // TODO: unset current rights from childs?
+                List<Number> racls = select("childRecursiveAcls", "nav_path", navPath + pid + "/%");
+                for (Number racl : racls) {
+                    Number nracl= selectOne("newAclId");
+                    update("copyAcl", "prev_acl", racl, "new_acl", nracl);
+                    update("updateChildRecursiveAcl",
+                           "nav_path", navPath + pid + "/%",
+                           "prev_acl", racl,
+                           "new_acl", nracl);
+
+                    delete("deleteAclUser", "acl", nracl, "user", wsUser.getName());
+                }
             }
         } else if (nRights != null && !nRights.isEmpty()) {
             String rights = nRights.get(0);
@@ -565,7 +575,17 @@ public class PageRS extends MBDAOSupport {
 
             delete("deleteAclUser", "acl", newRecAcl, "user", wsUser.getName());
 
-            // TODO: unset current rights from childs?
+            List<Number> racls = select("childRecursiveAcls", "nav_path", navPath + pid + "/%", "exclude_acl", newRecAcl);
+            for (Number racl : racls) {
+                Number nracl= selectOne("newAclId");
+                update("copyAcl", "prev_acl", racl, "new_acl", nracl);
+                update("updateChildRecursiveAcl",
+                       "nav_path", navPath + pid + "/%",
+                       "prev_acl", racl,
+                       "new_acl", nracl);
+
+                delete("deleteAclUser", "acl", nracl, "user", wsUser.getName());
+            }
 
             unsetRecursiveForParents(pid, user, navPath, false);
         }
@@ -586,8 +606,8 @@ public class PageRS extends MBDAOSupport {
         return (from != null ? from : "").replaceAll("[" + (r != null ? r : "") + "]", "");
     }
 
-
-    private Number updateRecursiveAclUser(Long pid, String navPath, String user, String rights, Number recAcl, boolean isSet) {
+    private void updateRecursiveAclUser(Long pid, String navPath, String user, String rights, Number recAcl, boolean isSet) {
+        String urights = null;
         Number newRecAcl = selectOne("newAclId");
         if (recAcl != null) {
             if (isSet) {
@@ -595,6 +615,9 @@ public class PageRS extends MBDAOSupport {
                 if (count > 0) {
                     throw new BadRequestException("User already in recursive ACL");
                 }
+            } else {
+                urights = unsetRights((String) selectOne("selectUserRights", "user", user, "acl", recAcl), rights);
+                urights = StringUtils.isBlank(urights) ? null : urights;
             }
 
             update("copyAcl", "prev_acl", recAcl, "new_acl", newRecAcl);
@@ -610,7 +633,6 @@ public class PageRS extends MBDAOSupport {
         List<Number> racls = select("childRecursiveAcls", "nav_path", navPath + pid + "/%", "exclude_acl", newRecAcl);
         for (Number racl : racls) {
             String rrights = selectOne("selectUserRights", "user", user, "acl", racl);
-            mergeRights(rrights, rights);
 
             Number nracl= selectOne("newAclId");
             update("copyAcl", "prev_acl", racl, "new_acl", nracl);
@@ -619,10 +641,9 @@ public class PageRS extends MBDAOSupport {
                    "prev_acl", racl,
                    "new_acl", nracl);
 
-            update("updateAclUserRights", "acl", nracl, "user", user, "rights", mergeRights(rights, rrights));
+            String nrights = urights == null ? mergeRights(rrights, rights) : unsetRights(rrights, urights);
+            update("updateAclUserRights", "acl", nracl, "user", user, "rights", nrights);
         }
-
-        return newRecAcl;
     }
 
     private void unsetRecursiveForParents(Long pid, String user, String navPath, boolean includeCurrent) {
