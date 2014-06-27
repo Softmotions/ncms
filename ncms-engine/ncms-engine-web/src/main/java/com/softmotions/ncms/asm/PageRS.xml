@@ -267,9 +267,14 @@
     </select>
 
     <select id="childRecursiveAcls" resultType="long" parameterType="map">
-        SELECT recursive_acl_id
-        FROM asms
-        WHERE <if test="exclude_acl != null">recursive_acl_id != #{exclude_acl} AND </if> nav_cached_path LIKE #{nav_path}
+        SELECT a.recursive_acl_id
+        FROM asms AS a
+        WHERE
+          a.nav_cached_path LIKE #{nav_path}
+          <if test="exclude_acl != null">AND a.recursive_acl_id != #{exclude_acl}</if>
+          <if test="with_user != null">
+              AND EXISTS (SELECT aae.rights FROM asm_acl_entity AS aae WHERE aae.acl_id = a.recursive_acl_id AND aae.user = #{with_user})
+          </if>
     </select>
 
     <select id="getRecursiveAcl" resultType="long" parameterType="map">
