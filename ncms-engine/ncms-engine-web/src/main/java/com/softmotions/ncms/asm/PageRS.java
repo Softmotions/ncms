@@ -130,6 +130,7 @@ public class PageRS extends MBDAOSupport {
     @Path("/edit/{id}")
     public ObjectNode selectPageEdit(@Context HttpServletRequest req, @PathParam("id") Long id) {
         ObjectNode res = mapper.createObjectNode();
+
         Asm page = adao.asmSelectById(id);
         if (page == null) {
             throw new NotFoundException();
@@ -151,11 +152,30 @@ public class PageRS extends MBDAOSupport {
                     .put("id", template.getId())
                     .put("name", template.getName())
                     .put("description", template.getDescription());
+
+
         }
         Collection<AsmAttribute> eattrs = page.getEffectiveAttributes();
         Collection<AsmAttribute> gattrs = new ArrayList<>(eattrs.size());
         for (AsmAttribute a : eattrs) {
-            if (!StringUtils.isBlank(a.getLabel())) {
+            if (!StringUtils.isBlank(a.getLabel())) { //it is GUI attribute?
+                if (template != null) {
+                    AsmAttribute tmplAttr = template.getEffectiveAttribute(a.getName());
+                    if (tmplAttr != null && Objects.equals(tmplAttr.getType(), a.getType())) {
+                        if (!Objects.equals(tmplAttr.getOptions(), a.getOptions())) {
+                            //force template attribute options
+                            a.setOptions(tmplAttr.getOptions());
+                            update("updateAttributeOptions", a);
+                        }
+                    }
+                    AsmAttributeManager am = amRegistry.getByType(a.getType());
+                    if (am != null) {
+                        a = am.prepareGUIAttribute(template, tmplAttr, a);
+                        if (a == null) {
+                            continue;
+                        }
+                    }
+                }
                 gattrs.add(a);
             }
         }
@@ -235,7 +255,7 @@ public class PageRS extends MBDAOSupport {
             AsmAttribute oa = a.getOverridenParent();
             if (oa != null &&
                 a.getAsmId() == id.longValue() &&
-                Objects.equals(oa.getType(), a.getType())) { //types incompatible
+                !Objects.equals(oa.getType(), a.getType())) { //types incompatible
                 attrsToRemove.add(a.getName());
             }
         }
@@ -300,6 +320,7 @@ public class PageRS extends MBDAOSupport {
         update("mergeNewPage",
                "guid", guid,
                "name", name,
+               "description", name,
                "type", type,
                "user", req.getRemoteUser(),
                "nav_parent_id", parent,

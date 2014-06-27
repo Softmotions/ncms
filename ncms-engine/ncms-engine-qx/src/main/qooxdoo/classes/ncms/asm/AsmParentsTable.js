@@ -76,7 +76,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             table.set({
                 showCellFocusIndicator : false,
                 statusBarVisible : false,
-                focusCellOnMouseMove : false});
+                focusCellOnPointerMove : false});
             return table;
         },
 

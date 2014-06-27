@@ -3,9 +3,12 @@ package com.softmotions.ncms.asm;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.am.AsmBooleanAttributeManager;
 import com.softmotions.ncms.asm.am.AsmRefAttributeManager;
 import com.softmotions.ncms.asm.am.AsmResourceAttributeManager;
+import com.softmotions.ncms.asm.am.AsmSelectAttributeManager;
 import com.softmotions.ncms.asm.am.AsmStringAttributeManager;
+import com.softmotions.ncms.asm.am.AsmTreeAttributeManager;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
@@ -47,11 +50,13 @@ public class AsmModule extends AbstractModule {
         attrBinder.addBinding().to(AsmStringAttributeManager.class);
         attrBinder.addBinding().to(AsmRefAttributeManager.class);
         attrBinder.addBinding().to(AsmResourceAttributeManager.class);
+        attrBinder.addBinding().to(AsmSelectAttributeManager.class);
+        attrBinder.addBinding().to(AsmBooleanAttributeManager.class);
+        attrBinder.addBinding().to(AsmTreeAttributeManager.class);
 
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);
         bind(AsmEventsListener.class).asEagerSingleton();
-
 
         bind(AsmRS.class).in(Singleton.class);
         bind(PageRS.class).in(Singleton.class);

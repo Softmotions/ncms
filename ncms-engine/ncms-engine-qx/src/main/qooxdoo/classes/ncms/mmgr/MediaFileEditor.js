@@ -119,6 +119,9 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         __owner : null,
 
         setUpdateFileMeta : function(update) {
+            if (update == null) {
+                return;
+            }
             var items = this.__form.getItems();
             if (items[update["id"]]) {
                 items[update["id"]].setValue(update["value"]);
@@ -137,7 +140,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             table.set({
                 showCellFocusIndicator : false,
                 statusBarVisible : false,
-                focusCellOnMouseMove : true,
+                focusCellOnPointerMove : true,
                 height : 120,
                 allowGrowY : true});
             return table;
@@ -254,7 +257,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             }
 
             this.__owner = {
-                name: spec["owner"],
+                name : spec["owner"],
                 fullName : spec["owner_fullName"]
             };
 
@@ -368,7 +371,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
     destruct : function() {
         this.__viewPane = null;
         this.__infoTable = null;
-        this.__owner  = null;
+        this.__owner = null;
         this._disposeObjects("__form");
         this.removeAllBindings();
     }

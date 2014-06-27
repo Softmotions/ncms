@@ -349,11 +349,9 @@ public class AsmRS extends MBDAOSupport {
         String name = spec.get("name").asText();
 
         if (oldName != null && !oldName.equals(name)) { //attribute renamed
-            update("renameAttribute",
-                   "asm_id", asmId,
-                   "new_name", name,
-                   "old_name", oldName);
+            renameAttribute(asmId, oldName, name);
         }
+
         AsmAttribute attr = selectOne("selectAttrByName",
                                       "asm_id", asmId,
                                       "name", name);
@@ -385,6 +383,29 @@ public class AsmRS extends MBDAOSupport {
         update("upsertAttribute", attr);
     }
 
+    private void renameAttribute(long asmId, String name, String newName) {
+
+        update("renameAttribute",
+               "asm_id", asmId,
+               "new_name", newName,
+               "old_name", name);
+
+        renameAttributeChilds(asmId, name, newName);
+    }
+
+    private void renameAttributeChilds(long parentAsmId, String name, String newName) {
+
+        update("renameAttributeChilds",
+               "parent_id", parentAsmId,
+               "new_name", newName,
+               "old_name", name);
+
+        List<Number> childIds = select("selectNotEmptyChilds",
+                                       "parent_id", parentAsmId);
+        for (Number cId : childIds) {
+            renameAttributeChilds(cId.longValue(), name, newName);
+        }
+    }
 
     @GET
     @Path("select")

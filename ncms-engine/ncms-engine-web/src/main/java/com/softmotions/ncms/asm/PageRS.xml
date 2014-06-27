@@ -50,6 +50,7 @@
                          nav_cached_path,
                          options,
                          mdate, muser, owner,
+                         description,
                          recursive_acl_id)
         KEY (name)
         VALUES (#{guid}, #{name}, #{type},
@@ -57,6 +58,7 @@
                 #{nav_cached_path},
                 #{options,jdbcType=VARCHAR},
                 now(), #{user}, #{user},
+                #{description},
                 #{recursive_acl})
     </update>
 
@@ -105,18 +107,30 @@
         SET
             options     = #{options},
             value       = #{value},
-            large_value = #{largeValue}
+            large_value = #{largeValue},
+            mdate       = now()
         WHERE asm_id = #{asmId}
               AND name = #{name}
     </update>
 
+
+    <update id="updateAttributeOptions"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        UPDATE asm_attrs
+        SET
+            options = #{options}
+        WHERE asm_id = #{asmId}
+              AND name = #{name}
+    </update>
+
+
     <update id="upsertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         MERGE INTO asm_attrs (asm_id, name, label, type,
-                              options, required, value, large_value)
+                              options, required, value, large_value, mdate)
         KEY (asm_id, name)
         VALUES (#{asmId}, #{name}, #{label}, #{type},
-                #{options}, #{required}, #{value}, #{largeValue})
+                #{options}, #{required}, #{value}, #{largeValue}, now())
     </update>
 
 

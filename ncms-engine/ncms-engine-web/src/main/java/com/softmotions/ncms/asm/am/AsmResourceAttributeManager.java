@@ -58,6 +58,10 @@ public class AsmResourceAttributeManager implements AsmAttributeManager {
         return TYPES;
     }
 
+    public AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+        return attr;
+    }
+
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
 
@@ -185,11 +189,11 @@ public class AsmResourceAttributeManager implements AsmAttributeManager {
         }
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode options) {
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode value) {
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
         return attr;
     }
 

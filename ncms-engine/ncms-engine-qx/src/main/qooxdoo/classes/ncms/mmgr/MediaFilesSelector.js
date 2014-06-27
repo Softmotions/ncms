@@ -183,6 +183,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         },
 
         setUpdateFileMeta : function(meta) {
+            if (meta == null) {
+                return;
+            }
             var tm = this.__table.getTableModel();
             tm.updateCachedRows(function(ind, rowdata) {
                 if (meta["id"] === rowdata["id"]) {

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Assembly attribute.
@@ -49,6 +50,8 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
     @JsonView(Asm.ViewFull.class)
     boolean required;
+
+    Date mdate;
 
     public AsmAttribute() {
     }
@@ -144,6 +147,14 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
     public void setRequired(boolean required) {
         this.required = required;
+    }
+
+    public Date getMdate() {
+        return mdate;
+    }
+
+    public void setMdate(Date mdate) {
+        this.mdate = mdate;
     }
 
     @JsonIgnore

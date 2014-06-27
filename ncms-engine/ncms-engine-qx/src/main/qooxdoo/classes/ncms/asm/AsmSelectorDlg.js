@@ -36,7 +36,7 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
                         new qx.ui.table.selection.Model()
                                 .set({selectionMode : qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION}),
                         useColumns);
-        selector.getTable().addListener("cellDblclick", this.__ok, this);
+        selector.getTable().addListener("cellDbltap", this.__ok, this);
 
         this.add(selector, {flex : 1});
 

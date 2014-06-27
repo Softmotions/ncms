@@ -154,11 +154,11 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                 }
             }, this));
             table.setDataRowRenderer(rr);
-            table.addListener("cellDblclick", this.__onEditOrOverride, this);
+            table.addListener("cellDbltap", this.__onEditOrOverride, this);
             table.set({
                 showCellFocusIndicator : false,
                 statusBarVisible : true,
-                focusCellOnMouseMove : false});
+                focusCellOnPointerMove : false});
 
             table.getSelectionModel()
                     .addListener("changeSelection", this._syncState, this);

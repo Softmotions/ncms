@@ -52,6 +52,30 @@
     </update>
 
 
+    <update id="renameAttributeChilds"
+            parameterType="map">
+        UPDATE asm_attrs
+        SET name = #{new_name}
+        WHERE name = #{old_name}
+              AND asm_id IN (SELECT
+                                 asm_id
+                             FROM asm_parents
+                             WHERE asm_parent_id = #{parent_id})
+    </update>
+
+
+    <select id="selectNotEmptyChilds"
+            parameterType="map"
+            resultType="long">
+        SELECT
+            DISTINCT
+            p2.asm_parent_id
+        FROM asm_parents AS p1
+            INNER JOIN asm_parents p2 ON p2.asm_parent_id = p1.asm_id
+        WHERE p1.asm_parent_id = #{parent_id}
+    </select>
+
+
     <delete id="deleteAttribute"
             parameterType="map">
         DELETE FROM asm_attrs
@@ -63,8 +87,8 @@
     <insert id="insertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         INSERT INTO asm_attrs
-        (asm_id, name, label, type, options, required, value, large_value)
-        VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue})
+        (asm_id, name, label, type, options, required, value, large_value, mdate)
+        VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
     </insert>
 
 
@@ -85,9 +109,9 @@
 
     <update id="upsertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        MERGE INTO asm_attrs (asm_id, name, label, type, options, required, value, large_value)
+        MERGE INTO asm_attrs (asm_id, name, label, type, options, required, value, large_value, mdate)
         KEY (asm_id, name)
-        VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue})
+        VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
     </update>
 
 
@@ -109,7 +133,8 @@
                               a2.ordinal
                           FROM asm_attrs a2
                           WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
-                                AND a1.ordinal != a2.ordinal)
+                                AND a1.ordinal != a2.ordinal),
+            a1.mdate   = now()
         WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
 
