@@ -16,6 +16,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,6 +29,8 @@ import java.util.Map;
  */
 @Singleton
 public class AsmTreeAttributeManager implements AsmAttributeManager {
+
+    private static final Logger log = LoggerFactory.getLogger(AsmTreeAttributeManager.class);
 
     private static final String[] TYPES = new String[]{"tree"};
 
@@ -44,7 +48,7 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
     public AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
         if (StringUtils.isBlank(attr.getEffectiveValue())) {
             try {
-                attr.setEffectiveValue(mapper.writeValueAsString(new JsonTree("root")));
+                attr.setEffectiveValue(mapper.writeValueAsString(new JsonTree(attr.getLabel() != null ? attr.getLabel() : "root")));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

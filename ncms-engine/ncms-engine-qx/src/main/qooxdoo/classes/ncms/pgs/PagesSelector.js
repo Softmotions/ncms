@@ -59,8 +59,22 @@ qx.Class.define("ncms.pgs.PagesSelector", {
         /**
          * Pages search form
          */
-        _searchSelector : null
+        _searchSelector : null,
 
+
+        getSelectedPageWithExtraInfo : function(cb, cbCtx) {
+            var sp = this.getSelectedPage();
+            if (sp == null) {
+                cb.call(cbCtx, null);
+                return;
+            }
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.path", {"id" : sp["id"]}),
+                    "GET", "application/json");
+            req.send(function(resp) {
+                qx.lang.Object.mergeWith(sp, resp.getContent() || {}, true);
+                cb.call(cbCtx, sp);
+            });
+        }
     },
 
     destruct : function() {

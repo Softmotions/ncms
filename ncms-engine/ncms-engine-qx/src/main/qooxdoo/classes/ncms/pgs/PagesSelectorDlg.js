@@ -57,11 +57,14 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
 
         _okBt : null,
 
+        __closeCmd : null,
+
         _ok : function() {
-            var sp = this._selector.getSelectedPage();
-            if (sp != null) {
-                this.fireDataEvent("completed", sp);
-            }
+            this.__selector.getSelectedPageWithExtraInfo(function(sp) {
+                if (sp != null) {
+                    this.fireDataEvent("completed", sp);
+                }
+            }, this);
         },
 
         _syncState : function() {
@@ -81,5 +84,6 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
     destruct : function() {
         this._okBt = null;
         this._selector = null;
+        this._disposeObjects("__closeCmd");
     }
 });

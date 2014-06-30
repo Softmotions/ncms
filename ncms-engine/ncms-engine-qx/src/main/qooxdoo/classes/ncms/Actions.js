@@ -168,6 +168,10 @@ qx.Class.define("ncms.Actions", {
         // pid: page id
         // user: user login
         this._action("pages.acl.user", "/ncms/rs/adm/pages/acl/{pid}/{user}");
+
+        //GET JSON Object contains full label-path and id-path to the specified page
+        // {id}: Page ID
+        this._action("pages.path", "/ncms/rs/adm/pages/path/{id}");
     },
 
     members : {

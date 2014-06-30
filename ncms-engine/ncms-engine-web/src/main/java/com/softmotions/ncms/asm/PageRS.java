@@ -91,6 +91,73 @@ public class PageRS extends MBDAOSupport {
         this.amRegistry = amRegistry;
     }
 
+
+    @GET
+    @Path("/path/{id}")
+    public ObjectNode selectPageLabelPath(@PathParam("id") Long id) {
+        ObjectNode res = mapper.createObjectNode();
+        Map<String, Object> qres = selectOne("selectNavPath", "id", id);
+        if (qres == null) {
+            throw new NotFoundException();
+        }
+        ArrayNode idPath = res.putArray("idPath");
+        ArrayNode labelPath = res.putArray("labelPath");
+        ArrayNode guidPath = res.putArray("guidPath");
+
+        String cpath = (String) qres.get("nav_cached_path");
+        if (cpath == null) {
+            guidPath.add((String) qres.get("guid"));
+            labelPath.add((String) qres.get("name"));
+            idPath.add(id);
+            return res;
+        }
+        cpath = StringUtils.strip(cpath, "/");
+        if (StringUtils.isBlank(cpath)) {
+            guidPath.add((String) qres.get("guid"));
+            labelPath.add((String) qres.get("name"));
+            idPath.add(id);
+            return res;
+        }
+        String[] idsArr = cpath.split("/");
+        if (idsArr.length == 0) {
+            guidPath.add((String) qres.get("guid"));
+            labelPath.add((String) qres.get("name"));
+            idPath.add(id);
+            return res;
+        }
+        Long[] ids = new Long[idsArr.length];
+        for (int i = 0; i < ids.length; ++i) {
+            ids[i] = Long.parseLong(idsArr[i]);
+            idPath.add(ids[i]);
+        }
+
+        List<Map<String, Object>> rows = select("selectPageInfoIN",
+                                                "ids", ids);
+        Map<Long, Map<String, Object>> rowsMap = new HashMap<>(ids.length);
+        for (Map<String, Object> row : rows) {
+            Number eId = (Number) row.get("id");
+            if (eId == null) {
+                continue;
+            }
+            rowsMap.put(eId.longValue(), row);
+        }
+        for (Long eId : ids) {
+            Map<String, Object> row = rowsMap.get(eId);
+            if (eId == null) {
+                labelPath.addNull();
+                guidPath.addNull();
+            } else {
+                labelPath.add((String) row.get("name"));
+                guidPath.add((String) row.get("guid"));
+            }
+        }
+        guidPath.add((String) qres.get("guid"));
+        labelPath.add((String) qres.get("name"));
+        idPath.add(id);
+        return res;
+    }
+
+
     /**
      * Get page data for info pane.
      *
@@ -516,7 +583,7 @@ public class PageRS extends MBDAOSupport {
 
                 List<Number> racls = select("childRecursiveAcls", "nav_path", navPath + pid + "/%", "with_user", wsUser.getName());
                 for (Number racl : racls) {
-                    Number nracl= selectOne("newAclId");
+                    Number nracl = selectOne("newAclId");
                     update("copyAcl", "prev_acl", racl, "new_acl", nracl);
                     update("updateChildRecursiveAcl",
                            "nav_path", navPath + pid + "/%",
@@ -577,7 +644,7 @@ public class PageRS extends MBDAOSupport {
 
             List<Number> racls = select("childRecursiveAcls", "nav_path", navPath + pid + "/%", "exclude_acl", newRecAcl, "with_user", user);
             for (Number racl : racls) {
-                Number nracl= selectOne("newAclId");
+                Number nracl = selectOne("newAclId");
                 update("copyAcl", "prev_acl", racl, "new_acl", nracl);
                 update("updateChildRecursiveAcl",
                        "nav_path", navPath + pid + "/%",
@@ -637,7 +704,7 @@ public class PageRS extends MBDAOSupport {
                 continue;
             }
 
-            Number nracl= selectOne("newAclId");
+            Number nracl = selectOne("newAclId");
             update("copyAcl", "prev_acl", racl, "new_acl", nracl);
             update("updateChildRecursiveAcl",
                    "nav_path", navPath + pid + "/%",
