@@ -661,12 +661,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 log.info("Importing " + fpath);
                 try (FileInputStream fis = new FileInputStream(f)) {
                     try {
-                        Long id = _put(folder, name, req, fis);
-                        if (id != null) {
-                            update("updateSysFlag",
-                                   "id", id,
-                                   "sys", 1);
-                        }
+                        _put(folder, name, req, fis);
                     } catch (Exception e) {
                         throw new IOException(e);
                     }
@@ -885,12 +880,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             boolean parentInSystem = isInSystemFolder(folder);
             for (int i = 0, l = files.length; i < l; ++i) {
                 File file = files[i];
-
                 boolean inSystem = parentInSystem || isInSystemFolder(folder + file.getName());
                 if (file.isDirectory() && inSystem && !req.isUserInRole("admin")) {
                     continue;
                 }
-
                 res.addObject()
                         .put("label", file.getName())
                         .put("status", file.isDirectory() ? 1 : 0)
@@ -1309,15 +1302,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (req.isUserInRole("admin")) {
             return;
         }
-
         Map<String, ?> fmeta = selectOne("selectResourceAttrsById", "id", id);
         if (fmeta == null) {
-            // O_o meta not found by id? it isn't possible!
-            String msg = message.get("ncms.mmgr.access.denied", req, "");
-            throw new NcmsMessageException(msg, true);
+            throw new NotFoundException();
         }
-
-
         _checkEditAccess(fmeta, StringUtils.strip((String) fmeta.get("folder") + fmeta.get("name"), "/"), req);
     }
 
@@ -1334,7 +1322,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     private void _checkEditAccess(Map<String, ?> fmeta, String path, HttpServletRequest req) {
-        boolean isFile = fmeta != null && 0 == (Integer) fmeta.get("status");
+        boolean isFile = (fmeta != null && 0 == ((Number) fmeta.get("status")).intValue());
         if (isFile) {
             if (!req.getRemoteUser().equals(fmeta.get("owner"))) {
                 String msg = message.get("ncms.mmgr.access.denied", req, path);
@@ -1345,17 +1333,16 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (!f.isDirectory()) {
                 return;
             }
-
             // check contains file entities in directory
             int count = selectOne("count", "folder", normalizeFolder(path));
             if (count > 0) {
-                throw new NcmsMessageException(message.get("ncms.mmgr.access.dened.folder.notEmpty", req), true);
+                throw new NcmsMessageException(message.get("ncms.mmgr.access.denied.folder.notEmpty", req), true);
             }
 
             // check contains subfolders in directory
             File[] files = f.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
             if (files != null && files.length > 0) {
-                throw new NcmsMessageException(message.get("ncms.mmgr.access.dened.folder.notEmpty", req), true);
+                throw new NcmsMessageException(message.get("ncms.mmgr.access.denied.folder.notEmpty", req), true);
             }
         }
     }

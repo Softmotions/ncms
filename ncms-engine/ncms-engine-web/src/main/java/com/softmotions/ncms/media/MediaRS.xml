@@ -243,13 +243,6 @@
         VALUES (#{id}, #{keyword})
     </insert>
 
-    <update id="updateSysFlag" parameterType="map">
-        UPDATE media_entity
-        SET
-            sys = #{sys}
-        WHERE id = #{id}
-    </update>
-
     <select id="selectResourceAttrsByPath" parameterType="map" resultType="map">
         SELECT
             id             AS "id",

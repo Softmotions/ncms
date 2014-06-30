@@ -523,7 +523,7 @@ public class PageRS extends MBDAOSupport {
             defaultRights = "wnd";
         }
 
-        Number localAcl = aclInfo != null ? (Number) aclInfo.get("local_acl") : null;
+        Number localAcl = (Number) aclInfo.get("local_acl");
         if (localAcl != null) {
             Integer count = selectOne("checkUserInAcl", "user", wsUser.getName(), "aids", new Number[]{localAcl});
             if (count > 0) {
@@ -779,7 +779,9 @@ public class PageRS extends MBDAOSupport {
         }
 
         String rights = "";
-        List<Map<String, ?>> arights = select("selectAclUserRights", "pid", row.get("id"), "user", req.getRemoteUser());
+        List<Map<String, ?>> arights = select("selectAclUserRights",
+                                              "pid", row.get("id"),
+                                              "user", req.getRemoteUser());
         for (Map<String, ?> aright : arights) {
             rights = mergeRights(rights, (String) aright.get("rights"));
         }

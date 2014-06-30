@@ -1,11 +1,14 @@
 /**
  * Tree value editor widget.
  *
+ * @asset(ncms/icon/22/places/folder.png)
+ * @asset(ncms/icon/22/places/folder-open.png)
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
  * @asset(ncms/icon/16/actions/application_form_edit.png)
- * @asset(ncms/icon/22/places/folder.png)
- * @asset(ncms/icon/22/places/folder-open.png)
+ * @asset(ncms/icon/16/misc/globe.png)
+ * @asset(ncms/icon/16/misc/box.png)
+ * @asset(ncms/icon/16/misc/document-text-image.png)
  * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
  */
 qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
@@ -102,6 +105,12 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             tree.setIconOptions({
                 converter : function(value, model, source, target) {
                     switch (value) {
+                        case "link":
+                            return "ncms/icon/16/misc/globe.png";
+                        case "page":
+                            return "ncms/icon/16/misc/document-text-image.png";
+                        case "file":
+                            return "ncms/icon/16/misc/box.png";
                         default:
                             if (model.getChildren != null) {
                                 var fdSuffix = target.isOpen() ? "-open" : "";
