@@ -10,13 +10,19 @@ qx.Class.define("ncms.pgs.PageEditorAccessPane", {
         this.base(arguments, this.tr("Access rights"));
         this.setLayout(new qx.ui.layout.VBox(5));
         this.addListener("loadPane", this.__onLoadPane, this);
+
+        this.__table = new ncms.pgs.PageEditorAccessTable();
+        this.add(this.__table, {flex : 1});
     },
 
     members : {
 
+        __table : null,
+
         __onLoadPane : function(ev) {
             var spec = ev.getData();
-            qx.log.Logger.info("Access rights load pane=" + spec);
+
+            this.__table.setPageSpec(spec);
         }
 
     },

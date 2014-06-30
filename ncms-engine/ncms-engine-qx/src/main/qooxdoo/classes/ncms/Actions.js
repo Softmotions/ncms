@@ -157,6 +157,17 @@ qx.Class.define("ncms.Actions", {
         // {id}: Page ID
         // {templateId} Template ID
         this._action("pages.set.template", "/ncms/rs/adm/pages/template/{id}/{templateId}");
+
+        // GET page acl
+        // pid: page id
+        this._action("pages.acl", "/ncms/rs/adm/pages/acl/{pid}");
+
+        // PUT add new user to acl
+        // DELETE delete user from acls for this page
+        // POST update user rights
+        // pid: page id
+        // user: user login
+        this._action("pages.acl.user", "/ncms/rs/adm/pages/acl/{pid}/{user}");
     },
 
     members : {
