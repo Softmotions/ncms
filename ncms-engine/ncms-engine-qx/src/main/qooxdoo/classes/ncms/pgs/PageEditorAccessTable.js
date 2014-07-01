@@ -23,12 +23,19 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             check : "Object",
             nullable : true,
             apply : "__applyPageSpec"
+        },
+
+        constViewSpec : {
+            check : "Object",
+            nullable : true,
+            apply : "__applyConstViewSpec"
         }
     },
 
-    construct : function() {
+    construct : function(constViewSpec) {
         this.base(arguments);
 
+        this.setConstViewSpec(constViewSpec || null);
         this._reload([]);
     },
 
@@ -39,9 +46,27 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             this._load();
         },
 
+        __applyConstViewSpec : function(viewSpec) {
+            this._load();
+        },
+
+        __applyConstViewSpecToRequest : function(req) {
+            var vspec = this.getConstViewSpec() || {};
+            for (var k in vspec) {
+                if (vspec[k] != null) {
+                    req.setParameter(k, vspec[k], false);
+                }
+            }
+        },
+
         _load : function() {
             var spec = this.getPageSpec();
+            if (!spec) {
+                return;
+            }
+
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl", {pid : spec["id"]}), "GET", "application/json");
+            this.__applyConstViewSpecToRequest(req);
             req.send(function(resp){
                 var data = resp.getContent() || [];
                 this._reload(data);
@@ -105,7 +130,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
                 var item = data[i];
                 var am = item["rights"];
                 items.push([
-                    [item["user"], item["userFullName"], am.indexOf("w") != -1, am.indexOf("n") != -1, am.indexOf("d") != -1, item["recursive"] == 1],
+                    [item["user"], item["userFullName"], am.indexOf("w") != -1, am.indexOf("n") != -1, am.indexOf("d") != -1],
                     item
                 ]);
             }
@@ -142,13 +167,6 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
                         "type" : "boolean",
                         "editable" : true,
                         "width" : "1*"
-                    },
-                    {
-                        "title" : this.tr("Recursive").toString(),
-                        "id" : "role.recursive",
-                        "type" : "boolean",
-                        "editable" : true,
-                        "width" : "1*"
                     }
                 ],
                 "items" : items
@@ -167,6 +185,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
                 dlg.destroy();
 
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: data["name"]}), "PUT", "application/json");
+                this.__applyConstViewSpecToRequest(req);
                 req.send(function(resp){
                     this._load();
                 }, this);
@@ -184,7 +203,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
 
             var spec = this.getPageSpec();
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user["user"]}), "DELETE", "application/json");
-            req.setParameter("recursive", user["recursive"] == 1, false);
+            this.__applyConstViewSpecToRequest(req);
             req.send(function(resp){
                 this._load();
             }, this);
@@ -200,12 +219,8 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             var user = this.getTableModel().getRowData(data.row);
             var parameter = this.getTableModel().getColumnId(data.col);
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user.rowData["user"]}), "POST", "application/json");
-            req.setParameter("recursive", user.rowData["recursive"] == 1, true);
-            if (parameter == "role.recursive") {
-                req.setParameter(parameter, data.value, true);
-            } else {
-                req.setParameter("rights", this.__populateUserRights(user.rowData, parameter, data.value), true);
-            }
+            this.__applyConstViewSpecToRequest(req);
+            req.setParameter("rights", this.__populateUserRights(user.rowData, parameter, data.value), false);
             req.send(function(resp){
                 this._load();
             }, this);

@@ -11,23 +11,31 @@ qx.Class.define("ncms.pgs.PageEditorAccessPane", {
         this.setLayout(new qx.ui.layout.VBox(5));
         this.addListener("loadPane", this.__onLoadPane, this);
 
-        this.__table = new ncms.pgs.PageEditorAccessTable();
-        this.add(this.__table, {flex : 1});
+        this.add(new qx.ui.basic.Label(this.tr("Local")));
+        this.__locAclTable = new ncms.pgs.PageEditorAccessTable({recursive : false});
+        this.add(this.__locAclTable, {flex : 1});
+
+        this.add(new qx.ui.basic.Label(this.tr("Recursive")));
+        this.__recAclTable = new ncms.pgs.PageEditorAccessTable({recursive : true});
+        this.add(this.__recAclTable, {flex : 1});
     },
 
     members : {
 
-        __table : null,
+        __locAclTable : null,
+        __recAclTable : null,
 
         __onLoadPane : function(ev) {
             var spec = ev.getData();
 
-            this.__table.setPageSpec(spec);
+            this.__locAclTable.setPageSpec(spec);
+            this.__recAclTable.setPageSpec(spec);
         }
 
     },
 
     destruct : function() {
-        //this._disposeObjects("__field_name");
+        this.__locAclTable = null;
+        this.__recAclTable = null;
     }
 });

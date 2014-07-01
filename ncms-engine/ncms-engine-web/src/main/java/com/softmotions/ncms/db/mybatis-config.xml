@@ -52,6 +52,7 @@
         <mapper resource="com/softmotions/ncms/asm/AsmDAO.xml"/>
         <mapper resource="com/softmotions/ncms/asm/AsmRS.xml"/>
         <mapper resource="com/softmotions/ncms/asm/PageRS.xml"/>
+        <mapper resource="com/softmotions/ncms/asm/PageSecurityService.xml"/>
         <mapper resource="com/softmotions/ncms/asm/AsmEventsListener.xml"/>
         <mapper resource="com/softmotions/ncms/media/MediaRS.xml"/>
     </mappers>
