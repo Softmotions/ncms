@@ -16,11 +16,11 @@
         INSERT INTO media_entity (
             folder, name, status, mdate,
             content_type, put_content_type, content_length,
-            owner)
+            owner, description, tags)
         VALUES (
             #{folder}, #{name}, #{status}, now(),
             #{content_type}, #{put_content_type}, #{content_length},
-            #{owner})
+            #{owner}, #{description}, #{tags})
     </insert>
 
     <update id="updateEntity" parameterType="map">
@@ -256,14 +256,17 @@
 
     <select id="selectResourceAttrsByPath" parameterType="map" resultType="map">
         SELECT
-            id             AS "id",
-            name           AS "name",
-            folder         AS "folder",
-            content_type   AS "content_type",
-            content_length AS "content_length",
-            mdate          AS "mdate",
-            owner          AS "owner",
-            status         AS "status"
+            id               AS "id",
+            name             AS "name",
+            folder           AS "folder",
+            content_type     AS "content_type",
+            put_content_type AS "put_content_type",
+            content_length   AS "content_length",
+            mdate            AS "mdate",
+            owner            AS "owner",
+            description      AS "description",
+            tags             AS "tags",
+            status           AS "status"
         FROM media_entity
         WHERE folder = #{folder}
               AND name = #{name}
@@ -271,14 +274,17 @@
 
     <select id="selectResourceAttrsById" parameterType="map" resultType="map">
         SELECT
-            id             AS "id",
-            name           AS "name",
-            folder         AS "folder",
-            content_type   AS "content_type",
-            content_length AS "content_length",
-            mdate          AS "mdate",
-            owner          AS "owner",
-            status         AS "status"
+            id               AS "id",
+            name             AS "name",
+            folder           AS "folder",
+            content_type     AS "content_type",
+            put_content_type AS "put_content_type",
+            content_length   AS "content_length",
+            mdate            AS "mdate",
+            owner            AS "owner",
+            description      AS "description",
+            tags             AS "tags",
+            status           AS "status"
         FROM media_entity
         WHERE id = #{id}
     </select>

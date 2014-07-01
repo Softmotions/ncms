@@ -398,22 +398,61 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         _copy(req, "", files);
     }
 
-    private void _copy(HttpServletRequest req, String target, ArrayNode files) throws Exception {
-        log.info("copy target=" + target + " files=" + files);
-        if (target.contains("..")) {
-            throw new BadRequestException(target);
+    private void _copy(HttpServletRequest req, String tfolder, ArrayNode files) throws Exception {
+        log.info("tfolder=" + tfolder + " files=" + files);
+        if (tfolder.contains("..")) {
+            throw new BadRequestException(tfolder);
         }
-        target = StringUtils.strip(target, "/");
-        checkEditAccess(target, req);
+        tfolder = normalizeFolder(tfolder);
+        checkEditAccess(tfolder, req);
+
         for (int i = 0, l = files.size(); i < l; ++i) {
-            String src = files.get(i).asText();
-            try (ResourceLock l1 = new ResourceLock(src, false)) {
-                File f1 = new File(basedir, src);
-                if (!f1.exists()) {
+            String spath = normalizePath(files.get(i).asText());
+            if (spath.contains("..")) {
+                continue;
+            }
+            try (ResourceLock l1 = new ResourceLock(spath, false)) {
+                String sfolder = getResourceParentFolder(spath);
+                String sname = getResourceName(spath);
+                String tpath = tfolder + sname;
+                if (spath.equals(tpath)) {
+                    continue;
+                }
+                File sfile = new File(basedir, spath);
+                if (!sfile.exists()) {
                     continue;
                 }
 
+                try (ResourceLock l2 = new ResourceLock(tpath, true)) {
+                    File tfile = new File(basedir, tpath);
+                    Map<String, Object> row = selectOne("selectResourceAttrsByPath",
+                                                        "folder", sfolder,
+                                                        "name", sname);
+                    if (row == null) {
+                        log.error("File to be copied: " + spath + " is missing in DB");
+                        continue;
+                    }
 
+                    FileUtils.copyFile(sfile, tfile);
+
+                    row.put("folder", tfolder);
+                    row.put("owner", req.getRemoteUser());
+                    row.remove("id");
+
+                    delete("deleteFile",
+                           "folder", tfolder,
+                           "name", sname);
+
+                    insert("insertEntity", row);
+
+                    if (row.get("id") != null) {
+                        updateFTSKeywords(((Number) row.get("id")).longValue(), req);
+                    }
+
+                } catch (IOException e) {
+                    log.error("Failed to copy " + spath + " => " + tpath, e);
+                    throw e;
+                }
             }
         }
     }
@@ -717,8 +756,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         Set<String> keywords = new HashSet<>();
         String name = (String) row.get("name");
         String ctype = (String) row.get("content_type");
+        String val;
 
-        String val = null;
         if (row.get("description") != null) {
             val = ((String) row.get("description")).toLowerCase();
             Collections.addAll(keywords, FTSUtils.stemWordsLangAware(val, locale, 3));
@@ -797,7 +836,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     private MBCriteriaQuery createSelectQ(HttpServletRequest req, boolean count) {
         Locale locale = message.getLocale(req);
         MBCriteriaQuery cq = createCriteria();
-        String val = null;
+        String val;
 
         if (!count) {
             val = req.getParameter("firstRow");

@@ -45,7 +45,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
             showMaximize : true,
             allowMaximize : true,
             showStatusbar : true,
-            width : 620,
+            width : 700,
             height : 450
         });
 
