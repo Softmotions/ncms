@@ -58,7 +58,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
-            var w = new ncms.asm.am.TreeAMValueWidget();
+            var w = new ncms.asm.am.TreeAMValueWidget(asmSpec);
             this._fetchAttributeValue(attrSpec, function(val) {
                 var opts = ncms.Utils.parseOptions(attrSpec["options"]);
                 var model = qx.data.marshal.Json.createModel(JSON.parse(val), true);

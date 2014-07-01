@@ -44,7 +44,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         }
     },
 
-    construct : function(model, options) {
+    construct : function(asmSpec, model, options) {
         this.base(arguments);
         this.setLayout(new qx.ui.layout.VBox());
         this.getChildControl("toolbar");
@@ -55,9 +55,12 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         if (options != null) {
             this.setOptions(options);
         }
+        this.__asmSpec = asmSpec;
     },
 
     members : {
+
+        __asmSpec : null,
 
         __tree : null,
 
@@ -271,7 +274,16 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         },
 
         __onAddFile : function() {
-            qx.log.Logger.info("add file");
+            var dlg = new ncms.mmgr.PageFilesSelectorDlg(
+                    this.__asmSpec["guid"],
+                    this.tr("Select file for page: %1", this.__asmSpec["name"]),
+                    {
+                        "allowModify" : true,
+                        "allowMove" : false,
+                        "smode" : qx.ui.table.selection.Model.SINGLE_SELECTION
+                    }
+            );
+            dlg.open();
         },
 
         __onRemove : function() {

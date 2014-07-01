@@ -1,10 +1,11 @@
 /**
- * Select file dialog.
+ * Files selector dialog dedicated to the specific page.
  */
-qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
+qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
     extend : qx.ui.window.Window,
 
     events : {
+
         /**
          * Data example:
          *
@@ -33,9 +34,17 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         }
     },
 
-    construct : function(allowModify, caption, icon) {
-        allowModify = !!allowModify;
-        this.base(arguments, caption, icon);
+    /**
+     *
+     * @param pageGuid {String} The page GUI.
+     * @param caption {String?} Dialog window caption.
+     * @param opts {Object?} ncms.mmgr.MediaFilesSelector options.
+     */
+    construct : function(pageGuid, caption, opts) {
+        if (typeof pageGuid !== "string" || pageGuid.length != 32) {
+            throw new Error("Invalid page guid: " + pageGuid);
+        }
+        this.base(arguments, caption);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
             modal : true,
@@ -48,32 +57,11 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         });
 
         var vsp = new qx.ui.splitpane.Pane("horizontal");
-        var folders = new ncms.mmgr.MediaItemTreeSelector(allowModify);
-
-        var leftSide = new qx.ui.container.Composite(new qx.ui.layout.VBox(5));
-        leftSide.add(folders, {flex : 1});
-
+        var leftSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
+        var files = this.__files = new ncms.mmgr.PageFilesSelector(pageGuid, opts);
+        leftSide.add(files, {flex : 1});
 
         var rightSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-        var files = this.__files = new ncms.mmgr.MediaFilesSelector(allowModify, {status : 0});
-        files.getTable().addListener("cellDbltap", this.__ok, this);
-        folders.bind("itemSelected", files, "item");
-        rightSide.add(files, {flex : 1});
-
-        //Bottom buttons
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
-        hcont.setPadding(5);
-
-        var bt = this.__okBt = new qx.ui.form.Button(this.tr("Ok")).set({enabled : false});
-        bt.addListener("execute", this.__ok, this);
-        hcont.add(bt);
-
-        bt = new qx.ui.form.Button(this.tr("Cancel"));
-        bt.addListener("execute", this.close, this);
-        hcont.add(bt);
-        rightSide.add(hcont);
-
-
         var thumbnail = new qx.ui.basic.Image().set(
                 {allowGrowX : false, allowGrowY : false,
                     allowShrinkX : false, allowShrinkY : false,
@@ -81,13 +69,23 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
                     alignY : "middle",
                     maxHeight : 128, maxWidth : 128,
                     scale : true});
-
-        leftSide.add(thumbnail);
+        rightSide.add(thumbnail);
         thumbnail.exclude();
 
         vsp.add(leftSide, 1);
-        vsp.add(rightSide, 3);
+        vsp.add(rightSide, 0);
         this.add(vsp, {flex : 1});
+
+        //Bottom buttons
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var bt = this.__okBt = new qx.ui.form.Button(this.tr("Ok")).set({enabled : false});
+        bt.addListener("execute", this.__ok, this);
+        hcont.add(bt);
+
+        bt = new qx.ui.form.Button(this.tr("Cancel"));
+        bt.addListener("execute", this.close, this);
+        hcont.add(bt);
+        this.add(hcont);
 
         files.addListener("fileSelected", function(ev) {
             var spec = ev.getData();
@@ -108,7 +106,6 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
                 this.setStatus("");
             }
         }, this);
-
 
         this.__closeCmd = new qx.ui.core.Command("Esc");
         this.__closeCmd.addListener("execute", this.close, this);
@@ -137,20 +134,15 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
             if (ctype && ff(ctype)) {
                 this.fireDataEvent("completed", spec);
             }
-        },
-
-        __dispose : function() {
-            if (this.__closeCmd) {
-                this.__closeCmd.setEnabled(false);
-            }
-            this._disposeObjects("__closeCmd");
-            this.__okBt = null;
-            this.__files = null;
         }
     },
 
     destruct : function() {
-        this.__dispose();
-        //this._disposeObjects("__field_name");
+        if (this.__closeCmd) {
+            this.__closeCmd.setEnabled(false);
+        }
+        this._disposeObjects("__closeCmd");
+        this.__okBt = null;
+        this.__files = null;
     }
 });
