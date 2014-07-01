@@ -107,6 +107,17 @@
     </select>
 
 
+    <!-- Select count  -->
+    <select id="countNotOwned" resultType="int" parameterType="map">
+        SELECT
+            COUNT(*)
+        FROM media_entity e
+        WHERE
+            e.folder LIKE #{folder}
+            AND e.owner != #{owner}
+    </select>
+
+
     <select id="selectByKeywords" resultType="map" parameterType="map">
         SELECT
         e.id AS "id",

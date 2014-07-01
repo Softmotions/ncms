@@ -6,17 +6,19 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
 
     events : {
         /**
+         * Array of selected files.
          * Data example:
          *
-         * {"id":2,
+         * [ {"id":2,
          *   "name":"496694.png",
          *   "folder":"/test/",
          *   "content_type":"image/png",
          *   "content_length":10736,
          *   "owner" : "adam",
          *   "tags" : "foo, bar"
-         *   }
-         * or null
+         *   },
+         *   ...
+         * ]
          */
         "completed" : "qx.event.type.Data"
     },
@@ -33,9 +35,9 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         }
     },
 
-    construct : function(allowModify, caption, icon) {
+    construct : function(allowModify, caption, opts) {
         allowModify = !!allowModify;
-        this.base(arguments, caption, icon);
+        this.base(arguments, caption);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
             modal : true,
@@ -55,7 +57,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
 
 
         var rightSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-        var files = this.__files = new ncms.mmgr.MediaFilesSelector(allowModify, {status : 0});
+        var files = this.__files = new ncms.mmgr.MediaFilesSelector(allowModify, {status : 0}, opts);
         files.getTable().addListener("cellDbltap", this.__ok, this);
         folders.bind("itemSelected", files, "item");
         rightSide.add(files, {flex : 1});
@@ -129,13 +131,18 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         },
 
         __ok : function() {
-            var spec = this.__files.getSelectedFile();
-            var ctype = spec ? spec["content_type"] : null;
             var ff = this.getCtypeAcceptor() || function() {
                 return true;
             };
-            if (ctype && ff(ctype)) {
-                this.fireDataEvent("completed", spec);
+            var sfiles = this.__files.getSelectedFiles();
+            sfiles = sfiles.filter(
+                    function(spec) {
+                        var ctype = spec ? spec["content_type"] : null;
+                        return !!(ctype && ff(ctype));
+                    }
+            );
+            if (sfiles.length > 0) {
+                this.fireDataEvent("completed", sfiles);
             }
         },
 

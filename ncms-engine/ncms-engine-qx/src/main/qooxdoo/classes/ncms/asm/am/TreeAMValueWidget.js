@@ -274,6 +274,8 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         },
 
         __onAddFile : function() {
+            var tree = this.__tree;
+            var item = this.__getInsertParent();
             var dlg = new ncms.mmgr.PageFilesSelectorDlg(
                     this.__asmSpec["guid"],
                     this.tr("Select file for page: %1", this.__asmSpec["name"]),
@@ -283,6 +285,21 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                         "smode" : qx.ui.table.selection.Model.SINGLE_SELECTION
                     }
             );
+            dlg.addListener("completed", function(ev) {
+                //data={"id":18,"name":"nlogo.jpg","folder":"/pages/162d/ab35/f252/f014/695e/6e66/5f63/bbcb/",
+                // "content_type":"image/jpeg","owner":"admin","owner_fullName":"Антон Адаманский",
+                // "content_length":16519,"description":"dslsd;lds;","tags":null}
+                var data = ev.getData();
+                var node = {
+                    "id" : data["id"],
+                    "name" : data["name"],
+                    "icon" : "file",
+                    "extra" : data["folder"] + data["name"]
+                };
+                item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
+                tree.openNode(item);
+                dlg.close();
+            }, this);
             dlg.open();
         },
 

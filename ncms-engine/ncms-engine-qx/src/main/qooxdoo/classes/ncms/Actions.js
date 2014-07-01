@@ -84,6 +84,10 @@ qx.Class.define("ncms.Actions", {
         //PUT /ncms/rs/media/rename/<path to folder>
         this._action("media.move", "/ncms/rs/media/move");
 
+        //PUT  /ncms/rs/media/copy-batch/<path to folde>
+        // Payload: JSON array of file paths to copy into {target} dir
+        this._action("media.copy-batch", "/ncms/rs/media/copy-batch");
+
         //DELETE media file/folder
         this._action("media.delete", "/ncms/rs/media/delete");
 

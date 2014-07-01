@@ -71,6 +71,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 opts["allowMove"] = true;
             }
         }
+        if (opts["allowSubfoldersView"] === undefined) {
+            opts["allowSubfoldersView"] = true;
+        }
 
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", function() {
@@ -125,7 +128,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
         }
-
         if (this.__allowModify) {
             table.addListener("dataEdited", function(ev) {
                 var tm = table.getTableModel();
@@ -208,6 +210,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             return this.__table.getSelectedFile()
         },
 
+        getSelectedFiles : function() {
+            return this.__table.getSelectedFiles();
+        },
+
         _setupToolbar : function() {
             var toolbar = new qx.ui.toolbar.ToolBar();
 
@@ -228,8 +234,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 bt.addListener("execute", this.__rmFiles, this);
                 part.add(bt);
 
-                //part.add(new qx.ui.toolbar.Separator().set({width: 5}));
-
                 if (this.__opts["allowMove"]) {
                     this.__mvBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/file-move.png")
                             .set({"appearance" : "toolbar-table-button"});
@@ -237,6 +241,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     bt.addListener("execute", this.__moveFiles, this);
                     part.add(bt);
                 }
+
+                this._setupToolbarEditDelegate(part);
             }
 
             toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
@@ -244,13 +250,24 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             part = new qx.ui.toolbar.Part()
                     .set({"appearance" : "toolbar-table/part"});
             toolbar.add(part);
-            this.__subfoldersBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/folder-tree-bw.png")
-                    .set({"appearance" : "toolbar-table-button"});
-            bt.addListener("execute", this.__changeIncludeSubfolders, this);
-            bt.setToolTipText(this.tr("Show subfolders files"));
-            part.add(bt);
 
+            if (this.__opts["allowSubfoldersView"]) {
+                this.__subfoldersBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/folder-tree-bw.png")
+                        .set({"appearance" : "toolbar-table-button"});
+                bt.addListener("execute", this.__changeIncludeSubfolders, this);
+                bt.setToolTipText(this.tr("Show subfolders files"));
+                part.add(bt);
+            }
             this._add(toolbar);
+        },
+
+
+        /**
+         * Toolbar setup delegate for inheritors.
+         * @param part {qx.ui.toolbar.Part}
+         * @protected
+         */
+        _setupToolbarEditDelegate : function(part) {
         },
 
 
@@ -303,6 +320,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             if (paths.length == 0) {
                 return;
             }
+
             ncms.Application.confirm(this.tr("Are you sure to remove selected files?"), function(yes) {
                 if (!yes) return;
                 var url = ncms.Application.ACT.getUrl("media.delete-batch");
@@ -493,7 +511,19 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     menu.add(bt);
                 }
             }
+
+            this._setupContextMenuDelegate(menu);
+
             return true;
+        },
+
+
+        /**
+         * @param menu {qx.ui.menu.Menu} Context menu
+         * @protected
+         */
+        _setupContextMenuDelegate : function(menu) {
+
         },
 
         __checkEditAccess : function(selected) {
