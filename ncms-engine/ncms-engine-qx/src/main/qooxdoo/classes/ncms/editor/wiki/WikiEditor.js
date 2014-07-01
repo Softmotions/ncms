@@ -452,13 +452,13 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 tooltipText : this.tr("Add table"),
                 prompt : function(cb, editor, stext) {
                     var dlg = new ncms.editor.wiki.TableDlg();
-                    dlg.addListener("insertTable", function(ev){
+                    dlg.addListener("insertTable", function(ev) {
                         dlg.close();
                         cb.call(this, ev.getData());
                     }, this);
                     dlg.open();
                 },
-                insertMediaWiki: cscall(this.__mediaWikiTable)
+                insertMediaWiki : cscall(this.__mediaWikiTable)
             });
             this._addToolbarControl(toolbar, {
                 id : "Tree",
@@ -609,7 +609,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
              | row 2, cell 2
              | row 2, cell 3
              |}
-            */
+             */
 
             var tspec = [];
             tspec.push("");

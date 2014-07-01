@@ -105,7 +105,7 @@ qx.Class.define("ncms.editor.wiki.TableDlg", {
             var cols = [];
             var nCols = this.__spCols.getValue();
             for (var i = 0; i < nCols; ++i) {
-                cols.push(new String(i + 1));
+                cols.push(String(i + 1));
             }
             tm.setColumns(cols);
             for (var i = 0; i < nCols; ++i) {
