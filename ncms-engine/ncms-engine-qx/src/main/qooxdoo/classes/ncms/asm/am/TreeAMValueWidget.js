@@ -1,9 +1,15 @@
 /**
  * Tree value editor widget.
  *
+ * @asset(ncms/icon/22/places/folder.png)
+ * @asset(ncms/icon/22/places/folder-open.png)
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
  * @asset(ncms/icon/16/actions/application_form_edit.png)
+ * @asset(ncms/icon/16/misc/globe.png)
+ * @asset(ncms/icon/16/misc/box.png)
+ * @asset(ncms/icon/16/misc/document-text-image.png)
+ * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
  */
 qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
     extend : qx.ui.container.Composite,
@@ -38,7 +44,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         }
     },
 
-    construct : function(model, options) {
+    construct : function(asmSpec, model, options) {
         this.base(arguments);
         this.setLayout(new qx.ui.layout.VBox());
         this.getChildControl("toolbar");
@@ -49,9 +55,12 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         if (options != null) {
             this.setOptions(options);
         }
+        this.__asmSpec = asmSpec;
     },
 
     members : {
+
+        __asmSpec : null,
 
         __tree : null,
 
@@ -80,7 +89,6 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
 
         _createTree : function() {
             var tree = this.__tree = new qx.ui.tree.VirtualTree(null, "name", "children");
-            tree.setHideRoot(true);
             var me = this;
             var delegate = {
                 /*createItem : function() {
@@ -96,6 +104,29 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 }
             };
             tree.setDelegate(delegate);
+            tree.setIconPath("icon");
+            tree.setIconOptions({
+                converter : function(value, model, source, target) {
+                    switch (value) {
+                        case "link":
+                            return "ncms/icon/16/misc/globe.png";
+                        case "page":
+                            return "ncms/icon/16/misc/document-text-image.png";
+                        case "file":
+                            return "ncms/icon/16/misc/box.png";
+                        default:
+                            if (model.getChildren != null) {
+                                var fdSuffix = target.isOpen() ? "-open" : "";
+                                return "ncms/icon/22/places/folder" + fdSuffix + ".png";
+                            } else {
+                                return "icon/22/mimetypes/office-document.png";
+                            }
+                            break;
+
+                    }
+                }
+            });
+
             tree.setContextMenu(new qx.ui.menu.Menu());
             tree.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             return tree;
@@ -135,6 +166,11 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         __applyOptions : function(opts) {
             var bt;
             var menu = new qx.ui.menu.Menu();
+
+            bt = new qx.ui.menu.Button(this.tr("New folder"));
+            bt.addListener("execute", this.__onNewFolder, this);
+            menu.add(bt);
+
             if (opts["allowPages"] == "true") {
                 bt = new qx.ui.menu.Button(this.tr("Add page reference"));
                 bt.addListener("execute", this.__onAddPage, this);
@@ -154,6 +190,11 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
 
             var opts = this.getOptions();
             var bt;
+
+            bt = new qx.ui.menu.Button(this.tr("New folder"));
+            bt.addListener("execute", this.__onNewFolder, this);
+            menu.add(bt);
+
             if (opts["allowPages"] == "true") {
                 bt = new qx.ui.menu.Button(this.tr("Add page reference"));
                 bt.addListener("execute", this.__onAddPage, this);
@@ -164,7 +205,30 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 bt.addListener("execute", this.__onAddFile, this);
                 menu.add(bt);
             }
+
+            bt = new qx.ui.menu.Button(this.tr("Remove"));
+            bt.addListener("execute", this.__onRemove, this);
             menu.add(bt);
+        },
+
+
+        __onNewFolder : function(ev) {
+            var tree = this.__tree;
+            var item = this.__getInsertParent();
+            var dlg = new ncms.asm.am.TreeAMNewFolderDlg();
+            dlg.addListener("completed", function(ev) {
+                var name = ev.getData();
+                dlg.close();
+                var folder = qx.data.marshal.Json.createModel({
+                    name : name,
+                    icon : "default",
+                    children : []
+                }, true);
+                item.getChildren().push(folder);
+                tree.openNode(item);
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
         },
 
         __onAddPage : function() {
@@ -174,25 +238,100 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 requireLinkName : true,
                 allowExternalLinks : (opts["allowExternal"] == "true")
             };
+            var tree = this.__tree;
+            var item = this.__getInsertParent();
             var dlg = new ncms.pgs.LinkSelectorDlg(this.tr("Select page"), dopts);
             dlg.open();
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();
-                qx.log.Logger.info("DATA=" + JSON.stringify(data));
+                // DATA:
+                // {"id":18,
+                // "name":"ddd",
+                // "idPath":[17,18],
+                // "labelPath":["p1","ddd"],
+                // "guidPath":["e1174a25f4c9e0925fc3975b7643b0cc","43017c58f2af4495dd146c1d4956b38b"],
+                // "linkText":"ddd",
+                // "externalLink":null}
+                var node = {
+                    "id" : data["id"]
+                };
+                if (data["externalLink"] != null) {
+                    node["name"] = data["linkText"] + " (" + data["externalLink"] + ")";
+                    node["icon"] = "link";
+                    node["extra"] = data["externalLink"];
+                } else {
+                    var name = data["linkText"];
+                    name += " (";
+                    name += data["labelPath"].join("/");
+                    name += ")";
+                    node["name"] = name;
+                    node["icon"] = "page";
+                }
+                item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
+                tree.openNode(item);
+                dlg.close();
             }, this);
         },
 
-
         __onAddFile : function() {
-            qx.log.Logger.info("add file");
+            var tree = this.__tree;
+            var item = this.__getInsertParent();
+            var dlg = new ncms.mmgr.PageFilesSelectorDlg(
+                    this.__asmSpec["guid"],
+                    this.tr("Select file for page: %1", this.__asmSpec["name"]),
+                    {
+                        "allowModify" : true,
+                        "allowMove" : false,
+                        "smode" : qx.ui.table.selection.Model.SINGLE_SELECTION
+                    }
+            );
+            dlg.addListener("completed", function(ev) {
+                //data={"id":18,"name":"nlogo.jpg","folder":"/pages/162d/ab35/f252/f014/695e/6e66/5f63/bbcb/",
+                // "content_type":"image/jpeg","owner":"admin","owner_fullName":"Антон Адаманский",
+                // "content_length":16519,"description":"dslsd;lds;","tags":null}
+                var data = ev.getData();
+                var node = {
+                    "id" : data["id"],
+                    "name" : data["name"],
+                    "icon" : "file",
+                    "extra" : data["folder"] + data["name"]
+                };
+                item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
+                tree.openNode(item);
+                dlg.close();
+            }, this);
+            dlg.open();
         },
 
         __onRemove : function() {
-
+            var tree = this.__tree;
+            var item = tree.getSelection().getItem(0);
+            if (item == null || item === this.__tree.getModel()) {
+                return;
+            }
+            var parent = tree.getParent(item);
+            if (parent == null) {
+                return;
+            }
+            parent.getChildren().remove(item);
         },
+
 
         __onEdit : function() {
 
+        },
+
+
+        __getInsertParent : function() {
+            var tree = this.__tree;
+            var item = tree.getSelection().getItem(0);
+            if (item && item.getChildren == null) {
+                item = tree.getParent(item);
+            }
+            if (item == null) {
+                item = tree.getModel();
+            }
+            return item;
         }
     },
 

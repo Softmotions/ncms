@@ -306,9 +306,6 @@
             <column name="CSUM" type="VARCHAR(48)"
                     remarks="File checksum">
             </column>
-            <column name="SYS" type="INT"
-                    remarks="System file boolean marker flag">
-            </column>
         </createTable>
 
         <createIndex tableName="MEDIA_ENTITY"

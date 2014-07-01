@@ -84,6 +84,10 @@ qx.Class.define("ncms.Actions", {
         //PUT /ncms/rs/media/rename/<path to folder>
         this._action("media.move", "/ncms/rs/media/move");
 
+        //PUT  /ncms/rs/media/copy-batch/<path to folde>
+        // Payload: JSON array of file paths to copy into {target} dir
+        this._action("media.copy-batch", "/ncms/rs/media/copy-batch");
+
         //DELETE media file/folder
         this._action("media.delete", "/ncms/rs/media/delete");
 
@@ -168,6 +172,10 @@ qx.Class.define("ncms.Actions", {
         // pid: page id
         // user: user login
         this._action("pages.acl.user", "/ncms/rs/adm/pages/acl/{pid}/{user}");
+
+        //GET JSON Object contains full label-path and id-path to the specified page
+        // {id}: Page ID
+        this._action("pages.path", "/ncms/rs/adm/pages/path/{id}");
     },
 
     members : {

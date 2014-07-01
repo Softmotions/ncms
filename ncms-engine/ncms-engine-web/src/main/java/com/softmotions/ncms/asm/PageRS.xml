@@ -5,6 +5,32 @@
 
 <mapper namespace="com.softmotions.ncms.asm.PageRS">
 
+
+    <select id="selectPageInfoIN" resultType="map" parameterType="map">
+        SELECT
+        p.id AS "id",
+        p.name AS "guid",
+        p.hname AS "name"
+        FROM ASMS AS p
+        WHERE p.id IN
+        <foreach item="id" index="index" collection="ids"
+                 open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="selectNavPath" resultType="map" parameterType="map">
+        SELECT
+            p.id              AS "id",
+            p.name            AS "guid",
+            p.hname           AS "name",
+            p.nav_cached_path AS "nav_cached_path"
+        FROM ASMS AS p
+        WHERE p.id = #{id}
+    </select>
+
+
     <select id="selectChildLayer" resultType="map" parameterType="map">
         SELECT
             p.id          AS "id",

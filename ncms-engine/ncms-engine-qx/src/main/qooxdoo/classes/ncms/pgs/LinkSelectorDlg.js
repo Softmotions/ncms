@@ -57,12 +57,14 @@ qx.Class.define("ncms.pgs.LinkSelectorDlg", {
             if (!this.__form.validate()) {
                 return;
             }
-            var sp = this._selector.getSelectedPage();
-            if (sp != null) {
-                sp = sm.lang.Object.shallowClone(sp);
+            this._selector.getSelectedPageWithExtraInfo(function(sp) {
+                sp = sm.lang.Object.shallowClone(sp || {});
                 this.__form.populateJSONObject(sp);
+                if (sp["id"] == null && sp["externalLink"]) {
+                    sp["id"] = sp["externalLink"];
+                }
                 this.fireDataEvent("completed", sp);
-            }
+            }, this);
         }
     },
 

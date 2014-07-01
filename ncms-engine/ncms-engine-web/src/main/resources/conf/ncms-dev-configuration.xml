@@ -40,7 +40,7 @@
         <import-directory>${basedir}/src/test/media</import-directory>
         <system-directories>
             <directory>/system</directory>
-            <directory>/core</directory>
+            <directory>/pages</directory>
         </system-directories>
     </media>
 

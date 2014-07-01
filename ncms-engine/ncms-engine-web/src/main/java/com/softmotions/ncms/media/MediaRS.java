@@ -385,6 +385,41 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @PUT
+    @Path("/copy-batch/{target:.*}")
+    public void copy(@Context HttpServletRequest req,
+                     @PathParam("target") String target,
+                     ArrayNode files) throws Exception {
+        _copy(req, target, files);
+    }
+
+    @PUT
+    @Path("/copy-batch")
+    public void copy(@Context HttpServletRequest req, ArrayNode files) throws Exception {
+        _copy(req, "", files);
+    }
+
+    private void _copy(HttpServletRequest req, String target, ArrayNode files) throws Exception {
+        log.info("copy target=" + target + " files=" + files);
+        if (target.contains("..")) {
+            throw new BadRequestException(target);
+        }
+        target = StringUtils.strip(target, "/");
+        checkEditAccess(target, req);
+        for (int i = 0, l = files.size(); i < l; ++i) {
+            String src = files.get(i).asText();
+            try (ResourceLock l1 = new ResourceLock(src, false)) {
+                File f1 = new File(basedir, src);
+                if (!f1.exists()) {
+                    continue;
+                }
+
+
+            }
+        }
+    }
+
+
+    @PUT
     @Path("/move/{path:.*}")
     @Transactional(executorType = ExecutorType.BATCH)
     public void move(@PathParam("path") String path,
@@ -661,12 +696,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 log.info("Importing " + fpath);
                 try (FileInputStream fis = new FileInputStream(f)) {
                     try {
-                        Long id = _put(folder, name, req, fis);
-                        if (id != null) {
-                            update("updateSysFlag",
-                                   "id", id,
-                                   "sys", 1);
-                        }
+                        _put(folder, name, req, fis);
                     } catch (Exception e) {
                         throw new IOException(e);
                     }
@@ -885,12 +915,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             boolean parentInSystem = isInSystemFolder(folder);
             for (int i = 0, l = files.length; i < l; ++i) {
                 File file = files[i];
-
                 boolean inSystem = parentInSystem || isInSystemFolder(folder + file.getName());
                 if (file.isDirectory() && inSystem && !req.isUserInRole("admin")) {
                     continue;
                 }
-
                 res.addObject()
                         .put("label", file.getName())
                         .put("status", file.isDirectory() ? 1 : 0)
@@ -1309,15 +1337,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (req.isUserInRole("admin")) {
             return;
         }
-
         Map<String, ?> fmeta = selectOne("selectResourceAttrsById", "id", id);
         if (fmeta == null) {
-            // O_o meta not found by id? it isn't possible!
-            String msg = message.get("ncms.mmgr.access.denied", req, "");
-            throw new NcmsMessageException(msg, true);
+            throw new NotFoundException();
         }
-
-
         _checkEditAccess(fmeta, StringUtils.strip((String) fmeta.get("folder") + fmeta.get("name"), "/"), req);
     }
 
@@ -1325,16 +1348,17 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (req.isUserInRole("admin")) {
             return;
         }
-
         Map<String, ?> fmeta = selectOne("selectResourceAttrsByPath",
                                          "folder", getResourceParentFolder(path),
                                          "name", getResourceName(path));
-
         _checkEditAccess(fmeta, path, req);
     }
 
     private void _checkEditAccess(Map<String, ?> fmeta, String path, HttpServletRequest req) {
-        boolean isFile = fmeta != null && 0 == (Integer) fmeta.get("status");
+
+        //todo check page access
+
+        boolean isFile = (fmeta != null && 0 == ((Number) fmeta.get("status")).intValue());
         if (isFile) {
             if (!req.getRemoteUser().equals(fmeta.get("owner"))) {
                 String msg = message.get("ncms.mmgr.access.denied", req, path);
@@ -1345,17 +1369,12 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (!f.isDirectory()) {
                 return;
             }
-
-            // check contains file entities in directory
-            int count = selectOne("count", "folder", normalizeFolder(path));
+            // check not owned files in the directory
+            int count = selectOne("countNotOwned",
+                                  "folder", normalizeFolder(path),
+                                  "owner", req.getRemoteUser());
             if (count > 0) {
-                throw new NcmsMessageException(message.get("ncms.mmgr.access.dened.folder.notEmpty", req), true);
-            }
-
-            // check contains subfolders in directory
-            File[] files = f.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
-            if (files != null && files.length > 0) {
-                throw new NcmsMessageException(message.get("ncms.mmgr.access.dened.folder.notEmpty", req), true);
+                throw new NcmsMessageException(message.get("ncms.mmgr.access.denied.notOwned", req), true);
             }
         }
     }

@@ -149,14 +149,14 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
         __setCore : function() {
             var spec = this.getAsmSpec();
-            var d = new ncms.mmgr.MediaSelectFileDlg(
+            var dlg = new ncms.mmgr.MediaSelectFileDlg(
                     true,
                     this.tr("Select core file for '%1' assembly", spec["name"] || ''));
-            d.setCtypeAcceptor(function(ctype) {
+            dlg.setCtypeAcceptor(function(ctype) {
                 return ncms.Utils.isTextualContentType(ctype);
             });
-            d.addListenerOnce("completed", function(ev) {
-                var fspec = ev.getData();
+            dlg.addListenerOnce("completed", function(ev) {
+                var fspec = ev.getData()[0];
                 var url = ncms.Application.ACT.getRestUrl("asms.core", spec);
                 var req = new sm.io.Request(url, "PUT", "application/json");
                 req.setRequestContentType("application/json");
@@ -166,12 +166,12 @@ qx.Class.define("ncms.asm.AsmEditor", {
                 req.send(function(resp) {
                     var specPart = resp.getContent();
                     qx.lang.Object.mergeWith(spec, specPart, true);
-                    d.close();
+                    dlg.close();
                     //clone needed to force execution of __applyAsmSpec
                     this.setAsmSpec(sm.lang.Object.shallowClone(spec));
                 }, this);
             }, this);
-            d.show();
+            dlg.show();
         },
 
 

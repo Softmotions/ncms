@@ -41,7 +41,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             form.add(el, this.tr("Allow external links"), null, "allowExternal");
             el.setValue(opts["allowExternal"] == "true");
 
-            el = new qx.ui.form.Spinner(1, 1, 10);
+            el = new qx.ui.form.Spinner(1, 1, 5);
             el.setAllowGrowX(false);
             el.setSingleStep(1);
             if (opts["nestingLevel"] == null) {
@@ -58,7 +58,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
-            var w = new ncms.asm.am.TreeAMValueWidget();
+            var w = new ncms.asm.am.TreeAMValueWidget(asmSpec);
             this._fetchAttributeValue(attrSpec, function(val) {
                 var opts = ncms.Utils.parseOptions(attrSpec["options"]);
                 var model = qx.data.marshal.Json.createModel(JSON.parse(val), true);

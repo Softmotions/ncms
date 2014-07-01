@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
@@ -29,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -40,6 +42,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
@@ -47,6 +50,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -91,6 +95,73 @@ public class PageRS extends MBDAOSupport {
         this.amRegistry = amRegistry;
         this.pageSecurity = pageSecurity;
     }
+
+
+    @GET
+    @Path("/path/{id}")
+    public ObjectNode selectPageLabelPath(@PathParam("id") Long id) {
+        ObjectNode res = mapper.createObjectNode();
+        Map<String, Object> qres = selectOne("selectNavPath", "id", id);
+        if (qres == null) {
+            throw new NotFoundException();
+        }
+        ArrayNode idPath = res.putArray("idPath");
+        ArrayNode labelPath = res.putArray("labelPath");
+        ArrayNode guidPath = res.putArray("guidPath");
+
+        String cpath = (String) qres.get("nav_cached_path");
+        if (cpath == null) {
+            guidPath.add((String) qres.get("guid"));
+            labelPath.add((String) qres.get("name"));
+            idPath.add(id);
+            return res;
+        }
+        cpath = StringUtils.strip(cpath, "/");
+        if (StringUtils.isBlank(cpath)) {
+            guidPath.add((String) qres.get("guid"));
+            labelPath.add((String) qres.get("name"));
+            idPath.add(id);
+            return res;
+        }
+        String[] idsArr = cpath.split("/");
+        if (idsArr.length == 0) {
+            guidPath.add((String) qres.get("guid"));
+            labelPath.add((String) qres.get("name"));
+            idPath.add(id);
+            return res;
+        }
+        Long[] ids = new Long[idsArr.length];
+        for (int i = 0; i < ids.length; ++i) {
+            ids[i] = Long.parseLong(idsArr[i]);
+            idPath.add(ids[i]);
+        }
+
+        List<Map<String, Object>> rows = select("selectPageInfoIN",
+                                                "ids", ids);
+        Map<Long, Map<String, Object>> rowsMap = new HashMap<>(ids.length);
+        for (Map<String, Object> row : rows) {
+            Number eId = (Number) row.get("id");
+            if (eId == null) {
+                continue;
+            }
+            rowsMap.put(eId.longValue(), row);
+        }
+        for (Long eId : ids) {
+            Map<String, Object> row = rowsMap.get(eId);
+            if (eId == null) {
+                labelPath.addNull();
+                guidPath.addNull();
+            } else {
+                labelPath.add((String) row.get("name"));
+                guidPath.add((String) row.get("guid"));
+            }
+        }
+        guidPath.add((String) qres.get("guid"));
+        labelPath.add((String) qres.get("name"));
+        idPath.add(id);
+        return res;
+    }
+
 
     /**
      * Get page data for info pane.
@@ -146,6 +217,8 @@ public class PageRS extends MBDAOSupport {
             }
         }
         res.put("id", page.getId());
+        res.put("guid", page.getName());
+        res.put("name", page.getHname());
         if (template == null) {
             res.putNull("template");
         } else {

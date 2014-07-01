@@ -30,10 +30,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         "fileSelected" : "qx.event.type.Data",
 
         /**
-         *  {
+         * DATA: {
          *      id : {String} file attribute name
          *      value : {String} new value
-         *  }
+         * }
          */
         "fileMetaEdited" : "qx.event.type.Data"
     },
@@ -61,9 +61,19 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         }
     },
 
-    construct : function(allowModify, constViewSpec, smode) {
+    construct : function(allowModify, constViewSpec, opts) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
+        opts = this.__opts = opts || {};
+
+        if (allowModify) {
+            if (opts["allowMove"] === undefined) {
+                opts["allowMove"] = true;
+            }
+        }
+        if (opts["allowSubfoldersView"] === undefined) {
+            opts["allowSubfoldersView"] = true;
+        }
 
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", function() {
@@ -78,6 +88,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
         }, this);
 
+        var smode = opts["smode"];
         if (smode == null) {
             smode = qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION;
         }
@@ -117,7 +128,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
         }
-
         if (this.__allowModify) {
             table.addListener("dataEdited", function(ev) {
                 var tm = table.getTableModel();
@@ -153,6 +163,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         __mvBt : null,
 
         __subfoldersBt : null,
+
+        __opts : null,
 
         setViewSpec : function(vs) {
             this.__table.resetSelection();
@@ -198,6 +210,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             return this.__table.getSelectedFile()
         },
 
+        getSelectedFiles : function() {
+            return this.__table.getSelectedFiles();
+        },
+
         _setupToolbar : function() {
             var toolbar = new qx.ui.toolbar.ToolBar();
 
@@ -218,13 +234,15 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 bt.addListener("execute", this.__rmFiles, this);
                 part.add(bt);
 
-                //part.add(new qx.ui.toolbar.Separator().set({width: 5}));
+                if (this.__opts["allowMove"]) {
+                    this.__mvBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/file-move.png")
+                            .set({"appearance" : "toolbar-table-button"});
+                    bt.setToolTipText(this.tr("Move files"));
+                    bt.addListener("execute", this.__moveFiles, this);
+                    part.add(bt);
+                }
 
-                this.__mvBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/file-move.png")
-                        .set({"appearance" : "toolbar-table-button"});
-                bt.setToolTipText(this.tr("Move files"));
-                bt.addListener("execute", this.__moveFiles, this);
-                part.add(bt);
+                this._setupToolbarEditDelegate(part);
             }
 
             toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
@@ -232,13 +250,24 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             part = new qx.ui.toolbar.Part()
                     .set({"appearance" : "toolbar-table/part"});
             toolbar.add(part);
-            this.__subfoldersBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/folder-tree-bw.png")
-                    .set({"appearance" : "toolbar-table-button"});
-            bt.addListener("execute", this.__changeIncludeSubfolders, this);
-            bt.setToolTipText(this.tr("Show subfolders files"));
-            part.add(bt);
 
+            if (this.__opts["allowSubfoldersView"]) {
+                this.__subfoldersBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/folder-tree-bw.png")
+                        .set({"appearance" : "toolbar-table-button"});
+                bt.addListener("execute", this.__changeIncludeSubfolders, this);
+                bt.setToolTipText(this.tr("Show subfolders files"));
+                part.add(bt);
+            }
             this._add(toolbar);
+        },
+
+
+        /**
+         * Toolbar setup delegate for inheritors.
+         * @param part {qx.ui.toolbar.Part}
+         * @protected
+         */
+        _setupToolbarEditDelegate : function(part) {
         },
 
 
@@ -291,6 +320,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             if (paths.length == 0) {
                 return;
             }
+
             ncms.Application.confirm(this.tr("Are you sure to remove selected files?"), function(yes) {
                 if (!yes) return;
                 var url = ncms.Application.ACT.getUrl("media.delete-batch");
@@ -470,22 +500,36 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                         menu.add(bt);
                     }
 
-                    bt = new qx.ui.menu.Button(this.tr("Move to another folder"));
-                    bt.addListenerOnce("execute", this.__moveFiles, this);
-                    menu.add(bt);
+                    if (this.__opts["allowMove"]) {
+                        bt = new qx.ui.menu.Button(this.tr("Move to another folder"));
+                        bt.addListenerOnce("execute", this.__moveFiles, this);
+                        menu.add(bt);
+                    }
 
                     bt = new qx.ui.menu.Button(this.tr("Remove"));
                     bt.addListenerOnce("execute", this.__rmFiles, this);
                     menu.add(bt);
                 }
             }
+
+            this._setupContextMenuDelegate(menu);
+
             return true;
+        },
+
+
+        /**
+         * @param menu {qx.ui.menu.Menu} Context menu
+         * @protected
+         */
+        _setupContextMenuDelegate : function(menu) {
+
         },
 
         __checkEditAccess : function(selected) {
             var appState = ncms.Application.APP_STATE;
             var user = appState.getUserLogin();
-            for(var i = 0; i < selected.length; ++i) {
+            for (var i = 0; i < selected.length; ++i) {
                 var file = selected[i];
                 // TODO: admin  role name to config/constant
                 if (!appState.userHasRole("admin") && file["owner"] != user) {
@@ -533,5 +577,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__rmBt = null;
         this.__mvBt = null;
         this.__subfoldersBt = null;
+        this.__opts = null;
     }
 });

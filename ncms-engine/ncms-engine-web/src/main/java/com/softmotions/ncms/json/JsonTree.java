@@ -19,6 +19,8 @@ public class JsonTree {
 
     private String extra;
 
+    private String icon;
+
     @JsonProperty(required = true)
     private ArrayList<JsonTree> children;
 
@@ -59,6 +61,14 @@ public class JsonTree {
 
     public void setExtra(String extra) {
         this.extra = extra;
+    }
+
+    public String getIcon() {
+        return icon != null ? icon : "default";
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public ArrayList<JsonTree> getChildren() {
