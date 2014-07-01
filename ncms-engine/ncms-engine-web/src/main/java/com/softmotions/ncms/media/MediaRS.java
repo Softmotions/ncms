@@ -865,6 +865,20 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             cq.withParam("folder", val);
         }
 
+        val = req.getParameter("nfolder");
+        if (!StringUtils.isBlank(val)) {
+            if (!val.endsWith("/")) {
+                val += '/';
+            }
+            val += '%';
+            cq.withParam("nfolder", val);
+        } else if (!BooleanUtils.toBoolean(req.getParameter("inpages"))) {
+            String folder = (String) cq.get("folder");
+            if (folder == null || !folder.startsWith("/pages/")) {
+                cq.withParam("nfolder", "/pages/%");
+            }
+        }
+
         val = req.getParameter("stext");
         if (!StringUtils.isBlank(val)) {
             val = val.toLowerCase();

@@ -83,6 +83,7 @@
         FROM media_entity e
         <where>
             <if test="folder != null">AND e.folder LIKE #{folder}</if>
+            <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
             <if test="name != null">AND LOWER(e.name) LIKE #{name}</if>
             <if test="status != null">AND e.status = #{status}</if>
         </where>
@@ -101,6 +102,7 @@
         FROM media_entity e
         <where>
             <if test="folder != null">AND e.folder LIKE #{folder}</if>
+            <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
             <if test="name != null">AND LOWER(e.name) LIKE #{name}</if>
             <if test="status != null">AND e.status = #{status}</if>
         </where>
@@ -134,6 +136,7 @@
         kw.entity_id = e.id
         <if test="status != null">AND e.status = #{status}</if>
         <if test="folder != null">AND e.folder LIKE #{folder}</if>
+        <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
         AND
         <foreach item="k" index="index" collection="keywords"
                  open="(" separator="OR" close=")">
@@ -160,6 +163,7 @@
         kw.ENTITY_ID = e.id
         <if test="status != null">AND e.status = #{status}</if>
         <if test="folder != null">AND e.folder LIKE #{folder}</if>
+        <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
         AND
         <foreach item="k" index="index" collection="keywords"
                  open="(" separator="OR" close=")">
