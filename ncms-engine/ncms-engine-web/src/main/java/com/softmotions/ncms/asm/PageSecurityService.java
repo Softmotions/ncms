@@ -288,7 +288,7 @@ public class PageSecurityService extends MBDAOSupport {
             locAcl = selectOne("newAclId");
             update("setLocalAcl", "pid", pid, "acl", locAcl);
         } else {
-            nrights = selectOne("selectUserRights", "user", user, "acl", locAcl);
+            nrights = selectOne("selectUserRightsByAcl", "user", user, "acl", locAcl);
         }
 
         update("updateAclUserRights", "acl", locAcl, "user", user, "rights", calcRights(mode, nrights, rights));
@@ -302,7 +302,7 @@ public class PageSecurityService extends MBDAOSupport {
         Number newRecAcl = selectOne("newAclId");
         if (recAcl != null) {
             update("copyAcl", "prev_acl", recAcl, "new_acl", newRecAcl);
-            cr = selectOne("selectUserRights", "user", user, "acl", recAcl);
+            cr = selectOne("selectUserRightsByAcl", "user", user, "acl", recAcl);
         }
 
         update("updateChildRecursiveAcl",
@@ -314,7 +314,7 @@ public class PageSecurityService extends MBDAOSupport {
 
         List<Number> racls = select("childRecursiveAcls", "nav_path", navPath + pid + "/%", "exclude_acl", newRecAcl);
         for (Number racl : racls) {
-            cr = selectOne("selectUserRights", "user", user, "acl", racl);
+            cr = selectOne("selectUserRightsByAcl", "user", user, "acl", racl);
 
             Number nracl = selectOne("newAclId");
             update("copyAcl", "prev_acl", racl, "new_acl", nracl);

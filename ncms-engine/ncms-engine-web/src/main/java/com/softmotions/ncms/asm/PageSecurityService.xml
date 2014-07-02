@@ -5,6 +5,12 @@
 
 <mapper namespace="com.softmotions.ncms.asm.PageSecurityService">
 
+    <select id="selectNavPagePath" resultType="string" parameterType="map">
+        SELECT nav_cached_path
+        FROM asms
+        WHERE id = #{pid}
+    </select>
+
     <select id="newAclId" resultType="long">
         CALL NEXT VALUE FOR SEQ_ACL_ID
     </select>
@@ -96,8 +102,6 @@
         WHERE a.id = #{pid} AND acl.user = #{user} AND acl.rights LIKE '%' || #{right} || '%'
     </select>
 
-    <!--TODO optimize queries-->
-
     <update id="updateAclUserRights" parameterType="map">
         MERGE INTO asm_acl_entity (acl_id, user, rights)
         KEY (acl_id, user)
@@ -113,18 +117,6 @@
         INSERT INTO asm_acl_entity (acl_id, user, rights)
         SELECT #{new_acl}, user, rights FROM asm_acl_entity WHERE acl_id = #{prev_acl}
     </update>
-
-    <select id="selectNavPagePath" resultType="string" parameterType="map">
-        SELECT nav_cached_path
-        FROM asms
-        WHERE id = #{pid}
-    </select>
-
-    <select id="selectUserRights" resultType="string" parameterType="map">
-        SELECT rights
-        FROM asm_acl_entity
-        WHERE user = #{user} AND acl_id = #{acl}
-    </select>
 
     <update id="updateChildRecursiveAcl" parameterType="map">
         UPDATE asms
@@ -144,28 +136,6 @@
               (recursive_acl_id IS NOT NULL AND recursive_acl_id != #{acl})
               AND nav_cached_path LIKE #{nav_path}
     </update>
-
-    <update id="updateParentRecursiveAcl" parameterType="map">
-        UPDATE asms
-        SET recursive_acl_id = #{new_acl}
-        WHERE recursive_acl_id = #{prev_acl} AND #{nav_path} LIKE (nav_cached_path || id || '/%')
-    </update>
-
-    <update id="updateUserAcl" parameterType="map">
-        UPDATE asm_acl_entity
-        SET acl_id = #{new_acl}
-        WHERE acl_id = #{prev_acl} AND user = #{user}
-    </update>
-
-    <select id="parentAcls" resultType="map" parameterType="map">
-        SELECT
-          id                AS "id",
-          local_acl_id      AS "local_acl",
-          recursive_acl_id  AS "recursive_acl"
-        FROM asms
-        WHERE #{nav_path} LIKE (nav_cached_path || id || '/%')
-        ORDER BY nav_cached_path DESC
-    </select>
 
     <select id="childRecursiveAcls" resultType="long" parameterType="map">
         SELECT a.recursive_acl_id
