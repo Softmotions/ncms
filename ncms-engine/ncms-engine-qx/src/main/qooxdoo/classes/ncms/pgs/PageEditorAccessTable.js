@@ -37,6 +37,10 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
 
         this.setConstViewSpec(constViewSpec || null);
         this._reload([]);
+
+        this.setContextMenu(new qx.ui.menu.Menu());
+        this.addListener("beforeContextmenuOpen", this.__beforeContextMenuOpen, this);
+
     },
 
     members : {
@@ -233,6 +237,23 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
                 case "role.news": return "n";
                 case "role.delete": return "d";
                 default : return "";
+            }
+        },
+
+        __beforeContextMenuOpen : function(ev) {
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+
+            var selected = !this.getSelectionModel().isSelectionEmpty();
+
+            var bt = new qx.ui.menu.Button(this.tr("Add user"));
+            bt.addListenerOnce("execute", this.__addUser, this);
+            menu.add(bt);
+
+            if (selected) {
+                bt = new qx.ui.menu.Button(this.tr("Delete user"));
+                bt.addListenerOnce("execute", this.__deleteUser, this);
+                menu.add(bt);
             }
         }
     },
