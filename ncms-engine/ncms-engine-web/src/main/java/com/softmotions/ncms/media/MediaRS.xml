@@ -16,11 +16,11 @@
         INSERT INTO media_entity (
             folder, name, status, mdate,
             content_type, put_content_type, content_length,
-            owner)
+            owner, description, tags)
         VALUES (
             #{folder}, #{name}, #{status}, now(),
             #{content_type}, #{put_content_type}, #{content_length},
-            #{owner})
+            #{owner}, #{description}, #{tags})
     </insert>
 
     <update id="updateEntity" parameterType="map">
@@ -83,6 +83,7 @@
         FROM media_entity e
         <where>
             <if test="folder != null">AND e.folder LIKE #{folder}</if>
+            <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
             <if test="name != null">AND LOWER(e.name) LIKE #{name}</if>
             <if test="status != null">AND e.status = #{status}</if>
         </where>
@@ -101,6 +102,7 @@
         FROM media_entity e
         <where>
             <if test="folder != null">AND e.folder LIKE #{folder}</if>
+            <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
             <if test="name != null">AND LOWER(e.name) LIKE #{name}</if>
             <if test="status != null">AND e.status = #{status}</if>
         </where>
@@ -134,6 +136,7 @@
         kw.entity_id = e.id
         <if test="status != null">AND e.status = #{status}</if>
         <if test="folder != null">AND e.folder LIKE #{folder}</if>
+        <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
         AND
         <foreach item="k" index="index" collection="keywords"
                  open="(" separator="OR" close=")">
@@ -160,6 +163,7 @@
         kw.ENTITY_ID = e.id
         <if test="status != null">AND e.status = #{status}</if>
         <if test="folder != null">AND e.folder LIKE #{folder}</if>
+        <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
         AND
         <foreach item="k" index="index" collection="keywords"
                  open="(" separator="OR" close=")">
@@ -256,14 +260,17 @@
 
     <select id="selectResourceAttrsByPath" parameterType="map" resultType="map">
         SELECT
-            id             AS "id",
-            name           AS "name",
-            folder         AS "folder",
-            content_type   AS "content_type",
-            content_length AS "content_length",
-            mdate          AS "mdate",
-            owner          AS "owner",
-            status         AS "status"
+            id               AS "id",
+            name             AS "name",
+            folder           AS "folder",
+            content_type     AS "content_type",
+            put_content_type AS "put_content_type",
+            content_length   AS "content_length",
+            mdate            AS "mdate",
+            owner            AS "owner",
+            description      AS "description",
+            tags             AS "tags",
+            status           AS "status"
         FROM media_entity
         WHERE folder = #{folder}
               AND name = #{name}
@@ -271,14 +278,17 @@
 
     <select id="selectResourceAttrsById" parameterType="map" resultType="map">
         SELECT
-            id             AS "id",
-            name           AS "name",
-            folder         AS "folder",
-            content_type   AS "content_type",
-            content_length AS "content_length",
-            mdate          AS "mdate",
-            owner          AS "owner",
-            status         AS "status"
+            id               AS "id",
+            name             AS "name",
+            folder           AS "folder",
+            content_type     AS "content_type",
+            put_content_type AS "put_content_type",
+            content_length   AS "content_length",
+            mdate            AS "mdate",
+            owner            AS "owner",
+            description      AS "description",
+            tags             AS "tags",
+            status           AS "status"
         FROM media_entity
         WHERE id = #{id}
     </select>

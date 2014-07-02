@@ -280,7 +280,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 var folder = "/" + item["path"].join("/");
                 this.setConstViewSpec({"folder" : folder, "status" : 0, fts : true});
             } else {
-                this.setConstViewSpec({"folder" : "/", "status" : 0, fts : true});
+                this.setConstViewSpec({"status" : 0, fts : true});
             }
         },
 

@@ -6,9 +6,6 @@
 qx.Class.define("ncms.mmgr.PageFilesSelector", {
     extend : ncms.mmgr.MediaFilesSelector,
 
-    properties : {
-    },
-
     /**
      * @param pageGuid {String} The page GUI
      * @param opts {Object?} ncms.mmgr.MediaFilesSelector options.
@@ -28,7 +25,7 @@ qx.Class.define("ncms.mmgr.PageFilesSelector", {
         if (opts["allowSubfoldersView"] === undefined) {
             opts["allowSubfoldersView"] = false;
         }
-        this.base(arguments, !!opts["allowModify"], null, opts);
+        this.base(arguments, !!opts["allowModify"], {inpages : true}, opts);
         this.setItem({
             status : 1,
             path : path
