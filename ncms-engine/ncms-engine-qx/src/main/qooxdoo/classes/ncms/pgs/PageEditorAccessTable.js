@@ -213,6 +213,23 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             }, this);
         },
 
+        __deleteUserRecursive : function() {
+            this.getTable().cancelEditing();
+
+            var user = this.getSelectedRowData();
+            if (!user) {
+                return;
+            }
+
+            var spec = this.getPageSpec();
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user["user"]}), "DELETE", "application/json");
+            this.__applyConstViewSpecToRequest(req);
+            req.setParameter("forceRecursive", true, false);
+            req.send(function(resp){
+                this._load();
+            }, this);
+        },
+
         __dataEdited : function(ev) {
             var spec = this.getPageSpec();
             var data = ev.getData();
@@ -253,6 +270,10 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             if (selected) {
                 bt = new qx.ui.menu.Button(this.tr("Delete user"));
                 bt.addListenerOnce("execute", this.__deleteUser, this);
+                menu.add(bt);
+
+                bt = new qx.ui.menu.Button(this.tr("Delete user (force recursive)"));
+                bt.addListenerOnce("execute", this.__deleteUserRecursive, this);
                 menu.add(bt);
             }
         }

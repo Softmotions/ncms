@@ -30,7 +30,7 @@ public class PageSecurityService extends MBDAOSupport {
     private static final char STRUCTURAL = 's';
 
     private static final char[] ALL_RIGHTS = {WRITE, NEWS, DELETE};
-    private static final String ALL_RIGHTS_STR = StringUtils.join(ALL_RIGHTS, "");
+    private static final String ALL_RIGHTS_STR = "" + WRITE + NEWS + DELETE;
 
     final ObjectMapper mapper;
 
@@ -213,6 +213,19 @@ public class PageSecurityService extends MBDAOSupport {
                 delete("deleteAclUser", "acl", nracl, "user", user);
             }
         }
+    }
+
+    /**
+     * Recursively delete user from all acl for page and its childs
+     *
+     * @param pid  page id
+     * @param user user name
+     */
+    public void deleteUserRecursive(Long pid, String user) {
+        deleteUserRights(pid, user, true);
+
+        String navPath = selectOne("selectNavPagePath", "pid", pid);
+        delete("deleteLocalAclUserRecursive", "user", user, "pid", pid, "nav_path", navPath + pid + "/%");
     }
 
     /**

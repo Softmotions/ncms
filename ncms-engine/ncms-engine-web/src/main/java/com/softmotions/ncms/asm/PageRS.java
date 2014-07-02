@@ -531,13 +531,18 @@ public class PageRS extends MBDAOSupport {
     @DELETE
     public void deleteFromAcl(@PathParam("pid") Long pid,
                               @PathParam("user") String user,
-                              @QueryParam("recursive") boolean recursive) {
+                              @QueryParam("recursive") boolean recursive,
+                              @QueryParam("forceRecursive") boolean force) {
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
             throw new BadRequestException("User not found");
         }
 
-        pageSecurity.deleteUserRights(pid, user, recursive);
+        if (force) {
+            pageSecurity.deleteUserRecursive(pid, user);
+        } else {
+            pageSecurity.deleteUserRights(pid, user, recursive);
+        }
     }
 
     Long getPathLastIdSegment(String path) {
