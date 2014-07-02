@@ -12,12 +12,19 @@ qx.Class.define("ncms.pgs.PageEditorAccessPane", {
         this.addListener("loadPane", this.__onLoadPane, this);
 
         this.add(new qx.ui.basic.Label(this.tr("Local")));
-        this.__locAclTable = new ncms.pgs.PageEditorAccessTable({recursive : false});
+        var lat = this.__locAclTable = new ncms.pgs.PageEditorAccessTable({recursive : false});
         this.add(this.__locAclTable, {flex : 1});
 
         this.add(new qx.ui.basic.Label(this.tr("Recursive")));
-        this.__recAclTable = new ncms.pgs.PageEditorAccessTable({recursive : true});
+        var rat =this.__recAclTable = new ncms.pgs.PageEditorAccessTable({recursive : true});
         this.add(this.__recAclTable, {flex : 1});
+
+        var reload = function() {
+            lat.reload();
+            rat.reload();
+        }
+        this.__locAclTable.addListener("aclUpdated", reload, this);
+        this.__recAclTable.addListener("aclUpdated", reload, this);
     },
 
     members : {
