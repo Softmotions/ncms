@@ -7,6 +7,10 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
     extend : sm.table.ToolbarLocalTable,
 
     events : {
+        /**
+         * Fired when acl for page updated
+         */
+        "aclUpdated" : "qx.event.type.Event"
     },
 
     properties : {
@@ -47,11 +51,11 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
         __delBt : null,
 
         __applyPageSpec : function(spec) {
-            this._load();
+            this.reload();
         },
 
         __applyConstViewSpec : function(viewSpec) {
-            this._load();
+            this.reload();
         },
 
         __applyConstViewSpecToRequest : function(req) {
@@ -63,7 +67,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             }
         },
 
-        _load : function() {
+        reload : function() {
             var spec = this.getPageSpec();
             if (!spec) {
                 return;
@@ -191,7 +195,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: data["name"]}), "PUT", "application/json");
                 this.__applyConstViewSpecToRequest(req);
                 req.send(function(resp){
-                    this._load();
+                    this.fireEvent("aclUpdated");
                 }, this);
             }, this);
             dlg.show();
@@ -209,7 +213,24 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user["user"]}), "DELETE", "application/json");
             this.__applyConstViewSpecToRequest(req);
             req.send(function(resp){
-                this._load();
+                this.fireEvent("aclUpdated");
+            }, this);
+        },
+
+        __deleteUserRecursive : function() {
+            this.getTable().cancelEditing();
+
+            var user = this.getSelectedRowData();
+            if (!user) {
+                return;
+            }
+
+            var spec = this.getPageSpec();
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user["user"]}), "DELETE", "application/json");
+            this.__applyConstViewSpecToRequest(req);
+            req.setParameter("forceRecursive", true, false);
+            req.send(function(resp){
+                this.fireEvent("aclUpdated");
             }, this);
         },
 
@@ -227,7 +248,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             req.setParameter("rights", this.__getRoleCharByName(parameter), false);
             req.setParameter("add", data.value, false);
             req.send(function(resp){
-                this._load();
+                this.fireEvent("aclUpdated");
             }, this);
         },
 
@@ -253,6 +274,10 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             if (selected) {
                 bt = new qx.ui.menu.Button(this.tr("Delete user"));
                 bt.addListenerOnce("execute", this.__deleteUser, this);
+                menu.add(bt);
+
+                bt = new qx.ui.menu.Button(this.tr("Delete user (force recursive)"));
+                bt.addListenerOnce("execute", this.__deleteUserRecursive, this);
                 menu.add(bt);
             }
         }

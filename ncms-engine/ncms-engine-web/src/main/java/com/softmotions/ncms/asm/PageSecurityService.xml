@@ -155,4 +155,9 @@
           acl.user = #{user} AND #{nav_path} LIKE (a.nav_cached_path || a.id || '/%')
     </select>
 
+    <update id="deleteLocalAclUserRecursive" parameterType="map">
+        DELETE FROM asm_acl_entity
+        WHERE user = #{user} AND acl_id IN (SELECT local_acl_id FROM asms WHERE nav_cached_path LIKE #{nav_path} OR id = #{pid})
+    </update>
+
 </mapper>
