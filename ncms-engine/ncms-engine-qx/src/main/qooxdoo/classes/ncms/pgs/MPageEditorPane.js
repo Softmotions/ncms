@@ -35,6 +35,19 @@ qx.Mixin.define("ncms.pgs.MPageEditorPane", {
             check : "Object",
             nullable : true,
             apply : "__applyPageSpec"
+        },
+
+
+        /**
+         * If editor data is modified by user
+         * and needs to be saved
+         */
+        modified : {
+            check : "Boolean",
+            nullable : false,
+            init : false,
+            event : "modified",
+            apply : "_applyModified"
         }
     },
 

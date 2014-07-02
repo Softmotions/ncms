@@ -143,6 +143,9 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
                 }, this);
             }, this);
             dlg.open();
+        },
+
+        _applyModified : function(val) {
         }
     },
 

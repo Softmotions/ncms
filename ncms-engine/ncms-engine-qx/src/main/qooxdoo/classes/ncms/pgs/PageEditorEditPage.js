@@ -3,6 +3,7 @@
  *
  * @asset(ncms/icon/16/misc/document-template.png)
  * @asset(ncms/icon/16/misc/tick.png)
+ * @asset(ncms/icon/16/misc/cross-script.png)
  * @asset(ncms/icon/16/misc/monitor.png)
  */
 qx.Class.define("ncms.pgs.PageEditorEditPage", {
@@ -41,12 +42,18 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__templateBf.addListener("execute", this.__onChangeTemplate, this);
         hcont.add(this.__templateBf, {flex : 1});
 
-        bt = this.__previewBt = new qx.ui.form.Button(this.tr("Preview"), "ncms/icon/16/misc/monitor.png");
+        var bt = this.__previewBt = new qx.ui.form.Button(this.tr("Preview"), "ncms/icon/16/misc/monitor.png");
         bt.addListener("execute", this.__preview, this);
         hcont.add(bt);
 
-        var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png");
+        bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png");
+        bt.setEnabled(false);
         bt.addListener("execute", this.__save, this);
+        hcont.add(bt);
+
+        bt = this.__cancelBt = new qx.ui.form.Button(this.tr("Cancel"), "ncms/icon/16/misc/cross-script.png");
+        bt.setEnabled(false);
+        bt.addListener("execute", this.__cancel, this);
         hcont.add(bt);
 
         this.add(hcont);
@@ -76,6 +83,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         __form : null,
 
         __saveBt : null,
+
+        __cancelBt : null,
 
         __previewBt : null,
 
@@ -121,6 +130,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.__form = form;
             this.__scroll.add(fr);
             this.__syncState();
+            this.setModified(false);
         },
 
 
@@ -164,15 +174,39 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 qx.log.Logger.warn("Attribute manager used for type: " + attrSpec["type"] + " produced invalid widget: " + w);
                 return;
             }
+
+            var oou = qx.util.OOUtil;
+            //Listen modified events
+            if (qx.Class.hasInterface(wclass, ncms.asm.am.IValueWidget)) {
+                w.addListener("modified", this._onModifiedWidget, this);
+            } else if (oou.supportsEvent(wclass, "input")) {
+                w.addListener("input", this._onModifiedWidget, this);
+            } else if (oou.supportsEvent(wclass, "changeValue")) {
+                w.addListener("changeValue", this._onModifiedWidget, this);
+            } else if (oou.supportsEvent(wclass, "changeSelection")) {
+                w.addListener("changeSelection", this._onModifiedWidget, this);
+            } else if (oou.supportsEvent(wclass, "execute")) {
+                w.addListener("execute", this._onModifiedWidget, this);
+            }
             if (!qx.Class.hasInterface(wclass, qx.ui.form.IForm)) {
                 w = new sm.ui.form.FormWidgetAdapter(w);
             }
+
             w.setUserData("attributeManager", am);
             var validator = null;
             if (typeof w.validator === "function") {
                 validator = w.validator;
             }
             form.add(w, attrSpec["label"], validator, attrSpec["name"]);
+        },
+
+        _onModifiedWidget : function() {
+            this.setModified(true);
+        },
+
+        _applyModified : function(val) {
+            this.__saveBt.setEnabled(val);
+            this.__cancelBt.setEnabled(val);
         },
 
         __onChangeTemplate : function() {
@@ -197,7 +231,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __syncState : function() {
             this.__previewBt.setEnabled(this.__form != null);
-            this.__saveBt.setEnabled(this.__form != null);
         },
 
         __save : function() {
@@ -214,13 +247,21 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 }
                 data[k] = am.valueAsJSON();
             }
-
             var spec = this.getPageSpec();
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec), "PUT");
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
             req.send(function(resp) {
+                this.setModified(false);
                 ncms.Application.alert(this.tr("Page '%1' saved successfully", spec["name"]));
+            }, this);
+        },
+
+        __cancel : function() {
+            ncms.Application.confirm(this.tr("Dow you really want to dispose pending changes?"), function(yes) {
+                if (yes) {
+                    this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()));
+                }
             }, this);
         },
 
@@ -236,5 +277,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__scroll = null;
         this.__previewBt = null;
         this.__saveBt = null;
+        this.__cancelBt = null;
     }
 });
