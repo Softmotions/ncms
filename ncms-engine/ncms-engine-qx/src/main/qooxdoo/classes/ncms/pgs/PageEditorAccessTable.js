@@ -220,22 +220,11 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             var parameter = this.getTableModel().getColumnId(data.col);
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user.rowData["user"]}), "POST", "application/json");
             this.__applyConstViewSpecToRequest(req);
-            req.setParameter("rights", this.__populateUserRights(user.rowData, parameter, data.value), false);
+            req.setParameter("rights", this.__getRoleCharByName(parameter), false);
+            req.setParameter("add", data.value, false);
             req.send(function(resp){
                 this._load();
             }, this);
-        },
-
-        __populateUserRights : function(user, role, isset) {
-            var am = user["rights"];
-            var roleChar = this.__getRoleCharByName(role);
-            if (roleChar == "") {
-                return am;
-            } else if (isset) {
-                return am.indexOf(roleChar) != -1 ? am : am + roleChar;
-            } else {
-                return am.replace(roleChar, "");
-            }
         },
 
         __getRoleCharByName : function(cname) {

@@ -89,6 +89,13 @@
         WHERE a.id = #{pid} <if test="user != null"> AND acl.user = #{user}</if>
     </select>
 
+    <select id="checkUserAccess" resultType="int" parameterType="map">
+        SELECT COUNT(acl.*)
+        FROM asm_acl_entity AS acl
+        INNER JOIN asms AS a ON a.recursive_acl_id = acl.acl_id OR a.local_acl_id = acl.acl_id
+        WHERE a.id = #{pid} AND acl.user = #{user} AND acl.rights LIKE '%' || #{right} || '%'
+    </select>
+
     <!--TODO optimize queries-->
 
     <update id="updateAclUserRights" parameterType="map">

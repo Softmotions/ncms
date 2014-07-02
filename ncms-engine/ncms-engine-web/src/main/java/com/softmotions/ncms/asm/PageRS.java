@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
@@ -30,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -42,7 +40,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
@@ -50,12 +47,14 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.ADD;
+import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.REMOVE;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -501,8 +500,7 @@ public class PageRS extends MBDAOSupport {
 
     @Path("/acl/{pid}/{user}")
     @PUT
-    public void addToAcl(@Context final HttpServletRequest req,
-                         @PathParam("pid") Long pid,
+    public void addToAcl(@PathParam("pid") Long pid,
                          @PathParam("user") String user,
                          @QueryParam("recursive") boolean recursive) {
 
@@ -516,23 +514,22 @@ public class PageRS extends MBDAOSupport {
 
     @Path("/acl/{pid}/{user}")
     @POST
-    public void updateAcl(@Context final HttpServletRequest req,
-                          @PathParam("pid") Long pid,
+    public void updateAcl(@PathParam("pid") Long pid,
                           @PathParam("user") String user,
                           @QueryParam("recursive") boolean recursive,
-                          @QueryParam("rights") String rights) {
+                          @QueryParam("rights") String rights,
+                          @QueryParam("add") boolean isAdd) {
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
             throw new BadRequestException("User not found");
         }
 
-        pageSecurity.updateUserRights(pid, user, rights, recursive);
+        pageSecurity.updateUserRights(pid, user, rights, isAdd ? ADD : REMOVE, recursive);
     }
 
     @Path("/acl/{pid}/{user}")
     @DELETE
-    public void deleteFromAcl(@Context final HttpServletRequest req,
-                              @PathParam("pid") Long pid,
+    public void deleteFromAcl(@PathParam("pid") Long pid,
                               @PathParam("user") String user,
                               @QueryParam("recursive") boolean recursive) {
         WSUser wsUser = userdb.findUser(user);

@@ -7,6 +7,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 
@@ -93,10 +94,8 @@ public class PageSecurityService extends MBDAOSupport {
 
     /**
      * Add new user acl entity:
-     * - for recursive:
-     * - if user already has rights for this page this rights will added for all childs recursively
-     * - non recursive
-     * - if user is owner of page rights will be updated to {@link ALL_RIGHTS}
+     * - for recursive: if user already has rights for this page this rights will added for all childs recursively
+     * - non recursive: if user is owner of page rights will be updated to {@link ALL_RIGHTS}
      *
      * @param pid       page id
      * @param user      user name
@@ -110,35 +109,59 @@ public class PageSecurityService extends MBDAOSupport {
             rights = ALL_RIGHTS_STR;
         }
 
-        updateUserRights(pid, user, rights, recursive);
+        updateUserRights(pid, user, rights, UpdateMode.ADD, recursive);
     }
 
     /**
-     * Update user rights for page.
+     * Set user rights.
      *
      * @param pid       page id
      * @param user      user name
      * @param rights    new rights
      * @param recursive recursive flag
      */
-    public void updateUserRights(Long pid, String user, String rights, boolean recursive) {
-        String navPath = selectOne("selectNavPagePath", "pid", pid);
+    public void setUserRights(Long pid, String user, String rights, boolean recursive) {
+        updateUserRights(pid, user, rights, UpdateMode.REPLACE, recursive);
+    }
 
-        Map<String, ?> aclInfo = selectOne("selectPageAclInfo", "pid", pid);
-        Number recAcl = aclInfo != null ? (Number) aclInfo.get("recursive_acl") : null;
-        Number locAcl = aclInfo != null ? (Number) aclInfo.get("local_acl") : null;
+    /**
+     * Add specifyed user rights.
+     *
+     * @param pid       page id
+     * @param user      user name
+     * @param rights    rights to add
+     * @param recursive recursive flag
+     */
+    public void addUserRights(Long pid, String user, String rights, boolean recursive) {
+        updateUserRights(pid, user, rights, UpdateMode.ADD, recursive);
+    }
 
-        rights = rights == null ? "" : rights;
+    /**
+     * Remove specifyed user rights.
+     *
+     * @param pid       page id
+     * @param user      user name
+     * @param rights    rights to remove
+     * @param recursive recursive flag
+     */
+    public void removeUserRights(Long pid, String user, String rights, boolean recursive) {
+        updateUserRights(pid, user, rights, UpdateMode.REMOVE, recursive);
+    }
 
+    /**
+     * Update user rights
+     *
+     * @param pid       page id
+     * @param user      user name
+     * @param rights    rights (to set/to add/to remove - depends on mode)
+     * @param mode      update mode
+     * @param recursive recursive flag
+     */
+    public void updateUserRights(Long pid, String user, String rights, UpdateMode mode, boolean recursive) {
         if (!recursive) {
-            // update local acl
-            if (locAcl == null) {
-                locAcl = selectOne("newAclId");
-                update("setLocalAcl", "pid", pid, "acl", locAcl);
-            }
-            update("updateAclUserRights", "acl", locAcl, "user", user, "rights", rights);
+            updateLocalAclUser(pid, user, rights, mode);
         } else {
-            updateRecursiveAclUser(pid, navPath, user, rights, recAcl);
+            updateRecursiveAclUser(pid, user, rights, mode);
         }
     }
 
@@ -222,9 +245,22 @@ public class PageSecurityService extends MBDAOSupport {
         return rights;
     }
 
+    /**
+     * Checks specifyed access user to page
+     *
+     * @param pid    page id
+     * @param user   user name
+     * @param access checked access
+     */
     public boolean checkAccess(Long pid, String user, Character access) {
-        // TODO: check specified access
-        return false;
+        if (access == null || !ArrayUtils.contains(ALL_RIGHTS, access)) {
+            return false;
+        }
+
+        return (Integer) selectOne("checkUserAccess",
+                                   "pid", pid,
+                                   "user", user,
+                                   "right", access) > 0;
     }
 
     private String mergeRights(String r1, String r2) {
@@ -243,14 +279,30 @@ public class PageSecurityService extends MBDAOSupport {
         return StringUtils.isBlank(r) ? from : from.replaceAll("[" + r + "]", "");
     }
 
-    private void updateRecursiveAclUser(Long pid, String navPath, String user, String rights, Number recAcl) {
-        String urights = null;
+    private void updateLocalAclUser(Long pid, String user, String rights, UpdateMode mode) {
+        String nrights = "";
+        Number locAcl = selectOne("getLocalAcl", "pid", pid);
+
+        // update local acl
+        if (locAcl == null) {
+            locAcl = selectOne("newAclId");
+            update("setLocalAcl", "pid", pid, "acl", locAcl);
+        } else {
+            nrights = selectOne("selectUserRights", "user", user, "acl", locAcl);
+        }
+
+        update("updateAclUserRights", "acl", locAcl, "user", user, "rights", calcRights(mode, nrights, rights));
+    }
+
+    private void updateRecursiveAclUser(Long pid, String user, String rights, UpdateMode mode) {
+        String navPath = selectOne("selectNavPagePath", "pid", pid);
+        Number recAcl = selectOne("getRecursiveAcl", "pid", pid);
+
+        String cr = "";
         Number newRecAcl = selectOne("newAclId");
         if (recAcl != null) {
-            urights = unsetRights((String) selectOne("selectUserRights", "user", user, "acl", recAcl), rights);
-            urights = StringUtils.isBlank(urights) ? null : urights;
-
             update("copyAcl", "prev_acl", recAcl, "new_acl", newRecAcl);
+            cr = selectOne("selectUserRights", "user", user, "acl", recAcl);
         }
 
         update("updateChildRecursiveAcl",
@@ -258,14 +310,11 @@ public class PageSecurityService extends MBDAOSupport {
                "nav_path", navPath + pid + "/%",
                "prev_acl", recAcl,
                "new_acl", newRecAcl);
-        update("updateAclUserRights", "acl", newRecAcl, "user", user, "rights", rights);
+        update("updateAclUserRights", "acl", newRecAcl, "user", user, "rights", calcRights(mode, cr, rights));
 
         List<Number> racls = select("childRecursiveAcls", "nav_path", navPath + pid + "/%", "exclude_acl", newRecAcl);
         for (Number racl : racls) {
-            String rrights = selectOne("selectUserRights", "user", user, "acl", racl);
-            if (rrights == null && urights != null) {
-                continue;
-            }
+            cr = selectOne("selectUserRights", "user", user, "acl", racl);
 
             Number nracl = selectOne("newAclId");
             update("copyAcl", "prev_acl", racl, "new_acl", nracl);
@@ -274,11 +323,26 @@ public class PageSecurityService extends MBDAOSupport {
                    "prev_acl", racl,
                    "new_acl", nracl);
 
-            String nrights = urights == null ? mergeRights(rrights, rights) : unsetRights(rrights, urights);
-            update("updateAclUserRights", "acl", nracl, "user", user, "rights", nrights);
+            update("updateAclUserRights", "acl", nracl, "user", user, "rights", calcRights(mode, cr, rights));
         }
     }
 
+    private String calcRights(UpdateMode mode, String cr, String nr) {
+        switch (mode) {
+            case REPLACE:
+                return nr;
+            case ADD:
+                return mergeRights(cr, nr);
+            case REMOVE:
+                return unsetRights(cr, nr);
+        }
+
+        return "";
+    }
+
+    /**
+     * User rights info
+     */
     public static class AclEntity {
         private String user;
         private String userFullName;
@@ -292,20 +356,50 @@ public class PageSecurityService extends MBDAOSupport {
             this.recursive = recursive;
         }
 
+        /**
+         * @return user name
+         */
         public String getUser() {
             return user;
         }
 
+        /**
+         * @return user full name
+         */
         public String getUserFullName() {
             return userFullName;
         }
 
+        /**
+         * @return rights
+         */
         public String getRights() {
             return rights;
         }
 
+        /**
+         * @return recursive flag
+         */
         public boolean isRecursive() {
             return recursive;
         }
+    }
+
+    /**
+     * Rights update mode
+     */
+    public static enum UpdateMode {
+        /**
+         * Add rights to exists
+         */
+        ADD,
+        /**
+         * Remove rights from exists
+         */
+        REMOVE,
+        /**
+         * Replace rights
+         */
+        REPLACE
     }
 }
