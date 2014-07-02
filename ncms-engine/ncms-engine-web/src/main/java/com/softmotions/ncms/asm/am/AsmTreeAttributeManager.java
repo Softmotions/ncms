@@ -79,7 +79,9 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
-        attr.setEffectiveValue(val != null ? val.asText() : null);
+        log.info("Apply tree val=" + val);
+
+        attr.setEffectiveValue(val != null ? val.toString() : null);
         return attr;
     }
 }

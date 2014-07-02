@@ -210,8 +210,11 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 var name = ev.getData();
                 dlg.close();
                 var folder = qx.data.marshal.Json.createModel({
+                    id : null,
                     name : name,
-                    icon : "default",
+                    type : "folder",
+                    extra : null,
+                    icon : "folder",
                     children : []
                 }, true);
                 item.getChildren().push(folder);
@@ -248,14 +251,18 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 };
                 if (data["externalLink"] != null) {
                     node["name"] = data["linkText"] + " (" + data["externalLink"] + ")";
-                    node["icon"] = "link";
+                    node["type"] = "link";
                     node["extra"] = data["externalLink"];
+                    node["icon"] = "link";
+
                 } else {
                     var name = data["linkText"];
                     name += " (";
                     name += data["labelPath"].join("/");
                     name += ")";
                     node["name"] = name;
+                    node["type"] = "page";
+                    node["extra"] = null;
                     node["icon"] = "page";
                 }
                 item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
@@ -285,8 +292,9 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 var node = {
                     "id" : data["id"],
                     "name" : data["name"],
-                    "icon" : "file",
-                    "extra" : data["folder"] + data["name"]
+                    "type" : "file",
+                    "extra" : data["folder"] + data["name"],
+                    "icon" : "file"
                 };
                 item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
                 tree.openNode(item);

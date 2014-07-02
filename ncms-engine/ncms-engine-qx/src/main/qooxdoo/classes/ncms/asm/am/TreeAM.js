@@ -65,13 +65,19 @@ qx.Class.define("ncms.asm.am.TreeAM", {
                 w.setModel(model);
                 w.setOptions(opts);
             });
+            this._valueWidget = w;
             return w;
         },
 
 
         valueAsJSON : function() {
-            var res = {};
-            return res;
+            var w = this._valueWidget;
+            var model = w.getModel();
+            if (model == null) {
+                return {};
+            }
+            model = qx.util.Serializer.toNativeObject(model);
+            return model;
         }
     },
 
