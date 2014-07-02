@@ -79,6 +79,10 @@ qx.Class.define("ncms.Application", {
             return ncms.Application.INSTANCE.registerWorkspaces(wsSpec);
         },
 
+        getActiveWorkspace : function() {
+            return ncms.Application.INSTANCE.getActiveWorkspace();
+        },
+
         formatDate : function(date, formatName) {
             if (typeof date === "number") {
                 date = new Date(date);
@@ -215,6 +219,11 @@ qx.Class.define("ncms.Application", {
                 }, {cache : true, wspec : wspec}, this);
             }
         },
+
+        getActiveWorkspace : function() {
+            return this.getComponent("nav-stack").getActiveWidget();
+        },
+
 
         /**
          * Display default workspace area placeholder

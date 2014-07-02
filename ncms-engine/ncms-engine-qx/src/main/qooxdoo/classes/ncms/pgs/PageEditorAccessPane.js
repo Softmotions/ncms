@@ -27,9 +27,11 @@ qx.Class.define("ncms.pgs.PageEditorAccessPane", {
 
         __onLoadPane : function(ev) {
             var spec = ev.getData();
-
             this.__locAclTable.setPageSpec(spec);
             this.__recAclTable.setPageSpec(spec);
+        },
+
+        _applyModified : function(val) {
         }
 
     },

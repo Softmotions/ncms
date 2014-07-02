@@ -13,13 +13,9 @@
  */
 qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
     extend : qx.ui.container.Composite,
-    implement : [ qx.ui.form.IModel ],
-
-    statics : {
-    },
-
-    events : {
-    },
+    implement : [ qx.ui.form.IModel,
+                  ncms.asm.am.IValueWidget],
+    include : [ ncms.asm.am.MValueWidget ],
 
     properties : {
 
@@ -67,8 +63,6 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         __addBt : null,
 
         __delBt : null,
-
-        __editBt : null,
 
         _createChildControlImpl : function(id) {
             var control;
@@ -145,10 +139,6 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                     this.__onRemove, this);
             this.__delBt.setToolTipText(this.tr("Drop element"));
             part.add(this.__delBt);
-
-            this.__editBt = this._createButton(null, "ncms/icon/16/actions/application_form_edit.png",
-                    this.__onEdit, this);
-            part.add(this.__editBt);
         },
 
         _createButton : function(label, icon, handler, self) {
@@ -226,6 +216,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 }, true);
                 item.getChildren().push(folder);
                 tree.openNode(item);
+                this.fireEvent("modified");
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.open();
@@ -270,6 +261,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
                 tree.openNode(item);
                 dlg.close();
+                this.fireEvent("modified");
             }, this);
         },
 
@@ -299,6 +291,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
                 tree.openNode(item);
                 dlg.close();
+                this.fireEvent("modified");
             }, this);
             dlg.open();
         },
@@ -314,6 +307,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 return;
             }
             parent.getChildren().remove(item);
+            this.fireEvent("modified");
         },
 
 
@@ -339,7 +333,6 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         this.__tree = null;
         this.__addBt = null;
         this.__delBt = null;
-        this.__editBt = null;
-        //this._disposeObjects("__field_name");                                
+        //this._disposeObjects("__field_name");
     }
 });
