@@ -11,6 +11,8 @@
  *
  * @asset(ncms/icon/16/help/help.png)
  * @asset(ncms/icon/16/misc/door_in.png)
+ *
+ * @asset(qx/icon/${qx.icontheme}/48/status/dialog-information.png)
  */
 qx.Class.define("ncms.Application", {
     extend : qx.application.Standalone,
@@ -21,6 +23,7 @@ qx.Class.define("ncms.Application", {
         APP_STATE : null,
         ACT : null,
 
+        INFO_POPUP : null,
 
         ///////////////////////////////////////////////////////////
         //                         Alerts
@@ -49,6 +52,83 @@ qx.Class.define("ncms.Application", {
                 "context" : context || null,
                 "image" : "icon/48/status/dialog-warning.png"
             })).open();
+        },
+
+        /**
+         * Show autohided popup message
+         *
+         * @param message {String} message to show
+         * @param showTime {Number|null} time in ms to show message, defaul 1500 ms
+         * @param hideTime {Number|null} fade out animation duration, default 500 ms
+         * @param options {Object|null} additional options:
+         *       - icon - icon to show. by default of if <code>undefined</code> will be shown default icon: status/dialog-information,
+         *                              if <code>null</code> no icon will be shown
+         */
+        infoPopup : function(message, showTime, hideTime, options) {
+            var root = qx.core.Init.getApplication().getRoot();
+            var info = ncms.Application.INFO_POPUP;
+            if (!info) {
+                info = ncms.Application.INFO_POPUP = new qx.ui.container.Composite(new qx.ui.layout.VBox(0).set({alignX: "center"}))
+                info.addListener("resize", function() {
+                    var parent = this.getLayoutParent();
+                    if (parent) {
+                      var bounds = parent.getBounds();
+                      if (bounds) {
+                        var hint = this.getSizeHint();
+                          var left = Math.round((bounds.width - hint.width) / 2);
+                          this.setLayoutProperties({
+                              left : left,
+                              top : 0
+                          });
+                      }
+                    }
+                }, info);
+
+                root.add(info);
+            } else {
+                var maxWindowZIndex = info.getZIndex();
+                var windows = root.getWindows();
+                for (var i = 0; i < windows.length; i++) {
+                    if (windows[i] != this) {
+                        var zIndex = windows[i].getZIndex();
+                        maxWindowZIndex = Math.max(maxWindowZIndex, zIndex);
+                    }
+                }
+                info.setZIndex(maxWindowZIndex + 1e8);
+            }
+
+            options = options || {};
+            options["icon"] = options["icon"] !== undefined ? options["icon"] : "icon/48/status/dialog-information.png";
+
+            var el = new qx.ui.basic.Atom(message, options["icon"]).set({
+                center: true,
+                rich : true,
+                selectable : true,
+                appearance : "ncms-info-popup"
+            });
+            info.add(el);
+
+            var fadeOut = {
+                duration : hideTime || 500,
+                delay : showTime || 1500,
+                timing : "ease-out",
+                keep : 100,
+                keyFrames : {
+                    0 : {opacity : 1},
+                    100 : {opacity : 0, display : "none"}
+                }
+            };
+
+            el.addListenerOnce("appear", function() {
+                var ah = qx.bom.element.Animation.animate(this.getContentElement().getDomElement(), fadeOut);
+                ah.once("end", function() {
+                    this.destroy();
+                }, this);
+                this.addListener("click", function() {
+                    ah.stop();
+                    this.destroy();
+                }, this);
+            }, el);
         },
 
         getComponent : function(name) {

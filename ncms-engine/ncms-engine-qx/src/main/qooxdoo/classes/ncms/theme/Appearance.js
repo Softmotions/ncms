@@ -60,6 +60,17 @@ qx.Theme.define("ncms.theme.Appearance", {
                     marginRight : 0
                 };
             }
+        },
+
+        // message info popup (on top of page, auto hide)
+        "ncms-info-popup" : {
+            style : function(states) {
+                return {
+                    padding: [5, 10, 5, 10],
+                    maxWidth: 350,
+                    backgroundColor : "background"
+                }
+            }
         }
     }
 });
