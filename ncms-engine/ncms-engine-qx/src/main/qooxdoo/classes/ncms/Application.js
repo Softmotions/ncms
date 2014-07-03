@@ -357,6 +357,11 @@ qx.Class.define("ncms.Application", {
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
         },
 
+        // overriden
+        close : function(val) {
+            return this.tr("You leave NCMS area.");
+        },
+
         __construct : sm.lang.Object.newInstance
     },
 
