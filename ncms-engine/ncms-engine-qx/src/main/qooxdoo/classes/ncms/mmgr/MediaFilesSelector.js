@@ -132,17 +132,20 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             table.addListener("dataEdited", function(ev) {
                 var tm = table.getTableModel();
                 var data = ev.getData();
-                var fileSpec = tm.getRowData(data.row);
+                var fspec = tm.getRowData(data.row);
+                if (fspec == null) {
+                    return;
+                }
                 var attrName = table.getTableModel().getColumnId(data.col);
-                if (!this.__checkEditAccess([fileSpec])) {
+                if (!this.__checkEditAccess([fspec])) {
                     tm.updateCachedRows(function(ind, rowdata) {
-                        if (fileSpec["id"] === rowdata["id"]) {
+                        if (fspec["id"] === rowdata["id"]) {
                             rowdata[attrName] = data.oldValue;
                             return rowdata;
                         }
                     }, this);
                 } else {
-                    this.__updateMetaAttribute(fileSpec, attrName, data.value, data.oldValue);
+                    this.__updateMetaAttribute(fspec, attrName, data.value, data.oldValue);
                 }
             }, this);
         }

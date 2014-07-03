@@ -1,4 +1,4 @@
-package com.softmotions.ncms.media;
+package com.softmotions.ncms.media.events;
 
 import com.softmotions.ncms.events.BasicEvent;
 

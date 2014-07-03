@@ -1,15 +1,20 @@
 package com.softmotions.ncms.media;
 
 import com.softmotions.commons.cont.ArrayUtils;
+import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.asm.events.PageDroppedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.fts.FTSUtils;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.media.events.MediaCreateEvent;
+import com.softmotions.ncms.media.events.MediaDeleteEvent;
+import com.softmotions.ncms.media.events.MediaMoveEvent;
 import com.softmotions.web.HttpServletRequestAdapter;
 import com.softmotions.web.ResponseUtils;
 import com.softmotions.web.security.WSUser;
@@ -22,6 +27,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
@@ -81,6 +87,7 @@ import java.nio.charset.Charset;
 import java.security.Principal;
 import java.sql.Blob;
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -151,6 +158,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         this.ebus = ebus;
         this.userdb = userdb;
         this.sctx = sctx;
+        this.ebus.register(this);
     }
 
     /**
@@ -1483,6 +1491,24 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return path;
     }
 
+    @Subscribe
+    public void pageDropped(PageDroppedEvent ev) {
+        String guid = ev.getGuid();
+        List<String> parts = new ArrayList<>(8);
+        for (int i = 0; i < 32; i += 4) {
+            parts.add(guid.substring(i, i + 4));
+        }
+        String path = "pages/" + CollectionUtils.join("/", parts);
+        try (ResourceLock l = new ResourceLock(path, true)) {
+            File pdir = new File(basedir, path);
+            if (pdir.isDirectory()) {
+                log.info("Removing page dir: " + path);
+                FileUtils.deleteDirectory(pdir);
+            }
+        } catch (IOException e) {
+            log.error("Failed to drop page files dir: " + path, e);
+        }
+    }
 
     private static final class RWLocksLRUCache extends LRUMap {
 

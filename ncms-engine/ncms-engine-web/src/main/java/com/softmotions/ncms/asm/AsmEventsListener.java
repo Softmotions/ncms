@@ -1,8 +1,8 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.ncms.events.NcmsEventBus;
-import com.softmotions.ncms.media.MediaDeleteEvent;
-import com.softmotions.ncms.media.MediaMoveEvent;
+import com.softmotions.ncms.media.events.MediaDeleteEvent;
+import com.softmotions.ncms.media.events.MediaMoveEvent;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.google.common.eventbus.Subscribe;

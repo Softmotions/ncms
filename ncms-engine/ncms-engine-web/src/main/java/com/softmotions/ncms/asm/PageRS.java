@@ -7,6 +7,8 @@ import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.events.PageDroppedEvent;
+import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -78,6 +80,8 @@ public class PageRS extends MBDAOSupport {
 
     final PageSecurityService pageSecurity;
 
+    final NcmsEventBus ebus;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao,
@@ -85,7 +89,8 @@ public class PageRS extends MBDAOSupport {
                   NcmsMessages messages,
                   WSUserDatabase userdb,
                   AsmAttributeManagersRegistry amRegistry,
-                  PageSecurityService pageSecurity) {
+                  PageSecurityService pageSecurity,
+                  NcmsEventBus ebus) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -93,6 +98,7 @@ public class PageRS extends MBDAOSupport {
         this.userdb = userdb;
         this.amRegistry = amRegistry;
         this.pageSecurity = pageSecurity;
+        this.ebus = ebus;
     }
 
 
@@ -425,7 +431,12 @@ public class PageRS extends MBDAOSupport {
     @Transactional
     public void dropPage(@Context HttpServletRequest req,
                          @PathParam("id") Long id) {
+        Map<String, Object> info = selectOne("selectPageInfo",
+                                             "id", id);
         delete("dropPage", "id", id);
+        if (info != null) {
+            ebus.fireOnSuccessCommit(new PageDroppedEvent(this, id, (String) info.get("guid")));
+        }
     }
 
     @Path("/layer")
