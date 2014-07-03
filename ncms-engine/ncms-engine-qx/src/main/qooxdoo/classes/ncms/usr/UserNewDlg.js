@@ -71,15 +71,14 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
         this.add(hcont);
 
-        this.__closeCmd = new qx.ui.core.Command("Esc");
-        this.__closeCmd.addListener("execute", this.close, this);
+        var cmd  = this.createCommand("Esc");
+        cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
     },
 
     members : {
-        __form : null,
 
-        __closeCmd : null,
+        __form : null,
 
         __ok : function(ev) {
             if (!this.__form.validate()) {
@@ -118,9 +117,6 @@ qx.Class.define("ncms.usr.UserNewDlg", {
     },
 
     destruct : function() {
-        if (this.__closeCmd) {
-            this.__closeCmd.setEnabled(false);
-        }
-        this._disposeObjects("__closeCmd", "__form");
+        this._disposeObjects("__form");
     }
 });

@@ -112,8 +112,8 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-        this.__closeCmd = new qx.ui.core.Command("Esc");
-        this.__closeCmd.addListener("execute", this.close, this);
+        var cmd  = this.createCommand("Esc");
+        cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
 
         if (attrSpec != null) {
@@ -127,8 +127,6 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
     members : {
 
         __form : null,
-
-        __closeCmd : null,
 
         __attrSpec : null,
 
@@ -158,12 +156,6 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         __selectType : function() {
             var dlg = new ncms.asm.AsmAttributeTypeSelectorDlg();
-            dlg.addListenerOnce("appear", function() {
-                this.__closeCmd.setEnabled(false);
-            }, this);
-            dlg.addListenerOnce("disappear", function() {
-                this.__closeCmd.setEnabled(true);
-            }, this);
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();
                 dlg.destroy();
@@ -219,9 +211,6 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
     },
 
     destruct : function() {
-        if (this.__closeCmd) {
-            this.__closeCmd.setEnabled(false);
-        }
         if (this.__typeEditorStack) {
             this.__typeEditorStack.getActivatedWidgets().forEach(function(w) {
                 var editor = w.getUserData("eidtor");
@@ -230,7 +219,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
                 }
             });
         }
-        this._disposeObjects("__form", "__closeCmd");
+        this._disposeObjects("__form");
         this.__asmSpec = null;
         this.__attrSpec = null;
         this.__typeEditorStack = null;

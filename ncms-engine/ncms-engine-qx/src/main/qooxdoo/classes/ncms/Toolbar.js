@@ -38,9 +38,7 @@ qx.Class.define("ncms.Toolbar", {
                     "ncms/icon/16/misc/door_in.png");
             logoff.setToolTipText(this.tr("Logout"));
             logoff.addListener("execute", function() {
-                if (window.confirm(this.tr("Do you really want to logout?"))) {
-                    window.location.href = ncms.Application.ACT.getUrl("app.logout");
-                }
+                ncms.Application.logout();
             }, this);
             this.add(logoff);
             this.setPaddingRight(10);

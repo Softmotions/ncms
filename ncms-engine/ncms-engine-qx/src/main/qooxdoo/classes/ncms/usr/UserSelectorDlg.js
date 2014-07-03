@@ -44,8 +44,8 @@ qx.Class.define("ncms.usr.UserSelectorDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-        this.__closeCmd = new qx.ui.core.Command("Esc");
-        this.__closeCmd.addListener("execute", this.close, this);
+        var cmd  = this.createCommand("Esc");
+        cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
 
         selector.addListener("userSelected", this.__syncState, this);
@@ -65,12 +65,6 @@ qx.Class.define("ncms.usr.UserSelectorDlg", {
          */
         __okBt : null,
 
-        /**
-         * Escape key command
-         */
-        __closeCmd : null,
-
-
         __ok : function() {
             this.fireDataEvent("completed", this.__selector.getSelectedUsers())
         },
@@ -87,12 +81,7 @@ qx.Class.define("ncms.usr.UserSelectorDlg", {
     },
 
     destruct : function() {
-        if (this.__closeCmd) {
-            this.__closeCmd.setEnabled(false);
-        }
-        this._disposeObjects("__closeCmd");
         this.__selector = null;
-        this.__closeCmd = null;
         this.__okBt = null;
     }
 });

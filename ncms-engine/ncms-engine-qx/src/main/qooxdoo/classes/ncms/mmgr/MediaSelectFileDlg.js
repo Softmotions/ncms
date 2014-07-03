@@ -112,8 +112,8 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         }, this);
 
 
-        this.__closeCmd = new qx.ui.core.Command("Esc");
-        this.__closeCmd.addListener("execute", this.close, this);
+        var cmd  = this.createCommand("Esc");
+        cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
     },
 
@@ -122,8 +122,6 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         __files : null,
 
         __okBt : null,
-
-        __closeCmd : null,
 
         close : function() {
             this.base(arguments);
@@ -147,10 +145,6 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         },
 
         __dispose : function() {
-            if (this.__closeCmd) {
-                this.__closeCmd.setEnabled(false);
-            }
-            this._disposeObjects("__closeCmd");
             this.__okBt = null;
             this.__files = null;
         }

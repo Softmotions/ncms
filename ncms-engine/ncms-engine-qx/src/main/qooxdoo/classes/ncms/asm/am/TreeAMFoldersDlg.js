@@ -58,16 +58,14 @@ qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-        this.__closeCmd = new qx.ui.core.Command("Esc");
-        this.__closeCmd.addListener("execute", this.close, this);
+        var cmd  = this.createCommand("Esc");
+        cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
     },
 
     members : {
 
         __tree : null,
-
-        __closeCmd : null,
 
         __saveBt : null,
 
@@ -91,15 +89,10 @@ qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
 
 
     destruct : function() {
-        if (this.__closeCmd) {
-            this.__closeCmd.setEnabled(false);
-        }
         if (this.__tree) {
             this.__tree.getSelection().removeListener("change", this.__onChangeSelection, this);
             this.__tree.resetModel();
         }
-        this._disposeObjects("__closeCmd");
-        this.__closeCmd = null;
         this.__tree = null;
         this.__saveBt = null;
     }

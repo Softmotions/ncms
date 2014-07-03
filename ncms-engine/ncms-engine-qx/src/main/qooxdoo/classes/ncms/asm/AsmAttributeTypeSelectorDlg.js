@@ -47,16 +47,14 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
         this.add(hcont);
 
 
-        this.__closeCmd = new qx.ui.core.Command("Esc");
-        this.__closeCmd.addListener("execute", this.close, this);
+        var cmd  = this.createCommand("Esc");
+        cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
     },
 
     members : {
 
         __okBt : null,
-
-        __closeCmd : null,
 
         __table : null,
 
@@ -134,7 +132,6 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
         __dispose : function() {
             this.__table = null;
             this.__okBt = null;
-            this._disposeObjects("__closeCmd");
         },
 
         close : function() {

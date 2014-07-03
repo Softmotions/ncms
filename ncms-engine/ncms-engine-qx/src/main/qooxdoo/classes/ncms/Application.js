@@ -172,6 +172,10 @@ qx.Class.define("ncms.Application", {
             }
             var df = new qx.util.format.DateFormat(format);
             return df.format(date);
+        },
+
+        logout : function() {
+            window.location.href = ncms.Application.ACT.getUrl("app.logout");
         }
     },
 
@@ -190,10 +194,7 @@ qx.Class.define("ncms.Application", {
          * Example data: {"qxClass":"ncms.pgs.PagesNav","label":"Страницы"}
          */
         "workspaceActivated" : "qx.event.type.Data"
-
-
     },
-
 
     members : {
 
@@ -205,6 +206,13 @@ qx.Class.define("ncms.Application", {
         __header : null,
 
         __nav : null,
+
+
+        _createRootWidget : function() {
+            var root = new qx.ui.root.Application(document);
+            root.setWindowManager(new sm.ui.window.ExtendedWindowManager());
+            return root;
+        },
 
         main : function() {
 
@@ -219,6 +227,7 @@ qx.Class.define("ncms.Application", {
             }
             // Call super class
             this.base(arguments);
+
             this.__components = {};
             this.__bootstrap();
 
@@ -359,15 +368,14 @@ qx.Class.define("ncms.Application", {
 
         // overriden
         close : function(val) {
-            return this.tr("You leave NCMS area.");
+            var appName = ncms.Application.APP_STATE.getAppName() || "Application";
+            return this.tr("You leave %1", appName);
         },
 
         __construct : sm.lang.Object.newInstance
     },
 
     defer : function(statics) {
-        //Class modulations
-        qx.Class.include(qx.ui.table.Table, qx.ui.table.MTableContextMenu);
         if (statics.ACT == null) {
             statics.ACT = new ncms.Actions();
         }

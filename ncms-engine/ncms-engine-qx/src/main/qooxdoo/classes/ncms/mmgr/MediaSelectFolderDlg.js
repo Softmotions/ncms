@@ -28,9 +28,9 @@ qx.Class.define("ncms.mmgr.MediaSelectFolderDlg", {
         });
         this._initTree({"action" : "media.folders"});
 
-        this.__closeCmd = new qx.ui.core.Command("Esc");
-        this.__closeCmd.addListener("execute", this.close, this);
-        this.addListenerOnce("resize", this.center, this)
+        var cmd  = this.createCommand("Esc");
+        cmd.addListener("execute", this.close, this);
+        this.addListenerOnce("resize", this.center, this);
 
         this.addListener("itemSelected", function(ev) {
             var item = ev.getData();
@@ -41,8 +41,6 @@ qx.Class.define("ncms.mmgr.MediaSelectFolderDlg", {
     members : {
 
         __saveBt : null,
-
-        __closeCmd : null,
 
         close : function() {
             this.base(arguments);
@@ -69,10 +67,6 @@ qx.Class.define("ncms.mmgr.MediaSelectFolderDlg", {
         },
 
         __dispose : function() {
-            if (this.__closeCmd) {
-                this.__closeCmd.setEnabled(false);
-            }
-            this._disposeObjects("__closeCmd");
             this.__saveBt = null;
         }
     },

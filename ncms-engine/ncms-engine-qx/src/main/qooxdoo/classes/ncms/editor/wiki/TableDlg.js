@@ -30,8 +30,8 @@ qx.Class.define("ncms.editor.wiki.TableDlg", {
             height : 460
         });
 
-        this.__closeCmd = new qx.ui.core.Command("Esc");
-        this.__closeCmd.addListener("execute", function() {
+        var cmd  = this.createCommand("Esc");
+        cmd.addListener("execute", function() {
             this.close();
         }, this);
 
@@ -81,8 +81,6 @@ qx.Class.define("ncms.editor.wiki.TableDlg", {
         __spRows : null,
 
         __table : null,
-
-        __closeCmd : null,
 
         open : function() {
             this.base(arguments);
@@ -146,10 +144,6 @@ qx.Class.define("ncms.editor.wiki.TableDlg", {
         },
 
         __dispose : function() {
-            if (this.__closeCmd) {
-                this.__closeCmd.setEnabled(false);
-            }
-            this._disposeObjects("__closeCmd");
         }
     },
 

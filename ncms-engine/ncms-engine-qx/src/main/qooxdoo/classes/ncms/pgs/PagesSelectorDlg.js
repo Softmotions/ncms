@@ -43,8 +43,8 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-        this.__closeCmd = new qx.ui.core.Command("Esc");
-        this.__closeCmd.addListener("execute", this.close, this);
+        var cmd  = this.createCommand("Esc");
+        cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
 
         selector.addListener("pageSelected", this._syncState, this);
@@ -56,8 +56,6 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
         _selector : null,
 
         _okBt : null,
-
-        __closeCmd : null,
 
         _ok : function() {
             this.__selector.getSelectedPageWithExtraInfo(function(sp) {
@@ -84,6 +82,5 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
     destruct : function() {
         this._okBt = null;
         this._selector = null;
-        this._disposeObjects("__closeCmd");
     }
 });
