@@ -517,10 +517,10 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         __mediaWikiUL : function(data) {
             var val = [];
             val.push("");
-            val.push("* Один");
-            val.push("* Два");
-            val.push("** Первый у второго");
-            val.push("* Три");
+            val.push("* " + this.tr("First"));
+            val.push("* " + this.tr("Second"));
+            val.push("** " + this.tr("First for second"));
+            val.push("* " + this.tr("Third"));
             val.push("");
             return val.join("\n");
         },
@@ -528,10 +528,10 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         __markdownUL : function(data) {
             var val = [];
             val.push("");
-            val.push("* Один");
-            val.push("* Два");
-            val.push("    * Первый у второго");
-            val.push("* Три");
+            val.push("* " + this.tr("First"));
+            val.push("* " + this.tr("Second"));
+            val.push("    * " + this.tr("First for second"));
+            val.push("* " + this.tr("Third"));
             val.push("");
             return val.join("\n");
         },
@@ -539,10 +539,10 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         __mediaWikiOL : function(data) {
             var val = [];
             val.push("");
-            val.push("# Один");
-            val.push("# Два");
-            val.push("## Первый у второго");
-            val.push("# Три");
+            val.push("# " + this.tr("First"));
+            val.push("# " + this.tr("Second"));
+            val.push("## " + this.tr("First for second"));
+            val.push("# " + this.tr("Third"));
             val.push("");
             return val.join("\n");
         },
@@ -550,10 +550,10 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         __markdownOL : function(data) {
             var val = [];
             val.push("");
-            val.push("1. Один");
-            val.push("1. Два");
-            val.push("    1. Первый у второго");
-            val.push("1. Три");
+            val.push("1. " + this.tr("First"));
+            val.push("1. " + this.tr("Second"));
+            val.push("    1. " + this.tr("First for second"));
+            val.push("1. " + this.tr("Third"));
             val.push("");
             return val.join("\n");
         },
@@ -562,10 +562,10 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             var val = [];
             val.push("");
             val.push("<tree open=\"true\">");
-            val.push("- Корень");
-            val.push("-- Потомок 1");
-            val.push("--- Потомок третьего уровня");
-            val.push("-- Потомок 2");
+            val.push("- " + this.tr("Root"));
+            val.push("-- " + this.tr("Child 1"));
+            val.push("--- " + this.tr("Child level 3"));
+            val.push("-- " + this.tr("Child 2"));
             val.push("</tree>");
             val.push("");
             return val.join("\n");
@@ -575,7 +575,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             var val = [];
             val.push("");
             val.push("<note>");
-            val.push("Текст заметки");
+            val.push(this.tr("Note text"));
             val.push("</note>");
             val.push("");
             return val.join("\n");
@@ -585,7 +585,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             var val = [];
             val.push("");
             val.push("<note>");
-            val.push("Текст заметки");
+            val.push(this.tr("Note text"));
             val.push("</note>");
             val.push("");
             return val.join("\n");
