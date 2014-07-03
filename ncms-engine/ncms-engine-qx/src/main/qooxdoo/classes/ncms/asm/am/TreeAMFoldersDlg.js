@@ -9,7 +9,10 @@ qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
     extend : qx.ui.window.Window,
 
     events : {
-
+        /**
+         * DATA: Selected tree model item.
+         */
+        "completed" : "qx.event.type.Event"
     },
 
 
@@ -25,7 +28,7 @@ qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
             height : 400
         });
 
-        var tree = this.__tree = new new qx.ui.tree.VirtualTree(null, "name", "children");
+        var tree = this.__tree = new qx.ui.tree.VirtualTree(null, "name", "children");
         tree.setIconPath("icon");
         tree.setIconOptions({
             converter : function(value, model, source, target) {
@@ -38,11 +41,15 @@ qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
             }
         });
         tree.setModel(model);
+        tree.getSelection().addListener("change", this.__onChangeSelection, this);
+
+        this.add(tree, {flex : 1});
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
-        hcont.setPadding(5);
+        //hcont.setPadding(5);
 
         var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Ok"));
+        bt.setEnabled(false);
         bt.addListener("execute", this.__ok, this);
         hcont.add(bt);
 
@@ -62,16 +69,38 @@ qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
 
         __closeCmd : null,
 
-        __saveBt : null
+        __saveBt : null,
+
+        __onChangeSelection : function(ev) {
+            this.__saveBt.setEnabled(this.__tree.getSelection().getItem(0) != null);
+        },
+
+        __ok : function() {
+            var item = this.__tree.getSelection().getItem(0);
+            if (item == null) {
+                return;
+            }
+            this.fireDataEvent("completed", item);
+        },
+
+        close : function() {
+            this.base(arguments);
+            this.destroy();
+        }
     },
+
 
     destruct : function() {
         if (this.__closeCmd) {
             this.__closeCmd.setEnabled(false);
         }
+        if (this.__tree) {
+            this.__tree.getSelection().removeListener("change", this.__onChangeSelection, this);
+            this.__tree.resetModel();
+        }
         this._disposeObjects("__closeCmd");
-        this.__tree = null;
         this.__closeCmd = null;
+        this.__tree = null;
         this.__saveBt = null;
     }
 });

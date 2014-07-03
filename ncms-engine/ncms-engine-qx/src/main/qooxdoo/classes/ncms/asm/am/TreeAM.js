@@ -41,7 +41,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             form.add(el, this.tr("Allow external links"), null, "allowExternal");
             el.setValue(opts["allowExternal"] == "true");
 
-            el = new qx.ui.form.Spinner(1, 1, 5);
+            el = new qx.ui.form.Spinner(0, 1, 5);
             el.setAllowGrowX(false);
             el.setSingleStep(1);
             if (opts["nestingLevel"] == null) {
