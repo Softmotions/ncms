@@ -68,15 +68,6 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
 
         __closeCmd : null,
 
-        __dispose : function() {
-            if (this.__closeCmd) {
-                this.__closeCmd.setEnabled(false);
-            }
-            this._disposeObjects("__closeCmd");
-            this.__selector = null;
-            this.__closeCmd = null;
-            this.__saveBt = null;
-        },
 
         __ok : function() {
             this.fireDataEvent("completed", this.__selector.getSelectedAsms())
@@ -95,7 +86,12 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
     },
 
     destruct : function() {
-        this.__dispose();
-
+        if (this.__closeCmd) {
+            this.__closeCmd.setEnabled(false);
+        }
+        this._disposeObjects("__closeCmd");
+        this.__selector = null;
+        this.__closeCmd = null;
+        this.__saveBt = null;
     }
 });

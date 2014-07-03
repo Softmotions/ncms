@@ -1,14 +1,14 @@
 /**
  * Tree value editor widget.
  *
- * @asset(ncms/icon/22/places/folder.png)
- * @asset(ncms/icon/22/places/folder-open.png)
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
  * @asset(ncms/icon/16/actions/application_form_edit.png)
  * @asset(ncms/icon/16/misc/globe.png)
  * @asset(ncms/icon/16/misc/box.png)
  * @asset(ncms/icon/16/misc/document-text-image.png)
+ * @asset(ncms/icon/22/places/folder.png)
+ * @asset(ncms/icon/22/places/folder-open.png)
  * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
  */
 qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
@@ -41,7 +41,15 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
     },
 
     construct : function(asmSpec, model, options) {
+
+        this.__broadcaster = sm.event.Broadcaster.create({
+            "up" : false,
+            "down" : false,
+            "sel" : false
+        });
+
         this.base(arguments);
+
         this.setLayout(new qx.ui.layout.VBox());
         this.getChildControl("toolbar");
         this.getChildControl("tree");
@@ -62,7 +70,8 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
 
         __addBt : null,
 
-        __delBt : null,
+        __broadcaster : null,
+
 
         _createChildControlImpl : function(id) {
             var control;
@@ -83,11 +92,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
 
         _createTree : function() {
             var tree = this.__tree = new qx.ui.tree.VirtualTree(null, "name", "children");
-            var me = this;
-            var delegate = {
-                /*createItem : function() {
-                 return new sm.ui.tree.ExtendedVirtualTreeItem();
-                 },*/
+            tree.setDelegate({
 
                 configureItem : function(item) {
                     item.setOpenSymbolMode("auto");
@@ -96,8 +101,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 bindItem : function(controller, item, index) {
                     controller.bindDefaultProperties(item, index);
                 }
-            };
-            tree.setDelegate(delegate);
+            });
             tree.setIconPath("icon");
             tree.setIconOptions({
                 converter : function(value, model, source, target) {
@@ -121,6 +125,10 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 }
             });
 
+            tree.getSelection().addListener("change", function(e) {
+                this.__onSelected(e.getTarget().getItem(0));
+            }, this);
+
             tree.setContextMenu(new qx.ui.menu.Menu());
             tree.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             return tree;
@@ -135,10 +143,29 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             el.setShowArrow(true);
             part.add(el);
 
-            this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png",
+            el = this._createButton(null, "ncms/icon/16/actions/delete.png",
                     this.__onRemove, this);
-            this.__delBt.setToolTipText(this.tr("Drop element"));
-            part.add(this.__delBt);
+            this.__broadcaster.attach(el, "sel", "enabled");
+            el.setToolTipText(this.tr("Drop element"));
+            part.add(el);
+
+            toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
+
+            part = new qx.ui.toolbar.Part()
+                    .set({"appearance" : "toolbar-table/part"});
+            toolbar.add(part);
+
+            el = this._createButton(null, "ncms/icon/16/misc/arrow_up.png",
+                    this.__onMoveUp, this);
+            el.setToolTipText(this.tr("Move item up"));
+            this.__broadcaster.attach(el, "up", "enabled");
+            part.add(el);
+
+            el = this._createButton(null, "ncms/icon/16/misc/arrow_down.png",
+                    this.__onMoveDown, this);
+            el.setToolTipText(this.tr("Move item down"));
+            this.__broadcaster.attach(el, "down", "enabled");
+            part.add(el);
         },
 
         _createButton : function(label, icon, handler, self) {
@@ -149,9 +176,84 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             return bt;
         },
 
+        __onSelected : function() {
+            this.__syncState();
+        },
+
         __applyModel : function(model) {
             this.__tree.setModel(model);
         },
+
+        __syncState : function() {
+            var item = this.__tree.getSelection().getItem(0);
+            var root = false;
+            if (item == this.__tree.getModel()) {
+                root = true;
+                item = null;
+            }
+            var b = this.__broadcaster;
+            b.setSel(item != null);
+            b.setUp(this.__canMoveUp(item));
+            b.setDown(this.__canMoveDown(item));
+        },
+
+        __canMoveUp : function(item) {
+            if (item == null) {
+                return false;
+            }
+            var parent = this.__tree.getParent(item);
+            if (parent == null) {
+                return false;
+            }
+            return parent.getChildren().indexOf(item) > 0;
+        },
+
+        __onMoveUp : function() {
+            var item = this.__tree.getSelection().getItem(0);
+            if (!this.__canMoveUp(item)) {
+                return;
+            }
+            var parent = this.__tree.getParent(item);
+            var clist = parent.getChildren();
+            var ind = clist.indexOf(item);
+            clist.removeAt(ind);
+            clist.insertAt(ind - 1, item);
+            this.__tree.getSelection().removeAll();
+            this.__tree.getSelection().push(item);
+            this.__syncState();
+            this.fireEvent("modified");
+        },
+
+        __canMoveDown : function(item) {
+            if (item == null) {
+                return false;
+            }
+            var parent = this.__tree.getParent(item);
+            if (parent == null) {
+                return false;
+            }
+            var clist = parent.getChildren();
+            var ind = clist.indexOf(item);
+            return ind >= 0 && ind < clist.length - 1;
+        },
+
+
+        __onMoveDown : function() {
+            var item = this.__tree.getSelection().getItem(0);
+            if (!this.__canMoveDown(item)) {
+                return;
+            }
+            var parent = this.__tree.getParent(item);
+            var clist = parent.getChildren();
+            var ind = clist.indexOf(item);
+            clist.removeAt(ind);
+            clist.insertAt(ind + 1, item);
+            this.__tree.getSelection().removeAll();
+            this.__tree.getSelection().push(item);
+            this.__syncState();
+            this.fireEvent("modified");
+        },
+
 
         __applyOptions : function(opts) {
             var bt;
@@ -178,6 +280,10 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             var menu = ev.getData().getTarget();
             menu.removeAll();
 
+            var item = this.__tree.getSelection().getItem(0);
+            if (item === this.__tree.getModel()) {
+                item = null;
+            }
             var opts = this.getOptions();
             var bt;
 
@@ -196,9 +302,18 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 menu.add(bt);
             }
 
-            bt = new qx.ui.menu.Button(this.tr("Remove"));
-            bt.addListener("execute", this.__onRemove, this);
-            menu.add(bt);
+            if (item != null) {
+
+                menu.add(new qx.ui.menu.Separator());
+
+                bt = new qx.ui.menu.Button(this.tr("Remove"));
+                bt.addListener("execute", this.__onRemove, this);
+                menu.add(bt);
+
+                bt = new qx.ui.menu.Button(this.tr("Move to another folder"));
+                bt.addListener("execute", this.__onMove, this);
+                menu.add(bt);
+            }
         },
 
 
@@ -319,10 +434,16 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         },
 
 
-        __onEdit : function() {
+        __onMove : function() {
+            var model = this.__tree.getModel();
+            var fmodel = {};
+            var saveItem = function(obj, item) {
+                //if (!Array.isArray())
+            };
 
+
+            qx.log.Logger.info("On move!!!");
         },
-
 
         __getInsertParent : function() {
             var tree = this.__tree;
@@ -338,9 +459,12 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
     },
 
     destruct : function() {
+        if (this.__broadcaster) {
+            this.__broadcaster.destruct();
+            this.__broadcaster = null;
+        }
         this.__tree = null;
         this.__addBt = null;
-        this.__delBt = null;
         //this._disposeObjects("__field_name");
     }
 });
