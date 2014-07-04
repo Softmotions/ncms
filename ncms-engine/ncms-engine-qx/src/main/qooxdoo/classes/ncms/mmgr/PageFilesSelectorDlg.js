@@ -38,9 +38,9 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
      *
      * @param pageGuid {String} The page GUI.
      * @param caption {String?} Dialog window caption.
-     * @param opts {Object?} ncms.mmgr.MediaFilesSelector options.
+     * @param options {Object?} ncms.mmgr.MediaFilesSelector options.
      */
-    construct : function(pageGuid, caption, opts) {
+    construct : function(pageGuid, caption, options) {
         if (typeof pageGuid !== "string" || pageGuid.length != 32) {
             throw new Error("Invalid page guid: " + pageGuid);
         }
@@ -58,8 +58,14 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
 
         var vsp = new qx.ui.splitpane.Pane("horizontal");
         var leftSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-        var files = this.__files = new ncms.mmgr.PageFilesSelector(pageGuid, opts);
+        var files = this.__files = new ncms.mmgr.PageFilesSelector(pageGuid, options);
         leftSide.add(files, {flex : 1});
+
+        //form
+        var form = this.__form = new sm.ui.form.ExtendedForm();
+        var linkTextTf = new qx.ui.form.TextField().set({maxLength : 64, required : true});
+        form.add(linkTextTf, this.tr("Link text"), null, "linkText");
+        leftSide.add(new sm.ui.form.FlexFormRenderer(form));
 
         var rightSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
         var thumbnail = new qx.ui.basic.Image().set(
@@ -101,18 +107,22 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
             };
             this.__okBt.setEnabled((ctype != null && ff(ctype)));
             if (spec) {
+                var ind = spec["name"].indexOf(".");
+                linkTextTf.setValue(ind !== -1 ? spec["name"].substring(0, ind) : spec["name"]);
                 this.setStatus(spec["folder"] + spec["name"]);
             } else {
                 this.setStatus("");
             }
         }, this);
 
-        var cmd  = this.createCommand("Esc");
+        var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
     },
 
     members : {
+
+        __form : null,
 
         __files : null,
 
@@ -130,6 +140,7 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
                 return true;
             };
             if (ctype && ff(ctype)) {
+                this.__form.populateJSONObject(spec);
                 this.fireDataEvent("completed", spec);
             }
         }
@@ -138,5 +149,6 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
     destruct : function() {
         this.__okBt = null;
         this.__files = null;
+        this._disposeObjects("__form");
     }
 });

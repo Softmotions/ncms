@@ -94,12 +94,17 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             var tree = this.__tree = new qx.ui.tree.VirtualTree(null, "name", "children");
             tree.setDelegate({
 
+                createItem : function() {
+                    return new ncms.asm.am.TreeAMItem();
+                },
+
                 configureItem : function(item) {
                     item.setOpenSymbolMode("auto");
                 },
 
                 bindItem : function(controller, item, index) {
                     controller.bindDefaultProperties(item, index);
+                    controller.bindProperty("extra", "extra", null, item, index);
                 }
             });
             tree.setIconPath("icon");
@@ -392,19 +397,15 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                     "id" : data["id"]
                 };
                 if (data["externalLink"] != null) {
-                    node["name"] = data["linkText"] + " (" + data["externalLink"] + ")";
+                    node["name"] = data["linkText"];
                     node["type"] = "link";
                     node["extra"] = data["externalLink"];
                     node["icon"] = "link";
 
                 } else {
-                    var name = data["linkText"];
-                    name += " (";
-                    name += data["labelPath"].join("/");
-                    name += ")";
-                    node["name"] = name;
+                    node["name"] = data["linkText"];
                     node["type"] = "page";
-                    node["extra"] = null;
+                    node["extra"] = data["labelPath"].join("/");
                     node["icon"] = "page";
                 }
                 item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
@@ -427,15 +428,19 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                     }
             );
             dlg.addListener("completed", function(ev) {
-                //data={"id":18,"name":"nlogo.jpg","folder":"/pages/162d/ab35/f252/f014/695e/6e66/5f63/bbcb/",
-                // "content_type":"image/jpeg","owner":"admin","owner_fullName":"Антон Адаманский",
-                // "content_length":16519,"description":"dslsd;lds;","tags":null}
+                //{"id":55,
+                // "name":"my nsu главная (1).png",
+                // "folder":"/pages/c5aa/416c/5223/e6cd/3975/5938/469b/2674/",
+                // "content_type":"image/png","owner":"admin",
+                // "owner_fullName":"Антон Адаманский",
+                // "content_length":943086,"description":null,
+                // "tags":null,"linkText":"my nsu главная (1)"}
                 var data = ev.getData();
                 var node = {
                     "id" : data["id"],
-                    "name" : data["name"],
+                    "name" : data["linkText"],
                     "type" : "file",
-                    "extra" : data["folder"] + data["name"],
+                    "extra" : data["name"],
                     "icon" : "file"
                 };
                 item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
