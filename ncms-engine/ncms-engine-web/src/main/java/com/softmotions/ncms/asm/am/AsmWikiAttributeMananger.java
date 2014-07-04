@@ -69,7 +69,6 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        log.info("renderAsmAttribute RES=" + res);
         return res;
     }
 
