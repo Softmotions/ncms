@@ -50,7 +50,7 @@ public class AsmStringAttributeManager implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
-        attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
+        attr.setEffectiveValue(val.has("value") ? val.get("value").toString() : null);
         return attr;
     }
 }

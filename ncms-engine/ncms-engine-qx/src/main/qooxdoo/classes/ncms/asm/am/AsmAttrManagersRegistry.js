@@ -11,7 +11,8 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
             ncms.asm.am.SelectAM,
             ncms.asm.am.BooleanAM,
             ncms.asm.am.RefAM,
-            ncms.asm.am.TreeAM
+            ncms.asm.am.TreeAM,
+            ncms.asm.am.WikiAM
         ],
 
 

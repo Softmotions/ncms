@@ -9,6 +9,7 @@ import com.softmotions.ncms.asm.am.AsmResourceAttributeManager;
 import com.softmotions.ncms.asm.am.AsmSelectAttributeManager;
 import com.softmotions.ncms.asm.am.AsmStringAttributeManager;
 import com.softmotions.ncms.asm.am.AsmTreeAttributeManager;
+import com.softmotions.ncms.asm.am.AsmWikiAttributeMananger;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
@@ -53,6 +54,7 @@ public class AsmModule extends AbstractModule {
         attrBinder.addBinding().to(AsmSelectAttributeManager.class);
         attrBinder.addBinding().to(AsmBooleanAttributeManager.class);
         attrBinder.addBinding().to(AsmTreeAttributeManager.class);
+        attrBinder.addBinding().to(AsmWikiAttributeMananger.class);
 
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);
