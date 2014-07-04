@@ -360,7 +360,11 @@ public class AsmRS extends MBDAOSupport {
             attr.setName(name);
         }
         if (spec.hasNonNull("type")) {
+            String oldType = attr.getType();
             attr.setType(spec.get("type").asText());
+            if (!attr.getType().equals(oldType)) {
+                attr.setEffectiveValue(null);
+            }
         }
         if (spec.hasNonNull("label")) {
             attr.setLabel(spec.get("label").asText());

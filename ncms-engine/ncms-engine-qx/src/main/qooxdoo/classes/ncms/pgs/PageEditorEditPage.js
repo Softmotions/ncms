@@ -57,11 +57,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         hcont.add(bt);
 
         this.add(hcont);
-
-        this.__scroll = new qx.ui.container.Scroll().set({marginTop : 20});
-        this.add(this.__scroll, {flex : 1});
-
-
         this.addListener("loadPane", this.__onLoadPane, this);
     },
 
@@ -126,9 +121,11 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             }, this);
 
             this.__cleanupFormPane();
-            var fr = new sm.ui.form.FlexFormRenderer(form);
             this.__form = form;
-            this.__scroll.add(fr);
+            this.__scroll = new qx.ui.container.Scroll().set({marginTop : 20});
+            this.__scroll.add(new sm.ui.form.FlexFormRenderer(form));
+            this.add(this.__scroll, {flex : 1});
+
             this.__syncState();
             this.setModified(false);
         },
@@ -136,9 +133,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __cleanupFormPane : function() {
             if (this.__scroll) {
-                this.__scroll.getChildren().forEach(function(c) {
-                    c.destroy();
-                });
+                this.__scroll.destroy();
+                this.__scroll = null;
             }
             if (this.__form != null) {
                 var items = this.__form.getItems();
@@ -153,7 +149,13 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                             qx.log.Logger.error(e);
                         }
                     }
+                    try {
+                        w.destroy();
+                    } catch (e) {
+                        qx.log.Logger.error(e);
+                    }
                 }
+                this.__form.dispose();
                 this.__form = null;
             }
         },

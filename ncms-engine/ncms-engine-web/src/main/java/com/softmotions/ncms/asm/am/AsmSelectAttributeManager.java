@@ -93,7 +93,7 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
-        String value = attr.getValue();
+        String value = attr.getEffectiveValue();
         if (StringUtils.isEmpty(value)) {
             return Collections.EMPTY_LIST;
         }

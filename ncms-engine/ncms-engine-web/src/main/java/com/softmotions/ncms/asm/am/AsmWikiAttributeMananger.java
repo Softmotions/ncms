@@ -6,16 +6,14 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
-import com.softmotions.ncms.json.JsonTree;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,21 +21,20 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Tree strucrure attribute manager.
+ * Markdown/Mediawiki attribute manager.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-@Singleton
-public class AsmTreeAttributeManager implements AsmAttributeManager {
+public class AsmWikiAttributeMananger implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmTreeAttributeManager.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmWikiAttributeMananger.class);
 
-    private static final String[] TYPES = new String[]{"tree"};
+    public static final String[] TYPES = new String[]{"wiki"};
 
     private final ObjectMapper mapper;
 
     @Inject
-    public AsmTreeAttributeManager(ObjectMapper mapper) {
+    public AsmWikiAttributeMananger(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -46,15 +43,6 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
     }
 
     public AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
-        if (StringUtils.isBlank(attr.getEffectiveValue())) {
-            try {
-                attr.setEffectiveValue(mapper.writeValueAsString(new JsonTree(attr.getLabel() != null ? attr.getLabel() : "root")));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            //todo sync?
-        }
         return attr;
     }
 
@@ -62,28 +50,43 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
         if (attr == null || attr.getEffectiveValue() == null) {
-            return new JsonTree("root");
+            return null;
         }
-        try {
-            return mapper.reader(JsonTree.class).readTree(attr.getEffectiveValue());
+        String res = null;
+        String value = attr.getEffectiveValue();
+        try (JsonParser parser = mapper.getFactory().createParser(value)) {
+            if (parser.nextToken() != JsonToken.START_OBJECT) {
+                return null;
+            }
+            JsonToken t;
+            do {
+                t = parser.nextValue();
+                if ("html".equals(parser.getCurrentName())) {
+                    res = parser.getValueAsString();
+                    break;
+                }
+            } while (t != null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return res;
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
-                                        "allowPages", "allowFiles", "allowExternal",
-                                        "nestingLevel");
+                                        "markup");
         attr.setOptions(asmOpts.toString());
         return attr;
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
-        log.info("Apply tree val=" + val);
-
-        attr.setEffectiveValue(val != null ? val.toString() : null);
+        String markup = val.has("value") ? val.get("value").toString() : null;
+        ObjectNode root = mapper.createObjectNode();
+        root.put("html", markup); //todo
+        root.put("type", "mediawiki"); //todo
+        root.put("markup", markup);
+        attr.setEffectiveValue(root.toString());
         return attr;
     }
 }
