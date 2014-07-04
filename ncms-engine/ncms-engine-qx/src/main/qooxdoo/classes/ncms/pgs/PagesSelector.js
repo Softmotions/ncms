@@ -30,22 +30,15 @@ qx.Class.define("ncms.pgs.PagesSelector", {
         var page = new qx.ui.tabview.Page(this.tr("Structure"));
         page.setLayout(new qx.ui.layout.Grow());
         var ts = this._treeSelector = new ncms.pgs.PagesTreeSelector(allowModify);
-        ts.addListener("itemSelected", function(ev) {
-            var edata = ev.getData();
-            var data = null;
-            if (edata != null) {
-                data = {
-                    id : edata["id"],
-                    name : edata["label"]
-                }
-            }
-            this.setSelectedPage(data);
-        }, this);
+        ts.addListener("itemSelected", this.__pageSelected, this);
         page.add(ts);
         this.add(page);
 
         page = new qx.ui.tabview.Page(this.tr("Search"));
         page.setLayout(new qx.ui.layout.Grow());
+        var ss = this._searchSelector = new ncms.pgs.PagesSearchSelector(null, allowModify);
+        ss.addListener("itemSelected", this.__pageSelected, this);
+        page.add(ss);
         this.add(page);
     },
 
@@ -57,10 +50,21 @@ qx.Class.define("ncms.pgs.PagesSelector", {
         _treeSelector : null,
 
         /**
-         * Pages search form
+         * Pages search selector
          */
         _searchSelector : null,
 
+        __pageSelected : function(ev) {
+            var edata = ev.getData();
+            var data = null;
+            if (edata != null) {
+                data = {
+                    id : edata["id"],
+                    name : edata["label"]
+                }
+            }
+            this.setSelectedPage(data);
+        },
 
         getSelectedPageWithExtraInfo : function(cb, cbCtx) {
             var sp = this.getSelectedPage();

@@ -176,6 +176,10 @@ qx.Class.define("ncms.Actions", {
         //GET JSON Object contains full label-path and id-path to the specified page
         // {id}: Page ID
         this._action("pages.path", "/ncms/rs/adm/pages/path/{id}");
+
+        // GET search page
+        this._action("pages.search", "/ncms/rs/adm/pages/search");
+        this._action("pages.search.count", "/ncms/rs/adm/pages/search/count");
     },
 
     members : {

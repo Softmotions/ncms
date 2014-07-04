@@ -177,4 +177,21 @@
         WHERE id = #{pid}
     </select>
 
+    <select id="searchPageCount" resultType="int" parameterType="map">
+        SELECT COUNT(*)
+        FROM asms
+        WHERE <if test="name != null">hname LIKE #{name} AND </if> type LIKE 'page%'
+    </select>
+
+    <select id="searchPage" resultType="map" parameterType="map">
+        SELECT
+          id              AS "id",
+          hname           AS "hname"
+        FROM asms
+        WHERE <if test="name != null">hname LIKE #{name} AND </if> type LIKE 'page%'
+        <if test="count != null and count > 0">
+            LIMIT #{count} <if test="skip != null">OFFSET #{skip}</if>
+        </if>
+    </select>
+
 </mapper>

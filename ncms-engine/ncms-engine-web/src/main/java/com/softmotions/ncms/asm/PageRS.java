@@ -556,6 +556,37 @@ public class PageRS extends MBDAOSupport {
         }
     }
 
+    @GET
+    @Path("search/count")
+    public Integer searchPagesCount(@QueryParam("name") String name) {
+        return selectOne("searchPageCount",
+                         "name", StringUtils.isBlank(name)? null : name + "%");
+    }
+
+    @GET
+    @Path("search")
+    public JsonNode searchPages(@QueryParam("firstRow") int firstRow,
+                                @QueryParam("lastRow") int lastRow,
+                                @QueryParam("name") String name) {
+        final ArrayNode result = mapper.createArrayNode();
+
+        select("searchPage",
+               new ResultHandler() {
+                   public void handleResult(ResultContext context) {
+                       Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                       result.addObject()
+                               .put("id", (Long) row.get("id"))
+                               .put("label", (String) row.get("hname"));
+                   }
+               },
+               "name", StringUtils.isBlank(name)? null : name + "%",
+               "skip", firstRow,
+               "count", lastRow - firstRow + 1);
+
+
+        return result;
+    }
+
     Long getPathLastIdSegment(String path) {
         if (path == null) {
             return null;
