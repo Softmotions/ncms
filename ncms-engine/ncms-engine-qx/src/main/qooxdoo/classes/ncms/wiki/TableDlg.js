@@ -4,7 +4,7 @@
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
-qx.Class.define("ncms.editor.wiki.TableDlg", {
+qx.Class.define("ncms.wiki.TableDlg", {
     extend  : qx.ui.window.Window,
 
     events : {
@@ -136,7 +136,7 @@ qx.Class.define("ncms.editor.wiki.TableDlg", {
                 this.__table.setTableModel(tm);
             }
 
-            var hrend = new sm.cms.editor.wiki.TableDlgCRenderer();
+            var hrend = new ncms.wiki.TableDlgCRenderer();
             for (var i = 0; i < nCols; ++i) {
                 tm.setColumnSortable(i, false);
                 this.__table.getTableColumnModel().setDataCellRenderer(i, hrend);

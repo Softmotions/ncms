@@ -46,7 +46,9 @@ qx.Class.define("ncms.asm.am.WikiAM", {
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
-            return new qx.ui.core.Widget().set({backgroundColor : "green"});
+            var w = new ncms.wiki.WikiEditor();
+            w.setHelpSite("http://nsu.ru");
+            return w;
         },
 
         valueAsJSON : function() {

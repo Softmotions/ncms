@@ -14,7 +14,7 @@
  * @asset(ncms/icon/16/wiki/tree_add.png)
  * @asset(ncms/icon/16/wiki/note_add.png)
  */
-qx.Class.define("ncms.editor.wiki.WikiEditor", {
+qx.Class.define("ncms.wiki.WikiEditor", {
     extend : qx.ui.core.Widget,
     implement : [
         qx.ui.form.IStringForm,
@@ -22,46 +22,39 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
     ],
     include : [
         qx.ui.form.MForm,
-        qx.ui.core.MChildrenHandling
+        qx.ui.core.MChildrenHandling,
+        sm.event.MForwardEvent
     ],
 
 
     statics : {
+
         createTextSurround : function(text, level, pattern, trails) {
             var nval = [];
-
             var hfix = qx.lang.String.repeat(pattern, level < 1 ? 1 : level);
             nval.push(hfix);
             nval.push(trails || "");
             nval.push(text);
             nval.push(trails || "");
             nval.push(hfix);
-
             return nval.join("");
         }
     },
 
     events : {
+
+        /** Fired on user input */
+        "input" : "qx.event.type.Data",
+
         /** Fired when the value was modified */
-        "changeValue" : "qx.event.type.Data",
-
-        /** Fired when the enabled state was modified */
-        "changeEnabled" : "qx.event.type.Data",
-
-        /** Fired when the valid state was modified */
-        "changeValid" : "qx.event.type.Data",
-
-        /** Fired when the invalidMessage was modified */
-        "changeInvalidMessage" : "qx.event.type.Data",
-
-        /** Fired when the required was modified */
-        "changeRequired" : "qx.event.type.Data"
+        "changeValue" : "qx.event.type.Data"
     },
 
     properties : {
+
         "type" : {
-            check : ["mediaWiki", "markdown"],
-            init : "mediaWiki",
+            check : ["mediawiki", "markdown"],
+            init : "mediawiki",
             apply : "_applyType"
         },
 
@@ -74,12 +67,16 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
     construct : function() {
         this.base(arguments);
-        this._setLayout(new qx.ui.layout.VBox(4));
-
+        this._setLayout(new qx.ui.layout.VBox(0));
         this.__editorControls = []; // cache for controls
 
-        this.getChildControl("toolbar");
-        var ta = this.getChildControl("textarea");
+        var toolbar = this.getChildControl("toolbar");
+        this.__initToolbar(toolbar);
+
+        var ta = this.getChildControl("textarea")
+                .set({minimalLineHeight : 10});
+        ta.setAutoSize(true);
+
 
         //todo scary textselection hacks
         if (qx.core.Environment.get("engine.name") == "mshtml") {
@@ -102,7 +99,6 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 var tael = ta.getContentElement().getDomElement();
                 this.__lastSStart = this.__lastSEnd = getCaret(tael);
             };
-
             ta.addListener("keyup", syncSel, this);
             ta.addListener("focus", syncSel, this);
             ta.addListener("click", syncSel, this);
@@ -110,6 +106,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
     },
 
     members : {
+
         __lastToolbarItem : null,
 
         __editorControls : null,
@@ -120,14 +117,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
         __helpControls : null,
 
-        addListener : function(type, listener, self, capture) {
-            switch (type) {
-                default:
-                    //todo scary hack
-                    this._getTextArea().addListener(type, listener, self, capture);
-                    break;
-            }
-        },
+        __mainPart : null,
 
         // overridden
         setValue : function(value) {
@@ -164,19 +154,23 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
         _createChildControlImpl : function(id) {
             var control;
             switch (id) {
+
                 case "toolbar":
                     control = new qx.ui.toolbar.ToolBar().set({overflowHandling : true, "show" : "icon"});
+                    this.__mainPart = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
+                    control.add(this.__mainPart);
                     this._add(control, {flex : 0});
                     this.__lastToolbarItem = control.addSpacer();
                     var overflow = new qx.ui.toolbar.MenuButton(this.tr("More..."));
                     overflow.setMenu(new qx.ui.menu.Menu());
                     control.add(overflow);
                     control.setOverflowIndicator(overflow);
-                    this.__initToolbar(control);
                     break;
 
                 case "textarea":
                     control = new qx.ui.form.TextArea();
+                    control.addListener("input", this.forwardEvent, this);
+                    control.addListener("changeValue", this.forwardEvent, this);
                     this._add(control, {flex : 1});
                     break;
             }
@@ -205,7 +199,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
          * }
          */
         addToolbarControl : function(options) {
-            this._addToolbarControl(this.getChildControl("toolbar"), options);
+            this._addToolbarControl(options);
         },
 
         /**
@@ -261,19 +255,19 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             this._getTextArea().setPlaceholder(value);
         },
 
-        _addToolbarControl : function(toolbar, options) {
+        _addToolbarControl : function(options) {
+            var toolbar = this.getChildControl("toolbar");
             var callback = this.__buildToolbarControlAction(options);
-
             var cmeta = this.__editorControls[this.__editorControls.length] = {
                 options : options,
                 buttons : []
             };
-
-            cmeta.buttons[0] = this.__createToolbarControl(toolbar, this.__lastToolbarItem, qx.ui.toolbar.Button, callback, options, "wiki-editor-toolbar-button");
+            cmeta.buttons[0] = this.__createToolbarControl(toolbar, this.__mainPart,
+                    qx.ui.toolbar.Button, callback, options, "wiki-editor-toolbar-button");
             if (toolbar.getOverflowIndicator()) {
-                cmeta.buttons[1] = this.__createToolbarControl(toolbar.getOverflowIndicator().getMenu(), null, qx.ui.menu.Button, callback, options);
+                cmeta.buttons[1] = this.__createToolbarControl(toolbar.getOverflowIndicator().getMenu(), null,
+                        qx.ui.menu.Button, callback, options);
             }
-
             this.__updateControl(cmeta);
         },
 
@@ -318,19 +312,20 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
             };
         },
 
-        __createToolbarControl : function(toolbar, before, btclass, callback, options, appearance) {
-            var bt = new btclass(options["title"], options["icon"]).set(appearance ? {appearance : appearance} : {});
+        __createToolbarControl : function(toolbar, part, btclass, callback, options, appearance) {
+            var bt = new btclass(options["title"], options["icon"]);
+            if (appearance) {
+                bt.setAppearance(appearance);
+            }
             if (options["tooltipText"]) {
                 bt.setToolTip(new qx.ui.tooltip.ToolTip(options["tooltipText"]));
             }
             bt.addListener("execute", callback, this);
-
-            if (before) {
-                toolbar.addBefore(bt, before);
+            if (part) {
+                part.add(bt);
             } else {
                 toolbar.add(bt);
             }
-
             return bt;
         },
 
@@ -342,8 +337,10 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
                 }
                 qx.bom.Window.open(this.getHelpSite(), "NCMS:WikiHelp");
             };
-
-            var hbm = this.__helpControls[this.__helpControls.length] = new qx.ui.toolbar.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
+            var hbm = this.__helpControls[this.__helpControls.length] =
+                    new qx.ui.toolbar.Button(this.tr("Help"),
+                            "ncms/icon/16/help/help.png")
+                            .set({appearance : "wiki-editor-toolbar-button"});
             hbm.addListener("execute", helpCallback, this);
             hbm.setToolTip(new qx.ui.tooltip.ToolTip(this.tr("Help")));
             toolbar.addAfter(hbm, this.__lastToolbarItem);
@@ -382,95 +379,95 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
 
             this.__initHelpControls(toolbar);
 
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "H1",
                 icon : "ncms/icon/16/wiki/text_heading_1.png",
                 tooltipText : this.tr("Heading 1"),
                 prompt : cprompt(this.tr("Header text")),
-                insertMediaWiki : csurround(1, "=", " "),
+                insertMediawiki : csurround(1, "=", " "),
                 insertMarkdown : csurround(1, "#", " ")
             });
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "H2",
                 icon : "ncms/icon/16/wiki/text_heading_2.png",
                 tooltipText : this.tr("Heading 2"),
                 prompt : cprompt(this.tr("Header text")),
-                insertMediaWiki : csurround(2, "=", " "),
+                insertMediawiki : csurround(2, "=", " "),
                 insertMarkdown : csurround(2, "#", " ")
             });
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "H3",
                 icon : "ncms/icon/16/wiki/text_heading_3.png",
                 tooltipText : this.tr("Heading 3"),
                 prompt : cprompt(this.tr("Header text")),
-                insertMediaWiki : csurround(3, "=", " "),
+                insertMediawiki : csurround(3, "=", " "),
                 insertMarkdown : csurround(3, "#", " ")
             });
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "Bold",
                 icon : "ncms/icon/16/wiki/text_bold.png",
                 tooltipText : this.tr("Bold"),
                 prompt : cprompt(this.tr("Bold text")),
-                insertMediaWiki : csurround(1, "'", ""),
+                insertMediawiki : csurround(1, "'", ""),
                 insertMarkdown : csurround(2, "*", "")
             });
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "Italic",
                 icon : "ncms/icon/16/wiki/text_italic.png",
                 tooltipText : this.tr("Italic"),
                 prompt : cprompt(this.tr("Italics text")),
-                insertMediaWiki : csurround(2, "'", ""),
+                insertMediawiki : csurround(2, "'", ""),
                 insertMarkdown : csurround(1, "*", "")
             });
 
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "UL",
                 icon : "ncms/icon/16/wiki/text_list_bullets.png",
                 tooltipText : this.tr("Bullet list"),
-                insertMediaWiki : cscall(this.__mediaWikiUL),
+                insertMediawiki : cscall(this.__mediaWikiUL),
                 insertMarkdown : cscall(this.__markdownUL)
             });
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "OL",
                 icon : "ncms/icon/16/wiki/text_list_numbers.png",
                 tooltipText : this.tr("Numbered list"),
-                insertMediaWiki : cscall(this.__mediaWikiOL),
+                insertMediawiki : cscall(this.__mediaWikiOL),
                 insertMarkdown : cscall(this.__markdownOL)
             });
             // TODO: init buttons: link, image
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 icon : "ncms/icon/16/wiki/link_add.png",
                 tooltipText : this.tr("Link to another page")
             });
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 icon : "ncms/icon/16/wiki/image_add.png",
                 tooltipText : this.tr("Add image|link to file")
             });
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "Table",
                 icon : "ncms/icon/16/wiki/table_add.png",
                 tooltipText : this.tr("Add table"),
                 prompt : function(cb, editor, stext) {
-                    var dlg = new ncms.editor.wiki.TableDlg();
+                    var dlg = new ncms.wiki.TableDlg();
                     dlg.addListener("insertTable", function(ev) {
                         dlg.close();
                         cb.call(this, ev.getData());
                     }, this);
                     dlg.open();
                 },
-                insertMediaWiki : cscall(this.__mediaWikiTable)
+                insertMediawiki : cscall(this.__mediaWikiTable)
             });
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "Tree",
                 icon : "ncms/icon/16/wiki/tree_add.png",
                 tooltipText : this.tr("Add tree"),
-                insertMediaWiki : cscall(this.__mediaWikiTree)
+                insertMediawiki : cscall(this.__mediaWikiTree)
             });
-            this._addToolbarControl(toolbar, {
+            this._addToolbarControl({
                 id : "Note",
                 icon : "ncms/icon/16/wiki/note_add.png",
                 tooltipText : this.tr("Create note"),
-                insertMediaWiki : cscall(this.__mediaWikiNote),
+                insertMediawiki : cscall(this.__mediaWikiNote),
                 insertMarkdown : cscall(this.__markdownNote)
             });
         },
@@ -632,7 +629,7 @@ qx.Class.define("ncms.editor.wiki.WikiEditor", {
     },
 
     destruct : function() {
-        this._disposeArray("__editorControls");
-        this._disposeArray("__helpControls");
+        this.__editorControls = null;
+        this.__helpControls = null;
     }
 });

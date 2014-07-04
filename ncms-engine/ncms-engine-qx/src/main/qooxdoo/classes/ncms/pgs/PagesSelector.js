@@ -36,6 +36,8 @@ qx.Class.define("ncms.pgs.PagesSelector", {
 
         page = new qx.ui.tabview.Page(this.tr("Search"));
         page.setLayout(new qx.ui.layout.Grow());
+
+        //todo rows loaded when tab is not actually opened
         var ss = this._searchSelector = new ncms.pgs.PagesSearchSelector(null, allowModify);
         ss.addListener("itemSelected", this.__pageSelected, this);
         page.add(ss);

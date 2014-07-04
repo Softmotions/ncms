@@ -4,7 +4,7 @@
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
-qx.Class.define("ncms.editor.wiki.TableDlgCRenderer", {
+qx.Class.define("ncms.wiki.TableDlgCRenderer", {
     extend : qx.ui.table.cellrenderer.Conditional,
 
     members :

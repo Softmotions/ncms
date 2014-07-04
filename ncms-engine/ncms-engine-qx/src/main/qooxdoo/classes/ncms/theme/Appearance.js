@@ -51,23 +51,14 @@ qx.Theme.define("ncms.theme.Appearance", {
             }
         },
 
-        "wiki-editor-toolbar-button" : {
-            alias : "toolbar-button",
-            include : "toolbar-button",
-            style : function(states) {
-                return {
-                    marginLeft : 0,
-                    marginRight : 0
-                };
-            }
-        },
+        "wiki-editor-toolbar-button" : "toolbar-table-button",
 
         // message info popup (on top of page, auto hide)
         "ncms-info-popup" : {
             style : function(states) {
                 return {
-                    padding: [5, 10, 5, 10],
-                    maxWidth: 350,
+                    padding : [5, 10, 5, 10],
+                    maxWidth : 350,
                     backgroundColor : "background"
                 }
             }
