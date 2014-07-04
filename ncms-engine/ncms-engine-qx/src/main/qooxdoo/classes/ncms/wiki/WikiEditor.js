@@ -74,7 +74,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         this.__initToolbar(toolbar);
 
         var ta = this.getChildControl("textarea")
-                .set({minimalLineHeight : 10});
+                .set({minimalLineHeight : 10}); //todo customize
         ta.setAutoSize(true);
 
 
