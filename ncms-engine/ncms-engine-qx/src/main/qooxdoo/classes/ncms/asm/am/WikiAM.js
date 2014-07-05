@@ -46,13 +46,32 @@ qx.Class.define("ncms.asm.am.WikiAM", {
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
+            var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var w = new ncms.wiki.WikiEditor();
-            w.setHelpSite("http://nsu.ru");
+            //w.getTextArea().setAutoSize(true);
+            w.getTextArea().setMinimalLineHeight(25);
+            //w.getTextArea().setMaxHeight(500);
+            if (opts["markup"] != null) {
+                w.setMarkup(opts["markup"])
+            }
+            w.setHelpSite(ncms.Application.APP_STATE.getHelpSite());
+            this._fetchAttributeValue(attrSpec, function(val) {
+                if (sm.lang.String.isEmpty(val)) {
+                    return;
+                }
+                var spec = JSON.parse(val);
+                w.setValue(spec["value"]);
+            });
+            this._valueWidget = w;
             return w;
         },
 
         valueAsJSON : function() {
-            return {};
+            var w = this._valueWidget;
+            return {
+                markup : w.getMarkup(),
+                value : w.getValue()
+            };
         }
     },
 

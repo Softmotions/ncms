@@ -74,6 +74,9 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
+        if (attr.getOptions() != null) {
+            asmOpts.loadOptions(attr.getOptions());
+        }
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
                                         "markup");
         attr.setOptions(asmOpts.toString());
@@ -81,11 +84,13 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
-        String markup = val.has("value") ? val.get("value").toString() : null;
+        String value = val.has("value") ? val.get("value").asText() : null;
+        String markup = val.has("markup") ? val.get("markup").asText() : "mediawiki";
+        String html = value; //todo
         ObjectNode root = mapper.createObjectNode();
-        root.put("html", markup); //todo
-        root.put("type", "mediawiki"); //todo
+        root.put("html", html);
         root.put("markup", markup);
+        root.put("value", value);
         attr.setEffectiveValue(root.toString());
         return attr;
     }

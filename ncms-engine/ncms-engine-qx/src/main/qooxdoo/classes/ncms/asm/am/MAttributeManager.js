@@ -19,6 +19,10 @@ qx.Mixin.define("ncms.asm.am.MAttributeManager", {
                 cb.call(cbContext, (attrSpec["value"] === undefined ? null : attrSpec["value"]));
                 return;
             }
+            if (attrSpec["largeValue"] != null) {
+                cb.call(cbContext, (attrSpec["largeValue"] === undefined ? null : attrSpec["largeValue"]));
+                return;
+            }
             //make attribute value request
             var req = new sm.io.Request(
                     ncms.Application.ACT.getRestUrl("asms.attribute", {

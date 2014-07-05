@@ -185,6 +185,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.label = label;
     }
 
+    @JsonProperty(required = true)
     public boolean isHasLargeValue() {
         return (getLargeValue() != null);
     }

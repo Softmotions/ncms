@@ -7,6 +7,13 @@ qx.Theme.define("ncms.theme.Decoration", {
 
     decorations : {
 
-
+        "separator-bottom-vertical" :
+        {
+            style :
+            {
+                widthBottom : 1,
+                colorBottom : "border-separator"
+            }
+        }
     }
 });

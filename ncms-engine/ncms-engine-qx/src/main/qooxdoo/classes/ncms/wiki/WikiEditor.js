@@ -52,10 +52,10 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
     properties : {
 
-        "type" : {
+        "markup" : {
             check : ["mediawiki", "markdown"],
             init : "mediawiki",
-            apply : "_applyType"
+            apply : "_applyMarkup"
         },
 
         "helpSite" : {
@@ -73,10 +73,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         var toolbar = this.getChildControl("toolbar");
         this.__initToolbar(toolbar);
 
-        var ta = this.getChildControl("textarea")
-                .set({minimalLineHeight : 10}); //todo customize
-        ta.setAutoSize(true);
-
+        var ta = this.getChildControl("textarea");
 
         //todo scary textselection hacks
         if (qx.core.Environment.get("engine.name") == "mshtml") {
@@ -119,32 +116,50 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __mainPart : null,
 
+
+        getMinimalLineHeight : function() {
+            return this._getTextArea().getMinimalLineHeight();
+        },
+
+        setMinimalLineHeight : function(val) {
+            this._getTextArea().setMinimalLineHeight(val);
+        },
+
+
+        getAutoSize : function() {
+            return this._getTextArea().getAutoSize();
+        },
+
+        setAutoSize : function(val) {
+            this._getTextArea().setAutoSize(val);
+        },
+
         // overridden
         setValue : function(value) {
-            this._getTextArea().setValue(value);
+            this.getTextArea().setValue(value);
         },
 
         // overridden
         resetValue : function() {
-            this._getTextArea().resetValue();
+            this.getTextArea().resetValue();
         },
 
         // overridden
         getValue : function() {
-            return this._getTextArea().getValue();
+            return this.getTextArea().getValue();
         },
 
-        _getTextArea : function() {
+        getTextArea : function() {
             return this.getChildControl("textarea");
         },
 
         //overriden
         _applyEnabled : function(value, old) {
             this.base(arguments, value, old);
-            this._getTextArea().setEnabled(value);
+            this.getTextArea().setEnabled(value);
         },
 
-        _applyType : function(value, old) {
+        _applyMarkup : function(value, old) {
             for (var i = 0; i < this.__editorControls.length; ++i) {
                 this.__updateControl(this.__editorControls[i]);
             }
@@ -252,7 +267,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
         setPlaceholder : function(value) {
-            this._getTextArea().setPlaceholder(value);
+            this.getTextArea().setPlaceholder(value);
         },
 
         _addToolbarControl : function(options) {
@@ -272,7 +287,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
         __updateControl : function(cmeta) {
-            var applied = !!cmeta.options[("insert" + qx.lang.String.capitalize(this.getType()))] && !cmeta.options["excluded"];
+            var applied = !!cmeta.options[("insert" + qx.lang.String.capitalize(this.getMarkup()))] && !cmeta.options["excluded"];
             for (var i = 0; i < cmeta.buttons.length; ++i) {
                 if (applied) {
                     cmeta.buttons[i].show();
@@ -296,12 +311,11 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         __buildToolbarControlAction : function(options) {
             var me = this;
             return function() {
-                var icb = options[("insert" + qx.lang.String.capitalize(me.getType()))];
+                var icb = options[("insert" + qx.lang.String.capitalize(me.getMarkup()))];
                 if (!icb) {
                     return;
                 }
-
-                var selectedText = this._getTextArea().getContentElement().getTextSelection();
+                var selectedText = this.getTextArea().getContentElement().getTextSelection();
                 if (options["prompt"]) {
                     options["prompt"].call(me, function(text) {
                         icb.call(me, me._insertText, text);
@@ -473,17 +487,17 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
         _getSelectionStart : function() {
-            var sStart = this._getTextArea().getTextSelectionStart();
+            var sStart = this.getTextArea().getTextSelectionStart();
             return (sStart == null || sStart == -1 || sStart == 0) ? this.__lastSStart : sStart;
         },
 
         _getSelectionEnd : function() {
-            var sEnd = this._getTextArea().getTextSelectionEnd();
+            var sEnd = this.getTextArea().getTextSelectionEnd();
             return (sEnd == null || sEnd == -1 || sEnd == 0) ? this.__lastSEnd : sEnd;
         },
 
         _insertText : function(text) {
-            var ta = this._getTextArea();
+            var ta = this.getTextArea();
             var tel = ta.getContentElement();
             var scrollY = tel.getScrollY();
 

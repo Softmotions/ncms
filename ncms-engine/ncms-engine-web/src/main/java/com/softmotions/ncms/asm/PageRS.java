@@ -207,7 +207,6 @@ public class PageRS extends MBDAOSupport {
     @Path("/edit/{id}")
     public ObjectNode selectPageEdit(@Context HttpServletRequest req, @PathParam("id") Long id) {
         ObjectNode res = mapper.createObjectNode();
-
         Asm page = adao.asmSelectById(id);
         if (page == null) {
             throw new NotFoundException();
@@ -231,8 +230,6 @@ public class PageRS extends MBDAOSupport {
                     .put("id", template.getId())
                     .put("name", template.getName())
                     .put("description", template.getDescription());
-
-
         }
         Collection<AsmAttribute> eattrs = page.getEffectiveAttributes();
         Collection<AsmAttribute> gattrs = new ArrayList<>(eattrs.size());

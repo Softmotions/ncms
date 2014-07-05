@@ -24,15 +24,17 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
     construct : function() {
         this.base(arguments, this.tr("Edit"));
-        this.setLayout(new qx.ui.layout.VBox(5));
+        this.setLayout(new qx.ui.layout.VBox(1));
+
+        var header = new qx.ui.container.Composite(new qx.ui.layout.VBox(5))
+                .set({backgroundColor : "#EBEBEB", padding : [5, 5, 10, 5]});
 
         //Page name
         this.__pageNameLabel = new qx.ui.basic.Label();
         this.__pageNameLabel.setFont("headline");
-        this.add(this.__pageNameLabel);
+        header.add(this.__pageNameLabel);
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
-        hcont.setPadding(5);
 
         this.__templateBf =
                 new sm.ui.form.ButtonField(this.tr("Template"),
@@ -56,7 +58,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt.addListener("execute", this.__cancel, this);
         hcont.add(bt);
 
-        this.add(hcont);
+        header.add(hcont);
+        this.add(header);
+
         this.addListener("loadPane", this.__onLoadPane, this);
     },
 
@@ -122,7 +126,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
             this.__cleanupFormPane();
             this.__form = form;
-            this.__scroll = new qx.ui.container.Scroll().set({marginTop : 20});
+            this.__scroll = new qx.ui.container.Scroll().set({marginTop : 5});
             this.__scroll.add(new sm.ui.form.FlexFormRenderer(form));
             this.add(this.__scroll, {flex : 1});
 
