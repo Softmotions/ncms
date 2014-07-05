@@ -1,7 +1,6 @@
 package com.softmotions.ncms.media;
 
 import com.softmotions.commons.cont.ArrayUtils;
-import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.ncms.NcmsConfiguration;
@@ -87,7 +86,6 @@ import java.nio.charset.Charset;
 import java.security.Principal;
 import java.sql.Blob;
 import java.text.Collator;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -407,7 +405,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     private void _copy(HttpServletRequest req, String tfolder, ArrayNode files) throws Exception {
-        log.info("tfolder=" + tfolder + " files=" + files);
         if (tfolder.contains("..")) {
             throw new BadRequestException(tfolder);
         }
@@ -1493,12 +1490,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     @Subscribe
     public void pageDropped(PageDroppedEvent ev) {
-        String guid = ev.getGuid();
-        List<String> parts = new ArrayList<>(8);
-        for (int i = 0; i < 32; i += 4) {
-            parts.add(guid.substring(i, i + 4));
-        }
-        String path = "pages/" + CollectionUtils.join("/", parts);
+        String path = getPageLocalFolderPath(ev.getId());
         try (ResourceLock l = new ResourceLock(path, true)) {
             File pdir = new File(basedir, path);
             if (pdir.isDirectory()) {
@@ -1509,6 +1501,20 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             log.error("Failed to drop page files dir: " + path, e);
         }
     }
+
+    private String getPageLocalFolderPath(long pageId) {
+        StringBuilder sb = new StringBuilder(16);
+        sb.append("/pages");
+        String sPageId = Long.toString(pageId);
+        for (int i = 0, l = sPageId.length(); i < l; ++i) {
+            if (i % 3 == 0) {
+                sb.append('/');
+            }
+            sb.append(sPageId.charAt(i));
+        }
+        return sb.toString();
+    }
+
 
     private static final class RWLocksLRUCache extends LRUMap {
 

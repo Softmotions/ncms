@@ -64,7 +64,6 @@ qx.Class.define("ncms.Utils", {
             return (ctype.toString().indexOf("image/") == 0);
         },
 
-
         /**
          * Return true if given ctype is type of text document.
          * @param ctype {String}
@@ -85,6 +84,28 @@ qx.Class.define("ncms.Utils", {
                 cs = cs.substring(0, cs.indexOf(";")).trim();
             }
             return (this.TXT_CTYPES.indexOf(cs) != -1);
+        },
+
+        /**
+         * Create page local folder path as elements array.
+         * @param pageId {Number}
+         * @returns {Array}
+         */
+        getPageLocalFolders : function(pageId) {
+            var path = ["pages"];
+            pageId = String(pageId);
+            var node = [];
+            for (var i = 0, l = pageId.length; i < l; ++i) {
+                node.push(pageId.charAt(i));
+                if (node.length == 3) {
+                    path.push(node.join(""));
+                    node.length = 0;
+                }
+            }
+            if (node.length > 0) {
+                path.push(node.join(""));
+            }
+            return path;
         }
     },
 

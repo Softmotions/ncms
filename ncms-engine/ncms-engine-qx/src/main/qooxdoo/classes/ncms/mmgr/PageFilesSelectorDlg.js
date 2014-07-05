@@ -36,14 +36,12 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
 
     /**
      *
-     * @param pageGuid {String} The page GUI.
+     * @param pageId {Number} The page ID.
      * @param caption {String?} Dialog window caption.
      * @param options {Object?} ncms.mmgr.MediaFilesSelector options.
      */
-    construct : function(pageGuid, caption, options) {
-        if (typeof pageGuid !== "string" || pageGuid.length != 32) {
-            throw new Error("Invalid page guid: " + pageGuid);
-        }
+    construct : function(pageId, caption, options) {
+        qx.core.Assert.assertNumber(pageId, "Page ID is not a number");
         this.base(arguments, caption);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
@@ -58,7 +56,7 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
 
         var vsp = new qx.ui.splitpane.Pane("horizontal");
         var leftSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-        var files = this.__files = new ncms.mmgr.PageFilesSelector(pageGuid, options);
+        var files = this.__files = new ncms.mmgr.PageFilesSelector(pageId, options);
         leftSide.add(files, {flex : 1});
 
         //form

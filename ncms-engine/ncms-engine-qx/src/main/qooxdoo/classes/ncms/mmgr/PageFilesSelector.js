@@ -7,18 +7,13 @@ qx.Class.define("ncms.mmgr.PageFilesSelector", {
     extend : ncms.mmgr.MediaFilesSelector,
 
     /**
-     * @param pageGuid {String} The page GUI
+     * @param pageId {Number} The page GUI
      * @param opts {Object?} ncms.mmgr.MediaFilesSelector options.
      */
-    construct : function(pageGuid, opts) {
-        if (typeof pageGuid !== "string" || pageGuid.length != 32) {
-            throw new Error("Invalid page guid: " + pageGuid);
-        }
+    construct : function(pageId, opts) {
+        qx.core.Assert.assertNumber(pageId, "Page ID is not a number");
         opts = opts || {};
-        var path = ["pages"];
-        for (var i = 0; i < 32; i += 4) {
-            path.push(pageGuid.substring(i, i + 4));
-        }
+        var path = ncms.Utils.getPageLocalFolders(pageId);
         if (opts["allowMove"] === undefined) {
             opts["allowMove"] = false;
         }

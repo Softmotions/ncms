@@ -419,7 +419,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             var tree = this.__tree;
             var item = this.__getInsertParent();
             var dlg = new ncms.mmgr.PageFilesSelectorDlg(
-                    this.__asmSpec["guid"],
+                    this.__asmSpec["id"],
                     this.tr("Select file for page: %1", this.__asmSpec["name"]),
                     {
                         "allowModify" : true,
