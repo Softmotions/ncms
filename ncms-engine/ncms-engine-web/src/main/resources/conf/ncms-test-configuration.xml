@@ -75,6 +75,8 @@
         <module class="com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule"/>
         <module class="com.softmotions.ncms.adm.AdmModule"/>
         <module class="com.softmotions.ncms.jaxrs.JAXRSExceptionHandlingModule"/>
+        <module class="com.softmotions.ncms.media.MediaModule"/>
+        <module class="com.softmotions.ncms.mediawiki.MediaWikiModule"/>
     </modules>
 
     <ui>
@@ -85,5 +87,15 @@
             <widget qxClass="ncms.usr.UsersNav" roles="admin.users"/>
         </navigation-selectors>
     </ui>
+
+    <mediawiki>
+        <tags>
+            <tag class="com.softmotions.ncms.mediawiki.NoteTag"/>
+            <tag class="com.softmotions.ncms.mediawiki.GMapTag"/>
+            <tag class="com.softmotions.ncms.mediawiki.YoutubeTag"/>
+            <tag class="com.softmotions.ncms.mediawiki.TreeTag"/>
+        </tags>
+    </mediawiki>
+
 
 </configuration>
