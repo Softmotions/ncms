@@ -19,8 +19,6 @@ qx.Class.define("ncms.asm.am.BooleanAM", {
 
     members : {
 
-        __w : null,
-
         __form : null,
 
         activateOptionsWidget : function(attrSpec, asmSpec) {
@@ -38,19 +36,18 @@ qx.Class.define("ncms.asm.am.BooleanAM", {
             var val = attrSpec["value"];
             var cb = new qx.ui.form.CheckBox();
             cb.setValue(val != null && (val == "true"));
-            this.__w = cb;
-            return this.__w;
+            this._valueWidget = cb;
+            return cb;
         },
 
         valueAsJSON : function() {
             return {
-                "value" : this.__w.getValue()
+                "value" : this._valueWidget.getValue()
             };
         }
     },
 
     destruct : function() {
-        this.__w = null;
         this._disposeObjects("_form");
     }
 });

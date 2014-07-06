@@ -43,9 +43,6 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
     events : {
 
-        /** Fired on user input */
-        "input" : "qx.event.type.Data",
-
         /** Fired when the value was modified */
         "changeValue" : "qx.event.type.Data"
     },
@@ -184,7 +181,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
                 case "textarea":
                     control = new qx.ui.form.TextArea();
-                    control.addListener("input", this.forwardEvent, this);
+                    control.setLiveUpdate(true);
                     control.addListener("changeValue", this.forwardEvent, this);
                     this._add(control, {flex : 1});
                     break;
