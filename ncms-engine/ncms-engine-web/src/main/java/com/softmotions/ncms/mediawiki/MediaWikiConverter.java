@@ -11,6 +11,8 @@ import info.bliki.wiki.model.IWikiModel;
 import info.bliki.wiki.model.ImageFormat;
 import info.bliki.wiki.tags.HTMLTag;
 
+import com.google.inject.Singleton;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -18,16 +20,17 @@ import java.util.Map;
 
 /**
  * A converter which renders the internal tree node representation as HTML text
- *
  */
-public class WikiConverter implements ITextConverter {
+
+@Singleton
+public class MediaWikiConverter implements ITextConverter {
     private boolean fNoLinks;
 
-    public WikiConverter(boolean noLinks) {
+    public MediaWikiConverter(boolean noLinks) {
         this.fNoLinks = noLinks;
     }
 
-    public WikiConverter() {
+    public MediaWikiConverter() {
         this(false);
     }
 

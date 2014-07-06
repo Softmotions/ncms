@@ -379,13 +379,12 @@
             <groupId>info.bliki.wiki</groupId>
             <artifactId>bliki-core</artifactId>
             <version>3.1.01-SNAPSHOT</version>
-            <!--<version>3.0.19</version>-->
         </dependency>
-        <dependency>
-            <groupId>org.pegdown</groupId>
-            <artifactId>pegdown</artifactId>
-            <version>1.4.2</version>
-        </dependency>
+        <!-- <dependency>
+             <groupId>org.pegdown</groupId>
+             <artifactId>pegdown</artifactId>
+             <version>1.4.2</version>
+         </dependency>-->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>

@@ -1,11 +1,12 @@
 package com.softmotions.ncms.mediawiki;
 
 import info.bliki.htmlcleaner.TagToken;
+import info.bliki.wiki.filter.ITextConverter;
 import com.softmotions.ncms.NcmsConfiguration;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
-import com.google.inject.multibindings.Multibinder;
+import com.google.inject.multibindings.MapBinder;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -39,11 +40,15 @@ public class MediaWikiModule extends AbstractModule {
         );
 
         XMLConfiguration xcfg = cfg.impl();
-        Multibinder<TagToken> tagsBinder =
-                Multibinder.newSetBinder(binder(), TagToken.class);
+        MapBinder<String, TagToken> tagsBinder =
+                MapBinder.newMapBinder(binder(), String.class, TagToken.class);
 
         List<HierarchicalConfiguration> tcfgs = xcfg.configurationsAt("mediawiki.tags.tag");
         for (final HierarchicalConfiguration tcfg : tcfgs) {
+            String name = tcfg.getString("[@name]");
+            if (StringUtils.isBlank(name)) {
+                continue;
+            }
             String className = tcfg.getString("[@class]");
             if (StringUtils.isBlank(className)) {
                 continue;
@@ -55,13 +60,15 @@ public class MediaWikiModule extends AbstractModule {
                                                " does not implement: " + TagToken.class.getName());
                 }
                 //noinspection unchecked
-                tagsBinder.addBinding().to((Class<? extends TagToken>) clazz).in(Singleton.class);
-                log.info("Mediawiki custom tag: " + className + " registered");
+                tagsBinder.addBinding(name).to((Class<? extends TagToken>) clazz).in(Singleton.class);
             } catch (ClassNotFoundException e) {
                 String msg = "Failed to load mediawiki tag class: " + className;
                 log.error(msg, e);
                 throw new RuntimeException(msg, e);
             }
         }
+
+        bind(MediaWikiRenderer.class).in(Singleton.class);
+        bind(ITextConverter.class).to(MediaWikiConverter.class).in(Singleton.class);
     }
 }

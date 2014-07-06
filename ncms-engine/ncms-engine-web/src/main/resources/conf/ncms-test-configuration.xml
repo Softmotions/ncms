@@ -89,12 +89,18 @@
     </ui>
 
     <mediawiki>
+        <!-- todo -->
+        <image-base-url>/exp/file?ref=${image}</image-base-url>
+        <link-base-url>/exp/ref/${title}</link-base-url>
         <tags>
-            <tag class="com.softmotions.ncms.mediawiki.NoteTag"/>
-            <tag class="com.softmotions.ncms.mediawiki.GMapTag"/>
-            <tag class="com.softmotions.ncms.mediawiki.YoutubeTag"/>
-            <tag class="com.softmotions.ncms.mediawiki.TreeTag"/>
+            <tag name="note" class="com.softmotions.ncms.mediawiki.NoteTag"/>
+            <tag name="gmap" class="com.softmotions.ncms.mediawiki.GMapTag"/>
+            <tag name="youtube" class="com.softmotions.ncms.mediawiki.YoutubeTag"/>
+            <tag name="tree" class="com.softmotions.ncms.mediawiki.TreeTag"/>
         </tags>
+        <interwiki-links>
+            <link key="page" value="/asm/${title}"/>
+        </interwiki-links>
     </mediawiki>
 
 

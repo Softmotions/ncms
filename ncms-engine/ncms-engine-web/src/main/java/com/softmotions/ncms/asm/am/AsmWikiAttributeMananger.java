@@ -6,6 +6,7 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,9 +35,13 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
 
     private final ObjectMapper mapper;
 
+    private final MediaWikiRenderer mediaWikiRenderer;
+
     @Inject
-    public AsmWikiAttributeMananger(ObjectMapper mapper) {
+    public AsmWikiAttributeMananger(ObjectMapper mapper,
+                                    MediaWikiRenderer mediaWikiRenderer) {
         this.mapper = mapper;
+        this.mediaWikiRenderer = mediaWikiRenderer;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -86,7 +92,23 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
         String value = val.has("value") ? val.get("value").asText() : null;
         String markup = val.has("markup") ? val.get("markup").asText() : "mediawiki";
-        String html = value; //todo
+        String html = null;
+        if (!StringUtils.isBlank(value)) {
+            if ("mediawiki".equals(markup)) {
+                html = mediaWikiRenderer.render(value);
+                html = new StringBuilder(html.length() + 32)
+                        .append("<div class=\"wiki\">")
+                        .append(html)
+                        .append("</div>")
+                        .toString();
+            } else {
+                log.warn("Unsupported markup language: " + markup);
+                html = null;
+            }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Rendered HTML=" + html);
+        }
         ObjectNode root = mapper.createObjectNode();
         root.put("html", html);
         root.put("markup", markup);

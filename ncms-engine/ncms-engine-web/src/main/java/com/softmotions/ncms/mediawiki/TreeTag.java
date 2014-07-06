@@ -60,7 +60,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         String[] bodyLines = body.split("\n");
 
         WikiModel inModel = new WikiModel((WikiModel) model);
-        ITextConverter inConverter = new WikiConverter();
+        ITextConverter inConverter = new MediaWikiConverter();
 
         TreeNode root = new TreeNode(0, null, inModel, inConverter);
         Stack<TreeNode> nstack = new Stack<>();
