@@ -1,13 +1,16 @@
 package com.softmotions.ncms.media;
 
 import com.softmotions.commons.cont.ArrayUtils;
+import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.TinyParamMap;
+import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.events.PageDroppedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.fts.FTSUtils;
+import com.softmotions.ncms.io.MetadataDetector;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
@@ -65,6 +68,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -110,6 +114,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class MediaRS extends MBDAOSupport implements MediaService {
 
     private static final Logger log = LoggerFactory.getLogger(MediaRS.class);
+
+    public static final String SIZE_CACHE_FOLDER = ".size_cache";
 
     private static final int MB = 1048576;
 
@@ -192,16 +198,18 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @Transactional
     public Response get(@PathParam("folder") String folder,
                         @PathParam("name") String name,
-                        @Context HttpServletRequest req) throws Exception {
-        return _get(folder, name, req, true);
+                        @Context HttpServletRequest req,
+                        @QueryParam("w") Integer width) throws Exception {
+        return _get(folder, name, req, width, true);
     }
 
     @GET
     @Path("/file/{name}")
     @Transactional
     public Response get(@PathParam("name") String name,
-                        @Context HttpServletRequest req) throws Exception {
-        return _get("", name, req, true);
+                        @Context HttpServletRequest req,
+                        @QueryParam("w") Integer width) throws Exception {
+        return _get("", name, req, width, true);
     }
 
     @HEAD
@@ -209,16 +217,18 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @Transactional
     public Response head(@PathParam("folder") String folder,
                          @PathParam("name") String name,
-                         @Context HttpServletRequest req) throws Exception {
-        return _get(folder, name, req, false);
+                         @Context HttpServletRequest req,
+                         @QueryParam("w") Integer width) throws Exception {
+        return _get(folder, name, req, width, false);
     }
 
     @HEAD
     @Path("/file/{name}")
     @Transactional
     public Response head(@PathParam("name") String name,
-                         @Context HttpServletRequest req) throws Exception {
-        return _get("", name, req, false);
+                         @Context HttpServletRequest req,
+                         @QueryParam("w") Integer width) throws Exception {
+        return _get("", name, req, width, false);
     }
 
     @GET
@@ -405,17 +415,13 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     private void _copy(HttpServletRequest req, String tfolder, ArrayNode files) throws Exception {
-        if (tfolder.contains("..")) {
-            throw new BadRequestException(tfolder);
-        }
+        checkFolder(tfolder);
         tfolder = normalizeFolder(tfolder);
         checkEditAccess(tfolder, req);
 
         for (int i = 0, l = files.size(); i < l; ++i) {
             String spath = normalizePath(files.get(i).asText());
-            if (spath.contains("..")) {
-                continue;
-            }
+            checkFolder(spath);
             try (ResourceLock l1 = new ResourceLock(spath, false)) {
                 String sfolder = getResourceParentFolder(spath);
                 String sname = getResourceName(spath);
@@ -472,7 +478,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
         path = StringUtils.strip(path, "/");
         npath = StringUtils.strip(npath, "/");
-        if (npath.contains("..") || path.contains("..") || StringUtils.isBlank(npath)) {
+        checkFolder(path);
+        checkFolder(npath);
+        if (StringUtils.isBlank(npath)) {
             throw new BadRequestException();
         }
         if (npath.equals(path)) {
@@ -558,42 +566,60 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     public void deleteResource(@PathParam("path") String path,
                                @Context HttpServletRequest req) throws Exception {
         path = StringUtils.strip(path, "/");
-        if (path.contains("..")) {
-            throw new BadRequestException();
-        }
+        checkFolder(path);
         if (log.isDebugEnabled()) {
             log.debug("deleteResource: " + path);
         }
-        boolean isdir;
-        try (ResourceLock l = new ResourceLock(path, true)) {
-            File f = new File(basedir, path);
-            if (!f.exists()) {
-                throw new NotFoundException(path);
-            }
 
+        boolean isdir;
+        String name = getResourceName(path);
+        String folder = getResourceParentFolder(path);
+
+        try (ResourceLock l = new ResourceLock(path, true)) {
+
+            File f = new File(basedir, path);
             checkEditAccess(path, req);
 
             isdir = f.isDirectory();
             if (isdir) {
+
                 deleteDirectoryInternal(path, true);
                 delete("deleteFolder",
                        "prefix_like", '/' + path + "/%");
                 delete("deleteFile",
-                       "folder", getResourceParentFolder(path),
-                       "name", getResourceName(path));
+                       "folder", folder,
+                       "name", name);
+
             } else {
+
+                Long id = selectOne("selectEntityIdByPath",
+                                    "folder", folder,
+                                    "name", name);
                 boolean exists = f.exists();
                 if (f.delete() || !exists) {
                     delete("deleteFile",
-                           "folder", getResourceParentFolder(path),
-                           "name", getResourceName(path));
+                           "folder", folder,
+                           "name", name);
                 } else {
                     throw new NcmsMessageException(message.get("ncms.mmgr.file.cannot.delete", req, path), true);
+                }
+
+                if (id != null) {
+                    File sdir = findFileSizeCacheDir(folder, id);
+                    if (sdir != null) {
+                        try {
+                            FileUtils.deleteDirectory(sdir);
+                        } catch (IOException e) {
+                            log.error("", e);
+                        }
+                    }
                 }
             }
         }
 
-        ebus.fireOnSuccessCommit(new MediaDeleteEvent(this, isdir, path));
+        ebus.fireOnSuccessCommit(
+                new MediaDeleteEvent(this, isdir, path)
+        );
     }
 
     @DELETE
@@ -947,6 +973,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     private JsonNode _list(String folder,
                            FileFilter filter,
                            HttpServletRequest req) throws IOException {
+        checkFolder(folder);
         ArrayNode res = mapper.createArrayNode();
         ReentrantReadWriteLock rwlock = acquirePathRWLock(folder, false);
         try {
@@ -1001,10 +1028,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
             folder = (String) rec.get("folder");
             name = (String) rec.get("name");
+
         } else {
-            if (folder.contains("..")) {
-                throw new BadRequestException(folder);
-            }
+
+            checkFolder(folder);
             folder = normalizeFolder(folder);
             rec = selectOne("selectIcon", "folder", folder, "name", name);
             if (rec == null) {
@@ -1084,10 +1111,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     private Response _get(String folder,
                           String name,
                           HttpServletRequest req,
+                          Integer width,
                           boolean transfer) throws Exception {
-        if (folder.contains("..")) {
-            throw new BadRequestException(folder);
-        }
+        checkFolder(folder);
         if (!folder.endsWith("/")) {
             folder += '/';
         }
@@ -1095,8 +1121,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         Response.ResponseBuilder rb = Response.ok();
         String path = folder + name;
         final ResourceLock l = new ResourceLock(path, false);
+
         try {
-            final File f = new File(new File(basedir, folder), name);
+
+            File f = new File(new File(basedir, folder), name);
             if (!f.exists() || !f.isFile()) {
                 //noinspection ThrowCaughtLocally
                 throw new NotFoundException(path);
@@ -1116,8 +1144,29 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (ctype == null) {
                 ctype = "application/octet-stream";
             }
-            Number clength = (Number) res.get("content_length");
+
+            Number clength;
+            Number id = (Number) res.get("id");
             MediaType mtype = MediaType.parse(ctype);
+            final File respFile;
+
+            if (id == null) {
+                throw new NotFoundException(path);
+            }
+            if (width != null && CTypeUtils.isImageContentType(ctype)) {
+                respFile = findResizedFile(mtype, folder, id.longValue(), width);
+                if (respFile == null) {
+                    throw new NotFoundException(path);
+                }
+                clength = respFile.length();
+                if (clength.intValue() == 0) {
+                    throw new NotFoundException(path);
+                }
+            } else {
+                respFile = f;
+                clength = (Number) res.get("content_length");
+            }
+
             if (mtype != null) {
                 rb.type(mtype.toString());
                 rb.encoding(mtype.getParameters().get("charset"));
@@ -1133,7 +1182,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 rb.entity(
                         new StreamingOutput() {
                             public void write(OutputStream output) throws IOException, WebApplicationException {
-                                try (FileInputStream fis = new FileInputStream(f)) {
+                                try (FileInputStream fis = new FileInputStream(respFile)) {
                                     IOUtils.copyLarge(fis, output);
                                 } finally {
                                     l.close();
@@ -1144,7 +1193,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             } else {
                 rb.status(Response.Status.NO_CONTENT);
             }
+
             r = rb.build();
+
         } catch (Throwable e) {
             l.close();
             throw e;
@@ -1152,7 +1203,41 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (!transfer) {
             l.close();
         }
+
         return r;
+    }
+
+    private File findFileSizeCacheDir(String folder, long entryId) {
+        if (!folder.endsWith("/")) {
+            folder += "/";
+        }
+        File dir = new File(basedir,
+                            folder +
+                            SIZE_CACHE_FOLDER +
+                            '/' + entryId);
+        return (dir.exists() ? dir : null);
+    }
+
+
+    private File findResizedFile(MediaType mtype, String folder, long entryId, int width) {
+        if (!folder.endsWith("/")) {
+            folder += "/";
+        }
+        File sfile = new File(basedir,
+                              folder +
+                              SIZE_CACHE_FOLDER +
+                              '/' + entryId +
+                              '/' + width + '.' + mtype.getSubtype());
+        return (sfile.exists() ? sfile : null);
+    }
+
+    private void checkFolder(String folder) {
+        if (folder == null) {
+            throw new IllegalArgumentException();
+        }
+        if (folder.contains("..") || folder.contains(SIZE_CACHE_FOLDER)) {
+            throw new BadRequestException(folder);
+        }
     }
 
     private Long _put(String folder,
@@ -1160,10 +1245,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                       HttpServletRequest req,
                       InputStream in) throws Exception {
 
-
-        if (folder.contains("..")) {
-            throw new BadRequestException(folder);
-        }
+        checkFolder(folder);
         Number id;
         folder = normalizeFolder(folder);
 
@@ -1220,6 +1302,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 us.writeTo(fos);
                 fos.flush();
             }
+            String ctype = mtype.toString();
+            KVOptions meta = MetadataDetector.metadata2Options(MetadataDetector.detect(mtype, target));
 
             if (id == null) {
 
@@ -1227,10 +1311,11 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 args.put("folder", folder);
                 args.put("name", name);
                 args.put("status", 0);
-                args.put("content_type", mtype.toString());
+                args.put("content_type", ctype);
                 args.put("put_content_type", req.getContentType());
                 args.put("content_length", actualLength);
                 args.put("owner", req.getRemoteUser());
+                args.put("meta", meta.toString());
                 insert("insertEntity", args);
                 id = (Number) args.get("id"); //autogenerated
 
@@ -1238,9 +1323,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
                 update("updateEntity",
                        "id", id,
-                       "content_type", mtype.toString(),
+                       "content_type", ctype,
                        "content_length", actualLength,
-                       "owner", req.getRemoteUser());
+                       "owner", req.getRemoteUser(),
+                       "meta", meta.toString());
             }
 
             if (id != null) {
@@ -1501,6 +1587,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             log.error("Failed to drop page files dir: " + path, e);
         }
     }
+
 
     private String getPageLocalFolderPath(long pageId) {
         StringBuilder sb = new StringBuilder(16);
