@@ -14,9 +14,9 @@ import com.softmotions.ncms.io.MetadataDetector;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
-import com.softmotions.ncms.media.events.MediaCreateEvent;
 import com.softmotions.ncms.media.events.MediaDeleteEvent;
 import com.softmotions.ncms.media.events.MediaMoveEvent;
+import com.softmotions.ncms.media.events.MediaUpdateEvent;
 import com.softmotions.web.HttpServletRequestAdapter;
 import com.softmotions.web.ResponseUtils;
 import com.softmotions.web.security.WSUser;
@@ -90,6 +90,7 @@ import java.nio.charset.Charset;
 import java.security.Principal;
 import java.sql.Blob;
 import java.text.Collator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -351,7 +352,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 .build();
     }
 
-
     @GET
     @Path("/select/count")
     @Produces("text/plain")
@@ -367,7 +367,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     public JsonNode newFolder(@PathParam("folder") String folder,
                               @Context HttpServletRequest req) throws Exception {
 
-        try (ResourceLock l = new ResourceLock(folder, true)) {
+        try (final ResourceLock l = new ResourceLock(folder, true)) {
             File f = new File(basedir, folder);
             if (!f.exists()) {
                 if (!f.mkdirs()) {
@@ -389,7 +389,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
                 id = (Number) params.get("id");
                 ebus.fireOnSuccessCommit(
-                        new MediaCreateEvent(this, true, id, dirname + name));
+                        new MediaUpdateEvent(this, true, id, dirname + name));
             } else {
                 throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
             }
@@ -422,7 +422,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         for (int i = 0, l = files.size(); i < l; ++i) {
             String spath = normalizePath(files.get(i).asText());
             checkFolder(spath);
-            try (ResourceLock l1 = new ResourceLock(spath, false)) {
+            try (final ResourceLock l1 = new ResourceLock(spath, false)) {
                 String sfolder = getResourceParentFolder(spath);
                 String sname = getResourceName(spath);
                 String tpath = tfolder + sname;
@@ -434,7 +434,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     continue;
                 }
 
-                try (ResourceLock l2 = new ResourceLock(tpath, true)) {
+                try (final ResourceLock l2 = new ResourceLock(tpath, true)) {
                     File tfile = new File(basedir, tpath);
                     Map<String, Object> row = selectOne("selectResourceAttrsByPath",
                                                         "folder", sfolder,
@@ -468,7 +468,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
     }
 
-
     @PUT
     @Path("/move/{path:.*}")
     @Transactional(executorType = ExecutorType.BATCH)
@@ -488,8 +487,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
         Long id;
 
-        try (ResourceLock l1 = new ResourceLock(path, true)) {
-            try (ResourceLock l2 = new ResourceLock(npath, true)) {
+        try (final ResourceLock l1 = new ResourceLock(path, true)) {
+            try (final ResourceLock l2 = new ResourceLock(npath, true)) {
                 File f1 = new File(basedir, path);
                 if (!f1.exists()) {
                     throw new NotFoundException(path);
@@ -535,12 +534,13 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
                 } else if (f1.isFile()) {
 
+                    String folder = getResourceParentFolder(path);
                     String nname = getResourceName(npath);
                     String nfolder = getResourceParentFolder(npath);
                     update("fixResourceLocation",
                            "nfolder", nfolder,
                            "nname", nname,
-                           "folder", getResourceParentFolder(path),
+                           "folder", folder,
                            "name", getResourceName(path));
 
                     FileUtils.moveFile(f1, f2);
@@ -548,7 +548,25 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     id = selectOne("selectEntityIdByPath",
                                    "name", nname,
                                    "folder", nfolder);
+
                     if (id != null) {
+
+                        //Handle resize image dir
+                        File rdir = getResizedImageDir(folder, id);
+                        if (rdir.exists()) {
+                            File nrdir = getResizedImageDir(nfolder, id);
+                            File pnrdir = nrdir.getParentFile();
+                            if (pnrdir != null && (pnrdir.exists() || pnrdir.mkdirs())) {
+                                try {
+                                    FileUtils.deleteDirectory(nrdir);
+                                    FileUtils.moveDirectory(rdir, pnrdir);
+                                } catch (IOException e) {
+                                    log.error("Failed to move directory: " +
+                                              rdir + " to " + nrdir, e);
+                                }
+                            }
+                        }
+
                         ebus.fireOnSuccessCommit(new MediaMoveEvent(this, id, false, path, npath));
                         updateFTSKeywords(id, req);
                     }
@@ -575,7 +593,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         String name = getResourceName(path);
         String folder = getResourceParentFolder(path);
 
-        try (ResourceLock l = new ResourceLock(path, true)) {
+        try (final ResourceLock l = new ResourceLock(path, true)) {
 
             File f = new File(basedir, path);
             checkEditAccess(path, req);
@@ -605,8 +623,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 }
 
                 if (id != null) {
-                    File sdir = findFileSizeCacheDir(folder, id);
-                    if (sdir != null) {
+                    File sdir = getResizedImageDir(folder, id);
+                    if (sdir.exists()) {
                         try {
                             FileUtils.deleteDirectory(sdir);
                         } catch (IOException e) {
@@ -663,7 +681,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
             int i = 0;
             Object[] qtags = new Object[tagSet.size()];
-            for (String tag : tagSet) {
+            for (final String tag : tagSet) {
                 qtags[i++] = tag;
             }
             Arrays.sort(qtags, new Comparator<Object>() {
@@ -690,7 +708,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             updateFTSKeywords(id, req);
         }
     }
-
 
     @Transactional(executorType = ExecutorType.SIMPLE)
     public void importDirectory(File dir) throws IOException {
@@ -764,7 +781,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     }
                 }
                 log.info("Importing " + fpath);
-                try (FileInputStream fis = new FileInputStream(f)) {
+                try (final FileInputStream fis = new FileInputStream(f)) {
                     try {
                         _put(folder, name, req, fis);
                     } catch (Exception e) {
@@ -818,7 +835,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             keywords.add(mtype.getSubtype());
         }
         delete("dropKeywords", "id", id);
-        for (String k : keywords) {
+        for (final String k : keywords) {
             if (k.length() > 24) { //VARCHAR(24)
                 continue;
             }
@@ -841,7 +858,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (flist == null) {
                 return false;
             }
-            for (File sf : flist) {
+            for (final File sf : flist) {
                 if (sf.isDirectory()) {
                     deleteDirectoryInternal(path + '/' + sf.getName(), false);
                 } else {
@@ -862,7 +879,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
         return res;
     }
-
 
     private MBCriteriaQuery createSelectQ(HttpServletRequest req, boolean count) {
         Locale locale = message.getLocale(req);
@@ -953,7 +969,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return cq.finish();
     }
 
-
     /**
      * GET list of files in the specified directory(folder).
      * <p/>
@@ -1042,23 +1057,15 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
         String path = folder + name;
         XMLConfiguration xcfg = cfg.impl();
-        String thumbFormat = xcfg.getString("media.thumbnails-default-format", "jpeg");
-        thumbFormat = thumbFormat.toLowerCase();
-        int thumWidth = xcfg.getInt("media.thumbnails-width", 255);
-
+        int thumbWidth = xcfg.getInt("media.thumbnails-width", 255);
         String ctype = (String) rec.get("content_type");
         String iconCtype = (String) rec.get("icon_content_type");
         if (ctype == null || !ctype.startsWith("image/")) {
             throw new BadRequestException(path);
         }
-        //Trying to avoid cross-format conversions for better thumbnails quality
-        if (ctype.startsWith("image/jpeg")) {
-            thumbFormat = "jpeg";
-        }
-        if (ctype.startsWith("image/png")) {
-            thumbFormat = "png";
-        }
+        String thumbFormat = getImageFileResizeFormat(ctype);
         final Blob icon = (Blob) rec.get("icon");
+
         if (icon != null) {
             final byte[] icondata = icon.getBytes(0, (int) icon.length());
             return Response.ok(new StreamingOutput() {
@@ -1071,7 +1078,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
 
         BufferedImage image;
-        try (ResourceLock l = new ResourceLock(path, false)) {
+        try (final ResourceLock l = new ResourceLock(path, false)) {
             File f = new File(basedir, path.substring(1));
             if (!f.exists()) {
                 throw new NotFoundException(path);
@@ -1086,7 +1093,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
         //Now resize the image
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        BufferedImage thumbnail = Scalr.resize(image, thumWidth);
+        BufferedImage thumbnail = Scalr.resize(image, thumbWidth);
         if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
             throw new RuntimeException("Cannot find image writer for thumbFormat=" + thumbFormat);
         }
@@ -1107,6 +1114,15 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 .build();
     }
 
+    private String getImageFileResizeFormat(String ctype) {
+        if (ctype.startsWith("image/jpeg")) {
+            return "jpeg";
+        } else if (ctype.startsWith("image/png")) {
+            return "png";
+        } else {
+            return cfg.impl().getString("media.resize-default-format", "jpeg");
+        }
+    }
 
     private Response _get(String folder,
                           String name,
@@ -1120,8 +1136,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         Response r;
         Response.ResponseBuilder rb = Response.ok();
         String path = folder + name;
-        final ResourceLock l = new ResourceLock(path, false);
 
+        final ResourceLock l = new ResourceLock(path, false);
         try {
 
             File f = new File(new File(basedir, folder), name);
@@ -1154,8 +1170,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 throw new NotFoundException(path);
             }
             if (width != null && CTypeUtils.isImageContentType(ctype)) {
-                respFile = findResizedFile(mtype, folder, id.longValue(), width);
-                if (respFile == null) {
+                mtype = MediaType.parse("image/" + getImageFileResizeFormat(ctype));
+                respFile = getResizedImageFile(mtype, folder, id.longValue(), width);
+                if (!respFile.exists()) {
                     throw new NotFoundException(path);
                 }
                 clength = respFile.length();
@@ -1182,7 +1199,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 rb.entity(
                         new StreamingOutput() {
                             public void write(OutputStream output) throws IOException, WebApplicationException {
-                                try (FileInputStream fis = new FileInputStream(respFile)) {
+                                try (final FileInputStream fis = new FileInputStream(respFile)) {
                                     IOUtils.copyLarge(fis, output);
                                 } finally {
                                     l.close();
@@ -1207,28 +1224,111 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return r;
     }
 
-    private File findFileSizeCacheDir(String folder, long entryId) {
-        if (!folder.endsWith("/")) {
-            folder += "/";
+    @Transactional
+    public void updateResizedImages(String path) throws IOException {
+        if (path == null) {
+            throw new IllegalArgumentException("path");
         }
-        File dir = new File(basedir,
-                            folder +
-                            SIZE_CACHE_FOLDER +
-                            '/' + entryId);
-        return (dir.exists() ? dir : null);
+        //collect widths
+        List<Integer> widths = new ArrayList<>();
+        try (final ResourceLock l = new ResourceLock(path, false)) {
+            String folder = getResourceParentFolder(path);
+            String name = getResourceName(path);
+            Number id = selectOne("selectEntityIdByPath",
+                                  "folder", folder,
+                                  "name", name);
+            if (id == null) {
+                return;
+            }
+            File dir = getResizedImageDir(folder, id.longValue());
+            if (!dir.exists()) {
+                return;
+            }
+            for (final String wd : dir.list(DirectoryFileFilter.INSTANCE)) {
+                //noinspection EmptyCatchBlock
+                try {
+                    widths.add(Integer.parseInt(wd));
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        for (int w : widths) {
+            ensureResizedImage(path, w);
+        }
     }
 
+    @Transactional
+    public void ensureResizedImage(String path, int width) throws IOException {
+        if (path == null) {
+            throw new IllegalArgumentException("path");
+        }
+        if (width <= 0 || width > 6000) {
+            throw new IllegalArgumentException("width");
+        }
+        try (final ResourceLock l = new ResourceLock(path, false)) {
+            String folder = getResourceParentFolder(path);
+            String name = getResourceName(path);
+            Map<String, ?> info = selectOne("selectResourceAttrsByPath",
+                                            "folder", folder,
+                                            "name", name);
+            if (info == null || info.get("id") == null) {
+                return;
+            }
+            long id = ((Number) info.get("id")).longValue();
+            String ctype = (String) info.get("content_type");
+            if (!CTypeUtils.isImageContentType(ctype)) {
+                log.warn("ensureResizedImage: Not applicable file content type: " + ctype);
+                return;
+            }
+            MediaType mtype = MediaType.parse("image/" + getImageFileResizeFormat(ctype));
+            File source = new File(basedir, path.startsWith("/") ? path.substring(1) : path);
+            if (!source.exists()) {
+                return;
+            }
+            File tfile = getResizedImageFile(mtype, folder, id, width);
+            if (tfile.exists() && !FileUtils.isFileNewer(source, tfile)) {
+                return; //up-to-date resized file version exists
+            }
+            BufferedImage image = ImageIO.read(source);
+            if (image == null) {
+                log.warn("Cannot read file as image: " + source);
+                return;
+            }
+            image = Scalr.resize(image, width);
+            //Unlock read lock before acuiring exclusive write lock
+            l.close();
+            try (final ResourceLock wl = new ResourceLock(path, true)) {
+                if (source.exists()) {
+                    try (final FileOutputStream fos = new FileOutputStream(tfile)) {
+                        if (!ImageIO.write(image, mtype.getSubtype(), fos)) {
+                            throw new RuntimeException("Cannot find image writer for: '" +
+                                                       mtype.getSubtype() + "'");
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-    private File findResizedFile(MediaType mtype, String folder, long entryId, int width) {
+    private File getResizedImageDir(String folder, long entryId) {
         if (!folder.endsWith("/")) {
             folder += "/";
         }
-        File sfile = new File(basedir,
-                              folder +
-                              SIZE_CACHE_FOLDER +
-                              '/' + entryId +
-                              '/' + width + '.' + mtype.getSubtype());
-        return (sfile.exists() ? sfile : null);
+        return new File(basedir,
+                        folder +
+                        SIZE_CACHE_FOLDER +
+                        '/' + entryId);
+    }
+
+    private File getResizedImageFile(MediaType mtype, String folder, long entryId, int width) {
+        if (!folder.endsWith("/")) {
+            folder += "/";
+        }
+        return new File(basedir,
+                        folder +
+                        SIZE_CACHE_FOLDER +
+                        '/' + entryId +
+                        '/' + width + '.' + mtype.getSubtype());
     }
 
     private void checkFolder(String folder) {
@@ -1271,7 +1371,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         int uplTh = xcfg.getInt("media.max-upload-size", MB * 10); //10Mb by default
         FileUploadStream us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", cfg.getTmpdir());
 
-        try (ResourceLock l = new ResourceLock(folder + name, true)) {
+        try (final ResourceLock l = new ResourceLock(folder + name, true)) {
             id = selectOne("selectEntityIdByPath",
                            "folder", folder,
                            "name", name);
@@ -1298,7 +1398,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 log.debug("Writing {}/{} into: {} as {} size: {}",
                           folder, name, target.getAbsolutePath(), mtype, actualLength);
             }
-            try (FileOutputStream fos = new FileOutputStream(target)) {
+            try (final FileOutputStream fos = new FileOutputStream(target)) {
                 us.writeTo(fos);
                 fos.flush();
             }
@@ -1330,7 +1430,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
 
             if (id != null) {
-                ebus.fireOnSuccessCommit(new MediaCreateEvent(this, false, id, folder + name));
+                ebus.fireOnSuccessCommit(new MediaUpdateEvent(this, false, id, folder + name));
                 updateFTSKeywords(id.longValue(), req);
             }
 
@@ -1351,7 +1451,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     public Closeable acquireWriteResourceLock(String path) {
         return new ResourceLock(path, true);
     }
-
 
     final class ResourceLock implements Closeable {
 
@@ -1526,7 +1625,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     private boolean isInSystemFolder(String path) {
         path = normalizeFolder(path);
         List<Object> sdirs = cfg.impl().getList("media.system-directories.directory");
-        for (Object sdirObj : sdirs) {
+        for (final Object sdirObj : sdirs) {
             String sdir = String.valueOf(sdirObj);
             if (path.startsWith(normalizeFolder(sdir))) {
                 return true;
@@ -1566,7 +1665,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return folder;
     }
 
-
     public static String normalizePath(String path) {
         if (path.isEmpty() || path.charAt(0) != '/') {
             path = '/' + path;
@@ -1577,7 +1675,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @Subscribe
     public void pageDropped(PageDroppedEvent ev) {
         String path = getPageLocalFolderPath(ev.getId());
-        try (ResourceLock l = new ResourceLock(path, true)) {
+        try (final ResourceLock l = new ResourceLock(path, true)) {
             File pdir = new File(basedir, path);
             if (pdir.isDirectory()) {
                 log.info("Removing page dir: " + path);
@@ -1588,6 +1686,16 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
     }
 
+    @Subscribe
+    public void mediaUpdate(MediaUpdateEvent ev) {
+        if (!ev.isFolder()) {
+            try {
+                updateResizedImages(ev.getPath());
+            } catch (IOException e) {
+                log.error("Failed to update resized images dir", e);
+            }
+        }
+    }
 
     private String getPageLocalFolderPath(long pageId) {
         StringBuilder sb = new StringBuilder(16);
@@ -1601,7 +1709,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
         return sb.toString();
     }
-
 
     private static final class RWLocksLRUCache extends LRUMap {
 
@@ -1619,7 +1726,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             return false; //Do not remove: someone holds the lock
         }
     }
-
 
     private static final class FileUploadStream extends DeferredFileOutputStream {
 
@@ -1655,7 +1761,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             super.write(b, off, len);
         }
     }
-
 
     private final class LocalPUTRequest extends HttpServletRequestAdapter {
 

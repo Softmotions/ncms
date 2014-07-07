@@ -32,4 +32,21 @@ public interface MediaService {
      */
     MediaResource findMediaResource(String path, Locale locale);
 
+    /**
+     * Ensure existensce of resized image file
+     * for specified image source file identified by path.
+     *
+     * @param path  The original file path
+     * @param width Desired file width
+     */
+    void ensureResizedImage(String path, int width) throws IOException;
+
+
+    /**
+     * Update all reasized image files
+     * for specified image source file identified by path.
+     *
+     * @param path
+     */
+    void updateResizedImages(String path) throws IOException;
 }

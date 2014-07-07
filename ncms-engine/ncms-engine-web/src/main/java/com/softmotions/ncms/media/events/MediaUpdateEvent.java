@@ -5,7 +5,7 @@ import com.softmotions.ncms.events.BasicEvent;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class MediaCreateEvent extends BasicEvent {
+public class MediaUpdateEvent extends BasicEvent {
 
     final Long id;
 
@@ -13,7 +13,7 @@ public class MediaCreateEvent extends BasicEvent {
 
     final boolean isFolder;
 
-    public MediaCreateEvent(Object source, boolean isFolder, Number id, String path) {
+    public MediaUpdateEvent(Object source, boolean isFolder, Number id, String path) {
         super(source);
         this.id = id != null ? id.longValue() : null;
         this.path = path;
