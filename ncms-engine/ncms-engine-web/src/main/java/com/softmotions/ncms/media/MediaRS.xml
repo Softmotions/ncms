@@ -16,11 +16,11 @@
         INSERT INTO media_entity (
             folder, name, status, mdate,
             content_type, put_content_type, content_length,
-            owner, description, tags)
+            owner, description, tags, meta)
         VALUES (
             #{folder}, #{name}, #{status}, now(),
             #{content_type}, #{put_content_type}, #{content_length},
-            #{owner}, #{description}, #{tags})
+            #{owner}, #{description}, #{tags}, #{meta})
     </insert>
 
     <update id="updateEntity" parameterType="map">
@@ -30,7 +30,8 @@
             owner             = #{owner},
             icon              = NULL,
             icon_content_type = NULL,
-            mdate             = now()
+            mdate             = now(),
+            meta              = #{meta}
         WHERE id = #{id}
     </update>
 
@@ -270,7 +271,8 @@
             owner            AS "owner",
             description      AS "description",
             tags             AS "tags",
-            status           AS "status"
+            status           AS "status",
+            meta             AS "meta"
         FROM media_entity
         WHERE folder = #{folder}
               AND name = #{name}
@@ -288,7 +290,8 @@
             owner            AS "owner",
             description      AS "description",
             tags             AS "tags",
-            status           AS "status"
+            status           AS "status",
+            meta             AS "meta"
         FROM media_entity
         WHERE id = #{id}
     </select>

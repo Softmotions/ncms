@@ -401,7 +401,7 @@ public class PageSecurityService extends MBDAOSupport {
     /**
      * Rights update mode
      */
-    public static enum UpdateMode {
+    public enum UpdateMode {
         /**
          * Add rights to exists
          */

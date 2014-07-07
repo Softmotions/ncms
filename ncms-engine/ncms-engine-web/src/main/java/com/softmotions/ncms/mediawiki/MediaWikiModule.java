@@ -22,6 +22,7 @@ import java.util.List;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@SuppressWarnings("unchecked")
 public class MediaWikiModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(MediaWikiModule.class);
@@ -59,7 +60,6 @@ public class MediaWikiModule extends AbstractModule {
                     throw new RuntimeException("Tag class: " + className +
                                                " does not implement: " + TagToken.class.getName());
                 }
-                //noinspection unchecked
                 tagsBinder.addBinding(name).to((Class<? extends TagToken>) clazz).in(Singleton.class);
             } catch (ClassNotFoundException e) {
                 String msg = "Failed to load mediawiki tag class: " + className;
