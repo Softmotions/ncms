@@ -104,6 +104,24 @@ qx.Class.define("ncms.pgs.PageEditor", {
         },
 
         __applyPageSpec : function(spec) {
+            this.__editPane.setEnabled(false);
+            this.__accessPane.setEnabled(false);
+
+            var appState = ncms.Application.APP_STATE;
+            var user = appState.getUserLogin();
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.check.rights",
+                    {pid : spec["id"], user : user, rights : "w"}), "GET", "application/json");
+            req.send(function(resp){
+                var access = resp.getContent() || false;
+
+                this.__editPane.setEnabled(!!access);
+                this.__accessPane.setEnabled(!!access);
+
+                if (!access) {
+                    this.setSelection([this.__infoPane]);
+                }
+            }, this);
+
         }
     },
 

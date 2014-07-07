@@ -180,6 +180,9 @@ qx.Class.define("ncms.Actions", {
         // GET search page
         this._action("pages.search", "/ncms/rs/adm/pages/search");
         this._action("pages.search.count", "/ncms/rs/adm/pages/search/count");
+
+        // GET check user access
+        this._action("pages.check.rights", "/ncms/rs/adm/pages/check/{pid}/{user}/{rights}");
     },
 
     members : {

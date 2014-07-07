@@ -250,7 +250,7 @@ public class PageSecurityService extends MBDAOSupport {
         }
 
         String rights = "";
-        List<String> arights = select("selectAclUserRightsForPage", "pid", pid, "user", user);
+        List<String> arights = select("selectUserRightsForPage", "pid", pid, "user", user);
         for (String aright : arights) {
             rights = mergeRights(rights, aright);
         }
@@ -270,10 +270,51 @@ public class PageSecurityService extends MBDAOSupport {
             return false;
         }
 
+        WSUser wsUser = userdb.findUser(user);
+        if (wsUser == null) {
+            return false;
+        }
+
+        Map<String, ?> row = selectOne("selectPageAclInfo", "pid", pid);
+        String owner = row != null ? (String) row.get("owner") : null;
+        if (user.equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
+            return true;
+        }
+
         return (Integer) selectOne("checkUserAccess",
                                    "pid", pid,
                                    "user", user,
                                    "right", access) > 0;
+    }
+
+    /**
+     * Checks user access to edit page
+     *
+     * @param pid  page id
+     * @param user user name
+     */
+    public boolean canEdit(Long pid, String user) {
+        return checkAccess(pid, user, WRITE);
+    }
+
+    /**
+     * Checks user access to delete page
+     *
+     * @param pid  page id
+     * @param user user name
+     */
+    public boolean canDelete(Long pid, String user) {
+        return checkAccess(pid, user, DELETE);
+    }
+
+    /**
+     * Checks user access to edit news for page
+     *
+     * @param pid  page id
+     * @param user user name
+     */
+    public boolean canNewsEdit(Long pid, String user) {
+        return checkAccess(pid, user, DELETE);
     }
 
     private String mergeRights(String r1, String r2) {

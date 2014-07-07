@@ -584,6 +584,18 @@ public class PageRS extends MBDAOSupport {
         return result;
     }
 
+    @GET
+    @Path("check/{pid}/{user}/{rights}")
+    public boolean checkAccess(@PathParam("pid") Long pid,
+                               @PathParam("user") String user,
+                               @PathParam("rights") String rights) {
+        boolean access = true;
+        for (char c : (rights == null? "" : rights).toCharArray()) {
+            access = access && pageSecurity.checkAccess(pid, user, c);
+        }
+        return access;
+    }
+
     Long getPathLastIdSegment(String path) {
         if (path == null) {
             return null;
