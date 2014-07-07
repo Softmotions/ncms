@@ -8,15 +8,13 @@ qx.Class.define("ncms.pgs.PageEditorAccessPane", {
 
     construct : function() {
         this.base(arguments, this.tr("Access rights"));
-        this.setLayout(new qx.ui.layout.VBox(5).set({alignX : "center"}));
+        this.setLayout(new qx.ui.layout.VBox(5));
         this.addListener("loadPane", this.__onLoadPane, this);
 
-        this.add(new qx.ui.basic.Label(this.tr("Local")).set({font : "bold"}));
-        var lat = this.__locAclTable = new ncms.pgs.PageEditorAccessTable({recursive : false});
+        var lat = this.__locAclTable = new ncms.pgs.PageEditorAccessTable(this.tr("Local"), {recursive : false});
         this.add(this.__locAclTable, {flex : 1});
 
-        this.add(new qx.ui.basic.Label(this.tr("Recursive")).set({font : "bold"}));
-        var rat =this.__recAclTable = new ncms.pgs.PageEditorAccessTable({recursive : true});
+        var rat =this.__recAclTable = new ncms.pgs.PageEditorAccessTable(this.tr("Recursive"), {recursive : true});
         this.add(this.__recAclTable, {flex : 1});
 
         var reload = function() {
