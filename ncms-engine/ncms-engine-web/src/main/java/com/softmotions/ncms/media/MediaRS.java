@@ -477,14 +477,16 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
         path = StringUtils.strip(path, "/");
         npath = StringUtils.strip(npath, "/");
-        checkFolder(path);
-        checkFolder(npath);
         if (StringUtils.isBlank(npath)) {
             throw new BadRequestException();
         }
         if (npath.equals(path)) {
             return;
         }
+
+        checkFolder(path);
+        checkFolder(npath);
+
         Long id;
 
         try (final ResourceLock l1 = new ResourceLock(path, true)) {
