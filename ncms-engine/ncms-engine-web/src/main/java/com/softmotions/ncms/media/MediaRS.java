@@ -1215,7 +1215,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                             folder +
                             SIZE_CACHE_FOLDER +
                             '/' + entryId);
-        log.info("!!!!!!!!!!! SDIR=" + dir);
         return (dir.exists() ? dir : null);
     }
 
