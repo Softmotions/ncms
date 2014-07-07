@@ -32,12 +32,8 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         this._setLayout(new qx.ui.layout.VBox());
 
         var sf = this.__sf = new sm.ui.form.SearchField();
-        sf.addListener("clear", function() {
-            this.__search(null);
-        }, this);
-        sf.addListener("input", function(ev) {
-            this.__search(ev.getData());
-        }, this);
+        sf.addListener("clear", this.__search, this);
+        sf.addListener("input", this.__search, this);
         sf.addListener("keypress", function(ev) {
             if ("Down" == ev.getKeyIdentifier()) {
                 this.__table.handleFocus();
@@ -58,8 +54,7 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
 
         this.setConstViewSpec(constViewSpec || null);
 
-        this._add(this.__sf);
-        this._add(this.__table, {flex : 1});
+        this.addListener("appear", this.__search, this);
     },
 
     members : {
@@ -68,26 +63,21 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
 
         setViewSpec : function(vspec) {
             this.__table.resetSelection();
-            this.__table.getTableModel().setViewSpec(this.__createViewSpec(vspec));
+            this.__table.getTableModel().setViewSpec(vspec);
         },
 
         updateViewSpec : function(vspec) {
             this.__table.resetSelection();
-            this.__table.getTableModel().updateViewSpec(this.__createViewSpec(vspec));
+            this.__table.getTableModel().updateViewSpec(vspec);
         },
 
-        __createViewSpec : function(vspec) {
-            if (this.getConstViewSpec() == null) {
-                return vspec;
+        __search : function() {
+            var val = this.__sf.getValue();
+            if (!val) {
+                this.__table.cleanup();
+            } else {
+                this.updateViewSpec({name : val || ""});
             }
-            var nspec = {};
-            qx.Bootstrap.objectMergeWith(nspec, this.getConstViewSpec(), false);
-            qx.Bootstrap.objectMergeWith(nspec, vspec, false);
-            return nspec;
-        },
-
-        __search : function(val) {
-            this.updateViewSpec({name : val || ""});
         },
 
         __applyConstViewSpec : function() {

@@ -36,11 +36,18 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
         }
     },
 
-    construct : function(constViewSpec) {
+    construct : function(title, constViewSpec) {
         this.base(arguments);
 
         this.setConstViewSpec(constViewSpec || null);
         this._reload([]);
+
+        if (title) {
+            var toolbar = this.getChildControl("toolbar");
+            toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
+            toolbar.add(new qx.ui.basic.Label(title).set({font : "bold"}));
+            toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
+        }
 
         this.setContextMenu(new qx.ui.menu.Menu());
         this.addListener("beforeContextmenuOpen", this.__beforeContextMenuOpen, this);
