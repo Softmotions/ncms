@@ -28,17 +28,30 @@ qx.Class.define("ncms.asm.am.ImageAM", {
         activateOptionsWidget : function(attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var form = this._form = new sm.ui.form.ExtendedForm();
-            var el = new qx.ui.form.TextField().set({maxLength : 3});
-            if (opts["width"] != null) {
-                el.setValue(opts["width"]);
-            }
-            form.add(el, this.tr("Width"), null, "width");
 
-            el = new qx.ui.form.TextField().set({maxLength : 3});
-            if (opts["height"] != null) {
-                el.setValue(opts["height"]);
+            var syncwTb = function() {
+                var val = wTb.getValue();
+                if (sm.lang.String.isEmpty(val)) {
+                    autoCb.setValue(false);
+                    autoCb.setEnabled(false);
+                } else {
+                    autoCb.setEnabled(true);
+                }
+            };
+
+            var wTb = new qx.ui.form.TextField().set({maxLength : 3});
+            if (opts["width"] != null) {
+                wTb.setValue(opts["width"]);
             }
-            form.add(el, this.tr("Height"), null, "height");
+            wTb.addListener("input", syncwTb, this);
+            form.add(wTb, this.tr("Width"), null, "width");
+
+
+            var hTb = new qx.ui.form.TextField().set({maxLength : 3});
+            if (opts["height"] != null) {
+                hTb.setValue(opts["height"]);
+            }
+            form.add(hTb, this.tr("Height"), null, "height");
 
             var autoCb = new qx.ui.form.CheckBox();
             autoCb.setValue(opts["resize"] == "true");
@@ -59,6 +72,8 @@ qx.Class.define("ncms.asm.am.ImageAM", {
                     autoCb.setValue(false);
                 }
             });
+
+            syncwTb();
 
             return new sm.ui.form.ExtendedDoubleFormRenderer(form);
         },
