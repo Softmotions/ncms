@@ -7,6 +7,14 @@ qx.Class.define("ncms.mmgr.PageFilesSelector", {
     extend : ncms.mmgr.MediaFilesSelector,
 
     /**
+     * <code>
+     *  {
+     *      allowModify : true|false,
+     *      allowMove : true|false,
+     *      allowSubfoldersView : true|fa;se
+     *  }
+     * </code>
+     *
      * @param pageId {Number} The page GUI
      * @param opts {Object?} ncms.mmgr.MediaFilesSelector options.
      */

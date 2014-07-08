@@ -61,6 +61,18 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         }
     },
 
+    /**
+     * <code>
+     *  {
+     *      allowMove : true|false,
+     *      allowSubfoldersView : true|fa;se
+     *  }
+     * </code>
+     *
+     * @param allowModify {Boolean?false} If true allow modify directory/files
+     * @param constViewSpec {Object?}
+     * @param opts {Object?} ncms.mmgr.MediaFilesSelector options.
+     */
     construct : function(allowModify, constViewSpec, opts) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());

@@ -4,8 +4,13 @@
  * NOTE:
  * Implementors must define the following static methods:
  *
+ *  statics : {
  *      getDescription
  *      getSupportedAttributeTypes
+ *  }
+ *
+ *  //todo describe 'widgetNotReady' state
+ *  //todo describe 'ncms.asm.activeWidget' widget user data
  *
  */
 qx.Interface.define("ncms.asm.IAsmAttributeManager", {
@@ -43,10 +48,12 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
          * }
          *
          * @param attrSpec {Object}
+         * @param asmSpec {Object}
          * @return {qx.ui.core.Widget} settings editor widget.
          */
         activateOptionsWidget : function(attrSpec, asmSpec) {
             this.assertMap(attrSpec);
+            this.assertMap(asmSpec);
         },
 
         /**
@@ -59,10 +66,12 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
          * Create attribute-value editor widget.
          *
          * @param attrSpec {Object}
+         * @param asmSpec {Object}
          * @return {qx.ui.core.Widget} value editor widget.
          */
         activateValueEditorWidget : function(attrSpec, asmSpec) {
             this.assertMap(attrSpec);
+            this.assertMap(asmSpec);
         },
 
         /**

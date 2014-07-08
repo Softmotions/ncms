@@ -35,12 +35,21 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
     },
 
     /**
-     *
+     * options:
+     * <code>
+     *  {
+     *      noLinkText : true|false
+     *      allowModify : true|false,
+     *      allowMove : true|false,
+     *      allowSubfoldersView : true|fa;se
+     *  }
+     * </code>
      * @param pageId {Number} The page ID.
      * @param caption {String?} Dialog window caption.
      * @param options {Object?} ncms.mmgr.MediaFilesSelector options.
      */
     construct : function(pageId, caption, options) {
+        options = options || {};
         qx.core.Assert.assertNumber(pageId, "Page ID is not a number");
         this.base(arguments, caption);
         this.setLayout(new qx.ui.layout.VBox(5));
@@ -61,8 +70,12 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
 
         //form
         var form = this.__form = new sm.ui.form.ExtendedForm();
-        var linkTextTf = new qx.ui.form.TextField().set({maxLength : 64, required : true});
-        form.add(linkTextTf, this.tr("Link text"), null, "linkText");
+
+        var linkTextTf = null;
+        if (!options["noLinkText"]) {
+            linkTextTf = new qx.ui.form.TextField().set({maxLength : 64, required : true});
+            form.add(linkTextTf, this.tr("Link text"), null, "linkText");
+        }
         leftSide.add(new sm.ui.form.FlexFormRenderer(form));
 
         var rightSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
@@ -106,7 +119,9 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
             this.__okBt.setEnabled((ctype != null && ff(ctype)));
             if (spec) {
                 var ind = spec["name"].indexOf(".");
-                linkTextTf.setValue(ind !== -1 ? spec["name"].substring(0, ind) : spec["name"]);
+                if (linkTextTf) {
+                    linkTextTf.setValue(ind !== -1 ? spec["name"].substring(0, ind) : spec["name"]);
+                }
                 this.setStatus(spec["folder"] + spec["name"]);
             } else {
                 this.setStatus("");

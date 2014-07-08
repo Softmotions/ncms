@@ -103,11 +103,18 @@ qx.Class.define("ncms.Actions", {
         //GET Thumbnail of image media
         this._action("media.thumbnail2", "/ncms/rs/media/thumbnail2/{id}");
 
+        //GET Thumbnail of image media
+        ///ncms/rs/media/thumbnail/<path to file>
+        this._action("media.thumbnail", "/ncms/rs/media/thumbnail");
+
         //POST Save extra file meta fields
         this._action("media.meta", "/ncms/rs/media/meta/{id}");
 
         //POST Save extra file meta fields (by path)
         this._action("media.path.meta", "/ncms/rs/media/meta/path");
+
+        //GET media-entity path by specified ID
+        this._action("media.path", "/ncms/rs/media/path/{id}");
 
         //================== NcmsSecurityRS
 

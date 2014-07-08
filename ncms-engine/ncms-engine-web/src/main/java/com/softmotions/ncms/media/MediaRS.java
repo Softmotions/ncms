@@ -166,6 +166,23 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         this.ebus.register(this);
     }
 
+
+    /**
+     * Get media-entity path by specified ID
+     *
+     * @param id Media entry ID
+     */
+    @GET
+    @Path("/path/{id}")
+    @Transactional
+    public String path(@PathParam("id") Long id) {
+        Map<String, ?> row = selectOne("selectResourceAttrsById", "id", id);
+        if (row == null) {
+            throw new NotFoundException();
+        }
+        return String.valueOf(row.get("folder")) + row.get("name");
+    }
+
     /**
      * Save uploaded file.
      * <p/>
