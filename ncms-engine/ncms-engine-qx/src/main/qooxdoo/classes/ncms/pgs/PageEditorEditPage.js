@@ -182,18 +182,34 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             }
 
             var oou = qx.util.OOUtil;
-            //Listen modified events
-            if (qx.Class.hasInterface(wclass, ncms.asm.am.IValueWidget)) {
-                w.addListener("modified", this._onModifiedWidget, this);
-            } else if (oou.supportsEvent(wclass, "input")) {
-                w.addListener("input", this._onModifiedWidget, this);
-            } else if (oou.supportsEvent(wclass, "changeValue")) {
-                w.addListener("changeValue", this._onModifiedWidget, this);
-            } else if (oou.supportsEvent(wclass, "changeSelection")) {
-                w.addListener("changeSelection", this._onModifiedWidget, this);
-            } else if (oou.supportsEvent(wclass, "execute")) {
-                w.addListener("execute", this._onModifiedWidget, this);
+
+            var awclass = wclass;
+            var aw = w;
+            if (w.getUserData("ncms.asm.activeWidget") != null) {
+                aw = w.getUserData("ncms.asm.activeWidget");
+                awclass = qx.Class.getByName(aw.classname);
+                if (awclass == null) {
+                    qx.log.Logger.warn("Attribute manager used for type: " + attrSpec["type"] +
+                            " produced invalid 'ncms.asm.activeWidget' widget: " + aw);
+                    return;
+                }
+                w.setUserData("ncms.asm.activeWidget", null);
             }
+
+            //Listen modified events
+            if (qx.Class.hasInterface(awclass, ncms.asm.am.IValueWidget)) {
+                aw.addListener("modified", this._onModifiedWidget, this);
+            } else if (oou.supportsEvent(awclass, "input") && !((typeof aw.getReadOnly === "function") && aw.getReadOnly() === true)) {
+                aw.addListener("input", this._onModifiedWidget, this);
+            } else if (oou.supportsEvent(awclass, "changeValue")) {
+                aw.addListener("changeValue", this._onModifiedWidget, this);
+            } else if (oou.supportsEvent(awclass, "changeSelection")) {
+                aw.addListener("changeSelection", this._onModifiedWidget, this);
+            } else if (oou.supportsEvent(awclass, "execute")) {
+                aw.addListener("execute", this._onModifiedWidget, this);
+            }
+
+
             if (!qx.Class.hasInterface(wclass, qx.ui.form.IForm)) {
                 w = new sm.ui.form.FormWidgetAdapter(w);
             }
@@ -206,7 +222,13 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             form.add(w, attrSpec["label"], validator, attrSpec["name"]);
         },
 
-        _onModifiedWidget : function() {
+        _onModifiedWidget : function(ev) {
+            var w = ev.getTarget();
+            if (w != null) {
+                if (w.getEnabled() === false || w.hasState("widgetNotReady")) {
+                    return;
+                }
+            }
             this.setModified(true);
         },
 
