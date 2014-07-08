@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
@@ -265,6 +266,9 @@ public class PageRS extends MBDAOSupport {
     public void savePage(@Context HttpServletRequest req,
                          @PathParam("id") Long id,
                          ObjectNode data) {
+        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
 
         Asm page = adao.asmSelectById(id);
         if (page == null) {
@@ -314,6 +318,10 @@ public class PageRS extends MBDAOSupport {
     public ObjectNode setTemplate(@Context HttpServletRequest req,
                                   @PathParam("id") Long id,
                                   @PathParam("templateId") Long templateId) {
+        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
+
         Integer ts = selectOne("selectPageTemplateStatus", templateId);
         if (ts == null || ts.intValue() == 0) {
             log.warn("Assembly: " + templateId + " is not page template");
@@ -355,8 +363,12 @@ public class PageRS extends MBDAOSupport {
     @PUT
     @Path("/owner/{id}/{owner}")
     @Transactional
-    public JsonNode setPageOwner(@PathParam("id") String id,
+    public JsonNode setPageOwner(@Context HttpServletRequest req,
+                                 @PathParam("id") Long id,
                                  @PathParam("owner") String owner) {
+        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
 
         WSUser user = userdb.findUser(owner);
         if (user == null) {
@@ -378,10 +390,13 @@ public class PageRS extends MBDAOSupport {
     @Transactional
     public void newPage(@Context HttpServletRequest req,
                         ObjectNode spec) {
-
         String name = spec.hasNonNull("name") ? spec.get("name").asText() : null;
         Long parent = spec.hasNonNull("parent") ? spec.get("parent").asLong() : null;
         String type = spec.hasNonNull("type") ? spec.get("type").asText() : null;
+
+        if (!pageSecurity.canEdit(parent, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
 
         if (name == null) {
             throw new BadRequestException("name");
@@ -428,6 +443,10 @@ public class PageRS extends MBDAOSupport {
     @Transactional
     public void dropPage(@Context HttpServletRequest req,
                          @PathParam("id") Long id) {
+        if (!pageSecurity.canDelete(id, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
+
         Map<String, Object> info = selectOne("selectPageInfo",
                                              "id", id);
         delete("dropPage", "id", id);
@@ -508,9 +527,13 @@ public class PageRS extends MBDAOSupport {
 
     @Path("/acl/{pid}/{user}")
     @PUT
-    public void addToAcl(@PathParam("pid") Long pid,
+    public void addToAcl(@Context HttpServletRequest req,
+                         @PathParam("pid") Long pid,
                          @PathParam("user") String user,
                          @QueryParam("recursive") boolean recursive) {
+        if (!pageSecurity.canEdit(pid, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
 
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
@@ -522,11 +545,16 @@ public class PageRS extends MBDAOSupport {
 
     @Path("/acl/{pid}/{user}")
     @POST
-    public void updateAcl(@PathParam("pid") Long pid,
+    public void updateAcl(@Context HttpServletRequest req,
+                          @PathParam("pid") Long pid,
                           @PathParam("user") String user,
                           @QueryParam("recursive") boolean recursive,
                           @QueryParam("rights") String rights,
                           @QueryParam("add") boolean isAdd) {
+        if (!pageSecurity.canEdit(pid, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
+
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
             throw new BadRequestException("User not found");
@@ -537,10 +565,15 @@ public class PageRS extends MBDAOSupport {
 
     @Path("/acl/{pid}/{user}")
     @DELETE
-    public void deleteFromAcl(@PathParam("pid") Long pid,
+    public void deleteFromAcl(@Context HttpServletRequest req,
+                              @PathParam("pid") Long pid,
                               @PathParam("user") String user,
                               @QueryParam("recursive") boolean recursive,
                               @QueryParam("forceRecursive") boolean force) {
+        if (!pageSecurity.canEdit(pid, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
+
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
             throw new BadRequestException("User not found");
@@ -585,13 +618,20 @@ public class PageRS extends MBDAOSupport {
     }
 
     @GET
-    @Path("check/{pid}/{user}/{rights}")
-    public boolean checkAccess(@PathParam("pid") Long pid,
-                               @PathParam("user") String user,
+    @Path("rights/{pid}")
+    public String getUserRights(@Context HttpServletRequest req,
+                                @PathParam("pid") Long pid) {
+        return pageSecurity.getUserRights(pid, req.getRemoteUser());
+    }
+
+    @GET
+    @Path("check/{pid}/{rights}")
+    public boolean checkAccess(@Context HttpServletRequest req,
+                               @PathParam("pid") Long pid,
                                @PathParam("rights") String rights) {
         boolean access = true;
         for (char c : (rights == null? "" : rights).toCharArray()) {
-            access = access && pageSecurity.checkAccess(pid, user, c);
+            access = access && pageSecurity.checkAccess(pid, req.getRemoteUser(), c);
         }
         return access;
     }

@@ -33,32 +33,38 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         __beforeContextmenuOpen : function(ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
-            var bt;
+            var req;
             var tree = this._tree;
             var root = tree.getModel();
             var sel = tree.getSelection().getItem(0);
 
-            bt = new qx.ui.menu.Button(this.tr("New page"));
-            bt.addListenerOnce("execute", this.__onNewPage, this);
-            menu.add(bt);
+            var newBt = new qx.ui.menu.Button(this.tr("New page"));
+            newBt.addListenerOnce("execute", this.__onNewPage, this);
+            newBt.setEnabled(false);
+            menu.add(newBt);
 
-            if (sel != null) {
-                if (sel != root) {
-                    bt = new qx.ui.menu.Button(this.tr("Drop page"));
-                    bt.addListenerOnce("execute", this.__onDeletePage, this);
-                    menu.add(bt);
-                }
+            var parent = this.__calcFirstFolderParent(sel);
+            req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.check.rights", {pid : parent.getId(), rights: "w"}), "GET", "application/json");
+            req.send(function(resp){
+                newBt.setEnabled(!!resp.getContent());
+            }, this);
+
+
+            if (sel != null && sel != root) {
+                var delBt = new qx.ui.menu.Button(this.tr("Drop page"));
+                delBt.addListenerOnce("execute", this.__onDeletePage, this);
+                delBt.setEnabled(false);
+                menu.add(delBt);
+
+                req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.check.rights", {pid : sel.getId(), rights: "d"}), "GET", "application/json");
+                req.send(function(resp){
+                    delBt.setEnabled(!!resp.getContent());
+                }, this);
             }
         },
 
         __onNewPage : function(ev) {
-            var parent = this._tree.getSelection().getItem(0);
-            while (parent && (parent.getStatus() & 1) === 0) {
-                parent = this._tree.getParent(parent);
-            }
-            if (parent == null) {
-                parent = this._tree.getModel();
-            }
+            var parent = this.__calcFirstFolderParent(this._tree.getSelection().getItem(0));
             var parentId = parent.getId();
             var d = new ncms.pgs.PageNewDlg(parentId);
             d.addListenerOnce("completed", function(ev) {
@@ -84,6 +90,17 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                     this._refreshNode(parent);
                 }, this);
             }, this);
+        },
+
+        __calcFirstFolderParent : function(item) {
+            var parent = item;
+            while (parent && (parent.getStatus() & 1) === 0) {
+                parent = this._tree.getParent(parent);
+            }
+            if (parent == null) {
+                parent = this._tree.getModel();
+            }
+            return parent;
         }
     },
 

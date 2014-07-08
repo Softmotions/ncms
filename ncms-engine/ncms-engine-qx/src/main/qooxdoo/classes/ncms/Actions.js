@@ -181,8 +181,10 @@ qx.Class.define("ncms.Actions", {
         this._action("pages.search", "/ncms/rs/adm/pages/search");
         this._action("pages.search.count", "/ncms/rs/adm/pages/search/count");
 
+        // GET get user access
+        this._action("pages.get.rights", "/ncms/rs/adm/pages/rights/{pid}");
         // GET check user access
-        this._action("pages.check.rights", "/ncms/rs/adm/pages/check/{pid}/{user}/{rights}");
+        this._action("pages.check.rights", "/ncms/rs/adm/pages/check/{pid}/{rights}");
     },
 
     members : {

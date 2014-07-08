@@ -100,7 +100,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         __setOwner : function(info) {
             var owner = info["owner"];
             var am = info["accessmask"] || "r";
-            this.__ownerSelector.setMainButtonEnabled(am.indexOf("s") !== -1);
+            this.__ownerSelector.setMainButtonEnabled(am.indexOf("w") !== -1);
             if (owner == null) {
                 this.__ownerSelector.setValue("");
                 return;

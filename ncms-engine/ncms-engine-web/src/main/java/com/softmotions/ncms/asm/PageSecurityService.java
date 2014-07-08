@@ -266,7 +266,7 @@ public class PageSecurityService extends MBDAOSupport {
      * @param access checked access
      */
     public boolean checkAccess(Long pid, String user, Character access) {
-        if (access == null || !ArrayUtils.contains(ALL_RIGHTS, access)) {
+        if (access == null || (!ArrayUtils.contains(ALL_RIGHTS, access) && STRUCTURAL != access)) {
             return false;
         }
 
@@ -314,7 +314,7 @@ public class PageSecurityService extends MBDAOSupport {
      * @param user user name
      */
     public boolean canNewsEdit(Long pid, String user) {
-        return checkAccess(pid, user, DELETE);
+        return checkAccess(pid, user, NEWS);
     }
 
     private String mergeRights(String r1, String r2) {
