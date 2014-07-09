@@ -137,7 +137,6 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
                 req.send(function(resp) {
                     resp = resp.getContent();
                     qx.lang.Object.mergeWith(this.__info, resp, true);
-                    qx.log.Logger.info("info=" + JSON.stringify(this.__info));
                     this.__setOwner(this.__info);
                     dlg.close();
                 }, this);
