@@ -209,17 +209,19 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 aw.addListener("execute", this._onModifiedWidget, this);
             }
 
-
             if (!qx.Class.hasInterface(wclass, qx.ui.form.IForm)) {
                 w = new sm.ui.form.FormWidgetAdapter(w);
             }
 
             w.setUserData("attributeManager", am);
             var validator = null;
-            if (typeof w.validator === "function") {
-                validator = w.validator;
+            if (typeof w.getUserData("ncms.asm.validator") === "function") {
+                validator = w.getUserData("ncms.asm.validator");
+            } else if (typeof w.getValidator === "function") {
+                validator = w.getValidator();
             }
-            form.add(w, attrSpec["label"], validator, attrSpec["name"]);
+
+            form.add(w, attrSpec["label"], validator, attrSpec["name"], w);
         },
 
         _onModifiedWidget : function(ev) {
@@ -263,6 +265,10 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __save : function() {
             if (this.__form == null || !this.__form.validate()) {
+                ncms.Application.infoPopup(this.tr("Page fields contain errors"), {
+                    showTime : 5000,
+                    icon : "ncms/icon/32/exclamation.png"
+                });
                 return;
             }
             var data = {};

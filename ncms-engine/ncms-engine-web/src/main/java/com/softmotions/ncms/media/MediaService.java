@@ -41,6 +41,7 @@ public interface MediaService {
      */
     void ensureResizedImage(String path, int width) throws IOException;
 
+    void ensureResizedImage(long id, int width) throws IOException;
 
     /**
      * Update all reasized image files
@@ -49,4 +50,6 @@ public interface MediaService {
      * @param path
      */
     void updateResizedImages(String path) throws IOException;
+
+    void updateResizedImages(long id, int width) throws IOException;
 }

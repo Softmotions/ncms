@@ -12,6 +12,7 @@
  * @asset(ncms/icon/16/help/help.png)
  * @asset(ncms/icon/16/misc/door_in.png)
  * @asset(ncms/icon/32/information.png)
+ * @asset(ncms/icon/32/exclamation.png)
  */
 qx.Class.define("ncms.Application", {
     extend : qx.application.Standalone,
@@ -57,13 +58,16 @@ qx.Class.define("ncms.Application", {
          * Show autohided popup message
          *
          * @param message {String} message to show
-         * @param showTime {Number?} time in ms to show message, defaul 1500 ms
-         * @param hideTime {Number?} fade out animation duration, default 500 ms
          * @param options {Object?} additional options:
          *       - icon - icon to show. by default of if <code>undefined</code> will be shown default icon: status/dialog-information,
          *                              if <code>null</code> no icon will be shown
+         *       - showTime {Number?} time in ms to show message, default 1500 ms
+         *       - hideTime {Number?} fade out animation duration, default 500 ms
          */
-        infoPopup : function(message, showTime, hideTime, options) {
+        infoPopup : function(message, options) {
+            options = options || {};
+            var showTime = options["showTime"];
+            var hideTime = options["hideTime"];
             var root = qx.core.Init.getApplication().getRoot();
             var info = ncms.Application.INFO_POPUP;
             if (!info) {
@@ -94,9 +98,7 @@ qx.Class.define("ncms.Application", {
                 }
                 info.setZIndex(maxWindowZIndex + 1e8);
             }
-            options = options || {};
-            options["icon"] = options["icon"] !== undefined ? options["icon"] : "ncms/icon/32/information.png";
-
+            options["icon"] = (options["icon"] !== undefined) ? options["icon"] : "ncms/icon/32/information.png";
             var el = new qx.ui.basic.Atom(message, options["icon"]).set({
                 center : true,
                 rich : true,

@@ -29,6 +29,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -49,6 +50,7 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.imgscalr.Scalr;
 import org.mybatis.guice.transactional.Transactional;
@@ -176,12 +178,13 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @Path("/path/{id}")
     @Transactional
     public String path(@PathParam("id") Long id) {
-        Map<String, ?> row = selectOne("selectResourceAttrsById", "id", id);
+        Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
             throw new NotFoundException();
         }
         return String.valueOf(row.get("folder")) + row.get("name");
     }
+
 
     /**
      * Save uploaded file.
@@ -228,6 +231,34 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                         @Context HttpServletRequest req,
                         @QueryParam("w") Integer width) throws Exception {
         return _get("", name, req, width, true);
+    }
+
+
+    @GET
+    @Path("/fileid/{id}")
+    @Transactional
+    public Response get(@PathParam("id") Long id,
+                        @Context HttpServletRequest req,
+                        @QueryParam("w") Integer width) throws Exception {
+        Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
+        if (row == null) {
+            throw new NotFoundException();
+        }
+        return _get((String) row.get("folder"), (String) row.get("name"), req, width, true);
+    }
+
+
+    @HEAD
+    @Path("/fileid/{id}")
+    @Transactional
+    public Response head(@PathParam("id") Long id,
+                         @Context HttpServletRequest req,
+                         @QueryParam("w") Integer width) throws Exception {
+        Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
+        if (row == null) {
+            throw new NotFoundException();
+        }
+        return _get((String) row.get("folder"), (String) row.get("name"), req, width, false);
     }
 
     @HEAD
@@ -667,6 +698,24 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             String path = files.get(i).asText();
             deleteResource(path, req);
         }
+    }
+
+
+    @GET
+    @Path("/meta/{id}")
+    @Transactional
+    public ObjectNode getMeta(@PathParam("id") Long id,
+                              @Context HttpServletRequest req) throws Exception {
+        Map<String, ?> row = selectOne("selectResourceAttrsById", "id", id);
+        if (row == null) {
+            throw new NotFoundException();
+        }
+        ObjectNode res = mapper.createObjectNode();
+        res.put("id", id);
+        res.put("folder", (String) row.get("folder"));
+        res.put("name", (String) row.get("name"));
+        res.put("meta", (String) row.get("meta"));
+        return res;
     }
 
     /**
@@ -1112,7 +1161,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
         //Now resize the image
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        BufferedImage thumbnail = Scalr.resize(image, thumbWidth);
+        BufferedImage thumbnail = (image.getWidth() > thumbWidth || image.getHeight() > thumbWidth) ?
+                                  Scalr.resize(image, thumbWidth) : image;
         if (!ImageIO.write(thumbnail, thumbFormat, bos)) {
             throw new RuntimeException("Cannot find image writer for thumbFormat=" + thumbFormat);
         }
@@ -1243,6 +1293,16 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         return r;
     }
 
+
+    @Transactional
+    public void updateResizedImages(long id, int width) throws IOException {
+        Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
+        if (row == null) {
+            return;
+        }
+        updateResizedImages(String.valueOf(row.get("folder")) + row.get("name"));
+    }
+
     @Transactional
     public void updateResizedImages(String path) throws IOException {
         if (path == null) {
@@ -1274,6 +1334,15 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         for (int w : widths) {
             ensureResizedImage(path, w);
         }
+    }
+
+    @Transactional
+    public void ensureResizedImage(long id, int width) throws IOException {
+        Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
+        if (row == null) {
+            return;
+        }
+        ensureResizedImage(String.valueOf(row.get("folder")) + row.get("name"), width);
     }
 
     @Transactional
@@ -1313,11 +1382,12 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 log.warn("Cannot read file as image: " + source);
                 return;
             }
-            image = Scalr.resize(image, width);
+            image = Scalr.resize(image, Scalr.Mode.FIT_TO_WIDTH, width);
             //Unlock read lock before acuiring exclusive write lock
             l.close();
             try (final ResourceLock wl = new ResourceLock(path, true)) {
                 if (source.exists()) {
+                    tfile.getParentFile().mkdirs();
                     try (final FileOutputStream fos = new FileOutputStream(tfile)) {
                         if (!ImageIO.write(image, mtype.getSubtype(), fos)) {
                             throw new RuntimeException("Cannot find image writer for: '" +
@@ -1421,8 +1491,25 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 us.writeTo(fos);
                 fos.flush();
             }
-            String ctype = mtype.toString();
-            KVOptions meta = MetadataDetector.metadata2Options(MetadataDetector.detect(mtype, target));
+
+            KVOptions meta;
+            if (CTypeUtils.isImageContentType(mtype.toString())) {
+                Metadata metadata = MetadataDetector.detect(mtype, target);
+                if (metadata.get("width") == null) {
+                    if (metadata.get(Metadata.IMAGE_WIDTH) != null) {
+                        metadata.add("width", metadata.get(Metadata.IMAGE_WIDTH));
+                    }
+                }
+                if (metadata.get("height") == null) {
+                    if (metadata.get(Metadata.IMAGE_LENGTH) != null) {
+                        metadata.add("height", metadata.get(Metadata.IMAGE_LENGTH));
+                    }
+                }
+                meta = MetadataDetector.metadata2Options(metadata,
+                                                         "width", "height");
+            } else {
+                meta = new KVOptions();
+            }
 
             if (id == null) {
 
@@ -1430,7 +1517,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 args.put("folder", folder);
                 args.put("name", name);
                 args.put("status", 0);
-                args.put("content_type", ctype);
+                args.put("content_type", mtype.toString());
                 args.put("put_content_type", req.getContentType());
                 args.put("content_length", actualLength);
                 args.put("owner", req.getRemoteUser());
@@ -1442,7 +1529,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
                 update("updateEntity",
                        "id", id,
-                       "content_type", ctype,
+                       "content_type", mtype.toString(),
                        "content_length", actualLength,
                        "owner", req.getRemoteUser(),
                        "meta", meta.toString());

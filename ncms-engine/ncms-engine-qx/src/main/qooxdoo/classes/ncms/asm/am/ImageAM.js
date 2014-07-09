@@ -23,30 +23,15 @@ qx.Class.define("ncms.asm.am.ImageAM", {
 
         _form : null,
 
-        _bf : null,
-
         activateOptionsWidget : function(attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var form = this._form = new sm.ui.form.ExtendedForm();
-
-            var syncwTb = function() {
-                var val = wTb.getValue();
-                if (sm.lang.String.isEmpty(val)) {
-                    autoCb.setValue(false);
-                    autoCb.setEnabled(false);
-                } else {
-                    autoCb.setEnabled(true);
-                }
-            };
 
             var wTb = new qx.ui.form.TextField().set({maxLength : 3});
             if (opts["width"] != null) {
                 wTb.setValue(opts["width"]);
             }
-            wTb.addListener("input", syncwTb, this);
             form.add(wTb, this.tr("Width"), null, "width");
-
-
             var hTb = new qx.ui.form.TextField().set({maxLength : 3});
             if (opts["height"] != null) {
                 hTb.setValue(opts["height"]);
@@ -73,8 +58,6 @@ qx.Class.define("ncms.asm.am.ImageAM", {
                 }
             });
 
-            syncwTb();
-
             return new sm.ui.form.ExtendedDoubleFormRenderer(form);
         },
 
@@ -86,69 +69,20 @@ qx.Class.define("ncms.asm.am.ImageAM", {
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
-            var opts = ncms.Utils.parseOptions(attrSpec["options"]);
-            var w = new qx.ui.container.Composite(new qx.ui.layout.VBox(5));
-
-            var bf = this._bf = new sm.ui.form.ButtonField(this.tr("Select image"), "ncms/icon/16/misc/image.png", true);
-            bf.setReadOnly(true);
-            bf.addState("widgetNotReady");
-            //bf.setEnabled(false);
-            bf.addListener("execute", function() {
-                var dlg = new ncms.mmgr.PageFilesSelectorDlg(
-                        asmSpec["id"],
-                        this.tr("Select image file"), {
-                            allowModify : true
-                        });
-                dlg.setCtypeAcceptor(ncms.Utils.isImageContentType);
-                dlg.open();
-                dlg.addListener("completed", function(ev) {
-                    var data = ev.getData();
-                    var udata = {
-                        id : data["id"],
-                        options : opts
-                    };
-                    bf.setUserData("value", udata);
-                    bf.setValue(data["folder"] + data["name"]);
-                    image.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail2", udata));
-                    dlg.close();
-                });
-            }, this);
-            w.add(bf);
-
-            var image = new qx.ui.basic.Image();
-            w.add(image);
-
+            var w = new ncms.asm.am.ImageAMValueWidget(attrSpec, asmSpec);
             this._fetchAttributeValue(attrSpec, function(val) {
-                if (sm.lang.String.isEmpty(val)) {
-                    bf.resetValue();
-                    bf.removeState("widgetNotReady");
-                    image.resetSource();
-                    return;
-                }
-                val = JSON.parse(val);
-                bf.setUserData("value", val);
-                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.path", val), "GET");
-                req.send(function(resp) {
-                    bf.setValue(resp.getContent());
-                }, this);
-                req.addListener("finished", function() {
-                    bf.removeState("widgetNotReady");
-                });
-                image.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail2", val));
-            }, this);
-
-            w.setUserData("ncms.asm.activeWidget", bf);
+                w.setAttributeValue(val);
+            });
             this._valueWidget = w;
             return w;
         },
 
         valueAsJSON : function() {
-            return this._bf.getUserData("value");
+            return this._valueWidget.getWidgetValue() || {};
         }
     },
 
     destruct : function() {
-        this._bf = null;
         this._disposeObjects("_form");
     }
 });

@@ -12,6 +12,16 @@
         WHERE folder = #{folder} AND name = #{name}
     </select>
 
+
+    <select id="selectEntityPathById" parameterType="map" resultType="map">
+        SELECT
+            folder AS "folder",
+            name   AS "name"
+        FROM media_entity
+        WHERE id = #{id}
+    </select>
+
+
     <insert id="insertEntity" parameterType="map" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO media_entity (
             folder, name, status, mdate,

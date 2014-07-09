@@ -11,6 +11,7 @@
  *
  *  //todo describe 'widgetNotReady' state
  *  //todo describe 'ncms.asm.activeWidget' widget user data
+ *  //todo describe 'ncms.asm.validator' user data
  *
  */
 qx.Interface.define("ncms.asm.IAsmAttributeManager", {

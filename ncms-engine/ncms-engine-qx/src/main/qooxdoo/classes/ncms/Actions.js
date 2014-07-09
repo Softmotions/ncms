@@ -100,6 +100,9 @@ qx.Class.define("ncms.Actions", {
         //GET Download file /ncms/rs/media/file/<path to file>
         this._action("media.file", "/ncms/rs/media/file");
 
+        //GET Download file by id
+        this._action("media.fileid", "/ncms/rs/media/fileid/{id}");
+
         //GET Thumbnail of image media
         this._action("media.thumbnail2", "/ncms/rs/media/thumbnail2/{id}");
 
@@ -107,7 +110,7 @@ qx.Class.define("ncms.Actions", {
         ///ncms/rs/media/thumbnail/<path to file>
         this._action("media.thumbnail", "/ncms/rs/media/thumbnail");
 
-        //POST Save extra file meta fields
+        //GET/POST Save extra file meta fields
         this._action("media.meta", "/ncms/rs/media/meta/{id}");
 
         //POST Save extra file meta fields (by path)

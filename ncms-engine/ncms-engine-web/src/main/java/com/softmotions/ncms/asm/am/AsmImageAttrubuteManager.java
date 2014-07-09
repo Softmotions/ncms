@@ -6,13 +6,17 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.ncms.media.MediaService;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -23,6 +27,16 @@ public class AsmImageAttrubuteManager implements AsmAttributeManager {
     private static final Logger log = LoggerFactory.getLogger(AsmImageAttrubuteManager.class);
 
     public static final String[] TYPES = new String[]{"image"};
+
+    final MediaService mediaService;
+
+    final ObjectMapper mapper;
+
+    @Inject
+    public AsmImageAttrubuteManager(MediaService mediaService, ObjectMapper mapper) {
+        this.mediaService = mediaService;
+        this.mapper = mapper;
+    }
 
     public String[] getSupportedAttributeTypes() {
         return TYPES;
@@ -46,6 +60,20 @@ public class AsmImageAttrubuteManager implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+        ObjectNode opts = (ObjectNode) val.get("options");
+        if (opts == null) {
+            opts = mapper.createObjectNode();
+        }
+        long id = val.has("id") ? val.get("id").asLong() : 0L;
+        if (opts.has("resize") && opts.has("width") && opts.get("resize").asBoolean()) {
+            int width = opts.get("width").asInt();
+            try {
+                mediaService.ensureResizedImage(id, width);
+            } catch (IOException e) {
+                log.error("", e);
+                throw new RuntimeException(e);
+            }
+        }
         attr.setEffectiveValue(val.toString());
         return attr;
     }
