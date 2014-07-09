@@ -24,13 +24,13 @@ import java.util.Map;
  */
 public class PageSecurityService extends MBDAOSupport {
 
-    private static final char WRITE = 'w';
-    private static final char NEWS = 'n';
-    private static final char DELETE = 'd';
-    private static final char STRUCTURAL = 's';
+    public static final char WRITE = 'w';
+    public static final char NEWS = 'n';
+    public static final char DELETE = 'd';
+    // public static final char STRUCTURAL = 's';
 
-    private static final char[] ALL_RIGHTS = {WRITE, NEWS, DELETE};
-    private static final String ALL_RIGHTS_STR = "" + WRITE + NEWS + DELETE;
+    public static final char[] ALL_RIGHTS = {WRITE, NEWS, DELETE};
+    public static final String ALL_RIGHTS_STR = "" + WRITE + NEWS + DELETE;
 
     final ObjectMapper mapper;
 
@@ -52,6 +52,13 @@ public class PageSecurityService extends MBDAOSupport {
      */
     public Collection<AclEntity> getAcl(Long pid) {
         return getAcl(pid, null);
+    }
+
+    /**
+     * Retruns all existing rights
+     */
+    public String getAllRights() {
+        return ALL_RIGHTS_STR;
     }
 
     /**
@@ -106,7 +113,7 @@ public class PageSecurityService extends MBDAOSupport {
         Number acl = (Number) aclInfo.get(recursive ? "recursive_acl" : "local_acl");
         String rights = acl == null ? "" : (String) selectOne("selectUserRightsByAcl", "user", user, "acl", acl);
         if (!recursive && StringUtils.equals(user, (CharSequence) aclInfo.get("owner"))) {
-            rights = ALL_RIGHTS_STR;
+            rights = getAllRights();
         }
 
         updateUserRights(pid, user, rights, UpdateMode.ADD, recursive);
@@ -246,7 +253,7 @@ public class PageSecurityService extends MBDAOSupport {
         Map<String, ?> row = selectOne("selectPageAclInfo", "pid", pid);
         String owner = row != null ? (String) row.get("owner") : null;
         if (user.equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
-            return ALL_RIGHTS_STR + STRUCTURAL;
+            return getAllRights();
         }
 
         String rights = "";
@@ -266,7 +273,7 @@ public class PageSecurityService extends MBDAOSupport {
      * @param access checked access
      */
     public boolean checkAccess(Long pid, String user, Character access) {
-        if (access == null || (!ArrayUtils.contains(ALL_RIGHTS, access) && STRUCTURAL != access)) {
+        if (access == null || (!ArrayUtils.contains(ALL_RIGHTS, access))) {
             return false;
         }
 
@@ -317,7 +324,10 @@ public class PageSecurityService extends MBDAOSupport {
         return checkAccess(pid, user, NEWS);
     }
 
-    private String mergeRights(String r1, String r2) {
+    /**
+     * Merge rights. Returns new rights string that contains all rights from r1 and r2.
+     */
+    public String mergeRights(String r1, String r2) {
         String res = r1 != null ? r1 : "";
         for (char r : (r2 != null ? r2 : "").toCharArray()) {
             if (!StringUtils.contains(res, r)) {

@@ -33,33 +33,21 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         __beforeContextmenuOpen : function(ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
-            var req;
             var tree = this._tree;
             var root = tree.getModel();
             var sel = tree.getSelection().getItem(0);
 
-            var newBt = new qx.ui.menu.Button(this.tr("New page"));
-            newBt.addListenerOnce("execute", this.__onNewPage, this);
-            newBt.setEnabled(false);
-            menu.add(newBt);
-
             var parent = this.__calcFirstFolderParent(sel);
-            req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.check.rights", {pid : parent.getId(), rights: "w"}), "GET", "application/json");
-            req.send(function(resp){
-                newBt.setEnabled(!!resp.getContent());
-            }, this);
+            if (ncms.Application.userInRoles("admin.structure") || (parent != root && parent.getAccessMask().indexOf("w") != -1)) {
+                var newBt = new qx.ui.menu.Button(this.tr("New page"));
+                newBt.addListenerOnce("execute", this.__onNewPage, this);
+                menu.add(newBt);
+            }
 
-
-            if (sel != null && sel != root) {
+            if (sel != null && sel != root && (sel.getAccessMask().indexOf("d") != -1)) {
                 var delBt = new qx.ui.menu.Button(this.tr("Drop page"));
                 delBt.addListenerOnce("execute", this.__onDeletePage, this);
-                delBt.setEnabled(false);
                 menu.add(delBt);
-
-                req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.check.rights", {pid : sel.getId(), rights: "d"}), "GET", "application/json");
-                req.send(function(resp){
-                    delBt.setEnabled(!!resp.getContent());
-                }, this);
             }
         },
 
@@ -97,10 +85,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             while (parent && (parent.getStatus() & 1) === 0) {
                 parent = this._tree.getParent(parent);
             }
-            if (parent == null) {
-                parent = this._tree.getModel();
-            }
-            return parent;
+            return parent || this._tree.getModel();
         }
     },
 
