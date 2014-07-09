@@ -54,7 +54,8 @@ public class AsmImageAttrubuteManager implements AsmAttributeManager {
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
-                                        "width", "height", "resize", "restrict");
+                                        "width", "height",
+                                        "resize", "restrict", "skipSmall");
         attr.setOptions(asmOpts.toString());
         return attr;
     }
@@ -65,10 +66,20 @@ public class AsmImageAttrubuteManager implements AsmAttributeManager {
             opts = mapper.createObjectNode();
         }
         long id = val.has("id") ? val.get("id").asLong() : 0L;
-        if (opts.has("resize") && opts.has("width") && opts.get("resize").asBoolean()) {
-            int width = opts.get("width").asInt();
+        if (opts.get("resize").asBoolean() &&
+            (opts.has("width") || opts.has("height"))) {
+            Integer width = opts.has("width") ? opts.get("width").asInt() : 0;
+            Integer height = opts.has("height") ? opts.get("height").asInt() : 0;
+            if (width.intValue() == 0) {
+                width = null;
+            }
+            if (height.intValue() == 0) {
+                height = null;
+            }
+            log.info("Val=" + val);
+            boolean skipSmall = !opts.has("skipSmall") || opts.asBoolean(true);
             try {
-                mediaService.ensureResizedImage(id, width);
+                mediaService.ensureResizedImage(id, width, height, skipSmall);
             } catch (IOException e) {
                 log.error("", e);
                 throw new RuntimeException(e);

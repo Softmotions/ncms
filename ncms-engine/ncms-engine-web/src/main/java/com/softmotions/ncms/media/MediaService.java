@@ -36,12 +36,17 @@ public interface MediaService {
      * Ensure existensce of resized image file
      * for specified image source file identified by path.
      *
-     * @param path  The original file path
-     * @param width Desired file width
+     * @param path      The original file path
+     * @param width     Desired file width
+     * @param height    Desired file height
+     * @param skipSmall Skip resizing/checking image with dimensions
+     *                  smaller or equal to given height and width values
      */
-    void ensureResizedImage(String path, int width) throws IOException;
+    void ensureResizedImage(String path, Integer width, Integer height,
+                            boolean skipSmall) throws IOException;
 
-    void ensureResizedImage(long id, int width) throws IOException;
+    void ensureResizedImage(long id, Integer width, Integer height,
+                            boolean skipSmall) throws IOException;
 
     /**
      * Update all reasized image files
@@ -51,5 +56,5 @@ public interface MediaService {
      */
     void updateResizedImages(String path) throws IOException;
 
-    void updateResizedImages(long id, int width) throws IOException;
+    void updateResizedImages(long id) throws IOException;
 }

@@ -90,9 +90,24 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
             }
             var opts = this.__options;
             var meta = this.__meta;
+
             if (meta && opts && opts["restrict"] == "true") {
-                if ((!sm.lang.String.isEmpty(opts["width"]) && opts["width"] != meta["width"]) ||
-                        (!sm.lang.String.isEmpty(opts["height"]) && opts["height"] != meta["height"])) {
+                var optsW = Number(opts["width"]);
+                var optsH = Number(opts["height"]);
+                var metaW = Number(meta["width"]);
+                var metaH = Number(meta["height"]);
+                var valid = true;
+
+                if (opts["skipSmall"] == "true") { //skip images with smaller dims
+                    if ((optsW > 0 && metaW > optsW) || (optsH > 0 && metaH > optsH)) {
+                        valid = false;
+                    }
+                } else {
+                    if ((optsW > 0 && metaW != optsW) || (optsH > 0 && metaH != optsH)) {
+                        valid = false;
+                    }
+                }
+                if (valid === false) {
                     var restriction = "";
                     restriction += sm.lang.String.isEmpty(opts["width"]) ? "*" : opts["width"];
                     restriction += " x ";

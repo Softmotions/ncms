@@ -40,6 +40,8 @@ qx.Class.define("ncms.asm.am.ImageAM", {
 
             var autoCb = new qx.ui.form.CheckBox();
             autoCb.setValue(opts["resize"] == "true");
+            autoCb.setToolTipText(
+                    this.tr("Perform automatic image resizing to given height and width values"));
             form.add(autoCb, this.tr("Auto resize"), null, "resize");
             autoCb.addListener("changeValue", function(ev) {
                 var val = ev.getData();
@@ -50,6 +52,8 @@ qx.Class.define("ncms.asm.am.ImageAM", {
 
             var restrictCb = new qx.ui.form.CheckBox();
             restrictCb.setValue(opts["restrict"] == "true");
+            restrictCb.setToolTipText(
+                    this.tr("Restrict image size to given height and width values"));
             form.add(restrictCb, this.tr("Restrict sizes"), null, "restrict");
             restrictCb.addListener("changeValue", function(ev) {
                 var val = ev.getData();
@@ -58,7 +62,18 @@ qx.Class.define("ncms.asm.am.ImageAM", {
                 }
             });
 
-            return new sm.ui.form.ExtendedDoubleFormRenderer(form);
+            var skipSmall = new qx.ui.form.CheckBox();
+            if (opts["skipSmall"]) {
+                skipSmall.setValue(opts["skipSmall"] == "true");
+            } else {
+                skipSmall.setValue(true);
+            }
+            skipSmall.setToolTipText(
+                    this.tr("Skip resizing/checking image with dimensions smaller or equal to given height and width values"));
+            form.add(skipSmall, this.tr("Skip small"), null, "skipSmall");
+
+            return new qx.ui.form.renderer.Single(form)
+                    .set({allowGrowX : false});
         },
 
         optionsAsJSON : function() {

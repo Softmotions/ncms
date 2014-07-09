@@ -2,6 +2,7 @@ package com.softmotions.ncms.media;
 
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.KVOptions;
+import com.softmotions.commons.cont.Pair;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.io.DirUtils;
@@ -220,8 +221,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     public Response get(@PathParam("folder") String folder,
                         @PathParam("name") String name,
                         @Context HttpServletRequest req,
-                        @QueryParam("w") Integer width) throws Exception {
-        return _get(folder, name, req, width, true);
+                        @QueryParam("w") Integer width,
+                        @QueryParam("h") Integer height) throws Exception {
+        return _get(folder, name, req, width, height, true);
     }
 
     @GET
@@ -229,8 +231,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @Transactional
     public Response get(@PathParam("name") String name,
                         @Context HttpServletRequest req,
-                        @QueryParam("w") Integer width) throws Exception {
-        return _get("", name, req, width, true);
+                        @QueryParam("w") Integer width,
+                        @QueryParam("h") Integer height) throws Exception {
+        return _get("", name, req, width, height, true);
     }
 
 
@@ -239,12 +242,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @Transactional
     public Response get(@PathParam("id") Long id,
                         @Context HttpServletRequest req,
-                        @QueryParam("w") Integer width) throws Exception {
+                        @QueryParam("w") Integer width,
+                        @QueryParam("h") Integer height) throws Exception {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
             throw new NotFoundException();
         }
-        return _get((String) row.get("folder"), (String) row.get("name"), req, width, true);
+        return _get((String) row.get("folder"), (String) row.get("name"),
+                    req, width, height, true);
     }
 
 
@@ -253,12 +258,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @Transactional
     public Response head(@PathParam("id") Long id,
                          @Context HttpServletRequest req,
-                         @QueryParam("w") Integer width) throws Exception {
+                         @QueryParam("w") Integer width,
+                         @QueryParam("h") Integer height) throws Exception {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
             throw new NotFoundException();
         }
-        return _get((String) row.get("folder"), (String) row.get("name"), req, width, false);
+        return _get((String) row.get("folder"), (String) row.get("name"),
+                    req, width, height, false);
     }
 
     @HEAD
@@ -267,8 +274,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     public Response head(@PathParam("folder") String folder,
                          @PathParam("name") String name,
                          @Context HttpServletRequest req,
-                         @QueryParam("w") Integer width) throws Exception {
-        return _get(folder, name, req, width, false);
+                         @QueryParam("w") Integer width,
+                         @QueryParam("h") Integer height) throws Exception {
+        return _get(folder, name, req, width, height, false);
     }
 
     @HEAD
@@ -276,8 +284,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     @Transactional
     public Response head(@PathParam("name") String name,
                          @Context HttpServletRequest req,
-                         @QueryParam("w") Integer width) throws Exception {
-        return _get("", name, req, width, false);
+                         @QueryParam("w") Integer width,
+                         @QueryParam("h") Integer height) throws Exception {
+        return _get("", name, req, width, height, false);
     }
 
     @GET
@@ -558,6 +567,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                     log.debug("Moving " + f1 + " => " + f2);
                 }
                 if (f1.isDirectory()) {
+
                     String p1 = f1.getCanonicalPath();
                     String p2 = f2.getCanonicalPath();
                     if (p2.startsWith(p1 + '/')) {
@@ -600,10 +610,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                                    "folder", nfolder);
 
                     if (id != null) {
-
                         //Handle resize image dir
                         File rdir = getResizedImageDir(folder, id);
-                        if (rdir.exists()) {
+                        if (rdir.exists() && !folder.equals(nfolder)) {
                             File nrdir = getResizedImageDir(nfolder, id);
                             File pnrdir = nrdir.getParentFile();
                             if (pnrdir != null && (pnrdir.exists() || pnrdir.mkdirs())) {
@@ -1197,6 +1206,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                           String name,
                           HttpServletRequest req,
                           Integer width,
+                          Integer height,
                           boolean transfer) throws Exception {
         checkFolder(folder);
         if (!folder.endsWith("/")) {
@@ -1230,7 +1240,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 ctype = "application/octet-stream";
             }
 
-            Number clength;
+            Number clength = (Number) res.get("content_length");
             Number id = (Number) res.get("id");
             MediaType mtype = MediaType.parse(ctype);
             final File respFile;
@@ -1238,21 +1248,19 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (id == null) {
                 throw new NotFoundException(path);
             }
-            if (width != null && CTypeUtils.isImageContentType(ctype)) {
-                mtype = MediaType.parse("image/" + getImageFileResizeFormat(ctype));
-                respFile = getResizedImageFile(mtype, folder, id.longValue(), width);
-                if (!respFile.exists()) {
-                    throw new NotFoundException(path);
-                }
-                clength = respFile.length();
-                if (clength.intValue() == 0) {
-                    throw new NotFoundException(path);
+            if ((width != null || height != null) && CTypeUtils.isImageContentType(ctype)) {
+                MediaType rsMtype = MediaType.parse("image/" + getImageFileResizeFormat(ctype));
+                File rsFile = getResizedImageFile(rsMtype, folder, id.longValue(), width, height);
+                if (rsFile.exists() && rsFile.length() > 0) { //we have resized version
+                    mtype = rsMtype;
+                    clength = rsFile.length();
+                    respFile = rsFile;
+                } else {
+                    respFile = f;
                 }
             } else {
                 respFile = f;
-                clength = (Number) res.get("content_length");
             }
-
             if (mtype != null) {
                 rb.type(mtype.toString());
                 rb.encoding(mtype.getParameters().get("charset"));
@@ -1295,7 +1303,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
 
     @Transactional
-    public void updateResizedImages(long id, int width) throws IOException {
+    public void updateResizedImages(long id) throws IOException {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
             return;
@@ -1309,7 +1317,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             throw new IllegalArgumentException("path");
         }
         //collect widths
-        List<Integer> widths = new ArrayList<>();
+        List<Pair<Integer, Integer>> hints = new ArrayList<>();
         try (final ResourceLock l = new ResourceLock(path, false)) {
             String folder = getResourceParentFolder(path);
             String name = getResourceName(path);
@@ -1323,35 +1331,55 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (!dir.exists()) {
                 return;
             }
-            for (final String wd : dir.list(DirectoryFileFilter.INSTANCE)) {
+            for (String h : dir.list(FileFileFilter.FILE)) {
+                h = FilenameUtils.removeExtension(h);
                 //noinspection EmptyCatchBlock
                 try {
-                    widths.add(Integer.parseInt(wd));
+                    int ind = h.indexOf('x');
+                    if (ind == 0) {
+                        hints.add(new Pair<Integer, Integer>(
+                                null, Integer.parseInt(h.substring(1))));
+                    } else if (ind > 0) {
+                        if (ind < h.length() - 1) {
+                            hints.add(new Pair<>(
+                                    Integer.parseInt(h.substring(0, ind)),
+                                    Integer.parseInt(h.substring(ind + 1))
+                            ));
+                        }
+                    } else if (!h.isEmpty()) {
+                        hints.add(new Pair<Integer, Integer>(Integer.parseInt(h), null));
+                    }
                 } catch (NumberFormatException ignored) {
                 }
             }
         }
-        for (int w : widths) {
-            ensureResizedImage(path, w);
+        for (Pair<Integer, Integer> h : hints) {
+            ensureResizedImage(path, h.getOne(), h.getTwo(), false);
         }
     }
 
     @Transactional
-    public void ensureResizedImage(long id, int width) throws IOException {
+    public void ensureResizedImage(long id, Integer width, Integer height,
+                                   boolean skipSmall) throws IOException {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
             return;
         }
-        ensureResizedImage(String.valueOf(row.get("folder")) + row.get("name"), width);
+        ensureResizedImage(String.valueOf(row.get("folder")) + row.get("name"),
+                           width, height, skipSmall);
     }
 
     @Transactional
-    public void ensureResizedImage(String path, int width) throws IOException {
+    public void ensureResizedImage(String path,
+                                   Integer width, Integer height,
+                                   boolean skipSmall) throws IOException {
         if (path == null) {
             throw new IllegalArgumentException("path");
         }
-        if (width <= 0 || width > 6000) {
-            throw new IllegalArgumentException("width");
+        if ((width == null && height == null) ||
+            (width != null && (width <= 0 || width > 6000)) ||
+            (height != null && (height <= 0 || height > 6000))) {
+            throw new IllegalArgumentException("width|height");
         }
         try (final ResourceLock l = new ResourceLock(path, false)) {
             String folder = getResourceParentFolder(path);
@@ -1362,6 +1390,22 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (info == null || info.get("id") == null) {
                 return;
             }
+
+            KVOptions meta = new KVOptions();
+            meta.loadOptions((String) info.get("meta"));
+            if (meta.containsKey("width") && meta.containsKey("height")) {
+                if ((width == null || (width.intValue() == meta.getInt("width", Integer.MAX_VALUE))) &&
+                    (height == null || (height.intValue() == meta.getInt("height", Integer.MAX_VALUE)))) {
+                    return;
+                }
+                if (skipSmall) {
+                    if ((width == null || (width.intValue() > meta.getInt("width", Integer.MAX_VALUE))) &&
+                        (height == null || (height.intValue() > meta.getInt("height", Integer.MAX_VALUE)))) {
+                        return;
+                    }
+                }
+            }
+
             long id = ((Number) info.get("id")).longValue();
             String ctype = (String) info.get("content_type");
             if (!CTypeUtils.isImageContentType(ctype)) {
@@ -1373,7 +1417,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             if (!source.exists()) {
                 return;
             }
-            File tfile = getResizedImageFile(mtype, folder, id, width);
+            File tfile = getResizedImageFile(mtype, folder, id, width, height);
             if (tfile.exists() && !FileUtils.isFileNewer(source, tfile)) {
                 return; //up-to-date resized file version exists
             }
@@ -1382,7 +1426,13 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 log.warn("Cannot read file as image: " + source);
                 return;
             }
-            image = Scalr.resize(image, Scalr.Mode.FIT_TO_WIDTH, width);
+            if (width != null && height != null) {
+                image = Scalr.resize(image, Scalr.Mode.FIT_EXACT, width, height);
+            } else if (width != null) {
+                image = Scalr.resize(image, Scalr.Mode.FIT_TO_WIDTH, width);
+            } else {
+                image = Scalr.resize(image, Scalr.Mode.FIT_TO_HEIGHT, height);
+            }
             //Unlock read lock before acuiring exclusive write lock
             l.close();
             try (final ResourceLock wl = new ResourceLock(path, true)) {
@@ -1409,15 +1459,28 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                         '/' + entryId);
     }
 
-    private File getResizedImageFile(MediaType mtype, String folder, long entryId, int width) {
+    private File getResizedImageFile(MediaType mtype,
+                                     String folder, long entryId,
+                                     Integer width,
+                                     Integer height) {
         if (!folder.endsWith("/")) {
             folder += "/";
+        }
+        String hint;
+        if (width != null && height != null) {
+            hint = width.toString() + "x" + height;
+        } else if (width != null) {
+            hint = width.toString();
+        } else if (height != null) {
+            hint = "x" + height;
+        } else {
+            throw new IllegalArgumentException("Either width or height must be specified");
         }
         return new File(basedir,
                         folder +
                         SIZE_CACHE_FOLDER +
                         '/' + entryId +
-                        '/' + width + '.' + mtype.getSubtype());
+                        '/' + hint + '.' + mtype.getSubtype());
     }
 
     private void checkFolder(String folder) {
