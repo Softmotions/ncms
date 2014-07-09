@@ -39,8 +39,13 @@
             p.description AS "description",
             p.type        AS "type",
             p.published   AS "published",
-            p.template    AS "template"
+            p.template    AS "template",
+            p.owner       AS "owner",
+            lacl.rights   AS "local_rights",
+            racl.rights   AS "recursive_rights"
         FROM ASMS AS p
+        LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
+        LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         WHERE p.nav_parent_id = #{nav_parent_id}
               AND p.type LIKE 'page%'
         ORDER BY p.hname ASC
@@ -55,8 +60,13 @@
             p.description AS "description",
             p.type        AS "type",
             p.published   AS "published",
-            p.template    AS "template"
+            p.template    AS "template",
+            p.owner       AS "owner",
+            lacl.rights   AS "local_rights",
+            racl.rights   AS "recursive_rights"
         FROM ASMS AS p
+        LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
+        LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         WHERE p.nav_parent_id IS NULL
               AND p.type LIKE 'page%'
         ORDER BY p.hname ASC

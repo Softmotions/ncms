@@ -474,6 +474,7 @@ public class PageRS extends MBDAOSupport {
                 final JsonGenerator gen = new JsonFactory().createGenerator(output);
                 gen.writeStartArray();
                 Map q = createSelectLayerQ(path);
+                q.put("user", req.getRemoteUser());
                 String stmtName = q.containsKey("nav_parent_id") ? "selectChildLayer" : "selectRootLayer";
                 try {
                     select(stmtName, new ResultHandler() {
@@ -494,7 +495,13 @@ public class PageRS extends MBDAOSupport {
                                 gen.writeStringField("type", type);
                                 gen.writeStringField("options", (String) row.get("options"));
 
-                                //todo load page access rights?
+                                String am;
+                                if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
+                                    am = pageSecurity.getAllRights();
+                                } else {
+                                    am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
+                                }
+                                gen.writeStringField("accessMask", am);
 
                                 gen.writeEndObject();
                             } catch (IOException e) {
