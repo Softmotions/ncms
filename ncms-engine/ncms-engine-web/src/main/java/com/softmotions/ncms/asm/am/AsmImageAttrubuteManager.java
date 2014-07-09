@@ -66,7 +66,7 @@ public class AsmImageAttrubuteManager implements AsmAttributeManager {
             opts = mapper.createObjectNode();
         }
         long id = val.has("id") ? val.get("id").asLong() : 0L;
-        if (opts.get("resize").asBoolean() &&
+        if (opts.has("resize") && opts.get("resize").asBoolean() &&
             (opts.has("width") || opts.has("height"))) {
             Integer width = opts.has("width") ? opts.get("width").asInt() : 0;
             Integer height = opts.has("height") ? opts.get("height").asInt() : 0;
@@ -76,8 +76,7 @@ public class AsmImageAttrubuteManager implements AsmAttributeManager {
             if (height.intValue() == 0) {
                 height = null;
             }
-            log.info("Val=" + val);
-            boolean skipSmall = !opts.has("skipSmall") || opts.asBoolean(true);
+            boolean skipSmall = !opts.has("skipSmall") || opts.get("skipSmall").asBoolean(true);
             try {
                 mediaService.ensureResizedImage(id, width, height, skipSmall);
             } catch (IOException e) {
