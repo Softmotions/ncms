@@ -49,16 +49,20 @@
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
         <ninjaframework.version>3.2.0</ninjaframework.version>
-        <jackson.version>2.3.2</jackson.version>
-        <resteasy.version>3.0.7.Final</resteasy.version>
+        <jackson.version>2.4.1</jackson.version>
+        <resteasy.version>3.0.8.Final</resteasy.version>
         <commons.collection.version>3.2.1</commons.collection.version>
         <commons.validator.version>1.4.0</commons.validator.version>
-        <httpcomponents.version>4.3.3</httpcomponents.version>
+        <httpcomponents.version>4.3.4</httpcomponents.version>
         <tomcat.version>7.0.54</tomcat.version>
         <httl.version>1.0.11</httl.version>
         <jericho.version>3.3</jericho.version>
         <guava.version>17.0</guava.version>
         <jetty.version>9.2.1.v20140609</jetty.version>
+        <tika.version>1.5</tika.version>
+        <h2.version>1.4.179</h2.version>
+        <mybatis.version>3.2.7</mybatis.version>
+        <mybatis-guice.version>3.6</mybatis-guice.version>
         <web.run.port>8080</web.run.port>
         <web.context.reloadable>true</web.context.reloadable>
     </properties>
@@ -285,6 +289,47 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>${tika.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-parsers</artifactId>
+                <version>${tika.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>xerces</groupId>
+                        <artifactId>xercesImpl</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>edu.ucar</groupId>
+                        <artifactId>netcdf</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-catalina</artifactId>
+                <version>${tomcat.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-guice</artifactId>
+                <version>${mybatis-guice.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
