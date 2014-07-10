@@ -113,12 +113,14 @@ public class NcmsConfiguration extends WBConfiguration {
     private File sessionTmpDir;
 
     public String substitutePath(String path) {
-        String webappPath = getServletContext().getRealPath("");
-        if (webappPath.endsWith("/")) {
-            webappPath = webappPath.substring(0, webappPath.length() - 1);
+        String webappPath = getServletContext().getRealPath("/");
+        if (webappPath != null) {
+            if (webappPath.endsWith("/")) {
+                webappPath = webappPath.substring(0, webappPath.length() - 1);
+            }
+            path = path.replace("{webapp}", webappPath);
         }
-        path = path.replace("{webapp}", webappPath)
-                .replace("{cwd}", System.getProperty("user.dir"))
+        path = path.replace("{cwd}", System.getProperty("user.dir"))
                 .replace("{home}", System.getProperty("user.home"))
                 .replace("{tmp}", getTmpdir().getAbsolutePath());
 

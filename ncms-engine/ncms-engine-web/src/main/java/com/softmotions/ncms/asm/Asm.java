@@ -40,8 +40,6 @@ public class Asm implements Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(Asm.class);
 
-    public static final String ASM_HANDLER_CLASS_ATTR_NAME = "NCMS__ASM_HANDLER_CLASS";
-
     interface ViewFull {
     }
 
@@ -66,6 +64,9 @@ public class Asm implements Serializable {
 
     @JsonProperty
     AsmCore core;
+
+    @JsonProperty
+    String controller;
 
     @JsonProperty
     String options;
@@ -179,6 +180,29 @@ public class Asm implements Serializable {
 
     public void setPublished(boolean published) {
         this.published = published;
+    }
+
+    public String getController() {
+        return controller;
+    }
+
+    public void setController(String controller) {
+        this.controller = controller;
+    }
+
+    @JsonProperty()
+    public String getEffectiveController() {
+        String c = getController();
+        if (c != null || getParents() == null) {
+            return c;
+        }
+        for (final Asm p : getParents()) {
+            c = p.getEffectiveController();
+            if (c != null) {
+                return c;
+            }
+        }
+        return null;
     }
 
     public AsmCore getCore() {

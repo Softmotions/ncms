@@ -89,7 +89,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
         var vmgr = form.getValidationManager();
         vmgr.setRequiredFieldMessage(this.tr("This field is required"));
 
-        var el = new qx.ui.form.TextField();
+        var el = new qx.ui.form.TextField().set({maxLength : 127});
         el.setReadOnly(true);
         el.setEnabled(false);
         form.add(el, this.tr("Name"), null, "name");
@@ -101,9 +101,14 @@ qx.Class.define("ncms.asm.AsmEditor", {
         el.addListener("reset", this.__resetCore, this);
         form.add(el, this.tr("Core"), null, "core");
 
-        el = new qx.ui.form.TextField();
+        el = new qx.ui.form.TextField().set({maxLength : 255});
         el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Description"), null, "description");
+
+        el = new qx.ui.form.TextField().set({maxLength : 127});
+        el.setPlaceholder(this.tr("Class name of optional assembly controller"));
+        el.addListener("changeValue", this.__saveSimpleProps, this);
+        form.add(el, this.tr("Controller"), null, "controller");
 
         el = new qx.ui.form.CheckBox();
         el.setToolTipText(this.tr("Use this assembly as base template for other pages"));
@@ -212,6 +217,21 @@ qx.Class.define("ncms.asm.AsmEditor", {
                     ctls["name"].setValue(spec["name"]);
                     ctls["description"].setValue(spec["description"]);
                     ctls["template"].setValue(!!spec["template"]);
+
+                    if (!sm.lang.String.isEmpty(spec["effectiveController"]) &&
+                            sm.lang.String.isEmpty(spec["controller"])) {
+                        ctls["controller"].setPlaceholder(spec["effectiveController"]);
+                    }
+                    if (sm.lang.String.isEmpty(spec["controller"])) {
+                        ctls["controller"].resetValue();
+                        if (!sm.lang.String.isEmpty(spec["effectiveController"])) {
+                            ctls["controller"].setPlaceholder(spec["effectiveController"]);
+                        } else {
+                            ctls["controller"].setPlaceholder(this.tr("Class name of optional assembly controller"));
+                        }
+                    } else {
+                        ctls["controller"].setValue(spec["controller"]);
+                    }
                 }
                 if (spec["effectiveCore"] != null) {
                     var ecore = spec["effectiveCore"];

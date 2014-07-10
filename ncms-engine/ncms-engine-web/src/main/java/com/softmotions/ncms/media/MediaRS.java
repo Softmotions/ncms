@@ -149,7 +149,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                    NcmsEventBus ebus,
                    WSUserDatabase userdb,
                    Provider<ServletContext> sctx) throws IOException {
-
         super(MediaRS.class.getName(), sess);
         this.cfg = cfg;
         XMLConfiguration xcfg = cfg.impl();

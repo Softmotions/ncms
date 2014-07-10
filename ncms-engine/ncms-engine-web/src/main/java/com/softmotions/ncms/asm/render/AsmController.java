@@ -1,7 +1,7 @@
 package com.softmotions.ncms.asm.render;
 
 /**
- * Assembly handler.
+ * Assembly controller.
  * <p>
  * Handler may contain custom presentation logic.
  * Handler instance called by {@link com.softmotions.ncms.asm.render.AsmRenderer}
@@ -11,7 +11,7 @@ package com.softmotions.ncms.asm.render;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public interface AsmHandler {
+public interface AsmController {
 
     /**
      * Execute assembly handler.

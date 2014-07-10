@@ -4,6 +4,7 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
@@ -261,7 +263,6 @@ public class AsmRS extends MBDAOSupport {
     @Transactional
     public void updateAssemblyProps(@PathParam("id") Long asmId,
                                     ObjectNode props) {
-
         TinyParamMap args = new TinyParamMap();
         args.param("id", asmId);
         if (props.hasNonNull("description")) {
@@ -269,6 +270,29 @@ public class AsmRS extends MBDAOSupport {
         }
         if (props.hasNonNull("template")) {
             args.param("template", props.get("template").asBoolean() ? 1 : 0);
+        }
+        if (props.hasNonNull("controller")) {
+            String controller = props.get("controller").asText();
+            if (!StringUtils.isEmpty(controller)) {
+                ClassLoader cl = ObjectUtils.firstNonNull(
+                        Thread.currentThread().getContextClassLoader(),
+                        getClass().getClassLoader()
+                );
+                try {
+                    Class clazz = cl.loadClass(controller);
+                    if (!AsmController.class.isAssignableFrom(clazz)) {
+                        //todo report error to user
+                        log.warn("Assembly controller does not implement: " + AsmController.class.getName());
+                    }
+                } catch (ClassNotFoundException e) {
+                    //todo report error to user
+                    log.warn("Failed to find assembly controller class: " + controller);
+                    controller = "";
+                }
+            } else {
+                controller = null;
+            }
+            args.param("controller", controller);
         }
         update("updateAssemblyProps", args);
     }

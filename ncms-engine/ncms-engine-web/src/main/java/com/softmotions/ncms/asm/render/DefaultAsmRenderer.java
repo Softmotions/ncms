@@ -50,7 +50,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
         ctx.push();
         try {
-            if (executeAsmHandler(asm, ctx) || ctx.getServletResponse().isCommitted()) {
+            if (executeAsmController(asm, ctx) || ctx.getServletResponse().isCommitted()) {
                 return; //Assembly handler took full control on response
             }
             AsmTemplateEngineAdapter te = selectTemplateEngineForCore(core);
@@ -99,40 +99,35 @@ public class DefaultAsmRenderer implements AsmRenderer {
      *
      * @return True if handler commits the response.
      */
-    protected boolean executeAsmHandler(Asm asm, AsmRendererContext ctx) {
-        AsmAttribute hattr = asm.getAttribute(Asm.ASM_HANDLER_CLASS_ATTR_NAME);
-        if (hattr == null) {
+    protected boolean executeAsmController(Asm asm, AsmRendererContext ctx) {
+        Class controllerClass;
+        String controllerClassName = asm.getEffectiveController();
+        if (StringUtils.isBlank(controllerClassName)) {
             return false;
         }
-        String handlerClassName = hattr.getValue();
-        if (StringUtils.isBlank(handlerClassName)) {
-            return false;
-        }
-
-        Class handlerClass;
         try {
-            handlerClass = ctx.getClassLoader().loadClass(handlerClassName);
-            if (!AsmHandler.class.isAssignableFrom(handlerClass)) {
-                throw new AsmRenderingException("AsmHandler: '" + handlerClassName + "' " +
-                                                "' class does not implement: " + AsmHandler.class.getName() +
+            controllerClass = ctx.getClassLoader().loadClass(controllerClassName);
+            if (!AsmController.class.isAssignableFrom(controllerClass)) {
+                throw new AsmRenderingException("AsmHandler: '" + controllerClassName + "' " +
+                                                "' class does not implement: " + AsmController.class.getName() +
                                                 " interface for assembly: " + asm.getName());
             }
         } catch (ClassNotFoundException e) {
             log.error("", e);
-            throw new AsmRenderingException("AsmHandler class: '" + handlerClassName +
+            throw new AsmRenderingException("AsmHandler class: '" + controllerClassName +
                                             "' not found for assembly: " + asm.getName());
         }
 
         try {
-            AsmHandler handler = (AsmHandler) ctx.getInjector().getInstance(handlerClass);
-            return handler.execute(ctx);
+            AsmController controller = (AsmController) ctx.getInjector().getInstance(controllerClass);
+            return controller.execute(ctx);
         } catch (ClassNotFoundException e) {
             log.error("", e);
-            throw new AsmRenderingException("AsmHandler class: '" + handlerClassName +
+            throw new AsmRenderingException("AsmHandler class: '" + controllerClassName +
                                             "' not found for assembly: " + asm.getName());
         } catch (Exception e) {
             log.error("", e);
-            throw new AsmRenderingException("Failed to execute assembly handler: '" + handlerClassName +
+            throw new AsmRenderingException("Failed to execute assembly handler: '" + controllerClassName +
                                             "' for assembly: " + asm.getName());
         }
     }

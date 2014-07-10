@@ -120,7 +120,8 @@
         UPDATE asms
         <set>
             <if test="template != null">template = #{template},</if>
-            <if test="description != null">description = #{description},</if>
+            description = #{description},
+            controller = #{controller},
         </set>
         WHERE id = #{id}
     </update>
