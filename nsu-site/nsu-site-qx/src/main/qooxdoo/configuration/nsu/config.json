@@ -1,0 +1,83 @@
+{
+    "name" : "${qooxdoo.application.name}",
+
+    "include" : [
+        {
+            "path" : "${QOOXDOO_PATH}/tool/data/config/application.json"
+        }
+    ],
+
+    "let" : {
+        "APPLICATION" : "${qooxdoo.application.namespace}",
+        "QOOXDOO_PATH" : "${qooxdoo.sdk.parentDirectory}/qooxdoo-sdk",
+        "QXTHEME" : "${APPLICATION}.theme.Theme",
+        "API_EXCLUDE" : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
+        "LOCALES" : [ ],
+        "CACHE" : "${qooxdoo.application.cacheDirectory}",
+        "ROOT" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}",
+        "SOURCE_PATH" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}/siteroot",
+        "BUILD_PATH" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}/siteroot",
+        "SUBMODULES_PATH" : "${qooxdoo.submodules.dir}"
+    },
+
+    "jobs" : {
+
+        "build-files" : {
+            "=copy-files" : {
+                "files" : []
+            }
+        },
+
+        "ncms-common" : {
+            "library" : [
+                {
+                    "manifest" : "./Manifest.json",
+                    "uri" : "./"
+                },
+                {
+                    "manifest" : "${QOOXDOO_PATH}/framework/Manifest.json",
+                    "uri" : "${QOOXDOO_PATH}/framework"
+                },
+                {
+                    "manifest" : "${SUBMODULES_PATH}/qx-softmotions/client/Manifest.json",
+                    "uri" : "${SUBMODULES_PATH}/qx-softmotions/client"
+                }
+            ]
+        },
+        "debug" : {
+            "extend" : ["source-hybrid", "ncms-common"],
+            "environment" : {
+                "qx.debug" : true,
+                "ncms.debug" : true,
+                "ncms.testing.urls" : true
+            }
+        },
+
+        "prerelease" : {
+            "extend" : ["build", "ncms-common"],
+            "environment" : {
+                "qx.debug" : true,
+                "ncms.debug" : false,
+                "ncms.testing.urls" : false
+            },
+            "let" : {
+                "OPTIMIZE" : ["comments"]
+            }
+        },
+
+        "production" : {
+            "extend" : ["prerelease"],
+            "let" : {
+                "OPTIMIZE" : [
+                    "basecalls",
+                    "comments",
+                    "privates",
+                    "strings",
+                    "variables",
+                    "variants",
+                    "whitespace"
+                ]
+            }
+        }
+    }
+}
