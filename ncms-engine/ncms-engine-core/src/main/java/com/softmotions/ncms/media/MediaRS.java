@@ -1486,7 +1486,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (folder == null) {
             throw new IllegalArgumentException();
         }
-        if (folder.contains("..") || folder.contains(SIZE_CACHE_FOLDER)) {
+        if (folder.contains("src/main") || folder.contains(SIZE_CACHE_FOLDER)) {
             throw new BadRequestException(folder);
         }
     }

@@ -61,7 +61,7 @@ public interface MediaResource {
      * </pre>
      *
      * @return source reader
-     * @throws IOException - If an I/O error occurs
+     * @throws java.io.IOException - If an I/O error occurs
      */
     Reader openReader() throws IOException;
 
@@ -80,7 +80,7 @@ public interface MediaResource {
      * </pre>
      *
      * @return source input stream
-     * @throws IOException - If an I/O error occurs
+     * @throws java.io.IOException - If an I/O error occurs
      */
     InputStream openStream() throws IOException;
 

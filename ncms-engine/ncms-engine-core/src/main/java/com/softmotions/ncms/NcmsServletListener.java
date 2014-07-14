@@ -8,7 +8,6 @@ import com.google.inject.servlet.GuiceFilter;
 
 import org.jboss.resteasy.logging.Logger;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -18,13 +17,7 @@ import javax.servlet.ServletContextEvent;
  */
 public class NcmsServletListener extends WBServletListener {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(NcmsServletListener.class);
-
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
-
-
-    public NcmsServletListener() {
-    }
 
     public NcmsServletListener(NinjaProperties ninjaProperties) {
         super(ninjaProperties);

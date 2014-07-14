@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<database>
+
+    <role name="admin" description="Superuser role"/>
+    <role name="user" description="Simple user"/>
+    <role name="admin.asm" description="Assemblies administrator"/>
+    <role name="admin.users" description="Users administrator"/>
+    <role name="admin.structure" description="Site atructure administrator"/>
+
+    <group name="admins" description="Superuser group"
+           roles="admin,admin.asm,admin.users,user,admin.structure">
+    </group>
+
+    <group name="users" description="User group"
+           roles="user">
+    </group>
+
+    <user name="admin"
+          password="admin"
+          email="adamansky@gmail.com"
+          fullName="Антон Адаманский"
+          groups="admins">
+    </user>
+
+    <user name="dimad"
+          password="password"
+          email="dd.savelev@gmail.com"
+          fullName="Дмитрий Савельев"
+          groups="users">
+    </user>
+
+    <user name="kdima"
+          password="password"
+          email="kurbatov@gmail.com"
+          fullName="Дмитрий Курбатов"
+          groups="users">
+    </user>
+
+</database>

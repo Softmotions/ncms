@@ -16,7 +16,7 @@ public interface MediaService {
      * into this media regtistry.
      *
      * @param dir Directory to import.
-     * @throws IOException
+     * @throws java.io.IOException
      */
     void importDirectory(File dir) throws IOException;
 

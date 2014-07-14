@@ -14,7 +14,7 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>softmotions-ncms</groupId>
+    <groupId>softmotions</groupId>
     <artifactId>ncms-base</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -37,6 +37,7 @@
     </developers>
 
     <properties>
+        <softmotions.commons.version>1.0-SNAPSHOT</softmotions.commons.version>
         <slf4j-api.version>1.7.6</slf4j-api.version>
         <python.exec>python</python.exec>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -44,7 +45,6 @@
         <java.source.version>1.7</java.source.version>
         <maven.war.plugin.version>2.4</maven.war.plugin.version>
         <servlet.api.version>3.1.0</servlet.api.version>
-        <softmotions.commons.version>1.0-SNAPSHOT</softmotions.commons.version>
         <qooxdoo.sdk.version>4.0.1</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
@@ -155,6 +155,9 @@
                         <source>${java.source.version}</source>
                         <target>${java.source.version}</target>
                         <encoding>UTF-8</encoding>
+                        <compilerArgs>
+                            <arg>-Xlint</arg>
+                        </compilerArgs>
                     </configuration>
                 </plugin>
                 <plugin>

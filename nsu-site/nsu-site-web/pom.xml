@@ -2,43 +2,26 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <parent>
-        <artifactId>ncms-engine</artifactId>
-        <groupId>softmotions</groupId>
+        <artifactId>nsu-site</artifactId>
+        <groupId>nsu</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ncms-engine-web</artifactId>
+    <artifactId>nsu-site-web</artifactId>
     <packaging>war</packaging>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-
-            <!-- Allows you to run Ninja via the SuperDevMode. -->
-            <!-- run "mvn ninja:run" on the command line for the best -->
-            <!-- development experience. -->
-            <plugin>
-                <groupId>org.ninjaframework</groupId>
-                <artifactId>ninja-maven-plugin</artifactId>
-                <version>${ninjaframework.version}</version>
-            </plugin>
-
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
                     <changeLogFile>
-                        src/main/java/com/softmotions/ncms/db/changelog/db-changelog-master.xml
+                        com/softmotions/ncms/db/changelog/db-changelog-master.xml
                     </changeLogFile>
                     <driver>${ncms.JDBC.driver}</driver>
                     <url>${ncms.JDBC.url}</url>
@@ -175,33 +158,6 @@
                     <contextFile>src/main/webapp/META-INF/context.xml</contextFile>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty.version}</version>
-                <configuration>
-                    <contextPath>/</contextPath>
-                    <stopKey>stop</stopKey>
-                    <stopPort>8889</stopPort>
-                    <scanIntervalSeconds>1</scanIntervalSeconds>
-                    <reload>automatic</reload>
-                    <scanTargetPatterns>
-                        <scanTargetPattern>
-                            <directory>target/classes</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                        </scanTargetPattern>
-                    </scanTargetPatterns>
-                    <systemProperties>
-                        <systemProperty>
-                            <name>ninja.mode</name>
-                            <value>${ninja.mode}</value>
-                        </systemProperty>
-                    </systemProperties>
-                </configuration>
-            </plugin>
         </plugins>
 
         <resources>
@@ -233,50 +189,21 @@
                     <exclude>**/*.java</exclude>
                 </excludes>
             </testResource>
-            <testResource>
-                <directory>src/test/import</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-                <filtering>true</filtering>
-            </testResource>
         </testResources>
     </build>
 
     <dependencies>
         <dependency>
             <groupId>softmotions</groupId>
-            <artifactId>ncms-engine-qx</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <classifier>${ncms.environment}</classifier>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>softmotions</groupId>
             <artifactId>ncms-engine-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>softmotions</groupId>
-            <artifactId>softmotions-web-realms</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ninjaframework</groupId>
-            <artifactId>ninja-test-utilities</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-plus</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-jndi</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
+            <groupId>nsu</groupId>
+            <artifactId>nsu-site-qx</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <classifier>${ncms.environment}</classifier>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 </project>

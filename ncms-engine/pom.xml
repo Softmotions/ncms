@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>ncms-base</artifactId>
-        <groupId>softmotions-ncms</groupId>
+        <groupId>softmotions</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -14,5 +14,6 @@
     <modules>
         <module>ncms-engine-qx</module>
         <module>ncms-engine-web</module>
+        <module>ncms-engine-core</module>
     </modules>
 </project>

@@ -2,17 +2,14 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <parent>
         <artifactId>nsu-site</artifactId>
         <groupId>nsu</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>nsu-site-qx</artifactId>
     <packaging>qooxdoo-jar</packaging>
-
     <properties>
         <qooxdoo.build.job>${ncms.environment}</qooxdoo.build.job>
         <qooxdoo.application.name>nsu</qooxdoo.application.name>
@@ -20,7 +17,6 @@
         <qooxdoo.application.description>${project.description}</qooxdoo.application.description>
         <qooxdoo.submodules.dir>${basedir}/../../submodules</qooxdoo.submodules.dir>
     </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -37,7 +33,6 @@
             </plugin>
         </plugins>
     </build>
-
     <dependencies>
         <dependency>
             <groupId>org.qooxdoo</groupId>
@@ -46,12 +41,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>softmotions-ncms</groupId>
+            <groupId>softmotions</groupId>
             <artifactId>ncms-engine-qx</artifactId>
             <classifier>sources</classifier>
             <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
 </project>
