@@ -9,7 +9,8 @@
 
     "let" : {
         "APPLICATION" : "${qooxdoo.application.namespace}",
-        "QOOXDOO_PATH" : "${qooxdoo.sdk.parentDirectory}/qooxdoo-sdk",
+        "MODULES_PATH" : "${qooxdoo.modules.cacheDirectory}",
+        "QOOXDOO_PATH" : "${MODULES_PATH}/qooxdoo-sdk",
         "QXTHEME" : "${APPLICATION}.theme.Theme",
         "API_EXCLUDE" : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
         "LOCALES" : [ ],

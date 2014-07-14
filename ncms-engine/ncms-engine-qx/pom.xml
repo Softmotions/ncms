@@ -30,7 +30,7 @@
                 <configuration>
                     <namespace>${qooxdoo.application.name}</namespace>
                     <buildJob>${qooxdoo.build.job}</buildJob>
-                    <sdkParentDirectory>${project.basedir}/../../.cache</sdkParentDirectory>
+                    <modulesCacheDirectory>${project.basedir}/../../.cache</modulesCacheDirectory>
                     <cacheDirectory>${project.basedir}/../../.cache/.qx</cacheDirectory>
                 </configuration>
             </plugin>

@@ -23,10 +23,15 @@
 # This is a stub proxy for the real generator.py
 ##
 
-import sys, os, re, subprocess, codecs, optparse
+import sys
+import os
+import re
+import subprocess
+import codecs
+import optparse
 
 CMD_PYTHON = sys.executable
-QOOXDOO_PATH = '${qooxdoo.sdk.parentDirectory}/qooxdoo-sdk'
+QOOXDOO_PATH = '${qooxdoo.modules.cacheDirectory}/qooxdoo-sdk'
 QX_PYLIB = "tool/pylib"
 
 ##

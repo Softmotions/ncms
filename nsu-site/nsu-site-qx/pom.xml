@@ -15,7 +15,7 @@
 
     <properties>
         <qooxdoo.build.job>${ncms.environment}</qooxdoo.build.job>
-        <qooxdoo.application.name>ncms</qooxdoo.application.name>
+        <qooxdoo.application.name>nsu</qooxdoo.application.name>
         <qooxdoo.application.summary>${project.name}</qooxdoo.application.summary>
         <qooxdoo.application.description>${project.description}</qooxdoo.application.description>
         <qooxdoo.submodules.dir>${basedir}/../../submodules</qooxdoo.submodules.dir>
@@ -31,7 +31,7 @@
                 <configuration>
                     <namespace>${qooxdoo.application.name}</namespace>
                     <buildJob>${qooxdoo.build.job}</buildJob>
-                    <sdkParentDirectory>${project.basedir}/../../.cache</sdkParentDirectory>
+                    <modulesCacheDirectory>${project.basedir}/../../.cache</modulesCacheDirectory>
                     <cacheDirectory>${project.basedir}/../../.cache/.qx</cacheDirectory>
                 </configuration>
             </plugin>

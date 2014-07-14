@@ -31,7 +31,7 @@ import codecs
 import optparse
 
 CMD_PYTHON = sys.executable
-QOOXDOO_PATH = '${qooxdoo.sdk.parentDirectory}/qooxdoo-sdk'
+QOOXDOO_PATH = '${qooxdoo.modules.cacheDirectory}/qooxdoo-sdk'
 QX_PYLIB = "tool/pylib"
 
 ##
