@@ -23,6 +23,10 @@ public class NcmsServletListener extends WBServletListener {
         super(ninjaProperties);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
+    public NcmsServletListener() {
+    }
+
     public void contextInitialized(ServletContextEvent event) {
         Logger.setLoggerType(Logger.LoggerType.SLF4J);
         ServletContext sctx = event.getServletContext();

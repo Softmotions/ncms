@@ -5,7 +5,7 @@
               auth="Container"
               type="com.softmotions.web.security.WSUserDatabase"
               factory="com.softmotions.web.security.XMLWSUserDatabaseJNDIFactory"
-              config="conf/nsu-test-users.xml"
+              config="conf/nsu-users.xml"
               scope="Shareable"/>
 
     <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"
