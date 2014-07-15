@@ -2,14 +2,12 @@
  * Nsu site application
  */
 qx.Class.define("nsu.Application", {
-    extend : qx.application.Standalone,
-    include : [qx.locale.MTranslation],
-
+    extend : ncms.Application,
 
     members : {
 
         main : function() {
-
+            this.base(arguments);
         }
     },
 
