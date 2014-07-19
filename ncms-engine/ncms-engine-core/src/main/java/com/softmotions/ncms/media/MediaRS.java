@@ -1954,6 +1954,17 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 }
             }
         }
+
+        for (final Path path : deleted) {
+            Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
+            try {
+                deleteResource(target.toString(), new LocalRequest(target.toFile()));
+            } catch (NotFoundException ignored) {
+            } catch (Exception e) {
+                log.error("File deletion failed. Path: " + path + " target: " + target + " error: " + e.getMessage());
+            }
+        }
+
         for (final Path path : modified) {
             Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
             try {
@@ -1966,16 +1977,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
 
         }
-        for (final Path path : deleted) {
-            Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
-            try {
-                deleteResource(target.toString(), new LocalRequest(target.toFile()));
-            } catch (NotFoundException ignored) {
-            } catch (Exception e) {
-                log.error("File deletion failed. Path: " + path + " target: " + target + " error: " + e.getMessage());
-            }
-        }
-
     }
 
     public void handleRegisterEvent(FSWatcherRegisterEvent ev) throws Exception {

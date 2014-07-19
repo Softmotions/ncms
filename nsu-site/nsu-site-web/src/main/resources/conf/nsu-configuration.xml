@@ -5,7 +5,9 @@
     <help-site>http://nsu.ru</help-site>
     <logout-redirect>http://nsu.ru</logout-redirect>
     <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->
-
+    <site-root resolveRelativePaths="true">
+        /site
+    </site-root>
     <ncms-prefix>/ncms</ncms-prefix>
 
     <jar-web-resources>
