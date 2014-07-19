@@ -18,10 +18,10 @@
     <mybatis config="com/softmotions/ncms/db/mybatis-config.xml"
              bindDatasource="true"
              shutdownSQL="SHUTDOWN">
-        JDBC.driver=${ncms.JDBC.driver}
-        JDBC.url=${ncms.JDBC.url}
-        JDBC.username=${ncms.JDBC.username}
-        JDBC.password=${ncms.JDBC.password}
+        JDBC.driver=${nsu.JDBC.driver}
+        JDBC.url=${nsu.JDBC.url}
+        JDBC.username=${nsu.JDBC.username}
+        JDBC.password=${nsu.JDBC.password}
     </mybatis>
 
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
@@ -30,18 +30,32 @@
     </liquibase>
 
     <!-- basedir replacements: {webapp}|{cwd}|{home}|{tmp}|{newtmp} -->
-    <media basedir="{tmp}/nsu-site/media">
+    <media basedir="{home}/.nsusite/media">
         <max-upload-size>31457280</max-upload-size>
         <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
         <locks-lrucache-size>127</locks-lrucache-size>
         <thumbnails-width>250</thumbnails-width>
         <resize-default-format>jpeg</resize-default-format>
         <max-edit-text-size>524288</max-edit-text-size>
-        <import-directory>${basedir}/src/test/media</import-directory>
         <system-directories>
-            <directory>/system</directory>
+            <directory>/site</directory>
             <directory>/pages</directory>
         </system-directories>
+        <import directory="${basedir}/src/main/webapp"
+                target="site"
+                watch="true"
+                overwrite="true"
+                system="true">
+            <includes>
+                <include>**/*</include>
+            </includes>
+            <excludes>
+                <exclude>META-INF/**</exclude>
+                <exclude>WEB-INF/**</exclude>
+                <exclude>**/*___jb_bak___</exclude>
+                <exclude>**/*___jb_old___</exclude>
+            </excludes>
+        </import>
     </media>
 
     <httl extensions="*,httl,html">

@@ -1,36 +1,40 @@
 package com.softmotions.ncms.media;
 
-import java.io.File;
+import java.io.Closeable;
 import java.io.IOException;
-import java.util.Locale;
 
 /**
  * Generic media service.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public interface MediaService {
+public interface MediaRepository extends MediaReader, Closeable {
 
     /**
      * Import given directory
-     * into this media regtistry.
-     *
-     * @param dir Directory to import.
-     * @throws java.io.IOException
+     * into this media repository.
      */
-    void importDirectory(File dir) throws IOException;
+    void importDirectory(String source,
+                         String target,
+                         String[] includes,
+                         String[] excludes,
+                         boolean overwrite,
+                         boolean watch,
+                         boolean system) throws IOException;
 
     /**
-     * Find media resource. Returns null if no resources found.
-     * Path can be in the following forms:
-     * 1. Full path: /foo/bar
-     * 2. URI form: entity:{id} eg: entity:123
+     * Import given file
+     * into this media repository.
      *
-     * @param path   Media resource specification.
-     * @param locale Desired locale, can be null.
-     * @return
+     * @param source    File path to import. It must be file.
+     * @param target    Path to to the target file in the repository.
+     * @param overwrite If {@code false} pre-existed file will not be overriten it
      */
-    MediaResource findMediaResource(String path, Locale locale);
+    void importFile(String source,
+                    String target,
+                    boolean overwrite,
+                    boolean system) throws IOException;
+
 
     /**
      * Ensure existensce of resized image file

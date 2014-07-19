@@ -26,11 +26,11 @@
         INSERT INTO media_entity (
             folder, name, status, mdate,
             content_type, put_content_type, content_length,
-            owner, description, tags, meta)
+            owner, description, tags, meta, system)
         VALUES (
             #{folder}, #{name}, #{status}, now(),
             #{content_type}, #{put_content_type}, #{content_length},
-            #{owner}, #{description}, #{tags}, #{meta})
+            #{owner}, #{description}, #{tags}, #{meta}, #{system})
     </insert>
 
     <update id="updateEntity" parameterType="map">
@@ -41,7 +41,8 @@
             icon              = NULL,
             icon_content_type = NULL,
             mdate             = now(),
-            meta              = #{meta}
+            meta              = #{meta},
+            system            = #{system}
         WHERE id = #{id}
     </update>
 
@@ -97,6 +98,7 @@
             <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
             <if test="name != null">AND LOWER(e.name) LIKE #{name}</if>
             <if test="status != null">AND e.status = #{status}</if>
+            <if test="system == null">AND e.system = 0</if>
         </where>
         <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">
@@ -116,6 +118,7 @@
             <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
             <if test="name != null">AND LOWER(e.name) LIKE #{name}</if>
             <if test="status != null">AND e.status = #{status}</if>
+            <if test="system == null">AND e.system = 0</if>
         </where>
     </select>
 
@@ -148,6 +151,7 @@
         <if test="status != null">AND e.status = #{status}</if>
         <if test="folder != null">AND e.folder LIKE #{folder}</if>
         <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
+        <if test="system == null">AND e.system = 0</if>
         AND
         <foreach item="k" index="index" collection="keywords"
                  open="(" separator="OR" close=")">
@@ -175,6 +179,7 @@
         <if test="status != null">AND e.status = #{status}</if>
         <if test="folder != null">AND e.folder LIKE #{folder}</if>
         <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
+        <if test="system == null">AND e.system = 0</if>
         AND
         <foreach item="k" index="index" collection="keywords"
                  open="(" separator="OR" close=")">
@@ -282,6 +287,7 @@
             description      AS "description",
             tags             AS "tags",
             status           AS "status",
+            system           AS "system",
             meta             AS "meta"
         FROM media_entity
         WHERE folder = #{folder}
@@ -301,6 +307,7 @@
             description      AS "description",
             tags             AS "tags",
             status           AS "status",
+            system           AS "system",
             meta             AS "meta"
         FROM media_entity
         WHERE id = #{id}

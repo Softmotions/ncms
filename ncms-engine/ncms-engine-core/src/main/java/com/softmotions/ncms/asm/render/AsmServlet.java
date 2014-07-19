@@ -59,22 +59,17 @@ public class AsmServlet extends HttpServlet {
         //Content-Type can be overriden by assembly renderer.
         resp.setContentType("text/html;charset=UTF-8");
 
-        String ref = req.getPathInfo();
-        if (ref.charAt(0) == '/') {
-            ref = ref.substring(1);
-        }
-        if (ref.isEmpty()) {
+        String asmRef = req.getPathInfo();
+        if (asmRef == null || asmRef.length() < 2) {
             log.warn("Invalid pathInfo: " + req.getPathInfo());
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-
-        Object asmRef;
-        try {
-            asmRef = Long.parseLong(ref);
-        } catch (NumberFormatException e) {
-            asmRef = ref;
+        asmRef = asmRef.substring(1);
+        if (asmRef.endsWith(".html")) {
+            asmRef = asmRef.substring(0, asmRef.length() - ".html".length());
         }
+
         AsmRenderer renderer = rendererProvider.get();
         AsmResourceLoader loader = loaderProvider.get();
         AsmRendererContext ctx;
@@ -114,4 +109,5 @@ public class AsmServlet extends HttpServlet {
             resp.flushBuffer();
         }
     }
+
 }

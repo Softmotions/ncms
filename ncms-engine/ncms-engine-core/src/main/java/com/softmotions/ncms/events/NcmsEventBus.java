@@ -1,17 +1,13 @@
 package com.softmotions.ncms.events;
 
+import com.softmotions.commons.ebus.EBus;
+
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public interface NcmsEventBus {
-
-    void fire(Object event);
+public interface NcmsEventBus extends EBus {
 
     void fireOnSuccessCommit(Object event);
 
     void fireOnRollback(Object event);
-
-    void register(Object object);
-
-    void unregister(Object object);
 }

@@ -6,7 +6,7 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
-import com.softmotions.ncms.media.MediaService;
+import com.softmotions.ncms.media.MediaRepository;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -26,19 +26,19 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmImageAttrubuteManager implements AsmAttributeManager {
+public class AsmImageAttributeManager implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmImageAttrubuteManager.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmImageAttributeManager.class);
 
     public static final String[] TYPES = new String[]{"image"};
 
-    final MediaService mediaService;
+    final MediaRepository repository;
 
     final ObjectMapper mapper;
 
     @Inject
-    public AsmImageAttrubuteManager(MediaService mediaService, ObjectMapper mapper) {
-        this.mediaService = mediaService;
+    public AsmImageAttributeManager(MediaRepository repository, ObjectMapper mapper) {
+        this.repository = repository;
         this.mapper = mapper;
     }
 
@@ -128,7 +128,7 @@ public class AsmImageAttrubuteManager implements AsmAttributeManager {
             }
             boolean skipSmall = !opts.hasNonNull("skipSmall") || opts.get("skipSmall").asBoolean(true);
             try {
-                mediaService.ensureResizedImage(id, width, height, skipSmall);
+                repository.ensureResizedImage(id, width, height, skipSmall);
             } catch (IOException e) {
                 log.error("", e);
                 throw new RuntimeException(e);

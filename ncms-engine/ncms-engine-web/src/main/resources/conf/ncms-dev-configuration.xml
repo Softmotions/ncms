@@ -37,7 +37,7 @@
         <thumbnails-width>250</thumbnails-width>
         <resize-default-format>jpeg</resize-default-format>
         <max-edit-text-size>524288</max-edit-text-size>
-        <import-directory>${basedir}/src/test/media</import-directory>
+        <import>${basedir}/src/test/media</import>
         <system-directories>
             <directory>/system</directory>
             <directory>/pages</directory>

@@ -39,15 +39,17 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
 
     protected void init(NcmsConfiguration cfg) {
         bind(NcmsConfiguration.class).toInstance(cfg);
+        initBefore(cfg);
         initNinjaDispatcher(cfg);
-        initAsmServlet(cfg);
         initJAXRS(cfg);
+        initAsmServlet(cfg);
         initJarResourcesServlet(cfg);
+        initAfter(cfg);
     }
 
     protected void initAsmServlet(NcmsConfiguration cfg) {
         //Assembly rendering servlet
-        serve(cfg.getNcmsPrefix() + "/asm/*", AsmServlet.class);
+        serve(cfg.getNcmsPrefix() + "/asm/*", getAsmServletClass());
     }
 
     protected void initNinjaDispatcher(NcmsConfiguration cfg) {
@@ -84,5 +86,17 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
         bind(JarResourcesServlet.class).in(Singleton.class);
         bind(JarResourcesProvider.class).to(JarResourcesServlet.class);
         serve(cfg.getNcmsPrefix() + "/*", JarResourcesServlet.class, params);
+    }
+
+    protected Class<? extends AsmServlet> getAsmServletClass() {
+        return AsmServlet.class;
+    }
+
+    protected void initBefore(NcmsConfiguration cfg) {
+
+    }
+
+    protected void initAfter(NcmsConfiguration cfg) {
+
     }
 }

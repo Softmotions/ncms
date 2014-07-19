@@ -277,7 +277,8 @@
             <column name="NAME" type="VARCHAR(127)">
                 <constraints nullable="false"/>
             </column>
-            <column name="STATUS" type="INT">
+            <column name="STATUS" type="INT"
+                    remarks="If status: 1 - it is folder, 0 - otherwise">
                 <constraints nullable="false"/>
             </column>
             <column name="FOLDER" type="VARCHAR(255)">
@@ -310,6 +311,15 @@
             </column>
             <column name="CSUM" type="VARCHAR(48)"
                     remarks="File checksum">
+            </column>
+            <column name="SYSTEM" type="TINYINT(1)"
+                    defaultValueNumeric="0"
+                    remarks="True if is a system file managed by admins">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FLAGS" type="INT"
+                    defaultValueNumeric="0"
+                    remarks="Various flags bitmask">
             </column>
         </createTable>
 

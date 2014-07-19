@@ -6,6 +6,17 @@ import com.softmotions.commons.cont.Pair;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.io.DirUtils;
+import com.softmotions.commons.io.scanner.DirectoryScanner;
+import com.softmotions.commons.io.scanner.DirectoryScannerFactory;
+import com.softmotions.commons.io.scanner.DirectoryScannerVisitor;
+import com.softmotions.commons.io.watcher.FSWatcher;
+import com.softmotions.commons.io.watcher.FSWatcherCollectEventHandler;
+import com.softmotions.commons.io.watcher.FSWatcherCreateEvent;
+import com.softmotions.commons.io.watcher.FSWatcherDeleteEvent;
+import com.softmotions.commons.io.watcher.FSWatcherEventHandler;
+import com.softmotions.commons.io.watcher.FSWatcherEventSupport;
+import com.softmotions.commons.io.watcher.FSWatcherModifyEvent;
+import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.events.PageDroppedEvent;
@@ -33,7 +44,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 import org.apache.commons.collections.iterators.ArrayIterator;
 import org.apache.commons.collections.map.LRUMap;
@@ -68,7 +78,6 @@ import javax.ws.rs.HEAD;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -90,6 +99,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.Principal;
 import java.sql.Blob;
 import java.text.Collator;
@@ -113,9 +126,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-@Path("/media")
+@javax.ws.rs.Path("/media")
 @Produces("application/json")
-public class MediaRS extends MBDAOSupport implements MediaService {
+public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(MediaRS.class);
 
@@ -124,6 +137,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     private static final int MB = 1048576;
 
     private static final File[] EMPTY_FILES_ARRAY = new File[0];
+
+    private static final int PUT_NO_KEYS = 1;
+
+    private static final int PUT_SYSTEM = 1 << 1;
 
     final NcmsConfiguration cfg;
 
@@ -135,11 +152,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     final NcmsMessages message;
 
-    final Provider<ServletContext> sctx;
-
     final NcmsEventBus ebus;
 
     final WSUserDatabase userdb;
+
 
     @Inject
     public MediaRS(NcmsConfiguration cfg,
@@ -147,8 +163,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                    ObjectMapper mapper,
                    NcmsMessages message,
                    NcmsEventBus ebus,
-                   WSUserDatabase userdb,
-                   Provider<ServletContext> sctx) throws IOException {
+                   WSUserDatabase userdb) throws IOException {
         super(MediaRS.class.getName(), sess);
         this.cfg = cfg;
         XMLConfiguration xcfg = cfg.impl();
@@ -164,7 +179,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         this.message = message;
         this.ebus = ebus;
         this.userdb = userdb;
-        this.sctx = sctx;
         this.ebus.register(this);
     }
 
@@ -175,7 +189,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
      * @param id Media entry ID
      */
     @GET
-    @Path("/path/{id}")
+    @javax.ws.rs.Path("/path/{id}")
     @Transactional
     public String path(@PathParam("id") Long id) {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
@@ -194,28 +208,28 @@ public class MediaRS extends MBDAOSupport implements MediaService {
      */
     @PUT
     @Consumes("*/*")
-    @Path("/file/{folder:.*}/{name}")
+    @javax.ws.rs.Path("/file/{folder:.*}/{name}")
     @Transactional(executorType = ExecutorType.SIMPLE)
     public void put(@PathParam("folder") String folder,
                     @PathParam("name") String name,
                     @Context HttpServletRequest req,
                     InputStream in) throws Exception {
-        _put(folder, name, req, in);
+        _put(folder, name, req, in, 0);
     }
 
     @PUT
     @Consumes("*/*")
-    @Path("/file/{name}")
+    @javax.ws.rs.Path("/file/{name}")
     @Transactional(executorType = ExecutorType.SIMPLE)
     public void put(@PathParam("name") String name,
                     @Context HttpServletRequest req,
                     InputStream in) throws Exception {
-        _put("", name, req, in);
+        _put("", name, req, in, 0);
     }
 
 
     @GET
-    @Path("/file/{folder:.*}/{name}")
+    @javax.ws.rs.Path("/file/{folder:.*}/{name}")
     @Transactional
     public Response get(@PathParam("folder") String folder,
                         @PathParam("name") String name,
@@ -226,7 +240,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @GET
-    @Path("/file/{name}")
+    @javax.ws.rs.Path("/file/{name}")
     @Transactional
     public Response get(@PathParam("name") String name,
                         @Context HttpServletRequest req,
@@ -237,7 +251,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
 
     @GET
-    @Path("/fileid/{id}")
+    @javax.ws.rs.Path("/fileid/{id}")
     @Transactional
     public Response get(@PathParam("id") Long id,
                         @Context HttpServletRequest req,
@@ -253,7 +267,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
 
     @HEAD
-    @Path("/fileid/{id}")
+    @javax.ws.rs.Path("/fileid/{id}")
     @Transactional
     public Response head(@PathParam("id") Long id,
                          @Context HttpServletRequest req,
@@ -268,7 +282,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @HEAD
-    @Path("/file/{folder:.*}/{name}")
+    @javax.ws.rs.Path("/file/{folder:.*}/{name}")
     @Transactional
     public Response head(@PathParam("folder") String folder,
                          @PathParam("name") String name,
@@ -279,7 +293,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @HEAD
-    @Path("/file/{name}")
+    @javax.ws.rs.Path("/file/{name}")
     @Transactional
     public Response head(@PathParam("name") String name,
                          @Context HttpServletRequest req,
@@ -289,7 +303,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @GET
-    @Path("/thumbnail2/{id}")
+    @javax.ws.rs.Path("/thumbnail2/{id}")
     @Transactional
     public Response thumbnail(@PathParam("id") Long id,
                               @Context HttpServletRequest req) throws Exception {
@@ -298,7 +312,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
 
     @GET
-    @Path("/thumbnail/{folder:.*}/{name}")
+    @javax.ws.rs.Path("/thumbnail/{folder:.*}/{name}")
     @Transactional
     public Response thumbnail(@PathParam("folder") String folder,
                               @PathParam("name") String name,
@@ -307,7 +321,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @GET
-    @Path("/thumbnail/{name}")
+    @javax.ws.rs.Path("/thumbnail/{name}")
     @Transactional
     public Response thumbnail(@PathParam("name") String name,
                               @Context HttpServletRequest req) throws Exception {
@@ -316,7 +330,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
 
     @GET
-    @Path("/files/{folder:.*}")
+    @javax.ws.rs.Path("/files/{folder:.*}")
     @Transactional
     public JsonNode listFiles(@PathParam("folder") String folder,
                               @Context HttpServletRequest req) throws IOException {
@@ -324,14 +338,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @GET
-    @Path("/files")
+    @javax.ws.rs.Path("/files")
     @Transactional
     public JsonNode listFiles(@Context HttpServletRequest req) throws IOException {
         return _list("", FileFileFilter.FILE, req);
     }
 
     @GET
-    @Path("/folders/{folder:.*}")
+    @javax.ws.rs.Path("/folders/{folder:.*}")
     @Transactional
     public JsonNode listFolders(@PathParam("folder") String folder,
                                 @Context HttpServletRequest req) throws IOException {
@@ -339,7 +353,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @GET
-    @Path("/folders")
+    @javax.ws.rs.Path("/folders")
     @Transactional
     public JsonNode listFolders(@Context HttpServletRequest req) throws IOException {
         return _list("", DirectoryFileFilter.INSTANCE, req);
@@ -347,7 +361,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
 
     @GET
-    @Path("/all/{folder:.*}")
+    @javax.ws.rs.Path("/all/{folder:.*}")
     @Transactional
     public JsonNode listAll(@PathParam("folder") String folder,
                             @Context HttpServletRequest req) throws IOException {
@@ -355,14 +369,14 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @GET
-    @Path("/all")
+    @javax.ws.rs.Path("/all")
     @Transactional
     public JsonNode listAll(@Context HttpServletRequest req) throws IOException {
         return _list("", TrueFileFilter.INSTANCE, req);
     }
 
     @GET
-    @Path("/select")
+    @javax.ws.rs.Path("/select")
     @Transactional
     public Response select(@Context final HttpServletRequest req) {
         return Response.ok(new StreamingOutput() {
@@ -409,7 +423,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @GET
-    @Path("/select/count")
+    @javax.ws.rs.Path("/select/count")
     @Produces("text/plain")
     @Transactional
     public Integer selectCount(@Context HttpServletRequest req) {
@@ -418,7 +432,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @PUT
-    @Path("/folder/{folder:.*}")
+    @javax.ws.rs.Path("/folder/{folder:.*}")
     @Transactional
     public JsonNode newFolder(@PathParam("folder") String folder,
                               @Context HttpServletRequest req) throws Exception {
@@ -457,7 +471,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @PUT
-    @Path("/copy-batch/{target:.*}")
+    @javax.ws.rs.Path("/copy-batch/{target:.*}")
     public void copy(@Context HttpServletRequest req,
                      @PathParam("target") String target,
                      ArrayNode files) throws Exception {
@@ -465,7 +479,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @PUT
-    @Path("/copy-batch")
+    @javax.ws.rs.Path("/copy-batch")
     public void copy(@Context HttpServletRequest req, ArrayNode files) throws Exception {
         _copy(req, "", files);
     }
@@ -525,7 +539,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @PUT
-    @Path("/move/{path:.*}")
+    @javax.ws.rs.Path("/move/{path:.*}")
     @Transactional(executorType = ExecutorType.BATCH)
     public void move(@PathParam("path") String path,
                      @Context HttpServletRequest req,
@@ -637,7 +651,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @DELETE
-    @Path("/delete/{path:.*}")
+    @javax.ws.rs.Path("/delete/{path:.*}")
     @Transactional(executorType = ExecutorType.BATCH)
     public void deleteResource(@PathParam("path") String path,
                                @Context HttpServletRequest req) throws Exception {
@@ -677,9 +691,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                            "folder", folder,
                            "name", name);
                 } else {
-                    throw new NcmsMessageException(message.get("ncms.mmgr.file.cannot.delete", req, path), true);
+                    throw new NotFoundException(message.get("ncms.mmgr.file.cannot.delete", req, path));
                 }
-
                 if (id != null) {
                     File sdir = getResizedImageDir(folder, id);
                     if (sdir.exists()) {
@@ -699,7 +712,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     }
 
     @DELETE
-    @Path("/delete-batch")
+    @javax.ws.rs.Path("/delete-batch")
     public void deleteBatch(@Context HttpServletRequest req,
                             ArrayNode files) throws Exception {
         for (int i = 0, l = files.size(); i < l; ++i) {
@@ -710,7 +723,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
 
     @GET
-    @Path("/meta/{id}")
+    @javax.ws.rs.Path("/meta/{id}")
     @Transactional
     public ObjectNode getMeta(@PathParam("id") Long id,
                               @Context HttpServletRequest req) throws Exception {
@@ -730,7 +743,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
      * Update some meta fields of files.
      */
     @POST
-    @Path("/meta/{id}")
+    @javax.ws.rs.Path("/meta/{id}")
     @Consumes("application/x-www-form-urlencoded")
     @Transactional(executorType = ExecutorType.BATCH)
     public void updateMeta(@PathParam("id") Long id,
@@ -785,14 +798,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
     }
 
-    @Transactional(executorType = ExecutorType.SIMPLE)
-    public void importDirectory(File dir) throws IOException {
-        if (dir == null || !dir.isDirectory()) {
-            log.warn(dir + " is not a directory");
-        }
-        importDirectoryInternal(dir, dir, new LocalPUTRequest());
-    }
-
     @Transactional
     public MediaResource findMediaResource(String path, Locale locale) {
         Map<String, Object> res;
@@ -830,42 +835,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     public File getBasedir() {
         return basedir;
-    }
-
-    private void importDirectoryInternal(File bdir, File dir, HttpServletRequest req) throws IOException {
-        File[] files = dir.listFiles();
-        if (files == null) {
-            return;
-        }
-        String prefix = bdir.getCanonicalPath();
-        for (final File f : files) {
-            if (f.isDirectory()) {
-                importDirectoryInternal(bdir, f, req);
-            } else if (f.isFile()) {
-                String fpath = f.getCanonicalPath();
-                fpath = fpath.substring(prefix.length());
-                File tgt = new File(basedir, fpath);
-                String name = getResourceName(fpath);
-                String folder = getResourceParentFolder(fpath);
-                if (tgt.exists() && !FileUtils.isFileNewer(f, tgt)) {
-                    //check db
-                    Long id = selectOne("selectEntityIdByPath",
-                                        "name", name,
-                                        "folder", folder);
-                    if (id != null) {
-                        continue;
-                    }
-                }
-                log.info("Importing " + fpath);
-                try (final FileInputStream fis = new FileInputStream(f)) {
-                    try {
-                        _put(folder, name, req, fis);
-                    } catch (Exception e) {
-                        throw new IOException(e);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -960,7 +929,9 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         Locale locale = message.getLocale(req);
         MBCriteriaQuery cq = createCriteria();
         String val;
-
+        if (req.isUserInRole("admin")) {
+            cq.withParam("system", true);
+        }
         if (!count) {
             val = req.getParameter("firstRow");
             if (val != null) {
@@ -1486,7 +1457,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         if (folder == null) {
             throw new IllegalArgumentException();
         }
-        if (folder.contains("src/main") || folder.contains(SIZE_CACHE_FOLDER)) {
+        if (folder.contains("..") || folder.contains(SIZE_CACHE_FOLDER)) {
             throw new BadRequestException(folder);
         }
     }
@@ -1494,7 +1465,8 @@ public class MediaRS extends MBDAOSupport implements MediaService {
     private Long _put(String folder,
                       String name,
                       HttpServletRequest req,
-                      InputStream in) throws Exception {
+                      InputStream in,
+                      int flags) throws Exception {
 
         checkFolder(folder);
         Number id;
@@ -1502,11 +1474,12 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
         //Used in order to detect ctype with TIKA (mark/reset are supported by BufferedInputStream)
         BufferedInputStream bis = new BufferedInputStream(in);
+        FileUploadStream us = null;
+        boolean localPut = (req instanceof LocalRequest);
+        String rctype = (req.getContentType() == null) ?
+                        req.getServletContext().getMimeType(name) :
+                        req.getContentType();
 
-        String rctype = req.getContentType();
-        if (rctype == null) {
-            rctype = req.getServletContext().getMimeType(name);
-        }
         //We do not trust to the content-type provided by request
         MediaType mtype = MimeTypeDetector.detect(bis, name, rctype, req.getCharacterEncoding());
         if (mtype.getBaseType().toString().startsWith("text/") &&
@@ -1517,21 +1490,27 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             }
         }
 
-        XMLConfiguration xcfg = cfg.impl();
-        int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB); //1Mb by default
-        int uplTh = xcfg.getInt("media.max-upload-size", MB * 10); //10Mb by default
-        FileUploadStream us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", cfg.getTmpdir());
+        if (!localPut) {
+            XMLConfiguration xcfg = cfg.impl();
+            int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB); //1Mb by default
+            int uplTh = xcfg.getInt("media.max-upload-size", MB * 10); //10Mb by default
+            us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", cfg.getTmpdir());
+        }
 
         try (final ResourceLock l = new ResourceLock(folder + name, true)) {
             id = selectOne("selectEntityIdByPath",
                            "folder", folder,
                            "name", name);
-            if (id != null) {
-                checkEditAccess(id.longValue(), req);
-            }
 
-            long actualLength = IOUtils.copyLarge(bis, us);
-            us.close();
+            checkEditAccess(folder + name, req);
+
+            long actualLength;
+            if (localPut) {
+                actualLength = ((LocalRequest) req).file.length();
+            } else {
+                actualLength = IOUtils.copyLarge(bis, us);
+                us.close();
+            }
             if (req.getContentLength() != -1 && req.getContentLength() != actualLength) {
                 throw new BadRequestException(
                         String.format("Wrong Content-Length request header specified. " +
@@ -1550,7 +1529,11 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                           folder, name, target.getAbsolutePath(), mtype, actualLength);
             }
             try (final FileOutputStream fos = new FileOutputStream(target)) {
-                us.writeTo(fos);
+                if (us != null) {
+                    us.writeTo(fos);
+                } else {
+                    IOUtils.copyLarge(bis, fos);
+                }
                 fos.flush();
             }
 
@@ -1584,6 +1567,7 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 args.put("content_length", actualLength);
                 args.put("owner", req.getRemoteUser());
                 args.put("meta", meta.toString());
+                args.put("system", ((flags & PUT_SYSTEM) != 0) ? 1 : 0);
                 insert("insertEntity", args);
                 id = (Number) args.get("id"); //autogenerated
 
@@ -1594,16 +1578,19 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                        "content_type", mtype.toString(),
                        "content_length", actualLength,
                        "owner", req.getRemoteUser(),
-                       "meta", meta.toString());
+                       "meta", meta.toString(),
+                       "system", ((flags & PUT_SYSTEM) != 0) ? 1 : 0);
             }
 
             if (id != null) {
                 ebus.fireOnSuccessCommit(new MediaUpdateEvent(this, false, id, folder + name));
-                updateFTSKeywords(id.longValue(), req);
+                if ((PUT_NO_KEYS & flags) == 0) {
+                    updateFTSKeywords(id.longValue(), req);
+                }
             }
 
         } finally {
-            if (us.getFile() != null) {
+            if (us != null && us.getFile() != null) {
                 us.getFile().delete();
             }
             bis.close();
@@ -1749,9 +1736,6 @@ public class MediaRS extends MBDAOSupport implements MediaService {
             return;
         }
         Map<String, ?> fmeta = selectOne("selectResourceAttrsById", "id", id);
-        if (fmeta == null) {
-            throw new NotFoundException();
-        }
         _checkEditAccess(fmeta, StringUtils.strip((String) fmeta.get("folder") + fmeta.get("name"), "/"), req);
     }
 
@@ -1767,13 +1751,17 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
     private void _checkEditAccess(Map<String, ?> fmeta, String path, HttpServletRequest req) {
 
+        if ((req instanceof LocalRequest) || req.isUserInRole("admin")) {
+            return;
+        }
+
         //todo check page access
 
         boolean isFile = (fmeta != null && 0 == ((Number) fmeta.get("status")).intValue());
         if (isFile) {
             if (!req.getRemoteUser().equals(fmeta.get("owner"))) {
                 String msg = message.get("ncms.mmgr.access.denied", req, path);
-                throw new NcmsMessageException(msg, true);
+                throw new SecurityException(msg);
             }
         } else {
             File f = new File(basedir, path);
@@ -1781,11 +1769,11 @@ public class MediaRS extends MBDAOSupport implements MediaService {
                 return;
             }
             // check not owned files in the directory
-            int count = selectOne("countNotOwned",
-                                  "folder", normalizeFolder(path),
-                                  "owner", req.getRemoteUser());
-            if (count > 0) {
-                throw new NcmsMessageException(message.get("ncms.mmgr.access.denied.notOwned", req), true);
+            Number count = selectOne("countNotOwned",
+                                     "folder", normalizeFolder(path),
+                                     "owner", req.getRemoteUser());
+            if (count != null && count.intValue() > 0) {
+                throw new SecurityException(message.get("ncms.mmgr.access.denied.notOwned", req));
             }
         }
     }
@@ -1930,7 +1918,205 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
     }
 
-    private final class LocalPUTRequest extends HttpServletRequestAdapter {
+    ///////////////////////////////////////////////////////////////////////////
+    //                       Import resources staff                          //
+    ///////////////////////////////////////////////////////////////////////////
+
+    private final List<DirectoryScanner> watchScanners = Collections.synchronizedList(new ArrayList<DirectoryScanner>());
+
+    private final FSWatcherCollectEventHandler watchHandler = new FSWatcherCollectEventHandler(
+            FSWatcherCollectEventHandler.MOVE_CREATED_INTO_MODIFIED
+    );
+
+    public void init(FSWatcher watcher) {
+    }
+
+    public void handlePollTimeout(FSWatcher watcher) {
+        FSWatcherCollectEventHandler snapshot;
+        synchronized (watchHandler) {
+            if (watchHandler.getModified().isEmpty() &&
+                watchHandler.getDeleted().isEmpty()) {
+                watchHandler.clear();
+                return;
+            }
+            snapshot = (FSWatcherCollectEventHandler) watchHandler.clone();
+            watchHandler.clear();
+        }
+        FSWatcherUserData data = watcher.getUserData();
+        Set<Path> modified = new HashSet<>(snapshot.getModified());
+        Set<Path> deleted = new HashSet<>(snapshot.getDeleted());
+        for (final Path path : snapshot.getModified()) {
+            if (modified.contains(path)) {
+                if (Files.exists(path)) {
+                    deleted.remove(path);
+                } else {
+                    modified.remove(path);
+                }
+            }
+        }
+        for (final Path path : modified) {
+            Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
+            try {
+                importFile(path.toString(),
+                           target.toString(),
+                           data.overwrite,
+                           data.system);
+            } catch (IOException e) {
+                log.error("File import failed. Path: " + path + " target: " + target + " error: " + e.getMessage());
+            }
+
+        }
+        for (final Path path : deleted) {
+            Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
+            try {
+                deleteResource(target.toString(), new LocalRequest(target.toFile()));
+            } catch (NotFoundException ignored) {
+            } catch (Exception e) {
+                log.error("File deletion failed. Path: " + path + " target: " + target + " error: " + e.getMessage());
+            }
+        }
+
+    }
+
+    public void handleRegisterEvent(FSWatcherRegisterEvent ev) throws Exception {
+        watcherImportFile(ev);
+    }
+
+    public void handleCreateEvent(FSWatcherCreateEvent ev) {
+        synchronized (watchHandler) {
+            watchHandler.handleCreateEvent(ev);
+        }
+    }
+
+    public void handleModifyEvent(FSWatcherModifyEvent ev) {
+        synchronized (watchHandler) {
+            watchHandler.handleModifyEvent(ev);
+        }
+    }
+
+    public void handleDeleteEvent(FSWatcherDeleteEvent ev) throws Exception {
+        synchronized (watchHandler) {
+            watchHandler.handleDeleteEvent(ev);
+        }
+    }
+
+    private void watcherImportFile(FSWatcherEventSupport ev) throws Exception {
+        FSWatcherUserData data = ev.getWatcher().getUserData();
+        Path target = data.target.resolve(data.ds.getBasedir().relativize(ev.getFullPath()));
+        importFile(ev.getFullPath().toString(),
+                   target.toString(),
+                   data.overwrite,
+                   data.system);
+    }
+
+    @Transactional(executorType = ExecutorType.SIMPLE)
+    public void importDirectory(String source,
+                                String target,
+                                String[] includes,
+                                String[] excludes,
+                                final boolean overwrite,
+                                final boolean watch,
+                                final boolean system) throws IOException {
+
+        if (target.startsWith("/")) {
+            target = target.substring(1);
+        }
+        log.info("Importing " + source + " into " + target + " watch=" + watch);
+        final DirectoryScannerFactory sf = new DirectoryScannerFactory(Paths.get(source));
+        for (final String inc : includes) {
+            sf.include(inc);
+        }
+        for (final String exc : excludes) {
+            sf.exclude(exc);
+        }
+        if (watch) {
+            DirectoryScanner ds = sf.createScanner();
+            watchScanners.add(ds);
+            ds.activateFileSystemWatcher(this, 200L,
+                                         new FSWatcherUserData(ds,
+                                                               Paths.get(target),
+                                                               overwrite,
+                                                               system));
+        } else {
+            final String importTarget = target;
+            try (DirectoryScanner ds = sf.createScanner()) {
+                ds.scan(new DirectoryScannerVisitor() {
+                    public void visit(Path path, BasicFileAttributes basicFileAttributes) throws IOException {
+                        importFile(sf.getBasedir().resolve(path).toString(),
+                                   Paths.get(importTarget).resolve(path).toString(),
+                                   overwrite, system);
+                    }
+
+                    public void error(Path path, IOException e) throws IOException {
+                        log.error("Failed to scan path: " + path, e);
+                    }
+                });
+            }
+        }
+    }
+
+
+    @Transactional(executorType = ExecutorType.SIMPLE)
+    public void importFile(String source, String target, boolean overwrite, boolean system) throws IOException {
+        File srcFile = new File(source);
+        if (!srcFile.isFile()) {
+            throw new IOException(srcFile.getAbsolutePath() + " is not a file");
+        }
+        File tgt = new File(basedir, target);
+        if (tgt.isDirectory()) {
+            throw new IOException("Cannot overwrite existing directory: " + target);
+        }
+        String name = getResourceName(target);
+        String folder = getResourceParentFolder(target);
+        if (!overwrite &&
+            tgt.exists() &&
+            !FileUtils.isFileNewer(srcFile, tgt)) {
+            //check db
+            Number id = selectOne("selectEntityIdByPath",
+                                  "name", name,
+                                  "folder", folder);
+            if (id != null) {
+                return;
+            }
+        }
+        log.info("Importing " + target);
+        try (final FileInputStream fis = new FileInputStream(srcFile)) {
+            try {
+                int flags = PUT_NO_KEYS;
+                if (system) {
+                    flags |= PUT_SYSTEM;
+                }
+                _put(folder, name, new LocalRequest(srcFile), fis, flags);
+            } catch (Exception e) {
+                throw new IOException(e);
+            }
+        }
+    }
+
+    private static final class FSWatcherUserData {
+        private final DirectoryScanner ds;
+        private final Path target;
+        private final boolean overwrite;
+        private final boolean system;
+
+        private FSWatcherUserData(DirectoryScanner ds,
+                                  Path target,
+                                  boolean overwrite,
+                                  boolean system) {
+            this.ds = ds;
+            this.target = target;
+            this.overwrite = overwrite;
+            this.system = system;
+        }
+    }
+
+    private final class LocalRequest extends HttpServletRequestAdapter {
+
+        private final File file;
+
+        private LocalRequest(File file) {
+            this.file = file;
+        }
 
         public String getMethod() {
             return "PUT";
@@ -1938,6 +2124,10 @@ public class MediaRS extends MBDAOSupport implements MediaService {
 
         public String getRemoteUser() {
             return "system";
+        }
+
+        public boolean isUserInRole(String role) {
+            return true;
         }
 
         public Principal getUserPrincipal() {
@@ -1949,11 +2139,25 @@ public class MediaRS extends MBDAOSupport implements MediaService {
         }
 
         public ServletContext getServletContext() {
-            return sctx.get();
+            return cfg.getServletContext();
         }
 
         public String getCharacterEncoding() {
             return "UTF-8";
         }
+    }
+
+
+    public void close() throws IOException {
+        DirectoryScanner[] wsArr = watchScanners.toArray(new DirectoryScanner[watchScanners.size()]);
+        for (final DirectoryScanner ds : wsArr) {
+            try {
+                ds.close();
+            } catch (IOException e) {
+                log.error("", e);
+            }
+        }
+        watchHandler.clear();
+        watchScanners.clear();
     }
 }
