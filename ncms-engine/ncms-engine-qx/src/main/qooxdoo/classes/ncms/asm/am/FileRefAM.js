@@ -125,7 +125,11 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
                     var path = fspec["folder"] + fspec["name"];
                     bf.setValue(path);
                     dlg.close();
-                    this._form.validate();
+                    if (this._form != null) {
+                        this._form.validate();
+                    } else {
+                        this.__validateFileSelector(path, bf);
+                    }
                 }, this);
                 dlg.show();
             }, this);
@@ -133,7 +137,14 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
         },
 
         __validateFileSelector : function(value, bf) {
-            return true;
+            if (bf.getRequired() && sm.lang.String.isEmpty(bf.getValue())) {
+                bf.setInvalidMessage(this.tr("This field is required"));
+                bf.setValid(false);
+                return false;
+            } else {
+                bf.setValid(true);
+                return true;
+            }
         },
 
         valueAsJSON : function() {
