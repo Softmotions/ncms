@@ -1,4 +1,4 @@
-package com.softmotions.ncms.json;
+package com.softmotions.ncms.mhttl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class JsonTree {
+public class Tree {
 
     private Long id;
 
@@ -22,12 +22,12 @@ public class JsonTree {
     private String icon;
 
     @JsonProperty(required = true)
-    private ArrayList<JsonTree> children;
+    private ArrayList<Tree> children;
 
-    public JsonTree() {
+    public Tree() {
     }
 
-    public JsonTree(String name) {
+    public Tree(String name) {
         this.name = name;
     }
 
@@ -71,14 +71,14 @@ public class JsonTree {
         this.icon = icon;
     }
 
-    public ArrayList<JsonTree> getChildren() {
+    public ArrayList<Tree> getChildren() {
         if (children == null) {
             children = new ArrayList<>();
         }
         return children;
     }
 
-    public void setChildren(ArrayList<JsonTree> children) {
+    public void setChildren(ArrayList<Tree> children) {
         this.children = children;
     }
 

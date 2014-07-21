@@ -6,7 +6,7 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
-import com.softmotions.ncms.json.JsonTree;
+import com.softmotions.ncms.mhttl.Tree;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -48,7 +48,7 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
     public AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
         if (StringUtils.isBlank(attr.getEffectiveValue())) {
             try {
-                attr.setEffectiveValue(mapper.writeValueAsString(new JsonTree(attr.getLabel() != null ? attr.getLabel() : "root")));
+                attr.setEffectiveValue(mapper.writeValueAsString(new Tree(attr.getLabel() != null ? attr.getLabel() : "root")));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -62,10 +62,10 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
         if (attr == null || attr.getEffectiveValue() == null) {
-            return new JsonTree("root");
+            return new Tree("root");
         }
         try {
-            return mapper.reader(JsonTree.class).readTree(attr.getEffectiveValue());
+            return mapper.reader(Tree.class).readTree(attr.getEffectiveValue());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

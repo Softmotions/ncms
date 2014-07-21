@@ -7,6 +7,7 @@ import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.media.MediaRepository;
+import com.softmotions.ncms.mhttl.Image;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -57,7 +58,7 @@ public class AsmImageAttributeManager implements AsmAttributeManager {
         if (StringUtils.isBlank(value)) {
             return null;
         }
-        AsmImageNode res = new AsmImageNode();
+        Image res = new Image();
         try (JsonParser parser = mapper.getFactory().createParser(value)) {
             JsonToken t;
             String key;
@@ -70,25 +71,25 @@ public class AsmImageAttributeManager implements AsmAttributeManager {
             }
             key = parser.getCurrentName();
             if ("id".equals(key)) {
-                res.id = parser.getValueAsLong();
+                res.setId(parser.getValueAsLong());
             } else if ("options".equals(key)) {
                 while ((t = parser.nextValue()) != null) {
                     key = parser.getCurrentName();
                     switch (key) {
                         case "width":
-                            res.optionsWidth = parser.getValueAsInt();
+                            res.setOptionsWidth(parser.getValueAsInt());
                             break;
                         case "height":
-                            res.optionsHeight = parser.getValueAsInt();
+                            res.setOptionsHeight(parser.getValueAsInt());
                             break;
                         case "resize":
-                            res.resize = parser.getValueAsBoolean();
+                            res.setResize(parser.getValueAsBoolean());
                             break;
                         case "restrict":
-                            res.restrict = parser.getValueAsBoolean();
+                            res.setRestrict(parser.getValueAsBoolean());
                             break;
                         case "skipSmall":
-                            res.skipSmall = parser.getValueAsBoolean(true);
+                            res.setSkipSmall(parser.getValueAsBoolean(true));
                             break;
                         default:
                             break;
@@ -138,54 +139,4 @@ public class AsmImageAttributeManager implements AsmAttributeManager {
         return attr;
     }
 
-    public static final class AsmImageNode {
-
-        long id;
-        boolean restrict;
-        boolean resize;
-        boolean skipSmall;
-        Integer optionsWidth;
-        Integer optionsHeight;
-
-        public long getId() {
-            return id;
-        }
-
-        public boolean isRestrict() {
-            return restrict;
-        }
-
-        public boolean isResize() {
-            return resize;
-        }
-
-        public boolean isSkipSmall() {
-            return skipSmall;
-        }
-
-        public Integer getOptionsWidth() {
-            return optionsWidth;
-        }
-
-        public Integer getOptionsHeight() {
-            return optionsHeight;
-        }
-
-        public String getLink() {
-            //todo !!!!
-            return "" + id;
-        }
-
-        public String toString() {
-            final StringBuilder sb = new StringBuilder("AsmImageNode{");
-            sb.append("id=").append(id);
-            sb.append(", optionsWidth=").append(optionsWidth);
-            sb.append(", optionsHeight=").append(optionsHeight);
-            sb.append(", restrict=").append(restrict);
-            sb.append(", resize=").append(resize);
-            sb.append(", skipSmall=").append(skipSmall);
-            sb.append('}');
-            return sb.toString();
-        }
-    }
 }

@@ -68,6 +68,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             });
             form.add(aslocCb, this.tr("Render only location"), null, "asLocation");
             escCb.setEnabled(aslocCb.getValue() == false);
+            astCb.setEnabled(aslocCb.getValue() == false);
 
             var fr = new sm.ui.form.FlexFormRenderer(form);
             this._form = form;

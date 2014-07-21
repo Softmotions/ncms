@@ -5,6 +5,7 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.ncms.mhttl.SelectNode;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -154,30 +155,4 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
         return attr;
     }
 
-    public static final class SelectNode {
-
-        final String key;
-
-        final String value;
-
-        final boolean selected;
-
-        public SelectNode(String key, String value, boolean selected) {
-            this.key = key;
-            this.value = value;
-            this.selected = selected;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public boolean isSelected() {
-            return selected;
-        }
-    }
 }
