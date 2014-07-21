@@ -8,7 +8,9 @@ import com.softmotions.ncms.media.MediaResource;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.Locale;
 
 /**
@@ -64,5 +66,17 @@ public final class HttlMediaResourceAdapter implements MediaResource {
 
     public InputStream openStream() throws IOException {
         return res.openStream();
+    }
+
+    public long writeTo(Writer out) throws IOException {
+        try (final Reader r = openReader()) {
+            return org.apache.commons.io.IOUtils.copyLarge(r, out);
+        }
+    }
+
+    public long writeTo(OutputStream out) throws IOException {
+        try (final InputStream is = openStream()) {
+            return org.apache.commons.io.IOUtils.copyLarge(is, out);
+        }
     }
 }

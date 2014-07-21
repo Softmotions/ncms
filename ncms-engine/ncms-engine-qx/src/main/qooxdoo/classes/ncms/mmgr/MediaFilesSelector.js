@@ -316,7 +316,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             path = path.split("/");
             var d = new ncms.mmgr.MediaItemRenameDlg(path, f.name);
             d.setPosition("bottom-center");
-            d.addListenerOnce("completed", function() {
+            d.addListener("completed", function() {
                 d.destroy();
                 this.reload();
             }, this);
@@ -402,7 +402,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             var dlg = new sm.ui.upload.FileUploadProgressDlg(function(f) {
                 return ncms.Application.ACT.getRestUrl("media.upload", path.concat(f.name));
             }, files);
-            dlg.addListenerOnce("completed", function() {
+            dlg.addListener("completed", function() {
                 dlg.close();
                 this.reload();
                 if (cb != null) {
@@ -473,7 +473,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 }, this);
             };
 
-            d.addListenerOnce("completed", function(ev) {
+            d.addListener("completed", function(ev) {
                 var target = ev.getData();
                 moveFiles.call(this, sfiles, target, moveFiles, function() {
                     this.reload();

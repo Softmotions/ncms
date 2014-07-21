@@ -2,7 +2,9 @@ package com.softmotions.ncms.media;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.Locale;
 
 /**
@@ -83,6 +85,11 @@ public interface MediaResource {
      * @throws java.io.IOException - If an I/O error occurs
      */
     InputStream openStream() throws IOException;
+
+
+    long writeTo(Writer out) throws IOException;
+
+    long writeTo(OutputStream out) throws IOException;
 
     /**
      * Get the resource locale.

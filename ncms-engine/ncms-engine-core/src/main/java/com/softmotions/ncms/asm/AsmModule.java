@@ -4,12 +4,13 @@ import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.am.AsmBooleanAttributeManager;
+import com.softmotions.ncms.asm.am.AsmFileRefAttributeManager;
 import com.softmotions.ncms.asm.am.AsmImageAttributeManager;
 import com.softmotions.ncms.asm.am.AsmRefAttributeManager;
-import com.softmotions.ncms.asm.am.AsmResourceAttributeManager;
 import com.softmotions.ncms.asm.am.AsmSelectAttributeManager;
 import com.softmotions.ncms.asm.am.AsmStringAttributeManager;
 import com.softmotions.ncms.asm.am.AsmTreeAttributeManager;
+import com.softmotions.ncms.asm.am.AsmWebRefAttributeManager;
 import com.softmotions.ncms.asm.am.AsmWikiAttributeMananger;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
@@ -51,12 +52,13 @@ public class AsmModule extends AbstractModule {
                 Multibinder.newSetBinder(binder(), AsmAttributeManager.class);
         attrBinder.addBinding().to(AsmStringAttributeManager.class);
         attrBinder.addBinding().to(AsmRefAttributeManager.class);
-        attrBinder.addBinding().to(AsmResourceAttributeManager.class);
+        attrBinder.addBinding().to(AsmWebRefAttributeManager.class);
         attrBinder.addBinding().to(AsmSelectAttributeManager.class);
         attrBinder.addBinding().to(AsmBooleanAttributeManager.class);
         attrBinder.addBinding().to(AsmTreeAttributeManager.class);
         attrBinder.addBinding().to(AsmWikiAttributeMananger.class);
         attrBinder.addBinding().to(AsmImageAttributeManager.class);
+        attrBinder.addBinding().to(AsmFileRefAttributeManager.class);
 
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);

@@ -1,11 +1,17 @@
 package com.softmotions.ncms.asm.render;
 
+import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.media.MediaReader;
+import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.web.GenericResponseWrapper;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
+import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.io.IOUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 
 /**
@@ -30,13 +37,22 @@ public class AsmServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(AsmServlet.class);
 
     @Inject
-    Injector injector;
+    private Injector injector;
 
     @Inject
-    Provider<AsmRenderer> rendererProvider;
+    private Provider<AsmRenderer> rendererProvider;
 
     @Inject
-    Provider<AsmResourceLoader> loaderProvider;
+    private Provider<AsmResourceLoader> loaderProvider;
+
+    @Inject
+    private MediaReader mediaReader;
+
+    @Inject
+    private NcmsConfiguration cfg;
+
+    @Inject
+    private NcmsMessages messages;
 
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -53,6 +69,10 @@ public class AsmServlet extends HttpServlet {
 
     @Transactional
     protected void getContent(HttpServletRequest req, HttpServletResponse resp, boolean transfer) throws ServletException, IOException {
+
+        if (processResources(req, resp)) { //find resources
+            return;
+        }
 
         //Set charset before calling javax.servlet.ServletResponse.getWriter()
         //Assumed all assemblies generated as utf8 encoded text data.
@@ -108,6 +128,31 @@ public class AsmServlet extends HttpServlet {
             Thread.currentThread().setContextClassLoader(old);
             resp.flushBuffer();
         }
+    }
+
+    boolean processResources(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String pi = req.getPathInfo();
+        if (pi == null) {
+            return false;
+        }
+        XMLConfiguration xcfg = cfg.impl();
+        if (!xcfg.getBoolean("site-root[@resolveRelativePaths]", false)) {
+            return false;
+        }
+        String siteRoot = xcfg.getString("site-root");
+        MediaResource mres = mediaReader.findMediaResource(siteRoot + pi, messages.getLocale(req));
+        if (mres == null) {
+            return false;
+        }
+        resp.setContentType(mres.getContentType());
+        if (mres.getLength() >= 0L) {
+            resp.setContentLength((int) mres.getLength());
+        }
+        try (InputStream is = mres.openStream()) {
+            IOUtils.copyLarge(is, resp.getOutputStream());
+
+        }
+        return true;
     }
 
 }

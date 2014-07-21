@@ -91,7 +91,6 @@ qx.Class.define("ncms.asm.AsmEditor", {
 
         var el = new qx.ui.form.TextField().set({maxLength : 127});
         el.setReadOnly(true);
-        el.setEnabled(false);
         form.add(el, this.tr("Name"), null, "name");
 
         el = new sm.ui.form.ButtonField(null, "ncms/icon/16/actions/core_link.png");
@@ -157,10 +156,8 @@ qx.Class.define("ncms.asm.AsmEditor", {
             var dlg = new ncms.mmgr.MediaSelectFileDlg(
                     true,
                     this.tr("Select core file for '%1' assembly", spec["name"] || ''));
-            dlg.setCtypeAcceptor(function(ctype) {
-                return ncms.Utils.isTextualContentType(ctype);
-            });
-            dlg.addListenerOnce("completed", function(ev) {
+            dlg.setCtypeAcceptor(ncms.Utils.isTextualContentType.bind(ncms.Utils));
+            dlg.addListener("completed", function(ev) {
                 var fspec = ev.getData()[0];
                 var url = ncms.Application.ACT.getRestUrl("asms.core", spec);
                 var req = new sm.io.Request(url, "PUT", "application/json");

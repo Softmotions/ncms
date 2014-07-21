@@ -79,7 +79,7 @@ qx.Class.define("ncms.usr.UsersNav", {
 
         __onNewUser : function(ev) {
             var d = new ncms.usr.UserNewDlg();
-            d.addListenerOnce("completed", function(ev) {
+            d.addListener("completed", function(ev) {
                 d.close();
                 this.__selector.reload();
             }, this);

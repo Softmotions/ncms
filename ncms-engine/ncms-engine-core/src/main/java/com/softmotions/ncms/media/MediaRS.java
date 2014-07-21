@@ -29,7 +29,6 @@ import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.media.events.MediaDeleteEvent;
 import com.softmotions.ncms.media.events.MediaMoveEvent;
 import com.softmotions.ncms.media.events.MediaUpdateEvent;
-import com.softmotions.web.HttpServletRequestAdapter;
 import com.softmotions.web.ResponseUtils;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -69,7 +68,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -103,7 +101,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.security.Principal;
 import java.sql.Blob;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -819,11 +816,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (res == null) {
             return null;
         }
-        String folder = (String) res.get("folder");
-        String name = (String) res.get("name");
-        Date mdate = (Date) res.get("mdate");
-        Number length = (Number) res.get("content_length");
 
+        final String folder = (String) res.get("folder");
+        final String name = (String) res.get("name");
+        final Date mdate = (Date) res.get("mdate");
+        final Number length = (Number) res.get("content_length");
         return new MediaResourceImpl(this,
                                      ((Number) res.get("id")).longValue(),
                                      (folder + name),
@@ -1475,7 +1472,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         //Used in order to detect ctype with TIKA (mark/reset are supported by BufferedInputStream)
         BufferedInputStream bis = new BufferedInputStream(in);
         FileUploadStream us = null;
-        boolean localPut = (req instanceof LocalRequest);
+        boolean localPut = (req instanceof MediaRSLocalRequest);
         String rctype = (req.getContentType() == null) ?
                         req.getServletContext().getMimeType(name) :
                         req.getContentType();
@@ -1506,7 +1503,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
             long actualLength;
             if (localPut) {
-                actualLength = ((LocalRequest) req).file.length();
+                actualLength = ((MediaRSLocalRequest) req).getFile().length();
             } else {
                 actualLength = IOUtils.copyLarge(bis, us);
                 us.close();
@@ -1751,7 +1748,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private void _checkEditAccess(Map<String, ?> fmeta, String path, HttpServletRequest req) {
 
-        if ((req instanceof LocalRequest) || req.isUserInRole("admin")) {
+        if ((req instanceof MediaRSLocalRequest) || req.isUserInRole("admin")) {
             return;
         }
 
@@ -1958,7 +1955,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         for (final Path path : deleted) {
             Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
             try {
-                deleteResource(target.toString(), new LocalRequest(target.toFile()));
+                deleteResource(target.toString(), new MediaRSLocalRequest(cfg, target.toFile()));
             } catch (NotFoundException ignored) {
             } catch (Exception e) {
                 log.error("File deletion failed. Path: " + path + " target: " + target + " error: " + e.getMessage());
@@ -2083,11 +2080,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         log.info("Importing " + target);
         try (final FileInputStream fis = new FileInputStream(srcFile)) {
             try {
-                int flags = PUT_NO_KEYS;
+                int flags = 0;
                 if (system) {
                     flags |= PUT_SYSTEM;
                 }
-                _put(folder, name, new LocalRequest(srcFile), fis, flags);
+                _put(folder, name, new MediaRSLocalRequest(cfg, srcFile), fis, flags);
             } catch (Exception e) {
                 throw new IOException(e);
             }
@@ -2108,43 +2105,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             this.target = target;
             this.overwrite = overwrite;
             this.system = system;
-        }
-    }
-
-    private final class LocalRequest extends HttpServletRequestAdapter {
-
-        private final File file;
-
-        private LocalRequest(File file) {
-            this.file = file;
-        }
-
-        public String getMethod() {
-            return "PUT";
-        }
-
-        public String getRemoteUser() {
-            return "system";
-        }
-
-        public boolean isUserInRole(String role) {
-            return true;
-        }
-
-        public Principal getUserPrincipal() {
-            return new Principal() {
-                public String getName() {
-                    return getRemoteUser();
-                }
-            };
-        }
-
-        public ServletContext getServletContext() {
-            return cfg.getServletContext();
-        }
-
-        public String getCharacterEncoding() {
-            return "UTF-8";
         }
     }
 

@@ -55,7 +55,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             var parent = this.__calcFirstFolderParent(this._tree.getSelection().getItem(0));
             var parentId = parent.getId();
             var d = new ncms.pgs.PageNewDlg(parentId);
-            d.addListenerOnce("completed", function(ev) {
+            d.addListener("completed", function(ev) {
                 this._refreshNode(parent);
                 d.destroy();
             }, this);

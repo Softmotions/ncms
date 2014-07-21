@@ -5,7 +5,7 @@
  *
  * @asset(ncms/icon/16/misc/document-import.png)
  */
-qx.Class.define("ncms.asm.am.RefAM", {
+qx.Class.define("ncms.asm.am.AsmRefAM", {
     extend : qx.core.Object,
     implement : [ ncms.asm.IAsmAttributeManager ],
     include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],

@@ -46,6 +46,23 @@ public class NcmsConfiguration extends WBConfiguration {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        normalizePrefix("site-root");
+        normalizePrefix("ncms-prefix");
+    }
+
+    private void normalizePrefix(String property) {
+        String val = impl().getString(property);
+        if (!StringUtils.isBlank(val)) {
+            val = val.trim();
+            if (!val.startsWith("/")) {
+                val = '/' + val;
+            }
+            if (val.endsWith("/")) {
+                val = val.substring(0, val.length() - 1);
+            }
+            impl().setProperty(property, val);
+        }
     }
 
     public String getApplicationName() {

@@ -97,7 +97,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             var path = this._getItemPathSegments(item);
             var d = new ncms.mmgr.MediaItemRenameDlg(path, item.getLabel());
             d.setPosition("bottom-right");
-            d.addListenerOnce("completed", function(ev) {
+            d.addListener("completed", function(ev) {
                 d.destroy();
                 var data = ev.getData();
                 item.setLoaded(false);
@@ -119,7 +119,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             var d = new ncms.mmgr.MediaSelectFolderDlg(
                     this.tr("Move '%1' to another folder", path.join("/"))
             );
-            d.addListenerOnce("completed", function(ev) {
+            d.addListener("completed", function(ev) {
                 var target = ev.getData();
                 var npath = [].concat(target, item.getLabel());
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.move", path),
@@ -150,8 +150,8 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             var path = this._getItemPathSegments(parent);
             var d = new ncms.mmgr.MediaFolderNewDlg(path);
             d.setPosition("bottom-right");
-            d.addListenerOnce("completed", function(ev) {
-                d.destroy();
+            d.addListener("completed", function(ev) {
+                d.close();
                 this._refreshNode(parent);
             }, this);
             d.placeToWidget(ev.getTarget(), false);

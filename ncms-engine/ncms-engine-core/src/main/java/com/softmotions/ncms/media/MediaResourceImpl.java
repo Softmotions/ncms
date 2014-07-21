@@ -12,8 +12,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Locale;
 
 /**
@@ -136,6 +138,18 @@ class MediaResourceImpl implements MediaResource {
         return is;
     }
 
+
+    public long writeTo(Writer out) throws IOException {
+        try (final Reader r = openReader()) {
+            return IOUtils.copyLarge(r, out);
+        }
+    }
+
+    public long writeTo(OutputStream out) throws IOException {
+        try (final InputStream is = openStream()) {
+            return IOUtils.copyLarge(is, out);
+        }
+    }
 
     private static class InputStreamSession extends InputStreamWrapper {
 

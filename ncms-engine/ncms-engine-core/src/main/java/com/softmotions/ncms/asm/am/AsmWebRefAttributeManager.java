@@ -2,18 +2,22 @@ package com.softmotions.ncms.asm.am;
 
 import ninja.lifecycle.Dispose;
 import ninja.lifecycle.Start;
+import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.web.GenericResponseWrapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.map.Flat3Map;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -46,11 +50,11 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 @Singleton
-public class AsmResourceAttributeManager implements AsmAttributeManager {
+public class AsmWebRefAttributeManager implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmResourceAttributeManager.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmWebRefAttributeManager.class);
 
-    public static final String[] TYPES = new String[]{"resource"};
+    public static final String[] TYPES = new String[]{"webref"};
 
     CloseableHttpClient httpclient;
 
@@ -70,27 +74,38 @@ public class AsmResourceAttributeManager implements AsmAttributeManager {
         if (attr == null || StringUtils.isBlank(attr.getEffectiveValue())) {
             return null;
         }
+        AsmOptions opts = new AsmOptions();
+        if (attr.getOptions() != null) {
+            opts.loadOptions(attr.getOptions());
+        }
         String location = attr.getEffectiveValue();
         URI uri;
         try {
             uri = new URI(location);
         } catch (URISyntaxException e) {
             log.warn("Invalid resource location: " + location +
-                     " asm: " + ctx.getAsm());
+                     " asm: " + ctx.getAsm() + " attribute: " + attrname +
+                     " error: " + e.getMessage());
             return null;
         }
-
+        if (BooleanUtils.toBoolean(opts.getString("asLocation"))) {
+            return location;
+        }
         if (log.isDebugEnabled()) {
             log.debug("Including resource: '" + uri + '\'');
         }
+        Object res;
         if (uri.getScheme() == null) {
-            return internalInclude(ctx, uri, options);
+            res = internalInclude(ctx, attrname, uri, options);
         } else {
-            return externalInclude(ctx, uri, options);
+            res = externalInclude(ctx, attrname, uri, options);
         }
+        ctx.setNextEscapeSkipping(!BooleanUtils.toBoolean(opts.getString("escape")));
+        return res;
     }
 
-    private String externalInclude(AsmRendererContext ctx, URI location, Map<String, String> options) {
+    private String externalInclude(AsmRendererContext ctx, String attrname,
+                                   URI location, Map<String, String> options) {
         StringWriter out = new StringWriter(1024);
         String cs = ctx.getServletRequest().getCharacterEncoding();
         if (cs == null) {
@@ -116,6 +131,7 @@ public class AsmResourceAttributeManager implements AsmAttributeManager {
                         log.warn("Invalid resource response status code: " + hresp.getStatusLine().getStatusCode() +
                                  " location: " + location +
                                  " asm: " + ctx.getAsm() +
+                                 " attribute: " + attrname +
                                  " response: " + out.toString());
                         return null;
                     }
@@ -146,13 +162,15 @@ public class AsmResourceAttributeManager implements AsmAttributeManager {
             }
         } catch (Exception e) {
             log.warn("Unable to load resource: " + location +
-                     " asm: " + ctx.getAsm(), e);
+                     " asm: " + ctx.getAsm() +
+                     " attribute: " + attrname, e);
             return null;
         }
         return out.toString();
     }
 
-    private String internalInclude(AsmRendererContext ctx, URI location, Map<String, String> options) {
+    private String internalInclude(AsmRendererContext ctx, String attrname,
+                                   URI location, Map<String, String> options) {
         String cs = ctx.getServletRequest().getCharacterEncoding();
         if (cs == null) {
             cs = "UTF-8";
@@ -175,7 +193,9 @@ public class AsmResourceAttributeManager implements AsmAttributeManager {
         try {
             rd.include(req, resp);
         } catch (IOException | ServletException e) {
-            log.warn("", e);
+            log.warn("Failed to include resource: " + location +
+                     " asm: " + ctx.getAsm() +
+                     " attribute: " + attrname, e);
             return null;
         }
         if (resp.getStatus() == HttpServletResponse.SC_OK) {
@@ -184,16 +204,24 @@ public class AsmResourceAttributeManager implements AsmAttributeManager {
             log.warn("Invalid resource response status code: " + resp.getStatus() +
                      " location: " + location +
                      " asm: " + ctx.getAsm() +
+                     " attribute: " + attrname +
                      " response: " + out.toString());
             return null;
         }
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
+        AsmOptions opts = new AsmOptions();
+        JsonUtils.populateMapByJsonNode((ObjectNode) val, opts,
+                                        "escape",
+                                        "asLocation");
+        attr.setOptions(opts.toString());
+        attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
         return attr;
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+        attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText().trim() : null);
         return attr;
     }
 

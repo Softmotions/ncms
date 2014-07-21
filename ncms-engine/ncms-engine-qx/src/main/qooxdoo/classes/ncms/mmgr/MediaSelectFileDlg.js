@@ -103,7 +103,7 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
             var ff = this.getCtypeAcceptor() || function() {
                 return true;
             };
-            this.__okBt.setEnabled((ctype != null && ff(ctype)));
+            this.__okBt.setEnabled((ctype != null && ff.call(ff, ctype)));
             if (spec) {
                 this.setStatus(spec["folder"] + spec["name"]);
             } else {

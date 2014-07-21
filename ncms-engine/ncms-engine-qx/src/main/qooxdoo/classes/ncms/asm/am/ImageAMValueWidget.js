@@ -130,7 +130,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
                         allowModify : true,
                         noLinkText : true
                     });
-            dlg.setCtypeAcceptor(ncms.Utils.isImageContentType);
+            dlg.setCtypeAcceptor(ncms.Utils.isImageContentType.bind(ncms.Utils));
             dlg.open();
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();

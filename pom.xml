@@ -55,7 +55,7 @@
         <commons.validator.version>1.4.0</commons.validator.version>
         <httpcomponents.version>4.3.4</httpcomponents.version>
         <tomcat.version>7.0.54</tomcat.version>
-        <httl.version>1.0.11</httl.version>
+        <httl.version>1.0.12-SNAPSHOT</httl.version>
         <jericho.version>3.3</jericho.version>
         <guava.version>17.0</guava.version>
         <jetty.version>9.2.1.v20140609</jetty.version>

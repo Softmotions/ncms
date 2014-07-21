@@ -62,7 +62,7 @@ public class AsmRefAttributeManager implements AsmAttributeManager {
         } catch (Exception e) {
             log.warn("Exception " + e.getMessage() +
                      " during sub-assembly rendering: " + asmName +
-                     " of assembly: " + asm.getName() +
+                     " asm: " + asm.getName() +
                      " attribute: " + attr.getName(), e);
             return null;
         }
@@ -70,7 +70,7 @@ public class AsmRefAttributeManager implements AsmAttributeManager {
         if (resp.getStatus() != HttpServletResponse.SC_OK) {
             log.warn("Unexpected status code: " + resp.getStatus() +
                      " during sub-assembly rendering: " + asmName +
-                     " of assembly: " + asm.getName() +
+                     " asm: " + asm.getName() +
                      " attribute: " + attr.getName());
             return null;
         }

@@ -291,7 +291,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                     this.tr("New attribute for assembly: %1", this.__spec["name"]),
                     this.__spec
             );
-            dlg.addListenerOnce("completed", function(ev) {
+            dlg.addListener("completed", function(ev) {
                 dlg.close();
                 this.fireEvent("attributesChanged");
             }, this);
@@ -327,7 +327,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             }
 
             var dlg = new ncms.asm.AsmAttrEditorDlg(caption, this.__spec, rd);
-            dlg.addListenerOnce("completed", function(ev) {
+            dlg.addListener("completed", function(ev) {
                 dlg.close();
                 this.fireEvent("attributesChanged");
             }, this);

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,6 +41,15 @@ public class DefaultAsmRenderer implements AsmRenderer {
                               AsmAttributeManagersRegistry amRegistry) {
         this.templateEgines = templateEgines;
         this.amRegistry = amRegistry;
+    }
+
+    public void renderTemplate(String location, AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException {
+        AsmTemplateEngineAdapter te = selectTemplateEngineForLocation(location);
+        if (te == null) {
+            throw new AsmRenderingException("Failed to select template engine for location: " +
+                                            location + " assembly: " + ctx.getAsm().getName());
+        }
+        te.renderTemplate(location, ctx, out);
     }
 
     public void renderAsm(AsmRendererContext ctx) throws AsmRenderingException, IOException {
@@ -71,11 +81,12 @@ public class DefaultAsmRenderer implements AsmRenderer {
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attributeName,
                                      Map<String, String> options) throws AsmRenderingException {
+
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attributeName);
         if (attr == null) {
-            log.warn("Acquired attribute: " + attributeName +
-                     " not found in assembly: " + asm.getName());
+            log.warn("Attribute: '" + attributeName +
+                     "' not found in assembly: '" + asm.getName() + '\'');
             return "";
         }
         String type = attr.getType();
@@ -130,6 +141,30 @@ public class DefaultAsmRenderer implements AsmRenderer {
             throw new AsmRenderingException("Failed to execute assembly handler: '" + controllerClassName +
                                             "' for assembly: " + asm.getName());
         }
+    }
+
+
+    protected AsmTemplateEngineAdapter selectTemplateEngineForLocation(String location) {
+        AsmTemplateEngineAdapter defaultTe = null;
+        String type = FilenameUtils.getExtension(location);
+        if (StringUtils.isBlank(type)) {
+            type = "*";
+        }
+        String dotType = '.' + type;
+        for (final AsmTemplateEngineAdapter te : templateEgines) {
+            if (defaultTe == null) {
+                defaultTe = te;
+            }
+            for (String ext : te.getSupportedExtensions()) {
+                if ("*".equals(ext) || ".*".equals(ext)) {
+                    defaultTe = te;
+                }
+                if (ext.equals(type) || ext.equals(dotType)) {
+                    return te;
+                }
+            }
+        }
+        return defaultTe;
     }
 
     protected AsmTemplateEngineAdapter selectTemplateEngineForCore(AsmCore core) {

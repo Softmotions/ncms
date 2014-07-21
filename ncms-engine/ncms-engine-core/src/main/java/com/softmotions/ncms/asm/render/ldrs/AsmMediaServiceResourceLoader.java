@@ -18,7 +18,7 @@ import java.util.Locale;
 @Singleton
 public class AsmMediaServiceResourceLoader implements AsmResourceLoader {
 
-    final MediaReader reader;
+    private final MediaReader reader;
 
     @Inject
     public AsmMediaServiceResourceLoader(MediaReader reader) {
