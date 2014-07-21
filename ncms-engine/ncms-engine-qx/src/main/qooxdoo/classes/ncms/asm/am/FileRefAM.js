@@ -101,10 +101,14 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
         __initFileSelectorBf : function() {
             var bf = new sm.ui.form.ButtonField(this.tr("File"),
                     "ncms/icon/16/misc/document-text.png");
+            bf.setShowResetButton(true);
             bf.setReadOnly(true);
             bf.setRequired(true);
             bf.setPlaceholder(this.tr("Please specify a file"));
-            bf.addListener("execute", function(ev) {
+            bf.addListener("reset", function() {
+                bf.resetValue();
+            });
+            bf.addListener("execute", function() {
                 var dlg = new ncms.mmgr.MediaSelectFileDlg(
                         true,
                         this.tr("Please specify a file"));
@@ -121,6 +125,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
                     var path = fspec["folder"] + fspec["name"];
                     bf.setValue(path);
                     dlg.close();
+                    this._form.validate();
                 }, this);
                 dlg.show();
             }, this);

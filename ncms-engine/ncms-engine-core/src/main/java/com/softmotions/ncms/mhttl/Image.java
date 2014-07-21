@@ -5,12 +5,12 @@ package com.softmotions.ncms.mhttl;
 */
 public final class Image {
 
-    long id;
-    boolean restrict;
-    boolean resize;
-    boolean skipSmall;
-    Integer optionsWidth;
-    Integer optionsHeight;
+    private long id;
+    private boolean restrict;
+    private boolean resize;
+    private boolean skipSmall;
+    private Integer optionsWidth;
+    private Integer optionsHeight;
 
     public long getId() {
         return id;
