@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm.render;
 
+import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.web.GenericResponseWrapper;
@@ -40,17 +41,21 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final boolean subcontext;
 
+    final NcmsConfiguration cfg;
+
     Map<String, Asm> asmCloneContext;
 
     Map<String, String[]> dedicatedParams;
 
 
-    private AsmRendererContextImpl(Injector injector,
+    private AsmRendererContextImpl(NcmsConfiguration cfg,
+                                   Injector injector,
                                    ClassLoader classLoader,
                                    AsmRenderer renderer,
                                    AsmResourceLoader loader,
                                    HttpServletRequest req, HttpServletResponse resp,
                                    Asm asm) {
+        this.cfg = cfg;
         this.injector = injector;
         this.renderer = renderer;
         this.loader = loader;
@@ -61,13 +66,15 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.subcontext = true;
     }
 
-    public AsmRendererContextImpl(Injector injector,
+    public AsmRendererContextImpl(NcmsConfiguration cfg,
+                                  Injector injector,
                                   AsmRenderer renderer,
                                   AsmResourceLoader loader,
                                   HttpServletRequest req, HttpServletResponse resp,
                                   Object asmRef)
             throws AsmRenderingException {
 
+        this.cfg = cfg;
         this.injector = injector;
         this.renderer = renderer;
         this.loader = loader;
@@ -107,6 +114,10 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     public Injector getInjector() {
         return injector;
+    }
+
+    public NcmsConfiguration getCfg() {
+        return cfg;
     }
 
     public Map<String, String[]> getDedicatedRequestParams() {
@@ -154,7 +165,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
             throw new AsmResourceNotFoundException("asm: '" + asmname + "'");
         }
         AsmRendererContextImpl nctx =
-                new AsmRendererContextImpl(injector, classLoader, renderer, loader,
+                new AsmRendererContextImpl(cfg, injector, classLoader, renderer, loader,
                                            req, new GenericResponseWrapper(resp, out, false),
                                            nasm.cloneDeep(asmCloneContext));
         nctx.asmCloneContext = asmCloneContext;

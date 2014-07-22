@@ -100,7 +100,8 @@ public class AsmServlet extends HttpServlet {
             renderResp = new GenericResponseWrapper(resp, out, false);
         }
         try {
-            ctx = new AsmRendererContextImpl(injector,
+            ctx = new AsmRendererContextImpl(cfg,
+                                             injector,
                                              renderer,
                                              loader,
                                              req, renderResp, asmRef);

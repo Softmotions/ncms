@@ -75,7 +75,7 @@ public class AsmRefAttributeManager implements AsmAttributeManager {
             return null;
         }
         //Schedule skip escaping on this attribute
-        ctx.setNextEscapeSkipping(true);
+        //ctx.setNextEscapeSkipping(true);
         return out.toString();
     }
 

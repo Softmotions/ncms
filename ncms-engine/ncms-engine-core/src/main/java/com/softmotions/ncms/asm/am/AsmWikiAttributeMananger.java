@@ -99,7 +99,7 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
                 html = new StringBuilder(html.length() + 32)
                         .append("<div class=\"wiki\">")
                         .append(html)
-                        .append("</div>")
+                        .append("\n</div>")
                         .toString();
             } else {
                 log.warn("Unsupported markup language: " + markup);

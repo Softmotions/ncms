@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm.render;
 
 import com.softmotions.commons.cont.Stack;
+import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.asm.Asm;
 
 import com.google.inject.Injector;
@@ -22,7 +23,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = new ThreadLocal<>();
 
-    protected boolean nextEscapeSkipping = true;
+    public final Stack<Boolean> escapeStack = new Stack<>();
 
     /**
      * Push the current context in the ThreadLocal {@link #ASM_CTX}
@@ -62,14 +63,6 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
             return null;
         }
         return sctx.peek();
-    }
-
-    public boolean isNextEscapeSkipping() {
-        return nextEscapeSkipping;
-    }
-
-    public void setNextEscapeSkipping(boolean nextEscapeSkipping) {
-        this.nextEscapeSkipping = nextEscapeSkipping;
     }
 
     public abstract AsmRenderer getRenderer();
@@ -124,6 +117,8 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      * Guice injector.
      */
     public abstract Injector getInjector();
+
+    public abstract NcmsConfiguration getCfg();
 
     /**
      * Classloader used to load resources within this context.

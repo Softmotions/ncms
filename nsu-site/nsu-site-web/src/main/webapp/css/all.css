@@ -1238,7 +1238,7 @@ dialog {
 
 #main ul li {
     padding: 0 0 0 13px;
-    margin: 0 0 10px;
+    margin: 0 0 5px; /*adam 0 0 10px */
     position: relative;
 }
 
@@ -2717,4 +2717,16 @@ ol li:before {
     overflow: hidden;
     font: 13px/18px Arial, Helvetica, sans-serif;
     display: block;
+}
+
+
+/*======================== Extra ======================== */
+
+div.wiki {
+    padding: 0;
+    margin: 0;
+}
+
+span.mw-headline {
+
 }

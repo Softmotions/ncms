@@ -9,6 +9,7 @@
         SELECT
         asm.id AS "id",
         asm.name AS "name",
+        asm.hname AS "hname",
         asm.description AS "description",
         asm.type AS "type",
         asm.published AS "published",

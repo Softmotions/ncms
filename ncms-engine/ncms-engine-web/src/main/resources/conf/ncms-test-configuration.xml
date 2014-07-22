@@ -38,7 +38,7 @@
         <thumbnails-width>250</thumbnails-width>
         <resize-default-format>jpeg</resize-default-format>
         <max-edit-text-size>524288</max-edit-text-size>
-        <import>${basedir}/src/test/media</import>
+        <import directory="${basedir}/src/test/media"/>
         <system-directories>
             <directory>/system</directory>
             <directory>/pages</directory>
@@ -50,7 +50,7 @@
         loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
         import.methods+=com.softmotions.ncms.asm.render.httl.HttlAsmMethods
         import.packages+=com.softmotions.ncms.mhttl
-        value.filters=com.softmotions.ncms.asm.render.httl.HttlValueFilter
+        value.filters=httl.spi.filters.EscapeXmlFilter
         reloadable=true
         code.directory=/tmp/httl-code1
     </httl>

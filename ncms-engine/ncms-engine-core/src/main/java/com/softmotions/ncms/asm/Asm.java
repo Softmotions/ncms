@@ -443,8 +443,12 @@ public class Asm implements Serializable {
         asm = new Asm();
         asm.id = id;
         asm.name = name;
+        asm.hname = hname;
         asm.description = description;
         asm.options = options;
+        asm.published = published;
+        asm.template = template;
+        asm.controller = controller;
         asm.core = (core != null) ? core.cloneDeep() : null;
         asm.attributes = (attributes != null) ? attributes.cloneDeep() : null;
         if (getParents() != null) {
@@ -472,6 +476,7 @@ public class Asm implements Serializable {
         final StringBuilder sb = new StringBuilder("Asm{");
         sb.append("id=").append(id);
         sb.append(", name='").append(name).append('\'');
+        sb.append(", hname='").append(hname).append('\'');
         sb.append(", options='").append(options).append('\'');
         sb.append(", core=").append(core);
         sb.append(", description='").append(description).append('\'');

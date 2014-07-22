@@ -1,8 +1,10 @@
 package com.softmotions.ncms.mhttl;
 
+import com.softmotions.ncms.asm.render.AsmRendererContext;
+
 /**
-* @author Adamansky Anton (adamansky@gmail.com)
-*/
+ * @author Adamansky Anton (adamansky@gmail.com)
+ */
 public final class Image {
 
     private long id;
@@ -11,6 +13,11 @@ public final class Image {
     private boolean skipSmall;
     private Integer optionsWidth;
     private Integer optionsHeight;
+    private final AsmRendererContext ctx;
+
+    public Image(AsmRendererContext ctx) {
+        this.ctx = ctx;
+    }
 
     public long getId() {
         return id;
@@ -61,12 +68,15 @@ public final class Image {
     }
 
     public String getLink() {
-        //todo !!!!
-        return "" + id;
+        String cpath = ctx.getServletRequest().getServletContext().getContextPath();
+        if (cpath.endsWith("/")) {
+            cpath = cpath.substring(0, cpath.length() - 1);
+        }
+        return cpath + ctx.getCfg().getNcmsPrefix() + "/rc/media/fileid/" + id;
     }
 
     public String toString() {
-        final StringBuilder sb = new StringBuilder("AsmImageNode{");
+        final StringBuilder sb = new StringBuilder("Image{");
         sb.append("id=").append(id);
         sb.append(", optionsWidth=").append(optionsWidth);
         sb.append(", optionsHeight=").append(optionsHeight);

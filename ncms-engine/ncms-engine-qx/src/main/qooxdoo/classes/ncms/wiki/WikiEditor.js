@@ -419,7 +419,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 icon : "ncms/icon/16/wiki/text_bold.png",
                 tooltipText : this.tr("Bold"),
                 prompt : cprompt(this.tr("Bold text")),
-                insertMediawiki : csurround(1, "'", ""),
+                insertMediawiki : csurround(1, "'''", ""),
                 insertMarkdown : csurround(2, "*", "")
             });
             this._addToolbarControl({

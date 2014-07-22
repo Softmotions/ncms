@@ -48,13 +48,13 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             });
             form.add(bf, this.tr("Location"), null, "location");
 
-            var escCb = new qx.ui.form.CheckBox();
+            /*var escCb = new qx.ui.form.CheckBox();
             if (opts["escape"] != null) {
                 escCb.setValue("true" == opts["escape"]);
             } else {
                 escCb.setValue(true);
             }
-            form.add(escCb, this.tr("Escape data"), null, "escape");
+            form.add(escCb, this.tr("Escape data"), null, "escape");*/
 
             var astCb = new qx.ui.form.CheckBox();
             astCb.setValue("true" == opts["asTemplate"]);
@@ -63,11 +63,11 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             var aslocCb = new qx.ui.form.CheckBox();
             aslocCb.setValue("true" == opts["asLocation"]);
             aslocCb.addListener("changeValue", function(ev) {
-                escCb.setEnabled(ev.getData() == false);
+                //escCb.setEnabled(ev.getData() == false);
                 astCb.setEnabled(ev.getData() == false);
             });
             form.add(aslocCb, this.tr("Render only location"), null, "asLocation");
-            escCb.setEnabled(aslocCb.getValue() == false);
+            //escCb.setEnabled(aslocCb.getValue() == false);
             astCb.setEnabled(aslocCb.getValue() == false);
 
             var fr = new sm.ui.form.FlexFormRenderer(form);
@@ -83,7 +83,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             return {
                 asTemplate : items["asTemplate"].getValue(),
                 asLocation : items["asLocation"].getValue(),
-                escape : items["escape"].getValue(),
+                //escape : items["escape"].getValue(),
                 value : items["location"].getValue()
             };
         },

@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm.render.httl;
 
 import com.softmotions.commons.cont.KVOptions;
+import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 import java.util.Map;
@@ -12,6 +13,11 @@ import java.util.Map;
 public class HttlAsmMethods {
 
     private HttlAsmMethods() {
+    }
+
+    public static Asm page() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getAsm();
     }
 
     public static Object asm(String val) {

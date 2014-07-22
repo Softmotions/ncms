@@ -12,6 +12,8 @@ import com.google.inject.Inject;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,6 +31,8 @@ import static org.junit.Assert.*;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public class AsmRenderer1Test extends NcmsWebTest {
+
+    private static final Logger log = LoggerFactory.getLogger(AsmRenderer1Test.class);
 
     @Inject
     AsmDAO adao;
@@ -86,6 +90,7 @@ public class AsmRenderer1Test extends NcmsWebTest {
         assertEquals(200, resp.statusCode);
         assertEquals("UTF-8", resp.charset);
         String respStr = resp.toString();
+
         assertTrue(respStr.contains("f67c7ec829b84e9da79c420f09e04994"));
         assertTrue(respStr.contains("asm1_attr1=a15e2f74f8724be9947acc586fd15a84"));
         assertTrue(respStr.contains("asm1_attr2=53496feab7f34f488185edacc70a4739"));
@@ -98,8 +103,9 @@ public class AsmRenderer1Test extends NcmsWebTest {
         assertTrue(respStr.contains("asm1_inc=f67c7ec829b84e9da79c420f09e04994"));
         assertTrue(respStr.contains("asm1_attr1=a15e2f74f8724be9947acc586fd15a84"));
         assertTrue(respStr.contains("asm1_attr2=53496feab7f34f488185edacc70a4739"));
+
         assertTrue(respStr.contains("asm1_attr3=&lt;asm1_attr3&gt;"));
-        assertTrue(respStr.contains("<core1>&amp;</core1>"));
+        assertTrue(respStr.contains("&lt;core1&gt;&amp;amp;&lt;/core1&gt;"));
         assertTrue(respStr.contains("<coreAsmInc>&amp;</coreAsmInc>"));
 
         resp = testBrowser.makeGET(getServerAddress() + "/testresp");
@@ -112,7 +118,7 @@ public class AsmRenderer1Test extends NcmsWebTest {
         respStr = resp.toString();
         assertEquals(200, resp.statusCode);
         assertEquals("UTF-8", resp.charset);
-        System.err.println("respStr=|" + respStr + "|");
+
         assertTrue(respStr.contains("b7d52d51edf94942a09fdda98ed88020"));
         assertTrue(respStr.contains("internal_inc1=0f7542de52b847b68ea6a16a7762c560"));
         assertTrue(respStr.contains("4b5c=83f4"));
@@ -126,7 +132,7 @@ public class AsmRenderer1Test extends NcmsWebTest {
         assertTrue(respStr.contains("440d=b6dc"));
         assertTrue(respStr.contains("asm1_inc=f67c7ec829b84e9da79c420f09e04994"));
         assertTrue(respStr.contains("asm1_attr3=&lt;asm1_attr3&gt;"));
-        assertTrue(respStr.contains("<core1>&amp;</core1>"));
+        assertTrue(respStr.contains("&lt;core1&gt;&amp;amp;&lt;/core1&gt;"));
         assertTrue(respStr.contains("external_inc1=0f7542de52b847b68ea6a16a7762c560"));
         assertTrue(respStr.contains("d499e094=3bc8"));
     }

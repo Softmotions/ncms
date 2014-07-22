@@ -100,7 +100,7 @@ public class AsmWebRefAttributeManager implements AsmAttributeManager {
         } else {
             res = externalInclude(ctx, attrname, uri, options);
         }
-        ctx.setNextEscapeSkipping(!BooleanUtils.toBoolean(opts.getString("escape")));
+        //ctx.setNextEscapeSkipping(!BooleanUtils.toBoolean(opts.getString("escape")));
         return res;
     }
 
@@ -213,7 +213,6 @@ public class AsmWebRefAttributeManager implements AsmAttributeManager {
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions opts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts,
-                                        "escape",
                                         "asLocation");
         attr.setOptions(opts.toString());
         attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);

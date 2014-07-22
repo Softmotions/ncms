@@ -58,7 +58,7 @@ public class AsmImageAttributeManager implements AsmAttributeManager {
         if (StringUtils.isBlank(value)) {
             return null;
         }
-        Image res = new Image();
+        Image res = new Image(ctx);
         try (JsonParser parser = mapper.getFactory().createParser(value)) {
             JsonToken t;
             String key;

@@ -65,7 +65,7 @@ public class AsmFileRefAttributeManager implements AsmAttributeManager {
         if (asTemplate) {
             AsmRenderer renderer = ctx.getRenderer();
             StringWriter out = new StringWriter(1024);
-            ctx.setNextEscapeSkipping(!BooleanUtils.toBoolean(opts.getString("escape")));
+            //ctx.setNextEscapeSkipping(!BooleanUtils.toBoolean(opts.getString("escape")));
             try {
                 renderer.renderTemplate(location, ctx, out);
             } catch (IOException e) {
@@ -91,14 +91,13 @@ public class AsmFileRefAttributeManager implements AsmAttributeManager {
             throw new AsmRenderingException("Failed to load resource: '" + location + '\'' +
                                             " asm: " + ctx.getAsm().getName() + " attribute: " + attrname, e);
         }
-        ctx.setNextEscapeSkipping(!BooleanUtils.toBoolean(opts.getString("escape")));
+        //ctx.setNextEscapeSkipping(!BooleanUtils.toBoolean(opts.getString("escape")));
         return sw.toString();
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
         AsmOptions opts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts,
-                                        "escape",
                                         "asLocation",
                                         "asTemplate");
         attr.setOptions(opts.toString());
