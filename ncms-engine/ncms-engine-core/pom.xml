@@ -99,7 +99,7 @@
             <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.httl</groupId>
+            <groupId>softmotions</groupId>
             <artifactId>httl</artifactId>
         </dependency>
         <dependency>

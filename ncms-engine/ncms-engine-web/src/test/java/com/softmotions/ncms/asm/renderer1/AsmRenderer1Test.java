@@ -21,8 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Test basics of assembly rendering.
@@ -69,11 +68,11 @@ public class AsmRenderer1Test extends NcmsWebTest {
         //Another version of assembly inclusion
         Asm asmInc2 = new Asm("asmInc2",
                               new AsmCore("com/softmotions/ncms/asm/renderer1/coreAsmInc2.httl", "coreAsmInc2"));
-        asmInc2.addAttribute(new AsmAttribute("internal_inc1", "resource",
+        asmInc2.addAttribute(new AsmAttribute("internal_inc1", "webref",
                                               "/testresp"));
-        asmInc2.addAttribute(new AsmAttribute("internal_inc2", "resource",
+        asmInc2.addAttribute(new AsmAttribute("internal_inc2", "webref",
                                               "/testresp?dc6bda8275b2=4c3e&6b21e2ee=a9cb"));
-        asmInc2.addAttribute(new AsmAttribute("external_inc1", "resource",
+        asmInc2.addAttribute(new AsmAttribute("external_inc1", "webref",
                                               getServerAddress() + "/testresp?d499e094=3bc8"));
 
 
@@ -113,6 +112,7 @@ public class AsmRenderer1Test extends NcmsWebTest {
         respStr = resp.toString();
         assertEquals(200, resp.statusCode);
         assertEquals("UTF-8", resp.charset);
+        System.err.println("respStr=|" + respStr + "|");
         assertTrue(respStr.contains("b7d52d51edf94942a09fdda98ed88020"));
         assertTrue(respStr.contains("internal_inc1=0f7542de52b847b68ea6a16a7762c560"));
         assertTrue(respStr.contains("4b5c=83f4"));
