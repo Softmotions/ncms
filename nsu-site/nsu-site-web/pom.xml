@@ -210,7 +210,7 @@
         <dependency>
             <groupId>nsu</groupId>
             <artifactId>nsu-site-qx</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
             <classifier>${ncms.environment}</classifier>
             <scope>runtime</scope>
         </dependency>

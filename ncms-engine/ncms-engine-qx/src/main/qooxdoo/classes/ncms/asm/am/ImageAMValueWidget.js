@@ -57,7 +57,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
 
         this.bind("valid", this.__bf, "valid");
 
-        this.setUserData("ncms.asm.validator", this.__validate);
+        this.setUserData("ncms.asm.validator", this.__validate.bind(this));
     },
 
     members : {
@@ -83,6 +83,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
          },
          */
         __validate : function() {
+
             if (this.getRequired() && sm.lang.String.isEmpty(this.__bf.getValue())) {
                 this.setValid(false);
                 this.setInvalidMessage(this.tr("This field is required"));
@@ -197,13 +198,13 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
         },
 
         setAttributeValue : function(val) {
-            if (sm.lang.String.isEmpty(val)) {
+            val = JSON.parse(val);
+            if (val == null || val["id"] == null) {
                 this.removeState("widgetNotReady");
                 this.__bf.resetValue();
                 this.__image.resetSource();
                 return;
             }
-            val = JSON.parse(val);
             if (val["options"] != null) {
                 this.__options = val["options"] || {};
             }
@@ -217,6 +218,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
             req.addListener("finished", function() {
                 this.removeState("widgetNotReady");
             }, this);
+
             this.__image.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail2", val));
         },
 

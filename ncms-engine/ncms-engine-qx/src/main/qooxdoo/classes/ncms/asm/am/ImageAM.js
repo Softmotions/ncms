@@ -88,6 +88,7 @@ qx.Class.define("ncms.asm.am.ImageAM", {
             this._fetchAttributeValue(attrSpec, function(val) {
                 w.setAttributeValue(val);
             });
+            w.setRequired(!!attrSpec["required"]);
             this._valueWidget = w;
             return w;
         },
