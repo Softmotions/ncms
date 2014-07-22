@@ -64,9 +64,9 @@ public class MediaWikiConverter implements ITextConverter {
                                 list.renderHTML(this, listSb, model);
                                 String listSpec = listSb.toString().trim();
                                 if (listSpec.indexOf("<ul>") == 0) {
-                                    listSpec = "<ul class='list'>" + listSpec.substring("<ul>".length());
+                                    listSpec = "<ul>" + listSpec.substring("<ul>".length());
                                 } else if (listSpec.indexOf("<ol>") == 0) {
-                                    listSpec = "<ol class='list'>" + listSpec.substring("<ol>".length());
+                                    listSpec = "<ol>" + listSpec.substring("<ol>".length());
                                 }
                                 resultBuffer.append(listSpec);
                             } else {
