@@ -157,7 +157,7 @@
                     </dependency>
                     <dependency>
                         <groupId>softmotions</groupId>
-                        <version>1.0-SNAPSHOT</version>
+                        <version>${parent.version}</version>
                         <artifactId>softmotions-web-realms</artifactId>
                     </dependency>
                 </dependencies>
@@ -247,14 +247,14 @@
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>ncms-engine-qx</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${parent.version}</version>
             <classifier>${ncms.environment}</classifier>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>ncms-engine-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${parent.version}</version>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
