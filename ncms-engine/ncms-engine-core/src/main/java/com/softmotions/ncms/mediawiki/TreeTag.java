@@ -106,7 +106,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
                             labelNode = (TextNode) parent.childs.get(parent.childs.size() - 1);
                             parent.childs.remove(parent.childs.size() - 1);
                         } else {
-                            log.warn("Invalid murkup at: " + line);
+                            log.warn("Invalid markup at: " + line);
                             continue;
                         }
 
@@ -148,7 +148,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
             }
             ++res;
         }
-        return new Pair<Integer, String>(res, i > 0 ? line.substring(i - 1) : line);
+        return new Pair<>(res, i > 0 ? line.substring(i - 1) : line);
     }
 
 

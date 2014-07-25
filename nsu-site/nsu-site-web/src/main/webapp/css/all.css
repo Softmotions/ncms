@@ -1261,7 +1261,7 @@ ol {
 }
 
 ol li {
-    margin: 0 0 10px;
+    margin: 0; /*adam 0 0 10px */
     display: block;
 }
 
@@ -1269,8 +1269,8 @@ ol li:before {
     content: counters(item, ".") ". ";
     counter-increment: item;
     color: #3395e1;
-    width: 17px;
     float: left;
+    padding: 0 5px 0 0;
     margin: 0 0 0 -17px;
     font: 700 13px/22px 'Open Sans', Arial, Helvetica, sans-serif;
 }
@@ -1282,6 +1282,16 @@ ol li:before {
     margin: 14px 0 28px;
     font: italic 15px/22px Arial, Helvetica, sans-serif;
     color: #515151;
+}
+
+#main .note-warn {
+    display: block;
+    border: 1px solid #cdcdcd;
+    margin: 14px 0 28px;
+    font: italic 15px/22px Arial, Helvetica, sans-serif;
+    color: #515151;
+    background: url(../images/exclamation.png) no-repeat 10px;
+    padding: 14px 18px 16px 55px;
 }
 
 #main h3 {

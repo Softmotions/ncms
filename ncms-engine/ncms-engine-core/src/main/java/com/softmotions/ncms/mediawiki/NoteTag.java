@@ -9,6 +9,7 @@ import info.bliki.wiki.tags.util.INoBodyParsingTag;
 import com.google.inject.Singleton;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Simple note tag.
@@ -22,12 +23,20 @@ public class NoteTag extends HTMLTag implements INoBodyParsingTag {
         super("div");
     }
 
+    public boolean isAllowedAttribute(String attName) {
+        return "style".equalsIgnoreCase(attName);
+    }
+
     public void renderHTML(ITextConverter converter, Appendable buf, IWikiModel model) throws IOException {
+        Map<String, String> attrs = getAttributes();
         String body = this.getBodyString();
-        buf.append("<div class='wiki-note-wrap'>");
-        buf.append("<div class='wiki-note'>");
+        if ("warning".equals(attrs.get("style"))) {
+            buf.append("<div class=\"note-warn\">");
+        } else {
+            buf.append("<div class=\"note\">");
+        }
         buf.append(Encoder.encodeHtml(body));
         buf.append("</div>");
-        buf.append("</div>");
+
     }
 }

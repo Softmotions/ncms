@@ -1,18 +1,7 @@
 /**
  * Wiki editor
  *
- * @asset(ncms/icon/16/wiki/text_heading_1.png)
- * @asset(ncms/icon/16/wiki/text_heading_2.png)
- * @asset(ncms/icon/16/wiki/text_heading_3.png)
- * @asset(ncms/icon/16/wiki/text_bold.png)
- * @asset(ncms/icon/16/wiki/text_italic.png)
- * @asset(ncms/icon/16/wiki/text_list_bullets.png)
- * @asset(ncms/icon/16/wiki/text_list_numbers.png)
- * @asset(ncms/icon/16/wiki/link_add.png)
- * @asset(ncms/icon/16/wiki/image_add.png)
- * @asset(ncms/icon/16/wiki/table_add.png)
- * @asset(ncms/icon/16/wiki/tree_add.png)
- * @asset(ncms/icon/16/wiki/note_add.png)
+ * @asset(ncms/icon/16/wiki/*)
  */
 qx.Class.define("ncms.wiki.WikiEditor", {
     extend : qx.ui.core.Widget,
@@ -29,16 +18,9 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
     statics : {
 
-        createTextSurround : function(text, level, pattern, trails) {
-            var nval = [];
-            var hfix = qx.lang.String.repeat(pattern, level < 1 ? 1 : level);
-            nval.push(hfix);
-            nval.push(trails || "");
-            nval.push(text);
-            nval.push(trails || "");
-            nval.push(hfix);
-            return nval.join("");
-        }
+        SELECTION_START : {},
+
+        SELECTION_END : {}
     },
 
     events : {
@@ -65,7 +47,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
     construct : function() {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(0));
-        this.__editorControls = []; // cache for controls
+        this.__controls = [];
 
         var toolbar = this.getChildControl("toolbar");
         this.__initToolbar(toolbar);
@@ -103,7 +85,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __lastToolbarItem : null,
 
-        __editorControls : null,
+        __controls : null,
 
         __lastSStart : 0,
 
@@ -157,9 +139,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
         _applyMarkup : function(value, old) {
-            for (var i = 0; i < this.__editorControls.length; ++i) {
-                this.__updateControl(this.__editorControls[i]);
-            }
+            this.__updateControls();
         },
 
         //overriden
@@ -174,9 +154,13 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     this._add(control, {flex : 0});
                     this.__lastToolbarItem = control.addSpacer();
                     var overflow = new qx.ui.toolbar.MenuButton(this.tr("More..."));
+                    overflow.setShow("both");
+                    overflow.setAppearance("wiki-editor-toolbar-menubutton");
                     overflow.setMenu(new qx.ui.menu.Menu());
+                    overflow.setShowArrow(true);
                     control.add(overflow);
                     control.setOverflowIndicator(overflow);
+                    control.setOverflowHandling(true);
                     break;
 
                 case "textarea":
@@ -218,45 +202,54 @@ qx.Class.define("ncms.wiki.WikiEditor", {
          * Set "excluded" state for all toolbar controls with given id.
          */
         excludeToolbarControl : function(id) {
-            for (var i = 0; i < this.__editorControls.length; ++i) {
-                var cmeta = this.__editorControls[i];
-                if (cmeta.options["id"] == id) {
-                    cmeta.options["excluded"] = true;
-                    this.__updateControl(cmeta);
+            this.__updateControls(this.__controls.filter(function(bt) {
+                var opts = bt.getUserData("opts");
+                if (opts && opts["id"] === id) {
+                    opts["excluded"] = true;
+                    return true;
+                } else {
+                    return false;
                 }
-            }
+            }));
         },
 
         /**
          * Reset "excluded" state for all toolbar controls with given id.
          */
         showToolbarControl : function(id) {
-            for (var i = 0; i < this.__editorControls.length; ++i) {
-                var cmeta = this.__editorControls[i];
-                if (cmeta.options["id"] == id) {
-                    cmeta.options["excluded"] = false;
-                    this.__updateControl(cmeta);
+            this.__updateControls(this.__controls.filter(function(bt) {
+                var opts = bt.getUserData("opts");
+                if (opts && opts["id"] === id) {
+                    opts["excluded"] = false;
+                    return true;
+                } else {
+                    return false;
                 }
-            }
+            }));
         },
 
         /**
          * Reset "excluded" state for all toolbar controls
          */
         resetToolbarControls : function() {
-            for (var i = 0; i < this.__editorControls.length; ++i) {
-                this.__editorControls[i].options["excluded"] = false;
-                this.__updateControl(this.__editorControls[i]);
-            }
+            this.__updateControls(this.__controls.filter(function(bt) {
+                var opts = bt.getUserData("opts");
+                if (opts) {
+                    opts["excluded"] = false;
+                    return true;
+                } else {
+                    return false;
+                }
+            }));
         },
 
         /**
          * Check for existing toolbar control with given id.
          */
         hasToolbarControl : function(id) {
-            for (var i = 0; i < this.__editorControls.length; ++i) {
-                var cmeta = this.__editorControls[i];
-                if (cmeta.options["id"] == id) {
+            for (var i = 0; i < this.__controls.length; ++i) {
+                var opts = this.__controls[i].getUserData();
+                if (opts && opts["id"] === id) {
                     return true;
                 }
             }
@@ -269,29 +262,71 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         _addToolbarControl : function(options) {
             var toolbar = this.getChildControl("toolbar");
-            var callback = this.__buildToolbarControlAction(options);
-            var cmeta = this.__editorControls[this.__editorControls.length] = {
-                options : options,
-                buttons : []
-            };
-            cmeta.buttons[0] = this.__createToolbarControl(toolbar, this.__mainPart,
-                    qx.ui.toolbar.Button, callback, options, "wiki-editor-toolbar-button");
-            if (toolbar.getOverflowIndicator()) {
-                cmeta.buttons[1] = this.__createToolbarControl(toolbar.getOverflowIndicator().getMenu(), null,
-                        qx.ui.menu.Button, callback, options);
-            }
-            this.__updateControl(cmeta);
-        },
+            var callback = null;
+            var bt = null;
+            var bts = [];
+            if (Array.isArray(options["menu"])) {
+                bt = new qx.ui.toolbar.MenuButton(options["title"], options["icon"])
+                        .set({appearance : "wiki-editor-toolbar-menubutton", showArrow : true});
+                bt.setMenu(new qx.ui.menu.Menu());
+                options["menu"].forEach(function(mopts) {
+                    callback = this.__buildToolbarControlAction(mopts);
+                    var mbt = this.__registerToolbarControl(
+                            bt.getMenu(), null,
+                            new qx.ui.menu.Button(mopts["title"], mopts["icon"]),
+                            callback, mopts);
+                    mbt.setUserData("opts", mopts);
+                    bts.push(mbt);
 
-        __updateControl : function(cmeta) {
-            var applied = !!cmeta.options[("insert" + qx.lang.String.capitalize(this.getMarkup()))] && !cmeta.options["excluded"];
-            for (var i = 0; i < cmeta.buttons.length; ++i) {
-                if (applied) {
-                    cmeta.buttons[i].show();
+                    if (toolbar.getOverflowIndicator()) {
+                        mbt = this.__registerToolbarControl(
+                                toolbar.getOverflowIndicator().getMenu(), null,
+                                new qx.ui.menu.Button(mopts["title"], mopts["icon"]),
+                                callback, mopts);
+                        mbt.setUserData("opts", mopts);
+                        bts.push(mbt);
+                    }
+                }, this);
+                if (this.__mainPart != null) {
+                    this.__mainPart.add(bt);
                 } else {
-                    cmeta.buttons[i].exclude();
+                    toolbar.add(bt);
+                }
+            } else {
+                callback = this.__buildToolbarControlAction(options);
+                bt = this.__registerToolbarControl(
+                        toolbar, this.__mainPart,
+                        new qx.ui.toolbar.Button(null, options["icon"])
+                                .set({appearance : "wiki-editor-toolbar-button"}),
+                        callback, options);
+                bt.setUserData("opts", options);
+                bts.push(bt);
+                if (toolbar.getOverflowIndicator()) {
+                    bt = this.__registerToolbarControl(
+                            toolbar.getOverflowIndicator().getMenu(), null,
+                            new qx.ui.menu.Button(options["title"], options["icon"]),
+                            callback, options);
+                    bt.setUserData("opts", options);
+                    bts.push(bt);
                 }
             }
+            this.__controls.concat(bts);
+            this.__updateControls(bts);
+        },
+
+        __updateControls : function(bts) {
+            bts = bts || this.__controls;
+            bts.forEach(function(bt) {
+                var opts = bt.getUserData("opts");
+                if (opts) {
+                    var mfun = ("insert" + qx.lang.String.capitalize(this.getMarkup()));
+                    if (opts[mfun] && !opts["excluded"]) {
+                        bt.show();
+                    } else {
+                        bt.exclude();
+                    }
+                }
+            }, this);
         },
 
         __updateHelpControls : function() {
@@ -307,29 +342,26 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __buildToolbarControlAction : function(options) {
             var me = this;
-            return function() {
+            return (function() {
                 var icb = options[("insert" + qx.lang.String.capitalize(me.getMarkup()))];
-                if (!icb) {
+                if (typeof icb !== "function") {
                     return;
                 }
-                var selectedText = this.getTextArea().getContentElement().getTextSelection();
-                if (options["prompt"]) {
-                    options["prompt"].call(me, function(text) {
-                        icb.call(me, me._insertText, text);
-                    }, this, selectedText);
+                var stext = me.getTextArea().getContentElement().getTextSelection();
+                var fprompt = options["prompt"];
+                if (typeof fprompt === "function") {
+                    fprompt(stext, function(data) {
+                        me._insertText(icb(data));
+                    });
                 } else {
-                    icb.call(me, me._insertText, selectedText);
+                    me._insertText(icb(stext));
                 }
-            };
+            });
         },
 
-        __createToolbarControl : function(toolbar, part, btclass, callback, options, appearance) {
-            var bt = new btclass(options["title"], options["icon"]);
-            if (appearance) {
-                bt.setAppearance(appearance);
-            }
+        __registerToolbarControl : function(toolbar, part, bt, callback, options) {
             if (options["tooltipText"]) {
-                bt.setToolTip(new qx.ui.tooltip.ToolTip(options["tooltipText"]));
+                bt.setToolTipText(options["tooltipText"]);
             }
             bt.addListener("execute", callback, this);
             if (part) {
@@ -358,35 +390,40 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             if (toolbar.getOverflowIndicator() && toolbar.getOverflowIndicator().getMenu()) {
                 var hbo = this.__helpControls[this.__helpControls.length] = new qx.ui.menu.Button(this.tr("Help"), "ncms/icon/16/help/help.png");
                 hbo.addListener("execute", helpCallback, this);
-                hbo.setToolTip(new qx.ui.tooltip.ToolTip(this.tr("Help")));
+                hbo.setToolTipText(this.tr("Help"));
                 toolbar.getOverflowIndicator().getMenu().addAt(hbo, 0);
             }
-
             this.__updateHelpControls();
         },
 
+        wrap : function(func, ctx) {
+            if (arguments.length == 1) {
+                ctx = this;
+            }
+            var args = Array.prototype.slice.call(arguments, arguments.length > 1 ? 2 : 1);
+            return function(data) {
+                return func.apply(ctx, [].concat(data, args));
+            }
+        },
+
+        textSurround : function(level, pattern, trails) {
+            return this.wrap(this.__textSurround, this, level, pattern, trails);
+        },
+
         __initToolbar : function(toolbar) {
-            var self = this.self(arguments);
+
             var cprompt = function(title) {
-                return function(cb, editor, sText) {
-                    if (!sText) {
-                        sText = prompt(title);
+                return function(stext, cb) {
+                    if (stext == null || stext.length == 0) {
+                        stext = prompt(title);
                     }
-                    if (sText != null && sText != undefined) {
-                        cb.call(this, sText);
+                    if (stext != null) {
+                        cb(stext);
                     }
                 }
             };
-            var csurround = function(level, pattern, trails) {
-                return function(cb, data) {
-                    cb.call(this, self.createTextSurround(data, level, pattern, trails));
-                }
-            };
-            var cscall = function(func) {
-                return function(cb, data) {
-                    cb.call(this, func.call(this, data));
-                }
-            };
+            var surround = this.textSurround.bind(this);
+            var wrap = this.wrap.bind(this);
 
             this.__initHelpControls(toolbar);
 
@@ -395,91 +432,109 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 icon : "ncms/icon/16/wiki/text_heading_1.png",
                 tooltipText : this.tr("Heading 1"),
                 prompt : cprompt(this.tr("Header text")),
-                insertMediawiki : csurround(1, "=", " "),
-                insertMarkdown : csurround(1, "#", " ")
+                insertMediawiki : surround(1, "=", " "),
+                insertMarkdown : surround(1, "#", " ")
             });
             this._addToolbarControl({
                 id : "H2",
                 icon : "ncms/icon/16/wiki/text_heading_2.png",
                 tooltipText : this.tr("Heading 2"),
                 prompt : cprompt(this.tr("Header text")),
-                insertMediawiki : csurround(2, "=", " "),
-                insertMarkdown : csurround(2, "#", " ")
+                insertMediawiki : surround(2, "=", " "),
+                insertMarkdown : surround(2, "#", " ")
             });
             this._addToolbarControl({
                 id : "H3",
                 icon : "ncms/icon/16/wiki/text_heading_3.png",
                 tooltipText : this.tr("Heading 3"),
                 prompt : cprompt(this.tr("Header text")),
-                insertMediawiki : csurround(3, "=", " "),
-                insertMarkdown : csurround(3, "#", " ")
+                insertMediawiki : surround(3, "=", " "),
+                insertMarkdown : surround(3, "#", " ")
             });
             this._addToolbarControl({
                 id : "Bold",
                 icon : "ncms/icon/16/wiki/text_bold.png",
                 tooltipText : this.tr("Bold"),
                 prompt : cprompt(this.tr("Bold text")),
-                insertMediawiki : csurround(1, "'''", ""),
-                insertMarkdown : csurround(2, "*", "")
+                insertMediawiki : surround(1, "'''", ""),
+                insertMarkdown : surround(2, "*", "")
             });
             this._addToolbarControl({
                 id : "Italic",
                 icon : "ncms/icon/16/wiki/text_italic.png",
                 tooltipText : this.tr("Italic"),
                 prompt : cprompt(this.tr("Italics text")),
-                insertMediawiki : csurround(2, "'", ""),
-                insertMarkdown : csurround(1, "*", "")
+                insertMediawiki : surround(2, "'", ""),
+                insertMarkdown : surround(1, "*", "")
             });
 
             this._addToolbarControl({
                 id : "UL",
                 icon : "ncms/icon/16/wiki/text_list_bullets.png",
                 tooltipText : this.tr("Bullet list"),
-                insertMediawiki : cscall(this.__mediaWikiUL),
-                insertMarkdown : cscall(this.__markdownUL)
+                insertMediawiki : wrap(this.__mediaWikiUL),
+                insertMarkdown : wrap(this.__markdownUL)
             });
             this._addToolbarControl({
                 id : "OL",
                 icon : "ncms/icon/16/wiki/text_list_numbers.png",
                 tooltipText : this.tr("Numbered list"),
-                insertMediawiki : cscall(this.__mediaWikiOL),
-                insertMarkdown : cscall(this.__markdownOL)
+                insertMediawiki : wrap(this.__mediaWikiOL, this),
+                insertMarkdown : wrap(this.__markdownOL, this)
             });
             // TODO: init buttons: link, image
             this._addToolbarControl({
                 icon : "ncms/icon/16/wiki/link_add.png",
+                title : this.tr("Page link"),
                 tooltipText : this.tr("Link to another page")
             });
             this._addToolbarControl({
                 icon : "ncms/icon/16/wiki/image_add.png",
+                title : this.tr("File link"),
                 tooltipText : this.tr("Add image|link to file")
             });
             this._addToolbarControl({
                 id : "Table",
                 icon : "ncms/icon/16/wiki/table_add.png",
+                title : this.tr("Table"),
                 tooltipText : this.tr("Add table"),
-                prompt : function(cb, editor, stext) {
+                prompt : function(stext, cb) {
                     var dlg = new ncms.wiki.TableDlg();
                     dlg.addListener("insertTable", function(ev) {
                         dlg.close();
-                        cb.call(this, ev.getData());
-                    }, this);
+                        cb(ev.getData());
+                    });
                     dlg.open();
                 },
-                insertMediawiki : cscall(this.__mediaWikiTable)
+                insertMediawiki : wrap(this.__mediaWikiTable)
             });
             this._addToolbarControl({
                 id : "Tree",
                 icon : "ncms/icon/16/wiki/tree_add.png",
+                title : this.tr("Tree"),
                 tooltipText : this.tr("Add tree"),
-                insertMediawiki : cscall(this.__mediaWikiTree)
+                insertMediawiki : wrap(this.__mediaWikiTree)
             });
             this._addToolbarControl({
                 id : "Note",
                 icon : "ncms/icon/16/wiki/note_add.png",
                 tooltipText : this.tr("Create note"),
-                insertMediawiki : cscall(this.__mediaWikiNote),
-                insertMarkdown : cscall(this.__markdownNote)
+                menu : [
+                    {
+                        id : "NoteRegular",
+                        icon : "ncms/icon/16/wiki/note.png",
+                        title : this.tr("Simple note"),
+                        tooltipText : this.tr("Simple note"),
+                        insertMediawiki : wrap(this.__mediaWikiNote)
+                    },
+                    {
+                        id : "NoteExclamation",
+                        icon : "ncms/icon/16/wiki/note_exclamation.png",
+                        title : this.tr("Warning note"),
+                        tooltipText : this.tr("Warning note"),
+                        insertMediawiki : wrap(this.__mediaWikiNote, this, "warning")
+                    }
+                ]
             });
         },
 
@@ -494,24 +549,51 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
         _insertText : function(text) {
+            if (text == null) {
+                return;
+            }
             var ta = this.getTextArea();
             var tel = ta.getContentElement();
             var scrollY = tel.getScrollY();
 
             var sStart = this._getSelectionStart();
             var sEnd = this._getSelectionEnd();
+            var startPos = sStart;
+            var endPos = sEnd;
 
             var nval = [];
             var value = ta.getValue();
             if (value == null) value = "";
 
             nval.push(value.substring(0, sStart));
-            nval.push(text);
-            nval.push(value.substring(sEnd));
-            this.setValue(nval.join(""));
 
-            var finishPos = sStart + text.length;
-            ta.setTextSelection(finishPos, finishPos);
+            if (Array.isArray(text)) {
+                var cpos = 0;
+                text.forEach(function(chunk) {
+                    if (chunk === ncms.wiki.WikiEditor.SELECTION_START) {
+                        sStart = startPos + cpos;
+                    } else if (chunk === ncms.wiki.WikiEditor.SELECTION_END) {
+                        sEnd = startPos + cpos;
+                        if (sEnd > sStart && sm.lang.String.lastChar(nval[nval.length - 1]) === "\n") {
+                            sEnd -= 1;
+                        }
+                    } else {
+                        nval.push(chunk);
+                        cpos += nval[nval.length - 1].length;
+                    }
+                });
+                if (sStart === startPos && sEnd === endPos) {
+                    sStart = sStart + cpos;
+                    sEnd = sStart;
+                }
+            } else {
+                nval.push(text);
+                sStart = sStart + text.length;
+                sEnd = sStart;
+            }
+            nval.push(value.substring(endPos));
+            this.setValue(nval.join(""));
+            ta.setTextSelection(sStart, sEnd);
             tel.scrollToY(scrollY);
         },
 
@@ -522,51 +604,69 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         //////////////////////////////////////////////////////////////////////////
         /////////////////////////   Helpers    ///////////////////////////////////
         //////////////////////////////////////////////////////////////////////////
-        __mediaWikiUL : function(data) {
+
+        __textSurround : function(text, level, pattern, trails) {
             var val = [];
-            val.push("");
-            val.push("* " + this.tr("First"));
-            val.push("* " + this.tr("Second"));
-            val.push("** " + this.tr("First for second"));
-            val.push("* " + this.tr("Third"));
-            val.push("");
-            return val.join("\n");
+            var hfix = qx.lang.String.repeat(pattern, level < 1 ? 1 : level);
+            val.push(hfix);
+            val.push(trails || "");
+            val.push(ncms.wiki.WikiEditor.SELECTION_START);
+            val.push(text);
+            val.push(ncms.wiki.WikiEditor.SELECTION_END);
+            val.push(trails || "");
+            val.push(hfix);
+            return val;
         },
 
-        __markdownUL : function(data) {
+        __mediaWikiUL : function() {
             var val = [];
-            val.push("");
-            val.push("* " + this.tr("First"));
-            val.push("* " + this.tr("Second"));
-            val.push("    * " + this.tr("First for second"));
+            val.push("* ");
+            val.push(ncms.wiki.WikiEditor.SELECTION_START);
+            val.push(this.tr("First") + "\n");
+            val.push(ncms.wiki.WikiEditor.SELECTION_END);
+            val.push("* " + this.tr("Second") + "\n");
+            val.push("** " + this.tr("First for second") + "\n");
             val.push("* " + this.tr("Third"));
-            val.push("");
-            return val.join("\n");
+            return val;
         },
 
-        __mediaWikiOL : function(data) {
+        __markdownUL : function() {
             var val = [];
-            val.push("");
-            val.push("# " + this.tr("First"));
-            val.push("# " + this.tr("Second"));
-            val.push("## " + this.tr("First for second"));
+            val.push("* ");
+            val.push(ncms.wiki.WikiEditor.SELECTION_START);
+            val.push(this.tr("First") + "\n");
+            val.push(ncms.wiki.WikiEditor.SELECTION_END);
+            val.push("* " + this.tr("Second") + "\n");
+            val.push("    * " + this.tr("First for second") + "\n");
+            val.push("* " + this.tr("Third"));
+            return val
+        },
+
+        __mediaWikiOL : function() {
+            var val = [];
+            val.push("# ");
+            val.push(ncms.wiki.WikiEditor.SELECTION_START);
+            val.push(this.tr("First") + "\n");
+            val.push(ncms.wiki.WikiEditor.SELECTION_END);
+            val.push("# " + this.tr("Second") + "\n");
+            val.push("## " + this.tr("First for second") + "\n");
             val.push("# " + this.tr("Third"));
-            val.push("");
-            return val.join("\n");
+            return val;
         },
 
-        __markdownOL : function(data) {
+        __markdownOL : function() {
             var val = [];
-            val.push("");
-            val.push("1. " + this.tr("First"));
-            val.push("1. " + this.tr("Second"));
-            val.push("    1. " + this.tr("First for second"));
+            val.push("1. ");
+            val.push(ncms.wiki.WikiEditor.SELECTION_START);
+            val.push(this.tr("First") + "\n");
+            val.push(ncms.wiki.WikiEditor.SELECTION_END);
+            val.push("1. " + this.tr("Second") + "\n");
+            val.push("    1. " + this.tr("First for second") + "\n");
             val.push("1. " + this.tr("Third"));
-            val.push("");
-            return val.join("\n");
+            return val;
         },
 
-        __mediaWikiTree : function(data) {
+        __mediaWikiTree : function() {
             var val = [];
             val.push("");
             val.push("<tree open=\"true\">");
@@ -579,29 +679,23 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             return val.join("\n");
         },
 
-        __mediaWikiNote : function(data) {
+        __mediaWikiNote : function(data, opts) {
             var val = [];
             val.push("");
-            val.push("<note>");
+            if (opts === "warning") {
+                val.push("<note style=\"warning\">");
+            } else {
+                val.push("<note>");
+            }
+            val.push(ncms.wiki.WikiEditor.SELECTION_START);
             val.push(this.tr("Note text"));
+            val.push(ncms.wiki.WikiEditor.SELECTION_END);
             val.push("</note>");
             val.push("");
-            return val.join("\n");
+            return val;
         },
 
-        __markdownNote : function(data) {
-            var val = [];
-            val.push("");
-            val.push("<note>");
-            val.push(this.tr("Note text"));
-            val.push("</note>");
-            val.push("");
-            return val.join("\n");
-        },
-
-        __mediaWikiTable : function(data) {
-            var tm = data[0];
-            var isWide = data[1];
+        __mediaWikiTable : function(tm, isWide) {
             /*
              {| class="table01"
              |-
@@ -618,7 +712,6 @@ qx.Class.define("ncms.wiki.WikiEditor", {
              | row 2, cell 3
              |}
              */
-
             var tspec = [];
             tspec.push("");
             tspec.push("{| class=" + (isWide == true ? "'tableWide'" : "'tableShort'"));
@@ -640,7 +733,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
     },
 
     destruct : function() {
-        this.__editorControls = null;
+        this.__controls = null;
         this.__helpControls = null;
     }
 });

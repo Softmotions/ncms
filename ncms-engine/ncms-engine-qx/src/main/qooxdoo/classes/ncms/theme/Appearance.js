@@ -53,6 +53,8 @@ qx.Theme.define("ncms.theme.Appearance", {
 
         "wiki-editor-toolbar-button" : "toolbar-table-button",
 
+        "wiki-editor-toolbar-menubutton" : "toolbar-table-menubutton",
+
         // message info popup (on top of page, auto hide)
         "ncms-info-popup" : {
             style : function(states) {
