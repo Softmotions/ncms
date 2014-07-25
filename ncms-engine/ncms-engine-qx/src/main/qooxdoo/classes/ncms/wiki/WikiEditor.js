@@ -714,7 +714,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
              */
             var tspec = [];
             tspec.push("");
-            tspec.push("{| class=" + (isWide == true ? "'tableWide'" : "'tableShort'"));
+            tspec.push("{| class=" + (isWide == true ? "'wide'" : "'short'"));
             var cc = tm.getColumnCount();
             var rc = tm.getRowCount();
             for (var i = 0; i < rc; ++i) {
@@ -727,7 +727,6 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             }
             tspec.push("|}");
             tspec.push("");
-
             return tspec.join("\n");
         }
     },

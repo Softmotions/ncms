@@ -1301,6 +1301,51 @@ ol li:before {
 }
 
 #main table {
+    margin: 21px 0 47px;
+    border-collapse: collapse;
+    color: #212121;
+    font: 14px/18px Arial, Helvetica, sans-serif;
+}
+
+#main table th {
+    background: #3395e1;
+    font: 700 14px/18px 'Open Sans', Arial, Helvetica, sans-serif;
+    color: #fff;
+    text-align: left;
+    padding: 12px 5px 13px 20px;
+}
+
+#main table td {
+    padding: 11px 5px 10px 20px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+#main table tr {
+    padding: 0;
+}
+
+#main table tr:hover td {
+    border-color: #3395e1;
+}
+
+#main table.short th {
+    border: 1px solid #3395e1;
+}
+
+#main table.short td {
+    border: 1px dotted #999;
+}
+
+#main table.short tr:hover td {
+    border-color: inherit;
+}
+
+#main table.wide {
+    width: 100%;
+}
+
+/*
+#main table {
     width: 100%;
     margin: 21px 0 47px;
     border-collapse: collapse;
@@ -1334,7 +1379,7 @@ ol li:before {
 
 #main table tr:hover td {
     border-color: #3395e1;
-}
+}*/
 
 #main .align-block {
     overflow: hidden;
@@ -1395,8 +1440,7 @@ ol li:before {
     position: absolute;
     bottom: 0;
     left: 0;
-    background: url(../images/bg-title.png) no-repeat;
-    background-color: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.75) url(../images/bg-title.png) no-repeat;
     display: inline-block;
     vertical-align: top;
     color: #fff;
@@ -2728,7 +2772,6 @@ ol li:before {
     font: 13px/18px Arial, Helvetica, sans-serif;
     display: block;
 }
-
 
 /*======================== Extra ======================== */
 

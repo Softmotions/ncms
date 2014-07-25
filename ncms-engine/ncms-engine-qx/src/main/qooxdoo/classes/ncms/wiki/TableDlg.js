@@ -88,7 +88,7 @@ qx.Class.define("ncms.wiki.TableDlg", {
 
         close : function() {
             this.base(arguments);
-            this.__dispose();
+            this.destroy();
         },
 
         _updateTable : function() {
@@ -112,7 +112,7 @@ qx.Class.define("ncms.wiki.TableDlg", {
             }
             var rowData = [];
             var nRows = this.__spRows.getValue();
-            for (var i = 0; i <= nRows; ++i) {
+            for (var i = 0; i < nRows; ++i) {
                 var oldRow = oldTm ? oldTm.getRowData(i) : null;
                 var row = [];
                 for (var j = 0; j < nCols; ++j) {
@@ -141,12 +141,12 @@ qx.Class.define("ncms.wiki.TableDlg", {
                 tm.setColumnSortable(i, false);
                 this.__table.getTableColumnModel().setDataCellRenderer(i, hrend);
             }
-        },
-
-        __dispose : function() {
         }
     },
 
     destruct : function() {
+        this.__spCols = null
+        this.__spRows = null;
+        this.__table = null;
     }
 });
