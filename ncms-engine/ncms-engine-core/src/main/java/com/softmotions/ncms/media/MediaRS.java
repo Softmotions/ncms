@@ -855,9 +855,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         final String name = (String) meta.get("name");
         final Date mdate = (Date) meta.get("mdate");
         final Number length = (Number) meta.get("content_length");
-        final KVOptions meta = new KVOptions();
-        meta.loadOptions((String) meta.get("meta"));
-
+        final KVOptions kvmeta = new KVOptions((String) meta.get("meta"));
 
         return new MediaResourceImpl(this,
                                      ((Number) meta.get("id")).longValue(),
@@ -865,7 +863,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                      (String) meta.get("content_type"),
                                      (mdate != null ? mdate.getTime() : 0),
                                      (length != null ? length.longValue() : -1L),
-                                     locale, meta);
+                                     locale, kvmeta);
     }
 
     public File getBasedir() {
@@ -1440,16 +1438,16 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 return;
             }
 
-            KVOptions meta = new KVOptions();
-            meta.loadOptions((String) info.get("meta"));
-            if (meta.containsKey("width") && meta.containsKey("height")) {
-                if ((width == null || (width.intValue() == meta.getInt("width", Integer.MAX_VALUE))) &&
-                    (height == null || (height.intValue() == meta.getInt("height", Integer.MAX_VALUE)))) {
+            KVOptions kvmeta = new KVOptions((String) info.get("meta"));
+
+            if (kvmeta.containsKey("width") && kvmeta.containsKey("height")) {
+                if ((width == null || (width.intValue() == kvmeta.getInt("width", Integer.MAX_VALUE))) &&
+                    (height == null || (height.intValue() == kvmeta.getInt("height", Integer.MAX_VALUE)))) {
                     return;
                 }
                 if (skipSmall) {
-                    if ((width == null || (width.intValue() > meta.getInt("width", Integer.MAX_VALUE))) &&
-                        (height == null || (height.intValue() > meta.getInt("height", Integer.MAX_VALUE)))) {
+                    if ((width == null || (width.intValue() > kvmeta.getInt("width", Integer.MAX_VALUE))) &&
+                        (height == null || (height.intValue() > kvmeta.getInt("height", Integer.MAX_VALUE)))) {
                         return;
                     }
                 }
