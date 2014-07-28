@@ -39,9 +39,11 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
      * <code>
      *  {
      *      noLinkText : true|false
+     *      noSyncLinkText : true |false //Do not allow link text filed <-> file name sync
      *      allowModify : true|false,
      *      allowMove : true|false,
-     *      allowSubfoldersView : true|fa;se
+     *      allowSubfoldersView : true|false
+     *
      *  }
      * </code>
      * @param pageId {Number} The page ID.
@@ -64,19 +66,22 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
         });
 
         var vsp = new qx.ui.splitpane.Pane("horizontal");
-        var leftSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
-        var files = this.__files = new ncms.mmgr.PageFilesSelector(pageId, options);
+        var leftSide = new qx.ui.container.Composite(new qx.ui.layout.VBox(5));
+        var files = this._files = new ncms.mmgr.PageFilesSelector(pageId, options);
+        files.getTable().setStatusBarVisible(false);
         leftSide.add(files, {flex : 1});
 
         //form
-        var form = this.__form = new sm.ui.form.ExtendedForm();
-
+        var form = this._form = new sm.ui.form.ExtendedForm();
         var linkTextTf = null;
         if (!options["noLinkText"]) {
-            linkTextTf = new qx.ui.form.TextField().set({maxLength : 64, required : true});
+            linkTextTf = new qx.ui.form.TextField().set({maxLength : 64});
             form.add(linkTextTf, this.tr("Link text"), null, "linkText");
         }
-        leftSide.add(new sm.ui.form.FlexFormRenderer(form));
+        this._initForm(form);
+        var fr = this._createFormRenderer(form);
+        fr.setPaddingRight(5);
+        leftSide.add(fr);
 
         var rightSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
         var thumbnail = new qx.ui.basic.Image().set(
@@ -95,8 +100,8 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
 
         //Bottom buttons
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
-        var bt = this.__okBt = new qx.ui.form.Button(this.tr("Ok")).set({enabled : false});
-        bt.addListener("execute", this.__ok, this);
+        var bt = this._okBt = new qx.ui.form.Button(this.tr("Ok")).set({enabled : false});
+        bt.addListener("execute", this._ok, this);
         hcont.add(bt);
 
         bt = new qx.ui.form.Button(this.tr("Cancel"));
@@ -116,10 +121,10 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
             var ff = this.getCtypeAcceptor() || function() {
                 return true;
             };
-            this.__okBt.setEnabled((ctype != null && ff(ctype)));
+            this._okBt.setEnabled((ctype != null && ff(ctype)));
             if (spec) {
                 var ind = spec["name"].indexOf(".");
-                if (linkTextTf) {
+                if (linkTextTf && !options["noSyncLinkText"]) {
                     linkTextTf.setValue(ind !== -1 ? spec["name"].substring(0, ind) : spec["name"]);
                 }
                 this.setStatus(spec["folder"] + spec["name"]);
@@ -135,33 +140,41 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
 
     members : {
 
-        __form : null,
+        _form : null,
 
-        __files : null,
+        _files : null,
 
-        __okBt : null,
+        _okBt : null,
 
         close : function() {
             this.base(arguments);
             this.destroy();
         },
 
-        __ok : function() {
-            var spec = this.__files.getSelectedFile();
+        _initForm : function(form) {
+
+        },
+
+        _createFormRenderer : function(form) {
+           return new sm.ui.form.FlexFormRenderer(form);
+        },
+
+        _ok : function() {
+            var spec = this._files.getSelectedFile();
             var ctype = spec ? spec["content_type"] : null;
             var ff = this.getCtypeAcceptor() || function() {
                 return true;
             };
             if (ctype && ff(ctype)) {
-                this.__form.populateJSONObject(spec);
+                this._form.populateJSONObject(spec);
                 this.fireDataEvent("completed", spec);
             }
         }
     },
 
     destruct : function() {
-        this.__okBt = null;
-        this.__files = null;
-        this._disposeObjects("__form");
+        this._okBt = null;
+        this._files = null;
+        this._disposeObjects("_form");
     }
 });

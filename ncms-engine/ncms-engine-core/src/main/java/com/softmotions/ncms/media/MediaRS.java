@@ -233,7 +233,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                         @Context HttpServletRequest req,
                         @QueryParam("w") Integer width,
                         @QueryParam("h") Integer height) throws Exception {
-        return _get(folder, name, req, width, height, true);
+        return _get(folder, name, req, width, height,
+                    BooleanUtils.toBoolean(req.getParameter("inline")), true);
     }
 
     @GET
@@ -243,7 +244,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                         @Context HttpServletRequest req,
                         @QueryParam("w") Integer width,
                         @QueryParam("h") Integer height) throws Exception {
-        return _get("", name, req, width, height, true);
+        return _get("", name, req, width, height,
+                    BooleanUtils.toBoolean(req.getParameter("inline")), true);
     }
 
 
@@ -253,13 +255,14 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     public Response get(@PathParam("id") Long id,
                         @Context HttpServletRequest req,
                         @QueryParam("w") Integer width,
-                        @QueryParam("h") Integer height) throws Exception {
+                        @QueryParam("h") Integer height,
+                        boolean inline) throws Exception {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
             throw new NotFoundException();
         }
         return _get((String) row.get("folder"), (String) row.get("name"),
-                    req, width, height, true);
+                    req, width, height, inline, true);
     }
 
 
@@ -275,7 +278,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             throw new NotFoundException();
         }
         return _get((String) row.get("folder"), (String) row.get("name"),
-                    req, width, height, false);
+                    req, width, height,
+                    BooleanUtils.toBoolean(req.getParameter("inline")), false);
     }
 
     @HEAD
@@ -286,7 +290,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                          @Context HttpServletRequest req,
                          @QueryParam("w") Integer width,
                          @QueryParam("h") Integer height) throws Exception {
-        return _get(folder, name, req, width, height, false);
+        return _get(folder, name, req, width, height,
+                    BooleanUtils.toBoolean(req.getParameter("inline")), false);
     }
 
     @HEAD
@@ -296,7 +301,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                          @Context HttpServletRequest req,
                          @QueryParam("w") Integer width,
                          @QueryParam("h") Integer height) throws Exception {
-        return _get("", name, req, width, height, false);
+        return _get("", name, req, width, height,
+                    BooleanUtils.toBoolean(req.getParameter("inline")), false);
     }
 
     @GET
@@ -795,6 +801,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+    public MediaResource findMediaResource(Long id, Locale locale) {
+        return findMediaResource("entity:" + id, locale);
+    }
+
     @Transactional
     public MediaResource findMediaResource(String path, Locale locale) {
         Map<String, Object> res;
@@ -821,13 +831,17 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         final String name = (String) res.get("name");
         final Date mdate = (Date) res.get("mdate");
         final Number length = (Number) res.get("content_length");
+        final KVOptions meta = new KVOptions();
+        meta.loadOptions((String) res.get("meta"));
+
+
         return new MediaResourceImpl(this,
                                      ((Number) res.get("id")).longValue(),
                                      (folder + name),
                                      (String) res.get("content_type"),
                                      (mdate != null ? mdate.getTime() : 0),
                                      (length != null ? length.longValue() : -1L),
-                                     locale);
+                                     locale, meta);
     }
 
     public File getBasedir() {
@@ -1059,6 +1073,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             boolean parentInSystem = isInSystemFolder(folder);
             for (int i = 0, l = files.length; i < l; ++i) {
                 File file = files[i];
+                if (file.getName().charAt(0) == '.') {
+                    continue;
+                }
                 boolean inSystem = parentInSystem || isInSystemFolder(folder + file.getName());
                 if (file.isDirectory() && inSystem && !req.isUserInRole("admin")) {
                     continue;
@@ -1174,6 +1191,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                           HttpServletRequest req,
                           Integer width,
                           Integer height,
+                          boolean inline,
                           boolean transfer) throws Exception {
         checkFolder(folder);
         if (!folder.endsWith("/")) {
@@ -1235,8 +1253,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             if (clength != null) {
                 rb.header(HttpHeaders.CONTENT_LENGTH, clength);
             }
-            rb.header(HttpHeaders.CONTENT_DISPOSITION, ResponseUtils
-                    .encodeContentDisposition(name, BooleanUtils.toBoolean(req.getParameter("inline"))));
+            rb.header(HttpHeaders.CONTENT_DISPOSITION,
+                      ResponseUtils.encodeContentDisposition(name, inline));
 
             if (transfer) {
                 l.releaseParent(); //unlock parent folder read-lock
@@ -1254,9 +1272,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             } else {
                 rb.status(Response.Status.NO_CONTENT);
             }
-
             r = rb.build();
-
         } catch (Throwable e) {
             l.close();
             throw e;

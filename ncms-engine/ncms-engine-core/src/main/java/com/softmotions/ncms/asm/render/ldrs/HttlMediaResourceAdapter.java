@@ -79,4 +79,12 @@ public final class HttlMediaResourceAdapter implements MediaResource {
             return org.apache.commons.io.IOUtils.copyLarge(is, out);
         }
     }
+
+    public int getImageWidth() {
+        return -1;
+    }
+
+    public int getImageHeight() {
+        return -1;
+    }
 }

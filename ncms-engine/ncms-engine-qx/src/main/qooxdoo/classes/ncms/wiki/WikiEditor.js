@@ -44,10 +44,13 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         }
     },
 
-    construct : function() {
+    construct : function(attrSpec, asmSpec) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(0));
+
         this.__controls = [];
+        this.__asmSpec = asmSpec;
+        this.__attrSpec = attrSpec;
 
         var toolbar = this.getChildControl("toolbar");
         this.__initToolbar(toolbar);
@@ -94,6 +97,10 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         __helpControls : null,
 
         __mainPart : null,
+
+        __attrSpec : null,
+
+        __asmSpec : null,
 
 
         getMinimalLineHeight : function() {
@@ -482,17 +489,23 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 insertMediawiki : wrap(this.__mediaWikiOL, this),
                 insertMarkdown : wrap(this.__markdownOL, this)
             });
+
+
             // TODO: init buttons: link, image
             this._addToolbarControl({
                 icon : "ncms/icon/16/wiki/link_add.png",
                 title : this.tr("Page link"),
                 tooltipText : this.tr("Link to another page")
             });
+
             this._addToolbarControl({
                 icon : "ncms/icon/16/wiki/image_add.png",
-                title : this.tr("File link"),
-                tooltipText : this.tr("Add image|link to file")
+                title : this.tr("Insert image"),
+                prompt : this.__addImagePrompt.bind(this),
+                tooltipText : this.tr("Insert inline image"),
+                insertMediawiki : wrap(this.__mediaWikiImage, this)
             });
+
             this._addToolbarControl({
                 id : "Table",
                 icon : "ncms/icon/16/wiki/table_add.png",
@@ -618,6 +631,47 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             return val;
         },
 
+        __addImagePrompt : function(stext, cb) {
+            var dlg = new ncms.wiki.InsertImageDlg(
+                    this.__asmSpec["id"],
+                    this.tr("Insert inline image"));
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                qx.log.Logger.info("data=" + JSON.stringify(data));
+                dlg.close();
+                cb(data);
+            });
+            dlg.open();
+        },
+
+        __mediaWikiImage : function(data) {
+            var val = [];
+            val.push("[[Image:");
+            val.push("/" + data["id"] + "/");
+            val.push(data["name"]);
+            switch (data["size"]) {
+                case "small":
+                    val.push("|100px");
+                    break;
+                case "medium":
+                    val.push("|200px");
+                    break;
+                case "large":
+                    val.push("|300px");
+                    break;
+
+            }
+            if (data["caption"] != null) {
+                val.push("|" + data["caption"]);
+            }
+            val.push("]]");
+
+
+            //qx.log.Logger.info("media wiki image=" + data);
+            qx.log.Logger.info("img=" + val.join(""));
+            return val.join("");
+        },
+
         __mediaWikiUL : function() {
             var val = [];
             val.push("* ");
@@ -734,5 +788,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
     destruct : function() {
         this.__controls = null;
         this.__helpControls = null;
+        this.__asmSpec = null;
+        this.__attrSpec = null;
     }
 });

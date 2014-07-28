@@ -97,4 +97,17 @@ public interface MediaResource {
      * @return locale
      */
     Locale getLocale();
+
+    /**
+     * Width of image.
+     * @return -1 if width is not known
+     */
+    int getImageWidth();
+
+    /**
+     * Height of image.
+     *  @return -1 if width is not known
+     */
+    int getImageHeight();
+
 }

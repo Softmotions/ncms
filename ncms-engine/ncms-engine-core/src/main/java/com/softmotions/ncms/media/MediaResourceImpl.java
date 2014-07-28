@@ -1,5 +1,6 @@
 package com.softmotions.ncms.media;
 
+import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.io.InputStreamWrapper;
 
@@ -39,6 +40,8 @@ class MediaResourceImpl implements MediaResource {
 
     private final Locale locale;
 
+    private final KVOptions meta;
+
 
     MediaResourceImpl(MediaRS rs,
                       long id,
@@ -46,7 +49,8 @@ class MediaResourceImpl implements MediaResource {
                       String contentType,
                       long lastModified,
                       long length,
-                      Locale locale) {
+                      Locale locale,
+                      KVOptions meta) {
         this.rs = rs;
         this.id = id;
         this.path = path;
@@ -54,6 +58,7 @@ class MediaResourceImpl implements MediaResource {
         this.lastModified = lastModified;
         this.length = length;
         this.locale = locale;
+        this.meta = meta;
         if (contentType != null) {
             MediaType mt = MediaType.parse(contentType);
             this.encoding = mt.getParameters().get("charset");
@@ -149,6 +154,14 @@ class MediaResourceImpl implements MediaResource {
         try (final InputStream is = openStream()) {
             return IOUtils.copyLarge(is, out);
         }
+    }
+
+    public int getImageWidth() {
+        return (meta != null) ? meta.getInt("width", -1) : -1;
+    }
+
+    public int getImageHeight() {
+        return (meta != null) ? meta.getInt("height", -1) : -1;
     }
 
     private static class InputStreamSession extends InputStreamWrapper {

@@ -47,7 +47,7 @@ qx.Class.define("ncms.asm.am.WikiAM", {
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
-            var w = new ncms.wiki.WikiEditor();
+            var w = new ncms.wiki.WikiEditor(attrSpec, asmSpec);
             //w.getTextArea().setAutoSize(true);
             w.getTextArea().setMinimalLineHeight(25);
             //w.getTextArea().setMaxHeight(500);
