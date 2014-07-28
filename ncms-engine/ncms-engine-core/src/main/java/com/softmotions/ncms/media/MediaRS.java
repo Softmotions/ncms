@@ -145,6 +145,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     final RWLocksLRUCache locksCache;
 
+    final Map<Object, Map<String, Object>> metaCache;
+
     final ObjectMapper mapper;
 
     final NcmsMessages message;
@@ -169,9 +171,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             throw new RuntimeException("Missing required configuration property: media[@basedir]");
         }
         dir = cfg.substitutePath(dir);
-        basedir = new File(dir);
+        this.basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);
-        locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 0x7f));
+        this.locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 128));
+        this.metaCache = new LRUMap(xcfg.getInt("media.meta-lrucache-size", 1024));
         this.mapper = mapper;
         this.message = message;
         this.ebus = ebus;
@@ -458,6 +461,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 params.put("name", name);
                 params.put("owner", req.getRemoteUser());
                 params.put("status", 1);
+                params.put("system", 0);
                 insert("insertEntity", params);
 
                 id = (Number) params.get("id");
@@ -606,10 +610,15 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
                     FileUtils.moveDirectory(f1, f2);
 
+                    synchronized (metaCache) {
+                        metaCache.clear();
+                    }
+
                     ebus.fireOnSuccessCommit(new MediaMoveEvent(this, null, true, path, npath));
 
                 } else if (f1.isFile()) {
 
+                    String name = getResourceName(path);
                     String folder = getResourceParentFolder(path);
                     String nname = getResourceName(npath);
                     String nfolder = getResourceParentFolder(npath);
@@ -617,13 +626,20 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                            "nfolder", nfolder,
                            "nname", nname,
                            "folder", folder,
-                           "name", getResourceName(path));
+                           "name", name);
 
                     FileUtils.moveFile(f1, f2);
 
                     id = selectOne("selectEntityIdByPath",
                                    "name", nname,
                                    "folder", nfolder);
+
+                    synchronized (metaCache) {
+                        metaCache.remove(folder + name);
+                        if (id != null) {
+                            metaCache.remove(id);
+                        }
+                    }
 
                     if (id != null) {
                         //Handle resize image dir
@@ -645,7 +661,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                         ebus.fireOnSuccessCommit(new MediaMoveEvent(this, id, false, path, npath));
                         updateFTSKeywords(id, req);
                     }
-
                 } else {
                     throw new IOException("Unsupported file type");
                 }
@@ -683,6 +698,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                        "folder", folder,
                        "name", name);
 
+                synchronized (metaCache) {
+                    metaCache.clear();
+                }
+
             } else {
 
                 Long id = selectOne("selectEntityIdByPath",
@@ -696,6 +715,14 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 } else {
                     throw new NotFoundException(message.get("ncms.mmgr.file.cannot.delete", req, path));
                 }
+
+                synchronized (metaCache) {
+                    metaCache.remove(folder + name);
+                    if (id != null) {
+                        metaCache.remove(id);
+                    }
+                }
+
                 if (id != null) {
                     File sdir = getResizedImageDir(folder, id);
                     if (sdir.exists()) {
@@ -730,15 +757,15 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Transactional
     public ObjectNode getMeta(@PathParam("id") Long id,
                               @Context HttpServletRequest req) throws Exception {
-        Map<String, ?> row = selectOne("selectResourceAttrsById", "id", id);
-        if (row == null) {
+        Map<String, Object> meta = getCachedMeta(id);
+        if (meta == null) {
             throw new NotFoundException();
         }
         ObjectNode res = mapper.createObjectNode();
         res.put("id", id);
-        res.put("folder", (String) row.get("folder"));
-        res.put("name", (String) row.get("name"));
-        res.put("meta", (String) row.get("meta"));
+        res.put("folder", (String) meta.get("folder"));
+        res.put("name", (String) meta.get("name"));
+        res.put("meta", (String) meta.get("meta"));
         return res;
     }
 
@@ -807,7 +834,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @Transactional
     public MediaResource findMediaResource(String path, Locale locale) {
-        Map<String, Object> res;
+        Map<String, Object> meta;
         if (path.startsWith("entity:")) {
             Long id;
             try {
@@ -816,29 +843,26 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 log.error("", e);
                 return null;
             }
-            res = selectOne("selectResourceAttrsById",
-                            "id", id);
+            meta = getCachedMeta(id);
         } else {
-            res = selectOne("selectResourceAttrsByPath",
-                            "folder", getResourceParentFolder(path),
-                            "name", getResourceName(path));
+            meta = getCachedMeta(path);
         }
-        if (res == null) {
+        if (meta == null) {
             return null;
         }
 
-        final String folder = (String) res.get("folder");
-        final String name = (String) res.get("name");
-        final Date mdate = (Date) res.get("mdate");
-        final Number length = (Number) res.get("content_length");
+        final String folder = (String) meta.get("folder");
+        final String name = (String) meta.get("name");
+        final Date mdate = (Date) meta.get("mdate");
+        final Number length = (Number) meta.get("content_length");
         final KVOptions meta = new KVOptions();
-        meta.loadOptions((String) res.get("meta"));
+        meta.loadOptions((String) meta.get("meta"));
 
 
         return new MediaResourceImpl(this,
-                                     ((Number) res.get("id")).longValue(),
+                                     ((Number) meta.get("id")).longValue(),
                                      (folder + name),
-                                     (String) res.get("content_type"),
+                                     (String) meta.get("content_type"),
                                      (mdate != null ? mdate.getTime() : 0),
                                      (length != null ? length.longValue() : -1L),
                                      locale, meta);
@@ -847,6 +871,51 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     public File getBasedir() {
         return basedir;
     }
+
+
+    private Map<String, Object> getCachedMeta(Long id) {
+        Map<String, Object> res;
+        synchronized (metaCache) {
+            res = metaCache.get(id);
+        }
+        if (res != null) {
+            return res;
+        }
+        res = selectOne("selectResourceAttrsById",
+                        "id", id);
+        if (res != null) {
+            synchronized (metaCache) {
+                metaCache.put(id, res);
+            }
+        }
+        return res;
+    }
+
+    private Map<String, Object> getCachedMeta(String folder, String name) {
+        Map<String, Object> res;
+        folder = normalizeFolder(folder);
+        String key = folder + name;
+        synchronized (metaCache) {
+            res = metaCache.get(key);
+        }
+        if (res != null) {
+            return res;
+        }
+        res = selectOne("selectResourceAttrsByPath",
+                        "folder", folder,
+                        "name", name);
+        if (res != null) {
+            synchronized (metaCache) {
+                metaCache.put(key, res);
+            }
+        }
+        return res;
+    }
+
+    private Map<String, Object> getCachedMeta(String path) {
+        return getCachedMeta(getResourceParentFolder(path), getResourceName(path));
+    }
+
 
     /**
      * Update media item search tokens
@@ -1203,7 +1272,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
         final ResourceLock l = new ResourceLock(path, false);
         try {
-
             File f = new File(new File(basedir, folder), name);
             if (!f.exists() || !f.isFile()) {
                 //noinspection ThrowCaughtLocally
@@ -1367,10 +1435,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         try (final ResourceLock l = new ResourceLock(path, false)) {
             String folder = getResourceParentFolder(path);
             String name = getResourceName(path);
-            Map<String, ?> info = selectOne("selectResourceAttrsByPath",
-                                            "folder", folder,
-                                            "name", name);
-            if (info == null || info.get("id") == null) {
+            Map<String, Object> info = getCachedMeta(folder, name);
+            if (info == null) {
                 return;
             }
 
@@ -1595,6 +1661,13 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                        "system", ((flags & PUT_SYSTEM) != 0) ? 1 : 0);
             }
 
+            synchronized (metaCache) {
+                metaCache.remove(folder + name);
+                if (id != null) {
+                    metaCache.remove(id);
+                }
+            }
+
             if (id != null) {
                 ebus.fireOnSuccessCommit(new MediaUpdateEvent(this, false, id, folder + name));
                 if ((PUT_NO_KEYS & flags) == 0) {
@@ -1745,28 +1818,23 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
     private void checkEditAccess(Long id, HttpServletRequest req) {
-        if (req.isUserInRole("admin")) {
-            return;
-        }
-        Map<String, ?> fmeta = selectOne("selectResourceAttrsById", "id", id);
-        _checkEditAccess(fmeta, StringUtils.strip((String) fmeta.get("folder") + fmeta.get("name"), "/"), req);
-    }
-
-    private void checkEditAccess(String path, HttpServletRequest req) {
-        if (req.isUserInRole("admin")) {
-            return;
-        }
-        Map<String, ?> fmeta = selectOne("selectResourceAttrsByPath",
-                                         "folder", getResourceParentFolder(path),
-                                         "name", getResourceName(path));
-        _checkEditAccess(fmeta, path, req);
-    }
-
-    private void _checkEditAccess(Map<String, ?> fmeta, String path, HttpServletRequest req) {
-
         if ((req instanceof MediaRSLocalRequest) || req.isUserInRole("admin")) {
             return;
         }
+        Map<String, Object> meta = getCachedMeta(id);
+        if (meta != null) {
+            _checkEditAccess(meta, (String) meta.get("folder") + meta.get("name"), req);
+        }
+    }
+
+    private void checkEditAccess(String path, HttpServletRequest req) {
+        if ((req instanceof MediaRSLocalRequest) || req.isUserInRole("admin")) {
+            return;
+        }
+        _checkEditAccess(getCachedMeta(path), path, req);
+    }
+
+    private void _checkEditAccess(Map<String, ?> fmeta, String path, HttpServletRequest req) {
 
         //todo check page access
 
@@ -1777,7 +1845,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 throw new SecurityException(msg);
             }
         } else {
-            File f = new File(basedir, path);
+            File f = new File(basedir, (path.length() > 0 && path.charAt(0) == '/') ? path.substring(1) : path);
             if (!f.isDirectory()) {
                 return;
             }

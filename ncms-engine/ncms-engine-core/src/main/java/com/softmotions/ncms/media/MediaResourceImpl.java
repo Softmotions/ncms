@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
@@ -22,7 +23,7 @@ import java.util.Locale;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-class MediaResourceImpl implements MediaResource {
+class MediaResourceImpl implements MediaResource, Serializable {
 
     private final MediaRS rs;
 
