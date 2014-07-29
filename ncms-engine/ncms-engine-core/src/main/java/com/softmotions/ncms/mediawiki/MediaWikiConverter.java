@@ -163,59 +163,54 @@ public class MediaWikiConverter implements ITextConverter {
 
     private void imageThumbToHTML(TagNode imageTagNode, Appendable resultBuffer, IWikiModel model, Map<String, String> map,
                                   String caption, String alt, String location, String type, int pxWidth, int pxHeight) throws IOException {
-        resultBuffer.append("\n<div class=\"thumb ");
+
+
+        resultBuffer.append("\n<div class=\"thumb");
         if ("left".equals(location)) {
-            resultBuffer.append("tleft\"");
+            resultBuffer.append(" tleft\"");
         } else if ("right".equals(location)) {
-            resultBuffer.append("tright\"");
+            resultBuffer.append(" tright\"");
+        } else if ("center".equals(location)) {
+            resultBuffer.append(" tcenter\"");
         } else {
-            resultBuffer.append("tright\"");
+            resultBuffer.append("\"");
         }
         resultBuffer.append('>');
 
-        boolean hasDimensions = pxHeight != -1 || pxWidth != -1;
-        if (hasDimensions) {
-            int pxWidthThumbinner = pxWidth;
-            if ("thumb".equals(type)) {
-                pxWidthThumbinner += 2;
-                resultBuffer.append("\n<div class=\"thumbinner\" style=\"");
-            } else {
-                resultBuffer.append("<div style=\"");
-            }
-            if (pxHeight != -1) {
-                resultBuffer.append("height:").append(Integer.toString(pxHeight)).append("px;");
-            }
-            if (pxWidth != -1) {
-                resultBuffer.append("width:").append(Integer.toString(pxWidthThumbinner)).append("px;");
-            }
-            resultBuffer.append("\">");
+        resultBuffer.append("\n<div class=\"thumbinner\" style=\"");
+        if (pxHeight != -1) {
+            resultBuffer.append("height:").append(Integer.toString(pxHeight)).append("px;");
         }
+        if (pxWidth != -1) {
+            resultBuffer.append("width:").append(Integer.toString(pxWidth + 2)).append("px;");
+        }
+        resultBuffer.append("display:inline-block;");
+        resultBuffer.append("\">");
+
         String href = map.get("href");
         if (href != null) {
-            resultBuffer.append("<a class=\"internal\" href=\"").append(href).append("\" ");
-
+            resultBuffer.append("<a class=\"image\" href=\"").append(href).append("\" ");
             if (caption != null && caption.length() > 0) {
-                resultBuffer.append("title=\"").append((alt.length() == 0) ? caption : alt).append('"');
+                resultBuffer.append("title=\"").append((alt.isEmpty()) ? caption : alt).append('"');
             }
             resultBuffer.append('>');
         }
 
         resultBuffer.append("<img src=\"").append(map.get("src")).append('"');
-
+        resultBuffer.append(" class=\"thumbimage\"");
         if (caption != null && caption.length() > 0) {
-            if (alt.length() == 0) {
+            if (alt.isEmpty()) {
                 resultBuffer.append(" alt=\"").append(caption).append('"').append(" title=\"").append(caption).append('"');
             } else {
                 resultBuffer.append(" alt=\"").append(alt).append('"').append(" title=\"").append(alt).append('"');
             }
         }
-
         StringBuilder clazz = null;
-        if (location != null && !(location.equalsIgnoreCase("none"))) {
+        /*if (location != null && !(location.equalsIgnoreCase("none"))) {
             clazz = new StringBuilder(64);
             clazz.append(" class=\"location-");
             clazz.append(location);
-        }
+        }*/
         if (type != null) {
             if (clazz == null) {
                 clazz = new StringBuilder(64);
@@ -228,7 +223,6 @@ public class MediaWikiConverter implements ITextConverter {
         if (clazz != null) {
             resultBuffer.append(clazz).append('"');
         }
-
         if (pxHeight != -1) {
             resultBuffer.append(" height=\"").append(Integer.toString(pxHeight)).append('"');
         }
@@ -245,9 +239,7 @@ public class MediaWikiConverter implements ITextConverter {
             nodesToText(children, resultBuffer, model);
         }
 
-        if (hasDimensions) {
-            resultBuffer.append("</div>\n");
-        }
+        resultBuffer.append("</div>\n");
         resultBuffer.append("</div>\n");
     }
 
@@ -258,7 +250,7 @@ public class MediaWikiConverter implements ITextConverter {
             resultBuffer.append("<a class=\"image\" href=\"").append(href).append("\" ");
 
             if (caption != null && caption.length() > 0) {
-                resultBuffer.append("title=\"").append((alt.length() == 0) ? caption : alt).append('"');
+                resultBuffer.append("title=\"").append((alt.isEmpty()) ? caption : alt).append('"');
             }
             resultBuffer.append('>');
         }
@@ -266,7 +258,7 @@ public class MediaWikiConverter implements ITextConverter {
         resultBuffer.append("<img src=\"").append(map.get("src")).append('"');
 
         if (caption != null && caption.length() > 0) {
-            if (alt.length() == 0) {
+            if (alt.isEmpty()) {
                 resultBuffer.append(" alt=\"").append(caption).append('"');
             } else {
                 resultBuffer.append(" alt=\"").append(alt).append('"');

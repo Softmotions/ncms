@@ -1921,7 +1921,7 @@ ol li:before {
 }
 
 #main .news-list.list2 li {
-    margin: 0 0 28px;
+    /*margin: 0 0 28px;*/
     overflow: hidden;
     float: left;
     width: 470px;
@@ -1981,8 +1981,8 @@ ol li:before {
 }
 
 #main .event-list li {
-    padding: 0;
-    margin: 0;
+    /*padding: 0;
+    margin: 0;*/
     float: left;
     width: 283px;
     border: 1px solid #d6d6d6;
@@ -2262,7 +2262,7 @@ ol li:before {
 }
 
 #main .two-col .col .news-list2 h4 {
-    margin: 0;
+    /*margin: 0;*/
     font: 700 15px/18px 'Open Sans', Arial, Helvetica, sans-serif;
     color: #1c1c1c;
     margin: 0 0 14px;
@@ -2462,8 +2462,7 @@ ol li:before {
     bottom: 0;
     padding: 12px 0 15px;
     left: 0;
-    background-color: rgba(0, 0, 0, 0.9);
-    background: url(../images/bg-title.png) no-repeat;
+    background: rgba(0, 0, 0, 0.9) url(../images/bg-title.png) no-repeat;
 }
 
 #main .about {
@@ -2773,11 +2772,72 @@ ol li:before {
     display: block;
 }
 
-/*======================== Extra ======================== */
+/*======================== Wiki ======================== */
 
 div.wiki {
     padding: 0;
     margin: 0;
+}
+
+div.tright {
+    float: right;
+    clear: right;
+    padding: 20px 0 20px 20px;
+}
+
+div.tleft {
+    float: left;
+    clear: left;
+    padding: 20px 20px 20px 0;
+}
+
+div.tcenter {
+    float: none;
+    width: 100%;
+    text-align: center;
+}
+
+div.thumbinner {
+    border: 1px solid #ccc;
+    padding: 3px !important;
+    background-color: #f9f9f9;
+    font-size: small;
+    line-height: 1.4em;
+    text-align: left;
+    overflow: hidden;
+}
+
+div.thumbcaption {
+    border: none;
+    padding: 3px !important;
+}
+
+div.framecaption {
+    border: none;
+    padding: 3px !important;
+}
+
+img.thumbimage {
+    border: 1px solid #ccc;
+    vertical-align: middle;
+}
+
+img.location-center {
+    float: none;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 20px;
+}
+
+img.location-right {
+    float: right;
+    padding: 20px 0 20px 20px;
+}
+
+img.location-left {
+    float: left;
+    padding: 20px 20px 20px 0;
 }
 
 span.mw-headline {

@@ -637,7 +637,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     this.tr("Insert inline image"));
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();
-                qx.log.Logger.info("data=" + JSON.stringify(data));
+                //qx.log.Logger.info("data=" + JSON.stringify(data));
                 dlg.close();
                 cb(data);
             });
@@ -659,16 +659,18 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 case "large":
                     val.push("|300px");
                     break;
-
+            }
+            if (data["position"] != null) {
+                val.push("|" + data["position"]);
             }
             if (data["caption"] != null) {
+                val.push("|frame");
                 val.push("|" + data["caption"]);
             }
             val.push("]]");
 
-
             //qx.log.Logger.info("media wiki image=" + data);
-            qx.log.Logger.info("img=" + val.join(""));
+            //qx.log.Logger.info("img=" + val.join(""));
             return val.join("");
         },
 

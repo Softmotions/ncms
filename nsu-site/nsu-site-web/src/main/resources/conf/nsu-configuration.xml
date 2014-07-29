@@ -103,7 +103,7 @@
     <mediawiki>
         <image-base-url>${ncms-prefix}/rs/mw/res/${image}</image-base-url>
         <link-base-url>${ncms-prefix}/rs/mw/link/${title}</link-base-url>
-        <max-inline-image-width-px>999</max-inline-image-width-px>
+        <max-inline-image-width-px>900</max-inline-image-width-px>
         <tags>
             <tag name="note" class="com.softmotions.ncms.mediawiki.NoteTag"/>
             <tag name="gmap" class="com.softmotions.ncms.mediawiki.GMapTag"/>
