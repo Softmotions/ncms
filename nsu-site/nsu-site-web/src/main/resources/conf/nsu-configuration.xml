@@ -110,8 +110,8 @@
             <tag name="youtube" class="com.softmotions.ncms.mediawiki.YoutubeTag"/>
             <tag name="tree" class="com.softmotions.ncms.mediawiki.TreeTag"/>
         </tags>
-        <interwiki-links>
-            <link key="page" value="/asm/${title}"/>
+        <interwiki-links>                                  s
+            <!--<link key="page" value="/asm/${title}"/>-->
         </interwiki-links>
     </mediawiki>
 

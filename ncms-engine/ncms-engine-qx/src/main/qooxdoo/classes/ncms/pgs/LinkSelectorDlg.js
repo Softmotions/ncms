@@ -4,6 +4,18 @@
 qx.Class.define("ncms.pgs.LinkSelectorDlg", {
     extend : ncms.pgs.PagesSelectorDlg,
 
+
+    /**
+     *
+     * options : {
+     *    includeLinkName : {Boolean?true},
+     *    requireLinkName : {Boolean?true}
+     *    allowExternalLinks : {Boolean?false}
+     * }
+     *
+     * @param caption {String?} Dialog captions
+     * @param options {Object?} Dialog options
+     */
     construct : function(caption, options) {
         this.__options = options || {};
         this.base(arguments, caption, false);
@@ -59,6 +71,18 @@ qx.Class.define("ncms.pgs.LinkSelectorDlg", {
             }
             this._selector.getSelectedPageWithExtraInfo(function(sp) {
                 sp = sm.lang.Object.shallowClone(sp || {});
+                var items = this.__form.getItems();
+                var externalLink = items["externalLink"];
+                if (externalLink != null) {
+                    var link = externalLink.getValue();
+                    if (!sm.lang.String.isEmpty(link)) {
+                        if (link.indexOf("://") === -1) {
+                            externalLink.setValue("http://" + link);
+                        }
+                    } else {
+                        externalLink.resetValue();
+                    }
+                }
                 this.__form.populateJSONObject(sp);
                 if (sp["id"] == null && sp["externalLink"]) {
                     sp["id"] = sp["externalLink"];

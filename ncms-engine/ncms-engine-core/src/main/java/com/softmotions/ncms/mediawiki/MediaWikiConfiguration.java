@@ -45,5 +45,14 @@ public class MediaWikiConfiguration extends Configuration {
             this.addInterwikiLink(key, value);
             log.info("Interwiki link [" + key + ", " + value + "] added");
         }
+        if (!this.getInterwikiMap().containsKey("page") && !this.getInterwikiMap().containsKey("Page")) {
+            String link = cfg.getServletContext().getContextPath();
+            if (!link.endsWith("/")) {
+                link += '/';
+            }
+            link += cfg.getNcmsPrefix().substring(1) + "/asm/${title}";
+            this.addInterwikiLink("page", link);
+            log.info("Interwiki link [page, " + link + "] added");
+        }
     }
 }

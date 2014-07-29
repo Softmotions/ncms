@@ -2,7 +2,7 @@ package com.softmotions.ncms.asm.render;
 
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.ncms.media.MediaReader;
+import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.web.GenericResponseWrapper;
 
@@ -46,7 +46,7 @@ public class AsmServlet extends HttpServlet {
     private Provider<AsmResourceLoader> loaderProvider;
 
     @Inject
-    private MediaReader mediaReader;
+    private MediaRepository mediaRepository;
 
     @Inject
     private NcmsConfiguration cfg;
@@ -137,11 +137,11 @@ public class AsmServlet extends HttpServlet {
             return false;
         }
         XMLConfiguration xcfg = cfg.impl();
-        if (!xcfg.getBoolean("site-root[@resolveRelativePaths]", false)) {
+        if (!xcfg.getBoolean("site-root[@resolveRelativePaths]", true)) {
             return false;
         }
         String siteRoot = xcfg.getString("site-root");
-        MediaResource mres = mediaReader.findMediaResource(siteRoot + pi, messages.getLocale(req));
+        MediaResource mres = mediaRepository.findMediaResource(siteRoot + pi, messages.getLocale(req));
         if (mres == null) {
             return false;
         }

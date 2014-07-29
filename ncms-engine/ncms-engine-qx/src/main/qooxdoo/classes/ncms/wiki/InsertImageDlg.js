@@ -1,5 +1,7 @@
 /**
  * Insert image dialog
+ *
+ * @asset(ncms/icon/16/wiki/link_add.png)
  */
 qx.Class.define("ncms.wiki.InsertImageDlg", {
     extend : ncms.mmgr.PageFilesSelectorDlg,
@@ -7,6 +9,11 @@ qx.Class.define("ncms.wiki.InsertImageDlg", {
     construct : function(pageId, caption) {
         this.base(arguments, pageId, caption, {noLinkText : true, allowModify : true});
         this.setCtypeAcceptor(ncms.Utils.isImageContentType.bind(ncms.Utils));
+        this.set({
+            width : 620,
+            height : 550
+        });
+
     },
 
     members : {
@@ -29,6 +36,29 @@ qx.Class.define("ncms.wiki.InsertImageDlg", {
             rg.add(new qx.ui.form.RadioButton(this.tr("right")).set({"model" : "right"}));
             form.add(rg, this.tr("Position"), null, "position");
 
+            var bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/wiki/link_add.png", true);
+            bf.setShowResetButton(true);
+            bf.setReadOnly(true);
+            bf.addListener("reset", bf.resetValue, bf);
+            bf.addListener("execute", function() {
+                var dlg = new ncms.pgs.LinkSelectorDlg(this.tr("Select image link"), {
+                    includeLinkName : false,
+                    allowExternalLinks : true
+                });
+                dlg.open();
+                dlg.addListener("completed", function(ev) {
+                    var data = ev.getData();
+                    if (!sm.lang.String.isEmpty(data["externalLink"])) {
+                        bf.setValue(data["externalLink"]);
+                    } else if (Array.isArray(data["guidPath"]) && data["guidPath"].length > 0) {
+                        var guid = data["guidPath"][data["guidPath"].length - 1];
+                        var val = ["Page:" + guid];
+                        bf.setValue(val.join(""));
+                    }
+                    dlg.close();
+                });
+            }, this);
+            form.add(bf, this.tr("Link"), null, "link");
         },
 
         _createFormRenderer : function(form) {

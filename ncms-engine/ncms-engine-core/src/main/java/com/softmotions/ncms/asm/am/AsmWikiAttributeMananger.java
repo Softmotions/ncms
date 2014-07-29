@@ -68,7 +68,7 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
             do {
                 t = parser.nextValue();
                 if ("html".equals(parser.getCurrentName())) {
-                    res = parser.getValueAsString();
+                    res = postProcessWikiHtml(parser.getValueAsString());
                     break;
                 }
             } while (t != null);
@@ -76,6 +76,11 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
             throw new RuntimeException(e);
         }
         return res;
+    }
+
+    private String postProcessWikiHtml(String html) {
+        //todo apply page aliases
+        return html;
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {

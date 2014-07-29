@@ -667,6 +667,9 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 val.push("|frame");
                 val.push("|" + data["caption"]);
             }
+            if (data["link"] != null) {
+                val.push("|link=" + data["link"]);
+            }
             val.push("]]");
 
             //qx.log.Logger.info("media wiki image=" + data);
