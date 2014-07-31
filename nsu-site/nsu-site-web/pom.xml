@@ -16,6 +16,28 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.jasig.maven</groupId>
+                <artifactId>sass-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>update-stylesheets</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sassSourceDirectory>${project.basedir}/src/main/webapp/scss</sassSourceDirectory>
+                    <destination>${project.basedir}/src/main/webapp/css</destination>
+                    <sassOptions>
+                        <style>:nested</style>
+                        <!--<debug_info>true</debug_info>-->
+                        <unix_newlines>true</unix_newlines>
+                    </sassOptions>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>3.2.0</version>

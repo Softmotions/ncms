@@ -1,0 +1,90 @@
+@import "mixins";
+@import "normalize";
+
+$basic_font: Arial, Helvetica, sans-serif;
+$basic_sans_font: 'Open Sans', $basic_font;
+
+body {
+  margin: 0;
+  color: #515151;
+  font: 15px/22px $basic_font;
+  background: #fff;
+  min-width: 1000px;
+}
+
+img {
+  border-style: none;
+}
+
+a {
+  color: #3395e1;
+  outline: none;
+  text-decoration: underline;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+* {
+  outline: none;
+}
+
+input, textarea, select {
+  font: 100% arial, sans-serif;
+  vertical-align: middle;
+}
+
+form, fieldset {
+  margin: 0;
+  padding: 0;
+  border-style: none;
+}
+
+.input-text::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #343434;
+  opacity: 1;
+}
+
+.input-text:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #343434;
+  opacity: 1;
+}
+
+.input-text::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #343434;
+  opacity: 1;
+}
+
+.input-text:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #343434;
+  opacity: 1;
+}
+
+.search-form2 .text::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #2d2d2d;
+  opacity: 1;
+}
+
+.search-form2 .text:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #2d2d2d;
+  opacity: 1;
+}
+
+.search-form2 .text::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #2d2d2d;
+  opacity: 1;
+}
+
+.search-form2 .text:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #2d2d2d;
+  opacity: 1;
+}

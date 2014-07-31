@@ -1,0 +1,37 @@
+&.dept-page {
+
+  .type2 {
+    padding: 7px 0 0;
+
+    #sidebar {
+      width: 277px;
+      float: left;
+    }
+
+    #content {
+      float: right;
+      width: 690px;
+      padding: 9px 0 0;
+
+      h1 {
+        margin: 0 0 20px;
+      }
+
+      p {
+        margin: 0 0 17px;
+      }
+
+      h2 {
+        margin: 0 0 31px;
+      }
+
+      .post-list li {
+        border: 0;
+        padding: 0;
+        margin: 0 0 17px;
+      }
+    }
+  }
+}
+
+
