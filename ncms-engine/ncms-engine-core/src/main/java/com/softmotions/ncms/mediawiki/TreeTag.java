@@ -8,6 +8,8 @@ import com.softmotions.commons.cont.Pair;
 
 import com.google.inject.Singleton;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,15 +48,16 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         super("div");
     }
 
-    public boolean isAllowedAttribute(String attName) {
-        return "open".equalsIgnoreCase(attName);
+    public boolean isAllowedAttribute(String attrName) {
+        return "open".equalsIgnoreCase(attrName) || "style".equalsIgnoreCase(attrName);
     }
 
     @Override
     public void renderHTML(ITextConverter converter, Appendable buf, IWikiModel model) throws IOException {
 
         Map<String, String> attrs = this.getAttributes();
-        boolean isClosed = "false".equalsIgnoreCase(attrs.get("open"));
+        boolean closed = "false".equalsIgnoreCase(attrs.get("open"));
+        String style = attrs.get("style");
 
         String body = this.getBodyString();
         String[] bodyLines = body.split("\n");
@@ -88,7 +91,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         //Process lines
         for (int i = 0; i < bodyLines.length; ++i) {
             String line = bodyLines[i];
-            if ("".equals(line.trim())) {
+            if (StringUtils.isBlank(line)) {
                 continue;
             }
             Pair<Integer, String> res = treeNodeLevel(line);
@@ -112,7 +115,8 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
 
                         TreeNode ntnode = new TreeNode(lvl, parent, inModel, inConverter);
                         if (parent.lvl == 0) {
-                            ntnode.closed = isClosed;
+                            ntnode.closed = closed;
+                            ntnode.style = style;
                         }
                         ntnode.labelNode = labelNode;
                         nstack.push(ntnode);
@@ -152,6 +156,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
     }
 
 
+    @SuppressWarnings("ClassReferencesSubclass")
     static class Node {
 
         protected final int lvl;
@@ -203,6 +208,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         TextNode labelNode;
         final List<Node> childs = new ArrayList<Node>();
         boolean closed;
+        String style;
 
         TreeNode(int lvl, TreeNode parent, IWikiModel model, ITextConverter converter) {
             super(lvl, parent, model, converter);
@@ -231,9 +237,13 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
             StringBuilder sb = new StringBuilder();
             final String offset = repeat(' ', lvl - 1);
 
-            if (lvl == 0) { //root
+            if (lvl == 0) { //Root
 
-                sb.append(offset).append("<ul class='tree'>");
+                sb.append(offset).append("<ul class='tree");
+                if (style != null) {
+                    sb.append(' ').append(StringEscapeUtils.escapeHtml4(style));
+                }
+                sb.append("'>");
                 for (int i = 0; i < childs.size(); ++i) {
                     sb.append("\n").append(childs.get(i).toHtml()).append("\n");
                 }
@@ -242,29 +252,16 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
 
             } else {  //Branch
 
-                sb.append("<li class='folder");
-                if (first && labelNode.lvl == 1) {
-                    sb.append(" firstItem");
-                }
-                sb.append(closed ? " close" : " open");
+                sb.append("<li class='");
+                sb.append(closed ? "close" : "open");
                 sb.append("'");
                 sb.append(">");
-
-                //Label
-                if (first && labelNode.lvl == 1) {
-                    sb.append("<p class='firstItem'>");
-                } else {
-                    sb.append("<p>");
-                }
-                sb.append("<span class=\"tree-icons\"></span>");
                 sb.append(labelNode.wikiToHtml());
-                sb.append("</p>");
-                //EOF Label
 
 
-                sb.append("<ul "); //ul body
+                sb.append("<ul"); //ul body
                 if (closed) {
-                    sb.append("style='display:none;'");
+                    sb.append(" style='display:none;'");
                 }
                 sb.append(">");
                 sb.append("\n");
@@ -309,27 +306,12 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
 
         @Override
         String toHtml() {
-            StringBuilder sb = new StringBuilder();
-            final String offset = repeat(' ', lvl);
-
-            sb.append("<li class='file");
-            if (last) {
-                sb.append(" last");
-            }
-            sb.append("'");
-            sb.append(">");
-            sb.append("<p><span class='tree-icons'></span>");
-            sb.append(wikiToHtml());
-            sb.append("</p>");
-            sb.append("</li>");
-
-            return sb.toString();
+            return "<li>" + wikiToHtml() + "</li>";
         }
 
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder(repeat(' ', lvl)).append("Text{").append(markup).append("}");
-            return sb.toString();
+            return repeat(' ', lvl) + "Text{" + markup + "}";
         }
     }
 }

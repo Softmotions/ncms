@@ -506,7 +506,7 @@
         background: url(../images/arrow-list.png) no-repeat 246px 50%;
       }
 
-      &.active > a/*, > a:hover*/  {
+      &.active > a/*, > a:hover*/             {
         text-decoration: none;
         color: #fff;
         margin: -1px;
@@ -1259,65 +1259,134 @@
 
 /*======================== Tree ======================== */
 
-/*.tree {
-    margin: 0 0 30px 0;
+#main {
+
+  ul.tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0 10px;
+      position: relative;
+
+      &:before {
+        content: '';
+        display: block;
+        width: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        border-left: 2px solid #d3d3d3;
+      }
+
+      li {
+        &:after {
+          display: none;
+        }
+
+        &:before {
+          content: "";
+          display: block;
+          width: 10px; /* same with indentation */
+          height: 0;
+          border-top: 2px solid #d3d3d3;
+          position: absolute;
+          top: 0.6em;
+          left: 0;
+        }
+
+        &:last-child:before {
+          background: white;
+          height: auto;
+          top: 0.6em; /* (line-height/2) */
+          bottom: 0;
+        }
+      }
+    }
+
+    li {
+      margin: 0;
+      padding: 0 12px;
+      line-height: 1.4em;
+      position: relative;
+      &:after {
+        display: none;
+      }
+    }
+  }
 }
 
-.tree li {
-  color: #595c5c;
-  font-size: 13px;
-  font-weight: bold;
-  padding: 15px 0 0 15px;
-  background: url(/exp/images/tr2.png) 16px 0px repeat-y;
-}
+/*#main .tree {
+  margin: 0 0 30px 0;
 
-.tree li p {
-  background: url(/exp/images/tr1.png) 5px 7px no-repeat;
-  margin: 0 0 0 -5px;
-  padding: 0 0 0 17px;
-}
+  .tree-icons {
+    width: 12px;
+    height: 12px;
+    //background: url(/exp/images/sprite.png) 0 0 no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 5px 0 0;
+    cursor: pointer;
+  }
 
-.tree-icons {
-  width: 12px;
-  height: 12px;
-  background: url(/exp/images/sprite.png) 0 0 no-repeat;
-  display: inline-block;
-  vertical-align: middle;
-  margin: 0 5px 0 0;
-  cursor: pointer;
-}
+  li {
+    color: #595c5c;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 15px 0 0 15px;
+    background: url(../images/tr2.png) 16px 0px repeat-y;
 
-li.folder.open .tree-icons {
-  background-position: -40px -104px;
-}
+    p {
+      background: url(../images/tr1.png) 5px 7px no-repeat;
+      margin: 0 0 0 -5px;
+      padding: 0 0 0 17px;
+    }
 
-li.folder.close .tree-icons {
-  background-position: -58px -104px;
-}
+    a {
+      color: #000;
+    }
 
-li.file .tree-icons {
-  background-position: -22px -104px !important;
-}
+    &:after {
+       display: none;
+    }
 
-.firstItem {
-  background: 0 none !important;
-}
+    &:first-child p {
+      background: 0 none !important;
+    }
 
-.tree li.last p {
-  background: url(/exp/images/tr3.png) 6px 2px no-repeat !important;
-}
+    &.folder.open .tree-icons {
+      //background-position: -40px -104px;
+      background: url(../images/bg-tree-minus.png) 0 0 no-repeat;
+    }
 
-.tree li ul li ul li {
-  font-size: 12px !important;
-  font-weight: normal !important;
-}
+    &.folder.close .tree-icons {
+      //background-position: -58px -104px;
+      background: url(../images/bg-tree-plus.png) 0 0 no-repeat;
+    }
 
-.tree li ul li ul li .tree-icons {
-  background-position: -76px -102px !important;
-}
+    &.file .tree-icons {
+      //background-position: -22px -104px !important;
+      background: url(../images/bg-tree-node.png) 0 0 no-repeat;
+    }
 
-.tree li a {
-  color: #000;
+    &.last p {
+      background: url(../images/tr3.png) 6px 2px no-repeat !important;
+    }
+
+    ul li ul li {
+      font-size: 12px !important;
+      font-weight: normal !important;
+    }
+
+    ul li ul li .tree-icons {
+      //background-position: -76px -102px !important;
+      background: url(../images/bg-tree-node-small.png);
+    }
+  }
 }*/
 
 /*

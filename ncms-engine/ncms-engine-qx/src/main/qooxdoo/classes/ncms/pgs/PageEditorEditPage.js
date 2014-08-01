@@ -271,24 +271,32 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 });
                 return;
             }
-            var data = {};
-            var items = this.__form.getItems();
-            for (var k in items) {
-                var w = items[k];
-                var am = w.getUserData("attributeManager");
-                if (am == null) {
-                    continue;
+            this.__saveBt.setEnabled(false);
+            try {
+                var data = {};
+                var items = this.__form.getItems();
+                for (var k in items) {
+                    var w = items[k];
+                    var am = w.getUserData("attributeManager");
+                    if (am == null) {
+                        continue;
+                    }
+                    data[k] = am.valueAsJSON();
                 }
-                data[k] = am.valueAsJSON();
+                var spec = this.getPageSpec();
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec), "PUT");
+                req.setRequestContentType("application/json");
+                req.setData(JSON.stringify(data));
+                req.addListener("error", function() {
+                    this.__saveBt.setEnabled(true);
+                }, this);
+                req.send(function(resp) {
+                    this.setModified(false);
+                    ncms.Application.infoPopup(this.tr("Page '%1' saved successfully", spec["name"]));
+                }, this);
+            } catch(e) {
+                this.__saveBt.setEnabled(true);
             }
-            var spec = this.getPageSpec();
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec), "PUT");
-            req.setRequestContentType("application/json");
-            req.setData(JSON.stringify(data));
-            req.send(function(resp) {
-                this.setModified(false);
-                ncms.Application.infoPopup(this.tr("Page '%1' saved successfully", spec["name"]));
-            }, this);
         },
 
         __cancel : function() {
