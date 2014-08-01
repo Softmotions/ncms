@@ -8,12 +8,14 @@ $sp-icons-spacing: 5px;
 //noinspection CssUnknownTarget
 @import "sp-icons/*.png";
 
+$bg_color: #fff;
+
 
 body {
   margin: 0;
   color: #515151;
   font: 15px/22px $basic_font;
-  background: #fff;
+  background: $bg_color;
   min-width: 1000px;
 }
 

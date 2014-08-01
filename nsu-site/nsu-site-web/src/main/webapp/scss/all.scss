@@ -1300,9 +1300,9 @@
         }
 
         &:last-child:before {
-          background: white;
+          background: $bg_color;
           height: auto;
-          top: 0.6em; /* (line-height/2) */
+          top: 0.7em; /* (line-height/2) */
           bottom: 0;
         }
       }
