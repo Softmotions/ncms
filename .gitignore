@@ -7,7 +7,3 @@
 *.iml
 /target
 logs
-ebean-create.sql
-ebean-drop.sql
-test-ebean-server-create.sql
-test-ebean-server-drop.sql

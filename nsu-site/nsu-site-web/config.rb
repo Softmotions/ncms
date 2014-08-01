@@ -12,7 +12,7 @@ javascripts_dir = "src/main/webapp/js"
 output_style =  :nested
 
 # To enable relative paths to assets via compass helper functions. Uncomment:
-# relative_assets = true
+relative_assets = true
 
 # To disable debugging comments that display the original location of your selectors. Uncomment:
 # line_comments = false
@@ -23,7 +23,5 @@ output_style =  :nested
 # preferred_syntax = :sass
 # and then run:
 # sass-convert -R --from scss --to sass sass scss && rm -rf sass && mv scss sass
-
-#sass_options = {:cache_location => "target/.sass-cache"}
 
 cache_dir = "target/.sass-cache"

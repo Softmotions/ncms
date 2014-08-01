@@ -86,27 +86,32 @@
         }
 
         .interview {
-          background: url(../images/bg-interview.png) no-repeat;
+          //background: url(../images/bg-interview.png) no-repeat;
+          @include sp-icons-sprite(bg-interview);
           padding: 0 0 0 23px;
         }
 
         .photo {
-          background: url(../images/bg-photo.png) no-repeat 0 1px;
+          //background: url(../images/bg-photo.png) no-repeat 0 1px;
+          @include sp-icons-sprite(bg-photo, $offset-y: 1px);
           padding: 0 0 0 23px;
         }
 
         .doc {
-          background: url(../images/bg-doc.png) no-repeat 0 0;
+          //background: url(../images/bg-doc.png) no-repeat 0 0;
+          @include sp-icons-sprite(bg-doc);
           padding: 0 0 0 23px;
         }
 
         .news {
-          background: url(../images/bg-news.png) no-repeat 0 5px;
+          //background: url(../images/bg-news.png) no-repeat 0 5px;
+          @include sp-icons-sprite(bg-news, $offset-y: 5px);
           padding: 0 0 0 23px;
         }
 
         .smig {
-          background: url(../images/bg-smig.png) no-repeat 0 3px;
+          //background: url(../images/bg-smig.png) no-repeat 0 3px;
+          @include sp-icons-sprite(bg-smig, $offset-y: 3px);
           padding: 0 0 0 23px;
         }
 

@@ -317,7 +317,8 @@
     right: 0;
     width: 22px;
     height: 24px;
-    background: url(../images/bg-pdf.png) no-repeat;
+    //background: url(../images/bg-pdf.png) no-repeat;
+    @include sp-icons-sprite(bg-pdf);
     text-indent: -9999px;
     overflow: hidden;
   }
@@ -432,7 +433,8 @@
         left: 0;
         width: 5px;
         height: 12px;
-        background: url(../images/separator-breadcrumbs.png) no-repeat;
+        //background: url(../images/separator-breadcrumbs.png) no-repeat;
+        @include sp-icons-sprite(separator-breadcrumbs);
         content: '';
       }
 
@@ -471,7 +473,7 @@
     }
 
     span {
-      background: url(../images/bg-about.png) no-repeat 0 5px;
+      @include sp-icons-sprite(bg-about, $offset-y: 5px);
       padding: 0 0 0 27px;
     }
   }
@@ -974,7 +976,8 @@
     }
 
     span {
-      background: url(../images/bg-more.png) no-repeat 0 5px;
+      //background: url(../images/bg-more.png) no-repeat 0 5px;
+      @include sp-icons-sprite(bg-more, $offset-y: 5px);
       padding: 0 0 0 27px;
     }
   }
@@ -1203,7 +1206,8 @@
       margin: 0 0 16px;
 
       h1 {
-        background: url(../images/bg-instagramm.png) no-repeat 0 5px;
+        //background: url(../images/bg-instagramm.png) no-repeat 0 5px;
+        @include sp-icons-sprite(bg-instagramm, $offset-y: 5px);
         padding: 0 0 0 28px;
         margin: 0 15px 0 0;
         float: left;

@@ -4,6 +4,11 @@
 $basic_font: Arial, Helvetica, sans-serif;
 $basic_sans_font: 'Open Sans', $basic_font;
 
+$sp-icons-spacing: 5px;
+//noinspection CssUnknownTarget
+@import "sp-icons/*.png";
+
+
 body {
   margin: 0;
   color: #515151;
