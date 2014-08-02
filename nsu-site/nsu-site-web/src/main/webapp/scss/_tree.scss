@@ -1,0 +1,141 @@
+ul.tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  > li:first-child {
+    padding: 0 !important;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0 10px;
+    position: relative;
+
+    &:before {
+      content: '';
+      display: block;
+      width: 0;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      border-left: 2px solid #d3d3d3;
+    }
+
+    li {
+      &:after {
+        display: none;
+      }
+
+      &:before {
+        content: "";
+        display: block;
+        width: 10px; /* same with indentation */
+        height: 0;
+        border-top: 2px solid #d3d3d3;
+        position: absolute;
+        top: 0.6em;
+        left: 0;
+      }
+
+      &:last-child:before {
+        background: $bg_color;
+        height: auto;
+        top: 0.7em; /* (line-height/2) */
+        bottom: 0;
+      }
+    }
+  }
+
+  li {
+    margin: 0;
+    padding: 0 12px;
+    line-height: 1.4em;
+    position: relative;
+    &:after {
+      display: none;
+    }
+  }
+}
+
+ul.dynamic {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 5px;
+  display: block;
+
+  ul {
+    display: block;
+    margin: -2px 0 0 0;
+    padding: 0;
+  }
+
+  > li:first-child {
+    padding: 0 !important;
+    background: none !important;
+    > span {
+      background: none !important;
+    }
+  }
+
+  li, ul li {
+    padding: 15px 0px 0px 15px;
+    margin: 0;
+    background: url(../images/tr2.png) 0px 0px repeat-y;
+
+    &:after {
+      display: none;
+    }
+
+    &:first-child {
+      margin: 0;
+    }
+
+    &.file {
+      > span:after {
+        background: url(../images/bg-tree-node.png) 0px 0px no-repeat;
+      }
+    }
+
+    &.close {
+      > span:after {
+        background: url(../images/bg-tree-plus.png) 0px 0px no-repeat !important;
+        cursor: pointer;
+      }
+      > ul {
+        display: none !important;
+      }
+    }
+
+   > p {
+    }
+
+    > span {
+      background: url(../images/tr1.png) 0px 13px no-repeat;
+      width: 17px;
+      height: 1em;
+      float: left;
+      margin: 0px 0 0 -16px;
+      padding: 0 14px 0 0;
+
+      &:after {
+        background: url(../images/bg-tree-minus.png) 0px 0px no-repeat;
+        cursor: pointer;
+        width: 12px;
+        height: 12px;
+        content: '';
+        display: inline-block;
+        margin: 0px 0 0 11px;
+        padding: 0 0 0 0px;
+        position: relative;
+        top: 4px;
+      }
+    }
+
+    /* &:last-of-type > span {
+       background: url(../images/tr3.png) 1px 8px no-repeat !important;
+     }*/
+  }
+}

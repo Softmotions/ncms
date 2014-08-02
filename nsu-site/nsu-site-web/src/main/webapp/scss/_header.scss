@@ -399,6 +399,8 @@
     text-indent: -9999px;
     overflow: hidden;
     margin: 4px 30px 0 0;
+    //todo enable it
+    display: none;
   }
 
   .search {
@@ -416,6 +418,8 @@
     .link {
       //background: url(../images/bg-link-active.png) no-repeat;
       @include sp-icons-sprite(bg-link-active);
+      //todo enable it
+      display: none;
     }
     .search {
       //background: url(../images/btn-search-active.png) no-repeat;

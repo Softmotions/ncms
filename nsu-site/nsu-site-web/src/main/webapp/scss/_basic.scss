@@ -48,6 +48,11 @@ form, fieldset {
   border-style: none;
 }
 
+hr {
+  border: 1px solid #e7e7e7;
+  margin-bottom: 15px;
+}
+
 .input-text::-webkit-input-placeholder {
   /* WebKit browsers */
   color: #343434;

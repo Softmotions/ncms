@@ -66,6 +66,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         ITextConverter inConverter = new MediaWikiConverter();
 
         TreeNode root = new TreeNode(0, null, inModel, inConverter);
+        root.style = style;
         Stack<TreeNode> nstack = new Stack<>();
         nstack.push(root);
 
@@ -116,7 +117,6 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
                         TreeNode ntnode = new TreeNode(lvl, parent, inModel, inConverter);
                         if (parent.lvl == 0) {
                             ntnode.closed = closed;
-                            ntnode.style = style;
                         }
                         ntnode.labelNode = labelNode;
                         nstack.push(ntnode);
@@ -236,12 +236,12 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         String toHtml() {
             StringBuilder sb = new StringBuilder();
             final String offset = repeat(' ', lvl - 1);
-
             if (lvl == 0) { //Root
-
-                sb.append(offset).append("<ul class='tree");
+                sb.append(offset).append("<ul class='");
                 if (style != null) {
-                    sb.append(' ').append(StringEscapeUtils.escapeHtml4(style));
+                    sb.append(StringEscapeUtils.escapeHtml4(style));
+                } else {
+                    sb.append("tree");
                 }
                 sb.append("'>");
                 for (int i = 0; i < childs.size(); ++i) {
@@ -301,12 +301,12 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
             if (ri.endsWith("</p>")) {
                 ri = ri.substring(0, ri.length() - "</p>".length());
             }
-            return ri;
+            return "<span></span> " + ri;
         }
 
         @Override
         String toHtml() {
-            return "<li>" + wikiToHtml() + "</li>";
+            return "<li class='file'>" + wikiToHtml() + "</li>";
         }
 
         @Override

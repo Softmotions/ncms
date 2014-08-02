@@ -60,7 +60,55 @@
                         </div>
                     </div>
                 </li>
-                <li><a href="#">Студентам</a></li>
+                <li><a href="#">Студентам</a>
+
+                    <div class="slide-holder">
+                        <div class="slide-frame">
+                            <ul>
+                                <li><a href="#">Миссия2</a></li>
+                                <li><a href="#">Руководство</a></li>
+                                <li><a href="#">Ученый совет</a></li>
+                                <li><a href="#">Ректорат</a></li>
+                                <li><a href="#">Контакты</a></li>
+                                <li><a href="#">Отд. качества</a></li>
+                                <li><a href="#">Межд. связи</a></li>
+                                <li><a href="#">Справочник</a></li>
+                                <li><a href="#">Академики</a></li>
+                                <li><a href="#">Доктора</a></li>
+                            </ul>
+                            <ul>
+                                <li><a href="#">Контакты</a></li>
+                                <li><a href="#">Отд. качества</a></li>
+                                <li><a href="#">Межд. связи</a></li>
+                                <li><a href="#">Справочник</a></li>
+                                <li><a href="#">Миссия</a></li>
+                                <li><a href="#">Руководство</a></li>
+                                <li><a href="#">Ученый совет</a></li>
+                                <li><a href="#">Ректорат</a></li>
+                                <li><a href="#">Контакты</a></li>
+                                <li><a href="#">Справочник</a></li>
+                            </ul>
+                            <ul>
+                                <li><a href="#">Академики</a></li>
+                                <li><a href="#">Доктора</a></li>
+                                <li><a href="#">Профессора</a></li>
+                                <li><a href="#">Мегапроекты</a></li>
+                                <li><a href="#">Контакты</a></li>
+                                <li><a href="#">Отд. качества</a></li>
+                                <li><a href="#">Межд. связи</a></li>
+                                <li><a href="#">Справочник</a></li>
+                                <li><a href="#">Академики</a></li>
+                                <li><a href="#">Доктора</a></li>
+                            </ul>
+                            <ul>
+                                <li><a href="#">ИТ службы</a></li>
+                                <li><a href="#">Система УИС</a></li>
+                                <li><a href="#">Провайлер услуг</a></li>
+                                <li><a href="#">О сайте</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
                 <li><a href="#">Абитуриентам</a></li>
                 <li><a href="#">Выпускникам</a></li>
                 <li><a href="#">СМИ</a></li>
