@@ -14,6 +14,7 @@ import com.google.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -41,15 +42,15 @@ public class AsmBooleanAttributeManager implements AsmAttributeManager {
         return BooleanUtils.toBooleanObject(attr.getValue());
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
                                         "display");
         attr.setOptions(asmOpts.toString());
-        return applyAttributeValue(attr, val);
+        return applyAttributeValue(attr, val, req);
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         JsonNode n = val.get("value");
         if (n != null && BooleanUtils.toBoolean(n.asText())) {
             attr.setEffectiveValue("true");

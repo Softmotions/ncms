@@ -68,7 +68,7 @@ ul.dynamic {
 
   ul {
     display: block;
-    margin: -2px 0 0 0;
+    margin: -6px 0 0 0;
     padding: 0;
   }
 
@@ -101,7 +101,7 @@ ul.dynamic {
 
     &.close {
       > span:after {
-        background: url(../images/bg-tree-plus.png) 0px 0px no-repeat !important;
+        background: url(../images/bg-tree-plus.png) 0px 0px no-repeat;
         cursor: pointer;
       }
       > ul {
@@ -109,11 +109,11 @@ ul.dynamic {
       }
     }
 
-   > p {
+    > p {
     }
 
     > span {
-      background: url(../images/tr1.png) 0px 13px no-repeat;
+      background: url(../images/tr1.png) 0px 9px no-repeat;
       width: 17px;
       height: 1em;
       float: left;
@@ -130,7 +130,7 @@ ul.dynamic {
         margin: 0px 0 0 11px;
         padding: 0 0 0 0px;
         position: relative;
-        top: 4px;
+        top: 0px;
       }
     }
 

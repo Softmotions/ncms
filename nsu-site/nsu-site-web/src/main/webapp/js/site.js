@@ -4,8 +4,7 @@ jQuery(function() {
 });
 
 function initTree() {
-    $('ul.dynamic li span').click(function() {
-        console.log("Click tree");
+    $('ul.dynamic li.node > span').click(function() {
         var li = $(this).parent();
         var flag = $(li).hasClass('open');
         if (flag == true) {

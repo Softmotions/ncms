@@ -158,7 +158,7 @@
 
     li {
       padding: 0 0 0 13px;
-      margin: 0 0 5px; /*adam 0 0 10px */
+      margin: 0; /*adam 0 0 10px */
       position: relative;
 
       &:after {
@@ -174,13 +174,14 @@
   }
 
   ol {
+    padding: 0;
     margin: 0 0 6px;
-    padding: 0 0 0 27px;
     height: 1%;
     overflow: hidden;
     counter-reset: item;
 
     li {
+      padding: 0 0 0 13px;
       margin: 0; /*adam 0 0 10px */
       display: block;
 
@@ -190,7 +191,7 @@
         color: #3395e1;
         float: left;
         padding: 0 5px 0 0;
-        margin: 0 0 0 -17px;
+        margin: 0 0 0 -14px;
         font: 700 13px/22px $basic_sans_font;
       }
     }

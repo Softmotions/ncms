@@ -48,7 +48,7 @@
         <qooxdoo.sdk.version>4.0.1</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
-        <ninjaframework.version>3.2.0</ninjaframework.version>
+        <ninjaframework.version>3.3.0</ninjaframework.version>
         <jackson.version>2.4.1</jackson.version>
         <resteasy.version>3.0.8.Final</resteasy.version>
         <commons.collection.version>3.2.1</commons.collection.version>

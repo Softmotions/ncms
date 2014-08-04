@@ -19,6 +19,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
@@ -95,7 +96,7 @@ public class AsmFileRefAttributeManager implements AsmAttributeManager {
         return sw.toString();
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         AsmOptions opts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts,
                                         "asLocation",
@@ -105,7 +106,7 @@ public class AsmFileRefAttributeManager implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText().trim() : null);
         return attr;
     }

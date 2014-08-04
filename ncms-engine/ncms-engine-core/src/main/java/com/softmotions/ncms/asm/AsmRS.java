@@ -366,6 +366,7 @@ public class AsmRS extends MBDAOSupport {
     @Consumes("application/json")
     @Transactional
     public void putAsmAttributes(@PathParam("id") Long asmId,
+                                 @Context HttpServletRequest req,
                                  ObjectNode spec) {
 
 
@@ -399,10 +400,10 @@ public class AsmRS extends MBDAOSupport {
         AsmAttributeManager am = amRegistry.getByType(attr.getType());
         if (am != null) {
             if (spec.hasNonNull("options")) {
-                attr = am.applyAttributeOptions(attr, spec.get("options"));
+                attr = am.applyAttributeOptions(attr, spec.get("options"), req);
             }
             if (spec.hasNonNull("value")) {
-                attr = am.applyAttributeValue(attr, spec.get("value"));
+                attr = am.applyAttributeValue(attr, spec.get("value"), req);
             }
         } else {
             log.warn("Missing atribute manager for given type: '" + attr.getType() + '\'');

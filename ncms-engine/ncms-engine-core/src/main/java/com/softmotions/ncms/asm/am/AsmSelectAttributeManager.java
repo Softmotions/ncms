@@ -18,6 +18,7 @@ import com.google.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,7 +128,7 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
     }
 
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         //options
         JsonNode optsVal = val.get("display");
         AsmOptions opts = new AsmOptions();
@@ -140,12 +141,12 @@ public class AsmSelectAttributeManager implements AsmAttributeManager {
         }
 
         attr.setOptions(opts.toString());
-        applyAttributeValue(attr, val);
+        applyAttributeValue(attr, val, req);
 
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         JsonNode value = val.get("value");
         if (value != null && value.isArray()) {
             attr.setEffectiveValue(value.toString());

@@ -301,7 +301,7 @@ public class PageRS extends MBDAOSupport {
                 attr = attr.cloneDeep();
                 attr.asmId = id;
             }
-            am.applyAttributeValue(attr, data.get(fname));
+            am.applyAttributeValue(attr, data.get(fname), req);
             update("upsertAttribute", attr);
         }
     }

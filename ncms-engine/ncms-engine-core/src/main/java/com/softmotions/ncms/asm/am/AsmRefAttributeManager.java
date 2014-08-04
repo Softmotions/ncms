@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.StringWriter;
 import java.util.Map;
@@ -79,11 +80,11 @@ public class AsmRefAttributeManager implements AsmAttributeManager {
         return out.toString();
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
-        return applyAttributeValue(attr, val);
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+        return applyAttributeValue(attr, val, req);
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         if (!val.get("value").canConvertToLong()) {
             attr.setEffectiveValue(null);
             return attr;

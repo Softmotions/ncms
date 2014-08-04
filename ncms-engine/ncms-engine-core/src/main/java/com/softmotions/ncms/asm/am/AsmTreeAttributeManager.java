@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
         }
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
                                         "allowPages", "allowFiles", "allowExternal",
@@ -80,7 +81,7 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         attr.setEffectiveValue(val != null ? val.toString() : null);
         return attr;
     }

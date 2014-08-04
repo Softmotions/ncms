@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -83,7 +84,7 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
         return html;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         AsmOptions asmOpts = new AsmOptions();
         if (attr.getOptions() != null) {
             asmOpts.loadOptions(attr.getOptions());
@@ -94,13 +95,13 @@ public class AsmWikiAttributeMananger implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         String value = val.has("value") ? val.get("value").asText() : null;
         String markup = val.has("markup") ? val.get("markup").asText() : "mediawiki";
         String html = null;
         if (!StringUtils.isBlank(value)) {
             if ("mediawiki".equals(markup)) {
-                html = mediaWikiRenderer.render(value);
+                html = mediaWikiRenderer.render(value, req);
                 html = new StringBuilder(html.length() + 32)
                         .append("<div class=\"wiki\">")
                         .append(html)

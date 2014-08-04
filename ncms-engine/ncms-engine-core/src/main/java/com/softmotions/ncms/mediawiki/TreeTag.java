@@ -254,7 +254,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
 
                 sb.append("<li class='");
                 sb.append(closed ? "close" : "open");
-                sb.append("'");
+                sb.append(" node'");
                 sb.append(">");
                 sb.append(labelNode.wikiToHtml());
 
