@@ -510,10 +510,10 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 id : "Table",
                 icon : "ncms/icon/16/wiki/table_add.png",
                 title : this.tr("Table"),
-                tooltipText : this.tr("Add table"),
+                tooltipText : this.tr("Insert table"),
                 prompt : function(stext, cb) {
                     var dlg = new ncms.wiki.TableDlg();
-                    dlg.addListener("insertTable", function(ev) {
+                    dlg.addListener("completed", function(ev) {
                         dlg.close();
                         cb(ev.getData());
                     });
@@ -525,7 +525,15 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 id : "Tree",
                 icon : "ncms/icon/16/wiki/tree_add.png",
                 title : this.tr("Tree"),
-                tooltipText : this.tr("Add tree"),
+                tooltipText : this.tr("Insert tree"),
+                prompt : function(stext, cb) {
+                    var dlg = new ncms.wiki.TreeDlg();
+                    dlg.addListener("completed", function(ev) {
+                        dlg.close();
+                        cb(ev.getData());
+                    });
+                    dlg.open();
+                },
                 insertMediawiki : wrap(this.__mediaWikiTree)
             });
             this._addToolbarControl({
@@ -725,10 +733,14 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             return val;
         },
 
-        __mediaWikiTree : function() {
+        __mediaWikiTree : function(data) {
             var val = [];
             val.push("");
-            val.push("<tree open=\"true\">");
+            if (data["style"] === "dynamic") {
+                val.push("<tree style=\"dynamic\" open=\"" + data["open"] + "\">");
+            } else {
+                val.push("<tree>");
+            }
             val.push("- " + this.tr("Root"));
             val.push("-- " + this.tr("Child 1"));
             val.push("--- " + this.tr("Child level 3"));

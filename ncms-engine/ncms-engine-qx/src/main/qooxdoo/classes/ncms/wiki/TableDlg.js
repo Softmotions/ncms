@@ -12,7 +12,7 @@ qx.Class.define("ncms.wiki.TableDlg", {
          * Fired if insert table button clicked
          * data: [{@link qx.ui.table.model.Simple}, isWide] Table model of current table & wide table flag
          */
-        "insertTable" : "qx.event.type.Data"
+        "completed" : "qx.event.type.Data"
     },
 
     properties : {
@@ -55,7 +55,7 @@ qx.Class.define("ncms.wiki.TableDlg", {
             if (this.__table.isEditing()) {
                 this.__table.stopEditing();
             }
-            this.fireDataEvent("insertTable", [this.__table.getTableModel(), wideCb.getValue()]);
+            this.fireDataEvent("completed", [this.__table.getTableModel(), wideCb.getValue()]);
         }, this);
         var cancel = new qx.ui.form.Button(this.tr("Cancel"));
         cancel.addListener("execute", function(ev) {

@@ -115,9 +115,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
                         }
 
                         TreeNode ntnode = new TreeNode(lvl, parent, inModel, inConverter);
-                        if (parent.lvl == 0) {
-                            ntnode.closed = closed;
-                        }
+                        ntnode.closed = closed;
                         ntnode.labelNode = labelNode;
                         nstack.push(ntnode);
                     } else {
@@ -260,9 +258,9 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
 
 
                 sb.append("<ul"); //ul body
-                if (closed) {
+                /*if (closed) {
                     sb.append(" style='display:none;'");
-                }
+                }*/
                 sb.append(">");
                 sb.append("\n");
 
