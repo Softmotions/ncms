@@ -491,18 +491,19 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             });
 
 
-            // TODO: init buttons: link, image
             this._addToolbarControl({
                 icon : "ncms/icon/16/wiki/link_add.png",
-                title : this.tr("Page link"),
-                tooltipText : this.tr("Link to another page")
+                title : this.tr("Insert link"),
+                tooltipText : this.tr("Insert link"),
+                prompt : this.__insertLinkPrompt.bind(this),
+                insertMediawiki : this.__mediaWikiLink.bind(this)
             });
 
             this._addToolbarControl({
                 icon : "ncms/icon/16/wiki/image_add.png",
                 title : this.tr("Insert image"),
-                prompt : this.__addImagePrompt.bind(this),
-                tooltipText : this.tr("Insert inline image"),
+                prompt : this.__insertImagePrompt.bind(this),
+                tooltipText : this.tr("Insert image"),
                 insertMediawiki : wrap(this.__mediaWikiImage, this)
             });
 
@@ -639,17 +640,58 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             return val;
         },
 
-        __addImagePrompt : function(stext, cb) {
-            var dlg = new ncms.wiki.InsertImageDlg(
-                    this.__asmSpec["id"],
-                    this.tr("Insert inline image"));
+        __insertLinkPrompt : function(stext, cb) {
+            var dlg = new ncms.pgs.LinkSelectorDlg(
+                    this.tr("Insert link"),
+                    {
+                        includeLinkName : true,
+                        linkText : stext,
+                        overrideLinktext : sm.lang.String.isEmpty(stext),
+                        allowExternalLinks : true,
+                        requireLinkName : false
+                    }
+            );
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();
-                //qx.log.Logger.info("data=" + JSON.stringify(data));
                 dlg.close();
                 cb(data);
             });
             dlg.open();
+        },
+
+        __insertImagePrompt : function(stext, cb) {
+            var dlg = new ncms.wiki.InsertImageDlg(
+                    this.__asmSpec["id"],
+                    this.tr("Insert image"));
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                dlg.close();
+                cb(data);
+            });
+            dlg.open();
+        },
+
+        __mediaWikiLink : function(data) {
+            //1: {"id":5,"name":"Привет","idPath":[5],
+            // "labelPath":["Привет"],
+            // "guidPath":["c30544921222a05b3d6070859cdc002a"],
+            // "linkText":"Привет","externalLink":null}
+
+            //2: {"linkText":"zzz","externalLink":"http://nsu.ru","id":"http://nsu.ru"}
+            var val = [];
+            val.push("[[");
+            if (!sm.lang.String.isEmpty(data["externalLink"])) {
+                val.push(data["externalLink"]);
+            } else {
+                val.push("Page:");
+                val.push(data["guidPath"][data["guidPath"].length - 1]);
+            }
+            if (!sm.lang.String.isEmpty(data["linkText"])) {
+                val.push("|");
+                val.push(data["linkText"]);
+            }
+            val.push("]]");
+            return val.join("")
         },
 
         __mediaWikiImage : function(data) {

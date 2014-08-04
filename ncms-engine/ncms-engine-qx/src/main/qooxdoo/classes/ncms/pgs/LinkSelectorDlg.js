@@ -9,6 +9,8 @@ qx.Class.define("ncms.pgs.LinkSelectorDlg", {
      *
      * options : {
      *    includeLinkName : {Boolean?true},
+     *    linkText        : {String?}
+     *    notOverrideLinktext : {Boolean?false}
      *    requireLinkName : {Boolean?true}
      *    allowExternalLinks : {Boolean?false}
      * }
@@ -40,6 +42,9 @@ qx.Class.define("ncms.pgs.LinkSelectorDlg", {
                 }
                 form.add(lname, this.tr("Link text"), null, "linkText");
                 this._selector.addListener("pageSelected", function(ev) {
+                    if (options["overrideLinktext"] == false) {
+                        return;
+                    }
                     var ps = ev.getData();
                     if (ps == null) {
                         lname.setValue("");
@@ -76,6 +81,7 @@ qx.Class.define("ncms.pgs.LinkSelectorDlg", {
                 if (externalLink != null) {
                     var link = externalLink.getValue();
                     if (!sm.lang.String.isEmpty(link)) {
+                        link = link.trim();
                         if (link.indexOf("://") === -1) {
                             externalLink.setValue("http://" + link);
                         }

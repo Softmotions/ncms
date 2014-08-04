@@ -6,7 +6,7 @@
 qx.Class.define("ncms.wiki.InsertImageDlg", {
     extend : ncms.mmgr.PageFilesSelectorDlg,
 
-    construct : function(pageId, caption) {
+    construct : function(pageId, caption, link) {
         this.base(arguments, pageId, caption, {noLinkText : true, allowModify : true});
         this.setCtypeAcceptor(ncms.Utils.isImageContentType.bind(ncms.Utils));
         this.set({
