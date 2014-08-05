@@ -38,11 +38,11 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
      * options:
      * <code>
      *  {
-     *      noLinkText : true|false
-     *      noSyncLinkText : true |false //Do not allow link text filed <-> file name sync
-     *      allowModify : true|false,
-     *      allowMove : true|false,
-     *      allowSubfoldersView : true|false
+     *      linkText : {Boolean?true}
+     *      syncLinkText : {Boolean?true} //Do not allow link text filed <-> file name sync
+     *      allowModify : {Boolean?false},
+     *      allowMove : {Boolean?false},
+     *      allowSubfoldersView : {Boolean?false}
      *
      *  }
      * </code>
@@ -74,7 +74,7 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
         //form
         var form = this._form = new sm.ui.form.ExtendedForm();
         var linkTextTf = null;
-        if (!options["noLinkText"]) {
+        if (options["linkText"] !== false) {
             linkTextTf = new qx.ui.form.TextField().set({maxLength : 64});
             form.add(linkTextTf, this.tr("Link text"), null, "linkText");
         }
@@ -124,7 +124,7 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
             this._okBt.setEnabled((ctype != null && ff(ctype)));
             if (spec) {
                 var ind = spec["name"].indexOf(".");
-                if (linkTextTf && !options["noSyncLinkText"]) {
+                if (linkTextTf && options["syncLinkText"] !== false) {
                     linkTextTf.setValue(ind !== -1 ? spec["name"].substring(0, ind) : spec["name"]);
                 }
                 this.setStatus(spec["folder"] + spec["name"]);
@@ -156,7 +156,7 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
         },
 
         _createFormRenderer : function(form) {
-           return new sm.ui.form.FlexFormRenderer(form);
+            return new sm.ui.form.FlexFormRenderer(form);
         },
 
         _ok : function() {

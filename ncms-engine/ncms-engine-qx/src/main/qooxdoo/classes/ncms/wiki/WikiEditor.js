@@ -508,6 +508,14 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             });
 
             this._addToolbarControl({
+                icon : "ncms/icon/16/wiki/document_add.png",
+                title : this.tr("Insert file link"),
+                prompt : this.__insertFilePrompt.bind(this),
+                tooltipText : this.tr("Insert file link"),
+                insertMediawiki : wrap(this.__mediaWikiFile, this)
+            });
+
+            this._addToolbarControl({
                 id : "Table",
                 icon : "ncms/icon/16/wiki/table_add.png",
                 title : this.tr("Table"),
@@ -671,13 +679,25 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             dlg.open();
         },
 
-        __mediaWikiLink : function(data) {
-            //1: {"id":5,"name":"Привет","idPath":[5],
-            // "labelPath":["Привет"],
-            // "guidPath":["c30544921222a05b3d6070859cdc002a"],
-            // "linkText":"Привет","externalLink":null}
+        __insertFilePrompt : function(stext, cb) {
+            var dlg = new ncms.mmgr.PageFilesSelectorDlg(
+                    this.__asmSpec["id"],
+                    this.tr("Insert link to file"),
+                    {
+                        allowModify : true,
+                        allowMove : false,
+                        allowSubfoldersView : true
+                    }
+            );
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                dlg.close();
+                cb(data);
+            });
+            dlg.open();
+        },
 
-            //2: {"linkText":"zzz","externalLink":"http://nsu.ru","id":"http://nsu.ru"}
+        __mediaWikiLink : function(data) {
             var val = [];
             val.push("[[");
             if (!sm.lang.String.isEmpty(data["externalLink"])) {
@@ -721,9 +741,22 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 val.push("|link=" + data["link"]);
             }
             val.push("]]");
+            return val.join("");
+        },
 
-            //qx.log.Logger.info("media wiki image=" + data);
-            //qx.log.Logger.info("img=" + val.join(""));
+        __mediaWikiFile : function(data) {
+            var val = [];
+            val.push("[[Media:/");
+            val.push(data["id"]);
+            val.push("/");
+            val.push(data["name"]);
+            val.push("|");
+            if (sm.lang.String.isEmpty(data["linkText"])) {
+                val.push(data["name"]);
+            } else {
+                val.push(data["linkText"]);
+            }
+            val.push("]]");
             return val.join("");
         },
 

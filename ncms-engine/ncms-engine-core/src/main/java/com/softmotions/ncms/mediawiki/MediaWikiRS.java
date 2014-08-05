@@ -38,7 +38,7 @@ public class MediaWikiRS {
     // Image:100px-/121/P4033297.JPG
     // File:/121/P4033297.JPG
     private static final Pattern LINK_FILE_REGEXP
-            = Pattern.compile("(Image|File|Media):((\\d+)px\\-)?/(\\d+)/.*");
+            = Pattern.compile("(Image|File|Media):((\\d+)px\\-)?/?(\\d+)/?.*");
 
     private static final Pattern EXT_LINK_REGEXP
             = Pattern.compile("((Http|Https|Ftp|Smb|Sftp|Scp)://)(.*)");
