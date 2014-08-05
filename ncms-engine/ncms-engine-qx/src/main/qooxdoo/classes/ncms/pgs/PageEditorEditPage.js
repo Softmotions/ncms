@@ -127,7 +127,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.__cleanupFormPane();
             this.__form = form;
             this.__scroll = new qx.ui.container.Scroll().set({marginTop : 5});
-            this.__scroll.add(new sm.ui.form.FlexFormRenderer(form));
+            //this.__scroll.add(new sm.ui.form.FlexFormRenderer(form));
+            this.__scroll.add(new sm.ui.form.OneColumnFormRenderer(form));
             this.add(this.__scroll, {flex : 1});
 
             this.__syncState();
