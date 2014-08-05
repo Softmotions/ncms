@@ -877,8 +877,11 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
         __mediaWikiGmap : function(data, opts) {
-            qx.log.Logger.info("data=" + JSON.stringify(data));
-            //todo
+            var val = [];
+            val.push("<gmap>");
+            val.push(data);
+            val.push("</gmap>");
+            return val.join("\n");
         },
 
         __insertYoutubePrompt : function(stext, cb) {

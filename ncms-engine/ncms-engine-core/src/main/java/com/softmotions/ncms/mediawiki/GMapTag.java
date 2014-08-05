@@ -23,6 +23,9 @@ public class GMapTag extends HTMLTag implements INoBodyParsingTag {
 
     private static final Logger log = LoggerFactory.getLogger(GMapTag.class);
 
+    private static final Pattern GMAP_FRAME_PATTERN =
+            Pattern.compile("<iframe.* src=\"http(s)?://(www\\.)?(maps\\.)?google\\.com/maps/.*>.*</iframe>");
+
     public GMapTag() {
         super("div");
     }
@@ -33,11 +36,10 @@ public class GMapTag extends HTMLTag implements INoBodyParsingTag {
        <iframe width="425" height="550" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
               src="http://maps.google.com/maps/ms?msa=0&amp;msid=201791464133870448049.0004a6bfb7edf6bf3d0db&amp;ie=UTF8&amp;ll=54.845311,83.092904&amp;spn=0.013591,0.027423&amp;z=15&amp;output=embed"></iframe><br /><small>View <a href="http://maps.google.com/maps/ms?msa=0&amp;msid=201791464133870448049.0004a6bfb7edf6bf3d0db&amp;ie=UTF8&amp;ll=54.845311,83.092904&amp;spn=0.013591,0.027423&amp;z=15&amp;source=embed" style="color:#0000FF;text-align:left">NSU </a> in a larger map</small>
         */
-        Pattern pattern = Pattern.compile("<iframe.* src=\"http://maps\\.google\\.com/maps/.*>.*</iframe>");
-        if (pattern.matcher(body).matches()) {
+        if (body == null || !GMAP_FRAME_PATTERN.matcher(body.trim()).matches()) {
             log.warn("Invalid google map iframe tag body: " + body);
             return;
         }
-        buf.append(body);
+        buf.append(body.trim());
     }
 }

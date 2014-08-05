@@ -58,8 +58,17 @@ qx.Class.define("ncms.wiki.InsertGMapDlg", {
         __ta : null,
 
         __ok : function() {
-            //todo validate
-            this.fireDataEvent("completed", this.__ta.getValue());
+            var data = this.__ta.getValue();
+            if (sm.lang.String.isEmpty(data) ||
+                    /<iframe.* src="http(s)?:\/\/(www\.)?(maps\.)?google\.com\/maps\/.*>.*<\/iframe>/
+                            .exec(data.trim()) == null) {
+                this.__ta.setValid(false);
+                this.__ta.setInvalidMessage(this.tr("Invalid google map location code"));
+                return;
+            } else {
+                this.__ta.setValid(true);
+            }
+            this.fireDataEvent("completed", data.trim());
         },
 
         close : function() {
