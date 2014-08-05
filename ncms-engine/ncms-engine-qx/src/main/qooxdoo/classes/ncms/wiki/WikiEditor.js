@@ -566,6 +566,31 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     }
                 ]
             });
+
+            this._addToolbarControl({
+                id : "Google",
+                icon : "ncms/icon/16/wiki/google.png",
+                tooltipText : this.tr("Google content"),
+                menu : [
+                    {
+                        id : "Youtube",
+                        icon : "ncms/icon/16/wiki/youtube.png",
+                        title : this.tr("Youtube film"),
+                        tooltipText : this.tr("Insert youtube film"),
+                        prompt : this.__insertYoutubePrompt.bind(this),
+                        insertMediawiki : wrap(this.__mediaWikiYoutube, this)
+                    },
+
+                    {
+                        id : "Gmap",
+                        icon : "ncms/icon/16/wiki/gmap.png",
+                        title : this.tr("Gmap location"),
+                        tooltipText : this.tr("Insert gmap location"),
+                        prompt : this.__insertGmapPrompt.bind(this),
+                        insertMediawiki : wrap(this.__mediaWikiGmap, this)
+                    }
+                ]
+            });
         },
 
         _getSelectionStart : function() {
@@ -839,6 +864,22 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             val.push("</note>");
             val.push("");
             return val;
+        },
+
+        __insertGmapPrompt : function(stext, cb) {
+
+        },
+
+        __mediaWikiGmap : function(data, opts) {
+
+        },
+
+        __insertYoutubePrompt : function(stext, cb) {
+
+        },
+
+        __mediaWikiYoutube : function(data, opts) {
+
         },
 
         __mediaWikiTable : function(tm, isWide) {
