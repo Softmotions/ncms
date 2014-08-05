@@ -8,8 +8,12 @@ import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import com.google.inject.Singleton;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Youtube embedded player tag.
@@ -18,6 +22,13 @@ import java.util.Map;
  */
 @Singleton
 public class YoutubeTag extends HTMLTag implements INoBodyParsingTag {
+
+    private static final Pattern URL_PATTERN =
+            Pattern.compile("(http|https)://(www.)?youtube.com/watch\\?v=(\\w{3,15})[\\w#!:\\.\\+=&%@!\\-/]*");
+
+    private static final Pattern CODE_PATTERN =
+            Pattern.compile("^\\w{3,15}$");
+
 
     public YoutubeTag() {
         super("div");
@@ -31,9 +42,19 @@ public class YoutubeTag extends HTMLTag implements INoBodyParsingTag {
 
     public void renderHTML(ITextConverter converter, Appendable buf, IWikiModel model) throws IOException {
         Map<String, String> attrs = this.getAttributes();
-        String videoId = Utils.escapeXml(attrs.get("videoid"), true, true, true);
-        if (videoId == null || "".equals(videoId.trim())) {
+        String videoId = attrs.get("videoid");
+        if (StringUtils.isBlank(videoId)) {
             return;
+        }
+        videoId = videoId.trim();
+        Matcher matcher = URL_PATTERN.matcher(videoId);
+        if (matcher.matches()) {
+            videoId = matcher.group(3);
+        } else {
+            matcher = CODE_PATTERN.matcher(videoId);
+            if (!matcher.matches()) {
+                return;
+            }
         }
         if (attrs.get("width") == null) {
             attrs.put("width", "640");

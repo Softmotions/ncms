@@ -1,49 +1,40 @@
 /**
- * Insert tree dialog.
+ * Insert google map iframe
  */
-qx.Class.define("ncms.wiki.TreeDlg", {
+qx.Class.define("ncms.wiki.InsertGMapDlg", {
     extend : qx.ui.window.Window,
 
     events : {
         /**
          * Data: {
-         *   style : {String} simple|dynamic,
-         *   open : {Boolean|null} Makes sens only for `dynamic` style
          * }
          */
         "completed" : "qx.event.type.Data"
     },
 
     construct : function() {
-        this.base(arguments, this.tr("Insert tree"));
+        this.base(arguments, this.tr("Insert google map location"));
         this.setLayout(new qx.ui.layout.VBox(4));
         this.set({
             modal : true,
             showMinimize : false,
             showMaximize : true,
             allowMaximize : true,
-            width : 250
+            width : 620
         });
+        var caption = new qx.ui.basic.Label(
+                this.tr(
+                        "In order to add google map place please follow <a href='%1' target='_blank'>this help tutorial</a>",
+                        ncms.Application.APP_STATE.getHelpSiteTopicUrl("wiki.gmap")
+                )
+        ).set({rich : true});
+        this.add(caption);
 
-        var form = this.__form = new sm.ui.form.ExtendedForm();
-        var rg = new qx.ui.form.RadioButtonGroup();
-        rg.add(new qx.ui.form.RadioButton(this.tr("Simple tree")).set({"model" : "simple"}));
-        rg.add(new qx.ui.form.RadioButton(this.tr("Dynamic tree")).set({"model" : "dynamic"}));
-        form.add(rg, this.tr("Tree style"), null, "style");
+        var ta = this.__ta = new qx.ui.form.TextArea();
+        ta.setMinimalLineHeight(4);
+        ta.setPlaceholder(this.tr("Paste here the generated google map <iframe> element"));
+        this.add(ta, {flex : 1});
 
-        rg.addListener("changeSelection", function(ev) {
-            var w = ev.getData()[0];
-            cb.setEnabled(w.getModel() === "dynamic");
-        });
-
-        var cb = new qx.ui.form.CheckBox();
-        cb.setEnabled(false);
-        form.add(cb, this.tr("Open all nodes"), null, "open");
-
-        var fr = new sm.ui.form.FlexFormRenderer(form);
-        this.add(fr);
-
-        //
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
         hcont.setPadding(5);
 
@@ -59,16 +50,16 @@ qx.Class.define("ncms.wiki.TreeDlg", {
         var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
+
     },
 
     members : {
 
-        __form : null,
+        __ta : null,
 
         __ok : function() {
-            var data = {};
-            this.__form.populateJSONObject(data);
-            this.fireDataEvent("completed", data);
+            //todo validate
+            this.fireDataEvent("completed", this.__ta.getValue());
         },
 
         close : function() {
@@ -78,6 +69,6 @@ qx.Class.define("ncms.wiki.TreeDlg", {
     },
 
     destruct : function() {
-        this._disposeObjects("__form");
+        this.__ta = null;
     }
 });
