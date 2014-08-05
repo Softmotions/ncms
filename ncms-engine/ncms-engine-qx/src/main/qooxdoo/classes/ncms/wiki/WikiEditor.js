@@ -875,11 +875,24 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
         __insertYoutubePrompt : function(stext, cb) {
-
+            var dlg = new ncms.wiki.InsertYoutubeDlg();
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                dlg.close();
+                cb(data);
+            });
+            dlg.open();
         },
 
         __mediaWikiYoutube : function(data, opts) {
-
+            var val = [];
+            val.push("<youtube videoId=\"" + data["code"] + "\"");
+            if (data["custom"]) {
+                val.push(" width=\"" + data["width"] + "\"");
+                val.push(" height=\"" + data["height"] + "\"");
+            }
+            val.push("/>");
+            return val.join("");
         },
 
         __mediaWikiTable : function(tm, isWide) {

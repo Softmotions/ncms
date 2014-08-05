@@ -6,7 +6,10 @@ qx.Class.define("ncms.wiki.TreeDlg", {
 
     events : {
         /**
-         * Data: todo
+         * Data: {
+         *   style : {String) simple|dynamic,
+         *   open : {Boolean|null} Makes sens only for `dynamic` style
+         * }
          */
         "completed" : "qx.event.type.Data"
     },
