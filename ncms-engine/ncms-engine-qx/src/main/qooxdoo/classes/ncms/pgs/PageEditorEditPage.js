@@ -264,7 +264,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.__previewBt.setEnabled(this.__form != null);
         },
 
-        __save : function() {
+        __save : function(cb) {
             if (this.__form == null || !this.__form.validate()) {
                 ncms.Application.infoPopup(this.tr("Page fields contain errors"), {
                     showTime : 5000,
@@ -286,17 +286,30 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 }
                 var spec = this.getPageSpec();
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec), "PUT");
+                req.setShowMessages(false);
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify(data));
-                req.addListener("error", function() {
+                req.addListener("error", function(ev) {
+                    ncms.Application.errorPopup(this.tr("Failed to save page."));
                     this.__saveBt.setEnabled(true);
+                    if (typeof cb === "function") {
+                        cb(true);
+                    }
                 }, this);
                 req.send(function(resp) {
                     this.setModified(false);
                     ncms.Application.infoPopup(this.tr("Page '%1' saved successfully", spec["name"]));
+                    if (typeof cb === "function") {
+                        cb(false);
+                    }
                 }, this);
-            } catch(e) {
+            } catch (e) {
                 this.__saveBt.setEnabled(true);
+                ncms.Application.errorPopup(this.tr("Failed to save page. Error: %1",
+                        (e != null && e.message) ? e.message : e));
+                if (typeof cb === "function") {
+                    cb(true);
+                }
             }
         },
 
@@ -309,7 +322,14 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __preview : function() {
-            //todo
+            var me = this;
+            this.__save(function(err) {
+                if (err) {
+                    return;
+                }
+                var pp = ncms.Application.ACT.getRestUrl("page.preview", me.getPageEditSpec());
+                qx.bom.Window.open(pp, "Preview", {}, false, false);
+            });
         }
     },
 

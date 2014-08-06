@@ -13,6 +13,7 @@
  * @asset(ncms/icon/16/misc/door_in.png)
  * @asset(ncms/icon/32/information.png)
  * @asset(ncms/icon/32/exclamation.png)
+ * @asset(ncms/icon/32/error.png)
  */
 qx.Class.define("ncms.Application", {
     extend : qx.application.Standalone,
@@ -52,6 +53,18 @@ qx.Class.define("ncms.Application", {
                 "context" : context || null,
                 "image" : "icon/48/status/dialog-warning.png"
             })).open();
+        },
+
+
+        errorPopup : function(message, options) {
+            options = options || {};
+            if (options["icon"] === undefined) {
+                options["icon"] = "ncms/icon/32/error.png";
+            }
+            if (options["showTime"] == null) {
+                options["showTime"] = Number.MAX_VALUE;
+            }
+            this.infoPopup(message, options);
         },
 
         /**

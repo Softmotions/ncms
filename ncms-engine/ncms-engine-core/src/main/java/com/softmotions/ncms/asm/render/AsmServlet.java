@@ -73,21 +73,15 @@ public class AsmServlet extends HttpServlet {
         if (processResources(req, resp)) { //find resources
             return;
         }
-
         //Set charset before calling javax.servlet.ServletResponse.getWriter()
         //Assumed all assemblies generated as utf8 encoded text data.
         //Content-Type can be overriden by assembly renderer.
         resp.setContentType("text/html;charset=UTF-8");
 
-        String asmRef = req.getPathInfo();
-        if (asmRef == null || asmRef.length() < 2) {
-            log.warn("Invalid pathInfo: " + req.getPathInfo());
+        Object asmRef = fetchAsmRef(req);
+        if (asmRef == null) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
-        }
-        asmRef = asmRef.substring(1);
-        if (asmRef.endsWith(".html")) {
-            asmRef = asmRef.substring(0, asmRef.length() - ".html".length());
         }
 
         AsmRenderer renderer = rendererProvider.get();
@@ -110,7 +104,6 @@ public class AsmServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         //noinspection ObjectEquality
         if (old != ctx.getClassLoader()) {
@@ -131,7 +124,26 @@ public class AsmServlet extends HttpServlet {
         }
     }
 
-    boolean processResources(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected Object fetchAsmRef(HttpServletRequest req) {
+        String asmRefParam = req.getPathInfo();
+        if (asmRefParam == null || asmRefParam.length() < 2) {
+            log.warn("Invalid pathInfo: " + req.getPathInfo());
+            return null;
+        }
+        asmRefParam = asmRefParam.substring(1);
+        if (asmRefParam.endsWith(".html")) {
+            asmRefParam = asmRefParam.substring(0, asmRefParam.length() - ".html".length());
+        }
+        if (asmRefParam.length() != 32) { // may be it is a number? (asm ID)
+            try {
+                return Integer.parseInt(asmRefParam);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return asmRefParam;
+    }
+
+    protected boolean processResources(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pi = req.getPathInfo();
         if (pi == null) {
             return false;

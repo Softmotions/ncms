@@ -36,9 +36,20 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         this.add(this.__ownerSelector);
 
         this.addListener("loadPane", this.__onLoadPane, this);
+
+        this.__previewFrame = new sm.ui.embed.ScaledIframe().set({fitWidth : true});
+        this.__previewFrame.setPadding([10, 15, 5, 15]);
+        this.add(this.__previewFrame, {flex : 1});
+
+        this.addListener("appear", function() {
+            this.__previewFrame.resetSource();
+            this.__initPreview(this.__spec);
+        }, this);
     },
 
     members : {
+
+        __previewFrame : null,
 
         /**
          * Page name label
@@ -91,10 +102,18 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
                 } else {
                     this.__alertBox.exclude();
                 }
-
-                this.__setOwner(info)
-
+                this.__setOwner(info);
             }, this);
+
+            this.__initPreview(spec);
+        },
+
+        __initPreview : function(spec) {
+            if (spec == null) {
+                return;
+            }
+            var pp = ncms.Application.ACT.getRestUrl("page.preview", spec);
+            this.__previewFrame.setSource(pp);
         },
 
         __setOwner : function(info) {
