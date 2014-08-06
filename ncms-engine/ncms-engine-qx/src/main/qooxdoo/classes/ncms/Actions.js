@@ -170,6 +170,10 @@ qx.Class.define("ncms.Actions", {
         // {templateId} Template ID
         this._action("pages.set.template", "/rs/adm/pages/template/{id}/{templateId}");
 
+        //PUT Publish/Unpublish page
+        this._action("pages.publish", "/rs/adm/pages/publish/{id}");
+        this._action("pages.unpublish", "/rs/adm/pages/unpublish/{id}");
+
         // GET page acl
         // pid: page id
         this._action("pages.acl", "/rs/adm/pages/acl/{pid}");
@@ -195,7 +199,7 @@ qx.Class.define("ncms.Actions", {
         this._action("pages.check.rights", "/rs/adm/pages/check/{pid}/{rights}");
 
         //Page preview url
-        this._action("page.preview", "/asm/{id}");
+        this._action("page.preview", "/asm/{id}?preview=true");
     },
 
     members : {

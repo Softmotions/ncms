@@ -44,8 +44,8 @@
             lacl.rights   AS "local_rights",
             racl.rights   AS "recursive_rights"
         FROM ASMS AS p
-        LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
-        LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
+            LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
+            LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         WHERE p.nav_parent_id = #{nav_parent_id}
               AND p.type LIKE 'page%'
         ORDER BY p.hname ASC
@@ -65,8 +65,8 @@
             lacl.rights   AS "local_rights",
             racl.rights   AS "recursive_rights"
         FROM ASMS AS p
-        LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
-        LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
+            LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
+            LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         WHERE p.nav_parent_id IS NULL
               AND p.type LIKE 'page%'
         ORDER BY p.hname ASC
@@ -108,6 +108,13 @@
     <update id="setPageOwner" parameterType="map">
         UPDATE asms
         SET owner = #{owner}
+        WHERE id = #{id}
+    </update>
+
+
+    <update id="updatePublishStatus" parameterType="map">
+        UPDATE asms
+        SET published = #{published}
         WHERE id = #{id}
     </update>
 
@@ -182,7 +189,8 @@
     </delete>
 
     <select id="getRecursiveAcl" resultType="long" parameterType="map">
-        SELECT recursive_acl_id
+        SELECT
+            recursive_acl_id
         FROM asms
         WHERE id = #{pid}
     </select>
@@ -190,17 +198,22 @@
     <select id="searchPageCount" resultType="int" parameterType="map">
         SELECT COUNT(*)
         FROM asms
-        WHERE <if test="name != null">hname LIKE #{name} AND </if> type LIKE 'page%'
+        WHERE
+        <if test="name != null">hname LIKE #{name} AND</if>
+        type LIKE 'page%'
     </select>
 
     <select id="searchPage" resultType="map" parameterType="map">
         SELECT
-          id              AS "id",
-          hname           AS "hname"
+        id AS "id",
+        hname AS "hname"
         FROM asms
-        WHERE <if test="name != null">hname LIKE #{name} AND </if> type LIKE 'page%'
+        WHERE
+        <if test="name != null">hname LIKE #{name} AND</if>
+        type LIKE 'page%'
         <if test="count != null and count > 0">
-            LIMIT #{count} <if test="skip != null">OFFSET #{skip}</if>
+            LIMIT #{count}
+            <if test="skip != null">OFFSET #{skip}</if>
         </if>
     </select>
 

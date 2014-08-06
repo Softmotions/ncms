@@ -5,6 +5,8 @@
  * @asset(ncms/icon/16/misc/tick.png)
  * @asset(ncms/icon/16/misc/cross-script.png)
  * @asset(ncms/icon/16/misc/monitor.png)
+ * @asset(ncms/icon/16/misc/light-bulb.png)
+ * @asset(ncms/icon/16/misc/light-bulb-off.png)
  */
 qx.Class.define("ncms.pgs.PageEditorEditPage", {
     extend : qx.ui.tabview.Page,
@@ -50,6 +52,10 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt.addListener("execute", this.__preview, this);
         hcont.add(bt);
 
+        bt = this.__publishBt = new qx.ui.form.ToggleButton(this.tr("Not published"), "ncms/icon/16/misc/light-bulb-off.png");
+        bt.addListener("execute", this.__publish, this);
+        hcont.add(bt);
+
         header.add(hcont);
         this.__templateBf =
                 new sm.ui.form.ButtonField(this.tr("Template"),
@@ -84,6 +90,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __cancelBt : null,
 
+        __publishBt : null,
+
         __previewBt : null,
 
         __onLoadPane : function(ev) {
@@ -98,6 +106,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __applyPageEditSpec : function(spec) {
+            this.__setPublishState(!!spec["published"]);
             var t = spec["template"];
             if (t == null) {
                 this.__templateBf.resetValue();
@@ -127,7 +136,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.__form = form;
             this.__scroll = new qx.ui.container.Scroll().set({marginTop : 5});
             //this.__scroll.add(new sm.ui.form.FlexFormRenderer(form));
-            this.__scroll.add(new sm.ui.form.OneColumnFormRenderer(form));
+            var fr = new sm.ui.form.OneColumnFormRenderer(form).set({paddingRight : 15});
+            this.__scroll.add(fr);
             this.add(this.__scroll, {flex : 1});
 
             this.__syncState();
@@ -319,6 +329,28 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             }
         },
 
+        __publish : function(ev) {
+            var val = ev.getTarget().getValue();
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl(
+                    val ? "pages.publish" : "pages.unpublish",
+                    {"id" : this.getPageSpec()["id"]}), "PUT");
+            req.send(function() {
+                var spec = this.getPageEditSpec();
+                spec["published"] = true;
+                this.__setPublishState(val);
+                ncms.Events.getInstance().fireDataEvent("pageChangePublished", {
+                    id : spec["id"],
+                    published : val
+                });
+            }, this);
+        },
+
+        __setPublishState : function(val) {
+            this.__publishBt.setLabel(val ? this.tr("Published") : this.tr("Not published"));
+            this.__publishBt.setIcon(val ? "ncms/icon/16/misc/light-bulb.png" : "ncms/icon/16/misc/light-bulb-off.png");
+            this.__publishBt.setValue(val);
+        },
+
         __cancel : function() {
             ncms.Application.confirm(this.tr("Dow you really want to dispose pending changes?"), function(yes) {
                 if (yes) {
@@ -347,5 +379,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__previewBt = null;
         this.__saveBt = null;
         this.__cancelBt = null;
+        this.__publishBt = null;
     }
 });

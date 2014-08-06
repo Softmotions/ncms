@@ -224,6 +224,7 @@ public class PageRS extends MBDAOSupport {
         res.put("id", page.getId());
         res.put("guid", page.getName());
         res.put("name", page.getHname());
+        res.put("published", page.isPublished());
         if (template == null) {
             res.putNull("template");
         } else {
@@ -260,6 +261,30 @@ public class PageRS extends MBDAOSupport {
         return res;
     }
 
+    @PUT
+    @Path("/publish/{id}")
+    @Transactional
+    public void publishPage(@Context HttpServletRequest req,
+                            @PathParam("id") Long id) {
+        updatePublishStatus(req, id, true);
+    }
+
+    @PUT
+    @Path("/unpublish/{id}")
+    @Transactional
+    public void unpublishPage(@Context HttpServletRequest req,
+                              @PathParam("id") Long id) {
+        updatePublishStatus(req, id, false);
+    }
+
+    private void updatePublishStatus(HttpServletRequest req, Long id, boolean published) {
+        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
+        update("updatePublishStatus",
+               "id", id,
+               "published", published);
+    }
 
     @PUT
     @Path("/edit/{id}")
@@ -597,7 +622,7 @@ public class PageRS extends MBDAOSupport {
     @Path("search/count")
     public Integer searchPagesCount(@QueryParam("name") String name) {
         return selectOne("searchPageCount",
-                         "name", StringUtils.isBlank(name)? null : name + "%");
+                         "name", StringUtils.isBlank(name) ? null : name + "%");
     }
 
     @GET
@@ -616,7 +641,7 @@ public class PageRS extends MBDAOSupport {
                                .put("label", (String) row.get("hname"));
                    }
                },
-               "name", StringUtils.isBlank(name)? null : name + "%",
+               "name", StringUtils.isBlank(name) ? null : name + "%",
                "skip", firstRow,
                "count", lastRow - firstRow + 1);
 
@@ -637,7 +662,7 @@ public class PageRS extends MBDAOSupport {
                                @PathParam("pid") Long pid,
                                @PathParam("rights") String rights) {
         boolean access = true;
-        for (char c : (rights == null? "" : rights).toCharArray()) {
+        for (char c : (rights == null ? "" : rights).toCharArray()) {
             access = access && pageSecurity.checkAccess(pid, req.getRemoteUser(), c);
         }
         return access;

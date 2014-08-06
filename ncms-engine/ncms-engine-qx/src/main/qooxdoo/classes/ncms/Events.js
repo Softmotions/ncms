@@ -5,13 +5,28 @@ qx.Class.define("ncms.Events", {
     events : {
 
         /**
+         * Page content edited.
+         *
          * Data:
          * {
-         *  id : {Number} page ID
+         *  id : {Number} Page ID
          *  ...
          *  ...
          */
-        "pageEdited" : "qx.event.type.Data"
+        "pageEdited" : "qx.event.type.Data",
+
+
+        /**
+         * Page publishe status changed.
+         *
+         * Data:
+         * {
+         *  id : {Number} Page ID,
+         *  published : {Boolean} Is page published
+         *
+         *
+         */
+        "pageChangePublished" : "qx.event.type.Data"
     }
 
 });

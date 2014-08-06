@@ -38,10 +38,11 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         this.addListener("loadPane", this.__onLoadPane, this);
 
         this.__previewFrame = new sm.ui.embed.ScaledIframe().set({fitWidth : true});
-        this.__previewFrame.setPadding([10, 15, 5, 15]);
+        this.__previewFrame.setMargin([10, 15, 5, 15]);
         this.add(this.__previewFrame, {flex : 1});
 
         ncms.Events.getInstance().addListener("pageEdited", this.__onPageEdited, this);
+        ncms.Events.getInstance().addListener("pageChangePublished", this.__onPageEdited, this);
     },
 
     members : {
@@ -83,6 +84,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
                 this.__reload();
             }
         },
+
 
         __reload : function() {
             var spec = this.getPageSpec();
