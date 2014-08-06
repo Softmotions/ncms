@@ -27,7 +27,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.setLayout(new qx.ui.layout.VBox(1));
 
         var header = new qx.ui.container.Composite(new qx.ui.layout.VBox(5))
-                .set({backgroundColor : "#EBEBEB", padding : [5, 5, 10, 5]});
+                .set({padding : [0, 5, 0, 0]});
 
         //Page name
         this.__pageNameLabel = new qx.ui.basic.Label();
@@ -36,19 +36,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
 
-        this.__templateBf =
-                new sm.ui.form.ButtonField(this.tr("Template"),
-                        "ncms/icon/16/misc/document-template.png",
-                        true).set({readOnly : true});
-        this.__templateBf.setPlaceholder(this.tr("Please select the page template"));
-        this.__templateBf.addListener("execute", this.__onChangeTemplate, this);
-        hcont.add(this.__templateBf, {flex : 1});
-
-        var bt = this.__previewBt = new qx.ui.form.Button(this.tr("Preview"), "ncms/icon/16/misc/monitor.png");
-        bt.addListener("execute", this.__preview, this);
-        hcont.add(bt);
-
-        bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png");
+        var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png");
         bt.setEnabled(false);
         bt.addListener("execute", this.__save, this);
         hcont.add(bt);
@@ -58,7 +46,18 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt.addListener("execute", this.__cancel, this);
         hcont.add(bt);
 
+        bt = this.__previewBt = new qx.ui.form.Button(this.tr("Preview"), "ncms/icon/16/misc/monitor.png");
+        bt.addListener("execute", this.__preview, this);
+        hcont.add(bt);
+
         header.add(hcont);
+        this.__templateBf =
+                new sm.ui.form.ButtonField(this.tr("Template"),
+                        "ncms/icon/16/misc/document-template.png",
+                        true).set({readOnly : true});
+        this.__templateBf.setPlaceholder(this.tr("Please select the page template"));
+        this.__templateBf.addListener("execute", this.__onChangeTemplate, this);
+        header.add(this.__templateBf);
         this.add(header);
 
         this.addListener("loadPane", this.__onLoadPane, this);
@@ -265,6 +264,12 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __save : function(cb) {
+            if (this.__saveBt.getEnabled() === false) {
+                if (typeof cb === "function") {
+                    cb(false);
+                }
+                return;
+            }
             if (this.__form == null || !this.__form.validate()) {
                 ncms.Application.infoPopup(this.tr("Page fields contain errors"), {
                     showTime : 5000,
@@ -302,6 +307,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     if (typeof cb === "function") {
                         cb(false);
                     }
+                    ncms.Events.getInstance().fireDataEvent("pageEdited", spec);
                 }, this);
             } catch (e) {
                 this.__saveBt.setEnabled(true);

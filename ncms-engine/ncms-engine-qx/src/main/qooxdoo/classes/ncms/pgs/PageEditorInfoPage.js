@@ -41,13 +41,12 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         this.__previewFrame.setPadding([10, 15, 5, 15]);
         this.add(this.__previewFrame, {flex : 1});
 
-        this.addListener("appear", function() {
-            this.__previewFrame.resetSource();
-            this.__initPreview(this.__spec);
-        }, this);
+        ncms.Events.getInstance().addListener("pageEdited", this.__onPageEdited, this);
     },
 
     members : {
+
+        __pendingRefresh : false,
 
         __previewFrame : null,
 
@@ -76,12 +75,25 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
          */
         __info : null,
 
+
+        __onPageEdited : function(ev) {
+            var myspec = this.getPageSpec();
+            var evspec = ev.getData();
+            if (myspec != null && evspec != null && myspec["id"] === evspec["id"]) {
+                this.__reload();
+            }
+        },
+
+        __reload : function() {
+            var spec = this.getPageSpec();
+            if (spec != null) {
+                this.setPageSpec(sm.lang.Object.shallowClone(spec));
+            }
+        },
+
         __onLoadPane : function(ev) {
             var spec = ev.getData();
-            this.__spec = spec;
-
             this.__pageNameLabel.setValue(spec["name"]);
-
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.info", spec),
                     "GET", "application/json");
             req.send(function(resp) {
@@ -113,6 +125,9 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
                 return;
             }
             var pp = ncms.Application.ACT.getRestUrl("page.preview", spec);
+            if (pp == this.__previewFrame.getSource()) {
+                this.__previewFrame.resetSource();
+            }
             this.__previewFrame.setSource(pp);
         },
 
