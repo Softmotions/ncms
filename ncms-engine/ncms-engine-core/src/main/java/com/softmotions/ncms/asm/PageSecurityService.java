@@ -276,22 +276,19 @@ public class PageSecurityService extends MBDAOSupport {
         if (access == null || (!ArrayUtils.contains(ALL_RIGHTS, access))) {
             return false;
         }
-
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
             return false;
         }
-
         Map<String, ?> row = selectOne("selectPageAclInfo", "pid", pid);
         String owner = row != null ? (String) row.get("owner") : null;
         if (user.equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
             return true;
         }
-
-        return (Integer) selectOne("checkUserAccess",
+        return ((Number) selectOne("checkUserAccess",
                                    "pid", pid,
                                    "user", user,
-                                   "right", access) > 0;
+                                   "right", access)).intValue() > 0;
     }
 
     /**

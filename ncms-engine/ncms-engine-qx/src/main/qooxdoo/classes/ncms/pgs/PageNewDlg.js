@@ -6,12 +6,12 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
 
     construct : function(parentId) {
         this.base(arguments);
-        this.__parentId = parentId;
+        this._id = parentId;
     },
 
     members : {
 
-        __parentId : null,
+        _id : null,
 
         _configureForm : function() {
             var el = new qx.ui.form.TextField().set({allowGrowY : true, maxLength : 64, required : true});
@@ -33,7 +33,7 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
             var items = this._form.getItems();
             var data = {
                 name : items["name"].getValue(),
-                parent : this.__parentId,
+                parent : this._id,
                 type : items["container"].getValue() ? "page.folder" : "page"
             };
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.new"), "PUT");

@@ -36,31 +36,55 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             var tree = this._tree;
             var root = tree.getModel();
             var sel = tree.getSelection().getItem(0);
+            var bt;
 
             var parent = this.__calcFirstFolderParent(sel);
             if (ncms.Application.userInRoles("admin.structure") || (parent != root && parent.getAccessMask().indexOf("w") != -1)) {
-                var newBt = new qx.ui.menu.Button(this.tr("New page"));
-                newBt.addListenerOnce("execute", this.__onNewPage, this);
-                menu.add(newBt);
+                bt = new qx.ui.menu.Button(this.tr("New"));
+                bt.addListenerOnce("execute", this.__onNewPage, this);
+                menu.add(bt);
             }
 
             if (sel != null && sel != root && (sel.getAccessMask().indexOf("d") != -1)) {
-                var delBt = new qx.ui.menu.Button(this.tr("Drop page"));
-                delBt.addListenerOnce("execute", this.__onDeletePage, this);
-                menu.add(delBt);
+                bt = new qx.ui.menu.Button(this.tr("Change/Rename"));
+                bt.addListenerOnce("execute", this.__onChangeOrRenamePage, this);
+                menu.add(bt);
+
+                bt = new qx.ui.menu.Button(this.tr("Drop"));
+                bt.addListenerOnce("execute", this.__onDeletePage, this);
+                menu.add(bt);
             }
+        },
+
+        __onChangeOrRenamePage : function(ev) {
+            var item = this._tree.getSelection().getItem(0);
+            if (item == null) {
+                return;
+            }
+            var parent = this._tree.getParent(item) || this._tree.getModel();
+            var dlg = new ncms.pgs.PageChangeOrRenameDlg({
+                id : item.getId(),
+                label : item.getLabel(),
+                status : item.getStatus()
+            });
+            dlg.addListener("completed", function(ev) {
+                this._refreshNode(parent);
+                dlg.close();
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
         },
 
         __onNewPage : function(ev) {
             var parent = this.__calcFirstFolderParent(this._tree.getSelection().getItem(0));
             var parentId = parent.getId();
-            var d = new ncms.pgs.PageNewDlg(parentId);
-            d.addListener("completed", function(ev) {
+            var dlg = new ncms.pgs.PageNewDlg(parentId);
+            dlg.addListener("completed", function(ev) {
                 this._refreshNode(parent);
-                d.destroy();
+                dlg.close();
             }, this);
-            d.placeToWidget(ev.getTarget(), false);
-            d.show();
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
         },
 
         __onDeletePage : function(ev) {

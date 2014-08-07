@@ -95,17 +95,17 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
                 return;
             }
             var path = this._getItemPathSegments(item);
-            var d = new ncms.mmgr.MediaItemRenameDlg(path, item.getLabel());
-            d.setPosition("bottom-right");
-            d.addListener("completed", function(ev) {
-                d.destroy();
+            var dlg = new ncms.mmgr.MediaItemRenameDlg(path, item.getLabel());
+            dlg.setPosition("bottom-right");
+            dlg.addListener("completed", function(ev) {
+                dlg.close();
                 var data = ev.getData();
                 item.setLoaded(false);
                 item.setLabel(data[0]);
                 this._onSelected(item);
             }, this);
-            d.placeToWidget(ev.getTarget(), false);
-            d.show();
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
         },
 
         __onMove : function(ev) {

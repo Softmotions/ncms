@@ -370,7 +370,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 if (err) {
                     return;
                 }
-                var pp = ncms.Application.ACT.getRestUrl("page.preview", me.getPageEditSpec());
+                var pp = ncms.Application.ACT.getRestUrl("pages.preview", me.getPageEditSpec());
                 qx.bom.Window.open(pp, "Preview", {}, false, false);
             });
         }

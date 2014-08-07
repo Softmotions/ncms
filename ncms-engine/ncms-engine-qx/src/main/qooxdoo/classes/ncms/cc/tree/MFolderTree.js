@@ -177,9 +177,6 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
         _onSelected : function(item) {
             var cfg = this._treeConfig;
-            if (cfg["selectRootAsNull"]) {
-
-            }
             var data = (item == null || (cfg["selectRootAsNull"] && item == this._tree.getModel())) ? null : {
                 "id" : item.getId(),
                 "label" : item.getLabel(),

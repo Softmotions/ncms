@@ -416,16 +416,14 @@ public class PageRS extends MBDAOSupport {
     @Transactional
     public void newPage(@Context HttpServletRequest req,
                         ObjectNode spec) {
-        String name = spec.hasNonNull("name") ? spec.get("name").asText() : null;
+        String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
         Long parent = spec.hasNonNull("parent") ? spec.get("parent").asLong() : null;
-        String type = spec.hasNonNull("type") ? spec.get("type").asText() : null;
-
+        String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
+        if (name == null && (!"page.folder".equals(type) && !"page".equals(type))) {
+            throw new BadRequestException();
+        }
         if (!pageSecurity.canEdit(parent, req.getRemoteUser())) {
             throw new ForbiddenException();
-        }
-
-        if (name == null) {
-            throw new BadRequestException("name");
         }
         String guid;
         Long id;
@@ -446,6 +444,32 @@ public class PageRS extends MBDAOSupport {
     }
 
 
+    @PUT
+    @Path("/update/basic")
+    @Transactional
+    public void updatePageBasic(@Context HttpServletRequest req,
+                                ObjectNode spec) {
+        String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
+        Long id = spec.hasNonNull("id") ? spec.get("id").asLong() : null;
+        String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
+        if (id == null || name == null || type == null ||
+            (!"page.folder".equals(type) && !"page".equals(type))) {
+            throw new BadRequestException();
+        }
+        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+            throw new ForbiddenException();
+        }
+        if ("page".equals(type)) {
+            if (count("selectNumberOfDirectChilds", id) > 0) {
+                type = "page.folder";
+            }
+        }
+        update("updatePageBasic",
+               "id", id,
+               "hname", name,
+               "type", type);
+    }
+
     private String getPageIDsPath(Long id) {
         if (id == null) {
             return "/";
@@ -462,7 +486,6 @@ public class PageRS extends MBDAOSupport {
         Collections.reverse(alist);
         return "/" + CollectionUtils.join("/", alist) + "/";
     }
-
 
     @DELETE
     @Path("/{id}")

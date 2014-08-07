@@ -79,6 +79,12 @@
         WHERE id = #{id}
     </select>
 
+    <select id="selectNumberOfDirectChilds" resultType="long" parameterType="long">
+        SELECT
+            COUNT(*)
+        FROM ASMS
+        WHERE nav_parent_id = #{id}
+    </select>
 
     <update id="mergeNewPage" parameterType="map">
         MERGE INTO ASMS (name, hname, type,
@@ -96,6 +102,13 @@
                 now(), #{user}, #{user},
                 #{description},
                 #{recursive_acl})
+    </update>
+
+
+    <update id="updatePageBasic" parameterType="map">
+        UPDATE ASMS
+        SET hname = #{hname}, type = #{type}
+        WHERE id = #{id}
     </update>
 
     <delete id="dropPage" parameterType="map">

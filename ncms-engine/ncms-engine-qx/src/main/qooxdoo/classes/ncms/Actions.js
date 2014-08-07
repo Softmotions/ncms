@@ -160,6 +160,14 @@ qx.Class.define("ncms.Actions", {
         //GET|PUT page data for page-edit pane.
         this._action("pages.edit", "/rs/adm/pages/edit/{id}");
 
+        //PUT update basic page info (rename/change type)
+        // {
+        //  name : {String} Page name
+        //  id :   {Number} Parent ID
+        //  type: {String} Page type
+        // }
+        this._action("pages.update.basic", "/rs/adm/pages/update/basic");
+
         //PUT set page owner
         // id: Page ID
         // owner: Owner user ID
@@ -199,7 +207,7 @@ qx.Class.define("ncms.Actions", {
         this._action("pages.check.rights", "/rs/adm/pages/check/{pid}/{rights}");
 
         //Page preview url
-        this._action("page.preview", "/asm/{id}?preview=true");
+        this._action("pages.preview", "/asm/{id}?preview=true");
     },
 
     members : {
