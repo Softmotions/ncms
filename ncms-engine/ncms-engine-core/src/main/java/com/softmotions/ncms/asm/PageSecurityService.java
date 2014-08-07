@@ -4,13 +4,14 @@ import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +23,7 @@ import java.util.Map;
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
-public class PageSecurityService extends MBDAOSupport {
+public final class PageSecurityService extends MBDAOSupport {
 
     public static final char WRITE = 'w';
     public static final char NEWS = 'n';
@@ -32,17 +33,21 @@ public class PageSecurityService extends MBDAOSupport {
     public static final char[] ALL_RIGHTS = {WRITE, NEWS, DELETE};
     public static final String ALL_RIGHTS_STR = "" + WRITE + NEWS + DELETE;
 
-    final ObjectMapper mapper;
-
-    final WSUserDatabase userdb;
+    private final WSUserDatabase userdb;
 
     @Inject
     public PageSecurityService(SqlSession sess,
-                               ObjectMapper mapper,
                                WSUserDatabase userdb) {
         super(PageSecurityService.class.getName(), sess);
-        this.mapper = mapper;
         this.userdb = userdb;
+    }
+
+    private WSUser toWSUser(HttpServletRequest req) {
+        Principal p = req.getUserPrincipal();
+        if (p instanceof WSUser) {
+            return (WSUser) p;
+        }
+        return null;
     }
 
     /**
@@ -241,27 +246,23 @@ public class PageSecurityService extends MBDAOSupport {
      * @param pid  page id
      * @param user user name
      */
-    public String getUserRights(Long pid, String user) {
-        if (user == null) {
-            return "";
-        }
-        WSUser wsUser = userdb.findUser(user);
+    public String getUserRights(Long pid, HttpServletRequest req) {
+        WSUser wsUser = toWSUser(req);
         if (wsUser == null) {
             return "";
         }
 
         Map<String, ?> row = selectOne("selectPageAclInfo", "pid", pid);
         String owner = row != null ? (String) row.get("owner") : null;
-        if (user.equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
+        if (wsUser.getName().equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
             return getAllRights();
         }
 
         String rights = "";
-        List<String> arights = select("selectUserRightsForPage", "pid", pid, "user", user);
+        List<String> arights = select("selectUserRightsForPage", "pid", pid, "user", wsUser.getName());
         for (String aright : arights) {
             rights = mergeRights(rights, aright);
         }
-
         return rights;
     }
 
@@ -272,43 +273,64 @@ public class PageSecurityService extends MBDAOSupport {
      * @param user   user name
      * @param access checked access
      */
-    public boolean checkAccess(Long pid, String user, Character access) {
-        if (access == null || (!ArrayUtils.contains(ALL_RIGHTS, access))) {
-            return false;
-        }
-        WSUser wsUser = userdb.findUser(user);
-        if (wsUser == null) {
+    public boolean checkAccess(Long pid, WSUser wsUser, Character access) {
+        if (wsUser == null || access == null || (!ArrayUtils.contains(ALL_RIGHTS, access))) {
             return false;
         }
         Map<String, ?> row = selectOne("selectPageAclInfo", "pid", pid);
         String owner = row != null ? (String) row.get("owner") : null;
-        if (user.equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
+        if (wsUser.getName().equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
             return true;
         }
         return ((Number) selectOne("checkUserAccess",
                                    "pid", pid,
-                                   "user", user,
+                                   "user", wsUser.getName(),
                                    "right", access)).intValue() > 0;
+    }
+
+
+    public boolean checkAccess(Long pid, HttpServletRequest req, Character access) {
+        return checkAccess(pid, toWSUser(req), access);
+    }
+
+    public boolean checkAccessAll(Long pid, HttpServletRequest req, String amask) {
+        String umask = getUserRights(pid, req);
+        for (int i = 0, l = amask.length(); i < l; ++i) {
+            if (umask.indexOf(amask.charAt(i)) == -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean checkAccessAny(Long pid, HttpServletRequest req, String amask) {
+        String umask = getUserRights(pid, req);
+        for (int i = 0, l = amask.length(); i < l; ++i) {
+            if (umask.indexOf(amask.charAt(i)) != -1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * Checks user access to edit page
      *
-     * @param pid  page id
-     * @param user user name
+     * @param pid page id
+     * @param req
      */
-    public boolean canEdit(Long pid, String user) {
-        return checkAccess(pid, user, WRITE);
+    public boolean canEdit(Long pid, HttpServletRequest req) {
+        return checkAccess(pid, req, WRITE);
     }
 
     /**
      * Checks user access to delete page
      *
-     * @param pid  page id
-     * @param user user name
+     * @param pid page id
+     * @param req
      */
-    public boolean canDelete(Long pid, String user) {
-        return checkAccess(pid, user, DELETE);
+    public boolean canDelete(Long pid, HttpServletRequest req) {
+        return checkAccess(pid, req, DELETE);
     }
 
     /**
@@ -317,8 +339,8 @@ public class PageSecurityService extends MBDAOSupport {
      * @param pid  page id
      * @param user user name
      */
-    public boolean canNewsEdit(Long pid, String user) {
-        return checkAccess(pid, user, NEWS);
+    public boolean canNewsEdit(Long pid, HttpServletRequest req) {
+        return checkAccess(pid, req, NEWS);
     }
 
     /**

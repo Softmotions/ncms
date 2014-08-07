@@ -46,14 +46,25 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             }
 
             if (sel != null && sel != root && (sel.getAccessMask().indexOf("d") != -1)) {
+                menu.add(new qx.ui.menu.Separator());
+
                 bt = new qx.ui.menu.Button(this.tr("Change/Rename"));
                 bt.addListenerOnce("execute", this.__onChangeOrRenamePage, this);
                 menu.add(bt);
 
-                bt = new qx.ui.menu.Button(this.tr("Drop"));
+                bt = new qx.ui.menu.Button(this.tr("Move"));
+                bt.addListenerOnce("execute", this.__onMovePage, this);
+                menu.add(bt);
+
+                bt = new qx.ui.menu.Button(this.tr("Delete"));
                 bt.addListenerOnce("execute", this.__onDeletePage, this);
                 menu.add(bt);
             }
+        },
+
+        __onMovePage : function(ev) {
+            qx.log.Logger.info("on move page!!!");
+
         },
 
         __onChangeOrRenamePage : function(ev) {

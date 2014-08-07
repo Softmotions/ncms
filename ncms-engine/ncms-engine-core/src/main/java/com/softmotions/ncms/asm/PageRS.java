@@ -199,7 +199,7 @@ public class PageRS extends MBDAOSupport {
                                          "name", "fullName");
         }
 
-        res.put("accessmask", pageSecurity.getUserRights(id, req.getRemoteUser()));
+        res.put("accessmask", pageSecurity.getUserRights(id, req));
         return res;
     }
 
@@ -279,7 +279,7 @@ public class PageRS extends MBDAOSupport {
     }
 
     private void updatePublishStatus(HttpServletRequest req, Long id, boolean published) {
-        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+        if (!pageSecurity.canEdit(id, req)) {
             throw new ForbiddenException();
         }
         update("updatePublishStatus",
@@ -292,7 +292,7 @@ public class PageRS extends MBDAOSupport {
     public void savePage(@Context HttpServletRequest req,
                          @PathParam("id") Long id,
                          ObjectNode data) {
-        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+        if (!pageSecurity.canEdit(id, req)) {
             throw new ForbiddenException();
         }
 
@@ -344,7 +344,7 @@ public class PageRS extends MBDAOSupport {
     public ObjectNode setTemplate(@Context HttpServletRequest req,
                                   @PathParam("id") Long id,
                                   @PathParam("templateId") Long templateId) {
-        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+        if (!pageSecurity.canEdit(id, req)) {
             throw new ForbiddenException();
         }
 
@@ -392,7 +392,7 @@ public class PageRS extends MBDAOSupport {
     public JsonNode setPageOwner(@Context HttpServletRequest req,
                                  @PathParam("id") Long id,
                                  @PathParam("owner") String owner) {
-        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+        if (!pageSecurity.canEdit(id, req)) {
             throw new ForbiddenException();
         }
 
@@ -422,7 +422,7 @@ public class PageRS extends MBDAOSupport {
         if (name == null && (!"page.folder".equals(type) && !"page".equals(type))) {
             throw new BadRequestException();
         }
-        if (!pageSecurity.canEdit(parent, req.getRemoteUser())) {
+        if (!pageSecurity.canEdit(parent, req)) {
             throw new ForbiddenException();
         }
         String guid;
@@ -456,7 +456,7 @@ public class PageRS extends MBDAOSupport {
             (!"page.folder".equals(type) && !"page".equals(type))) {
             throw new BadRequestException();
         }
-        if (!pageSecurity.canEdit(id, req.getRemoteUser())) {
+        if (!pageSecurity.canDelete(id, req)) {
             throw new ForbiddenException();
         }
         if ("page".equals(type)) {
@@ -492,7 +492,7 @@ public class PageRS extends MBDAOSupport {
     @Transactional
     public void dropPage(@Context HttpServletRequest req,
                          @PathParam("id") Long id) {
-        if (!pageSecurity.canDelete(id, req.getRemoteUser())) {
+        if (!pageSecurity.canDelete(id, req)) {
             throw new ForbiddenException();
         }
 
@@ -587,7 +587,7 @@ public class PageRS extends MBDAOSupport {
                          @PathParam("pid") Long pid,
                          @PathParam("user") String user,
                          @QueryParam("recursive") boolean recursive) {
-        if (!pageSecurity.canEdit(pid, req.getRemoteUser())) {
+        if (!pageSecurity.canEdit(pid, req)) {
             throw new ForbiddenException();
         }
 
@@ -607,7 +607,7 @@ public class PageRS extends MBDAOSupport {
                           @QueryParam("recursive") boolean recursive,
                           @QueryParam("rights") String rights,
                           @QueryParam("add") boolean isAdd) {
-        if (!pageSecurity.canEdit(pid, req.getRemoteUser())) {
+        if (!pageSecurity.canEdit(pid, req)) {
             throw new ForbiddenException();
         }
 
@@ -626,7 +626,7 @@ public class PageRS extends MBDAOSupport {
                               @PathParam("user") String user,
                               @QueryParam("recursive") boolean recursive,
                               @QueryParam("forceRecursive") boolean force) {
-        if (!pageSecurity.canEdit(pid, req.getRemoteUser())) {
+        if (!pageSecurity.canEdit(pid, req)) {
             throw new ForbiddenException();
         }
 
@@ -677,7 +677,7 @@ public class PageRS extends MBDAOSupport {
     @Path("rights/{pid}")
     public String getUserRights(@Context HttpServletRequest req,
                                 @PathParam("pid") Long pid) {
-        return pageSecurity.getUserRights(pid, req.getRemoteUser());
+        return pageSecurity.getUserRights(pid, req);
     }
 
     @GET
@@ -687,7 +687,7 @@ public class PageRS extends MBDAOSupport {
                                @PathParam("rights") String rights) {
         boolean access = true;
         for (char c : (rights == null ? "" : rights).toCharArray()) {
-            access = access && pageSecurity.checkAccess(pid, req.getRemoteUser(), c);
+            access = access && pageSecurity.checkAccess(pid, req, c);
         }
         return access;
     }

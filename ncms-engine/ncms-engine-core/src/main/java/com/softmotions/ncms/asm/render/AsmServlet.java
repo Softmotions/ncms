@@ -2,6 +2,8 @@ package com.softmotions.ncms.asm.render;
 
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.PageSecurityService;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.web.GenericResponseWrapper;
@@ -55,6 +57,9 @@ public class AsmServlet extends HttpServlet {
     @Inject
     private NcmsMessages messages;
 
+    @Inject
+    private PageSecurityService pageSecurity;
+
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         getContent(req, resp, true);
@@ -105,6 +110,16 @@ public class AsmServlet extends HttpServlet {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
+
+        boolean preview = BooleanUtils.toBoolean(req.getParameter("preview"));
+        Asm asm = ctx.getAsm();
+        if (!asm.isPublished()) {
+            if (!(preview && pageSecurity.checkAccessAny(asm.getId(), req, "wnd"))) {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+        }
+
         ClassLoader old = Thread.currentThread().getContextClassLoader();
         //noinspection ObjectEquality
         if (old != ctx.getClassLoader()) {
@@ -117,14 +132,14 @@ public class AsmServlet extends HttpServlet {
                 resp.setContentLength(out.getBuffer().length());
             }
         } catch (AsmMissingCoreException e) {
-            if (BooleanUtils.toBoolean(req.getParameter("preview"))) {
+            if (preview) {
                 //ignore it
                 resp.setStatus(HttpServletResponse.SC_OK);
             } else {
                 throw e;
             }
         } catch (AsmResourceNotFoundException e) {
-            log.error("Resource not found: " + e.getResource() + " assembly: " + ctx.getAsm().getName());
+            log.error("Resource not found: " + e.getResource() + " assembly: " + asm.getName());
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
