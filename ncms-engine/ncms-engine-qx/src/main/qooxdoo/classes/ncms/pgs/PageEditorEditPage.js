@@ -135,7 +135,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.__cleanupFormPane();
             this.__form = form;
             this.__scroll = new qx.ui.container.Scroll().set({marginTop : 5});
-            //this.__scroll.add(new sm.ui.form.FlexFormRenderer(form));
             var fr = new sm.ui.form.OneColumnFormRenderer(form).set({paddingRight : 15});
             this.__scroll.add(fr);
             this.add(this.__scroll, {flex : 1});
@@ -270,7 +269,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __syncState : function() {
-            this.__previewBt.setEnabled(this.__form != null);
+            var espec = this.getPageEditSpec();
+            this.__previewBt.setEnabled(this.__form != null && espec != null && espec["core"] != null);
+            this.__publishBt.setEnabled(this.__form != null && espec != null && espec["core"] != null);
         },
 
         __save : function(cb) {

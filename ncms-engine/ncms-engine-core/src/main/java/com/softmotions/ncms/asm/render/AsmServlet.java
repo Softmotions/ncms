@@ -12,6 +12,7 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +115,13 @@ public class AsmServlet extends HttpServlet {
             if (!transfer) {
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 resp.setContentLength(out.getBuffer().length());
+            }
+        } catch (AsmMissingCoreException e) {
+            if (BooleanUtils.toBoolean(req.getParameter("preview"))) {
+                //ignore it
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                throw e;
             }
         } catch (AsmResourceNotFoundException e) {
             log.error("Resource not found: " + e.getResource() + " assembly: " + ctx.getAsm().getName());

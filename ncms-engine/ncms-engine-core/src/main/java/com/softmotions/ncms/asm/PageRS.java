@@ -225,6 +225,7 @@ public class PageRS extends MBDAOSupport {
         res.put("guid", page.getName());
         res.put("name", page.getHname());
         res.put("published", page.isPublished());
+        res.putPOJO("core", page.getEffectiveCore());
         if (template == null) {
             res.putNull("template");
         } else {

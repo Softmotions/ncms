@@ -38,7 +38,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         this.addListener("loadPane", this.__onLoadPane, this);
 
         this.__previewFrame = new sm.ui.embed.ScaledIframe().set({fitWidth : true});
-        this.__previewFrame.setMargin([10, 15, 5, 15]);
+        this.__previewFrame.setPadding([10, 15, 5, 15]);
         this.add(this.__previewFrame, {flex : 1});
 
         ncms.Events.getInstance().addListener("pageEdited", this.__onPageEdited, this);
@@ -190,6 +190,8 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         this.__mdateLabel = null;
         this.__alertBox = null;
         this.__info = null;
+        ncms.Events.getInstance().removeListener("pageEdited", this.__onPageEdited, this);
+        ncms.Events.getInstance().removeListener("pageChangePublished", this.__onPageEdited, this);
         //this._disposeObjects("__field_name");
     }
 });

@@ -56,7 +56,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         Asm asm = ctx.getAsm();
         AsmCore core = asm.getEffectiveCore();
         if (core == null) {
-            throw new AsmRenderingException("Missing core for assembly: " + asm.getName());
+            throw new AsmMissingCoreException(asm.getName());
         }
         ctx.push();
         try {
