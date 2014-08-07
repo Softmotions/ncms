@@ -43,6 +43,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
 
         ncms.Events.getInstance().addListener("pageEdited", this.__onPageEdited, this);
         ncms.Events.getInstance().addListener("pageChangePublished", this.__onPageEdited, this);
+        ncms.Events.getInstance().addListener("pageChangeTemplate", this.__onPageEdited, this);
     },
 
     members : {
@@ -192,6 +193,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         this.__info = null;
         ncms.Events.getInstance().removeListener("pageEdited", this.__onPageEdited, this);
         ncms.Events.getInstance().removeListener("pageChangePublished", this.__onPageEdited, this);
+        ncms.Events.getInstance().removeListener("pageChangeTemplate", this.__onPageEdited, this);
         //this._disposeObjects("__field_name");
     }
 });

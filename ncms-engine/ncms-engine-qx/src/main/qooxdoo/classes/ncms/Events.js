@@ -17,16 +17,28 @@ qx.Class.define("ncms.Events", {
 
 
         /**
-         * Page publishe status changed.
+         * Page publish status changed.
          *
          * Data:
          * {
          *  id : {Number} Page ID,
          *  published : {Boolean} Is page published
+         * }
+         */
+        "pageChangePublished" : "qx.event.type.Data",
+
+
+        /**
+         * Page template changed.
          *
+         * Data:
+         * {
+         *  id : {Number} Page ID,
+         *  templateId : {Number} Page template ID
+         * }
          *
          */
-        "pageChangePublished" : "qx.event.type.Data"
+        "pageChangeTemplate" : "qx.event.type.Data"
     }
 
 });

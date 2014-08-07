@@ -263,6 +263,10 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 req.send(function(resp) {
                     this.setPageEditSpec(resp.getContent());
                     dlg.close();
+                    ncms.Events.getInstance().fireDataEvent("pageChangeTemplate", {
+                        id : pspec["id"],
+                        templateId : t["id"]
+                    });
                 }, this);
             }, this);
             dlg.open();
