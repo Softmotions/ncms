@@ -20,11 +20,7 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
     },
 
     properties : {
-        constViewSpec : {
-            check : "Object",
-            nullable : true,
-            apply : "__applyConstViewSpec"
-        }
+
     },
 
     construct : function(constViewSpec, allowModify) {
@@ -52,8 +48,7 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         this._add(this.__sf);
         this._add(this.__table, {flex : 1});
 
-        this.setConstViewSpec(constViewSpec || null);
-
+        this.__table.setConstViewSpec(constViewSpec, true);
         this.addListener("appear", this.__search, this);
     },
 
@@ -63,12 +58,12 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
 
         setViewSpec : function(vspec) {
             this.__table.resetSelection();
-            this.__table.getTableModel().setViewSpec(vspec);
+            this.__table.setViewSpec(vspec);
         },
 
         updateViewSpec : function(vspec) {
             this.__table.resetSelection();
-            this.__table.getTableModel().updateViewSpec(vspec);
+            this.__table.updateViewSpec(vspec);
         },
 
         __search : function() {
@@ -78,10 +73,6 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
             } else {
                 this.updateViewSpec({name : val || ""});
             }
-        },
-
-        __applyConstViewSpec : function() {
-            this.__search();
         }
     },
 

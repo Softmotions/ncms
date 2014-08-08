@@ -4,12 +4,14 @@ import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.guid.RandomGUID;
 import com.softmotions.commons.json.JsonUtils;
+import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.events.PageDroppedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBDAOSupport;
@@ -22,6 +24,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
@@ -66,6 +69,10 @@ import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.REMOVE;
 @Path("adm/pages")
 @Produces("application/json")
 public class PageRS extends MBDAOSupport {
+
+    public static final int PAGE_STATUS_FOLDER_FLAG = 1;
+
+    public static final int PAGE_STATUS_NOT_PUBLISHED_FLAG = 1 << 1;
 
     private static final Logger log = LoggerFactory.getLogger(PageRS.class);
 
@@ -470,6 +477,44 @@ public class PageRS extends MBDAOSupport {
                "type", type);
     }
 
+    @PUT
+    @Path("/move")
+    @Transactional
+    public void movePage(@Context HttpServletRequest req,
+                         ObjectNode spec) {
+        long src = spec.hasNonNull("src") ? spec.get("src").longValue() : 0;
+        long tgt = spec.hasNonNull("tgt") ? spec.get("tgt").longValue() : 0;
+        if (src == 0) {
+            throw new BadRequestException();
+        }
+        Asm srcPage = adao.asmSelectById(src);
+        Asm tgtPage = (tgt != 0) ? adao.asmSelectById(tgt) : null; //zero tgt => Root target
+        if (srcPage == null) {
+            throw new NotFoundException();
+        }
+        if (tgtPage != null && !"page.folder".equals(tgtPage.getType())) {
+            throw new BadRequestException();
+        }
+        if (src == tgt) {
+            String msg = messages.get("ncms.mmgr.folder.cantMoveIntoSelf", req, srcPage.getHname());
+            throw new NcmsMessageException(msg, true);
+        }
+        if (tgtPage != null && "page.folder".equals(srcPage.getType())) {
+            String srcPath = getPageIDsPath(src);
+            String tgtPath = getPageIDsPath(tgt);
+            if (tgtPath.startsWith(srcPath)) {
+                String msg = messages.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req,
+                                          srcPage.getHname(), tgtPage.getHname());
+                throw new NcmsMessageException(msg, true);
+            }
+        }
+
+        update("movePage",
+               "id", src,
+               "nav_parent_id", (tgt != 0) ? tgt : null);
+    }
+
+
     private String getPageIDsPath(Long id) {
         if (id == null) {
             return "/";
@@ -522,7 +567,7 @@ public class PageRS extends MBDAOSupport {
             public void write(OutputStream output) throws IOException, WebApplicationException {
                 final JsonGenerator gen = new JsonFactory().createGenerator(output);
                 gen.writeStartArray();
-                Map q = createSelectLayerQ(path);
+                Map q = createSelectLayerQ(path, req);
                 q.put("user", req.getRemoteUser());
                 String stmtName = q.containsKey("nav_parent_id") ? "selectChildLayer" : "selectRootLayer";
                 try {
@@ -538,7 +583,10 @@ public class PageRS extends MBDAOSupport {
                                 String type = (String) row.get("type");
                                 int status = 0;
                                 if ("page.folder".equals(type)) {
-                                    status |= 1;
+                                    status |= PAGE_STATUS_FOLDER_FLAG;
+                                }
+                                if (!NumberUtils.number2Boolean((Number) row.get("published"))) { //page not published
+                                    status |= PAGE_STATUS_NOT_PUBLISHED_FLAG;
                                 }
                                 gen.writeNumberField("status", status);
                                 gen.writeStringField("type", type);
@@ -644,18 +692,21 @@ public class PageRS extends MBDAOSupport {
 
     @GET
     @Path("search/count")
-    public Integer searchPagesCount(@QueryParam("name") String name) {
+    public Integer searchPagesCount(@QueryParam("name") String name,
+                                    @QueryParam("foldersOnly") String foldersOnly) {
         return selectOne("searchPageCount",
-                         "name", StringUtils.isBlank(name) ? null : name + "%");
+                         "name", StringUtils.isBlank(name) ? null : name + "%",
+                         "type", BooleanUtils.toBoolean(foldersOnly) ? "page.folder" : "page%"
+        );
     }
 
     @GET
     @Path("search")
     public JsonNode searchPages(@QueryParam("firstRow") int firstRow,
                                 @QueryParam("lastRow") int lastRow,
-                                @QueryParam("name") String name) {
+                                @QueryParam("name") String name,
+                                @QueryParam("foldersOnly") String foldersOnly) {
         final ArrayNode result = mapper.createArrayNode();
-
         select("searchPage",
                new ResultHandler() {
                    public void handleResult(ResultContext context) {
@@ -666,6 +717,7 @@ public class PageRS extends MBDAOSupport {
                    }
                },
                "name", StringUtils.isBlank(name) ? null : name + "%",
+               "type", BooleanUtils.toBoolean(foldersOnly) ? "page.folder" : "page%",
                "skip", firstRow,
                "count", lastRow - firstRow + 1);
 
@@ -704,11 +756,16 @@ public class PageRS extends MBDAOSupport {
     }
 
 
-    Map createSelectLayerQ(String path) {
+    Map createSelectLayerQ(String path, HttpServletRequest req) {
         Long pId = getPathLastIdSegment(path);
         Map<String, Object> ret = new TinyParamMap();
         if (pId != null) {
             ret.put("nav_parent_id", pId);
+        }
+        if (BooleanUtils.toBoolean(req.getParameter("foldersOnly"))) {
+            ret.put("page_type", "page.folder");
+        } else {
+            ret.put("page_type", "page%");
         }
         return ret;
     }

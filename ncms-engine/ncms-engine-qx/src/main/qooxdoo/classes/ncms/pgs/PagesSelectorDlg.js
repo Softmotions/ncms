@@ -14,7 +14,22 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
         "completed" : "qx.event.type.Data"
     },
 
-    construct : function(caption, allowModify) {
+
+    /**
+     *
+     * @param caption {String?} Dialog caption
+     * @param allowModify {Boolean?false} Allow CRUD operations on pages
+     * @param options {Map?} Options:
+     *                <code>
+     *                    {
+     *                      foldersOnly : {Boolean?false} //Show only folders,
+     *                      allowRootSelection : {Boolen?false}
+     *                    }
+     *                </code>
+     *
+     */
+    construct : function(caption, allowModify, options) {
+        this._options = options || {};
         this.base(arguments, caption != null ? caption : this.tr("Select page"));
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
@@ -26,7 +41,7 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
             height : 400
         });
 
-        var selector = this._selector = new ncms.pgs.PagesSelector(!!allowModify);
+        var selector = this._selector = new ncms.pgs.PagesSelector(!!allowModify, options);
         this.add(selector, {flex : 1});
 
         this._initForm();
@@ -43,7 +58,7 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-        var cmd  = this.createCommand("Esc");
+        var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
 
@@ -53,20 +68,24 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
 
     members : {
 
+        _options : null,
+
         _selector : null,
 
         _okBt : null,
 
         _ok : function() {
-            this.__selector.getSelectedPageWithExtraInfo(function(sp) {
-                if (sp != null) {
+            this._selector.getSelectedPageWithExtraInfo(function(sp) {
+                if (sp != null || this._options["allowRootSelection"]) {
                     this.fireDataEvent("completed", sp);
                 }
             }, this);
         },
 
         _syncState : function() {
-            this._okBt.setEnabled(this._selector.getSelectedPage() != null);
+            if (!this._options["allowRootSelection"]) {
+                this._okBt.setEnabled(this._selector.getSelectedPage() != null);
+            }
         },
 
         _initForm : function() {

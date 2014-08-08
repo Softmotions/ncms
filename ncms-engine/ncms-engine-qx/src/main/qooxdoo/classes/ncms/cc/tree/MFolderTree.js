@@ -45,6 +45,8 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          *   idPathSegments : {Boolean?false} If true Node IDs will be used in path segments
          *
          *   selectRootAsNull : {Boolean} If true, root selection will be fired as `null`
+         *
+         *   setupChildrenRequestFn : {Function?} Optional init HTTP request object on children loading
          * }
          */
         _initTree : function(cfg) {
@@ -194,6 +196,9 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             var url = ncms.Application.ACT.getRestUrl(cfg["action"],
                     this._getItemPathSegments(parent));
             var req = new sm.io.Request(url, "GET", "application/json");
+            if (typeof cfg["setupChildrenRequestFn"] === "function") {
+                cfg["setupChildrenRequestFn"].call(this, req);
+            }
             req.send(function(resp) {
                 var data = resp.getContent();
                 var children = parent.getChildren();

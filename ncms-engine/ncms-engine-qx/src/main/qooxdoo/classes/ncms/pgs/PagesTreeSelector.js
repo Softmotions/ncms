@@ -5,23 +5,26 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
     extend : qx.ui.core.Widget,
     include : [ ncms.cc.tree.MFolderTree ],
 
-    statics : {
-    },
-
-    events : {
-    },
-
-    properties : {
-    },
-
-    construct : function(allowModify) {
+    /**
+     * @param allowModify {Boolean?false} Allow CRUD operations on pages
+     * @param options {Map?} Options:
+     *                <code>
+     *                    {
+     *                      foldersOnly : {Boolean?false} //Show only folders
+     *                    }
+     *                </code>
+     */
+    construct : function(allowModify, options) {
+        this.__options = options || {};
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
         this._initTree(
                 {"action" : "pages.layer",
                     "idPathSegments" : true,
                     "rootLabel" : this.tr("Pages"),
-                    "selectRootAsNull" : true});
+                    "selectRootAsNull" : true,
+                    "setupChildrenRequestFn" : this.__setupChildrenRequest
+                });
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
@@ -29,6 +32,14 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
     },
 
     members : {
+
+        __options : null,
+
+        __setupChildrenRequest : function(req) {
+            if (this.__options["foldersOnly"]) {
+                req.setParameter("foldersOnly", "true");
+            }
+        },
 
         __beforeContextmenuOpen : function(ev) {
             var menu = ev.getData().getTarget();
@@ -63,8 +74,47 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         },
 
         __onMovePage : function(ev) {
-            qx.log.Logger.info("on move page!!!");
-
+            var item = this._tree.getSelection().getItem(0);
+            if (item == null) {
+                return;
+            }
+            //item={"id":5,"guid":"9eb264b3e1f73b1319224360b5d0db02",
+            // "label":"Привет","description":"Привет","status":0,"type":"page",
+            // "options":null,"accessMask":"wnd","icon":"default","loaded":true}
+            var parent = this._tree.getParent(item) || this._tree.getModel();
+            var dlg = new ncms.pgs.PagesSelectorDlg(
+                    this.tr("Choose the target container page"),
+                    false,
+                    {
+                        foldersOnly : true,
+                        allowRootSelection : true
+                    });
+            dlg.addListener("completed", function(ev) {
+                var target = ev.getData();
+                //{"id":7,"name":"Test2","idPath":[7],"labelPath":["Test2"],"guidPath":["dd67c81082248a0241937f0ebbbd01d3"]}
+                var req = new sm.io.Request(ncms.Application.ACT.getUrl("pages.move"), "PUT");
+                req.setRequestContentType("application/json");
+                req.setData(JSON.stringify({
+                    src : item.getId(),
+                    tgt : target != null ? target["id"] : 0
+                }));
+                req.send(function() {
+                    dlg.close();
+                    this._refreshNode(parent, function() {
+                        if (target == null) { //refresh root
+                            this._refreshNode(this._tree.getModel());
+                            return;
+                        }
+                        this._tree.iterateOverCachedNodes(function(node) {
+                            if (node.getId() == target["id"]) {
+                                this._refreshNode(node);
+                                return true; //stop iteration
+                            }
+                        }, this);
+                    }, this);
+                }, this);
+            }, this);
+            dlg.open();
         },
 
         __onChangeOrRenamePage : function(ev) {

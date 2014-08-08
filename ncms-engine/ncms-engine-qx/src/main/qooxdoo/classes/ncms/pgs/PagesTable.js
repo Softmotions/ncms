@@ -26,6 +26,27 @@ qx.Class.define("ncms.pgs.PagesTable", {
     },
 
     members : {
+
+        setViewSpec : function(spec) {
+            this.getTableModel().setViewSpec(spec);
+        },
+
+        getViewSpec : function() {
+            return this.getTableModel().getViewSpec();
+        },
+
+        updateViewSpec : function(spec) {
+            return this.getTableModel().updateViewSpec(spec);
+        },
+
+        setConstViewSpec : function(spec, noupdate) {
+            this.getTableModel().setConstViewSpec(spec, noupdate);
+        },
+
+        getConstViewSpec : function() {
+            return this.getTableModel().getConstViewSpec();
+        },
+
         getSelectedPageInd : function() {
             return this.getSelectionModel().getAnchorSelectionIndex();
         },

@@ -49,7 +49,9 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
 
     protected void initAsmServlet(NcmsConfiguration cfg) {
         //Assembly rendering servlet
-        serve(cfg.getNcmsPrefix() + "/asm/*", getAsmServletClass());
+        Class<? extends AsmServlet> clazz = getAsmServletClass();
+        serve(cfg.getNcmsPrefix() + "/asm/*", clazz);
+        serve(cfg.getNcmsPrefix() + "/adm/asm/*", clazz);
     }
 
     protected void initNinjaDispatcher(NcmsConfiguration cfg) {

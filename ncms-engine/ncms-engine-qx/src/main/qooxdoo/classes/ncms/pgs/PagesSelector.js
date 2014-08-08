@@ -1,13 +1,6 @@
 qx.Class.define("ncms.pgs.PagesSelector", {
     extend : qx.ui.tabview.TabView,
 
-    statics : {
-    },
-
-    events : {
-
-    },
-
     properties : {
 
         /**
@@ -24,12 +17,22 @@ qx.Class.define("ncms.pgs.PagesSelector", {
         }
     },
 
-    construct : function(allowModify) {
+    /**
+     * @param allowModify {Boolean?false} Allow CRUD operations on pages
+     * @param options {Map?} Options:
+     *                <code>
+     *                    {
+     *                      foldersOnly : {Boolean?false} //Show only folders
+     *                    }
+     *                </code>
+     */
+    construct : function(allowModify, options) {
         this.base(arguments, "top");
+        options = options || {};
 
         var page = new qx.ui.tabview.Page(this.tr("Structure"));
         page.setLayout(new qx.ui.layout.Grow());
-        var ts = this._treeSelector = new ncms.pgs.PagesTreeSelector(allowModify);
+        var ts = this._treeSelector = new ncms.pgs.PagesTreeSelector(allowModify, options);
         ts.addListener("itemSelected", this.__pageSelected, this);
         page.add(ts);
         this.add(page);
@@ -37,8 +40,11 @@ qx.Class.define("ncms.pgs.PagesSelector", {
         page = new qx.ui.tabview.Page(this.tr("Search"));
         page.setLayout(new qx.ui.layout.Grow());
 
-        //todo rows loaded when tab is not actually opened
-        var ss = this._searchSelector = new ncms.pgs.PagesSearchSelector(null, allowModify);
+        var cvs = {};
+        if (options["foldersOnly"]) {
+            cvs["foldersOnly"] = true;
+        }
+        var ss = this._searchSelector = new ncms.pgs.PagesSearchSelector(cvs, allowModify);
         ss.addListener("itemSelected", this.__pageSelected, this);
         page.add(ss);
         this.add(page);

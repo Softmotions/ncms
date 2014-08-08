@@ -91,9 +91,9 @@ qx.Class.define("ncms.asm.AsmSelector", {
             this.__table.getTableModel().updateViewSpec(vs);
         },
 
-        setConstViewSpec : function(vs) {
+        setConstViewSpec : function(vs, noupdate) {
             this.__table.resetSelection();
-            this.__table.getTableModel().setConstViewSpec(vs);
+            this.__table.getTableModel().setConstViewSpec(vs, noupdate);
         },
 
         reload : function(vspec) {

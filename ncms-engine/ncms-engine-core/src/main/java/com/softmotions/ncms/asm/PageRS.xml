@@ -47,7 +47,7 @@
             LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
             LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         WHERE p.nav_parent_id = #{nav_parent_id}
-              AND p.type LIKE 'page%'
+              AND p.type LIKE #{page_type}
         ORDER BY p.hname ASC
     </select>
 
@@ -68,7 +68,7 @@
             LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
             LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         WHERE p.nav_parent_id IS NULL
-              AND p.type LIKE 'page%'
+              AND p.type LIKE #{page_type}
         ORDER BY p.hname ASC
     </select>
 
@@ -116,6 +116,12 @@
         FROM asms
         WHERE id = #{id}
     </delete>
+
+    <update id="movePage" parameterType="map">
+        UPDATE ASMS
+        SET nav_parent_id = #{nav_parent_id,jdbcType=BIGINT}
+        WHERE id = #{id}
+    </update>
 
 
     <update id="setPageOwner" parameterType="map">
@@ -213,7 +219,7 @@
         FROM asms
         WHERE
         <if test="name != null">hname LIKE #{name} AND</if>
-        type LIKE 'page%'
+        type LIKE #{type}
     </select>
 
     <select id="searchPage" resultType="map" parameterType="map">
@@ -223,7 +229,7 @@
         FROM asms
         WHERE
         <if test="name != null">hname LIKE #{name} AND</if>
-        type LIKE 'page%'
+        type LIKE #{type}
         <if test="count != null and count > 0">
             LIMIT #{count}
             <if test="skip != null">OFFSET #{skip}</if>

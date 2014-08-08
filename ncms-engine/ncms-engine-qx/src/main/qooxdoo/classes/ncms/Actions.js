@@ -206,8 +206,16 @@ qx.Class.define("ncms.Actions", {
         // GET check user access
         this._action("pages.check.rights", "/rs/adm/pages/check/{pid}/{rights}");
 
+        // PUT move page
+        // Data:
+        // {
+        //   src : {Number} Source page ID,
+        //   tgt : {Number} Target page ID
+        // }
+        this._action("pages.move", "/rs/adm/pages/move");
+
         //Page preview url
-        this._action("pages.preview", "/asm/{id}?preview=true");
+        this._action("pages.preview", "/adm/asm/{id}?preview=true");
     },
 
     members : {
