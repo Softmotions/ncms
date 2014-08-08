@@ -107,7 +107,9 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                         }
                         this._tree.iterateOverCachedNodes(function(node) {
                             if (node.getId() == target["id"]) {
-                                this._refreshNode(node);
+                                if (parent != node) {
+                                    this._refreshNode(node);
+                                }
                                 return true; //stop iteration
                             }
                         }, this);
