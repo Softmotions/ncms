@@ -1,5 +1,12 @@
 /**
  * Media folder/file tree-selector.
+ *
+ * @asset(ncms/icon/22/places/folder.png)
+ * @asset(ncms/icon/22/places/folder-open.png)
+ * @asset(ncms/icon/22/places/system-folder.png)
+ * @asset(ncms/icon/22/places/system-folder-open.png)
+ * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
+ * @asset(ncms/icon/22/state/loading.gif)
  */
 qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
     extend : qx.ui.core.Widget,
@@ -9,8 +16,9 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
         this._initTree({
-            "action" : "media.folders",
-            "rootLabel" : this.tr("Files")
+            action : "media.folders",
+            rootLabel : this.tr("Files"),
+            iconConverter : this.__treeIconConverter.bind(this)
         });
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
@@ -19,6 +27,23 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
     },
 
     members : {
+
+
+        __treeIconConverter : function(value, model, source, target) {
+            switch (value) {
+                case "default":
+                    if (model.getChildren != null) {
+                        var fdPreffix = model.getSystem && model.getSystem() == 1 ? "system-" : "";
+                        var fdSuffix = target.isOpen() ? "-open" : "";
+                        return "ncms/icon/22/places/" + fdPreffix + "folder" + fdSuffix + ".png";
+                    } else {
+                        return "icon/22/mimetypes/office-document.png";
+                    }
+                    break;
+                default:
+                    return "ncms/icon/22/state/loading.gif";
+            }
+        },
 
         __beforeContextmenuOpen : function(ev) {
             var menu = ev.getData().getTarget();

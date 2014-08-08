@@ -3,8 +3,6 @@
  *
  * @asset(ncms/icon/22/places/folder.png)
  * @asset(ncms/icon/22/places/folder-open.png)
- * @asset(ncms/icon/22/places/system-folder.png)
- * @asset(ncms/icon/22/places/system-folder-open.png)
  * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
  * @asset(ncms/icon/22/state/loading.gif)
  */
@@ -46,7 +44,9 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          *
          *   selectRootAsNull : {Boolean} If true, root selection will be fired as `null`
          *
-         *   setupChildrenRequestFn : {Function?} Optional init HTTP request object on children loading
+         *   setupChildrenRequestFn : {Function?} Optional init HTTP request object on children loading,
+         *
+         *   iconConverter : {Function?}
          * }
          */
         _initTree : function(cfg) {
@@ -65,24 +65,28 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                 var tree = this._tree = new sm.ui.tree.ExtendedVirtualTree(root, "label", "children");
                 tree.setHideRoot(false);
                 tree.setIconPath("icon");
-                tree.setIconOptions({
-                    converter : function(value, model, source, target) {
-                        switch (value) {
-                            case "default":
-                                if (model.getChildren != null) {
-                                    var fdPreffix = model.getSystem && model.getSystem() == 1 ? "system-" : "";
-                                    var fdSuffix = target.isOpen() ? "-open" : "";
-
-                                    return "ncms/icon/22/places/" + fdPreffix + "folder" + fdSuffix + ".png";
-                                } else {
-                                    return "icon/22/mimetypes/office-document.png";
-                                }
-                                break;
-                            default:
-                                return "ncms/icon/22/state/loading.gif";
+                if (typeof cfg["iconConverter"] === "function") {
+                    tree.setIconOptions({
+                        converter : cfg["iconConverter"]
+                    });
+                } else {
+                    tree.setIconOptions({
+                        converter : function(value, model, source, target) {
+                            switch (value) {
+                                case "default":
+                                    if (model.getChildren != null) {
+                                        var fdSuffix = target.isOpen() ? "-open" : "";
+                                        return "ncms/icon/22/places/folder" + fdSuffix + ".png";
+                                    } else {
+                                        return "icon/22/mimetypes/office-document.png";
+                                    }
+                                    break;
+                                default:
+                                    return "ncms/icon/22/state/loading.gif";
+                            }
                         }
-                    }
-                });
+                    });
+                }
 
                 var delegate = {
 

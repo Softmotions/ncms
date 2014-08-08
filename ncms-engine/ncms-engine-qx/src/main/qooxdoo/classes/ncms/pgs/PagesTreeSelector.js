@@ -1,5 +1,10 @@
 /**
  * Pages tree selector.
+ *
+ * @asset(ncms/icon/22/misc/document-text.png)
+ * @asset(ncms/icon/22/misc/document-text-exclamation.png)
+ * @asset(ncms/icon/22/places/folder-exclamation.png)
+ * @asset(ncms/icon/22/places/folder-exclamation-open.png)
  */
 qx.Class.define("ncms.pgs.PagesTreeSelector", {
     extend : qx.ui.core.Widget,
@@ -19,21 +24,66 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
         this._initTree(
-                {"action" : "pages.layer",
-                    "idPathSegments" : true,
-                    "rootLabel" : this.tr("Pages"),
-                    "selectRootAsNull" : true,
-                    "setupChildrenRequestFn" : this.__setupChildrenRequest
+                {
+                    action : "pages.layer",
+                    idPathSegments : true,
+                    rootLabel : this.tr("Pages"),
+                    selectRootAsNull : true,
+                    setupChildrenRequestFn : this.__setupChildrenRequest,
+                    iconConverter : this.__treeIconConverter.bind(this)
                 });
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
         }
+        ncms.Events.getInstance().addListener("pageChangePublished", this.__onPagePublished, this);
     },
 
     members : {
 
         __options : null,
+
+
+        __onPagePublished : function(ev) {
+            var data = ev.getData();
+            var published = data["published"];
+            var id = data["id"];
+            this._tree.iterateOverCachedNodes(function(node) {
+                if (node.getId() === id && node.getStatus != null) {
+                    var status = node.getStatus();
+                    if (published) {
+                        status &= ~(1 << 1);
+
+                    } else {
+                        status |= (1 << 1);
+                    }
+                    node.setStatus(status);
+                    node.setIcon(published ? "published" : "unpublished");
+                    return true;
+                }
+            });
+        },
+
+        __treeIconConverter : function(value, model, source, target) {
+            var statusPrefix = "";
+            if (model.getStatus && (model.getStatus() & (1 << 1)) != 0) {
+                statusPrefix = "-exclamation";
+            }
+            switch (value) {
+                case "published":
+                case "unpublished":
+                case "default":
+                    if (model.getChildren != null) {
+                        var fdSuffix = target.isOpen() ? "-open" : "";
+                        return "ncms/icon/22/places/folder" + statusPrefix + fdSuffix + ".png";
+                    } else {
+                        return "ncms/icon/22/misc/document-text" + statusPrefix + ".png";
+                    }
+                    break;
+                default:
+                    return "ncms/icon/22/state/loading.gif";
+            }
+        },
 
         __setupChildrenRequest : function(req) {
             if (this.__options["foldersOnly"]) {
@@ -106,7 +156,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                             return;
                         }
                         this._tree.iterateOverCachedNodes(function(node) {
-                            if (node.getId() == target["id"]) {
+                            if (node.getId() === target["id"]) {
                                 if (parent != node) {
                                     this._refreshNode(node);
                                 }
@@ -178,5 +228,6 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
 
     destruct : function() {
         //this._disposeObjects("__field_name");
+        ncms.Events.getInstance().removeListener("pageChangePublished", this.__onPagePublished, this);
     }
 });
