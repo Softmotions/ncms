@@ -5,13 +5,12 @@
 
 <mapper namespace="com.softmotions.ncms.asm.PageRS">
 
-
     <select id="selectPageInfoIN" resultType="map" parameterType="map">
         SELECT
-        p.id AS "id",
-        p.name AS "guid",
-        p.hname AS "name"
-        FROM ASMS AS p
+        p.id                  AS "id",
+        p.name                AS "guid",
+        p.hname               AS "name"
+        FROM asms             AS p
         WHERE p.id IN
         <foreach item="id" index="index" collection="ids"
                  open="(" separator="," close=")">
@@ -43,7 +42,7 @@
             p.owner       AS "owner",
             lacl.rights   AS "local_rights",
             racl.rights   AS "recursive_rights"
-        FROM ASMS AS p
+        FROM asms AS p
             LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
             LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         WHERE p.nav_parent_id = #{nav_parent_id}
@@ -86,8 +85,10 @@
         WHERE nav_parent_id = #{id}
     </select>
 
-    <update id="mergeNewPage" parameterType="map">
-        MERGE INTO ASMS (name, hname, type,
+    <update id="mergeNewPage"
+            databaseId="H2"
+            parameterType="map">
+        MERGE INTO asms (name, hname, type,
                          nav_parent_id,
                          nav_cached_path,
                          options,
@@ -104,9 +105,59 @@
                 #{recursive_acl})
     </update>
 
+    <update id="mergeNewPage"
+            databaseId="DB2"
+            parameterType="map">
+
+        MERGE INTO asms a
+        USING (
+                  VALUES (#{guid}, #{name}, #{type},
+                          #{nav_parent_id,jdbcType=BIGINT},
+                          #{nav_cached_path},
+                          #{options,jdbcType=VARCHAR},
+                          current_timestamp, #{user}, #{user},
+                          #{description},
+                          #{recursive_acl})) AS s(
+              name, hname, type,
+              nav_parent_id,
+              nav_cached_path,
+              options,
+              mdate, muser, owner,
+              description,
+              recursive_acl_id)
+        ON a.name = s.name
+        WHEN MATCHED THEN
+        UPDATE SET
+            a.hname            = s.hname,
+            a.type             = s.type,
+            a.nav_parent_id    = s.nav_parent_id,
+            a.nav_cached_path  = s.nav_cached_path,
+            a.options          = s.options,
+            a.mdate            = s.mdate,
+            a.muser            = s.muser,
+            a.owner            = s.owner,
+            a.description      = s.description,
+            a.recursive_acl_id = s.recursive_acl_id
+        WHEN NOT MATCHED THEN
+        INSERT (name, hname, type,
+                nav_parent_id,
+                nav_cached_path,
+                options,
+                mdate, muser, owner,
+                description,
+                recursive_acl_id)
+        VALUES (s.name, s.hname, s.type,
+                s.nav_parent_id,
+                s.nav_cached_path,
+                s.options,
+                s.mdate, s.muser, s.owner,
+                s.description,
+                s.recursive_acl_id)
+    </update>
+
 
     <update id="updatePageBasic" parameterType="map">
-        UPDATE ASMS
+        UPDATE asms
         SET hname = #{hname}, type = #{type}
         WHERE id = #{id}
     </update>
@@ -150,7 +201,7 @@
             p.published AS "published",
             p.template  AS "template",
             p.options   AS "options"
-        FROM ASMS AS p
+        FROM asms AS p
         WHERE p.id = #{id}
               AND p.type LIKE 'page%'
     </select>
@@ -164,6 +215,7 @@
 
 
     <update id="updateAttribute"
+            databaseId="H2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         UPDATE asm_attrs
         SET
@@ -173,6 +225,19 @@
             mdate       = now()
         WHERE asm_id = #{asmId}
               AND name = #{name}
+    </update>
+
+    <update id="updateAttribute"
+            databaseId="DB2"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        UPDATE asm_attrs
+        SET
+        options     = #{options},
+        value       = #{value},
+        large_value = #{largeValue},
+        mdate       = current_timestamp
+        WHERE asm_id = #{asmId}
+        AND name = #{name}
     </update>
 
 
@@ -187,12 +252,42 @@
 
 
     <update id="upsertAttribute"
+            databaseId="H2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         MERGE INTO asm_attrs (asm_id, name, label, type,
                               options, required, value, large_value, mdate)
         KEY (asm_id, name)
         VALUES (#{asmId}, #{name}, #{label}, #{type},
                 #{options}, #{required}, #{value}, #{largeValue}, now())
+    </update>
+
+
+    <update id="upsertAttribute"
+            databaseId="DB2"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        MERGE INTO asm_attrs a
+        USING (
+                  VALUES (#{asmId}, #{name}, #{label}, #{type},
+                          #{options}, #{required}, #{value}, #{largeValue}, current_timestamp)
+              ) AS s(
+              asm_id, name, label, type,
+              options, required, value, large_value, mdate
+              )
+        ON a.asm_id = s.asm_id AND a.name = s.name
+        WHEN MATCHED THEN
+        UPDATE SET
+            a.label       = s.label,
+            a.type        = s.type,
+            a.options     = s.options,
+            a.required    = s.required,
+            a.value       = s.value,
+            a.large_value = s.large_value,
+            a.mdate       = s.mdate
+        WHEN NOT MATCHED THEN
+        INSERT (asm_id, name, label, type,
+                options, required, value, large_value, mdate)
+        VALUES (s.asm_id, s.name, s.label, s.type,
+                s.options, s.required, s.value, s.large_value, s.mdate)
     </update>
 
 

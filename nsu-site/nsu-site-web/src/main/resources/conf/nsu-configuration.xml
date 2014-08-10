@@ -16,8 +16,7 @@
     </jar-web-resources>
 
     <mybatis config="com/softmotions/ncms/db/mybatis-config.xml"
-             bindDatasource="true"
-             shutdownSQL="SHUTDOWN">
+             bindDatasource="true">
         JDBC.driver=${nsu.JDBC.driver}
         JDBC.url=${nsu.JDBC.url}
         JDBC.username=${nsu.JDBC.username}
@@ -26,7 +25,7 @@
 
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
         <!-- <dropAll/>-->
-        <update/>
+        <!--<update/>-->
     </liquibase>
 
     <!-- basedir replacements: {webapp}|{cwd}|{home}|{tmp}|{newtmp} -->

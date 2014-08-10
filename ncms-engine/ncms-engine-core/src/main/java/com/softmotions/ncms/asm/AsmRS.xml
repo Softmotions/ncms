@@ -109,10 +109,30 @@
 
 
     <update id="upsertAttribute"
+            databaseId="H2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        MERGE INTO asm_attrs (asm_id, name, label, type, options, required, value, large_value, mdate)
-        KEY (asm_id, name)
+        MERGE INTO asm_attrs (asm_id, NAME, LABEL, TYPE, OPTIONS, required, VALUE, large_value, mdate)
+        KEY (asm_id, NAME)
         VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
+    </update>
+
+
+    <update id="upsertAttribute"
+            databaseId="DB2"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        MERGE INTO asm_attrs a
+        USING (
+                  VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options},
+                          #{required}, #{value}, #{largeValue}, current_timestamp)
+              ) AS s(asm_id, name, label, type, options, required, value, large_value, mdate)
+        ON a.asm_id = s.asm_id AND a.name = s.name
+        WHEN MATCHED THEN
+        UPDATE SET
+            a.label = s.label, a.type = s.type, a.options = s.options, a.required = s.required,
+            a.value = s.value, a.large_value = s.large_value, a.mdate = s.mdate
+        WHEN NOT MATCHED THEN
+        INSERT (asm_id, name, label, type, options, required, value, large_value, mdate)
+        VALUES (s.asm_id, s.name, s.label, s.type, s.options, s.required, s.value, s.large_value, s.mdate)
     </update>
 
 
@@ -136,7 +156,7 @@
                           FROM asm_attrs a2
                           WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
                                 AND a1.ordinal != a2.ordinal),
-            a1.mdate   = now()
+            a1.mdate   = current_timestamp
         WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
 

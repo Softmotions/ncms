@@ -6,6 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
+
     <!-- ==================================================================== -->
     <!-- ====================== ASSEMBLY TABLES ============================= -->
     <!-- ==================================================================== -->
@@ -55,10 +56,10 @@
                     remarks="Username which modified this assembly"/>
             <column name="OWNER" type="VARCHAR(64)"
                     remarks="Username of page assembly owner"/>
-            <column name="PUBLISHED" type="TINYINT(1)"
+            <column name="PUBLISHED" type="${tinyint.type}"
                     defaultValueNumeric="0"
                     remarks="Published boolean flag for page assemblies"/>
-            <column name="TEMPLATE" type="TINYINT(1)"
+            <column name="TEMPLATE" type="${tinyint.type}"
                     defaultValueNumeric="0"
                     remarks="Use this page assembly as template for other pages"/>
             <column name="CONTROLLER" type="VARCHAR(127)"
@@ -197,7 +198,7 @@
                     autoIncrement="true">
                 <constraints nullable="false"/>
             </column>
-            <column name="REQUIRED" type="TINYINT(1)"
+            <column name="REQUIRED" type="${tinyint.type}"
                     defaultValueNumeric="0"
                     remarks="Required boolean flag for page assembly attributes">
                 <constraints nullable="false"/>
@@ -297,7 +298,7 @@
             </column>
             <column name="MDATE" type="TIMESTAMP">
             </column>
-            <column name="TAGS" type="ARRAY">
+            <column name="TAGS" type="VARCHAR(1024)">
             </column>
             <column name="ICON" type="BLOB"
                     remarks="Image media file thumbnail">
@@ -312,7 +313,7 @@
             <column name="CSUM" type="VARCHAR(48)"
                     remarks="File checksum">
             </column>
-            <column name="SYSTEM" type="TINYINT(1)"
+            <column name="SYSTEM" type="${tinyint.type}"
                     defaultValueNumeric="0"
                     remarks="True if is a system file managed by admins">
                 <constraints nullable="false"/>

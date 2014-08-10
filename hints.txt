@@ -19,4 +19,13 @@ PUT file
 curl --upload-file uploadfile http://www.example.com/receive.cgi
 
 
+DB2 INTEGRATION
+
+to enable offset and limit:
+
+db2set DB2_COMPATIBILITY_VECTOR=4000
+db2stop
+db2start
+
+
 

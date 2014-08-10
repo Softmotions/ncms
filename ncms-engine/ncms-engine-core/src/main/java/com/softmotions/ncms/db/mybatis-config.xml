@@ -48,6 +48,14 @@
         </environment>
     </environments>
 
+    <databaseIdProvider type="DB_VENDOR">
+        <property name="SQL Server" value="SQLSERVER"/>
+        <property name="DB2" value="DB2"/>
+        <property name="Oracle" value="ORACLE"/>
+        <property name="H2" value="H2"/>
+    </databaseIdProvider>
+
+
     <mappers>
         <mapper resource="com/softmotions/ncms/asm/AsmDAO.xml"/>
         <mapper resource="com/softmotions/ncms/asm/AsmRS.xml"/>

@@ -44,7 +44,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
-import org.apache.commons.collections.iterators.ArrayIterator;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -110,7 +109,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -411,7 +409,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                     gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
                                 }
                                 gen.writeStringField("description", (String) row.get("description"));
-                                gen.writeStringField("tags", ArrayUtils.stringJoin(row.get("tags"), ", "));
+                                gen.writeStringField("tags", row.get("tags") != null ? row.get("tags").toString() : null);
                                 gen.writeEndObject();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -808,7 +806,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     return coll.compare(String.valueOf(o1), String.valueOf(o2));
                 }
             });
-            qm.put("tags", qtags);
+            qm.put("tags", ArrayUtils.stringJoin(qtags, ", "));
         }
         if (form.containsKey("description")) {
             String desc = form.getFirst("description");
@@ -934,13 +932,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             Collections.addAll(keywords, FTSUtils.stemWordsLangAware(val, locale, 3));
         }
         if (row.get("tags") != null) {
-            StringBuilder tags = new StringBuilder();
-            Iterator it = new ArrayIterator(row.get("tags"));
-            while (it.hasNext()) {
-                String tag = (String) it.next();
-                tags.append(' ').append(tag.toLowerCase());
-            }
-            Collections.addAll(keywords, FTSUtils.stemWordsLangAware(tags.toString(), locale, 3));
+            Collections.addAll(keywords, FTSUtils.stemWordsLangAware((String) row.get("tags"), locale, 3));
         }
         val = FilenameUtils.getName(name);
         if (!StringUtils.isBlank(val) && val.length() > 2) {
@@ -1194,8 +1186,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         String thumbFormat = getImageFileResizeFormat(ctype);
         final Blob icon = (Blob) rec.get("icon");
 
+
         if (icon != null) {
-            final byte[] icondata = icon.getBytes(0, (int) icon.length());
+            final byte[] icondata = icon.getBytes(1, (int) icon.length());
             return Response.ok(new StreamingOutput() {
                 public void write(OutputStream output) throws IOException, WebApplicationException {
                     output.write(icondata);

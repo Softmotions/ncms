@@ -6,34 +6,47 @@
 <mapper namespace="com.softmotions.ncms.asm.PageSecurityService">
 
     <select id="selectNavPagePath" resultType="string" parameterType="map">
-        SELECT nav_cached_path
+        SELECT
+            nav_cached_path
         FROM asms
         WHERE id = #{pid}
     </select>
 
-    <select id="newAclId" resultType="long">
+    <select id="newAclId"
+            databaseId="H2"
+            resultType="long">
         CALL NEXT VALUE FOR SEQ_ACL_ID
+    </select>
+
+    <select id="newAclId"
+            databaseId="DB2"
+            resultType="long">
+        SELECT
+            NEXT VALUE FOR SEQ_ACL_ID
+        FROM SYSIBM.DUAL
     </select>
 
     <select id="selectPageAclInfo" resultType="map" parameterType="map">
         SELECT
-          owner             AS "owner",
-          local_acl_id      AS "local_acl",
-          recursive_acl_id  AS "recursive_acl"
+            owner            AS "owner",
+            local_acl_id     AS "local_acl",
+            recursive_acl_id AS "recursive_acl"
         FROM asms
         WHERE id = #{pid}
     </select>
 
     <select id="selectUserRightsByAcl" resultType="string" parameterType="map">
-        SELECT rights
+        SELECT
+            rights
         FROM asm_acl_entity
         WHERE user = #{user} AND acl_id = #{acl}
     </select>
 
     <select id="selectUserRightsForPage" resultType="string" parameterType="map">
-        SELECT acl.rights
+        SELECT
+            acl.rights
         FROM asm_acl_entity AS acl
-        INNER JOIN asms AS a ON acl.acl_id = a.local_acl_id OR acl.acl_id = a.recursive_acl_id
+            INNER JOIN asms AS a ON acl.acl_id = a.local_acl_id OR acl.acl_id = a.recursive_acl_id
         WHERE acl.user = #{user} AND a.id = #{pid}
     </select>
 
@@ -44,7 +57,8 @@
     </update>
 
     <select id="getLocalAcl" resultType="long" parameterType="map">
-        SELECT local_acl_id
+        SELECT
+            local_acl_id
         FROM asms
         WHERE id = #{pid}
     </select>
@@ -56,56 +70,84 @@
     </update>
 
     <select id="getRecursiveAcl" resultType="long" parameterType="map">
-        SELECT recursive_acl_id
+        SELECT
+            recursive_acl_id
         FROM asms
         WHERE id = #{pid}
     </select>
 
     <select id="selectAllUserRights" resultType="map" parameterType="map">
         SELECT
-          0       AS "recursive",
-          user    AS "user",
-          rights  AS "rights"
+            0      AS "recursive",
+            user   AS "user",
+            rights AS "rights"
         FROM asm_acl_entity
-        WHERE acl_id = (SELECT local_acl_id FROM asms WHERE id = #{pid})
+        WHERE acl_id = (SELECT
+                            local_acl_id
+                        FROM asms
+                        WHERE id = #{pid})
         UNION
         SELECT
-          1       AS "recursive",
-          user    AS "user",
-          rights  AS "rights"
+            1      AS "recursive",
+            user   AS "user",
+            rights AS "rights"
         FROM asm_acl_entity
-        WHERE acl_id = (SELECT recursive_acl_id FROM asms WHERE id = #{pid})
+        WHERE acl_id = (SELECT
+                            recursive_acl_id
+                        FROM asms
+                        WHERE id = #{pid})
     </select>
 
     <select id="selectRecursiveUserRights" resultType="map" parameterType="map">
         SELECT
-          acl.user    AS "user",
-          acl.rights  AS "rights"
+        acl.user AS "user",
+        acl.rights AS "rights"
         FROM asm_acl_entity AS acl
         INNER JOIN asms AS a ON acl.acl_id = a.recursive_acl_id
-        WHERE a.id = #{pid} <if test="user != null"> AND acl.user = #{user}</if>
+        WHERE a.id = #{pid}
+        <if test="user != null">AND acl.user = #{user}</if>
     </select>
 
     <select id="selectLocalUserRights" resultType="map" parameterType="map">
         SELECT
-          acl.user    AS "user",
-          acl.rights  AS "rights"
+        acl.user AS "user",
+        acl.rights AS "rights"
         FROM asm_acl_entity AS acl
         INNER JOIN asms AS a ON acl.acl_id = a.local_acl_id
-        WHERE a.id = #{pid} <if test="user != null"> AND acl.user = #{user}</if>
+        WHERE a.id = #{pid}
+        <if test="user != null">AND acl.user = #{user}</if>
     </select>
 
     <select id="checkUserAccess" resultType="int" parameterType="map">
-        SELECT COUNT(acl.*)
+        SELECT
+            COUNT(acl.acl_id)
         FROM asm_acl_entity AS acl
-        INNER JOIN asms AS a ON a.recursive_acl_id = acl.acl_id OR a.local_acl_id = acl.acl_id
+            INNER JOIN asms AS a ON a.recursive_acl_id = acl.acl_id OR a.local_acl_id = acl.acl_id
         WHERE a.id = #{pid} AND acl.user = #{user} AND acl.rights LIKE '%' || #{right} || '%'
     </select>
 
-    <update id="updateAclUserRights" parameterType="map">
+    <update id="updateAclUserRights"
+            databaseId="H2"
+            parameterType="map">
         MERGE INTO asm_acl_entity (acl_id, user, rights)
         KEY (acl_id, user)
         VALUES (#{acl}, #{user}, #{rights})
+    </update>
+
+    <update id="updateAclUserRights"
+            databaseId="DB2"
+            parameterType="map">
+        MERGE INTO asm_acl_entity a
+        USING (
+                  VALUES (#{acl}, #{user}, #{rights})
+              ) AS s(acl_id, user, rights)
+        ON a.acl_id = s.acl_id AND a.user = s.user
+        WHEN MATCHED THEN
+        UPDATE SET
+            a.rights = s.rights
+        WHEN NOT MATCHED THEN
+        INSERT (acl_id, user, rights)
+        VALUES (s.acl_id, s.user, s.rights)
     </update>
 
     <update id="deleteAclUser" parameterType="map">
@@ -115,49 +157,91 @@
 
     <update id="copyAcl" parameterType="map">
         INSERT INTO asm_acl_entity (acl_id, user, rights)
-        SELECT #{new_acl}, user, rights FROM asm_acl_entity WHERE acl_id = #{prev_acl}
+            SELECT
+                #{new_acl},
+                user,
+                rights
+            FROM asm_acl_entity
+            WHERE acl_id = #{prev_acl}
     </update>
 
     <update id="updateChildRecursiveAcl" parameterType="map">
         UPDATE asms
         SET recursive_acl_id = #{new_acl}
         WHERE
-          (<if test="prev_acl != null">recursive_acl_id = #{prev_acl} OR </if> recursive_acl_id IS NULL)
-          AND
-          (nav_cached_path LIKE #{nav_path} <if test="pid != null"> OR id = #{pid}</if>)
+        (
+        <if test="prev_acl != null">recursive_acl_id = #{prev_acl} OR</if>
+        recursive_acl_id IS NULL)
+        AND
+        (nav_cached_path LIKE #{nav_path}<if test="pid != null">OR id = #{pid}</if>)
     </update>
 
-    <update id="updateChildRecursiveAcl2" parameterType="map">
+    <update id="updateChildRecursiveAcl2"
+            databaseId="H2"
+            parameterType="map">
         MERGE INTO asm_acl_entity (acl_id, user, rights)
         KEY (acl_id, user)
-          SELECT recursive_acl_id, #{user}, #{rights}
-          FROM asms
-            WHERE
-              (recursive_acl_id IS NOT NULL AND recursive_acl_id != #{acl})
-              AND nav_cached_path LIKE #{nav_path}
+        SELECT
+            recursive_acl_id,
+            #{user},
+            #{rights}
+        FROM asms
+        WHERE
+            (recursive_acl_id IS NOT NULL AND recursive_acl_id != #{acl})
+            AND nav_cached_path LIKE #{nav_path}
+    </update>
+
+    <update id="updateChildRecursiveAcl2"
+            databaseId="DB2"
+            parameterType="map">
+        MERGE INTO asm_acl_entity a
+        USING (
+                  SELECT
+                      recursive_acl_id,
+                      #{user}   AS "user",
+                      #{rights} AS "rights"
+                  FROM asms
+                  WHERE
+                      (recursive_acl_id IS NOT NULL AND recursive_acl_id != #{acl})
+                      AND nav_cached_path LIKE #{nav_path}
+              ) AS s
+        ON a.acl_id = s.recursive_acl_id AND a.user = s.user
+        WHEN MATCHED THEN
+        UPDATE SET
+            a.rights = s.rights
+        WHEN NOT MATCHED THEN
+        INSERT (acl_id, user, rights)
+        VALUES (s.recursive_acl_id, s.user, s.rights)
     </update>
 
     <select id="childRecursiveAcls" resultType="long" parameterType="map">
         SELECT a.recursive_acl_id
         FROM asms AS a
         WHERE
-          a.nav_cached_path LIKE #{nav_path}
-          <if test="exclude_acl != null">AND a.recursive_acl_id != #{exclude_acl}</if>
-          <if test="with_user != null">
-              AND EXISTS (SELECT aae.rights FROM asm_acl_entity AS aae WHERE aae.acl_id = a.recursive_acl_id AND aae.user = #{with_user})
-          </if>
+        a.nav_cached_path LIKE #{nav_path}
+        <if test="exclude_acl != null">AND a.recursive_acl_id != #{exclude_acl}</if>
+        <if test="with_user != null">
+            AND EXISTS (SELECT aae.rights FROM asm_acl_entity AS aae WHERE aae.acl_id = a.recursive_acl_id AND aae.user
+            = #{with_user})
+        </if>
     </select>
 
     <select id="checkUserInParentRecursiveAcl" resultType="int" parameterType="map">
-        SELECT COUNT(a.*)
+        SELECT
+            COUNT(a.id)
         FROM asms AS a INNER JOIN asm_acl_entity AS acl ON a.recursive_acl_id = acl.acl_id
         WHERE
-          acl.user = #{user} AND #{nav_path} LIKE (a.nav_cached_path || a.id || '/%')
+            acl.user = #{user} AND #{nav_path} LIKE (a.nav_cached_path || a.id || '/%')
     </select>
 
     <update id="deleteLocalAclUserRecursive" parameterType="map">
         DELETE FROM asm_acl_entity
-        WHERE user = #{user} AND acl_id IN (SELECT local_acl_id FROM asms WHERE nav_cached_path LIKE #{nav_path} OR id = #{pid})
+        WHERE user = #{user}
+              AND acl_id
+                  IN (SELECT
+                          local_acl_id
+                      FROM asms
+                      WHERE nav_cached_path LIKE #{nav_path} OR id = #{pid})
     </update>
 
 </mapper>

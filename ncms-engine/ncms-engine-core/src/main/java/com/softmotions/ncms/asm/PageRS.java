@@ -512,6 +512,13 @@ public class PageRS extends MBDAOSupport {
         update("movePage",
                "id", src,
                "nav_parent_id", (tgt != 0) ? tgt : null);
+
+        //todo
+        // "nav_cached_path", getPageIDsPath(parent),
+
+        //todo security
+
+
     }
 
 
