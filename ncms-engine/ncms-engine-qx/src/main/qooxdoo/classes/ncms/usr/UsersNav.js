@@ -17,6 +17,7 @@ qx.Class.define("ncms.usr.UsersNav", {
     construct : function() {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
+        this.setPaddingLeft(10);
 
         this.__selector = new ncms.usr.UserSelector();
         this.__selector.addListener("userSelected", this.__userSelected, this);

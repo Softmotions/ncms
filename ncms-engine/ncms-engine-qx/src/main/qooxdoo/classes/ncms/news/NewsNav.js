@@ -18,6 +18,7 @@ qx.Class.define("ncms.news.NewsNav", {
     construct : function() {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(4));
+        this.setPadding([0, 0, 0, 10]);
 
         //Register page editor
         var eclazz = ncms.news.NewsNav.NEWS_EDITOR_CLAZZ;

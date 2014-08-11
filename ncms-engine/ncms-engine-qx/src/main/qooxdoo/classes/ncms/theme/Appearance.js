@@ -10,8 +10,51 @@ qx.Theme.define("ncms.theme.Appearance", {
 
     appearances : {
 
+        "atom/label" : {
+            include : "label",
+            style : function(states) {
+                return {
+                    textColor : states.disabled ? "text-disabled" : "#444"
+                };
+            }
+        },
+
+        "button/label" : {
+            include : "atom/label"
+        },
+
         "table" : {
-            include : "textfield"
+            style : function(states) {
+                var textColor;
+                if (states.disabled) {
+                    textColor = "text-disabled";
+                } else if (states.showingPlaceholder) {
+                    textColor = "text-placeholder";
+                } else {
+                    textColor = undefined;
+                }
+                var decorator;
+                var padding;
+                if (states.disabled) {
+                    decorator = "inset";
+                    padding = [1, 1];
+                } else if (states.invalid) {
+                    decorator = "border-invalid";
+                    padding = [0, 0];
+                } else if (states.focused) {
+                    decorator = "focused-inset";
+                    padding = [0, 0];
+                } else {
+                    padding = [1, 1];
+                    decorator = "inset";
+                }
+                return {
+                    decorator : decorator,
+                    padding : padding,
+                    textColor : textColor,
+                    backgroundColor : states.disabled ? "background-disabled" : "white"
+                };
+            }
         },
 
         "splitpane/splitter" : {
@@ -33,7 +76,13 @@ qx.Theme.define("ncms.theme.Appearance", {
         },
 
         "ncms-main-toolbar/part" : {
-            include : "toolbar/part"
+            include : "toolbar/part",
+
+            style : function(states) {
+                return {
+                    margin : [0, 15, 0, 10]
+                };
+            }
         },
 
         "ncms-tree-am" : {
