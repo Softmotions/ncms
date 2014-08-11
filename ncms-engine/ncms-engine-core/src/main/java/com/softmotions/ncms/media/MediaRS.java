@@ -477,6 +477,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @PUT
     @javax.ws.rs.Path("/copy-batch/{target:.*}")
+    @Transactional
     public void copy(@Context HttpServletRequest req,
                      @PathParam("target") String target,
                      ArrayNode files) throws Exception {
@@ -485,6 +486,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @PUT
     @javax.ws.rs.Path("/copy-batch")
+    @Transactional
     public void copy(@Context HttpServletRequest req, ArrayNode files) throws Exception {
         _copy(req, "", files);
     }

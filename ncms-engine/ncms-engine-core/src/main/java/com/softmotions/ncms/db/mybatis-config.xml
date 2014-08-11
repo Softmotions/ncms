@@ -15,7 +15,7 @@
         <setting name="lazyLoadingEnabled" value="true"/>
         <setting name="proxyFactory" value="JAVASSIST"/>
         <setting name="aggressiveLazyLoading" value="false"/>
-        <setting name="defaultExecutorType" value="BATCH"/>
+        <!--<setting name="defaultExecutorType" value="BATCH"/>-->
     </settings>
 
     <typeHandlers>
