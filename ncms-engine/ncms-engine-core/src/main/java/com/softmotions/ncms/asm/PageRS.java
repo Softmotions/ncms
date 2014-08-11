@@ -509,15 +509,18 @@ public class PageRS extends MBDAOSupport {
             }
         }
 
+        //check user access
+        if (
+                (tgt == 0 && !req.isUserInRole("admin.structure")) ||
+                !pageSecurity.checkAccess(tgt, req, 'w') ||
+                !pageSecurity.checkAccess(src, req, 'd')) {
+            throw new ForbiddenException();
+        }
+
         update("movePage",
                "id", src,
+               "nav_cached_path", getPageIDsPath(tgt != 0 ? tgt : null),
                "nav_parent_id", (tgt != 0) ? tgt : null);
-
-        //todo
-        // "nav_cached_path", getPageIDsPath(parent),
-
-        //todo security
-
 
     }
 
