@@ -62,7 +62,7 @@ qx.Theme.define("ncms.theme.Appearance", {
         "ncms-wsa-placeholder" : {
             style : function(states) {
                 return {
-                    backgroundColor : "#dcdcdc"
+                    backgroundColor : "background"
                 }
             }
         },

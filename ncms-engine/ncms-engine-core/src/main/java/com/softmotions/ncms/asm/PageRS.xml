@@ -7,10 +7,10 @@
 
     <select id="selectPageInfoIN" resultType="map" parameterType="map">
         SELECT
-        p.id                  AS "id",
-        p.name                AS "guid",
-        p.hname               AS "name"
-        FROM asms             AS p
+        p.id AS "id",
+        p.name AS "guid",
+        p.hname AS "name"
+        FROM asms AS p
         WHERE p.id IN
         <foreach item="id" index="index" collection="ids"
                  open="(" separator="," close=")">
@@ -88,14 +88,14 @@
     <update id="mergeNewPage"
             databaseId="H2"
             parameterType="map">
-        MERGE INTO asms (name, hname, type,
-                         nav_parent_id,
-                         nav_cached_path,
-                         options,
-                         mdate, muser, owner,
-                         description,
-                         recursive_acl_id)
-        KEY (name)
+        MERGE INTO asms (name, hname, TYPE,
+        nav_parent_id,
+        nav_cached_path,
+        OPTIONS,
+        mdate, muser, owner,
+        description,
+        recursive_acl_id)
+        KEY (NAME)
         VALUES (#{guid}, #{name}, #{type},
                 #{nav_parent_id,jdbcType=BIGINT},
                 #{nav_cached_path},
@@ -170,7 +170,7 @@
 
     <update id="movePage" parameterType="map">
         UPDATE ASMS
-        SET nav_parent_id = #{nav_parent_id,jdbcType=BIGINT},
+        SET nav_parent_id   = #{nav_parent_id,jdbcType=BIGINT},
             nav_cached_path = #{nav_cached_path}
         WHERE id = #{id}
     </update>
@@ -233,12 +233,12 @@
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         UPDATE asm_attrs
         SET
-        options     = #{options},
-        value       = #{value},
-        large_value = #{largeValue},
-        mdate       = current_timestamp
+            options     = #{options},
+            value       = #{value},
+            large_value = #{largeValue},
+            mdate       = current_timestamp
         WHERE asm_id = #{asmId}
-        AND name = #{name}
+              AND name = #{name}
     </update>
 
 
@@ -255,9 +255,9 @@
     <update id="upsertAttribute"
             databaseId="H2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        MERGE INTO asm_attrs (asm_id, name, label, type,
-                              options, required, value, large_value, mdate)
-        KEY (asm_id, name)
+        MERGE INTO asm_attrs (asm_id, NAME, LABEL, TYPE,
+        OPTIONS, required, VALUE, large_value, mdate)
+        KEY (asm_id, NAME)
         VALUES (#{asmId}, #{name}, #{label}, #{type},
                 #{options}, #{required}, #{value}, #{largeValue}, now())
     </update>
@@ -313,23 +313,27 @@
     <select id="searchPageCount" resultType="int" parameterType="map">
         SELECT COUNT(*)
         FROM asms
-        WHERE
-        <if test="name != null">hname LIKE #{name} AND</if>
-        type LIKE #{type}
+        <where>
+            <if test="name != null">AND hname LIKE #{name}</if>
+            <if test="type != null">AND type LIKE #{type}</if>
+        </where>
     </select>
 
     <select id="searchPage" resultType="map" parameterType="map">
         SELECT
-        id AS "id",
-        hname AS "hname"
+        id      AS "id",
+        hname   AS "hname"
         FROM asms
-        WHERE
-        <if test="name != null">hname LIKE #{name} AND</if>
-        type LIKE #{type}
-        <if test="count != null and count > 0">
-            LIMIT #{count}
-            <if test="skip != null">OFFSET #{skip}</if>
+        <where>
+            <if test="name != null">AND hname LIKE #{name}</if>
+            <if test="type != null">AND type LIKE #{type}</if>
+        </where>
+        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            LIMIT ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                OFFSET ${CQ_OFFSET}
+            </if>
         </if>
     </select>
-
 </mapper>

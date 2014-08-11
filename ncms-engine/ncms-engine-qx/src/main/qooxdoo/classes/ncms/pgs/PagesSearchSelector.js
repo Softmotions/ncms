@@ -12,7 +12,6 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
          * DATA: var item = {
          *        "id"     : {Object} Optional Node ID
          *        "label"  : {String} Item name.
-         *        "path"   : {String} Path to the item (from tree root)
          *       };
          * or null if selection cleared
          */
@@ -21,15 +20,24 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
 
     properties : {
 
+        /**
+         * If true - search list will be populated
+         * even if texttual search box is empty.
+         */
+        searchIfEmpty : {
+            check : "Boolean",
+            init : false,
+            apply : "__applySearchIfEmpty"
+        }
     },
 
-    construct : function(constViewSpec, allowModify) {
+    construct : function(constViewSpec) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
 
         var sf = this.__sf = new sm.ui.form.SearchField();
-        sf.addListener("clear", this.__search, this);
-        sf.addListener("input", this.__search, this);
+        sf.addListener("clear", this.refresh, this);
+        sf.addListener("input", this.refresh, this);
         sf.addListener("keypress", function(ev) {
             if ("Down" == ev.getKeyIdentifier()) {
                 this.__table.handleFocus();
@@ -49,12 +57,16 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         this._add(this.__table, {flex : 1});
 
         this.__table.setConstViewSpec(constViewSpec, true);
-        this.addListener("appear", this.__search, this);
+        this.addListener("appear", this.refresh, this);
     },
 
     members : {
         __sf : null,
         __table : null,
+
+        getSelectedPage : function() {
+            this.__table.getSelectedPage();
+        },
 
         setViewSpec : function(vspec) {
             this.__table.resetSelection();
@@ -66,16 +78,24 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
             this.__table.updateViewSpec(vspec);
         },
 
-        __search : function() {
+        refresh : function() {
             var val = this.__sf.getValue();
-            if (!val) {
+            if (sm.lang.String.isEmpty(val) && !this.getSearchIfEmpty()) {
                 this.__table.cleanup();
-            } else {
-                this.updateViewSpec({name : val || ""});
+                return;
+            }
+            this.updateViewSpec({name : val || ""});
+        },
+
+        __applySearchIfEmpty : function(val) {
+            if (val) {
+                this.refresh();
             }
         }
     },
 
     destruct : function() {
+        this.__sf = null;
+        this.__table = null;
     }
 });

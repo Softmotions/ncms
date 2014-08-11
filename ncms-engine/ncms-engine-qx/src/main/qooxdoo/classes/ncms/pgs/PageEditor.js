@@ -23,7 +23,7 @@ qx.Class.define("ncms.pgs.PageEditor", {
             check : "Object",
             nullable : true,
             event : "changePage",
-            apply : "__applyPageSpec"
+            apply : "_applyPageSpec"
         }
     },
 
@@ -31,15 +31,15 @@ qx.Class.define("ncms.pgs.PageEditor", {
         this.base(arguments, "top");
         this.set({padding : 5, paddingLeft : 0 });
 
-        var page = this.__createInfoPage();
+        var page = this._createInfoPage();
         if (page != null) {
             this.add(page);
         }
-        page = this.__createEditPage();
+        page = this._createEditPage();
         if (page != null) {
             this.add(page);
         }
-        page = this.__createAccessPane();
+        page = this._createAccessPane();
         if (page != null) {
             this.add(page);
         }
@@ -47,11 +47,11 @@ qx.Class.define("ncms.pgs.PageEditor", {
 
     members : {
 
-        __infoPane : null,
+        _infoPane : null,
 
-        __editPane : null,
+        _editPane : null,
 
-        __accessPane : null,
+        _accessPane : null,
 
 
         getFirstModifiedPane : function() {
@@ -73,26 +73,26 @@ qx.Class.define("ncms.pgs.PageEditor", {
             }
         },
 
-        __createInfoPage : function() {
+        _createInfoPage : function() {
             var page = new ncms.pgs.PageEditorInfoPage();
             this.bind("pageSpec", page, "pageSpec");
-            this.__infoPane = page;
+            this._infoPane = page;
             return page;
         },
 
-        __createEditPage : function() {
+        _createEditPage : function() {
             var page = new ncms.pgs.PageEditorEditPage();
             this.bind("pageSpec", page, "pageSpec");
             page.addListener("modified", this.__onModified, this);
-            this.__editPane = page;
+            this._editPane = page;
             return page;
         },
 
-        __createAccessPane : function() {
+        _createAccessPane : function() {
             var page = new ncms.pgs.PageEditorAccessPane();
             this.bind("pageSpec", page, "pageSpec");
             page.addListener("modified", this.__onModified, this);
-            this.__accessPane = page;
+            this._accessPane = page;
             return page;
         },
 
@@ -103,26 +103,33 @@ qx.Class.define("ncms.pgs.PageEditor", {
             }
         },
 
-        __applyPageSpec : function(spec) {
-            this.__editPane.setEnabled(false);
-            this.__accessPane.setEnabled(false);
+        _applyPageSpec : function(spec) {
+            if (this._editPane) {
+                this._editPane.setEnabled(false);
+            }
+            if (this._accessPane) {
+                this._accessPane.setEnabled(false);
+            }
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.check.rights",
                     {pid : spec["id"], rights : "w"}), "GET", "application/json");
-            req.send(function(resp){
+            req.send(function(resp) {
                 var access = !!resp.getContent();
-                this.__editPane.setEnabled(access);
-                this.__accessPane.setEnabled(access);
+                if (this._editPane) {
+                    this._editPane.setEnabled(access);
+                }
+                if (this._accessPane) {
+                    this._accessPane.setEnabled(access);
+                }
                 if (!access) {
-                    this.setSelection([this.__infoPane]);
+                    this.setSelection([this._infoPane]);
                 }
             }, this);
         }
     },
 
     destruct : function() {
-        this.__infoPane = null;
-        this.__editPane = null;
-        this.__accessPane = null;
-        //this._disposeObjects("__field_name");                                
+        this._infoPane = null;
+        this._editPane = null;
+        this._accessPane = null;
     }
 });

@@ -14,6 +14,7 @@ import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -46,6 +47,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
@@ -702,37 +704,94 @@ public class PageRS extends MBDAOSupport {
 
     @GET
     @Path("search/count")
-    public Integer searchPagesCount(@QueryParam("name") String name,
-                                    @QueryParam("foldersOnly") String foldersOnly) {
-        return selectOne("searchPageCount",
-                         "name", StringUtils.isBlank(name) ? null : name + "%",
-                         "type", BooleanUtils.toBoolean(foldersOnly) ? "page.folder" : "page%"
-        );
+    public Number searchPageCount(@Context HttpServletRequest req) {
+        MBCriteriaQuery cq = createSearchQ(req, true);
+        return selectOne(cq.getStatement(), cq);
     }
 
     @GET
     @Path("search")
-    public JsonNode searchPages(@QueryParam("firstRow") int firstRow,
-                                @QueryParam("lastRow") int lastRow,
-                                @QueryParam("name") String name,
-                                @QueryParam("foldersOnly") String foldersOnly) {
-        final ArrayNode result = mapper.createArrayNode();
-        select("searchPage",
-               new ResultHandler() {
-                   public void handleResult(ResultContext context) {
-                       Map<String, ?> row = (Map<String, ?>) context.getResultObject();
-                       result.addObject()
-                               .put("id", (Long) row.get("id"))
-                               .put("label", (String) row.get("hname"));
-                   }
-               },
-               "name", StringUtils.isBlank(name) ? null : name + "%",
-               "type", BooleanUtils.toBoolean(foldersOnly) ? "page.folder" : "page%",
-               "skip", firstRow,
-               "count", lastRow - firstRow + 1);
+    @Transactional
+    public Response searchPage(@Context final HttpServletRequest req) {
+        return Response.ok(new StreamingOutput() {
+            public void write(OutputStream output) throws IOException, WebApplicationException {
+                final JsonGenerator gen = new JsonFactory().createGenerator(output);
+                try {
+                    MBCriteriaQuery cq = createSearchQ(req, false);
+                    gen.writeStartArray();
+                    //noinspection InnerClassTooDeeplyNested
+                    select(cq.getStatement(), new ResultHandler() {
+                        public void handleResult(ResultContext context) {
+                            Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                            try {
+                                gen.writeStartObject();
+                                gen.writeNumberField("id", NumberUtils.number2Long((Number) row.get("id"), 0));
+                                gen.writeStringField("label", (String) row.get("hname"));
+                                gen.writeEndObject();
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }, cq);
+                } finally {
+                    gen.writeEndArray();
+                }
+                gen.flush();
+            }
+        }).type(MediaType.APPLICATION_JSON_TYPE).encoding("UTF-8").build();
+    }
+
+    private MBCriteriaQuery createSearchQ(HttpServletRequest req, boolean count) {
+        MBCriteriaQuery cq = createCriteria();
+        String val;
+        if (!count) {
+            val = req.getParameter("firstRow");
+            if (val != null) {
+                Integer frow = Integer.valueOf(val);
+                cq.offset(frow);
+                val = req.getParameter("lastRow");
+                if (val != null) {
+                    Integer lrow = Integer.valueOf(val);
+                    cq.limit(Math.abs(frow - lrow) + 1);
+                }
+            }
+        }
+        val = req.getParameter("name");
+        if (!StringUtils.isBlank(val)) {
+            cq.withParam("name", val + "%");
+        }
+        String type = "page%";
+        val = req.getParameter("type");
+        if (!StringUtils.isBlank(val)) {
+            type = val;
+        } else if (BooleanUtils.toBoolean(req.getParameter("foldersOnly"))) {
+            type = "page.folder";
+        }
+        cq.withParam("type", type);
+        cq.withStatement(count ? "searchPageCount" : "searchPage");
 
 
-        return result;
+        if (count) {
+            cq.withStatement("searchPageCount");
+        } else {
+            cq.withStatement("searchPage");
+            val = req.getParameter("sortAsc");
+            if (!StringUtils.isBlank(val)) {
+                if ("label".equals(val)) {
+                    val = "hname";
+                }
+                cq.orderBy(val).asc();
+            }
+            val = req.getParameter("sortDesc");
+            if (!StringUtils.isBlank(val)) {
+                if ("label".equals(val)) {
+                    val = "hname";
+                }
+                cq.orderBy(val).desc();
+            }
+        }
+
+        return cq.finish();
     }
 
     @GET
