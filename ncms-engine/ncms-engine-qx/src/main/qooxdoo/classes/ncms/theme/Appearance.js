@@ -12,7 +12,12 @@ qx.Theme.define("ncms.theme.Appearance", {
 
         "ncms-main-toolbar" : {
             alias : "toolbar",
-            include : "toolbar"
+            include : "toolbar",
+            style : function(states) {
+                return {
+                    backgroundColor : "background"
+                }
+            }
         },
 
         "ncms-main-toolbar/part" : {

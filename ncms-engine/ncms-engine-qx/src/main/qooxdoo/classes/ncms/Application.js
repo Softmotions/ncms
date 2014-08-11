@@ -8,6 +8,7 @@
  * @use(ncms.mmgr.MediaNav)
  * @use(ncms.pgs.PagesNav)
  * @use(ncms.usr.UsersNav)
+ * @use(ncms.news.NewsNav)
  *
  * @asset(ncms/icon/16/help/help.png)
  * @asset(ncms/icon/16/misc/door_in.png)
@@ -249,7 +250,7 @@ qx.Class.define("ncms.Application", {
             this.getRoot().setBlockerColor("black");
             this.getRoot().setBlockerOpacity(0.5);
 
-            var comp = new qx.ui.container.Composite(new qx.ui.layout.Dock().set({separatorY : "separator-vertical"}));
+            var comp = new qx.ui.container.Composite(new qx.ui.layout.Dock());
             this.getRoot().add(comp, {edge : 0});
 
             //Toolbar
