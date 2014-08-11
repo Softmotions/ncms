@@ -10,6 +10,15 @@ qx.Theme.define("ncms.theme.Appearance", {
 
     appearances : {
 
+        "ncms-main-toolbar" : {
+            alias : "toolbar",
+            include : "toolbar"
+        },
+
+        "ncms-main-toolbar/part" : {
+            include : "toolbar/part"
+        },
+
         "ncms-tree-am" : {
         },
 
