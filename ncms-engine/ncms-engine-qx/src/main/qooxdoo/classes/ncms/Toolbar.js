@@ -1,7 +1,6 @@
 /**
  * @asset(ncms/icon/16/help/help.png)
  * @asset(ncms/icon/16/misc/door_in.png)
- * @asset(ncms/icon/16/misc/categories.png)
  */
 qx.Class.define("ncms.Toolbar", {
     extend : qx.ui.toolbar.ToolBar,

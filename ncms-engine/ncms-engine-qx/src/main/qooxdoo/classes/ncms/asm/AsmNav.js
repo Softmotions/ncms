@@ -19,6 +19,7 @@ qx.Class.define("ncms.asm.AsmNav", {
     construct : function() {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
+        this.setPaddingLeft(10);
         this.__selector = new ncms.asm.AsmSelector();
         this.__selector.addListener("asmSelected", this.__asmSelected, this);
         this._add(this.__selector);

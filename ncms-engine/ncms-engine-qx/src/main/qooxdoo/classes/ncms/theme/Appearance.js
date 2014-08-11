@@ -10,6 +10,18 @@ qx.Theme.define("ncms.theme.Appearance", {
 
     appearances : {
 
+        "table" : {
+            include : "textfield"
+        },
+
+        "splitpane/splitter" : {
+            style : function(states) {
+                return {
+                    backgroundColor : "background"
+                };
+            }
+        },
+
         "ncms-main-toolbar" : {
             alias : "toolbar",
             include : "toolbar",
