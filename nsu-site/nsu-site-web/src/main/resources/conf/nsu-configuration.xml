@@ -25,7 +25,7 @@
 
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
         <!-- <dropAll/>-->
-        <!--<update/>-->
+        <update/>
     </liquibase>
 
     <!-- basedir replacements: {webapp}|{cwd}|{home}|{tmp}|{newtmp} -->
