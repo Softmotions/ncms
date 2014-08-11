@@ -39,7 +39,7 @@
         SELECT
             rights
         FROM asm_acl_entity
-        WHERE user = #{user} AND acl_id = #{acl}
+        WHERE "USER" = #{user} AND acl_id = #{acl}
     </select>
 
     <select id="selectUserRightsForPage" resultType="string" parameterType="map">
@@ -78,9 +78,9 @@
 
     <select id="selectAllUserRights" resultType="map" parameterType="map">
         SELECT
-            0      AS "recursive",
-            user   AS "user",
-            rights AS "rights"
+            0        AS "recursive",
+            "USER"   AS "user",
+            rights   AS "rights"
         FROM asm_acl_entity
         WHERE acl_id = (SELECT
                             local_acl_id
@@ -88,9 +88,9 @@
                         WHERE id = #{pid})
         UNION
         SELECT
-            1      AS "recursive",
-            user   AS "user",
-            rights AS "rights"
+            1        AS "recursive",
+            "USER"   AS "user",
+            rights   AS "rights"
         FROM asm_acl_entity
         WHERE acl_id = (SELECT
                             recursive_acl_id
@@ -152,14 +152,14 @@
 
     <update id="deleteAclUser" parameterType="map">
         DELETE FROM asm_acl_entity
-        WHERE user = #{user} AND acl_id = #{acl}
+        WHERE "USER" = #{user} AND acl_id = #{acl}
     </update>
 
     <update id="copyAcl" parameterType="map">
         INSERT INTO asm_acl_entity (acl_id, user, rights)
             SELECT
                 #{new_acl},
-                user,
+                "USER",
                 rights
             FROM asm_acl_entity
             WHERE acl_id = #{prev_acl}
@@ -236,7 +236,7 @@
 
     <update id="deleteLocalAclUserRecursive" parameterType="map">
         DELETE FROM asm_acl_entity
-        WHERE user = #{user}
+        WHERE "USER" = #{user}
               AND acl_id
                   IN (SELECT
                           local_acl_id
