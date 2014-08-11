@@ -1,6 +1,7 @@
 /**
  * @asset(ncms/icon/16/help/help.png)
  * @asset(ncms/icon/16/misc/door_in.png)
+ * @asset(ncms/icon/16/misc/categories.png)
  */
 qx.Class.define("ncms.Toolbar", {
     extend : qx.ui.toolbar.ToolBar,
@@ -14,16 +15,31 @@ qx.Class.define("ncms.Toolbar", {
         app.addListener("workspaceActivated", this.__workspaceActivated, this);
     },
 
+    properties : {
+        appearance : {
+            refine : true,
+            init : "ncms-main-toolbar"
+        }
+    },
+
     members : {
 
-        __workspaceMB : null,
+        __mainPart : null,
+
+        __rightPart : null,
+
+        __spacer : null,
 
         _init : function() {
             var apps = ncms.Application.APP_STATE;
-            this.__workspaceMB = new qx.ui.toolbar.MenuButton();
-            this.add(this.__workspaceMB);
+            this.__mainPart = new qx.ui.toolbar.Part().set({appearance : "ncms-main-toolbar/part"});
+            this.add(this.__mainPart);
 
-            this.add(new qx.ui.core.Spacer(), {flex : 1});
+            this.__spacer = new qx.ui.core.Spacer();
+            this.add(this.__spacer, {flex : 1});
+            this.__rightPart = new qx.ui.toolbar.Part();
+            this.add(this.__rightPart);
+
 
             if (apps.getHelpSite()) {
                 var helpButton = new qx.ui.toolbar.Button(this.tr("Help"),
@@ -32,7 +48,7 @@ qx.Class.define("ncms.Toolbar", {
                     qx.bom.Window.open(apps.getHelpSite());
                 });
                 helpButton.setToolTipText(this.tr("Help"));
-                this.add(helpButton);
+                this.__rightPart.add(helpButton);
             }
             var logoff = new qx.ui.toolbar.Button(this.tr("Logout") + " (" + apps.getUserLogin() + ")",
                     "ncms/icon/16/misc/door_in.png");
@@ -40,23 +56,25 @@ qx.Class.define("ncms.Toolbar", {
             logoff.addListener("execute", function() {
                 ncms.Application.logout();
             }, this);
-            this.add(logoff);
+            this.__rightPart.add(logoff);
+
             this.setPaddingRight(10);
         },
 
         __guiInitialized : function() {
             var req = new sm.io.Request(ncms.Application.ACT.getUrl("nav.selectors"), "GET", "application/json");
             req.send(function(resp) {
-                var menu = new qx.ui.menu.Menu();
                 var nitems = resp.getContent();
+                var rg = new qx.ui.form.RadioGroup();
                 nitems.forEach(function(ni) {
-                    var mb = new qx.ui.menu.Button(ni["label"], ni["qxIcon"]);
-                    mb.addListener("execute", this.__onMbActivated, this);
-                    mb.setUserData("wsSpec", ni);
-                    menu.add(mb);
-                    this.__workspaceMB.setMenu(menu);
+                    var b = new qx.ui.form.ToggleButton(ni["label"], ni["qxIcon"]);
+                    b.setAppearance("toolbar-button");
+                    b.addListener("execute", this.__onMbActivated, this);
+                    b.setUserData("wsSpec", ni);
+                    rg.add(b);
+                    this.__mainPart.add(b);
                 }, this);
-                this.__workspaceMB.setMenu(menu);
+
                 ncms.Application.registerWorkspaces(nitems);
                 if (nitems.length > 0) {
                     this.__activateWorkspace(nitems[0]);
@@ -73,15 +91,16 @@ qx.Class.define("ncms.Toolbar", {
         },
 
         __workspaceActivated : function(evt) {
-            var wsSpec = evt.getData();
-            if (wsSpec && wsSpec["label"] != null) {
-                this.__workspaceMB.setLabel(wsSpec["label"]);
-            }
+            /*var wsSpec = evt.getData();
+             if (wsSpec && wsSpec["label"] != null) {
+             this.__workspaceMB.setLabel(wsSpec["label"]);
+             }*/
         }
     },
 
     destruct : function() {
-        this.__workspaceMB = null;
-        //this._disposeObjects("__field_name");                                
+        this.__mainPart = null;
+        this.__rightPart = null;
+        this.__spacer = null;
     }
 });
