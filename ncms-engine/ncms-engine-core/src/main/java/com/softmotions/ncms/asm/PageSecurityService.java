@@ -306,7 +306,6 @@ public class PageSecurityService extends MBDAOSupport {
 
     }
 
-    @Transactional
     public String getUserRights(long pid, WSUser wsUser) {
         if (wsUser == null) {
             return "";
@@ -315,6 +314,12 @@ public class PageSecurityService extends MBDAOSupport {
         if (rights != null) {
             return rights;
         }
+        return getUserRightsDB(pid, wsUser);
+    }
+
+    @Transactional
+    protected String getUserRightsDB(long pid, WSUser wsUser) {
+        String rights = null;
         Map<String, ?> row = selectOne("selectPageAclInfo", "pid", pid);
         String owner = row != null ? (String) row.get("owner") : null;
         if (wsUser.getName().equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
@@ -335,7 +340,6 @@ public class PageSecurityService extends MBDAOSupport {
      * @param user   user name
      * @param access checked access
      */
-    @Transactional
     public boolean checkAccess(long pid, WSUser wsUser, char access) {
         if (wsUser == null || (!ArrayUtils.contains(ALL_RIGHTS, access))) {
             return false;
