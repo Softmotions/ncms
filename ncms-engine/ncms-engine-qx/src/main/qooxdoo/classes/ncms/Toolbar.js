@@ -68,10 +68,15 @@ qx.Class.define("ncms.Toolbar", {
                 nitems.forEach(function(ni) {
                     var b = new qx.ui.form.ToggleButton(ni["label"], ni["qxIcon"]);
                     b.setAppearance("toolbar-button");
-                    b.addListener("execute", this.__onMbActivated, this);
                     b.setUserData("wsSpec", ni);
                     rg.add(b);
                     this.__mainPart.add(b);
+                }, this);
+                rg.addListener("changeSelection", function(ev) {
+                    var w = ev.getData()[0];
+                    if (w) {
+                        this.__activateWorkspace(w.getUserData("wsSpec"));
+                    }
                 }, this);
 
                 ncms.Application.registerWorkspaces(nitems);
@@ -81,19 +86,11 @@ qx.Class.define("ncms.Toolbar", {
             }, this);
         },
 
-        __onMbActivated : function(ev) {
-            this.__activateWorkspace(ev.getTarget().getUserData("wsSpec"));
-        },
-
         __activateWorkspace : function(wsSpec) {
             ncms.Application.activateWorkspace(wsSpec);
         },
 
         __workspaceActivated : function(evt) {
-            /*var wsSpec = evt.getData();
-             if (wsSpec && wsSpec["label"] != null) {
-             this.__workspaceMB.setLabel(wsSpec["label"]);
-             }*/
         }
     },
 
