@@ -727,6 +727,13 @@ public class PageRS extends MBDAOSupport {
                                 gen.writeStartObject();
                                 gen.writeNumberField("id", NumberUtils.number2Long((Number) row.get("id"), 0));
                                 gen.writeStringField("label", (String) row.get("hname"));
+                                String am;
+                                if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
+                                    am = pageSecurity.getAllRights();
+                                } else {
+                                    am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
+                                }
+                                gen.writeStringField("accessMask", am);
                                 gen.writeEndObject();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -768,8 +775,7 @@ public class PageRS extends MBDAOSupport {
             type = "page.folder";
         }
         cq.withParam("type", type);
-        cq.withStatement(count ? "searchPageCount" : "searchPage");
-
+        cq.withParam("user", req.getRemoteUser());
 
         if (count) {
             cq.withStatement("searchPageCount");
@@ -780,14 +786,14 @@ public class PageRS extends MBDAOSupport {
                 if ("label".equals(val)) {
                     val = "hname";
                 }
-                cq.orderBy(val).asc();
+                cq.orderBy("p." + val).asc();
             }
             val = req.getParameter("sortDesc");
             if (!StringUtils.isBlank(val)) {
                 if ("label".equals(val)) {
                     val = "hname";
                 }
-                cq.orderBy(val).desc();
+                cq.orderBy("p." + val).desc();
             }
         }
 
