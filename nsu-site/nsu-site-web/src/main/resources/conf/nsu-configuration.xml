@@ -75,6 +75,7 @@
     <security dbJndiName="java:comp/env/WSUserDatabase">
         <web-fakeuser>admin</web-fakeuser>
         <web-access-control-allow>*</web-access-control-allow>
+        <acl-lru-cache-size>4096</acl-lru-cache-size>
     </security>
 
     <events>
