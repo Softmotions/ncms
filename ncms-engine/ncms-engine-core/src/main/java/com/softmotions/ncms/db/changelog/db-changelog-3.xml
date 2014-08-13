@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="3" author="adamansky@gmail.com">
+
+        <createTable tableName="USER_ENV"
+                     remarks="Various user environment values">
+            <column name="USERID"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SVALUE"
+                    type="VARCHAR(1024)">
+            </column>
+            <column name="IVALUE"
+                    type="BIGINT">
+            </column>
+            <column name="DESCRIPTION"
+                    type="VARCHAR(256)">
+            </column>
+        </createTable>
+        <createIndex tableName="USER_ENV"
+                     indexName="IDX_USERENV_SVAL">
+            <column name="USERID"/>
+            <column name="TYPE"/>
+            <column name="SVALUE"/>
+        </createIndex>
+        <createIndex tableName="USER_ENV"
+                     indexName="IDX_USERENV_IVAL">
+            <column name="USERID"/>
+            <column name="TYPE"/>
+            <column name="IVALUE"/>
+        </createIndex>
+
+
+    </changeSet>
+
+</databaseChangeLog>

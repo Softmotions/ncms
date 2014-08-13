@@ -1,5 +1,7 @@
 /**
  * News navigator
+ *
+ * @asset(ncms/icon/16/misc/chain.png)
  */
 qx.Class.define("ncms.news.NewsNav", {
     extend : qx.ui.core.Widget,
@@ -43,6 +45,11 @@ qx.Class.define("ncms.news.NewsNav", {
             }
         }, this);
 
+        var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain.png");
+        bf.addListener("execute", this.__choosePage);
+        bf.setPlaceholder(this.tr("Select the parent page for news"));
+        this._add(bf);
+
         this.__ps = new ncms.pgs.PagesSearchSelector({
             "type" : "page.news"
         }).set({searchIfEmpty : true});
@@ -60,9 +67,16 @@ qx.Class.define("ncms.news.NewsNav", {
                 app.showWSA(eclazz);
             }
         }, this);
+
+        this.__syncState();
     },
 
     members : {
+
+        /**
+         * Linked pages bf
+         */
+        __bf : null,
 
         /**
          * Pages selector
@@ -72,11 +86,37 @@ qx.Class.define("ncms.news.NewsNav", {
         getSelectedPage : function() {
             var sp = this.__ps.getSelectedPage();
             return (sp == null) ? null : {id : sp["id"], name : sp["label"]};
-        }
+        },
 
+        __choosePage : function() {
+            var dlg = new ncms.pgs.PagesCollectionDlg(this.tr("Please select the parent page for news"),
+                    {
+                        type : "pages.news.roots",
+                        accessAll : "n" //Required news editing access rights
+                    });
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                qx.log.Logger.info("News root changed! data=" + JSON.stringify(data));
+                dlg.close();
+            }, this);
+            dlg.open();
+        },
+
+        __syncState : function() {
+            var page = this.__bf.getUserData("page");
+            if (page == null) {
+                this.__ps.setEnabled(false);
+                ncms.Application.INSTANCE.showDefaultWSA();
+                this.__bf.getMainButton().addState("invalid");
+            } else {
+                this.__ps.setEnabled(true);
+                this.__bf.getMainButton().removeState("invalid");
+            }
+        }
     },
 
     destruct : function() {
+        this.__bf = null;
         this.__ps = null;
         //this._disposeObjects("__field_name");                                
     }

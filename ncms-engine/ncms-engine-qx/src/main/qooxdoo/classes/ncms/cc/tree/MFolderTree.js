@@ -88,14 +88,22 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                     });
                 }
 
+                var cfgDelegate = cfg["delegate"];
                 var delegate = {
 
                     createItem : function() {
-                        return new sm.ui.tree.ExtendedVirtualTreeItem();
+                        if (cfgDelegate && typeof cfgDelegate["createItem"] === "function") {
+                            return cfgDelegate["createItem"]();
+                        } else {
+                            return new sm.ui.tree.ExtendedVirtualTreeItem();
+                        }
                     },
 
                     configureItem : function(item) {
                         item.setOpenSymbolMode("always");
+                        if (cfgDelegate && typeof cfgDelegate["configureItem"] === "function") {
+                            cfgDelegate["configureItem"]();
+                        }
                     },
 
                     bindItem : function(controller, item, index) {
@@ -111,11 +119,14 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                                 return open;
                             }
                         }, item, index);
+                        if (cfgDelegate && typeof cfgDelegate["bindItem"] === "function") {
+                            cfgDelegate["bindItem"](controller, item, index);
+                        }
                     }
                 };
 
-                if (cfg["delegate"] != null) { //apply delegate properties from config
-                    qx.lang.Object.mergeWith(delegate, cfg["delegate"], true);
+                if (cfgDelegate != null) { //apply delegate properties from config
+                    qx.lang.Object.mergeWith(delegate, cfgDelegate, false);
                 }
 
                 tree.setDelegate(delegate);
@@ -187,7 +198,8 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                 "id" : item.getId(),
                 "label" : item.getLabel(),
                 "status" : item.getStatus(),
-                "path" : this._getItemPathSegments(item)
+                "path" : this._getItemPathSegments(item),
+                "accessMask" : (item.getAccessMask != null) ? item.getAccessMask() : null
 
             };
             if (this.hasListener("itemSelected")) {

@@ -10,8 +10,9 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
     events : {
         /**
          * DATA: var item = {
-         *        "id"     : {Object} Optional Node ID
-         *        "label"  : {String} Item name.
+         *        "id"          : {Object} Optional Node ID
+         *        "label"       : {String} Item name.
+         *        "accessMask"  : {String} Page access mask.
          *       };
          * or null if selection cleared
          */
@@ -81,6 +82,7 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         refresh : function() {
             var val = this.__sf.getValue();
             if (sm.lang.String.isEmpty(val) && !this.getSearchIfEmpty()) {
+                this.__table.resetSelection();
                 this.__table.cleanup();
                 return;
             }

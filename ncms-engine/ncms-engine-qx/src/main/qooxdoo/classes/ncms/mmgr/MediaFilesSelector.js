@@ -230,7 +230,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         },
 
         _setupToolbar : function() {
-            var toolbar = new qx.ui.toolbar.ToolBar();
+            var toolbar = new qx.ui.toolbar.ToolBar().set({"appearance" : "toolbar-table/toolbar"});
 
             if (this.__allowModify) {
                 var part = new qx.ui.toolbar.Part()

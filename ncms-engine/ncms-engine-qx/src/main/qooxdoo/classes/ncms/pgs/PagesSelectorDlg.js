@@ -8,7 +8,8 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
         /**
          * Data: {
          *   id : {Number} Page ID,
-         *   name : {String} Page name
+         *   name : {String} Page name,
+         *   accessMask : {String} Page access mask
          * }
          */
         "completed" : "qx.event.type.Data"
@@ -23,14 +24,15 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
      *                <code>
      *                    {
      *                      foldersOnly : {Boolean?false} //Show only folders,
-     *                      allowRootSelection : {Boolen?false}
+     *                      allowRootSelection : {Boolen?false},
+     *                      accessAll : {String?} //Optional access all page security restriction
      *                    }
      *                </code>
      *
      */
     construct : function(caption, allowModify, options) {
         this._options = options || {};
-        this.base(arguments, caption != null ? caption : this.tr("Select page"));
+        this.base(arguments, caption != null ? caption : this.tr("Select the page"));
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
             modal : true,
@@ -83,8 +85,14 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
         },
 
         _syncState : function() {
+            var sp = this._selector.getSelectedPage();
             if (!this._options["allowRootSelection"]) {
-                this._okBt.setEnabled(this._selector.getSelectedPage() != null);
+                this._okBt.setEnabled(sp != null);
+            }
+            if (sp != null) {
+                if (this._options["accessAll"]) {
+                    this._okBt.setEnabled(ncms.Utils.checkAccessAll(sp["accessMask"], this._options["accessAll"]));
+                }
             }
         },
 

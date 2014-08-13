@@ -1,13 +1,17 @@
 package com.softmotions.ncms.jaxrs;
 
+import com.softmotions.ncms.NcmsMessages;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.spi.ReaderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -30,44 +34,58 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
 
     public static final int MAX_MSG_LEN = 1024;
 
+    private final NcmsMessages messages;
+
+    @Inject
+    public NcmsRSExceptionHandler(NcmsMessages messages) {
+        this.messages = messages;
+    }
+
+    private String toHeaderMsg(String msg) {
+        try {
+
+            return StringUtils.left(URLEncoder.encode(messages.get("ncms.jaxrs.notfound"), "UTF-8"), MAX_MSG_LEN);
+        } catch (UnsupportedEncodingException e) {
+            log.error("", e);
+        }
+        return "";
+    }
+
     public Response toResponse(Exception ex) {
 
-        Response.ResponseBuilder rb = null;
+        Response.ResponseBuilder rb;
+
         if (ex instanceof NotFoundException) {
+
             log.warn("HTTP 404: " + ex.getMessage());
             rb = Response.status(Response.Status.NOT_FOUND)
                     .type(MediaType.TEXT_PLAIN_TYPE)
                     .entity(ex.getMessage());
+            rb.header("X-Softmotions-Err0", toHeaderMsg(messages.get("ncms.jaxrs.notfound")));
 
         } else if (ex instanceof NcmsMessageException) {
 
-            if (log.isDebugEnabled()) {
-                log.debug("NcmsMessageException", ex);
-            }
             NcmsMessageException mex = (NcmsMessageException) ex;
             if (mex.hasErrorMessages()) {
                 rb = Response.serverError();
             } else {
                 rb = Response.ok();
             }
-            List<String> messages = mex.getErrorMessages();
-            for (int i = 0, l = messages.size(); i < l; ++i) {
-                try {
-                    rb.header("X-Softmotions-Err" + i,
-                              StringUtils.left(URLEncoder.encode(messages.get(i), "UTF-8"), MAX_MSG_LEN));
-                } catch (UnsupportedEncodingException e) {
-                    log.error("", e);
-                }
+            List<String> mlist = mex.getErrorMessages();
+            for (int i = 0, l = mlist.size(); i < l; ++i) {
+                rb.header("X-Softmotions-Err" + i, toHeaderMsg(mlist.get(i)));
             }
-            messages = mex.getRegularMessages();
-            for (int i = 0, l = messages.size(); i < l; ++i) {
-                try {
-                    rb.header("X-Softmotions-Msg" + i,
-                              StringUtils.left(URLEncoder.encode(messages.get(i), "UTF-8"), MAX_MSG_LEN));
-                } catch (UnsupportedEncodingException e) {
-                    log.error("", e);
-                }
+            mlist = mex.getRegularMessages();
+            for (int i = 0, l = mlist.size(); i < l; ++i) {
+                rb.header("X-Softmotions-Msg" + i, toHeaderMsg(mlist.get(i)));
             }
+
+        } else if (ex instanceof ForbiddenException) {
+
+            rb = Response.status(Response.Status.FORBIDDEN)
+                    .header("X-Softmotions-Err0",
+                            toHeaderMsg(ex.getMessage() != null ? ex.getMessage() :
+                                        messages.get("ncms.jaxrs.forbidden")));
 
         } else if (ex instanceof JsonMappingException ||
                    ex instanceof JsonParseException ||
@@ -76,28 +94,17 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
                    ex instanceof javax.ws.rs.BadRequestException) {
 
             log.warn("", ex);
-            try {
-                rb = Response.status(Response.Status.BAD_REQUEST)
-                        .header("X-Softmotions-Err0",
-                                ex.getMessage() != null ?
-                                StringUtils.left(URLEncoder.encode(ex.getMessage(), "UTF-8"), MAX_MSG_LEN) : ex.toString()
-                        );
-            } catch (UnsupportedEncodingException e) {
-                log.error("", e);
-            }
-
+            rb = Response.status(Response.Status.BAD_REQUEST)
+                    .header("X-Softmotions-Err0",
+                            toHeaderMsg(ex.getMessage() != null ? ex.getMessage() : ex.toString()));
         } else {
+
             log.error("", ex);
-            try {
-                rb = Response.serverError()
-                        .header("X-Softmotions-Err0",
-                                ex.getMessage() != null ?
-                                StringUtils.left(URLEncoder.encode(ex.getMessage(), "UTF-8"), MAX_MSG_LEN) : ex.toString()
-                        );
-            } catch (UnsupportedEncodingException e) {
-                log.error("", e);
-            }
+            rb = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .header("X-Softmotions-Err0",
+                            toHeaderMsg(ex.getMessage() != null ? ex.getMessage() : ex.toString()));
         }
+
         return rb != null ? rb.build() : Response.serverError().build();
     }
 }

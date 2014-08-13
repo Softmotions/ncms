@@ -53,13 +53,14 @@ public class NcmsMessages {
                 return new IteratorEnumeration(all.iterator());
             }
         };
-
-
     }
 
-    public String get(String key, HttpServletRequest req, String... params) {
-        //todo lang selection
-        Optional<String> lang = Optional.absent();
+    public String get(String key, String... params) {
+        return get(key, Optional.<String>absent(), params);
+    }
+
+
+    public String get(String key, Optional<String> lang, String... params) {
         Optional<String> msg = messages.get(key, lang, params);
         if (msg.isPresent()) {
             return msg.get();
@@ -68,11 +69,20 @@ public class NcmsMessages {
         }
     }
 
+    public String get(String key, HttpServletRequest req, String... params) {
+        //todo lang selection
+        Optional<String> lang = Optional.absent();
+        return get(key, lang, params);
+    }
+
     public Lang getLang() {
         return lang;
     }
 
     public Locale getLocale(HttpServletRequest req) {
+        if (req == null) {
+            return Locale.getDefault();
+        }
         //todo locale selection
         return Locale.getDefault();
     }

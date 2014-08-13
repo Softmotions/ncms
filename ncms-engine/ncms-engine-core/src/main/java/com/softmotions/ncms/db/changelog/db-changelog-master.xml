@@ -8,5 +8,6 @@
     <property name="tinyint.type" dbms="h2" value="TINYINT"/>
 
     <include relativeToChangelogFile="true" file="db-changelog-1.xml"/>
+    <include relativeToChangelogFile="true" file="db-changelog-3.xml"/>
 
 </databaseChangeLog>

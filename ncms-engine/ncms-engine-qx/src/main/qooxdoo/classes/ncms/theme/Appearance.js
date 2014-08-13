@@ -2,6 +2,8 @@
  * @asset(ncms/icon/16/actions/search.png)
  * @asset(ncms/icon/16/misc/cross-script.png)
  * @asset(qx/icon/${qx.icontheme}/16/actions/edit-clear.png)
+ * @asset(ncms/icon/22/places/folder.png)
+ * @asset(ncms/icon/22/places/folder-open.png)
  */
 
 qx.Theme.define("ncms.theme.Appearance", {
@@ -9,6 +11,74 @@ qx.Theme.define("ncms.theme.Appearance", {
     include : [ sm.Appearance ],
 
     appearances : {
+
+
+        "virtual-tree" : {
+            include : "tree",
+            alias : "tree",
+
+            style : function(states) {
+                return {
+                    itemHeight : 24
+                };
+            }
+        },
+
+
+        "tree-folder" : {
+            style : function(states) {
+                var backgroundColor;
+                if (states.selected) {
+                    backgroundColor = "background-selected";
+                    if (states.disabled) {
+                        backgroundColor += "-disabled";
+                    }
+                }
+                return {
+                    padding : [0, 8, 0, 5],
+                    icon : states.opened ? "ncms/icon/22/places/folder-open.png" : "ncms/icon/22/places/folder.png",
+                    backgroundColor : backgroundColor,
+                    iconOpened : "ncms/icon/22/places/folder-open.png",
+                    opacity : (states.drag || states.locked) ? 0.5 : undefined
+                };
+            }
+        },
+
+
+        "tree-file" : {
+            include : "tree-folder",
+            alias : "tree-folder",
+
+            style : function(states) {
+                return {
+                    icon : "icon/16/mimetypes/text-plain.png",
+                    opacity : (states.drag || states.locked) ? 0.5 : undefined
+                };
+            }
+        },
+
+
+        "tree-folder/icon" : {
+            include : "image",
+            style : function(states) {
+                return {
+                    padding : [0, 4, 0, 0]
+                };
+            }
+        },
+
+        "toolbar-table/toolbar" : {
+            include : "toolbar",
+            alias : "toolbar",
+
+            style : function(states) {
+                return {
+                    backgroundColor : "#ededed",
+                    padding : 0
+                };
+            }
+
+        },
 
         "atom/label" : {
             include : "label",

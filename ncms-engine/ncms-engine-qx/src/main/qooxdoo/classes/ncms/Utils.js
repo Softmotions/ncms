@@ -6,6 +6,26 @@ qx.Class.define("ncms.Utils", {
     statics : {
 
         /**
+         * Checks if all access rights specified in the {@code pattern} are included
+         * in the provided {@code accessMask}
+         * @param accessMask {String} Access mask
+         * @param pattern {String} Access mask rights to check.
+         */
+        checkAccessAll : function(accessMask, pattern) {
+            if (pattern == null || accessMask == null) {
+                return false;
+            }
+            var ok = true;
+            for (var i = 0, l = pattern.length; i < l; ++i) {
+                if (accessMask.indexOf(pattern.charAt(i)) === -1) {
+                    ok = false;
+                    break;
+                }
+            }
+            return (ok && l > 0);
+        },
+
+        /**
          * Parse options string. Eg: 'foo=bar, foo2=bar2'
          * Returns key-value json map.
          *

@@ -1,8 +1,8 @@
 /**
  * Pages tree selector.
  *
- * @asset(ncms/icon/22/misc/document-text.png)
- * @asset(ncms/icon/22/misc/document-text-exclamation.png)
+ * @asset(ncms/icon/22/misc/document.png)
+ * @asset(ncms/icon/22/misc/document-exclamation.png)
  * @asset(ncms/icon/22/places/folder-exclamation.png)
  * @asset(ncms/icon/22/places/folder-exclamation-open.png)
  */
@@ -16,6 +16,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
      *                <code>
      *                    {
      *                      foldersOnly : {Boolean?false} //Show only folders
+     *                      accessAll : {String?} //Optional access all page security restriction
      *                    }
      *                </code>
      */
@@ -23,6 +24,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         this.__options = options || {};
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
+        var me = this;
         this._initTree(
                 {
                     action : "pages.layer",
@@ -30,7 +32,17 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                     rootLabel : this.tr("Pages"),
                     selectRootAsNull : true,
                     setupChildrenRequestFn : this.__setupChildrenRequest,
-                    iconConverter : this.__treeIconConverter.bind(this)
+                    iconConverter : this.__treeIconConverter.bind(this),
+                    delegate : {
+                        bindItem : function(controller, item, index) {
+                            controller.bindProperty("", "model", {
+                                converter : function(value, model, source, target) {
+                                    me.__configureItem(value, target);
+                                    return value;
+                                }
+                            }, item, index);
+                        }
+                    }
                 });
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
@@ -43,6 +55,22 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
 
         __options : null,
 
+        __configureItem : function(model, item) {
+            var checkAm = this.__options["accessAll"];
+            if (checkAm == null) {
+                return;
+            }
+            var am = (typeof model.getAccessMask === "function") ? model.getAccessMask() : null;
+            if (am == null || typeof am !== "string") {
+                return;
+            }
+            var ok = ncms.Utils.checkAccessAll(am, checkAm);
+            if (ok) {
+                item.removeState("locked");
+            } else {
+                item.addState("locked");
+            }
+        },
 
         __onPagePublished : function(ev) {
             var data = ev.getData();
@@ -77,7 +105,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                         var fdSuffix = target.isOpen() ? "-open" : "";
                         return "ncms/icon/22/places/folder" + statusPrefix + fdSuffix + ".png";
                     } else {
-                        return "ncms/icon/22/misc/document-text" + statusPrefix + ".png";
+                        return "ncms/icon/22/misc/document" + statusPrefix + ".png";
                     }
                     break;
                 default:

@@ -7,7 +7,8 @@ qx.Class.define("ncms.pgs.PagesSelector", {
          * Page selected.
          * Data: {
          *   id : {Number} Page ID,
-         *   name : {String} Page name
+         *   name : {String} Page name,
+         *   accessmask : {String}
          * }
          */
         selectedPage : {
@@ -22,7 +23,8 @@ qx.Class.define("ncms.pgs.PagesSelector", {
      * @param options {Map?} Options:
      *                <code>
      *                    {
-     *                      foldersOnly : {Boolean?false} //Show only folders
+     *                      foldersOnly : {Boolean?false} //Show only folders,
+     *                      accessAll : {String?} //Optional access all page security restriction
      *                    }
      *                </code>
      */
@@ -52,6 +54,8 @@ qx.Class.define("ncms.pgs.PagesSelector", {
 
     members : {
 
+        _options : null,
+
         /**
          * Pages tree navigation selector
          */
@@ -68,9 +72,11 @@ qx.Class.define("ncms.pgs.PagesSelector", {
             if (edata != null) {
                 data = {
                     id : edata["id"],
-                    name : edata["label"]
+                    name : edata["label"],
+                    accessMask : edata["accessMask"]
                 }
             }
+
             this.setSelectedPage(data);
         },
 
@@ -90,6 +96,7 @@ qx.Class.define("ncms.pgs.PagesSelector", {
     },
 
     destruct : function() {
+        this._options = null;
         this._treeSelector = null;
         this._searchSelector = null;
         //this._disposeObjects("__field_name");                                
