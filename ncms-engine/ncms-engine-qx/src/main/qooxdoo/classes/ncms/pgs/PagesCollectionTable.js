@@ -28,6 +28,10 @@ qx.Class.define("ncms.pgs.PagesCollectionTable", {
                     {accessAll : this.__options["accessAll"]});
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();
+                //{"id":23,"name":"Разметка",
+                // "accessMask":"wnd",
+                // "idPath":[22,23],"labelPath":["Помощь","Разметка"],
+                // "guidPath":["982f9f908e27d0b95e59f9d2af6ad66a","9cc2df6307dbb7821d53641b9dd81338"]}
                 qx.log.Logger.info("onAddPage data=" + JSON.stringify(data));
                 dlg.close();
             });

@@ -4,6 +4,7 @@
  * @asset(qx/icon/${qx.icontheme}/16/actions/edit-clear.png)
  * @asset(ncms/icon/22/places/folder.png)
  * @asset(ncms/icon/22/places/folder-open.png)
+ * @asset(ncms/icon/16/misc/cross.png)
  */
 
 qx.Theme.define("ncms.theme.Appearance", {
@@ -132,6 +133,17 @@ qx.Theme.define("ncms.theme.Appearance", {
                 return {
                     backgroundColor : "background"
                 };
+            }
+        },
+
+        "sm-search-field/clear" : {
+            include : "atom",
+            alias : "atom",
+            style : function(states) {
+                return {
+                    icon : "ncms/icon/16/misc/cross.png",
+                    padding : 0
+                }
             }
         },
 
