@@ -14,6 +14,17 @@ qx.Theme.define("ncms.theme.Appearance", {
     appearances : {
 
 
+        "window/captionbar" : {
+            style : function(states) {
+                return {
+                    backgroundColor : states.active ? "background" : "background-disabled",
+                    padding : [8, 8, 0, 8],
+                    font : "bold"
+                };
+            }
+        },
+
+
         "virtual-tree" : {
             include : "tree",
             alias : "tree",
