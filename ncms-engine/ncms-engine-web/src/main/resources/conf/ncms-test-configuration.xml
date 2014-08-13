@@ -81,6 +81,7 @@
         <module class="com.softmotions.ncms.jaxrs.JAXRSExceptionHandlingModule"/>
         <module class="com.softmotions.ncms.media.MediaModule"/>
         <module class="com.softmotions.ncms.mediawiki.MediaWikiModule"/>
+        <module class="com.softmotions.ncms.user.UserModule"/>
     </modules>
 
     <ui>

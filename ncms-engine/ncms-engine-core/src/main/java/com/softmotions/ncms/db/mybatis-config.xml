@@ -63,5 +63,6 @@
         <mapper resource="com/softmotions/ncms/asm/PageSecurityService.xml"/>
         <mapper resource="com/softmotions/ncms/asm/AsmEventsListener.xml"/>
         <mapper resource="com/softmotions/ncms/media/MediaRS.xml"/>
+        <mapper resource="com/softmotions/ncms/user/UserEnvRS.xml"/>
     </mappers>
 </configuration>

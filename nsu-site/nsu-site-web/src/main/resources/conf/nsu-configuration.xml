@@ -90,6 +90,7 @@
         <module class="com.softmotions.ncms.adm.AdmModule"/>
         <module class="com.softmotions.ncms.media.MediaModule"/>
         <module class="com.softmotions.ncms.mediawiki.MediaWikiModule"/>
+        <module class="com.softmotions.ncms.user.UserModule"/>
     </modules>
 
     <ui>
