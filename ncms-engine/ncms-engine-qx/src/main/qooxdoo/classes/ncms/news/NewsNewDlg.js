@@ -1,7 +1,4 @@
-/**
- * Create new page popup dialog.
- */
-qx.Class.define("ncms.pgs.PageNewDlg", {
+qx.Class.define("ncms.news.NewsNewDlg", {
     extend : sm.ui.form.BaseSavePopupDlg,
 
     construct : function(parentId) {
@@ -21,13 +18,9 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
                     this.save();
                 }
             }, this);
-            el.setToolTipText(this.tr("Page name"));
-            this._form.add(el, this.tr("Page name"), null, "name");
+            el.setToolTipText(this.tr("News caption"));
+            this._form.add(el, this.tr("News caption"), null, "name");
             el.focus();
-
-            el = new qx.ui.form.CheckBox();
-            el.setToolTipText(this.tr("Page is container folder for other pages"));
-            this._form.add(el, this.tr("Container"), null, "container");
         },
 
         _save : function() {
@@ -35,7 +28,7 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
             var data = {
                 name : items["name"].getValue(),
                 parent : this._id,
-                type : items["container"].getValue() ? "page.folder" : "page"
+                type : "news.page"
             };
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.new"), "PUT");
             req.setRequestContentType("application/json");
@@ -47,6 +40,6 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
     },
 
     destruct : function() {
-        //this._disposeObjects("__field_name");                                
+        //this._disposeObjects("__field_name");
     }
 });

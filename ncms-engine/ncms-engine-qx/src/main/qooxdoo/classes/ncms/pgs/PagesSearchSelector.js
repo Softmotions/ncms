@@ -61,7 +61,6 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         this._add(this.__table, {flex : 1});
 
         this.__table.setConstViewSpec(constViewSpec, true);
-        this.addListener("appear", this.refresh, this);
     },
 
     members : {

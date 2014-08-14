@@ -52,12 +52,12 @@ qx.Class.define("ncms.news.NewsNav", {
         bf.setPlaceholder(this.tr("Select the parent page for news"));
         this._add(bf);
 
-        this.__ps = new ncms.pgs.PagesSearchSelector({
-            "type" : "page.news"
+        var ps = this.__ps = new ncms.pgs.PagesSearchSelector({
+            "type" : "news.page"
         }).set({searchIfEmpty : true});
-        this._add(this.__ps, {flex : 1});
+        this._add(ps, {flex : 1});
 
-        this.__ps.addListener("itemSelected", function(ev) {
+        ps.addListener("itemSelected", function(ev) {
             var data = ev.getData();
             if (data == null) {
                 app.showDefaultWSA();
@@ -69,6 +69,10 @@ qx.Class.define("ncms.news.NewsNav", {
                 app.showWSA(eclazz);
             }
         }, this);
+
+        ps.getTable().setContextMenu(new qx.ui.menu.Menu());
+        ps.getTable().addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+
         this.__syncState();
         this.__loadCurrentNewsRoot();
     },
@@ -90,6 +94,30 @@ qx.Class.define("ncms.news.NewsNav", {
             return (sp == null) ? null : {id : sp["id"], name : sp["label"]};
         },
 
+        __beforeContextmenuOpen : function(ev) {
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+            var bt;
+            var root = this.__getRootPage();
+            if (root == null) {
+                return;
+            }
+            bt = new qx.ui.menu.Button(this.tr("New"));
+            bt.addListener("execute", this.__onNews, this);
+            menu.add(bt);
+        },
+
+        __onNews : function(ev) {
+            var root = this.__getRootPage();
+            var dlg = new ncms.news.NewsNewDlg(root["id"]);
+            dlg.addListener("completed", function(ev) {
+                dlg.close();
+                this.__ps.refresh();
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
+        },
+
         __choosePage : function() {
             var dlg = new ncms.pgs.PagesCollectionDlg(this.tr("Please select the parent page for news"),
                     {
@@ -103,7 +131,6 @@ qx.Class.define("ncms.news.NewsNav", {
             dlg.open();
         },
 
-
         __loadCurrentNewsRoot : function() {
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.single.get",
                     {"collection" : "news.root"}), "GET", "application/json");
@@ -111,7 +138,6 @@ qx.Class.define("ncms.news.NewsNav", {
                 this.__setNewsRoot(resp.getContent());
             }, this);
         },
-
 
         __updateNewsRoot : function(page) {
             //rs/adm/pages/single/{collection}/{id}
@@ -126,6 +152,7 @@ qx.Class.define("ncms.news.NewsNav", {
             var bf = this.__bf;
             if (page == null) {
                 bf.resetValue();
+                bf.setUserData("page", null);
                 this.__syncState();
                 return;
             }
@@ -135,11 +162,18 @@ qx.Class.define("ncms.news.NewsNav", {
             } else {
                 bf.setValue(page["name"]);
             }
+            this.__ps.updateViewSpec({
+                parentId : page["id"]
+            });
             this.__syncState();
         },
 
+        __getRootPage : function() {
+            return this.__bf.getUserData("page");
+        },
+
         __syncState : function() {
-            var page = this.__bf.getUserData("page");
+            var page = this.__getRootPage();
             if (page == null) {
                 this.__ps.setEnabled(false);
                 ncms.Application.INSTANCE.showDefaultWSA();

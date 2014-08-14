@@ -206,7 +206,6 @@
             p.options   AS "options"
         FROM asms AS p
         WHERE p.id = #{id}
-              AND p.type LIKE 'page%'
     </select>
 
     <select id="selectPageTemplateStatus" resultType="int" parameterType="long">
@@ -316,6 +315,7 @@
         SELECT COUNT(*)
         FROM asms
         <where>
+            <if test="parentId != null">AND nav_parent_id = #{parentId}</if>
             <if test="name != null">AND hname LIKE #{name}</if>
             <if test="type != null">AND type LIKE #{type}</if>
             <if test="collection != null and user != null">
@@ -339,8 +339,9 @@
         LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
         LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         <where>
-            <if test="name != null">AND hname LIKE #{name}</if>
-            <if test="type != null">AND type LIKE #{type}</if>
+            <if test="parentId != null">AND p.nav_parent_id = #{parentId}</if>
+            <if test="name != null">AND p.hname LIKE #{name}</if>
+            <if test="type != null">AND p.type LIKE #{type}</if>
             <if test="collection != null and user != null">
                 AND p.id IN (
                 SELECT e.ivalue FROM USER_ENV e

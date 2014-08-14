@@ -430,12 +430,22 @@ public class PageRS extends MBDAOSupport {
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
         Long parent = spec.hasNonNull("parent") ? spec.get("parent").asLong() : null;
         String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
-        if (name == null && (!"page.folder".equals(type) && !"page".equals(type))) {
+
+        if (name == null ||
+            !com.softmotions.commons.cont.ArrayUtils
+                    .isAnyOf(type, "page.folder", "page", "news.page")) {
             throw new BadRequestException();
         }
-        if (!pageSecurity.canEdit(parent, req)) {
+        if (parent == null && !req.isUserInRole("structure.admin")) {
             throw new ForbiddenException();
         }
+        if (parent != null &&
+            ("news.page".equals(type) ?
+             !pageSecurity.canNewsEdit(parent, req) :
+             !pageSecurity.canEdit(parent, req))) {
+            throw new ForbiddenException();
+        }
+
         String guid;
         Long id;
         do {
@@ -880,6 +890,10 @@ public class PageRS extends MBDAOSupport {
             type = val;
         } else if (BooleanUtils.toBoolean(req.getParameter("foldersOnly"))) {
             type = "page.folder";
+        }
+        val = req.getParameter("parentId");
+        if (!StringUtils.isBlank(val)) {
+            cq.withParam("parentId", Long.parseLong(val));
         }
         cq.withParam("type", type);
         cq.withParam("user", req.getRemoteUser());
