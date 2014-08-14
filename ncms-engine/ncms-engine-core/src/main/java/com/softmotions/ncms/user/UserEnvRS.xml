@@ -44,6 +44,13 @@
               AND ${vcol} = #{value}
     </delete>
 
+    <delete id="delAllSet"
+            parameterType="map">
+        DELETE FROM USER_ENV
+        WHERE "USERID" = #{userid}
+        AND "TYPE" = #{type}
+    </delete>
+
 </mapper>
 
 

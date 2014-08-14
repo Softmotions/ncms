@@ -6,8 +6,6 @@ import com.google.inject.Inject;
 
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
@@ -30,20 +28,27 @@ import java.util.Map;
 @Produces("application/json")
 public class UserEnvRS extends MBDAOSupport {
 
-    private static final Logger log = LoggerFactory.getLogger(UserEnvRS.class);
-
     @Inject
     public UserEnvRS(SqlSession sess) {
         super(UserEnvRS.class.getName(), sess);
     }
 
+    @PUT
+    @Path("single/{type}")
+    @Transactional
+    public Collection ensureSingle(@Context HttpServletRequest req,
+                                   @PathParam("type") String type,
+                                   String value) {
+        delAllSet(req, type);
+        return addSet(req, type, value);
+    }
 
     @PUT
-    @Path("set/{type}/{value}")
+    @Path("set/{type}")
     @Transactional
     public Collection addSet(@Context HttpServletRequest req,
                              @PathParam("type") String type,
-                             @PathParam("value") String value) {
+                             String value) {
         String vcol = "svalue";
         try {
             Integer.parseInt(value);
@@ -61,11 +66,11 @@ public class UserEnvRS extends MBDAOSupport {
 
 
     @DELETE
-    @Path("set/{type}/{value}")
+    @Path("set/{type}")
     @Transactional
     public Collection delSet(@Context HttpServletRequest req,
                              @PathParam("type") String type,
-                             @PathParam("value") String value) {
+                             String value) {
 
         String vcol = "svalue";
         try {
@@ -81,6 +86,18 @@ public class UserEnvRS extends MBDAOSupport {
 
         return getSet(req, type);
     }
+
+
+    @DELETE
+    @Path("clear/{type}")
+    @Transactional
+    public void delAllSet(@Context HttpServletRequest req,
+                          @PathParam("type") String type) {
+        delete("delAllSet",
+               "userid", req.getRemoteUser(),
+               "type", type);
+    }
+
 
     @GET
     @Path("set/{type}")

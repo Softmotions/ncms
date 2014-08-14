@@ -221,6 +221,33 @@ qx.Class.define("ncms.Actions", {
         // {collection}: Collection name
         // {id}: Page ID
         this._action("pages.collection", "/rs/adm/pages/collection/{collection}/{id}");
+
+        //PUT Put single page element into collection and delete others
+        this._action("pages.single", "/rs/adm/pages/single/{collection}/{id}");
+
+        //GET Single page element from named collection
+        this._action("pages.single.get", "/rs/adm/pages/single/{collection}");
+
+        //================== UserEnvRS
+
+        /**
+         * PUT Single user env value
+         * {type} Env type
+         * Data: env value
+         */
+        this._action("user.env.single", "/rs/adm/user/env/single/{type}");
+
+        /**
+         * GET|PUT|DELETE Add entry to the envset of {type}
+         * Data: env value used for PUT|DELETE
+         */
+        this._action("user.env.set", "/rs/adm/user/env/set/{type}");
+
+        /**
+         * DELETE Delete all elements in envset of {type}
+         */
+        this._action("user.env.clear", "/rs/adm/user/env/clear/{type}");
+
     },
 
     members : {

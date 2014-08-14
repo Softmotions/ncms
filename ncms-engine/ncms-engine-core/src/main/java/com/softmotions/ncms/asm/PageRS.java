@@ -213,7 +213,7 @@ public class PageRS extends MBDAOSupport {
                                          "name", "fullName");
         }
 
-        res.put("accessmask", pageSecurity.getUserRights(id, req));
+        res.put("accessMask", pageSecurity.getUserRights(id, req));
         return res;
     }
 
@@ -599,7 +599,7 @@ public class PageRS extends MBDAOSupport {
                                 if (includePath) {
                                     String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
                                     gen.writeStringField("path",
-                                                         (path.length > 0 ? "/" + com.softmotions.commons.cont.ArrayUtils.stringJoin(path, "/") : "")+
+                                                         (path.length > 0 ? "/" + com.softmotions.commons.cont.ArrayUtils.stringJoin(path, "/") : "") +
                                                          "/" + row.get("hname"));
                                 }
                                 gen.writeEndObject();
@@ -787,6 +787,32 @@ public class PageRS extends MBDAOSupport {
                                           @PathParam("collection") String collection,
                                           @PathParam("id") Long id) {
         userEnvRS.delSet(req, collection, id.toString());
+    }
+
+
+    @PUT
+    @Path("single/{collection}/{id}")
+    public ObjectNode putSinglePageIntoUserCollection(@Context HttpServletRequest req,
+                                                      @PathParam("collection") String collection,
+                                                      @PathParam("id") Long id) {
+        userEnvRS.ensureSingle(req, collection, id.toString());
+        ObjectNode info = selectPageInfo(req, id);
+        info.setAll(selectPageLabelPath(id));
+        return info;
+    }
+
+    @GET
+    @Path("single/{collection}")
+    public ObjectNode getSinglePageIntoUserCollection(@Context HttpServletRequest req,
+                                                      @PathParam("collection") String collection) {
+        Collection set = userEnvRS.getSet(req, collection);
+        if (set.isEmpty() || !(set.iterator().next() instanceof Number)) {
+            return mapper.createObjectNode(); //empty object
+        }
+        Long id = ((Number) set.iterator().next()).longValue();
+        ObjectNode info = selectPageInfo(req, id);
+        info.setAll(selectPageLabelPath(id));
+        return info;
     }
 
     private String getPageIDsPath(Long id) {

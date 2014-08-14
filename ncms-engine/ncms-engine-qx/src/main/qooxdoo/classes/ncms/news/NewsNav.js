@@ -95,16 +95,36 @@ qx.Class.define("ncms.news.NewsNav", {
                         accessAll : "n" //Required news editing access rights
                     });
             dlg.addListener("completed", function(ev) {
-                this.__setNewsRoot(ev.getData());
+                this.__updateNewsRoot(ev.getData());
                 dlg.close();
             }, this);
             dlg.open();
         },
 
 
+        __updateNewsRoot : function(page) {
+            //rs/adm/pages/single/{collection}/{id}
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.single",
+                    {collection : "news.root", id : page["id"]}), "PUT", "application/json");
+            req.send(function(resp) {
+                var content = resp.getContent();
+                this.__setNewsRoot(page);
+            }, this);
+        },
+
         __setNewsRoot : function(page) {
-            qx.log.Logger.info("News root changed! data=" + JSON.stringify(page));
-            //todo
+            //page data sample:
+            // {"owner":{"name":"admin","fullName":"Антон Адаманский"},
+            // "template":0,"mdate":1407731738067,
+            // "name":"test",
+            // "guid":"62cffbb6f97cfdd4cc1a940bc923027b",
+            // "id":41,"published":0,
+            // "type":"page",
+            // "muser":{"name":"admin","fullName":"Антон Адаманский"},
+            // "accessMask":"wnd","
+            // idPath":[42,41],
+            // "labelPath":["sandbox","test"],
+            //  "guidPath":["8568ab41179da1a6e8c2e189a4adf56f","62cffbb6f97cfdd4cc1a940bc923027b"]}
         },
 
         __syncState : function() {

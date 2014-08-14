@@ -8,7 +8,7 @@ qx.Class.define("ncms.pgs.PagesSelector", {
          * Data: {
          *   id : {Number} Page ID,
          *   name : {String} Page name,
-         *   accessmask : {String}
+         *   accessMask : {String}
          * }
          */
         selectedPage : {
