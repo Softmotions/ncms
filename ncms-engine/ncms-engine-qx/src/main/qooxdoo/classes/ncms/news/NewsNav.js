@@ -1,7 +1,7 @@
 /**
  * News navigator
  *
- * @asset(ncms/icon/16/misc/chain.png)
+ * @asset(ncms/icon/16/misc/chain-plus.png)
  */
 qx.Class.define("ncms.news.NewsNav", {
     extend : qx.ui.core.Widget,
@@ -45,7 +45,9 @@ qx.Class.define("ncms.news.NewsNav", {
             }
         }, this);
 
-        var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain.png");
+        var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain-plus.png");
+        bf.setReadOnly(true);
+        bf.getMainButton().setToolTipText(this.tr("Select the parent page for news"));
         bf.addListener("execute", this.__choosePage, this);
         bf.setPlaceholder(this.tr("Select the parent page for news"));
         this._add(bf);
@@ -67,8 +69,8 @@ qx.Class.define("ncms.news.NewsNav", {
                 app.showWSA(eclazz);
             }
         }, this);
-
         this.__syncState();
+        this.__loadCurrentNewsRoot();
     },
 
     members : {
@@ -102,29 +104,38 @@ qx.Class.define("ncms.news.NewsNav", {
         },
 
 
+        __loadCurrentNewsRoot : function() {
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.single.get",
+                    {"collection" : "news.root"}), "GET", "application/json");
+            req.send(function(resp) {
+                this.__setNewsRoot(resp.getContent());
+            }, this);
+        },
+
+
         __updateNewsRoot : function(page) {
             //rs/adm/pages/single/{collection}/{id}
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.single",
                     {collection : "news.root", id : page["id"]}), "PUT", "application/json");
             req.send(function(resp) {
-                var content = resp.getContent();
-                this.__setNewsRoot(page);
+                this.__setNewsRoot(resp.getContent());
             }, this);
         },
 
         __setNewsRoot : function(page) {
-            //page data sample:
-            // {"owner":{"name":"admin","fullName":"Антон Адаманский"},
-            // "template":0,"mdate":1407731738067,
-            // "name":"test",
-            // "guid":"62cffbb6f97cfdd4cc1a940bc923027b",
-            // "id":41,"published":0,
-            // "type":"page",
-            // "muser":{"name":"admin","fullName":"Антон Адаманский"},
-            // "accessMask":"wnd","
-            // idPath":[42,41],
-            // "labelPath":["sandbox","test"],
-            //  "guidPath":["8568ab41179da1a6e8c2e189a4adf56f","62cffbb6f97cfdd4cc1a940bc923027b"]}
+            var bf = this.__bf;
+            if (page == null) {
+                bf.resetValue();
+                this.__syncState();
+                return;
+            }
+            bf.setUserData("page", page);
+            if (page["labelPath"].length > 1) {
+                bf.setValue(page["name"] + " | " + page["labelPath"].join("/"));
+            } else {
+                bf.setValue(page["name"]);
+            }
+            this.__syncState();
         },
 
         __syncState : function() {
