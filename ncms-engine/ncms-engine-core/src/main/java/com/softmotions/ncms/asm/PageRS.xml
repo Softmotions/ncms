@@ -32,16 +32,17 @@
 
     <select id="selectChildLayer" resultType="map" parameterType="map">
         SELECT
-            p.id          AS "id",
-            p.name        AS "guid",
-            p.hname       AS "name",
-            p.description AS "description",
-            p.type        AS "type",
-            p.published   AS "published",
-            p.template    AS "template",
-            p.owner       AS "owner",
-            lacl.rights   AS "local_rights",
-            racl.rights   AS "recursive_rights"
+            p.id              AS "id",
+            p.name            AS "guid",
+            p.hname           AS "name",
+            p.description     AS "description",
+            p.type            AS "type",
+            p.published       AS "published",
+            p.template        AS "template",
+            p.owner           AS "owner",
+            p.nav_cached_path AS "nav_cached_path",
+            lacl.rights       AS "local_rights",
+            racl.rights       AS "recursive_rights"
         FROM asms AS p
             LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
             LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
@@ -53,16 +54,17 @@
 
     <select id="selectRootLayer" resultType="map" parameterType="map">
         SELECT
-            p.id          AS "id",
-            p.name        AS "guid",
-            p.hname       AS "name",
-            p.description AS "description",
-            p.type        AS "type",
-            p.published   AS "published",
-            p.template    AS "template",
-            p.owner       AS "owner",
-            lacl.rights   AS "local_rights",
-            racl.rights   AS "recursive_rights"
+            p.id              AS "id",
+            p.name            AS "guid",
+            p.hname           AS "name",
+            p.description     AS "description",
+            p.type            AS "type",
+            p.published       AS "published",
+            p.template        AS "template",
+            p.owner           AS "owner",
+            p.nav_cached_path AS "nav_cached_path",
+            lacl.rights       AS "local_rights",
+            racl.rights       AS "recursive_rights"
         FROM ASMS AS p
             LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
             LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
@@ -316,22 +318,35 @@
         <where>
             <if test="name != null">AND hname LIKE #{name}</if>
             <if test="type != null">AND type LIKE #{type}</if>
+            <if test="collection != null and user != null">
+                AND id IN (
+                SELECT e.ivalue FROM USER_ENV e
+                WHERE e.userid = #{user} AND e.type = #{collection}
+                )
+            </if>
         </where>
     </select>
 
     <select id="searchPage" resultType="map" parameterType="map">
         SELECT
-            p.id          AS "id",
-            p.hname       AS "hname",
-            p.owner       AS "owner",
-            lacl.rights   AS "local_rights",
-            racl.rights   AS "recursive_rights"
+        p.id AS "id",
+        p.hname AS "hname",
+        p.owner AS "owner",
+        p.nav_cached_path AS "nav_cached_path",
+        lacl.rights AS "local_rights",
+        racl.rights AS "recursive_rights"
         FROM asms AS p
         LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
         LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         <where>
             <if test="name != null">AND hname LIKE #{name}</if>
             <if test="type != null">AND type LIKE #{type}</if>
+            <if test="collection != null and user != null">
+                AND p.id IN (
+                SELECT e.ivalue FROM USER_ENV e
+                WHERE e.userid = #{user} AND e.type = #{collection}
+                )
+            </if>
         </where>
         <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">
@@ -341,4 +356,6 @@
             </if>
         </if>
     </select>
+
+
 </mapper>

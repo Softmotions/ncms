@@ -46,7 +46,7 @@ qx.Class.define("ncms.news.NewsNav", {
         }, this);
 
         var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain.png");
-        bf.addListener("execute", this.__choosePage);
+        bf.addListener("execute", this.__choosePage, this);
         bf.setPlaceholder(this.tr("Select the parent page for news"));
         this._add(bf);
 
@@ -91,15 +91,20 @@ qx.Class.define("ncms.news.NewsNav", {
         __choosePage : function() {
             var dlg = new ncms.pgs.PagesCollectionDlg(this.tr("Please select the parent page for news"),
                     {
-                        type : "pages.news.roots",
+                        collection : "news.root.pages",
                         accessAll : "n" //Required news editing access rights
                     });
             dlg.addListener("completed", function(ev) {
-                var data = ev.getData();
-                qx.log.Logger.info("News root changed! data=" + JSON.stringify(data));
+                this.__setNewsRoot(ev.getData());
                 dlg.close();
             }, this);
             dlg.open();
+        },
+
+
+        __setNewsRoot : function(page) {
+            qx.log.Logger.info("News root changed! data=" + JSON.stringify(page));
+            //todo
         },
 
         __syncState : function() {

@@ -18,6 +18,7 @@
     <logger name="com.softmotions.ncms.asm.AsmEventsListener" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.PageRS" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.PageSecurityService" level="INFO"/>
+    <logger name="com.softmotions.ncms.user.UserEnvRS" level="INFO"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

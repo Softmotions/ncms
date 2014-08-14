@@ -46,7 +46,7 @@ qx.Class.define("ncms.pgs.PagesSelector", {
         if (options["foldersOnly"]) {
             cvs["foldersOnly"] = true;
         }
-        var ss = this._searchSelector = new ncms.pgs.PagesSearchSelector(cvs, allowModify);
+        var ss = this._searchSelector = new ncms.pgs.PagesSearchSelector(cvs);
         ss.addListener("itemSelected", this.__pageSelected, this);
         page.add(ss);
         this.add(page);

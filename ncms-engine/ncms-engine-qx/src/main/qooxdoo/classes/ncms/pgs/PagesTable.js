@@ -9,7 +9,8 @@ qx.Class.define("ncms.pgs.PagesTable", {
 
     construct : function(useColumns) {
         var tm = new sm.model.RemoteVirtualTableModel({
-            "label" : this.tr("Name")
+            "label" : this.tr("Name"),
+            "path" : this.tr("Path")
         }).set({
                     "useColumns" : useColumns || ["label"],
                     "rowdataUrl" : ncms.Application.ACT.getUrl("pages.search"),

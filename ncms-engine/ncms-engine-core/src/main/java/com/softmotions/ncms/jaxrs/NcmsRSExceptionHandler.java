@@ -44,7 +44,7 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
     private String toHeaderMsg(String msg) {
         try {
 
-            return StringUtils.left(URLEncoder.encode(messages.get("ncms.jaxrs.notfound"), "UTF-8"), MAX_MSG_LEN);
+            return StringUtils.left(URLEncoder.encode(msg, "UTF-8"), MAX_MSG_LEN);
         } catch (UnsupportedEncodingException e) {
             log.error("", e);
         }

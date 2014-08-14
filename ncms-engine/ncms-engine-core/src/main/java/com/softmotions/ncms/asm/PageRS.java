@@ -12,6 +12,7 @@ import com.softmotions.ncms.asm.events.PageDroppedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.user.UserEnvRS;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
@@ -25,6 +26,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ResultContext;
@@ -60,6 +62,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringTokenizer;
 
 import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.ADD;
 import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.REMOVE;
@@ -78,19 +81,21 @@ public class PageRS extends MBDAOSupport {
 
     private static final Logger log = LoggerFactory.getLogger(PageRS.class);
 
-    final AsmDAO adao;
+    private final AsmDAO adao;
 
-    final ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
-    final NcmsMessages messages;
+    private final NcmsMessages messages;
 
-    final WSUserDatabase userdb;
+    private final WSUserDatabase userdb;
 
-    final AsmAttributeManagersRegistry amRegistry;
+    private final AsmAttributeManagersRegistry amRegistry;
 
-    final PageSecurityService pageSecurity;
+    private final PageSecurityService pageSecurity;
 
-    final NcmsEventBus ebus;
+    private final NcmsEventBus ebus;
+
+    private final UserEnvRS userEnvRS;
 
     @Inject
     public PageRS(SqlSession sess,
@@ -100,7 +105,8 @@ public class PageRS extends MBDAOSupport {
                   WSUserDatabase userdb,
                   AsmAttributeManagersRegistry amRegistry,
                   PageSecurityService pageSecurity,
-                  NcmsEventBus ebus) {
+                  NcmsEventBus ebus,
+                  UserEnvRS userEnvRS) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -109,8 +115,8 @@ public class PageRS extends MBDAOSupport {
         this.amRegistry = amRegistry;
         this.pageSecurity = pageSecurity;
         this.ebus = ebus;
+        this.userEnvRS = userEnvRS;
     }
-
 
     @GET
     @Path("/path/{id}")
@@ -177,7 +183,6 @@ public class PageRS extends MBDAOSupport {
         return res;
     }
 
-
     /**
      * Get page data for info pane.
      *
@@ -211,7 +216,6 @@ public class PageRS extends MBDAOSupport {
         res.put("accessmask", pageSecurity.getUserRights(id, req));
         return res;
     }
-
 
     @GET
     @Path("/edit/{id}")
@@ -388,7 +392,6 @@ public class PageRS extends MBDAOSupport {
         return selectPageEdit(req, id);
     }
 
-
     /**
      * Set the page owner
      *
@@ -418,7 +421,6 @@ public class PageRS extends MBDAOSupport {
                                      "name", "fullName");
         return res;
     }
-
 
     @PUT
     @Path("/new")
@@ -451,7 +453,6 @@ public class PageRS extends MBDAOSupport {
                "nav_cached_path", getPageIDsPath(parent),
                "recursive_acl", selectOne("getRecursiveAcl", "pid", parent));
     }
-
 
     @PUT
     @Path("/update/basic")
@@ -527,23 +528,6 @@ public class PageRS extends MBDAOSupport {
     }
 
 
-    private String getPageIDsPath(Long id) {
-        if (id == null) {
-            return "/";
-        }
-        List<Long> alist = new ArrayList<>();
-        alist.add(id);
-        Long pid = id;
-        do {
-            pid = selectOne("selectParentID", pid);
-            if (pid != null) {
-                alist.add(pid);
-            }
-        } while (pid != null);
-        Collections.reverse(alist);
-        return "/" + CollectionUtils.join("/", alist) + "/";
-    }
-
     @DELETE
     @Path("/{id}")
     @Transactional
@@ -577,6 +561,7 @@ public class PageRS extends MBDAOSupport {
 
         return Response.ok(new StreamingOutput() {
             public void write(OutputStream output) throws IOException, WebApplicationException {
+                final boolean includePath = BooleanUtils.toBoolean(req.getParameter("includePath"));
                 final JsonGenerator gen = new JsonFactory().createGenerator(output);
                 gen.writeStartArray();
                 Map q = createSelectLayerQ(path, req);
@@ -611,7 +596,12 @@ public class PageRS extends MBDAOSupport {
                                     am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
                                 }
                                 gen.writeStringField("accessMask", am);
-
+                                if (includePath) {
+                                    String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
+                                    gen.writeStringField("path",
+                                                         (path.length > 0 ? "/" + com.softmotions.commons.cont.ArrayUtils.stringJoin(path, "/") : "")+
+                                                         "/" + row.get("hname"));
+                                }
                                 gen.writeEndObject();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -619,7 +609,11 @@ public class PageRS extends MBDAOSupport {
                         }
                     }, q);
                 } finally {
-                    gen.writeEndArray();
+                    try {
+                        gen.writeEndArray();
+                    } catch (IOException e) {
+                        log.error("", e);
+                    }
                 }
                 gen.flush();
             }
@@ -715,6 +709,7 @@ public class PageRS extends MBDAOSupport {
     public Response searchPage(@Context final HttpServletRequest req) {
         return Response.ok(new StreamingOutput() {
             public void write(OutputStream output) throws IOException, WebApplicationException {
+                final boolean includePath = BooleanUtils.toBoolean(req.getParameter("includePath"));
                 final JsonGenerator gen = new JsonFactory().createGenerator(output);
                 try {
                     MBCriteriaQuery cq = createSearchQ(req, false);
@@ -734,6 +729,12 @@ public class PageRS extends MBDAOSupport {
                                     am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
                                 }
                                 gen.writeStringField("accessMask", am);
+                                if (includePath) {
+                                    String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
+                                    gen.writeStringField("path",
+                                                         (path.length > 0 ? "/" + com.softmotions.commons.cont.ArrayUtils.stringJoin(path, "/") : "") +
+                                                         "/" + row.get("hname"));
+                                }
                                 gen.writeEndObject();
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -741,11 +742,91 @@ public class PageRS extends MBDAOSupport {
                         }
                     }, cq);
                 } finally {
-                    gen.writeEndArray();
+                    try {
+                        gen.writeEndArray();
+                    } catch (IOException e) {
+                        log.error("", e);
+                    }
                 }
                 gen.flush();
             }
         }).type(MediaType.APPLICATION_JSON_TYPE).encoding("UTF-8").build();
+    }
+
+    @GET
+    @Path("rights/{pid}")
+    public String getUserRights(@Context HttpServletRequest req,
+                                @PathParam("pid") Long pid) {
+        return pageSecurity.getUserRights(pid, req);
+    }
+
+    @GET
+    @Path("check/{pid}/{rights}")
+    public boolean checkAccess(@Context HttpServletRequest req,
+                               @PathParam("pid") Long pid,
+                               @PathParam("rights") String rights) {
+        boolean access = true;
+        for (char c : (rights == null ? "" : rights).toCharArray()) {
+            access = access && pageSecurity.checkAccess(pid, req, c);
+        }
+        return access;
+    }
+
+    @PUT
+    @Path("collection/{collection}/{id}")
+    public void putPageIntoUserCollection(@Context HttpServletRequest req,
+                                          @PathParam("collection") String collection,
+                                          @PathParam("id") Long id) {
+
+        userEnvRS.addSet(req, collection, id.toString());
+    }
+
+    @DELETE
+    @Path("collection/{collection}/{id}")
+    public void delPageFromUserCollection(@Context HttpServletRequest req,
+                                          @PathParam("collection") String collection,
+                                          @PathParam("id") Long id) {
+        userEnvRS.delSet(req, collection, id.toString());
+    }
+
+    private String getPageIDsPath(Long id) {
+        if (id == null) {
+            return "/";
+        }
+        List<Long> alist = new ArrayList<>();
+        alist.add(id);
+        Long pid = id;
+        do {
+            pid = selectOne("selectParentID", pid);
+            if (pid != null) {
+                alist.add(pid);
+            }
+        } while (pid != null);
+        Collections.reverse(alist);
+        return "/" + CollectionUtils.join("/", alist) + "/";
+    }
+
+    private String[] convertPageIDPath2LabelPath(String idpath) {
+        if (idpath == null || "/".equals(idpath)) {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+        StringTokenizer st = new StringTokenizer(idpath, "/");
+        int ct = st.countTokens();
+        if (ct == 0) {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+        Long[] ids = new Long[ct];
+        for (int i = 0; i < ids.length; ++i) {
+            ids[i] = Long.parseLong(st.nextToken());
+        }
+        Map<Number, Map> rows = selectMap("selectPageInfoIN", "id",
+                                          "ids", ids);
+        String[] labels = new String[rows.size()];
+        for (int i = 0; i < ids.length; ++i) {
+            Map row = rows.get(ids[i]);
+            labels[i] = (String) row.get("name");
+        }
+        return labels;
     }
 
     private MBCriteriaQuery createSearchQ(HttpServletRequest req, boolean count) {
@@ -777,10 +858,11 @@ public class PageRS extends MBDAOSupport {
         cq.withParam("type", type);
         cq.withParam("user", req.getRemoteUser());
 
-        if (count) {
-            cq.withStatement("searchPageCount");
-        } else {
-            cq.withStatement("searchPage");
+        val = req.getParameter("collection");
+        if (!StringUtils.isBlank(val)) {
+            cq.withParam("collection", val);
+        }
+        if (!count) {
             val = req.getParameter("sortAsc");
             if (!StringUtils.isBlank(val)) {
                 if ("label".equals(val)) {
@@ -796,30 +878,13 @@ public class PageRS extends MBDAOSupport {
                 cq.orderBy("p." + val).desc();
             }
         }
-
+        if (cq.getStatement() == null) {
+            cq.withStatement(count ? "searchPageCount" : "searchPage");
+        }
         return cq.finish();
     }
 
-    @GET
-    @Path("rights/{pid}")
-    public String getUserRights(@Context HttpServletRequest req,
-                                @PathParam("pid") Long pid) {
-        return pageSecurity.getUserRights(pid, req);
-    }
-
-    @GET
-    @Path("check/{pid}/{rights}")
-    public boolean checkAccess(@Context HttpServletRequest req,
-                               @PathParam("pid") Long pid,
-                               @PathParam("rights") String rights) {
-        boolean access = true;
-        for (char c : (rights == null ? "" : rights).toCharArray()) {
-            access = access && pageSecurity.checkAccess(pid, req, c);
-        }
-        return access;
-    }
-
-    Long getPathLastIdSegment(String path) {
+    private Long getPathLastIdSegment(String path) {
         if (path == null) {
             return null;
         }
@@ -831,7 +896,7 @@ public class PageRS extends MBDAOSupport {
     }
 
 
-    Map createSelectLayerQ(String path, HttpServletRequest req) {
+    private Map createSelectLayerQ(String path, HttpServletRequest req) {
         Long pId = getPathLastIdSegment(path);
         Map<String, Object> ret = new TinyParamMap();
         if (pId != null) {
@@ -844,6 +909,4 @@ public class PageRS extends MBDAOSupport {
         }
         return ret;
     }
-
-
 }

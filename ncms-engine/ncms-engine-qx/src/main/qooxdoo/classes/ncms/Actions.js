@@ -216,6 +216,11 @@ qx.Class.define("ncms.Actions", {
 
         //Page preview url
         this._action("pages.preview", "/adm/asm/{id}?preview=true");
+
+        //PUT/DELETE page into user
+        // {collection}: Collection name
+        // {id}: Page ID
+        this._action("pages.collection", "/rs/adm/pages/collection/{collection}/{id}");
     },
 
     members : {

@@ -32,10 +32,13 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         }
     },
 
-    construct : function(constViewSpec) {
+    construct : function(constViewSpec, useColumns) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
-
+        if (Array.isArray(useColumns) && useColumns.indexOf("path") !== -1) {
+            constViewSpec = constViewSpec || {};
+            constViewSpec["includePath"] = true;
+        }
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", this.refresh, this);
         sf.addListener("input", this.refresh, this);
@@ -45,7 +48,7 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
             }
         }, this);
 
-        this.__table = new ncms.pgs.PagesTable().set({
+        this.__table = new ncms.pgs.PagesTable(useColumns).set({
             "statusBarVisible" : false,
             "showCellFocusIndicator" : false});
 
@@ -65,8 +68,12 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         __sf : null,
         __table : null,
 
+        getTable : function() {
+            return this.__table;
+        },
+
         getSelectedPage : function() {
-            this.__table.getSelectedPage();
+            return this.__table.getSelectedPage();
         },
 
         setViewSpec : function(vspec) {

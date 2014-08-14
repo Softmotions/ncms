@@ -3,7 +3,46 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.softmotions.ncms.user.UserModule">
+<mapper namespace="com.softmotions.ncms.user.UserEnvRS">
+
+    <select id="getSet" resultType="map" parameterType="map">
+        SELECT
+            svalue,
+            ivalue
+        FROM USER_ENV
+        WHERE "USERID" = #{userid}
+              AND "TYPE" = #{type}
+    </select>
+
+    <update id="addSet"
+            databaseId="H2"
+            parameterType="map">
+        MERGE INTO user_env (userid, TYPE, ${vcol})
+        KEY ("USERID", "TYPE", ${vcol})
+        VALUES (#{userid}, #{type}, #{value})
+    </update>
+
+    <update id="addSet"
+            databaseId="DB2"
+            parameterType="map">
+        MERGE INTO user_env e
+        USING (
+                  VALUES (#{userid}, #{type}, #{value})
+              ) AS s("USERID", "TYPE", ${vcol})
+        ON e.userid = s.userid AND e.type = s.type AND e.${vcol} = s.${vcol}
+        WHEN NOT MATCHED THEN
+        INSERT ("USERID", "TYPE", ${vcol})
+        VALUES (s.userid, s.type, s.${vcol})
+        ELSE IGNORE
+    </update>
+
+    <delete id="delSet"
+            parameterType="map">
+        DELETE FROM USER_ENV
+        WHERE "USERID" = #{userid}
+              AND "TYPE" = #{type}
+              AND ${vcol} = #{value}
+    </delete>
 
 </mapper>
 

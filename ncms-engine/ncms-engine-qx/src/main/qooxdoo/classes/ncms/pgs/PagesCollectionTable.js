@@ -2,26 +2,41 @@
  * Pages collection table
  */
 qx.Class.define("ncms.pgs.PagesCollectionTable", {
-    extend : sm.table.ToolbarLocalTable,
-
-    statics : {
-    },
+    extend : qx.ui.core.Widget,
+    include : [
+        sm.event.MForwardEvent
+    ],
 
     events : {
+
+        "cellDbltap" : "qx.ui.table.pane.CellEvent",
+
+        "syncState" : "qx.event.type.Event"
     },
 
     properties : {
+
+        appearance : {
+            refine : true,
+            init : "toolbar-table"
+        }
     },
 
     construct : function(options) {
         this.__options = options || {};
         this.base(arguments);
-        this._reload([]);
+        this._setLayout(new qx.ui.layout.VBox());
+        this.getChildControl("toolbar");
+        this.getChildControl("selector");
     },
 
     members : {
 
         __options : null,
+
+        getSelectedPage : function() {
+            return this.getChildControl("selector").getSelectedPage();
+        },
 
         __onAddPage : function() {
             var dlg = new ncms.pgs.PagesSelectorDlg(null, false,
@@ -32,14 +47,36 @@ qx.Class.define("ncms.pgs.PagesCollectionTable", {
                 // "accessMask":"wnd",
                 // "idPath":[22,23],"labelPath":["Помощь","Разметка"],
                 // "guidPath":["982f9f908e27d0b95e59f9d2af6ad66a","9cc2df6307dbb7821d53641b9dd81338"]}
-                qx.log.Logger.info("onAddPage data=" + JSON.stringify(data));
-                dlg.close();
-            });
+                //qx.log.Logger.info("onAddPage data=" + JSON.stringify(data) + " collection=" + this.__options["collection"]);
+                var req = new sm.io.Request(
+                        ncms.Application.ACT.getRestUrl("pages.collection",
+                                {
+                                    "collection" : this.__options["collection"],
+                                    "id" : data["id"]
+                                }), "PUT");
+                req.send(function() {
+                    dlg.close();
+                    this.getChildControl("selector").refresh();
+                }, this);
+            }, this);
             dlg.open();
         },
 
         __onRemovePage : function() {
-            qx.log.Logger.info("on remove");
+            var selector = this.getChildControl("selector");
+            var page = this.getSelectedPage();
+            if (page == null) {
+                return;
+            }
+            var req = new sm.io.Request(
+                    ncms.Application.ACT.getRestUrl("pages.collection",
+                            {
+                                "collection" : this.__options["collection"],
+                                "id" : page["id"]
+                            }), "DELETE");
+            req.send(function() {
+                selector.refresh();
+            }, this);
         },
 
         _createToolbarItems : function(toolbar) {
@@ -60,14 +97,25 @@ qx.Class.define("ncms.pgs.PagesCollectionTable", {
             return toolbar;
         },
 
-        _createTable : function(tm) {
-            var table = new sm.table.Table(tm, tm.getCustom());
-            table.getSelectionModel().addListener("changeSelection", this._syncState, this);
-            table.set({
-                showCellFocusIndicator : false,
-                statusBarVisible : false,
-                focusCellOnPointerMove : false});
-            return table;
+        _createChildControlImpl : function(id) {
+            var control;
+            switch (id) {
+                case "toolbar":
+                    control = new qx.ui.toolbar.ToolBar();
+                    this._createToolbarItems(control);
+                    this._add(control);
+                    break;
+                case "selector":
+                    control = new ncms.pgs.PagesSearchSelector({
+                        "collection" : this.__options["collection"]
+                    }, ["label", "path"]);
+                    control.set({searchIfEmpty : true});
+                    control.addListener("itemSelected", this._syncState, this);
+                    control.getTable().addListener("cellDbltap", this.forwardEvent, this);
+                    this._add(control, {flex : 1});
+                    break;
+            }
+            return control || this.base(arguments, id);
         },
 
         _createButton : function(label, icon, handler, self) {
@@ -78,34 +126,12 @@ qx.Class.define("ncms.pgs.PagesCollectionTable", {
             return bt;
         },
 
-        //overriden
-        _setJsonTableData : function(tm, items) {
-            var data = {
-                "columns" : [
-                    {
-                        "title" : this.tr("Name").toString(),
-                        "id" : "name",
-                        "sortable" : true,
-                        "width" : "1*"
-                    },
-
-                    {
-                        "title" : this.tr("Path").toString(),
-                        "id" : "path",
-                        "sortable" : true,
-                        "width" : "1*"
-                    }
-
-                ],
-                "items" : items
-            };
-            tm.setJsonData(data);
-            this._syncState();
-        },
-
         _syncState : function() {
-            var ri = this.getSelectedRowIndex();
-            this.__delBt.setEnabled(ri != null && ri !== -1);
+            var page = this.getSelectedPage();
+            this.__delBt.setEnabled(page != null);
+            if (this.hasListener("syncState")) {
+                this.fireEvent("syncState");
+            }
         }
     },
 
