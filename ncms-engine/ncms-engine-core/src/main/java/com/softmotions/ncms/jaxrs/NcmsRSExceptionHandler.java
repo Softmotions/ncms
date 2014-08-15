@@ -56,7 +56,6 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
         Response.ResponseBuilder rb;
 
         if (ex instanceof NotFoundException) {
-
             log.warn("HTTP 404: " + ex.getMessage());
             rb = Response.status(Response.Status.NOT_FOUND)
                     .type(MediaType.TEXT_PLAIN_TYPE)
@@ -81,10 +80,9 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
             }
 
         } else if (ex instanceof ForbiddenException) {
-
             rb = Response.status(Response.Status.FORBIDDEN)
                     .header("X-Softmotions-Err0",
-                            toHeaderMsg(ex.getMessage() != null ? ex.getMessage() :
+                            toHeaderMsg(!StringUtils.isBlank(ex.getMessage()) ? ex.getMessage() :
                                         messages.get("ncms.jaxrs.forbidden")));
 
         } else if (ex instanceof JsonMappingException ||
@@ -96,13 +94,13 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
             log.warn("", ex);
             rb = Response.status(Response.Status.BAD_REQUEST)
                     .header("X-Softmotions-Err0",
-                            toHeaderMsg(ex.getMessage() != null ? ex.getMessage() : ex.toString()));
+                            toHeaderMsg(!StringUtils.isBlank(ex.getMessage()) ? ex.getMessage() : ex.toString()));
         } else {
 
             log.error("", ex);
             rb = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .header("X-Softmotions-Err0",
-                            toHeaderMsg(ex.getMessage() != null ? ex.getMessage() : ex.toString()));
+                            toHeaderMsg(!StringUtils.isBlank(ex.getMessage()) ? ex.getMessage() : ex.toString()));
         }
 
         return rb != null ? rb.build() : Response.serverError().build();

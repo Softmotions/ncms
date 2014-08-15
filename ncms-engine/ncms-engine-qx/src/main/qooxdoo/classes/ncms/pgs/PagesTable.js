@@ -1,5 +1,7 @@
 /**
- * Pages plain table
+ * Pages plain table.
+ *
+ * @asset(ncms/icon/16/misc/exclamation.png)
  *
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
@@ -10,7 +12,10 @@ qx.Class.define("ncms.pgs.PagesTable", {
     construct : function(useColumns, overrideMeta) {
         var cmeta = {
             icon : {
-                title : ""
+                title : "",
+                type : "image",
+                width : 26,
+                sortable : false
             },
             label : {
                 title : this.tr("Name").toString()
@@ -22,13 +27,12 @@ qx.Class.define("ncms.pgs.PagesTable", {
         };
         if (overrideMeta) {
             for (var k in overrideMeta) {
-                var o = cmeta[k];
-                if (o) {
-                    qx.lang.Object.mergeWith(o, overrideMeta[k], true);
+                if (cmeta[k] && overrideMeta[k]) {
+                    qx.lang.Object.mergeWith(cmeta[k], overrideMeta[k], true);
                 }
             }
         }
-        useColumns = useColumns || ["label"];
+        useColumns = useColumns || ["icon", "label"];
         var tm = new sm.model.RemoteVirtualTableModel(cmeta).set({
             "useColumns" : useColumns,
             "rowdataUrl" : ncms.Application.ACT.getUrl("pages.search"),

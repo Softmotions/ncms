@@ -378,6 +378,32 @@ public class PageSecurityService extends MBDAOSupport {
      * @param pid page id
      * @param req
      */
+    public boolean canEdit2(Asm page, HttpServletRequest req) {
+        return checkAccessAll2(page, req, "w");
+    }
+
+    public boolean checkAccessAll2(Asm page, HttpServletRequest req, String mask) {
+        if (page == null || page.getId() == null) {
+            return false;
+        } else if ("news.page".equals(page.getType())) {
+            return (checkAccessAll(page.getId(), req, mask) ||
+                    (page.getNavParentId() != null && canNewsEdit(page.getNavParentId(), req)));
+        } else {
+            return checkAccessAll(page.getId(), req, mask);
+        }
+    }
+
+    public boolean checkAccessAny2(Asm page, HttpServletRequest req, String mask) {
+        if (page == null || page.getId() == null) {
+            return false;
+        } else if ("news.page".equals(page.getType())) {
+            return (checkAccessAny(page.getId(), req, mask) ||
+                    (page.getNavParentId() != null && canNewsEdit(page.getNavParentId(), req)));
+        } else {
+            return checkAccessAny(page.getId(), req, mask);
+        }
+    }
+
     public boolean canEdit(long pid, HttpServletRequest req) {
         return checkAccess(pid, req, WRITE);
     }

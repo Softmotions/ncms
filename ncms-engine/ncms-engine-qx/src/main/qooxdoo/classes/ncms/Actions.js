@@ -201,8 +201,6 @@ qx.Class.define("ncms.Actions", {
         this._action("pages.search", "/rs/adm/pages/search");
         this._action("pages.search.count", "/rs/adm/pages/search/count");
 
-        // GET get user access
-        this._action("pages.get.rights", "/rs/adm/pages/rights/{pid}");
         // GET check user access
         this._action("pages.check.rights", "/rs/adm/pages/check/{pid}/{rights}");
 

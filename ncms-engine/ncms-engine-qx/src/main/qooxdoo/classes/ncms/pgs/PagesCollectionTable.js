@@ -108,7 +108,7 @@ qx.Class.define("ncms.pgs.PagesCollectionTable", {
                 case "selector":
                     control = new ncms.pgs.PagesSearchSelector({
                         "collection" : this.__options["collection"]
-                    }, ["label", "path"]);
+                    }, ["icon", "label", "path"]);
                     control.set({searchIfEmpty : true});
                     control.addListener("itemSelected", this._syncState, this);
                     control.getTable().addListener("cellDbltap", this.forwardEvent, this);

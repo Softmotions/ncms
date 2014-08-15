@@ -292,8 +292,9 @@ public class PageRS extends MBDAOSupport {
     }
 
     private void updatePublishStatus(HttpServletRequest req, Long id, boolean published) {
-        if (!pageSecurity.canEdit(id, req)) {
-            throw new ForbiddenException();
+        Asm page = adao.asmSelectById(id);
+        if (!pageSecurity.canEdit2(page, req)) {
+            throw new ForbiddenException("");
         }
         update("updatePublishStatus",
                "id", id,
@@ -305,10 +306,6 @@ public class PageRS extends MBDAOSupport {
     public void savePage(@Context HttpServletRequest req,
                          @PathParam("id") Long id,
                          ObjectNode data) {
-        if (!pageSecurity.canEdit(id, req)) {
-            throw new ForbiddenException();
-        }
-
         Asm page = adao.asmSelectById(id);
         if (page == null) {
             throw new NotFoundException();
@@ -316,7 +313,9 @@ public class PageRS extends MBDAOSupport {
         if (!page.getType().startsWith("page")) {
             throw new BadRequestException();
         }
-
+        if (!pageSecurity.canEdit2(page, req)) {
+            throw new ForbiddenException("");
+        }
         Map<String, AsmAttribute> attrIdx = new HashMap<>();
         for (AsmAttribute attr : page.getEffectiveAttributes()) {
             if (attr.getLabel() == null || attr.getLabel().isEmpty()) {
@@ -357,10 +356,10 @@ public class PageRS extends MBDAOSupport {
     public ObjectNode setTemplate(@Context HttpServletRequest req,
                                   @PathParam("id") Long id,
                                   @PathParam("templateId") Long templateId) {
-        if (!pageSecurity.canEdit(id, req)) {
-            throw new ForbiddenException();
+        Asm page = adao.asmSelectById(id);
+        if (!pageSecurity.canEdit2(page, req)) {
+            throw new ForbiddenException("");
         }
-
         Integer ts = selectOne("selectPageTemplateStatus", templateId);
         if (ts == null || ts.intValue() == 0) {
             log.warn("Assembly: " + templateId + " is not page template");
@@ -371,7 +370,7 @@ public class PageRS extends MBDAOSupport {
 
         //Strore incompatible attribute names to clean-up
         List<String> attrsToRemove = new ArrayList<>();
-        Asm page = adao.asmSelectById(id);
+        page = adao.asmSelectById(id);
         Collection<AsmAttribute> attrs = page.getEffectiveAttributes();
 
         for (AsmAttribute a : attrs) {
@@ -405,9 +404,8 @@ public class PageRS extends MBDAOSupport {
                                  @PathParam("id") Long id,
                                  @PathParam("owner") String owner) {
         if (!pageSecurity.canEdit(id, req)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("");
         }
-
         WSUser user = userdb.findUser(owner);
         if (user == null) {
             throw new NotFoundException();
@@ -436,14 +434,14 @@ public class PageRS extends MBDAOSupport {
                     .isAnyOf(type, "page.folder", "page", "news.page")) {
             throw new BadRequestException();
         }
-        if (parent == null && !req.isUserInRole("structure.admin")) {
-            throw new ForbiddenException();
+        if (parent == null && !req.isUserInRole("admin.structure")) {
+            throw new ForbiddenException("");
         }
         if (parent != null &&
             ("news.page".equals(type) ?
              !pageSecurity.canNewsEdit(parent, req) :
              !pageSecurity.canEdit(parent, req))) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("");
         }
 
         String guid;
@@ -477,7 +475,7 @@ public class PageRS extends MBDAOSupport {
             throw new BadRequestException();
         }
         if (!pageSecurity.canDelete(id, req)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("");
         }
         if ("page".equals(type)) {
             if (count("selectNumberOfDirectChilds", id) > 0) {
@@ -527,7 +525,7 @@ public class PageRS extends MBDAOSupport {
                 (tgt == 0 && !req.isUserInRole("admin.structure")) ||
                 !pageSecurity.checkAccess(tgt, req, 'w') ||
                 !pageSecurity.checkAccess(src, req, 'd')) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("");
         }
 
         update("movePage",
@@ -544,7 +542,7 @@ public class PageRS extends MBDAOSupport {
     public void dropPage(@Context HttpServletRequest req,
                          @PathParam("id") Long id) {
         if (!pageSecurity.canDelete(id, req)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("");
         }
 
         Map<String, Object> info = selectOne("selectPageInfo",
@@ -652,7 +650,7 @@ public class PageRS extends MBDAOSupport {
                          @PathParam("user") String user,
                          @QueryParam("recursive") boolean recursive) {
         if (!pageSecurity.canEdit(pid, req)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("");
         }
 
         WSUser wsUser = userdb.findUser(user);
@@ -672,7 +670,7 @@ public class PageRS extends MBDAOSupport {
                           @QueryParam("rights") String rights,
                           @QueryParam("add") boolean isAdd) {
         if (!pageSecurity.canEdit(pid, req)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("");
         }
 
         WSUser wsUser = userdb.findUser(user);
@@ -691,7 +689,7 @@ public class PageRS extends MBDAOSupport {
                               @QueryParam("recursive") boolean recursive,
                               @QueryParam("forceRecursive") boolean force) {
         if (!pageSecurity.canEdit(pid, req)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("");
         }
 
         WSUser wsUser = userdb.findUser(user);
@@ -729,7 +727,10 @@ public class PageRS extends MBDAOSupport {
                         public void handleResult(ResultContext context) {
                             Map<String, ?> row = (Map<String, ?>) context.getResultObject();
                             try {
+                                boolean published = NumberUtils.number2Boolean((Number) row.get("published"));
+
                                 gen.writeStartObject();
+                                gen.writeStringField("icon", published ? "" : "ncms/icon/16/misc/exclamation.png");
                                 gen.writeNumberField("id", NumberUtils.number2Long((Number) row.get("id"), 0));
                                 gen.writeStringField("label", (String) row.get("hname"));
                                 String am;
@@ -745,7 +746,7 @@ public class PageRS extends MBDAOSupport {
                                                          (path.length > 0 ? "/" + com.softmotions.commons.cont.ArrayUtils.stringJoin(path, "/") : "") +
                                                          "/" + row.get("hname"));
                                 }
-                                gen.writeBooleanField("published", NumberUtils.number2Boolean((Number) row.get("published")));
+                                gen.writeBooleanField("published", published);
                                 gen.writeStringField("type", (String) row.get("type"));
 
                                 gen.writeEndObject();
@@ -767,22 +768,13 @@ public class PageRS extends MBDAOSupport {
     }
 
     @GET
-    @Path("rights/{pid}")
-    public String getUserRights(@Context HttpServletRequest req,
-                                @PathParam("pid") Long pid) {
-        return pageSecurity.getUserRights(pid, req);
-    }
-
-    @GET
     @Path("check/{pid}/{rights}")
+    @Transactional
     public boolean checkAccess(@Context HttpServletRequest req,
                                @PathParam("pid") Long pid,
                                @PathParam("rights") String rights) {
-        boolean access = true;
-        for (char c : (rights == null ? "" : rights).toCharArray()) {
-            access = access && pageSecurity.checkAccess(pid, req, c);
-        }
-        return access;
+        Asm page = adao.asmSelectById(pid);
+        return pageSecurity.checkAccessAll2(page, req, rights);
     }
 
     @PUT

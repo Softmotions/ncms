@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import com.google.common.collect.AbstractIterator;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,8 +35,6 @@ import java.util.Set;
 @JsonRootName("asm")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Asm implements Serializable {
-
-    private static final Logger log = LoggerFactory.getLogger(Asm.class);
 
     interface ViewFull {
     }
@@ -82,6 +78,8 @@ public class Asm implements Serializable {
     List<Asm> parents;
 
     AttrsList attributes;
+
+    Long navParentId;
 
 
     public Asm() {
@@ -234,6 +232,14 @@ public class Asm implements Serializable {
 
     public void setParents(List<Asm> parents) {
         this.parents = parents;
+    }
+
+    public Long getNavParentId() {
+        return navParentId;
+    }
+
+    public void setNavParentId(Long navParentId) {
+        this.navParentId = navParentId;
     }
 
     public Iterator<Asm> getAllParentsIterator() {

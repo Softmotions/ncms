@@ -57,9 +57,9 @@ qx.Class.define("ncms.news.NewsNav", {
                     type : "news.page",
                     sortDesc : "mdate"
                 },
-                ["label"],
+                ["icon", "label"],
                 {
-                    "label" : {
+                    label : {
                         sortable : false
                     }
                 }
