@@ -35,9 +35,11 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
     construct : function(constViewSpec, useColumns) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
-        if (Array.isArray(useColumns) && useColumns.indexOf("path") !== -1) {
-            constViewSpec = constViewSpec || {};
-            constViewSpec["includePath"] = true;
+        if (Array.isArray(useColumns)) {
+            if (useColumns.indexOf("path") !== -1) {
+                constViewSpec = constViewSpec || {};
+                constViewSpec["includePath"] = true;
+            }
         }
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", this.refresh, this);

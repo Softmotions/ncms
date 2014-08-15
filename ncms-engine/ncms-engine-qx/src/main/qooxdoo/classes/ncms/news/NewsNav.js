@@ -53,7 +53,8 @@ qx.Class.define("ncms.news.NewsNav", {
         this._add(bf);
 
         var ps = this.__ps = new ncms.pgs.PagesSearchSelector({
-            "type" : "news.page"
+            "type" : "news.page",
+            "sortDesc" : "mdate"
         }).set({searchIfEmpty : true});
         this._add(ps, {flex : 1});
 
