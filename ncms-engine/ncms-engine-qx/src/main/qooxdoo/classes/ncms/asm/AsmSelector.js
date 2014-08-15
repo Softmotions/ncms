@@ -134,7 +134,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
         },
 
         __searchKeypress : function(ev) {
-            if ("Down" == ev.getKeyIdentifier()) {
+            if ("Down" === ev.getKeyIdentifier()) {
                 this.__table.handleFocus();
             }
         }

@@ -333,6 +333,8 @@
         p.hname AS "hname",
         p.owner AS "owner",
         p.nav_cached_path AS "nav_cached_path",
+        p.published AS "published",
+        p.type AS "type",
         lacl.rights AS "local_rights",
         racl.rights AS "recursive_rights"
         FROM asms AS p

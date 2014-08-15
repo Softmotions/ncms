@@ -7,19 +7,39 @@
 qx.Class.define("ncms.pgs.PagesTable", {
     extend : sm.table.Table,
 
-    construct : function(useColumns) {
-        var tm = new sm.model.RemoteVirtualTableModel({
-            "label" : this.tr("Name"),
-            "path" : this.tr("Path")
-        }).set({
-                    "useColumns" : useColumns || ["label"],
-                    "rowdataUrl" : ncms.Application.ACT.getUrl("pages.search"),
-                    "rowcountUrl" : ncms.Application.ACT.getUrl("pages.search.count")
-                });
-
+    construct : function(useColumns, overrideMeta) {
+        var cmeta = {
+            icon : {
+                title : ""
+            },
+            label : {
+                title : this.tr("Name").toString()
+            },
+            path : {
+                title : this.tr("Path").toString(),
+                sortable : false
+            }
+        };
+        if (overrideMeta) {
+            for (var k in overrideMeta) {
+                var o = cmeta[k];
+                if (o) {
+                    qx.lang.Object.mergeWith(o, overrideMeta[k], true);
+                }
+            }
+        }
+        useColumns = useColumns || ["label"];
+        var tm = new sm.model.RemoteVirtualTableModel(cmeta).set({
+            "useColumns" : useColumns,
+            "rowdataUrl" : ncms.Application.ACT.getUrl("pages.search"),
+            "rowcountUrl" : ncms.Application.ACT.getUrl("pages.search.count")
+        });
         var custom = {
-            tableColumnModel : function(obj) {
-                return new qx.ui.table.columnmodel.Resize(obj);
+            tableColumnModel : function() {
+                return new sm.model.JsonTableColumnModel(
+                        useColumns.map(function(cname) {
+                            return cmeta[cname];
+                        }));
             }
         };
 

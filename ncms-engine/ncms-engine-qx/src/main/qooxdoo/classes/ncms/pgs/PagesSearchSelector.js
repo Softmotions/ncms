@@ -32,7 +32,7 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         }
     },
 
-    construct : function(constViewSpec, useColumns) {
+    construct : function(constViewSpec, useColumns, overrideColumsMeta) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
         if (Array.isArray(useColumns)) {
@@ -45,12 +45,12 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         sf.addListener("clear", this.refresh, this);
         sf.addListener("input", this.refresh, this);
         sf.addListener("keypress", function(ev) {
-            if ("Down" == ev.getKeyIdentifier()) {
+            if ("Down" === ev.getKeyIdentifier()) {
                 this.__table.handleFocus();
             }
         }, this);
 
-        this.__table = new ncms.pgs.PagesTable(useColumns).set({
+        this.__table = new ncms.pgs.PagesTable(useColumns, overrideColumsMeta).set({
             "statusBarVisible" : false,
             "showCellFocusIndicator" : false});
 

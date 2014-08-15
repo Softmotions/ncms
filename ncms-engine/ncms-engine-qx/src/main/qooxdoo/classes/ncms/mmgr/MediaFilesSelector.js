@@ -95,7 +95,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.__search(ev.getData());
         }, this);
         sf.addListener("keypress", function(ev) {
-            if ("Down" == ev.getKeyIdentifier()) {
+            if ("Down" === ev.getKeyIdentifier()) {
                 this.__table.handleFocus();
             }
         }, this);

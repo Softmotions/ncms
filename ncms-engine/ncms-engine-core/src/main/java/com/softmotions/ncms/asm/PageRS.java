@@ -745,6 +745,8 @@ public class PageRS extends MBDAOSupport {
                                                          (path.length > 0 ? "/" + com.softmotions.commons.cont.ArrayUtils.stringJoin(path, "/") : "") +
                                                          "/" + row.get("hname"));
                                 }
+                                gen.writeBooleanField("published", NumberUtils.number2Boolean((Number) row.get("published")));
+                                gen.writeStringField("type", (String) row.get("type"));
 
                                 gen.writeEndObject();
                             } catch (IOException e) {

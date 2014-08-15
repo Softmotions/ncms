@@ -52,10 +52,18 @@ qx.Class.define("ncms.news.NewsNav", {
         bf.setPlaceholder(this.tr("Select the parent page for news"));
         this._add(bf);
 
-        var ps = this.__ps = new ncms.pgs.PagesSearchSelector({
-            "type" : "news.page",
-            "sortDesc" : "mdate"
-        }).set({searchIfEmpty : true});
+        var ps = this.__ps = new ncms.pgs.PagesSearchSelector(
+                {
+                    type : "news.page",
+                    sortDesc : "mdate"
+                },
+                ["label"],
+                {
+                    "label" : {
+                        sortable : false
+                    }
+                }
+        ).set({searchIfEmpty : true});
         this._add(ps, {flex : 1});
 
         ps.addListener("itemSelected", function(ev) {
