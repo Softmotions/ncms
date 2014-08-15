@@ -310,9 +310,6 @@ public class PageRS extends MBDAOSupport {
         if (page == null) {
             throw new NotFoundException();
         }
-        if (!page.getType().startsWith("page")) {
-            throw new BadRequestException();
-        }
         if (!pageSecurity.canEdit2(page, req)) {
             throw new ForbiddenException("");
         }
@@ -541,16 +538,12 @@ public class PageRS extends MBDAOSupport {
     @Transactional
     public void dropPage(@Context HttpServletRequest req,
                          @PathParam("id") Long id) {
-        if (!pageSecurity.canDelete(id, req)) {
+        Asm page = adao.asmSelectById(id);
+        if (!pageSecurity.checkAccessAll2(page, req, "d")) {
             throw new ForbiddenException("");
         }
-
-        Map<String, Object> info = selectOne("selectPageInfo",
-                                             "id", id);
         delete("dropPage", "id", id);
-        if (info != null) {
-            ebus.fireOnSuccessCommit(new PageDroppedEvent(this, id, (String) info.get("guid")));
-        }
+        ebus.fireOnSuccessCommit(new PageDroppedEvent(this, id, page.getName()));
     }
 
     @Path("/layer")

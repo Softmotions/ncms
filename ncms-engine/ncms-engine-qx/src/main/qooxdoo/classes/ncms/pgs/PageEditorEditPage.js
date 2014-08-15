@@ -318,7 +318,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 }, this);
                 req.send(function(resp) {
                     this.setModified(false);
-                    ncms.Application.infoPopup(this.tr("Page '%1' saved successfully", spec["name"]));
+                    ncms.Application.infoPopup(this.tr("Page saved successfully"));
                     if (typeof cb === "function") {
                         cb(false);
                     }

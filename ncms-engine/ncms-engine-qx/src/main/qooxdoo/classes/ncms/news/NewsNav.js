@@ -84,6 +84,8 @@ qx.Class.define("ncms.news.NewsNav", {
 
         this.__syncState();
         this.__loadCurrentNewsRoot();
+
+        ncms.Events.getInstance().addListener("pageChangePublished", this.__onPagePublished, this);
     },
 
     members : {
@@ -111,9 +113,31 @@ qx.Class.define("ncms.news.NewsNav", {
             if (root == null) {
                 return;
             }
+            var sp = this.__ps.getSelectedPage();
             bt = new qx.ui.menu.Button(this.tr("New"));
-            bt.addListener("execute", this.__onNews, this);
+            bt.addListenerOnce("execute", this.__onNews, this);
             menu.add(bt);
+
+            if (sp != null) {
+                bt = new qx.ui.menu.Button(this.tr("Delete"));
+                bt.addListenerOnce("execute", this.__onDelete, this);
+                menu.add(bt);
+            }
+        },
+
+        __onDelete : function(ev) {
+            var sp = this.__ps.getSelectedPage();
+            if (sp == null) {
+                return;
+            }
+            ncms.Application.confirm(this.tr("Are you sure to remove page: %1", sp["label"]), function(yes) {
+                if (!yes) return;
+                var req = new sm.io.Request(
+                        ncms.Application.ACT.getRestUrl("pages.delete", {id : sp["id"]}), "DELETE");
+                req.send(function() {
+                    this.__ps.refresh();
+                }, this);
+            }, this);
         },
 
         __onNews : function(ev) {
@@ -125,6 +149,19 @@ qx.Class.define("ncms.news.NewsNav", {
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.open();
+        },
+
+        __onPagePublished : function(ev) {
+            var data = ev.getData();
+            var published = data["published"];
+            var id = data["id"];
+            var table = this.__ps.getTable();
+            table.getTableModel().updateCachedRows(function(ind, rowdata) {
+                if (rowdata["id"] === id) {
+                    rowdata["icon"] = published ? "" : "ncms/icon/16/misc/exclamation.png";
+                    return rowdata;
+                }
+            }, this);
         },
 
         __choosePage : function() {
@@ -201,6 +238,7 @@ qx.Class.define("ncms.news.NewsNav", {
     },
 
     destruct : function() {
+        ncms.Events.getInstance().removeListener("pageChangePublished", this.__onPagePublished, this);
         this.__bf = null;
         this.__ps = null;
         //this._disposeObjects("__field_name");                                
