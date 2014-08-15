@@ -182,6 +182,12 @@ qx.Class.define("ncms.news.NewsNav", {
                 this.__ps.setEnabled(true);
                 this.__bf.getMainButton().removeState("invalid");
             }
+        },
+
+        _applyEnabled : function(value, old) {
+            this.base(arguments, value, old);
+            this.__bf.setEnabled(value);
+            this.__ps.setEnabled(value);
         }
     },
 

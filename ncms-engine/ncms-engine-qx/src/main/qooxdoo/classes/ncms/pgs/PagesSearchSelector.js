@@ -95,6 +95,13 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
             this.updateViewSpec({name : val || ""});
         },
 
+        //overriden
+        _applyEnabled : function(value, old) {
+            this.base(arguments, value, old);
+            this.__sf.setEnabled(value);
+            this.__table.setEnabled(value);
+        },
+
         __applySearchIfEmpty : function(val) {
             if (val) {
                 this.refresh();
