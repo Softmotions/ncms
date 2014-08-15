@@ -124,7 +124,7 @@ public class PageRS extends MBDAOSupport {
         ObjectNode res = mapper.createObjectNode();
         Map<String, Object> qres = selectOne("selectNavPath", "id", id);
         if (qres == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         ArrayNode idPath = res.putArray("idPath");
         ArrayNode labelPath = res.putArray("labelPath");
@@ -194,7 +194,7 @@ public class PageRS extends MBDAOSupport {
     public ObjectNode selectPageInfo(@Context HttpServletRequest req, @PathParam("id") Long id) {
         Map<String, Object> row = selectOne("selectPageInfo", "id", id);
         if (row == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         ObjectNode res = mapper.createObjectNode();
         JsonUtils.populateObjectNode(row, res);
@@ -223,7 +223,7 @@ public class PageRS extends MBDAOSupport {
         ObjectNode res = mapper.createObjectNode();
         Asm page = adao.asmSelectById(id);
         if (page == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         Asm template = null;
         Iterator<Asm> piter = page.getAllParentsIterator();
@@ -308,7 +308,7 @@ public class PageRS extends MBDAOSupport {
                          ObjectNode data) {
         Asm page = adao.asmSelectById(id);
         if (page == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         if (!pageSecurity.canEdit2(page, req)) {
             throw new ForbiddenException("");
@@ -405,7 +405,7 @@ public class PageRS extends MBDAOSupport {
         }
         WSUser user = userdb.findUser(owner);
         if (user == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         update("setPageOwner",
                "id", id,
@@ -498,7 +498,7 @@ public class PageRS extends MBDAOSupport {
         Asm srcPage = adao.asmSelectById(src);
         Asm tgtPage = (tgt != 0) ? adao.asmSelectById(tgt) : null; //zero tgt => Root target
         if (srcPage == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         if (tgtPage != null && !"page.folder".equals(tgtPage.getType())) {
             throw new BadRequestException();

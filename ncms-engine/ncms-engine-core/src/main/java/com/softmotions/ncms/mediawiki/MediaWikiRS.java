@@ -78,7 +78,7 @@ public class MediaWikiRS {
             if (maxWidth > 0) {
                 MediaResource mres = repository.findMediaResource(id, messages.getLocale(req));
                 if (mres == null) {
-                    throw new NotFoundException();
+                    throw new NotFoundException("");
                 }
                 if (CTypeUtils.isImageContentType(mres.getContentType())) {
                     if (mres.getImageWidth() > maxWidth) { //restrict maximal image width

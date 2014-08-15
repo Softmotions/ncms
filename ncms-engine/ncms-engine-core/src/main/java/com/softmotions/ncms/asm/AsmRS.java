@@ -124,7 +124,7 @@ public class AsmRS extends MBDAOSupport {
     public ObjectNode corePut(@PathParam("id") Long id, ObjectNode coreSpec) {
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         ObjectNode res = mapper.createObjectNode();
         String locaton = coreSpec.get("location").asText();
@@ -168,7 +168,7 @@ public class AsmRS extends MBDAOSupport {
     public Asm get(@PathParam("id") Long id) {
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         return asm;
     }
@@ -182,7 +182,7 @@ public class AsmRS extends MBDAOSupport {
         ObjectNode res = mapper.createObjectNode();
         Asm asm = adao.asmSelectByName(name);
         if (asm == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         res.put("id", asm.getId());
         res.put("name", asm.getName());
@@ -197,7 +197,7 @@ public class AsmRS extends MBDAOSupport {
     public String[] removeParent(@PathParam("id") Long id, JsonNode jsdata) throws IOException {
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         if (!jsdata.isArray()) {
             throw new BadRequestException();
@@ -221,7 +221,7 @@ public class AsmRS extends MBDAOSupport {
     public String[] saveParent(@PathParam("id") Long id, JsonNode jsdata) throws IOException {
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         if (!jsdata.isArray()) {
             throw new BadRequestException();
@@ -311,7 +311,7 @@ public class AsmRS extends MBDAOSupport {
                                            "asm_id", asmId,
                                            "name", name);
         if (attr == null) {
-            throw new NotFoundException();
+            throw new NotFoundException("");
         }
         return attr;
     }
