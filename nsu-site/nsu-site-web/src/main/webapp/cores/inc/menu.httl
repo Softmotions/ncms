@@ -1,0 +1,17 @@
+<ul>
+    #foreach(Tree n in menu)
+    <li><a href="">${n.name}</a>
+        #if(n.hasChildren)
+        <div class="slide-holder">
+            <div class="slide-frame">
+                <ul>
+                    #foreach(Tree c in n)
+                    <li><a href="#">${c.name}</a></li>
+                    #end
+                </ul>
+            </div>
+        </div>
+        #end
+    </li>
+    #end
+</ul>

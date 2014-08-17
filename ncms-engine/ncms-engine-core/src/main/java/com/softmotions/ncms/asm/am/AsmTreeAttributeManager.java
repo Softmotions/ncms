@@ -66,7 +66,7 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
             return new Tree("root");
         }
         try {
-            return mapper.reader(Tree.class).readTree(attr.getEffectiveValue());
+            return mapper.reader(Tree.class).readValue(attr.getEffectiveValue());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

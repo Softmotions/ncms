@@ -9,62 +9,9 @@
 <header id="header">
     <div class="header-holder">
         <a href="#" class="link">link</a>
+        #set(Tree menu = asm("menu"))
         <nav id="nav">
-            <ul>
-                <li class="active"><a href="#">Сотрудникам</a>
-                    <div class="slide-holder">
-                        <div class="slide-frame">
-                            <ul>
-                                <li><a href="#">Миссия</a></li>
-                                <li><a href="#">Руководство</a></li>
-                                <li><a href="#">Ученый совет</a></li>
-                                <li><a href="#">Ректорат</a></li>
-                                <li><a href="#">Контакты</a></li>
-                                <li><a href="#">Отд. качества</a></li>
-                                <li><a href="#">Межд. связи</a></li>
-                                <li><a href="#">Справочник</a></li>
-                                <li><a href="#">Академики</a></li>
-                                <li><a href="#">Доктора</a></li>
-                            </ul>
-                            <ul>
-                                <li><a href="#">Контакты</a></li>
-                                <li><a href="#">Отд. качества</a></li>
-                                <li><a href="#">Межд. связи</a></li>
-                                <li><a href="#">Справочник</a></li>
-                                <li><a href="#">Миссия</a></li>
-                                <li><a href="#">Руководство</a></li>
-                                <li><a href="#">Ученый совет</a></li>
-                                <li><a href="#">Ректорат</a></li>
-                                <li><a href="#">Контакты</a></li>
-                                <li><a href="#">Справочник</a></li>
-                            </ul>
-                            <ul>
-                                <li><a href="#">Академики</a></li>
-                                <li><a href="#">Доктора</a></li>
-                                <li><a href="#">Профессора</a></li>
-                                <li><a href="#">Мегапроекты</a></li>
-                                <li><a href="#">Контакты</a></li>
-                                <li><a href="#">Отд. качества</a></li>
-                                <li><a href="#">Межд. связи</a></li>
-                                <li><a href="#">Справочник</a></li>
-                                <li><a href="#">Академики</a></li>
-                                <li><a href="#">Доктора</a></li>
-                            </ul>
-                            <ul>
-                                <li><a href="#">ИТ службы</a></li>
-                                <li><a href="#">Система УИС</a></li>
-                                <li><a href="#">Провайлер услуг</a></li>
-                                <li><a href="#">О сайте</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-                <li><a href="#">Студентам</a></li>
-                <li><a href="#">Абитуриентам</a></li>
-                <li><a href="#">Выпускникам</a></li>
-                <li><a href="#">СМИ</a></li>
-                <li><a href="#">Партнерам</a></li>
-            </ul>
+            ${include("inc/menu.httl")}
         </nav>
         <a href="#" class="search">search</a>
     </div>
