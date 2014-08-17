@@ -19,6 +19,7 @@
             <if test="type != null">AND asm.type = #{type}</if>
             <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
+            <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
             <if test="exclude != null">AND asm.id != #{exclude}</if>
         </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
@@ -30,6 +31,7 @@
             <if test="type != null">AND asm.type = #{type}</if>
             <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
+            <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
             <if test="exclude != null">AND asm.id != #{exclude}</if>
         </where>
     </select>
@@ -141,6 +143,7 @@
         UPDATE asms
         <set>
             <if test="template != null">template = #{template},</if>
+            <if test="template_mode != null">template_mode = #{template_mode},</if>
             description = #{description},
             controller = #{controller},
         </set>
@@ -159,6 +162,14 @@
             a1.mdate   = current_timestamp
         WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
+
+
+    <select id="selectAsmType" resultType="string" parameterType="long">
+        SELECT
+            a.type
+        FROM asms a
+        WHERE a.id = #{id}
+    </select>
 
 
 </mapper>

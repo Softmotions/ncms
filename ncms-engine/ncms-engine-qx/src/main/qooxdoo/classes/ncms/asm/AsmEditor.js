@@ -109,10 +109,12 @@ qx.Class.define("ncms.asm.AsmEditor", {
         el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Controller"), null, "controller");
 
-        el = new qx.ui.form.CheckBox();
-        el.setToolTipText(this.tr("Use this assembly as base template for other pages"));
-        el.addListener("changeValue", this.__saveSimpleProps, this);
-        form.add(el, this.tr("Template"), null, "template");
+        el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(5));
+        el.add(new qx.ui.form.RadioButton(this.tr("None")).set({model : "none"}));
+        el.add(new qx.ui.form.RadioButton(this.tr("Page")).set({model : "page"}));
+        el.add(new qx.ui.form.RadioButton(this.tr("News page")).set({model : "news"}));
+        el.addListener("changeSelection", this.__saveSimpleProps, this);
+        form.add(el, this.tr("Template"), null, "templateMode");
 
         el = new ncms.asm.AsmParentsTable();
         el.addListener("parentsChanged", function() {
@@ -127,6 +129,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
         form.add(el, this.tr("Attributes"), null, "attributes");
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
+        fr.setLastRowFlexible();
         fr.setAppearance("ncms-wsa-form");
         this.add(fr);
     },
@@ -213,7 +216,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
                 if (spec._part == null) {
                     ctls["name"].setValue(spec["name"]);
                     ctls["description"].setValue(spec["description"]);
-                    ctls["template"].setValue(!!spec["template"]);
+                    ctls["templateMode"].setModelSelection([spec["templateMode"] || "none"]);
 
                     if (!sm.lang.String.isEmpty(spec["effectiveController"]) &&
                             sm.lang.String.isEmpty(spec["controller"])) {

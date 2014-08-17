@@ -73,6 +73,9 @@ public class Asm implements Serializable {
     @JsonProperty
     boolean published;
 
+    @JsonProperty
+    String templateMode;
+
     KVOptions parsedOptions;
 
     List<Asm> parents;
@@ -170,6 +173,14 @@ public class Asm implements Serializable {
 
     public void setTemplate(boolean template) {
         this.template = template;
+    }
+
+    public String getTemplateMode() {
+        return templateMode;
+    }
+
+    public void setTemplateMode(String templateMode) {
+        this.templateMode = templateMode;
     }
 
     public boolean isPublished() {

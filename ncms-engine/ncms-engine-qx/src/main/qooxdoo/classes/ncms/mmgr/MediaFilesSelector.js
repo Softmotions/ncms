@@ -314,14 +314,14 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
             var path = f.folder + f.name;
             path = path.split("/");
-            var d = new ncms.mmgr.MediaItemRenameDlg(path, f.name);
-            d.setPosition("bottom-center");
-            d.addListener("completed", function() {
-                d.destroy();
+            var dlg = new ncms.mmgr.MediaItemRenameDlg(path, f.name);
+            dlg.setPosition("bottom-center");
+            dlg.addListener("completed", function() {
+                dlg.close();
                 this.reload();
             }, this);
-            d.placeToWidget(ev.getTarget(), false);
-            d.show();
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
         },
 
         __rmFiles : function() {
@@ -453,7 +453,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 return;
             }
 
-            var d = new ncms.mmgr.MediaSelectFolderDlg(
+            var dlg = new ncms.mmgr.MediaSelectFolderDlg(
                             sfiles.length == 1 ? this.tr("Move '%1' to another folder", sfiles[0].folder + sfiles[0].name) : this.tr("Move %1 files to another folder", sfiles.length)
             );
 
@@ -473,14 +473,14 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 }, this);
             };
 
-            d.addListener("completed", function(ev) {
+            dlg.addListener("completed", function(ev) {
                 var target = ev.getData();
                 moveFiles.call(this, sfiles, target, moveFiles, function() {
                     this.reload();
-                    d.close();
+                    dlg.close();
                 }, this);
             }, this);
-            d.show();
+            dlg.open();
 
         },
 

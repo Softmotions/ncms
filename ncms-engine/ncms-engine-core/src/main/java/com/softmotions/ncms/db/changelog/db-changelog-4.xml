@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
+
+    <changeSet id="4" author="adamansky@gmail.com">
+        <addColumn tableName="ASMS">
+            <column name="TEMPLATE_PAGE_TYPES" type="VARCHAR(32)"
+                    remarks="Comma separated list of page types this template applicable to"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="5" author="adamansky@gmail.com">
+        <renameColumn tableName="ASMS"
+                      oldColumnName="TEMPLATE_PAGE_TYPES"
+                      newColumnName="TEMPLATE_MODE"/>
+    </changeSet>
+
+    <changeSet id="6" author="adamansky@gmail.com">
+
+        <modifyDataType tableName="ASM_ATTRS"
+                        columnName="NAME"
+                        newDataType="VARCHAR(128)"/>
+        <modifyDataType tableName="ASM_ATTRS"
+                        columnName="LABEL"
+                        newDataType="VARCHAR(256)"/>
+        <modifyDataType tableName="ASM_ATTRS"
+                        columnName="VALUE"
+                        newDataType="VARCHAR(2048)"/>
+        <modifyDataType tableName="ASM_ATTRS"
+                        columnName="OPTIONS"
+                        newDataType="VARCHAR(2048)"/>
+
+        <modifyDataType tableName="ASM_CORES"
+                        columnName="LOCATION"
+                        newDataType="VARCHAR(512)"/>
+        <modifyDataType tableName="ASM_CORES"
+                        columnName="NAME"
+                        newDataType="VARCHAR(512)"/>
+
+        <modifyDataType tableName="ASMS"
+                        columnName="DESCRIPTION"
+                        newDataType="VARCHAR(512)"/>
+        <modifyDataType tableName="ASMS"
+                        columnName="HNAME"
+                        newDataType="VARCHAR(256)"/>
+
+        <modifyDataType tableName="MEDIA_ENTITY"
+                        columnName="DESCRIPTION"
+                        newDataType="VARCHAR(512)"/>
+        <modifyDataType tableName="MEDIA_ENTITY"
+                        columnName="NAME"
+                        newDataType="VARCHAR(256)"/>
+        <modifyDataType tableName="MEDIA_ENTITY"
+                        columnName="FOLDER"
+                        newDataType="VARCHAR(512)"/>
+
+
+        <modifyDataType tableName="MEDIA_ENTITY_KWORDS"
+                        columnName="KEYWORD"
+                        newDataType="VARCHAR(64)"/>
+
+
+    </changeSet>
+
+</databaseChangeLog>

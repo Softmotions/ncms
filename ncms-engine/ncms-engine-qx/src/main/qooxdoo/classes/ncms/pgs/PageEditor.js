@@ -104,12 +104,12 @@ qx.Class.define("ncms.pgs.PageEditor", {
         },
 
         _applyPageSpec : function(spec) {
-            if (this._editPane) {
+            /*if (this._editPane) {
                 this._editPane.setEnabled(false);
             }
             if (this._accessPane) {
                 this._accessPane.setEnabled(false);
-            }
+            }*/
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.check.rights",
                     {pid : spec["id"], rights : "w"}), "GET", "application/json");
             req.send(function(resp) {

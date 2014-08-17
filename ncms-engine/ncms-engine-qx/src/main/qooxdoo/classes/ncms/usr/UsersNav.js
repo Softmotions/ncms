@@ -79,12 +79,12 @@ qx.Class.define("ncms.usr.UsersNav", {
         },
 
         __onNewUser : function(ev) {
-            var d = new ncms.usr.UserNewDlg();
-            d.addListener("completed", function(ev) {
-                d.close();
+            var dlg = new ncms.usr.UserNewDlg();
+            dlg.addListener("completed", function(ev) {
+                dlg.close();
                 this.__selector.reload();
             }, this);
-            d.show();
+            dlg.open();
         },
 
         __onRemoveUser : function(ev) {

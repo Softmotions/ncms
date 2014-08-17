@@ -268,8 +268,10 @@ public class AsmRS extends MBDAOSupport {
         if (props.hasNonNull("description")) {
             args.param("description", props.get("description").asText());
         }
-        if (props.hasNonNull("template")) {
-            args.param("template", props.get("template").asBoolean() ? 1 : 0);
+        if (props.hasNonNull("templateMode")) {
+            String mode = props.get("templateMode").asText();
+            args.param("template", "none".equals(mode) ? 0 : 1);
+            args.param("template_mode", mode);
         }
         if (props.hasNonNull("controller")) {
             String controller = props.get("controller").asText();
@@ -480,6 +482,15 @@ public class AsmRS extends MBDAOSupport {
         val = req.getParameter("template");
         if (BooleanUtils.toBoolean(val)) {
             cq.withParam("template", 1);
+            val = req.getParameter("pageId");
+            if (!StringUtils.isBlank(val)) {
+                String ptype = selectOne("selectAsmType", Long.parseLong(val));
+                if ("news.page".equals(ptype)) {
+                    cq.withParam("template_mode", "news");
+                } else {
+                    cq.withParam("template_mode", "page");
+                }
+            }
         }
         boolean orderUsed = false;
         val = req.getParameter("sortAsc");

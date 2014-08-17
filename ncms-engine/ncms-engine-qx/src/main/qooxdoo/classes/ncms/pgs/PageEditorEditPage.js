@@ -251,7 +251,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         __onChangeTemplate : function() {
             var pspec = this.getPageSpec();
             var dlg = new ncms.asm.AsmSelectorDlg(this.tr("Please select the template page"), null, {
-                "template" : true
+                "template" : true,
+                "pageId" : pspec["id"]
             }, ["description", "name"]);
             dlg.addListener("completed", function(ev) {
                 var t = ev.getData()[0];

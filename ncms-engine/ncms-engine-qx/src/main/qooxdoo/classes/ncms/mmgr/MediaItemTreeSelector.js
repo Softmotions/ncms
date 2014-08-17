@@ -141,17 +141,17 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             var path = this._getItemPathSegments(item);
             var parent = this._tree.getParent(item) || this._tree.getModel();
 
-            var d = new ncms.mmgr.MediaSelectFolderDlg(
+            var dlg = new ncms.mmgr.MediaSelectFolderDlg(
                     this.tr("Move '%1' to another folder", path.join("/"))
             );
-            d.addListener("completed", function(ev) {
+            dlg.addListener("completed", function(ev) {
                 var target = ev.getData();
                 var npath = [].concat(target, item.getLabel());
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.move", path),
                         "PUT", "application/json");
                 req.setData(npath.join("/"));
                 req.send(function() {
-                    d.close();
+                    dlg.close();
                     this._refreshNode(parent, function() {
                         target = this._tree.findCachedNodeByPath(target, "label");
                         if (target != null) {
@@ -160,7 +160,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
                     }, this);
                 }, this);
             }, this);
-            d.show();
+            dlg.open();
         },
 
         __onNewFolder : function(ev) {
@@ -173,14 +173,14 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
 
         __newFolder : function(ev, parent) {
             var path = this._getItemPathSegments(parent);
-            var d = new ncms.mmgr.MediaFolderNewDlg(path);
-            d.setPosition("bottom-right");
-            d.addListener("completed", function(ev) {
-                d.close();
+            var dlg = new ncms.mmgr.MediaFolderNewDlg(path);
+            dlg.setPosition("bottom-right");
+            dlg.addListener("completed", function(ev) {
+                dlg.close();
                 this._refreshNode(parent);
             }, this);
-            d.placeToWidget(ev.getTarget(), false);
-            d.show();
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
         }
     },
 

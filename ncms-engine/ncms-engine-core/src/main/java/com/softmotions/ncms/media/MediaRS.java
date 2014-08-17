@@ -256,14 +256,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     public Response get(@PathParam("id") Long id,
                         @Context HttpServletRequest req,
                         @QueryParam("w") Integer width,
-                        @QueryParam("h") Integer height,
-                        boolean inline) throws Exception {
-        Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
-        if (row == null) {
-            throw new NotFoundException("");
-        }
-        return _get((String) row.get("folder"), (String) row.get("name"),
-                    req, width, height, inline, true);
+                        @QueryParam("h") Integer height) throws Exception {
+        return _get(id, req, width, height, BooleanUtils.toBoolean(req.getParameter("inline")));
     }
 
 
@@ -1246,6 +1240,28 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         } else {
             return cfg.impl().getString("media.resize-default-format", "jpeg");
         }
+    }
+
+
+    public Response get(Long id,
+                        HttpServletRequest req,
+                        Integer width,
+                        Integer height,
+                        boolean inline) throws Exception {
+        return _get(id, req, width, height, inline);
+    }
+
+    private Response _get(Long id,
+                          HttpServletRequest req,
+                          Integer width,
+                          Integer height,
+                          boolean inline) throws Exception {
+        Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
+        if (row == null) {
+            throw new NotFoundException("");
+        }
+        return _get((String) row.get("folder"), (String) row.get("name"),
+                    req, width, height, inline, true);
     }
 
     private Response _get(String folder,

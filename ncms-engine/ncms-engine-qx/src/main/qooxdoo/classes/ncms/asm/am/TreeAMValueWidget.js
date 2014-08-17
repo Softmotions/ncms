@@ -321,6 +321,10 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
 
                 menu.add(new qx.ui.menu.Separator());
 
+                bt = new qx.ui.menu.Button(this.tr("Rename"));
+                bt.addListener("execute", this.__onRename, this);
+                menu.add(bt);
+
                 bt = new qx.ui.menu.Button(this.tr("Remove"));
                 bt.addListener("execute", this.__onRemove, this);
                 menu.add(bt);
@@ -331,6 +335,28 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             }
         },
 
+
+        __onRename : function(ev) {
+            var tree = this.__tree;
+            var item = tree.getSelection().getItem(0);
+            if (item == null || item === this.__tree.getModel()) {
+                return;
+            }
+            var dlg = new sm.ui.form.SimplePromptPopupDlg(
+                    {
+                        label : this.tr("Name"),
+                        initialValue : item.getName(),
+                        selectAll : true
+                    }
+            );
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.addListenerOnce("completed", function(ev) {
+                item.setName(ev.getData());
+                dlg.close();
+                this.fireEvent("modified");
+            }, this);
+            dlg.open();
+        },
 
         __onNewFolder : function(ev) {
             if (!this.__canNewFolder()) {

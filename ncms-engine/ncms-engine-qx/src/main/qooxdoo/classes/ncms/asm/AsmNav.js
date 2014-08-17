@@ -108,15 +108,15 @@ qx.Class.define("ncms.asm.AsmNav", {
             if (asm == null) {
                 return;
             }
-            var d = new ncms.asm.AsmRenameDlg(asm["id"], asm["name"]);
-            d.setPosition("bottom-right");
-            d.addListener("completed", function(ev) {
-                d.close();
+            var dlg = new ncms.asm.AsmRenameDlg(asm["id"], asm["name"]);
+            dlg.setPosition("bottom-right");
+            dlg.addListener("completed", function(ev) {
+                dlg.close();
                 qx.log.Logger.info("Rename completed");
                 this.__selector.reload();
             }, this);
-            d.placeToWidget(ev.getTarget(), false);
-            d.show();
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.show();
 
         },
 
@@ -125,15 +125,15 @@ qx.Class.define("ncms.asm.AsmNav", {
         },
 
         __onNewAssembly : function(ev) {
-            var d = new ncms.asm.AsmNewDlg();
-            d.setPosition("bottom-right");
-            d.addListener("completed", function(ev) {
-                d.close();
+            var dlg = new ncms.asm.AsmNewDlg();
+            dlg.setPosition("bottom-right");
+            dlg.addListener("completed", function(ev) {
+                dlg.close();
                 var spec = ev.getData();
                 this.__selector.setSearchBoxValue(spec["name"]);
             }, this);
-            d.placeToWidget(ev.getTarget(), false);
-            d.show();
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.show();
         }
     },
 

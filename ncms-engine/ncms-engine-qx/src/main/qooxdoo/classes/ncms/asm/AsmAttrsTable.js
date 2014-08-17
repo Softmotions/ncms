@@ -25,7 +25,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
 
     construct : function() {
         this.base(arguments);
-        this.set({allowGrowX : true, allowGrowY : false, height : 300});
+        this.set({allowGrowX : true, allowGrowY : true});
         this._reload([]);
     },
 
