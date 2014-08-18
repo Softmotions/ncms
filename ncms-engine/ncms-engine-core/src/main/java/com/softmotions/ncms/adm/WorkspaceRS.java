@@ -83,6 +83,7 @@ public class WorkspaceRS {
             put("email", user.getEmail());
             put("time", new Date());
             put("helpSite", cfg.getHelpSite());
+            properties.put("ncmsPrefix", cfg.getNcmsPrefix());
             put("properties", properties);
         }
     }

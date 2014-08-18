@@ -395,7 +395,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             if (inl == null) {
                 return false;
             }
-            return (nl > inl);
+            return (nl > inl + 1);
         },
 
         __onAddPage : function() {
@@ -426,12 +426,15 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                     node["name"] = data["linkText"];
                     node["type"] = "link";
                     node["extra"] = data["externalLink"];
+                    node["link"] = data["externalLink"];
                     node["icon"] = "link";
 
                 } else {
                     node["name"] = data["linkText"];
                     node["type"] = "page";
                     node["extra"] = data["labelPath"].join("/");
+                    node["link"] = ncms.Application.APP_STATE.getStateProperty("ncmsPrefix") +
+                            "/asm/" + sm.lang.Array.lastElement(data["guidPath"]);
                     node["icon"] = "page";
                 }
                 item.getChildren().push(qx.data.marshal.Json.createModel(node, true));
@@ -467,6 +470,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                     "name" : data["linkText"],
                     "type" : "file",
                     "extra" : data["name"],
+                    "link" : ncms.Application.APP_STATE.getStateProperty("ncmsPrefix") + "/rs/fileid/" + data["id"] + "?inline=true",
                     "icon" : "file"
                 };
                 item.getChildren().push(qx.data.marshal.Json.createModel(node, true));

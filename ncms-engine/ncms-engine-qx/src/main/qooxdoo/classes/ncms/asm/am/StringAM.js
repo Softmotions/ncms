@@ -14,6 +14,10 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
         getSupportedAttributeTypes : function() {
             return [ "string" ];
+        },
+
+        isHidden : function() {
+            return false;
         }
     },
 

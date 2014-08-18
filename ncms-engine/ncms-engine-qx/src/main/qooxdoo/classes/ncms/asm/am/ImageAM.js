@@ -16,6 +16,10 @@ qx.Class.define("ncms.asm.am.ImageAM", {
 
         getSupportedAttributeTypes : function() {
             return [ "image" ];
+        },
+
+        isHidden : function() {
+            return false;
         }
     },
 

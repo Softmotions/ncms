@@ -41,8 +41,10 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             width : 620,
             height : 400
         });
-
         qx.core.Assert.assertMap(asmSpec, "Missing 'asmSpec' constructor argument");
+
+        var amClazz = (attrSpec != null) ?
+                      ncms.asm.am.AsmAttrManagersRegistry.findEditorClassForType(attrSpec["type"]) : null;
 
         this.__attrSpec = attrSpec;
         this.__asmSpec = asmSpec;
@@ -112,15 +114,12 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-        var cmd  = this.createCommand("Esc");
+        var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
 
-        if (attrSpec != null) {
-            var clazz = ncms.asm.am.AsmAttrManagersRegistry.findEditorClassForType(attrSpec["type"]);
-            if (clazz != null) {
-                this.__setType(attrSpec["type"], clazz);
-            }
+        if (amClazz != null) {
+            this.__setType(attrSpec["type"], amClazz);
         }
     },
 
@@ -147,6 +146,9 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
                     var editor = ncms.asm.am.AsmAttrManagersRegistry.createAttrManagerInstance(id);
                     var aspec = me.__getAttributeSpec();
                     var w = editor.activateOptionsWidget(aspec, me.__asmSpec);
+                    if (w == null) {
+                        w = new qx.ui.core.Widget();
+                    }
                     w.setUserData("editor", editor);
                     return w;
                 }
@@ -168,6 +170,12 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         __setType : function(type, editorClazz) {
             var items = this.__form.getItems();
             items["type"].setValue(type);
+            var hidden = (editorClazz.isHidden && editorClazz.isHidden());
+            items["label"].setEnabled(!hidden);
+            items["required"].setEnabled(!hidden);
+            if (sm.lang.String.isEmpty(items["name"].getValue())) {
+                items["name"].setValue(type);
+            }
             this.__typeEditorStack.showWidget(editorClazz.classname);
         },
 

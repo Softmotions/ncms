@@ -14,6 +14,10 @@ qx.Class.define("ncms.asm.am.TreeAM", {
 
         getSupportedAttributeTypes : function() {
             return [ "tree" ];
+        },
+
+        isHidden : function() {
+            return false;
         }
     },
 

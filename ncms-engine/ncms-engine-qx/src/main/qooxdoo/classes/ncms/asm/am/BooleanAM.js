@@ -14,6 +14,10 @@ qx.Class.define("ncms.asm.am.BooleanAM", {
 
         getSupportedAttributeTypes : function() {
             return [ "boolean" ];
+        },
+
+        isHidden : function() {
+            return false;
         }
     },
 

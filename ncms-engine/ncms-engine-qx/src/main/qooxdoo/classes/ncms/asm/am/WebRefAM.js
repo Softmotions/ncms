@@ -14,6 +14,10 @@ qx.Class.define("ncms.asm.am.WebRefAM", {
 
         getSupportedAttributeTypes : function() {
             return [ "webref" ];
+        },
+
+        isHidden : function() {
+            return false;
         }
     },
 

@@ -14,6 +14,10 @@ qx.Class.define("ncms.asm.am.WikiAM", {
 
         getSupportedAttributeTypes : function() {
             return [ "wiki" ];
+        },
+
+        isHidden : function() {
+            return false;
         }
     },
 

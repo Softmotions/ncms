@@ -14,6 +14,10 @@ qx.Class.define("ncms.asm.am.SelectAM", {
 
         getSupportedAttributeTypes : function() {
             return [ "select" ];
+        },
+
+        isHidden : function() {
+            return false;
         }
     },
 

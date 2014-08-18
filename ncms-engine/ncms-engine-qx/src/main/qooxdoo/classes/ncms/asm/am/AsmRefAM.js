@@ -18,6 +18,10 @@ qx.Class.define("ncms.asm.am.AsmRefAM", {
 
         getSupportedAttributeTypes : function() {
             return [ "asmref" ];
+        },
+
+        isHidden : function() {
+            return false;
         }
     },
 

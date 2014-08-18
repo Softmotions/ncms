@@ -25,6 +25,8 @@ public class Tree implements Iterable<Tree> {
 
     private String icon;
 
+    private String link;
+
     @JsonProperty(required = true)
     private ArrayList<Tree> children;
 
@@ -73,6 +75,14 @@ public class Tree implements Iterable<Tree> {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public ArrayList<Tree> getChildren() {

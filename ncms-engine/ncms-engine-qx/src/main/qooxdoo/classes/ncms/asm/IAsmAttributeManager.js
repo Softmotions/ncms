@@ -31,6 +31,13 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
 //         */
 //        getSupportedAttributeTypes : function() {
 //        }
+//
+//        /**
+//         * True if this control is not itended to be use as value editor widget.
+//         */
+//        isHidden : function() {
+//          return false;
+//        }
 //    },
 
     members : {

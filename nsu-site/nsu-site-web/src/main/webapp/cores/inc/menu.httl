@@ -6,7 +6,7 @@
             <div class="slide-frame">
                 <ul>
                     #foreach(Tree c in n)
-                    <li><a href="#">${c.name}</a></li>
+                    <li><a href="${c.link}">${c.name}</a></li>
                     #end
                 </ul>
             </div>

@@ -16,6 +16,10 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
 
         getSupportedAttributeTypes : function() {
             return [ "fileref" ];
+        },
+
+        isHidden : function() {
+            return false;
         }
     },
 
