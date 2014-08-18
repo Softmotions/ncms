@@ -42,7 +42,6 @@ public class AsmMainPageAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
-        log.info("val=" + val);
         AsmOptions opts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "enabled");
         attr.setOptions(opts.toString());
