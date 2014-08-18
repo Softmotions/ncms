@@ -2,13 +2,11 @@ package com.softmotions.ncms.asm.render;
 
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.asm.Asm;
-import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.asm.CachedPage;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.web.GenericResponseWrapper;
 
 import com.google.inject.Injector;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,8 +20,6 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public class AsmRendererContextImpl extends AsmRendererContext {
-
-    private static final Logger log = LoggerFactory.getLogger(AsmRendererContextImpl.class);
 
     final Injector injector;
 
@@ -87,17 +83,21 @@ public class AsmRendererContextImpl extends AsmRendererContext {
             this.classLoader = getClass().getClassLoader();
         }
 
-        AsmDAO adao = injector.getInstance(AsmDAO.class);
-        Asm localAsm =
-                adao.selectOne("selectAsmByCriteria",
-                               ((asmRef instanceof Number) ? "id" : "name"), asmRef);
-        if (localAsm == null) {
+        PageService ps = injector.getInstance(PageService.class);
+        CachedPage cp;
+        if (asmRef instanceof Number) {
+            cp = ps.getPage(((Number) asmRef).longValue(), true);
+        } else {
+            cp = ps.getPage((String) asmRef, true);
+        }
+        Asm asm0 = (cp != null) ? cp.getAsm() : null;
+        if (asm0 == null) {
             throw new AsmResourceNotFoundException("asm: " + asmRef);
         }
         //Clone the assembly to allow
         //rendering routines be free to change assembly structure and properties
         this.asmCloneContext = new HashMap<>();
-        this.asm = localAsm.cloneDeep(this.asmCloneContext);
+        this.asm = asm0.cloneDeep(this.asmCloneContext);
     }
 
     public AsmRenderer getRenderer() {
@@ -158,11 +158,12 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return subcontext;
     }
 
-    public AsmRendererContext createSubcontext(String asmname, Writer out) throws AsmResourceNotFoundException {
-        AsmDAO adao = injector.getInstance(AsmDAO.class);
-        Asm nasm = adao.asmSelectByName(asmname);
+    public AsmRendererContext createSubcontext(String asmName, Writer out) throws AsmResourceNotFoundException {
+        PageService ps = injector.getInstance(PageService.class);
+        CachedPage cp = ps.getPage(asmName, true);
+        Asm nasm = (cp != null) ? cp.getAsm() : null;
         if (nasm == null) {
-            throw new AsmResourceNotFoundException("asm: '" + asmname + "'");
+            throw new AsmResourceNotFoundException("asm: '" + asmName + "'");
         }
         AsmRendererContextImpl nctx =
                 new AsmRendererContextImpl(cfg, injector, classLoader, renderer, loader,

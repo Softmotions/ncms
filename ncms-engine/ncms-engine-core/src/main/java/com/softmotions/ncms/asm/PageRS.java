@@ -5,10 +5,13 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.guid.RandomGUID;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.commons.num.NumberUtils;
+import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
-import com.softmotions.ncms.asm.events.PageDroppedEvent;
+import com.softmotions.ncms.asm.events.AsmCreatedEvent;
+import com.softmotions.ncms.asm.events.AsmModifiedEvent;
+import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
@@ -24,8 +27,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +63,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -64,6 +71,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
+import static com.softmotions.ncms.asm.CachedPage.PATH_TYPE;
 import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.ADD;
 import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.REMOVE;
 
@@ -73,7 +81,8 @@ import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.REMOVE;
 @SuppressWarnings("unchecked")
 @Path("adm/pages")
 @Produces("application/json")
-public class PageRS extends MBDAOSupport {
+@Singleton
+public class PageRS extends MBDAOSupport implements PageService {
 
     public static final int PAGE_STATUS_FOLDER_FLAG = 1;
 
@@ -97,6 +106,10 @@ public class PageRS extends MBDAOSupport {
 
     private final UserEnvRS userEnvRS;
 
+    private final Map<Long, CachedPage> pagesCache;
+
+    private final Map<String, CachedPage> pageGuid2Cache;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao,
@@ -106,7 +119,8 @@ public class PageRS extends MBDAOSupport {
                   AsmAttributeManagersRegistry amRegistry,
                   PageSecurityService pageSecurity,
                   NcmsEventBus ebus,
-                  UserEnvRS userEnvRS) {
+                  UserEnvRS userEnvRS,
+                  NcmsConfiguration cfg) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -116,70 +130,35 @@ public class PageRS extends MBDAOSupport {
         this.pageSecurity = pageSecurity;
         this.ebus = ebus;
         this.userEnvRS = userEnvRS;
+        this.pagesCache = new PagesLRUMap(cfg.impl().getInt("pages.lru-cache-size", 1024));
+        this.pageGuid2Cache = new HashMap<>();
+        this.ebus.register(this);
     }
 
     @GET
     @Path("/path/{id}")
     public ObjectNode selectPageLabelPath(@PathParam("id") Long id) {
+
         ObjectNode res = mapper.createObjectNode();
-        Map<String, Object> qres = selectOne("selectNavPath", "id", id);
-        if (qres == null) {
+        CachedPage cp = getPage(id, true);
+        if (cp == null) {
             throw new NotFoundException("");
         }
+
         ArrayNode idPath = res.putArray("idPath");
         ArrayNode labelPath = res.putArray("labelPath");
         ArrayNode guidPath = res.putArray("guidPath");
 
-        String cpath = (String) qres.get("nav_cached_path");
-        if (cpath == null) {
-            guidPath.add((String) qres.get("guid"));
-            labelPath.add((String) qres.get("name"));
-            idPath.add(id);
-            return res;
-        }
-        cpath = StringUtils.strip(cpath, "/");
-        if (StringUtils.isBlank(cpath)) {
-            guidPath.add((String) qres.get("guid"));
-            labelPath.add((String) qres.get("name"));
-            idPath.add(id);
-            return res;
-        }
-        String[] idsArr = cpath.split("/");
-        if (idsArr.length == 0) {
-            guidPath.add((String) qres.get("guid"));
-            labelPath.add((String) qres.get("name"));
-            idPath.add(id);
-            return res;
-        }
-        Long[] ids = new Long[idsArr.length];
-        for (int i = 0; i < ids.length; ++i) {
-            ids[i] = Long.parseLong(idsArr[i]);
-            idPath.add(ids[i]);
-        }
+        Map<PATH_TYPE, Object> navPaths = cp.fetchNavPaths();
+        Long[] idPathArr = (Long[]) navPaths.get(PATH_TYPE.ID);
+        String[] labelPathArr = (String[]) navPaths.get(PATH_TYPE.LABEL);
+        String[] guidPathArr = (String[]) navPaths.get(PATH_TYPE.GUID);
 
-        List<Map<String, Object>> rows = select("selectPageInfoIN",
-                                                "ids", ids);
-        Map<Long, Map<String, Object>> rowsMap = new HashMap<>(ids.length);
-        for (Map<String, Object> row : rows) {
-            Number eId = (Number) row.get("id");
-            if (eId == null) {
-                continue;
-            }
-            rowsMap.put(eId.longValue(), row);
+        for (int i = 0; i < idPathArr.length; ++i) {
+            idPath.add(idPathArr[i]);
+            labelPath.add(labelPathArr[i]);
+            guidPath.add(guidPathArr[i]);
         }
-        for (Long eId : ids) {
-            Map<String, Object> row = rowsMap.get(eId);
-            if (eId == null) {
-                labelPath.addNull();
-                guidPath.addNull();
-            } else {
-                labelPath.add((String) row.get("name"));
-                guidPath.add((String) row.get("guid"));
-            }
-        }
-        guidPath.add((String) qres.get("guid"));
-        labelPath.add((String) qres.get("name"));
-        idPath.add(id);
         return res;
     }
 
@@ -299,13 +278,17 @@ public class PageRS extends MBDAOSupport {
         update("updatePublishStatus",
                "id", id,
                "published", published);
+
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
     }
 
     @PUT
     @Path("/edit/{id}")
+    @Transactional
     public void savePage(@Context HttpServletRequest req,
                          @PathParam("id") Long id,
                          ObjectNode data) {
+
         Asm page = adao.asmSelectById(id);
         if (page == null) {
             throw new NotFoundException("");
@@ -339,6 +322,8 @@ public class PageRS extends MBDAOSupport {
             am.applyAttributeValue(attr, data.get(fname), req);
             update("upsertAttribute", attr);
         }
+
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
     }
 
     /**
@@ -385,6 +370,7 @@ public class PageRS extends MBDAOSupport {
                    "names", attrsToRemove);
         }
 
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return selectPageEdit(req, id);
     }
 
@@ -414,6 +400,8 @@ public class PageRS extends MBDAOSupport {
         ObjectNode res = mapper.createObjectNode();
         JsonUtils.populateObjectNode(user, res.putObject("owner"),
                                      "name", "fullName");
+
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return res;
     }
 
@@ -422,6 +410,7 @@ public class PageRS extends MBDAOSupport {
     @Transactional
     public void newPage(@Context HttpServletRequest req,
                         ObjectNode spec) {
+
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
         Long parent = spec.hasNonNull("parent") ? spec.get("parent").asLong() : null;
         String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
@@ -445,7 +434,7 @@ public class PageRS extends MBDAOSupport {
         Long id;
         do {
             guid = new RandomGUID().toString();
-            id = adao.asmSelectIdByName(name);
+            id = adao.asmSelectIdByName(guid);
         } while (id != null); //very uncommon
 
         update("mergeNewPage",
@@ -457,6 +446,9 @@ public class PageRS extends MBDAOSupport {
                "nav_parent_id", parent,
                "nav_cached_path", getPageIDsPath(parent),
                "recursive_acl", selectOne("getRecursiveAcl", "pid", parent));
+
+        id = adao.asmSelectIdByName(guid);
+        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
     }
 
     @PUT
@@ -483,6 +475,8 @@ public class PageRS extends MBDAOSupport {
                "id", id,
                "hname", name,
                "type", type);
+
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
 
     @PUT
@@ -530,6 +524,7 @@ public class PageRS extends MBDAOSupport {
                "nav_cached_path", getPageIDsPath(tgt != 0 ? tgt : null),
                "nav_parent_id", (tgt != 0) ? tgt : null);
 
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, srcPage.getId()));
     }
 
 
@@ -543,7 +538,7 @@ public class PageRS extends MBDAOSupport {
             throw new ForbiddenException("");
         }
         delete("dropPage", "id", id);
-        ebus.fireOnSuccessCommit(new PageDroppedEvent(this, id, page.getName()));
+        ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id));
     }
 
     @Path("/layer")
@@ -937,4 +932,148 @@ public class PageRS extends MBDAOSupport {
         }
         return ret;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    //                     PageService implementation                        //
+    ///////////////////////////////////////////////////////////////////////////
+
+    private final class PagesLRUMap extends LRUMap {
+
+        private PagesLRUMap(int maxSize) {
+            super(maxSize);
+        }
+
+        protected boolean removeLRU(LinkEntry entry) {
+            CachedPage cp = (CachedPage) entry.getValue();
+            if (cp.getAsm().getName() != null) {
+                synchronized (pagesCache) {
+                    pageGuid2Cache.remove(cp.getAsm().getName());
+                }
+            }
+            return true;
+        }
+    }
+
+    private final class CachedPageImpl implements CachedPage {
+
+        private final Asm asm;
+
+        public Asm getAsm() {
+            return asm;
+        }
+
+        public Map<PATH_TYPE, Object> fetchNavPaths() {
+            String cpath = asm.getNavCachedPath();
+            Map<PATH_TYPE, Object> res = new EnumMap<>(PATH_TYPE.class);
+            cpath = (cpath != null) ? StringUtils.strip(cpath, "/") : null;
+            if (StringUtils.isBlank(cpath)) {
+                res.put(PATH_TYPE.GUID, new String[]{asm.getName()});
+                res.put(PATH_TYPE.LABEL, new String[]{asm.getHname()});
+                res.put(PATH_TYPE.ID, new Long[]{asm.getId()});
+                return res;
+            }
+            @SuppressWarnings("ConstantConditions")
+            String[] idsArr = cpath.split("/");
+            String[] guidPath = new String[idsArr.length + 1];
+            String[] labelPath = new String[idsArr.length + 1];
+            Long[] idPath = new Long[idsArr.length + 1];
+            int i;
+            for (i = 0; i < idsArr.length; ++i) {
+                Long pid = Long.valueOf(idsArr[i]);
+                CachedPage cp = getPage(pid, true);
+                if (cp == null) {
+                    guidPath[i] = null;
+                    labelPath[i] = null;
+                    idPath[i] = null;
+                } else {
+                    guidPath[i] = cp.getAsm().getName();
+                    labelPath[i] = cp.getAsm().getHname();
+                    idPath[i] = cp.getAsm().getId();
+                }
+            }
+            guidPath[i] = asm.getName();
+            labelPath[i] = asm.getHname();
+            idPath[i] = asm.getId();
+
+            res.put(PATH_TYPE.GUID, guidPath);
+            res.put(PATH_TYPE.LABEL, labelPath);
+            res.put(PATH_TYPE.ID, idPath);
+
+            return res;
+        }
+
+        private CachedPageImpl(Asm asm) {
+            this.asm = asm;
+        }
+    }
+
+    @Subscribe
+    public void onAsmRemoved(AsmRemovedEvent ev) {
+        clearCachedPage(ev.getId());
+    }
+
+    @Subscribe
+    public void onAsmModified(AsmModifiedEvent ev) {
+        clearCachedPage(ev.getId());
+    }
+
+    private void clearCachedPage(Long id) {
+        synchronized (pagesCache) {
+            CachedPage p = pagesCache.remove(id);
+            if (p != null && p.getAsm().getName() != null) {
+                pageGuid2Cache.remove(p.getAsm().getName());
+            }
+        }
+    }
+
+    public CachedPage getPage(Long id, boolean create) {
+        CachedPage cp;
+        synchronized (pagesCache) {
+            cp = pagesCache.get(id);
+        }
+        if (cp == null) {
+            if (!create) {
+                return null;
+            }
+            Asm asm = adao.asmSelectById(id);
+            if (asm == null) {
+                return null;
+            }
+            cp = new CachedPageImpl(asm);
+        }
+        synchronized (pagesCache) {
+            CachedPage cp2 = pagesCache.get(id);
+            if (cp2 == null) {
+                if (cp.getAsm().getName() != null) {
+                    pageGuid2Cache.put(cp.getAsm().getName(), cp);
+                }
+                pagesCache.put(id, cp);
+            } else {
+                cp = cp2;
+            }
+        }
+        return cp;
+    }
+
+    public CachedPage getPage(String guid, boolean create) {
+        CachedPage cp;
+        synchronized (pagesCache) {
+            cp = pageGuid2Cache.get(guid);
+        }
+        if (cp == null) {
+            if (create) {
+                Long id = adao.asmSelectIdByName(guid);
+                if (id != null) {
+                    cp = getPage(id, true);
+                }
+            }
+        }
+        return cp;
+    }
+
+    public CachedPage getIndexPage(HttpServletRequest req) {
+        //todo
+        return null;
+    }
+
 }

@@ -66,4 +66,14 @@
 
     </changeSet>
 
+    <changeSet id="7" author="adamansky@gmail.com">
+
+        <addColumn tableName="ASMS">
+            <column name="NAV_ALIAS"
+                    type="VARCHAR(255)">
+            </column>
+        </addColumn>
+
+    </changeSet>
+
 </databaseChangeLog>

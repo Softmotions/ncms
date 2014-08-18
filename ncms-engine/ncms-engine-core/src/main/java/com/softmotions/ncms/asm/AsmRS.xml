@@ -163,6 +163,12 @@
         WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
 
+    <select id="selectAsmIdByOrdinal"
+            parameterType="long"
+            resultType="long">
+        SELECT asm_id FROM asm_attrs WHERE ordinal = #{ordinal}
+    </select>
+
 
     <select id="selectAsmType" resultType="string" parameterType="long">
         SELECT

@@ -19,7 +19,7 @@ import com.softmotions.commons.io.watcher.FSWatcherModifyEvent;
 import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.ncms.asm.events.PageDroppedEvent;
+import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.fts.FTSUtils;
 import com.softmotions.ncms.io.MetadataDetector;
@@ -1919,7 +1919,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
     @Subscribe
-    public void pageDropped(PageDroppedEvent ev) {
+    public void pageDropped(AsmRemovedEvent ev) {
         String path = getPageLocalFolderPath(ev.getId());
         try (final ResourceLock l = new ResourceLock(path, true)) {
             File pdir = new File(basedir, path);

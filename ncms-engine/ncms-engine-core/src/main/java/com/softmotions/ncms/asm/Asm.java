@@ -84,6 +84,10 @@ public class Asm implements Serializable {
 
     Long navParentId;
 
+    String navAlias;
+
+    String navCachedPath;
+
 
     public Asm() {
     }
@@ -251,6 +255,22 @@ public class Asm implements Serializable {
 
     public void setNavParentId(Long navParentId) {
         this.navParentId = navParentId;
+    }
+
+    public String getNavAlias() {
+        return navAlias;
+    }
+
+    public void setNavAlias(String navAlias) {
+        this.navAlias = navAlias;
+    }
+
+    public String getNavCachedPath() {
+        return navCachedPath;
+    }
+
+    public void setNavCachedPath(String navCachedPath) {
+        this.navCachedPath = navCachedPath;
     }
 
     public Iterator<Asm> getAllParentsIterator() {

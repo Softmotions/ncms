@@ -171,7 +171,7 @@
     </delete>
 
     <update id="movePage" parameterType="map">
-        UPDATE ASMS
+        UPDATE asms
         SET nav_parent_id   = #{nav_parent_id,jdbcType=BIGINT},
             nav_cached_path = #{nav_cached_path}
         WHERE id = #{id}

@@ -4,7 +4,11 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.events.AsmCreatedEvent;
+import com.softmotions.ncms.asm.events.AsmModifiedEvent;
+import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.asm.render.AsmController;
+import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
@@ -60,17 +64,21 @@ public class AsmRS extends MBDAOSupport {
 
     final AsmAttributeManagersRegistry amRegistry;
 
+    final NcmsEventBus ebus;
+
 
     @Inject
     public AsmRS(SqlSession sess,
                  AsmDAO adao, ObjectMapper mapper,
                  AsmAttributeManagersRegistry amRegistry,
-                 NcmsMessages messages) {
+                 NcmsMessages messages,
+                 NcmsEventBus ebus) {
         super(AsmRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
         this.amRegistry = amRegistry;
+        this.ebus = ebus;
     }
 
     /**
@@ -78,6 +86,7 @@ public class AsmRS extends MBDAOSupport {
      */
     @PUT
     @Path("/new/{name}")
+    @Transactional
     public Asm newasm(@Context HttpServletRequest req,
                       @PathParam("name") String name) {
         name = name.trim();
@@ -91,11 +100,13 @@ public class AsmRS extends MBDAOSupport {
             asm = new Asm(name);
             adao.asmInsert(asm);
         }
+        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, asm.getId()));
         return asm;
     }
 
     @PUT
     @Path("/rename/{id}/{name}")
+    @Transactional
     public void rename(@Context HttpServletRequest req,
                        @PathParam("id") Long id,
                        @PathParam("name") String name) {
@@ -110,6 +121,7 @@ public class AsmRS extends MBDAOSupport {
                 adao.asmRename(id, name);
             }
         }
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
 
     @DELETE
@@ -117,10 +129,12 @@ public class AsmRS extends MBDAOSupport {
     @Transactional
     public void delete(@PathParam("id") Long id) {
         adao.asmRemove(id);
+        ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id));
     }
 
     @PUT
     @Path("/{id}/core")
+    @Transactional
     public ObjectNode corePut(@PathParam("id") Long id, ObjectNode coreSpec) {
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
@@ -144,11 +158,14 @@ public class AsmRS extends MBDAOSupport {
                     "coreId", core.getId());
         res.putPOJO("core", core);
         res.putPOJO("effectiveCore", core);
+
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return res;
     }
 
     @DELETE
     @Path("/{id}/core")
+    @Transactional
     public ObjectNode coreDelete(@PathParam("id") Long id) {
         ObjectNode res = mapper.createObjectNode();
         adao.update("asmUpdateCore",
@@ -157,9 +174,10 @@ public class AsmRS extends MBDAOSupport {
         Asm asm = get(id);
         res.putPOJO("core", asm.getCore());
         res.putPOJO("effectiveCore", asm.getEffectiveCore());
+
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return res;
     }
-
 
     @GET
     @Path("/{id}")
@@ -172,7 +190,6 @@ public class AsmRS extends MBDAOSupport {
         }
         return asm;
     }
-
 
     @GET
     @Path("/basic/{name}")
@@ -211,6 +228,7 @@ public class AsmRS extends MBDAOSupport {
             adao.asmRemoveParent(id, pnode.get("id").asLong());
         }
         asm = adao.asmSelectById(id); //refresh
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return asm.getParentRefs();
     }
 
@@ -254,17 +272,17 @@ public class AsmRS extends MBDAOSupport {
             adao.asmSetParent(asm, np);
         }
         asm = adao.asmSelectById(id); //refresh
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return asm.getParentRefs();
     }
-
 
     @PUT
     @Path("/{id}/props")
     @Transactional
-    public void updateAssemblyProps(@PathParam("id") Long asmId,
+    public void updateAssemblyProps(@PathParam("id") Long id,
                                     ObjectNode props) {
         TinyParamMap args = new TinyParamMap();
-        args.param("id", asmId);
+        args.param("id", id);
         if (props.hasNonNull("description")) {
             args.param("description", props.get("description").asText());
         }
@@ -286,7 +304,7 @@ public class AsmRS extends MBDAOSupport {
                         //todo report error to user
                         log.warn("Assembly controller does not implement: " + AsmController.class.getName());
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException ignored) {
                     //todo report error to user
                     log.warn("Failed to find assembly controller class: " + controller);
                     controller = "";
@@ -297,6 +315,7 @@ public class AsmRS extends MBDAOSupport {
             args.param("controller", controller);
         }
         update("updateAssemblyProps", args);
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
 
 
@@ -321,11 +340,14 @@ public class AsmRS extends MBDAOSupport {
 
     @DELETE
     @Path("/{id}/attribute/{name}")
-    public void rmAsmAttribute(@PathParam("id") Long asmId,
+    @Transactional
+    public void rmAsmAttribute(@PathParam("id") Long id,
                                @PathParam("name") String name) {
         delete("deleteAttribute",
                "name", name,
-               "asm_id", asmId);
+               "asm_id", id);
+
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
 
 
@@ -343,6 +365,11 @@ public class AsmRS extends MBDAOSupport {
         update("exchangeAttributesOrdinal",
                "ordinal1", ordinal1,
                "ordinal2", ordinal2);
+
+        Long id = selectOne("selectAsmIdByOrdinal", ordinal1);
+        if (id != null) {
+            ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        }
     }
 
 
@@ -367,7 +394,7 @@ public class AsmRS extends MBDAOSupport {
     @Path("/{id}/attributes")
     @Consumes("application/json")
     @Transactional
-    public void putAsmAttributes(@PathParam("id") Long asmId,
+    public void putAsmAttributes(@PathParam("id") Long id,
                                  @Context HttpServletRequest req,
                                  ObjectNode spec) {
 
@@ -376,11 +403,11 @@ public class AsmRS extends MBDAOSupport {
         String name = spec.get("name").asText();
 
         if (oldName != null && !oldName.equals(name)) { //attribute renamed
-            renameAttribute(asmId, oldName, name);
+            renameAttribute(id, oldName, name);
         }
 
         AsmAttribute attr = selectOne("selectAttrByName",
-                                      "asm_id", asmId,
+                                      "asm_id", id,
                                       "name", name);
         if (attr == null) {
             attr = new AsmAttribute();
@@ -410,8 +437,10 @@ public class AsmRS extends MBDAOSupport {
         } else {
             log.warn("Missing atribute manager for given type: '" + attr.getType() + '\'');
         }
-        attr.asmId = asmId;
+        attr.asmId = id;
         update("upsertAttribute", attr);
+
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
 
     private void renameAttribute(long asmId, String name, String newName) {
@@ -507,7 +536,6 @@ public class AsmRS extends MBDAOSupport {
             cq.orderBy("asm.type").asc();
             cq.orderBy("asm.name").asc();
         }
-
 
         return cq;
     }

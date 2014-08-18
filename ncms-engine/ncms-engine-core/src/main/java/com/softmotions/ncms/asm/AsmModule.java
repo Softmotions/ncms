@@ -70,7 +70,7 @@ public class AsmModule extends AbstractModule {
 
         bind(AsmRS.class).in(Singleton.class);
         bind(PageRS.class).in(Singleton.class);
-
+        bind(PageService.class).to(PageRS.class);
         bind(PageSecurityService.class).in(Singleton.class);
     }
 

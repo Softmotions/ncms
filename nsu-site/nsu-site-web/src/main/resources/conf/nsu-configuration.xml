@@ -118,5 +118,8 @@
         </interwiki-links>
     </mediawiki>
 
+    <pages>
+        <lru-cache-size>4096</lru-cache-size>
+    </pages>
 
 </configuration>
