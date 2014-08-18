@@ -3,16 +3,17 @@ package com.softmotions.ncms.asm;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
-import com.softmotions.ncms.asm.am.AsmBooleanAttributeManager;
-import com.softmotions.ncms.asm.am.AsmBreadCrumbsAttributeManager;
-import com.softmotions.ncms.asm.am.AsmFileRefAttributeManager;
-import com.softmotions.ncms.asm.am.AsmImageAttributeManager;
-import com.softmotions.ncms.asm.am.AsmRefAttributeManager;
-import com.softmotions.ncms.asm.am.AsmSelectAttributeManager;
-import com.softmotions.ncms.asm.am.AsmStringAttributeManager;
-import com.softmotions.ncms.asm.am.AsmTreeAttributeManager;
-import com.softmotions.ncms.asm.am.AsmWebRefAttributeManager;
-import com.softmotions.ncms.asm.am.AsmWikiAttributeMananger;
+import com.softmotions.ncms.asm.am.AsmBooleanAM;
+import com.softmotions.ncms.asm.am.AsmBreadCrumbsAM;
+import com.softmotions.ncms.asm.am.AsmFileRefAM;
+import com.softmotions.ncms.asm.am.AsmImageAM;
+import com.softmotions.ncms.asm.am.AsmMainPageAM;
+import com.softmotions.ncms.asm.am.AsmRefAM;
+import com.softmotions.ncms.asm.am.AsmSelectAM;
+import com.softmotions.ncms.asm.am.AsmStringAM;
+import com.softmotions.ncms.asm.am.AsmTreeAM;
+import com.softmotions.ncms.asm.am.AsmWebRefAM;
+import com.softmotions.ncms.asm.am.AsmWikiAM;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
@@ -51,16 +52,17 @@ public class AsmModule extends AbstractModule {
 
         Multibinder<AsmAttributeManager> attrBinder =
                 Multibinder.newSetBinder(binder(), AsmAttributeManager.class);
-        attrBinder.addBinding().to(AsmStringAttributeManager.class);
-        attrBinder.addBinding().to(AsmRefAttributeManager.class);
-        attrBinder.addBinding().to(AsmWebRefAttributeManager.class);
-        attrBinder.addBinding().to(AsmSelectAttributeManager.class);
-        attrBinder.addBinding().to(AsmBooleanAttributeManager.class);
-        attrBinder.addBinding().to(AsmTreeAttributeManager.class);
-        attrBinder.addBinding().to(AsmWikiAttributeMananger.class);
-        attrBinder.addBinding().to(AsmImageAttributeManager.class);
-        attrBinder.addBinding().to(AsmFileRefAttributeManager.class);
-        attrBinder.addBinding().to(AsmBreadCrumbsAttributeManager.class);
+        attrBinder.addBinding().to(AsmStringAM.class);
+        attrBinder.addBinding().to(AsmRefAM.class);
+        attrBinder.addBinding().to(AsmWebRefAM.class);
+        attrBinder.addBinding().to(AsmSelectAM.class);
+        attrBinder.addBinding().to(AsmBooleanAM.class);
+        attrBinder.addBinding().to(AsmTreeAM.class);
+        attrBinder.addBinding().to(AsmWikiAM.class);
+        attrBinder.addBinding().to(AsmImageAM.class);
+        attrBinder.addBinding().to(AsmFileRefAM.class);
+        attrBinder.addBinding().to(AsmBreadCrumbsAM.class);
+        attrBinder.addBinding().to(AsmMainPageAM.class);
 
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);

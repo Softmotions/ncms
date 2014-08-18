@@ -29,16 +29,16 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-public class AsmTreeAttributeManager implements AsmAttributeManager {
+public class AsmTreeAM implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmTreeAttributeManager.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmTreeAM.class);
 
     private static final String[] TYPES = new String[]{"tree"};
 
     private final ObjectMapper mapper;
 
     @Inject
-    public AsmTreeAttributeManager(ObjectMapper mapper) {
+    public AsmTreeAM(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -82,7 +82,6 @@ public class AsmTreeAttributeManager implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
-        log.info("VAL=" + val);
         attr.setEffectiveValue(val != null ? val.toString() : null);
         return attr;
     }

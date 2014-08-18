@@ -87,7 +87,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         if (attr == null) {
             log.warn("Attribute: '" + attributeName +
                      "' not found in assembly: '" + asm.getName() + '\'');
-            return "";
+            return null;
         }
         String type = attr.getType();
         if (type == null) {

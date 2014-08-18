@@ -35,10 +35,5 @@ qx.Class.define("ncms.asm.am.BreadCrumbsAM", {
         valueAsJSON : function() {
             return {}
         }
-    },
-
-
-    destruct : function() {
-        //this._disposeObjects("__field_name");                                
     }
 });

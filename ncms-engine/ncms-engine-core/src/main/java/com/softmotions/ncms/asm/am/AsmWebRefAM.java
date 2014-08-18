@@ -50,9 +50,9 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 @Singleton
-public class AsmWebRefAttributeManager implements AsmAttributeManager {
+public class AsmWebRefAM implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmWebRefAttributeManager.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmWebRefAM.class);
 
     public static final String[] TYPES = new String[]{"webref"};
 

@@ -33,14 +33,14 @@ import java.util.Set;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-public class AsmSelectAttributeManager implements AsmAttributeManager {
+public class AsmSelectAM implements AsmAttributeManager {
 
     public static final String[] TYPES = new String[]{"select"};
 
     private final ObjectMapper mapper;
 
     @Inject
-    public AsmSelectAttributeManager(ObjectMapper mapper) {
+    public AsmSelectAM(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 

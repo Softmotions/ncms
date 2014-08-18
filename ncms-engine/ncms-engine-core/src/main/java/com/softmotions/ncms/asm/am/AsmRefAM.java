@@ -8,6 +8,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +21,17 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmRefAttributeManager implements AsmAttributeManager {
+@Singleton
+public class AsmRefAM implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmRefAttributeManager.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmRefAM.class);
 
     public static final String[] TYPES = new String[]{"asmref"};
 
     final AsmDAO adao;
 
     @Inject
-    public AsmRefAttributeManager(AsmDAO adao) {
+    public AsmRefAM(AsmDAO adao) {
         this.adao = adao;
     }
 

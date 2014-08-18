@@ -18,7 +18,7 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-public class AsmStringAttributeManager implements AsmAttributeManager {
+public class AsmStringAM implements AsmAttributeManager {
 
     public static final String[] TYPES = new String[]{"*", "string"};
 

@@ -16,8 +16,7 @@ public class HttlAsmMethods {
     }
 
     public static Asm page() {
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return ctx.getAsm();
+        return AsmRendererContext.getSafe().getAsm();
     }
 
     public static Object asm(String val) {

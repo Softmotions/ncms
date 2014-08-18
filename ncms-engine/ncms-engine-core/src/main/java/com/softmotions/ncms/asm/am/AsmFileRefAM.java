@@ -27,16 +27,16 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmFileRefAttributeManager implements AsmAttributeManager {
+public class AsmFileRefAM implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmFileRefAttributeManager.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmFileRefAM.class);
 
     public static final String[] TYPES = new String[]{"fileref"};
 
     private MediaReader reader;
 
     @Inject
-    public AsmFileRefAttributeManager(MediaReader reader) {
+    public AsmFileRefAM(MediaReader reader) {
         this.reader = reader;
     }
 

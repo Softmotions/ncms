@@ -1,22 +1,33 @@
 package com.softmotions.ncms.asm.am;
 
+import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
-import com.softmotions.ncms.mhttl.Tree;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
+ * Main(index) page marker template attribute.
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmBreadCrumbsAttributeManager implements AsmAttributeManager {
+@Singleton
+public class AsmMainPageAM implements AsmAttributeManager {
 
-    public static final String[] TYPES = new String[]{"breadcrumbs"};
+    private static final Logger log = LoggerFactory.getLogger(AsmMainPageAM.class);
+
+    public static final String[] TYPES = new String[]{"mainpage"};
 
     public String[] getSupportedAttributeTypes() {
         return TYPES;
@@ -27,11 +38,14 @@ public class AsmBreadCrumbsAttributeManager implements AsmAttributeManager {
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
-        Tree bctree = new Tree();
-        return bctree;
+        return null;
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+        log.info("val=" + val);
+        AsmOptions opts = new AsmOptions();
+        JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "enabled");
+        attr.setOptions(opts.toString());
         return attr;
     }
 

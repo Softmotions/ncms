@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -28,9 +29,10 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmImageAttributeManager implements AsmAttributeManager {
+@Singleton
+public class AsmImageAM implements AsmAttributeManager {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmImageAttributeManager.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmImageAM.class);
 
     public static final String[] TYPES = new String[]{"image"};
 
@@ -39,7 +41,7 @@ public class AsmImageAttributeManager implements AsmAttributeManager {
     final ObjectMapper mapper;
 
     @Inject
-    public AsmImageAttributeManager(MediaRepository repository, ObjectMapper mapper) {
+    public AsmImageAM(MediaRepository repository, ObjectMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
