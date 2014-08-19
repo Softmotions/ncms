@@ -1027,14 +1027,18 @@ public class PageRS extends MBDAOSupport implements PageService {
     public void onAsmRemoved(AsmRemovedEvent ev) {
         Long pid = ev.getId();
         clearCachedPage(pid);
+        boolean isIndex = false;
         synchronized (lang2IndexPages) {
             String[] lngs = lang2IndexPages.keySet().toArray(new String[lang2IndexPages.size()]);
             for (final String l : lngs) {
-                Long id = lang2IndexPages.get(l);
-                if (pid.equals(id)) {
-                    lang2IndexPages.remove(l);
+                if (pid.equals(lang2IndexPages.get(l))) {
+                    isIndex = true;
+                    break;
                 }
             }
+        }
+        if (isIndex) {
+            reloadIndexPages();
         }
     }
 
@@ -1165,6 +1169,9 @@ public class PageRS extends MBDAOSupport implements PageService {
                         lang2IndexPages.put("*", lang2IndexPages.get(dpl));
                     }
                 }
+            }
+            if (lang2IndexPages.isEmpty()) {
+                log.warn("No main pages found!");
             }
         }
     }

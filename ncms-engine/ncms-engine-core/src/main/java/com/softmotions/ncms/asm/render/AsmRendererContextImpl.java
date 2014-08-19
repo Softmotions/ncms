@@ -174,6 +174,20 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return nctx;
     }
 
+    public AsmRendererContext createSubcontext(Asm nasm) throws AsmResourceNotFoundException {
+        if (nasm == null) {
+            throw new IllegalArgumentException("asm cannot be null");
+        }
+        AsmRendererContextImpl nctx =
+                new AsmRendererContextImpl(cfg, injector, classLoader, renderer, loader,
+                                           req, resp,
+                                           nasm.cloneDeep(asmCloneContext));
+        nctx.asmCloneContext = asmCloneContext;
+        nctx.putAll(this);
+        return nctx;
+    }
+
+
     public ClassLoader getClassLoader() {
         return classLoader;
     }

@@ -113,6 +113,8 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     public abstract AsmRendererContext createSubcontext(String asmname, Writer out) throws AsmResourceNotFoundException;
 
+    public abstract AsmRendererContext createSubcontext(Asm asm) throws AsmResourceNotFoundException;
+
     /**
      * Guice injector.
      */

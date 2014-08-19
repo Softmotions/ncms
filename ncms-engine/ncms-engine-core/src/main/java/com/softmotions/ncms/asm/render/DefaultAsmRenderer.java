@@ -92,9 +92,10 @@ public class DefaultAsmRenderer implements AsmRenderer {
         AsmAttribute attr = asm.getEffectiveAttribute(attributeName);
         if (attr == null) {
             CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest());
-            //todo use index page attributes!
-            log.info("IP=" + indexPage);
-
+            if (indexPage != null && !indexPage.getAsm().equals(asm)) {
+                ctx = ctx.createSubcontext(indexPage.getAsm());
+                return renderAsmAttribute(ctx, attributeName, options);
+            }
             log.warn("Attribute: '" + attributeName +
                      "' not found in assembly: '" + asm.getName() + '\'');
             return null;
