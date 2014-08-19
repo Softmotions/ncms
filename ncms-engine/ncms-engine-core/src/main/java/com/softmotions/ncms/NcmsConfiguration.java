@@ -147,6 +147,13 @@ public class NcmsConfiguration extends WBConfiguration {
         return path;
     }
 
+    public String getAsmLink(String guid) {
+        return getServletContext().getContextPath() + getNcmsPrefix() + "/asm/" + guid;
+    }
+
+    public String getAsmLink(Long id) {
+        return getServletContext().getContextPath() + getNcmsPrefix() + "/asm/" + id;
+    }
 
     @Dispose(order = 1)
     public void dispose() {

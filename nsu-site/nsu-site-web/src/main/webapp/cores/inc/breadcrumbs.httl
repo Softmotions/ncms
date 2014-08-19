@@ -1,0 +1,13 @@
+<div class="breadcrumbs-holder">
+    <a href="#" class="pdf">pdf</a>
+    <ul class="breadcrumbs">
+        #set(Tree breadcrumbs = asm("breadcrumbs"))
+        #foreach(Tree b in breadcrumbs)
+            #if(b.link == null)
+            <li>${b.name}</li>
+            #else
+            <li><a href="${b.link}">${b.name}</a></li>
+            #end
+        #end
+    </ul>
+</div>

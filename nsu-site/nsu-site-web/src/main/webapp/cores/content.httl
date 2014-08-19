@@ -11,18 +11,8 @@
         </header>
 
         <div id="main">
-            <div class="breadcrumbs-holder">
-                <a href="#" class="pdf">pdf</a>
-                <ul class="breadcrumbs">
-                    <li><a href="#">Главная</a></li>
-                    <li><a href="#">Студентам</a></li>
-                    <li>Расписание занятий</li>
-                </ul>
-            </div>
-
+            ${include("inc/breadcrumbs.httl")}
             $!{asm("content")}
-
-
             <div class="share-holder">
                 <span class="share">Поделиться:</span>
                 <a href="#">

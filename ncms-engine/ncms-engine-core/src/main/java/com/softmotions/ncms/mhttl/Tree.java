@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.apache.commons.collections.IteratorUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -13,7 +14,7 @@ import java.util.Iterator;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class Tree implements Iterable<Tree> {
+public class Tree implements Iterable<Tree>, Serializable {
 
     private Long id;
 
@@ -105,5 +106,18 @@ public class Tree implements Iterable<Tree> {
 
     public boolean isHasChildren() {
         return (children != null && !children.isEmpty());
+    }
+
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Tree{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", type='").append(type).append('\'');
+        sb.append(", extra='").append(extra).append('\'');
+        sb.append(", icon='").append(icon).append('\'');
+        sb.append(", link='").append(link).append('\'');
+        sb.append(", children=").append(children);
+        sb.append('}');
+        return sb.toString();
     }
 }

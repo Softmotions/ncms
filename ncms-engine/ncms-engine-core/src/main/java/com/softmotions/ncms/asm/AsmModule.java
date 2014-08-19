@@ -14,6 +14,7 @@ import com.softmotions.ncms.asm.am.AsmStringAM;
 import com.softmotions.ncms.asm.am.AsmTreeAM;
 import com.softmotions.ncms.asm.am.AsmWebRefAM;
 import com.softmotions.ncms.asm.am.AsmWikiAM;
+import com.softmotions.ncms.asm.am.DefaultAsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
@@ -48,7 +49,7 @@ public class AsmModule extends AbstractModule {
     protected void configure() {
         bind(AsmDAO.class);
         bind(AsmRenderer.class).to(DefaultAsmRenderer.class);
-        bind(AsmAttributeManagersRegistry.class).in(Singleton.class);
+        bind(AsmAttributeManagersRegistry.class).to(DefaultAsmAttributeManagersRegistry.class).in(Singleton.class);
 
         Multibinder<AsmAttributeManager> attrBinder =
                 Multibinder.newSetBinder(binder(), AsmAttributeManager.class);
