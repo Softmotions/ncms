@@ -3,6 +3,8 @@ package com.softmotions.ncms.asm.render;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
+import com.softmotions.ncms.asm.CachedPage;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 
@@ -31,16 +33,20 @@ public class DefaultAsmRenderer implements AsmRenderer {
     /**
      * Set of template engines.
      */
-    final Set<AsmTemplateEngineAdapter> templateEgines;
+    private final Set<AsmTemplateEngineAdapter> templateEgines;
 
-    final AsmAttributeManagersRegistry amRegistry;
+    private final AsmAttributeManagersRegistry amRegistry;
+
+    private final PageService pageService;
 
 
     @Inject
     public DefaultAsmRenderer(Set<AsmTemplateEngineAdapter> templateEgines,
-                              AsmAttributeManagersRegistry amRegistry) {
+                              AsmAttributeManagersRegistry amRegistry,
+                              PageService pageService) {
         this.templateEgines = templateEgines;
         this.amRegistry = amRegistry;
+        this.pageService = pageService;
     }
 
     public void renderTemplate(String location, AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException {
@@ -85,6 +91,10 @@ public class DefaultAsmRenderer implements AsmRenderer {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attributeName);
         if (attr == null) {
+            CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest());
+            //todo use index page attributes!
+            log.info("IP=" + indexPage);
+
             log.warn("Attribute: '" + attributeName +
                      "' not found in assembly: '" + asm.getName() + '\'');
             return null;

@@ -17,5 +17,5 @@ public interface CachedPage {
 
     Asm getAsm();
 
-    Map<PATH_TYPE, Object> fetchNavPaths();
+    <T> Map<PATH_TYPE, T> fetchNavPaths();
 }

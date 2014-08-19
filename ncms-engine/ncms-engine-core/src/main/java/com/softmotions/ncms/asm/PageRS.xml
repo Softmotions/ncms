@@ -360,5 +360,14 @@
         </if>
     </select>
 
+    <select id="selectAttrOptions" resultType="map" parameterType="map">
+        SELECT
+            a.id         AS "id",
+            attr.options AS "options"
+        FROM asm_attrs attr
+            INNER JOIN asms AS a ON attr.asm_id = a.id
+        WHERE attr.type = #{attrType}
+              AND a.type LIKE #{pageType}
+    </select>
 
 </mapper>

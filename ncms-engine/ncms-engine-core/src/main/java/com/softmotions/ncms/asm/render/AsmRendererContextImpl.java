@@ -86,9 +86,9 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         PageService ps = injector.getInstance(PageService.class);
         CachedPage cp;
         if (asmRef instanceof Number) {
-            cp = ps.getPage(((Number) asmRef).longValue(), true);
+            cp = ps.getCachedPage(((Number) asmRef).longValue(), true);
         } else {
-            cp = ps.getPage((String) asmRef, true);
+            cp = ps.getCachedPage((String) asmRef, true);
         }
         Asm asm0 = (cp != null) ? cp.getAsm() : null;
         if (asm0 == null) {
@@ -160,7 +160,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     public AsmRendererContext createSubcontext(String asmName, Writer out) throws AsmResourceNotFoundException {
         PageService ps = injector.getInstance(PageService.class);
-        CachedPage cp = ps.getPage(asmName, true);
+        CachedPage cp = ps.getCachedPage(asmName, true);
         Asm nasm = (cp != null) ? cp.getAsm() : null;
         if (nasm == null) {
             throw new AsmResourceNotFoundException("asm: '" + asmName + "'");

@@ -11,7 +11,9 @@ public interface PageService {
 
     CachedPage getIndexPage(HttpServletRequest req);
 
-    CachedPage getPage(Long id, boolean create);
+    void reloadIndexPages();
 
-    CachedPage getPage(String guid, boolean create);
+    CachedPage getCachedPage(Long id, boolean create);
+
+    CachedPage getCachedPage(String guid, boolean create);
 }

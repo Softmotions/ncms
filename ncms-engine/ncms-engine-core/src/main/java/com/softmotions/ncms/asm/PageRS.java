@@ -1,6 +1,9 @@
 package com.softmotions.ncms.asm;
 
+import ninja.lifecycle.Start;
+import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.CollectionUtils;
+import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.guid.RandomGUID;
 import com.softmotions.commons.json.JsonUtils;
@@ -32,7 +35,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ResultContext;
@@ -67,6 +69,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
@@ -110,6 +113,10 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final Map<String, CachedPage> pageGuid2Cache;
 
+    private final Map<String, Long> lang2IndexPages;
+
+    private final NcmsConfiguration cfg;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao,
@@ -132,6 +139,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.userEnvRS = userEnvRS;
         this.pagesCache = new PagesLRUMap(cfg.impl().getInt("pages.lru-cache-size", 1024));
         this.pageGuid2Cache = new HashMap<>();
+        this.lang2IndexPages = new HashMap<>();
+        this.cfg = cfg;
         this.ebus.register(this);
     }
 
@@ -140,7 +149,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     public ObjectNode selectPageLabelPath(@PathParam("id") Long id) {
 
         ObjectNode res = mapper.createObjectNode();
-        CachedPage cp = getPage(id, true);
+        CachedPage cp = getCachedPage(id, true);
         if (cp == null) {
             throw new NotFoundException("");
         }
@@ -416,8 +425,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
 
         if (name == null ||
-            !com.softmotions.commons.cont.ArrayUtils
-                    .isAnyOf(type, "page.folder", "page", "news.page")) {
+            !ArrayUtils.isAnyOf(type, "page.folder", "page", "news.page")) {
             throw new BadRequestException();
         }
         if (parent == null && !req.isUserInRole("admin.structure")) {
@@ -595,7 +603,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                                 if (includePath) {
                                     String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
                                     gen.writeStringField("path",
-                                                         (path.length > 0 ? "/" + com.softmotions.commons.cont.ArrayUtils.stringJoin(path, "/") : "") +
+                                                         (path.length > 0 ? "/" + ArrayUtils.stringJoin(path, "/") : "") +
                                                          "/" + row.get("hname"));
                                 }
                                 gen.writeEndObject();
@@ -731,7 +739,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                                 if (includePath) {
                                     String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
                                     gen.writeStringField("path",
-                                                         (path.length > 0 ? "/" + com.softmotions.commons.cont.ArrayUtils.stringJoin(path, "/") : "") +
+                                                         (path.length > 0 ? "/" + ArrayUtils.stringJoin(path, "/") : "") +
                                                          "/" + row.get("hname"));
                                 }
                                 gen.writeBooleanField("published", published);
@@ -827,12 +835,12 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private String[] convertPageIDPath2LabelPath(String idpath) {
         if (idpath == null || "/".equals(idpath)) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
         }
         StringTokenizer st = new StringTokenizer(idpath, "/");
         int ct = st.countTokens();
         if (ct == 0) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
         }
         Long[] ids = new Long[ct];
         for (int i = 0; i < ids.length; ++i) {
@@ -940,11 +948,19 @@ public class PageRS extends MBDAOSupport implements PageService {
     private final class PagesLRUMap extends LRUMap {
 
         private PagesLRUMap(int maxSize) {
-            super(maxSize);
+            super(maxSize, true);
         }
 
         protected boolean removeLRU(LinkEntry entry) {
             CachedPage cp = (CachedPage) entry.getValue();
+            Long pid = cp.getAsm().getId();
+            synchronized (lang2IndexPages) {
+                for (Long ipid : lang2IndexPages.values()) {
+                    if (ipid.equals(pid)) {  //this is the index page, keep it in the cache!
+                        return false;
+                    }
+                }
+            }
             if (cp.getAsm().getName() != null) {
                 synchronized (pagesCache) {
                     pageGuid2Cache.remove(cp.getAsm().getName());
@@ -980,7 +996,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             int i;
             for (i = 0; i < idsArr.length; ++i) {
                 Long pid = Long.valueOf(idsArr[i]);
-                CachedPage cp = getPage(pid, true);
+                CachedPage cp = getCachedPage(pid, true);
                 if (cp == null) {
                     guidPath[i] = null;
                     labelPath[i] = null;
@@ -1009,7 +1025,17 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @Subscribe
     public void onAsmRemoved(AsmRemovedEvent ev) {
-        clearCachedPage(ev.getId());
+        Long pid = ev.getId();
+        clearCachedPage(pid);
+        synchronized (lang2IndexPages) {
+            String[] lngs = lang2IndexPages.keySet().toArray(new String[lang2IndexPages.size()]);
+            for (final String l : lngs) {
+                Long id = lang2IndexPages.get(l);
+                if (pid.equals(id)) {
+                    lang2IndexPages.remove(l);
+                }
+            }
+        }
     }
 
     @Subscribe
@@ -1026,7 +1052,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
-    public CachedPage getPage(Long id, boolean create) {
+    public CachedPage getCachedPage(Long id, boolean create) {
         CachedPage cp;
         synchronized (pagesCache) {
             cp = pagesCache.get(id);
@@ -1055,7 +1081,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         return cp;
     }
 
-    public CachedPage getPage(String guid, boolean create) {
+    public CachedPage getCachedPage(String guid, boolean create) {
         CachedPage cp;
         synchronized (pagesCache) {
             cp = pageGuid2Cache.get(guid);
@@ -1064,7 +1090,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (create) {
                 Long id = adao.asmSelectIdByName(guid);
                 if (id != null) {
-                    cp = getPage(id, true);
+                    cp = getCachedPage(id, true);
                 }
             }
         }
@@ -1072,8 +1098,81 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     public CachedPage getIndexPage(HttpServletRequest req) {
-        //todo
-        return null;
+        Locale locale = messages.getLocale(req);
+        Long pid;
+        synchronized (lang2IndexPages) {
+            pid = lang2IndexPages.get(locale.getLanguage());
+            if (pid == null) {
+                if (!locale.equals(Locale.getDefault())) {
+                    pid = lang2IndexPages.get(Locale.getDefault().getLanguage());
+                }
+                if (pid == null) {
+                    pid = lang2IndexPages.get("*");
+                }
+            }
+        }
+        if (pid == null) {
+            return null;
+        }
+        CachedPage p = getCachedPage(pid, true);
+        if (p == null) {
+            synchronized (lang2IndexPages) {
+                String[] lngs = lang2IndexPages.keySet().toArray(new String[lang2IndexPages.size()]);
+                for (final String l : lngs) {
+                    Long id = lang2IndexPages.get(l);
+                    if (pid.equals(id)) {
+                        lang2IndexPages.remove(l);
+                    }
+                }
+            }
+        }
+        return p;
+    }
+
+    @Transactional
+    public void reloadIndexPages() {
+        List<Map<String, Object>> ipages =
+                select("selectAttrOptions",
+                       "attrType", "mainpage",
+                       "pageType", "page%");
+        synchronized (lang2IndexPages) {
+            lang2IndexPages.clear();
+            for (Map row : ipages) {
+                Long id = NumberUtils.number2Long((Number) row.get("id"), -1L);
+                if (id.longValue() == -1L) {
+                    continue;
+                }
+                CachedPage cp = getCachedPage(id, true);
+                if (cp == null) {
+                    continue;
+                }
+                String lp = ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/");
+                KVOptions options = new KVOptions();
+                options.loadOptions((String) row.get("options"));
+                if (!"true".equals(options.get("enabled"))) {
+                    continue;
+                }
+                String langs = (String) options.get("lang");
+                String[] lcodes = langs.split("\\s+|,+|;+");
+                for (String lang : lcodes) {
+                    log.info("Registering page: '" + lp + "' as the MAIN PAGE for lang: " + lang);
+                    lang2IndexPages.put(lang, id);
+                }
+                if (!lang2IndexPages.containsKey("*")) {
+                    String dpl = this.cfg.impl().getString("pages.default-page-language", Locale.getDefault().getLanguage());
+                    if (lang2IndexPages.containsKey(dpl)) {
+                        log.info("Registering page: '" + lp + "' as the MAIN PAGE for lang: *");
+                        lang2IndexPages.put("*", lang2IndexPages.get(dpl));
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Start(order = 90)
+    public void start() {
+        reloadIndexPages();
     }
 
 }

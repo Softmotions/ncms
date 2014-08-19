@@ -488,6 +488,9 @@ public class Asm implements Serializable {
         asm.controller = controller;
         asm.core = (core != null) ? core.cloneDeep() : null;
         asm.attributes = (attributes != null) ? attributes.cloneDeep() : null;
+        asm.navParentId = navParentId;
+        asm.navAlias = navAlias;
+        asm.navCachedPath = navCachedPath;
         if (getParents() != null) {
             asm.parents = new ArrayList<>(getParents().size());
             for (Asm parent : getParents()) {
