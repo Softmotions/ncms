@@ -105,7 +105,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                         "title" : "",
                         "id" : "icon",
                         "sortable" : false,
-                        "width" : 40,
+                        "width" : 30,
                         "type" : "image"
                     },
                     {
@@ -124,13 +124,13 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                         "title" : this.tr("Type").toString(),
                         "id" : "type",
                         "sortable" : false,
-                        "width" : "1*"
+                        "width" : 90
                     },
                     {
                         "title" : this.tr("Value").toString(),
                         "id" : "value",
                         "sortable" : false,
-                        "width" : "3*"
+                        "width" : "1*"
                     }
                 ],
                 "items" : items

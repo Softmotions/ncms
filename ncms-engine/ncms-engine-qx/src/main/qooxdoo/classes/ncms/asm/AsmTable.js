@@ -1,23 +1,45 @@
 /**
  * Virtual table of assemblies.
+ *
+ * @asset(ncms/icon/16/asm/*)
  */
 qx.Class.define("ncms.asm.AsmTable", {
     extend : sm.table.Table,
 
     construct : function(useColumns) {
-        var tm = new sm.model.RemoteVirtualTableModel({
-            "name" : this.tr("Name"),
-            "description" : this.tr("Description"),
-            "type" : this.tr("Type")
-        }).set({
-                    "useColumns" : useColumns || ["name", "description", "type"],
-                    "rowdataUrl" : ncms.Application.ACT.getUrl("asms.select"),
-                    "rowcountUrl" : ncms.Application.ACT.getUrl("asms.select.count")
-                });
+        var cmeta = {
+            icon : {
+                title : "",
+                type : "image",
+                width : 26
+            },
+            name : {
+                title : this.tr("Name").toString(),
+                width : "2*"
+            },
+            description : {
+                title : this.tr("Description").toString(),
+                width : "3*"
+            },
+            type : {
+                title : this.tr("Type").toString(),
+                width : "1*",
+                visible : false
+            }
+        };
+        useColumns = useColumns || ["icon", "name", "description", "type"];
+        var tm = new sm.model.RemoteVirtualTableModel(cmeta).set({
+            "useColumns" : useColumns,
+            "rowdataUrl" : ncms.Application.ACT.getUrl("asms.select"),
+            "rowcountUrl" : ncms.Application.ACT.getUrl("asms.select.count")
+        });
 
         var custom = {
-            tableColumnModel : function(obj) {
-                return new qx.ui.table.columnmodel.Resize(obj);
+            tableColumnModel : function() {
+                return new sm.model.JsonTableColumnModel(
+                        useColumns.map(function(cname) {
+                            return cmeta[cname];
+                        }));
             }
         };
 
@@ -30,20 +52,7 @@ qx.Class.define("ncms.asm.AsmTable", {
         }, this));
         this.setDataRowRenderer(rr);
 
-
-        var tcm = this.getTableColumnModel();
-        var cInd = tm.getColumnIndexById("name");
-        if (cInd != null) {
-            tcm.getBehavior().setWidth(cInd, "2*");
-        }
-        cInd = tm.getColumnIndexById("type");
-        if (cInd != null) {
-            tcm.getBehavior().setWidth(cInd, "1*");
-        }
-        cInd = tm.getColumnIndexById("description");
-        if (cInd != null) {
-            tcm.getBehavior().setWidth(cInd, "3*");
-        }
+        ncms.Events.getInstance().addListener("asmPropsChanged", this.__onAsmPropsChanged, this);
     },
 
     members : {
@@ -68,10 +77,33 @@ qx.Class.define("ncms.asm.AsmTable", {
 
         cleanup : function() {
             this.getTableModel().cleanup();
+        },
+
+        __onAsmPropsChanged : function(ev) {
+            var data = ev.getData();
+            var id = data["id"];
+            this.getTableModel().updateCachedRows(function(ind, rowdata) {
+                if (rowdata["id"] === id) {
+                    rowdata["name"] = data["name"];
+                    rowdata["description"] = data["description"];
+                    var tmode = data["templateMode"];
+                    var type = data["type"];
+                    if ("none" != tmode) {
+                        rowdata["icon"] = "ncms/icon/16/asm/template.png"
+                    } else if ("news.page" == type) {
+                        rowdata["icon"] = "ncms/icon/16/asm/news.png";
+                    } else if (!sm.lang.String.isEmpty(type)) {
+                        rowdata["icon"] = "ncms/icon/16/asm/page.png";
+                    } else {
+                        rowdata["icon"] = "ncms/icon/16/asm/other.png";
+                    }
+                    return rowdata;
+                }
+            }, this);
         }
     },
 
     destruct : function() {
-        //this._disposeObjects("__field_name");
+        ncms.Events.getInstance().removeListener("asmPropsChanged", this.__onAsmPropsChanged, this);
     }
 });

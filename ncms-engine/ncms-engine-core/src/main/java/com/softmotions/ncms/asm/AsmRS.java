@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.commons.cont.TinyParamMap;
+import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
@@ -15,6 +16,8 @@ import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -24,6 +27,8 @@ import com.google.inject.Inject;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.ResultContext;
+import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -38,8 +43,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +59,7 @@ import java.util.Set;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@SuppressWarnings("unchecked")
 @Path("adm/asms")
 @Produces("application/json")
 public class AsmRS extends MBDAOSupport {
@@ -470,9 +480,46 @@ public class AsmRS extends MBDAOSupport {
     @GET
     @Path("select")
     @Produces("application/json")
-    @Transactional
-    public List<Map> select(@Context HttpServletRequest req) {
-        return selectByCriteria(createQ(req).withStatement("select"));
+    public Response select(@Context final HttpServletRequest req) {
+        return Response.ok(new StreamingOutput() {
+            public void write(final OutputStream output) throws IOException, WebApplicationException {
+                final JsonGenerator gen = new JsonFactory().createGenerator(output);
+                gen.writeStartArray();
+                selectByCriteria(createQ(req), new ResultHandler() {
+                    public void handleResult(ResultContext context) {
+                        Map<String, Object> row = (Map<String, Object>) context.getResultObject();
+                        try {
+                            gen.writeStartObject();
+                            int template = NumberUtils.number2Int((Number) row.get("template"), 0);
+                            String type = (String) row.get("type");
+                            if (template == 1) {
+                                gen.writeStringField("icon", "ncms/icon/16/asm/template.png");
+                            } else if ("news.page".equals(type)) {
+                                gen.writeStringField("icon", "ncms/icon/16/asm/news.png");
+                            } else if (!StringUtils.isBlank(type)) {
+                                gen.writeStringField("icon", "ncms/icon/16/asm/page.png");
+                            } else {
+                                gen.writeStringField("icon", "ncms/icon/16/asm/other.png");
+                            }
+                            gen.writeNumberField("id", ((Number) row.get("id")).longValue());
+                            gen.writeStringField("name", (String) row.get("name"));
+                            gen.writeStringField("hname", (String) row.get("hname"));
+                            gen.writeStringField("description", (String) row.get("description"));
+                            gen.writeStringField("type", (String) row.get("type"));
+                            gen.writeNumberField("published", NumberUtils.number2Int((Number) row.get("published"), 0));
+                            gen.writeNumberField("template", template);
+                            gen.writeEndObject();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }, "select");
+                gen.writeEndArray();
+                gen.flush();
+            }
+        }).type("application/json")
+                .encoding("UTF-8")
+                .build();
     }
 
     @GET
@@ -525,18 +572,28 @@ public class AsmRS extends MBDAOSupport {
         val = req.getParameter("sortAsc");
         if (!StringUtils.isBlank(val)) {
             orderUsed = true;
-            cq.orderBy("asm." + val).asc();
+            if ("icon".equals(val)) {
+                cq.orderBy("asm.template").asc();
+                cq.orderBy("asm.type").asc();
+            } else {
+                cq.orderBy("asm." + val).asc();
+            }
         }
         val = req.getParameter("sortDesc");
         if (!StringUtils.isBlank(val)) {
             orderUsed = true;
-            cq.orderBy("asm." + val).desc();
+            if ("icon".equals(val)) {
+                cq.orderBy("asm.template").desc();
+                cq.orderBy("asm.type").desc();
+            } else {
+                cq.orderBy("asm." + val).desc();
+            }
         }
         if (!orderUsed) {
             cq.orderBy("asm.type").asc();
+            cq.orderBy("asm.template").asc();
             cq.orderBy("asm.name").asc();
         }
-
         return cq;
     }
 }

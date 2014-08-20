@@ -146,12 +146,17 @@ qx.Class.define("ncms.asm.AsmEditor", {
             if (this.__applyProgress === true || !this.__form.validate()) {
                 return;
             }
+            var aspec = this.getAsmSpec();
             var data = {};
             this.__form.populateJSONObject(data, false, true);
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.props", this.getAsmSpec()), "PUT");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.props", aspec), "PUT");
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
-            req.send();
+            data["id"] = aspec["id"];
+            data["type"] = aspec["type"];
+            req.send(function() {
+                ncms.Events.getInstance().fireDataEvent("asmPropsChanged", data);
+            });
         },
 
         __setCore : function() {
@@ -256,7 +261,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
                     "GET", "application/json");
             req.send(function(resp) {
                 var asmSpec = resp.getContent();
-                //Prevent overiding of non related form values in `__applyAsmSpec`
+                //Prevent overriding of non related form values in `__applyAsmSpec`
                 //if we are loading the specific 'part' of data
                 asmSpec._part = part;
                 this.setAsmSpec(asmSpec);

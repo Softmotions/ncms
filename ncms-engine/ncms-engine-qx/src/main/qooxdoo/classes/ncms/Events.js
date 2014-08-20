@@ -38,7 +38,13 @@ qx.Class.define("ncms.Events", {
          * }
          *
          */
-        "pageChangeTemplate" : "qx.event.type.Data"
+        "pageChangeTemplate" : "qx.event.type.Data",
+
+
+        /**
+         * Basic assembly properties changed in the assembly editor GUI.
+         */
+        "asmPropsChanged" : "qx.event.type.Data"
     }
 
 });
