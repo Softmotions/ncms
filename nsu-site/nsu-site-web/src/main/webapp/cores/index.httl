@@ -205,64 +205,7 @@
     </div>
 </div>
 <footer id="footer">
-    <div class="footer-holder">
-        <div class="footer-col col1">
-            <strong class="title">Наука</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-        <div class="footer-col col2">
-            <strong class="title">Структуры</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-        <div class="footer-col col3">
-            <strong class="title">Ресурсы</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-        <div class="footer-col col4">
-            <strong class="title">Атмосфера</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-frame">
-        <span class="text">Полезные ссылки:</span>
-        <ul class="list">
-            <li><a href="#">Новости</a></li>
-            <li><a href="#">События</a></li>
-            <li><a href="#">Мультимедиа</a></li>
-            <li><a href="#">Контакты</a></li>
-        </ul>
-        <form action="#" class="search-form">
-            <fieldset>
-                <input class="input-text" type="text" placeholder="Я ищу..." />
-                <input type="submit" value="search"  />
-            </fieldset>
-        </form>
-    </div>
-    <div class="footer-text">
-        <span class="by">Дизайн — <a href="#">BRIGHTSIDE</a></span>
-        <span class="copy">&copy; 2014 Новосибирский государственный университет</span>
-        <p>Все права защищены</p>
-    </div>
+    ${include("inc/footer.httl")}
 </footer>
 </div>
 </div>
