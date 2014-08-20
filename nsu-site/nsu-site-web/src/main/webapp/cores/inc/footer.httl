@@ -1,48 +1,21 @@
 <div class="footer-holder">
-    <div class="footer-col col1">
-        <strong class="title">Наука</strong>
+    #foreach(Tree n in asm("menu3"))
+    <div class="footer-col col${foreach.count}">
+        <strong class="title">${n.name}</strong>
         <ul>
-            <li><a href="#">Миссия</a></li>
-            <li><a href="#">Руководство</a></li>
-            <li><a href="#">Ученый совет</a></li>
-            <li><a href="#">Ректорат</a></li>
+            #foreach(Tree nn in n)
+            <li><a href="${nn.link}">${nn.name}</a></li>
+            #end
         </ul>
     </div>
-    <div class="footer-col col2">
-        <strong class="title">Структуры</strong>
-        <ul>
-            <li><a href="#">Миссия</a></li>
-            <li><a href="#">Руководство</a></li>
-            <li><a href="#">Ученый совет</a></li>
-            <li><a href="#">Ректорат</a></li>
-        </ul>
-    </div>
-    <div class="footer-col col3">
-        <strong class="title">Ресурсы</strong>
-        <ul>
-            <li><a href="#">Миссия</a></li>
-            <li><a href="#">Руководство</a></li>
-            <li><a href="#">Ученый совет</a></li>
-            <li><a href="#">Ректорат</a></li>
-        </ul>
-    </div>
-    <div class="footer-col col4">
-        <strong class="title">Атмосфера</strong>
-        <ul>
-            <li><a href="#">Миссия</a></li>
-            <li><a href="#">Руководство</a></li>
-            <li><a href="#">Ученый совет</a></li>
-            <li><a href="#">Ректорат</a></li>
-        </ul>
-    </div>
+    #end
 </div>
 <div class="footer-frame">
     <span class="text">Полезные ссылки:</span>
     <ul class="list">
-        <li><a href="#">Новости</a></li>
-        <li><a href="#">События</a></li>
-        <li><a href="#">Мультимедиа</a></li>
-        <li><a href="#">Контакты</a></li>
+        #foreach(Tree n in asm("menu2"))
+        <li><a href="${n.link}">${n.name}</a></li>
+        #end
     </ul>
     <form action="#" class="search-form">
         <fieldset>
@@ -52,7 +25,7 @@
     </form>
 </div>
 <div class="footer-text">
-    <span class="by">Дизайн — <a href="#">BRIGHTSIDE</a></span>
+    <!--<span class="by">Дизайн — <a href="#">BRIGHTSIDE</a></span>-->
     <span class="copy">&copy; 2014 Новосибирский государственный университет</span>
 
     <p>Все права защищены</p>

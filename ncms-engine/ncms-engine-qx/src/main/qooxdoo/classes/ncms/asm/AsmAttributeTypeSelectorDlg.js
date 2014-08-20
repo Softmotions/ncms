@@ -16,8 +16,6 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
         "completed" : "qx.event.type.Data"
     },
 
-    properties : {
-    },
 
     construct : function(caption) {
         this.base(arguments, caption || this.tr("Select assembly attribute type"));
@@ -31,6 +29,17 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             height : 400
         });
 
+        var sf = this.__sf = new sm.ui.form.SearchField();
+        sf.addListener("clear", function() {
+            this.__search(null);
+        }, this);
+        sf.addListener("input", function(ev) {
+            this.__search(ev.getData());
+        }, this);
+        sf.addListener("keypress", this.__searchKeypress, this);
+        this.add(sf);
+
+        this.__items = this.__createItems();
         this.__table = this.__createTable();
         this.add(this.__table, {flex : 1});
 
@@ -47,18 +56,24 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-
         var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
+
+        this.addListenerOnce("appear", function() {
+            sf.focus();
+        });
     },
 
     members : {
 
+        __items : null,
+
         __okBt : null,
 
-        __table : null,
+        __sf : null,
 
+        __table : null,
 
         __ok : function() {
             var clazz = this.__table.getSelectedRowData();
@@ -69,9 +84,27 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             this.fireDataEvent("completed", [row[1], clazz]);
         },
 
-        __createTable : function() {
-            var tm = new sm.model.JsonTableModel();
+        __search : function(text) {
+            if (text == null) {
+                this.__setTableData(null, this.__items);
+                return;
+            }
+            text = text.toLocaleLowerCase();
+            var items = this.__items.filter(function(el) {
+                var desc = (el[0][0] == null) ? "" : el[0][0].toLocaleLowerCase();
+                var type = (el[0][1] == null) ? "" : el[0][1].toLocaleLowerCase();
+                return ((desc.indexOf(text) === 0) || (type.indexOf(text) === 0));
+            });
+            this.__setTableData(null, items);
+        },
 
+        __searchKeypress : function(ev) {
+            if ("Down" === ev.getKeyIdentifier()) {
+                this.__table.handleFocus();
+            }
+        },
+
+        __createItems : function() {
             var items = [];
             ncms.asm.am.AsmAttrManagersRegistry.forEachAttributeManagerTypeClassPair(
                     function(type, clazz) {
@@ -81,8 +114,17 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
                         ]);
                     }
             );
+            items.sort(function(o1, o2) {
+                var d1 = o1[0][0];
+                var d2 = o2[0][0];
+                return (d1 > d2) ? 1 : (d1 < d2 ? -1 : 0);
+            });
+            return items;
+        },
 
-            this.__setTableData(tm, items);
+        __createTable : function() {
+            var tm = new sm.model.JsonTableModel();
+            this.__setTableData(tm, this.__items);
 
             var table = new sm.table.Table(tm, tm.getCustom());
             table.addListener("cellDbltap", this.__ok, this);
@@ -102,6 +144,9 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
         },
 
         __setTableData : function(tm, items) {
+            if (tm == null) {
+                tm = this.__table.getTableModel();
+            }
             items = items || [];
             tm.setJsonData({
                 "columns" : [
@@ -129,8 +174,9 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             });
         },
 
-
         __dispose : function() {
+            this.__items = null;
+            this.__sf = null;
             this.__table = null;
             this.__okBt = null;
         },

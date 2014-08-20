@@ -78,6 +78,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             switch (id) {
                 case "toolbar":
                     control = new qx.ui.toolbar.ToolBar();
+                    control.setAppearance("toolbar-table/toolbar");
                     this._createToolbarItems(control);
                     this.add(control);
                     break;
