@@ -1,6 +1,5 @@
 <div class="header-holder">
     <a href="#" class="link">link</a>
-    #set(Tree menu = asm("menu"))
     <nav id="nav">
         ${include("menu.httl")}
     </nav>
@@ -22,44 +21,22 @@
             </ul>
         </div>
         <ul class="menu">
-            <li><a href="#">Новости</a></li>
-            <li><a href="#">События</a></li>
-            <li><a href="#">Мультимедиа</a></li>
-            <li><a href="#">Контакты</a></li>
+            #foreach(Tree n in asm("menu2"))
+            <li><a href="${n.link}">${n.name}</a></li>
+            #end
         </ul>
+
     </div>
 </div>
 <ul class="list">
-    <li class="item1"><a href="#">Наука</a>
+    #set(style = ["item1", "item2", "item3", "item4"].toCycle)
+    #foreach(Tree n in asm("menu3"))
+    <li class="${style}"><a href="#">${n.name}</a>
         <ul>
-            <li><a href="#">Библиотечный фонды</a></li>
-            <li><a href="#">Электронные каталоги</a></li>
-            <li><a href="#">Ссылки на ресурсы</a></li>
-            <li><a href="#">Открытие лекции</a></li>
+            #foreach(Tree nn in n)
+            <li><a href="${nn.link}">${nn.name}</a></li>
+            #end
         </ul>
     </li>
-    <li class="item2"><a href="#">Структуры</a>
-        <ul>
-            <li><a href="#">Библиотечный фонды</a></li>
-            <li><a href="#">Электронные каталоги</a></li>
-            <li><a href="#">Ссылки на ресурсы</a></li>
-            <li><a href="#">Открытие лекции</a></li>
-        </ul>
-    </li>
-    <li class="item3"><a href="#">Ресурсы</a>
-        <ul>
-            <li><a href="#">Библиотечный фонды</a></li>
-            <li><a href="#">Электронные каталоги</a></li>
-            <li><a href="#">Ссылки на ресурсы</a></li>
-            <li><a href="#">Открытие лекции</a></li>
-        </ul>
-    </li>
-    <li class="item4"><a href="#">Атмосфера</a>
-        <ul>
-            <li><a href="#">Библиотечный фонды</a></li>
-            <li><a href="#">Электронные каталоги</a></li>
-            <li><a href="#">Ссылки на ресурсы</a></li>
-            <li><a href="#">Открытие лекции</a></li>
-        </ul>
-    </li>
+    #end
 </ul>

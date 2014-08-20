@@ -1,5 +1,6 @@
 package com.softmotions.ncms.mhttl;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.apache.commons.collections.IteratorUtils;
@@ -104,6 +105,7 @@ public class Tree implements Iterable<Tree>, Serializable {
         return children.iterator();
     }
 
+    @JsonIgnore
     public boolean isHasChildren() {
         return (children != null && !children.isEmpty());
     }

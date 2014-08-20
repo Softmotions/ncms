@@ -1,5 +1,5 @@
 <ul>
-    #foreach(Tree n in menu)
+    #foreach(Tree n in asm("menu"))
     <li><a href="">${n.name}</a>
         #if(n.hasChildren)
         <div class="slide-holder">
@@ -14,4 +14,4 @@
         #end
     </li>
     #end
-</ul>
+</ul>                                        [
