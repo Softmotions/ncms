@@ -14,13 +14,14 @@
 qx.Interface.define("ncms.asm.am.ICustomAMComponent", {
 
 //    statics : {
+//
 //        getDescription : function() {
 //        }
 //
 //        applicableTo : function() {
 //        }
 //
-//        createOptionsDlg : function(options) {
+//        createOptionsDlg : function(attrSpec, asmSpec, options) {
 //        }
 //    },
 
@@ -37,7 +38,7 @@ qx.Interface.define("ncms.asm.am.ICustomAMComponent", {
         /**
          * Activate this component
          */
-        open : function() {
+        open : function(attrSpec, asmSpec, options) {
         },
 
         /**

@@ -13,6 +13,10 @@ qx.Class.define("ncms.asm.am.RichResourceRefAMC", {
 
         applicableTo : function() {
             return ["tree"];
+        },
+
+        createOptionsDlg : function(attrSpec, asmSpec, options) {
+            return new ncms.asm.am.RichResourceRefAMCOptsDlg(attrSpec, asmSpec, options);
         }
     },
 
@@ -23,10 +27,7 @@ qx.Class.define("ncms.asm.am.RichResourceRefAMC", {
 
     members : {
 
-        createOptionsDlg : function(options) {
-        },
-
-        open : function() {
+        open : function(attrSpec, asmSpec, options) {
         },
 
         close : function() {
