@@ -319,7 +319,9 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         },
 
         __selectOwner : function() {
-            var dlg = new ncms.usr.UserSelectorDlg();
+            var dlg = new ncms.usr.UserSelectorDlg(
+                    this.tr("Choose the file owner")
+            );
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();
                 dlg.destroy();

@@ -100,6 +100,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
         }, this);
 
+        this.addListener("appear", function() {
+            sf.focus();
+        });
+
         var smode = opts["smode"];
         if (smode == null) {
             smode = qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION;

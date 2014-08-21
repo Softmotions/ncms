@@ -1,5 +1,7 @@
 /**
  * Tree/menu
+ *
+ * @asset(ncms/icon/16/misc/gear.png)
  */
 qx.Class.define("ncms.asm.am.TreeAM", {
     extend : qx.core.Object,
@@ -31,18 +33,18 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.CheckBox();
-            form.add(el, this.tr("Allow pages"), null, "allowPages");
+            form.add(el, this.tr("Pages"), null, "allowPages");
             if (opts["allowPages"] == null) {
                 el.setValue(true);
             } else {
                 el.setValue(opts["allowPages"] == "true");
             }
             el = new qx.ui.form.CheckBox();
-            form.add(el, this.tr("Allow files"), null, "allowFiles");
+            form.add(el, this.tr("Files"), null, "allowFiles");
             el.setValue(opts["allowFiles"] == "true");
 
             el = new qx.ui.form.CheckBox();
-            form.add(el, this.tr("Allow external links"), null, "allowExternal");
+            form.add(el, this.tr("External links"), null, "allowExternal");
             el.setValue(opts["allowExternal"] == "true");
 
             el = new qx.ui.form.Spinner(0, 1, 5);
@@ -54,6 +56,20 @@ qx.Class.define("ncms.asm.am.TreeAM", {
                 el.setValue(parseInt(opts["nestingLevel"]));
             }
             form.add(el, this.tr("Nesting level"), null, "nestingLevel");
+
+            //load custom am components
+            sm.lang.Object.forEachClass(function(clazz) {
+                if (typeof clazz.getDescription === "function" &&
+                        typeof clazz.applicableTo === "function" &&
+                        qx.Class.hasInterface(clazz, ncms.asm.am.ICustomAMComponent) &&
+                        clazz.applicableTo().indexOf("tree") !== -1) {
+                    el = new sm.ui.form.IconCheckBox("ncms/icon/16/misc/gear.png");
+                    el.setUserData("ccClass", clazz);
+                    el.addListener("iconClicked", this.__openAMCSettings, this);
+                    form.add(el, clazz.getDescription(), null, clazz.classname);
+                }
+            }, this);
+
             return new sm.ui.form.ExtendedDoubleFormRenderer(form);
         },
 
@@ -82,6 +98,15 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             }
             model = qx.util.Serializer.toNativeObject(model);
             return model;
+        },
+
+        __openAMCSettings : function(ev) {
+            var w = ev.getTarget();
+            var ccClass = w.getUserData("ccClass");
+            if (ccClass == null) {
+                return;
+            }
+            qx.log.Logger.info("cc settings=" + w + " ccClass=" + ccClass);
         }
     },
 

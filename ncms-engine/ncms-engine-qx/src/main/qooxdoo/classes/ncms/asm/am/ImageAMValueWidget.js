@@ -39,13 +39,8 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
 
         //Image
         var image = this.__image = new qx.ui.basic.Image();
+        image.setCursor("pointer");
         this._add(image);
-        image.addListener("pointerover", function() {
-            image.setCursor("pointer");
-        });
-        image.addListener("pointerout", function() {
-            image.resetCursor();
-        });
         image.addListener("tap", function() {
             var udata = this.__value;
             if (udata == null || udata["id"] == null) {

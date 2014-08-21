@@ -44,6 +44,9 @@ qx.Class.define("ncms.usr.UserSelector", {
                 this.__table.handleFocus();
             }
         }, this);
+        this.addListener("appear", function() {
+            sf.focus();
+        });
 
 
         this.__table = new ncms.usr.UsersTable().set({

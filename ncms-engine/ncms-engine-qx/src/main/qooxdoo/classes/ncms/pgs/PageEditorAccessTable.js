@@ -82,7 +82,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
 
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl", {pid : spec["id"]}), "GET", "application/json");
             this.__applyConstViewSpecToRequest(req);
-            req.send(function(resp){
+            req.send(function(resp) {
                 var data = resp.getContent() || [];
                 this._reload(data);
             }, this);
@@ -141,7 +141,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
         _setJsonTableData : function(tm, data) {
             var items = [];
             data = data || [];
-            for(var i = 0; i < data.length; ++i) {
+            for (var i = 0; i < data.length; ++i) {
                 var item = data[i];
                 var am = item["rights"];
                 items.push([
@@ -194,14 +194,16 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             this.getTable().cancelEditing();
 
             var spec = this.getPageSpec();
-            var dlg = new ncms.usr.UserSelectorDlg();
+            var dlg = new ncms.usr.UserSelectorDlg(
+                    this.tr("Add user to the access list")
+            );
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData()[0];
                 dlg.destroy();
 
-                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: data["name"]}), "PUT", "application/json");
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user : data["name"]}), "PUT", "application/json");
                 this.__applyConstViewSpecToRequest(req);
-                req.send(function(resp){
+                req.send(function(resp) {
                     this.fireEvent("aclUpdated");
                 }, this);
             }, this);
@@ -217,9 +219,9 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             }
 
             var spec = this.getPageSpec();
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user["user"]}), "DELETE", "application/json");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user : user["user"]}), "DELETE", "application/json");
             this.__applyConstViewSpecToRequest(req);
-            req.send(function(resp){
+            req.send(function(resp) {
                 this.fireEvent("aclUpdated");
             }, this);
         },
@@ -233,10 +235,10 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             }
 
             var spec = this.getPageSpec();
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user["user"]}), "DELETE", "application/json");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user : user["user"]}), "DELETE", "application/json");
             this.__applyConstViewSpecToRequest(req);
             req.setParameter("forceRecursive", true, false);
-            req.send(function(resp){
+            req.send(function(resp) {
                 this.fireEvent("aclUpdated");
             }, this);
         },
@@ -250,21 +252,25 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
 
             var user = this.getTableModel().getRowData(data.row);
             var parameter = this.getTableModel().getColumnId(data.col);
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user: user.rowData["user"]}), "POST", "application/json");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.acl.user", {pid : spec["id"], user : user.rowData["user"]}), "POST", "application/json");
             this.__applyConstViewSpecToRequest(req);
             req.setParameter("rights", this.__getRoleCharByName(parameter), false);
             req.setParameter("add", data.value, false);
-            req.send(function(resp){
+            req.send(function(resp) {
                 this.fireEvent("aclUpdated");
             }, this);
         },
 
         __getRoleCharByName : function(cname) {
             switch (cname) {
-                case "role.write": return "w";
-                case "role.news": return "n";
-                case "role.delete": return "d";
-                default : return "";
+                case "role.write":
+                    return "w";
+                case "role.news":
+                    return "n";
+                case "role.delete":
+                    return "d";
+                default :
+                    return "";
             }
         },
 

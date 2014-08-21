@@ -58,8 +58,11 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
 
         var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
-        this.addListenerOnce("resize", this.center, this);
 
+        cmd = this.createCommand("Enter");
+        cmd.addListener("execute", this.__ok, this);
+
+        this.addListenerOnce("resize", this.center, this);
         this.addListenerOnce("appear", function() {
             sf.focus();
         });

@@ -59,6 +59,10 @@ qx.Class.define("ncms.asm.AsmSelector", {
         this._add(this.__table, {flex : 1});
 
         this.setConstViewSpec(constViewSpec || null);
+
+        this.addListener("appear", function() {
+            sf.focus();
+        });
     },
 
     members : {

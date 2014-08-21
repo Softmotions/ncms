@@ -49,6 +49,9 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
                 this.__table.handleFocus();
             }
         }, this);
+        this.addListener("appear", function() {
+            sf.focus();
+        });
 
         this.__table = new ncms.pgs.PagesTable(useColumns, overrideColumsMeta).set({
             "statusBarVisible" : false,

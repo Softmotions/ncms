@@ -46,8 +46,11 @@ qx.Class.define("ncms.usr.UserSelectorDlg", {
 
         var cmd  = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
-        this.addListenerOnce("resize", this.center, this);
 
+        cmd = this.createCommand("Enter");
+        cmd.addListener("execute", this.__ok, this);
+
+        this.addListenerOnce("resize", this.center, this);
         selector.addListener("userSelected", this.__syncState, this);
         selector.getTable().addListener("cellDbltap", this.__ok, this);
 
@@ -66,6 +69,9 @@ qx.Class.define("ncms.usr.UserSelectorDlg", {
         __okBt : null,
 
         __ok : function() {
+            if (!this.__okBt.getEnabled()) {
+                return;
+            }
             this.fireDataEvent("completed", this.__selector.getSelectedUsers())
         },
 

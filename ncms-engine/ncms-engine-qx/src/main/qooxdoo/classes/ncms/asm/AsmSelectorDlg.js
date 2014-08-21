@@ -54,9 +54,13 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
 
         var cmd  = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
-        this.addListenerOnce("resize", this.center, this);
 
+        cmd = this.createCommand("Enter");
+        cmd.addListener("execute", this.__ok, this);
+
+        this.addListenerOnce("resize", this.center, this);
         selector.addListener("asmSelected", this.__syncState, this);
+
         this.__syncState();
     },
 
@@ -67,7 +71,14 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
         __selector : null,
 
         __ok : function() {
-            this.fireDataEvent("completed", this.__selector.getSelectedAsms())
+            if (!this.__saveBt.getEnabled()) {
+                return;
+            }
+            var asms = this.__selector.getSelectedAsms();
+            if (asms == null || asms.length === 0) {
+                return;
+            }
+            this.fireDataEvent("completed", asms)
         },
 
         __syncState : function() {

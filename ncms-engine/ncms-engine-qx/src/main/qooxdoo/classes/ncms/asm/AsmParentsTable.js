@@ -77,6 +77,9 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
                 showCellFocusIndicator : false,
                 statusBarVisible : false,
                 focusCellOnPointerMove : false});
+
+            table.setContextMenu(new qx.ui.menu.Menu());
+            table.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             return table;
         },
 
@@ -114,7 +117,9 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             var spec = this.__spec;
             var asmId = spec["id"];
             var rd = this.getSelectedRowData();
-            if (rd == null) return;
+            if (rd == null) {
+                return;
+            }
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.parents", {id : asmId}),
                     "DELETE", "application/json");
             req.setData(JSON.stringify([rd]));
@@ -145,6 +150,20 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
                 }, this);
             }, this);
             dlg.open();
+        },
+
+        __beforeContextmenuOpen : function(ev) {
+            var rd = this.getSelectedRowData();
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+            var bt = new qx.ui.menu.Button(this.tr("Add parent"));
+            bt.addListenerOnce("execute", this.__addParents, this);
+            menu.add(bt);
+            if (rd != null) {
+                bt = new qx.ui.menu.Button(this.tr("Remove parent"));
+                bt.addListenerOnce("execute", this.__removeParent, this);
+                menu.add(bt);
+            }
         }
     },
 
