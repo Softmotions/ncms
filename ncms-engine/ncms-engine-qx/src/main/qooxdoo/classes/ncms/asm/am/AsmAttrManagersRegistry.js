@@ -2,8 +2,6 @@
  * Registry of available assembly attrubute managers.
  *
  * Require a set of custom AM components:
- *
- * @use(ncms.asm.am.RichResourceRefAMC)
  */
 qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
     type : "static",

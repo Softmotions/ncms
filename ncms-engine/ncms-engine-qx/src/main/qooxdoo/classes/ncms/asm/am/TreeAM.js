@@ -28,9 +28,11 @@ qx.Class.define("ncms.asm.am.TreeAM", {
 
         _form : null,
 
+        _opts : null,
+
         activateOptionsWidget : function(attrSpec, asmSpec) {
             var form = this._form = new sm.ui.form.ExtendedForm();
-            var opts = ncms.Utils.parseOptions(attrSpec["options"]);
+            var opts = this._opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.CheckBox();
             form.add(el, this.tr("Pages"), null, "allowPages");
@@ -58,7 +60,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             form.add(el, this.tr("Nesting level"), null, "nestingLevel");
 
             //load custom am components
-            sm.lang.Object.forEachClass(function(clazz) {
+           /* sm.lang.Object.forEachClass(function(clazz) {
                 if (typeof clazz.getDescription === "function" &&
                         typeof clazz.applicableTo === "function" &&
                         qx.Class.hasInterface(clazz, ncms.asm.am.ICustomAMComponent) &&
@@ -66,17 +68,27 @@ qx.Class.define("ncms.asm.am.TreeAM", {
                     el = new sm.ui.form.IconCheckBox("ncms/icon/16/misc/gear.png");
                     el.setUserData("ccClass", clazz);
                     el.addListener("iconClicked", function(ev) {
-                        this.__openAMCSettings(ev, attrSpec, asmSpec, opts);
+                        this.__openAMCSettings(ev, attrSpec, asmSpec);
                     }, this);
                     form.add(el, clazz.getDescription(), null, clazz.classname);
                 }
-            }, this);
+            }, this);*/
 
             return new sm.ui.form.ExtendedDoubleFormRenderer(form);
         },
 
         optionsAsJSON : function() {
             var opts = this._form.populateJSONObject({}, false, true);
+            var items = this._form.getItems();
+            for (var k in items) {
+                var w = items[k];
+                var ccClass = w.getUserData("ccClass");
+                if (ccClass == null) {
+                    continue;
+                }
+                opts[ccClass.classname] = JSON.stringify(this._opts[ccClass.classname]);
+            }
+            qx.log.Logger.info("optionsAsJSON=" + JSON.stringify(opts));
             return opts;
         },
 
@@ -101,26 +113,11 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             }
             model = qx.util.Serializer.toNativeObject(model);
             return model;
-        },
-
-        __openAMCSettings : function(ev, attrSpec, asmSpec, opts) {
-            var w = ev.getTarget();
-            var ccClass = w.getUserData("ccClass");
-            if (ccClass == null) {
-                return;
-            }
-            var wopts = opts[ccClass.classname];
-            var dlg = ccClass.createOptionsDlg(attrSpec, asmSpec, wopts);
-            dlg.addListener("completed", function(ev) {
-                var data = ev.getData();
-                qx.log.Logger.info("data=" + JSON.stringify(data));
-                dlg.close();
-            }, this);
-            dlg.open();
         }
     },
 
     destruct : function() {
+        this._opts = null;
         this._disposeObjects("_form");
     }
 });
