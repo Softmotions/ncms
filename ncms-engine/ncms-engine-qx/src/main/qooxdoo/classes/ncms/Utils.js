@@ -36,6 +36,9 @@ qx.Class.define("ncms.Utils", {
             if (spec == null) {
                 return {};
             }
+            if (typeof spec === "object") {
+                return spec;
+            }
             qx.core.Assert.assertString(spec);
             var res = {};
             var idx, sp1 = 0, sp2 = 0;
@@ -60,8 +63,9 @@ qx.Class.define("ncms.Utils", {
                 idx = part.indexOf("=");
                 if (idx != -1 && idx < len) {
                     if (escaped) {
-                        res[part.substring(0, idx).replace("\\,", ",").trim()] =
-                                part.substring(idx + 1).replace("\\,", ",").trim();
+
+                        res[part.substring(0, idx).replace(/\\,/g, ",").trim()] =
+                                part.substring(idx + 1).replace(/\\,/g, ",").trim();
                         escaped = false;
                     } else {
                         res[part.substring(0, idx).trim()] = part.substring(idx + 1).trim();

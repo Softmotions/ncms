@@ -90,7 +90,7 @@ qx.Class.define("ncms.asm.am.ImageAM", {
         activateValueEditorWidget : function(attrSpec, asmSpec) {
             var w = new ncms.asm.am.ImageAMValueWidget(attrSpec, asmSpec);
             this._fetchAttributeValue(attrSpec, function(val) {
-                w.setAttributeValue(val);
+                w.setModel(val);
             });
             w.setRequired(!!attrSpec["required"]);
             this._valueWidget = w;

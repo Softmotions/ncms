@@ -19,7 +19,8 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
             ncms.asm.am.WikiAM,
             ncms.asm.am.ImageAM,
             ncms.asm.am.BreadCrumbsAM,
-            ncms.asm.am.MainPageAM
+            ncms.asm.am.MainPageAM,
+            ncms.asm.am.RichRefAM
         ],
 
 

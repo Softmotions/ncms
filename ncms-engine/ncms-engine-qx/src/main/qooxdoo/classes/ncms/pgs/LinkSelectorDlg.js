@@ -10,7 +10,7 @@ qx.Class.define("ncms.pgs.LinkSelectorDlg", {
      * options : {
      *    includeLinkName : {Boolean?true},
      *    linkText        : {String?}
-     *    notOverrideLinktext : {Boolean?false}
+     *    overrideLinktext : {Boolean?true}
      *    requireLinkName : {Boolean?true}
      *    allowExternalLinks : {Boolean?false}
      * }

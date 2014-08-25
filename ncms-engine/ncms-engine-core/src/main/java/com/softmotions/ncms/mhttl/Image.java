@@ -68,11 +68,7 @@ public final class Image {
     }
 
     public String getLink() {
-        String cpath = ctx.getServletRequest().getServletContext().getContextPath();
-        if (cpath.endsWith("/")) {
-            cpath = cpath.substring(0, cpath.length() - 1);
-        }
-        return cpath + ctx.getCfg().getNcmsPrefix() + "/rc/media/fileid/" + id;
+        return ctx.getCfg().getFileLink(id);
     }
 
     public String toString() {

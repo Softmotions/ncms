@@ -33,6 +33,8 @@ qx.Mixin.define("ncms.asm.am.MAttributeManager", {
             req.send(function(resp) {
                 var attr = resp.getContent();
                 var eval = attr["hasLargeValue"] ? attr["largeValue"] : attr["value"];
+                attrSpec["largeValue"] = attr["largeValue"];
+                attrSpec["value"] = attr["value"];
                 cb.call(cbContext, (eval === undefined ? null : eval));
             });
         }

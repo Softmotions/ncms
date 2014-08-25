@@ -155,6 +155,21 @@ public class NcmsConfiguration extends WBConfiguration {
         return getServletContext().getContextPath() + getNcmsPrefix() + "/asm/" + id;
     }
 
+    public String getFileLink(Long id) {
+        return getServletContext().getContextPath() + getNcmsPrefix() + "/rc/media/fileid/" + id;
+    }
+
+    public String getPageLink(String spec) {
+        if (spec.contains("://")) {
+            return spec;
+        }
+        if (spec.startsWith("page:")) {
+            return getAsmLink(spec.substring("page:".length()));
+        } else {
+            return getAsmLink(spec);
+        }
+    }
+
     @Dispose(order = 1)
     public void dispose() {
         synchronized (this) {
