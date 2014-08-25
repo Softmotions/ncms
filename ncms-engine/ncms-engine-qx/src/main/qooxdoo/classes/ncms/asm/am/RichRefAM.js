@@ -9,7 +9,7 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
     statics : {
 
         getDescription : function() {
-            return qx.locale.Manager.tr("Rich web resource reference");
+            return qx.locale.Manager.tr("Rich reference");
         },
 
         getSupportedAttributeTypes : function() {

@@ -97,6 +97,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
 
 
         __applyModel : function(model) {
+            model = model || {};
             //qx.log.Logger.info("Apply model " + JSON.stringify(model));
             this.addState("widgetNotReady");
             var items = this.__form.getItems();

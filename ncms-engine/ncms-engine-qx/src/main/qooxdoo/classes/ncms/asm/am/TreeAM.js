@@ -20,7 +20,11 @@ qx.Class.define("ncms.asm.am.TreeAM", {
 
         isHidden : function() {
             return false;
-        }
+        },
+
+        NESTED_AMS : [
+            ncms.asm.am.RichRefAM
+        ]
     },
 
 
@@ -31,6 +35,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
         _opts : null,
 
         activateOptionsWidget : function(attrSpec, asmSpec) {
+            //attrSpec = sm.lang.Object.shallowClone(attrSpec);
             var form = this._form = new sm.ui.form.ExtendedForm();
             var opts = this._opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
@@ -59,20 +64,16 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             }
             form.add(el, this.tr("Nesting level"), null, "nestingLevel");
 
-            //load custom am components
-           /* sm.lang.Object.forEachClass(function(clazz) {
-                if (typeof clazz.getDescription === "function" &&
-                        typeof clazz.applicableTo === "function" &&
-                        qx.Class.hasInterface(clazz, ncms.asm.am.ICustomAMComponent) &&
-                        clazz.applicableTo().indexOf("tree") !== -1) {
-                    el = new sm.ui.form.IconCheckBox("ncms/icon/16/misc/gear.png");
-                    el.setUserData("ccClass", clazz);
-                    el.addListener("iconClicked", function(ev) {
-                        this.__openAMCSettings(ev, attrSpec, asmSpec);
-                    }, this);
-                    form.add(el, clazz.getDescription(), null, clazz.classname);
-                }
-            }, this);*/
+            var NESTED_AMS = ncms.asm.am.TreeAM.NESTED_AMS;
+            for (var i = 0; i < NESTED_AMS.length; ++i) {
+                var clazz = NESTED_AMS[i];
+                el = new sm.ui.form.IconCheckBox("ncms/icon/16/misc/gear.png");
+                el.setUserData("naClass", clazz);
+                el.addListener("iconClicked", function(ev) {
+                    this.__openNAMCSettings(ev, attrSpec, asmSpec);
+                }, this);
+                form.add(el, clazz.getDescription(), null, clazz.classname);
+            }
 
             return new sm.ui.form.ExtendedDoubleFormRenderer(form);
         },
@@ -81,12 +82,12 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             var opts = this._form.populateJSONObject({}, false, true);
             var items = this._form.getItems();
             for (var k in items) {
-                var w = items[k];
-                var ccClass = w.getUserData("ccClass");
-                if (ccClass == null) {
-                    continue;
-                }
-                opts[ccClass.classname] = JSON.stringify(this._opts[ccClass.classname]);
+                /*var w = items[k];
+                 var ccClass = w.getUserData("ccClass");
+                 if (ccClass == null) {
+                 continue;
+                 }
+                 opts[ccClass.classname] = JSON.stringify(this._opts[ccClass.classname]);*/
             }
             qx.log.Logger.info("optionsAsJSON=" + JSON.stringify(opts));
             return opts;
@@ -104,7 +105,6 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             return w;
         },
 
-
         valueAsJSON : function() {
             var w = this._valueWidget;
             var model = w.getModel();
@@ -113,6 +113,24 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             }
             model = qx.util.Serializer.toNativeObject(model);
             return model;
+        },
+
+        __openNAMCSettings : function(ev, attrSpec, asmSpec) {
+            var w = ev.getTarget();
+            var clazz = w.getUserData("naClass");
+            var opts = ncms.Utils.parseOptions(attrSpec["options"]);
+            attrSpec = sm.lang.Object.shallowClone(attrSpec);
+            attrSpec["options"] = opts[clazz.classname];
+            var dlg = new ncms.asm.am.AMWrapperDlg(clazz, attrSpec, asmSpec, {
+                mode : "options"
+            });
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                qx.log.Logger.info("completed=" + JSON.stringify(data));
+                //todo
+                dlg.close();
+            }, this);
+            dlg.open();
         }
     },
 
