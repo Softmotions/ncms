@@ -171,6 +171,11 @@
                         <version>1.0-SNAPSHOT</version>
                         <artifactId>softmotions-web-realms</artifactId>
                     </dependency>
+                    <dependency>
+                        <groupId>nsu</groupId>
+                        <artifactId>nsu-wsusers-db</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                    </dependency>
                 </dependencies>
                 <configuration>
                     <port>${web.run.port}</port>

@@ -8,6 +8,15 @@
               config="conf/nsu-users.xml"
               scope="Shareable"/>
 
+    <!-- для использования с WSUsersMongoDB -->
+    <!--<Resource name="WSUserDatabase"-->
+              <!--auth="Container"-->
+              <!--type="com.softmotions.web.security.WSUserDatabase"-->
+              <!--factory="ru.nsu.WSUsersMongoDatabaseJNDIFactory"-->
+              <!--config="conf/nsu-mongo-config.xml"-->
+              <!--scope="Shareable">-->
+    <!--</Resource>-->
+
     <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"
            localDatabase="true"
            resourceName="WSUserDatabase"/>
