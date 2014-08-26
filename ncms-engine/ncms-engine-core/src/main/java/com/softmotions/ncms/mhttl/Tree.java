@@ -29,6 +29,8 @@ public class Tree implements Iterable<Tree>, Serializable {
 
     private String link;
 
+    private RichRef richRef;
+
     @JsonProperty(required = true)
     private ArrayList<Tree> children;
 
@@ -87,6 +89,14 @@ public class Tree implements Iterable<Tree>, Serializable {
         this.link = link;
     }
 
+    public RichRef getRichRef() {
+        return richRef;
+    }
+
+    public void setRichRef(RichRef richRef) {
+        this.richRef = richRef;
+    }
+
     public ArrayList<Tree> getChildren() {
         if (children == null) {
             children = new ArrayList<>();
@@ -118,6 +128,7 @@ public class Tree implements Iterable<Tree>, Serializable {
         sb.append(", extra='").append(extra).append('\'');
         sb.append(", icon='").append(icon).append('\'');
         sb.append(", link='").append(link).append('\'');
+        sb.append(", richRef='").append(richRef).append('\'');
         sb.append(", children=").append(children);
         sb.append('}');
         return sb.toString();

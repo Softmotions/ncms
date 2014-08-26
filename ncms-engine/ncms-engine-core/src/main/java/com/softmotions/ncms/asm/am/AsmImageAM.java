@@ -54,6 +54,31 @@ public class AsmImageAM implements AsmAttributeManager {
         return attr;
     }
 
+    public Image renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) {
+        Image image = new Image(ctx);
+        image.setId(node.hasNonNull("id") ? node.get("id").asLong() : 0);
+        if (node.hasNonNull("options")) {
+            ObjectNode opts = (ObjectNode) node.get("options");
+            if (opts.hasNonNull("width")) {
+                image.setOptionsWidth(opts.get("width").asInt());
+            }
+            if (opts.hasNonNull("height")) {
+                image.setOptionsHeight(opts.get("height").asInt());
+            }
+            if (opts.hasNonNull("resize")) {
+                image.setResize(opts.get("resize").asBoolean());
+            }
+            if (opts.hasNonNull("restrict")) {
+                image.setRestrict(opts.get("restrict").asBoolean());
+            }
+            if (opts.hasNonNull("skipSmall")) {
+                image.setSkipSmall(opts.get("skipSmall").asBoolean());
+            }
+        }
+        return image;
+    }
+
+
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);

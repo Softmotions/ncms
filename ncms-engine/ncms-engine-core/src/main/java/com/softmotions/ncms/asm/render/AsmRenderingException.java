@@ -12,4 +12,8 @@ public class AsmRenderingException extends RuntimeException {
     public AsmRenderingException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public AsmRenderingException(Throwable cause) {
+        super(cause);
+    }
 }

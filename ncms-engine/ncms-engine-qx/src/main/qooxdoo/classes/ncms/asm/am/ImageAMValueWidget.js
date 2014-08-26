@@ -5,11 +5,20 @@
  */
 qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
     extend : qx.ui.core.Widget,
-    implement : [ qx.ui.form.IForm,
+    implement : [ qx.ui.form.IModel,
+                  qx.ui.form.IForm,
                   qx.ui.form.IStringForm,
                   ncms.asm.am.IValueWidget],
     include : [ ncms.asm.am.MValueWidget,
                 sm.ui.form.MStringForm ],
+
+    properties : {
+        model : {
+            nullable : true,
+            event : "changeModel",
+            apply : "__applyModel"
+        }
+    },
 
     construct : function(attrSpec, asmSpec) {
         this.base(arguments);
@@ -25,9 +34,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
                 "ncms/icon/16/misc/image.png", true);
         bf.setReadOnly(true);
         bf.addListener("execute", this.__onExecuteBf, this);
-        bf.addListener("changeValue", function() {
-            this.fireEvent("modified");
-        }, this);
+        bf.addListener("changeValue", this.__modified, this);
         this._add(bf);
 
         //Labels
@@ -77,6 +84,14 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
          invalid : true
          },
          */
+
+        __modified : function() {
+            if (this.hasState("widgetNotReady")) {
+                return;
+            }
+            this.fireEvent("modified");
+        },
+
         __validate : function() {
 
             if (this.getRequired() && sm.lang.String.isEmpty(this.__bf.getValue())) {
@@ -192,8 +207,9 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
             this.__validate();
         },
 
-        setAttributeValue : function(val) {
-            val = JSON.parse(val);
+        __applyModel : function(val) {
+            this.addState("widgetNotReady");
+            val = (typeof val === "string") ? JSON.parse(val) : val;
             if (val == null || val["id"] == null) {
                 this.removeState("widgetNotReady");
                 this.__bf.resetValue();
