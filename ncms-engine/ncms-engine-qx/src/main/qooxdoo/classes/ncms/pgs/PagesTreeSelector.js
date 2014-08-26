@@ -55,6 +55,10 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
 
         __options : null,
 
+        getTree : function() {
+            return this._tree;
+        },
+
         __configureItem : function(model, item) {
             var checkAm = this.__options["accessAll"];
             if (checkAm == null) {

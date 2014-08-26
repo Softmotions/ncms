@@ -93,6 +93,14 @@ qx.Class.define("ncms.pgs.PagesSelector", {
                 qx.lang.Object.mergeWith(sp, resp.getContent() || {}, true);
                 cb.call(cbCtx, sp);
             });
+        },
+
+        getTreeSelector : function() {
+            return this._treeSelector;
+        },
+
+        getSearchSelector : function() {
+            return this._searchSelector;
         }
     },
 

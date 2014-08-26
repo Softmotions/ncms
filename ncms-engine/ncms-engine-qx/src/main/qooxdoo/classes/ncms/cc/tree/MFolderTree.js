@@ -20,7 +20,10 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          *       };
          * or null if selection cleared
          */
-        itemSelected : "qx.event.type.Data"
+        itemSelected : "qx.event.type.Data",
+
+
+        "treeLoaded" : "qx.event.type.Event"
     },
 
     members : {
@@ -135,6 +138,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                 }, this);
 
                 this.addTree(tree);
+                this.fireEvent("treeLoaded");
             }, this);
         },
 
@@ -246,7 +250,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
     },
 
     destruct : function() {
+        this._treeConfig = null;
         this._tree = null;
-        //this._disposeObjects("__field_name");                                
     }
 });

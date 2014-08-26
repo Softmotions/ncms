@@ -5,6 +5,7 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
     extend : qx.ui.window.Window,
 
     events : {
+
         /**
          * Data: {
          *   id : {Number} Page ID,
@@ -66,6 +67,19 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
 
         selector.addListener("pageSelected", this._syncState, this);
         this._syncState();
+
+        selector.getTreeSelector().addListenerOnce("treeLoaded", function() {
+            var tree = selector.getTreeSelector().getTree();
+            var pane = tree.getPane();
+            pane.addListener("cellDbltap", function(ev) {
+                var row = ev.getRow();
+                var item = tree.getLookupTable().getItem(row);
+                if (tree.isNode(item)) {
+                    return;
+                }
+                this._ok();
+            }, this);
+        }, this);
     },
 
     members : {
