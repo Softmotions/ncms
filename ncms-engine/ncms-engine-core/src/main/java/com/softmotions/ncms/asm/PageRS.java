@@ -474,11 +474,17 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (!pageSecurity.canDelete(id, req)) {
             throw new ForbiddenException("");
         }
+
+        log.info("type1=" + type);
+
         if ("page".equals(type)) {
             if (count("selectNumberOfDirectChilds", id) > 0) {
                 type = "page.folder";
             }
         }
+
+        log.info("type2=" + type);
+
         update("updatePageBasic",
                "id", id,
                "hname", name,

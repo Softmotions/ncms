@@ -85,6 +85,7 @@
             COUNT(*)
         FROM ASMS
         WHERE nav_parent_id = #{id}
+        AND type != 'news.page'
     </select>
 
     <update id="mergeNewPage"
