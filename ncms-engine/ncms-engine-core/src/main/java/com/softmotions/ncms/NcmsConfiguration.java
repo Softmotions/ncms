@@ -156,7 +156,7 @@ public class NcmsConfiguration extends WBConfiguration {
     }
 
     public String getFileLink(Long id) {
-        return getServletContext().getContextPath() + getNcmsPrefix() + "/rc/media/fileid/" + id;
+        return getServletContext().getContextPath() + getNcmsPrefix() + "/rs/media/fileid/" + id;
     }
 
     public String getPageLink(String spec) {

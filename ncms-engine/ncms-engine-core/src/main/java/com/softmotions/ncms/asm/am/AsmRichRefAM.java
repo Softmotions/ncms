@@ -60,7 +60,6 @@ public class AsmRichRefAM implements AsmAttributeManager {
 
 
     public RichRef renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) throws AsmRenderingException {
-        //log.info("value node=" + node);
         JsonNode n;
         String link = null;
         String name = null;
@@ -74,10 +73,10 @@ public class AsmRichRefAM implements AsmAttributeManager {
             link = n.asText().trim();
             int ind = link.indexOf('|');
             if (ind != -1) {
-                link = link.substring(0, ind).trim();
                 if (ind < link.length() - 1) {
                     name = link.substring(ind + 1).trim();
                 }
+                link = link.substring(0, ind).trim();
             }
             link = cfg.getPageLink(link);
         }

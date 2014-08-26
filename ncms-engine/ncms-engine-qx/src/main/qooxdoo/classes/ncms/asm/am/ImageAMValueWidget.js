@@ -176,7 +176,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
             var opts = this.__options;
 
             if (meta["width"] && meta["height"]) {
-                infoLabel.setValue(this.tr("Original image size") +
+                infoLabel.setValue(this.tr("Original size") +
                         ": " + meta["width"] + " x " + meta["height"]);
                 infoLabel.show();
             } else {
@@ -184,7 +184,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
                 infoLabel.exclude();
             }
             if (opts["resize"] == "true") {
-                var msg = this.tr("Automatic image resize") + ": ";
+                var msg = this.tr("Automatic resize") + ": ";
                 msg += sm.lang.String.isEmpty(opts["width"]) ? "*" : opts["width"];
                 msg += " x ";
                 msg += sm.lang.String.isEmpty(opts["height"]) ? "*" : opts["height"];

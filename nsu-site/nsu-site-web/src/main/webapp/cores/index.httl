@@ -10,36 +10,27 @@
     ${include("inc/header.httl")}
 </header>
 <div id="main" class="index-page">
+    #set(Tree headline = asm("headline"))
+    #if(headline.hasChildren)
     <div class="gallery-holder">
         <ul class="slideset">
+            #foreach(Tree h in headline)
             <li class="slide">
                 <div class="text-holder">
-                    <h2>52-я Международная научная студенческая  конференция</h2>
-                    <p>Новосибирский государственный университет — победитель первого конкурса среди университетов на присвоение им статуса "Национальный исследовательский университет"</p>
-                    <a href="#" class="more">Подробнее</a>
+                    <h2>${h.richRef.name}</h2>
+                    <p>${h.richRef.description}</p>
+                    <a href="${h.richRef.link}" class="more">Подробнее</a>
                 </div>
-                <img src="images/img1.jpg" width="693" height="400" alt="image description" />
-            </li>
-            <li class="slide">
-                <div class="text-holder">
-                    <h2>521-я Международная научная студенческая  конференция</h2>
-                    <p>Новосибирский государственный университет — победитель первого конкурса среди университетов на присвоение им статуса "Национальный исследовательский университет"</p>
-                    <a href="#" class="more">Подробнее</a>
+                <div style="width:693px; height:400px; overflow:hidden; padding: 0; margin: 0">
+                    <img src="${h.richRef.image.link}" width="693" alt="${h.richRef.name}" />
                 </div>
-                <img src="images/img1.jpg" width="693" height="400" alt="image description" />
             </li>
-            <li class="slide">
-                <div class="text-holder">
-                    <h2>522-я Международная научная студенческая  конференция</h2>
-                    <p>Новосибирский государственный университет — победитель первого конкурса среди университетов на присвоение им статуса "Национальный исследовательский университет"</p>
-                    <a href="#" class="more">Подробнее</a>
-                </div>
-                <img src="images/img1.jpg" width="693" height="400" alt="image description" />
-            </li>
+            #end
         </ul>
         <a href="#" class="btn-prev">prev</a>
         <a href="#" class="btn-next">next</a>
     </div>
+    #end
     <ul class="ad-list">
         <li class="ad1"><a href="#">Расписание<br/> занятий</a></li>
         <li class="ad2"><a href="#">Топ-100 <br/>университетов</a></li>
