@@ -37,7 +37,7 @@ qx.Class.define("ncms.Utils", {
                 return {};
             }
             if (typeof spec === "object") {
-                return spec;
+                return this.stringifyObjectValues(spec);
             }
             qx.core.Assert.assertString(spec);
             var res = {};
@@ -63,7 +63,6 @@ qx.Class.define("ncms.Utils", {
                 idx = part.indexOf("=");
                 if (idx != -1 && idx < len) {
                     if (escaped) {
-
                         res[part.substring(0, idx).replace(/\\,/g, ",").trim()] =
                                 part.substring(idx + 1).replace(/\\,/g, ",").trim();
                         escaped = false;
@@ -73,6 +72,21 @@ qx.Class.define("ncms.Utils", {
                 }
             }
             return res;
+        },
+
+
+        stringifyObjectValues : function(o) {
+            Object.keys(o).forEach(function(k) {
+                var v = o[k];
+                if (v != null) {
+                    if (typeof v === "object") {
+                        this.stringifyObjectValues(v);
+                    } else if (typeof v !== "string") {
+                        o[k] = String(v);
+                    }
+                }
+            }, this);
+            return o;
         },
 
 

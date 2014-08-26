@@ -35,7 +35,6 @@ qx.Class.define("ncms.asm.am.TreeAM", {
         _opts : null,
 
         activateOptionsWidget : function(attrSpec, asmSpec) {
-            //attrSpec = sm.lang.Object.shallowClone(attrSpec);
             var form = this._form = new sm.ui.form.ExtendedForm();
             var opts = this._opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
@@ -69,6 +68,8 @@ qx.Class.define("ncms.asm.am.TreeAM", {
                 var clazz = NESTED_AMS[i];
                 el = new sm.ui.form.IconCheckBox("ncms/icon/16/misc/gear.png");
                 el.setUserData("naClass", clazz);
+                el.setUserData("naOptions", opts[clazz.classname]);
+                el.setValue(opts[clazz.classname] != null);
                 el.addListener("iconClicked", function(ev) {
                     this.__openNAMCSettings(ev, attrSpec, asmSpec);
                 }, this);
@@ -82,19 +83,22 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             var opts = this._form.populateJSONObject({}, false, true);
             var items = this._form.getItems();
             for (var k in items) {
-                /*var w = items[k];
-                 var ccClass = w.getUserData("ccClass");
-                 if (ccClass == null) {
-                 continue;
-                 }
-                 opts[ccClass.classname] = JSON.stringify(this._opts[ccClass.classname]);*/
+                var w = items[k];
+                var naClass = w.getUserData("naClass");
+                if (naClass == null) {
+                    continue;
+                }
+                if (w.getValue() == false) { //not checked
+                    delete opts[naClass.classname];
+                    continue;
+                }
+                opts[naClass.classname] = w.getUserData("naOptions");
             }
-            qx.log.Logger.info("optionsAsJSON=" + JSON.stringify(opts));
             return opts;
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
-            var w = new ncms.asm.am.TreeAMValueWidget(asmSpec);
+            var w = new ncms.asm.am.TreeAMValueWidget(attrSpec, asmSpec);
             this._fetchAttributeValue(attrSpec, function(val) {
                 var opts = ncms.Utils.parseOptions(attrSpec["options"]);
                 var model = qx.data.marshal.Json.createModel(JSON.parse(val), true);
@@ -118,16 +122,16 @@ qx.Class.define("ncms.asm.am.TreeAM", {
         __openNAMCSettings : function(ev, attrSpec, asmSpec) {
             var w = ev.getTarget();
             var clazz = w.getUserData("naClass");
-            var opts = ncms.Utils.parseOptions(attrSpec["options"]);
+            var opts = w.getUserData("naOptions");
             attrSpec = sm.lang.Object.shallowClone(attrSpec);
-            attrSpec["options"] = opts[clazz.classname];
+            attrSpec["options"] = opts;
             var dlg = new ncms.asm.am.AMWrapperDlg(clazz, attrSpec, asmSpec, {
                 mode : "options"
             });
+            //{"allowDescription":true,"allowImage":true,"image":{"width":"10","height":null,"resize":false,"restrict":false,"skipSmall":true}}
             dlg.addListener("completed", function(ev) {
                 var data = ev.getData();
-                qx.log.Logger.info("completed=" + JSON.stringify(data));
-                //todo
+                w.setUserData("naOptions", data);
                 dlg.close();
             }, this);
             dlg.open();

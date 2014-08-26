@@ -37,9 +37,12 @@ public class AsmTreeAM implements AsmAttributeManager {
 
     private final ObjectMapper mapper;
 
+    private final AsmRichRefAM richRefAM;
+
     @Inject
-    public AsmTreeAM(ObjectMapper mapper) {
+    public AsmTreeAM(ObjectMapper mapper, AsmRichRefAM richRefAM) {
         this.mapper = mapper;
+        this.richRefAM = richRefAM;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -66,10 +69,30 @@ public class AsmTreeAM implements AsmAttributeManager {
             return new Tree("root");
         }
         try {
-            return mapper.reader(Tree.class).readValue(attr.getEffectiveValue());
+            return initTree((Tree) mapper.reader(Tree.class).readValue(attr.getEffectiveValue()), ctx);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Tree initTree(Tree tree, AsmRendererContext ctx) throws IOException {
+        if (!StringUtils.isBlank(tree.getNam())) {
+            JsonNode namSpec = mapper.readTree(tree.getNam());
+            if (!namSpec.hasNonNull("naClass")) {
+                return tree;
+            }
+            String naClass = namSpec.get("naClass").asText();
+            if (!"ncms.asm.am.RichRefAM".equals(naClass)) {
+                return tree;
+            }
+            tree.setRichRef(richRefAM.renderAsmAttribute(ctx, (ObjectNode) namSpec));
+        }
+        if (tree.isHasChildren()) {
+            for (Tree c : tree.getChildren()) {
+                initTree(c, ctx);
+            }
+        }
+        return tree;
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {

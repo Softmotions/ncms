@@ -58,6 +58,9 @@ qx.Class.define("ncms.asm.am.AMWrapperDlg", {
 
         __ok : function() {
             var data = (this.__opts["mode"] === "value") ? this.__am.valueAsJSON() : this.__am.optionsAsJSON();
+            if (data == null) {
+                return;
+            }
             this.fireDataEvent("completed", data);
         },
 

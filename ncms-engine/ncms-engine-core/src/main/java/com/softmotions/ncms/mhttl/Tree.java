@@ -29,6 +29,8 @@ public class Tree implements Iterable<Tree>, Serializable {
 
     private String link;
 
+    private String nam; //Nested attribute manager serialized JSON model
+
     private RichRef richRef;
 
     @JsonProperty(required = true)
@@ -89,6 +91,15 @@ public class Tree implements Iterable<Tree>, Serializable {
         this.link = link;
     }
 
+    public String getNam() {
+        return nam;
+    }
+
+    public void setNam(String nam) {
+        this.nam = nam;
+    }
+
+    @JsonIgnore
     public RichRef getRichRef() {
         return richRef;
     }
@@ -128,6 +139,7 @@ public class Tree implements Iterable<Tree>, Serializable {
         sb.append(", extra='").append(extra).append('\'');
         sb.append(", icon='").append(icon).append('\'');
         sb.append(", link='").append(link).append('\'');
+        sb.append(", nam='").append(nam).append('\'');
         sb.append(", richRef='").append(richRef).append('\'');
         sb.append(", children=").append(children);
         sb.append('}');

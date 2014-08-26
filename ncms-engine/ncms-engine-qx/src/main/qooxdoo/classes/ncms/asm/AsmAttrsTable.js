@@ -246,6 +246,9 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                 var tmp = data[sInd];
                 data[sInd] = data[buddyInd];
                 data[buddyInd] = tmp;
+                tmp = rd["ordinal"];
+                rd["ordinal"] = buddy["ordinal"];
+                buddy["ordinal"] = tmp;
                 this.getTableModel().setData(data);
                 this.getSelectionModel().setSelectionInterval(buddyInd, buddyInd);
             }, this);

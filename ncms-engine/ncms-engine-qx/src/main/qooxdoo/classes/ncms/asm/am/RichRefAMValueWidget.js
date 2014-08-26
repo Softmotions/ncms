@@ -33,12 +33,14 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
         var form = this.__form = new qx.ui.form.Form();
         var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain-plus.png", true);
         bf.setReadOnly(true);
+        bf.setRequired(true);
         bf.addListener("execute", this.__onSetLink, this);
         bf.addListener("changeValue", this.__modified, this);
         form.add(bf, this.tr("Link"), null, "link");
 
         if (opts["allowDescription"] === "true") {
             el = new qx.ui.form.TextArea();
+            el.setRequired(true);
             el.setMaxLength(1024); //todo
             el.addListener("input", this.__modified, this);
             form.add(el, this.tr("Description"), null, "description");
@@ -49,10 +51,17 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             iAttrSpec["hasLargeValue"] = false;
             iAttrSpec["value"] = "null";
             iAttrSpec["options"] = opts["image"];
+            iAttrSpec["required"] = true;
             this.__imageAM = new ncms.asm.am.ImageAM();
             var iw = this.__imageAM.activateValueEditorWidget(iAttrSpec, asmSpec);
+            var validator = null;
+            if (typeof iw.getUserData("ncms.asm.validator") === "function") {
+                validator = iw.getUserData("ncms.asm.validator");
+            } else if (typeof iw.getValidator === "function") {
+                validator = iw.getValidator();
+            }
             iw.addListener("modified", this.__modified, this);
-            form.add(iw, this.tr("Image"), null, "image");
+            form.add(iw, this.tr("Image"), validator, "image", iw);
         }
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
@@ -90,6 +99,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
                     val.push(data["linkText"]);
                 }
                 this.__bf.setValue(val.join(" | "));
+                this.__bf.setUserData("data", data);
                 dlg.close();
             }, this);
             dlg.open();
@@ -105,7 +115,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             //      "image":{"id":561,"options":{"restrict":"false","width":"693","skipSmall":"false","resize":"true"}},
             //       "link":"page:e96b3224e0ef7850e6c86d6d857b327b | Главная","description":"test"
             // }
-            if (items["image"]) {
+            if (items["image"] && model["image"] != null) {
                 items["image"].setModel(model["image"]);
             }
             if (model["link"] != null) {
@@ -113,16 +123,20 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             } else {
                 this.__bf.resetValue();
             }
-            if (model["description"] != null) {
-                items["description"].setValue(model["description"]);
-            } else {
-                items.resetValue();
+            if (items["description"]) {
+                if (model["description"] != null) {
+                    items["description"].setValue(model["description"]);
+                } else {
+                    items["description"].resetValue();
+                }
             }
             this.removeState("widgetNotReady");
         },
 
-
         valueAsJSON : function() {
+            if (!this.__form.validate() || this.__bf.getUserData("data") == null) {
+                return null;
+            }
             var data = {};
             if (this.__imageAM) {
                 data["image"] = this.__imageAM.valueAsJSON();
@@ -132,6 +146,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             if (items["description"]) {
                 data["description"] = items["description"].getValue();
             }
+            data["name"] = this.__bf.getUserData("data")["linkText"];
             return data;
         }
 
