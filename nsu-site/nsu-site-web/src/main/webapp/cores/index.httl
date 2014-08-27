@@ -31,12 +31,16 @@
         <a href="#" class="btn-next">next</a>
     </div>
     #end
+
+    #set(Tree adlist = asm("adlist"))
+    #if(adlist.hasChildren)
     <ul class="ad-list">
-        <li class="ad1"><a href="#">Расписание<br/> занятий</a></li>
-        <li class="ad2"><a href="#">Топ-100 <br/>университетов</a></li>
-        <li class="ad3"><a href="#">Материалы<br/> на lib.nsu.ru</a></li>
-        <li class="ad4"><a href="#">Новый раздел<br/> «Наука»</a></li>
+        #foreach(Tree n in adlist)
+        <li class="${n.richRef.style}"><a href="${n.richRef.link}">${n.richRef.name}</a></li>
+        #end
     </ul>
+    #end
+
     <div class="three-col">
         <div class="news-holder">
             <ul class="tabset">

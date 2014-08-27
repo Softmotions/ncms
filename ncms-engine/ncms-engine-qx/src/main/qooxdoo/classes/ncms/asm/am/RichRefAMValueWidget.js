@@ -64,6 +64,14 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             form.add(iw, this.tr("Image"), validator, "image", iw);
         }
 
+        var styles = ncms.Utils.parseOptions(opts["styles"]);
+        if (Object.keys(styles).length > 0) { //we have a styles
+            el = new qx.ui.form.SelectBox();
+            Object.keys(styles).forEach(function(k) {
+                el.add(new qx.ui.form.ListItem(k, null, styles[k]));
+            });
+            form.add(el, this.tr("Styles"), null, "styles");
+        }
         var fr = new sm.ui.form.FlexFormRenderer(form);
         this._add(fr);
     },
@@ -129,6 +137,9 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
                     items["description"].resetValue();
                 }
             }
+            if (items["styles"] && model["style"] != null) {
+                items["styles"].setModelSelection([ model["style"] ]);
+            }
             this.removeState("widgetNotReady");
         },
 
@@ -148,6 +159,15 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             data["name"] = link.split("|")[1];
             if (data["name"]) {
                 data["name"] = data["name"].trim();
+                if (items["styles"]) {
+                    var item = items["styles"].getSelection()[0];
+                    if (item != null) {
+                        data["name"] = data["name"] + " (" + String(item.getLabel()) + ")";
+                    }
+                }
+            }
+            if (items["styles"]) {
+                data["style"] = items["styles"].getModelSelection().getItem(0);
             }
             return data;
         }

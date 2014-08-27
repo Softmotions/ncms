@@ -48,6 +48,13 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             form.add(iopts, this.tr("Image"), null, "image");
             el.bind("value", iopts, "enabled");
 
+            el = new qx.ui.form.TextField();
+            if (opts["styles"] != null) {
+                el.setValue(opts["styles"]);
+            }
+            el.setPlaceholder(this.tr("style=value,style2=value2,..."));
+            form.add(el, this.tr("Styles"), null, "styles");
+
             var fr = new sm.ui.form.FlexFormRenderer(form);
             this._form = form;
             return fr;
@@ -61,6 +68,7 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             if (data["allowImage"]) {
                 data["image"] = this._imageAM.optionsAsJSON();
             }
+            data["styles"] = items["styles"].getValue();
             return data;
         },
 
