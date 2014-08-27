@@ -99,7 +99,6 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
                     val.push(data["linkText"]);
                 }
                 this.__bf.setValue(val.join(" | "));
-                this.__bf.setUserData("data", data);
                 dlg.close();
             }, this);
             dlg.open();
@@ -134,7 +133,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
         },
 
         valueAsJSON : function() {
-            if (!this.__form.validate() || this.__bf.getUserData("data") == null) {
+            if (!this.__form.validate()) {
                 return null;
             }
             var data = {};
@@ -142,11 +141,14 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
                 data["image"] = this.__imageAM.valueAsJSON();
             }
             var items = this.__form.getItems();
-            data["link"] = items["link"].getValue();
+            var link = data["link"] = items["link"].getValue();
             if (items["description"]) {
                 data["description"] = items["description"].getValue();
             }
-            data["name"] = this.__bf.getUserData("data")["linkText"];
+            data["name"] = link.split("|")[1];
+            if (data["name"]) {
+                data["name"] = data["name"].trim();
+            }
             return data;
         }
 

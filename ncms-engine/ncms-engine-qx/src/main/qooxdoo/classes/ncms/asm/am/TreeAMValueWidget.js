@@ -353,6 +353,11 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             if (item != null) {
 
                 menu.add(new qx.ui.menu.Separator());
+                if (item.getNam && !sm.lang.String.isEmpty(item.getNam())) {
+                    bt = new qx.ui.menu.Button(this.tr("Edit"));
+                    bt.addListener("execute", this.__onEditNA, this);
+                    menu.add(bt);
+                }
 
                 bt = new qx.ui.menu.Button(this.tr("Rename"));
                 bt.addListener("execute", this.__onRename, this);
@@ -518,6 +523,37 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             dlg.open();
         },
 
+        __onEditNA : function() {
+            var tree = this.__tree;
+            var item = tree.getSelection().getItem(0);
+            if (!item.getNam || sm.lang.String.isEmpty(item.getNam())) {
+                return;
+            }
+            var nam = item.getNam();
+            nam = JSON.parse(nam);
+            var naClass = qx.Class.getByName(nam["naClass"]);
+            if (naClass == null) {
+                return;
+            }
+            var naOptions = this.getOptions()[naClass.classname];
+            var attrSpec = sm.lang.Object.shallowClone(this.__attrSpec);
+            attrSpec["options"] = naOptions;
+            attrSpec["hasLargeValue"] = false;
+            attrSpec["value"] = JSON.stringify(nam);
+            var dlg = new ncms.asm.am.AMWrapperDlg(naClass, attrSpec, this.__asmSpec, {
+                "mode" : "value"
+            });
+            dlg.addListener("completed", function(ev) {
+                var data = ev.getData();
+                data["naClass"] = naClass.classname;
+                var name = data["name"] || JSON.stringify(data);
+                item.setName(name);
+                item.setNam(JSON.stringify(data));
+                dlg.close();
+                this.fireEvent("modified");
+            }, this);
+            dlg.open();
+        },
 
         __onAddNA : function(ev) {
             var bt = ev.getTarget();
