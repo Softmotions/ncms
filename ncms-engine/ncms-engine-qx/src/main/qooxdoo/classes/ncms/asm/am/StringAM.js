@@ -40,7 +40,6 @@ qx.Class.define("ncms.asm.am.StringAM", {
         activateOptionsWidget : function(attrSpec, asmSpec) {
 
             var form = new qx.ui.form.Form();
-            //---------- Options
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(4));
@@ -49,7 +48,12 @@ qx.Class.define("ncms.asm.am.StringAM", {
             el.setModelSelection(opts["display"] ? [opts["display"]] : ["field"]);
             form.add(el, this.tr("Display as"), null, "display");
 
-            //---------- Text value
+            el = new qx.ui.form.Spinner(0, 0, Number.MAX_VALUE);
+            if (opts["maxLength"] != null) {
+                el.setValue(Number(opts["maxLength"]));
+            }
+            form.add(el, this.tr("Max length"), null, "maxLength");
+
             var ta = new qx.ui.form.TextArea();
             this._fetchAttributeValue(attrSpec, function(val) {
                 ta.setValue(val);
@@ -80,6 +84,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
             opts["display"] = rb.getModel();
             opts["value"] = items["value"].getValue();
             opts["placeholder"] = items["placeholder"].getValue();
+            opts["maxLength"] = items["maxLength"].getValue();
             return opts;
         },
 
@@ -87,6 +92,12 @@ qx.Class.define("ncms.asm.am.StringAM", {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var display = opts["display"] || "field";
             var w = (display === "area") ? new qx.ui.form.TextArea() : new qx.ui.form.TextField();
+            if (opts["maxLength"] != null) {
+                var val = Number(opts["maxLength"]);
+                if (val > 0) {
+                    w.setMaxLength(val);
+                }
+            }
             this._fetchAttributeValue(attrSpec, function(val) {
                 w.setValue(val);
             });

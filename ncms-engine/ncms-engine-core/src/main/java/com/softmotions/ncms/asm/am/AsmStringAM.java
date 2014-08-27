@@ -44,7 +44,7 @@ public class AsmStringAM implements AsmAttributeManager {
     public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
-                                        "display", "placeholder");
+                                        "display", "placeholder", "maxLength");
         attr.setOptions(asmOpts.toString());
         attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText() : null);
         return attr;

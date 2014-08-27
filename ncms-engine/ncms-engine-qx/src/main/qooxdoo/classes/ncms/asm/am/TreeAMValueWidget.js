@@ -143,6 +143,14 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
 
             tree.setContextMenu(new qx.ui.menu.Menu());
             tree.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+            tree.getPane().addListener("cellDbltap", function(ev) {
+                var row = ev.getRow();
+                var item = tree.getLookupTable().getItem(row);
+                if (tree.isNode(item)) {
+                    return;
+                }
+                this.__onEditNA();
+            }, this);
             return tree;
         },
 

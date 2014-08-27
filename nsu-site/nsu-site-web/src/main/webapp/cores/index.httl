@@ -40,7 +40,7 @@
         #end
     </ul>
     #end
-
+    <!-- News -->
     <div class="three-col">
         <div class="news-holder">
             <ul class="tabset">
@@ -150,6 +150,8 @@
         </div>
     </div>
     <a href="#" class="fetch-more"><span>Еще больше новостей Вуза</span></a>
+    <!-- EOF News -->
+
     <ul class="ad-list2">
         <li>
             <a href="#">
