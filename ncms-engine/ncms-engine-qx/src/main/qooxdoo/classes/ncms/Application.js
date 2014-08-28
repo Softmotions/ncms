@@ -15,6 +15,7 @@
  * @asset(ncms/icon/32/information.png)
  * @asset(ncms/icon/32/exclamation.png)
  * @asset(ncms/icon/32/error.png)
+ * @asset(ncms/icon/32/exclamation.png)
  */
 qx.Class.define("ncms.Application", {
     extend : qx.application.Standalone,
@@ -30,6 +31,19 @@ qx.Class.define("ncms.Application", {
         ///////////////////////////////////////////////////////////
         //                         Alerts
         ///////////////////////////////////////////////////////////
+
+
+        confirmCb : function(message, cblabel, cbvalue, callback, context) {
+            (new sm.dialog.Confirm({
+                "message" : message,
+                "callback" : callback || null,
+                "context" : context || null,
+                "checkbox" : {
+                    "label" : cblabel,
+                    "value" : cbvalue
+                }
+            })).open();
+        },
 
         confirm : function(message, callback, context) {
             (new sm.dialog.Confirm({
@@ -52,7 +66,7 @@ qx.Class.define("ncms.Application", {
                 "message" : message,
                 "callback" : callback || null,
                 "context" : context || null,
-                "image" : "icon/48/status/dialog-warning.png"
+                "image" : "ncms/icon/32/exclamation.png"
             })).open();
         },
 
