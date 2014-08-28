@@ -522,6 +522,7 @@ public class Asm implements Serializable {
         sb.append(", options='").append(options).append('\'');
         sb.append(", core=").append(core);
         sb.append(", description='").append(description).append('\'');
+        sb.append(", navParentId=").append(navParentId);
         sb.append(", attributes=").append(attributes);
         sb.append('}');
         return sb.toString();

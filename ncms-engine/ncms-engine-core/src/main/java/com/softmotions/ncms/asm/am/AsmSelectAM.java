@@ -1,8 +1,11 @@
 package com.softmotions.ncms.asm.am;
 
+import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.ncms.asm.CachedPage;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.mhttl.SelectNode;
@@ -17,6 +20,8 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -35,21 +40,65 @@ import java.util.Set;
 @Singleton
 public class AsmSelectAM implements AsmAttributeManager {
 
+    private static final Logger log = LoggerFactory.getLogger(AsmSelectAM.class);
+
     public static final String[] TYPES = new String[]{"select"};
 
     private final ObjectMapper mapper;
 
+    private final PageService pageService;
+
     @Inject
-    public AsmSelectAM(ObjectMapper mapper) {
+    public AsmSelectAM(ObjectMapper mapper, PageService pageService) {
         this.mapper = mapper;
+        this.pageService = pageService;
     }
 
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
+    private ArrayNode checkFetchFrom(AsmAttribute attr) {
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        KVOptions opts = new KVOptions(attr.getOptions());
+        String fetchFrom = opts.getString("fetchfrom");
+        if (StringUtils.isBlank(fetchFrom)) {
+            return null;
+        }
+        Long id = attr.getAsmId();
+        CachedPage page = pageService.getCachedPage(id, true);
+        id = page.getAsm().getNavParentId();
+        if (id == null) {
+            return null;
+        }
+        page = pageService.getCachedPage(id, true);
+        if (page == null) {
+            return null;
+        }
+        AsmAttribute fattr = page.getAsm().getEffectiveAttribute(fetchFrom);
+        if (fattr == null || !"string".equals(fattr.getType())) {
+            return null;
+        }
+        String value = fattr.getValue();
+        if (StringUtils.isEmpty(value)) {
+            return mapper.createArrayNode();
+        }
+        String[] items = value.split(",");
+        ArrayNode res = mapper.createArrayNode();
+        for (String item : items) {
+            item = item.trim();
+            ArrayNode el = mapper.createArrayNode();
+            el.add(false);
+            el.add(item);
+            el.add(item);
+            res.add(el);
+        }
+        return res;
+    }
+
     public AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
-        if (tmplAttr == null) {
+        ArrayNode tArr = checkFetchFrom(attr);
+        if (tArr == null && (tmplAttr == null || StringUtils.isBlank(tmplAttr.getEffectiveValue()))) {
             if (StringUtils.isBlank(attr.getEffectiveValue())) {
                 attr.setEffectiveValue("[]");
             }
@@ -74,7 +123,9 @@ public class AsmSelectAM implements AsmAttributeManager {
                     }
                 }
             }
-            ArrayNode tArr = (ArrayNode) mapper.readTree(tmplAttr.getEffectiveValue());
+            if (tArr == null) {
+                tArr = (ArrayNode) mapper.readTree(tmplAttr.getEffectiveValue());
+            }
             for (JsonNode n : tArr) {
                 if (!n.isArray()) {
                     continue;
@@ -132,17 +183,19 @@ public class AsmSelectAM implements AsmAttributeManager {
         //options
         JsonNode optsVal = val.get("display");
         AsmOptions opts = new AsmOptions();
-        if (optsVal.isTextual()) {
+        if (optsVal != null && optsVal.isTextual()) {
             opts.put("display", optsVal.asText());
         }
+        optsVal = val.get("fetchfrom");
+        if (optsVal != null && optsVal.isTextual()) {
+            opts.put("fetchfrom", optsVal.asText());
+        }
         optsVal = val.get("multiselect");
-        if (optsVal.isBoolean()) {
+        if (optsVal != null && optsVal.isBoolean()) {
             opts.put("multiselect", optsVal.asBoolean());
         }
-
         attr.setOptions(opts.toString());
         applyAttributeValue(attr, val, req);
-
         return attr;
     }
 
