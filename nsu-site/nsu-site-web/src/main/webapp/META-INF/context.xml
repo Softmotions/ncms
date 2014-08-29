@@ -8,14 +8,22 @@
               config="conf/nsu-users.xml"
               scope="Shareable"/>
 
-    <!-- для использования с WSUsersMongoDB -->
+    <!--&lt;!&ndash; Авторизация через портал (OAuth2) &ndash;&gt;-->
+    <!--<Valve className="com.softmotions.web.security.tomcat.MyNSUOAuth2Authenticator"-->
+           <!--securePagesWithPragma="false"-->
+           <!--clientId="53feb63b52185f6e3d78a212"-->
+           <!--clientSecret="3peUmn2HVnD6k4KqpPP4Z3R_D7nQN5aDGYujWOT9sRs"-->
+           <!--authEndpoint="http://localhost:9011/oauth2/authorize"-->
+           <!--tokenEndpoint="http://localhost:9011/oauth2/token"-->
+           <!--userinfoEndpoint="http://localhost:9011/oauth2api/userinfo"/>-->
+
+    <!--&lt;!&ndash; для использования с WSUsersMongoDB &ndash;&gt;-->
     <!--<Resource name="WSUserDatabase"-->
               <!--auth="Container"-->
               <!--type="com.softmotions.web.security.WSUserDatabase"-->
               <!--factory="ru.nsu.WSUsersMongoDatabaseJNDIFactory"-->
               <!--config="conf/nsu-mongo-config.xml"-->
-              <!--scope="Shareable">-->
-    <!--</Resource>-->
+              <!--scope="Shareable"/>-->
 
     <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"
            localDatabase="true"

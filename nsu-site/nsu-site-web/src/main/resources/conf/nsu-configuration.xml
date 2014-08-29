@@ -125,4 +125,16 @@
         <lru-cache-size>4096</lru-cache-size>
     </pages>
 
+    <oauth2-authorize>
+        <provider>
+            <auth-endpoint>http://localhost:9011/oauth2/authorize</auth-endpoint>
+            <token-endpoint>http://localhost:9011/oauth2/token</token-endpoint>
+            <api-endpoint>http://localhost:9011/oauth2api/userinfo</api-endpoint>
+        </provider>
+        <client>
+            <id>53feb63b52185f6e3d78a212</id>
+            <secret>3peUmn2HVnD6k4KqpPP4Z3R_D7nQN5aDGYujWOT9sRs</secret>
+        </client>
+    </oauth2-authorize>
+
 </configuration>
