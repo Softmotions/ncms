@@ -43,6 +43,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -352,7 +353,12 @@ public class AsmRS extends MBDAOSupport {
     @Path("/{id}/attribute/{name}")
     @Transactional
     public void rmAsmAttribute(@PathParam("id") Long id,
-                               @PathParam("name") String name) {
+                               @PathParam("name") String name,
+                               @QueryParam("recursive") Boolean recursive) {
+
+        //log.info("Recursive remove=" + recursive);
+        //todo recursive remove!!!
+
         delete("deleteAttribute",
                "name", name,
                "asm_id", id);
@@ -449,7 +455,15 @@ public class AsmRS extends MBDAOSupport {
         }
         attr.asmId = id;
         update("upsertAttribute", attr);
-
+        if (attr.getId() == null) {
+            Number gid = selectOne("prevAttrID");
+            if (gid != null) {
+                attr.setId(gid.longValue());
+            }
+        }
+        if (am != null) {
+            am.attributePersisted(attr, spec.get("value"), req);
+        }
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
 

@@ -224,6 +224,10 @@ public class AsmWebRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+
+    }
+
 
     @Start(order = 10)
     public void start() {

@@ -330,8 +330,14 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             am.applyAttributeValue(attr, data.get(fname), req);
             update("upsertAttribute", attr);
+            if (attr.getId() == null) {
+                Number gid = selectOne("prevAttrID");
+                if (gid != null) {
+                    attr.setId(gid.longValue());
+                }
+            }
+            am.attributePersisted(attr, data.get(fname), req);
         }
-
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
     }
 

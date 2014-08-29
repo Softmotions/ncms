@@ -13,6 +13,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.guice.transactional.Transactional;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -252,6 +253,21 @@ public class AsmDAO extends MBDAOSupport {
         return selectOne("asmSelectSysprop",
                          "asmId", asmId,
                          "property", property);
+    }
+
+
+    @Transactional
+    public void updateAttrsIdxValues(AsmAttribute attr, Collection<String> values) {
+        if (attr.getId() == null) {
+            throw new IllegalArgumentException("Attribute instance with unspecified 'id' property");
+        } else {
+            update("deleteAttrsIdxValues", attr.getId());
+            if (!values.isEmpty()) {
+                insert("insertAttrsIdxValues",
+                       "attrId", attr.getId(),
+                       "values", values);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

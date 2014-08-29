@@ -124,4 +124,8 @@ public class AsmRichRefAM implements AsmAttributeManager {
         attr.setEffectiveValue(val != null ? val.toString() : null);
         return attr;
     }
+
+    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+
+    }
 }

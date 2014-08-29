@@ -49,6 +49,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
             form.add(el, this.tr("Display as"), null, "display");
 
             el = new qx.ui.form.Spinner(0, 0, Number.MAX_VALUE);
+            el.setAllowGrowX(false);
             if (opts["maxLength"] != null) {
                 el.setValue(Number(opts["maxLength"]));
             }

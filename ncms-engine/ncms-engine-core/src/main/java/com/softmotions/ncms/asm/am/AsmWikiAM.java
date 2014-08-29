@@ -124,4 +124,8 @@ public class AsmWikiAM implements AsmAttributeManager {
         attr.setEffectiveValue(root.toString());
         return attr;
     }
+
+    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+
+    }
 }

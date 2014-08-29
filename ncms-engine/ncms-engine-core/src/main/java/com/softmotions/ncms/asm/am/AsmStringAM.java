@@ -54,4 +54,8 @@ public class AsmStringAM implements AsmAttributeManager {
         attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
         return attr;
     }
+
+    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+
+    }
 }

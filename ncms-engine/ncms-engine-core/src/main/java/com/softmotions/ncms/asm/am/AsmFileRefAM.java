@@ -110,4 +110,8 @@ public class AsmFileRefAM implements AsmAttributeManager {
         attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText().trim() : null);
         return attr;
     }
+
+    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+
+    }
 }

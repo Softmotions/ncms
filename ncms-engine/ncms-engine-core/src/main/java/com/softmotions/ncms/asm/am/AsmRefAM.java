@@ -95,4 +95,8 @@ public class AsmRefAM implements AsmAttributeManager {
         attr.setEffectiveValue(name);
         return attr;
     }
+
+    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+
+    }
 }

@@ -20,6 +20,8 @@ import java.util.Date;
 @XmlAccessorType(XmlAccessType.NONE)
 public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
+    Long id;
+
     @JsonProperty
     long asmId;
 
@@ -75,6 +77,13 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.type = type;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public long getAsmId() {
         return asmId;

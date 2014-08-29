@@ -35,19 +35,24 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             el.add(new qx.ui.form.RadioButton(this.tr("list")).set({"model" : "list"}));
             el.add(new qx.ui.form.RadioButton(this.tr("selectbox")).set({"model" : "selectbox"}));
             el.setModelSelection(opts["display"] ? [opts["display"]] : ["selectbox"]);
+            el.addListener("changeSelection", this.__syncState, this);
             form.add(el, this.tr("Display as"), null, "display");
 
             var table = new ncms.asm.am.SelectAMTable();
 
             el = new qx.ui.form.CheckBox();
-            el.addListener("changeValue", function(ev) {
-                var val = ev.getData();
-                table.setCheckMode(val ? "multiply" : "single");
-            });
             if (opts["multiselect"] != null) {
                 el.setValue(opts["multiselect"] == "true" || opts["multiselect"] === true);
             }
+            el.addListener("changeValue", this.__syncState, this);
             form.add(el, this.tr("Multi select"), null, "multiselect");
+
+            el = new qx.ui.form.TextField();
+            if (opts["fetchfrom"] != null) {
+                el.setValue(opts["fetchfrom"]);
+            }
+            el.addListener("input", this.__syncState, this);
+            form.add(el, this.tr("Fetch from"), null, "fetchfrom");
 
             //---------- Table
             this._fetchAttributeValue(attrSpec, function(val) {
@@ -59,16 +64,33 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             });
             form.add(table, this.tr("Items"), null, "table");
             this._form = form;
+
+            this.__syncState();
             return new sm.ui.form.FlexFormRenderer(form);
+        },
+
+        __syncState : function() {
+            if (this._form == null) {
+                return;
+            }
+            var items = this._form.getItems();
+            var table = items["table"];
+            var multiselect = items["multiselect"];
+            var fetchfrom = items["fetchfrom"];
+            var display = items["display"].getModelSelection().getItem(0);
+            multiselect.setEnabled(display == "list");
+            table.setCheckMode((multiselect.getEnabled() && multiselect.getValue()) ? "multiply" : "single");
+            table.setEnabled(sm.lang.String.isEmpty(fetchfrom.getValue()));
         },
 
         optionsAsJSON : function() {
             var items = this._form.getItems();
             var table = items["table"];
-            var value = table.toJSONValue();
+            var value = (table.isEnabled() ? table.toJSONValue() : null);
             return {
-                multiselect : items["multiselect"].getValue(),
+                multiselect : items["multiselect"].getEnabled() ? items["multiselect"].getValue() : false,
                 display : items["display"].getModelSelection().getItem(0),
+                fetchfrom : items["fetchfrom"].getValue(),
                 value : value
             };
         },

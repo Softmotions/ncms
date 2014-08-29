@@ -306,13 +306,25 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             if (rd == null || rd["asmId"] != this.__spec["id"]) {
                 return;
             }
-            var req = new sm.io.Request(
-                    ncms.Application.ACT.getRestUrl("asms.attribute",
-                            {id : rd["asmId"], name : rd["name"]}),
-                    "DELETE", "application/json");
-            req.send(function() {
-                this.fireEvent("attributesChanged");
-            }, this);
+            ncms.Application.confirmCb(
+                    this.tr("A you sure to remove attribute?"),
+                    this.tr("Recursive?"),
+                    false,
+                    function(yes, recursive) {
+                        if (!yes) {
+                            return;
+                        }
+                        var req = new sm.io.Request(
+                                ncms.Application.ACT.getRestUrl("asms.attribute",
+                                        {id : rd["asmId"], name : rd["name"]}),
+                                "DELETE", "application/json");
+                        req.setParameter("recursive", !!recursive);
+                        req.send(function() {
+                            this.fireEvent("attributesChanged");
+                        }, this);
+                    },
+                    this
+            );
         },
 
         __onEdit : function(ev, rd) {
