@@ -84,6 +84,7 @@
             resultMap="asmFullRM"
             useCache="true">
         SELECT asm.*,
+        attr.id AS attr_id,
         attr.asm_id AS attr_asm_id,
         attr.name AS attr_name,
         attr.label AS attr_label,
@@ -120,8 +121,8 @@
     <insert id="asmSetAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         INSERT INTO asm_attrs
-        (asm_id, name, type, label, options, value, large_value)
-        VALUES (#{asmId}, #{name}, #{type}, #{label}, #{options}, #{value}, #{largeValue})
+        (id, asm_id, name, type, label, options, value, large_value)
+        VALUES (NEXT VALUE FOR SEQ_ATTR_ID, #{asmId}, #{name}, #{type}, #{label}, #{options}, #{value}, #{largeValue})
     </insert>
 
 
@@ -138,6 +139,9 @@
         WHERE id = #{id}
     </update>
 
+
+
+
     <!-- ======================= Nested selects =========================== -->
 
     <select id="selectAsmParents"
@@ -146,6 +150,7 @@
             parameterType="long">
         SELECT
             asm.*,
+            attr.id              AS attr_id,
             attr.asm_id          AS attr_asm_id,
             attr.name            AS attr_name,
             attr.label           AS attr_label,
@@ -236,7 +241,6 @@
               AND attr.name = #{name}
     </select>
 
-
     <insert id="asmInsertSysprop" parameterType="map">
         INSERT INTO ASM_SYSPROPS
         (asm_id, property, value)
@@ -259,6 +263,20 @@
         FROM ASM_SYSPROPS sp
         WHERE sp.asm_id = #{asmId} AND sp.property = #{property}
     </select>
+
+    <delete id="deleteAttrsIdxValues" parameterType="long">
+        DELETE FROM ASM_ATTR_IDXVALS
+        WHERE ATTR_ID = #{id}
+    </delete>
+
+    <insert id="insertAttrsIdxValues" parameterType="map">
+        INSERT INTO ASM_ATTR_IDXVALS
+        VALUES
+        <foreach item="value" index="index" collection="values"
+                 open="" separator="," close="">
+            (#{attrId}, #{value})
+        </foreach>
+    </insert>
 
     <!-- ======================== Result maps ============================= -->
 

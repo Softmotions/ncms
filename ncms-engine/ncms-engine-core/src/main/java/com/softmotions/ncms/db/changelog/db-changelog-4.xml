@@ -76,4 +76,42 @@
 
     </changeSet>
 
+    <changeSet id="8" author="adamansky@gmail.com">
+        <createSequence sequenceName="SEQ_ATTR_ID" incrementBy="1" startValue="1"/>
+    </changeSet>
+
+    <changeSet id="9" author="adamansky@gmail.com">
+        <sql>ALTER TABLE asm_attrs ADD COLUMN id BIGINT NOT NULL WITH DEFAULT 0</sql>
+        <sql dbms="db2">CALL SYSPROC.ADMIN_CMD ('REORG TABLE asm_attrs')</sql>
+        <sql>UPDATE asm_attrs set id = SEQ_ATTR_ID.NEXTVAL</sql>
+        <sql>ALTER TABLE asm_attrs ADD CONSTRAINT pk_asm_attrs PRIMARY KEY (id)</sql>
+        <sql dbms="db2">CALL SYSPROC.ADMIN_CMD ('REORG TABLE asm_attrs')</sql>
+    </changeSet>
+
+    <changeSet id="10" author="adamansky@gmail.com">
+
+        <createTable tableName="ASM_ATTR_IDXVALS">
+            <column name="ATTR_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="ASM_ATTR_IDXVALS"
+                                 baseColumnNames="ATTR_ID"
+                                 constraintName="FK_ATTRIDXVALS_ATTRS"
+                                 referencedTableName="ASM_ATTRS"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+        <createIndex tableName="ASM_ATTR_IDXVALS" indexName="IDX_ASMATTRIDXVALS_VALS">
+            <column name="VALUE"/>
+            <column name="ATTR_ID"/>
+        </createIndex>
+    </changeSet>
+
+
+
 </databaseChangeLog>

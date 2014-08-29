@@ -862,7 +862,14 @@
         content: '';
       }
 
-      img {
+      > div.news-img-holder {
+        width: 81px;
+        height: 68px;
+        overflow: hidden;
+        margin: 0 0 10px;
+      }
+
+      > img {
         display: block;
         margin: 0 0 10px;
       }

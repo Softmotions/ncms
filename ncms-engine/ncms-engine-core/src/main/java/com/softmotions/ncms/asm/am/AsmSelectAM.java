@@ -3,6 +3,7 @@ package com.softmotions.ncms.asm.am;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageService;
@@ -48,10 +49,13 @@ public class AsmSelectAM implements AsmAttributeManager {
 
     private final PageService pageService;
 
+    private final AsmDAO adao;
+
     @Inject
-    public AsmSelectAM(ObjectMapper mapper, PageService pageService) {
+    public AsmSelectAM(ObjectMapper mapper, PageService pageService, AsmDAO adao) {
         this.mapper = mapper;
         this.pageService = pageService;
+        this.adao = adao;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -209,4 +213,22 @@ public class AsmSelectAM implements AsmAttributeManager {
         return attr;
     }
 
+    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+        JsonNode value = val.get("value");
+        List<String> mvals = new ArrayList<>();
+        if (value != null && value.isArray()) {
+            ArrayNode arr = (ArrayNode) value;
+            for (int i = 0, l = arr.size(); i < l; ++i) {
+                if (!arr.get(i).isArray()) {
+                    continue;
+                }
+                ArrayNode slot = (ArrayNode) arr.get(i);
+                if (slot.size() != 3 || !slot.get(0).isBoolean() || !slot.get(0).asBoolean()) {
+                    continue;
+                }
+                mvals.add(slot.get(2).asText());
+            }
+        }
+        adao.updateAttrsIdxValues(attr, mvals);
+    }
 }

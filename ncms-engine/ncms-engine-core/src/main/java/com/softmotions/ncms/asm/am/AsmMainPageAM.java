@@ -51,4 +51,8 @@ public class AsmMainPageAM implements AsmAttributeManager {
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
         return attr;
     }
+
+    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+
+    }
 }

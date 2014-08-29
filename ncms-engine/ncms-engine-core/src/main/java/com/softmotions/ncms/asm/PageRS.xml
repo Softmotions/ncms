@@ -260,7 +260,7 @@
         MERGE INTO asm_attrs (asm_id, NAME, LABEL, TYPE,
         OPTIONS, required, VALUE, large_value, mdate)
         KEY (asm_id, NAME)
-        VALUES (#{asmId}, #{name}, #{label}, #{type},
+        VALUES (NEXT VALUE FOR SEQ_ATTR_ID, #{asmId}, #{name}, #{label}, #{type},
                 #{options}, #{required}, #{value}, #{largeValue}, now())
     </update>
 
@@ -287,11 +287,20 @@
             a.large_value = s.large_value,
             a.mdate       = s.mdate
         WHEN NOT MATCHED THEN
-        INSERT (asm_id, name, label, type,
+        INSERT (id, asm_id, name, label, type,
                 options, required, value, large_value, mdate)
-        VALUES (s.asm_id, s.name, s.label, s.type,
+        VALUES (NEXT VALUE FOR SEQ_ATTR_ID, s.asm_id, s.name, s.label, s.type,
                 s.options, s.required, s.value, s.large_value, s.mdate)
     </update>
+
+
+    <select id="prevAttrID"
+            databaseId="DB2"
+            resultType="long">
+        SELECT
+        PREVIOUS VALUE FOR SEQ_ATTR_ID
+        FROM SYSIBM.DUAL
+    </select>
 
 
     <delete id="deleteAttrsByNames"

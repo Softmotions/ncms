@@ -26,4 +26,6 @@ public interface AsmAttributeManager {
 
     AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req);
 
+    void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req);
+
 }

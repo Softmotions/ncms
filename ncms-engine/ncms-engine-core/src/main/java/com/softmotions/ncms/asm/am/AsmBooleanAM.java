@@ -59,4 +59,8 @@ public class AsmBooleanAM implements AsmAttributeManager {
         }
         return attr;
     }
+
+    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+
+    }
 }
