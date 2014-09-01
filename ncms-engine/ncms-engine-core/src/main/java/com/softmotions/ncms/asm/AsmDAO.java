@@ -362,9 +362,6 @@ public class AsmDAO extends MBDAOSupport {
             //noinspection InnerClassTooDeeplyNested
             select(new ResultHandler() {
                 public void handleResult(ResultContext context) {
-                    // Columns: id, name, hname, type, attr_id, attr_name, attr_type, attr_value, iv_attr_id, iv_value
-                    // Row: 321, f8452b9bce15f78075c99733377278b9, Новый сайт НГУ, news.page, category, select, [[false,"Новости","Новости"],[false,"Интервью","Интервью"],
-                    // [true,"Репортажи","Репортажи"],[false,"Сми","Сми"]], 169, Репортажи
                     @SuppressWarnings("unchecked")
                     Map<String, Object> row = (Map<String, Object>) context.getResultObject();
                     long id = ((Number) row.get("id")).longValue();
