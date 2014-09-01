@@ -148,14 +148,16 @@
                 options,
                 mdate, muser, owner,
                 description,
-                recursive_acl_id)
+                recursive_acl_id,
+                cdate)
         VALUES (s.name, s.hname, s.type,
                 s.nav_parent_id,
                 s.nav_cached_path,
                 s.options,
                 s.mdate, s.muser, s.owner,
                 s.description,
-                s.recursive_acl_id)
+                s.recursive_acl_id,
+                current_timestamp)
     </update>
 
 

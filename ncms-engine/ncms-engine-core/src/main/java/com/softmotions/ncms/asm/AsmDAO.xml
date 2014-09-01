@@ -50,9 +50,9 @@
     <insert id="asmInsert" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
         INSERT INTO asms
-        (name, type, description, template
+        (name, type, description, template, cdate
         <if test="core != null">, asm_core_id</if>)
-        VALUES (#{name}, #{type}, #{description}, #{template}
+        VALUES (#{name}, #{type}, #{description}, #{template}, current_timestamp
         <if test="core != null">, #{core.id}</if>)
     </insert>
 

@@ -120,5 +120,16 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="12" author="adamansky@gmail.com">
+        <addColumn tableName="ASMS">
+            <column name="CDATE" type="TIMESTAMP"/>
+        </addColumn>
+        <sql>
+            UPDATE asms SET cdate = mdate WHERE mdate IS NOT NULL
+        </sql>
+        <sql>
+            UPDATE asms SET cdate = current_timestamp WHERE cdate IS NULL
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
