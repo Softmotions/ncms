@@ -6,9 +6,12 @@ import com.softmotions.commons.cont.Pair;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.AbstractIterator;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -350,6 +353,41 @@ public class Asm implements Serializable {
         }
         return null;
     }
+
+    public String getEffectiveAttributeAsString(String name, String defVal) {
+        AsmAttribute attr = getEffectiveAttribute(name);
+        if (attr == null) {
+            return defVal;
+        }
+        return attr.getEffectiveValue();
+    }
+
+    public String[] getEffectiveAttributeAsStringArray(String name, ObjectMapper mapper) {
+        AsmAttribute attr = getEffectiveAttribute(name);
+        if (attr == null) {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+        String val = attr.getEffectiveValue();
+        if (StringUtils.isBlank(val)) {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+        val = val.trim();
+        if (val.charAt(0) == '[') { //todo it is optimistic JSON array detection :(
+            try {
+                ArrayNode an = (ArrayNode) mapper.readTree(val);
+                String[] ret = new String[an.size()];
+                for (int i = 0, l = ret.length; i < l; ++i) {
+                    ret[i] = an.get(i).asText();
+                }
+                return ret;
+            } catch (Exception ignored) {
+                return ArrayUtils.EMPTY_STRING_ARRAY;
+            }
+        } else {
+            return com.softmotions.commons.cont.ArrayUtils.split(val, " ,;");
+        }
+    }
+
 
     public AsmAttribute getAttribute(String name) {
         return (getAttributes() != null) ? attributes.getIndex().get(name) : null;

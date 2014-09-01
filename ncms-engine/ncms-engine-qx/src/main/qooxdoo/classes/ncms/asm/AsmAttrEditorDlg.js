@@ -77,7 +77,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         //GUI label
         el = new qx.ui.form.TextField();
-        el.setMaxLength(32);
+        el.setMaxLength(64);
         if (attrSpec != null) {
             el.setValue(attrSpec["label"])
         }

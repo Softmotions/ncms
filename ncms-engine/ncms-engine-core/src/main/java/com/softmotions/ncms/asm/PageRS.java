@@ -250,7 +250,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                     }
                     AsmAttributeManager am = amRegistry.getByType(a.getType());
                     if (am != null) {
-                        a = am.prepareGUIAttribute(template, tmplAttr, a);
+                        a = am.prepareGUIAttribute(page, template, tmplAttr, a);
                         if (a == null) {
                             continue;
                         }
@@ -1169,7 +1169,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                     continue;
                 }
                 String langs = (String) options.get("lang");
-                String[] lcodes = langs.split("\\s+|,+|;+");
+                String[] lcodes = ArrayUtils.split(langs, " ,;");
                 for (String lang : lcodes) {
                     log.info("Registering page: '" + lp + "' as the MAIN PAGE for lang: " + lang);
                     lang2IndexPages.put(lang, id);

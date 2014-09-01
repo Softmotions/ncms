@@ -87,6 +87,20 @@
     </delete>
 
 
+    <delete id="deleteAttributeFromChilds"
+            parameterType="map">
+        DELETE FROM asm_attrs
+        WHERE
+            name = #{name}
+            AND asm_id IN (
+                SELECT
+                    ap.asm_id
+                FROM asm_parents AS ap
+                WHERE ap.asm_parent_id = #{parent_id}
+            )
+    </delete>
+
+
     <insert id="insertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         INSERT INTO asm_attrs

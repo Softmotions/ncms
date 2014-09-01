@@ -112,6 +112,13 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="11" author="adamansky@gmail.com">
+        <createIndex tableName="ASM_ATTRS" indexName="IDX_ASMATTRS_TNV">
+            <column name="TYPE"/>
+            <column name="NAME"/>
+            <column name="VALUE"/>
+        </createIndex>
+    </changeSet>
 
 
 </databaseChangeLog>

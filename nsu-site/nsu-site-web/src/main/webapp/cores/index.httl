@@ -44,12 +44,18 @@
     <div class="three-col">
         <div class="news-holder">
             <ul class="tabset">
-                <li class="active"><a href="#">Новости</a></li>
-                <li><a href="#">Интервью</a></li>
+                #foreach(String nc in newsCategories)
+                #if(nc == activeCategory)
+                <li class="active"><a href="#">${nc}</a></li>
+                #else
+                <li><a href="#">${nc}</a></li>
+                #end
+                #end
             </ul>
             <div class="tab-holder">
                 <div class="tab active">
                     <ul class="news-list">
+                        #foreach(Asm pn in news)
                         <li>
                             <div class="img-holder">
                                 <div class="news-img-holder">
@@ -65,34 +71,7 @@
                                 <span class="tag">Атмосфера</span>
                             </div>
                         </li>
-                        <li>
-                            <div class="img-holder">
-                                <div class="news-img-holder">
-                                    <img src="images/img3.png" alt="image description" />
-                                </div>
-                                <span class="date">13</span>
-                                <span class="month">май</span>
-                                <span class="year">2014</span>
-                            </div>
-                            <div class="text-holder">
-                                <h3><a href="#">Лекция «Хайтек <br/>в современном мире»</a></h3>
-                                <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт Израиля». Лекция состоится 12 мая в 17.45 в большой </p>
-                                <span class="tag">Образование</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="img-holder">
-                                <img src="images/img4.png" width="81" height="68" alt="image description" />
-                                <span class="date">9</span>
-                                <span class="month">май</span>
-                                <span class="year">2014</span>
-                            </div>
-                            <div class="text-holder">
-                                <h3><a href="#">Возложение цветов</a></h3>
-                                <p>В рамках мероприятий, посвященных празднованию Дня Победы, социальное управление приглашает студентов и сотрудников НГУ принять участие в </p>
-                                <span class="tag">Атмосфера</span>
-                            </div>
-                        </li>
+                        #end
                     </ul>
                 </div>
             </div>

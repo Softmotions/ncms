@@ -49,10 +49,10 @@
         loggers=httl.spi.loggers.Slf4jLogger
         loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
         import.methods+=com.softmotions.ncms.asm.render.httl.HttlAsmMethods
-        import.packages+=com.softmotions.ncms.mhttl
+        import.packages+=com.softmotions.ncms.mhttl\,com.softmotions.ncms.asm
         value.filters=httl.spi.filters.EscapeXmlFilter
         reloadable=true
-        code.directory=/tmp/httl-code1
+        code.directory=/tmp/httl-code
     </httl>
 
     <asm>

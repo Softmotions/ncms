@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm;
 
+import com.softmotions.commons.cont.Pair;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.weboot.mb.MBAction;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
@@ -8,13 +9,20 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.ibatis.session.ResultContext;
+import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Assembly access DAO.
@@ -24,7 +32,9 @@ import java.util.List;
 @Singleton
 public class AsmDAO extends MBDAOSupport {
 
-    final SqlSessionFactory sessionFactory;
+    private static final Logger log = LoggerFactory.getLogger(AsmDAO.class);
+
+    private final SqlSessionFactory sessionFactory;
 
     @Inject
     public AsmDAO(SqlSession sess, SqlSessionFactory sessionFactory) {
@@ -270,6 +280,11 @@ public class AsmDAO extends MBDAOSupport {
         }
     }
 
+    public PageCriteria newPageCriteria() {
+        return new PageCriteria(this, this.namespace).withStatement("queryAttrs");
+    }
+
+
     @SuppressWarnings("unchecked")
     static class CriteriaBase<T extends CriteriaBase> extends MBCriteriaQuery<T> {
 
@@ -308,6 +323,71 @@ public class AsmDAO extends MBDAOSupport {
         public AsmCriteria onAsm() {
             prefixedBy(null);
             return this;
+        }
+    }
+
+    public static class PageCriteria extends CriteriaBase<PageCriteria> {
+
+        private List<Pair<String, Object>> attrs = new ArrayList<>();
+
+        public PageCriteria(AsmDAO dao, String namespace) {
+            super(dao, namespace);
+            withStatement("queryByAttrs");
+        }
+
+        public PageCriteria withPublished(boolean val) {
+            return withParam("published", val);
+        }
+
+        public PageCriteria withNavParentId(long id) {
+            return withParam("navParentId", id);
+        }
+
+        public PageCriteria withTypeLike(String type) {
+            return withParam("type", type);
+        }
+
+        public PageCriteria withAttributeLike(String name, Object val) {
+            attrs.add(new Pair<>(name, val));
+            return this;
+        }
+
+        public PageCriteria finish() {
+            withParam("attrs", attrs);
+            return super.finish();
+        }
+
+        public Collection<Asm> selectAsAsms() {
+            final Map<Long, Asm> asmGroup = new LinkedHashMap<>();
+            //noinspection InnerClassTooDeeplyNested
+            select(new ResultHandler() {
+                public void handleResult(ResultContext context) {
+                    // Columns: id, name, hname, type, attr_id, attr_name, attr_type, attr_value, iv_attr_id, iv_value
+                    // Row: 321, f8452b9bce15f78075c99733377278b9, Новый сайт НГУ, news.page, category, select, [[false,"Новости","Новости"],[false,"Интервью","Интервью"],
+                    // [true,"Репортажи","Репортажи"],[false,"Сми","Сми"]], 169, Репортажи
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> row = (Map<String, Object>) context.getResultObject();
+                    long id = ((Number) row.get("id")).longValue();
+                    Asm asm = asmGroup.get(id);
+                    if (asm == null) {
+                        asm = new Asm(id, (String) row.get("name"));
+                        asm.setHname((String) row.get("hnme"));
+                        asm.setType((String) row.get("type"));
+                        asmGroup.put(id, asm);
+                    }
+                    AsmAttribute attr = new AsmAttribute();
+                    attr.setId(((Number) row.get("attr_id")).longValue());
+                    attr.setName((String) row.get("attr_name"));
+                    attr.setType((String) row.get("attr_type"));
+                    if (row.get("iv_attr_id") != null) {
+                        attr.setValue((String) row.get("iv_value"));
+                    } else {
+                        attr.setValue((String) row.get("attr_value"));
+                    }
+                    asm.addAttribute(attr);
+                }
+            });
+            return asmGroup.values();
         }
     }
 

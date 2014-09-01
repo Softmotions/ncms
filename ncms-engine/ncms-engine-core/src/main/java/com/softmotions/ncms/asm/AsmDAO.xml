@@ -139,9 +139,6 @@
         WHERE id = #{id}
     </update>
 
-
-
-
     <!-- ======================= Nested selects =========================== -->
 
     <select id="selectAsmParents"
@@ -277,6 +274,59 @@
             (#{attrId}, #{value})
         </foreach>
     </insert>
+
+    <select id="queryAttrs" parameterType="map" resultType="map">
+        SELECT
+            asm.id      AS "id",
+            asm.name    AS "name",
+            asm.hname   AS "hname",
+            asm.type    AS "type",
+            attr.id     AS "attr_id",
+            attr.name   AS "attr_name",
+            attr.type   AS "attr_type",
+            attr.value  AS "attr_value",
+            iv.attr_id  AS "iv_attr_id",
+            iv.value    AS "iv_value"
+        FROM asms AS asm
+            INNER JOIN asm_attrs AS attr ON attr.asm_id = asm.id
+            LEFT OUTER JOIN asm_attr_idxvals AS iv ON iv.attr_id = attr.id
+        WHERE
+        <trim prefixOverrides="AND | OR">
+            <if test="navParentId != null">
+            AND asm.nav_parent_id = #{navParentId}
+            </if>
+            <if test="published != null">
+            AND asm.published = #{published}
+            </if>
+            <if test="type != null">
+            AND asm.type LIKE #{type}
+            </if>
+            <if test="attrs != null and !attrs.isEmpty">
+            AND (
+              <trim prefixOverrides="OR">
+                <foreach collection="attrs" item="attr">
+                       OR (
+                          attr.type NOT IN ( 'select' )
+                          AND attr.name = #{attr.one} AND attr.value LIKE #{attr.two}
+                       )
+
+                       OR (
+                          attr.type IN ( 'select' )
+                          AND attr.name = #{attr.one} AND iv.value LIKE #{attr.two}
+                       )
+                </foreach>
+              </trim>
+            )
+           </if>
+        </trim>
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            LIMIT ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                OFFSET ${CQ_OFFSET}
+            </if>
+        </if>
+    </select>
 
     <!-- ======================== Result maps ============================= -->
 

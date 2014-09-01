@@ -62,24 +62,24 @@ public class AsmSelectAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    private ArrayNode checkFetchFrom(AsmAttribute attr) {
+    private ArrayNode checkFetchFrom(Asm page, AsmAttribute attr) {
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         KVOptions opts = new KVOptions(attr.getOptions());
         String fetchFrom = opts.getString("fetchfrom");
         if (StringUtils.isBlank(fetchFrom)) {
             return null;
         }
-        Long id = attr.getAsmId();
-        CachedPage page = pageService.getCachedPage(id, true);
-        id = page.getAsm().getNavParentId();
+        Long id = page.getId();
+        CachedPage npPage = pageService.getCachedPage(id, true);
+        id = npPage.getAsm().getNavParentId();
         if (id == null) {
             return null;
         }
-        page = pageService.getCachedPage(id, true);
-        if (page == null) {
+        npPage = pageService.getCachedPage(id, true);
+        if (npPage == null) {
             return null;
         }
-        AsmAttribute fattr = page.getAsm().getEffectiveAttribute(fetchFrom);
+        AsmAttribute fattr = npPage.getAsm().getEffectiveAttribute(fetchFrom);
         if (fattr == null || !"string".equals(fattr.getType())) {
             return null;
         }
@@ -100,8 +100,9 @@ public class AsmSelectAM implements AsmAttributeManager {
         return res;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
-        ArrayNode tArr = checkFetchFrom(attr);
+    public AsmAttribute prepareGUIAttribute(Asm page, Asm template,
+                                            AsmAttribute tmplAttr, AsmAttribute attr) {
+        ArrayNode tArr = checkFetchFrom(page, attr);
         if (tArr == null && (tmplAttr == null || StringUtils.isBlank(tmplAttr.getEffectiveValue()))) {
             if (StringUtils.isBlank(attr.getEffectiveValue())) {
                 attr.setEffectiveValue("[]");

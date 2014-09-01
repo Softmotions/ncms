@@ -61,7 +61,7 @@
         loggers=httl.spi.loggers.Slf4jLogger
         loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
         import.methods+=com.softmotions.ncms.asm.render.httl.HttlAsmMethods
-        import.packages+=com.softmotions.ncms.mhttl
+        import.packages+=com.softmotions.ncms.mhttl\,com.softmotions.ncms.asm
         reloadable=true
         ##code.directory=/tmp/httl-code
     </httl>
@@ -125,7 +125,7 @@
         <lru-cache-size>4096</lru-cache-size>
     </pages>
 
-    <oauth2-authorize>
+    <oauth2>
         <provider>
             <auth-endpoint>http://localhost:9011/oauth2/authorize</auth-endpoint>
             <token-endpoint>http://localhost:9011/oauth2/token</token-endpoint>
@@ -135,6 +135,11 @@
             <id>53feb63b52185f6e3d78a212</id>
             <secret>3peUmn2HVnD6k4KqpPP4Z3R_D7nQN5aDGYujWOT9sRs</secret>
         </client>
-    </oauth2-authorize>
+    </oauth2>
+
+
+    <content>
+
+    </content>
 
 </configuration>

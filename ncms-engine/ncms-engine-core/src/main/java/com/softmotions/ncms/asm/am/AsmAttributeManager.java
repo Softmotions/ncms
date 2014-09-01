@@ -17,7 +17,8 @@ public interface AsmAttributeManager {
 
     String[] getSupportedAttributeTypes();
 
-    AsmAttribute prepareGUIAttribute(Asm template, AsmAttribute tmplAttr, AsmAttribute attr);
+    AsmAttribute prepareGUIAttribute(Asm page, Asm template,
+                                     AsmAttribute tmplAttr, AsmAttribute attr);
 
     Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                               Map<String, String> options) throws AsmRenderingException;

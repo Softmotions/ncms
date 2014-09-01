@@ -352,18 +352,29 @@ public class AsmRS extends MBDAOSupport {
     @DELETE
     @Path("/{id}/attribute/{name}")
     @Transactional
-    public void rmAsmAttribute(@PathParam("id") Long id,
+    public void rmAsmAttribute(@PathParam("id") Long asmId,
                                @PathParam("name") String name,
                                @QueryParam("recursive") Boolean recursive) {
-
-        //log.info("Recursive remove=" + recursive);
-        //todo recursive remove!!!
-
         delete("deleteAttribute",
                "name", name,
-               "asm_id", id);
+               "asm_id", asmId);
+        if (recursive != null && recursive.booleanValue()) {
+            log.info("Remove assembly attribute recursive, attr=" + asmId + " name=" + name);
+            deleteAttributeFromChilds(asmId, name);
+        }
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, asmId));
+    }
 
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+
+    private void deleteAttributeFromChilds(long parentId, String name) {
+        update("deleteAttributeFromChilds",
+               "parent_id", parentId,
+               "name", name);
+        List<Number> childIds = select("selectNotEmptyChilds",
+                                       "parent_id", parentId);
+        for (Number cId : childIds) {
+            deleteAttributeFromChilds(cId.longValue(), name);
+        }
     }
 
 
@@ -461,7 +472,7 @@ public class AsmRS extends MBDAOSupport {
                 attr.setId(gid.longValue());
             }
         }
-        if (am != null) {
+        if (am != null && spec.hasNonNull("value")) {
             am.attributePersisted(attr, spec.get("value"), req);
         }
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
