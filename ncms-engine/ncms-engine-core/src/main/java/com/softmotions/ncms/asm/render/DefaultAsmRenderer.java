@@ -97,6 +97,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
             CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest());
             if (indexPage != null && !indexPage.getAsm().equals(asm)) {
                 ctx = ctx.createSubcontext(indexPage.getAsm());
+                //noinspection TailRecursion
                 return renderAsmAttribute(ctx, attributeName, options);
             }
             log.warn("Attribute: '" + attributeName +
