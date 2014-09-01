@@ -68,7 +68,16 @@ public final class Image {
     }
 
     public String getLink() {
-        return ctx.getCfg().getFileLink(id);
+        String link = ctx.getCfg().getFileLink(id);
+        if (resize) {
+            if (optionsWidth != null) {
+                link += "?w=" + optionsWidth;
+            }
+            if (optionsHeight != null) {
+                link += (((optionsWidth != null) ? "&h=" : "?h=") + optionsHeight);
+            }
+        }
+        return link;
     }
 
     public String toString() {

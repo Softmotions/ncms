@@ -379,8 +379,16 @@
       text-decoration: none;
     }
 
-    .active a,
     a:hover {
+      color: #1c1c1c;
+      text-decoration: none;
+      z-index: 2;
+      position: relative;
+      margin: 0 0 -2px;
+      border-bottom: 2px solid #3395e1;
+    }
+
+    .active a {
       color: #1c1c1c;
       text-decoration: none;
       z-index: 2;
@@ -516,7 +524,7 @@
         background: url(../images/arrow-list.png) no-repeat 246px 50%;
       }
 
-      &.active > a/*, > a:hover*/                                          {
+      &.active > a/*, > a:hover*/                                           {
         text-decoration: none;
         color: #fff;
         margin: -1px;

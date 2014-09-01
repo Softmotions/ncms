@@ -88,39 +88,35 @@ public class AsmImageAM implements AsmAttributeManager {
         }
         Image res = new Image(ctx);
         try (JsonParser parser = mapper.getFactory().createParser(value)) {
-            JsonToken t;
             String key;
             if (parser.nextToken() != JsonToken.START_OBJECT) {
                 return Collections.EMPTY_LIST;
             }
-            t = parser.nextValue();
-            if (t == null) {
-                return res;
-            }
-            key = parser.getCurrentName();
-            if ("id".equals(key)) {
-                res.setId(parser.getValueAsLong());
-            } else if ("options".equals(key)) {
-                while ((t = parser.nextValue()) != null) {
-                    key = parser.getCurrentName();
-                    switch (key) {
-                        case "width":
-                            res.setOptionsWidth(parser.getValueAsInt());
-                            break;
-                        case "height":
-                            res.setOptionsHeight(parser.getValueAsInt());
-                            break;
-                        case "resize":
-                            res.setResize(parser.getValueAsBoolean());
-                            break;
-                        case "restrict":
-                            res.setRestrict(parser.getValueAsBoolean());
-                            break;
-                        case "skipSmall":
-                            res.setSkipSmall(parser.getValueAsBoolean(true));
-                            break;
-                        default:
-                            break;
+            while (parser.nextValue() != null) {
+                key = parser.getCurrentName();
+                if ("id".equals(key)) {
+                    res.setId(parser.getValueAsLong());
+                } else if ("options".equals(key)) {
+                    while (parser.nextValue() != null && (key = parser.getCurrentName()) != null) {
+                        switch (key) {
+                            case "width":
+                                res.setOptionsWidth(parser.getValueAsInt());
+                                break;
+                            case "height":
+                                res.setOptionsHeight(parser.getValueAsInt());
+                                break;
+                            case "resize":
+                                res.setResize(parser.getValueAsBoolean());
+                                break;
+                            case "restrict":
+                                res.setRestrict(parser.getValueAsBoolean());
+                                break;
+                            case "skipSmall":
+                                res.setSkipSmall(parser.getValueAsBoolean(true));
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }

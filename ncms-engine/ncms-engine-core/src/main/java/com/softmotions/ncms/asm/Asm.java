@@ -12,6 +12,8 @@ import com.google.common.collect.AbstractIterator;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -39,6 +41,8 @@ import java.util.Set;
 @JsonRootName("asm")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Asm implements Serializable {
+
+    private static final Logger log = LoggerFactory.getLogger(Asm.class);
 
     interface ViewFull {
     }
@@ -354,6 +358,10 @@ public class Asm implements Serializable {
         return null;
     }
 
+    public boolean isHasAttribute(String name) {
+        return (getEffectiveAttribute(name) != null);
+    }
+
     public String getEffectiveAttributeAsString(String name, String defVal) {
         AsmAttribute attr = getEffectiveAttribute(name);
         if (attr == null) {
@@ -372,7 +380,7 @@ public class Asm implements Serializable {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
         val = val.trim();
-        if (val.charAt(0) == '[') { //todo it is optimistic JSON array detection :(
+        if (val.length() > 1 && val.charAt(0) == '[' && val.charAt(val.length() - 1) == ']') { //todo Naive JSON array detection :(
             try {
                 ArrayNode an = (ArrayNode) mapper.readTree(val);
                 String[] ret = new String[an.size()];
@@ -387,7 +395,6 @@ public class Asm implements Serializable {
             return com.softmotions.commons.cont.ArrayUtils.split(val, " ,;");
         }
     }
-
 
     public AsmAttribute getAttribute(String name) {
         return (getAttributes() != null) ? attributes.getIndex().get(name) : null;

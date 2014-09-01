@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,7 +88,9 @@ public class DefaultAsmRenderer implements AsmRenderer {
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attributeName,
                                      Map<String, String> options) throws AsmRenderingException {
-
+        if (options == null) {
+            options = Collections.EMPTY_MAP;
+        }
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attributeName);
         if (attr == null) {
@@ -97,7 +100,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
                 return renderAsmAttribute(ctx, attributeName, options);
             }
             log.warn("Attribute: '" + attributeName +
-                     "' not found in assembly: '" + asm.getName() + '\'');
+                     "' not found in assembly: '" + ctx.getRootAsm().getName() + '\'');
             return null;
         }
         String type = attr.getType();

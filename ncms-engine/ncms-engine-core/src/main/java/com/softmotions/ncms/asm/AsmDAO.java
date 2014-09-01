@@ -371,20 +371,19 @@ public class AsmDAO extends MBDAOSupport {
                     Asm asm = asmGroup.get(id);
                     if (asm == null) {
                         asm = new Asm(id, (String) row.get("name"));
-                        asm.setHname((String) row.get("hnme"));
+                        asm.setHname((String) row.get("hname"));
                         asm.setType((String) row.get("type"));
                         asmGroup.put(id, asm);
                     }
-                    AsmAttribute attr = new AsmAttribute();
-                    attr.setId(((Number) row.get("attr_id")).longValue());
-                    attr.setName((String) row.get("attr_name"));
-                    attr.setType((String) row.get("attr_type"));
-                    if (row.get("iv_attr_id") != null) {
-                        attr.setValue((String) row.get("iv_value"));
-                    } else {
+                    String attrName = (String) row.get("attr_name");
+                    if (asm.getAttribute(attrName) == null) {
+                        AsmAttribute attr = new AsmAttribute();
+                        attr.setId(((Number) row.get("attr_id")).longValue());
+                        attr.setName(attrName);
+                        attr.setType((String) row.get("attr_type"));
                         attr.setValue((String) row.get("attr_value"));
+                        asm.addAttribute(attr);
                     }
-                    asm.addAttribute(attr);
                 }
             });
             return asmGroup.values();

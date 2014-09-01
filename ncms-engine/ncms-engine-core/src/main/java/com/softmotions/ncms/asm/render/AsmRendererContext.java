@@ -96,6 +96,9 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     public abstract Asm getAsm();
 
+
+    public abstract Asm getRootAsm();
+
     /**
      * Return true is current context is subcontext.
      *

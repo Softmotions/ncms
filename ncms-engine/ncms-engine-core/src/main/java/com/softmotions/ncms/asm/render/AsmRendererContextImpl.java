@@ -43,6 +43,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     Map<String, String[]> dedicatedParams;
 
+    Asm rootAsm;
+
 
     private AsmRendererContextImpl(NcmsConfiguration cfg,
                                    Injector injector,
@@ -58,6 +60,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.req = req;
         this.resp = resp;
         this.asm = asm;
+        this.rootAsm = asm;
         this.classLoader = classLoader;
         this.subcontext = true;
     }
@@ -98,6 +101,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         //rendering routines be free to change assembly structure and properties
         this.asmCloneContext = new HashMap<>();
         this.asm = asm0.cloneDeep(this.asmCloneContext);
+        this.rootAsm = asm;
     }
 
     public AsmRenderer getRenderer() {
@@ -154,6 +158,10 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return asm;
     }
 
+    public Asm getRootAsm() {
+        return rootAsm;
+    }
+
     public boolean isSubcontext() {
         return subcontext;
     }
@@ -170,6 +178,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                            req, new GenericResponseWrapper(resp, out, false),
                                            nasm.cloneDeep(asmCloneContext));
         nctx.asmCloneContext = asmCloneContext;
+        nctx.rootAsm = asm;
         nctx.putAll(this);
         return nctx;
     }
@@ -183,6 +192,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                            req, resp,
                                            nasm.cloneDeep(asmCloneContext));
         nctx.asmCloneContext = asmCloneContext;
+        nctx.rootAsm = asm;
         nctx.putAll(this);
         return nctx;
     }
@@ -197,8 +207,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return Locale.getDefault();
     }
 
-    public Object renderAttribute(String attributeName, Map<String, String> opts) {
-        return renderer.renderAsmAttribute(this, attributeName, opts);
+    public Object renderAttribute(String attributeName, Map<String, String> options) {
+        return renderer.renderAsmAttribute(this, attributeName, options);
     }
 
     public void render() throws AsmRenderingException, IOException {

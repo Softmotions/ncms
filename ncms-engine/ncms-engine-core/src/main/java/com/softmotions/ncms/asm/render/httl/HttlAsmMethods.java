@@ -19,6 +19,11 @@ public class HttlAsmMethods {
         return AsmRendererContext.getSafe().getAsm();
     }
 
+    public static String link(Asm asm) {
+        return AsmRendererContext.getSafe().getCfg().getAsmLink(asm.getName());
+    }
+
+
     public static Object asm(String val) {
         String attrName;
         Map<String, String> opts;
@@ -68,6 +73,67 @@ public class HttlAsmMethods {
                          ok1, ov1,
                          ok2, ov2,
                          ok3, ov3);
+    }
+
+    public static Object asm(Asm asm, String attr) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        //noinspection ObjectEquality
+        if (ctx.getAsm() != asm) {
+            ctx = ctx.createSubcontext(asm);
+        }
+        return ctx.renderAttribute(attr, null);
+    }
+
+    public static Object asm(Asm asm, String attr, String opts) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        //noinspection ObjectEquality
+        if (ctx.getAsm() != asm) {
+            ctx = ctx.createSubcontext(asm);
+        }
+        KVOptions kvopts = new KVOptions();
+        kvopts.loadOptions(opts);
+        return ctx.renderAttribute(attr, kvopts);
+    }
+
+    public static Object asm(Asm asm, String attr, String ok, String ov) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        //noinspection ObjectEquality
+        if (ctx.getAsm() != asm) {
+            ctx = ctx.createSubcontext(asm);
+        }
+        KVOptions opts = new KVOptions();
+        opts.put(ok, ov);
+        return ctx.renderAttribute(attr, opts);
+    }
+
+    public static Object asm(Asm asm, String attr,
+                             String ok, String ov,
+                             String ok1, String ov1) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        //noinspection ObjectEquality
+        if (ctx.getAsm() != asm) {
+            ctx = ctx.createSubcontext(asm);
+        }
+        KVOptions opts = new KVOptions();
+        opts.put(ok, ov);
+        opts.put(ok1, ov1);
+        return ctx.renderAttribute(attr, opts);
+    }
+
+    public static Object asm(Asm asm, String attr,
+                             String ok, String ov,
+                             String ok1, String ov1,
+                             String ok2, String ov2) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        //noinspection ObjectEquality
+        if (ctx.getAsm() != asm) {
+            ctx = ctx.createSubcontext(asm);
+        }
+        KVOptions opts = new KVOptions();
+        opts.put(ok, ov);
+        opts.put(ok1, ov1);
+        opts.put(ok2, ov2);
+        return ctx.renderAttribute(attr, opts);
     }
 
     private static Object asmIntern(String attrName, String... extraOpts) {

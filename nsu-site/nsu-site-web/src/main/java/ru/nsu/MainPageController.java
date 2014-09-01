@@ -71,6 +71,7 @@ public class MainPageController implements AsmController {
         ctx.put("newsCategories", newsCategories);
         ctx.put("news", news);
 
+
         return false;
     }
 }
