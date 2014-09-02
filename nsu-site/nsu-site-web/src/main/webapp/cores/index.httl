@@ -60,7 +60,7 @@
                         <li>
                             <div class="img-holder">
                                 <div class="news-img-holder">
-                                    <img src="$!{icon.link}" alt="${pn.hname}"/>
+                                    <a href="$!{link(pn)}"><img src="$!{icon.link}" alt="${pn.hname}"/></a>
                                 </div>
                                 <span class="date">17</span>
                                 <span class="month">май</span>
