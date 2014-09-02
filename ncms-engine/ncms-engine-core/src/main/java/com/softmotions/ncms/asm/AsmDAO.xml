@@ -50,9 +50,9 @@
     <insert id="asmInsert" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
         INSERT INTO asms
-        (name, type, description, template, cdate
+        (name, type, description, template, cdate, ordinal
         <if test="core != null">, asm_core_id</if>)
-        VALUES (#{name}, #{type}, #{description}, #{template}, current_timestamp
+        VALUES (#{name}, #{type}, #{description}, #{template}, CURRENT_TIMESTAMP, SEQ_ASMS_ORDINAL.NEXTVAL
         <if test="core != null">, #{core.id}</if>)
     </insert>
 
@@ -122,7 +122,7 @@
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         INSERT INTO asm_attrs
         (id, asm_id, name, type, label, options, value, large_value)
-        VALUES (NEXT VALUE FOR SEQ_ATTR_ID, #{asmId}, #{name}, #{type}, #{label}, #{options}, #{value}, #{largeValue})
+        VALUES (SEQ_ATTR_ID.NEXTVAL, #{asmId}, #{name}, #{type}, #{label}, #{options}, #{value}, #{largeValue})
     </insert>
 
 
@@ -281,6 +281,8 @@
             asm.name    AS "name",
             asm.hname   AS "hname",
             asm.type    AS "type",
+            asm.cdate   AS "cdate",
+            asm.mdate   AS "mdate",
             attr.id     AS "attr_id",
             attr.name   AS "attr_name",
             attr.type   AS "attr_type",

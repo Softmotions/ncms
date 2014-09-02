@@ -12,8 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -25,10 +29,11 @@ public class NcmsMessages {
 
     private static final Logger log = LoggerFactory.getLogger(NcmsMessages.class);
 
-    final Messages messages;
+    private static final ThreadLocal<Map<String, SimpleDateFormat>> LOCAL_SDF_CACHE = new ThreadLocal<>();
 
-    final Lang lang;
+    private final Messages messages;
 
+    private final Lang lang;
 
     @Inject
     public NcmsMessages(Messages messages, Lang lang) {
@@ -89,5 +94,23 @@ public class NcmsMessages {
 
     public Messages getNinjaMessages() {
         return messages;
+    }
+
+    public String format(Date date, String format, Locale locale) {
+        if (locale == null) {
+            locale = Locale.getDefault();
+        }
+        Map<String, SimpleDateFormat> formatters = LOCAL_SDF_CACHE.get();
+        if (formatters == null) {
+            formatters = new HashMap<>();
+            LOCAL_SDF_CACHE.set(formatters);
+        }
+        String key = locale.toString() + '@' + format;
+        SimpleDateFormat sdf = formatters.get(key);
+        if (sdf == null) {
+            sdf = new SimpleDateFormat(format, locale);
+            formatters.put(key, sdf);
+        }
+        return sdf.format(date);
     }
 }

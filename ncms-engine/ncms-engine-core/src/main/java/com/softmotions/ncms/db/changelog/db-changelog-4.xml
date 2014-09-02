@@ -132,4 +132,19 @@
         </sql>
     </changeSet>
 
+    <changeSet id="13" author="adamansky@gmail.com">
+        <createSequence sequenceName="SEQ_ASMS_ORDINAL"/>
+        <addColumn tableName="ASMS">
+            <column name="ORDINAL" type="BIGINT"/>
+        </addColumn>
+        <sql>
+            UPDATE asms
+            SET ordinal = SEQ_ASMS_ORDINAL.NEXTVAL
+        </sql>
+        <addNotNullConstraint tableName="ASMS" columnName="ORDINAL"/>
+        <createIndex tableName="ASMS" indexName="IDX_ASMS_ORDINAL" unique="true">
+            <column name="ORDINAL"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

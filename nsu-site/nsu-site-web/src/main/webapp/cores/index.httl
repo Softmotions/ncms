@@ -56,21 +56,21 @@
                 <div class="tab active">
                     <ul class="news-list">
                         #foreach(Asm pn in news)
-                        #set(Image icon = asm(pn, "icon"))
+                        #set(Image icon = pn.asm("icon"))
                         <li>
                             <div class="img-holder">
                                 <div class="news-img-holder">
-                                    <a href="$!{link(pn)}"><img src="$!{icon.link}" alt="${pn.hname}"/></a>
+                                    <a href="$!{pn.link}"><img src="$!{icon.link}" alt="${pn.hname}"/></a>
                                 </div>
-                                <span class="date">17</span>
-                                <span class="month">май</span>
-                                <span class="year">2014</span>
+                                <span class="date">${pn.cdate.format2("dd")}</span>
+                                <span class="month">${pn.cdate.format2("MMMMM")}</span>
+                                <span class="year">${pn.cdate.format2("yyyy")}</span>
                             </div>
                             <div class="text-holder">
-                                <h3><a href="$!{link(pn)}">${pn.hname}</a></h3>
-                                <p>${asm(pn, "annotation")}</p>
+                                <h3><a href="$!{pn.link}">${pn.hname}</a></h3>
+                                <p>${pn.asm("annotation")}</p>
                                 #if(pn.isHasAttribute("subcategory"))
-                                #foreach(SelectNode sn in asm(pn, "subcategory"))
+                                #foreach(SelectNode sn in pn.asm("subcategory"))
                                 <span class="tag">${sn.key}</span>
                                 #end
                                 #end

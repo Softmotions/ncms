@@ -1,4 +1,4 @@
-package com.softmotions.ncms.asm.render.httl;
+package com.softmotions.ncms.mhttl;
 
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.asm.Asm;
@@ -18,11 +18,6 @@ public class HttlAsmMethods {
     public static Asm page() {
         return AsmRendererContext.getSafe().getAsm();
     }
-
-    public static String link(Asm asm) {
-        return AsmRendererContext.getSafe().getCfg().getAsmLink(asm.getName());
-    }
-
 
     public static Object asm(String val) {
         String attrName;

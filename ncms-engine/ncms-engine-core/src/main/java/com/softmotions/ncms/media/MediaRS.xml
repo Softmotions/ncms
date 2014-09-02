@@ -44,7 +44,7 @@
             content_type, put_content_type, content_length,
             owner, description, tags, meta, system)
         VALUES (
-            #{folder}, #{name}, #{status}, current_timestamp,
+            #{folder}, #{name}, #{status}, CURRENT_TIMESTAMP,
             #{content_type}, #{put_content_type}, #{content_length},
             #{owner}, #{description}, #{tags}, #{meta}, #{system})
     </insert>
@@ -73,7 +73,7 @@
             owner             = #{owner},
             icon              = NULL,
             icon_content_type = NULL,
-            mdate             = current_timestamp,
+            mdate             = CURRENT_TIMESTAMP,
             meta              = #{meta},
             system            = #{system}
         WHERE id = #{id}
@@ -96,7 +96,7 @@
         UPDATE media_entity e
         SET e.folder = #{nfolder},
             e.name   = #{nname},
-            mdate    = current_timestamp
+            mdate    = CURRENT_TIMESTAMP
         WHERE e.folder = #{folder}
               AND e.name = #{name}
     </update>
@@ -116,7 +116,7 @@
             parameterType="map">
         UPDATE media_entity e
         SET e.folder = #{new_prefix} || substr(e.folder, #{prefix_like_len}),
-            e.mdate  = current_timestamp
+            e.mdate  = CURRENT_TIMESTAMP
         WHERE e.folder LIKE #{prefix_like}
     </update>
 

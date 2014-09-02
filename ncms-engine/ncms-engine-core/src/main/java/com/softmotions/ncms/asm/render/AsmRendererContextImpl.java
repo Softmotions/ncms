@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm.render;
 
 import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageService;
@@ -39,6 +40,10 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final NcmsConfiguration cfg;
 
+    final NcmsMessages messages;
+
+    Locale cachedLocale;
+
     Map<String, Asm> asmCloneContext;
 
     Map<String, String[]> dedicatedParams;
@@ -51,6 +56,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                    ClassLoader classLoader,
                                    AsmRenderer renderer,
                                    AsmResourceLoader loader,
+                                   NcmsMessages messages,
                                    HttpServletRequest req, HttpServletResponse resp,
                                    Asm asm) {
         this.cfg = cfg;
@@ -62,6 +68,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.asm = asm;
         this.rootAsm = asm;
         this.classLoader = classLoader;
+        this.messages = messages;
         this.subcontext = true;
     }
 
@@ -69,6 +76,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                   Injector injector,
                                   AsmRenderer renderer,
                                   AsmResourceLoader loader,
+                                  NcmsMessages messages,
                                   HttpServletRequest req, HttpServletResponse resp,
                                   Object asmRef)
             throws AsmRenderingException {
@@ -77,6 +85,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.injector = injector;
         this.renderer = renderer;
         this.loader = loader;
+        this.messages = messages;
         this.req = req;
         this.resp = resp;
         this.subcontext = false;
@@ -175,6 +184,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         }
         AsmRendererContextImpl nctx =
                 new AsmRendererContextImpl(cfg, injector, classLoader, renderer, loader,
+                                           messages,
                                            req, new GenericResponseWrapper(resp, out, false),
                                            nasm.cloneDeep(asmCloneContext));
         nctx.asmCloneContext = asmCloneContext;
@@ -189,6 +199,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         }
         AsmRendererContextImpl nctx =
                 new AsmRendererContextImpl(cfg, injector, classLoader, renderer, loader,
+                                           messages,
                                            req, resp,
                                            nasm.cloneDeep(asmCloneContext));
         nctx.asmCloneContext = asmCloneContext;
@@ -203,8 +214,15 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     }
 
     public Locale getLocale() {
-        //todo
-        return Locale.getDefault();
+        if (cachedLocale != null) {
+            return cachedLocale;
+        }
+        cachedLocale = messages.getLocale(getServletRequest());
+        return cachedLocale;
+    }
+
+    public NcmsMessages getMessages() {
+        return messages;
     }
 
     public Object renderAttribute(String attributeName, Map<String, String> options) {

@@ -104,6 +104,7 @@ public class AsmServlet extends HttpServlet {
                                              injector,
                                              renderer,
                                              loader,
+                                             messages,
                                              req, renderResp, asmRef);
         } catch (AsmResourceNotFoundException e) {
             log.error("Resource not found: " + e.getResource() + " assembly: " + asmRef);

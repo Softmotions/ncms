@@ -65,12 +65,12 @@ public class MainPageController implements AsmController {
         crit.withAttributeLike("category", (activeCategory != null) ? activeCategory : "%");
         crit.withAttributeLike("subcategory", "%");
         crit.withAttributeLike("icon", "%");
+        crit.onAsm().orderBy("ordinal").desc();
 
         Collection<Asm> news = crit.selectAsAsms();
         ctx.put("activeCategory", activeCategory);
         ctx.put("newsCategories", newsCategories);
         ctx.put("news", news);
-
 
         return false;
     }

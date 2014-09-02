@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -357,6 +358,10 @@ public class AsmDAO extends MBDAOSupport {
             return super.finish();
         }
 
+        public PageCriteria onAsm() {
+            return prefixedBy("asm.");
+        }
+
         public Collection<Asm> selectAsAsms() {
             final Map<Long, Asm> asmGroup = new LinkedHashMap<>();
             //noinspection InnerClassTooDeeplyNested
@@ -370,6 +375,8 @@ public class AsmDAO extends MBDAOSupport {
                         asm = new Asm(id, (String) row.get("name"));
                         asm.setHname((String) row.get("hname"));
                         asm.setType((String) row.get("type"));
+                        asm.setMdate((Date) row.get("mdate"));
+                        asm.setCdate((Date) row.get("cdate"));
                         asmGroup.put(id, asm);
                     }
                     String attrName = (String) row.get("attr_name");

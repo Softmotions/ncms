@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm.render;
 
 import com.softmotions.commons.cont.Stack;
 import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 
 import com.google.inject.Injector;
@@ -135,6 +136,8 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      * Cannot be null.
      */
     public abstract Locale getLocale();
+
+    public abstract NcmsMessages getMessages();
 
     public abstract void render() throws AsmRenderingException, IOException;
 

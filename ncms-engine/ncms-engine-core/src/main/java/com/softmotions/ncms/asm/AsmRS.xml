@@ -105,7 +105,7 @@
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         INSERT INTO asm_attrs
         (id, asm_id, name, label, type, options, required, value, large_value, mdate)
-        VALUES (NEXT VALUE FOR SEQ_ATTR_ID, #{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
+        VALUES (SEQ_ATTR_ID.NEXTVAL, #{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
     </insert>
 
 
@@ -129,7 +129,7 @@
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         MERGE INTO asm_attrs (id, asm_id, NAME, LABEL, TYPE, OPTIONS, required, VALUE, large_value, mdate)
         KEY (asm_id, NAME)
-        VALUES (NEXT VALUE FOR SEQ_ATTR_ID, #{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
+        VALUES (SEQ_ATTR_ID.NEXTVAL, #{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
     </update>
 
 
@@ -139,7 +139,7 @@
         MERGE INTO asm_attrs a
         USING (
                   VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options},
-                          #{required}, #{value}, #{largeValue}, current_timestamp)
+                          #{required}, #{value}, #{largeValue}, CURRENT_TIMESTAMP)
               ) AS s(asm_id, name, label, type, options, required, value, large_value, mdate)
         ON a.asm_id = s.asm_id AND a.name = s.name
         WHEN MATCHED THEN
@@ -148,7 +148,7 @@
             a.value = s.value, a.large_value = s.large_value, a.mdate = s.mdate
         WHEN NOT MATCHED THEN
         INSERT (id, asm_id, name, label, type, options, required, value, large_value, mdate)
-        VALUES (NEXT VALUE FOR SEQ_ATTR_ID, s.asm_id, s.name, s.label, s.type, s.options, s.required, s.value, s.large_value, s.mdate)
+        VALUES (SEQ_ATTR_ID.NEXTVAL, s.asm_id, s.name, s.label, s.type, s.options, s.required, s.value, s.large_value, s.mdate)
     </update>
 
     <select id="prevAttrID"
@@ -180,7 +180,7 @@
                           FROM asm_attrs a2
                           WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
                                 AND a1.ordinal != a2.ordinal),
-            a1.mdate   = current_timestamp
+            a1.mdate   = CURRENT_TIMESTAMP
         WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
 

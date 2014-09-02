@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -83,6 +84,10 @@ public class Asm implements Serializable {
 
     @JsonProperty
     String templateMode;
+
+    Date mdate;
+
+    Date cdate;
 
     KVOptions parsedOptions;
 
@@ -193,6 +198,21 @@ public class Asm implements Serializable {
 
     public void setTemplateMode(String templateMode) {
         this.templateMode = templateMode;
+    }
+    public Date getMdate() {
+        return mdate;
+    }
+
+    public void setMdate(Date mdate) {
+        this.mdate = mdate;
+    }
+
+    public Date getCdate() {
+        return cdate;
+    }
+
+    public void setCdate(Date cdate) {
+        this.cdate = cdate;
     }
 
     public boolean isPublished() {
