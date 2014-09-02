@@ -75,6 +75,9 @@ public class AsmImageAM implements AsmAttributeManager {
             if (opts.hasNonNull("skipSmall")) {
                 image.setSkipSmall(opts.get("skipSmall").asBoolean());
             }
+            if (opts.hasNonNull("cover")) {
+                image.setCover(opts.get("cover").asBoolean());
+            }
         }
         return image;
     }
