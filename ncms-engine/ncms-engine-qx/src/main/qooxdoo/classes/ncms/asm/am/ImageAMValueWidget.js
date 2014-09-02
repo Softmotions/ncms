@@ -183,14 +183,21 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
                 infoLabel.resetValue();
                 infoLabel.exclude();
             }
-            if (opts["resize"] == "true") {
+            if (opts["cover"] === "true") {
+                var msg = this.tr("Cover the given area") + ": ";
+                msg += sm.lang.String.isEmpty(opts["width"]) ? "*" : opts["width"];
+                msg += " x ";
+                msg += sm.lang.String.isEmpty(opts["height"]) ? "*" : opts["height"];
+                msgLabel.setValue(msg);
+                msgLabel.show();
+            } else if (opts["resize"] === "true") {
                 var msg = this.tr("Automatic resize") + ": ";
                 msg += sm.lang.String.isEmpty(opts["width"]) ? "*" : opts["width"];
                 msg += " x ";
                 msg += sm.lang.String.isEmpty(opts["height"]) ? "*" : opts["height"];
                 msgLabel.setValue(msg);
                 msgLabel.show();
-            } else if (opts["restrict"] == "true") {
+            } else if (opts["restrict"] === "true") {
                 var msg = this.tr("Image size required") + ": ";
                 var restriction = "";
                 restriction += sm.lang.String.isEmpty(opts["width"]) ? "*" : opts["width"];
@@ -203,7 +210,6 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
                 msgLabel.resetValue();
                 msgLabel.exclude();
             }
-
             this.__validate();
         },
 

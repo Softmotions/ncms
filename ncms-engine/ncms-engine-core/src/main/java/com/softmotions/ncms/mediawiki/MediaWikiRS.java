@@ -82,7 +82,7 @@ public class MediaWikiRS {
                 }
                 if (CTypeUtils.isImageContentType(mres.getContentType())) {
                     if (mres.getImageWidth() > maxWidth) { //restrict maximal image width
-                        repository.ensureResizedImage(id, maxWidth, null, true);
+                        repository.ensureResizedImage(id, maxWidth, null, MediaRepository.RESIZE_SKIP_SMALL);
                         width = maxWidth;
                     }
                 }

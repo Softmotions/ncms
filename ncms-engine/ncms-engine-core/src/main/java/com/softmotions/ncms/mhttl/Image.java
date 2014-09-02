@@ -11,6 +11,7 @@ public final class Image {
     private boolean restrict;
     private boolean resize;
     private boolean skipSmall;
+    private boolean cover;
     private Integer optionsWidth;
     private Integer optionsHeight;
     private final AsmRendererContext ctx;
@@ -57,6 +58,9 @@ public final class Image {
 
     public void setOptionsWidth(Integer optionsWidth) {
         this.optionsWidth = optionsWidth;
+        if (optionsWidth != null && optionsWidth.intValue() < 1) {
+            this.optionsWidth = null;
+        }
     }
 
     public Integer getOptionsHeight() {
@@ -65,11 +69,22 @@ public final class Image {
 
     public void setOptionsHeight(Integer optionsHeight) {
         this.optionsHeight = optionsHeight;
+        if (optionsHeight != null && optionsHeight.intValue() < 1) {
+            this.optionsHeight = null;
+        }
+    }
+
+    public boolean isCover() {
+        return cover;
+    }
+
+    public void setCover(boolean cover) {
+        this.cover = cover;
     }
 
     public String getLink() {
         String link = ctx.getCfg().getFileLink(id);
-        if (resize) {
+        if (resize || cover) {
             if (optionsWidth != null) {
                 link += "?w=" + optionsWidth;
             }
@@ -86,6 +101,7 @@ public final class Image {
         sb.append(", optionsWidth=").append(optionsWidth);
         sb.append(", optionsHeight=").append(optionsHeight);
         sb.append(", restrict=").append(restrict);
+        sb.append(", cover=").append(cover);
         sb.append(", resize=").append(resize);
         sb.append(", skipSmall=").append(skipSmall);
         sb.append('}');

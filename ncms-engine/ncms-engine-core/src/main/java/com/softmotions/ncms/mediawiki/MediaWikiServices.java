@@ -55,7 +55,7 @@ public class MediaWikiServices {
             Long id = Long.parseLong(idStr);
             Integer width = Integer.parseInt(widthStr);
             try {
-                repository.ensureResizedImage(id, width, null, true);
+                repository.ensureResizedImage(id, width, null, MediaRepository.RESIZE_SKIP_SMALL);
             } catch (Exception e) {
                 log.error("Failed to resize image", e);
             }

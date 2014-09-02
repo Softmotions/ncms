@@ -1414,25 +1414,25 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
         }
         for (Pair<Integer, Integer> h : hints) {
-            ensureResizedImage(path, h.getOne(), h.getTwo(), false);
+            ensureResizedImage(path, h.getOne(), h.getTwo(), 0);
         }
     }
 
     @Transactional
-    public void ensureResizedImage(long id, Integer width, Integer height,
-                                   boolean skipSmall) throws IOException {
+    public Pair<Integer, Integer> ensureResizedImage(long id, Integer width, Integer height,
+                                                     int flags) throws IOException {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
-            return;
+            return null;
         }
-        ensureResizedImage(String.valueOf(row.get("folder")) + row.get("name"),
-                           width, height, skipSmall);
+        return ensureResizedImage(String.valueOf(row.get("folder")) + row.get("name"),
+                                  width, height, flags);
     }
 
     @Transactional
-    public void ensureResizedImage(String path,
-                                   Integer width, Integer height,
-                                   boolean skipSmall) throws IOException {
+    public Pair<Integer, Integer> ensureResizedImage(String path,
+                                                     Integer width, Integer height,
+                                                     int flags) throws IOException {
         if (path == null) {
             throw new IllegalArgumentException("path");
         }
@@ -1441,48 +1441,63 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             (height != null && (height <= 0 || height > 6000))) {
             throw new IllegalArgumentException("width|height");
         }
+
+        boolean skipSmall = ((flags & RESIZE_SKIP_SMALL) != 0);
+        boolean coverArea = ((flags & RESIZE_COVER_AREA) != 0);
+
         try (final ResourceLock l = new ResourceLock(path, false)) {
             String folder = getResourceParentFolder(path);
             String name = getResourceName(path);
             Map<String, Object> info = getCachedMeta(folder, name);
             if (info == null) {
-                return;
+                return null;
             }
-
-            KVOptions kvmeta = new KVOptions((String) info.get("meta"));
-
-            if (kvmeta.containsKey("width") && kvmeta.containsKey("height")) {
-                if ((width == null || (width.intValue() == kvmeta.getInt("width", Integer.MAX_VALUE))) &&
-                    (height == null || (height.intValue() == kvmeta.getInt("height", Integer.MAX_VALUE)))) {
-                    return;
-                }
-                if (skipSmall) {
-                    if ((width == null || (width.intValue() > kvmeta.getInt("width", Integer.MAX_VALUE))) &&
-                        (height == null || (height.intValue() > kvmeta.getInt("height", Integer.MAX_VALUE)))) {
-                        return;
-                    }
-                }
-            }
-
             long id = ((Number) info.get("id")).longValue();
             String ctype = (String) info.get("content_type");
             if (!CTypeUtils.isImageContentType(ctype)) {
                 log.warn("ensureResizedImage: Not applicable file content type: " + ctype);
-                return;
+                return null;
             }
+            KVOptions kvmeta = new KVOptions((String) info.get("meta"));
+            Integer iWidth = kvmeta.getIntObject("width", null);
+            Integer iHeight = kvmeta.getIntObject("height", null);
+            if (iWidth != null && iHeight != null) {
+                if ((width == null || (width.intValue() == kvmeta.getInt("width", Integer.MAX_VALUE))) &&
+                    (height == null || (height.intValue() == kvmeta.getInt("height", Integer.MAX_VALUE)))) {
+                    return new Pair<>(iWidth, iHeight);
+                }
+                if (skipSmall) {
+                    if ((width == null || (width.intValue() > kvmeta.getInt("width", Integer.MAX_VALUE))) &&
+                        (height == null || (height.intValue() > kvmeta.getInt("height", Integer.MAX_VALUE)))) {
+                        return new Pair<>(iWidth, iHeight);
+                    }
+                }
+            }
+
             MediaType mtype = MediaType.parse("image/" + getImageFileResizeFormat(ctype));
             File source = new File(basedir, path.startsWith("/") ? path.substring(1) : path);
             if (!source.exists()) {
-                return;
+                return null;
             }
+
+            if (coverArea &&
+                width != null && height != null &&
+                iWidth != null && iHeight != null &&
+                iWidth.intValue() > 0 && iHeight.intValue() > 0) {
+
+                double mul = Math.max(width.doubleValue() / iWidth.doubleValue(), height.doubleValue() / iHeight.doubleValue());
+                width = (int) Math.ceil(mul * (double) iWidth);
+                height = null;
+            }
+
             File tfile = getResizedImageFile(mtype, folder, id, width, height);
             if (tfile.exists() && !FileUtils.isFileNewer(source, tfile)) {
-                return; //up-to-date resized file version exists
+                return new Pair<>(width, height); //up-to-date resized file version exists
             }
             BufferedImage image = ImageIO.read(source);
             if (image == null) {
                 log.warn("Cannot read file as image: " + source);
-                return;
+                return null;
             }
             if (width != null && height != null) {
                 image = Scalr.resize(image, Scalr.Mode.FIT_EXACT, width, height);
@@ -1491,6 +1506,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             } else {
                 image = Scalr.resize(image, Scalr.Mode.FIT_TO_HEIGHT, height);
             }
+
             //Unlock read lock before acuiring exclusive write lock
             l.close();
             try (final ResourceLock wl = new ResourceLock(path, true)) {
@@ -1504,6 +1520,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     }
                 }
             }
+
+            return new Pair<>(width, height);
         }
     }
 

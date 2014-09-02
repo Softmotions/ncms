@@ -4,7 +4,7 @@
         <strong class="title">${n.name}</strong>
         <ul>
             #foreach(Tree nn in n)
-            <li><a href="${nn.link}">${nn.name}</a></li>
+            <li><a href="$!{nn.link}">${nn.name}</a></li>
             #end
         </ul>
     </div>
@@ -14,7 +14,7 @@
     <span class="text">Полезные ссылки:</span>
     <ul class="list">
         #foreach(Tree n in asm("menu2"))
-        <li><a href="${n.link}">${n.name}</a></li>
+        <li><a href="$!{n.link}">${n.name}</a></li>
         #end
     </ul>
     <form action="#" class="search-form">

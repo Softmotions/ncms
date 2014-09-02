@@ -22,7 +22,7 @@
         </div>
         <ul class="menu">
             #foreach(Tree n in asm("menu2"))
-            <li><a href="${n.link}">${n.name}</a></li>
+            <li><a href="$!{n.link}">${n.name}</a></li>
             #end
         </ul>
 
@@ -34,7 +34,7 @@
     <li class="${style}"><a href="#">${n.name}</a>
         <ul>
             #foreach(Tree nn in n)
-            <li><a href="${nn.link}">${nn.name}</a></li>
+            <li><a href="$!{nn.link}">${nn.name}</a></li>
             #end
         </ul>
     </li>

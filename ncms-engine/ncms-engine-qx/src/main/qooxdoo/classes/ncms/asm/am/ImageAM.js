@@ -36,44 +36,77 @@ qx.Class.define("ncms.asm.am.ImageAM", {
                 wTb.setValue(opts["width"]);
             }
             form.add(wTb, this.tr("Width"), null, "width");
+
             var hTb = new qx.ui.form.TextField().set({maxLength : 3});
             if (opts["height"] != null) {
                 hTb.setValue(opts["height"]);
             }
             form.add(hTb, this.tr("Height"), null, "height");
 
+            wTb.addListener("input", function() {
+                coverCb.setEnabled(!sm.lang.String.isEmpty(wTb.getValue()) && !sm.lang.String.isEmpty(hTb.getValue()))
+            });
+
+            hTb.addListener("input", function() {
+                coverCb.setEnabled(!sm.lang.String.isEmpty(wTb.getValue()) && !sm.lang.String.isEmpty(hTb.getValue()))
+            });
+
             var autoCb = new qx.ui.form.CheckBox();
-            autoCb.setValue(opts["resize"] == "true");
+            autoCb.setValue(opts["resize"] === "true");
             autoCb.setToolTipText(
-                    this.tr("Perform automatic image resizing to given height and width values"));
+                    this.tr("Automatic image resizing to given height and width values"));
             form.add(autoCb, this.tr("Auto resize"), null, "resize");
             autoCb.addListener("changeValue", function(ev) {
                 var val = ev.getData();
-                if (val === true && restrictCb.getValue()) {
+                if (val === true) {
                     restrictCb.setValue(false);
+                    coverCb.setValue(false);
                 }
             });
 
+            var coverCb = new qx.ui.form.CheckBox();
+            coverCb.setValue(opts["cover"] === "true");
+            coverCb.setToolTipText(
+                    this.tr("Automatic image resizing to cover given area. Image's original aspect ratio is preserved.")
+            );
+            coverCb.setEnabled(!sm.lang.String.isEmpty(wTb.getValue()) && !sm.lang.String.isEmpty(hTb.getValue()));
+            coverCb.addListener("changeValue", function(ev) {
+                var val = ev.getData();
+                if (val === true) {
+                    autoCb.setValue(false);
+                    restrictCb.setValue(false);
+                    skipSmall.setValue(false);
+                }
+            });
+            form.add(coverCb, this.tr("Cover area"), null, "cover");
+
             var restrictCb = new qx.ui.form.CheckBox();
-            restrictCb.setValue(opts["restrict"] == "true");
+            restrictCb.setValue(opts["restrict"] === "true");
             restrictCb.setToolTipText(
                     this.tr("Restrict image size to given height and width values"));
-            form.add(restrictCb, this.tr("Restrict sizes"), null, "restrict");
+            form.add(restrictCb, this.tr("Restrict size"), null, "restrict");
             restrictCb.addListener("changeValue", function(ev) {
                 var val = ev.getData();
-                if (val === true && autoCb.getValue()) {
+                if (val === true) {
                     autoCb.setValue(false);
+                    coverCb.setValue(false);
                 }
             });
 
             var skipSmall = new qx.ui.form.CheckBox();
             if (opts["skipSmall"]) {
-                skipSmall.setValue(opts["skipSmall"] == "true");
+                skipSmall.setValue(opts["skipSmall"] === "true");
             } else {
                 skipSmall.setValue(true);
             }
             skipSmall.setToolTipText(
                     this.tr("Skip resizing/checking image with dimensions smaller or equal to given height and width values"));
+            skipSmall.addListener("changeValue", function(ev) {
+                var val = ev.getData();
+                if (val === true) {
+                    coverCb.setValue(false);
+                }
+            });
             form.add(skipSmall, this.tr("Skip small"), null, "skipSmall");
 
             return new qx.ui.form.renderer.Single(form)

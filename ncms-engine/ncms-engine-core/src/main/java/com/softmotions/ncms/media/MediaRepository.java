@@ -1,5 +1,7 @@
 package com.softmotions.ncms.media;
 
+import com.softmotions.commons.cont.Pair;
+
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -9,6 +11,11 @@ import java.io.IOException;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public interface MediaRepository extends MediaReader, Closeable {
+
+    int RESIZE_SKIP_SMALL = 1;
+
+    int RESIZE_COVER_AREA = 1 << 1;
+
 
     /**
      * Import given directory
@@ -43,14 +50,11 @@ public interface MediaRepository extends MediaReader, Closeable {
      * @param path      The original file path
      * @param width     Desired file width
      * @param height    Desired file height
-     * @param skipSmall Skip resizing/checking image with dimensions
-     *                  smaller or equal to given height and width values
+     * @param flags    {@link #RESIZE_SKIP_SMALL}, {@link #RESIZE_COVER_AREA}
      */
-    void ensureResizedImage(String path, Integer width, Integer height,
-                            boolean skipSmall) throws IOException;
+    Pair<Integer, Integer> ensureResizedImage(String path, Integer width, Integer height, int flags) throws IOException;
 
-    void ensureResizedImage(long id, Integer width, Integer height,
-                            boolean skipSmall) throws IOException;
+    Pair<Integer, Integer> ensureResizedImage(long id, Integer width, Integer height, int flags) throws IOException;
 
     /**
      * Update all reasized image files

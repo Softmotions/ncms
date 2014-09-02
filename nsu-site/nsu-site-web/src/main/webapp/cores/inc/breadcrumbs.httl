@@ -6,7 +6,7 @@
             #if(b.link == null)
             <li>${b.name}</li>
             #else
-            <li><a href="${b.link}">${b.name}</a></li>
+            <li><a href="$!{b.link}">${b.name}</a></li>
             #end
         #end
     </ul>

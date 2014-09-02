@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm.am;
 
+import com.softmotions.commons.cont.Pair;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
@@ -114,6 +115,9 @@ public class AsmImageAM implements AsmAttributeManager {
                             case "skipSmall":
                                 res.setSkipSmall(parser.getValueAsBoolean(true));
                                 break;
+                            case "cover":
+                                res.setCover(parser.getValueAsBoolean());
+                                break;
                             default:
                                 break;
                         }
@@ -130,7 +134,8 @@ public class AsmImageAM implements AsmAttributeManager {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
                                         "width", "height",
-                                        "resize", "restrict", "skipSmall");
+                                        "resize", "restrict", "skipSmall",
+                                        "cover");
         attr.setOptions(asmOpts.toString());
         return attr;
     }
@@ -140,9 +145,13 @@ public class AsmImageAM implements AsmAttributeManager {
         if (opts == null) {
             opts = mapper.createObjectNode();
         }
+
         long id = val.hasNonNull("id") ? val.get("id").asLong() : 0L;
-        if (opts.hasNonNull("resize") && opts.get("resize").asBoolean() &&
+
+        if ((opts.hasNonNull("resize") && opts.get("resize").asBoolean() ||
+             opts.hasNonNull("cover") && opts.get("cover").asBoolean()) &&
             (opts.hasNonNull("width") || opts.hasNonNull("height"))) {
+
             Integer width = opts.hasNonNull("width") ? opts.get("width").asInt() : 0;
             Integer height = opts.hasNonNull("height") ? opts.get("height").asInt() : 0;
             if (width.intValue() == 0) {
@@ -151,12 +160,31 @@ public class AsmImageAM implements AsmAttributeManager {
             if (height.intValue() == 0) {
                 height = null;
             }
-            boolean skipSmall = !opts.hasNonNull("skipSmall") || opts.get("skipSmall").asBoolean(true);
+            int flags = 0;
+            if (width != null && height != null &&
+                opts.hasNonNull("cover") && opts.get("cover").asBoolean()) {
+                flags |= MediaRepository.RESIZE_COVER_AREA;
+            } else if (!opts.hasNonNull("skipSmall") || opts.get("skipSmall").asBoolean(true)) {
+                flags |= MediaRepository.RESIZE_SKIP_SMALL;
+            }
+
             try {
-                repository.ensureResizedImage(id, width, height, skipSmall);
+
+                Pair<Integer, Integer> dim = repository.ensureResizedImage(id, width, height, flags);
+                if (dim == null) {
+                    throw new RuntimeException("Unable to resize image file: " + id +
+                                               " width=" + width +
+                                               " heigth=" + height + " flags=" + flags);
+                }
+                opts.set("width", dim.getOne() != null ? opts.numberNode(dim.getOne()) : null);
+                opts.set("height", dim.getTwo() != null ? opts.numberNode(dim.getTwo()) : null);
+
             } catch (IOException e) {
-                log.error("", e);
-                throw new RuntimeException(e);
+                String msg = "Unable to resize image file: " + id +
+                             " width=" + width +
+                             " heigth=" + height + " flags=" + flags;
+                log.error(msg, e);
+                throw new RuntimeException(msg, e);
             }
         }
         attr.setEffectiveValue(val.toString());
