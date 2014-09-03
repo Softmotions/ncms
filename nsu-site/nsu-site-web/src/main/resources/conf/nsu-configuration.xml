@@ -139,9 +139,14 @@
         </client>
     </oauth2>
 
-
     <content>
-
+        <mainpage>
+            <news>
+               <a template="index_news" max="10"/>
+               <b template="index_announce" max="12"/>
+               <c template="faculty_news" max="12"/>
+            </news>
+        </mainpage>
     </content>
 
 </configuration>

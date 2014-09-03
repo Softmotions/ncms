@@ -1,5 +1,6 @@
 package ru.nsu;
 
+import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.PageService;
@@ -9,6 +10,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
+import org.apache.commons.configuration.SubnodeConfiguration;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,20 +33,35 @@ public class MainPageController implements AsmController {
 
     private final ObjectMapper mapper;
 
+    private final SubnodeConfiguration mpCfg;
+
+
     @Inject
     public MainPageController(AsmDAO dao,
                               PageService pageService,
-                              ObjectMapper mapper) {
+                              ObjectMapper mapper,
+                              NcmsConfiguration cfg) {
         this.dao = dao;
         this.pageService = pageService;
         this.mapper = mapper;
+        this.mpCfg = cfg.impl().configurationAt("content.mainpage");
     }
 
     @Transactional
     public boolean execute(AsmRendererContext ctx) throws Exception {
+        addMainNews(ctx);
+
+
+
+        return false;
+    }
+
+
+    private void addMainNews(AsmRendererContext ctx) throws Exception {
         Asm asm = ctx.getAsm();
         HttpSession sess = ctx.getServletRequest().getSession();
 
+        Integer skip = (Integer) sess.getAttribute("MainPageController.a.skip");
         String[] newsCategories = asm.getEffectiveAttributeAsStringArray("news_categories", mapper);
         Integer activeCategoryId = (Integer) sess.getAttribute("MainPageController.activeCategoryId");
         if (newsCategories.length > 0 &&
@@ -65,13 +82,17 @@ public class MainPageController implements AsmController {
         crit.withAttributeLike("category", (activeCategory != null) ? activeCategory : "%");
         crit.withAttributeLike("subcategory", "%");
         crit.withAttributeLike("icon", "%");
+        crit.withTemplate(mpCfg.getString("news.a[@template]", "index_news"));
+        /*if (skip != null) {
+            crit.skip(skip);
+        }
+        crit.limit(mpCfg.getInt("news.a[@max]", 1000));*/
+
         crit.onAsm().orderBy("ordinal").desc();
 
         Collection<Asm> news = crit.selectAsAsms();
         ctx.put("activeCategory", activeCategory);
         ctx.put("newsCategories", newsCategories);
         ctx.put("news", news);
-
-        return false;
     }
 }
