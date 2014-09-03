@@ -23,6 +23,15 @@
         JDBC.password=${nsu.JDBC.password}
     </mybatis>
 
+    <solr rebuildIndex="true">
+        <provider class="com.softmotions.weboot.solr.HttpSolrServerProvider">
+            <connectionUrl>http://localhost:8983/solr/</connectionUrl>
+        </provider>
+        <data-handlers>
+            <data-handler class="com.softmotions.ncms.asm.PageSolrImportHandler"/>
+        </data-handlers>
+    </solr>
+
     <liquibase changelog="com/softmotions/ncms/db/changelog/db-changelog-master.xml">
         <!-- <dropAll/>-->
         <update/>
