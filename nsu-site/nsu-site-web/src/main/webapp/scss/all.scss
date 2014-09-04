@@ -524,7 +524,7 @@
         background: url(../images/arrow-list.png) no-repeat 246px 50%;
       }
 
-      &.active > a/*, > a:hover*/                                           {
+      &.active > a/*, > a:hover*/                                            {
         text-decoration: none;
         color: #fff;
         margin: -1px;
@@ -1042,6 +1042,12 @@
 
       img {
         vertical-align: top;
+      }
+
+      div {
+        overflow: hidden;
+        width: 322px;
+        height: 72px;
       }
     }
   }
