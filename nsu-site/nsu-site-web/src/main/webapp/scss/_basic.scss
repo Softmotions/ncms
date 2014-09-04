@@ -100,7 +100,6 @@ hr {
   opacity: 1;
 }
 
-
 /* Tiny carousel */
 .disable {
   visibility: hidden;
@@ -121,5 +120,16 @@ hr {
 
 .photo-line {
   margin-bottom: 20px;
+  div.viewport {
+    height: 185px;
+    li {
+      height: 185px;
+      div {
+        width: 322px;
+        height: 185px;
+        overflow: hidden;
+      }
+    }
+  }
 }
 

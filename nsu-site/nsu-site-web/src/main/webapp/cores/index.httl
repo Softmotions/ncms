@@ -115,62 +115,30 @@
             <a href="#" class="fetch-more"><span>Еще больше новостей Вуза</span></a>
             <!-- EOF News -->
 
+            #set(Tree pline = asm("photoline"))
+            #if(pline != null && pline.hasChildren)
             <div class="photo-line">
-                <div class="viewport" style="height:185px;">
+                <div class="viewport">
                     <ul class="overview ad-list2">
+                        #foreach(Tree n in pline)
                         <li>
-                            <a href="#">
-                                <span class="photo">Фотоотчет</span>
-
-                                <div style="width:322;height:185;overflow:hidden">
-                                    <img src="images/img5.jpg" alt="image description"/>
+                            <a href="$!{n.richRef.link}">
+                                #if(n.richRef.style != "none")
+                                <span class="photo">${n.richRef.style}</span>
+                                #end
+                                <div>
+                                    <img src="$!{n.richRef.image.link}" alt="${n.richRef.name}"/>
                                 </div>
-                                <h4>Зооархеологические исследования</h4>
+                                #if(n.richRef.style2 != "nocaption")
+                                <h4>${n.richRef.name}</h4>
+                                #end
                             </a>
                         </li>
-                        <li>
-                            <a href="#">
-                                <!-- <span class="photo">Фотоотчет</span>-->
-                                <img src="images/img6.jpg" width="322" height="185" alt="image description"/>
-                                <h4>Зооархеологические исследования</h4>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img src="images/img7.jpg" width="322" height="185" alt="image description"/>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <!-- <span class="photo">Фотоотчет</span>-->
-                                <img src="images/img6.jpg" width="322" height="185" alt="image description"/>
-                                <h4>Зооархеологические исследования</h4>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <!-- <span class="photo">Фотоотчет</span>-->
-                                <img src="images/img6.jpg" width="322" height="185" alt="image description"/>
-                                <h4>Зооархеологические исследования</h4>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <!-- <span class="photo">Фотоотчет</span>-->
-                                <img src="images/img6.jpg" width="322" height="185" alt="image description"/>
-                                <h4>Зооархеологические исследования</h4>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <!-- <span class="photo">Фотоотчет</span>-->
-                                <img src="images/img6.jpg" width="322" height="185" alt="image description"/>
-                                <h4>Зооархеологические исследования</h4>
-                            </a>
-                        </li>
+                        #end
                     </ul>
                 </div>
             </div>
+            #end
 
 
             <div class="partners-holder">

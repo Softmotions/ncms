@@ -11,6 +11,7 @@ import com.softmotions.ncms.mhttl.Tree;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -103,8 +104,39 @@ public class AsmTreeAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
-        attr.setEffectiveValue(val != null ? val.toString() : null);
+        ObjectNode tree = (ObjectNode) val;
+        if (tree != null) {
+            try {
+                saveTree(tree, req);
+            } catch (IOException e) {
+                log.error("", e);
+                throw new RuntimeException(e);
+            }
+            attr.setEffectiveValue(tree.toString());
+        } else {
+            attr.setEffectiveValue(null);
+        }
         return attr;
+    }
+
+    private void saveTree(ObjectNode tree, HttpServletRequest req) throws IOException {
+        JsonNode val = tree.get("nam");
+        if (val != null && val.isTextual()) {
+            JsonNode naSpec = mapper.readTree(val.asText());
+            String naClass = naSpec.hasNonNull("naClass") ? naSpec.get("naClass").asText() : null;
+            if ("ncms.asm.am.RichRefAM".equals(naClass)) {
+                richRefAM.applyAttributeValue(naSpec, req);
+                tree.set("nam", tree.textNode(naSpec.toString()));
+            }
+        }
+        val = tree.get("children");
+        if (val instanceof ArrayNode) {
+            for (JsonNode n : val) {
+                if (n instanceof ObjectNode) {
+                    saveTree((ObjectNode) n, req);
+                }
+            }
+        }
     }
 
     public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {

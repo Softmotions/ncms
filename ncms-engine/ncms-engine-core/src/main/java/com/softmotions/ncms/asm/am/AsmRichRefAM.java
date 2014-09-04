@@ -58,13 +58,13 @@ public class AsmRichRefAM implements AsmAttributeManager {
         return attr;
     }
 
-
     public RichRef renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) throws AsmRenderingException {
         JsonNode n;
         String link = null;
         String name = null;
         String description = null;
         String style = null;
+        String style2 = null;
         Image image = null;
         if (node.hasNonNull("image")) {
             image = imageAM.renderAsmAttribute(ctx, (ObjectNode) node.get("image"));
@@ -87,8 +87,10 @@ public class AsmRichRefAM implements AsmAttributeManager {
         if (node.hasNonNull("style")) {
             style = node.get("style").asText();
         }
-        return new RichRef(name, link, description, image, style);
-
+        if (node.hasNonNull("style2")) {
+            style2 = node.get("style2").asText();
+        }
+        return new RichRef(name, link, description, image, style, style2);
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
@@ -121,8 +123,16 @@ public class AsmRichRefAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
-        attr.setEffectiveValue(val != null ? val.toString() : null);
+        attr.setEffectiveValue(val != null ? applyAttributeValue(val, req).toString() : null);
         return attr;
+    }
+
+    public JsonNode applyAttributeValue(JsonNode val, HttpServletRequest req) {
+        JsonNode image = val.get("image");
+        if (image != null) {
+            imageAM.applyAttributeValue(image, req);
+        }
+        return val;
     }
 
     public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {

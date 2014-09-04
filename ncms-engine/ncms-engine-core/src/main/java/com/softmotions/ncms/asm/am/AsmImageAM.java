@@ -144,13 +144,17 @@ public class AsmImageAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+        attr.setEffectiveValue(val != null ? applyAttributeValue(val, req).toString() : null);
+        return attr;
+    }
+
+    public JsonNode applyAttributeValue(JsonNode val, HttpServletRequest req) {
         ObjectNode opts = (ObjectNode) val.get("options");
         if (opts == null) {
             opts = mapper.createObjectNode();
+            ((ObjectNode) val).set("options", opts);
         }
-
         long id = val.hasNonNull("id") ? val.get("id").asLong() : 0L;
-
         if ((opts.hasNonNull("resize") && opts.get("resize").asBoolean() ||
              opts.hasNonNull("cover") && opts.get("cover").asBoolean()) &&
             (opts.hasNonNull("width") || opts.hasNonNull("height"))) {
@@ -170,9 +174,7 @@ public class AsmImageAM implements AsmAttributeManager {
             } else if (!opts.hasNonNull("skipSmall") || opts.get("skipSmall").asBoolean(true)) {
                 flags |= MediaRepository.RESIZE_SKIP_SMALL;
             }
-
             try {
-
                 Pair<Integer, Integer> dim = repository.ensureResizedImage(id, width, height, flags);
                 if (dim == null) {
                     throw new RuntimeException("Unable to resize image file: " + id +
@@ -190,9 +192,9 @@ public class AsmImageAM implements AsmAttributeManager {
                 throw new RuntimeException(msg, e);
             }
         }
-        attr.setEffectiveValue(val.toString());
-        return attr;
+        return val;
     }
+
 
     public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
 
