@@ -99,8 +99,8 @@
         core.name AS core_name,
         core.template_engine AS core_template_engine
         FROM asms AS asm
-        LEFT OUTER JOIN asm_attrs attr ON attr.asm_id = asm.id
-        LEFT OUTER JOIN asm_cores core ON core.id = asm.asm_core_id
+        LEFT JOIN asm_attrs attr ON attr.asm_id = asm.id
+        LEFT JOIN asm_cores core ON core.id = asm.asm_core_id
         <where>
             <if test="CQ_PK != null">asm.id = #{CQ_PK}</if>
             <if test="id != null">asm.id = #{id}</if>
@@ -163,8 +163,8 @@
             core.template_engine AS core_template_engine
         FROM asm_parents AS parent
             INNER JOIN asms asm ON asm.id = parent.asm_parent_id
-            LEFT OUTER JOIN asm_attrs attr ON attr.asm_id = asm.id
-            LEFT OUTER JOIN asm_cores core ON core.id = asm.asm_core_id
+            LEFT JOIN asm_attrs attr ON attr.asm_id = asm.id
+            LEFT JOIN asm_cores core ON core.id = asm.asm_core_id
         WHERE parent.asm_id = #{id}
     </select>
 
@@ -280,25 +280,33 @@
             resultType="map"
             resultSetType="FORWARD_ONLY">
         SELECT
-            asm.id        AS "id",
-            asm.name      AS "name",
-            asm.hname     AS "hname",
-            asm.type      AS "type",
-            asm.cdate     AS "cdate",
-            asm.mdate     AS "mdate",
-            attr.id       AS "attr_id",
-            attr.name     AS "attr_name",
-            attr.type     AS "attr_type",
-            attr.value    AS "attr_value",
-            iv.attr_id    AS "iv_attr_id",
-            iv.value      AS "iv_value"
+            asm.id            AS "id",
+            asm.name          AS "name",
+            asm.hname         AS "hname",
+            asm.type          AS "type",
+            asm.cdate         AS "cdate",
+            asm.mdate         AS "mdate",
+            asm.nav_parent_id AS "nav_parent_id",
+            attr.id           AS "attr_id",
+            attr.name         AS "attr_name",
+            attr.type         AS "attr_type",
+            attr.value        AS "attr_value",
+            iv.attr_id        AS "iv_attr_id",
+            iv.value          AS "iv_value",
+            npasm.id          AS "np_id",
+            npasm.hname       AS "np_hname",
+            npasm.name        AS "np_name"
         FROM
             (SELECT DISTINCT
               asm.id,
               asm.ordinal
             FROM asms AS asm
               INNER JOIN asm_attrs AS attr ON attr.asm_id = asm.id
-              LEFT OUTER JOIN asm_attr_idxvals AS iv1 ON iv1.attr_id = attr.id
+              LEFT JOIN asm_attr_idxvals AS iv1 ON iv1.attr_id = attr.id
+              <if test="template != null">
+              LEFT JOIN asm_parents AS parent ON parent.asm_id = asm.id
+              LEFT JOIN asms AS pasm ON parent.asm_parent_id = pasm.id
+              </if>
             WHERE
             <trim prefixOverrides="AND | OR">
                     <if test="navParentId != null">
@@ -309,6 +317,9 @@
                     </if>
                     <if test="type != null">
                     AND asm.type LIKE #{type}
+                    </if>
+                    <if test="template != null">
+                    AND pasm.name = #{template}
                     </if>
                     <if test="attrs != null and !attrs.isEmpty">
                     AND (
@@ -336,8 +347,17 @@
                 </if>
         ) AS restr(id, ordinal)
         INNER JOIN asms AS asm ON restr.id = asm.id
-        LEFT OUTER JOIN asm_attrs AS attr ON attr.asm_id = asm.id
-        LEFT OUTER JOIN asm_attr_idxvals AS iv ON iv.attr_id = attr.id
+        LEFT JOIN asm_attrs AS attr ON attr.asm_id = asm.id
+        <if test="!attrsInclude.isEmpty">
+        AND attr.name IN
+        <foreach collection="attrsInclude" item="an" open="(" close=")" separator=",">#{an}</foreach>
+        </if>
+        <if test="!attrsExclude.isEmpty">
+        AND attr.name NOT IN
+        <foreach collection="attrsExclude" item="an" open="(" close=")" separator=",">#{an}</foreach>
+        </if>
+        LEFT JOIN asm_attr_idxvals AS iv ON iv.attr_id = attr.id
+        LEFT JOIN asms AS npasm ON npasm.id = asm.nav_parent_id
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
     </select>
 

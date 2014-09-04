@@ -124,7 +124,7 @@
       }
     }
 
-    a {
+    /*a {
       text-decoration: underline;
       color: #818181;
       font: 13px/18px $basic_sans_font;
@@ -133,6 +133,18 @@
       &:hover {
         color: #3395e1;
         text-decoration: underline;
+      }
+    }*/
+
+    p {
+      margin: 0;
+      a {
+        color: #393939;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+          color: #3395e1;
+        }
       }
     }
   }

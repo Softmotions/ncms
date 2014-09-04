@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -30,6 +31,18 @@ public class NcmsMessages {
     private static final Logger log = LoggerFactory.getLogger(NcmsMessages.class);
 
     private static final ThreadLocal<Map<String, SimpleDateFormat>> LOCAL_SDF_CACHE = new ThreadLocal<>();
+
+    @SuppressWarnings("StaticCollection")
+    private static final Map<String, String[]> LNG_MONTHS = new HashMap<>();
+
+    static {
+
+        LNG_MONTHS.put("ru", new String[]{
+                "января", "февраля", "марта", "апреля", "мая",
+                "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"
+        });
+    }
+
 
     private final Messages messages;
 
@@ -100,6 +113,9 @@ public class NcmsMessages {
         if (locale == null) {
             locale = Locale.getDefault();
         }
+        if ("LMMMMM".equals(format)) {
+            return getLocaleAwareMonth(date, locale);
+        }
         Map<String, SimpleDateFormat> formatters = LOCAL_SDF_CACHE.get();
         if (formatters == null) {
             formatters = new HashMap<>();
@@ -112,5 +128,17 @@ public class NcmsMessages {
             formatters.put(key, sdf);
         }
         return sdf.format(date);
+    }
+
+
+    private String getLocaleAwareMonth(Date date, Locale locale) {
+        Calendar cal = Calendar.getInstance(locale);
+        cal.setTime(date);
+        String lng = locale.getLanguage();
+        String[] months = LNG_MONTHS.get(lng);
+        if (months != null) {
+            return months[cal.get(Calendar.MONTH)];
+        }
+        return format(cal.getTime(), "MMMMM", locale);
     }
 }

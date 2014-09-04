@@ -10,7 +10,6 @@ $sp-icons-spacing: 5px;
 
 $bg_color: #fff;
 
-
 body {
   margin: 0;
   color: #515151;
@@ -100,3 +99,27 @@ hr {
   color: #2d2d2d;
   opacity: 1;
 }
+
+
+/* Tiny carousel */
+.disable {
+  visibility: hidden;
+}
+
+.viewport {
+  overflow: hidden;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.overview {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.photo-line {
+  margin-bottom: 20px;
+}
+

@@ -127,7 +127,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
             if (spec == null) {
                 return;
             }
-            var pp = ncms.Application.ACT.getRestUrl("pages.preview", spec);
+            var pp = ncms.Application.ACT.getRestUrl("pages.preview.frame", spec);
             if (pp == this.__previewFrame.getSource()) {
                 this.__previewFrame.resetSource();
             }
