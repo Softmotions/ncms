@@ -7,7 +7,6 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -18,15 +17,23 @@ public interface AsmAttributeManager {
     String[] getSupportedAttributeTypes();
 
     AsmAttribute prepareGUIAttribute(Asm page, Asm template,
-                                     AsmAttribute tmplAttr, AsmAttribute attr);
+                                     AsmAttribute tmplAttr,
+                                     AsmAttribute attr);
 
-    Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
+    Object renderAsmAttribute(AsmRendererContext ctx,
+                              String attrname,
                               Map<String, String> options) throws AsmRenderingException;
 
-    AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req);
+    AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx,
+                                       AsmAttribute attr,
+                                       JsonNode val);
 
-    AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req);
+    AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx,
+                                     AsmAttribute attr,
+                                     JsonNode val);
 
-    void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req);
+    void attributePersisted(AsmAttributeManagerContext ctx,
+                            AsmAttribute attr,
+                            JsonNode val);
 
 }

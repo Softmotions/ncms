@@ -24,6 +24,7 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 
+@SuppressWarnings("unchecked")
 @Path("adm/user/env")
 @Produces("application/json")
 public class UserEnvRS extends MBDAOSupport {

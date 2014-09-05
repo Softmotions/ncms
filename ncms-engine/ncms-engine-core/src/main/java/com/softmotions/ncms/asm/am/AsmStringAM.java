@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Singleton;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -41,7 +40,7 @@ public class AsmStringAM implements AsmAttributeManager {
     }
 
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
                                         "display", "placeholder", "maxLength");
@@ -50,12 +49,12 @@ public class AsmStringAM implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
         return attr;
     }
 
-    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
 
     }
 }

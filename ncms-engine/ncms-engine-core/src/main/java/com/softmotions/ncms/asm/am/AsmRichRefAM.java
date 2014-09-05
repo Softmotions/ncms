@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -39,7 +38,6 @@ public class AsmRichRefAM implements AsmAttributeManager {
     private final ObjectMapper mapper;
 
     private final NcmsConfiguration cfg;
-
 
     @Inject
     public AsmRichRefAM(AsmImageAM imageAM,
@@ -115,27 +113,27 @@ public class AsmRichRefAM implements AsmAttributeManager {
         return res;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts);
         attr.setOptions(asmOpts.toString());
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
-        attr.setEffectiveValue(val != null ? applyAttributeValue(val, req).toString() : null);
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+        attr.setEffectiveValue(val != null ? applyAttributeValue(ctx, val).toString() : null);
         return attr;
     }
 
-    public JsonNode applyAttributeValue(JsonNode val, HttpServletRequest req) {
+    public JsonNode applyAttributeValue(AsmAttributeManagerContext ctx, JsonNode val) {
         JsonNode image = val.get("image");
         if (image != null) {
-            imageAM.applyAttributeValue(image, req);
+            imageAM.applyAttributeValue(ctx, image);
         }
         return val;
     }
 
-    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
 
     }
 }

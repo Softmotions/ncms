@@ -23,15 +23,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Allows you to run Ninja via the SuperDevMode. -->
-            <!-- run "mvn ninja:run" on the command line for the best -->
-            <!-- development experience. -->
-            <plugin>
-                <groupId>org.ninjaframework</groupId>
-                <artifactId>ninja-maven-plugin</artifactId>
-                <version>${ninjaframework.version}</version>
-            </plugin>
-
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
@@ -166,40 +157,13 @@
                     <path>/</path>
                     <contextReloadable>${web.context.reloadable}</contextReloadable>
                     <useSeparateTomcatClassLoader>false</useSeparateTomcatClassLoader>
-                    <systemProperties>
+                   <!-- <systemProperties>
                         <ninja.mode>${ninja.mode}</ninja.mode>
-                    </systemProperties>
+                    </systemProperties>-->
                     <server>ncms-tomcat-server</server>
                     <useNaming>true</useNaming>
                     <uriEncoding>UTF-8</uriEncoding>
                     <contextFile>src/main/webapp/META-INF/context.xml</contextFile>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty.version}</version>
-                <configuration>
-                    <contextPath>/</contextPath>
-                    <stopKey>stop</stopKey>
-                    <stopPort>8889</stopPort>
-                    <scanIntervalSeconds>1</scanIntervalSeconds>
-                    <reload>automatic</reload>
-                    <scanTargetPatterns>
-                        <scanTargetPattern>
-                            <directory>target/classes</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                        </scanTargetPattern>
-                    </scanTargetPatterns>
-                    <systemProperties>
-                        <systemProperty>
-                            <name>ninja.mode</name>
-                            <value>${ninja.mode}</value>
-                        </systemProperty>
-                    </systemProperties>
                 </configuration>
             </plugin>
         </plugins>
@@ -260,11 +224,6 @@
             <groupId>softmotions</groupId>
             <artifactId>softmotions-web-realms</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ninjaframework</groupId>
-            <artifactId>ninja-test-utilities</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>

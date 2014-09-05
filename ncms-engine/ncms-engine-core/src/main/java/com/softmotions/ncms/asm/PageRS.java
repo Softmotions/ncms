@@ -1,6 +1,5 @@
 package com.softmotions.ncms.asm;
 
-import ninja.lifecycle.Start;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.KVOptions;
@@ -11,6 +10,7 @@ import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.events.AsmCreatedEvent;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
@@ -21,6 +21,7 @@ import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.user.UserEnvRS;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.lifecycle.Start;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 import org.apache.commons.collections.map.LRUMap;
@@ -117,6 +119,8 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final NcmsConfiguration cfg;
 
+    private final Provider<AsmAttributeManagerContext> amCtxProvider;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao,
@@ -127,7 +131,8 @@ public class PageRS extends MBDAOSupport implements PageService {
                   PageSecurityService pageSecurity,
                   NcmsEventBus ebus,
                   UserEnvRS userEnvRS,
-                  NcmsConfiguration cfg) {
+                  NcmsConfiguration cfg,
+                  Provider<AsmAttributeManagerContext> amCtxProvider) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -141,6 +146,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.pageGuid2Cache = new HashMap<>();
         this.lang2IndexPages = new HashMap<>();
         this.cfg = cfg;
+        this.amCtxProvider = amCtxProvider;
         this.ebus.register(this);
     }
 
@@ -298,6 +304,10 @@ public class PageRS extends MBDAOSupport implements PageService {
                          @PathParam("id") Long id,
                          ObjectNode data) {
 
+        AsmAttributeManagerContext amCtx = amCtxProvider.get();
+        log.info("ampCtx=" + amCtx);
+
+
         Asm page = adao.asmSelectById(id);
         if (page == null) {
             throw new NotFoundException("");
@@ -328,7 +338,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 attr = attr.cloneDeep();
                 attr.asmId = id;
             }
-            am.applyAttributeValue(attr, data.get(fname), req);
+            am.applyAttributeValue(amCtx, attr, data.get(fname));
             update("upsertAttribute", attr);
             if (attr.getId() == null) {
                 Number gid = selectOne("prevAttrID");
@@ -336,7 +346,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                     attr.setId(gid.longValue());
                 }
             }
-            am.attributePersisted(attr, data.get(fname), req);
+            am.attributePersisted(amCtx, attr, data.get(fname));
         }
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
     }

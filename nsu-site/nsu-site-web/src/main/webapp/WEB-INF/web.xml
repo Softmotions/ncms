@@ -9,7 +9,6 @@
     <listener>
         <listener-class>com.softmotions.ncms.NcmsServletListener</listener-class>
     </listener>
-
     <!-- включение авторизации на (используется с MyNSUOAuth2) -->
     <!--<security-constraint>-->
         <!--<web-resource-collection>-->

@@ -183,7 +183,7 @@
                     <contextReloadable>${web.context.reloadable}</contextReloadable>
                     <useSeparateTomcatClassLoader>false</useSeparateTomcatClassLoader>
                     <systemProperties>
-                        <ninja.mode>${ninja.mode}</ninja.mode>
+                        <WEBOOT_CFG_LOCATION>conf/nsu-configuration.xml</WEBOOT_CFG_LOCATION>
                     </systemProperties>
                     <server>ncms-tomcat-server</server>
                     <useNaming>true</useNaming>

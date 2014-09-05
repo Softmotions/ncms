@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -73,15 +72,15 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
         return res;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         return attr;
     }
 
-    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
 
     }
 }

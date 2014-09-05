@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -96,18 +95,18 @@ public class AsmTreeAM implements AsmAttributeManager {
         return tree;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts);
         attr.setOptions(asmOpts.toString());
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         ObjectNode tree = (ObjectNode) val;
         if (tree != null) {
             try {
-                saveTree(tree, req);
+                saveTree(ctx, tree);
             } catch (IOException e) {
                 log.error("", e);
                 throw new RuntimeException(e);
@@ -119,13 +118,13 @@ public class AsmTreeAM implements AsmAttributeManager {
         return attr;
     }
 
-    private void saveTree(ObjectNode tree, HttpServletRequest req) throws IOException {
+    private void saveTree(AsmAttributeManagerContext ctx, ObjectNode tree) throws IOException {
         JsonNode val = tree.get("nam");
         if (val != null && val.isTextual()) {
             JsonNode naSpec = mapper.readTree(val.asText());
             String naClass = naSpec.hasNonNull("naClass") ? naSpec.get("naClass").asText() : null;
             if ("ncms.asm.am.RichRefAM".equals(naClass)) {
-                richRefAM.applyAttributeValue(naSpec, req);
+                richRefAM.applyAttributeValue(ctx, naSpec);
                 tree.set("nam", tree.textNode(naSpec.toString()));
             }
         }
@@ -133,13 +132,13 @@ public class AsmTreeAM implements AsmAttributeManager {
         if (val instanceof ArrayNode) {
             for (JsonNode n : val) {
                 if (n instanceof ObjectNode) {
-                    saveTree((ObjectNode) n, req);
+                    saveTree(ctx, (ObjectNode) n);
                 }
             }
         }
     }
 
-    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
 
     }
 }

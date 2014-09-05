@@ -4,6 +4,7 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.events.AsmCreatedEvent;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
@@ -423,8 +424,8 @@ public class AsmRS extends MBDAOSupport {
     @Transactional
     public void putAsmAttributes(@PathParam("id") Long id,
                                  @Context HttpServletRequest req,
+                                 @Context AsmAttributeManagerContext amCtx,
                                  ObjectNode spec) {
-
 
         String oldName = spec.hasNonNull("old_name") ? spec.get("old_name").asText() : null;
         String name = spec.get("name").asText();
@@ -456,10 +457,10 @@ public class AsmRS extends MBDAOSupport {
         AsmAttributeManager am = amRegistry.getByType(attr.getType());
         if (am != null) {
             if (spec.hasNonNull("options")) {
-                attr = am.applyAttributeOptions(attr, spec.get("options"), req);
+                attr = am.applyAttributeOptions(amCtx, attr, spec.get("options"));
             }
             if (spec.hasNonNull("value")) {
-                attr = am.applyAttributeValue(attr, spec.get("value"), req);
+                attr = am.applyAttributeValue(amCtx, attr, spec.get("value"));
             }
         } else {
             log.warn("Missing atribute manager for given type: '" + attr.getType() + '\'');
@@ -473,7 +474,7 @@ public class AsmRS extends MBDAOSupport {
             }
         }
         if (am != null && spec.hasNonNull("value")) {
-            am.attributePersisted(attr, spec.get("value"), req);
+            am.attributePersisted(amCtx, attr, spec.get("value"));
         }
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }

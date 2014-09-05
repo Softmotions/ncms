@@ -1,7 +1,5 @@
 package com.softmotions.ncms;
 
-import ninja.servlet.NinjaServletDispatcher;
-import ninja.utils.NinjaProperties;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.ncms.asm.render.AsmServlet;
 import com.softmotions.ncms.jaxrs.NcmsJsonNodeReader;
@@ -16,7 +14,6 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
-import javax.servlet.ServletContext;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,20 +24,9 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
 
-    protected NcmsConfiguration createConfiguration(ServletContext sctx, NinjaProperties nprops) {
-        String ncmsCfgFile = nprops.get("ncms.configurationFile");
-        if (ncmsCfgFile == null) {
-            log.warn("Missing 'ncms.configurationFile' property in the ninja configuration, " +
-                     "using fallback resource location: " + NcmsConfiguration.DEFAULT_CFG_RESOURCE);
-            ncmsCfgFile = NcmsConfiguration.DEFAULT_CFG_RESOURCE;
-        }
-        return new NcmsConfiguration(sctx, nprops, ncmsCfgFile, true);
-    }
-
     protected void init(NcmsConfiguration cfg) {
         bind(NcmsConfiguration.class).toInstance(cfg);
         initBefore(cfg);
-        initNinjaDispatcher(cfg);
         initJAXRS(cfg);
         initAsmServlet(cfg);
         initJarResourcesServlet(cfg);
@@ -52,12 +38,6 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
         Class<? extends AsmServlet> clazz = getAsmServletClass();
         serve(cfg.getNcmsPrefix() + "/asm/*", clazz);
         serve(cfg.getNcmsPrefix() + "/adm/asm/*", clazz);
-    }
-
-    protected void initNinjaDispatcher(NcmsConfiguration cfg) {
-        //Ninja staff
-        bind(NinjaServletDispatcher.class).in(Singleton.class);
-        serve(cfg.getNcmsPrefix() + "/nj/*", NinjaServletDispatcher.class);
     }
 
     protected void initJAXRS(NcmsConfiguration cfg) {
