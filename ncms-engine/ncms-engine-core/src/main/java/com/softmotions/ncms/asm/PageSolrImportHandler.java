@@ -4,12 +4,12 @@ import com.softmotions.weboot.solr.SolrImportHandler;
 
 import com.google.common.collect.AbstractIterator;
 
+import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.common.SolrInputDocument;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -17,22 +17,24 @@ import java.util.List;
  */
 public class PageSolrImportHandler implements SolrImportHandler {
 
-//    @Inject
-//    private SolrServer solr;
+    final SolrServer solr;
+
+    final AsmDAO adao;
 
     @Inject
-    private AsmDAO adao;
+    public PageSolrImportHandler(SolrServer solr, AsmDAO adao) {
+        this.solr = solr;
+        this.adao = adao;
+    }
 
     public void init() {
         // TODO: add listener for events
     }
 
     public Iterator<SolrInputDocument> getData() {
-
-
 //        List<Asm> asms = adao.asmSelectAllPlain();
 //        final Iterator<Asm> asmsi = asms.iterator();
-        final Iterator asmsi = Arrays.asList(1, 2, 3, 4, 5, 6).iterator();
+        final Iterator asmsi = Arrays.asList(1, 2).iterator();
 
         return new AbstractIterator<SolrInputDocument>() {
             protected SolrInputDocument computeNext() {
