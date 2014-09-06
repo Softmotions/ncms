@@ -27,7 +27,11 @@ public class AsmAttributeManagerContext {
 
     @Inject
     public AsmAttributeManagerContext(HttpServletRequest request) {
-        log.info("Create am context=" + request);
         this.request = request;
+    }
+
+
+    public void finish() {
+
     }
 }

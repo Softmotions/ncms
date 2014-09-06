@@ -42,14 +42,14 @@
             </ul>
             #end
             <!-- News -->
-            <div class="three-col">
+            <div class="three-col" id="news">
                 <div class="news-holder">
                     <ul class="tabset">
                         #foreach(String nc in newsCategories)
                         #if(nc == activeCategory)
                         <li class="active"><a href="#">${nc}</a></li>
                         #else
-                        <li><a href="#">${nc}</a></li>
+                        <li><a href="?mpc.a.ac=${nc.encodeUriComponent}#news">${nc}</a></li>
                         #end
                         #end
                     </ul>

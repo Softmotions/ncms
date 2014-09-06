@@ -3,7 +3,12 @@ package com.softmotions.ncms.mhttl;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +23,8 @@ import java.util.Objects;
  */
 public class HttlUtilsMethods {
 
+    private static final Logger log = LoggerFactory.getLogger(HttlUtilsMethods.class);
+
     private HttlUtilsMethods() {
     }
 
@@ -28,6 +35,19 @@ public class HttlUtilsMethods {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         HttpServletRequest req = ctx.getServletRequest();
         return Objects.equals(req.getParameter(param), value);
+    }
+
+
+    public static String encodeUriComponent(String s) {
+        if (s == null) {
+            return null;
+        }
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            log.error("", e);
+        }
+        return null;
     }
 
     public static <T> List<T> randomSublist(Collection<T> coll, int max) {

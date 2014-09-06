@@ -305,9 +305,6 @@ public class PageRS extends MBDAOSupport implements PageService {
                          ObjectNode data) {
 
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
-        log.info("ampCtx=" + amCtx);
-
-
         Asm page = adao.asmSelectById(id);
         if (page == null) {
             throw new NotFoundException("");
