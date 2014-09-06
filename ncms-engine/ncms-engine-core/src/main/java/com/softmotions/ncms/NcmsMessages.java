@@ -59,7 +59,6 @@ public class NcmsMessages {
             }
             rnames.add(sv);
         }
-        log.info("BLIST=" + blist);
         bundleLocator = new AggregateResourceBundleLocator(rnames);
         bundleCache = new ConcurrentHashMap<>();
     }
