@@ -8,6 +8,7 @@ import com.google.inject.servlet.GuiceFilter;
 
 import org.jboss.resteasy.logging.Logger;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -19,6 +20,18 @@ import java.util.List;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public class NcmsServletListener extends WBServletListener {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(NcmsServletListener.class);
+
+    private static final String LOGO =
+            "                                                    \n" +
+            " _____ _____ _____ _____    _____         _         \n" +
+            "|   | |     |     |   __|  |   __|___ ___|_|___ ___ \n" +
+            "| | | |   --| | | |__   |  |   __|   | . | |   | -_|\n" +
+            "|_|___|_____|_|_|_|_____|  |_____|_|_|_  |_|_|_|___|\n" +
+            "                                     |___|          \n" +
+            "Version: {}                                         \n";
+
 
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
 
@@ -41,6 +54,9 @@ public class NcmsServletListener extends WBServletListener {
                 .addMappingForUrlPatterns(null, false, "/*");
 
         start();
+
+
+        log.info(LOGO, NcmsConfiguration.getNcmsVersion());
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {

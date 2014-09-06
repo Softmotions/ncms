@@ -30,6 +30,25 @@
                 </includes>
             </resource>
         </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>com.igormaznitsa</groupId>
+                <artifactId>jcp</artifactId>
+                <version>5.3.3</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>preprocess</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>

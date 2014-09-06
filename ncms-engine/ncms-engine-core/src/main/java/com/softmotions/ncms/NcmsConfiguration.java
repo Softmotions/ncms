@@ -27,6 +27,10 @@ public class NcmsConfiguration extends WBConfiguration {
 
     private ServletContext servletContext;
 
+    public static String getNcmsVersion()  {
+        return "/*$mvn.project.version$*/";
+    }
+
     public void load(String location, ServletContext sctx) {
         super.load(location, sctx);
         this.servletContext = sctx;
