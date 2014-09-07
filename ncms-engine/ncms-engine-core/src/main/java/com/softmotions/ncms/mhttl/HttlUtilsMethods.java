@@ -28,6 +28,10 @@ public class HttlUtilsMethods {
     private HttlUtilsMethods() {
     }
 
+    public static boolean requestParamMatched(String param, int value) {
+        return requestParamMatched(param, Integer.toString(value));
+    }
+
     public static boolean requestParamMatched(String param, String value) {
         if (param == null) {
             return false;

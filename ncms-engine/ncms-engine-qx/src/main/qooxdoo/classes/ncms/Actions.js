@@ -213,8 +213,8 @@ qx.Class.define("ncms.Actions", {
         this._action("pages.move", "/rs/adm/pages/move");
 
         //Page preview url
-        this._action("pages.preview", "/adm/asm/{id}?preview=true");
-        this._action("pages.preview.frame", "/adm/asm/{id}?preview=true&preview_frame=true");
+        this._action("pages.preview", "/adm/asm/{id}?preview=1");
+        this._action("pages.preview.frame", "/adm/asm/{id}?preview=1&preview_frame=1");
 
         //PUT/DELETE page into user
         // {collection}: Collection name
