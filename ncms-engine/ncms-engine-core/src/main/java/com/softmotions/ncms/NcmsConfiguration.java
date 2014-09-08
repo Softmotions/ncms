@@ -23,12 +23,25 @@ public class NcmsConfiguration extends WBConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(NcmsConfiguration.class);
 
+    public static volatile NcmsConfiguration INSTANCE;
+
     private File tmpdir;
 
     private ServletContext servletContext;
 
-    public static String getNcmsVersion()  {
+    public static String getNcmsVersion() {
         return "/*$mvn.project.version$*/";
+    }
+
+
+    public NcmsConfiguration() {
+        if (INSTANCE == null) {
+            synchronized (NcmsConfiguration.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = this;
+                }
+            }
+        }
     }
 
     public void load(String location, ServletContext sctx) {
@@ -155,6 +168,10 @@ public class NcmsConfiguration extends WBConfiguration {
 
     public String getFileLink(Long id) {
         return getServletContext().getContextPath() + getNcmsPrefix() + "/rs/media/fileid/" + id;
+    }
+
+    public String getFileLink(Long id, boolean inline) {
+        return getServletContext().getContextPath() + getNcmsPrefix() + "/rs/media/fileid/" + id + "?inline=true";
     }
 
     public String getPageLink(String spec) {

@@ -147,4 +147,39 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="14" author="adamansky@gmail.com">
+        <createTable tableName="ASM_MEDIA_DEPS">
+            <column name="ATTR_ID" type="BIGINT"
+                    remarks="Assembly attribute reference">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_ID" type="BIGINT"
+                    remarks="Media file reference">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="ASM_MEDIA_DEPS"
+                                 baseColumnNames="ATTR_ID"
+                                 referencedTableName="ASM_ATTRS"
+                                 referencedColumnNames="ID"
+                                 constraintName="FK_ASMMEDIADEPS_ATTRS"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="ASM_MEDIA_DEPS"
+                                 baseColumnNames="FILE_ID"
+                                 constraintName="FK_ASMMEDIADEPS_FILES"
+                                 referencedTableName="MEDIA_ENTITY"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+        <createIndex tableName="ASM_MEDIA_DEPS"
+                     indexName="IDX_MEDIADEPS"
+                     unique="true">
+            <column name="ATTR_ID"/>
+            <column name="FILE_ID"/>
+        </createIndex>
+    </changeSet>
+
+
 </databaseChangeLog>

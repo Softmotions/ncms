@@ -121,14 +121,14 @@ public class AsmRichRefAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
-        attr.setEffectiveValue(val != null ? applyAttributeValue(ctx, val).toString() : null);
+        attr.setEffectiveValue(val != null ? applyJSONAttributeValue(ctx, attr, val).toString() : null);
         return attr;
     }
 
-    public JsonNode applyAttributeValue(AsmAttributeManagerContext ctx, JsonNode val) {
+    public JsonNode applyJSONAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         JsonNode image = val.get("image");
         if (image != null) {
-            imageAM.applyAttributeValue(ctx, image);
+            imageAM.applyJSONAttributeValue(ctx, attr, image);
         }
         return val;
     }

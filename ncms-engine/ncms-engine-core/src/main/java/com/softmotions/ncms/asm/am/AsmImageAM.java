@@ -142,17 +142,23 @@ public class AsmImageAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
-        attr.setEffectiveValue(val != null ? applyAttributeValue(ctx, val).toString() : null);
+        attr.setEffectiveValue(val != null ? applyJSONAttributeValue(ctx, attr, val).toString() : null);
         return attr;
     }
 
-    public JsonNode applyAttributeValue(AsmAttributeManagerContext ctx, JsonNode val) {
+    public JsonNode applyJSONAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         ObjectNode opts = (ObjectNode) val.get("options");
         if (opts == null) {
             opts = mapper.createObjectNode();
             ((ObjectNode) val).set("options", opts);
         }
-        long id = val.hasNonNull("id") ? val.get("id").asLong() : 0L;
+        Long id = val.hasNonNull("id") ? val.get("id").asLong() : null;
+        if (id == null) {
+            return val;
+        }
+
+        ctx.registerMediaFileDependency(attr, id);
+
         if ((opts.hasNonNull("resize") && opts.get("resize").asBoolean() ||
              opts.hasNonNull("cover") && opts.get("cover").asBoolean()) &&
             (opts.hasNonNull("width") || opts.hasNonNull("height"))) {

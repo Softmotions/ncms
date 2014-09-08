@@ -230,6 +230,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
     public String toString() {
         final StringBuilder sb = new StringBuilder("AsmAttribute{");
         sb.append("name='").append(name).append('\'');
+        sb.append(", id='").append(id).append('\'');
         sb.append(", type='").append(type).append('\'');
         sb.append(", options='").append(options).append('\'');
         sb.append(", value='").append(value).append('\'');

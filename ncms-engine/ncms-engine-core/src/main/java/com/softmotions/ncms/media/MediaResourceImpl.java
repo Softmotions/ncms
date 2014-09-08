@@ -69,7 +69,7 @@ class MediaResourceImpl implements MediaResource, Serializable {
 
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

@@ -305,6 +305,8 @@ public class PageRS extends MBDAOSupport implements PageService {
                          ObjectNode data) {
 
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
+        amCtx.setAsmId(id);
+
         Asm page = adao.asmSelectById(id);
         if (page == null) {
             throw new NotFoundException("");
@@ -345,7 +347,11 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             am.attributePersisted(amCtx, attr, data.get(fname));
         }
+
+        amCtx.flush();
+
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
+
     }
 
     /**

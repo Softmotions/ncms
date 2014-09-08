@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm.am;
 
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.json.JsonUtils;
+import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
@@ -32,11 +33,14 @@ public class AsmFileRefAM implements AsmAttributeManager {
 
     public static final String[] TYPES = new String[]{"fileref"};
 
-    private MediaReader reader;
+    private final MediaReader reader;
+
+    private final NcmsMessages messages;
 
     @Inject
-    public AsmFileRefAM(MediaReader reader) {
+    public AsmFileRefAM(MediaReader reader, NcmsMessages messages) {
         this.reader = reader;
+        this.messages = messages;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -106,7 +110,14 @@ public class AsmFileRefAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
-        attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText().trim() : null);
+        String location = val.hasNonNull("value") ? val.get("value").asText().trim() : null;
+        attr.setEffectiveValue(location);
+        if (location != null) {
+            MediaResource resource = reader.findMediaResource(location, messages.getLocale(ctx.getRequest()));
+            if (resource != null) {
+                ctx.registerMediaFileDependency(attr, resource.getId());
+            }
+        }
         return attr;
     }
 

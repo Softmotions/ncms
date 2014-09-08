@@ -60,14 +60,16 @@ public class NcmsServletListener extends WBServletListener {
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-
-        stop();
-
-        if (resteasyBootstrap != null) {
-            resteasyBootstrap.contextDestroyed(servletContextEvent);
-            resteasyBootstrap = null;
+        try {
+            stop();
+            if (resteasyBootstrap != null) {
+                resteasyBootstrap.contextDestroyed(servletContextEvent);
+                resteasyBootstrap = null;
+            }
+            super.contextDestroyed(servletContextEvent);
+        } finally {
+            NcmsConfiguration.INSTANCE = null;
         }
-        super.contextDestroyed(servletContextEvent);
     }
 
     protected Collection<Module> getStartupModules() {
@@ -75,6 +77,4 @@ public class NcmsServletListener extends WBServletListener {
         mlist.add(new NcmsServletModule());
         return mlist;
     }
-
-
 }

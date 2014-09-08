@@ -12,6 +12,9 @@ import java.util.Locale;
  */
 public interface MediaResource {
 
+
+    Long getId();
+
     /**
      * Get the resource name.
      */

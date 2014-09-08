@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.asm.am.AsmAttributeManagerContext">
+
+    <delete id="deleteDeps">
+        DELETE FROM ASM_MEDIA_DEPS
+        WHERE
+        attr_id IN
+        <foreach collection="attrs" item="attr" open="(" separator="," close=")">
+            #{attr}
+        </foreach>
+    </delete>
+
+    <update id="mergeFileDependencies" parameterType="list">
+        MERGE INTO ASM_MEDIA_DEPS md
+        USING (VALUES
+            <foreach collection="list" item="r" separator=",">
+                (${r[0]}, ${r[1]})
+            </foreach>
+        ) AS r(attr_id, file_id)
+        ON md.attr_id = r.attr_id AND md.file_id = r.file_id
+        WHEN NOT MATCHED THEN
+            INSERT(attr_id, file_id)
+            VALUES(r.attr_id, r.file_id)
+        ELSE IGNORE
+    </update>
+
+</mapper>

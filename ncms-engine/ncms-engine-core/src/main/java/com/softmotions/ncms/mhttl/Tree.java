@@ -1,5 +1,7 @@
 package com.softmotions.ncms.mhttl;
 
+import com.softmotions.ncms.NcmsConfiguration;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -84,6 +86,9 @@ public class Tree implements Iterable<Tree>, Serializable {
     }
 
     public String getLink() {
+        if ("file".equals(type) && id != null) {
+            return NcmsConfiguration.INSTANCE.getFileLink(id, true);
+        }
         return link;
     }
 
