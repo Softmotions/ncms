@@ -44,7 +44,9 @@
             <!--<connectionUrl>http://localhost:8983/solr/</connectionUrl>-->
         <!--</provider>-->
         <data-handlers>
-            <data-handler class="com.softmotions.ncms.asm.PageSolrImportHandler"/>
+            <data-handler class="com.softmotions.ncms.asm.PageSolrDataHandler">
+                <extra-attributes>content,title</extra-attributes>
+            </data-handler>
         </data-handlers>
     </solr>
 
