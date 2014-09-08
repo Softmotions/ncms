@@ -86,7 +86,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
         res.addField("type", asm.getType());
 
         for (String attrName : extraAttributeNames) {
-            AsmAttribute attr = asm.getAttribute(attrName);
+            AsmAttribute attr = asm.getEffectiveAttribute(attrName);
             res.addField(attrName, attr != null ? attr.getValue() : null);
         }
 

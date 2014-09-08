@@ -34,10 +34,5 @@
     <!--<requestHandler name="/analysis/field" startup="lazy" class="solr.FieldAnalysisRequestHandler"/>-->
     <requestHandler name="/update" class="solr.UpdateRequestHandler"/>
 
-    <!--<indexConfig>-->
-        <!--<unlockOnStartup>true</unlockOnStartup>-->
-        <!--<lockType>simple</lockType>-->
-    <!--</indexConfig>-->
-
 </config>
 
