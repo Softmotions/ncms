@@ -9,7 +9,7 @@
     <select id="selectEntityIdByPath" parameterType="map" resultType="long">
         SELECT
             id
-        FROM media_entity
+        FROM MEDIA_ENTITY
         WHERE folder = #{folder} AND name = #{name}
     </select>
 
@@ -18,7 +18,7 @@
         SELECT
             folder AS "folder",
             name   AS "name"
-        FROM media_entity
+        FROM MEDIA_ENTITY
         WHERE id = #{id}
     </select>
 
@@ -26,7 +26,7 @@
     <insert id="insertEntity"
             databaseId="H2"
             parameterType="map" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO media_entity (
+        INSERT INTO MEDIA_ENTITY (
             folder, name, status, mdate,
             content_type, put_content_type, content_length,
             owner, description, tags, meta, system)
@@ -39,7 +39,7 @@
     <insert id="insertEntity"
             databaseId="DB2"
             parameterType="map" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO media_entity (
+        INSERT INTO MEDIA_ENTITY (
             folder, name, status, mdate,
             content_type, put_content_type, content_length,
             owner, description, tags, meta, system)
@@ -52,7 +52,7 @@
     <update id="updateEntity"
             databaseId="H2"
             parameterType="map">
-        UPDATE media_entity
+        UPDATE MEDIA_ENTITY
         SET content_type      = #{content_type},
             content_length    = #{content_length},
             owner             = #{owner},
@@ -67,7 +67,7 @@
     <update id="updateEntity"
             databaseId="DB2"
             parameterType="map">
-        UPDATE media_entity
+        UPDATE MEDIA_ENTITY
         SET content_type      = #{content_type},
             content_length    = #{content_length},
             owner             = #{owner},
@@ -82,7 +82,7 @@
     <update id="fixResourceLocation"
             databaseId="H2"
             parameterType="map">
-        UPDATE media_entity e
+        UPDATE MEDIA_ENTITY e
         SET e.folder = #{nfolder},
             e.name   = #{nname},
             mdate    = now()
@@ -93,7 +93,7 @@
     <update id="fixResourceLocation"
             databaseId="DB2"
             parameterType="map">
-        UPDATE media_entity e
+        UPDATE MEDIA_ENTITY e
         SET e.folder = #{nfolder},
             e.name   = #{nname},
             mdate    = CURRENT_TIMESTAMP
@@ -104,7 +104,7 @@
     <update id="fixFolderName"
             databaseId="H2"
             parameterType="map">
-        UPDATE media_entity e
+        UPDATE MEDIA_ENTITY e
         SET e.folder = #{new_prefix} || substr(e.folder, #{prefix_like_len}),
             e.mdate  = now()
         WHERE e.folder LIKE #{prefix_like}
@@ -114,19 +114,19 @@
     <update id="fixFolderName"
             databaseId="DB2"
             parameterType="map">
-        UPDATE media_entity e
+        UPDATE MEDIA_ENTITY e
         SET e.folder = #{new_prefix} || substr(e.folder, #{prefix_like_len}),
             e.mdate  = CURRENT_TIMESTAMP
         WHERE e.folder LIKE #{prefix_like}
     </update>
 
     <delete id="deleteFolder" parameterType="map">
-        DELETE FROM media_entity
+        DELETE FROM MEDIA_ENTITY
         WHERE folder LIKE #{prefix_like}
     </delete>
 
     <delete id="deleteFile" parameterType="map">
-        DELETE FROM media_entity
+        DELETE FROM MEDIA_ENTITY
         WHERE folder = #{folder}
               AND name = #{name}
     </delete>
@@ -134,7 +134,7 @@
     <select id="selectInFolder" parameterType="map" resultType="map">
         SELECT
             e.*
-        FROM media_entity AS e
+        FROM MEDIA_ENTITY AS e
         WHERE e.folder = #{folder}
         ORDER BY e.status DESC, e.name ASC
     </select>
@@ -150,7 +150,7 @@
         e.owner AS "owner",
         e.description AS "description",
         e.tags AS "tags"
-        FROM media_entity e
+        FROM MEDIA_ENTITY e
         <where>
             <if test="folder != null">AND e.folder LIKE #{folder}</if>
             <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
@@ -158,7 +158,7 @@
             <if test="status != null">AND e.status = #{status}</if>
             <if test="system == null">AND e.system = 0</if>
         </where>
-        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">
             LIMIT ${CQ_LIMIT}
             <if test="CQ_OFFSET">
@@ -170,7 +170,7 @@
     <select id="count" resultType="int" parameterType="map">
         SELECT
         COUNT(*)
-        FROM media_entity e
+        FROM MEDIA_ENTITY e
         <where>
             <if test="folder != null">AND e.folder LIKE #{folder}</if>
             <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
@@ -185,7 +185,7 @@
     <select id="countNotOwned" resultType="int" parameterType="map">
         SELECT
             COUNT(*)
-        FROM media_entity e
+        FROM MEDIA_ENTITY e
         WHERE
             e.folder LIKE #{folder}
             AND e.owner != #{owner}
@@ -203,7 +203,7 @@
         e.owner AS "owner",
         e.description AS "description",
         e.tags AS "tags"
-        FROM media_entity e, media_entity_kwords kw
+        FROM MEDIA_ENTITY e, MEDIA_ENTITY_KWORDS kw
         WHERE
         kw.entity_id = e.id
         <if test="status != null">AND e.status = #{status}</if>
@@ -217,7 +217,7 @@
         </foreach>
         GROUP BY e.id, e.name, e.status, e.content_type, e.content_length, e.folder, e.owner, e.description, e.tags
         HAVING COUNT(e.id) = #{keywordsSize}
-        <if test="CQ_ORDERBY">order by ${CQ_ORDERBY}</if>
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">
             LIMIT ${CQ_LIMIT}
             <if test="CQ_OFFSET">
@@ -231,7 +231,7 @@
         SELECT COUNT(*)
         FROM (
         SELECT e.id
-        FROM media_entity e, media_entity_kwords kw
+        FROM MEDIA_ENTITY e, MEDIA_ENTITY_KWORDS kw
         WHERE
         kw.ENTITY_ID = e.id
         <if test="status != null">AND e.status = #{status}</if>
@@ -259,7 +259,7 @@
             e.folder         AS "folder",
             e.owner          AS "owner",
             e.description    AS "description"
-        FROM media_entity e
+        FROM MEDIA_ENTITY e
         WHERE
             e.folder = #{folder}
             AND e.name = #{name}
@@ -272,7 +272,7 @@
             e.icon              AS "icon",
             e.content_type      AS "content_type",
             e.icon_content_type AS "icon_content_type"
-        FROM media_entity e
+        FROM MEDIA_ENTITY e
         WHERE
             e.folder = #{folder}
             AND e.name = #{name}
@@ -287,14 +287,14 @@
             e.icon              AS "icon",
             e.content_type      AS "content_type",
             e.icon_content_type AS "icon_content_type"
-        FROM media_entity e
+        FROM MEDIA_ENTITY e
         WHERE
             e.id = #{id}
     </select>
 
 
     <update id="updateIcon" parameterType="map">
-        UPDATE media_entity
+        UPDATE MEDIA_ENTITY
         SET
             icon              = #{icon,jdbcType=BLOB},
             icon_content_type = #{icon_content_type}
@@ -302,7 +302,7 @@
     </update>
 
     <update id="updateMeta" parameterType="map">
-        UPDATE media_entity
+        UPDATE MEDIA_ENTITY
         <set>
             <if test="tags != null">tags = #{tags},</if>
             <if test="description != null">description = #{description},</if>
@@ -317,17 +317,17 @@
             description  AS "description",
             tags         AS "tags",
             content_type AS "content_type"
-        FROM media_entity
+        FROM MEDIA_ENTITY
         WHERE id = #{id}
     </select>
 
     <delete id="dropKeywords" parameterType="map">
-        DELETE FROM media_entity_kwords
+        DELETE FROM MEDIA_ENTITY_KWORDS
         WHERE entity_id = #{id}
     </delete>
 
     <insert id="insertKeyword" parameterType="map">
-        INSERT INTO media_entity_kwords
+        INSERT INTO MEDIA_ENTITY_KWORDS
         (entity_id, keyword)
         VALUES (#{id}, #{keyword})
     </insert>
@@ -347,7 +347,7 @@
             status           AS "status",
             system           AS "system",
             meta             AS "meta"
-        FROM media_entity
+        FROM MEDIA_ENTITY
         WHERE folder = #{folder}
               AND name = #{name}
     </select>
@@ -367,8 +367,22 @@
             status           AS "status",
             system           AS "system",
             meta             AS "meta"
-        FROM media_entity
+        FROM MEDIA_ENTITY
         WHERE id = #{id}
+    </select>
+
+
+    <select id="selectAsmMediaDepsByFile" parameterType="long" resultType="map">
+        SELECT
+            asm.name  AS "guid",
+            asm.hname AS "name",
+            attr.name AS "attr_name"
+        FROM ASM_MEDIA_DEPS AS d
+            INNER JOIN ASM_ATTRS AS attr ON d.ATTR_ID = attr.ID
+            INNER JOIN ASMS AS asm ON attr.asm_id = asm.id
+        WHERE d.file_id = #{file_id}
+        ORDER BY asm.name ASC, attr.name ASC
+        LIMIT 10
     </select>
 
 </mapper>
