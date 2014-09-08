@@ -64,5 +64,6 @@
         <mapper resource="com/softmotions/ncms/asm/AsmEventsListener.xml"/>
         <mapper resource="com/softmotions/ncms/media/MediaRS.xml"/>
         <mapper resource="com/softmotions/ncms/user/UserEnvRS.xml"/>
+        <mapper resource="com/softmotions/ncms/asm/am/AsmAttributeManagerContext.xml"/>
     </mappers>
 </configuration>

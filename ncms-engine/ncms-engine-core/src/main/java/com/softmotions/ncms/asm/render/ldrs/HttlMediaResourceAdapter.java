@@ -24,6 +24,10 @@ public final class HttlMediaResourceAdapter implements MediaResource {
         this.res = res;
     }
 
+    public Long getId() {
+        return null;
+    }
+
     public String getName() {
         return res.getName();
     }

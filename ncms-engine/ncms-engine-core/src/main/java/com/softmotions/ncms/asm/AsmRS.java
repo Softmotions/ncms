@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -78,19 +79,23 @@ public class AsmRS extends MBDAOSupport {
 
     final NcmsEventBus ebus;
 
+    final Provider<AsmAttributeManagerContext> amCtxProvider;
+
 
     @Inject
     public AsmRS(SqlSession sess,
                  AsmDAO adao, ObjectMapper mapper,
                  AsmAttributeManagersRegistry amRegistry,
                  NcmsMessages messages,
-                 NcmsEventBus ebus) {
+                 NcmsEventBus ebus,
+                 Provider<AsmAttributeManagerContext> amCtxProvider) {
         super(AsmRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
         this.amRegistry = amRegistry;
         this.ebus = ebus;
+        this.amCtxProvider = amCtxProvider;
     }
 
     /**
@@ -424,8 +429,10 @@ public class AsmRS extends MBDAOSupport {
     @Transactional
     public void putAsmAttributes(@PathParam("id") Long id,
                                  @Context HttpServletRequest req,
-                                 @Context AsmAttributeManagerContext amCtx,
                                  ObjectNode spec) {
+
+        AsmAttributeManagerContext amCtx = amCtxProvider.get();
+        amCtx.setAsmId(id);
 
         String oldName = spec.hasNonNull("old_name") ? spec.get("old_name").asText() : null;
         String name = spec.get("name").asText();
@@ -476,6 +483,9 @@ public class AsmRS extends MBDAOSupport {
         if (am != null && spec.hasNonNull("value")) {
             am.attributePersisted(amCtx, attr, spec.get("value"));
         }
+
+        amCtx.flush();
+
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
 

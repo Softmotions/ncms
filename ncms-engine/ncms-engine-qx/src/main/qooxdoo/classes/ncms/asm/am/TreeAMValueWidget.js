@@ -519,7 +519,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                     "name" : data["linkText"],
                     "type" : "file",
                     "extra" : data["name"],
-                    "link" : ncms.Application.APP_STATE.getStateProperty("ncmsPrefix") + "/rs/fileid/" + data["id"] + "?inline=true",
+                    "link" : null,
                     "icon" : "file",
                     "nam" : null
                 };

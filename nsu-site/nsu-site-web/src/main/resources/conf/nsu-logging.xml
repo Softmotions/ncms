@@ -19,6 +19,7 @@
     <logger name="com.softmotions.ncms.asm.PageRS" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.PageSecurityService" level="INFO"/>
     <logger name="com.softmotions.ncms.user.UserEnvRS" level="INFO"/>
+    <logger name="com.softmotions.ncms.asm.am.AsmAttributeManagerContext" level="INFO"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

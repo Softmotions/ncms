@@ -106,7 +106,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         ObjectNode tree = (ObjectNode) val;
         if (tree != null) {
             try {
-                saveTree(ctx, tree);
+                saveTree(ctx, attr, tree);
             } catch (IOException e) {
                 log.error("", e);
                 throw new RuntimeException(e);
@@ -118,13 +118,18 @@ public class AsmTreeAM implements AsmAttributeManager {
         return attr;
     }
 
-    private void saveTree(AsmAttributeManagerContext ctx, ObjectNode tree) throws IOException {
+    private void saveTree(AsmAttributeManagerContext ctx, AsmAttribute attr, ObjectNode tree) throws IOException {
+        String type = tree.hasNonNull("type") ? tree.get("type").asText() : null;
+        Long id = tree.hasNonNull("id") ? tree.get("id").asLong() : null;
+        if ("file".equals(type) && id != null) {
+            ctx.registerMediaFileDependency(attr, id);
+        }
         JsonNode val = tree.get("nam");
         if (val != null && val.isTextual()) {
             JsonNode naSpec = mapper.readTree(val.asText());
             String naClass = naSpec.hasNonNull("naClass") ? naSpec.get("naClass").asText() : null;
             if ("ncms.asm.am.RichRefAM".equals(naClass)) {
-                richRefAM.applyAttributeValue(ctx, naSpec);
+                richRefAM.applyJSONAttributeValue(ctx, attr, naSpec);
                 tree.set("nam", tree.textNode(naSpec.toString()));
             }
         }
@@ -132,7 +137,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         if (val instanceof ArrayNode) {
             for (JsonNode n : val) {
                 if (n instanceof ObjectNode) {
-                    saveTree(ctx, (ObjectNode) n);
+                    saveTree(ctx, attr, (ObjectNode) n);
                 }
             }
         }
