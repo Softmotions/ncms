@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -331,6 +332,10 @@ public class AsmDAO extends MBDAOSupport {
 
         private List<Pair<String, Object>> attrs = new ArrayList<>();
 
+        private List<String> attrsInclude;
+
+        private List<String> attrsExclude;
+
         public PageCriteria(AsmDAO dao, String namespace) {
             super(dao, namespace);
             withStatement("queryByAttrs");
@@ -338,10 +343,6 @@ public class AsmDAO extends MBDAOSupport {
 
         public PageCriteria withPublished(boolean val) {
             return withParam("published", val);
-        }
-
-        public PageCriteria withNavParentId(long id) {
-            return withParam("navParentId", id);
         }
 
         public PageCriteria withTypeLike(String type) {
@@ -359,12 +360,41 @@ public class AsmDAO extends MBDAOSupport {
 
         public PageCriteria finish() {
             withParam("attrs", attrs);
+            if (!containsKey("attrsExclude")) {
+                withParam("attrsExclude", Collections.EMPTY_LIST);
+            }
+            if (!containsKey("attrsInclude")) {
+                withParam("attrsInclude", Collections.EMPTY_LIST);
+            }
             return super.finish();
         }
 
         public PageCriteria onAsm() {
             return prefixedBy("asm.");
         }
+
+        public PageCriteria attributesInclude(String... names) {
+            if (attrsInclude == null) {
+                attrsInclude = new ArrayList<>();
+                withParam("attrsInclude", attrsInclude);
+            }
+            Collections.addAll(attrsInclude, names);
+            return this;
+        }
+
+        public PageCriteria attrubutesExclude(String... names) {
+            if (attrsExclude == null) {
+                attrsExclude = new ArrayList<>();
+                withParam("attrsExclude", attrsExclude);
+            }
+            Collections.addAll(attrsExclude, names);
+            return this;
+        }
+
+        public PageCriteria withNavParentId(Long id) {
+            return withParam("navParentId", id);
+        }
+
 
         public Collection<Asm> selectAsAsms() {
             final Map<Long, Asm> asmGroup = new LinkedHashMap<>();
@@ -378,19 +408,29 @@ public class AsmDAO extends MBDAOSupport {
                     if (asm == null) {
                         asm = new Asm(id, (String) row.get("name"));
                         asm.setHname((String) row.get("hname"));
+                        asm.setNavParentId((Long) row.get("nav_parent_id"));
                         asm.setType((String) row.get("type"));
                         asm.setMdate((Date) row.get("mdate"));
                         asm.setCdate((Date) row.get("cdate"));
                         asmGroup.put(id, asm);
                     }
                     String attrName = (String) row.get("attr_name");
-                    if (asm.getAttribute(attrName) == null) {
+                    if (attrName != null && asm.getAttribute(attrName) == null) {
                         AsmAttribute attr = new AsmAttribute();
                         attr.setId(((Number) row.get("attr_id")).longValue());
                         attr.setName(attrName);
                         attr.setType((String) row.get("attr_type"));
                         attr.setValue((String) row.get("attr_value"));
                         asm.addAttribute(attr);
+                    }
+                    if (row.get("np_name") != null && asm.getAttribute("np_name") == null) {
+                        asm.addAttribute(new AsmAttribute("np_name", "string", row.get("np_name").toString()));
+                    }
+                    if (row.get("np_hname") != null && asm.getAttribute("np_hname") == null) {
+                        asm.addAttribute(new AsmAttribute("np_hname", "string", row.get("np_hname").toString()));
+                    }
+                    if (row.get("np_id") != null && asm.getAttribute("np_id") == null) {
+                        asm.addAttribute(new AsmAttribute("np_id", "string", row.get("np_id").toString()));
                     }
                 }
             });

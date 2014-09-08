@@ -2,6 +2,9 @@
 
 <configuration>
     <app-name>Ncms</app-name>
+    <environment>${ncms.environment}</environment>
+    <db-environment>${ncms.db.environment}</db-environment>
+
     <help-site>http://nsu.ru</help-site>
     <logout-redirect>http://nsu.ru</logout-redirect>
     <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->

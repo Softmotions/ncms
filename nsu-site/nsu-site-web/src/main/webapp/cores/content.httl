@@ -118,6 +118,6 @@
         </footer>
     </div>
 </div>
-$!{read("inc/scripts.html")}
+$!{include("inc/scripts.httl")}
 </body>
 </html>

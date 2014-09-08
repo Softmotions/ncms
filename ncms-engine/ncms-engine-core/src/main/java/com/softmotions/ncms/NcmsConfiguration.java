@@ -1,12 +1,13 @@
 package com.softmotions.ncms;
 
-import ninja.lifecycle.Dispose;
-import ninja.utils.NinjaProperties;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.weboot.WBConfiguration;
+import com.softmotions.weboot.lifecycle.Dispose;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import java.io.File;
@@ -20,33 +21,30 @@ import java.nio.file.Files;
  */
 public class NcmsConfiguration extends WBConfiguration {
 
-    public static final String DEFAULT_CFG_RESOURCE = "com/softmotions/ncms/ncms-configuration.xml";
+    private static final Logger log = LoggerFactory.getLogger(NcmsConfiguration.class);
 
-    private final File tmpdir;
+    private File tmpdir;
 
-    private final ServletContext servletContext;
+    private ServletContext servletContext;
 
-    public NcmsConfiguration(ServletContext servletContext, NinjaProperties ninjaProperties) {
-        this(servletContext, ninjaProperties, null, true);
+    public static String getNcmsVersion()  {
+        return "/*$mvn.project.version$*/";
     }
 
-    public NcmsConfiguration(ServletContext servletContext,
-                             NinjaProperties ninjaProperties,
-                             String cfgResource, boolean resource) {
-        super(ninjaProperties, cfgResource, resource);
-        this.servletContext = servletContext;
-        String dir = impl().getString("tmpdir");
+    public void load(String location, ServletContext sctx) {
+        super.load(location, sctx);
+        this.servletContext = sctx;
+        String dir = xcfg.getString("tmpdir");
         if (StringUtils.isBlank(dir)) {
             dir = System.getProperty("java.io.tmpdir");
         }
         tmpdir = new File(dir);
-        log.info("Using dir: " + tmpdir.getAbsolutePath());
+        log.info("Using TMP dir: " + tmpdir.getAbsolutePath());
         try {
             DirUtils.ensureDir(tmpdir, true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         normalizePrefix("site-root");
         normalizePrefix("ncms-prefix");
     }
@@ -83,16 +81,16 @@ public class NcmsConfiguration extends WBConfiguration {
     }
 
     public String getEnvironmentType() {
-        String etype = ninjaProperties.get("ncms.environment");
+        String etype = xcfg.getString("environment");
         if (etype == null) {
-            throw new RuntimeException("Missing required 'ncms.environment' " +
-                                       "property in 'application.conf'");
+            throw new RuntimeException("Missing required '<environment>' " +
+                                       "property in application config");
         }
         return etype;
     }
 
     public String getDBEnvironmentType() {
-        String etype = ninjaProperties.get("ncms.db.environment");
+        String etype = xcfg.getString("db-environment");
         if (etype == null) {
             throw new RuntimeException("Missing required 'ncms.db.environment' " +
                                        "property in 'application.conf'");

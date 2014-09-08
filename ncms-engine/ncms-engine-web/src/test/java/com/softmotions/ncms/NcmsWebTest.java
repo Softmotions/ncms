@@ -57,7 +57,6 @@ public class NcmsWebTest implements NcmsTestServerInitializer {
     @Before
     public void startupServerAndBrowser() throws Exception {
         log.info("EnvProps: " + envProps);
-        System.setProperty("ninja.mode", "test");
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.INFO);

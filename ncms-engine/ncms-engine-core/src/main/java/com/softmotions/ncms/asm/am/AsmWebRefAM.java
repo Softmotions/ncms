@@ -1,7 +1,5 @@
 package com.softmotions.ncms.asm.am;
 
-import ninja.lifecycle.Dispose;
-import ninja.lifecycle.Start;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
@@ -9,6 +7,8 @@ import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.web.GenericResponseWrapper;
+import com.softmotions.weboot.lifecycle.Dispose;
+import com.softmotions.weboot.lifecycle.Start;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -210,7 +210,7 @@ public class AsmWebRefAM implements AsmAttributeManager {
         }
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         AsmOptions opts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts,
                                         "asLocation");
@@ -219,12 +219,12 @@ public class AsmWebRefAM implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText().trim() : null);
         return attr;
     }
 
-    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
 
     }
 

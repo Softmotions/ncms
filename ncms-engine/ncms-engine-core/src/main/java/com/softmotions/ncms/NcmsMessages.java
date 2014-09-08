@@ -1,25 +1,24 @@
 package com.softmotions.ncms;
 
-import ninja.i18n.Lang;
-import ninja.i18n.Messages;
-
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.collections.iterators.IteratorEnumeration;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.resourceloading.AggregateResourceBundleLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -31,57 +30,70 @@ public class NcmsMessages {
 
     private static final ThreadLocal<Map<String, SimpleDateFormat>> LOCAL_SDF_CACHE = new ThreadLocal<>();
 
-    private final Messages messages;
+    @SuppressWarnings("StaticCollection")
+    private static final Map<String, String[]> LNG_MONTHS = new HashMap<>();
 
-    private final Lang lang;
+    static {
+
+        LNG_MONTHS.put("ru", new String[]{
+                "января", "февраля", "марта", "апреля", "мая",
+                "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"
+        });
+    }
+
+    private final AggregateResourceBundleLocator bundleLocator;
+
+    private final Map<Locale, ResourceBundle> bundleCache;
 
     @Inject
-    public NcmsMessages(Messages messages, Lang lang) {
-        this.messages = messages;
-        this.lang = lang;
+    public NcmsMessages(NcmsConfiguration cfg) {
+        List<Object> blist = cfg.impl().getList("messages.bundle");
+        if (!blist.contains("com.softmotions.ncms.Messages")) {
+            blist.add("com.softmotions.ncms.Messages");
+        }
+        ArrayList<String> rnames = new ArrayList<>();
+        for (Object v : blist) {
+            String sv = (v != null) ? v.toString() : null;
+            if (StringUtils.isBlank(sv)) {
+                continue;
+            }
+            rnames.add(sv);
+        }
+        bundleLocator = new AggregateResourceBundleLocator(rnames);
+        bundleCache = new ConcurrentHashMap<>();
+    }
+
+
+    public ResourceBundle getResourceBundle(Locale locale) {
+        ResourceBundle bundle = bundleCache.get(locale);
+        if (bundle == null) {
+            bundle = bundleLocator.getResourceBundle(locale);
+            if (bundle != null) {
+                bundleCache.put(locale, bundle);
+            }
+        }
+        return bundle;
     }
 
     public ResourceBundle getResourceBundle(HttpServletRequest req) {
-        final String langName = getLocale(req).getLanguage();
-        @SuppressWarnings("deprecation")
-        final Set all = messages.getAll(Optional.of(langName)).keySet();
-
-        return new ResourceBundle() {
-
-            protected Object handleGetObject(String key) {
-                Optional<String> res = messages.get(key, Optional.of(langName));
-                return res.orNull();
-            }
-
-            public Enumeration<String> getKeys() {
-                //noinspection unchecked
-                return new IteratorEnumeration(all.iterator());
-            }
-        };
+        return getResourceBundle(getLocale(req));
     }
 
     public String get(String key, String... params) {
-        return get(key, Optional.<String>absent(), params);
+        return get(key, Locale.getDefault(), params);
     }
 
-
-    public String get(String key, Optional<String> lang, String... params) {
-        Optional<String> msg = messages.get(key, lang, params);
-        if (msg.isPresent()) {
-            return msg.get();
-        } else {
+    public String get(String key, Locale locale, String... params) {
+        ResourceBundle bundle = getResourceBundle(locale);
+        if (bundle == null) {
             return null;
         }
+        String msg = bundle.getString(key);
+        return (msg != null) ? String.format(locale, msg, params) : null;
     }
 
     public String get(String key, HttpServletRequest req, String... params) {
-        //todo lang selection
-        Optional<String> lang = Optional.absent();
-        return get(key, lang, params);
-    }
-
-    public Lang getLang() {
-        return lang;
+        return get(key, getLocale(req), params);
     }
 
     public Locale getLocale(HttpServletRequest req) {
@@ -92,13 +104,12 @@ public class NcmsMessages {
         return Locale.getDefault();
     }
 
-    public Messages getNinjaMessages() {
-        return messages;
-    }
-
     public String format(Date date, String format, Locale locale) {
         if (locale == null) {
             locale = Locale.getDefault();
+        }
+        if ("LMMMMM".equals(format)) {
+            return getLocaleAwareMonth(date, locale);
         }
         Map<String, SimpleDateFormat> formatters = LOCAL_SDF_CACHE.get();
         if (formatters == null) {
@@ -112,5 +123,17 @@ public class NcmsMessages {
             formatters.put(key, sdf);
         }
         return sdf.format(date);
+    }
+
+
+    private String getLocaleAwareMonth(Date date, Locale locale) {
+        Calendar cal = Calendar.getInstance(locale);
+        cal.setTime(date);
+        String lng = locale.getLanguage();
+        String[] months = LNG_MONTHS.get(lng);
+        if (months != null) {
+            return months[cal.get(Calendar.MONTH)];
+        }
+        return format(cal.getTime(), "MMMMM", locale);
     }
 }

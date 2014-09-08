@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -86,7 +85,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return html;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         if (attr.getOptions() != null) {
             asmOpts.loadOptions(attr.getOptions());
@@ -97,13 +96,13 @@ public class AsmWikiAM implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         String value = val.has("value") ? val.get("value").asText() : null;
         String markup = val.has("markup") ? val.get("markup").asText() : "mediawiki";
         String html = null;
         if (!StringUtils.isBlank(value)) {
             if ("mediawiki".equals(markup)) {
-                html = mediaWikiRenderer.render(value, req);
+                html = mediaWikiRenderer.render(value, ctx.getRequest());
                 html = new StringBuilder(html.length() + 32)
                         .append("<div class=\"wiki\">")
                         .append(html)
@@ -125,7 +124,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
 
     }
 }

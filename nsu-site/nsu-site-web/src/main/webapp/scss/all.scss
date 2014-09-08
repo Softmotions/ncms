@@ -524,7 +524,7 @@
         background: url(../images/arrow-list.png) no-repeat 246px 50%;
       }
 
-      &.active > a/*, > a:hover*/                                           {
+      &.active > a/*, > a:hover*/                                            {
         text-decoration: none;
         color: #fff;
         margin: -1px;
@@ -786,7 +786,7 @@
 
   .ad-list2 {
     padding: 0;
-    margin: 0 0 20px -16px;
+    margin: 0 0 0 -16px;
     list-style: none;
     overflow: hidden;
 
@@ -821,15 +821,15 @@
 
       h4 {
         font: 600 15px/18px $basic_sans_font;
+        position: absolute;
+        bottom: 0;
+        left: 0;
         margin: 0;
         color: #fff;
         text-align: center;
         width: 100%;
-        position: absolute;
-        bottom: 0;
         padding: 12px 0 15px;
-        left: 0;
-        background: url(../images/bg-title.png) no-repeat;
+        background: url(../images/bg-title.png) repeat-x;
         background-color: rgba(0, 0, 0, 0.9);
       }
     }
@@ -1042,6 +1042,12 @@
 
       img {
         vertical-align: top;
+      }
+
+      div {
+        overflow: hidden;
+        width: 322px;
+        height: 72px;
       }
     }
   }

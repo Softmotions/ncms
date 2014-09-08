@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
@@ -40,7 +39,6 @@ public class AsmRichRefAM implements AsmAttributeManager {
 
     private final NcmsConfiguration cfg;
 
-
     @Inject
     public AsmRichRefAM(AsmImageAM imageAM,
                         ObjectMapper mapper,
@@ -58,13 +56,13 @@ public class AsmRichRefAM implements AsmAttributeManager {
         return attr;
     }
 
-
     public RichRef renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) throws AsmRenderingException {
         JsonNode n;
         String link = null;
         String name = null;
         String description = null;
         String style = null;
+        String style2 = null;
         Image image = null;
         if (node.hasNonNull("image")) {
             image = imageAM.renderAsmAttribute(ctx, (ObjectNode) node.get("image"));
@@ -87,8 +85,10 @@ public class AsmRichRefAM implements AsmAttributeManager {
         if (node.hasNonNull("style")) {
             style = node.get("style").asText();
         }
-        return new RichRef(name, link, description, image, style);
-
+        if (node.hasNonNull("style2")) {
+            style2 = node.get("style2").asText();
+        }
+        return new RichRef(name, link, description, image, style, style2);
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
@@ -113,19 +113,27 @@ public class AsmRichRefAM implements AsmAttributeManager {
         return res;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts);
         attr.setOptions(asmOpts.toString());
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
-        attr.setEffectiveValue(val != null ? val.toString() : null);
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+        attr.setEffectiveValue(val != null ? applyAttributeValue(ctx, val).toString() : null);
         return attr;
     }
 
-    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public JsonNode applyAttributeValue(AsmAttributeManagerContext ctx, JsonNode val) {
+        JsonNode image = val.get("image");
+        if (image != null) {
+            imageAM.applyAttributeValue(ctx, image);
+        }
+        return val;
+    }
+
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
 
     }
 }

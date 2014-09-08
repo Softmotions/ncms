@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -184,7 +183,7 @@ public class AsmSelectAM implements AsmAttributeManager {
     }
 
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         //options
         JsonNode optsVal = val.get("display");
         AsmOptions opts = new AsmOptions();
@@ -200,11 +199,11 @@ public class AsmSelectAM implements AsmAttributeManager {
             opts.put("multiselect", optsVal.asBoolean());
         }
         attr.setOptions(opts.toString());
-        applyAttributeValue(attr, val, req);
+        applyAttributeValue(ctx, attr, val);
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         JsonNode value = val.get("value");
         if (value != null && value.isArray()) {
             attr.setEffectiveValue(value.toString());
@@ -214,7 +213,7 @@ public class AsmSelectAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         JsonNode value = val.get("value");
         List<String> mvals = new ArrayList<>();
         if (value != null && value.isArray()) {

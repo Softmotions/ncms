@@ -1,15 +1,15 @@
 package com.softmotions.ncms.db;
 
-import ninja.lifecycle.Start;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.weboot.lifecycle.Start;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 
+import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,7 +14,6 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,7 +111,7 @@ public class AsmServlet extends HttpServlet {
             return;
         }
 
-        boolean preview = BooleanUtils.toBoolean(req.getParameter("preview"));
+        boolean preview = "1".equals(req.getParameter("preview"));
         Asm asm = ctx.getAsm();
         if (!asm.isPublished()) {
             if (!(preview && pageSecurity.checkAccessAny(asm.getId(), req, "wnd"))) {

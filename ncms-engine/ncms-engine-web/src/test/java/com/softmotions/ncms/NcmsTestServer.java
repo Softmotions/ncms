@@ -1,10 +1,5 @@
 package com.softmotions.ncms;
 
-import ninja.utils.NinjaConstant;
-import ninja.utils.NinjaMode;
-import ninja.utils.NinjaPropertiesImpl;
-import com.softmotions.weboot.WBServletListener;
-
 import com.google.inject.Injector;
 
 import org.apache.http.client.utils.URIBuilder;
@@ -37,7 +32,6 @@ public class NcmsTestServer {
         container = new NcmsJetty(initializer);
         container.setPort(this.port);
         container.setServerUri(serverUri);
-        container.setNinjaMode(NinjaMode.test);
         container.start();
     }
 
@@ -89,15 +83,13 @@ public class NcmsTestServer {
 
         URI serverUri;
 
-        NinjaMode ninjaMode;
-
         Server server;
 
         ServletContextHandler context;
 
         String contextPath;
 
-        WBServletListener servletListener;
+        NcmsServletListener servletListener;
 
         NcmsTestServerInitializer initializer;
 
@@ -105,7 +97,6 @@ public class NcmsTestServer {
             //some sensible defaults
             port = DEFAULT_PORT;
             serverUri = URI.create("http://localhost:" + port);
-            ninjaMode = NinjaMode.dev;
             this.initializer = initializer;
         }
 
@@ -120,11 +111,6 @@ public class NcmsTestServer {
 
         public NcmsJetty setServerUri(URI serverUri) {
             this.serverUri = serverUri;
-            return this;
-        }
-
-        public NcmsJetty setNinjaMode(NinjaMode ninjaMode) {
-            this.ninjaMode = ninjaMode;
             return this;
         }
 
@@ -149,10 +135,8 @@ public class NcmsTestServer {
                 ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
                 context.setSecurityHandler(securityHandler);
 
-                NinjaPropertiesImpl nprops = new NinjaPropertiesImpl(ninjaMode);
-                nprops.setProperty(NinjaConstant.serverName, serverUri.toString());
-
-                servletListener = new NcmsServletListener(nprops);
+                //todo init!!!
+                servletListener = new NcmsServletListener();
                 context.addEventListener(servletListener);
 
                 initializer.initServer(server, context);

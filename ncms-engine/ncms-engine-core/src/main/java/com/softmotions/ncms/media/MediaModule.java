@@ -1,7 +1,7 @@
 package com.softmotions.ncms.media;
 
-import ninja.lifecycle.Start;
 import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.weboot.lifecycle.Start;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;

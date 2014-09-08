@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -82,7 +81,6 @@ public class AsmImageAM implements AsmAttributeManager {
         return image;
     }
 
-
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
@@ -133,7 +131,7 @@ public class AsmImageAM implements AsmAttributeManager {
         return res;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
                                         "width", "height",
@@ -143,14 +141,18 @@ public class AsmImageAM implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+        attr.setEffectiveValue(val != null ? applyAttributeValue(ctx, val).toString() : null);
+        return attr;
+    }
+
+    public JsonNode applyAttributeValue(AsmAttributeManagerContext ctx, JsonNode val) {
         ObjectNode opts = (ObjectNode) val.get("options");
         if (opts == null) {
             opts = mapper.createObjectNode();
+            ((ObjectNode) val).set("options", opts);
         }
-
         long id = val.hasNonNull("id") ? val.get("id").asLong() : 0L;
-
         if ((opts.hasNonNull("resize") && opts.get("resize").asBoolean() ||
              opts.hasNonNull("cover") && opts.get("cover").asBoolean()) &&
             (opts.hasNonNull("width") || opts.hasNonNull("height"))) {
@@ -170,9 +172,7 @@ public class AsmImageAM implements AsmAttributeManager {
             } else if (!opts.hasNonNull("skipSmall") || opts.get("skipSmall").asBoolean(true)) {
                 flags |= MediaRepository.RESIZE_SKIP_SMALL;
             }
-
             try {
-
                 Pair<Integer, Integer> dim = repository.ensureResizedImage(id, width, height, flags);
                 if (dim == null) {
                     throw new RuntimeException("Unable to resize image file: " + id +
@@ -190,11 +190,11 @@ public class AsmImageAM implements AsmAttributeManager {
                 throw new RuntimeException(msg, e);
             }
         }
-        attr.setEffectiveValue(val.toString());
-        return attr;
+        return val;
     }
 
-    public void attributePersisted(AsmAttribute attr, JsonNode val, HttpServletRequest req) {
+
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
 
     }
 

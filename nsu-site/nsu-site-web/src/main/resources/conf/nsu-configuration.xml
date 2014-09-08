@@ -2,11 +2,21 @@
 
 <configuration>
     <app-name>Ncms</app-name>
+    <environment>${ncms.environment}</environment>
+    <db-environment>${nsu.db.environment}</db-environment>
+
     <help-site>http://nsu.ru</help-site>
     <logout-redirect>http://nsu.ru</logout-redirect>
     <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->
+
     <site-root resolveRelativePaths="true">/site</site-root>
     <ncms-prefix>/ncms</ncms-prefix>
+
+    <messages>
+        <bundle>com.softmotions.ncms.Messages</bundle>
+    </messages>
+
+    <logging ref="nsu-logging.xml"/>
 
     <jar-web-resources>
         <resource>
@@ -157,9 +167,9 @@
     <content>
         <mainpage>
             <news>
-               <a template="index_news" max="10"/>
-               <b template="index_announce" max="12"/>
-               <c template="faculty_news" max="12"/>
+                <a template="index_news" max="10"/>
+                <b template="index_announce" max="12"/>
+                <c template="faculty_news" max="12"/>
             </news>
         </mainpage>
     </content>
