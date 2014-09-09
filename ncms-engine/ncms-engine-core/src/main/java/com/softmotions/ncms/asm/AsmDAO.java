@@ -297,6 +297,12 @@ public class AsmDAO extends MBDAOSupport {
     }
 
 
+    @Transactional
+    public void bumpAsmOrdinal(Long asmId) {
+        update("bumpAsmOrdinal", asmId);
+    }
+
+
     public PageCriteria newPageCriteria() {
         return new PageCriteria(this, this.namespace).withStatement("queryAttrs");
     }

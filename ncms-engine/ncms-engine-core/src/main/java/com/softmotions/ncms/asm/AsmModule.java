@@ -5,6 +5,7 @@ import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.am.AsmBooleanAM;
 import com.softmotions.ncms.asm.am.AsmBreadCrumbsAM;
+import com.softmotions.ncms.asm.am.AsmBumpOrdinalAM;
 import com.softmotions.ncms.asm.am.AsmDateAM;
 import com.softmotions.ncms.asm.am.AsmFileRefAM;
 import com.softmotions.ncms.asm.am.AsmImageAM;
@@ -68,6 +69,7 @@ public class AsmModule extends AbstractModule {
         attrBinder.addBinding().to(AsmMainPageAM.class);
         attrBinder.addBinding().to(AsmRichRefAM.class);
         attrBinder.addBinding().to(AsmDateAM.class);
+        attrBinder.addBinding().to(AsmBumpOrdinalAM.class);
 
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);

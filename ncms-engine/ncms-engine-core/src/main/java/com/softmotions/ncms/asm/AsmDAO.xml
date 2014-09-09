@@ -284,6 +284,12 @@
         </foreach>
     </insert>
 
+    <update id="bumpAsmOrdinal" parameterType="long">
+        UPDATE ASMS
+        SET ordinal = SEQ_ASMS_ORDINAL.NEXTVAL
+        WHERE id = #{id}
+    </update>
+
     <select id="queryAttrs"
             parameterType="map"
             resultType="map"
