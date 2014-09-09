@@ -34,17 +34,17 @@ public class MainPageController implements AsmController {
                                                            "subcategory",
                                                            "event_date"};
 
-    private final AsmDAO dao;
+    private final AsmDAO adao;
 
     private final ObjectMapper mapper;
 
     private final SubnodeConfiguration mpCfg;
 
     @Inject
-    public MainPageController(AsmDAO dao,
+    public MainPageController(AsmDAO adao,
                               ObjectMapper mapper,
                               NcmsConfiguration cfg) {
-        this.dao = dao;
+        this.adao = adao;
         this.mapper = mapper;
         this.mpCfg = cfg.impl().configurationAt("content.mainpage");
     }
@@ -62,11 +62,11 @@ public class MainPageController implements AsmController {
         String val = req.getParameter("mpc.c.skip");
         Integer skip = (val != null) ? Integer.parseInt(val) : null;
 
-        AsmDAO.PageCriteria crit = dao.newPageCriteria();
+        AsmDAO.PageCriteria crit = adao.newPageCriteria();
         crit.attributesInclude(DEFAULT_ATTRS_INCLUDE);
         crit.withPublished(true);
         crit.withTypeLike("news.page");
-        crit.withTemplate(mpCfg.getString("news.c[@template]", "faculty_news"));
+        crit.withTemplates(mpCfg.getString("news.c[@template]", "faculty_news"));
 
         if (skip != null) {
             crit.skip(skip);
@@ -85,12 +85,12 @@ public class MainPageController implements AsmController {
         String val = req.getParameter("mpc.b.skip");
         Integer skip = (val != null) ? Integer.parseInt(val) : null;
 
-        AsmDAO.PageCriteria crit = dao.newPageCriteria();
+        AsmDAO.PageCriteria crit = adao.newPageCriteria();
         crit.attributesInclude(DEFAULT_ATTRS_INCLUDE);
         crit.withPublished(true);
         crit.withNavParentId(asm.getId());
         crit.withTypeLike("news.page");
-        crit.withTemplate(mpCfg.getString("news.b[@template]", "index_announce"));
+        crit.withTemplates(mpCfg.getString("news.b[@template]", "index_announce"));
 
         if (skip != null) {
             crit.skip(skip);
@@ -115,12 +115,12 @@ public class MainPageController implements AsmController {
             activeCategory = newsCategories[0];
         }
 
-        AsmDAO.PageCriteria crit = dao.newPageCriteria();
+        AsmDAO.PageCriteria crit = adao.newPageCriteria();
         crit.attributesInclude(DEFAULT_ATTRS_INCLUDE);
         crit.withPublished(true);
         crit.withNavParentId(asm.getId());
         crit.withTypeLike("news.page");
-        crit.withTemplate(mpCfg.getString("news.a[@template]", "index_news"));
+        crit.withTemplates(mpCfg.getString("news.a[@template]", "index_news"));
 
         if (activeCategory != null) {
             crit.withAttributeLike("category", activeCategory);

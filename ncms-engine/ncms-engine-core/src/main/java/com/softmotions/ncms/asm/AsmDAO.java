@@ -375,8 +375,8 @@ public class AsmDAO extends MBDAOSupport {
             return this;
         }
 
-        public PageCriteria withTemplate(String name) {
-            return withParam("template", name);
+        public PageCriteria withTemplates(String... templates) {
+            return withParam("templates", templates);
         }
 
         public PageCriteria finish() {

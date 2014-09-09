@@ -19,8 +19,7 @@
 </div>
 <h1>Главные события</h1>
 <ul class="news-list list3">
-
-
+    #foreach(Asm p in events)
     <li>
         <div class="img-holder">
             <img src="images/img37.jpg" width="314" height="192" alt="image description"/>
@@ -40,46 +39,7 @@
             <span class="tag">Атмосфера</span>
         </div>
     </li>
-
-
-    <li>
-        <div class="img-holder">
-            <img src="images/img38.jpg" width="314" height="192" alt="image description"/>
-
-            <div class="date-holder">
-                <span class="date">17</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-        </div>
-        <div class="text-holder">
-            <h3><a href="#">Ректор НГУ ответил на вопросы студентов</a></h3>
-
-            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций
-                PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта»,
-                флэшмоб по иллюстрациям к драмам Шекспспира.</p>
-            <span class="tag">Официально</span>
-        </div>
-    </li>
-    <li>
-        <div class="img-holder">
-            <img src="images/img39.jpg" width="314" height="192" alt="image description"/>
-
-            <div class="date-holder">
-                <span class="date">17</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-        </div>
-        <div class="text-holder">
-            <h3><a href="#">Хемоолимпийские игры</a></h3>
-
-            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций
-                PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта»,
-                флэшмоб по иллюстрациям к драмам Шекспспира.</p>
-            <span class="tag">Атмосфера</span>
-        </div>
-    </li>
+    #end
 </ul>
 
 
