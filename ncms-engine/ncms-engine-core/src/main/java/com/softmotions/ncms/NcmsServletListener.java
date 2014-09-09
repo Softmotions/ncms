@@ -32,7 +32,6 @@ public class NcmsServletListener extends WBServletListener {
             "                                     |___|          \n" +
             "Version: {}                                         \n";
 
-
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
 
     public void contextInitialized(ServletContextEvent event) {
@@ -45,6 +44,7 @@ public class NcmsServletListener extends WBServletListener {
 
         super.contextInitialized(event);
 
+        NcmsConfiguration cfg = (NcmsConfiguration) sctx.getAttribute(WEBOOT_CFG_SCTX_KEY);
         resteasyBootstrap = getInjector().getInstance(GuiceResteasyBootstrapServletContextListener.class);
         resteasyBootstrap.contextInitialized(event);
 
@@ -55,8 +55,7 @@ public class NcmsServletListener extends WBServletListener {
 
         start();
 
-
-        log.info(LOGO, NcmsConfiguration.getNcmsVersion());
+        log.info(LOGO, cfg.getNcmsVersion());
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {

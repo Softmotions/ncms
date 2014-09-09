@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Properties;
 
 /**
  * Ncms configuration.
@@ -25,14 +27,15 @@ public class NcmsConfiguration extends WBConfiguration {
 
     public static volatile NcmsConfiguration INSTANCE;
 
+    private final Properties coreProps;
+
     private File tmpdir;
 
     private ServletContext servletContext;
 
-    public static String getNcmsVersion() {
-        return "/*$mvn.project.version$*/";
+    public String getNcmsVersion() {
+        return coreProps.getProperty("project.version");
     }
-
 
     public NcmsConfiguration() {
         if (INSTANCE == null) {
@@ -41,6 +44,18 @@ public class NcmsConfiguration extends WBConfiguration {
                     INSTANCE = this;
                 }
             }
+        }
+        String res = "/com/softmotions/ncms/core/Core.properties";
+        InputStream is =
+                getClass().getResourceAsStream(res);
+        if (is == null) {
+            throw new RuntimeException("Jar resource not found: " + res);
+        }
+        coreProps = new Properties();
+        try {
+            coreProps.load(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

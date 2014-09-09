@@ -192,4 +192,8 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="16" author="adamansky@gmail.com">
+        <dropTable tableName="MEDIA_ENTITY_REFS"/>
+    </changeSet>
+
 </databaseChangeLog>

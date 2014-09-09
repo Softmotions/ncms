@@ -3,7 +3,6 @@ package ru.nsu;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
-import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
@@ -37,19 +36,15 @@ public class MainPageController implements AsmController {
 
     private final AsmDAO dao;
 
-    private final PageService pageService;
-
     private final ObjectMapper mapper;
 
     private final SubnodeConfiguration mpCfg;
 
     @Inject
     public MainPageController(AsmDAO dao,
-                              PageService pageService,
                               ObjectMapper mapper,
                               NcmsConfiguration cfg) {
         this.dao = dao;
-        this.pageService = pageService;
         this.mapper = mapper;
         this.mpCfg = cfg.impl().configurationAt("content.mainpage");
     }

@@ -54,21 +54,21 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
         CachedPage ip = pageService.getIndexPage(ctx.getServletRequest());
         if (ip != null) {
             Tree c = new Tree();
-            c.setId(ip.getAsm().getId());
-            c.setName(ip.getAsm().getHname());
-            c.setLink(cfg.getAsmLink(ip.getAsm().getId()));
+            c.setId(ip.getId());
+            c.setName(ip.getHname());
+            c.setLink(cfg.getAsmLink(ip.getId()));
             children.add(c);
         }
         for (int i = 0, l = idPaths.length; i < l; ++i) {
             CachedPage p = pageService.getCachedPage(idPaths[i], true);
             if (p == null ||
-                (ip != null && p.getAsm().getId().equals(ip.getAsm().getId()))) {
+                (ip != null && p.getId().equals(ip.getId()))) {
                 continue;
             }
             Tree c = new Tree();
             c.setId(idPaths[i]);
             c.setName(labelPaths[i]);
-            if (p.getAsm().isPublished() && i < l - 1) {
+            if (p.isPublished() && i < l - 1) {
                 c.setLink(cfg.getAsmLink(idPaths[i]));
             }
             children.add(c);

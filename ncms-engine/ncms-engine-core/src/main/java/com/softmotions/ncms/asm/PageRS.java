@@ -975,7 +975,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         protected boolean removeLRU(LinkEntry entry) {
             CachedPage cp = (CachedPage) entry.getValue();
-            Long pid = cp.getAsm().getId();
+            Long pid = cp.getId();
             synchronized (lang2IndexPages) {
                 for (Long ipid : lang2IndexPages.values()) {
                     if (ipid.equals(pid)) {  //this is the index page, keep it in the cache!
@@ -983,9 +983,9 @@ public class PageRS extends MBDAOSupport implements PageService {
                     }
                 }
             }
-            if (cp.getAsm().getName() != null) {
+            if (cp.getName() != null) {
                 synchronized (pagesCache) {
-                    pageGuid2Cache.remove(cp.getAsm().getName());
+                    pageGuid2Cache.remove(cp.getName());
                 }
             }
             return true;
@@ -998,6 +998,26 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         public Asm getAsm() {
             return asm;
+        }
+
+        public Long getId() {
+            return asm.getId();
+        }
+
+        public String getName() {
+            return asm.getName();
+        }
+
+        public String getHname() {
+            return asm.getHname();
+        }
+
+        public boolean isPublished() {
+            return asm.isPublished();
+        }
+
+        public Long getNavParentId() {
+            return asm.getNavParentId();
         }
 
         public Map<PATH_TYPE, Object> fetchNavPaths() {
@@ -1024,9 +1044,9 @@ public class PageRS extends MBDAOSupport implements PageService {
                     labelPath[i] = null;
                     idPath[i] = null;
                 } else {
-                    guidPath[i] = cp.getAsm().getName();
-                    labelPath[i] = cp.getAsm().getHname();
-                    idPath[i] = cp.getAsm().getId();
+                    guidPath[i] = cp.getName();
+                    labelPath[i] = cp.getHname();
+                    idPath[i] = cp.getId();
                 }
             }
             guidPath[i] = asm.getName();
@@ -1072,8 +1092,8 @@ public class PageRS extends MBDAOSupport implements PageService {
     private void clearCachedPage(Long id) {
         synchronized (pagesCache) {
             CachedPage p = pagesCache.remove(id);
-            if (p != null && p.getAsm().getName() != null) {
-                pageGuid2Cache.remove(p.getAsm().getName());
+            if (p != null && p.getName() != null) {
+                pageGuid2Cache.remove(p.getName());
             }
         }
     }
@@ -1096,8 +1116,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         synchronized (pagesCache) {
             CachedPage cp2 = pagesCache.get(id);
             if (cp2 == null) {
-                if (cp.getAsm().getName() != null) {
-                    pageGuid2Cache.put(cp.getAsm().getName(), cp);
+                if (cp.getName() != null) {
+                    pageGuid2Cache.put(cp.getName(), cp);
                 }
                 pagesCache.put(id, cp);
             } else {
