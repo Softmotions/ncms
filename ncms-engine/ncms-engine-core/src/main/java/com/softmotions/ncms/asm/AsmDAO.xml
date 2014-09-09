@@ -267,11 +267,20 @@
     </delete>
 
     <insert id="insertAttrsIdxValues" parameterType="map">
-        INSERT INTO ASM_ATTR_IDXVALS
+        INSERT INTO ASM_ATTR_IDXVALS(attr_id, value)
         VALUES
         <foreach item="value" index="index" collection="values"
                  open="" separator="," close="">
-            (#{attrId}, #{value})
+            (#{attrId}, #{value,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <insert id="insertAttrsIdxIValues" parameterType="map">
+        INSERT INTO ASM_ATTR_IDXVALS(attr_id, ivalue)
+        VALUES
+        <foreach item="value" index="index" collection="values"
+                 open="" separator="," close="">
+            (#{attrId}, #{value,jdbcType=BIGINT})
         </foreach>
     </insert>
 
@@ -326,7 +335,7 @@
                       <trim prefixOverrides="OR">
                         <foreach collection="attrs" item="attr">
                             OR (
-                              attr.type NOT IN ( 'select' )
+                              attr.type NOT IN ( 'select', 'date' )
                                 AND attr.name = #{attr.one} AND attr.value LIKE #{attr.two}
                             )
                             OR (

@@ -29,7 +29,11 @@ public class MainPageController implements AsmController {
 
     private static final int MAX_TOTAL_NEWS_LIMIT = 1000;
 
-    private static final String[] DEFAULT_ATTRS_INCLUDE = {"annotation", "icon", "category", "subcategory"};
+    private static final String[] DEFAULT_ATTRS_INCLUDE = {"annotation",
+                                                           "icon",
+                                                           "category",
+                                                           "subcategory",
+                                                           "event_date"};
 
     private final AsmDAO dao;
 

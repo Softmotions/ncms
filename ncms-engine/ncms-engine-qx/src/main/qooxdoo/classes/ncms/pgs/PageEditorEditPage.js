@@ -230,7 +230,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 validator = w.getValidator();
             }
 
-            form.add(w, attrSpec["label"], validator, attrSpec["name"], w);
+            form.add(w, attrSpec["label"] + " (" + attrSpec["name"] + ")", validator, attrSpec["name"], w);
         },
 
         _onModifiedWidget : function(ev) {

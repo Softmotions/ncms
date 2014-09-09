@@ -229,6 +229,6 @@ public class AsmSelectAM implements AsmAttributeManager {
                 mvals.add(slot.get(2).asText());
             }
         }
-        adao.updateAttrsIdxValues(attr, mvals);
+        adao.updateAttrsIdxStringValues(attr, mvals);
     }
 }

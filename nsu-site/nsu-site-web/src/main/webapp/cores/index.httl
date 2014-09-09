@@ -90,8 +90,9 @@
                     <ul class="announcement-list">
                         #foreach(Asm pn in news_b)
                         <li>
-                            <span class="date">${pn.cdate.format2("dd")} ${pn.cdate.format2("LMMMMM")} <span
-                                    class="year">${pn.cdate.format2("yyyy")}</span></span>
+                            #set(Date event_date = asm(pn, "event_date"))
+                            <span class="date">${event_date.format2("dd")} ${event_date.format2("LMMMMM")} <span
+                                    class="year">${event_date.format2("yyyy")}</span></span>
 
                             <p><a href="$!{pn.link}">${pn.asm("annotation")}</a></p>
                         </li>
