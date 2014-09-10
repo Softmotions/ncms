@@ -8,10 +8,6 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
                   ncms.asm.am.IValueWidget],
     include : [ ncms.asm.am.MValueWidget ],
 
-    events : {
-
-    },
-
     properties : {
         model : {
             check : "Object",

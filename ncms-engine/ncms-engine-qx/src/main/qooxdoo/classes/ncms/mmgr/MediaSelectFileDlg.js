@@ -35,6 +35,18 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
         }
     },
 
+    /**
+     * Options:
+     * <code>
+     *  {
+     *      allowMove : {Boolean?false},
+     *      allowSubfoldersView : {Boolean?false}
+     *  }
+     * </code>
+     * @param allowModify {Boolean?false}
+     * @param caption {String?} Dialog caption.
+     * @param opts {Object?} ncms.mmgr.MediaFilesSelector options.
+     */
     construct : function(allowModify, caption, opts) {
         allowModify = !!allowModify;
         this.base(arguments, caption);
