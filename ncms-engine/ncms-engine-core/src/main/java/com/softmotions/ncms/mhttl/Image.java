@@ -7,7 +7,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
  */
 public final class Image {
 
-    private long id;
+    private Long id;
     private boolean restrict;
     private boolean resize;
     private boolean skipSmall;
@@ -20,11 +20,11 @@ public final class Image {
         this.ctx = ctx;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

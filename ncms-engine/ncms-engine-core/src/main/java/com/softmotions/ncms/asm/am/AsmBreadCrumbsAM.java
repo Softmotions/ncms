@@ -49,6 +49,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
         Map<CachedPage.PATH_TYPE, Object> navpaths = cp.fetchNavPaths();
         Long[] idPaths = (Long[]) navpaths.get(PATH_TYPE.ID);
         String[] labelPaths = (String[]) navpaths.get(PATH_TYPE.LABEL);
+        String[] guidPaths = (String[]) navpaths.get(PATH_TYPE.GUID);
         Tree res = new Tree();
         List<Tree> children = res.getChildren();
         CachedPage ip = pageService.getIndexPage(ctx.getServletRequest());
@@ -56,7 +57,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
             Tree c = new Tree();
             c.setId(ip.getId());
             c.setName(ip.getHname());
-            c.setLink(cfg.getAsmLink(ip.getId()));
+            c.setLink(cfg.getAsmLink(ip.getName()));
             children.add(c);
         }
         for (int i = 0, l = idPaths.length; i < l; ++i) {
@@ -69,7 +70,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
             c.setId(idPaths[i]);
             c.setName(labelPaths[i]);
             if (p.isPublished() && i < l - 1) {
-                c.setLink(cfg.getAsmLink(idPaths[i]));
+                c.setLink(cfg.getAsmLink(guidPaths[i]));
             }
             children.add(c);
         }

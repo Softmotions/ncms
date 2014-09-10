@@ -38,6 +38,7 @@ public class NewsMainPageController implements AsmController {
         crit.withTemplates("index_news",
                            "index_announce",
                            "index_orders");
+        crit.withAttributeLike("mainevent", "true");
         crit.limit(3);
         crit.onAsm().orderBy("ordinal").desc();
         Collection<Asm> events = crit.selectAsAsms();
