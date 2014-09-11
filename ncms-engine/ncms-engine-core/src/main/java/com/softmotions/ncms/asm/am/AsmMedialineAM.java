@@ -12,6 +12,7 @@ import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.mhttl.Image;
+import com.softmotions.ncms.mhttl.Medialine;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -43,6 +44,8 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
     private static final Logger log = LoggerFactory.getLogger(AsmMedialineAM.class);
 
     public static final int DEFAULT_IMG_WIDTH = 800;
+
+    public static final int DEFAULT_IMG_THUMB_WIDTH = 64;
 
     private static final String[] TYPE = new String[]{"medialine"};
 
@@ -105,13 +108,14 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
 
     @Transactional
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
-        Collection<Image> res = new ArrayList<>();
+        Collection<Medialine> res = new ArrayList<>();
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
 
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         AsmOptions opts = new AsmOptions(attr.getOptions());
         int width = opts.getInt("width", DEFAULT_IMG_WIDTH);
+        int thumbWidth = opts.getInt("thumb_width", DEFAULT_IMG_THUMB_WIDTH);
 
         String value = attr.getEffectiveValue();
         if (StringUtils.isBlank(value)) {
@@ -130,7 +134,14 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
                 img.setId(parser.getLongValue());
                 img.setOptionsWidth(width);
                 img.setSkipSmall(true);
-                res.add(img);
+
+
+                Image thumbnail = new Image(ctx);
+                img.setId(parser.getLongValue());
+                img.setOptionsWidth(thumbWidth);
+                img.setSkipSmall(true);
+
+                res.add(new Medialine(img, thumbnail));
             }
         } catch (IOException e) {
             throw new AsmRenderingException(e);
@@ -140,7 +151,8 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
-        JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts, "width");
+        JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
+                                        "width", "thumb_width");
         attr.setOptions(asmOpts.toString());
         return attr;
     }
@@ -152,6 +164,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         AsmOptions opts = new AsmOptions(attr.getOptions());
         int width = opts.getInt("width", DEFAULT_IMG_WIDTH);
+        int thumbWidth = opts.getInt("thumb_width", DEFAULT_IMG_THUMB_WIDTH);
         ArrayNode sval = mapper.createArrayNode();
         ArrayNode aval = (ArrayNode) val;
         for (int i = 0, l = aval.size(); i < l; ++i) {
@@ -169,6 +182,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
             }
             ctx.registerMediaFileDependency(attr, fileId);
             ebus.fireOnSuccessCommit(new EnsureResizedImageJobEvent(fileId, width, null, MediaRepository.RESIZE_SKIP_SMALL));
+            ebus.fireOnSuccessCommit(new EnsureResizedImageJobEvent(fileId, thumbWidth, null, MediaRepository.RESIZE_SKIP_SMALL));
             sval.add(fileId);
         }
         attr.setEffectiveValue(sval.toString());

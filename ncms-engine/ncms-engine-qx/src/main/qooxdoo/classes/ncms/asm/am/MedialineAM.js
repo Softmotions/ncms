@@ -33,6 +33,16 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
                 el.setValue("800");
             }
             form.add(el, this.tr("Max image width"), sm.util.Validate.canBeRangeNumber(10, 2048), "width");
+
+            el = new qx.ui.form.TextField();
+            el.setRequired(true);
+            if (opts["thumb_width"] != null) {
+                el.setValue(opts["thumb_width"]);
+            } else {
+                el.setValue("64");
+            }
+            form.add(el, this.tr("Max thumbnail width"), sm.util.Validate.canBeRangeNumber(10, 256), "thumb_width");
+
             var fr = new qx.ui.form.renderer.Single(form);
             this.__form = form;
             fr.setAllowGrowX(false);
@@ -45,7 +55,8 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
             }
             var items = this.__form.getItems();
             return {
-                width : items["width"].getValue()
+                width : items["width"].getValue(),
+                thumb_width : items["thumb_width"].getValue()
             };
         },
 
