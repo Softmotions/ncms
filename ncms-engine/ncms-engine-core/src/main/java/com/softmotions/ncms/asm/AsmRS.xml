@@ -7,14 +7,14 @@
 
     <select id="select" resultType="map" parameterType="map">
         SELECT
-        asm.id AS "id",
-        asm.name AS "name",
-        asm.hname AS "hname",
-        asm.description AS "description",
-        asm.type AS "type",
-        asm.published AS "published",
-        asm.template AS "template"
-        FROM asms asm
+        asm.id            AS "id",
+        asm.name          AS "name",
+        asm.hname         AS "hname",
+        asm.description   AS "description",
+        asm.type          AS "type",
+        asm.published     AS "published",
+        asm.template      AS "template"
+        FROM ASMS asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
             <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
@@ -26,7 +26,7 @@
     </select>
 
     <select id="count" resultType="int" parameterType="map">
-        SELECT COUNT(*) FROM asms AS asm
+        SELECT COUNT(*) FROM ASMS AS asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
             <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
@@ -41,14 +41,14 @@
             resultType="com.softmotions.ncms.asm.AsmAttribute">
         SELECT
             attr.*
-        FROM asm_attrs attr
+        FROM ASM_ATTRS attr
         WHERE attr.asm_id = #{asm_id}
               AND attr.name = #{name}
     </select>
 
     <update id="renameAttribute"
             parameterType="map">
-        UPDATE asm_attrs
+        UPDATE ASM_ATTRS
         SET name = #{new_name}
         WHERE name = #{old_name}
               AND asm_id = #{asm_id}
@@ -57,12 +57,12 @@
 
     <update id="renameAttributeChilds"
             parameterType="map">
-        UPDATE asm_attrs
+        UPDATE ASM_ATTRS
         SET name = #{new_name}
         WHERE name = #{old_name}
               AND asm_id IN (SELECT
                                  asm_id
-                             FROM asm_parents
+                             FROM ASM_PARENTS
                              WHERE asm_parent_id = #{parent_id})
     </update>
 
@@ -73,15 +73,15 @@
         SELECT
             DISTINCT
             p2.asm_parent_id
-        FROM asm_parents AS p1
-            INNER JOIN asm_parents p2 ON p2.asm_parent_id = p1.asm_id
+        FROM ASM_PARENTS AS p1
+            INNER JOIN ASM_PARENTS p2 ON p2.asm_parent_id = p1.asm_id
         WHERE p1.asm_parent_id = #{parent_id}
     </select>
 
 
     <delete id="deleteAttribute"
             parameterType="map">
-        DELETE FROM asm_attrs
+        DELETE FROM ASM_ATTRS
         WHERE name = #{name}
               AND asm_id = #{asm_id}
     </delete>
@@ -89,13 +89,13 @@
 
     <delete id="deleteAttributeFromChilds"
             parameterType="map">
-        DELETE FROM asm_attrs
+        DELETE FROM ASM_ATTRS
         WHERE
             name = #{name}
             AND asm_id IN (
                 SELECT
                     ap.asm_id
-                FROM asm_parents AS ap
+                FROM ASM_PARENTS AS ap
                 WHERE ap.asm_parent_id = #{parent_id}
             )
     </delete>
@@ -103,7 +103,7 @@
 
     <insert id="insertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        INSERT INTO asm_attrs
+        INSERT INTO ASM_ATTRS
         (id, asm_id, name, label, type, options, required, value, large_value, mdate)
         VALUES (SEQ_ATTR_ID.NEXTVAL, #{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
     </insert>
@@ -111,7 +111,7 @@
 
     <update id="updateAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        UPDATE asm_attrs
+        UPDATE ASM_ATTRS
         SET
             label       = #{label},
             type        = #{type},
@@ -127,7 +127,7 @@
     <update id="upsertAttribute"
             databaseId="H2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        MERGE INTO asm_attrs (id, asm_id, NAME, LABEL, TYPE, OPTIONS, required, VALUE, large_value, mdate)
+        MERGE INTO ASM_ATTRS (id, asm_id, NAME, LABEL, TYPE, OPTIONS, required, VALUE, large_value, mdate)
         KEY (asm_id, NAME)
         VALUES (SEQ_ATTR_ID.NEXTVAL, #{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
     </update>
@@ -136,7 +136,7 @@
     <update id="upsertAttribute"
             databaseId="DB2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        MERGE INTO asm_attrs a
+        MERGE INTO ASM_ATTRS a
         USING (
                   VALUES (#{asmId}, #{name}, #{label}, #{type}, #{options},
                           #{required}, #{value}, #{largeValue}, CURRENT_TIMESTAMP)
@@ -161,7 +161,7 @@
 
     <update id="updateAssemblyProps"
             parameterType="map">
-        UPDATE asms
+        UPDATE ASMS
         <set>
             <if test="template != null">template = #{template},</if>
             <if test="template_mode != null">template_mode = #{template_mode},</if>
@@ -174,10 +174,10 @@
 
     <update id="exchangeAttributesOrdinal"
             parameterType="map">
-        UPDATE asm_attrs a1
+        UPDATE ASM_ATTRS a1
         SET a1.ordinal = (SELECT
                               a2.ordinal
-                          FROM asm_attrs a2
+                          FROM ASM_ATTRS a2
                           WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
                                 AND a1.ordinal != a2.ordinal),
             a1.mdate   = CURRENT_TIMESTAMP
@@ -187,14 +187,14 @@
     <select id="selectAsmIdByOrdinal"
             parameterType="long"
             resultType="long">
-        SELECT asm_id FROM asm_attrs WHERE ordinal = #{ordinal}
+        SELECT asm_id FROM ASM_ATTRS WHERE ordinal = #{ordinal}
     </select>
 
 
     <select id="selectAsmType" resultType="string" parameterType="long">
         SELECT
             a.type
-        FROM asms a
+        FROM ASMS a
         WHERE a.id = #{id}
     </select>
 

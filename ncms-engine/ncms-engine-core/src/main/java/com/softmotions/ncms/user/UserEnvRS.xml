@@ -17,7 +17,7 @@
     <update id="addSet"
             databaseId="H2"
             parameterType="map">
-        MERGE INTO user_env (userid, TYPE, ${vcol})
+        MERGE INTO USER_ENV (userid, TYPE, ${vcol})
         KEY ("USERID", "TYPE", ${vcol})
         VALUES (#{userid}, #{type}, #{value})
     </update>
@@ -25,7 +25,7 @@
     <update id="addSet"
             databaseId="DB2"
             parameterType="map">
-        MERGE INTO user_env e
+        MERGE INTO USER_ENV e
         USING (
                   VALUES (#{userid}, #{type}, #{value})
               ) AS s("USERID", "TYPE", ${vcol})

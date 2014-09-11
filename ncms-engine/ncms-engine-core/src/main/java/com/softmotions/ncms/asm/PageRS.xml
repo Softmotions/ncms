@@ -10,7 +10,7 @@
         p.id AS "id",
         p.name AS "guid",
         p.hname AS "name"
-        FROM asms AS p
+        FROM ASMS AS p
         WHERE p.id IN
         <foreach item="id" index="index" collection="ids"
                  open="(" separator="," close=")">
@@ -43,9 +43,9 @@
             p.nav_cached_path AS "nav_cached_path",
             lacl.rights       AS "local_rights",
             racl.rights       AS "recursive_rights"
-        FROM asms AS p
-            LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
-            LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
+        FROM ASMS AS p
+            LEFT JOIN ASM_ACL_ENTITY AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
+            LEFT JOIN ASM_ACL_ENTITY AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         WHERE p.nav_parent_id = #{nav_parent_id}
               AND p.type LIKE #{page_type}
         ORDER BY p.hname ASC
@@ -66,8 +66,8 @@
             lacl.rights       AS "local_rights",
             racl.rights       AS "recursive_rights"
         FROM ASMS AS p
-            LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
-            LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
+            LEFT JOIN ASM_ACL_ENTITY AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
+            LEFT JOIN ASM_ACL_ENTITY AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         WHERE p.nav_parent_id IS NULL
               AND p.type LIKE #{page_type}
         ORDER BY p.hname ASC
@@ -111,8 +111,7 @@
     <update id="mergeNewPage"
             databaseId="DB2"
             parameterType="map">
-
-        MERGE INTO asms a
+        MERGE INTO ASMS a
         USING (
                   VALUES (#{guid}, #{name}, #{type},
                           #{nav_parent_id,jdbcType=BIGINT},
@@ -164,19 +163,19 @@
 
 
     <update id="updatePageBasic" parameterType="map">
-        UPDATE asms
+        UPDATE ASMS
         SET hname = #{hname}, type = #{type}
         WHERE id = #{id}
     </update>
 
     <delete id="dropPage" parameterType="map">
         DELETE
-        FROM asms
+        FROM ASMS
         WHERE id = #{id}
     </delete>
 
     <update id="movePage" parameterType="map">
-        UPDATE asms
+        UPDATE ASMS
         SET nav_parent_id   = #{nav_parent_id,jdbcType=BIGINT},
             nav_cached_path = #{nav_cached_path}
         WHERE id = #{id}
@@ -184,14 +183,14 @@
 
 
     <update id="setPageOwner" parameterType="map">
-        UPDATE asms
+        UPDATE ASMS
         SET owner = #{owner}
         WHERE id = #{id}
     </update>
 
 
     <update id="updatePublishStatus" parameterType="map">
-        UPDATE asms
+        UPDATE ASMS
         SET published = #{published}
         WHERE id = #{id}
     </update>
@@ -209,7 +208,7 @@
             p.published AS "published",
             p.template  AS "template",
             p.options   AS "options"
-        FROM asms AS p
+        FROM ASMS AS p
         WHERE p.id = #{id}
     </select>
 
@@ -224,7 +223,7 @@
     <update id="updateAttribute"
             databaseId="H2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        UPDATE asm_attrs
+        UPDATE ASM_ATTRS
         SET
             options     = #{options},
             value       = #{value},
@@ -237,7 +236,7 @@
     <update id="updateAttribute"
             databaseId="DB2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        UPDATE asm_attrs
+        UPDATE ASM_ATTRS
         SET
             options     = #{options},
             value       = #{value},
@@ -250,7 +249,7 @@
 
     <update id="updateAttributeOptions"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        UPDATE asm_attrs
+        UPDATE ASM_ATTRS
         SET
             options = #{options}
         WHERE asm_id = #{asmId}
@@ -261,7 +260,7 @@
     <update id="upsertAttribute"
             databaseId="H2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        MERGE INTO asm_attrs (asm_id, NAME, LABEL, TYPE,
+        MERGE INTO ASM_ATTRS (asm_id, NAME, LABEL, TYPE,
         OPTIONS, required, VALUE, large_value, mdate)
         KEY (asm_id, NAME)
         VALUES (SEQ_ATTR_ID.NEXTVAL, #{asmId}, #{name}, #{label}, #{type},
@@ -272,7 +271,7 @@
     <update id="upsertAttribute"
             databaseId="DB2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        MERGE INTO asm_attrs a
+        MERGE INTO ASM_ATTRS a
         USING (
                   VALUES (#{asmId}, #{name}, #{label}, #{type},
                           #{options}, #{required}, #{value}, #{largeValue}, CURRENT_TIMESTAMP)
@@ -309,7 +308,7 @@
 
     <delete id="deleteAttrsByNames"
             parameterType="map">
-        DELETE FROM asm_attrs
+        DELETE FROM ASM_ATTRS
         WHERE asm_id = #{asmId}
         AND name IN
         <foreach item="name" index="index" collection="names"
@@ -321,13 +320,13 @@
     <select id="getRecursiveAcl" resultType="long" parameterType="map">
         SELECT
             recursive_acl_id
-        FROM asms
+        FROM ASMS
         WHERE id = #{pid}
     </select>
 
     <select id="searchPageCount" resultType="int" parameterType="map">
         SELECT COUNT(*)
-        FROM asms
+        FROM ASMS
         <where>
             <if test="parentId != null">AND nav_parent_id = #{parentId}</if>
             <if test="name != null">AND hname LIKE #{name}</if>
@@ -351,9 +350,9 @@
         p.type AS "type",
         lacl.rights AS "local_rights",
         racl.rights AS "recursive_rights"
-        FROM asms AS p
-        LEFT JOIN asm_acl_entity AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
-        LEFT JOIN asm_acl_entity AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
+        FROM ASMS AS p
+        LEFT JOIN ASM_ACL_ENTITY AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
+        LEFT JOIN ASM_ACL_ENTITY AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
         <where>
             <if test="parentId != null">AND p.nav_parent_id = #{parentId}</if>
             <if test="name != null">AND p.hname LIKE #{name}</if>
@@ -378,8 +377,8 @@
         SELECT
             a.id         AS "id",
             attr.options AS "options"
-        FROM asm_attrs attr
-            INNER JOIN asms AS a ON attr.asm_id = a.id
+        FROM ASM_ATTRS attr
+            INNER JOIN ASMS AS a ON attr.asm_id = a.id
         WHERE attr.type = #{attrType}
               AND a.type LIKE #{pageType}
     </select>

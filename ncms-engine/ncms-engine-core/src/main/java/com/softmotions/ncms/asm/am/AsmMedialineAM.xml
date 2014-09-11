@@ -7,10 +7,10 @@
 
     <select id="selectBasicMediaInfo" resultType="map" parameterType="list">
         SELECT
-            e.id           AS "id",
-            e.name         AS "name",
-            e.description  AS "description",
-            e.content_type AS "content_type"
+            e.id            AS "id",
+            e.name          AS "name",
+            e.description   AS "description",
+            e.content_type  AS "content_type"
         FROM MEDIA_ENTITY AS e
         WHERE e.id IN
         <foreach collection="list" item="item" open="(" separator="," close=")">

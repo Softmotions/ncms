@@ -9,14 +9,14 @@
 
     <insert id="coreInsert" parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id" useGeneratedKeys="true">
-        INSERT INTO asm_cores
+        INSERT INTO ASM_CORES
         (location, name, template_engine)
         VALUES (#{location}, #{name}, #{templateEngine})
     </insert>
 
     <update id="coreUpdate" parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id">
-        UPDATE asm_cores
+        UPDATE ASM_CORES
         <set>
             <if test="name != null">name = #{name},</if>
             <if test="location != null">location = #{location},</if>
@@ -27,7 +27,7 @@
 
     <delete id="coreDelete">
         DELETE
-        FROM asm_cores
+        FROM ASM_CORES
         <where>
             <if test="id != null">#{id}</if>
             <if test="location != null">#{location}</if>
@@ -38,7 +38,7 @@
             resultType="com.softmotions.ncms.asm.AsmCore"
             resultMap="coreRM">
         SELECT *
-        FROM asm_cores
+        FROM ASM_CORES
         <where>
             <if test="id != null">id = #{id}</if>
             <if test="location != null">AND location = #{location}</if>
@@ -49,7 +49,7 @@
 
     <insert id="asmInsert" parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id" useGeneratedKeys="true">
-        INSERT INTO asms
+        INSERT INTO ASMS
         (name, type, description, template, cdate, ordinal
         <if test="core != null">, asm_core_id</if>)
         VALUES (#{name}, #{type}, #{description}, #{template}, CURRENT_TIMESTAMP, SEQ_ASMS_ORDINAL.NEXTVAL
@@ -59,7 +59,7 @@
     <update id="asmUpdate"
             parameterType="com.softmotions.ncms.asm.Asm"
             keyProperty="id">
-        UPDATE asms
+        UPDATE ASMS
         <set>
             <if test="name != null">name = #{name},</if>
             <if test="type != null">type = #{type},</if>
@@ -73,7 +73,7 @@
 
     <update id="asmUpdateCore"
             parameterType="map">
-        UPDATE asms
+        UPDATE ASMS
         SET asm_core_id = #{coreId,jdbcType=BIGINT}
         WHERE id = #{id}
     </update>
@@ -84,23 +84,23 @@
             resultMap="asmFullRM"
             useCache="true">
         SELECT asm.*,
-        attr.id AS attr_id,
-        attr.asm_id AS attr_asm_id,
-        attr.name AS attr_name,
-        attr.label AS attr_label,
-        attr.type AS attr_type,
-        attr.options AS attr_options,
-        attr.value AS attr_value,
-        attr.large_value AS attr_large_value,
-        attr.ordinal AS attr_ordinal,
-        attr.required AS attr_required,
-        core.id AS core_id,
-        core.location AS core_location,
-        core.name AS core_name,
-        core.template_engine AS core_template_engine
-        FROM asms AS asm
-        LEFT JOIN asm_attrs attr ON attr.asm_id = asm.id
-        LEFT JOIN asm_cores core ON core.id = asm.asm_core_id
+        attr.id               AS attr_id,
+        attr.asm_id           AS attr_asm_id,
+        attr.name             AS attr_name,
+        attr.label            AS attr_label,
+        attr.type             AS attr_type,
+        attr.options          AS attr_options,
+        attr.value            AS attr_value,
+        attr.large_value      AS attr_large_value,
+        attr.ordinal          AS attr_ordinal,
+        attr.required         AS attr_required,
+        core.id               AS core_id,
+        core.location         AS core_location,
+        core.name             AS core_name,
+        core.template_engine  AS core_template_engine
+        FROM ASMS AS asm
+        LEFT JOIN ASM_ATTRS attr ON attr.asm_id = asm.id
+        LEFT JOIN ASM_CORES core ON core.id = asm.asm_core_id
         <where>
             <if test="CQ_PK != null">asm.id = #{CQ_PK}</if>
             <if test="id != null">asm.id = #{id}</if>
@@ -120,7 +120,7 @@
 
     <insert id="asmSetAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        INSERT INTO asm_attrs
+        INSERT INTO ASM_ATTRS
         (id, asm_id, name, type, label, options, value, large_value)
         VALUES (SEQ_ATTR_ID.NEXTVAL, #{asmId}, #{name}, #{type}, #{label}, #{options}, #{value}, #{largeValue})
     </insert>
@@ -129,12 +129,13 @@
     <select id="asmSelectAllPlain" resultType="com.softmotions.ncms.asm.Asm">
         SELECT
             *
-        FROM asms
+        FROM ASMS
         ORDER BY name ASC
+        LIMIT 10000 -- Limit hardcoded for mem safety
     </select>
 
     <update id="asmRename" parameterType="map">
-        UPDATE asms
+        UPDATE ASMS
         SET name = #{name}
         WHERE id = #{id}
     </update>
@@ -161,10 +162,10 @@
             core.location        AS core_location,
             core.name            AS core_name,
             core.template_engine AS core_template_engine
-        FROM asm_parents AS parent
-            INNER JOIN asms asm ON asm.id = parent.asm_parent_id
-            LEFT JOIN asm_attrs attr ON attr.asm_id = asm.id
-            LEFT JOIN asm_cores core ON core.id = asm.asm_core_id
+        FROM ASM_PARENTS AS parent
+            INNER JOIN ASMS asm ON asm.id = parent.asm_parent_id
+            LEFT JOIN ASM_ATTRS attr ON attr.asm_id = asm.id
+            LEFT JOIN ASM_CORES core ON core.id = asm.asm_core_id
         WHERE parent.asm_id = #{id}
     </select>
 
@@ -175,8 +176,8 @@
             resultType="int"
             parameterType="map">
         SELECT
-            count(*)
-        FROM asm_parents AS p
+            COUNT(*)
+        FROM ASM_PARENTS AS p
         WHERE p.asm_id = #{asmId}
               AND p.asm_parent_id = #{parentId}
     </select>
@@ -185,7 +186,7 @@
     <select id="asmIDByName" parameterType="string" resultType="long">
         SELECT
             id
-        FROM asms
+        FROM ASMS
         WHERE name = #{name}
     </select>
 
@@ -193,37 +194,37 @@
     <select id="asmNameByID" parameterType="long" resultType="string">
         SELECT
             name
-        FROM asms
+        FROM ASMS
         WHERE id = #{id}
     </select>
 
     <insert id="asmSetParent">
-        INSERT INTO asm_parents
+        INSERT INTO ASM_PARENTS
         (asm_id, asm_parent_id)
         VALUES (#{asmId}, #{parentId})
     </insert>
 
     <delete id="asmRemoveParent">
         DELETE
-        FROM asm_parents
+        FROM ASM_PARENTS
         WHERE asm_id = #{asmId} AND asm_parent_id = #{parentId}
     </delete>
 
     <delete id="asmRemoveAllParents">
         DELETE
-        FROM asm_parents
+        FROM ASM_PARENTS
         WHERE asm_id = #{asmId}
     </delete>
 
     <delete id="asmRemoveParentFromAll">
         DELETE
-        FROM asm_parents
+        FROM ASM_PARENTS
         WHERE asm_parent_id = #{parentId}
     </delete>
 
     <delete id="asmRemove">
         DELETE
-        FROM asms
+        FROM ASMS
         WHERE id = #{id}
     </delete>
 
@@ -233,7 +234,7 @@
             parameterType="map">
         SELECT
             attr.*
-        FROM asm_attrs attr
+        FROM ASM_ATTRS attr
         WHERE attr.asm_id = #{asm_id}
               AND attr.name = #{name}
     </select>
@@ -315,12 +316,12 @@
             (SELECT DISTINCT
               asm.id,
               asm.ordinal
-            FROM asms AS asm
-              INNER JOIN asm_attrs AS attr ON attr.asm_id = asm.id
-              LEFT JOIN asm_attr_idxvals AS iv1 ON iv1.attr_id = attr.id
+            FROM ASMS AS asm
+              INNER JOIN ASM_ATTRS AS attr ON attr.asm_id = asm.id
+              LEFT JOIN ASM_ATTR_IDXVALS AS iv1 ON iv1.attr_id = attr.id
               <if test="templates != null">
-              LEFT JOIN asm_parents AS parent ON parent.asm_id = asm.id
-              LEFT JOIN asms AS pasm ON parent.asm_parent_id = pasm.id
+              LEFT JOIN ASM_PARENTS AS parent ON parent.asm_id = asm.id
+              LEFT JOIN ASMS AS pasm ON parent.asm_parent_id = pasm.id
               </if>
             WHERE
             <trim prefixOverrides="AND | OR">
@@ -364,8 +365,8 @@
                     </if>
                 </if>
         ) AS restr(id, ordinal)
-        INNER JOIN asms AS asm ON restr.id = asm.id
-        LEFT JOIN asm_attrs AS attr ON attr.asm_id = asm.id
+        INNER JOIN ASMS AS asm ON restr.id = asm.id
+        LEFT JOIN ASM_ATTRS AS attr ON attr.asm_id = asm.id
         <if test="!attrsInclude.isEmpty">
         AND attr.name IN
         <foreach collection="attrsInclude" item="an" open="(" close=")" separator=",">#{an}</foreach>
@@ -374,8 +375,8 @@
         AND attr.name NOT IN
         <foreach collection="attrsExclude" item="an" open="(" close=")" separator=",">#{an}</foreach>
         </if>
-        LEFT JOIN asm_attr_idxvals AS iv ON iv.attr_id = attr.id
-        LEFT JOIN asms AS npasm ON npasm.id = asm.nav_parent_id
+        LEFT JOIN ASM_ATTR_IDXVALS AS iv ON iv.attr_id = attr.id
+        LEFT JOIN ASMS AS npasm ON npasm.id = asm.nav_parent_id
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
     </select>
 
