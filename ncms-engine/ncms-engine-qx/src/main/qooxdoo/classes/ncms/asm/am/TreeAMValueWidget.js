@@ -500,9 +500,9 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                     this.__asmSpec["id"],
                     this.tr("Select file for page: %1", this.__asmSpec["name"]),
                     {
-                        "allowModify" : true,
-                        "allowMove" : false,
-                        "smode" : qx.ui.table.selection.Model.SINGLE_SELECTION
+                        allowModify : true,
+                        allowMove : false,
+                        smode : qx.ui.table.selection.Model.SINGLE_SELECTION
                     }
             );
             dlg.addListener("completed", function(ev) {

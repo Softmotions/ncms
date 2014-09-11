@@ -1,5 +1,8 @@
 /**
  * @asset(ncms/icon/16/misc/image-plus.png)
+ * @asset(ncms/icon/16/misc/images-stack.png)
+ * @asset(ncms/icon/16/misc/film-plus.png)
+ * @asset(ncms/icon/16/actions/delete.png)
  */
 qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
     extend : sm.table.ToolbarLocalTable,
@@ -21,6 +24,10 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
     construct : function(asmSpec, attrSpec) {
         this.__asmSpec = asmSpec;
         this.__attrSpec = attrSpec;
+        this.__broadcaster = sm.event.Broadcaster.create({
+            "del" : false
+        });
+
         this.base(arguments);
         this.set({height : 200});
         this._reload([]);
@@ -29,12 +36,20 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
 
     members : {
 
+        __broadcaster : null,
+
         __asmSpec : null,
 
         __attrSpec : null,
 
         _createTable : function(tm) {
-            var table = new sm.table.Table(tm, tm.getCustom());
+            var custom = tm.getCustom() || {};
+            custom["selectionModel"] = function() {
+                var res = new qx.ui.table.selection.Model();
+                res.setSelectionMode(qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION);
+                return res;
+            };
+            var table = new sm.table.Table(tm, custom);
             table.getSelectionModel().addListener("changeSelection", this.__syncState, this);
             table.set({
                 showCellFocusIndicator : false,
@@ -53,6 +68,22 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
             var bt = this._createButton(null, "ncms/icon/16/misc/image-plus.png");
             bt.setToolTipText(this.tr("Add images to the gallery"));
             bt.addListener("execute", this.__addImages, this);
+            part.add(bt);
+
+            /*bt = this._createButton(null, "ncms/icon/16/misc/images-stack.png");
+             bt.setToolTipText(this.tr("Add all page images into the gallery"));
+             bt.addListener("execute", this.__addAllImages, this);
+             part.add(bt);*/
+
+            bt = this._createButton(null, "ncms/icon/16/misc/film-plus.png");
+            bt.setToolTipText(this.tr("Add video into the gallery"));
+            bt.addListener("execute", this.__addVideo, this);
+            part.add(bt);
+
+            bt = this._createButton(null, "ncms/icon/16/actions/delete.png");
+            bt.setToolTipText(this.tr("Delete images and links"));
+            bt.addListener("execute", this.__delete, this);
+            this.__broadcaster.attach(bt, "del", "enabled");
             part.add(bt);
 
             return toolbar;
@@ -74,21 +105,36 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
             var bt = new qx.ui.menu.Button(this.tr("Add images"));
             bt.addListenerOnce("execute", this.__addImages, this);
             menu.add(bt);
+
+            /* bt = new qx.ui.menu.Button(this.tr("Import all images"));
+             bt.addListenerOnce("execute", this.__addAllImages, this);
+             menu.add(bt);*/
+
+            bt = new qx.ui.menu.Button(this.tr("Add video"));
+            bt.addListenerOnce("execute", this.__addVideo, this);
+            menu.add(bt);
+
+            if (rd != null) {
+                bt = new qx.ui.menu.Button(this.tr("Delete"));
+                bt.addListenerOnce("execute", this.__delete, this);
+                menu.add(bt);
+            }
         },
 
         _setJsonTableData : function(tm, items) {
             var data = {
                 "columns" : [
                     {
-                        "title" : this.tr("Image/Link").toString(),
+                        "title" : this.tr("Image/video").toString(),
                         "id" : "resource",
-                        "sortable" : false,
+                        "sortable" : true,
                         "width" : "1*"
                     },
                     {
                         "title" : this.tr("Title").toString(),
                         "id" : "description",
-                        "width" : "1*"
+                        "sortable" : false,
+                        "width" : "2*"
                     }
                 ],
                 "items" : items
@@ -101,20 +147,52 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
             var asmSpec = this.__asmSpec;
             var dlg = new ncms.mmgr.PageFilesSelectorDlg(
                     asmSpec["id"],
-                    this.tr("Add images to the media gallery"), {
+                    this.tr("Add images into the media gallery"), {
                         allowModify : true,
-                        linkText : false
+                        linkText : false,
+                        smode : qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION
                     });
             dlg.setCtypeAcceptor(ncms.Utils.isImageContentType.bind(ncms.Utils));
             dlg.addListener("completed", function(evt) {
-                var data = evt.getData();
-                qx.log.Logger.info("data=" + JSON.stringify(data));
+                var files = dlg.getSelectedFiles();
+                this.__pushFiles(files);
                 dlg.close();
             }, this);
             dlg.open();
         },
 
+        __pushFiles : function(files) {
+            files.forEach(function(f) {
+                this.addRow(f["id"], [f["name"], f["description"]]);
+            }, this);
+            this.fireEvent("modified");
+        },
+
+        __addVideo : function() {
+            qx.log.Logger.info("Add video!!!");
+        },
+
+
+        /*__addAllImages : function() {
+         //todo
+         ncms.Application.confirm(this.tr("Add all page images into the media gallery?"), function(yes) {
+         if (!yes) {
+         return;
+         }
+         qx.log.Logger.info("Add all images!!!");
+         }, this);
+         },*/
+
+
+        __delete : function() {
+            this.removeSelected();
+            this.__syncState();
+            this.fireEvent("modified");
+        },
+
         __syncState : function() {
+            var rd = this.getSelectedRowData();
+            this.__broadcaster.setDel(rd != null);
         },
 
         __applyModel : function(model) {
@@ -126,6 +204,6 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
     destruct : function() {
         this.__asmSpec = null;
         this.__attrSpec = null;
-        //this._disposeObjects("__field_name");                                
+        this._disposeObjects("__broadcaster");
     }
 });

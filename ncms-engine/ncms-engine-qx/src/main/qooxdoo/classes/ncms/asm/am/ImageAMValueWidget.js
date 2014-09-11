@@ -139,7 +139,8 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
                     asmSpec["id"],
                     this.tr("Select image file"), {
                         allowModify : true,
-                        linkText : false
+                        linkText : false,
+                        smode : qx.ui.table.selection.Model.SINGLE_SELECTION
                     });
             dlg.setCtypeAcceptor(ncms.Utils.isImageContentType.bind(ncms.Utils));
             dlg.open();

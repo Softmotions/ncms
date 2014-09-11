@@ -42,7 +42,8 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
      *      syncLinkText : {Boolean?true} //Do not allow link text filed <-> file name sync
      *      allowModify : {Boolean?false},
      *      allowMove : {Boolean?false},
-     *      allowSubfoldersView : {Boolean?false}
+     *      allowSubfoldersView : {Boolean?false},
+     *      smode : qx.ui.table.selection.Model.(SINGLE_SELECTION | SINGLE_INTERVAL_SELECTION | MULTIPLE_INTERVAL_SELECTION | MULTIPLE_INTERVAL_SELECTION_TOGGLE)
      *
      *  }
      * </code>
@@ -52,6 +53,9 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
      */
     construct : function(pageId, caption, options) {
         options = options || {};
+        if (options["smode"] == null) {
+            options["smode"] = qx.ui.table.selection.Model.SINGLE_SELECTION;
+        }
         qx.core.Assert.assertNumber(pageId, "Page ID is not a number");
         this.base(arguments, caption);
         this.setLayout(new qx.ui.layout.VBox(5));
@@ -159,16 +163,26 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
             return new sm.ui.form.FlexFormRenderer(form);
         },
 
-        _ok : function() {
-            var spec = this._files.getSelectedFile();
-            var ctype = spec ? spec["content_type"] : null;
-            var ff = this.getCtypeAcceptor() || function() {
+        getSelectedFiles : function() {
+            var cta = this.getCtypeAcceptor() || function() {
                 return true;
             };
-            if (ctype && ff(ctype)) {
-                this._form.populateJSONObject(spec);
-                this.fireDataEvent("completed", spec);
+            return this._files.getSelectedFiles().filter(function(f) {
+                return cta(f["content_type"]);
+            }, this);
+        },
+
+        getSelectedFile : function() {
+            return this.getSelectedFiles()[0];
+        },
+
+        _ok : function() {
+            var f = this.getSelectedFile();
+            if (f == null) {
+                return;
             }
+            this._form.populateJSONObject(f);
+            this.fireDataEvent("completed", f);
         }
     },
 
