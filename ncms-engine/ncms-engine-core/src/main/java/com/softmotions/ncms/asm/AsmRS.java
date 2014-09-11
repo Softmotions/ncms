@@ -440,7 +440,6 @@ public class AsmRS extends MBDAOSupport {
         if (oldName != null && !oldName.equals(name)) { //attribute renamed
             renameAttribute(id, oldName, name);
         }
-
         AsmAttribute attr = selectOne("selectAttrByName",
                                       "asm_id", id,
                                       "name", name);
@@ -483,9 +482,7 @@ public class AsmRS extends MBDAOSupport {
         if (am != null && spec.hasNonNull("value")) {
             am.attributePersisted(amCtx, attr, spec.get("value"));
         }
-
         amCtx.flush();
-
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
 

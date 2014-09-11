@@ -108,7 +108,6 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
 
     @Transactional
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
-        Collection<Medialine> res = new ArrayList<>();
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
 
@@ -116,11 +115,11 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         AsmOptions opts = new AsmOptions(attr.getOptions());
         int width = opts.getInt("width", DEFAULT_IMG_WIDTH);
         int thumbWidth = opts.getInt("thumb_width", DEFAULT_IMG_THUMB_WIDTH);
-
         String value = attr.getEffectiveValue();
         if (StringUtils.isBlank(value)) {
-            return res;
+            return Collections.EMPTY_LIST;
         }
+        List<Long> ids = new ArrayList<>();
         JsonToken t;
         try (JsonParser parser = mapper.getFactory().createParser(value)) {
             if (parser.nextToken() != JsonToken.START_ARRAY) {
@@ -130,21 +129,38 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
                 if (t != JsonToken.VALUE_NUMBER_INT) {
                     continue;
                 }
-                Image img = new Image(ctx);
-                img.setId(parser.getLongValue());
-                img.setOptionsWidth(width);
-                img.setSkipSmall(true);
-
-
-                Image thumbnail = new Image(ctx);
-                img.setId(parser.getLongValue());
-                img.setOptionsWidth(thumbWidth);
-                img.setSkipSmall(true);
-
-                res.add(new Medialine(img, thumbnail));
+                ids.add(parser.getLongValue());
             }
         } catch (IOException e) {
             throw new AsmRenderingException(e);
+        }
+        if (ids.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+
+        Collection<Medialine> res = new ArrayList<>(ids.size());
+        for (int i = 0, step = 128, to = Math.min(ids.size(), i + step);
+             i < ids.size();
+             i = to, to = Math.min(ids.size(), i + step)) {
+            List<Map<String, Object>> rows = select("selectBasicMediaInfo", ids.subList(i, to));
+            for (Map<String, Object> row : rows) {
+                if (!CTypeUtils.isImageContentType((String) row.get("content_type"))) {
+                    continue;
+                }
+                Image img = new Image(ctx);
+                img.setId(NumberUtils.number2Long((Number) row.get("id"), 0L));
+                img.setOptionsWidth(width);
+                img.setSkipSmall(true);
+                img.setResize(true);
+
+                Image thumbnail = new Image(ctx);
+                thumbnail.setId(img.getId());
+                thumbnail.setOptionsWidth(thumbWidth);
+                thumbnail.setSkipSmall(true);
+                thumbnail.setResize(true);
+
+                res.add(new Medialine(img, thumbnail, (String) row.get("description")));
+            }
         }
         return res;
     }
