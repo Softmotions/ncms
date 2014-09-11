@@ -14,7 +14,6 @@
             $!{asm("content")}
             ${include("inc/medialine.httl")}
             ${include("inc/soclikes.httl")}
-            ${include("inc/partners.httl")}
         </div>
         <footer id="footer">
             ${include("inc/footer.httl")}
