@@ -7,13 +7,13 @@
 
     <select id="select" resultType="map" parameterType="map">
         SELECT
-        asm.id            AS "id",
-        asm.name          AS "name",
-        asm.hname         AS "hname",
-        asm.description   AS "description",
-        asm.type          AS "type",
-        asm.published     AS "published",
-        asm.template      AS "template"
+            asm.id            AS "id",
+            asm.name          AS "name",
+            asm.hname         AS "hname",
+            asm.description   AS "description",
+            asm.type          AS "type",
+            asm.published     AS "published",
+            asm.template      AS "template"
         FROM ASMS asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>

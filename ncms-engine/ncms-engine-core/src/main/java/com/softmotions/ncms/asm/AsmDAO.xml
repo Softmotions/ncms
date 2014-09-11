@@ -83,21 +83,22 @@
             parameterType="java.util.Map"
             resultMap="asmFullRM"
             useCache="true">
-        SELECT asm.*,
-        attr.id               AS attr_id,
-        attr.asm_id           AS attr_asm_id,
-        attr.name             AS attr_name,
-        attr.label            AS attr_label,
-        attr.type             AS attr_type,
-        attr.options          AS attr_options,
-        attr.value            AS attr_value,
-        attr.large_value      AS attr_large_value,
-        attr.ordinal          AS attr_ordinal,
-        attr.required         AS attr_required,
-        core.id               AS core_id,
-        core.location         AS core_location,
-        core.name             AS core_name,
-        core.template_engine  AS core_template_engine
+        SELECT
+            asm.*,
+            attr.id               AS attr_id,
+            attr.asm_id           AS attr_asm_id,
+            attr.name             AS attr_name,
+            attr.label            AS attr_label,
+            attr.type             AS attr_type,
+            attr.options          AS attr_options,
+            attr.value            AS attr_value,
+            attr.large_value      AS attr_large_value,
+            attr.ordinal          AS attr_ordinal,
+            attr.required         AS attr_required,
+            core.id               AS core_id,
+            core.location         AS core_location,
+            core.name             AS core_name,
+            core.template_engine  AS core_template_engine
         FROM ASMS AS asm
         LEFT JOIN ASM_ATTRS attr ON attr.asm_id = asm.id
         LEFT JOIN ASM_CORES core ON core.id = asm.asm_core_id
