@@ -11,8 +11,11 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.media.MediaRepository;
+import com.softmotions.ncms.mhttl.Image;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -25,7 +28,10 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +41,8 @@ import java.util.Map;
 public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager {
 
     private static final Logger log = LoggerFactory.getLogger(AsmMedialineAM.class);
+
+    public static final int DEFAULT_IMG_WIDTH = 800;
 
     private static final String[] TYPE = new String[]{"medialine"};
 
@@ -95,8 +103,40 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         return attr;
     }
 
+    @Transactional
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
-        return null;
+        Collection<Image> res = new ArrayList<>();
+        Asm asm = ctx.getAsm();
+        AsmAttribute attr = asm.getEffectiveAttribute(attrname);
+
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        AsmOptions opts = new AsmOptions(attr.getOptions());
+        int width = opts.getInt("width", DEFAULT_IMG_WIDTH);
+
+        String value = attr.getEffectiveValue();
+        if (StringUtils.isBlank(value)) {
+            return res;
+        }
+        JsonToken t;
+        try (JsonParser parser = mapper.getFactory().createParser(value)) {
+            if (parser.nextToken() != JsonToken.START_ARRAY) {
+                return Collections.EMPTY_LIST;
+            }
+            while ((t = parser.nextToken()) != null && t != JsonToken.END_ARRAY) {
+                if (t != JsonToken.VALUE_NUMBER_INT) {
+                    continue;
+                }
+                Image img = new Image(ctx);
+                img.setId(parser.getLongValue());
+                img.setOptionsWidth(width);
+                img.setSkipSmall(true);
+                res.add(img);
+            }
+
+        } catch (IOException e) {
+            throw new AsmRenderingException(e);
+        }
+        return res;
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
@@ -110,8 +150,9 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         if (!val.isArray()) {
             return attr;
         }
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         AsmOptions opts = new AsmOptions(attr.getOptions());
-        int width = opts.getInt("width", 800);
+        int width = opts.getInt("width", DEFAULT_IMG_WIDTH);
         ArrayNode sval = mapper.createArrayNode();
         ArrayNode aval = (ArrayNode) val;
         for (int i = 0, l = aval.size(); i < l; ++i) {
