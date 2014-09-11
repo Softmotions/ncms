@@ -30,12 +30,12 @@ public class AsmBumpOrdinalAM extends AsmBooleanAM {
         return TYPES;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         return attr;
     }
 
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         JsonNode bval = val.get("value");
         if (bval != null && bval.asBoolean()) {
             adao.bumpAsmOrdinal(ctx.getAsmId());

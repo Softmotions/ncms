@@ -213,7 +213,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @GET
     @Path("/edit/{id}")
-    public ObjectNode selectPageEdit(@Context HttpServletRequest req, @PathParam("id") Long id) {
+    public ObjectNode selectPageEdit(@Context HttpServletRequest req, @PathParam("id") Long id) throws Exception {
         ObjectNode res = mapper.createObjectNode();
         Asm page = adao.asmSelectById(id);
         if (page == null) {
@@ -302,7 +302,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public void savePage(@Context HttpServletRequest req,
                          @PathParam("id") Long id,
-                         ObjectNode data) {
+                         ObjectNode data) throws Exception {
 
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
         amCtx.setAsmId(id);
@@ -365,7 +365,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public ObjectNode setTemplate(@Context HttpServletRequest req,
                                   @PathParam("id") Long id,
-                                  @PathParam("templateId") Long templateId) {
+                                  @PathParam("templateId") Long templateId) throws Exception {
         Asm page = adao.asmSelectById(id);
         if (!pageSecurity.canEdit2(page, req)) {
             throw new ForbiddenException("");

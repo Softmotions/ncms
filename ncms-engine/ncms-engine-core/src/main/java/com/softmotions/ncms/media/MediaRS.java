@@ -20,6 +20,7 @@ import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
+import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.fts.FTSUtils;
 import com.softmotions.ncms.io.MetadataDetector;
@@ -1984,6 +1985,15 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             } catch (IOException e) {
                 log.error("Failed to update resized images dir", e);
             }
+        }
+    }
+
+    @Subscribe
+    public void ensureResizedImage(EnsureResizedImageJobEvent ev) {
+        try {
+            ensureResizedImage(ev.getId(), ev.getWidth(), ev.getHeight(), ev.getFlags());
+        } catch (Exception e) {
+            log.error("", e);
         }
     }
 

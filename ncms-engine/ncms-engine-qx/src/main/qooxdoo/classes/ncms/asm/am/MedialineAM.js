@@ -52,15 +52,30 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
         activateValueEditorWidget : function(attrSpec, asmSpec) {
             var w = new ncms.asm.am.MedialineAMValueWidget(asmSpec, attrSpec);
             this._fetchAttributeValue(attrSpec, function(val) {
-                w.setModel((typeof val === "string") ? JSON.parse(val) : null);
+                var model = sm.lang.String.isEmpty(val) ? [] : JSON.parse(val);
+                if (!Array.isArray(model)) {
+                    model = [];
+                }
+                //[[964,"корея.jpg","Крыша из кореи"],[966,"желтые цветы.jpg",null],[967,"зеленый цветок.jpg",""]]
+                w.setModel(model.map(function(el) {
+                    return [
+                        [el[1], el[2]],
+                        el[0]
+                    ];
+                }));
             }, this);
             this._valueWidget = w;
             return w;
         },
 
         valueAsJSON : function() {
-            var data = {};
-            return data;
+            var w = this._valueWidget;
+            if (w == null) {
+                return null;
+            }
+            return w.getModel().map(function(el) {
+                return [ el.rowData ].concat(el);
+            });
         }
     },
 

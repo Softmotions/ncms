@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.asm.am.AsmMedialineAM">
+
+    <select id="selectBasicMediaInfo" resultType="map" parameterType="list">
+        SELECT
+            e.id           AS "id",
+            e.name         AS "name",
+            e.description  AS "description",
+            e.content_type AS "content_type"
+        FROM MEDIA_ENTITY AS e
+        WHERE e.id IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

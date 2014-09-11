@@ -28,7 +28,7 @@ public class AsmBooleanAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
         if (StringUtils.isBlank(attr.getEffectiveValue())) {
             attr.setEffectiveValue("false");
         }
@@ -41,7 +41,7 @@ public class AsmBooleanAM implements AsmAttributeManager {
         return BooleanUtils.toBooleanObject(attr.getValue());
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
                                         "display");
@@ -49,7 +49,7 @@ public class AsmBooleanAM implements AsmAttributeManager {
         return applyAttributeValue(ctx, attr, val);
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         JsonNode n = val.get("value");
         if (n != null && BooleanUtils.toBoolean(n.asText())) {
             attr.setEffectiveValue("true");
@@ -59,6 +59,6 @@ public class AsmBooleanAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
     }
 }
