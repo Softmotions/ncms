@@ -49,23 +49,28 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
         Map<CachedPage.PATH_TYPE, Object> navpaths = cp.fetchNavPaths();
         Long[] idPaths = (Long[]) navpaths.get(PATH_TYPE.ID);
         String[] labelPaths = (String[]) navpaths.get(PATH_TYPE.LABEL);
+        String[] guidPaths = (String[]) navpaths.get(PATH_TYPE.GUID);
         Tree res = new Tree();
         List<Tree> children = res.getChildren();
         CachedPage ip = pageService.getIndexPage(ctx.getServletRequest());
         if (ip != null) {
             Tree c = new Tree();
-            c.setId(ip.getAsm().getId());
-            c.setName(ip.getAsm().getHname());
-            c.setLink(cfg.getAsmLink(ip.getAsm().getId()));
+            c.setId(ip.getId());
+            c.setName(ip.getHname());
+            c.setLink(cfg.getAsmLink(ip.getName()));
             children.add(c);
         }
         for (int i = 0, l = idPaths.length; i < l; ++i) {
             CachedPage p = pageService.getCachedPage(idPaths[i], true);
+            if (p == null ||
+                (ip != null && p.getId().equals(ip.getId()))) {
+                continue;
+            }
             Tree c = new Tree();
             c.setId(idPaths[i]);
             c.setName(labelPaths[i]);
-            if (p != null && p.getAsm().isPublished() && i < l - 1) {
-                c.setLink(cfg.getAsmLink(idPaths[i]));
+            if (p.isPublished() && i < l - 1) {
+                c.setLink(cfg.getAsmLink(guidPaths[i]));
             }
             children.add(c);
         }

@@ -276,7 +276,7 @@ qx.Class.define("ncms.Application", {
 
             //Left nav side
             var navStack = new sm.ui.cont.LazyStack();
-            navStack.setWidth(250);
+            navStack.setWidth(350);
             hsp.add(navStack, 0);
 
             //Right nav side

@@ -62,6 +62,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
     },
 
     /**
+     * Options:
      * <code>
      *  {
      *      allowMove : true|false,

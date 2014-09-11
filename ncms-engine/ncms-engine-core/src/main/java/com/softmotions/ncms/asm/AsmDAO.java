@@ -269,7 +269,7 @@ public class AsmDAO extends MBDAOSupport {
 
 
     @Transactional
-    public void updateAttrsIdxValues(AsmAttribute attr, Collection<String> values) {
+    public void updateAttrsIdxStringValues(AsmAttribute attr, Collection<String> values) {
         if (attr.getId() == null) {
             throw new IllegalArgumentException("Attribute instance with unspecified 'id' property");
         } else {
@@ -281,6 +281,27 @@ public class AsmDAO extends MBDAOSupport {
             }
         }
     }
+
+    @Transactional
+    public void updateAttrsIdxNumberValues(AsmAttribute attr, Collection<Long> values) {
+        if (attr.getId() == null) {
+            throw new IllegalArgumentException("Attribute instance with unspecified 'id' property");
+        } else {
+            update("deleteAttrsIdxValues", attr.getId());
+            if (!values.isEmpty()) {
+                insert("insertAttrsIdxIValues",
+                       "attrId", attr.getId(),
+                       "values", values);
+            }
+        }
+    }
+
+
+    @Transactional
+    public void bumpAsmOrdinal(Long asmId) {
+        update("bumpAsmOrdinal", asmId);
+    }
+
 
     public PageCriteria newPageCriteria() {
         return new PageCriteria(this, this.namespace).withStatement("queryAttrs");
@@ -354,8 +375,8 @@ public class AsmDAO extends MBDAOSupport {
             return this;
         }
 
-        public PageCriteria withTemplate(String name) {
-            return withParam("template", name);
+        public PageCriteria withTemplates(String... templates) {
+            return withParam("templates", templates);
         }
 
         public PageCriteria finish() {

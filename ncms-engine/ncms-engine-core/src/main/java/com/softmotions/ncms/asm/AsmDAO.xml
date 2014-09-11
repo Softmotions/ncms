@@ -267,13 +267,28 @@
     </delete>
 
     <insert id="insertAttrsIdxValues" parameterType="map">
-        INSERT INTO ASM_ATTR_IDXVALS
+        INSERT INTO ASM_ATTR_IDXVALS(attr_id, value)
         VALUES
         <foreach item="value" index="index" collection="values"
                  open="" separator="," close="">
-            (#{attrId}, #{value})
+            (#{attrId}, #{value,jdbcType=VARCHAR})
         </foreach>
     </insert>
+
+    <insert id="insertAttrsIdxIValues" parameterType="map">
+        INSERT INTO ASM_ATTR_IDXVALS(attr_id, ivalue)
+        VALUES
+        <foreach item="value" index="index" collection="values"
+                 open="" separator="," close="">
+            (#{attrId}, #{value,jdbcType=BIGINT})
+        </foreach>
+    </insert>
+
+    <update id="bumpAsmOrdinal" parameterType="long">
+        UPDATE ASMS
+        SET ordinal = SEQ_ASMS_ORDINAL.NEXTVAL
+        WHERE id = #{id}
+    </update>
 
     <select id="queryAttrs"
             parameterType="map"
@@ -303,7 +318,7 @@
             FROM asms AS asm
               INNER JOIN asm_attrs AS attr ON attr.asm_id = asm.id
               LEFT JOIN asm_attr_idxvals AS iv1 ON iv1.attr_id = attr.id
-              <if test="template != null">
+              <if test="templates != null">
               LEFT JOIN asm_parents AS parent ON parent.asm_id = asm.id
               LEFT JOIN asms AS pasm ON parent.asm_parent_id = pasm.id
               </if>
@@ -318,15 +333,18 @@
                     <if test="type != null">
                     AND asm.type LIKE #{type}
                     </if>
-                    <if test="template != null">
-                    AND pasm.name = #{template}
+                    <if test="templates != null">
+                    AND pasm.name IN
+                    <foreach collection="templates" item="t" open="(" separator="," close=")">
+                       #{t}
+                    </foreach>
                     </if>
                     <if test="attrs != null and !attrs.isEmpty">
                     AND (
                       <trim prefixOverrides="OR">
                         <foreach collection="attrs" item="attr">
                             OR (
-                              attr.type NOT IN ( 'select' )
+                              attr.type NOT IN ( 'select', 'date' )
                                 AND attr.name = #{attr.one} AND attr.value LIKE #{attr.two}
                             )
                             OR (

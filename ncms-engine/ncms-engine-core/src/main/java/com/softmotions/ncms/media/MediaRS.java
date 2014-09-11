@@ -70,6 +70,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.NotFoundException;
@@ -701,6 +702,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 Long id = selectOne("selectEntityIdByPath",
                                     "folder", folder,
                                     "name", name);
+
+                checkFileDeletion(id, req);
+
                 boolean exists = f.exists();
                 if (f.delete() || !exists) {
                     delete("deleteFile",
@@ -1869,7 +1873,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (isFile) {
             if (!req.getRemoteUser().equals(fmeta.get("owner"))) {
                 String msg = message.get("ncms.mmgr.access.denied", req, path);
-                throw new SecurityException(msg);
+                throw new ForbiddenException(msg);
             }
         } else {
             File f = new File(basedir, (path.length() > 0 && path.charAt(0) == '/') ? path.substring(1) : path);
@@ -1881,9 +1885,31 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                      "folder", normalizeFolder(path),
                                      "owner", req.getRemoteUser());
             if (count != null && count.intValue() > 0) {
-                throw new SecurityException(message.get("ncms.mmgr.access.denied.notOwned", req));
+                throw new ForbiddenException(message.get("ncms.mmgr.access.denied.notOwned", req));
             }
         }
+    }
+
+    private void checkFileDeletion(Long id, HttpServletRequest req) throws Exception {
+        if (id == null) {
+            return;
+        }
+        List<Map> rows = select("selectAsmMediaDepsByFile", id);
+        if (rows.isEmpty()) {
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Map row : rows) {
+            sb.append(System.getProperty("line.separator"));
+            String pname = (String) row.get("name");
+            String attrName = (String) row.get("attr_name");
+            if (pname == null || attrName == null) {
+                continue;
+            }
+            sb.append(pname).append(": ").append(attrName);
+        }
+        String msg = message.get("ncms.mmgr.access.file.used", sb.toString());
+        throw new ForbiddenException(msg);
     }
 
     private boolean isInSystemFolder(String path) {

@@ -70,7 +70,7 @@ public class AsmSelectAM implements AsmAttributeManager {
         }
         Long id = page.getId();
         CachedPage npPage = pageService.getCachedPage(id, true);
-        id = npPage.getAsm().getNavParentId();
+        id = npPage.getNavParentId();
         if (id == null) {
             return null;
         }
@@ -229,6 +229,6 @@ public class AsmSelectAM implements AsmAttributeManager {
                 mvals.add(slot.get(2).asText());
             }
         }
-        adao.updateAttrsIdxValues(attr, mvals);
+        adao.updateAttrsIdxStringValues(attr, mvals);
     }
 }

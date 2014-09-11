@@ -55,8 +55,12 @@ public class AsmImageAM implements AsmAttributeManager {
     }
 
     public Image renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) {
+        Long id = node.hasNonNull("id") ? node.get("id").asLong() : null;
+        if (id == null || id.longValue() == 0L) {
+            return null;
+        }
         Image image = new Image(ctx);
-        image.setId(node.hasNonNull("id") ? node.get("id").asLong() : 0);
+        image.setId(id);
         if (node.hasNonNull("options")) {
             ObjectNode opts = (ObjectNode) node.get("options");
             if (opts.hasNonNull("width")) {
@@ -127,6 +131,9 @@ public class AsmImageAM implements AsmAttributeManager {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        if (res.getId() == null || res.getId().longValue() == 0L) {
+            return null;
         }
         return res;
     }

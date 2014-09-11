@@ -39,7 +39,7 @@ qx.Class.define("ncms.asm.am.BooleanAM", {
         activateValueEditorWidget : function(attrSpec, asmSpec) {
             var val = attrSpec["value"];
             var cb = new qx.ui.form.CheckBox();
-            cb.setValue(val != null && (val == "true"));
+            cb.setValue(val != null && (val === "true"));
             this._valueWidget = cb;
             return cb;
         },

@@ -15,6 +15,7 @@ import com.softmotions.ncms.media.MediaResource;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@Singleton
 public class AsmFileRefAM implements AsmAttributeManager {
 
     private static final Logger log = LoggerFactory.getLogger(AsmFileRefAM.class);

@@ -1,275 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Новосибирский  Государственный Университет</title>
-    <link rel="stylesheet" href="css/all.css" type="text/css" />
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css'>
-    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="js/jquery.main.js"></script>
-    <script type="text/javascript" src="js/jquery.placeholder.js"></script>
-    <!--[if lte IE 8]><script type="text/javascript" src="js/ie.js"></script><![endif]-->
+    $!{asm("head")}
 </head>
 <body>
 <div id="wrapper">
 <div class="w1">
 <header id="header">
-    <div class="header-holder">
-        <a href="#" class="link">link</a>
-        <nav id="nav">
-            <ul>
-                <li><a href="#">Сотрудникам</a>
-                    <div class="slide-holder">
-                        <div class="slide-frame">
-                            <ul>
-                                <li><a href="#">Миссия</a></li>
-                                <li><a href="#">Руководство</a></li>
-                                <li><a href="#">Ученый совет</a></li>
-                                <li><a href="#">Ректорат</a></li>
-                                <li><a href="#">Контакты</a></li>
-                                <li><a href="#">Отд. качества</a></li>
-                                <li><a href="#">Межд. связи</a></li>
-                                <li><a href="#">Справочник</a></li>
-                                <li><a href="#">Академики</a></li>
-                                <li><a href="#">Доктора</a></li>
-                            </ul>
-                            <ul>
-                                <li><a href="#">Контакты</a></li>
-                                <li><a href="#">Отд. качества</a></li>
-                                <li><a href="#">Межд. связи</a></li>
-                                <li><a href="#">Справочник</a></li>
-                                <li><a href="#">Миссия</a></li>
-                                <li><a href="#">Руководство</a></li>
-                                <li><a href="#">Ученый совет</a></li>
-                                <li><a href="#">Ректорат</a></li>
-                                <li><a href="#">Контакты</a></li>
-                                <li><a href="#">Справочник</a></li>
-                            </ul>
-                            <ul>
-                                <li><a href="#">Академики</a></li>
-                                <li><a href="#">Доктора</a></li>
-                                <li><a href="#">Профессора</a></li>
-                                <li><a href="#">Мегапроекты</a></li>
-                                <li><a href="#">Контакты</a></li>
-                                <li><a href="#">Отд. качества</a></li>
-                                <li><a href="#">Межд. связи</a></li>
-                                <li><a href="#">Справочник</a></li>
-                                <li><a href="#">Академики</a></li>
-                                <li><a href="#">Доктора</a></li>
-                            </ul>
-                            <ul>
-                                <li><a href="#">ИТ службы</a></li>
-                                <li><a href="#">Система УИС</a></li>
-                                <li><a href="#">Провайлер услуг</a></li>
-                                <li><a href="#">О сайте</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-                <li><a href="#">Студентам</a>
-                    <div class="slide-holder">
-                        <div class="slide-frame">
-                            <ul>
-                                <li><a href="#">Академики</a></li>
-                                <li><a href="#">Доктора</a></li>
-                                <li><a href="#">Профессора</a></li>
-                                <li><a href="#">Мегапроекты</a></li>
-                                <li><a href="#">Контакты</a></li>
-                                <li><a href="#">Отд. качества</a></li>
-                                <li><a href="#">Межд. связи</a></li>
-                                <li><a href="#">Справочник</a></li>
-                                <li><a href="#">Академики</a></li>
-                                <li><a href="#">Доктора</a></li>
-                            </ul>
-                            <ul>
-                                <li><a href="#">ИТ службы</a></li>
-                                <li><a href="#">Система УИС</a></li>
-                                <li><a href="#">Провайлер услуг</a></li>
-                                <li><a href="#">О сайте</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-                <li><a href="#">Абитуриентам</a></li>
-                <li><a href="#">Выпускникам</a></li>
-                <li><a href="#">СМИ</a></li>
-                <li><a href="#">Партнерам</a></li>
-            </ul>
-        </nav>
-        <a href="#" class="search">search</a>
-    </div>
-    <div class="header-info">
-        <strong class="logo"><a href="#">Новосибирский  Государственный Университет</a></strong>
-        <a href="#" class="language">Eng</a>
-        <div class="personal-holder">
-            <div class="personal-row">
-                <a href="#" class="personal">Личный кабинет</a>
-                <ul class="social-networks">
-                    <li><a href="#" class="plus">plus</a></li>
-                    <li><a href="#" class="facebook">facebook</a></li>
-                    <li><a href="#" class="vk">vk</a></li>
-                    <li><a href="#" class="twitter">twitter</a></li>
-                    <li><a href="#" class="instagramm">instagramm</a></li>
-                </ul>
-            </div>
-            <ul class="menu">
-                <li><a href="#">Новости</a></li>
-                <li><a href="#">События</a></li>
-                <li><a href="#">Мультимедиа</a></li>
-                <li><a href="#">Контакты</a></li>
-            </ul>
-        </div>
-    </div>
-    <ul class="list">
-        <li class="item1"><a href="#">Наука</a>
-            <ul>
-                <li><a href="#">Библиотечный фонды</a></li>
-                <li><a href="#">Электронные каталоги</a></li>
-                <li><a href="#">Ссылки на ресурсы</a></li>
-                <li><a href="#">Открытие лекции</a></li>
-            </ul>
-        </li>
-        <li class="item2"><a href="#">Структуры</a>
-            <ul>
-                <li><a href="#">Библиотечный фонды</a></li>
-                <li><a href="#">Электронные каталоги</a></li>
-                <li><a href="#">Ссылки на ресурсы</a></li>
-                <li><a href="#">Открытие лекции</a></li>
-            </ul>
-        </li>
-        <li class="item3"><a href="#">Ресурсы</a>
-            <ul>
-                <li><a href="#">Библиотечный фонды</a></li>
-                <li><a href="#">Электронные каталоги</a></li>
-                <li><a href="#">Ссылки на ресурсы</a></li>
-                <li><a href="#">Открытие лекции</a></li>
-            </ul>
-        </li>
-        <li class="item4"><a href="#">Атмосфера</a>
-            <ul>
-                <li><a href="#">Библиотечный фонды</a></li>
-                <li><a href="#">Электронные каталоги</a></li>
-                <li><a href="#">Ссылки на ресурсы</a></li>
-                <li><a href="#">Открытие лекции</a></li>
-            </ul>
-        </li>
-    </ul>
+    ${include("inc/header.httl")}
 </header>
 <div id="main" class="newsmain-page">
-<div class="breadcrumbs-holder">
-    <a href="#" class="pdf">pdf</a>
-    <ul class="breadcrumbs">
-        <li><a href="#">Главная</a></li>
-        <li>Новости</li>
-    </ul>
-</div>
+${include("inc/breadcrumbs.httl")}
 <h1>Главные события</h1>
 <ul class="news-list list3">
+    #foreach(Asm p in events)
     <li>
-        <div class="img-holder">
-            <img src="images/img37.jpg" width="314" height="192" alt="image description" />
+        #set(Image img = p.asm("bigicon"))
+        #if(img != null)
+        <div class="img-holder" style="width:314px;height:192px;overflow:hidden">
+            <img src="${img.link}" width="314" alt="${p.hname}"/>
+            #set(Date edate = p.eventDate)
             <div class="date-holder">
-                <span class="date">17</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
+                <span class="date">${edate.format2("dd")}</span>
+                <span class="month">${edate.format2("MMM")}</span>
+                <span class="year">${edate.format2("yyyy")}</span>
             </div>
         </div>
+        #end
         <div class="text-holder">
-            <h3><a href="#">Дни Шекспира в НГУ</a></h3>
-            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по иллюстрациям к драмам Шекспспира.</p>
-            <span class="tag">Атмосфера</span>
+            <h3><a href="#">${p.hname}</a></h3>
+            <p>${p.asm("annotation")}</p>
+            #if(p.isHasAttribute("subcategory"))
+            #foreach(SelectNode sn in p.asm("subcategory"))
+            <span class="tag">${sn.key}</span>
+            #end
+            #end
         </div>
     </li>
-    <li>
-        <div class="img-holder">
-            <img src="images/img38.jpg" width="314" height="192" alt="image description" />
-            <div class="date-holder">
-                <span class="date">17</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-        </div>
-        <div class="text-holder">
-            <h3><a href="#">Ректор НГУ ответил на вопросы студентов</a></h3>
-            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по иллюстрациям к драмам Шекспспира.</p>
-            <span class="tag">Официально</span>
-        </div>
-    </li>
-    <li>
-        <div class="img-holder">
-            <img src="images/img39.jpg" width="314" height="192" alt="image description" />
-            <div class="date-holder">
-                <span class="date">17</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-        </div>
-        <div class="text-holder">
-            <h3><a href="#">Хемоолимпийские игры</a></h3>
-            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по иллюстрациям к драмам Шекспспира.</p>
-            <span class="tag">Атмосфера</span>
-        </div>
-    </li>
+    #end
 </ul>
+
+
 <h1>Фото</h1>
 <ul class="ad-list2 list2">
     <li>
         <a href="#">
             <span class="photo">Фотоотчет</span>
-            <img src="images/img5.jpg" width="322" height="185" alt="image description" />
+            <img src="images/img5.jpg" width="322" height="185" alt="image description"/>
             <h4>Зооархеологические исследования</h4>
         </a>
     </li>
     <li>
         <a href="#">
             <span class="photo">Фотоотчет</span>
-            <img src="images/img6.jpg" width="322" height="185" alt="image description" />
+            <img src="images/img6.jpg" width="322" height="185" alt="image description"/>
             <h4>Зооархеологические исследования</h4>
         </a>
     </li>
     <li>
         <a href="#">
             <span class="photo">Фотоотчет</span>
-            <img src="images/img5.jpg" width="322" height="185" alt="image description" />
+            <img src="images/img5.jpg" width="322" height="185" alt="image description"/>
             <h4>Зооархеологические исследования</h4>
         </a>
     </li>
 </ul>
+
+
 <div class="instagramm-holder">
     <div class="title-holder">
         <h1>NSU Instagram</h1>
         <span class="tag">Фотографии с тегом #nsu</span>
-        <a href="#" class="view"><img src="images/img40.jpg" width="138" height="26" alt="image description" /></a>
+        <a href="#" class="view"><img src="images/img40.jpg" width="138" height="26" alt="image description"/></a>
     </div>
     <ul class="photo-list">
         <li>
             <a href="#">
-                <img src="images/img41.jpg" width="150" height="150" alt="image description" />
+                <img src="images/img41.jpg" width="150" height="150" alt="image description"/>
             </a>
         </li>
         <li>
             <a href="#">
-                <img src="images/img42.jpg" width="150" height="150" alt="image description" />
+                <img src="images/img42.jpg" width="150" height="150" alt="image description"/>
             </a>
         </li>
         <li>
             <a href="#">
-                <img src="images/img43.jpg" width="150" height="150" alt="image description" />
+                <img src="images/img43.jpg" width="150" height="150" alt="image description"/>
             </a>
         </li>
         <li>
             <a href="#">
-                <img src="images/img44.jpg" width="150" height="150" alt="image description" />
+                <img src="images/img44.jpg" width="150" height="150" alt="image description"/>
             </a>
         </li>
         <li>
             <a href="#">
-                <img src="images/img45.jpg" width="150" height="150" alt="image description" />
+                <img src="images/img45.jpg" width="150" height="150" alt="image description"/>
             </a>
         </li>
         <li>
             <a href="#">
-                <img src="images/img46.jpg" width="150" height="150" alt="image description" />
+                <img src="images/img46.jpg" width="150" height="150" alt="image description"/>
             </a>
         </li>
     </ul>
@@ -277,71 +109,84 @@
 <div class="two-col">
     <div class="col">
         <h3>Последние новости</h3>
+
         <div class="tab-holder">
             <div class="tab active">
                 <ul class="news-list">
                     <li>
                         <div class="img-holder">
-                            <img src="images/img2.png" width="81" height="68" alt="image description" />
+                            <img src="images/img2.png" width="81" height="68" alt="image description"/>
                             <span class="date">17</span>
                             <span class="month">май</span>
                             <span class="year">2014</span>
                         </div>
                         <div class="text-holder">
                             <h3><a href="#">Дни Шекспира в НГУ</a></h3>
-                            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по </p>
+
+                            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс
+                                мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ
+                                на спектакль «Ромео и Джульетта», флэшмоб по </p>
                             <span class="tag">Атмосфера</span>
                         </div>
                     </li>
                     <li>
                         <div class="img-holder">
-                            <img src="images/img3.png" width="81" height="68" alt="image description" />
+                            <img src="images/img3.png" width="81" height="68" alt="image description"/>
                             <span class="date">13</span>
                             <span class="month">май</span>
                             <span class="year">2014</span>
                         </div>
                         <div class="text-holder">
                             <h3><a href="#">Лекция «Хайтек <br/>в современном мире»</a></h3>
-                            <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт Израиля». Лекция состоится 12 мая в 17.45 в</p>
+
+                            <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт
+                                Израиля». Лекция состоится 12 мая в 17.45 в</p>
                             <span class="tag">Образование</span>
                         </div>
                     </li>
                     <li>
                         <div class="img-holder">
-                            <img src="images/img4.png" width="81" height="68" alt="image description" />
+                            <img src="images/img4.png" width="81" height="68" alt="image description"/>
                             <span class="date">9</span>
                             <span class="month">май</span>
                             <span class="year">2014</span>
                         </div>
                         <div class="text-holder">
                             <h3><a href="#">Возложение цветов</a></h3>
-                            <p>В рамках мероприятий, посвященных празднованию Дня Победы, социальное управление приглашает студентов и сотрудников</p>
+
+                            <p>В рамках мероприятий, посвященных празднованию Дня Победы, социальное управление
+                                приглашает студентов и сотрудников</p>
                             <span class="tag">Атмосфера</span>
                         </div>
                     </li>
                     <li>
                         <div class="img-holder">
-                            <img src="images/img2.png" width="81" height="68" alt="image description" />
+                            <img src="images/img2.png" width="81" height="68" alt="image description"/>
                             <span class="date">17</span>
                             <span class="month">май</span>
                             <span class="year">2014</span>
                         </div>
                         <div class="text-holder">
                             <h3><a href="#">Дни Шекспира в НГУ</a></h3>
-                            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по </p>
+
+                            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс
+                                мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ
+                                на спектакль «Ромео и Джульетта», флэшмоб по </p>
                             <span class="tag">Атмосфера</span>
                         </div>
                     </li>
                     <li>
                         <div class="img-holder">
-                            <img src="images/img3.png" width="81" height="68" alt="image description" />
+                            <img src="images/img3.png" width="81" height="68" alt="image description"/>
                             <span class="date">13</span>
                             <span class="month">май</span>
                             <span class="year">2014</span>
                         </div>
                         <div class="text-holder">
                             <h3><a href="#">Лекция «Хайтек <br/>в современном мире»</a></h3>
-                            <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт Израиля». Лекция состоится 12 мая в 17.45 в</p>
+
+                            <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт
+                                Израиля». Лекция состоится 12 мая в 17.45 в</p>
                             <span class="tag">Образование</span>
                         </div>
                     </li>
@@ -364,9 +209,11 @@
                         <h4 class="interview">Интервью</h4>
                         <span class="date">21 май 2014</span>
                     </div>
-                    <img src="images/img49.jpg" width="227" height="126" alt="image description" />
+                    <img src="images/img49.jpg" width="227" height="126" alt="image description"/>
+
                     <h3><a href="#">Геннадий Бахалов</a></h3>
                     <span class="position">проректор по воспитательной работе</span>
+
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
                 </li>
                 <li>
@@ -374,20 +221,24 @@
                         <h4 class="photo">Репортаж</h4>
                         <span class="date">21 май 2014</span>
                     </div>
-                    <img src="images/img50.jpg" width="227" height="126" alt="image description" />
+                    <img src="images/img50.jpg" width="227" height="126" alt="image description"/>
+
                     <h3><a href="#">В стенах НГУ</a></h3>
+
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
                 </li>
                 <li>
                     <h4 class="doc">Приказы и документы</h4>
                     <span class="date">21 май 2014</span>
                     <h5><a href="#">О назначении проректора</a></h5>
+
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
                 </li>
                 <li>
                     <h4 class="news">Новости факультетов</h4>
                     <span class="date">21 май 2014</span>
                     <h5><a href="#">Механико-математический</a></h5>
+
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
                 </li>
             </ul>
@@ -396,6 +247,7 @@
                     <h4 class="news">Новости факультетов</h4>
                     <span class="date">21 май 2014</span>
                     <h5><a href="#">Механико-математический</a></h5>
+
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
                 </li>
                 <li>
@@ -403,15 +255,18 @@
                         <h4 class="interview">Интервью</h4>
                         <span class="date">21 май 2014</span>
                     </div>
-                    <img src="images/img51.jpg" width="227" height="126" alt="image description" />
+                    <img src="images/img51.jpg" width="227" height="126" alt="image description"/>
+
                     <h3><a href="#">Геннадий Бахалов</a></h3>
                     <span class="position">проректор по воспитательной работе</span>
+
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
                 </li>
                 <li>
                     <h4 class="news">Новости факультетов</h4>
                     <span class="date">21 май 2014</span>
                     <h5><a href="#">Механико-математический</a></h5>
+
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
                 </li>
                 <li>
@@ -420,6 +275,7 @@
                         <span class="date">21 май 2014</span>
                     </div>
                     <h5><a href="#">Один из лучших ВУЗов России признан</a></h5>
+
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
                 </li>
             </ul>
@@ -427,26 +283,27 @@
     </div>
 </div>
 <a href="#" class="fetch-more"><span>Загрузить еще</span></a>
+
 <div class="video-holder">
     <h1>Видео</h1>
     <ul class="video-list">
         <li>
             <a href="#">
-                <img src="images/img47.jpg" width="322" height="185" alt="image description" />
+                <img src="images/img47.jpg" width="322" height="185" alt="image description"/>
                 <span class="play">play</span>
                 <h4>Зооархеологические исследования</h4>
             </a>
         </li>
         <li>
             <a href="#">
-                <img src="images/img48.jpg" width="322" height="185" alt="image description" />
+                <img src="images/img48.jpg" width="322" height="185" alt="image description"/>
                 <span class="play">play</span>
                 <h4>Зооархеологические исследования</h4>
             </a>
         </li>
         <li>
             <a href="#">
-                <img src="images/img47.jpg" width="322" height="185" alt="image description" />
+                <img src="images/img47.jpg" width="322" height="185" alt="image description"/>
                 <span class="play">play</span>
                 <h4>Зооархеологические исследования</h4>
             </a>
@@ -457,15 +314,15 @@
 <div class="share-holder">
     <span class="share">Поделиться:</span>
     <a href="#">
-        <img src="images/img19.jpg" width="32" height="32" alt="image description" />
+        <img src="images/img19.jpg" width="32" height="32" alt="image description"/>
     </a><a href="#">
-    <img src="images/img20.jpg" width="32" height="32" alt="image description" />
+    <img src="images/img20.jpg" width="32" height="32" alt="image description"/>
 </a><a href="#">
-    <img src="images/img21.jpg" width="32" height="32" alt="image description" />
+    <img src="images/img21.jpg" width="32" height="32" alt="image description"/>
 </a><a href="#">
-    <img src="images/img22.jpg" width="32" height="32" alt="image description" />
+    <img src="images/img22.jpg" width="32" height="32" alt="image description"/>
 </a><a href="#">
-    <img src="images/img23.jpg" width="98" height="32" alt="image description" />
+    <img src="images/img23.jpg" width="98" height="32" alt="image description"/>
 </a>
 </div>
 <div class="partners-holder">
@@ -473,90 +330,34 @@
     <ul class="partners-list">
         <li>
             <a href="#">
-                <img src="images/img8.jpg" width="322" height="72" alt="image description" />
+                <img src="images/img8.jpg" width="322" height="72" alt="image description"/>
             </a>
         </li>
         <li>
             <a href="#">
-                <img src="images/img9.jpg" width="322" height="72" alt="image description" />
+                <img src="images/img9.jpg" width="322" height="72" alt="image description"/>
             </a>
         </li>
         <li>
             <a href="#">
-                <img src="images/img10.jpg" width="322" height="72" alt="image description" />
+                <img src="images/img10.jpg" width="322" height="72" alt="image description"/>
             </a>
         </li>
     </ul>
 </div>
 <div class="placeholder">
-    <a href="#"><img src="images/img11.png" width="109" height="21" alt="image description" /></a>
-    <a href="#"><img src="images/img12.png" width="81" height="20" alt="image description" /></a>
-    <a href="#"><img src="images/img13.png" width="106" height="20" alt="image description" /></a>
-    <a href="#"><img src="images/img14.png" width="120" height="20" alt="image description" /></a>
-    <a href="#"><img src="images/img15.png" width="88" height="20" alt="image description" /></a>
+    <a href="#"><img src="images/img11.png" width="109" height="21" alt="image description"/></a>
+    <a href="#"><img src="images/img12.png" width="81" height="20" alt="image description"/></a>
+    <a href="#"><img src="images/img13.png" width="106" height="20" alt="image description"/></a>
+    <a href="#"><img src="images/img14.png" width="120" height="20" alt="image description"/></a>
+    <a href="#"><img src="images/img15.png" width="88" height="20" alt="image description"/></a>
 </div>
 </div>
 <footer id="footer">
-    <div class="footer-holder">
-        <div class="footer-col col1">
-            <strong class="title">Наука</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-        <div class="footer-col col2">
-            <strong class="title">Структуры</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-        <div class="footer-col col3">
-            <strong class="title">Ресурсы</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-        <div class="footer-col col4">
-            <strong class="title">Атмосфера</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-frame">
-        <span class="text">Полезные ссылки:</span>
-        <ul class="list">
-            <li><a href="#">Новости</a></li>
-            <li><a href="#">События</a></li>
-            <li><a href="#">Мультимедиа</a></li>
-            <li><a href="#">Контакты</a></li>
-        </ul>
-        <form action="#" class="search-form">
-            <fieldset>
-                <input class="input-text" type="text" placeholder="Я ищу..." />
-                <input type="submit" value="search"  />
-            </fieldset>
-        </form>
-    </div>
-    <div class="footer-text">
-        <span class="by">Дизайн — <a href="#">BRIGHTSIDE</a></span>
-        <span class="copy">&copy; 2014 Новосибирский государственный университет</span>
-        <p>Все права защищены</p>
-    </div>
+    ${include("inc/footer.httl")}
 </footer>
 </div>
 </div>
+$!{include("inc/scripts.httl")}
 </body>
 </html>

@@ -180,6 +180,20 @@
             <column name="FILE_ID"/>
         </createIndex>
     </changeSet>
+    
+    <changeSet id="15" author="adamansky@gmail.com">
+        <dropNotNullConstraint tableName="ASM_ATTR_IDXVALS" columnName="VALUE"/>
+        <addColumn tableName="ASM_ATTR_IDXVALS">
+            <column name="IVALUE" type="BIGINT"/>
+        </addColumn>
+        <createIndex tableName="ASM_ATTR_IDXVALS" indexName="IDX_ASMATTRIDXVALS_IVALS">
+            <column name="IVALUE"/>
+            <column name="ATTR_ID"/>
+        </createIndex>
+    </changeSet>
 
+    <changeSet id="16" author="adamansky@gmail.com">
+        <dropTable tableName="MEDIA_ENTITY_REFS"/>
+    </changeSet>
 
 </databaseChangeLog>

@@ -17,5 +17,15 @@ public interface CachedPage {
 
     Asm getAsm();
 
+    Long getId();
+
+    String getName();
+
+    String getHname();
+
+    boolean isPublished();
+
+    Long getNavParentId();
+
     <T> Map<PATH_TYPE, T> fetchNavPaths();
 }
