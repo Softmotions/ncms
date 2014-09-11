@@ -48,6 +48,7 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @SuppressWarnings("unchecked")
 @Singleton
 public class AsmWebRefAM implements AsmAttributeManager {

@@ -21,6 +21,7 @@ import java.util.Map;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmMainPageAM implements AsmAttributeManager {
 

@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm.am;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,8 @@ import java.util.Set;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
+@Singleton
 public class DefaultAsmAttributeManagersRegistry implements AsmAttributeManagersRegistry {
 
     /**

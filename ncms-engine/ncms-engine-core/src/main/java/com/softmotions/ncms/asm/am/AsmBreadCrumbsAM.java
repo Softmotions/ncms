@@ -21,6 +21,7 @@ import static com.softmotions.ncms.asm.CachedPage.PATH_TYPE;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmBreadCrumbsAM implements AsmAttributeManager {
 

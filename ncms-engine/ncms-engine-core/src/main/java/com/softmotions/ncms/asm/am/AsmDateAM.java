@@ -23,6 +23,7 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmDateAM implements AsmAttributeManager {
 

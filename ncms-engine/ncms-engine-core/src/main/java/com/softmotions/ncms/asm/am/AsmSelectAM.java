@@ -37,6 +37,7 @@ import java.util.Set;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmSelectAM implements AsmAttributeManager {
 

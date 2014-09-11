@@ -5,6 +5,7 @@ import com.softmotions.ncms.asm.AsmDAO;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
+@Singleton
 public class AsmBumpOrdinalAM extends AsmBooleanAM {
 
     private static final Logger log = LoggerFactory.getLogger(AsmBumpOrdinalAM.class);
