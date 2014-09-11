@@ -197,6 +197,9 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         if (nasm == null) {
             throw new IllegalArgumentException("asm cannot be null");
         }
+        if (asm.equals(nasm)) {
+            return this;
+        }
         AsmRendererContextImpl nctx =
                 new AsmRendererContextImpl(cfg, injector, classLoader, renderer, loader,
                                            messages,
@@ -225,8 +228,23 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return messages;
     }
 
-    public Object renderAttribute(String attributeName, Map<String, String> options) {
-        return renderer.renderAsmAttribute(this, attributeName, options);
+    public Object renderAttribute(String attributeName, Map<String, String> opts) {
+        return renderer.renderAsmAttribute(this, attributeName, opts);
+    }
+
+    public Object renderAttribute(Asm nasm, String attributeName, Map<String, String> opts) {
+        if (this.asm.equals(nasm)) {
+            return renderAttribute(attributeName, opts);
+        }
+        Object res = null;
+        AsmRendererContext nctx = this.createSubcontext(nasm);
+        nctx.push();
+        try {
+            res = nctx.renderAttribute(attributeName, opts);
+        } finally {
+            nctx.pop();
+        }
+        return res;
     }
 
     public void render() throws AsmRenderingException, IOException {

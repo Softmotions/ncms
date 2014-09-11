@@ -3,6 +3,7 @@ package com.softmotions.ncms.asm.am;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 
@@ -27,11 +28,15 @@ public class AsmRefAM implements AsmAttributeManager {
 
     public static final String[] TYPES = new String[]{"asmref"};
 
-    final AsmDAO adao;
+    private final AsmDAO adao;
+
+    private final PageService pageService;
+
 
     @Inject
-    public AsmRefAM(AsmDAO adao) {
+    public AsmRefAM(AsmDAO adao, PageService pageService) {
         this.adao = adao;
+        this.pageService = pageService;
     }
 
     public String[] getSupportedAttributeTypes() {

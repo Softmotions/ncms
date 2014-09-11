@@ -132,7 +132,6 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
                 img.setSkipSmall(true);
                 res.add(img);
             }
-
         } catch (IOException e) {
             throw new AsmRenderingException(e);
         }
