@@ -79,9 +79,8 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
             Template template = engine.getTemplate(location, ctx.getLocale());
             template.render(ctx, out);
         } catch (ParseException e) {
-            String msg = "Failed to parse template: " + location + " for asm: " + ctx.getAsm().getName();
-            log.error(msg, e);
-            throw new AsmRenderingException(msg, e);
+            throw new AsmRenderingException("Failed to parse template: " + location +
+                                            " for asm: " + ctx.getAsm().getName(), e);
         }
     }
 }

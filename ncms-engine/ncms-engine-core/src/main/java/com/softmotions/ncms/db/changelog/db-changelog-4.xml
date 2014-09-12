@@ -196,4 +196,10 @@
         <dropTable tableName="MEDIA_ENTITY_REFS"/>
     </changeSet>
 
+    <changeSet id="17" author="adamansky@gmail.com">
+        <modifyDataType tableName="ASM_ATTRS"
+                        columnName="LARGE_VALUE"
+                        newDataType="CLOB(10485760)"/>
+    </changeSet>
+
 </databaseChangeLog>
