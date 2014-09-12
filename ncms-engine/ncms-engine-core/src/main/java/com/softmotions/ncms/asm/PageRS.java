@@ -487,7 +487,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         Long id = spec.hasNonNull("id") ? spec.get("id").asLong() : null;
         String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
         if (id == null || name == null || type == null ||
-            (!"page.folder".equals(type) && !"page".equals(type))) {
+            (!"page.folder".equals(type) && !"page".equals(type) && !"news.page".equals(type))) {
             throw new BadRequestException();
         }
 

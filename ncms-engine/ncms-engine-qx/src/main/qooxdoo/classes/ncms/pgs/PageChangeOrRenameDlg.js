@@ -24,7 +24,7 @@ qx.Class.define("ncms.pgs.PageChangeOrRenameDlg", {
         _save : function() {
             var items = this._form.getItems();
             var data = {
-                "id" : this._spec["id"],
+                id : this._spec["id"],
                 name : items["name"].getValue(),
                 type : items["container"].getValue() ? "page.folder" : "page"
             };

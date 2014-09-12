@@ -32,7 +32,7 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
 
     private static final Logger log = LoggerFactory.getLogger(NcmsRSExceptionHandler.class);
 
-    public static final int MAX_MSG_LEN = 1024;
+    public static final int MAX_MSG_LEN = 2048;
 
     private final NcmsMessages messages;
 
@@ -43,8 +43,11 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
 
     private String toHeaderMsg(String msg) {
         try {
-
-            return StringUtils.left(URLEncoder.encode(msg, "UTF-8"), MAX_MSG_LEN);
+            String str = StringUtils.left(URLEncoder.encode(msg, "UTF-8"), MAX_MSG_LEN);
+            if (str.endsWith("%")) {  //todo review!!!
+                str = str.substring(0, str.length() - 1);
+            }
+            return str;
         } catch (UnsupportedEncodingException e) {
             log.error("", e);
         }

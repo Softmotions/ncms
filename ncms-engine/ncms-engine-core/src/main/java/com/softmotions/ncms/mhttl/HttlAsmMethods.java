@@ -2,8 +2,10 @@ package com.softmotions.ncms.mhttl;
 
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -130,5 +132,22 @@ public class HttlAsmMethods {
             }
         }
         return ctx.renderAttribute(attrName, opts);
+    }
+
+    public static Collection<Asm> asmNews(Integer skip, Integer limit) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        Asm asm = ctx.getAsm();
+        AsmDAO adao = ctx.getInjector().getInstance(AsmDAO.class);
+        AsmDAO.PageCriteria crit = adao.newPageCriteria();
+        crit.withPublished(true);
+        crit.withNavParentId(asm.getId());
+        crit.withTypeLike("news.page");
+        if (skip != null) {
+            crit.skip(skip);
+        }
+        if (limit != null) {
+            crit.limit(limit);
+        }
+        return crit.selectAsAsms();
     }
 }
