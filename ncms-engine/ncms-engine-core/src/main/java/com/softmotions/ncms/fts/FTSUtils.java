@@ -5,13 +5,13 @@ import com.softmotions.commons.cont.CollectionUtils;
 import org.apache.tika.language.LanguageIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tartarus.snowball.SnowballStemmer;
-import org.tartarus.snowball.ext.englishStemmer;
-import org.tartarus.snowball.ext.frenchStemmer;
-import org.tartarus.snowball.ext.germanStemmer;
-import org.tartarus.snowball.ext.italianStemmer;
-import org.tartarus.snowball.ext.russianStemmer;
-import org.tartarus.snowball.ext.spanishStemmer;
+import org.tartarus.snowball.SnowballProgram;
+import org.tartarus.snowball.ext.EnglishStemmer;
+import org.tartarus.snowball.ext.FrenchStemmer;
+import org.tartarus.snowball.ext.GermanStemmer;
+import org.tartarus.snowball.ext.ItalianStemmer;
+import org.tartarus.snowball.ext.RussianStemmer;
+import org.tartarus.snowball.ext.SpanishStemmer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,7 +70,7 @@ public class FTSUtils {
                                      Collection<String> words,
                                      int minimalTermChars) {
 
-        SnowballStemmer s = selectStemmer(locale, fallback);
+        SnowballProgram s = selectStemmer(locale, fallback);
         if (s == null) {
             return words.toArray(new String[words.size()]);
         }
@@ -86,8 +86,8 @@ public class FTSUtils {
         return rl.toArray(new String[rl.size()]);
     }
 
-    private static SnowballStemmer selectStemmer(Locale locale, Locale fallback) {
-        SnowballStemmer stemmer = selectStemmer(locale);
+    private static SnowballProgram selectStemmer(Locale locale, Locale fallback) {
+        SnowballProgram stemmer = selectStemmer(locale);
         //noinspection ObjectEquality
         if (stemmer == null && fallback != null && fallback != locale) {
             stemmer = selectStemmer(fallback);
@@ -95,24 +95,24 @@ public class FTSUtils {
         return stemmer;
     }
 
-    private static SnowballStemmer selectStemmer(Locale locale) {
+    private static SnowballProgram selectStemmer(Locale locale) {
         if (locale == null) {
             return null;
         }
         String lng = locale.getLanguage();
         lng = lng.toLowerCase(Locale.ENGLISH);
         if ("ru".equals(lng) || "rus".equals(lng)) {
-            return new russianStemmer();
+            return new RussianStemmer();
         } else if ("en".equals(lng) || "eng".equals(lng)) {
-            return new englishStemmer();
+            return new EnglishStemmer();
         } else if ("fr".equals(lng) || "fra".equals(lng)) {
-            return new frenchStemmer();
+            return new FrenchStemmer();
         } else if ("de".equals(lng) || "deu".equals(lng)) {
-            return new germanStemmer();
+            return new GermanStemmer();
         } else if ("it".equals(lng) || "ita".equals(lng)) {
-            return new italianStemmer();
+            return new ItalianStemmer();
         } else if ("es".equals(lng) || "spa".equals(lng)) {
-            return new spanishStemmer();
+            return new SpanishStemmer();
         }
         return null;
     }

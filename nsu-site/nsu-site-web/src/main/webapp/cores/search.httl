@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    $!{asm("head")}
+</head>
+<body>
+<div id="wrapper">
+    <div class="w1">
+        <header id="header">
+            ${include("inc/header.httl")}
+        </header>
+
+        <div id="main" class="search-page">
+            ${include("inc/breadcrumbs.httl")}
+
+            <!-- TODO: search form -->
+            <form action="" class="search-form2">
+                <fieldset>
+                    <div class="row">
+                        <input name="spc.search.text" class="text" type="text" value="$!{search_query}"placeholder=""/>
+                        <input type="submit" value="Искать"/>
+                        <!-- TODO: time filter -->
+                        <!--<input type="radio" name="radio1" id="radio1"/>-->
+                        <!--<label class="radio" for="radio1">За все время</label>-->
+                        <!--<input type="radio" name="radio2" id="radio2"/>-->
+                        <!--<label class="radio" for="radio2">Год</label>-->
+                        <!--<input type="radio" name="radio3" id="radio3"/>-->
+                        <!--<label class="radio" for="radio3">Пол года</label>-->
+                        <!--<input type="radio" name="radio4" id="radio4"/>-->
+                        <!--<label class="radio" for="radio4">Последний месяц</label>-->
+                    </div>
+
+                    <!-- TODO: categories -->
+                    <!--<div class="row">-->
+                    <!--<input type="checkbox" id="check1"/>-->
+                    <!--<label for="check1">Официально</label>-->
+                    <!--<input type="checkbox" id="check2"/>-->
+                    <!--<label for="check2">Атмосфера</label>-->
+                    <!--<input type="checkbox" id="check3"/>-->
+                    <!--<label for="check3">Образование</label>-->
+                    <!--<input type="checkbox" id="check4"/>-->
+                    <!--<label for="check4">Развитие НГУ</label>-->
+                    <!--<select>-->
+                    <!--<option>Показать все рубрики</option>-->
+                    <!--<option>Показать все рубрики</option>-->
+                    <!--<option>Показать все рубрики</option>-->
+                    <!--</select>-->
+                    <!--</div>-->
+                </fieldset>
+            </form>
+            <ul class="news-list list2">
+                #foreach(Asm pn in search_result)
+                <li>
+                    <div class="img-holder">
+                        #set(Image icon = pn.asm("icon"))
+                        #if(icon != null)
+                        <img src="$!{icon.link}" alt="${pn.hname}" width="81" height="68"/>
+                        #end
+                        #set(Date event_date = asm(pn, "event_date"))
+                        <span class="date">${event_date.format2("dd")}</span>
+                        <span class="mounth">${event_date.format2("LMMMMM")}</span>
+                        <span class="year">${event_date.format2("yyyy")}</span>
+                    </div>
+                    <div class="text-holder">
+                        <h3><a href="$!{pn.link}">${pn.hname}</a></h3>
+
+                        <p>${pn.asm("annotation")}</p>
+                        #if(pn.isHasAttribute("subcategory"))
+                        #foreach(SelectNode sn in pn.asm("subcategory"))
+                        <span class="tag">${sn.key}</span>
+                        #end
+                        #end
+                    </div>
+                </li>
+                #end
+            </ul>
+        </div>
+
+        <footer id="footer">
+            ${include("inc/footer.httl")}
+        </footer>
+    </div>
+</div>
+$!{include("inc/scripts.httl")}
+</body>
+</html>

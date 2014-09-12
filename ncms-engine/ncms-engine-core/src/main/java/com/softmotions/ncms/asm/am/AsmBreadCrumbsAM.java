@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,10 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
 
     public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
         return attr;
+    }
+
+    public String[] prepareFulltextSearchData(AsmAttribute attr) {
+        return ArrayUtils.EMPTY_STRING_ARRAY;
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {

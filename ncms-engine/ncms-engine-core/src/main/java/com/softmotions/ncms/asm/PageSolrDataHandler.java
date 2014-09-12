@@ -1,5 +1,7 @@
 package com.softmotions.ncms.asm;
 
+import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.events.AsmCreatedEvent;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
@@ -30,6 +32,8 @@ public class PageSolrDataHandler implements SolrDataHandler {
 
     protected static final Logger log = LoggerFactory.getLogger(PageSolrDataHandler.class);
 
+    private final AsmAttributeManagersRegistry aamr;
+
     private final NcmsEventBus ebus;
 
     private final SolrServer solr;
@@ -39,7 +43,8 @@ public class PageSolrDataHandler implements SolrDataHandler {
     Collection<String> extraAttributeNames;
 
     @Inject
-    public PageSolrDataHandler(NcmsEventBus ebus, SolrServer solr, AsmDAO adao) {
+    public PageSolrDataHandler(AsmAttributeManagersRegistry aamr, NcmsEventBus ebus, SolrServer solr, AsmDAO adao) {
+        this.aamr = aamr;
         this.ebus = ebus;
         this.solr = solr;
         this.adao = adao;
@@ -47,9 +52,13 @@ public class PageSolrDataHandler implements SolrDataHandler {
 
     public void init(Configuration cfg) {
         String[] attrs = cfg.getStringArray("extra-attributes");
-        extraAttributeNames = new ArrayList<>();
-        if (attrs != null && attrs.length > 0) {
-            extraAttributeNames.addAll(Arrays.asList(attrs));
+        if (attrs != null && attrs.length == 1 && "*".equals(attrs[0])) {
+            extraAttributeNames = null;
+        } else {
+            extraAttributeNames = new ArrayList<>();
+            if (attrs != null && attrs.length > 0) {
+                extraAttributeNames.addAll(Arrays.asList(attrs));
+            }
         }
 
         ebus.register(this);
@@ -66,7 +75,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
                         return endOfData();
                     }
 
-                    SolrInputDocument solrDocument = asmToSolrDocument(asmsi.next());
+                    SolrInputDocument solrDocument = asmToSolrDocument(adao.asmSelectById(asmsi.next().getId()));
                     if (solrDocument != null) {
                         return solrDocument;
                     }
@@ -83,11 +92,27 @@ public class PageSolrDataHandler implements SolrDataHandler {
         SolrInputDocument res = new SolrInputDocument();
         res.addField("id", asm.getId());
         res.addField("name", asm.getHname());
+        res.addField("description", asm.getDescription());
+        res.addField("published", asm.isPublished());
         res.addField("type", asm.getType());
 
-        for (String attrName : extraAttributeNames) {
+        for (String attrName : extraAttributeNames == null ? asm.getEffectiveAttributeNames() : extraAttributeNames) {
             AsmAttribute attr = asm.getEffectiveAttribute(attrName);
-            res.addField(attrName, attr != null ? attr.getValue() : null);
+            if (attr != null) {
+                AsmAttributeManager aam = aamr.getByType(attr.getType());
+                if (aam != null) {
+                    String[] strings = aam.prepareFulltextSearchData(attr);
+                    for (String string : strings) {
+                        if (string != null) {
+                            res.addField("asm_attr_" + attrName, string);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("SolrDocument: " + res);
         }
 
         return res;

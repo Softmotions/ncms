@@ -7,11 +7,14 @@
     <!-- general -->
     <field name="id" type="string" indexed="true" stored="true" multiValued="false" required="true"/>
     <field name="type" type="text_general" indexed="true" stored="true" multiValued="false"/>
+    <field name="published" type="bool" indexed="true" stored="true" multiValued="false"/>
 
-    <!-- text fields for search-->
+    <!-- asm fileds -->
     <field name="name" type="text_general" indexed="true" stored="true" multiValued="false"/>
-    <field name="title" type="text_general" indexed="true" stored="true" multiValued="false"/>
-    <field name="content" type="text_general" indexed="true" stored="true" multiValued="false"/>
+    <field name="description" type="text_general" indexed="true" stored="true" multiValued="false"/>
+
+    <!-- dynamic fields for asm attrs -->
+    <dynamicField name="asm_attr_*" type="text_general" indexed="true" stored="true" multiValued="true"/>
 
     <!-- default search field-->
     <field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
@@ -19,8 +22,7 @@
 
     <!--copy text fields to default search -->
     <copyField source="name" dest="text"/>
-    <copyField source="title" dest="text"/>
-    <copyField source="content" dest="text"/>
+    <copyField source="asm_attr_*" dest="text"/>
 
     <!-- field to use to determine and enforce document uniqueness. -->
     <uniqueKey>id</uniqueKey>
@@ -30,6 +32,7 @@
 
     <fieldtype name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
     <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+    <fieldType name="bool" class="solr.BoolField"/>
 
     <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">

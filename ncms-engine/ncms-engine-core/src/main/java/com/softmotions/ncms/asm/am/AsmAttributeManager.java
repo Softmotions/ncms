@@ -20,6 +20,8 @@ public interface AsmAttributeManager {
                                      AsmAttribute tmplAttr,
                                      AsmAttribute attr);
 
+    String[] prepareFulltextSearchData(AsmAttribute attr);
+
     Object renderAsmAttribute(AsmRendererContext ctx,
                               String attrname,
                               Map<String, String> options) throws AsmRenderingException;

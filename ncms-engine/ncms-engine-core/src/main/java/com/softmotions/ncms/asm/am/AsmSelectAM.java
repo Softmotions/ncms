@@ -19,6 +19,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -147,6 +151,28 @@ public class AsmSelectAM implements AsmAttributeManager {
         return attr;
     }
 
+    public String[] prepareFulltextSearchData(AsmAttribute attr) {
+        String value = attr.getEffectiveValue();
+
+        if (StringUtils.isEmpty(value)) {
+            return ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+
+        Collection<String> items = new ArrayList<>();
+        Object selectNodes = parseSelectNodes(value, false, false);
+        if (selectNodes instanceof Collection) {
+            CollectionUtils.collect((Collection) selectNodes, new Transformer() {
+                public Object transform(Object input) {
+                    return input instanceof SelectNode ? ((SelectNode) input).getValue() : null;
+                }
+            }, items);
+        } else if (selectNodes instanceof SelectNode) {
+            items.add(((SelectNode) selectNodes).getValue());
+        }
+
+        return items.toArray(new String[items.size()]);
+    }
+
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
@@ -156,6 +182,10 @@ public class AsmSelectAM implements AsmAttributeManager {
         }
         boolean first = BooleanUtils.toBoolean(options.get("first"));
         boolean all = BooleanUtils.toBoolean(options.get("all"));
+        return parseSelectNodes(value, first, all);
+    }
+
+    private Object parseSelectNodes(String value, boolean first, boolean all) {
         List<SelectNode> nodes = first ? null : new ArrayList<SelectNode>();
         try (JsonParser parser = mapper.getFactory().createParser(value)) {
             if (parser.nextToken() != JsonToken.START_ARRAY) {

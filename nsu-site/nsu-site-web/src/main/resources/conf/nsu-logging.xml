@@ -21,6 +21,9 @@
     <logger name="com.softmotions.ncms.user.UserEnvRS" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.am.AsmAttributeManagerContext" level="INFO"/>
 
+    <logger name="com.softmotions.ncms.asm.PageSolrDataHandler" level="DEBUG"/>
+    <logger name="ru.nsu.SearchNewsController" level="DEBUG"/>
+
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>

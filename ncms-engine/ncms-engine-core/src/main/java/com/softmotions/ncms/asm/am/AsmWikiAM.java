@@ -54,6 +54,11 @@ public class AsmWikiAM implements AsmAttributeManager {
         return attr;
     }
 
+    public String[] prepareFulltextSearchData(AsmAttribute attr) {
+        // TODO:
+        return new String[0];
+    }
+
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);

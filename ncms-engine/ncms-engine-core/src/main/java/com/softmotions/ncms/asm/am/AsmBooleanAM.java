@@ -35,6 +35,10 @@ public class AsmBooleanAM implements AsmAttributeManager {
         return attr;
     }
 
+    public String[] prepareFulltextSearchData(AsmAttribute attr) {
+        return new String[]{attr.getEffectiveValue()};
+    }
+
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);

@@ -6,6 +6,7 @@ import com.softmotions.ncms.asm.AsmDAO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,10 @@ public class AsmBumpOrdinalAM extends AsmBooleanAM {
 
     public String[] getSupportedAttributeTypes() {
         return TYPES;
+    }
+
+    public String[] prepareFulltextSearchData(AsmAttribute attr) {
+        return ArrayUtils.EMPTY_STRING_ARRAY;
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {

@@ -45,7 +45,8 @@
         <!--</provider>-->
         <data-handlers>
             <data-handler class="com.softmotions.ncms.asm.PageSolrDataHandler">
-                <extra-attributes>content,title</extra-attributes>
+                <!--<extra-attributes>category</extra-attributes>-->
+                <extra-attributes>*</extra-attributes>
             </data-handler>
         </data-handlers>
     </solr>

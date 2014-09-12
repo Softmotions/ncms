@@ -17,6 +17,7 @@ import com.google.inject.Singleton;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.map.Flat3Map;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
@@ -64,6 +65,10 @@ public class AsmWebRefAM implements AsmAttributeManager {
 
     public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
         return attr;
+    }
+
+    public String[] prepareFulltextSearchData(AsmAttribute attr) {
+        return ArrayUtils.EMPTY_STRING_ARRAY;
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
