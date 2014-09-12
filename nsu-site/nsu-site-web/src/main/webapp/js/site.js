@@ -35,18 +35,20 @@ window.requestAnimFrame = (function() {
  * @param {int} delay The delay in milliseconds
  */
 window.requestTimeout = function(fn, delay) {
-    if (!window.requestAnimationFrame && !window.webkitRequestAnimationFrame && !window.mozRequestAnimationFrame && !window.oRequestAnimationFrame && !window.msRequestAnimationFrame)
+    if (!window.requestAnimationFrame &&
+            !window.webkitRequestAnimationFrame &&
+            !window.mozRequestAnimationFrame &&
+            !window.oRequestAnimationFrame &&
+            !window.msRequestAnimationFrame) {
         return window.setTimeout(fn, delay);
-
-    var start = new Date().getTime(),
-            handle = new Object();
-
+    }
+    var start = new Date().getTime();
+    var handle = {};
     function loop() {
         var current = new Date().getTime(),
                 delta = current - start;
         delta >= delay ? fn.call() : handle.value = requestAnimFrame(loop);
     }
-
     handle.value = requestAnimFrame(loop);
     return handle;
 };
