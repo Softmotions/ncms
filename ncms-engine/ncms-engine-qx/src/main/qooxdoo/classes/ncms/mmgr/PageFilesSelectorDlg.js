@@ -44,6 +44,7 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
      *      allowMove : {Boolean?false},
      *      allowSubfoldersView : {Boolean?false},
      *      smode : qx.ui.table.selection.Model.(SINGLE_SELECTION | SINGLE_INTERVAL_SELECTION | MULTIPLE_INTERVAL_SELECTION | MULTIPLE_INTERVAL_SELECTION_TOGGLE)
+     *      noActions : {Boolean?false} //If true dialog will have only 'Ok' control simple closing this dialog
      *
      *  }
      * </code>
@@ -104,13 +105,20 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
 
         //Bottom buttons
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
-        var bt = this._okBt = new qx.ui.form.Button(this.tr("Ok")).set({enabled : false});
-        bt.addListener("execute", this._ok, this);
-        hcont.add(bt);
 
-        bt = new qx.ui.form.Button(this.tr("Cancel"));
-        bt.addListener("execute", this.close, this);
-        hcont.add(bt);
+        if (options["noActions"] === true) {
+            var bt = new qx.ui.form.Button(this.tr("Close"));
+            bt.addListener("execute", this.close, this);
+            hcont.add(bt);
+        } else {
+            var bt = this._okBt = new qx.ui.form.Button(this.tr("Ok")).set({enabled : false});
+            bt.addListener("execute", this._ok, this);
+            hcont.add(bt);
+
+            bt = new qx.ui.form.Button(this.tr("Cancel"));
+            bt.addListener("execute", this.close, this);
+            hcont.add(bt);
+        }
         this.add(hcont);
 
         files.addListener("fileSelected", function(ev) {
@@ -125,7 +133,9 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
             var ff = this.getCtypeAcceptor() || function() {
                 return true;
             };
-            this._okBt.setEnabled((ctype != null && ff(ctype)));
+            if (this._okBt) {
+                this._okBt.setEnabled((ctype != null && ff(ctype)));
+            }
             if (spec) {
                 var ind = spec["name"].indexOf(".");
                 if (linkTextTf && options["syncLinkText"] !== false) {

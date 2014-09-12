@@ -7,6 +7,7 @@
  * @asset(ncms/icon/16/misc/monitor.png)
  * @asset(ncms/icon/16/misc/light-bulb.png)
  * @asset(ncms/icon/16/misc/light-bulb-off.png)
+ * @asset(ncms/icon/16/misc/images.png)
  */
 qx.Class.define("ncms.pgs.PageEditorEditPage", {
     extend : qx.ui.tabview.Page,
@@ -38,7 +39,11 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
 
-        var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png");
+        var bt = this.__publishBt = new qx.ui.form.ToggleButton(this.tr("Not published"), "ncms/icon/16/misc/light-bulb-off.png");
+        bt.addListener("execute", this.__publish, this);
+        hcont.add(bt);
+
+        bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png");
         bt.setEnabled(false);
         bt.addListener("execute", this.__save, this);
         hcont.add(bt);
@@ -48,12 +53,12 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt.addListener("execute", this.__cancel, this);
         hcont.add(bt);
 
-        bt = this.__previewBt = new qx.ui.form.Button(this.tr("Preview"), "ncms/icon/16/misc/monitor.png");
-        bt.addListener("execute", this.__preview, this);
+        bt = new qx.ui.form.Button(this.tr("Files"), "ncms/icon/16/misc/images.png");
+        bt.addListener("execute", this.__files, this);
         hcont.add(bt);
 
-        bt = this.__publishBt = new qx.ui.form.ToggleButton(this.tr("Not published"), "ncms/icon/16/misc/light-bulb-off.png");
-        bt.addListener("execute", this.__publish, this);
+        bt = this.__previewBt = new qx.ui.form.Button(this.tr("Preview"), "ncms/icon/16/misc/monitor.png");
+        bt.addListener("execute", this.__preview, this);
         hcont.add(bt);
 
         header.add(hcont);
@@ -363,6 +368,19 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()));
                 }
             }, this);
+        },
+
+        __files : function() {
+            qx.log.Logger.info("Files");
+            var pspec = this.getPageSpec();
+            var dlg = new ncms.mmgr.PageFilesSelectorDlg(
+                    pspec["id"],
+                    this.tr("Organize the page files"), {
+                        allowModify : true,
+                        linkText : false,
+                        noActions : true
+                    });
+            dlg.open();
         },
 
         __preview : function() {
