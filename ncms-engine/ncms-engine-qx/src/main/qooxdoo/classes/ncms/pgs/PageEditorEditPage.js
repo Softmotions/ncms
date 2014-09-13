@@ -38,7 +38,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         header.add(this.__pageNameLabel);
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
-
         var bt = this.__publishBt = new qx.ui.form.ToggleButton(this.tr("Not published"), "ncms/icon/16/misc/light-bulb-off.png");
         bt.addListener("execute", this.__publish, this);
         hcont.add(bt);
@@ -56,19 +55,22 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt = new qx.ui.form.Button(this.tr("Files"), "ncms/icon/16/misc/images.png");
         bt.addListener("execute", this.__files, this);
         hcont.add(bt);
+        header.add(hcont);
 
+        var hcont2 = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
         bt = this.__previewBt = new qx.ui.form.Button(this.tr("Preview"), "ncms/icon/16/misc/monitor.png");
         bt.addListener("execute", this.__preview, this);
-        hcont.add(bt);
+        hcont2.add(bt);
 
-        header.add(hcont);
         this.__templateBf =
                 new sm.ui.form.ButtonField(this.tr("Template"),
                         "ncms/icon/16/misc/document-template.png",
                         true).set({readOnly : true});
         this.__templateBf.setPlaceholder(this.tr("Please select the page template"));
         this.__templateBf.addListener("execute", this.__onChangeTemplate, this);
-        header.add(this.__templateBf);
+        hcont2.add(this.__templateBf, {flex : 1});
+        header.add(hcont2);
+
         this.add(header);
 
         this.addListener("loadPane", this.__onLoadPane, this);

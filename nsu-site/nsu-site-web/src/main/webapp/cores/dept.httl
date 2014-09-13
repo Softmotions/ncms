@@ -41,7 +41,7 @@
                 </div>
                 <aside id="sidebar">
                     <ul class="side-list">
-                        #set(Tree tree = asm("menu"))
+                        #set(Tree tree = asm("dept_menu"))
                         #foreach(Tree n in tree)
                         <li class='${ifTrue(foreach.count == 1, "active")}'><a href="#">${n.name}</a>
                             <ul>

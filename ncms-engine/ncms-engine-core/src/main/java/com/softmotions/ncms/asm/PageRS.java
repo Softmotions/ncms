@@ -1086,7 +1086,14 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @Subscribe
     public void onAsmModified(AsmModifiedEvent ev) {
-        clearCachedPage(ev.getId());
+
+        long cc = adao.asmChildrenCount(ev.getId());
+        if (cc == 0) {
+            clearCachedPage(ev.getId());
+        } else {
+            clearCache();
+        }
+
     }
 
     private void clearCachedPage(Long id) {
@@ -1095,6 +1102,13 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (p != null && p.getName() != null) {
                 pageGuid2Cache.remove(p.getName());
             }
+        }
+    }
+
+    private void clearCache() {
+        synchronized (pagesCache) {
+            pagesCache.clear();
+            pageGuid2Cache.clear();
         }
     }
 

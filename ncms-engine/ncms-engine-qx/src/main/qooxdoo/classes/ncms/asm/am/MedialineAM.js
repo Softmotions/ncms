@@ -32,7 +32,7 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
             } else {
                 el.setValue("800");
             }
-            form.add(el, this.tr("Max image width"), sm.util.Validate.canBeRangeNumber(10, 2048), "width");
+            form.add(el, this.tr("Max image width"), sm.util.Validate.canBeRangeNumber(10, 2048, true), "width");
 
             el = new qx.ui.form.TextField();
             el.setRequired(true);
@@ -41,7 +41,7 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
             } else {
                 el.setValue("64");
             }
-            form.add(el, this.tr("Max thumbnail width"), sm.util.Validate.canBeRangeNumber(10, 256), "thumb_width");
+            form.add(el, this.tr("Max thumbnail width"), sm.util.Validate.canBeRangeNumber(10, 256, true), "thumb_width");
 
             var fr = new qx.ui.form.renderer.Single(form);
             this.__form = form;

@@ -298,15 +298,19 @@ public class AsmDAO extends MBDAOSupport {
 
 
     @Transactional
-    public void bumpAsmOrdinal(Long asmId) {
+    public void bumpAsmOrdinal(long asmId) {
         update("bumpAsmOrdinal", asmId);
     }
 
 
+    @Transactional
+    public long asmChildrenCount(long asmId) {
+        return ((Number) selectOne("selectChildrenCount", asmId)).longValue();
+    }
+
     public PageCriteria newPageCriteria() {
         return new PageCriteria(this, this.namespace).withStatement("queryAttrs");
     }
-
 
     @SuppressWarnings("unchecked")
     static class CriteriaBase<T extends CriteriaBase> extends MBCriteriaQuery<T> {

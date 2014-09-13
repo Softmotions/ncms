@@ -7,6 +7,13 @@
 
     <!--<cache type="com.softmotions.ncms.db.MBDebugCache"/>-->
 
+    <select id="selectChildrenCount" parameterType="long" resultType="long">
+        SELECT
+            COUNT(*)
+        FROM ASM_PARENTS
+        WHERE asm_parent_id = #{id}
+    </select>
+
     <insert id="coreInsert" parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id" useGeneratedKeys="true">
         INSERT INTO ASM_CORES

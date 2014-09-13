@@ -69,12 +69,18 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
         },
 
         optionsAsJSON : function() {
+            if (this._form == null || !this._form.validate()) {
+                return null;
+            }
             var data = {};
             var items = this._form.getItems();
             data["allowDescription"] = items["allowDescription"].getValue();
             data["allowImage"] = items["allowImage"].getValue();
             if (data["allowImage"]) {
                 data["image"] = this._imageAM.optionsAsJSON();
+                if (data["image"] == null) {
+                    return;
+                }
             }
             data["styles"] = items["styles"].getValue();
             data["styles2"] = items["styles2"].getValue();
