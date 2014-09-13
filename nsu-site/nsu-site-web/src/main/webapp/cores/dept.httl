@@ -22,22 +22,18 @@
 
                     <h2>Новости</h2>
                     <ul class="post-list">
-                        #foreach(Asm p in asmNews())
+                        #foreach(Asm p in asmNavChilds("news.page", 0, 100))
+                        #set(Date date = p.eventDate())
                         <li>
                             <div class="date-holder">
-                                <span class="date">17</span>
-                                <span class="month">май</span>
-                                <span class="year">2014</span>
+                                <span class="date">${date.format2("dd")}</span>
+                                <span class="month">${date.format2("MMM")}</span>
+                                <span class="year">${date.format2("yyyy")}</span>
                             </div>
                             <div class="text-holder">
-                                <h1><a href="#">Дни Шекспира в НГУ</a></h1>
+                                <h1><a href="$!{p.link}">${p.hname}</a></h1>
 
-                                <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха»,
-                                    конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка
-                                    студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по иллюстрациям к драмам
-                                    Шекспспира, а самое главное, музыкально-поэтический вечер, где студенты и
-                                    преподаватели университета читали стихи Шекспира и о Шекспире, исполняли музыку его
-                                    эпохи и просто размышляли о роли Поэта и</p>
+                                <p>${p.asm("annotation")}</p>
                             </div>
                         </li>
                         #end

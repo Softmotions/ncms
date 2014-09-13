@@ -84,7 +84,7 @@ function initTree() {
 function initAboutSections() {
     $('a.about').click(function(event) {
         var _this = $(this);
-        _this.fadeOut(200);
+        _this.slideUp(300);
         _this.prev("div").slideDown(300);
         event.preventDefault();
     });

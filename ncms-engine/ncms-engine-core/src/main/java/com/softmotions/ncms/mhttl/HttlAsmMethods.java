@@ -134,20 +134,19 @@ public class HttlAsmMethods {
         return ctx.renderAttribute(attrName, opts);
     }
 
-    public static Collection<Asm> asmNews(Integer skip, Integer limit) {
+    public static Collection<Asm> asmNavChilds(String type, int skip, int limit) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         Asm asm = ctx.getAsm();
         AsmDAO adao = ctx.getInjector().getInstance(AsmDAO.class);
         AsmDAO.PageCriteria crit = adao.newPageCriteria();
         crit.withPublished(true);
         crit.withNavParentId(asm.getId());
-        crit.withTypeLike("news.page");
-        if (skip != null) {
-            crit.skip(skip);
+        if (type != null) {
+            crit.withTypeLike(type);
         }
-        if (limit != null) {
-            crit.limit(limit);
-        }
+        crit.skip(skip);
+        crit.limit(limit);
+        crit.onAsm().orderBy("ordinal").desc();
         return crit.selectAsAsms();
     }
 }

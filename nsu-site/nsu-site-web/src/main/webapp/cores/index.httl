@@ -58,6 +58,7 @@
                             <ul class="news-list">
                                 #foreach(Asm pn in news_a)
                                 #set(Image icon = pn.asm("icon"))
+                                #set(Date date = pn.eventDate())
                                 <li>
                                     <div class="img-holder">
                                         #if(icon != null)
@@ -65,9 +66,9 @@
                                             <a href="$!{pn.link}"><img src="$!{icon.link}" alt="${pn.hname}"/></a>
                                         </div>
                                         #end
-                                        <span class="date">${pn.cdate.format2("dd")}</span>
-                                        <span class="month">${pn.cdate.format2("MMMMM")}</span>
-                                        <span class="year">${pn.cdate.format2("yyyy")}</span>
+                                        <span class="date">${date.format2("dd")}</span>
+                                        <span class="month">${date.format2("MMMMM")}</span>
+                                        <span class="year">${date.format2("yyyy")}</span>
                                     </div>
                                     <div class="text-holder">
                                         <h3><a href="$!{pn.link}">${pn.hname}</a></h3>
@@ -90,9 +91,9 @@
                     <ul class="announcement-list">
                         #foreach(Asm pn in news_b)
                         <li>
-                            #set(Date event_date = asm(pn, "event_date"))
-                            <span class="date">${event_date.format2("dd")} ${event_date.format2("LMMMMM")} <span
-                                    class="year">${event_date.format2("yyyy")}</span></span>
+                            #set(Date date = pn.eventDate())
+                            <span class="date">${date.format2("dd")} ${date.format2("LMMMMM")} <span
+                                    class="year">${date.format2("yyyy")}</span></span>
 
                             <p><a href="$!{pn.link}">${pn.asm("annotation")}</a></p>
                         </li>
@@ -103,8 +104,9 @@
                     <h3>Новости факультетов</h3>
                     <ul class="faculty-list">
                         #foreach(Asm pn in news_c)
+                        #set(Date date = pn.eventDate())
                         <li>
-                            <span class="date">${pn.cdate.format2("dd")} ${pn.cdate.format2("LMMMMM")} ${pn.cdate.format2("yyyy")}</span>
+                            <span class="date">${date.format2("dd")} ${date.format2("LMMMMM")} ${date.format2("yyyy")}</span>
                             <span class="faculty">${pn.asm("np_hname")}</span>
 
                             <p><a href="$!{pn.link}">${pn.asm("annotation")}</a></p>
