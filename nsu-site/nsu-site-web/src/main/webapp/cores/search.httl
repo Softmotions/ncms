@@ -17,35 +17,33 @@
             <form action="" class="search-form2">
                 <fieldset>
                     <div class="row">
-                        <input name="spc.search.text" class="text" type="text" value="$!{search_query}"placeholder=""/>
+                        <input name="spc.text" class="text" type="text" value="$!{search_query}" placeholder=""/>
                         <input type="submit" value="Искать"/>
-                        <!-- TODO: time filter -->
-                        <!--<input type="radio" name="radio1" id="radio1"/>-->
-                        <!--<label class="radio" for="radio1">За все время</label>-->
-                        <!--<input type="radio" name="radio2" id="radio2"/>-->
-                        <!--<label class="radio" for="radio2">Год</label>-->
-                        <!--<input type="radio" name="radio3" id="radio3"/>-->
-                        <!--<label class="radio" for="radio3">Пол года</label>-->
-                        <!--<input type="radio" name="radio4" id="radio4"/>-->
-                        <!--<label class="radio" for="radio4">Последний месяц</label>-->
+                        <input type="radio" name="spc.scope" value="all" id="radio1" #if(search_scope == 'all')checked#end/>
+                        <label class="radio" for="radio1">За все время</label>
+                        <input type="radio" name="spc.scope" value="year" id="radio2" #if(search_scope == 'year')checked#end/>
+                        <label class="radio" for="radio2">Год</label>
+                        <input type="radio" name="spc.scope" value="half-year" id="radio3" #if(search_scope == 'half-year')checked#end/>
+                        <label class="radio" for="radio3">Пол года</label>
+                        <input type="radio" name="spc.scope" value="month" id="radio4" #if(search_scope == 'month')checked#end/>
+                        <label class="radio" for="radio4">Последний месяц</label>
                     </div>
 
                     <!-- TODO: categories -->
-                    <!--<div class="row">-->
-                    <!--<input type="checkbox" id="check1"/>-->
-                    <!--<label for="check1">Официально</label>-->
-                    <!--<input type="checkbox" id="check2"/>-->
-                    <!--<label for="check2">Атмосфера</label>-->
-                    <!--<input type="checkbox" id="check3"/>-->
-                    <!--<label for="check3">Образование</label>-->
-                    <!--<input type="checkbox" id="check4"/>-->
-                    <!--<label for="check4">Развитие НГУ</label>-->
-                    <!--<select>-->
-                    <!--<option>Показать все рубрики</option>-->
-                    <!--<option>Показать все рубрики</option>-->
-                    <!--<option>Показать все рубрики</option>-->
-                    <!--</select>-->
-                    <!--</div>-->
+
+                    <div class="row">
+                        #set(Integer ci = 1)
+                        #foreach(SelectNode category in asm("categories"))
+                        <input type="checkbox" id="check${ci}"/>
+                        <label for="check${ci}">${category.value}</label>
+                        #set(Integer ci = ci + 1)
+                        #end
+                        <!--<select>-->
+                        <!--<option>Показать все рубрики</option>-->
+                        <!--<option>Показать все рубрики</option>-->
+                        <!--<option>Показать все рубрики</option>-->
+                        <!--</select>-->
+                    </div>
                 </fieldset>
             </form>
             <ul class="news-list list2">
