@@ -24,12 +24,10 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = new ThreadLocal<>();
 
-    public final Stack<Boolean> escapeStack = new Stack<>();
-
     /**
      * Push the current context in the ThreadLocal {@link #ASM_CTX}
      */
-    public void push() {
+    public AsmRendererContext push() {
         Stack<AsmRendererContext> asmRendererContexts = ASM_CTX.get();
         if (asmRendererContexts == null) {
             asmRendererContexts = new Stack<>();
@@ -39,14 +37,16 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
             throw new AsmRenderingException("Cycling assembly dependency on: " + this);
         }
         asmRendererContexts.push(this);
+        return this;
     }
 
     /**
      * Pop the current content from the ThreadLocal {@link #ASM_CTX}
      */
-    public void pop() {
+    public AsmRendererContext pop() {
         Stack<AsmRendererContext> asmRendererContexts = ASM_CTX.get();
         asmRendererContexts.pop();
+        return this;
     }
 
     public static AsmRendererContext getSafe() {
@@ -117,8 +117,6 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     public abstract AsmRendererContext createSubcontext(String asmname, Writer out) throws AsmResourceNotFoundException;
 
-    public abstract AsmRendererContext createSubcontext(Asm asm) throws AsmResourceNotFoundException;
-
     /**
      * Guice injector.
      */
@@ -142,6 +140,8 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
     public abstract void render() throws AsmRenderingException, IOException;
 
     public abstract Object renderAttribute(String attributeName, Map<String, String> opts);
+
+    public abstract Object renderAttribute(Asm asm, String attributeName, Map<String, String> opts);
 
     public abstract AsmResourceLoader getLoader();
 

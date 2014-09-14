@@ -24,6 +24,7 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmDateAM implements AsmAttributeManager {
 
@@ -42,7 +43,7 @@ public class AsmDateAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
         return attr;
     }
 
@@ -68,19 +69,19 @@ public class AsmDateAM implements AsmAttributeManager {
         return new Date(ms);
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts, "format");
         attr.setOptions(asmOpts.toString());
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText() : null);
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         val = val.get("value");
         if (val == null) {
             return;

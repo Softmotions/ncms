@@ -1,595 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Новосибирский  Государственный Университет</title>
-    <link rel="stylesheet" href="css/all.css" type="text/css" />
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css'>
-    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="js/jquery.main.js"></script>
-    <script type="text/javascript" src="js/jquery.placeholder.js"></script>
-    <!--[if lte IE 8]><script type="text/javascript" src="js/ie.js"></script><![endif]-->
+    $!{asm("head")}
 </head>
 <body>
 <div id="wrapper">
-<div class="w1">
-<header id="header">
-<div class="header-holder">
-<a href="#" class="link">link</a>
-<nav id="nav">
-<ul>
-<li><a href="#">Сотрудникам</a>
-    <div class="slide-holder">
-        <div class="slide-frame">
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Справочник</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-                <li><a href="#">Профессора</a></li>
-                <li><a href="#">Мегапроекты</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">ИТ службы</a></li>
-                <li><a href="#">Система УИС</a></li>
-                <li><a href="#">Провайлер услуг</a></li>
-                <li><a href="#">О сайте</a></li>
-            </ul>
+    <div class="w1">
+        <header id="header">
+            ${include("inc/header.httl")}
+        </header>
+        <div id="main" class="dept-page">
+            ${include("inc/breadcrumbs.httl")}
+            <div class="twocolumns type2">
+                <div id="content">
+                    <h1>${page().hname}</h1>
+                    $!{asm("announce_wiki")}
+                    <div style="display:none;">
+                        $!{asm("structure_wiki")}
+                    </div>
+                    <a href="#" class="about"><span>Подробнее о структуре</span></a>
+
+                    <h2>Новости</h2>
+                    <ul class="post-list">
+                        #foreach(Asm p in asmNavChilds("news.page", 0, 100))
+                        #set(Date date = p.eventDate())
+                        <li>
+                            <div class="date-holder">
+                                <span class="date">${date.format2("dd")}</span>
+                                <span class="month">${date.format2("MMM")}</span>
+                                <span class="year">${date.format2("yyyy")}</span>
+                            </div>
+                            <div class="text-holder">
+                                <h1><a href="$!{p.link}">${p.hname}</a></h1>
+
+                                <p>${p.asm("annotation")}</p>
+                            </div>
+                        </li>
+                        #end
+                    </ul>
+                </div>
+                <aside id="sidebar">
+                    <ul class="side-list">
+                        #set(Tree tree = asm("dept_menu"))
+                        #foreach(Tree n in tree)
+                        <li class='${ifTrue(foreach.count == 1, "active")}'><a href="#">${n.name}</a>
+                            <ul>
+                                #foreach(Tree nn in n)
+                                <li><a href="${nn.link}">${nn.name}</a></li>
+                                #end
+                            </ul>
+                        </li>
+                        #end
+                    </ul>
+                </aside>
+            </div>
+            ${include("inc/soclikes.httl")}
         </div>
-    </div>
-</li>
-<li><a href="#">Студентам</a>
-    <div class="slide-holder">
-        <div class="slide-frame">
-            <ul>
-                <li><a href="#">Миссия1111</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Справочник</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-                <li><a href="#">Профессора</a></li>
-                <li><a href="#">Мегапроекты</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">ИТ службы</a></li>
-                <li><a href="#">Система УИС</a></li>
-                <li><a href="#">Провайлер услуг</a></li>
-                <li><a href="#">О сайте</a></li>
-            </ul>
-        </div>
-    </div>
-</li>
-<li><a href="#">Абитуриентам</a>
-    <div class="slide-holder">
-        <div class="slide-frame">
-            <ul>
-                <li><a href="#">Миссия2222</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Справочник</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-                <li><a href="#">Профессора</a></li>
-                <li><a href="#">Мегапроекты</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">ИТ службы</a></li>
-                <li><a href="#">Система УИС</a></li>
-                <li><a href="#">Провайлер услуг</a></li>
-                <li><a href="#">О сайте</a></li>
-            </ul>
-        </div>
-    </div>
-</li>
-<li><a href="#">Выпускникам</a>
-    <div class="slide-holder">
-        <div class="slide-frame">
-            <ul>
-                <li><a href="#">Миссия3333</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Справочник</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-                <li><a href="#">Профессора</a></li>
-                <li><a href="#">Мегапроекты</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">ИТ службы</a></li>
-                <li><a href="#">Система УИС</a></li>
-                <li><a href="#">Провайлер услуг</a></li>
-                <li><a href="#">О сайте</a></li>
-            </ul>
-        </div>
-    </div>
-</li>
-<li><a href="#">СМИ</a>
-    <div class="slide-holder">
-        <div class="slide-frame">
-            <ul>
-                <li><a href="#">Миссия4444</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Справочник</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-                <li><a href="#">Профессора</a></li>
-                <li><a href="#">Мегапроекты</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">ИТ службы</a></li>
-                <li><a href="#">Система УИС</a></li>
-                <li><a href="#">Провайлер услуг</a></li>
-                <li><a href="#">О сайте</a></li>
-            </ul>
-        </div>
-    </div>
-</li>
-<li><a href="#">Партнерам</a>
-    <div class="slide-holder">
-        <div class="slide-frame">
-            <ul>
-                <li><a href="#">Миссия5555</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Справочник</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-                <li><a href="#">Профессора</a></li>
-                <li><a href="#">Мегапроекты</a></li>
-                <li><a href="#">Контакты</a></li>
-                <li><a href="#">Отд. качества</a></li>
-                <li><a href="#">Межд. связи</a></li>
-                <li><a href="#">Справочник</a></li>
-                <li><a href="#">Академики</a></li>
-                <li><a href="#">Доктора</a></li>
-            </ul>
-            <ul>
-                <li><a href="#">ИТ службы</a></li>
-                <li><a href="#">Система УИС</a></li>
-                <li><a href="#">Провайлер услуг</a></li>
-                <li><a href="#">О сайте</a></li>
-            </ul>
-        </div>
-    </div>
-</li>
-</ul>
-</nav>
-<a href="#" class="search">search</a>
-</div>
-<div class="header-info">
-    <strong class="logo"><a href="#">Новосибирский  Государственный Университет</a></strong>
-    <a href="#" class="language">Eng</a>
-    <div class="personal-holder">
-        <div class="personal-row">
-            <a href="#" class="personal">Личный кабинет</a>
-            <ul class="social-networks">
-                <li><a href="#" class="plus">plus</a></li>
-                <li><a href="#" class="facebook">facebook</a></li>
-                <li><a href="#" class="vk">vk</a></li>
-                <li><a href="#" class="twitter">twitter</a></li>
-                <li><a href="#" class="instagramm">instagramm</a></li>
-            </ul>
-        </div>
-        <ul class="menu">
-            <li><a href="#">Новости</a></li>
-            <li><a href="#">События</a></li>
-            <li><a href="#">Мультимедиа</a></li>
-            <li><a href="#">Контакты</a></li>
-        </ul>
+        <footer id="footer">
+            ${include("inc/footer.httl")}
+        </footer>
     </div>
 </div>
-<ul class="list">
-    <li class="item1"><a href="#">Наука</a>
-        <ul>
-            <li><a href="#">Библиотечный фонды</a></li>
-            <li><a href="#">Электронные каталоги</a></li>
-            <li><a href="#">Ссылки на ресурсы</a></li>
-            <li><a href="#">Открытие лекции</a></li>
-        </ul>
-    </li>
-    <li class="item2"><a href="#">Структуры</a>
-        <ul>
-            <li><a href="#">Библиотечный фонды</a></li>
-            <li><a href="#">Электронные каталоги</a></li>
-            <li><a href="#">Ссылки на ресурсы</a></li>
-            <li><a href="#">Открытие лекции</a></li>
-        </ul>
-    </li>
-    <li class="item3"><a href="#">Ресурсы</a>
-        <ul>
-            <li><a href="#">Библиотечный фонды</a></li>
-            <li><a href="#">Электронные каталоги</a></li>
-            <li><a href="#">Ссылки на ресурсы</a></li>
-            <li><a href="#">Открытие лекции</a></li>
-        </ul>
-    </li>
-    <li class="item4"><a href="#">Атмосфера</a>
-        <ul>
-            <li><a href="#">Библиотечный фонды</a></li>
-            <li><a href="#">Электронные каталоги</a></li>
-            <li><a href="#">Ссылки на ресурсы</a></li>
-            <li><a href="#">Открытие лекции</a></li>
-        </ul>
-    </li>
-</ul>
-</header>
-<div id="main" class="dept-page">
-    <div class="breadcrumbs-holder">
-        <a href="#" class="pdf">pdf</a>
-        <ul class="breadcrumbs">
-            <li><a href="#">Главная</a></li>
-            <li><a href="#">Студентам </a></li>
-            <li>Название подразделения</li>
-        </ul>
-    </div>
-    <div class="twocolumns type2">
-        <div id="content">
-            <h1>Название подразделения</h1>
-            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по иллюстрациям к драмам Шекспспира, а самое главное, музыкально-поэтический вечер, где студенты и преподаватели университета читали стихи Шекспира и о Шекспире, исполняли музыку его эпохи и просто размышляли о роли Поэта и Поэзии.</p>
-            <a href="#" class="about"><span>Подробнее о структуре</span></a>
-            <h2>Последние новости подразделения</h2>
-            <ul class="post-list">
-                <li>
-                    <div class="date-holder">
-                        <span class="date">17</span>
-                        <span class="month">май</span>
-                        <span class="year">2014</span>
-                    </div>
-                    <div class="text-holder">
-                        <h1><a href="#">Дни Шекспира в НГУ</a></h1>
-                        <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по иллюстрациям к драмам Шекспспира, а самое главное, музыкально-поэтический вечер, где студенты и преподаватели университета читали стихи Шекспира и о Шекспире, исполняли музыку его эпохи и просто размышляли о роли Поэта и</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="date-holder">
-                        <span class="date">17</span>
-                        <span class="month">май</span>
-                        <span class="year">2014</span>
-                    </div>
-                    <div class="text-holder">
-                        <h1><a href="#">Дни Шекспира в НГУ</a></h1>
-                        <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по иллюстрациям к драмам Шекспспира, а самое главное, музыкально-поэтический вечер, где студенты и преподаватели университета читали стихи Шекспира и о Шекспире, исполняли музыку его эпохи и просто размышляли о роли Поэта и</p>
-                    </div>
-                </li>
-                <li>
-                    <div class="date-holder">
-                        <span class="date">17</span>
-                        <span class="month">май</span>
-                        <span class="year">2014</span>
-                    </div>
-                    <div class="text-holder">
-                        <h1><a href="#">Дни Шекспира в НГУ</a></h1>
-                        <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль «Ромео и Джульетта», флэшмоб по иллюстрациям к драмам Шекспспира, а самое главное, музыкально-поэтический вечер, где студенты и преподаватели университета читали стихи Шекспира и о Шекспире, исполняли музыку его эпохи и просто размышляли о роли Поэта и</p>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <aside id="sidebar">
-            <ul class="side-list">
-                <li class="active"><a href="#">Структура подразделения</a>
-                    <ul>
-                        <li class="active"><a href="#">Первый отдел</a></li>
-                        <li><a href="#">Второй отдел</a></li>
-                        <li><a href="#">Третий отдел</a></li>
-                        <li><a href="#">Четвертый отдел</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Нормативные документы</a>
-                    <ul>
-                        <li><a href="#">Первый отдел</a></li>
-                        <li><a href="#">Второй отдел</a></li>
-                        <li><a href="#">Третий отдел</a></li>
-                        <li><a href="#">Четвертый отдел</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Ненормативные</a>
-                    <ul>
-                        <li><a href="#">Первый отдел</a></li>
-                        <li><a href="#">Второй отдел</a></li>
-                        <li><a href="#">Третий отдел</a></li>
-                        <li><a href="#">Четвертый отдел</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Документы</a>
-                    <ul>
-                        <li><a href="#">Первый отдел</a></li>
-                        <li><a href="#">Второй отдел</a></li>
-                        <li><a href="#">Третий отдел</a></li>
-                        <li><a href="#">Четвертый отдел</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Пункт</a>
-                    <ul>
-                        <li><a href="#">Первый отдел</a></li>
-                        <li><a href="#">Второй отдел</a></li>
-                        <li><a href="#">Третий отдел</a></li>
-                        <li><a href="#">Четвертый отдел</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Пункт</a>
-                    <ul>
-                        <li><a href="#">Первый отдел</a></li>
-                        <li><a href="#">Второй отдел</a></li>
-                        <li><a href="#">Третий отдел</a></li>
-                        <li><a href="#">Четвертый отдел</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Пункт</a>
-                    <ul>
-                        <li><a href="#">Первый отдел</a></li>
-                        <li><a href="#">Второй отдел</a></li>
-                        <li><a href="#">Третий отдел</a></li>
-                        <li><a href="#">Четвертый отдел</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Пункт</a>
-                    <ul>
-                        <li><a href="#">Первый отдел</a></li>
-                        <li><a href="#">Второй отдел</a></li>
-                        <li><a href="#">Третий отдел</a></li>
-                        <li><a href="#">Четвертый отдел</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </aside>
-    </div>
-    <div class="share-holder">
-        <span class="share">Поделиться:</span>
-        <a href="#">
-            <img src="images/img19.jpg" width="32" height="32" alt="image description" />
-        </a><a href="#">
-        <img src="images/img20.jpg" width="32" height="32" alt="image description" />
-    </a><a href="#">
-        <img src="images/img21.jpg" width="32" height="32" alt="image description" />
-    </a><a href="#">
-        <img src="images/img22.jpg" width="32" height="32" alt="image description" />
-    </a><a href="#">
-        <img src="images/img23.jpg" width="98" height="32" alt="image description" />
-    </a>
-    </div>
-    <div class="partners-holder">
-        <h2>Наши партнеры</h2>
-        <ul class="partners-list">
-            <li>
-                <a href="#">
-                    <img src="images/img8.jpg" width="322" height="72" alt="image description" />
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <img src="images/img9.jpg" width="322" height="72" alt="image description" />
-                </a>
-            </li>
-            <li>
-                <a href="#">
-                    <img src="images/img10.jpg" width="322" height="72" alt="image description" />
-                </a>
-            </li>
-        </ul>
-    </div>
-    <div class="placeholder">
-        <a href="#"><img src="images/img11.png" width="109" height="21" alt="image description" /></a>
-        <a href="#"><img src="images/img12.png" width="81" height="20" alt="image description" /></a>
-        <a href="#"><img src="images/img13.png" width="106" height="20" alt="image description" /></a>
-        <a href="#"><img src="images/img14.png" width="120" height="20" alt="image description" /></a>
-        <a href="#"><img src="images/img15.png" width="88" height="20" alt="image description" /></a>
-    </div>
-</div>
-<footer id="footer">
-    <div class="footer-holder">
-        <div class="footer-col col1">
-            <strong class="title">Наука</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-        <div class="footer-col col2">
-            <strong class="title">Структуры</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-        <div class="footer-col col3">
-            <strong class="title">Ресурсы</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-        <div class="footer-col col4">
-            <strong class="title">Атмосфера</strong>
-            <ul>
-                <li><a href="#">Миссия</a></li>
-                <li><a href="#">Руководство</a></li>
-                <li><a href="#">Ученый совет</a></li>
-                <li><a href="#">Ректорат</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-frame">
-        <span class="text">Полезные ссылки:</span>
-        <ul class="list">
-            <li><a href="#">Новости</a></li>
-            <li><a href="#">События</a></li>
-            <li><a href="#">Мультимедиа</a></li>
-            <li><a href="#">Контакты</a></li>
-        </ul>
-        <form action="#" class="search-form">
-            <fieldset>
-                <input class="input-text" type="text" placeholder="Я ищу..." />
-                <input type="submit" value="search"  />
-            </fieldset>
-        </form>
-    </div>
-    <div class="footer-text">
-        <span class="by">Дизайн — <a href="#">BRIGHTSIDE</a></span>
-        <span class="copy">&copy; 2014 Новосибирский государственный университет</span>
-        <p>Все права защищены</p>
-    </div>
-</footer>
-</div>
-</div>
+$!{include("inc/scripts.httl")}
 </body>
 </html>

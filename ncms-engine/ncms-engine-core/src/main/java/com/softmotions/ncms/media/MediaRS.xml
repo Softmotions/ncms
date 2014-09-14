@@ -141,15 +141,15 @@
 
     <select id="select" resultType="map" parameterType="map">
         SELECT
-        e.id AS "id",
-        e.name AS "name",
-        e.status AS "status",
-        e.content_type AS "content_type",
-        e.content_length AS "content_length",
-        e.folder AS "folder",
-        e.owner AS "owner",
-        e.description AS "description",
-        e.tags AS "tags"
+            e.id                AS "id",
+            e.name              AS "name",
+            e.status            AS "status",
+            e.content_type      AS "content_type",
+            e.content_length    AS "content_length",
+            e.folder            AS "folder",
+            e.owner             AS "owner",
+            e.description       AS "description",
+            e.tags              AS "tags"
         FROM MEDIA_ENTITY e
         <where>
             <if test="folder != null">AND e.folder LIKE #{folder}</if>
@@ -194,15 +194,15 @@
 
     <select id="selectByKeywords" resultType="map" parameterType="map">
         SELECT
-        e.id AS "id",
-        e.name AS "name",
-        e.status AS "status",
-        e.content_type AS "content_type",
-        e.content_length AS "content_length",
-        e.folder AS "folder",
-        e.owner AS "owner",
-        e.description AS "description",
-        e.tags AS "tags"
+            e.id                AS "id",
+            e.name              AS "name",
+            e.status            AS "status",
+            e.content_type      AS "content_type",
+            e.content_length    AS "content_length",
+            e.folder            AS "folder",
+            e.owner             AS "owner",
+            e.description       AS "description",
+            e.tags              AS "tags"
         FROM MEDIA_ENTITY e, MEDIA_ENTITY_KWORDS kw
         WHERE
         kw.entity_id = e.id
@@ -230,21 +230,21 @@
     <select id="countByKeywords" resultType="int" parameterType="map">
         SELECT COUNT(*)
         FROM (
-        SELECT e.id
-        FROM MEDIA_ENTITY e, MEDIA_ENTITY_KWORDS kw
-        WHERE
-        kw.ENTITY_ID = e.id
-        <if test="status != null">AND e.status = #{status}</if>
-        <if test="folder != null">AND e.folder LIKE #{folder}</if>
-        <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
-        <if test="system == null">AND e.system = 0</if>
-        AND
-        <foreach item="k" index="index" collection="keywords"
-                 open="(" separator="OR" close=")">
-            kw.keyword LIKE #{k}
-        </foreach>
-        GROUP BY e.id
-        HAVING COUNT(e.id) = #{keywordsSize}
+            SELECT e.id
+            FROM MEDIA_ENTITY e, MEDIA_ENTITY_KWORDS kw
+            WHERE
+            kw.ENTITY_ID = e.id
+            <if test="status != null">AND e.status = #{status}</if>
+            <if test="folder != null">AND e.folder LIKE #{folder}</if>
+            <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
+            <if test="system == null">AND e.system = 0</if>
+            AND
+            <foreach item="k" index="index" collection="keywords"
+                     open="(" separator="OR" close=")">
+                kw.keyword LIKE #{k}
+            </foreach>
+            GROUP BY e.id
+            HAVING COUNT(e.id) = #{keywordsSize}
         )
     </select>
 

@@ -188,11 +188,13 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                     if (cb != null) {
                         cb.call(self);
                     }
+                    this._tree.focus();
                 }, this);
             } else {
                 if (cb) {
                     cb.call(self);
                 }
+                this._tree.focus();
             }
         },
 

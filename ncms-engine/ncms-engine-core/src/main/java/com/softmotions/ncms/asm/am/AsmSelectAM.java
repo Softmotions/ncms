@@ -41,6 +41,7 @@ import java.util.Set;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmSelectAM implements AsmAttributeManager {
 
@@ -104,7 +105,7 @@ public class AsmSelectAM implements AsmAttributeManager {
     }
 
     public AsmAttribute prepareGUIAttribute(Asm page, Asm template,
-                                            AsmAttribute tmplAttr, AsmAttribute attr) {
+                                            AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
         ArrayNode tArr = checkFetchFrom(page, attr);
         if (tArr == null && (tmplAttr == null || StringUtils.isBlank(tmplAttr.getEffectiveValue()))) {
             if (StringUtils.isBlank(attr.getEffectiveValue())) {
@@ -213,7 +214,7 @@ public class AsmSelectAM implements AsmAttributeManager {
     }
 
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         //options
         JsonNode optsVal = val.get("display");
         AsmOptions opts = new AsmOptions();
@@ -233,7 +234,7 @@ public class AsmSelectAM implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         JsonNode value = val.get("value");
         if (value != null && value.isArray()) {
             attr.setEffectiveValue(value.toString());
@@ -243,7 +244,7 @@ public class AsmSelectAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         JsonNode value = val.get("value");
         List<String> mvals = new ArrayList<>();
         if (value != null && value.isArray()) {

@@ -3,6 +3,7 @@ package com.softmotions.ncms.asm.am;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 
@@ -21,6 +22,7 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmRefAM implements AsmAttributeManager {
 
@@ -28,18 +30,22 @@ public class AsmRefAM implements AsmAttributeManager {
 
     public static final String[] TYPES = new String[]{"asmref"};
 
-    final AsmDAO adao;
+    private final AsmDAO adao;
+
+    private final PageService pageService;
+
 
     @Inject
-    public AsmRefAM(AsmDAO adao) {
+    public AsmRefAM(AsmDAO adao, PageService pageService) {
         this.adao = adao;
+        this.pageService = pageService;
     }
 
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
         return attr;
     }
 
@@ -86,11 +92,11 @@ public class AsmRefAM implements AsmAttributeManager {
         return out.toString();
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         return applyAttributeValue(ctx, attr, val);
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         if (!val.get("value").canConvertToLong()) {
             attr.setEffectiveValue(null);
             return attr;
@@ -100,7 +106,7 @@ public class AsmRefAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
 
     }
 }

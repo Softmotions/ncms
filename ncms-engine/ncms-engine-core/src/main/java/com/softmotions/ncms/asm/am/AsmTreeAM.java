@@ -29,6 +29,7 @@ import java.util.Map;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmTreeAM implements AsmAttributeManager {
 
@@ -50,7 +51,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
         if (StringUtils.isBlank(attr.getEffectiveValue())) {
             try {
                 attr.setEffectiveValue(mapper.writeValueAsString(new Tree(attr.getLabel() != null ? attr.getLabel() : "root")));
@@ -100,14 +101,14 @@ public class AsmTreeAM implements AsmAttributeManager {
         return tree;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts);
         attr.setOptions(asmOpts.toString());
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         ObjectNode tree = (ObjectNode) val;
         if (tree != null) {
             try {
@@ -148,7 +149,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         }
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
 
     }
 }

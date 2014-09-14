@@ -711,7 +711,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     {
                         allowModify : true,
                         allowMove : false,
-                        allowSubfoldersView : true
+                        allowSubfoldersView : true,
+                        smode : qx.ui.table.selection.Model.SINGLE_SELECTION
                     }
             );
             dlg.addListener("completed", function(ev) {

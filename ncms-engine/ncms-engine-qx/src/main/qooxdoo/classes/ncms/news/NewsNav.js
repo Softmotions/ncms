@@ -117,12 +117,29 @@ qx.Class.define("ncms.news.NewsNav", {
             bt = new qx.ui.menu.Button(this.tr("New"));
             bt.addListenerOnce("execute", this.__onNews, this);
             menu.add(bt);
-
             if (sp != null) {
+                bt = new qx.ui.menu.Button(this.tr("Rename"));
+                bt.addListenerOnce("execute", this.__onRename, this);
+                menu.add(bt);
+
                 bt = new qx.ui.menu.Button(this.tr("Delete"));
                 bt.addListenerOnce("execute", this.__onDelete, this);
                 menu.add(bt);
             }
+        },
+
+        __onRename : function(ev) {
+            var sp = this.__ps.getSelectedPage();
+            if (sp == null) {
+                return;
+            }
+            var dlg = new ncms.news.NewsRenameDlg(sp["id"], sp["label"]);
+            dlg.addListener("completed", function(ev) {
+                dlg.close();
+                this.__ps.refresh();
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
         },
 
         __onDelete : function(ev) {

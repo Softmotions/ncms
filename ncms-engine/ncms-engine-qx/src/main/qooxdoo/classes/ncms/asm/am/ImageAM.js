@@ -35,13 +35,13 @@ qx.Class.define("ncms.asm.am.ImageAM", {
             if (opts["width"] != null) {
                 wTb.setValue(opts["width"]);
             }
-            form.add(wTb, this.tr("Width"), null, "width");
+            form.add(wTb, this.tr("Width"), sm.util.Validate.canBeRangeNumber(10, 2048, true), "width");
 
             var hTb = new qx.ui.form.TextField().set({maxLength : 3});
             if (opts["height"] != null) {
                 hTb.setValue(opts["height"]);
             }
-            form.add(hTb, this.tr("Height"), null, "height");
+            form.add(hTb, this.tr("Height"), sm.util.Validate.canBeRangeNumber(10, 2048, true), "height");
 
             wTb.addListener("input", function() {
                 coverCb.setEnabled(!sm.lang.String.isEmpty(wTb.getValue()) && !sm.lang.String.isEmpty(hTb.getValue()))

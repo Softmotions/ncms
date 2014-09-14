@@ -2,8 +2,10 @@ package com.softmotions.ncms.mhttl;
 
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -17,6 +19,10 @@ public class HttlAsmMethods {
 
     public static Asm page() {
         return AsmRendererContext.getSafe().getAsm();
+    }
+
+    public static boolean asmHasAttribute(String name) {
+        return AsmRendererContext.getSafe().getAsm().isHasAttribute(name);
     }
 
     public static Object asm(String val) {
@@ -71,64 +77,39 @@ public class HttlAsmMethods {
     }
 
     public static Object asm(Asm asm, String attr) {
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        //noinspection ObjectEquality
-        if (ctx.getAsm() != asm) {
-            ctx = ctx.createSubcontext(asm);
-        }
-        return ctx.renderAttribute(attr, null);
+        return AsmRendererContext.getSafe().renderAttribute(asm, attr, null);
     }
 
     public static Object asm(Asm asm, String attr, String opts) {
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        //noinspection ObjectEquality
-        if (ctx.getAsm() != asm) {
-            ctx = ctx.createSubcontext(asm);
-        }
         KVOptions kvopts = new KVOptions();
         kvopts.loadOptions(opts);
-        return ctx.renderAttribute(attr, kvopts);
+        return AsmRendererContext.getSafe().renderAttribute(asm, attr, kvopts);
     }
 
     public static Object asm(Asm asm, String attr, String ok, String ov) {
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        //noinspection ObjectEquality
-        if (ctx.getAsm() != asm) {
-            ctx = ctx.createSubcontext(asm);
-        }
         KVOptions opts = new KVOptions();
         opts.put(ok, ov);
-        return ctx.renderAttribute(attr, opts);
+        return AsmRendererContext.getSafe().renderAttribute(asm, attr, opts);
     }
 
     public static Object asm(Asm asm, String attr,
                              String ok, String ov,
                              String ok1, String ov1) {
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        //noinspection ObjectEquality
-        if (ctx.getAsm() != asm) {
-            ctx = ctx.createSubcontext(asm);
-        }
         KVOptions opts = new KVOptions();
         opts.put(ok, ov);
         opts.put(ok1, ov1);
-        return ctx.renderAttribute(attr, opts);
+        return AsmRendererContext.getSafe().renderAttribute(asm, attr, opts);
     }
 
     public static Object asm(Asm asm, String attr,
                              String ok, String ov,
                              String ok1, String ov1,
                              String ok2, String ov2) {
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        //noinspection ObjectEquality
-        if (ctx.getAsm() != asm) {
-            ctx = ctx.createSubcontext(asm);
-        }
         KVOptions opts = new KVOptions();
         opts.put(ok, ov);
         opts.put(ok1, ov1);
         opts.put(ok2, ov2);
-        return ctx.renderAttribute(attr, opts);
+        return AsmRendererContext.getSafe().renderAttribute(asm, attr, opts);
     }
 
     private static Object asmIntern(String attrName, String... extraOpts) {
@@ -151,5 +132,21 @@ public class HttlAsmMethods {
             }
         }
         return ctx.renderAttribute(attrName, opts);
+    }
+
+    public static Collection<Asm> asmNavChilds(String type, int skip, int limit) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        Asm asm = ctx.getAsm();
+        AsmDAO adao = ctx.getInjector().getInstance(AsmDAO.class);
+        AsmDAO.PageCriteria crit = adao.newPageCriteria();
+        crit.withPublished(true);
+        crit.withNavParentId(asm.getId());
+        if (type != null) {
+            crit.withTypeLike(type);
+        }
+        crit.skip(skip);
+        crit.limit(limit);
+        crit.onAsm().orderBy("ordinal").desc();
+        return crit.selectAsAsms();
     }
 }

@@ -2,6 +2,8 @@ jQuery(function() {
     initTree();
     initMainMenu();
     initSlideShow();
+    initAccordion();
+    initAboutSections();
 });
 
 /*
@@ -33,18 +35,20 @@ window.requestAnimFrame = (function() {
  * @param {int} delay The delay in milliseconds
  */
 window.requestTimeout = function(fn, delay) {
-    if (!window.requestAnimationFrame && !window.webkitRequestAnimationFrame && !window.mozRequestAnimationFrame && !window.oRequestAnimationFrame && !window.msRequestAnimationFrame)
+    if (!window.requestAnimationFrame &&
+            !window.webkitRequestAnimationFrame &&
+            !window.mozRequestAnimationFrame &&
+            !window.oRequestAnimationFrame &&
+            !window.msRequestAnimationFrame) {
         return window.setTimeout(fn, delay);
-
-    var start = new Date().getTime(),
-            handle = new Object();
-
+    }
+    var start = new Date().getTime();
+    var handle = {};
     function loop() {
         var current = new Date().getTime(),
                 delta = current - start;
         delta >= delay ? fn.call() : handle.value = requestAnimFrame(loop);
     }
-
     handle.value = requestAnimFrame(loop);
     return handle;
 };
@@ -74,6 +78,15 @@ function initTree() {
             $(li).removeClass('close');
             $(li).addClass('open');
         }
+    });
+}
+
+function initAboutSections() {
+    $('a.about').click(function(event) {
+        var _this = $(this);
+        _this.slideUp(300);
+        _this.prev("div").slideDown(300);
+        event.preventDefault();
     });
 }
 
@@ -263,6 +276,33 @@ jQuery.fn.fadeGallery = function(_options) {
         autoSlide();
     });
 };
+
+function initAccordion() {
+    $('.accordion > li > a').click(function(event) {
+        var _this = $(this);
+        if (!_this.parent().hasClass('active')) {
+            _this.parent().find('ul').slideDown(200, function() {
+                _this.parent().addClass('active');
+            });
+        } else {
+            _this.parent().find('ul').slideUp(200, function() {
+                _this.parent().removeClass('active');
+            });
+        }
+        event.preventDefault();
+    });
+    $('.side-list > li > a').click(function(event) {
+        if (!$(this).parent().hasClass('active')) {
+            $(this).parents('.side-list').children('li.active').find('ul').slideUp(200, function() {
+                $(this).parent().removeClass('active');
+            });
+            $(this).parent().find('ul').slideDown(200, function() {
+                $(this).parent().addClass('active')
+            });
+        }
+        event.preventDefault();
+    })
+}
 
 //tinycarousel plugin
 (function($) {

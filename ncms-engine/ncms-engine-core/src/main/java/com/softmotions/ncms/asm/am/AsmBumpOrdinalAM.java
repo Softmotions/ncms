@@ -5,6 +5,7 @@ import com.softmotions.ncms.asm.AsmDAO;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
+@Singleton
 public class AsmBumpOrdinalAM extends AsmBooleanAM {
 
     private static final Logger log = LoggerFactory.getLogger(AsmBumpOrdinalAM.class);
@@ -35,12 +38,12 @@ public class AsmBumpOrdinalAM extends AsmBooleanAM {
         return ArrayUtils.EMPTY_STRING_ARRAY;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         return attr;
     }
 
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         JsonNode bval = val.get("value");
         if (bval != null && bval.asBoolean()) {
             adao.bumpAsmOrdinal(ctx.getAsmId());

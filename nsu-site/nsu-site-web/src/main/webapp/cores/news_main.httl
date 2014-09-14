@@ -18,7 +18,7 @@ ${include("inc/breadcrumbs.httl")}
         #set(Image img = p.asm("bigicon"))
         #if(img != null)
         <div class="img-holder" style="width:314px;height:192px;overflow:hidden">
-            <img src="${img.link}" width="314" alt="${p.hname}"/>
+            <a href="${p.link}"><img src="${img.link}" width="314" alt="${p.hname}"/></a>
             #set(Date edate = p.eventDate)
             <div class="date-holder">
                 <span class="date">${edate.format2("dd")}</span>
@@ -28,7 +28,8 @@ ${include("inc/breadcrumbs.httl")}
         </div>
         #end
         <div class="text-holder">
-            <h3><a href="#">${p.hname}</a></h3>
+            <h3><a href="${p.link}">${p.hname}</a></h3>
+
             <p>${p.asm("annotation")}</p>
             #if(p.isHasAttribute("subcategory"))
             #foreach(SelectNode sn in p.asm("subcategory"))
@@ -311,47 +312,8 @@ ${include("inc/breadcrumbs.httl")}
     </ul>
     <a href="#" class="fetch-more"><span>Загрузить еще</span></a>
 </div>
-<div class="share-holder">
-    <span class="share">Поделиться:</span>
-    <a href="#">
-        <img src="images/img19.jpg" width="32" height="32" alt="image description"/>
-    </a><a href="#">
-    <img src="images/img20.jpg" width="32" height="32" alt="image description"/>
-</a><a href="#">
-    <img src="images/img21.jpg" width="32" height="32" alt="image description"/>
-</a><a href="#">
-    <img src="images/img22.jpg" width="32" height="32" alt="image description"/>
-</a><a href="#">
-    <img src="images/img23.jpg" width="98" height="32" alt="image description"/>
-</a>
-</div>
-<div class="partners-holder">
-    <h2>Наши партнеры</h2>
-    <ul class="partners-list">
-        <li>
-            <a href="#">
-                <img src="images/img8.jpg" width="322" height="72" alt="image description"/>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <img src="images/img9.jpg" width="322" height="72" alt="image description"/>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <img src="images/img10.jpg" width="322" height="72" alt="image description"/>
-            </a>
-        </li>
-    </ul>
-</div>
-<div class="placeholder">
-    <a href="#"><img src="images/img11.png" width="109" height="21" alt="image description"/></a>
-    <a href="#"><img src="images/img12.png" width="81" height="20" alt="image description"/></a>
-    <a href="#"><img src="images/img13.png" width="106" height="20" alt="image description"/></a>
-    <a href="#"><img src="images/img14.png" width="120" height="20" alt="image description"/></a>
-    <a href="#"><img src="images/img15.png" width="88" height="20" alt="image description"/></a>
-</div>
+${include("inc/soclikes.httl")}
+${include("inc/partners.httl")}
 </div>
 <footer id="footer">
     ${include("inc/footer.httl")}

@@ -30,6 +30,7 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmImageAM implements AsmAttributeManager {
 
@@ -51,7 +52,7 @@ public class AsmImageAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
         return attr;
     }
 
@@ -143,7 +144,7 @@ public class AsmImageAM implements AsmAttributeManager {
         return res;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
                                         "width", "height",
@@ -153,7 +154,7 @@ public class AsmImageAM implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         attr.setEffectiveValue(val != null ? applyJSONAttributeValue(ctx, attr, val).toString() : null);
         return attr;
     }
@@ -212,7 +213,7 @@ public class AsmImageAM implements AsmAttributeManager {
     }
 
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
 
     }
 

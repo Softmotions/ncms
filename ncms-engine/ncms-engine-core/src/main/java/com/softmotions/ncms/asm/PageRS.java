@@ -213,7 +213,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @GET
     @Path("/edit/{id}")
-    public ObjectNode selectPageEdit(@Context HttpServletRequest req, @PathParam("id") Long id) {
+    public ObjectNode selectPageEdit(@Context HttpServletRequest req, @PathParam("id") Long id) throws Exception {
         ObjectNode res = mapper.createObjectNode();
         Asm page = adao.asmSelectById(id);
         if (page == null) {
@@ -302,7 +302,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public void savePage(@Context HttpServletRequest req,
                          @PathParam("id") Long id,
-                         ObjectNode data) {
+                         ObjectNode data) throws Exception {
 
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
         amCtx.setAsmId(id);
@@ -365,7 +365,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public ObjectNode setTemplate(@Context HttpServletRequest req,
                                   @PathParam("id") Long id,
-                                  @PathParam("templateId") Long templateId) {
+                                  @PathParam("templateId") Long templateId) throws Exception {
         Asm page = adao.asmSelectById(id);
         if (!pageSecurity.canEdit2(page, req)) {
             throw new ForbiddenException("");
@@ -487,7 +487,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         Long id = spec.hasNonNull("id") ? spec.get("id").asLong() : null;
         String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
         if (id == null || name == null || type == null ||
-            (!"page.folder".equals(type) && !"page".equals(type))) {
+            (!"page.folder".equals(type) && !"page".equals(type) && !"news.page".equals(type))) {
             throw new BadRequestException();
         }
 
@@ -1086,7 +1086,14 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @Subscribe
     public void onAsmModified(AsmModifiedEvent ev) {
-        clearCachedPage(ev.getId());
+
+        long cc = adao.asmChildrenCount(ev.getId());
+        if (cc == 0) {
+            clearCachedPage(ev.getId());
+        } else {
+            clearCache();
+        }
+
     }
 
     private void clearCachedPage(Long id) {
@@ -1095,6 +1102,13 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (p != null && p.getName() != null) {
                 pageGuid2Cache.remove(p.getName());
             }
+        }
+    }
+
+    private void clearCache() {
+        synchronized (pagesCache) {
+            pagesCache.clear();
+            pageGuid2Cache.clear();
         }
     }
 

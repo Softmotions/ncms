@@ -49,6 +49,7 @@ import java.util.Map;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @SuppressWarnings("unchecked")
 @Singleton
 public class AsmWebRefAM implements AsmAttributeManager {
@@ -63,7 +64,7 @@ public class AsmWebRefAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
         return attr;
     }
 
@@ -215,7 +216,7 @@ public class AsmWebRefAM implements AsmAttributeManager {
         }
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions opts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts,
                                         "asLocation");
@@ -224,12 +225,12 @@ public class AsmWebRefAM implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText().trim() : null);
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
 
     }
 

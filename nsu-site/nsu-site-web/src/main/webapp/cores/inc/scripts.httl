@@ -2,4 +2,5 @@
 <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="js/site.js"></script>
 <script type="text/javascript" src="js/jquery.placeholder.js"></script>
+<script type="text/javascript" src="fotorama/fotorama.js"></script>
 #end

@@ -28,6 +28,7 @@ import java.util.Map;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @Singleton
 public class AsmWikiAM implements AsmAttributeManager {
 
@@ -50,7 +51,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) {
+    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
         return attr;
     }
 
@@ -90,7 +91,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return html;
     }
 
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         if (attr.getOptions() != null) {
             asmOpts.loadOptions(attr.getOptions());
@@ -101,7 +102,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return attr;
     }
 
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         String value = val.has("value") ? val.get("value").asText() : null;
         String markup = val.has("markup") ? val.get("markup").asText() : "mediawiki";
         String html = null;
@@ -129,7 +130,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
 
     }
 }

@@ -5,6 +5,8 @@ import com.softmotions.weboot.mb.MBSqlSessionListener;
 import com.softmotions.weboot.mb.MBSqlSessionManager;
 
 import com.google.common.eventbus.AsyncEventBus;
+import com.google.common.eventbus.SubscriberExceptionContext;
+import com.google.common.eventbus.SubscriberExceptionHandler;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -23,8 +25,17 @@ public class EventsModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(EventsModule.class);
 
+    private static final NcmsSubscriberExceptionHandler EX_INSTANCE = new NcmsSubscriberExceptionHandler();
+
     protected void configure() {
         bind(NcmsEventBus.class).to(LocalEventBus.class).in(Singleton.class);
+    }
+
+    static class NcmsSubscriberExceptionHandler implements SubscriberExceptionHandler {
+        public void handleException(Throwable ex, SubscriberExceptionContext ctx) {
+            log.error("Could not dispatch event: " + ctx.getSubscriber() +
+                      " to " + ctx.getSubscriberMethod(), ex);
+        }
     }
 
     static class LocalEventBus extends AsyncEventBus implements NcmsEventBus {
@@ -38,7 +49,7 @@ public class EventsModule extends AbstractModule {
         @Inject
         LocalEventBus(NcmsConfiguration cfg,
                       MBSqlSessionManager sessionManager) {
-            super(Executors.newFixedThreadPool(cfg.impl().getInt("events.num-workers", 1)));
+            super(Executors.newFixedThreadPool(cfg.impl().getInt("events.num-workers", 1)), EX_INSTANCE);
             this.sessionManager = sessionManager;
         }
 

@@ -40,6 +40,6 @@ qx.Class.define("ncms.news.NewsNewDlg", {
     },
 
     destruct : function() {
-        //this._disposeObjects("__field_name");
+        this._id = null;
     }
 });

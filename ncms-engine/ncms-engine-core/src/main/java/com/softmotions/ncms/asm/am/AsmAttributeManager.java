@@ -18,7 +18,7 @@ public interface AsmAttributeManager {
 
     AsmAttribute prepareGUIAttribute(Asm page, Asm template,
                                      AsmAttribute tmplAttr,
-                                     AsmAttribute attr);
+                                     AsmAttribute attr) throws Exception;
 
     String[] prepareFulltextSearchData(AsmAttribute attr);
 
@@ -28,14 +28,14 @@ public interface AsmAttributeManager {
 
     AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx,
                                        AsmAttribute attr,
-                                       JsonNode val);
+                                       JsonNode val) throws Exception;
 
     AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx,
                                      AsmAttribute attr,
-                                     JsonNode val);
+                                     JsonNode val) throws Exception;
 
     void attributePersisted(AsmAttributeManagerContext ctx,
                             AsmAttribute attr,
-                            JsonNode val);
+                            JsonNode val) throws Exception;
 
 }

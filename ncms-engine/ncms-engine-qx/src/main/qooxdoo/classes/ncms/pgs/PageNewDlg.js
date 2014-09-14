@@ -47,6 +47,6 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
     },
 
     destruct : function() {
-        //this._disposeObjects("__field_name");                                
+        this._id = null;
     }
 });
