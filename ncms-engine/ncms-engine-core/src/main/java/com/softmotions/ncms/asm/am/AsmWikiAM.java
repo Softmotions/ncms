@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +57,15 @@ public class AsmWikiAM implements AsmAttributeManager {
     }
 
     public String[] prepareFulltextSearchData(AsmAttribute attr) {
-        // TODO:
-        return new String[0];
+        if (!StringUtils.isBlank(attr.getValue())) {
+            try {
+                JsonNode value = mapper.readTree(attr.getValue());
+                return new String[]{value.get("value").asText()};
+            } catch (IOException ignored) {
+                return ArrayUtils.EMPTY_STRING_ARRAY;
+            }
+        }
+        return ArrayUtils.EMPTY_STRING_ARRAY;
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
@@ -96,8 +104,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         if (attr.getOptions() != null) {
             asmOpts.loadOptions(attr.getOptions());
         }
-        JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
-                                        "markup");
+        JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts, "markup");
         attr.setOptions(asmOpts.toString());
         return attr;
     }

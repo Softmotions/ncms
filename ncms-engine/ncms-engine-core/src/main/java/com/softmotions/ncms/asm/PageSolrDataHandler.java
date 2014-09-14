@@ -52,7 +52,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
 
     public void init(Configuration cfg) {
         String[] attrs = cfg.getStringArray("extra-attributes");
-        if (attrs == null || (attrs.length == 1 && "*".equals(attrs[0]))) {
+        if (attrs == null || attrs.length == 0 ||  (attrs.length == 1 && "*".equals(attrs[0]))) {
             extraAttributeNames = null;
         } else {
             extraAttributeNames = new ArrayList<>();
