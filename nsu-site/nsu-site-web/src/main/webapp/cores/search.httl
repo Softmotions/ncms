@@ -1,3 +1,6 @@
+#if(results_only != null)
+    $!{include("inc/search_results.httl")}
+#else
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,7 +17,7 @@
             ${include("inc/breadcrumbs.httl")}
 
             <!-- TODO: search form -->
-            <form action="" class="search-form2">
+            <form action="" class="search-form2" id="spc-search-form">
                 <fieldset>
                     <div class="row">
                         <input name="spc.text" class="text" type="text" value="$!{search_query}" placeholder=""/>
@@ -28,8 +31,6 @@
                         <input type="radio" name="spc.scope" value="month" id="radio4" #if(search_scope == 'month')checked#end/>
                         <label class="radio" for="radio4">Последний месяц</label>
                     </div>
-
-                    <!-- TODO: categories -->
 
                     <div class="row">
                         #set(Integer ci = 1)
@@ -46,38 +47,13 @@
                     </div>
                 </fieldset>
             </form>
-            <ul class="news-list list2">
-                #set(Integer index = search_start)
-                #foreach(Asm pn in search_result)
-                #set(Integer index = index + 1)
-                <li>
-                    <div class="img-holder">
-                        #set(Image icon = pn.asm("icon"))
-                        #if(icon != null)
-                        <img src="$!{icon.link}" alt="${pn.hname}" width="81" height="68"/>
-                        #end
-                        #set(Date event_date = asm(pn, "event_date"))
-                        <span class="date">${event_date.format2("dd")}</span>
-                        <span class="mounth">${event_date.format2("LMMMMM")}</span>
-                        <span class="year">${event_date.format2("yyyy")}</span>
-                    </div>
-                    <div class="text-holder">
-                        <h3><a href="$!{pn.link}">${pn.hname}</a></h3>
-
-                        <p>${pn.asm("annotation")}</p>
-                        #if(pn.isHasAttribute("subcategory"))
-                        #foreach(SelectNode sn in pn.asm("subcategory"))
-                        <span class="tag">${sn.key}</span>
-                        #end
-                        #end
-                    </div>
-                </li>
-                #if(index % 2 ==  0)
-                <br clear="all"/>
-                #end
-                #end
-                <!-- TODO: загрузить ещё -->
+            <ul id="spc-search-results" class="news-list list2">
+                $!{include("inc/search_results.httl")}
             </ul>
+            <!-- TODO: загрузить ещё -->
+            <a class="fetch-more" id="spc-fetch-more" style="display: none"><span>Загрузить еще</span></a>
+            ${include("inc/soclikes.httl")}
+            ${include("inc/partners.httl")}
         </div>
 
         <footer id="footer">
@@ -86,5 +62,9 @@
     </div>
 </div>
 $!{include("inc/scripts.httl")}
+<script>
+    initSearch($!{search_limit});
+</script>
 </body>
 </html>
+#end

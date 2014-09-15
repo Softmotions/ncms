@@ -50,6 +50,21 @@ public class SearchNewsController implements AsmController {
     }
 
     public boolean execute(AsmRendererContext ctx) throws Exception {
+        prepare(ctx);
+
+        HttpServletRequest req = ctx.getServletRequest();
+
+        String action = req.getParameter("spc.action");
+        if ("search".equals(action)) {
+            ctx.put("results_only", true);
+        }
+
+        doSearch(ctx);
+
+        return false;
+    }
+
+    private void prepare(AsmRendererContext ctx) {
         HttpServletRequest req = ctx.getServletRequest();
 
         int offset = 0;
@@ -69,13 +84,8 @@ public class SearchNewsController implements AsmController {
         }
         ctx.put("search_limit", limit);
 
-        ModifiableSolrParams params = new ModifiableSolrParams();
-
-        // поисковая строка. если поисковая строка пустая - используем поиска по всем, иначе на всякий случай эскейпим спец символы
         String text = req.getParameter("spc.text");
         ctx.put("search_query", text);
-        text = StringUtils.isBlank(text) ? "*" : text; //QueryParser.escape(text);
-        params.add(CommonParams.Q, text);
 
         // TODO: time scopes?
         List<String> timeScopes = Arrays.asList("all", "year", "half-year", "month");
@@ -83,10 +93,9 @@ public class SearchNewsController implements AsmController {
         String timeScope = req.getParameter("spc.scope");
         timeScope = StringUtils.isBlank(timeScope) || !timeScopes.contains(timeScope) ? timeScopes.get(0) : timeScope;
         ctx.put("search_scope", timeScope);
-        // TODO use time scope
 
-        Collection<String> selectedCategories = new ArrayList<>();
         Collection<Pair<String, Boolean>> categories = new ArrayList<>();
+        Collection<String> selectedCategories = new ArrayList<>();
         Object cObj = ctx.getRenderer().renderAsmAttribute(ctx, "categories", Collections.EMPTY_MAP);
         if (cObj instanceof Collection) {
             String[] categoryNames = req.getParameterValues("spc.category");
@@ -107,9 +116,22 @@ public class SearchNewsController implements AsmController {
             }
         }
         ctx.put("search_categories", categories);
+        ctx.put("search_categories_selected", selectedCategories);
+    }
 
+    private void doSearch(AsmRendererContext ctx) throws Exception {
+        ModifiableSolrParams params = new ModifiableSolrParams();
+
+        // поисковая строка. если поисковая строка пустая - используем поиска по всем, иначе на всякий случай эскейпим спец символы
+        String text = (String) ctx.get("search_query");
+        text = StringUtils.isBlank(text) ? "*" : QueryParser.escape(text);
+        params.add(CommonParams.Q, text);
+
+        // TODO use time scope
+
+        Collection<String> selectedCategories = (Collection<String>) ctx.get("search_categories_selected");
         String categoriesFQ = "";
-        if (!selectedCategories.isEmpty()) {
+        if (selectedCategories != null && !selectedCategories.isEmpty()) {
             CollectionUtils.transform(selectedCategories, new Transformer() {
                 public Object transform(Object input) {
                     return "asm_attr_subcategory:" + QueryParser.escape(String.valueOf(input));
@@ -122,15 +144,18 @@ public class SearchNewsController implements AsmController {
         // фильтр на только новости
         params.add(CommonParams.FQ, "+type:news* +published:true" + categoriesFQ);
 
+        // пэйджинг
+        int offset = ctx.get("search_start") != null ? (int) ctx.get("search_start") : 0;
+        params.add(CommonParams.START, String.valueOf(offset));
+        int limit = ctx.get("search_limit") != null ? (int) ctx.get("search_limit") : DEFAULT_MAX_RESULTS;
+        params.add(CommonParams.ROWS, String.valueOf(limit));
+
         // нам нужны только поля:
         //  id - идентификатор
         //  score - "баллы" поиска, для сортировки по релевантности
         params.add(CommonParams.FL, "id,score");
         // выставляем сортировку по релевантности
         params.add(CommonParams.SORT, "score desc");
-        // пэйджинг
-        params.add(CommonParams.START, String.valueOf(offset));
-        params.add(CommonParams.ROWS, String.valueOf(limit));
 
         QueryResponse queryResponse = solr.query(params);
         SolrDocumentList results = queryResponse.getResults();
@@ -142,7 +167,5 @@ public class SearchNewsController implements AsmController {
         }
 
         ctx.put("search_result", asms);
-
-        return false;
     }
 }

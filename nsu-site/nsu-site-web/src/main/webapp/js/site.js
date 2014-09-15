@@ -694,3 +694,50 @@ $.fn.radio = function(o) {
 		throw Error('радиокнопка/и уже проинициализирована/ы');
 	}
 }
+
+function initSearch(pageSize) {
+    var spc = window._ncms_spc = {
+        form : $('form#spc-search-form'),
+        results : $('ul#spc-search-results'),
+        fetchMore : $('a#spc-fetch-more'),
+        start : 0,
+        pageSize : pageSize || 1
+    };
+
+    spc.form.submit(function() {
+        doSearch(true);
+        return false;
+    });
+    spc.fetchMore.click(function() {
+        doSearch(false);
+        return false;
+    });
+    updateSearchButtons();
+}
+
+function doSearch(reset) {
+    var spc = window._ncms_spc;
+    spc.start = reset ? 0 : (spc.start || 0) + spc.pageSize;
+    var fdata = spc.form.serializeArray();
+    fdata.push({name: "spc.action", value: "search"});
+    fdata.push({name: "spc.start", value : spc.start});
+    fdata.push({name: "spc.limit", value : spc.pageSize});
+    $.post(spc.form.action, fdata).done(function(data){
+        if (reset) {
+            spc.results.html(data);
+        } else {
+            spc.results.append(data);
+        }
+        updateSearchButtons();
+    });
+
+    updateSearchButtons();
+}
+
+function updateSearchButtons() {
+    var spc = window._ncms_spc;
+    spc.fetchMore.hide();
+    if ($('ul#spc-search-results li').size() >= ((spc.start || 0) + spc.pageSize)) {
+        spc.fetchMore.show()
+    }
+}
