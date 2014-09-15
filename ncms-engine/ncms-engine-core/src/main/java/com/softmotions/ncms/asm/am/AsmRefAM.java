@@ -49,8 +49,8 @@ public class AsmRefAM implements AsmAttributeManager {
         return attr;
     }
 
-    public String[] prepareFulltextSearchData(AsmAttribute attr) {
-        return ArrayUtils.EMPTY_STRING_ARRAY;
+    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+        return null;
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {

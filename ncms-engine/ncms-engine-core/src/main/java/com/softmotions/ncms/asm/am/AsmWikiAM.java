@@ -56,16 +56,16 @@ public class AsmWikiAM implements AsmAttributeManager {
         return attr;
     }
 
-    public String[] prepareFulltextSearchData(AsmAttribute attr) {
+    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
         if (!StringUtils.isBlank(attr.getValue())) {
             try {
                 JsonNode value = mapper.readTree(attr.getValue());
                 return new String[]{value.get("value").asText()};
             } catch (IOException ignored) {
-                return ArrayUtils.EMPTY_STRING_ARRAY;
+                return null;
             }
         }
-        return ArrayUtils.EMPTY_STRING_ARRAY;
+        return null;
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {

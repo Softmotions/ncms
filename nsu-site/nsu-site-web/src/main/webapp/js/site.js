@@ -717,17 +717,18 @@ function initSearch(pageSize) {
 
 function doSearch(reset) {
     var spc = window._ncms_spc;
+
+    if (reset) {
+        spc.results.html(null);
+    }
+
     spc.start = reset ? 0 : (spc.start || 0) + spc.pageSize;
     var fdata = spc.form.serializeArray();
     fdata.push({name: "spc.action", value: "search"});
     fdata.push({name: "spc.start", value : spc.start});
     fdata.push({name: "spc.limit", value : spc.pageSize});
     $.post(spc.form.action, fdata).done(function(data){
-        if (reset) {
-            spc.results.html(data);
-        } else {
-            spc.results.append(data);
-        }
+        spc.results.append(data);
         updateSearchButtons();
     });
 

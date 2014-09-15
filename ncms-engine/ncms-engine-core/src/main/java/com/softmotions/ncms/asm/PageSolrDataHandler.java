@@ -12,6 +12,7 @@ import com.google.common.collect.AbstractIterator;
 import com.google.common.eventbus.Subscribe;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.common.SolrInputDocument;
@@ -41,6 +42,8 @@ public class PageSolrDataHandler implements SolrDataHandler {
     private final AsmDAO adao;
 
     Collection<String> extraAttributeNames;
+
+    private int index = 0;
 
     @Inject
     public PageSolrDataHandler(AsmAttributeManagersRegistry aamr, NcmsEventBus ebus, SolrServer solr, AsmDAO adao) {
@@ -95,16 +98,21 @@ public class PageSolrDataHandler implements SolrDataHandler {
         res.addField("description", asm.getDescription());
         res.addField("published", asm.isPublished());
         res.addField("type", asm.getType());
+        res.addField("cdate", asm.getCdate().getTime());
+        res.addField("mdate", asm.getMdate().getTime());
 
         for (String attrName : extraAttributeNames == null ? asm.getEffectiveAttributeNames() : extraAttributeNames) {
             AsmAttribute attr = asm.getEffectiveAttribute(attrName);
             if (attr != null) {
                 AsmAttributeManager aam = aamr.getByType(attr.getType());
                 if (aam != null) {
-                    String[] strings = aam.prepareFulltextSearchData(attr);
-                    for (String string : strings) {
-                        if (string != null) {
-                            res.addField("asm_attr_" + attrName, string);
+                    Object[] data = aam.prepareFulltextSearchData(attr);
+                    if (data != null) {
+                        for (Object obj : data) {
+                            String suff = getFieldSuffixByObject(obj);
+                            if (obj != null) {
+                                res.addField("asm_attr_" + suff + "_" + attrName, obj);
+                            }
                         }
                     }
                 }
@@ -117,6 +125,17 @@ public class PageSolrDataHandler implements SolrDataHandler {
 
         return res;
     }
+
+    private String getFieldSuffixByObject(Object obj) {
+        if (obj instanceof Long || obj instanceof Integer) {
+            return "l";
+        } else if (obj instanceof Boolean) {
+            return "b";
+        } else {
+            return "s";
+        }
+    }
+
 
     @Subscribe
     public void onAsmCreate(AsmCreatedEvent e) {

@@ -12,9 +12,13 @@
     <!-- asm fileds -->
     <field name="name" type="text_general" indexed="true" stored="true" multiValued="false"/>
     <field name="description" type="text_general" indexed="true" stored="true" multiValued="false"/>
+    <field name="cdate" type="long" indexed="true" stored="true" multiValued="false"/>
+    <field name="mdate" type="long" indexed="true" stored="true" multiValued="false"/>
 
     <!-- dynamic fields for asm attrs -->
-    <dynamicField name="asm_attr_*" type="text_general" indexed="true" stored="true" multiValued="true"/>
+    <dynamicField name="asm_attr_s_*" type="text_general" indexed="true" stored="true" multiValued="true"/>
+    <dynamicField name="asm_attr_l_*" type="long" indexed="true" stored="true" multiValued="true"/>
+    <dynamicField name="asm_attr_b_*" type="bool" indexed="true" stored="true" multiValued="true"/>
 
     <!-- default search field-->
     <field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
@@ -22,7 +26,10 @@
 
     <!--copy text fields to default search -->
     <copyField source="name" dest="text"/>
-    <copyField source="asm_attr_*" dest="text"/>
+    <copyField source="description" dest="text"/>
+    <!--<copyField source="asm_attr_*" dest="text"/>-->
+    <copyField source="asm_attr_s_annotation" dest="text"/>
+    <copyField source="asm_attr_s_content" dest="text"/>
 
     <!-- field to use to determine and enforce document uniqueness. -->
     <uniqueKey>id</uniqueKey>

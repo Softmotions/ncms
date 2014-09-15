@@ -24,10 +24,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -39,9 +42,43 @@ public class SearchNewsController implements AsmController {
 
     private static final int DEFAULT_MAX_RESULTS = 20;
 
+    private static final Map<String, Callable<Pair<Date, Date>>> TIME_SCOPES;
+    private static final String DEFAULT_TIME_SCOPE = "all";
+
     private final AsmDAO adao;
 
     private final SolrServer solr;
+
+    static {
+        TIME_SCOPES = new HashMap<>();
+        TIME_SCOPES.put(DEFAULT_TIME_SCOPE, new Callable<Pair<Date, Date>>() {
+            public Pair<Date, Date> call() throws Exception {
+                return null;
+            }
+        });
+        // TODO: configure?
+        TIME_SCOPES.put("year", new Callable<Pair<Date, Date>>() {
+            public Pair<Date, Date> call() throws Exception {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.YEAR, -1);
+                return new Pair<>(cal.getTime(), null);
+            }
+        });
+        TIME_SCOPES.put("half-year", new Callable<Pair<Date, Date>>() {
+            public Pair<Date, Date> call() throws Exception {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, -6);
+                return new Pair<>(cal.getTime(), null);
+            }
+        });
+        TIME_SCOPES.put("month", new Callable<Pair<Date, Date>>() {
+            public Pair<Date, Date> call() throws Exception {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, -1);
+                return new Pair<>(cal.getTime(), null);
+            }
+        });
+    }
 
     @Inject
     public SearchNewsController(AsmDAO adao, SolrServer solr) {
@@ -87,11 +124,8 @@ public class SearchNewsController implements AsmController {
         String text = req.getParameter("spc.text");
         ctx.put("search_query", text);
 
-        // TODO: time scopes?
-        List<String> timeScopes = Arrays.asList("all", "year", "half-year", "month");
-
         String timeScope = req.getParameter("spc.scope");
-        timeScope = StringUtils.isBlank(timeScope) || !timeScopes.contains(timeScope) ? timeScopes.get(0) : timeScope;
+        timeScope = StringUtils.isBlank(timeScope) || !TIME_SCOPES.containsKey(timeScope) ? DEFAULT_TIME_SCOPE : timeScope;
         ctx.put("search_scope", timeScope);
 
         Collection<Pair<String, Boolean>> categories = new ArrayList<>();
@@ -127,14 +161,28 @@ public class SearchNewsController implements AsmController {
         text = StringUtils.isBlank(text) ? "*" : QueryParser.escape(text);
         params.add(CommonParams.Q, text);
 
-        // TODO use time scope
+        String timeScopeFQ = "";
+        String timeScopeName = (String) ctx.get("search_scope");
+        if (!StringUtils.isBlank(timeScopeName) && TIME_SCOPES.containsKey(timeScopeName)) {
+            Callable<Pair<Date, Date>> tsc = TIME_SCOPES.get(timeScopeName);
+            Pair<Date, Date> timeScope = tsc != null ? tsc.call() : null;
+            if (timeScope != null && (timeScope.getOne() != null || timeScope.getTwo() != null)) {
+                timeScopeFQ =
+                        " +cdate:" +
+                        "[" +
+                        (timeScope.getOne() == null ? "*" : String.valueOf(timeScope.getOne().getTime())) +
+                        " TO " +
+                        (timeScope.getTwo() == null ? "*" : String.valueOf(timeScope.getTwo().getTime())) +
+                        "]";
+            }
+        }
 
         Collection<String> selectedCategories = (Collection<String>) ctx.get("search_categories_selected");
         String categoriesFQ = "";
         if (selectedCategories != null && !selectedCategories.isEmpty()) {
             CollectionUtils.transform(selectedCategories, new Transformer() {
                 public Object transform(Object input) {
-                    return "asm_attr_subcategory:" + QueryParser.escape(String.valueOf(input));
+                    return "asm_attr_s_subcategory:" + QueryParser.escape(String.valueOf(input));
                 }
             });
 
@@ -142,7 +190,7 @@ public class SearchNewsController implements AsmController {
         }
 
         // фильтр на только новости
-        params.add(CommonParams.FQ, "+type:news* +published:true" + categoriesFQ);
+        params.add(CommonParams.FQ, "+type:news* +published:true" + categoriesFQ + timeScopeFQ);
 
         // пэйджинг
         int offset = ctx.get("search_start") != null ? (int) ctx.get("search_start") : 0;

@@ -58,8 +58,8 @@ public class AsmRichRefAM implements AsmAttributeManager {
         return attr;
     }
 
-    public String[] prepareFulltextSearchData(AsmAttribute attr) {
-        return ArrayUtils.EMPTY_STRING_ARRAY;
+    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+        return null;
     }
 
     public RichRef renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) throws AsmRenderingException {

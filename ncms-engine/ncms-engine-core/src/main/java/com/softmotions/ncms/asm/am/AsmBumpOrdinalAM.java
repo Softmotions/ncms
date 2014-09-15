@@ -34,8 +34,8 @@ public class AsmBumpOrdinalAM extends AsmBooleanAM {
         return TYPES;
     }
 
-    public String[] prepareFulltextSearchData(AsmAttribute attr) {
-        return ArrayUtils.EMPTY_STRING_ARRAY;
+    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+        return null;
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {

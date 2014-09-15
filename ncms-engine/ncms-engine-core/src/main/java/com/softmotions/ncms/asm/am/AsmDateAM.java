@@ -47,9 +47,13 @@ public class AsmDateAM implements AsmAttributeManager {
         return attr;
     }
 
-    // TODO: date for lucene
-    public String[] prepareFulltextSearchData(AsmAttribute attr) {
-        return ArrayUtils.EMPTY_STRING_ARRAY;
+    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+        try {
+            return new Long[]{Long.parseLong(attr.getEffectiveValue())};
+        } catch (NumberFormatException ignored) {
+        }
+
+        return null;
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {

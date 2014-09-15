@@ -152,11 +152,11 @@ public class AsmSelectAM implements AsmAttributeManager {
         return attr;
     }
 
-    public String[] prepareFulltextSearchData(AsmAttribute attr) {
+    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
         String value = attr.getEffectiveValue();
 
         if (StringUtils.isEmpty(value)) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return null;
         }
 
         Collection<String> items = new ArrayList<>();
