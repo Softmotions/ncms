@@ -37,12 +37,12 @@
     <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
         <analyzer type="index">
             <tokenizer class="solr.StandardTokenizerFactory"/>
+            <filter class="solr.SnowballPorterFilterFactory" language="Russian"/>
             <filter class="solr.LowerCaseFilterFactory"/>
             <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="15"/>
             <filter class="solr.ReverseStringFilterFactory" />
             <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="15"/>
             <filter class="solr.ReverseStringFilterFactory" />
-            <filter class="solr.SnowballPorterFilterFactory" language="Russian"/>
         </analyzer>
         <analyzer type="query">
             <tokenizer class="solr.StandardTokenizerFactory"/>

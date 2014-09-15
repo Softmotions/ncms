@@ -5,10 +5,14 @@ import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.mhttl.SelectNode;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
@@ -22,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -55,24 +60,24 @@ public class SearchNewsController implements AsmController {
             offset = !StringUtils.isBlank(offsetStr) ? Integer.parseInt(offsetStr) : offset;
         } catch (NumberFormatException ignored) {
         }
+        ctx.put("search_start", offset);
 
         String limitStr = req.getParameter("spc.limit");
         try {
             limit = !StringUtils.isBlank(limitStr) ? Integer.parseInt(limitStr) : limit;
         } catch (NumberFormatException ignored) {
         }
+        ctx.put("search_limit", limit);
 
         ModifiableSolrParams params = new ModifiableSolrParams();
 
-        // фильтр на только новости
-        // TODO: configure types for search?
-        params.add(CommonParams.FQ, "+type:news* +published:true");
         // поисковая строка. если поисковая строка пустая - используем поиска по всем, иначе на всякий случай эскейпим спец символы
         String text = req.getParameter("spc.text");
         ctx.put("search_query", text);
         text = StringUtils.isBlank(text) ? "*" : text; //QueryParser.escape(text);
         params.add(CommonParams.Q, text);
 
+        // TODO: time scopes?
         List<String> timeScopes = Arrays.asList("all", "year", "half-year", "month");
 
         String timeScope = req.getParameter("spc.scope");
@@ -80,6 +85,42 @@ public class SearchNewsController implements AsmController {
         ctx.put("search_scope", timeScope);
         // TODO use time scope
 
+        Collection<String> selectedCategories = new ArrayList<>();
+        Collection<Pair<String, Boolean>> categories = new ArrayList<>();
+        Object cObj = ctx.getRenderer().renderAsmAttribute(ctx, "categories", Collections.EMPTY_MAP);
+        if (cObj instanceof Collection) {
+            String[] categoryNames = req.getParameterValues("spc.category");
+            for (SelectNode category : (Iterable<SelectNode>) cObj) {
+                boolean selected = false;
+                if (categoryNames != null) {
+                    for (String categoryName : categoryNames) {
+                        if (category.getValue().equals(categoryName)) {
+                            selected = true;
+                            break;
+                        }
+                    }
+                }
+                categories.add(new Pair<>(category.getValue(), selected));
+                if (selected) {
+                    selectedCategories.add(category.getValue());
+                }
+            }
+        }
+        ctx.put("search_categories", categories);
+
+        String categoriesFQ = "";
+        if (!selectedCategories.isEmpty()) {
+            CollectionUtils.transform(selectedCategories, new Transformer() {
+                public Object transform(Object input) {
+                    return "asm_attr_subcategory:" + QueryParser.escape(String.valueOf(input));
+                }
+            });
+
+            categoriesFQ = " +(" + StringUtils.join(selectedCategories, " ") + ")";
+        }
+
+        // фильтр на только новости
+        params.add(CommonParams.FQ, "+type:news* +published:true" + categoriesFQ);
 
         // нам нужны только поля:
         //  id - идентификатор

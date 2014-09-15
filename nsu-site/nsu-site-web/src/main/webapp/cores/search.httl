@@ -33,9 +33,9 @@
 
                     <div class="row">
                         #set(Integer ci = 1)
-                        #foreach(SelectNode category in asm("categories"))
-                        <input type="checkbox" id="check${ci}"/>
-                        <label for="check${ci}">${category.value}</label>
+                        #foreach(Pair category in search_categories)
+                        <input type="checkbox" id="check${ci}" name="spc.category" value="${category.one}" #if(category.two == true)checked#end/>
+                        <label for="check${ci}">${category.one}</label>
                         #set(Integer ci = ci + 1)
                         #end
                         <!--<select>-->
@@ -47,7 +47,9 @@
                 </fieldset>
             </form>
             <ul class="news-list list2">
+                #set(Integer index = search_start)
                 #foreach(Asm pn in search_result)
+                #set(Integer index = index + 1)
                 <li>
                     <div class="img-holder">
                         #set(Image icon = pn.asm("icon"))
@@ -70,7 +72,11 @@
                         #end
                     </div>
                 </li>
+                #if(index % 2 ==  0)
+                <br clear="all"/>
                 #end
+                #end
+                <!-- TODO: загрузить ещё -->
             </ul>
         </div>
 
