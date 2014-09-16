@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public class AsmBumpOrdinalAM extends AsmBooleanAM {
         return TYPES;
     }
 
-    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+    public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
 

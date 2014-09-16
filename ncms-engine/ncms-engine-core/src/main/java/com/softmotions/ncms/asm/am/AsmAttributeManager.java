@@ -20,7 +20,7 @@ public interface AsmAttributeManager {
                                      AsmAttribute tmplAttr,
                                      AsmAttribute attr) throws Exception;
 
-    Object[] prepareFulltextSearchData(AsmAttribute attr);
+    Object[] fetchFTSData(AsmAttribute attr);
 
     Object renderAsmAttribute(AsmRendererContext ctx,
                               String attrname,

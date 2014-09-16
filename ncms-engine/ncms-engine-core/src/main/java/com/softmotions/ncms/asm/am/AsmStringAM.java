@@ -30,7 +30,7 @@ public class AsmStringAM implements AsmAttributeManager {
         return attr;
     }
 
-    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+    public Object[] fetchFTSData(AsmAttribute attr) {
         return new String[]{attr.getEffectiveValue()};
     }
 

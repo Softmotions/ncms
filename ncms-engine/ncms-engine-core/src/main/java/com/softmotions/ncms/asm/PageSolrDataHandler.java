@@ -106,7 +106,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
             if (attr != null) {
                 AsmAttributeManager aam = aamr.getByType(attr.getType());
                 if (aam != null) {
-                    Object[] data = aam.prepareFulltextSearchData(attr);
+                    Object[] data = aam.fetchFTSData(attr);
                     if (data != null) {
                         for (Object obj : data) {
                             String suff = getFieldSuffixByObject(obj);

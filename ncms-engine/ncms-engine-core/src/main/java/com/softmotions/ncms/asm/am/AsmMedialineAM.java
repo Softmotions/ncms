@@ -27,7 +27,6 @@ import com.google.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,7 +109,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         return attr;
     }
 
-    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+    public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
 

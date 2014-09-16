@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return attr;
     }
 
-    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+    public Object[] fetchFTSData(AsmAttribute attr) {
         if (!StringUtils.isBlank(attr.getValue())) {
             try {
                 JsonNode value = mapper.readTree(attr.getValue());

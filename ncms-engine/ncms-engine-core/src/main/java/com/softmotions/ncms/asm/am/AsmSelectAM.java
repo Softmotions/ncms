@@ -21,7 +21,6 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -152,7 +151,7 @@ public class AsmSelectAM implements AsmAttributeManager {
         return attr;
     }
 
-    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+    public Object[] fetchFTSData(AsmAttribute attr) {
         String value = attr.getEffectiveValue();
 
         if (StringUtils.isEmpty(value)) {

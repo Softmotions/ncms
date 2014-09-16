@@ -45,7 +45,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
         return attr;
     }
 
-    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+    public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
 

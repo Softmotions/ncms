@@ -36,7 +36,7 @@ public class AsmBooleanAM implements AsmAttributeManager {
         return attr;
     }
 
-    public Object[] prepareFulltextSearchData(AsmAttribute attr) {
+    public Object[] fetchFTSData(AsmAttribute attr) {
         return new Boolean[]{BooleanUtils.toBooleanObject(attr.getEffectiveValue())};
     }
 
