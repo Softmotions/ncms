@@ -10,6 +10,11 @@
         </encoder>
     </appender>
 
+    <logger name="org.apache.solr.update.processor.LogUpdateProcessor" level="WARN"/>
+    <logger name="org.apache.solr.core.SolrCore" level="WARN"/>
+    <logger name="org.apache.solr.search.SolrIndexSearcher" level="WARN"/>
+    <logger name="org.apache.solr.update.UpdateHandler" level="WARN"/>
+
     <logger name="com.softmotions.commons.web" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.render" level="DEBUG"/>
     <logger name="com.softmotions.ncms.media" level="INFO"/>
