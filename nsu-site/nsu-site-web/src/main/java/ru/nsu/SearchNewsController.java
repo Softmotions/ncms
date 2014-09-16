@@ -161,6 +161,7 @@ public class SearchNewsController implements AsmController {
         text = StringUtils.isBlank(text) ? "*" : QueryParser.escape(text);
         params.add(CommonParams.Q, text);
 
+        // фильтр на дату создания новости
         String timeScopeFQ = "";
         String timeScopeName = (String) ctx.get("search_scope");
         if (!StringUtils.isBlank(timeScopeName) && TIME_SCOPES.containsKey(timeScopeName)) {
@@ -177,8 +178,9 @@ public class SearchNewsController implements AsmController {
             }
         }
 
-        Collection<String> selectedCategories = (Collection<String>) ctx.get("search_categories_selected");
+        // фильтр на категорию новости
         String categoriesFQ = "";
+        Collection<String> selectedCategories = (Collection<String>) ctx.get("search_categories_selected");
         if (selectedCategories != null && !selectedCategories.isEmpty()) {
             CollectionUtils.transform(selectedCategories, new Transformer() {
                 public Object transform(Object input) {
@@ -189,7 +191,7 @@ public class SearchNewsController implements AsmController {
             categoriesFQ = " +(" + StringUtils.join(selectedCategories, " ") + ")";
         }
 
-        // фильтр на только новости
+        // фильтр: только опубликованные новости с нужной категорией (если указано) и за выбранный период (если указан)
         params.add(CommonParams.FQ, "+type:news* +published:true" + categoriesFQ + timeScopeFQ);
 
         // пэйджинг
@@ -208,7 +210,6 @@ public class SearchNewsController implements AsmController {
         QueryResponse queryResponse = solr.query(params);
         SolrDocumentList results = queryResponse.getResults();
 
-        // TODO: переписать на селект типа: id IN (:ids)
         Collection<Asm> asms = new ArrayList<>(results.size());
         for (SolrDocument document : results) {
             asms.add(adao.asmSelectById(Long.valueOf(String.valueOf(document.getFieldValue("id")))));
