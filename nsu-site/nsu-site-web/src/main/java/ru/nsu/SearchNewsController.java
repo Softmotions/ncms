@@ -203,9 +203,10 @@ public class SearchNewsController implements AsmController {
         // нам нужны только поля:
         //  id - идентификатор
         //  score - "баллы" поиска, для сортировки по релевантности
-        params.add(CommonParams.FL, "id,score");
-        // выставляем сортировку по релевантности
-        params.add(CommonParams.SORT, "score desc");
+        //  cdate - дата создания
+        params.add(CommonParams.FL, "id,score,cdate");
+        // выставляем сортировку по релевантности и дате создания
+        params.add(CommonParams.SORT, "score desc, cdate desc");
 
         QueryResponse queryResponse = solr.query(params);
         SolrDocumentList results = queryResponse.getResults();
