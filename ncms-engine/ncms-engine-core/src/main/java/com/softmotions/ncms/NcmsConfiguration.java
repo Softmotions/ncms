@@ -1,19 +1,12 @@
 package com.softmotions.ncms;
 
-import com.softmotions.commons.io.DirUtils;
 import com.softmotions.weboot.WBConfiguration;
-import com.softmotions.weboot.lifecycle.Dispose;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Properties;
 
 /**
@@ -23,15 +16,11 @@ import java.util.Properties;
  */
 public class NcmsConfiguration extends WBConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(NcmsConfiguration.class);
-
     public static volatile NcmsConfiguration INSTANCE;
 
+    private static final String CORE_PROPS_LOCATION = "/com/softmotions/ncms/core/Core.properties";
+
     private final Properties coreProps;
-
-    private File tmpdir;
-
-    private ServletContext servletContext;
 
     public String getNcmsVersion() {
         return coreProps.getProperty("project.version");
@@ -45,14 +34,11 @@ public class NcmsConfiguration extends WBConfiguration {
                 }
             }
         }
-        String res = "/com/softmotions/ncms/core/Core.properties";
-        InputStream is =
-                getClass().getResourceAsStream(res);
-        if (is == null) {
-            throw new RuntimeException("Jar resource not found: " + res);
-        }
         coreProps = new Properties();
-        try {
+        try (InputStream is = getClass().getResourceAsStream(CORE_PROPS_LOCATION)) {
+            if (is == null) {
+                throw new RuntimeException("Jar resource not found: " + CORE_PROPS_LOCATION);
+            }
             coreProps.load(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -61,18 +47,6 @@ public class NcmsConfiguration extends WBConfiguration {
 
     public void load(String location, ServletContext sctx) {
         super.load(location, sctx);
-        this.servletContext = sctx;
-        String dir = xcfg.getString("tmpdir");
-        if (StringUtils.isBlank(dir)) {
-            dir = System.getProperty("java.io.tmpdir");
-        }
-        tmpdir = new File(dir);
-        log.info("Using TMP dir: " + tmpdir.getAbsolutePath());
-        try {
-            DirUtils.ensureDir(tmpdir, true);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         normalizePrefix("site-root");
         normalizePrefix("ncms-prefix");
     }
@@ -126,53 +100,6 @@ public class NcmsConfiguration extends WBConfiguration {
         return etype;
     }
 
-    /**
-     * System-wide tmp dir.
-     */
-    public File getTmpdir() {
-        return tmpdir;
-    }
-
-    /**
-     * Tmp dir cleared on application shutdown.
-     */
-    public File getSessionTmpdir() {
-        synchronized (this) {
-            if (sessionTmpDir == null) {
-                try {
-                    sessionTmpDir = Files.createTempDirectory("ncms-").toFile();
-                } catch (IOException e) {
-                    log.error("", e);
-                }
-            }
-        }
-        return sessionTmpDir;
-    }
-
-    public ServletContext getServletContext() {
-        return servletContext;
-    }
-
-    private File sessionTmpDir;
-
-    public String substitutePath(String path) {
-        String webappPath = getServletContext().getRealPath("/");
-        if (webappPath != null) {
-            if (webappPath.endsWith("/")) {
-                webappPath = webappPath.substring(0, webappPath.length() - 1);
-            }
-            path = path.replace("{webapp}", webappPath);
-        }
-        path = path.replace("{cwd}", System.getProperty("user.dir"))
-                .replace("{home}", System.getProperty("user.home"))
-                .replace("{tmp}", getTmpdir().getAbsolutePath());
-
-        if (path.contains("{newtmp}")) {
-            path = path.replace("{newtmp}", getSessionTmpdir().getAbsolutePath());
-        }
-        return path;
-    }
-
     public String getAsmLink(String guid) {
         return getServletContext().getContextPath() + getNcmsPrefix() + "/asm/" + guid;
     }
@@ -197,19 +124,6 @@ public class NcmsConfiguration extends WBConfiguration {
             return getAsmLink(spec.substring("page:".length()));
         } else {
             return getAsmLink(spec);
-        }
-    }
-
-    @Dispose(order = 1)
-    public void dispose() {
-        synchronized (this) {
-            if (sessionTmpDir != null) {
-                try {
-                    FileUtils.deleteDirectory(sessionTmpDir);
-                } catch (IOException e) {
-                    log.error("", e);
-                }
-            }
         }
     }
 }

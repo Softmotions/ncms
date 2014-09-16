@@ -36,12 +36,12 @@ import java.util.concurrent.Callable;
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
+@SuppressWarnings("unchecked")
 public class SearchNewsController implements AsmController {
 
     private static final Logger log = LoggerFactory.getLogger(SearchNewsController.class);
 
     private static final int DEFAULT_MAX_RESULTS = 20;
-
     private static final Map<String, Callable<Pair<Date, Date>>> TIME_SCOPES;
     private static final String DEFAULT_TIME_SCOPE = "all";
 
@@ -88,16 +88,12 @@ public class SearchNewsController implements AsmController {
 
     public boolean execute(AsmRendererContext ctx) throws Exception {
         prepare(ctx);
-
         HttpServletRequest req = ctx.getServletRequest();
-
         String action = req.getParameter("spc.action");
         if ("search".equals(action)) {
             ctx.put("results_only", true);
         }
-
         doSearch(ctx);
-
         return false;
     }
 

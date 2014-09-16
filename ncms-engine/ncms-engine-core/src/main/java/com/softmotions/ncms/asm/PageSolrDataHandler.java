@@ -12,7 +12,6 @@ import com.google.common.collect.AbstractIterator;
 import com.google.common.eventbus.Subscribe;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.common.SolrInputDocument;
@@ -96,9 +95,12 @@ public class PageSolrDataHandler implements SolrDataHandler {
         res.addField("description", asm.getDescription());
         res.addField("published", asm.isPublished());
         res.addField("type", asm.getType());
-        res.addField("cdate", asm.getCdate().getTime());
-        res.addField("mdate", asm.getMdate().getTime());
-
+        if (asm.getCdate() != null) {
+            res.addField("cdate", asm.getCdate().getTime());
+        }
+        if (asm.getMdate() != null) {
+            res.addField("mdate", asm.getMdate().getTime());
+        }
         for (String attrName : extraAttributeNames == null ? asm.getEffectiveAttributeNames() : extraAttributeNames) {
             AsmAttribute attr = asm.getEffectiveAttribute(attrName);
             if (attr != null) {

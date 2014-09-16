@@ -33,9 +33,9 @@
         JDBC.password=${nsu.JDBC.password}
     </mybatis>
 
-    <solr rebuildIndex="true">
+    <solr rebuildIndex="false">
         <provider class="com.softmotions.weboot.solr.EmbeddedSolrServerProvider" name="core">
-            <instance-dir>/home/tve/Projects/tmp/solr/</instance-dir>
+            <instance-dir>{home}/.nsusite/solr</instance-dir>
             <config>conf/nsu-solr-config.xml</config>
             <core-config>conf/nsu-solr-core-config.xml</core-config>
             <core-schema>conf/nsu-solr-core-schema.xml</core-schema>
