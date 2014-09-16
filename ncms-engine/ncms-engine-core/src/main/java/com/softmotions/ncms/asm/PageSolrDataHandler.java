@@ -41,9 +41,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
 
     private final AsmDAO adao;
 
-    Collection<String> extraAttributeNames;
-
-    private int index = 0;
+    private Collection<String> extraAttributeNames;
 
     @Inject
     public PageSolrDataHandler(AsmAttributeManagersRegistry aamr, NcmsEventBus ebus, SolrServer solr, AsmDAO adao) {
@@ -127,6 +125,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
     }
 
     private String getFieldSuffixByObject(Object obj) {
+        //noinspection ChainOfInstanceofChecks
         if (obj instanceof Long || obj instanceof Integer) {
             return "l";
         } else if (obj instanceof Boolean) {
