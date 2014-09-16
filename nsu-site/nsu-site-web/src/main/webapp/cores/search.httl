@@ -16,7 +16,6 @@
         <div id="main" class="search-page">
             ${include("inc/breadcrumbs.httl")}
 
-            <!-- TODO: search form -->
             <form action="" class="search-form2" id="spc-search-form">
                 <fieldset>
                     <div class="row">
