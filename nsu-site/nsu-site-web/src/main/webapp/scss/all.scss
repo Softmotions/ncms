@@ -1280,8 +1280,8 @@
     }
   }
 
+  @import "nav2";
   @import "tree";
-
   @import "page_index";
   @import "page_blog";
   @import "page_events";
@@ -1290,60 +1290,7 @@
   @import "page_search";
 }
 
-/*
-#main .accordion {
-  padding: 5px 0 0 2px;
-  margin: 0 0 29px;
-  list-style: none;
-  overflow: hidden;
-  font: 700 15px/18px $basic_font;
-}
-
-#main .accordion > li > a {
-  color: #1c1c1c;
-  background: url(../images/bg-plus.png) no-repeat 0 1px;
-  padding: 0 0 0 25px;
-}
-
-#main .accordion > li.active > a {
-  background: url(../images/bg-minus.png) no-repeat 0 1px;
-}
-
-#main .accordion li {
-  padding: 0;
-  margin: 0 0 10px;
-  overflow: hidden;
-}
-
-#main .accordion li:after {
-  display: none;
-}
-
-#main .accordion ul {
-  padding: 10px 0 0 46px;
-  margin: 0 0 -10px;
-  list-style: none;
-  position: relative;
-  font: 15px/18px $basic_font;
-  display: none;
-}
-
-#main .accordion .active ul {
-  display: block;
-}
-
-#main .accordion ul a {
-  color: #1c1c1c;
-  text-decoration: none;
-}
-
-#main .accordion ul a:hover {
-  text-decoration: underline;
-}
-*/
-
 @import "footer";
-
 @import "wiki";
 
 

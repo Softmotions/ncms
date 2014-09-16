@@ -1,4 +1,4 @@
-<div class="header-holder">
+<div class="nav-holder">
     <a href="#" class="link">link</a>
     <nav id="nav">
         ${include("menu.httl")}

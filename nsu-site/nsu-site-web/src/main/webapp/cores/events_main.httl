@@ -14,7 +14,7 @@
 <div id="wrapper">
 <div class="w1">
 <header id="header">
-    <div class="header-holder">
+    <div class="nav-holder">
         <a href="#" class="link">link</a>
         <nav id="nav">
             <ul>
