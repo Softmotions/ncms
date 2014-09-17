@@ -27,6 +27,20 @@
                         <input type="radio" name="spc.scope" value="month" id="radio4" #if(search_scope == 'month')checked#end/>
                         <label class="radio" for="radio4">Последний месяц</label>
                     </div>
+
+                    <div class="row">
+                        #set(Integer ci = 1)
+                        #foreach(Pair category in search_categories)
+                        <input type="checkbox" id="check${ci}" name="spc.category" value="${category.one}" #if(category.two == true)checked#end/>
+                        <label for="check${ci}">${category.one}</label>
+                        #set(Integer ci = ci + 1)
+                        #end
+                        <!--<select>-->
+                        <!--<option>Показать все рубрики</option>-->
+                        <!--<option>Показать все рубрики</option>-->
+                        <!--<option>Показать все рубрики</option>-->
+                        <!--</select>-->
+                    </div>
                 </fieldset>
             </form>
             <ul id="spc-search-results" class="news-list list2">

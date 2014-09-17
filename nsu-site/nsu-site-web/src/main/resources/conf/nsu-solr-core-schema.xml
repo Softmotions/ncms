@@ -5,8 +5,8 @@
     <field name="_version_" type="long" indexed="true" stored="true"/>
 
     <!-- general -->
-    <field name="id" type="string" indexed="true" stored="true" multiValued="false" required="true"/>
-    <field name="type" type="text_general" indexed="true" stored="true" multiValued="false"/>
+    <field name="id" type="long" indexed="true" stored="true" multiValued="false" required="true"/>
+    <field name="type" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="published" type="bool" indexed="true" stored="true" multiValued="false"/>
 
     <!-- asm fileds -->
