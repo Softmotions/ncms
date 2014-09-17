@@ -97,28 +97,29 @@ function initNav() {
     var _nav = $('#nav, #nav2');
     _nav.find('> ul > li > a').hover(function() {
         var _this = $(this);
-        if (_nav.find('> ul > li.active').length == 0) {
+        var _lnav = _this.closest('#nav, #nav2');
+        if (_lnav.find('> ul > li.active').length == 0) {
             return;
         }
         if (!_this.parent().hasClass("active")) {
-            $('#nav, #nav2').find('> ul > li.active').removeClass('active');
+            _lnav.find('> ul > li.active').removeClass('active');
             _this.parent().addClass('active');
-            $('.nav-holder').addClass('active');
-
+            _this.closest('.nav-holder').addClass('active');
         }
     }, function() {
 
     });
     _nav.find('> ul > li > a').click(function(event) {
         var _this = $(this);
+        var _lnav = _this.closest('#nav, #nav2');
         if (_this.parent().find('.slide-holder').size()) {
             if (!_this.parent().hasClass('active')) {
-                $('#nav, #nav2').find('> ul > li.active').removeClass('active');
+                _lnav.find('> ul > li.active').removeClass('active');
                 _this.parent().addClass('active');
-                $('.nav-holder').addClass('active');
+                _this.closest('.nav-holder').addClass('active');
             } else {
                 _this.parent().removeClass('active');
-                $('.nav-holder').removeClass('active');
+                _this.closest('.nav-holder').removeClass('active');
             }
             event.preventDefault();
         }
@@ -130,7 +131,7 @@ function initNav() {
         $('.nav-holder').removeClass('active');
         $('#nav, #nav2').find('> ul > li.active').removeClass('active');
         event.stopPropagation();
-    })
+    });
 }
 
 

@@ -1,14 +1,26 @@
 .nav-holder {
   position: relative;
-  padding: 12px 9999px 0;
-  margin: 0 -9999px;
-  background: #3395e1;
+  padding: 10px 10px 0;
+  margin: 0;
+  background: #fff;
+
+  ul {
+    overflow: visible !important;
+  }
+
+  li {
+    position: static;
+  }
+
+  li:after {
+    display: none;
+  }
 
   &.active {
     background: #fff;
     #nav2 {
-      margin: 0 0 4px;
-      border-bottom: 2px solid #e2e2e2;
+      margin: 0 0 2px;
+      /*border-bottom: 2px solid #e2e2e2;*/
       > ul {
         > li {
           &.active {
@@ -38,13 +50,13 @@
   #nav2 {
     float: left;
     width: 905px;
-    margin: 0 0 6px;
+    margin: 0 0 2px;
 
     ul {
       padding: 0;
       margin: 0;
       list-style: none;
-      font: 600 18px/22px $basic_sans_font;
+      font: 600 14px/18px $basic_sans_font;
 
       .slide-holder {
         position: absolute;
@@ -54,7 +66,7 @@
         background: #fff;
         width: 100%;
         z-index: 4;
-        @include box-shadow(0px 4px 4px 0px rgba(0, 0, 0, 0.15));
+        @include box-shadow(0px 0px 4px 0px rgba(0, 0, 0, 0.15));
 
         ul {
           padding: 0 0 0 21px;
@@ -67,7 +79,7 @@
           width: 132px;
 
           &:first-child {
-            margin: 0 0 0 51px;
+            margin: 0 0 0 31px;
             padding: 0;
             border: 0;
           }
@@ -96,6 +108,7 @@
 
     > ul {
       > li {
+        position: static;
         float: left;
         padding: 0 0 0 34px;
 
@@ -112,10 +125,10 @@
         }
 
         > a {
-          color: #fff;
+          color: #575757;
           display: inline-block;
           vertical-align: top;
-          padding: 0 0 11px;
+          padding: 0 0 8px;
           text-decoration: none;
         }
       }

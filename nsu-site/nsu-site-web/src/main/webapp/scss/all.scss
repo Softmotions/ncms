@@ -629,8 +629,7 @@
     overflow: hidden;
     height: 400px;
     width: 100%;
-    margin: 0 0 3px;
-
+    margin: 0;
     .btn-prev {
       position: absolute;
       bottom: 22px;
@@ -728,7 +727,7 @@
 
   .ad-list {
     padding: 0;
-    margin: 0 0 27px;
+    margin: 3px 0 27px;
     list-style: none;
     overflow: hidden;
     font: 600 18px/22px $basic_sans_font;
