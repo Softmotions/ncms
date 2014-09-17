@@ -1,7 +1,7 @@
 <div class="nav-holder">
     <a href="#" class="link">link</a>
     <nav id="nav">
-        ${include("menu.httl")}
+        ${include("menu.httl", ["menuAttr" : "menu"])}
     </nav>
     <a href="#" class="search">search</a>
 </div>

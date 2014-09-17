@@ -1,5 +1,8 @@
+#if(menuAttr != null)
+#set(Tree menuTree = asm((String) menuAttr))
+#if(menuTree != null)
 <ul>
-    #foreach(Tree n in asm("menu"))
+    #foreach(Tree n in menuTree)
     <li><a href="">${n.name}</a>
         #if(n.hasChildren)
         <div class="slide-holder">
@@ -15,3 +18,5 @@
     </li>
     #end
 </ul>
+#end
+#end
