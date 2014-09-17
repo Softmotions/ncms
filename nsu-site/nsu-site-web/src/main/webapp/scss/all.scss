@@ -168,7 +168,7 @@
         width: 6px;
         height: 6px;
         content: '';
-        background: #3395e1;
+        background-color: #3395e1;
       }
     }
   }
@@ -272,7 +272,8 @@
       right: 0;
       width: 15px;
       height: 9px;
-      background: url(../images/quote-right.png) no-repeat;
+      background: url(../images/quote-right.png) no-repeat !important;
+      background-color: #fff;
       content: '';
     }
 
@@ -453,6 +454,7 @@
         height: 12px;
         //background: url(../images/separator-breadcrumbs.png) no-repeat;
         @include sp-icons-sprite(separator-breadcrumbs);
+        background-color: #fff;
         content: '';
       }
 
