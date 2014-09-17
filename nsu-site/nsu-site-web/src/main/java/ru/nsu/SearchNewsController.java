@@ -2,9 +2,12 @@ package ru.nsu;
 
 import com.softmotions.commons.cont.Pair;
 import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmController;
+import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.mhttl.SelectNode;
 
 import com.google.inject.Inject;
@@ -23,6 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -88,12 +94,18 @@ public class SearchNewsController implements AsmController {
 
     public boolean execute(AsmRendererContext ctx) throws Exception {
         prepare(ctx);
+        doSearch(ctx);
+
         HttpServletRequest req = ctx.getServletRequest();
+        HttpServletResponse resp = ctx.getServletResponse();
         String action = req.getParameter("spc.action");
         if ("search".equals(action)) {
-            ctx.put("results_only", true);
+            resp.setContentType("text/html");
+            AsmAttribute results = ctx.getAsm().getEffectiveAttribute("results");
+            ctx.getRenderer().renderTemplate(results.getEffectiveValue(), ctx, resp.getWriter());
+
+            return true;
         }
-        doSearch(ctx);
         return false;
     }
 
