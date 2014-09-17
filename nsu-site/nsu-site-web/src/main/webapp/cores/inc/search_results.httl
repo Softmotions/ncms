@@ -1,0 +1,16 @@
+#set(Integer index = search_start)
+#foreach(Asm pn in search_result)
+#set(Integer index = index + 1)
+<li>
+    <div class="text-holder">
+        <h3><a href="$!{pn.link}">${pn.hname}</a></h3>
+        <p>${pn.asm("annotation")}</p>
+    </div>
+</li>
+#if(index % 2 ==  0)
+<br style="clear: both"/>
+#end
+#end
+#if(index == 0)
+<li>Ничего не найдено</li>
+#end
