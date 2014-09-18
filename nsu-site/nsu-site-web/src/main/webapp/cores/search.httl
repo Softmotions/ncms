@@ -16,16 +16,8 @@
             <form action="${page().link}" class="search-form2" id="spc-search-form">
                 <fieldset>
                     <div class="row">
-                        <input name="spc.text" class="text" type="text" value="$!{search_query}" placeholder=""/>
+                        <input name="spc.text" class="text" type="text" value="$!{search_query}" placeholder="" style="width: 778px"/>
                         <input type="submit" value="Искать"/>
-                        <input type="radio" name="spc.scope" value="all" id="radio1" #if(search_scope == 'all')checked#end/>
-                        <label class="radio" for="radio1">За все время</label>
-                        <input type="radio" name="spc.scope" value="year" id="radio2" #if(search_scope == 'year')checked#end/>
-                        <label class="radio" for="radio2">Год</label>
-                        <input type="radio" name="spc.scope" value="half-year" id="radio3" #if(search_scope == 'half-year')checked#end/>
-                        <label class="radio" for="radio3">Пол года</label>
-                        <input type="radio" name="spc.scope" value="month" id="radio4" #if(search_scope == 'month')checked#end/>
-                        <label class="radio" for="radio4">Последний месяц</label>
                     </div>
                 </fieldset>
             </form>
