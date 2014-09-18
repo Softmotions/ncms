@@ -177,6 +177,7 @@
                         <version>1.0-SNAPSHOT</version>
                     </dependency>
                 </dependencies>
+
                 <configuration>
                     <port>${web.run.port}</port>
                     <path>/</path>
@@ -187,11 +188,13 @@
                     </systemProperties>
                     <server>ncms-tomcat-server</server>
                     <charset>UTF-8</charset>
-                    <url>http://84.237.51.7:8080/manager/text</url>
+                    <url>${nsu.deployment.url}</url>
+                    <update>true</update>
                     <useNaming>true</useNaming>
                     <uriEncoding>UTF-8</uriEncoding>
                     <contextFile>src/main/webapp/META-INF/context.xml</contextFile>
                 </configuration>
+
             </plugin>
         </plugins>
 

@@ -6,6 +6,7 @@ import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
+import com.softmotions.weboot.lifecycle.Dispose;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -82,5 +83,11 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
             throw new AsmRenderingException("Failed to parse template: " + location +
                                             " for asm: " + ctx.getAsm().getName(), e);
         }
+    }
+
+
+    @Dispose
+    public void close() {
+
     }
 }

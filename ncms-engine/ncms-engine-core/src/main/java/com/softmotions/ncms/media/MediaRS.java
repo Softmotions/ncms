@@ -33,6 +33,7 @@ import com.softmotions.ncms.media.events.MediaUpdateEvent;
 import com.softmotions.web.ResponseUtils;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.lifecycle.Dispose;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
@@ -2256,7 +2257,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
 
+    @Dispose
     public void close() throws IOException {
+        log.info("Disposing all directory scanners");
         DirectoryScanner[] wsArr = watchScanners.toArray(new DirectoryScanner[watchScanners.size()]);
         for (final DirectoryScanner ds : wsArr) {
             try {

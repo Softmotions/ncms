@@ -28,11 +28,10 @@
     </jar-web-resources>
 
     <mybatis config="com/softmotions/ncms/db/mybatis-config.xml"
+             propsFile="{home}/.nsusite.ds"
              bindDatasource="true">
         JDBC.driver=${nsu.JDBC.driver}
         JDBC.url=${nsu.JDBC.url}
-        JDBC.username=${nsu.JDBC.username}
-        JDBC.password=${nsu.JDBC.password}
     </mybatis>
 
     <solr rebuildIndex="false">

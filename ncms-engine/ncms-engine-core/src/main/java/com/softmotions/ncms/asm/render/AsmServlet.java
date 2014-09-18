@@ -153,8 +153,8 @@ public class AsmServlet extends HttpServlet {
     }
 
     protected Object fetchAsmRef(HttpServletRequest req) {
-        String asmRefParam = req.getPathInfo();
-        if (asmRefParam == null || asmRefParam.length() < 2 || "/index.html".equals(asmRefParam)) {
+        String pi = req.getPathInfo();
+        if (pi == null || pi.length() < 2 || "/index.html".equals(pi)) {
             CachedPage cp = pageService.getIndexPage(req);
             if (cp == null) {
                 log.warn("Unable to find index page");
@@ -162,22 +162,22 @@ public class AsmServlet extends HttpServlet {
             }
             return cp.getId();
         }
-        asmRefParam = asmRefParam.substring(1);
-        if (asmRefParam.endsWith(".html")) {
-            asmRefParam = asmRefParam.substring(0, asmRefParam.length() - ".html".length());
+        pi = pi.substring(1);
+        if (pi.endsWith(".html")) {
+            pi = pi.substring(0, pi.length() - ".html".length());
         }
-        if (asmRefParam.length() != 32) { // may be it is a number? (asm ID)
+        if (pi.length() != 32) { // may be it is a number? (asm ID)
             try {
-                return Long.parseLong(asmRefParam);
+                return Long.parseLong(pi);
             } catch (NumberFormatException ignored) {
             }
         }
-        return asmRefParam;
+        return pi;
     }
 
     protected boolean processResources(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pi = req.getPathInfo();
-        if (pi == null) {
+        if (pi == null || "/index.html".equals(pi)) {
             return false;
         }
         XMLConfiguration xcfg = cfg.impl();
