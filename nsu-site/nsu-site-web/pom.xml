@@ -186,6 +186,8 @@
                         <WEBOOT_CFG_LOCATION>conf/nsu-configuration.xml</WEBOOT_CFG_LOCATION>
                     </systemProperties>
                     <server>ncms-tomcat-server</server>
+                    <charset>UTF-8</charset>
+                    <url>http://84.237.51.7:8080/manager/text</url>
                     <useNaming>true</useNaming>
                     <uriEncoding>UTF-8</uriEncoding>
                     <contextFile>src/main/webapp/META-INF/context.xml</contextFile>
