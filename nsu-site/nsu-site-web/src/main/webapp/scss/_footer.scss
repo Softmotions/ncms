@@ -137,42 +137,6 @@
     }
   }
 
-  .search-form {
-    float: right;
-    width: 246px;
-    margin: -7px 0 0;
-    background-color: rgba(255, 255, 255, 0.2);
-
-    .input-text {
-      float: left;
-      width: 195px;
-      height: 18px;
-      background: none;
-      padding: 6px 13px;
-      margin: 0;
-      border: 0;
-      color: #343434;
-      font: 15px/18px $basic_font;
-    }
-
-    input[type="submit"] {
-      float: left;
-      width: 16px;
-      height: 16px;
-      background: url(../images/btn-submit.png) no-repeat;
-      text-indent: -9999px;
-      overflow: hidden;
-      padding: 0;
-      margin: 7px 5px 0 0;
-      border: 0;
-      cursor: pointer;
-      font-size: 0;
-      line-height: 0;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
-  }
+  @import "search_form";
 }
 

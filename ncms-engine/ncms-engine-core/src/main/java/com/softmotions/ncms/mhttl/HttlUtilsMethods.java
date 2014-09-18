@@ -79,4 +79,8 @@ public class HttlUtilsMethods {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         return ctx.getMessages().format(date, format, ctx.getLocale());
     }
+
+    public static String alias(String alias) {
+        return (alias != null) ? AsmRendererContext.getSafe().getCfg().getAsmLink(alias) : null;
+    }
 }

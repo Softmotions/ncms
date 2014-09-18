@@ -266,5 +266,13 @@
   }
 
   @import "nav";
+
+
+  div#search-popup {
+    display: none;
+    padding-top: 7px;
+  }
+
+  @import "search_form";
 }
 

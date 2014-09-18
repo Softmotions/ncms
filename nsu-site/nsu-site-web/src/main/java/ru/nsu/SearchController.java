@@ -37,44 +37,10 @@ public class SearchController implements AsmController {
 
     protected static final int DEFAULT_MAX_RESULTS = 20;
 
-    protected static final Map<String, Callable<Pair<Date, Date>>> TIME_SCOPES;
-    protected static final String DEFAULT_TIME_SCOPE = "all";
-
     protected final Logger log;
     protected final AsmDAO adao;
 
     protected final SolrServer solr;
-
-    static {
-        TIME_SCOPES = new HashMap<>();
-        TIME_SCOPES.put(DEFAULT_TIME_SCOPE, new Callable<Pair<Date, Date>>() {
-            public Pair<Date, Date> call() throws Exception {
-                return null;
-            }
-        });
-        // TODO: configure?
-        TIME_SCOPES.put("year", new Callable<Pair<Date, Date>>() {
-            public Pair<Date, Date> call() throws Exception {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.YEAR, -1);
-                return new Pair<>(cal.getTime(), null);
-            }
-        });
-        TIME_SCOPES.put("half-year", new Callable<Pair<Date, Date>>() {
-            public Pair<Date, Date> call() throws Exception {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.MONTH, -6);
-                return new Pair<>(cal.getTime(), null);
-            }
-        });
-        TIME_SCOPES.put("month", new Callable<Pair<Date, Date>>() {
-            public Pair<Date, Date> call() throws Exception {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.MONTH, -1);
-                return new Pair<>(cal.getTime(), null);
-            }
-        });
-    }
 
     @Inject
     public SearchController(AsmDAO adao, SolrServer solr) {
@@ -122,15 +88,6 @@ public class SearchController implements AsmController {
 
         String text = req.getParameter("spc.text");
         ctx.put("search_query", text);
-
-        String timeScope = req.getParameter("spc.scope");
-        timeScope = StringUtils.isBlank(timeScope) || !TIME_SCOPES.containsKey(timeScope) ? DEFAULT_TIME_SCOPE : timeScope;
-        ctx.put("search_scope", timeScope);
-
-        prepareInternal(ctx);
-    }
-
-    protected void prepareInternal(AsmRendererContext ctx) {
     }
 
     protected void doSearch(AsmRendererContext ctx) throws Exception {
@@ -170,24 +127,7 @@ public class SearchController implements AsmController {
     }
 
     protected String buildFilterQuery(AsmRendererContext ctx) throws Exception {
-        // фильтр на дату создания
-        String timeScopeFQ = "";
-        String timeScopeName = (String) ctx.get("search_scope");
-        if (!StringUtils.isBlank(timeScopeName) && TIME_SCOPES.containsKey(timeScopeName)) {
-            Callable<Pair<Date, Date>> tsc = TIME_SCOPES.get(timeScopeName);
-            Pair<Date, Date> timeScope = tsc != null ? tsc.call() : null;
-            if (timeScope != null && (timeScope.getOne() != null || timeScope.getTwo() != null)) {
-                timeScopeFQ =
-                        " +cdate:" +
-                        "[" +
-                        (timeScope.getOne() == null ? "*" : String.valueOf(timeScope.getOne().getTime())) +
-                        " TO " +
-                        (timeScope.getTwo() == null ? "*" : String.valueOf(timeScope.getTwo().getTime())) +
-                        "]";
-            }
-        }
-
-        // ищем только опубликованное + фильтр на дату создания
-        return "+published:true " + timeScopeFQ;
+        // ищем только опубликованное
+        return "+published:true ";
     }
 }

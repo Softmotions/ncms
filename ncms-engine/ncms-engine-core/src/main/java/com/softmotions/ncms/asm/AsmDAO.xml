@@ -198,6 +198,18 @@
         WHERE name = #{name}
     </select>
 
+    <select id="asmIDByAlias" parameterType="string" resultType="long">
+        SELECT
+            asm_id
+        FROM ASM_ATTRS
+        WHERE type = 'alias' AND value = #{alias}
+    </select>
+
+    <select id="asmCheckUniqueAlias" resultType="long">
+        SELECT COUNT(*)
+        FROM ASM_ATTRS
+        WHERE type = 'alias' AND id != #{aliasId} AND value = #{alias}
+    </select>
 
     <select id="asmNameByID" parameterType="long" resultType="string">
         SELECT

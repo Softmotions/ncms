@@ -3,7 +3,17 @@
     <nav id="nav">
         ${include("menu.httl", ["menuAttr" : "menu"])}
     </nav>
-    <a href="#" class="search">search</a>
+    <div style="float: right; width: 0; position: relative;">
+        <div id="search-popup">
+            <form action="$!{alias('search')}" class="search-form">
+                <fieldset>
+                    <input class="input-text" name="spc.text" type="text" placeholder="Я ищу..."/>
+                    <input type="submit" value="search"/>
+                </fieldset>
+            </form>
+        </div>
+        <a href="$!{alias('search')}" class="search">search</a>
+    </div>
 </div>
 <div class="header-info">
     <strong class="logo"><a href="#">Новосибирский Государственный Университет</a></strong>

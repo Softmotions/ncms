@@ -1148,7 +1148,14 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         if (cp == null) {
             if (create) {
-                Long id = adao.asmSelectIdByName(guid);
+                // TODO: move
+                Long id;
+                if (guid.matches("^[0-9a-f]{32}$")) {
+                    id = adao.asmSelectIdByName(guid);
+                } else {
+                // попытка найти по alias-у
+                    id = adao.asmSelectIdByAlias(guid);
+                }
                 if (id != null) {
                     cp = getCachedPage(id, true);
                 }

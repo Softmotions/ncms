@@ -314,11 +314,21 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 }
                 var spec = this.getPageSpec();
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec), "PUT");
-                req.setShowMessages(false);
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify(data));
+                req.setMessageHandler(function(isError, messages) {
+                    var message = this.tr("Failed to save page.");
+                    if (messages != null && messages.length > 0) {
+                        message += "<br/>" + messages.join("<br/>");
+                    }
+
+                    if (isError) {
+                        ncms.Application.errorPopup(message);
+                    } else {
+                        ncms.Application.infoPopup(message);
+                    }
+                });
                 req.addListener("error", function(ev) {
-                    ncms.Application.errorPopup(this.tr("Failed to save page."));
                     this.__saveBt.setEnabled(true);
                     if (typeof cb === "function") {
                         cb(true);

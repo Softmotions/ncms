@@ -168,6 +168,18 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
+    public Long asmSelectIdByAlias(String alias) {
+        Number id = sess.selectOne(toStatementId("asmIDByAlias"), alias);
+        return id != null ? id.longValue() : null;
+    }
+
+    @Transactional
+    public boolean asmCheckUniqueAlias(long aliasId, String alias) {
+        Number count = selectOne("asmCheckUniqueAlias", "aliasId", aliasId, "alias", alias);
+        return 0 == count.intValue();
+    }
+
+    @Transactional
     public String asmSelectNameById(Long id) {
         return sess.selectOne(toStatementId("asmNameByID"), id);
     }

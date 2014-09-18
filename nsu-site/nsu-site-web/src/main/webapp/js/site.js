@@ -4,6 +4,7 @@ jQuery(function() {
     initSlideShow();
     initAccordion();
     initAboutSections();
+    initSearchPopup();
 });
 
 /*
@@ -146,6 +147,14 @@ function initSlideShow() {
     });
     $('.photo-line').tinycarousel({
         interval : true
+    });
+}
+
+function initSearchPopup() {
+    $('a.search').click(function(){
+        $('a.search').hide();
+        $('div#search-popup').show();
+        return false;
     });
 }
 

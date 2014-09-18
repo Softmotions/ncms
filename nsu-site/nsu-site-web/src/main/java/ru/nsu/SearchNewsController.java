@@ -15,8 +15,13 @@ import org.apache.solr.client.solrj.SolrServer;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -25,15 +30,53 @@ import java.util.Collections;
 @SuppressWarnings("unchecked")
 public class SearchNewsController extends SearchController {
 
+    protected static final Map<String, Callable<Pair<Date, Date>>> TIME_SCOPES;
+    protected static final String DEFAULT_TIME_SCOPE = "all";
+
+    static {
+        TIME_SCOPES = new HashMap<>();
+        TIME_SCOPES.put(SearchNewsController.DEFAULT_TIME_SCOPE, new Callable<Pair<Date, Date>>() {
+            public Pair<Date, Date> call() throws Exception {
+                return null;
+            }
+        });
+        // TODO: configure?
+        TIME_SCOPES.put("year", new Callable<Pair<Date, Date>>() {
+            public Pair<Date, Date> call() throws Exception {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.YEAR, -1);
+                return new Pair<>(cal.getTime(), null);
+            }
+        });
+        TIME_SCOPES.put("half-year", new Callable<Pair<Date, Date>>() {
+            public Pair<Date, Date> call() throws Exception {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, -6);
+                return new Pair<>(cal.getTime(), null);
+            }
+        });
+        TIME_SCOPES.put("month", new Callable<Pair<Date, Date>>() {
+            public Pair<Date, Date> call() throws Exception {
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MONTH, -1);
+                return new Pair<>(cal.getTime(), null);
+            }
+        });
+    }
+
     @Inject
     public SearchNewsController(AsmDAO adao, SolrServer solr) {
         super(adao, solr);
     }
 
-    protected void prepareInternal(AsmRendererContext ctx) {
-        super.prepareInternal(ctx);
+    protected void prepare(AsmRendererContext ctx) {
+        super.prepare(ctx);
 
         HttpServletRequest req = ctx.getServletRequest();
+
+        String timeScope = req.getParameter("spc.scope");
+        timeScope = StringUtils.isBlank(timeScope) || !TIME_SCOPES.containsKey(timeScope) ? DEFAULT_TIME_SCOPE : timeScope;
+        ctx.put("search_scope", timeScope);
 
         Collection<Pair<String, Boolean>> categories = new ArrayList<>();
         Collection<String> selectedCategories = new ArrayList<>();
@@ -74,7 +117,24 @@ public class SearchNewsController extends SearchController {
             categoriesFQ = " +(" + StringUtils.join(selectedCategories, " ") + ")";
         }
 
-        // добавляем фильтр на только новости  и на категорию носвостей (если есть)
-        return "+type:news* " + super.buildFilterQuery(ctx) + categoriesFQ;
+        // фильтр на дату создания
+        String timeScopeFQ = "";
+        String timeScopeName = (String) ctx.get("search_scope");
+        if (!StringUtils.isBlank(timeScopeName) && TIME_SCOPES.containsKey(timeScopeName)) {
+            Callable<Pair<Date, Date>> tsc = TIME_SCOPES.get(timeScopeName);
+            Pair<Date, Date> timeScope = tsc != null ? tsc.call() : null;
+            if (timeScope != null && (timeScope.getOne() != null || timeScope.getTwo() != null)) {
+                timeScopeFQ =
+                        " +cdate:" +
+                        "[" +
+                        (timeScope.getOne() == null ? "*" : String.valueOf(timeScope.getOne().getTime())) +
+                        " TO " +
+                        (timeScope.getTwo() == null ? "*" : String.valueOf(timeScope.getTwo().getTime())) +
+                        "]";
+            }
+        }
+
+        // добавляем фильтр на только новости, на категорию носвостей (если есть) и на дату создания
+        return "+type:news* " + super.buildFilterQuery(ctx) + categoriesFQ + timeScopeFQ;
     }
 }

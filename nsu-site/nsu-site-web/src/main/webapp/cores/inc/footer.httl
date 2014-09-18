@@ -17,9 +17,9 @@
         <li><a href="$!{n.link}">${n.name}</a></li>
         #end
     </ul>
-    <form action="#" class="search-form">
+    <form action="$!{alias('search')}" class="search-form">
         <fieldset>
-            <input class="input-text" type="text" placeholder="Я ищу..."/>
+            <input class="input-text" name="spc.text" type="text" placeholder="Я ищу..."/>
             <input type="submit" value="search"/>
         </fieldset>
     </form>

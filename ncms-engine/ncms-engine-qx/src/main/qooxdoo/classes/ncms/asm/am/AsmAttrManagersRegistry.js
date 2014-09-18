@@ -9,6 +9,7 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
     statics : {
 
         CLASSES : [
+            ncms.asm.am.AliasAM,
             ncms.asm.am.StringAM,
             ncms.asm.am.SelectAM,
             ncms.asm.am.BooleanAM,
