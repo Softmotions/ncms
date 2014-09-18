@@ -3,7 +3,9 @@ package com.softmotions.ncms.asm.render;
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageSecurityService;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.web.GenericResponseWrapper;
@@ -58,6 +60,9 @@ public class AsmServlet extends HttpServlet {
 
     @Inject
     private PageSecurityService pageSecurity;
+
+    @Inject
+    private PageService pageService;
 
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -149,9 +154,13 @@ public class AsmServlet extends HttpServlet {
 
     protected Object fetchAsmRef(HttpServletRequest req) {
         String asmRefParam = req.getPathInfo();
-        if (asmRefParam == null || asmRefParam.length() < 2) {
-            log.warn("Invalid pathInfo: " + req.getPathInfo());
-            return null;
+        if (asmRefParam == null || asmRefParam.length() < 2 || "/index.html".equals(asmRefParam)) {
+            CachedPage cp = pageService.getIndexPage(req);
+            if (cp == null) {
+                log.warn("Unable to find index page");
+                return null;
+            }
+            return cp.getId();
         }
         asmRefParam = asmRefParam.substring(1);
         if (asmRefParam.endsWith(".html")) {
@@ -159,7 +168,7 @@ public class AsmServlet extends HttpServlet {
         }
         if (asmRefParam.length() != 32) { // may be it is a number? (asm ID)
             try {
-                return Integer.parseInt(asmRefParam);
+                return Long.parseLong(asmRefParam);
             } catch (NumberFormatException ignored) {
             }
         }
@@ -172,10 +181,10 @@ public class AsmServlet extends HttpServlet {
             return false;
         }
         XMLConfiguration xcfg = cfg.impl();
-        if (!xcfg.getBoolean("site-root[@resolveRelativePaths]", true)) {
+        if (!xcfg.getBoolean("site-files-root[@resolveRelativePaths]", true)) {
             return false;
         }
-        String siteRoot = xcfg.getString("site-root");
+        String siteRoot = xcfg.getString("site-files-root");
         MediaResource mres = mediaRepository.findMediaResource(siteRoot + pi, messages.getLocale(req));
         if (mres == null) {
             return false;

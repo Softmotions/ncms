@@ -12,8 +12,8 @@
     <!-- включение авторизации на (используется с MyNSUOAuth2) -->
     <!--<security-constraint>-->
         <!--<web-resource-collection>-->
-            <!--<web-resource-name>Everything</web-resource-name>-->
-            <!--<url-pattern>/ncms/*</url-pattern>-->
+            <!--<web-resource-name>Admin zone</web-resource-name>-->
+            <!--<url-pattern>/ncms/adm/*</url-pattern>-->
         <!--</web-resource-collection>-->
         <!--<auth-constraint>-->
             <!--<role-name>user</role-name>-->

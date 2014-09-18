@@ -5,11 +5,13 @@
     <environment>${ncms.environment}</environment>
     <db-environment>${nsu.db.environment}</db-environment>
 
-    <help-site>http://nsu.ru</help-site>
-    <logout-redirect>http://nsu.ru</logout-redirect>
+    <site-root>http://127.0.0.1:8080</site-root>
+    <help-site>http://127.0.0.1:8080</help-site>
+    <logout-redirect>http://127.0.0.1:8080</logout-redirect>
+    <site-files-root resolveRelativePaths="true">/site</site-files-root>
     <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->
 
-    <site-root resolveRelativePaths="true">/site</site-root>
+
     <ncms-prefix>/ncms</ncms-prefix>
 
     <messages>
@@ -20,7 +22,7 @@
 
     <jar-web-resources>
         <resource>
-            <path-prefix>/</path-prefix>
+            <path-prefix>/adm</path-prefix>
             <options>/nsu-site-qx/nsu\,watch=true</options>
         </resource>
     </jar-web-resources>

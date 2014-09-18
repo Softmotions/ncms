@@ -47,7 +47,7 @@ public class NcmsConfiguration extends WBConfiguration {
 
     public void load(String location, ServletContext sctx) {
         super.load(location, sctx);
-        normalizePrefix("site-root");
+        normalizePrefix("site-files-root");
         normalizePrefix("ncms-prefix");
     }
 
@@ -101,11 +101,15 @@ public class NcmsConfiguration extends WBConfiguration {
     }
 
     public String getAsmLink(String guid) {
-        return getServletContext().getContextPath() + getNcmsPrefix() + "/asm/" + guid;
+        return getAsmRoot() + guid;
     }
 
     public String getAsmLink(Long id) {
-        return getServletContext().getContextPath() + getNcmsPrefix() + "/asm/" + id;
+        return getAsmRoot() + id;
+    }
+
+    public String getAsmRoot() {
+        return getServletContext().getContextPath() + getNcmsPrefix() + "/asm/";
     }
 
     public String getFileLink(Long id) {
