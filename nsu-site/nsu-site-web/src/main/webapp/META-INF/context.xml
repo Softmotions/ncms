@@ -22,7 +22,7 @@
               <!--auth="Container"-->
               <!--type="com.softmotions.web.security.WSUserDatabase"-->
               <!--factory="ru.nsu.WSUsersMongoDatabaseJNDIFactory"-->
-              <!--config="conf/nsu-mongo-config.xml"-->
+              <!--config="conf/nsu-users-mongo.xml"-->
               <!--scope="Shareable"/>-->
 
     <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"
