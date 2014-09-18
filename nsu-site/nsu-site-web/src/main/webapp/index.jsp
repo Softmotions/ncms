@@ -8,7 +8,8 @@
     String link = request.getScheme() + "://" +
                   request.getServerName() +
                   ":" + request.getServerPort() +
-                  "/index.html";
+                  cfg.getNcmsPrefix() +
+                  "/asm/index.html";
     if (!preferRequestUrl) {
         link = cfg.impl().getString("site-root", link);
     }
