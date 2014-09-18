@@ -5,7 +5,7 @@
     <environment>${ncms.environment}</environment>
     <db-environment>${nsu.db.environment}</db-environment>
 
-    <site-root>http://127.0.0.1:8080</site-root>
+    <site-root preferRequestUrl="true">http://127.0.0.1:8080</site-root>
     <help-site>http://127.0.0.1:8080</help-site>
     <logout-redirect>http://127.0.0.1:8080</logout-redirect>
     <site-files-root resolveRelativePaths="true">/site</site-files-root>

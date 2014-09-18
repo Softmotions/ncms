@@ -3,12 +3,15 @@
 <%
     Injector injector = (Injector) request.getServletContext().getAttribute(Injector.class.getName());
     NcmsConfiguration cfg = injector.getInstance(NcmsConfiguration.class);
-    String link = cfg.impl().getString("site-root",
-                                       request.getScheme() + "://" +
-                                       request.getServerName() +
-                                       ":" + request.getServerPort()) +
-                  cfg.getAsmRoot() +
+
+    boolean preferRequestUrl = cfg.impl().getBoolean("site-root[@preferRequestUrl]", false);
+    String link = request.getScheme() + "://" +
+                  request.getServerName() +
+                  ":" + request.getServerPort() +
                   "index.html";
+    if (!preferRequestUrl) {
+        link = cfg.impl().getString("site-root", link);
+    }
     response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
     response.setHeader("Location", link);
     response.flushBuffer();
