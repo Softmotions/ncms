@@ -59,7 +59,7 @@ public class MediaModule extends AbstractModule {
         }
 
         private void processImportDir(HierarchicalConfiguration c) {
-            String srcDir = c.getString("[@directory]");
+            String srcDir = cfg.substitutePath(c.getString("[@directory]"));
             if (StringUtils.isBlank(srcDir)) {
                 log.error("Missing required media.import[@directory] configuration attribute");
                 return;

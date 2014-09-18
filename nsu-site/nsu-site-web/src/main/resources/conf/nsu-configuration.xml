@@ -71,7 +71,7 @@
             <directory>/site</directory>
             <directory>/pages</directory>
         </system-directories>
-        <import directory="${basedir}/src/main/webapp"
+        <import directory="{webapp}"
                 target="site"
                 watch="true"
                 overwrite="false"
