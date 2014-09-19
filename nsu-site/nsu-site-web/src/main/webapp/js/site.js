@@ -840,12 +840,37 @@ $.fn.radio = function(o) {
 };
 
 function initSearch(pageSize) {
-    var spc = window._ncms_spc = {
+    var spc = {
         form : $('form#spc-search-form'),
         results : $('ul#spc-search-results'),
         fetchMore : $('a#spc-fetch-more'),
         start : 0,
         pageSize : pageSize || 1
+    };
+
+    updateSearchButtons = function() {
+        spc.fetchMore.hide();
+        if ($('ul#spc-search-results li').size() >= ((spc.start || 0) + spc.pageSize)) {
+            spc.fetchMore.show()
+        }
+    };
+
+    doSearch = function(reset) {
+        if (reset) {
+            spc.results.html(null);
+        }
+
+        spc.start = reset ? 0 : (spc.start || 0) + spc.pageSize;
+        var fdata = spc.form.serializeArray();
+        fdata.push({name : "spc.action", value : "search"});
+        fdata.push({name : "spc.start", value : spc.start});
+        fdata.push({name : "spc.limit", value : spc.pageSize});
+        $.post(spc.form[0].action, fdata).done(function(data) {
+            spc.results.append(data);
+            updateSearchButtons();
+        });
+
+        updateSearchButtons();
     };
 
     spc.form.submit(function() {
@@ -857,32 +882,4 @@ function initSearch(pageSize) {
         return false;
     });
     updateSearchButtons();
-}
-
-function doSearch(reset) {
-    var spc = window._ncms_spc;
-
-    if (reset) {
-        spc.results.html(null);
-    }
-
-    spc.start = reset ? 0 : (spc.start || 0) + spc.pageSize;
-    var fdata = spc.form.serializeArray();
-    fdata.push({name : "spc.action", value : "search"});
-    fdata.push({name : "spc.start", value : spc.start});
-    fdata.push({name : "spc.limit", value : spc.pageSize});
-    $.post(spc.form[0].action, fdata).done(function(data) {
-        spc.results.append(data);
-        updateSearchButtons();
-    });
-
-    updateSearchButtons();
-}
-
-function updateSearchButtons() {
-    var spc = window._ncms_spc;
-    spc.fetchMore.hide();
-    if ($('ul#spc-search-results li').size() >= ((spc.start || 0) + spc.pageSize)) {
-        spc.fetchMore.show()
-    }
 }
