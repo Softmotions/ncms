@@ -23,26 +23,36 @@ qx.Class.define("ncms.usr.UsersNav", {
         this.__selector.addListener("userSelected", this.__userSelected, this);
         this._add(this.__selector);
 
-        var eclazz = ncms.usr.UsersNav.USER_EDITOR_CLAZZ;
-        var app = ncms.Application.INSTANCE;
-        app.registerWSA(eclazz, function() {
-            return new ncms.usr.UserEditor();
-        }, null, this);
+        var req = new sm.io.Request(ncms.Application.ACT.getUrl("security.settings"), "GET", "application/json");
+        req.setAsynchronous(false);
+        req.send(function(resp) {
+            var settings = resp.getContent() || {};
+            var userEditable = !!settings["usersWritable"];
+            var accessEditable = !!settings["usersAccessWritable"];
 
-        this.addListener("disappear", function() {
-            //Navigation side is inactive so hide user editor pane if it not done already
-            if (app.getActiveWSAID() == eclazz) {
-                app.showDefaultWSA();
+            var eclazz = ncms.usr.UsersNav.USER_EDITOR_CLAZZ;
+            var app = ncms.Application.INSTANCE;
+            app.registerWSA(eclazz, function() {
+                return new ncms.usr.UserEditor(userEditable, accessEditable);
+            }, null, this);
+
+            this.addListener("disappear", function() {
+                //Navigation side is inactive so hide user editor pane if it not done already
+                if (app.getActiveWSAID() == eclazz) {
+                    app.showDefaultWSA();
+                }
+            }, this);
+            this.addListener("appear", function() {
+                if (app.getActiveWSAID() != eclazz && this.__selector.getSelectedUser() != null) {
+                    app.showWSA(eclazz);
+                }
+            }, this);
+
+            if (userEditable) {
+                this.setContextMenu(new qx.ui.menu.Menu());
+                this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             }
         }, this);
-        this.addListener("appear", function() {
-            if (app.getActiveWSAID() != eclazz && this.__selector.getSelectedUser() != null) {
-                app.showWSA(eclazz);
-            }
-        }, this);
-
-        this.setContextMenu(new qx.ui.menu.Menu());
-        this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
     },
 
     members : {

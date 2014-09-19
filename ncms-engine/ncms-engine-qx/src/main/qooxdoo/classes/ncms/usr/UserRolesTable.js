@@ -4,7 +4,8 @@
 qx.Class.define("ncms.usr.UserRolesTable", {
     extend : sm.table.Table,
 
-    construct : function() {
+    construct : function(editable) {
+        this.__editable = editable === undefined ? true : !!editable;
         var tm = this._createTableModel();
         this.base(arguments, tm, tm.getCustom());
         this.set({statusBarVisible : false});
@@ -36,6 +37,8 @@ qx.Class.define("ncms.usr.UserRolesTable", {
     members : {
 
         __user : null,
+
+        __editable : null,
 
         setUser : function(login) {
             if (login == null) {
@@ -138,7 +141,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
                         "title" : this.tr("Assign").toString(),
                         "id" : "active",
                         "type" : "boolean",
-                        "editable" : true,
+                        "editable" : this.__editable,
                         "width" : 75
                     },
                     {
@@ -178,5 +181,6 @@ qx.Class.define("ncms.usr.UserRolesTable", {
 
     destruct : function() {
         this.__user = null;
+        this.__editable = null;
     }
 });

@@ -7,6 +7,9 @@
     <writable>false</writable>
     <!-- дополнительные настройки-->
     <properties>
+        <persons>
+            <accessWritable>true</accessWritable> <!-- возможность редактировать права пользователей -->
+        </persons>
         <roles>
             <writable>true</writable> <!-- возможность записи в коллекцию ролей (надо для инициализации дефолтных ролей) -->
         </roles>

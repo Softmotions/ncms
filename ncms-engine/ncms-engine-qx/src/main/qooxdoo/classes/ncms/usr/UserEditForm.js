@@ -11,9 +11,11 @@ qx.Class.define("ncms.usr.UserEditForm", {
         "userUpdated" : "qx.event.type.Data"
     },
 
-    construct : function() {
+    construct : function(editable) {
         this.base(arguments);
         this.setLayout(new qx.ui.layout.VBox(5));
+
+        this.__editable = editable === undefined ? true : !!editable;
 
         var form = this.__form = new qx.ui.form.Form();
         var vmgr = form.getValidationManager();
@@ -42,7 +44,7 @@ qx.Class.define("ncms.usr.UserEditForm", {
         fr._getLayout().setRowFlex(fr._row - 1, 1);
         this.add(fr, {flex : 1});
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = this.__buttonsCont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
         hcont.setPadding(5);
 
         var bt = new qx.ui.form.Button(this.tr("Save"));
@@ -61,6 +63,10 @@ qx.Class.define("ncms.usr.UserEditForm", {
 
         __user : null,
 
+        __buttonsCont : null,
+
+        __editable : null,
+
         setUser : function(name) {
             this.__user = name;
             this.__form.reset();
@@ -71,17 +77,31 @@ qx.Class.define("ncms.usr.UserEditForm", {
                 var data = resp.getContent();
                 fitems["name"].setEnabled(false);
                 fitems["name"].setValue(data["name"]);
+                fitems["fullName"].setEnabled(this.__editable);
                 fitems["fullName"].setValue(data["fullName"]);
+                fitems["email"].setEnabled(this.__editable);;
                 fitems["email"].setValue(data["email"]);
+                fitems["password"].setEnabled(this.__editable);;
                 fitems["password"].setRequired(false);
                 fitems["password"].setValue(null);
+                fitems["passwordCfrm"].setEnabled(this.__editable);
                 fitems["passwordCfrm"].setRequired(false);
                 fitems["passwordCfrm"].setValue(null);
+
+                if (this.__editable) {
+                    fitems["password"].show();
+                    fitems["passwordCfrm"].show();
+                    this.__buttonsCont.show();
+                } else {
+                    fitems["password"].exclude();
+                    fitems["passwordCfrm"].exclude();
+                    this.__buttonsCont.exclude();
+                }
             }, this);
         },
 
         __save : function() {
-            if (!this.__form.validate()) {
+            if (!this.__form.validate() || !this.__editable) {
                 return;
             }
 
@@ -120,5 +140,7 @@ qx.Class.define("ncms.usr.UserEditForm", {
 
     destruct : function() {
         this.__user = null;
+        this.__editable = null;
+        this.__buttonsCont = null;
     }
 });

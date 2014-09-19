@@ -50,6 +50,17 @@ public class NcmsSecurityRS {
         this.mapper = mapper;
     }
 
+    @GET
+    @Path("settings")
+    public JsonNode settings() {
+        ObjectNode res = mapper.createObjectNode();
+
+        res.put("usersWritable", userDatabase.isCanUsersWrite());
+        res.put("usersAccessWritable", userDatabase.isCanUsersAccessWrite());
+
+        return res;
+    }
+
     /**
      * Return number of users stored in users database.
      */

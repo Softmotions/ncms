@@ -25,20 +25,20 @@ qx.Class.define("ncms.usr.UserEditor", {
         }
     },
 
-    construct : function() {
+    construct : function(userEditable, accessEditable) {
         this.base(arguments, "top");
         this.setPadding(5);
 
         var epage = new qx.ui.tabview.Page(this.tr("Roles/Groups"));
         epage.setLayout(new qx.ui.layout.VBox());
-        var urTable = this.__userRoles = new ncms.usr.UserRolesTable();
+        var urTable = this.__userRoles = new ncms.usr.UserRolesTable(accessEditable);
         epage.add(urTable);
 
         this.add(epage);
 
         epage = new qx.ui.tabview.Page(this.tr("General"));
         epage.setLayout(new qx.ui.layout.VBox());
-        var uiForm = this.__userInfoForm = new ncms.usr.UserEditForm();
+        var uiForm = this.__userInfoForm = new ncms.usr.UserEditForm(userEditable);
         uiForm.addListener("userUpdated", this.__userUpdated, this);
         epage.add(uiForm);
 
