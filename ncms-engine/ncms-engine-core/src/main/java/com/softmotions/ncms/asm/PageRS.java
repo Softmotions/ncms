@@ -198,6 +198,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (user != null) {
             JsonUtils.populateObjectNode(user, res.putObject("owner"),
                                          "name", "fullName");
+        } else {
+            res.remove("owner");
         }
 
         username = (String) row.get("muser");
@@ -205,6 +207,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (user != null) {
             JsonUtils.populateObjectNode(user, res.putObject("muser"),
                                          "name", "fullName");
+        } else {
+            res.remove("muser");
         }
 
         res.put("accessMask", pageSecurity.getUserRights(id, req));
@@ -1153,7 +1157,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 if (guid.matches("^[0-9a-f]{32}$")) {
                     id = adao.asmSelectIdByName(guid);
                 } else {
-                // попытка найти по alias-у
+                    // попытка найти по alias-у
                     id = adao.asmSelectIdByAlias(guid);
                 }
                 if (id != null) {
