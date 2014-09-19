@@ -61,6 +61,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -185,7 +186,9 @@ public class PageRS extends MBDAOSupport implements PageService {
      */
     @GET
     @Path("/info/{id}")
-    public ObjectNode selectPageInfo(@Context HttpServletRequest req, @PathParam("id") Long id) {
+    public ObjectNode selectPageInfo(@Context HttpServletRequest req,
+                                     @Context SecurityContext sctx,
+                                     @PathParam("id") Long id) {
         Map<String, Object> row = selectOne("selectPageInfo", "id", id);
         if (row == null) {
             throw new NotFoundException("");
@@ -292,7 +295,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     private void updatePublishStatus(HttpServletRequest req, Long id, boolean published) {
         Asm page = adao.asmSelectById(id);
         if (!pageSecurity.canEdit2(page, req)) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException("Not authenticated");
         }
         update("updatePublishStatus",
                "id", id,
@@ -305,6 +308,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/edit/{id}")
     @Transactional
     public void savePage(@Context HttpServletRequest req,
+                         @Context SecurityContext sctx,
                          @PathParam("id") Long id,
                          ObjectNode data) throws Exception {
 
@@ -351,11 +355,8 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             am.attributePersisted(amCtx, attr, data.get(fname));
         }
-
-        amCtx.flush();
-
+        amCtx.flush(sctx);
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
-
     }
 
     /**
@@ -486,6 +487,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/update/basic")
     @Transactional
     public void updatePageBasic(@Context HttpServletRequest req,
+                                @Context SecurityContext sctx,
                                 ObjectNode spec) {
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
         Long id = spec.hasNonNull("id") ? spec.get("id").asLong() : null;
@@ -508,7 +510,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         update("updatePageBasic",
                "id", id,
                "hname", name,
-               "type", type);
+               "type", type,
+               "muser", pageSecurity.getCurrentWSUserSafe(sctx).getName());
 
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
@@ -820,10 +823,11 @@ public class PageRS extends MBDAOSupport implements PageService {
     @PUT
     @Path("single/{collection}/{id}")
     public ObjectNode putSinglePageIntoUserCollection(@Context HttpServletRequest req,
+                                                      @Context SecurityContext sctx,
                                                       @PathParam("collection") String collection,
                                                       @PathParam("id") Long id) {
         userEnvRS.ensureSingle(req, collection, id.toString());
-        ObjectNode info = selectPageInfo(req, id);
+        ObjectNode info = selectPageInfo(req, sctx, id);
         info.setAll(selectPageLabelPath(id));
         return info;
     }
@@ -831,13 +835,14 @@ public class PageRS extends MBDAOSupport implements PageService {
     @GET
     @Path("single/{collection}")
     public ObjectNode getSinglePageIntoUserCollection(@Context HttpServletRequest req,
+                                                      @Context SecurityContext sctx,
                                                       @PathParam("collection") String collection) {
         Collection set = userEnvRS.getSet(req, collection);
         if (set.isEmpty() || !(set.iterator().next() instanceof Number)) {
             return mapper.createObjectNode(); //empty object
         }
         Long id = ((Number) set.iterator().next()).longValue();
-        ObjectNode info = selectPageInfo(req, id);
+        ObjectNode info = selectPageInfo(req, sctx, id);
         info.setAll(selectPageLabelPath(id));
         return info;
     }

@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm;
 
 import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBDAOSupport;
@@ -14,8 +15,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +37,8 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class PageSecurityService extends MBDAOSupport {
 
+    private static final Logger log = LoggerFactory.getLogger(PageSecurityService.class);
+
     public static final char WRITE = 'w';
     public static final char NEWS = 'n';
     public static final char DELETE = 'd';
@@ -40,6 +47,7 @@ public class PageSecurityService extends MBDAOSupport {
     public static final String ALL_RIGHTS_STR = "" + WRITE + NEWS + DELETE;
 
     private final WSUserDatabase userdb;
+    private final NcmsMessages messages;
     private final LRUMap aclCache;
     private final MBSqlSessionManager sessionManager;
 
@@ -47,10 +55,12 @@ public class PageSecurityService extends MBDAOSupport {
     @Inject
     public PageSecurityService(SqlSession sess,
                                WSUserDatabase userdb,
+                               NcmsMessages messages,
                                NcmsConfiguration cfg,
                                MBSqlSessionManager sessionManager) {
         super(PageSecurityService.class.getName(), sess);
         this.userdb = userdb;
+        this.messages = messages;
         this.aclCache = new LRUMap(cfg.impl().getInt("security.acl-lru-cache-size", 1024));
         this.sessionManager = sessionManager;
     }
@@ -61,6 +71,23 @@ public class PageSecurityService extends MBDAOSupport {
             return (WSUser) p;
         }
         return null;
+    }
+
+    public WSUser getCurrentWSUserSafe(SecurityContext sctx) {
+        Principal p = sctx.getUserPrincipal();
+        if (p instanceof WSUser) {
+            return (WSUser) p;
+        } else {
+            throw new ForbiddenException(messages.get("ncms.access.notAuthenticated"));
+        }
+    }
+
+    public WSUser getCurrentWSUserSafe(HttpServletRequest req) {
+        WSUser u = toWSUser(req);
+        if (u == null) {
+            throw new ForbiddenException(messages.get("ncms.access.notAuthenticated"));
+        }
+        return u;
     }
 
     /**

@@ -135,7 +135,6 @@ public class AsmRichRefAM implements AsmAttributeManager {
     }
 
     public JsonNode applyJSONAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
-        log.info("val=" + val);
         JsonNode n = val.get("image");
         if (n != null) {
             imageAM.applyJSONAttributeValue(ctx, attr, n);
@@ -143,7 +142,6 @@ public class AsmRichRefAM implements AsmAttributeManager {
         n = val.get("link");
         if (n != null && n.isTextual()) {
             Long fid = cfg.getFileIdByResourceSpec(n.asText());
-            log.info("fid=" + fid);
             if (fid != null) {
                 ctx.registerMediaFileDependency(attr, fid);
             }

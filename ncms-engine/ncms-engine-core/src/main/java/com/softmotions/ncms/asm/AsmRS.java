@@ -49,6 +49,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -429,6 +430,7 @@ public class AsmRS extends MBDAOSupport {
     @Transactional
     public void putAsmAttributes(@PathParam("id") Long id,
                                  @Context HttpServletRequest req,
+                                 @Context SecurityContext sctx,
                                  ObjectNode spec) throws Exception {
 
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
@@ -482,7 +484,7 @@ public class AsmRS extends MBDAOSupport {
         if (am != null && spec.hasNonNull("value")) {
             am.attributePersisted(amCtx, attr, spec.get("value"));
         }
-        amCtx.flush();
+        amCtx.flush(sctx);
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
 

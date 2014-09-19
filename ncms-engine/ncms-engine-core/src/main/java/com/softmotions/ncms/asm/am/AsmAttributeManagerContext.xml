@@ -28,4 +28,10 @@
         ELSE IGNORE
     </update>
 
+    <update id="updateMUser" parameterType="map">
+        UPDATE ASMS
+        SET muser = #{muser}, mdate = #{mdate,jdbcType=TIMESTAMP}
+        WHERE id = #{id}
+    </update>
+
 </mapper>
