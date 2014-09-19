@@ -80,7 +80,8 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
 
         update("updateMUser",
                "mdate", new Date(),
-               "muser", pageSecurity.getCurrentWSUserSafe(sctx).getName());
+               "muser", pageSecurity.getCurrentWSUserSafe(sctx).getName(),
+               "id", asmId);
 
         if (fileDeps == null || fileDeps.isEmpty()) {
             return;
