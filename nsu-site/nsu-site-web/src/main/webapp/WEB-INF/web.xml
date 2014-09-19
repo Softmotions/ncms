@@ -10,27 +10,27 @@
         <listener-class>com.softmotions.ncms.NcmsServletListener</listener-class>
     </listener>
     <!-- включение авторизации на (используется с MyNSUOAuth2) -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Admin zone</web-resource-name>
-            <url-pattern>/ncms/adm/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>user</role-name>
-        </auth-constraint>
-    </security-constraint>
+    <!--<security-constraint>-->
+        <!--<web-resource-collection>-->
+            <!--<web-resource-name>Admin zone</web-resource-name>-->
+            <!--<url-pattern>/ncms/adm/*</url-pattern>-->
+        <!--</web-resource-collection>-->
+        <!--<auth-constraint>-->
+            <!--<role-name>user</role-name>-->
+        <!--</auth-constraint>-->
+    <!--</security-constraint>-->
 
-    <login-config>
-        <auth-method>FORM</auth-method>
-        <realm-name>NSUSite</realm-name>
-        <form-login-config>
-            <form-login-page>/login.jsp</form-login-page>
-            <form-error-page>/error.jsp</form-error-page>
-        </form-login-config>
-    </login-config>
+    <!--<login-config>-->
+        <!--<auth-method>FORM</auth-method>-->
+        <!--<realm-name>NSUSite</realm-name>-->
+        <!--<form-login-config>-->
+            <!--<form-login-page>/login.jsp</form-login-page>-->
+            <!--<form-error-page>/error.jsp</form-error-page>-->
+        <!--</form-login-config>-->
+    <!--</login-config>-->
 
-    <security-role>
-        <role-name>user</role-name>
-    </security-role>
+    <!--<security-role>-->
+        <!--<role-name>user</role-name>-->
+    <!--</security-role>-->
 
 </web-app>
