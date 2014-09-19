@@ -82,7 +82,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
                 }
                 link = link.substring(0, ind).trim();
             }
-            link = cfg.getPageLink(link);
+            link = cfg.getResourceLink(link);
         }
         if (node.hasNonNull("description")) {
             description = node.get("description").asText();
@@ -126,14 +126,27 @@ public class AsmRichRefAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        attr.setEffectiveValue(val != null ? applyJSONAttributeValue(ctx, attr, val).toString() : null);
+        if (val == null) {
+            attr.setEffectiveValue(null);
+            return null;
+        }
+        attr.setEffectiveValue(applyJSONAttributeValue(ctx, attr, val).toString());
         return attr;
     }
 
     public JsonNode applyJSONAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
-        JsonNode image = val.get("image");
-        if (image != null) {
-            imageAM.applyJSONAttributeValue(ctx, attr, image);
+        log.info("val=" + val);
+        JsonNode n = val.get("image");
+        if (n != null) {
+            imageAM.applyJSONAttributeValue(ctx, attr, n);
+        }
+        n = val.get("link");
+        if (n != null && n.isTextual()) {
+            Long fid = cfg.getFileIdByResourceSpec(n.asText());
+            log.info("fid=" + fid);
+            if (fid != null) {
+                ctx.registerMediaFileDependency(attr, fid);
+            }
         }
         return val;
     }

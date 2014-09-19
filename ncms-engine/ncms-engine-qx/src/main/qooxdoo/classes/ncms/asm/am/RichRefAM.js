@@ -32,12 +32,20 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.CheckBox();
+            el.setValue(opts["allowPages"] == null || opts["allowPages"] === "true");
+            form.add(el, this.tr("Pages"), null, "allowPages", null, {flex : 0});
+
+            el = new qx.ui.form.CheckBox();
+            el.setValue(opts["allowFiles"] === "true");
+            form.add(el, this.tr("Files"), null, "allowFiles", null, {flex : 1});
+
+            el = new qx.ui.form.CheckBox();
             el.setValue(opts["allowDescription"] === "true");
-            form.add(el, this.tr("Allow description"), null, "allowDescription");
+            form.add(el, this.tr("Description"), null, "allowDescription", null, {flex : 0});
 
             el = new qx.ui.form.CheckBox();
             el.setValue(opts["allowImage"] === "true");
-            form.add(el, this.tr("Allow image"), null, "allowImage");
+            form.add(el, this.tr("Image"), null, "allowImage", null, {flex : 1});
 
             //Wrap nested image am
             var imageAm = this._imageAM = new ncms.asm.am.ImageAM();
@@ -45,7 +53,7 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             imageAttrSpec["options"] = opts["image"];
 
             var iopts = new sm.ui.form.FormWidgetAdapter(imageAm.activateOptionsWidget(imageAttrSpec, asmSpec));
-            form.add(iopts, this.tr("Image"), null, "image");
+            form.add(iopts, this.tr("Image"), null, "image", null, {fullRow : true});
             el.bind("value", iopts, "enabled");
 
             el = new qx.ui.form.TextField();
@@ -53,17 +61,16 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
                 el.setValue(opts["styles"]);
             }
             el.setPlaceholder(this.tr("style=value,style2=value2,..."));
-            form.add(el, this.tr("Styles"), null, "styles");
+            form.add(el, this.tr("Styles"), null, "styles", null, {fullRow : true});
 
             el = new qx.ui.form.TextField();
             if (opts["styles2"] != null) {
                 el.setValue(opts["styles2"]);
             }
             el.setPlaceholder(this.tr("style=value,style2=value2,..."));
-            form.add(el, this.tr("Styles2"), null, "styles2");
+            form.add(el, this.tr("Styles2"), null, "styles2", null, {fullRow : true});
 
-
-            var fr = new sm.ui.form.FlexFormRenderer(form);
+            var fr = new sm.ui.form.ExtendedDoubleFormRenderer(form);//sm.ui.form.FlexFormRenderer(form);
             this._form = form;
             return fr;
         },
@@ -74,6 +81,8 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             }
             var data = {};
             var items = this._form.getItems();
+            data["allowPages"] = items["allowPages"].getValue();
+            data["allowFiles"] = items["allowFiles"].getValue();
             data["allowDescription"] = items["allowDescription"].getValue();
             data["allowImage"] = items["allowImage"].getValue();
             if (data["allowImage"]) {

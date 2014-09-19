@@ -122,9 +122,9 @@ qx.Class.define("ncms.asm.am.TreeAM", {
         __openNAMCSettings : function(ev, attrSpec, asmSpec) {
             var w = ev.getTarget();
             var clazz = w.getUserData("naClass");
-            var opts = w.getUserData("naOptions");
+            var naOpts = ncms.Utils.parseOptions(w.getUserData("naOptions"));
             attrSpec = sm.lang.Object.shallowClone(attrSpec);
-            attrSpec["options"] = opts;
+            attrSpec["options"] = naOpts;
             var dlg = new ncms.asm.am.AMWrapperDlg(clazz, attrSpec, asmSpec, {
                 mode : "options"
             });

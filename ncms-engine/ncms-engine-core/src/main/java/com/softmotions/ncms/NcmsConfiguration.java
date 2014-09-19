@@ -120,14 +120,48 @@ public class NcmsConfiguration extends WBConfiguration {
         return getServletContext().getContextPath() + getNcmsPrefix() + "/rs/media/fileid/" + id + "?inline=true";
     }
 
-    public String getPageLink(String spec) {
+    public String getResourceLink(String spec) {
         if (spec.contains("://")) {
             return spec;
         }
-        if (spec.startsWith("page:")) {
-            return getAsmLink(spec.substring("page:".length()));
+        Long fid = getFileIdByResourceSpec(spec);
+        if (fid != null) {
+            return getFileLink(fid, true);
+        }
+        if (spec.toLowerCase().startsWith("page:")) { //Page reference
+            spec = spec.substring("page:".length());
+            int ind = spec.indexOf('|');
+            if (ind != -1) {
+                spec = spec.substring(0, ind).trim();
+            }
+        }
+        return getAsmLink(spec);
+    }
+
+    public Long getFileIdByResourceSpec(String spec) {
+        spec = spec.toLowerCase();
+        if (!spec.startsWith("media:") && !spec.startsWith("image:")) {
+            return null;
+        }
+        spec = spec.substring("media:".length()); /*'image:' string has the same length*/
+        if (spec.charAt(0) == '/') {
+            spec = spec.substring(1);
+        }
+        int ind;
+        int ind1 = spec.indexOf('/');
+        int ind2 = spec.indexOf('|');
+        if (ind1 == -1 || ind2 == -1) {
+            ind = Math.max(ind1, ind2);
         } else {
-            return getAsmLink(spec);
+            ind = Math.min(ind1, ind2);
+        }
+        if (ind != -1) {
+            spec = spec.substring(0, ind);
+        }
+        try {
+            return Long.valueOf(spec);
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 }

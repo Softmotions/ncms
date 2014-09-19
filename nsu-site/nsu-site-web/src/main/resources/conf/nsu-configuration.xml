@@ -31,7 +31,6 @@
              propsFile="{home}/.nsusite.ds"
              bindDatasource="true">
         JDBC.driver=${nsu.JDBC.driver}
-        JDBC.url=${nsu.JDBC.url}
     </mybatis>
 
     <solr rebuildIndex="false">
@@ -176,6 +175,12 @@
                 <c template="faculty_news" max="12"/>
             </news>
         </mainpage>
+        <!-- Архив и API для журналов(Пресса) -->
+        <pressa>
+            <template>
+                <name>pressa_archive</name>
+            </template>
+        </pressa>
     </content>
 
 </configuration>

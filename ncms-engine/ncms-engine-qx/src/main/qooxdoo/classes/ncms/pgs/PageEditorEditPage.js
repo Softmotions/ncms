@@ -287,6 +287,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __save : function(cb) {
+            var me = this;
             if (this.__saveBt.getEnabled() === false) {
                 if (typeof cb === "function") {
                     cb(false);
@@ -317,11 +318,11 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify(data));
                 req.setMessageHandler(function(isError, messages) {
-                    var message = this.tr("Failed to save page.");
+                    qx.log.Logger.info("me=" + me);
+                    var message = me.tr("Failed to save page.");
                     if (messages != null && messages.length > 0) {
                         message += "<br/>" + messages.join("<br/>");
                     }
-
                     if (isError) {
                         ncms.Application.errorPopup(message);
                     } else {

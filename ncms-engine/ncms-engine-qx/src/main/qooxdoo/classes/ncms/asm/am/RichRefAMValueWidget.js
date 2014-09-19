@@ -18,7 +18,11 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
     },
 
     construct : function(attrSpec, asmSpec) {
+        this.__asmSpec = asmSpec;
+        this.__attrSpec = attrSpec;
+
         this.base(arguments);
+
         this._setLayout(new qx.ui.layout.Grow());
         this.addState("widgetNotReady");
 
@@ -27,7 +31,15 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
 
         var el;
         var form = this.__form = new qx.ui.form.Form();
-        var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain-plus.png", true);
+
+        var menuspec = [];
+        if (opts["allowPages"] == null || opts["allowPages"] === "true") {
+            menuspec.push([this.tr("Page link").toString(), "page"]);
+        }
+        if (opts["allowFiles"] === "true") {
+            menuspec.push([this.tr("File link").toString(), "file"]);
+        }
+        var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain-plus.png", true, menuspec);
         bf.setReadOnly(true);
         bf.setRequired(true);
         bf.addListener("execute", this.__onSetLink, this);
@@ -90,6 +102,10 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
 
         __form : null,
 
+        __asmSpec : null,
+
+        __attrSpec : null,
+
         __modified : function() {
             if (this.hasState("widgetNotReady")) {
                 return;
@@ -98,26 +114,54 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
         },
 
         __onSetLink : function(ev) {
-            var dlg = new ncms.pgs.LinkSelectorDlg(this.tr("Please set resource link"), {
-                allowExternalLinks : true
-            });
-            dlg.addListener("completed", function(ev) {
-                var data = ev.getData();
-                var val = [];
-                if (!sm.lang.String.isEmpty(data["externalLink"])) {
-                    val.push(data["externalLink"]);
-                } else {
-                    val.push("page:" + sm.lang.Array.lastElement(data["guidPath"]));
-                }
-                if (!sm.lang.String.isEmpty(data["linkText"])) {
-                    val.push(data["linkText"]);
-                }
-                this.__bf.setValue(val.join(" | "));
-                dlg.close();
-            }, this);
-            dlg.open();
+            var dlg;
+            var data = ev.getData();
+            if (data == null || data === "page") {
+                dlg = new ncms.pgs.LinkSelectorDlg(this.tr("Please set the page link"), {
+                    allowExternalLinks : true
+                });
+                dlg.addListener("completed", function(ev) {
+                    var data = ev.getData();
+                    qx.log.Logger.info("data=" + JSON.stringify(data));
+                    var val = [];
+                    if (!sm.lang.String.isEmpty(data["externalLink"])) {
+                        val.push(data["externalLink"]);
+                    } else {
+                        val.push("page:" + sm.lang.Array.lastElement(data["guidPath"]));
+                    }
+                    if (!sm.lang.String.isEmpty(data["linkText"])) {
+                        val.push(data["linkText"]);
+                    }
+                    this.__bf.setValue(val.join(" | "));
+                    dlg.close();
+                }, this);
+                dlg.open();
+            } else {
+                dlg = new ncms.mmgr.PageFilesSelectorDlg(
+                        this.__asmSpec["id"],
+                        this.tr("Please set the file link"),
+                        {
+                            allowModify : true,
+                            allowSubfoldersView : true,
+                            smode : qx.ui.table.selection.Model.SINGLE_SELECTION
+                        }
+                );
+                dlg.addListener("completed", function(ev) {
+                    var data = ev.getData();
+                    //{"id":1221,"name":"зеленый цветок.jpg",
+                    //"folder":"/pages/963/","content_type":"image/jpeg",
+                    //"owner":"admin","owner_fullName":"Антон Адаманский","content_length":35195,"description":null,"tags":null,"linkText":"зеленый цветок"}
+                    var val = [];
+                    val.push("media:/" + data["id"] + "/" + data["name"]);
+                    if (!sm.lang.String.isEmpty(data["linkText"])) {
+                        val.push(data["linkText"]);
+                    }
+                    this.__bf.setValue(val.join(" | "));
+                    dlg.close();
+                }, this);
+                dlg.open();
+            }
         },
-
 
         __applyModel : function(model) {
             model = model || {};
@@ -189,6 +233,8 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
 
     destruct : function() {
         this.__bf = null;
+        this.__asmSpec = null;
+        this.__attrSpec = null;
         this._disposeObjects("__form", "__imageAM");
     }
 });
