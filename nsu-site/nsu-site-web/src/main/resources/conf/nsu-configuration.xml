@@ -103,7 +103,7 @@
     </asm>
 
     <security dbJndiName="java:comp/env/WSUserDatabase">
-        <web-fakeuser>admin</web-fakeuser>
+        <!--<web-fakeuser>admin</web-fakeuser>-->
         <!--  для использования с WSUsersMongoDB -->
         <!--<web-fakeuser>adamansky@gmail.com</web-fakeuser>-->
         <web-access-control-allow>*</web-access-control-allow>

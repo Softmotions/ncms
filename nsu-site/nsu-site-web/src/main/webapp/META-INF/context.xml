@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context useNaming="true">
 
-    <Resource name="WSUserDatabase"
-              auth="Container"
-              type="com.softmotions.web.security.WSUserDatabase"
-              factory="com.softmotions.web.security.XMLWSUserDatabaseJNDIFactory"
-              config="conf/nsu-users.xml"
-              scope="Shareable"/>
-
-    <!--&lt;!&ndash; Авторизация через портал (OAuth2) &ndash;&gt;-->
-    <!--<Valve className="com.softmotions.web.security.tomcat.MyNSUOAuth2Authenticator"-->
-           <!--securePagesWithPragma="false"-->
-           <!--clientId="540611e9498e629ba5a9e766"-->
-           <!--clientSecret="SQ5lPyUrzkmKypfKZl0wnhYSGtyv7GlX"-->
-           <!--authEndpoint="https://my.nsu.ru/oauth2/authorize"-->
-           <!--tokenEndpoint="https://my.nsu.ru/oauth2/token"-->
-           <!--userinfoEndpoint="https://my.nsu.ru/oauth2api/userinfo"/>-->
-
-    <!--&lt;!&ndash; для использования с WSUsersMongoDB &ndash;&gt;-->
     <!--<Resource name="WSUserDatabase"-->
               <!--auth="Container"-->
               <!--type="com.softmotions.web.security.WSUserDatabase"-->
-              <!--factory="ru.nsu.WSUsersMongoDatabaseJNDIFactory"-->
-              <!--config="conf/nsu-users-mongo.xml"-->
+              <!--factory="com.softmotions.web.security.XMLWSUserDatabaseJNDIFactory"-->
+              <!--config="conf/nsu-users.xml"-->
               <!--scope="Shareable"/>-->
+
+    <!-- Авторизация через портал (OAuth2) -->
+    <Valve className="com.softmotions.web.security.tomcat.MyNSUOAuth2Authenticator"
+           securePagesWithPragma="false"
+           clientId="540611e9498e629ba5a9e766"
+           clientSecret="SQ5lPyUrzkmKypfKZl0wnhYSGtyv7GlX"
+           authEndpoint="https://my.nsu.ru/oauth2/authorize"
+           tokenEndpoint="https://my.nsu.ru/oauth2/token"
+           userinfoEndpoint="https://my.nsu.ru/oauth2api/userinfo"/>
+
+    <!-- для использования с WSUsersMongoDB -->
+    <Resource name="WSUserDatabase"
+              auth="Container"
+              type="com.softmotions.web.security.WSUserDatabase"
+              factory="ru.nsu.WSUsersMongoDatabaseJNDIFactory"
+              config="conf/nsu-users-mongo.xml"
+              scope="Shareable"/>
 
     <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"
            localDatabase="true"
