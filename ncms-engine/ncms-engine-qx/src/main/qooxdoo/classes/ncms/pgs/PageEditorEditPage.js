@@ -318,7 +318,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify(data));
                 req.setMessageHandler(function(isError, messages) {
-                    qx.log.Logger.info("me=" + me);
                     var message = me.tr("Failed to save page.");
                     if (messages != null && messages.length > 0) {
                         message += "<br/>" + messages.join("<br/>");
