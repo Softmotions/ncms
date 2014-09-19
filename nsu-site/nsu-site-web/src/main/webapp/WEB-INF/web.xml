@@ -11,7 +11,7 @@
     </listener>
 
     <!-- включение авторизации на (используется с MyNSUOAuth2) -->
-    <security-constraint>
+    <!--<security-constraint>
         <web-resource-collection>
             <web-resource-name>Admin zone</web-resource-name>
             <url-pattern>/ncms/adm/*</url-pattern>
@@ -32,6 +32,6 @@
 
     <security-role>
         <role-name>user</role-name>
-    </security-role>
+    </security-role>-->
 
 </web-app>
