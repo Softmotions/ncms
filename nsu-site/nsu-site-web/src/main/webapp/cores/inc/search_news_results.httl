@@ -4,8 +4,10 @@
 <li>
     <div class="img-holder">
         #set(Image icon = pn.asm("icon"))
-        <img src="#if(icon != null)$!{icon.link}#else/images/none.gif#end" alt="${pn.hname}" width="81" height="68"/>
-        #set(Date event_date = asm(pn, "event_date"))
+        #if(icon != null)
+        <img src="$!{icon.link}" alt="${pn.hname}" width="81" height="68"/>
+        #end
+        #set(Date event_date = pn.eventDate())
         <span class="date">${event_date.format2("dd")}</span>
         <span class="mounth">${event_date.format2("LMMMMM")}</span>
         <span class="year">${event_date.format2("yyyy")}</span>
