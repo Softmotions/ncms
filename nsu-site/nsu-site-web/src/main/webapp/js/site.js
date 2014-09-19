@@ -871,7 +871,7 @@ function doSearch(reset) {
     fdata.push({name : "spc.action", value : "search"});
     fdata.push({name : "spc.start", value : spc.start});
     fdata.push({name : "spc.limit", value : spc.pageSize});
-    $.post(spc.form.action, fdata).done(function(data) {
+    $.post(spc.form[0].action, fdata).done(function(data) {
         spc.results.append(data);
         updateSearchButtons();
     });
