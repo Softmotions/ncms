@@ -2,7 +2,6 @@ package com.softmotions.ncms.security;
 
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.web.AccessControlHDRFilter;
-import com.softmotions.web.security.SecurityFakeEnvFilter;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.WBServletInitializerModule;
@@ -43,19 +42,7 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     public void initServlets(WBServletModule m) {
         NcmsConfiguration cfg = (NcmsConfiguration) m.getConfiguration();
         String dbJndiName = cfg.impl().getString("security[@dbJndiName]");
-        String webFakeUser = cfg.impl().getString("security.web-fakeuser");
         String webAccessControlAllow = cfg.impl().getString("security.web-access-control-allow");
-
-        if (webFakeUser != null) {
-            log.info("Setup SecurityFakeEnvFilter filter fake web user: " + webFakeUser);
-            if (StringUtils.isBlank(dbJndiName)) {
-                throw new RuntimeException("Missing required 'dbJndiName' attribute in the <security> configuration");
-            }
-            Map<String, String> params = new Flat3Map();
-            params.put("dbJndiName", dbJndiName);
-            params.put("username", webFakeUser);
-            m.filterAndBind("/*", SecurityFakeEnvFilter.class, params);
-        }
 
         if (dbJndiName != null) {
             WSUserDatabase udb = locateWSUserDatabase(dbJndiName);

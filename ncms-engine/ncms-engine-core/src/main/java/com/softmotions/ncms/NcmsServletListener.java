@@ -1,19 +1,24 @@
 package com.softmotions.ncms;
 
 import com.softmotions.web.CharsetFilter;
+import com.softmotions.web.security.SecurityFakeEnvFilter;
 import com.softmotions.weboot.WBServletListener;
 
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.logging.Logger;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -50,12 +55,34 @@ public class NcmsServletListener extends WBServletListener {
 
         sctx.addFilter("charsetFilter", CharsetFilter.class)
                 .addMappingForUrlPatterns(null, false, "/*");
+
+        initSecurity(cfg, sctx);
+
         sctx.addFilter("guiceFilter", GuiceFilter.class)
                 .addMappingForUrlPatterns(null, false, "/*");
 
         start();
 
         log.info(LOGO, cfg.getNcmsVersion());
+    }
+
+
+    private void initSecurity(NcmsConfiguration cfg, ServletContext sctx) {
+        String webFakeUser = cfg.impl().getString("security.web-fakeuser");
+        if (webFakeUser == null) {
+            return;
+        }
+        String dbJndiName = cfg.impl().getString("security[@dbJndiName]");
+        log.info("Setup SecurityFakeEnvFilter filter fake web user: " + webFakeUser);
+        if (StringUtils.isBlank(dbJndiName)) {
+            throw new RuntimeException("Missing required 'dbJndiName' attribute in the <security> configuration");
+        }
+        FilterRegistration.Dynamic reg = sctx.addFilter(SecurityFakeEnvFilter.class.getName(),
+                                                        SecurityFakeEnvFilter.class);
+        reg.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
+        reg.setInitParameter("dbJndiName", dbJndiName);
+        reg.setInitParameter("username", webFakeUser);
+
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {

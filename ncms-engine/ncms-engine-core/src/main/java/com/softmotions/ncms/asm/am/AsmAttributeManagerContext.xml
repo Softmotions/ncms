@@ -30,7 +30,7 @@
 
     <update id="updateMUser" parameterType="map">
         UPDATE ASMS
-        SET muser = #{muser}, mdate = #{mdate,jdbcType=TIMESTAMP}
+        SET muser = #{muser,jdbcType=VARCHAR}, mdate = #{mdate,jdbcType=TIMESTAMP}
         WHERE id = #{id}
     </update>
 

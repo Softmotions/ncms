@@ -355,7 +355,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             am.attributePersisted(amCtx, attr, data.get(fname));
         }
-        amCtx.flush(sctx);
+        amCtx.flush();
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
     }
 

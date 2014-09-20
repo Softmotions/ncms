@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm.am;
 
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.PageSecurityService;
+import com.softmotions.web.security.WSUser;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.google.inject.Inject;
@@ -13,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.SecurityContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -76,13 +76,12 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
     }
 
     @Transactional
-    public void flush(SecurityContext sctx) {
-
+    public void flush() {
+        WSUser user = pageSecurity.getCurrentWSUserSafe(request);
         update("updateMUser",
                "mdate", new Date(),
-               "muser", pageSecurity.getCurrentWSUserSafe(sctx).getName(),
+               "muser", (user != null) ? user.getName() : null,
                "id", asmId);
-
         if (fileDeps == null || fileDeps.isEmpty()) {
             return;
         }
