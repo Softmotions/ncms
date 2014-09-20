@@ -29,6 +29,13 @@ public class HttlAsmMethods {
         return asmHasAttribute(val) ? asm(val) : null;
     }
 
+    public static Object asmAny(Asm asm, String val) {
+        if (asm == null) {
+            return null;
+        }
+        return asm.isHasAttribute(val) ? asm(asm, val) : null;
+    }
+
     public static Object asm(String val) {
         String attrName;
         Map<String, String> opts;
