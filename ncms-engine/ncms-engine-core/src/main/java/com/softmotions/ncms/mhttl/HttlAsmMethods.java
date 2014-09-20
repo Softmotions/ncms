@@ -25,6 +25,10 @@ public class HttlAsmMethods {
         return AsmRendererContext.getSafe().getAsm().isHasAttribute(name);
     }
 
+    public static Object asmAny(String val) {
+        return asmHasAttribute(val) ? asm(val) : null;
+    }
+
     public static Object asm(String val) {
         String attrName;
         Map<String, String> opts;

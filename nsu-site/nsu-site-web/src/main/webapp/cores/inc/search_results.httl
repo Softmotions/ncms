@@ -4,7 +4,7 @@
 <li>
     <div class="text-holder">
         <h3><a href="$!{pn.link}">${pn.hname}</a></h3>
-        <p>${pn.asm("annotation")}</p>
+        <p>${pn.asmAny("annotation")}</p>
     </div>
 </li>
 #if(index % 2 ==  0)
