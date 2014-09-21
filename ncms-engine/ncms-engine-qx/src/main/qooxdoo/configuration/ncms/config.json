@@ -13,7 +13,7 @@
         "QOOXDOO_PATH" : "${MODULES_PATH}/qooxdoo-sdk",
         "QXTHEME" : "${APPLICATION}.theme.Theme",
         "API_EXCLUDE" : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
-        "LOCALES" : [ ],
+        "LOCALES" : [ "en", "ru" ],
         "CACHE" : "${qooxdoo.application.cacheDirectory}",
         "ROOT" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}",
         "SOURCE_PATH" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}/siteroot",
@@ -46,7 +46,7 @@
             ]
         },
         "debug" : {
-            "extend" : ["source-hybrid", "ncms-common"],
+            "extend" : ["source-hybrid", "ncms-common", "translation"],
             "environment" : {
                 "qx.debug" : true,
                 "ncms.debug" : true,
@@ -55,7 +55,7 @@
         },
 
         "prerelease" : {
-            "extend" : ["build", "ncms-common"],
+            "extend" : ["build", "ncms-common", "translation"],
             "environment" : {
                 "qx.debug" : true,
                 "ncms.debug" : false,

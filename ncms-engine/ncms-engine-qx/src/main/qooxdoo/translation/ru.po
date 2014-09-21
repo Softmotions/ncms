@@ -4,28 +4,28 @@ msgstr ""
 
 #: ncms/Application.js:402
 msgid "You leave %1"
-msgstr ""
+msgstr "Вы покидаете %1"
 
 #: ncms/wiki/WikiEditor.js:391 ncms/wiki/WikiEditor.js:395
 #: ncms/wiki/WikiEditor.js:398 ncms/wiki/WikiEditor.js:400 ncms/Toolbar.js:44
 #: ncms/Toolbar.js:49
 msgid "Help"
-msgstr ""
+msgstr "Справка"
 
 #: ncms/Toolbar.js:52 ncms/Toolbar.js:54
 msgid "Logout"
-msgstr ""
+msgstr "Выход"
 
 #: ncms/asm/AsmAttrEditorDlg.js:34
 msgid "Edit assembly attribute"
-msgstr ""
+msgstr "Редактирование атрибута страницы"
 
 #: ncms/asm/am/FileRefAM.js:145 ncms/asm/am/ImageAMValueWidget.js:99
 #: ncms/asm/AsmAttrEditorDlg.js:56 ncms/usr/UserEditForm.js:22
 #: ncms/usr/UserNewDlg.js:34 ncms/asm/AsmEditor.js:90
 #: ncms/pgs/PageEditorEditPage.js:136
 msgid "This field is required"
-msgstr ""
+msgstr "Обязательное поле"
 
 #: ncms/mmgr/MediaFileEditor.js:368 ncms/mmgr/MediaFilesTable.js:9
 #: ncms/asm/AsmTable.js:17 ncms/usr/UsersTable.js:10
@@ -35,18 +35,18 @@ msgstr ""
 #: ncms/asm/AsmAttrsTable.js:112 ncms/asm/am/SelectAMTable.js:65
 #: ncms/asm/am/TreeAMNewFolderDlg.js:22 ncms/pgs/PagesTable.js:21
 msgid "Name"
-msgstr ""
+msgstr "Название"
 
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:163 ncms/mmgr/MediaFilesTable.js:10
 #: ncms/asm/AsmTable.js:25 ncms/asm/AsmAttrEditorDlg.js:68
 #: ncms/asm/AsmAttrEditorDlg.js:76 ncms/asm/AsmAttrsTable.js:124
 #: ncms/usr/UserRolesTable.js:153
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #: ncms/asm/AsmAttrEditorDlg.js:69
 msgid "Choose the attribute type"
-msgstr ""
+msgstr "Выберите тип атрибута"
 
 #: ncms/asm/AsmAttrEditorDlg.js:84
 msgid "GUI Label"
@@ -54,7 +54,7 @@ msgstr ""
 
 #: ncms/asm/AsmAttrEditorDlg.js:87
 msgid "Required"
-msgstr ""
+msgstr "Обязательное"
 
 #: ncms/asm/AsmAttrEditorDlg.js:91
 msgid "GUI Required"
@@ -69,7 +69,7 @@ msgstr ""
 #: ncms/usr/UserSelectorDlg.js:38 ncms/pgs/PagesSelectorDlg.js:55
 #: ncms/mmgr/PageFilesSelectorDlg.js:114 ncms/mmgr/MediaSelectFolderDlg.js:55
 msgid "Ok"
-msgstr ""
+msgstr "Ок"
 
 #: ncms/asm/AsmSelectorDlg.js:50 ncms/asm/am/TreeAMFoldersDlg.js:56
 #: ncms/wiki/TreeDlg.js:54 ncms/asm/am/AMWrapperDlg.js:41
@@ -82,67 +82,67 @@ msgstr ""
 #: ncms/pgs/PagesSelectorDlg.js:59 ncms/mmgr/PageFilesSelectorDlg.js:118
 #: ncms/mmgr/MediaSelectFolderDlg.js:59
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:21
 msgid "Select assembly attribute type"
-msgstr ""
+msgstr "Выбор типа атрибута"
 
 #: ncms/mmgr/MediaFileEditor.js:54 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
 #: ncms/mmgr/MediaFilesTable.js:13 ncms/asm/AsmTable.js:21
 #: ncms/asm/am/RichRefAMValueWidget.js:54 ncms/asm/am/RichRefAM.js:44
 #: ncms/asm/AsmEditor.js:105 ncms/usr/UserRolesTable.js:158
 msgid "Description"
-msgstr ""
+msgstr "Описание"
 
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:169
 msgid "Class"
-msgstr ""
+msgstr "Класс"
 
 #: ncms/asm/AsmAttrsTable.js:62
 msgid "Add new attribute"
-msgstr ""
+msgstr "Добавить новый атрибут"
 
 #: ncms/asm/AsmAttrsTable.js:67
 msgid "Drop attribute"
-msgstr ""
+msgstr "Удалить атрибут"
 
 #: ncms/asm/AsmAttrsTable.js:118
 msgid "Label"
-msgstr ""
+msgstr "Подпись"
 
 #: ncms/mmgr/MediaFileEditor.js:159 ncms/asm/am/StringAM.js:62
 #: ncms/asm/AsmAttrsTable.js:130 ncms/asm/am/SelectAMTable.js:72
 msgid "Value"
-msgstr ""
+msgstr "Значение"
 
 #: ncms/asm/AsmAttrsTable.js:180
 msgid "Edit attribute"
-msgstr ""
+msgstr "Дедактировать атрибут"
 
 #: ncms/asm/AsmAttrsTable.js:182
 msgid "Override attribute"
-msgstr ""
+msgstr "Перезаписать атрибут"
 
 #: ncms/news/NewsNav.js:117 ncms/pgs/PagesTreeSelector.js:136
 #: ncms/asm/AsmAttrsTable.js:193
 msgid "New"
-msgstr ""
+msgstr "Создать"
 
 #: ncms/asm/am/TreeAMValueWidget.js:365 ncms/pgs/PageEditorEditPage.js:29
 #: ncms/asm/AsmAttrsTable.js:201
 msgid "Edit"
-msgstr ""
+msgstr "Редактировать"
 
 #: ncms/usr/UsersNav.js:85 ncms/asm/AsmNav.js:84
 #: ncms/asm/am/TreeAMValueWidget.js:374 ncms/asm/AsmAttrsTable.js:205
 #: ncms/mmgr/MediaFilesSelector.js:529
 msgid "Remove"
-msgstr ""
+msgstr "Удалить"
 
 #: ncms/asm/AsmAttrsTable.js:211
 msgid "Override"
-msgstr ""
+msgstr "Перезаписать"
 
 #: ncms/asm/AsmAttrsTable.js:215
 msgid "Edit in parent"
@@ -150,15 +150,15 @@ msgstr ""
 
 #: ncms/asm/AsmAttrsTable.js:294
 msgid "New attribute for assembly: %1"
-msgstr ""
+msgstr "Новый атрибут для шаблона: %1"
 
 #: ncms/asm/AsmAttrsTable.js:310
 msgid "A you sure to remove attribute?"
-msgstr ""
+msgstr "Вы действительно хотите удалить атрибут?"
 
 #: ncms/asm/AsmAttrsTable.js:311
 msgid "Recursive?"
-msgstr ""
+msgstr "Рекурсивно?"
 
 #: ncms/asm/AsmAttrsTable.js:337
 msgid "Override the parent assembly attribute: '%1'"
@@ -170,7 +170,7 @@ msgstr ""
 
 #: ncms/asm/AsmAttrsTable.js:341
 msgid "Edit attribute: '%1'"
-msgstr ""
+msgstr "Редактирование атрибута: '%1'"
 
 #: ncms/asm/AsmEditor.js:101
 msgid "Core"
@@ -178,27 +178,27 @@ msgstr ""
 
 #: ncms/asm/AsmEditor.js:108 ncms/asm/AsmEditor.js:235
 msgid "Class name of optional assembly controller"
-msgstr ""
+msgstr "Имя класса контроллера щаблона (опционально)"
 
 #: ncms/asm/AsmEditor.js:110
 msgid "Controller"
-msgstr ""
+msgstr "Контроллер"
 
 #: ncms/asm/AsmEditor.js:113
 msgid "None"
-msgstr ""
+msgstr "Нет"
 
 #: ncms/asm/AsmEditor.js:114
 msgid "Page"
-msgstr ""
+msgstr "Страница"
 
 #: ncms/asm/AsmEditor.js:115
 msgid "News page"
-msgstr ""
+msgstr "Новость"
 
 #: ncms/asm/AsmEditor.js:117 ncms/pgs/PageEditorEditPage.js:66
 msgid "Template"
-msgstr ""
+msgstr "Шаблон"
 
 #: ncms/asm/AsmEditor.js:123
 msgid "Parents"
@@ -206,11 +206,11 @@ msgstr ""
 
 #: ncms/asm/AsmEditor.js:129
 msgid "Attributes"
-msgstr ""
+msgstr "Атрибуты"
 
 #: ncms/asm/AsmEditor.js:166
 msgid "Select core file for '%1' assembly"
-msgstr ""
+msgstr "Выберите файл вёрстки для шаблона: '%1'"
 
 #: ncms/asm/AsmEditor.js:189
 msgid "Are you sure to remove local assembly core?"
@@ -218,25 +218,25 @@ msgstr ""
 
 #: ncms/asm/AsmNav.js:70
 msgid "New assembly"
-msgstr ""
+msgstr "Новый шаблон"
 
 #: ncms/asm/AsmNav.js:74 ncms/mmgr/MediaItemTreeSelector.js:87
 msgid "Refresh"
-msgstr ""
+msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:121 ncms/asm/AsmNav.js:80
 #: ncms/asm/am/TreeAMValueWidget.js:370 ncms/mmgr/MediaItemTreeSelector.js:72
 #: ncms/mmgr/MediaFilesSelector.js:518
 msgid "Rename"
-msgstr ""
+msgstr "Переименовать"
 
 #: ncms/asm/AsmNav.js:96
 msgid "Are you sure to remove assembly: \"%1\"?"
-msgstr ""
+msgstr "Вы действительно хотите удалить шаблон: '%1'?"
 
 #: ncms/asm/am/AsmRefAM.js:37 ncms/asm/AsmNewDlg.js:19
 msgid "Assembly"
-msgstr ""
+msgstr "Шаблон"
 
 #: ncms/asm/AsmParentsTable.js:60
 msgid "Extend from parent"
@@ -256,11 +256,11 @@ msgstr ""
 
 #: ncms/asm/AsmSelectorDlg.js:22 ncms/asm/am/AsmRefAM.js:44
 msgid "Select assembly"
-msgstr ""
+msgstr "Выбор шаблона"
 
 #: ncms/asm/am/AliasAM.js:13
 msgid "Alias"
-msgstr ""
+msgstr "Алиас"
 
 #: ncms/asm/am/AsmRefAM.js:16
 msgid "Include assembly"
@@ -280,7 +280,7 @@ msgstr ""
 
 #: ncms/asm/am/BooleanAM.js:31
 msgid "Boolean value"
-msgstr ""
+msgstr "Логическое значение"
 
 #: ncms/asm/am/BreadCrumbsAM.js:8
 msgid "Bread crumbs"
@@ -292,11 +292,11 @@ msgstr ""
 
 #: ncms/asm/am/DateAM.js:9
 msgid "Date selector"
-msgstr ""
+msgstr "Выбор даты"
 
 #: ncms/asm/am/DateAM.js:32
 msgid "Date format"
-msgstr ""
+msgstr "Формат даты"
 
 #: ncms/asm/am/FileRefAM.js:14
 msgid "Include file resource"
@@ -304,58 +304,61 @@ msgstr ""
 
 #: ncms/asm/am/FileRefAM.js:53 ncms/asm/am/WebRefAM.js:52
 msgid "Location"
-msgstr ""
+msgstr "Местоположение"
 
 #: ncms/asm/am/FileRefAM.js:65
 msgid "Render as template"
-msgstr ""
+msgstr "Обрабатывать как шаблон"
 
 #: ncms/asm/am/FileRefAM.js:73 ncms/asm/am/WebRefAM.js:67
 msgid "Render only location"
-msgstr ""
+msgstr "Обрабатывать как местоположение"
 
 #: ncms/asm/am/FileRefAM.js:106
 msgid "File"
-msgstr ""
+msgstr "Файл"
 
 #: ncms/asm/am/FileRefAM.js:111 ncms/asm/am/FileRefAM.js:118
 msgid "Please specify a file"
-msgstr ""
+msgstr "Пожалуйста, выберите файл"
 
 #: ncms/asm/am/RichRefAMValueWidget.js:72 ncms/asm/am/RichRefAM.js:48
 #: ncms/asm/am/RichRefAM.js:56 ncms/asm/am/ImageAM.js:14
 msgid "Image"
-msgstr ""
+msgstr "Картинка"
 
 #: ncms/wiki/InsertYoutubeDlg.js:42 ncms/asm/am/ImageAM.js:38
 msgid "Width"
-msgstr ""
+msgstr "Ширина"
 
 #: ncms/wiki/InsertYoutubeDlg.js:45 ncms/asm/am/ImageAM.js:44
 msgid "Height"
-msgstr ""
+msgstr "Высота"
 
 #: ncms/asm/am/ImageAM.js:57
 msgid "Automatic image resizing to given height and width values"
-msgstr ""
+msgstr "Автоматическое изменение размера картинки под указанные"
 
 #: ncms/asm/am/ImageAM.js:58
 msgid "Auto resize"
-msgstr ""
+msgstr "Автоизменение размера"
 
 #: ncms/asm/am/ImageAM.js:70
 msgid ""
 "Automatic image resizing to cover given area. Image's original aspect ratio "
 "is preserved."
 msgstr ""
+"Автоматическое масштабирование размера картинки под указанные размеры с "
+"сохранение пропорций"
 
 #: ncms/asm/am/ImageAM.js:81
 msgid "Cover area"
-msgstr ""
+msgstr "Масштабирование"
 
 #: ncms/asm/am/ImageAM.js:86
 msgid "Restrict image size to given height and width values"
 msgstr ""
+"Принимать только картинки, удовлетворяющие критериям (ширина и высота)"
 
 #: ncms/asm/am/ImageAM.js:87
 msgid "Restrict size"
@@ -373,7 +376,7 @@ msgstr ""
 
 #: ncms/asm/am/ImageAMValueWidget.js:33
 msgid "Select image"
-msgstr ""
+msgstr "Выберите картинку"
 
 #: ncms/asm/am/ImageAMValueWidget.js:127
 msgid "Image size does not match restriction"
