@@ -34,7 +34,7 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
                 new ncms.asm.AsmSelector(
                         constViewSpec,
                         new qx.ui.table.selection.Model()
-                                .set({selectionMode : qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION}),
+                                .set({selectionMode : qx.ui.table.selection.Model.SINGLE_SELECTION}),
                         useColumns);
         selector.getTable().addListener("cellDbltap", this.__ok, this);
 

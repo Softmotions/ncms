@@ -20,6 +20,7 @@
             <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
             <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
+            <if test="name_restriction != null">AND asm.name LIKE #{name_restriction}</if>
             <if test="exclude != null">AND asm.id != #{exclude}</if>
         </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
@@ -32,6 +33,7 @@
             <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
             <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
+            <if test="name_restriction != null">AND asm.name LIKE #{name_restriction}</if>
             <if test="exclude != null">AND asm.id != #{exclude}</if>
         </where>
     </select>
@@ -191,12 +193,16 @@
     </select>
 
 
-    <select id="selectAsmType" resultType="string" parameterType="long">
+    <select id="selectAsmTParents" resultType="map" parameterType="long">
         SELECT
-            a.type
+        a.type AS "type",
+        p.id   AS "pid",
+        p.name AS "pname",
+        p.type AS "ptype"
         FROM ASMS a
+        LEFT JOIN ASMS np ON a.nav_parent_id = np.id
+        LEFT JOIN ASM_PARENTS AS ap ON ap.asm_id = np.id
+        LEFT JOIN ASMS p ON p.id = ap.asm_parent_id AND p.template = 1
         WHERE a.id = #{id}
     </select>
-
-
 </mapper>

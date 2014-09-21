@@ -31,6 +31,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -366,7 +367,6 @@ public class AsmRS extends MBDAOSupport {
                "name", name,
                "asm_id", asmId);
         if (recursive != null && recursive.booleanValue()) {
-            log.info("Remove assembly attribute recursive, attr=" + asmId + " name=" + name);
             deleteAttributeFromChilds(asmId, name);
         }
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, asmId));
@@ -595,9 +595,15 @@ public class AsmRS extends MBDAOSupport {
             cq.withParam("template", 1);
             val = req.getParameter("pageId");
             if (!StringUtils.isBlank(val)) {
-                String ptype = selectOne("selectAsmType", Long.parseLong(val));
-                if ("news.page".equals(ptype)) {
+                List<Map<String, Object>> rows = select("selectAsmTParents", new RowBounds(0, 1), Long.parseLong(val));
+                Map<String, Object> prow = rows.isEmpty() ? null : rows.iterator().next();
+                String type = (prow != null) ? (String) prow.get("type") : null;
+                if ("news.page".equals(type)) {
                     cq.withParam("template_mode", "news");
+                    String pname = (String) prow.get("pname");
+                    if (pname != null) {
+                        cq.withParam("name_restriction", pname + "_%");
+                    }
                 } else {
                     cq.withParam("template_mode", "page");
                 }
