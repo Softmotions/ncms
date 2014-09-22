@@ -10,11 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import org.apache.commons.configuration.SubnodeConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Collection;
 
 /**
@@ -51,6 +53,31 @@ public class MainPageController implements AsmController {
 
     @Transactional
     public boolean execute(AsmRendererContext ctx) throws Exception {
+        HttpServletRequest req = ctx.getServletRequest();
+        HttpServletResponse resp = ctx.getServletResponse();
+        String action = req.getParameter("mpc.action");
+        if ("fetchMore".equals(action)) {
+            // TODO: checks ?
+            String type = StringUtils.trimToEmpty(req.getParameter("mpc.fetch.type"));
+            String templateLocation = "/site/cores/inc/index_news_" + type + ".httl";
+            switch (type) {
+                case "a":
+                    addNewsA(ctx);
+                    break;
+                case "b":
+                    addNewsB(ctx);
+                    break;
+                case "c":
+                    addNewsC(ctx);
+                    break;
+                default:
+                    return true;
+            }
+            resp.setContentType("text/html");
+            ctx.getRenderer().renderTemplate(templateLocation, ctx, resp.getWriter());
+            return true;
+        }
+
         addNewsA(ctx);
         addNewsB(ctx);
         addNewsC(ctx);

@@ -1,0 +1,9 @@
+#foreach(Asm pn in news_b)
+<li>
+    #set(Date date = pn.eventDate())
+    <span class="date">${date.format2("dd")} ${date.format2("LMMMMM")} <span
+            class="year">${date.format2("yyyy")}</span></span>
+
+    <p><a href="$!{pn.link}">${pn.asm("annotation")}</a></p>
+</li>
+#end
