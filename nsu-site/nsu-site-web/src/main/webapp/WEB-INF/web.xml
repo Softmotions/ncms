@@ -15,6 +15,7 @@
         <web-resource-collection>
             <web-resource-name>Admin zone</web-resource-name>
             <url-pattern>/ncms/adm/*</url-pattern>
+            <url-pattern>/ncms/rs/adm/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>user</role-name>
