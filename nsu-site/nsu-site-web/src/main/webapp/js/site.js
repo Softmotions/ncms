@@ -844,9 +844,12 @@ function initSearch(pageSize) {
         form : $('form#spc-search-form'),
         results : $('ul#spc-search-results'),
         fetchMore : $('a#spc-fetch-more'),
+        loader: $('.loader'),
         start : 0,
         pageSize : pageSize || 1
     };
+
+    spc.loader.hide();
 
     updateSearchButtons = function() {
         spc.fetchMore.hide();
@@ -860,12 +863,14 @@ function initSearch(pageSize) {
             spc.results.html(null);
         }
 
+        spc.loader.show();
         spc.start = reset ? 0 : (spc.start || 0) + spc.pageSize;
         var fdata = spc.form.serializeArray();
         fdata.push({name : "spc.action", value : "search"});
         fdata.push({name : "spc.start", value : spc.start});
         fdata.push({name : "spc.limit", value : spc.pageSize});
         $.post(spc.form[0].action, fdata).done(function(data) {
+            spc.loader.hide();
             spc.results.append(data);
             updateSearchButtons();
         });

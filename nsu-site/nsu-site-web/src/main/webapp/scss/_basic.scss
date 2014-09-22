@@ -133,3 +133,9 @@ hr {
   }
 }
 
+div.loader {
+  width: 43px;
+  height: 11px;
+  background: transparent url(../images/loader.gif) no-repeat 0 0;
+  margin: 5px auto;
+}
