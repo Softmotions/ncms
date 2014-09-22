@@ -22,22 +22,10 @@
 
                     <h2>Новости</h2>
                     <ul class="post-list">
-                        #foreach(Asm p in asmNavChilds("news.page", 0, 100))
-                        #set(Date date = p.eventDate())
-                        <li>
-                            <div class="date-holder">
-                                <span class="date">${date.format2("dd")}</span>
-                                <span class="month">${date.format2("MMM")}</span>
-                                <span class="year">${date.format2("yyyy")}</span>
-                            </div>
-                            <div class="text-holder">
-                                <h1><a href="$!{p.link}">${p.hname}</a></h1>
-
-                                <p>${p.asm("annotation")}</p>
-                            </div>
-                        </li>
-                        #end
+                        $!{asm("news_list")}
                     </ul>
+                    <div class="loader" style="display: none;">&nbsp;</div>
+                    <a class="fetch-more" id="fetch-more" style="display: none"><span>Загрузить еще</span></a>
                 </div>
                 <aside id="sidebar">
                     <ul class="side-list">
@@ -62,5 +50,8 @@
     </div>
 </div>
 $!{include("inc/scripts.httl")}
+<script>
+    initFetchMore("a#fetch-more", "div.loader", "$!{page().link}", "ul.post-list", $!{news_limit}, "news");
+</script>
 </body>
 </html>

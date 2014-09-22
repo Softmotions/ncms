@@ -1,0 +1,28 @@
+#set(int offset = news_skip)
+#set(int limit = news_limit)
+#set(int index = offset)
+#foreach(Asm p in asmNavChilds("news.page", offset, limit))
+#set(Date date = p.eventDate())
+#set(int index = inde + 1)
+<li #if(index % 2 == 0)style="clear: both;"#end>
+    <div class="img-holder">
+        #set(Image icon = p.asm("icon"))
+        #if(icon != null)
+        <img src="$!{icon.link}" alt="${p.hname}" width="81" height="68"/>
+        #end
+        <span class="date">${date.format2("dd")}</span>
+        <span class="month">${date.format2("MMM")}</span>
+        <span class="year">${date.format2("yyyy")}</span>
+    </div>
+    <div class="text-holder">
+        <h3><a href="$!{p.link}">${p.hname}</a></h3>
+
+        <p>${p.asm("annotation")}</p>
+        #if(p.isHasAttribute("subcategory"))
+        #foreach(SelectNode sn in p.asm("subcategory"))
+        <span class="tag">${sn.key}</span>
+        #end
+        #end
+    </div>
+</li>
+#end

@@ -57,7 +57,6 @@ public class MainPageController implements AsmController {
         HttpServletResponse resp = ctx.getServletResponse();
         String action = req.getParameter("mpc.action");
         if ("fetchMore".equals(action)) {
-            // TODO: checks ?
             String type = StringUtils.trimToEmpty(req.getParameter("mpc.fetch.type"));
             String templateLocation = "/site/cores/inc/index_news_" + type + ".httl";
             switch (type) {

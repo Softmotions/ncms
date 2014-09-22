@@ -43,193 +43,11 @@
     </div>
     <a href="#" class="about"><span>${page().hname}</span></a>
 
-
     <ul class="news-list list2">
-        <li>
-            <div class="img-holder">
-                <img src="images/img2.png" width="81" height="68" alt="image description"/>
-                <span class="date">17</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Дни Шекспира в НГУ</a></h3>
-
-                <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс
-                    мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль
-                    «Ромео и Джульетта», флэшмоб по </p>
-                <span class="tag">Атмосфера</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img2.png" width="81" height="68" alt="image description"/>
-                <span class="date">17</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Дни Шекспира в НГУ</a></h3>
-
-                <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс
-                    мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль
-                    «Ромео и Джульетта», флэшмоб по </p>
-                <span class="tag">Атмосфера</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img3.png" width="81" height="68" alt="image description"/>
-                <span class="date">13</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Лекция «Хайтек <br/>в современном мире»</a></h3>
-
-                <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт Израиля».
-                    Лекция состоится 12 мая в 17.45 в большой </p>
-                <span class="tag">Образование</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img3.png" width="81" height="68" alt="image description"/>
-                <span class="date">13</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Лекция «Хайтек <br/>в современном мире»</a></h3>
-
-                <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт Израиля».
-                    Лекция состоится 12 мая в 17.45 в большой </p>
-                <span class="tag">Образование</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img4.png" width="81" height="68" alt="image description"/>
-                <span class="date">9</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Возложение цветов</a></h3>
-
-                <p>В рамках мероприятий, посвященных празднованию Дня Победы, социальное управление приглашает студентов
-                    и сотрудников НГУ принять участие в </p>
-                <span class="tag">Атмосфера</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img4.png" width="81" height="68" alt="image description"/>
-                <span class="date">9</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Возложение цветов</a></h3>
-
-                <p>В рамках мероприятий, посвященных празднованию Дня Победы, социальное управление приглашает студентов
-                    и сотрудников НГУ принять участие в </p>
-                <span class="tag">Атмосфера</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img2.png" width="81" height="68" alt="image description"/>
-                <span class="date">17</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Дни Шекспира в НГУ</a></h3>
-
-                <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс
-                    мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль
-                    «Ромео и Джульетта», флэшмоб по </p>
-                <span class="tag">Атмосфера</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img2.png" width="81" height="68" alt="image description"/>
-                <span class="date">17</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Дни Шекспира в НГУ</a></h3>
-
-                <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс
-                    мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ на спектакль
-                    «Ромео и Джульетта», флэшмоб по </p>
-                <span class="tag">Атмосфера</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img3.png" width="81" height="68" alt="image description"/>
-                <span class="date">13</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Лекция «Хайтек <br/>в современном мире»</a></h3>
-
-                <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт Израиля».
-                    Лекция состоится 12 мая в 17.45 в большой </p>
-                <span class="tag">Образование</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img3.png" width="81" height="68" alt="image description"/>
-                <span class="date">13</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Лекция «Хайтек <br/>в современном мире»</a></h3>
-
-                <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт Израиля».
-                    Лекция состоится 12 мая в 17.45 в большой </p>
-                <span class="tag">Образование</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img4.png" width="81" height="68" alt="image description"/>
-                <span class="date">9</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Возложение цветов</a></h3>
-
-                <p>В рамках мероприятий, посвященных празднованию Дня Победы, социальное управление приглашает студентов
-                    и сотрудников НГУ принять участие в </p>
-                <span class="tag">Атмосфера</span>
-            </div>
-        </li>
-        <li>
-            <div class="img-holder">
-                <img src="images/img4.png" width="81" height="68" alt="image description"/>
-                <span class="date">9</span>
-                <span class="month">май</span>
-                <span class="year">2014</span>
-            </div>
-            <div class="text-holder">
-                <h3><a href="#">Возложение цветов</a></h3>
-
-                <p>В рамках мероприятий, посвященных празднованию Дня Победы, социальное управление приглашает студентов
-                    и сотрудников НГУ принять участие в </p>
-                <span class="tag">Атмосфера</span>
-            </div>
-        </li>
+        $!{asm("news_list")}
     </ul>
+    <div class="loader" style="display: none;">&nbsp;</div>
+    <a class="fetch-more" id="fetch-more" style="display: none"><span>Загрузить еще</span></a>
 
     ${include("inc/soclikes.httl")}
 </div>
@@ -239,5 +57,8 @@
 </div>
 </div>
 $!{include("inc/scripts.httl")}
+<script>
+    initFetchMore("a#fetch-more", "div.loader", "$!{page().link}", "ul.news-list", $!{news_limit}, "news");
+</script>
 </body>
 </html>
