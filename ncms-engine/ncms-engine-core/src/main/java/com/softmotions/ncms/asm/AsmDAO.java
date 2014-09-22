@@ -22,15 +22,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Assembly access DAO.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@SuppressWarnings("unchecked")
 @Singleton
 public class AsmDAO extends MBDAOSupport {
 
@@ -195,6 +198,25 @@ public class AsmDAO extends MBDAOSupport {
         return update("asmRename",
                       "id", id,
                       "name", name);
+    }
+
+    @Transactional
+    public Collection<String> asmAccessRoles(long id) {
+        List<String> res = select("asmAccessRoles", id);
+        Collections.sort(res);
+        return res.isEmpty() ? Collections.EMPTY_LIST : res;
+    }
+
+    @Transactional
+    public void setAsmAccessRoles(long id, String... roles) {
+        Set<String> rset = new HashSet<>(roles.length);
+        Collections.addAll(rset, roles);
+        delete("deleteAsmAccessRoles", id);
+        if (roles.length > 0) {
+            insert("insertAsmAccessRoles",
+                   "id", id,
+                   "roles", rset);
+        }
     }
 
     /**

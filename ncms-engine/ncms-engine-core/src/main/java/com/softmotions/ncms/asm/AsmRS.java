@@ -190,7 +190,10 @@ public class AsmRS extends MBDAOSupport {
         adao.update("asmUpdateCore",
                     "id", id,
                     "coreId", null);
-        Asm asm = get(id);
+        Asm asm = adao.asmSelectById(id);
+        if (asm == null) {
+            throw new NotFoundException();
+        }
         res.putPOJO("core", asm.getCore());
         res.putPOJO("effectiveCore", asm.getEffectiveCore());
 
@@ -202,17 +205,17 @@ public class AsmRS extends MBDAOSupport {
     @Path("/{id}")
     @JsonView(Asm.ViewFull.class)
     @Transactional
-    public Asm get(@PathParam("id") Long id) {
+    public Asm get(@PathParam("id") Long id) throws Exception {
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
             throw new NotFoundException("");
         }
+        asm.accessRoles = adao.asmAccessRoles(asm.getId());
         return asm;
     }
 
     @GET
     @Path("/basic/{name}")
-    @JsonView(Asm.ViewFull.class)
     @Transactional
     public ObjectNode getBasic(@PathParam("name") String name) {
         ObjectNode res = mapper.createObjectNode();
@@ -332,6 +335,13 @@ public class AsmRS extends MBDAOSupport {
                 controller = null;
             }
             args.param("controller", controller);
+        }
+        if (props.hasNonNull("accessRoles")) {
+            String[] roles = props.get("accessRoles").asText().split(",");
+            for (int i = 0, l = roles.length; i < l; ++i) {
+                roles[i] = roles[i].trim();
+            }
+            adao.setAsmAccessRoles(id, roles);
         }
         update("updateAssemblyProps", args);
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));

@@ -400,6 +400,28 @@
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
     </select>
 
+    <select id="asmAccessRoles" resultType="string" parameterType="long">
+        SELECT
+            ar.role_name
+        FROM ASM_ACCESS_ROLES AS ar
+        WHERE ar.asm_id = #{id}
+    </select>
+
+    <delete id="deleteAsmAccessRoles" parameterType="long">
+        DELETE FROM
+            ASM_ACCESS_ROLES
+        WHERE asm_id = #{id}
+    </delete>
+
+    <insert id="insertAsmAccessRoles" parameterType="map">
+        INSERT INTO ASM_ACCESS_ROLES(asm_id, role_name)
+        VALUES
+        <foreach collection="roles" item="role" separator=",">
+            (#{id}, #{role})
+        </foreach>
+    </insert>
+
+
     <!-- ======================== Result maps ============================= -->
 
     <resultMap id="coreRM"

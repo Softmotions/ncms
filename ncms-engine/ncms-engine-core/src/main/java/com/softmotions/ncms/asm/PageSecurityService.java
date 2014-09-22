@@ -556,6 +556,15 @@ public class PageSecurityService extends MBDAOSupport {
         return "";
     }
 
+    public Set<Long> getAccessibleTemplates(HttpServletRequest req) {
+        return getAccessibleTemplates(toWSUser(req));
+    }
+
+    public Set<Long> getAccessibleTemplates(WSUser user) {
+        //todo
+        return Collections.EMPTY_SET;
+    }
+
     /**
      * User rights info
      */

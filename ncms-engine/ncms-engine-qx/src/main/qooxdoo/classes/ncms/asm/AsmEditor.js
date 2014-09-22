@@ -105,7 +105,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
         form.add(el, this.tr("Description"), null, "description");
 
         el = new qx.ui.form.TextField().set({maxLength : 127});
-        el.setPlaceholder(this.tr("Class name of optional assembly controller"));
+        el.setPlaceholder(this.tr("Class name of an optional assembly controller"));
         el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Controller"), null, "controller");
 
@@ -115,6 +115,12 @@ qx.Class.define("ncms.asm.AsmEditor", {
         el.add(new qx.ui.form.RadioButton(this.tr("News page")).set({model : "news"}));
         el.addListener("changeSelection", this.__saveSimpleProps, this);
         form.add(el, this.tr("Template"), null, "templateMode");
+
+        el = new qx.ui.form.TextField().set({maxLength : 255});
+        el.setPlaceholder(this.tr("Comma separated list of roles used to access the assembly"));
+        el.setEnabled(false);
+        el.addListener("changeValue", this.__saveSimpleProps, this);
+        form.add(el, this.tr("Roles"), null, "accessRoles");
 
         el = new ncms.asm.AsmParentsTable();
         el.addListener("parentsChanged", function() {
@@ -222,7 +228,12 @@ qx.Class.define("ncms.asm.AsmEditor", {
                     ctls["name"].setValue(spec["name"]);
                     ctls["description"].setValue(spec["description"]);
                     ctls["templateMode"].setModelSelection([spec["templateMode"] || "none"]);
-
+                    ctls["accessRoles"].setEnabled(spec["templateMode"] != null && spec["templateMode"] !== "none");
+                    if (!Array.isArray(spec["accessRoles"])) {
+                        ctls["accessRoles"].resetValue();
+                    } else {
+                        ctls["accessRoles"].setValue(spec["accessRoles"].join(", "));
+                    }
                     if (!sm.lang.String.isEmpty(spec["effectiveController"]) &&
                             sm.lang.String.isEmpty(spec["controller"])) {
                         ctls["controller"].setPlaceholder(spec["effectiveController"]);
@@ -232,7 +243,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
                         if (!sm.lang.String.isEmpty(spec["effectiveController"])) {
                             ctls["controller"].setPlaceholder(spec["effectiveController"]);
                         } else {
-                            ctls["controller"].setPlaceholder(this.tr("Class name of optional assembly controller"));
+                            ctls["controller"].setPlaceholder(this.tr("Class name of an optional assembly controller"));
                         }
                     } else {
                         ctls["controller"].setValue(spec["controller"]);

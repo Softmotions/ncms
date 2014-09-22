@@ -8,24 +8,31 @@
     <!-- дополнительные настройки-->
     <properties>
         <persons>
-            <accessWritable>true</accessWritable> <!-- возможность редактировать права пользователей -->
+            <!-- возможность редактировать права пользователей -->
+            <accessWritable>true</accessWritable>
         </persons>
         <roles>
-            <writable>true</writable> <!-- возможность записи в коллекцию ролей (надо для инициализации дефолтных ролей) -->
+            <!-- возможность записи в коллекцию ролей (надо для инициализации дефолтных ролей) -->
+            <writable>true</writable>
         </roles>
         <groups>
-            <writable>true</writable> <!-- возможность записи в коллекцию групп (надо для инициализации дефолтных групп) -->
+            <!-- возможность записи в коллекцию групп (надо для инициализации дефолтных групп) -->
+            <writable>true</writable>
         </groups>
     </properties>
     <!-- начальные данные. роли и граппу будут созданы при старте (необходимо выставить в true параметры roles.writable и groups.writable) -->
     <defaults>
         <role name="admin" description="Superuser role"/>
-        <role name="user" description="Simple user"/>
         <role name="admin.asm" description="Assemblies administrator"/>
         <role name="admin.users" description="Users administrator"/>
         <role name="admin.structure" description="Site atructure administrator"/>
+        <role name="user" description="Simple user"/>
+        <role name="faculty" description="Faculty user"/>
+        <role name="dept" description="Department user"/>
+        <role name="press" description="Press center user"/>
 
         <group name="users" description="User group" roles="user"/>
-        <group name="admins" description="Superuser group" roles="admin,admin.asm,admin.users,user,admin.structure"/>
+        <group name="admins" description="Superuser group"
+               roles="admin,admin.asm,admin.users,user,admin.structure,faculty,dept,press"/>
     </defaults>
 </config>

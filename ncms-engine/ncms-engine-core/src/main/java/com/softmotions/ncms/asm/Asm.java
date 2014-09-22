@@ -4,8 +4,10 @@ import com.softmotions.commons.cont.AbstractIndexedCollection;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.Pair;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.AbstractIterator;
@@ -41,6 +43,13 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 @JsonRootName("asm")
 @XmlAccessorType(XmlAccessType.NONE)
+@JsonAutoDetect(
+        creatorVisibility = JsonAutoDetect.Visibility.NONE,
+        fieldVisibility = JsonAutoDetect.Visibility.NONE,
+        getterVisibility = JsonAutoDetect.Visibility.NONE,
+        isGetterVisibility = JsonAutoDetect.Visibility.NONE,
+        setterVisibility = JsonAutoDetect.Visibility.NONE
+)
 public class Asm implements Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(Asm.class);
@@ -100,6 +109,8 @@ public class Asm implements Serializable {
     String navAlias;
 
     String navCachedPath;
+
+    Collection<String> accessRoles;
 
 
     public Asm() {
@@ -199,6 +210,7 @@ public class Asm implements Serializable {
     public void setTemplateMode(String templateMode) {
         this.templateMode = templateMode;
     }
+
     public Date getMdate() {
         return mdate;
     }
@@ -254,7 +266,7 @@ public class Asm implements Serializable {
         this.core = core;
     }
 
-    @JsonProperty()
+    @JsonProperty
     public AsmCore getEffectiveCore() {
         AsmCore c = getCore();
         if (c != null || getParents() == null) {
@@ -267,6 +279,11 @@ public class Asm implements Serializable {
             }
         }
         return null;
+    }
+
+    @JsonView(Asm.ViewFull.class)
+    public Collection<String> getAccessRoles() {
+        return accessRoles;
     }
 
     public List<Asm> getParents() {

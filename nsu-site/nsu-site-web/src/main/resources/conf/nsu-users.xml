@@ -7,9 +7,12 @@
     <role name="admin.asm" description="Assemblies administrator"/>
     <role name="admin.users" description="Users administrator"/>
     <role name="admin.structure" description="Site atructure administrator"/>
+    <role name="faculty" description="Faculty user"/>
+    <role name="dept" description="Department user"/>
+    <role name="press" description="Press center user"/>
 
     <group name="admins" description="Superuser group"
-           roles="admin,admin.asm,admin.users,user,admin.structure">
+           roles="admin,admin.asm,admin.users,user,admin.structure,faculty,dept,press">
     </group>
 
     <group name="users" description="User group"

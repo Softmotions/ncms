@@ -180,7 +180,7 @@
             <column name="FILE_ID"/>
         </createIndex>
     </changeSet>
-    
+
     <changeSet id="15" author="adamansky@gmail.com">
         <dropNotNullConstraint tableName="ASM_ATTR_IDXVALS" columnName="VALUE"/>
         <addColumn tableName="ASM_ATTR_IDXVALS">
@@ -200,6 +200,30 @@
         <modifyDataType tableName="ASM_ATTRS"
                         columnName="LARGE_VALUE"
                         newDataType="CLOB(10485760)"/>
+    </changeSet>
+
+
+    <changeSet id="18" author="adamansky@gmail.com">
+
+        <createTable tableName="ASM_ACCESS_ROLES">
+            <column name="ASM_ID" type="BIGINT"/>
+            <column name="ROLE_NAME" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="ASM_ACCESS_ROLES"
+                                 baseColumnNames="ASM_ID"
+                                 constraintName="FK_ASMACCESSROLES_ASMS"
+                                 referencedTableName="ASMS"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+        <createIndex tableName="ASM_ACCESS_ROLES"
+                     indexName="IDX_ASMACCESSROLES_ALL"
+                     unique="true">
+            <column name="ROLE_NAME"/>
+            <column name="ASM_ID"/>
+        </createIndex>
+
     </changeSet>
 
 </databaseChangeLog>
