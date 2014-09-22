@@ -4,7 +4,7 @@
 #foreach(Asm p in asmNavChilds("news.page", offset, limit))
 #set(Date date = p.eventDate())
 #set(int index = inde + 1)
-<li #if(index % 2 == 0)style="clear: both;"#end>
+<li style="display: none; #if(index % 2 == 0)clear: both;#end">
     <div class="img-holder">
         #set(Image icon = p.asm("icon"))
         #if(icon != null)

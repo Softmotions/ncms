@@ -24,7 +24,6 @@
                     <ul class="post-list">
                         $!{asm("news_list")}
                     </ul>
-                    <div class="loader" style="display: none;">&nbsp;</div>
                     <a class="fetch-more" id="fetch-more" style="display: none"><span>Загрузить еще</span></a>
                 </div>
                 <aside id="sidebar">
@@ -51,7 +50,7 @@
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    initFetchMore("a#fetch-more", "div.loader", "$!{page().link}", "ul.post-list", $!{news_limit}, "news");
+    initFetchMore("a#fetch-more", "$!{page().link}", "ul.post-list", $!{news_limit}, "news");
 </script>
 </body>
 </html>

@@ -46,7 +46,6 @@
     <ul class="news-list list2">
         $!{asm("news_list")}
     </ul>
-    <div class="loader" style="display: none;">&nbsp;</div>
     <a class="fetch-more" id="fetch-more" style="display: none"><span>Загрузить еще</span></a>
 
     ${include("inc/soclikes.httl")}
@@ -58,7 +57,7 @@
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    initFetchMore("a#fetch-more", "div.loader", "$!{page().link}", "ul.news-list", $!{news_limit}, "news");
+    initFetchMore("a#fetch-more", "$!{page().link}", "ul.news-list", $!{news_limit}, "news");
 </script>
 </body>
 </html>

@@ -1019,9 +1019,9 @@ function initMainNews() {
     });
 }
 
-function initFetchMore(btn, loader, action, results, pageSize, prefix) {
-    $(loader).hide();
+function initFetchMore(btn, action, results, pageSize, prefix) {
     $(btn).hide();
+    $(results).find('li').show();
 
     $(btn).click(function() {
                 var data = {};
@@ -1036,10 +1036,8 @@ function initFetchMore(btn, loader, action, results, pageSize, prefix) {
                     if ($(results).find('li').size() - count >= pageSize) {
                         $(btn).show();
                     }
-                }).always(function() {
-                    $(loader).hide()
+                    $(results).find('li:hidden').slideDown();
                 });
-                $(loader).show();
                 return false;
             }
     );
