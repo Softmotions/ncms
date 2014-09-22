@@ -378,8 +378,15 @@ public class PageRS extends MBDAOSupport implements PageService {
         Integer ts = selectOne("selectPageTemplateStatus", templateId);
         if (ts == null || ts.intValue() == 0) {
             log.warn("Assembly: " + templateId + " is not page template");
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
+        //adao.
+        Collection<Long> aTemplates = pageSecurity.getAccessibleTemplates(req);
+        if (!aTemplates.contains(templateId)) {
+            log.warn("Template: " + templateId + " is not accesible for user");
+            throw new ForbiddenException(messages.get("ncms.page.template.access.denied", req));
+        }
+
         adao.asmRemoveAllParents(id);
         adao.asmSetParent(id, templateId);
 
@@ -450,7 +457,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         if (name == null ||
             !ArrayUtils.isAnyOf(type, "page.folder", "page", "news.page")) {
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
         if (parent == null && !req.isUserInRole("admin.structure")) {
             throw new ForbiddenException("");
@@ -494,7 +501,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
         if (id == null || name == null || type == null ||
             (!"page.folder".equals(type) && !"page".equals(type) && !"news.page".equals(type))) {
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
 
         if (!pageSecurity.canDelete(id, req)) {
@@ -524,7 +531,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         long src = spec.hasNonNull("src") ? spec.get("src").longValue() : 0;
         long tgt = spec.hasNonNull("tgt") ? spec.get("tgt").longValue() : 0;
         if (src == 0) {
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
         Asm srcPage = adao.asmSelectById(src);
         Asm tgtPage = (tgt != 0) ? adao.asmSelectById(tgt) : null; //zero tgt => Root target
@@ -532,7 +539,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new NotFoundException("");
         }
         if (tgtPage != null && !"page.folder".equals(tgtPage.getType())) {
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
         if (src == tgt) {
             String msg = messages.get("ncms.mmgr.folder.cantMoveIntoSelf", req, srcPage.getHname());

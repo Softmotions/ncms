@@ -333,8 +333,8 @@
             <if test="type != null">AND type LIKE #{type}</if>
             <if test="collection != null and user != null">
                 AND id IN (
-                SELECT e.ivalue FROM USER_ENV e
-                WHERE e.userid = #{user} AND e.type = #{collection}
+                    SELECT e.ivalue FROM USER_ENV e
+                    WHERE e.userid = #{user} AND e.type = #{collection}
                 )
             </if>
         </where>

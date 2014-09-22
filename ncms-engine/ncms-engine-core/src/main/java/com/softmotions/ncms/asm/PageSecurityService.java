@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm;
 
 import com.softmotions.ncms.NcmsConfiguration;
 import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBDAOSupport;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -556,13 +558,25 @@ public class PageSecurityService extends MBDAOSupport {
         return "";
     }
 
-    public Set<Long> getAccessibleTemplates(HttpServletRequest req) {
+    public Collection<Long> getAccessibleTemplates(HttpServletRequest req) {
         return getAccessibleTemplates(toWSUser(req));
     }
 
-    public Set<Long> getAccessibleTemplates(WSUser user) {
-        //todo
-        return Collections.EMPTY_SET;
+    @Transactional
+    public Collection<Long> getAccessibleTemplates(WSUser user) {
+        if (user.isHasAnyRole("admin", "admin.asm")) {
+            return select("accessibleAsmsForRoles",
+                          "template", 1);
+        } else {
+            Iterator<WSRole> roles = user.getRoles();
+            List<String> lRoles = new ArrayList<>(32);
+            while (roles.hasNext()) {
+                lRoles.add(roles.next().getName());
+            }
+            return select("accessibleAsmsForRoles",
+                          "template", 1,
+                          "roles", lRoles);
+        }
     }
 
     /**

@@ -22,6 +22,27 @@
             <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
             <if test="name_restriction != null">AND asm.name LIKE #{name_restriction}</if>
             <if test="exclude != null">AND asm.id != #{exclude}</if>
+            <if test="roles != null">
+                AND (
+                    <trim prefixOverrides="AND | OR">
+                    <if test="roles.length > 0">
+                        EXISTS (
+                            SELECT r.asm_id FROM ASM_ACCESS_ROLES AS r
+                            WHERE
+                                r.asm_id = asm.id
+                                AND r.role_name IN
+                                <foreach collection="roles" item="role" open="(" close=")" separator=",">
+                                    #{role}
+                                </foreach>
+                        )
+                    </if>
+                        OR NOT EXISTS (
+                            SELECT r.asm_id FROM ASM_ACCESS_ROLES AS r
+                            WHERE r.asm_id = asm.id
+                        )
+                    </trim>
+                )
+            </if>
         </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
     </select>
@@ -35,6 +56,27 @@
             <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
             <if test="name_restriction != null">AND asm.name LIKE #{name_restriction}</if>
             <if test="exclude != null">AND asm.id != #{exclude}</if>
+            <if test="roles != null and roles.length > 0">
+                AND (
+                    <trim prefixOverrides="AND | OR">
+                    <if test="roles.length > 0">
+                        EXISTS (
+                            SELECT r.asm_id FROM ASM_ACCESS_ROLES AS r
+                            WHERE
+                                r.asm_id = asm.id
+                                AND r.role_name IN
+                                <foreach collection="roles" item="role" open="(" close=")" separator=",">
+                                    #{role}
+                                </foreach>
+                        )
+                    </if>
+                        OR NOT EXISTS (
+                            SELECT r.asm_id FROM ASM_ACCESS_ROLES AS r
+                            WHERE r.asm_id = asm.id
+                        )
+                    </trim>
+                )
+            </if>
         </where>
     </select>
 
@@ -195,14 +237,14 @@
 
     <select id="selectAsmTParents" resultType="map" parameterType="long">
         SELECT
-        a.type AS "type",
-        p.id   AS "pid",
-        p.name AS "pname",
-        p.type AS "ptype"
+            a.type AS "type",
+            p.id   AS "pid",
+            p.name AS "pname",
+            p.type AS "ptype"
         FROM ASMS a
-        LEFT JOIN ASMS np ON a.nav_parent_id = np.id
-        LEFT JOIN ASM_PARENTS AS ap ON ap.asm_id = np.id
-        LEFT JOIN ASMS p ON p.id = ap.asm_parent_id AND p.template = 1
+            LEFT JOIN ASMS np ON a.nav_parent_id = np.id
+            LEFT JOIN ASM_PARENTS AS ap ON ap.asm_id = np.id
+            LEFT JOIN ASMS p ON p.id = ap.asm_parent_id AND p.template = 1
         WHERE a.id = #{id}
     </select>
 </mapper>

@@ -677,7 +677,7 @@ $.fn.checkbox = function(o) {
             } else if (checkbox.attr('id')) {
                 checkbox.data('label', $('label[for=' + checkbox.attr('id') + ']'));
             }
-            checkbox.on('change.customForms',function(e, command) {
+            checkbox.on('change.customForms', function(e, command) {
                 if (command == "check") {
                     check();
                 } else if (command == "uncheck") {
@@ -792,7 +792,7 @@ $.fn.radio = function(o) {
             } else if (radio.attr('id')) {
                 radio.data('label', $('label[for=' + radio.attr('id') + ']'));
             }
-            radio.on('change.customForms',function(e, command) {
+            radio.on('change.customForms', function(e, command) {
                 if (radio.is(':checked') || command == "check") {
                     if (curGroup) {
                         uncheck(curGroup.not(radio).next());
@@ -852,18 +852,17 @@ function initSearch(pageSize) {
     spc.loader.hide();
     spc.results.find('li').show();
 
-    updateSearchButtons = function() {
+    function updateSearchButtons() {
         spc.fetchMore.hide();
         if (spc.results.find('li').size() >= ((spc.start || 0) + spc.pageSize)) {
             spc.fetchMore.show()
         }
-    };
+    }
 
-    doSearch = function(reset) {
+    function doSearch(reset) {
         if (reset) {
             spc.results.html(null);
         }
-
         spc.loader.show();
         spc.start = reset ? 0 : (spc.start || 0) + spc.pageSize;
         var fdata = spc.form.serializeArray();
@@ -876,9 +875,8 @@ function initSearch(pageSize) {
             spc.results.find('li:hidden').slideDown();
             updateSearchButtons();
         });
-
         updateSearchButtons();
-    };
+    }
 
     spc.form.submit(function() {
         doSearch(true);
@@ -916,7 +914,7 @@ function initMainNews() {
         main : $('div#news'),
         fetchMore : $('a#mpc-fetch-more'),
         loader : $('.loader')
-    }
+    };
 
     mpc.loader.hide();
     mpc.fetchMore.hide();
@@ -992,7 +990,7 @@ function initMainNews() {
                 "mpc.fetch.type" : def.type
             };
             var prevSize = data["mpc." + def.type + ".skip"] = def.results.find('li').size();
-            $.post(mpc.fetchMore[0].href, data,function(html) {
+            $.post(mpc.fetchMore[0].href, data, function(html) {
                 def.results.append(html);
                 if (def.results.find('li').size() == prevSize) {
                     def.subscribed = false;
@@ -1024,16 +1022,15 @@ function initMainNews() {
 function initFetchMore(btn, action, results, pageSize, prefix) {
     $(btn).hide();
     $(results).find('li').show();
-
     $(btn).click(function() {
                 var data = {};
                 data[prefix + ".action"] = "fetchMore";
                 data[prefix + ".skip"] = $(results).find('li').size();
                 data[prefix + ".limit"] = pageSize;
 
-                $.post(action, data,function(html) {
+                $.post(action, data, function(html) {
                     $(btn).hide();
-                    var count = $(results).find('li').size()
+                    var count = $(results).find('li').size();
                     $(results).append(html);
                     if ($(results).find('li').size() - count >= pageSize) {
                         $(btn).show();

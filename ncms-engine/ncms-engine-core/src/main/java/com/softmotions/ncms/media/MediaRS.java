@@ -552,7 +552,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         path = StringUtils.strip(path, "/");
         npath = StringUtils.strip(npath, "/");
         if (StringUtils.isBlank(npath)) {
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
         if (npath.equals(path)) {
             return;
@@ -817,7 +817,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (form.containsKey("owner")) {
             String owner = form.getFirst("owner");
             if (StringUtils.isBlank(owner)) {
-                throw new BadRequestException();
+                throw new BadRequestException("");
             }
             qm.put("owner", owner);
         }

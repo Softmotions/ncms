@@ -66,7 +66,7 @@ public class MediaWikiRS {
         Matcher matcher = RES_REGEXP.matcher(spec);
         if (!matcher.matches()) {
             //todo fallback for old site format
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
         Integer width = null;
         String widthStr = matcher.group(2);
@@ -98,7 +98,7 @@ public class MediaWikiRS {
         Matcher matcher = LINK_FILE_REGEXP.matcher(spec);
         if (!matcher.matches()) {
             //todo fallback for old site format
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
         Long id = Long.parseLong(matcher.group(4));
         return repository.get(id, req, null, null, true);

@@ -13,6 +13,7 @@ import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.web.security.WSUser;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
@@ -239,7 +240,7 @@ public class AsmRS extends MBDAOSupport {
             throw new NotFoundException("");
         }
         if (!jsdata.isArray()) {
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
         ArrayNode an = (ArrayNode) jsdata;
         for (int i = 0, l = an.size(); i < l; ++i) {
@@ -264,7 +265,7 @@ public class AsmRS extends MBDAOSupport {
             throw new NotFoundException("");
         }
         if (!jsdata.isArray()) {
-            throw new BadRequestException();
+            throw new BadRequestException("");
         }
 
         ArrayNode an = (ArrayNode) jsdata;
@@ -617,6 +618,10 @@ public class AsmRS extends MBDAOSupport {
                 } else {
                     cq.withParam("template_mode", "page");
                 }
+            }
+            WSUser u = (WSUser) req.getUserPrincipal();
+            if (u != null && !u.isHasAnyRole("admin", "asmin.asm")) {
+                cq.withParam("roles", u.getRoleNames());
             }
         }
         boolean orderUsed = false;
