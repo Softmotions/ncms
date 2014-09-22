@@ -81,6 +81,8 @@
         response.sendRedirect(rootUrl);
     }
 
+    response.addHeader("X-Softmotions-Login", "true");
+
     Injector injector = (Injector) request.getServletContext().getAttribute(Injector.class.getName());
     NcmsConfiguration ncmsCfg = injector.getInstance(NcmsConfiguration.class);
     Configuration cfg = ncmsCfg.impl().subset("oauth2");
