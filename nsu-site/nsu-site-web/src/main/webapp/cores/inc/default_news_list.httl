@@ -2,7 +2,7 @@
 #set(int limit = news_limit)
 #foreach(Asm p in asmNavChilds("news.page", offset, limit))
 #set(Date date = p.eventDate())
-<li style="display: none;">
+<li style="#if(offset != 0)display: none;#end">
     <div class="date-holder">
         <span class="date">${date.format2("dd")}</span>
         <span class="month">${date.format2("MMM")}</span>

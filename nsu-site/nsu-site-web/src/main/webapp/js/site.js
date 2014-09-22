@@ -850,10 +850,11 @@ function initSearch(pageSize) {
     };
 
     spc.loader.hide();
+    spc.results.find('li').show();
 
     updateSearchButtons = function() {
         spc.fetchMore.hide();
-        if ($('ul#spc-search-results li').size() >= ((spc.start || 0) + spc.pageSize)) {
+        if (spc.results.find('li').size() >= ((spc.start || 0) + spc.pageSize)) {
             spc.fetchMore.show()
         }
     };
@@ -872,6 +873,7 @@ function initSearch(pageSize) {
         $.post(spc.form[0].action, fdata).done(function(data) {
             spc.loader.hide();
             spc.results.append(data);
+            spc.results.find('li:hidden').slideDown();
             updateSearchButtons();
         });
 
