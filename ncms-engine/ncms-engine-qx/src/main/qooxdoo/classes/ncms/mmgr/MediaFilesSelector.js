@@ -275,7 +275,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 this.__subfoldersBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/folder-tree-bw.png")
                         .set({"appearance" : "toolbar-table-button"});
                 bt.addListener("execute", this.__changeIncludeSubfolders, this);
-                bt.setToolTipText(this.tr("Show subfolders files"));
+                bt.setToolTipText(this.tr("Show files in subfolders"));
                 part.add(bt);
             }
             this._add(toolbar);

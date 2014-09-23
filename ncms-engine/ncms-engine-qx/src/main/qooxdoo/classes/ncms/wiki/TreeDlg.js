@@ -22,7 +22,7 @@ qx.Class.define("ncms.wiki.TreeDlg", {
             showMinimize : false,
             showMaximize : true,
             allowMaximize : true,
-            width : 250
+            width : 350
         });
 
         var form = this.__form = new sm.ui.form.ExtendedForm();

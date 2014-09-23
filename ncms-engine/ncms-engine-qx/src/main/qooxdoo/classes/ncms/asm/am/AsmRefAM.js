@@ -43,7 +43,7 @@ qx.Class.define("ncms.asm.am.AsmRefAM", {
         __createBf : function(attrSpec, asmSpec) {
             var bf = this._bf = new sm.ui.form.ButtonField(this.tr("Select assembly"),
                     "ncms/icon/16/misc/document-import.png");
-            bf.setPlaceholder(this.tr("Please select template to include"));
+            bf.setPlaceholder(this.tr("Please select assembly to include"));
             bf.setReadOnly(true);
             bf.addListener("execute", function() {
                 this.__onSelectAssembly(attrSpec, asmSpec);
@@ -75,7 +75,7 @@ qx.Class.define("ncms.asm.am.AsmRefAM", {
 
         __onSelectAssembly : function(attrSpec, asmSpec) {
             var dlg = new ncms.asm.AsmSelectorDlg(
-                    this.tr("Select assembly to include"), null,
+                    this.tr("Please select assembly to include"), null,
                     {type : "", exclude : asmSpec["id"]},
                     ["name", "description"]);
             dlg.open();

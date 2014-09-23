@@ -6,13 +6,7 @@
 qx.Class.define("ncms.mmgr.MediaFileEditor", {
     extend : qx.ui.core.Widget,
 
-    statics : {
-
-        ATTR_ALIASES : null
-    },
-
     events : {
-
         "fileMetaUpdated" : "qx.event.type.Data"
     },
 
@@ -268,7 +262,13 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         },
 
         __updateInfoTable : function(spec) {
-            var aliases = ncms.mmgr.MediaFileEditor.ATTR_ALIASES;
+            var aliases = {
+                "content_type" : this.tr("Content type").toString(),
+                "content_length" : this.tr("Size").toString(),
+                "folder" : this.tr("Folder").toString(),
+                "name" : this.tr("Name").toString(),
+                "imageSize" : this.tr("Image size").toString()
+            };
             var attrs = [];
             Object.keys(spec).forEach(function(k) {
                 var alias = aliases[k];
@@ -354,20 +354,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 user.push("|");
                 user.push(udata["fullName"]);
             }
-
             return user.join(" ");
         }
-    },
-
-    defer : function(statics, members) {
-        var lm = qx.locale.Manager;
-        statics.ATTR_ALIASES = {
-            "content_type" : lm.tr("Content type").toString(),
-            "content_length" : lm.tr("Size").toString(),
-            "folder" : lm.tr("Folder").toString(),
-            "name" : lm.tr("Name").toString(),
-            "imageSize" : lm.tr("Image size").toString()
-        };
     },
 
     destruct : function() {

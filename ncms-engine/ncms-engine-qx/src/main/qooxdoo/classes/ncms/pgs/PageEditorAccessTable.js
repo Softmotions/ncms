@@ -110,7 +110,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             part.add(bt);
 
             this.__delBt = bt = this._createButton(null, "ncms/icon/16/actions/delete.png", this.__deleteUser, this);
-            bt.setToolTipText(this.tr("Delete user"));
+            bt.setToolTipText(this.tr("Remove user"));
             part.add(bt);
 
             return toolbar;
@@ -285,11 +285,11 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             menu.add(bt);
 
             if (selected) {
-                bt = new qx.ui.menu.Button(this.tr("Delete user"));
+                bt = new qx.ui.menu.Button(this.tr("Remove user"));
                 bt.addListenerOnce("execute", this.__deleteUser, this);
                 menu.add(bt);
 
-                bt = new qx.ui.menu.Button(this.tr("Delete user (force recursive)"));
+                bt = new qx.ui.menu.Button(this.tr("Remove user recursively"));
                 bt.addListenerOnce("execute", this.__deleteUserRecursive, this);
                 menu.add(bt);
             }

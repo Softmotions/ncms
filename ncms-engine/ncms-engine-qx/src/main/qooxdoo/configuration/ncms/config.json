@@ -13,7 +13,7 @@
         "QOOXDOO_PATH" : "${MODULES_PATH}/qooxdoo-sdk",
         "QXTHEME" : "${APPLICATION}.theme.Theme",
         "API_EXCLUDE" : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
-        "LOCALES" : [ "en", "ru" ],
+        "LOCALES" : [ "ru" ],
         "CACHE" : "${qooxdoo.application.cacheDirectory}",
         "ROOT" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}",
         "SOURCE_PATH" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}/siteroot",

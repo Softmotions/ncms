@@ -66,7 +66,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 new sm.ui.form.ButtonField(this.tr("Template"),
                         "ncms/icon/16/misc/document-template.png",
                         true).set({readOnly : true});
-        this.__templateBf.setPlaceholder(this.tr("Please select the page template"));
+        this.__templateBf.setPlaceholder(this.tr("Please select the template page"));
         this.__templateBf.addListener("execute", this.__onChangeTemplate, this);
         hcont2.add(this.__templateBf, {flex : 1});
         header.add(hcont2);

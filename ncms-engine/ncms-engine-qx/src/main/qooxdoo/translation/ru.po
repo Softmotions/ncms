@@ -27,7 +27,7 @@ msgstr "Редактирование атрибута страницы"
 msgid "This field is required"
 msgstr "Обязательное поле"
 
-#: ncms/mmgr/MediaFileEditor.js:368 ncms/mmgr/MediaFilesTable.js:9
+#: ncms/mmgr/MediaFileEditor.js:269 ncms/mmgr/MediaFilesTable.js:9
 #: ncms/asm/AsmTable.js:17 ncms/usr/UsersTable.js:10
 #: ncms/asm/AsmAttrEditorDlg.js:65 ncms/usr/UserEditForm.js:27
 #: ncms/asm/AsmParentsTable.js:99 ncms/asm/am/TreeAMValueWidget.js:393
@@ -50,7 +50,7 @@ msgstr "Выберите тип атрибута"
 
 #: ncms/asm/AsmAttrEditorDlg.js:84
 msgid "GUI Label"
-msgstr ""
+msgstr "GUI Название"
 
 #: ncms/asm/AsmAttrEditorDlg.js:87
 msgid "Required"
@@ -58,29 +58,28 @@ msgstr "Обязательное"
 
 #: ncms/asm/AsmAttrEditorDlg.js:91
 msgid "GUI Required"
-msgstr ""
+msgstr "Обязательное в GUI"
 
 #: ncms/asm/AsmSelectorDlg.js:46 ncms/asm/am/TreeAMFoldersDlg.js:51
-#: ncms/wiki/TreeDlg.js:50 ncms/asm/am/AMWrapperDlg.js:37
-#: ncms/asm/AsmAttributeTypeSelectorDlg.js:49
-#: ncms/mmgr/MediaSelectFileDlg.js:81 ncms/wiki/InsertGMapDlg.js:41
+#: ncms/asm/AsmAttributeTypeSelectorDlg.js:49 ncms/wiki/TreeDlg.js:50
+#: ncms/asm/am/AMWrapperDlg.js:37 ncms/mmgr/MediaSelectFileDlg.js:81
+#: ncms/mmgr/PageFilesSelectorDlg.js:114 ncms/wiki/InsertGMapDlg.js:41
 #: ncms/wiki/InsertYoutubeDlg.js:58 ncms/asm/AsmAttrEditorDlg.js:108
 #: ncms/pgs/PagesCollectionDlg.js:40 ncms/usr/UserNewDlg.js:64
 #: ncms/usr/UserSelectorDlg.js:38 ncms/pgs/PagesSelectorDlg.js:55
-#: ncms/mmgr/PageFilesSelectorDlg.js:114 ncms/mmgr/MediaSelectFolderDlg.js:55
+#: ncms/mmgr/MediaSelectFolderDlg.js:55
 msgid "Ok"
 msgstr "Ок"
 
 #: ncms/asm/AsmSelectorDlg.js:50 ncms/asm/am/TreeAMFoldersDlg.js:56
-#: ncms/wiki/TreeDlg.js:54 ncms/asm/am/AMWrapperDlg.js:41
-#: ncms/asm/AsmAttributeTypeSelectorDlg.js:54
-#: ncms/mmgr/MediaSelectFileDlg.js:85 ncms/wiki/InsertGMapDlg.js:45
+#: ncms/asm/AsmAttributeTypeSelectorDlg.js:54 ncms/wiki/TreeDlg.js:54
+#: ncms/asm/am/AMWrapperDlg.js:41 ncms/mmgr/MediaSelectFileDlg.js:85
+#: ncms/mmgr/PageFilesSelectorDlg.js:118 ncms/wiki/InsertGMapDlg.js:45
 #: ncms/wiki/InsertYoutubeDlg.js:62 ncms/asm/AsmAttrEditorDlg.js:112
 #: ncms/usr/UserEditForm.js:54 ncms/pgs/PagesCollectionDlg.js:45
 #: ncms/wiki/TableDlg.js:60 ncms/usr/UserNewDlg.js:68
 #: ncms/pgs/PageEditorEditPage.js:50 ncms/usr/UserSelectorDlg.js:42
-#: ncms/pgs/PagesSelectorDlg.js:59 ncms/mmgr/PageFilesSelectorDlg.js:118
-#: ncms/mmgr/MediaSelectFolderDlg.js:59
+#: ncms/pgs/PagesSelectorDlg.js:59 ncms/mmgr/MediaSelectFolderDlg.js:59
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -88,10 +87,11 @@ msgstr "Отмена"
 msgid "Select assembly attribute type"
 msgstr "Выбор типа атрибута"
 
-#: ncms/mmgr/MediaFileEditor.js:54 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
+#: ncms/asm/am/RichRefAMValueWidget.js:54
+#: ncms/asm/AsmAttributeTypeSelectorDlg.js:157 ncms/mmgr/MediaFileEditor.js:48
 #: ncms/mmgr/MediaFilesTable.js:13 ncms/asm/AsmTable.js:21
-#: ncms/asm/am/RichRefAMValueWidget.js:54 ncms/asm/am/RichRefAM.js:44
-#: ncms/asm/AsmEditor.js:105 ncms/usr/UserRolesTable.js:158
+#: ncms/asm/AsmEditor.js:105 ncms/asm/am/RichRefAM.js:44
+#: ncms/usr/UserRolesTable.js:158
 msgid "Description"
 msgstr "Описание"
 
@@ -111,14 +111,14 @@ msgstr "Удалить атрибут"
 msgid "Label"
 msgstr "Подпись"
 
-#: ncms/mmgr/MediaFileEditor.js:159 ncms/asm/am/StringAM.js:62
+#: ncms/mmgr/MediaFileEditor.js:153 ncms/asm/am/StringAM.js:62
 #: ncms/asm/AsmAttrsTable.js:130 ncms/asm/am/SelectAMTable.js:72
 msgid "Value"
 msgstr "Значение"
 
 #: ncms/asm/AsmAttrsTable.js:180
 msgid "Edit attribute"
-msgstr "Дедактировать атрибут"
+msgstr "Редактировать атрибут"
 
 #: ncms/asm/AsmAttrsTable.js:182
 msgid "Override attribute"
@@ -146,11 +146,11 @@ msgstr "Перезаписать"
 
 #: ncms/asm/AsmAttrsTable.js:215
 msgid "Edit in parent"
-msgstr ""
+msgstr "Редактировать у родителя"
 
 #: ncms/asm/AsmAttrsTable.js:294
 msgid "New attribute for assembly: %1"
-msgstr "Новый атрибут для шаблона: %1"
+msgstr "Новый атрибут для сборки (assembly): %1"
 
 #: ncms/asm/AsmAttrsTable.js:310
 msgid "A you sure to remove attribute?"
@@ -162,11 +162,11 @@ msgstr "Рекурсивно?"
 
 #: ncms/asm/AsmAttrsTable.js:337
 msgid "Override the parent assembly attribute: '%1'"
-msgstr ""
+msgstr "Перезаписать родительский атрибут"
 
 #: ncms/asm/AsmAttrsTable.js:339
 msgid "Edit the parent assembly attribute: '%1'"
-msgstr ""
+msgstr "Редактировать атрибут родителя"
 
 #: ncms/asm/AsmAttrsTable.js:341
 msgid "Edit attribute: '%1'"
@@ -174,11 +174,11 @@ msgstr "Редактирование атрибута: '%1'"
 
 #: ncms/asm/AsmEditor.js:101
 msgid "Core"
-msgstr ""
+msgstr "Ядро (core)"
 
-#: ncms/asm/AsmEditor.js:108 ncms/asm/AsmEditor.js:235
-msgid "Class name of optional assembly controller"
-msgstr "Имя класса контроллера щаблона (опционально)"
+#: ncms/asm/AsmEditor.js:108 ncms/asm/AsmEditor.js:246
+msgid "Class name of an optional assembly controller"
+msgstr "Имя класса котроллера сборки (assembly)"
 
 #: ncms/asm/AsmEditor.js:110
 msgid "Controller"
@@ -200,25 +200,34 @@ msgstr "Новость"
 msgid "Template"
 msgstr "Шаблон"
 
+#: ncms/asm/AsmEditor.js:120
+msgid "Comma separated list of roles used to access the assembly"
+msgstr "Список ролей через запятую для доступа к данной сборке (assembly)"
+
 #: ncms/asm/AsmEditor.js:123
-msgid "Parents"
-msgstr ""
+msgid "Roles"
+msgstr "Роли"
 
 #: ncms/asm/AsmEditor.js:129
+msgid "Parents"
+msgstr "Родители"
+
+#: ncms/asm/AsmEditor.js:135
 msgid "Attributes"
 msgstr "Атрибуты"
 
-#: ncms/asm/AsmEditor.js:166
+#: ncms/asm/AsmEditor.js:172
 msgid "Select core file for '%1' assembly"
-msgstr "Выберите файл вёрстки для шаблона: '%1'"
+msgstr "Выберите файл ядра(верстки) для сборки(assembly): '%1'"
 
-#: ncms/asm/AsmEditor.js:189
+#: ncms/asm/AsmEditor.js:195
 msgid "Are you sure to remove local assembly core?"
 msgstr ""
+"Вы действительно желаете удалить ссылку на ядро(core) сборки(assembly)"
 
 #: ncms/asm/AsmNav.js:70
 msgid "New assembly"
-msgstr "Новый шаблон"
+msgstr "Новая сборка (assembly)"
 
 #: ncms/asm/AsmNav.js:74 ncms/mmgr/MediaItemTreeSelector.js:87
 msgid "Refresh"
@@ -232,63 +241,59 @@ msgstr "Переименовать"
 
 #: ncms/asm/AsmNav.js:96
 msgid "Are you sure to remove assembly: \"%1\"?"
-msgstr "Вы действительно хотите удалить шаблон: '%1'?"
+msgstr "Вы действительно хотите удалить сборку(assembly): '%1'?"
 
 #: ncms/asm/am/AsmRefAM.js:37 ncms/asm/AsmNewDlg.js:19
 msgid "Assembly"
-msgstr "Шаблон"
+msgstr "Сборка (assembly)"
 
 #: ncms/asm/AsmParentsTable.js:60
 msgid "Extend from parent"
-msgstr ""
+msgstr "Наследоваться от родителя"
 
 #: ncms/asm/AsmParentsTable.js:65 ncms/asm/AsmParentsTable.js:163
 msgid "Remove parent"
-msgstr ""
+msgstr "Убрать наследование от родителя"
 
 #: ncms/asm/AsmParentsTable.js:137
 msgid "Select parents for: %1"
-msgstr ""
+msgstr "Выберите родителей для %1"
 
 #: ncms/asm/AsmParentsTable.js:159
 msgid "Add parent"
-msgstr ""
+msgstr "Добавить родителя"
 
 #: ncms/asm/AsmSelectorDlg.js:22 ncms/asm/am/AsmRefAM.js:44
 msgid "Select assembly"
-msgstr "Выбор шаблона"
+msgstr "Выбор сборки (assembly)"
 
 #: ncms/asm/am/AliasAM.js:13
 msgid "Alias"
-msgstr "Алиас"
+msgstr "Псевдоним"
 
 #: ncms/asm/am/AsmRefAM.js:16
 msgid "Include assembly"
-msgstr ""
+msgstr "Вставка сборки (assembly)"
 
-#: ncms/asm/am/AsmRefAM.js:46
-msgid "Please select template to include"
-msgstr ""
-
-#: ncms/asm/am/AsmRefAM.js:78
-msgid "Select assembly to include"
-msgstr ""
+#: ncms/asm/am/AsmRefAM.js:46 ncms/asm/am/AsmRefAM.js:78
+msgid "Please select assembly to include"
+msgstr "Пожалуйста выберите сборку (assembly)"
 
 #: ncms/asm/am/BooleanAM.js:12
 msgid "Checkbox"
-msgstr ""
+msgstr "Да/Нет переключатель"
 
 #: ncms/asm/am/BooleanAM.js:31
 msgid "Boolean value"
-msgstr "Логическое значение"
+msgstr "Значение"
 
 #: ncms/asm/am/BreadCrumbsAM.js:8
-msgid "Bread crumbs"
+msgid "Breadcrumbs"
 msgstr ""
 
 #: ncms/asm/am/BumpOrdinalAM.js:9
 msgid "Bump page ordinal"
-msgstr ""
+msgstr "Поднять страницу наверх"
 
 #: ncms/asm/am/DateAM.js:9
 msgid "Date selector"
@@ -300,7 +305,7 @@ msgstr "Формат даты"
 
 #: ncms/asm/am/FileRefAM.js:14
 msgid "Include file resource"
-msgstr ""
+msgstr "Вставить файл"
 
 #: ncms/asm/am/FileRefAM.js:53 ncms/asm/am/WebRefAM.js:52
 msgid "Location"
@@ -308,11 +313,11 @@ msgstr "Местоположение"
 
 #: ncms/asm/am/FileRefAM.js:65
 msgid "Render as template"
-msgstr "Обрабатывать как шаблон"
+msgstr "Отображать как шаблон"
 
 #: ncms/asm/am/FileRefAM.js:73 ncms/asm/am/WebRefAM.js:67
 msgid "Render only location"
-msgstr "Обрабатывать как местоположение"
+msgstr "Отображать как местоположение"
 
 #: ncms/asm/am/FileRefAM.js:106
 msgid "File"
@@ -322,10 +327,10 @@ msgstr "Файл"
 msgid "Please specify a file"
 msgstr "Пожалуйста, выберите файл"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:72 ncms/asm/am/RichRefAM.js:48
-#: ncms/asm/am/RichRefAM.js:56 ncms/asm/am/ImageAM.js:14
+#: ncms/asm/am/RichRefAMValueWidget.js:72 ncms/asm/am/ImageAM.js:14
+#: ncms/asm/am/RichRefAM.js:48 ncms/asm/am/RichRefAM.js:56
 msgid "Image"
-msgstr "Картинка"
+msgstr "Изображение"
 
 #: ncms/wiki/InsertYoutubeDlg.js:42 ncms/asm/am/ImageAM.js:38
 msgid "Width"
@@ -337,124 +342,125 @@ msgstr "Высота"
 
 #: ncms/asm/am/ImageAM.js:57
 msgid "Automatic image resizing to given height and width values"
-msgstr "Автоматическое изменение размера картинки под указанные"
+msgstr ""
+"Автоматическое изменение размера изображения под указанные ограничения"
 
 #: ncms/asm/am/ImageAM.js:58
 msgid "Auto resize"
-msgstr "Автоизменение размера"
+msgstr "Автомасштабирование"
 
 #: ncms/asm/am/ImageAM.js:70
 msgid ""
 "Automatic image resizing to cover given area. Image's original aspect ratio "
 "is preserved."
 msgstr ""
-"Автоматическое масштабирование размера картинки под указанные размеры с "
-"сохранение пропорций"
+"Автоматическое масштабирование размера изображения под указанные размеры с "
+"сохранением пропорций"
 
 #: ncms/asm/am/ImageAM.js:81
 msgid "Cover area"
-msgstr "Масштабирование"
+msgstr "Заполнить область"
 
 #: ncms/asm/am/ImageAM.js:86
 msgid "Restrict image size to given height and width values"
 msgstr ""
-"Принимать только картинки, удовлетворяющие критериям (ширина и высота)"
+"Принимать только изображения, удовлетворяющие критериям (ширина и высота)"
 
 #: ncms/asm/am/ImageAM.js:87
 msgid "Restrict size"
-msgstr ""
+msgstr "Проверять размер"
 
 #: ncms/asm/am/ImageAM.js:103
 msgid ""
 "Skip resizing/checking image with dimensions smaller or equal to given "
 "height and width values"
-msgstr ""
+msgstr "На масштабировать изображения меньшего или равного размера"
 
 #: ncms/asm/am/ImageAM.js:110
 msgid "Skip small"
-msgstr ""
+msgstr "Не масштабировать маленькие"
 
 #: ncms/asm/am/ImageAMValueWidget.js:33
 msgid "Select image"
-msgstr "Выберите картинку"
+msgstr "Выберите изображение"
 
 #: ncms/asm/am/ImageAMValueWidget.js:127
 msgid "Image size does not match restriction"
-msgstr ""
+msgstr "Размер изображения не совпадает с указанными ограничениями"
 
 #: ncms/asm/am/ImageAMValueWidget.js:140
 msgid "Select image file"
-msgstr ""
+msgstr "Выберите файл с изображением"
 
 #: ncms/asm/am/ImageAMValueWidget.js:180
 msgid "Original size"
-msgstr ""
+msgstr "Оригинальный размер"
 
 #: ncms/asm/am/ImageAMValueWidget.js:188
 msgid "Cover the given area"
-msgstr ""
+msgstr "Заполнить заданную область"
 
 #: ncms/asm/am/ImageAMValueWidget.js:195
 msgid "Automatic resize"
-msgstr ""
+msgstr "Автоматическое масштабирование"
 
 #: ncms/asm/am/ImageAMValueWidget.js:202
 msgid "Image size required"
-msgstr ""
+msgstr "Изображение должно быть следующего размера"
 
 #: ncms/asm/am/MainPageAM.js:12
 msgid "Main page marker"
-msgstr ""
+msgstr "Маркер главной страницы"
 
 #: ncms/asm/am/MainPageAM.js:35
 msgid "Comma separated list of applicable language codes"
-msgstr ""
+msgstr "Список кодов языка через запятую"
 
 #: ncms/asm/am/MainPageAM.js:36
 msgid "Language codes"
-msgstr ""
+msgstr "Коды языка"
 
 #: ncms/asm/am/MainPageAM.js:42
 msgid "Enabled"
-msgstr ""
+msgstr "Активировано"
 
 #: ncms/asm/am/MedialineAM.js:9
 msgid "Medialine"
-msgstr ""
+msgstr "Фотолента"
 
 #: ncms/asm/am/MedialineAM.js:35
 msgid "Max image width"
-msgstr ""
+msgstr "Максимальная высота изображения"
 
 #: ncms/asm/am/MedialineAM.js:44
 msgid "Max thumbnail width"
-msgstr ""
+msgstr "Максимальная высота миниатюры"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:65
 msgid "Add images to the gallery"
-msgstr ""
+msgstr "Добавить изображения в галерею"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:70
 msgid "Add video into the gallery"
-msgstr ""
+msgstr "Добавить ссылку на видео в галерею"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:75
 msgid "Delete images and links"
-msgstr ""
+msgstr "Удалить изображения и ссылки"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:96
 msgid "Add images"
-msgstr ""
+msgstr "Добавить изображения"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:100
 msgid "Add video"
-msgstr ""
+msgstr "Добавить видео"
 
 #: ncms/news/NewsNav.js:125 ncms/pgs/PagesTreeSelector.js:152
 #: ncms/mmgr/MediaItemTreeSelector.js:80
 #: ncms/asm/am/MedialineAMValueWidget.js:105
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:115
 msgid "Image/video"
@@ -462,25 +468,25 @@ msgstr ""
 
 #: ncms/asm/am/MedialineAMValueWidget.js:121
 msgid "Title"
-msgstr ""
+msgstr "Заголовок"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:137
 msgid "Add images into the media gallery"
-msgstr ""
+msgstr "Добавить изображения в галерею"
 
 #: ncms/asm/am/RichRefAM.js:12
 msgid "Rich reference"
-msgstr ""
+msgstr "Стилизованная ссылка"
 
-#: ncms/pgs/PagesTreeSelector.js:32 ncms/asm/am/RichRefAM.js:36
-#: ncms/asm/am/TreeAM.js:42
+#: ncms/pgs/PagesTreeSelector.js:32 ncms/asm/am/TreeAM.js:42
+#: ncms/asm/am/RichRefAM.js:36
 msgid "Pages"
-msgstr ""
+msgstr "Страницы"
 
-#: ncms/asm/am/RichRefAM.js:40 ncms/asm/am/TreeAM.js:49
-#: ncms/mmgr/MediaItemTreeSelector.js:20 ncms/pgs/PageEditorEditPage.js:55
+#: ncms/asm/am/TreeAM.js:49 ncms/mmgr/MediaItemTreeSelector.js:20
+#: ncms/pgs/PageEditorEditPage.js:55 ncms/asm/am/RichRefAM.js:40
 msgid "Files"
-msgstr ""
+msgstr "Файлы"
 
 #: ncms/asm/am/RichRefAM.js:63 ncms/asm/am/RichRefAM.js:70
 msgid "style=value,style2=value2,..."
@@ -488,39 +494,39 @@ msgstr ""
 
 #: ncms/asm/am/RichRefAM.js:64
 msgid "Styles"
-msgstr ""
+msgstr "Стили"
 
 #: ncms/asm/am/RichRefAM.js:71
 msgid "Styles2"
-msgstr ""
+msgstr "Стили2"
 
 #: ncms/asm/am/RichRefAMValueWidget.js:37
 msgid "Page link"
-msgstr ""
+msgstr "Ссылка на страницу"
 
 #: ncms/asm/am/RichRefAMValueWidget.js:40
 msgid "File link"
-msgstr ""
+msgstr "Ссылка на файл"
 
 #: ncms/asm/am/RichRefAMValueWidget.js:47 ncms/wiki/InsertImageDlg.js:61
 msgid "Link"
-msgstr ""
+msgstr "Ссылка"
 
 #: ncms/asm/am/RichRefAMValueWidget.js:81
 msgid "Style"
-msgstr ""
+msgstr "Стиль"
 
 #: ncms/asm/am/RichRefAMValueWidget.js:90
 msgid "Style2"
-msgstr ""
+msgstr "Стиль2"
 
 #: ncms/asm/am/RichRefAMValueWidget.js:120
 msgid "Please set the page link"
-msgstr ""
+msgstr "Пожалуйста укажите ссылку на страницу"
 
 #: ncms/asm/am/RichRefAMValueWidget.js:142
 msgid "Please set the file link"
-msgstr ""
+msgstr "Пожалуйста укажите ссылку на файл"
 
 #: ncms/asm/am/SelectAM.js:12
 msgid "Selectbox"
@@ -536,11 +542,11 @@ msgstr ""
 
 #: ncms/asm/am/SelectAM.js:39 ncms/asm/am/StringAM.js:49
 msgid "Display as"
-msgstr ""
+msgstr "Отображать как"
 
 #: ncms/asm/am/SelectAM.js:48
 msgid "Multi select"
-msgstr ""
+msgstr "Выбор множества значений"
 
 #: ncms/asm/am/SelectAM.js:55
 msgid "Fetch from"
@@ -548,23 +554,23 @@ msgstr ""
 
 #: ncms/asm/am/SelectAM.js:65
 msgid "Items"
-msgstr ""
+msgstr "Элементы"
 
 #: ncms/asm/am/SelectAMTable.js:57
 msgid "Selected"
-msgstr ""
+msgstr "Выбрано"
 
 #: ncms/asm/am/SelectAMTable.js:114
 msgid "Add record"
-msgstr ""
+msgstr "Добавить запись"
 
 #: ncms/asm/am/SelectAMTable.js:119
 msgid "Drop record"
-msgstr ""
+msgstr "Удалить запись"
 
 #: ncms/asm/am/StringAM.js:12
 msgid "String"
-msgstr ""
+msgstr "Строка"
 
 #: ncms/asm/am/StringAM.js:46
 msgid "field"
@@ -576,7 +582,7 @@ msgstr ""
 
 #: ncms/asm/am/StringAM.js:56
 msgid "Max length"
-msgstr ""
+msgstr "Max length"
 
 #: ncms/asm/am/StringAM.js:68
 msgid "Placeholder"
@@ -584,72 +590,72 @@ msgstr ""
 
 #: ncms/asm/am/TreeAM.js:14
 msgid "Tree/Menu"
-msgstr ""
+msgstr "Дерево/Меню"
 
 #: ncms/asm/am/TreeAM.js:53
 msgid "External links"
-msgstr ""
+msgstr "Внешние ссылки"
 
 #: ncms/asm/am/TreeAM.js:64
 msgid "Nesting level"
-msgstr ""
+msgstr "Уровень вложенности"
 
 #: ncms/asm/am/TreeAMNewFolderDlg.js:21
 msgid "Folder name"
-msgstr ""
+msgstr "Название папки"
 
 #: ncms/asm/am/TreeAMValueWidget.js:169
 msgid "Drop element"
-msgstr ""
+msgstr "Удалить элемент"
 
 #: ncms/asm/am/TreeAMValueWidget.js:180
 msgid "Move item up"
-msgstr ""
+msgstr "Переместить наверх"
 
 #: ncms/asm/am/TreeAMValueWidget.js:186
 msgid "Move item down"
-msgstr ""
+msgstr "Переместить вниз"
 
 #: ncms/asm/am/TreeAMValueWidget.js:285 ncms/asm/am/TreeAMValueWidget.js:332
 msgid "New folder"
-msgstr ""
+msgstr "Новая папка"
 
 #: ncms/asm/am/TreeAMValueWidget.js:295 ncms/asm/am/TreeAMValueWidget.js:338
 msgid "Add page reference"
-msgstr ""
+msgstr "Добавить ссылку на страницу"
 
 #: ncms/asm/am/TreeAMValueWidget.js:300 ncms/asm/am/TreeAMValueWidget.js:343
 msgid "Add file reference"
-msgstr ""
+msgstr "Добавить ссылку на файл"
 
 #: ncms/asm/am/TreeAMValueWidget.js:378 ncms/mmgr/MediaItemTreeSelector.js:76
 #: ncms/mmgr/MediaFilesSelector.js:524
 msgid "Move to another folder"
-msgstr ""
+msgstr "Переместить в другую папку"
 
 #: ncms/asm/am/TreeAMValueWidget.js:458
 msgid "Select page"
-msgstr ""
+msgstr "Выбрать страницу"
 
 #: ncms/asm/am/TreeAMValueWidget.js:501
 msgid "Select file for page: %1"
-msgstr ""
+msgstr "Выбрать файл для: %1"
 
 #: ncms/asm/am/TreeAMValueWidget.js:655
 msgid "Please choose the target folder"
-msgstr ""
+msgstr "Пожалуйста выберите целевую папку"
 
 #: ncms/asm/am/WebRefAM.js:12
 msgid "Include web resource"
-msgstr ""
+msgstr "Веб ресурс"
 
 #: ncms/asm/am/WebRefAM.js:48 ncms/asm/am/WebRefAM.js:89
 msgid "Please specify web resource url"
-msgstr ""
+msgstr "Пожалуйста укажите адрес веб ресурса"
 
 #: ncms/asm/am/WikiAM.js:12
 msgid "Wiki editor"
-msgstr ""
+msgstr "Wiki редактор"
 
 #: ncms/asm/am/WikiAM.js:33
 msgid "mediawiki"
@@ -661,319 +667,315 @@ msgstr ""
 
 #: ncms/asm/am/WikiAM.js:36
 msgid "Markup language"
-msgstr ""
+msgstr "Язык разметки"
 
-#: ncms/wiki/WikiEditor.js:845 ncms/cc/tree/MFolderTree.js:60
+#: ncms/cc/tree/MFolderTree.js:60 ncms/wiki/WikiEditor.js:845
 msgid "Root"
-msgstr ""
+msgstr "Корень"
 
-#: ncms/mmgr/MediaFileEditor.js:53
+#: ncms/mmgr/MediaFileEditor.js:47
 msgid "Short file description"
-msgstr ""
+msgstr "Краткое описание файла"
 
-#: ncms/mmgr/MediaFileEditor.js:60
+#: ncms/mmgr/MediaFileEditor.js:54
 msgid "Comma separated tags"
-msgstr ""
+msgstr "Теги через запятую"
 
-#: ncms/mmgr/MediaFileEditor.js:61
+#: ncms/mmgr/MediaFileEditor.js:55
 msgid "Tags"
-msgstr ""
+msgstr "Теги"
 
-#: ncms/mmgr/MediaFileEditor.js:63
+#: ncms/mmgr/MediaFileEditor.js:57
 msgid "Change"
-msgstr ""
+msgstr "Изменить"
 
-#: ncms/mmgr/MediaFileEditor.js:65
+#: ncms/mmgr/MediaFileEditor.js:59
 msgid "Choose the new file owner"
-msgstr ""
+msgstr "Выберите нового владельца файла"
 
-#: ncms/mmgr/MediaFileEditor.js:68 ncms/pgs/PageEditorInfoPage.js:31
+#: ncms/mmgr/MediaFileEditor.js:62 ncms/pgs/PageEditorInfoPage.js:31
 msgid "Owner"
-msgstr ""
+msgstr "Владелец"
 
-#: ncms/mmgr/MediaFileEditor.js:153
+#: ncms/mmgr/MediaFileEditor.js:147
 msgid "Attribute"
-msgstr ""
+msgstr "Атрибут"
+
+#: ncms/mmgr/MediaFileEditor.js:266
+msgid "Content type"
+msgstr "Тип данных"
+
+#: ncms/mmgr/MediaFileEditor.js:267 ncms/wiki/InsertImageDlg.js:30
+msgid "Size"
+msgstr "Размер"
+
+#: ncms/mmgr/MediaFileEditor.js:268 ncms/mmgr/MediaFilesTable.js:12
+#: ncms/mmgr/MediaItemRenameDlg.js:37 ncms/mmgr/MediaFolderNewDlg.js:27
+msgid "Folder"
+msgstr "Папка"
+
+#: ncms/mmgr/MediaFileEditor.js:270
+msgid "Image size"
+msgstr "Размер изображения"
 
 #: ncms/mmgr/MediaFileEditor.js:291 ncms/pgs/PageEditorEditPage.js:61
 #: ncms/mmgr/MediaFilesSelector.js:505
 msgid "Preview"
-msgstr ""
+msgstr "Предпросмотр"
 
 #: ncms/mmgr/MediaFileEditor.js:295 ncms/mmgr/MediaFilesSelector.js:509
 msgid "Download"
-msgstr ""
+msgstr "Скачать"
 
 #: ncms/mmgr/MediaFileEditor.js:323
 msgid "Choose the file owner"
-msgstr ""
-
-#: ncms/mmgr/MediaFileEditor.js:365
-msgid "Content type"
-msgstr ""
-
-#: ncms/mmgr/MediaFileEditor.js:366 ncms/wiki/InsertImageDlg.js:30
-msgid "Size"
-msgstr ""
-
-#: ncms/mmgr/MediaFileEditor.js:367 ncms/mmgr/MediaFilesTable.js:12
-#: ncms/mmgr/MediaItemRenameDlg.js:37 ncms/mmgr/MediaFolderNewDlg.js:27
-msgid "Folder"
-msgstr ""
-
-#: ncms/mmgr/MediaFileEditor.js:369
-msgid "Image size"
-msgstr ""
+msgstr "Выберите владельца файла"
 
 #: ncms/mmgr/MediaFilesSelector.js:247
 msgid "Add files"
-msgstr ""
+msgstr "Добавить файлы"
 
 #: ncms/mmgr/MediaFilesSelector.js:253
 msgid "Remove files"
-msgstr ""
+msgstr "Удалить файлы"
 
 #: ncms/mmgr/MediaFilesSelector.js:260
 msgid "Move files"
-msgstr ""
+msgstr "Переместить файлы"
 
 #: ncms/mmgr/MediaFilesSelector.js:278
-msgid "Show subfolders files"
-msgstr ""
+msgid "Show files in subfolders"
+msgstr "Показать файлы в под-папках"
 
 #: ncms/mmgr/MediaFilesSelector.js:344
 msgid "Are you sure to remove selected files?"
-msgstr ""
+msgstr "Вы действительно желаете безвозвратно удалить выбранные файлы?"
 
 #: ncms/mmgr/MediaFilesSelector.js:462
 msgid "Move %1 files to another folder"
-msgstr ""
+msgstr "Переместить %1 файл(а) в другую папку"
 
 #: ncms/mmgr/MediaItemTreeSelector.js:145 ncms/mmgr/MediaFilesSelector.js:462
 msgid "Move '%1' to another folder"
-msgstr ""
+msgstr "Переместить '%1' в другую папку"
 
 #: ncms/mmgr/MediaFilesSelector.js:499
 msgid "Upload"
-msgstr ""
+msgstr "Загрузить"
 
 #: ncms/mmgr/MediaFilesTable.js:11
 msgid "Length"
-msgstr ""
+msgstr "Длина"
 
 #: ncms/mmgr/MediaItemTreeSelector.js:58
 msgid "New subfolder"
-msgstr ""
+msgstr "Новая папка"
 
 #: ncms/mmgr/MediaItemTreeSelector.js:64
 msgid "New top-level folder"
-msgstr ""
+msgstr "Новая папка верхнего уровня"
 
 #: ncms/mmgr/MediaItemTreeSelector.js:107
 msgid "Are you sure to remove folder: %1"
-msgstr ""
+msgstr "Вы действительно желаете безвозвратно удалить папку: %1"
 
 #: ncms/mmgr/MediaTextFileEditor.js:46 ncms/usr/UserEditForm.js:50
 #: ncms/pgs/PageEditorEditPage.js:45
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: ncms/mmgr/PageFilesSelector.js:43 ncms/mmgr/PageFilesSelector.js:50
 #: ncms/mmgr/PageFilesSelector.js:56
 msgid "Import from media repository"
-msgstr ""
+msgstr "Импортировать из медиа-репозитория"
 
 #: ncms/pgs/LinkSelectorDlg.js:43 ncms/mmgr/PageFilesSelectorDlg.js:84
 msgid "Link text"
-msgstr ""
+msgstr "Текст ссылки"
 
 #: ncms/mmgr/PageFilesSelectorDlg.js:110
 msgid "Close"
-msgstr ""
+msgstr "Закрыть"
 
 #: ncms/news/NewsNav.js:50 ncms/news/NewsNav.js:52
 msgid "Select the parent page for news"
-msgstr ""
+msgstr "Укажите родительскую страницу для новостей"
 
 #: ncms/news/NewsNav.js:150 ncms/pgs/PagesTreeSelector.js:242
 msgid "Are you sure to remove page: %1"
-msgstr ""
+msgstr "Вы действительно желаете удалить страницу %1"
 
 #: ncms/news/NewsNav.js:185
 msgid "Please select the parent page for news"
-msgstr ""
+msgstr "Пожалуйста укажите родительскую страницу для новостей"
 
 #: ncms/news/NewsNewDlg.js:21 ncms/news/NewsNewDlg.js:22
 msgid "News caption"
-msgstr ""
+msgstr "Заголовок новости"
 
 #: ncms/pgs/LinkSelectorDlg.js:60
 msgid "Or set external link"
-msgstr ""
+msgstr "Или укажите внешнюю ссылку"
 
 #: ncms/pgs/PageEditorAccessPane.js:10
 msgid "Access rights"
-msgstr ""
+msgstr "Права доступа"
 
 #: ncms/pgs/PageEditorAccessPane.js:14
 msgid "Local"
-msgstr ""
+msgstr "Локальные"
 
 #: ncms/pgs/PageEditorAccessPane.js:17
 msgid "Recursive"
-msgstr ""
+msgstr "Рекурсивные"
 
 #: ncms/pgs/PageEditorAccessTable.js:109 ncms/pgs/PageEditorAccessTable.js:283
 msgid "Add user"
-msgstr ""
+msgstr "Добавить пользователя"
 
 #: ncms/pgs/PageEditorAccessTable.js:113 ncms/pgs/PageEditorAccessTable.js:288
-msgid "Delete user"
-msgstr ""
+msgid "Remove user"
+msgstr "Убрать пользователя"
 
 #: ncms/pgs/PageEditorAccessTable.js:156 ncms/usr/UsersTable.js:9
 msgid "Login"
-msgstr ""
+msgstr "Логин"
 
 #: ncms/pgs/PageEditorAccessTable.js:161
 msgid "User name"
-msgstr ""
+msgstr "Имя пользователя"
 
 #: ncms/pgs/PageEditorAccessTable.js:166
 msgid "Editing"
-msgstr ""
+msgstr "Редактирование"
 
 #: ncms/pgs/PageEditorAccessTable.js:173
 msgid "News"
-msgstr ""
+msgstr "Новости"
 
 #: ncms/pgs/PageEditorAccessTable.js:180
 msgid "Deleting"
-msgstr ""
+msgstr "Удаление"
 
 #: ncms/pgs/PageEditorAccessTable.js:198
 msgid "Add user to the access list"
-msgstr ""
+msgstr "Добавить пользователя в список прав"
 
 #: ncms/pgs/PageEditorAccessTable.js:292
-msgid "Delete user (force recursive)"
-msgstr ""
+msgid "Remove user recursively"
+msgstr "Убрать пользователя (рекурсивно)"
 
 #: ncms/pgs/PageEditorEditPage.js:41 ncms/pgs/PageEditorEditPage.js:372
 msgid "Not published"
-msgstr ""
+msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:69
-msgid "Please select the page template"
-msgstr ""
-
-#: ncms/pgs/PageEditorEditPage.js:260
+#: ncms/pgs/PageEditorEditPage.js:69 ncms/pgs/PageEditorEditPage.js:260
 msgid "Please select the template page"
-msgstr ""
+msgstr "Пожалуйста выберите шаблон для страницы"
 
 #: ncms/pgs/PageEditorEditPage.js:298
 msgid "Page fields contain errors"
-msgstr ""
+msgstr "В полях страницы обнаружены ошибки"
 
 #: ncms/pgs/PageEditorEditPage.js:321
 msgid "Failed to save page."
-msgstr ""
+msgstr "Ошибка при сохранении страницы"
 
 #: ncms/pgs/PageEditorEditPage.js:339
 msgid "Page saved successfully"
-msgstr ""
+msgstr "Страница успешно сохранена"
 
 #: ncms/pgs/PageEditorEditPage.js:347
 msgid "Failed to save page. Error: %1"
-msgstr ""
+msgstr "Ошибка при сохранении страницы: %1"
 
 #: ncms/pgs/PageEditorEditPage.js:372
 msgid "Published"
-msgstr ""
+msgstr "Опубликовано"
 
 #: ncms/pgs/PageEditorEditPage.js:378
 msgid "Dow you really want to dispose pending changes?"
-msgstr ""
+msgstr "Вы действительно желаете отменить несохраненные изменения"
 
 #: ncms/pgs/PageEditorEditPage.js:390
 msgid "Organize the page files"
-msgstr ""
+msgstr "Управление файлами страницы"
 
 #: ncms/pgs/PageEditorInfoPage.js:12 ncms/usr/UserEditor.js:39
 msgid "General"
-msgstr ""
+msgstr "Общее"
 
 #: ncms/pgs/PageEditorInfoPage.js:106
 msgid "Last modification: %1, %2"
-msgstr ""
+msgstr "Последнее редактирование: %1, %2"
 
 #: ncms/pgs/PageEditorInfoPage.js:115
 msgid "This page is not pulished yet"
-msgstr ""
+msgstr "Эта страница еще не опубликована"
 
 #: ncms/pgs/PageEditorInfoPage.js:164
 msgid "Choose the owner of %1"
-msgstr ""
+msgstr "Выберите владельца: %1"
 
 #: ncms/pgs/PageEditorInfoPage.js:165
 msgid "Choose the owner"
-msgstr ""
+msgstr "Выберите владельца"
 
 #: ncms/pgs/PageNewDlg.js:24 ncms/pgs/PageNewDlg.js:25
 msgid "Page name"
-msgstr ""
+msgstr "Название страницы"
 
 #: ncms/pgs/PageNewDlg.js:29
 msgid "Page is container folder for other pages"
-msgstr ""
+msgstr "Страница является контейнером/папкой для других страни"
 
 #: ncms/pgs/PageNewDlg.js:30
 msgid "Container"
-msgstr ""
+msgstr "Контейнер/папка"
 
 #: ncms/pgs/PagesCollectionDlg.js:21
 msgid "Page collection"
-msgstr ""
+msgstr "Коллекция страниц"
 
 #: ncms/pgs/PagesCollectionTable.js:87
 msgid "Add page"
-msgstr ""
+msgstr "Добавить страницу"
 
 #: ncms/pgs/PagesCollectionTable.js:93
 msgid "Remove page"
-msgstr ""
+msgstr "Удалить страницу"
 
 #: ncms/pgs/PagesSelector.js:35
 msgid "Structure"
-msgstr ""
+msgstr "Структура"
 
 #: ncms/pgs/PagesSelector.js:42
 msgid "Search"
-msgstr ""
+msgstr "Поиск"
 
 #: ncms/pgs/PagesSelectorDlg.js:36
 msgid "Select the page"
-msgstr ""
+msgstr "Выбрать страницу"
 
 #: ncms/pgs/PagesTable.js:24
 msgid "Path"
-msgstr ""
+msgstr "Путь"
 
 #: ncms/pgs/PagesTreeSelector.js:144
 msgid "Change/Rename"
-msgstr ""
+msgstr "Изменить/Переименовать"
 
 #: ncms/pgs/PagesTreeSelector.js:148
 msgid "Move"
-msgstr ""
+msgstr "Переместить"
 
 #: ncms/pgs/PagesTreeSelector.js:168
 msgid "Choose the target container page"
-msgstr ""
+msgstr "Укажите папку"
 
 #: ncms/usr/UserEditForm.js:31 ncms/usr/UserNewDlg.js:43
 msgid "Full name"
-msgstr ""
+msgstr "Полное имя"
 
 #: ncms/usr/UserEditForm.js:35 ncms/usr/UserNewDlg.js:47
 msgid "E-Mail"
@@ -981,49 +983,51 @@ msgstr ""
 
 #: ncms/usr/UserEditForm.js:38 ncms/usr/UserNewDlg.js:51
 msgid "Password"
-msgstr ""
+msgstr "Пароль"
 
 #: ncms/usr/UserEditForm.js:41 ncms/usr/UserNewDlg.js:55
 msgid "Password confirm"
-msgstr ""
+msgstr "Подтверждение пароля"
 
 #: ncms/usr/UserEditForm.js:134 ncms/usr/UserNewDlg.js:107
 msgid "Not matching with password."
-msgstr ""
+msgstr "Пароли не соответствуют"
 
 #: ncms/usr/UserEditor.js:32
 msgid "Roles/Groups"
-msgstr ""
+msgstr "Роли/Группы"
 
 #: ncms/usr/UsersNav.js:79 ncms/usr/UserNewDlg.js:21
 msgid "New user"
-msgstr ""
+msgstr "Новый пользователь"
 
 #: ncms/usr/UserRolesTable.js:141
 msgid "Assign"
-msgstr ""
+msgstr "Назначить"
 
 #: ncms/usr/UserRolesTable.js:148
 msgid "Role/Group"
-msgstr ""
+msgstr "Роль/Группа"
 
 #: ncms/usr/UsersNav.js:106
 msgid "Are you sure to remove user: \"%1\"?"
-msgstr ""
+msgstr "Вы действительно желаете удалить пользователя \"%1\"?"
 
 #: ncms/wiki/InsertGMapDlg.js:16
 msgid "Insert google map location"
-msgstr ""
+msgstr "Выставить google карту"
 
 #: ncms/wiki/InsertGMapDlg.js:27
 msgid ""
 "In order to add google map place please follow <a href='%1' "
 "target='_blank'>this help tutorial</a>"
 msgstr ""
+"Для того, чтобы вставить goole карту <a href='%1' target='_blank'>следуйте "
+"этим инструкциям</a>"
 
 #: ncms/wiki/InsertGMapDlg.js:35
 msgid "Paste here the generated google map <iframe> element"
-msgstr ""
+msgstr "Вставьте сюда сгенерированный google map <iframe> элемент"
 
 #: ncms/wiki/InsertGMapDlg.js:66
 msgid "Invalid google map location code"
@@ -1031,51 +1035,51 @@ msgstr ""
 
 #: ncms/wiki/InsertImageDlg.js:23
 msgid "Caption"
-msgstr ""
+msgstr "Заголовок"
 
 #: ncms/wiki/InsertImageDlg.js:26
 msgid "original"
-msgstr ""
+msgstr "оригинальный"
 
 #: ncms/wiki/InsertImageDlg.js:27
 msgid "small"
-msgstr ""
+msgstr "маленький"
 
 #: ncms/wiki/InsertImageDlg.js:28
 msgid "medium"
-msgstr ""
+msgstr "средний"
 
 #: ncms/wiki/InsertImageDlg.js:29
 msgid "large"
-msgstr ""
+msgstr "большой"
 
 #: ncms/wiki/InsertImageDlg.js:33
 msgid "default"
-msgstr ""
+msgstr "по умолчанию"
 
 #: ncms/wiki/InsertImageDlg.js:34
 msgid "center"
-msgstr ""
+msgstr "по центру"
 
 #: ncms/wiki/InsertImageDlg.js:35
 msgid "left"
-msgstr ""
+msgstr "слева"
 
 #: ncms/wiki/InsertImageDlg.js:36
 msgid "right"
-msgstr ""
+msgstr "справа"
 
 #: ncms/wiki/InsertImageDlg.js:37
 msgid "Position"
-msgstr ""
+msgstr "Расположение"
 
 #: ncms/wiki/InsertImageDlg.js:44
 msgid "Select image link"
-msgstr ""
+msgstr "Укажите ссылку на изображение"
 
 #: ncms/wiki/InsertYoutubeDlg.js:19
 msgid "Insert youtube video"
-msgstr ""
+msgstr "Вставка ролика youtube"
 
 #: ncms/wiki/InsertYoutubeDlg.js:34
 msgid "http://www.youtube.com/watch?v=? or video code"
@@ -1087,184 +1091,187 @@ msgstr ""
 
 #: ncms/wiki/InsertYoutubeDlg.js:39
 msgid "Custom size"
-msgstr ""
+msgstr "Другой размер"
 
 #: ncms/wiki/InsertYoutubeDlg.js:79
 msgid "Invalid youtube video url or code"
-msgstr ""
+msgstr "Неправильная ссылка на видео youtube"
 
 #: ncms/wiki/WikiEditor.js:522 ncms/wiki/TableDlg.js:22
 #: ncms/wiki/TableDlg.js:53
 msgid "Insert table"
-msgstr ""
+msgstr "Вставить таблицу"
 
 #: ncms/wiki/TableDlg.js:44
 msgid "Columns"
-msgstr ""
+msgstr "Колонок"
 
 #: ncms/wiki/TableDlg.js:46
 msgid "Rows"
-msgstr ""
+msgstr "Строк"
 
 #: ncms/wiki/TableDlg.js:69
 msgid "Wide table"
-msgstr ""
+msgstr "Широкая таблица"
 
 #: ncms/wiki/WikiEditor.js:537 ncms/wiki/TreeDlg.js:18
 msgid "Insert tree"
-msgstr ""
+msgstr "Вставить деево"
 
 #: ncms/wiki/TreeDlg.js:30
 msgid "Simple tree"
-msgstr ""
+msgstr "Простое дерево"
 
 #: ncms/wiki/TreeDlg.js:31
 msgid "Dynamic tree"
-msgstr ""
+msgstr "Динамическое дерево"
 
 #: ncms/wiki/TreeDlg.js:32
 msgid "Tree style"
-msgstr ""
+msgstr "Стиль дерева"
 
 #: ncms/wiki/TreeDlg.js:41
 msgid "Open all nodes"
-msgstr ""
+msgstr "Открыть все узлы"
 
 #: ncms/wiki/WikiEditor.js:163
 msgid "More..."
-msgstr ""
+msgstr "Больше..."
 
 #: ncms/wiki/WikiEditor.js:440
 msgid "Heading 1"
-msgstr ""
+msgstr "Заголовок 1"
 
 #: ncms/wiki/WikiEditor.js:441 ncms/wiki/WikiEditor.js:449
 #: ncms/wiki/WikiEditor.js:457
 msgid "Header text"
-msgstr ""
+msgstr "Текст заголовка"
 
 #: ncms/wiki/WikiEditor.js:448
 msgid "Heading 2"
-msgstr ""
+msgstr "Заголовок 1"
 
 #: ncms/wiki/WikiEditor.js:456
 msgid "Heading 3"
-msgstr ""
+msgstr "Заголовок 3"
 
 #: ncms/wiki/WikiEditor.js:464
 msgid "Bold"
-msgstr ""
+msgstr "Жирный"
 
 #: ncms/wiki/WikiEditor.js:465
 msgid "Bold text"
-msgstr ""
+msgstr "Жирный текст"
 
 #: ncms/wiki/WikiEditor.js:472
 msgid "Italic"
-msgstr ""
+msgstr "Курсив"
 
 #: ncms/wiki/WikiEditor.js:473
 msgid "Italics text"
-msgstr ""
+msgstr "Текст курсивом"
 
 #: ncms/wiki/WikiEditor.js:481
 msgid "Bullet list"
-msgstr ""
+msgstr "Список"
 
 #: ncms/wiki/WikiEditor.js:488
 msgid "Numbered list"
-msgstr ""
+msgstr "Нумерованный список"
 
 #: ncms/wiki/WikiEditor.js:496 ncms/wiki/WikiEditor.js:497
 #: ncms/wiki/WikiEditor.js:678
 msgid "Insert link"
-msgstr ""
+msgstr "Вставить ссылку"
 
 #: ncms/wiki/WikiEditor.js:504 ncms/wiki/WikiEditor.js:506
 #: ncms/wiki/WikiEditor.js:698
 msgid "Insert image"
-msgstr ""
+msgstr "Вставить изображние"
 
 #: ncms/wiki/WikiEditor.js:512 ncms/wiki/WikiEditor.js:514
 msgid "Insert file link"
-msgstr ""
+msgstr "Вставить ссылку на файл"
 
 #: ncms/wiki/WikiEditor.js:521
 msgid "Table"
-msgstr ""
+msgstr "Таблица"
 
 #: ncms/wiki/WikiEditor.js:536
 msgid "Tree"
-msgstr ""
+msgstr "Дерево"
 
 #: ncms/wiki/WikiEditor.js:551
 msgid "Create note"
-msgstr ""
+msgstr "Создать узел"
 
 #: ncms/wiki/WikiEditor.js:556 ncms/wiki/WikiEditor.js:557
 msgid "Simple note"
-msgstr ""
+msgstr "Простая заметка"
 
 #: ncms/wiki/WikiEditor.js:563 ncms/wiki/WikiEditor.js:564
 msgid "Warning note"
-msgstr ""
+msgstr "Заметка предупреждение"
 
 #: ncms/wiki/WikiEditor.js:573
-msgid "Google content"
-msgstr ""
+msgid "Google services"
+msgstr "Сервисы google"
 
 #: ncms/wiki/WikiEditor.js:578
 msgid "Youtube film"
-msgstr ""
+msgstr "Youtube ролик"
 
 #: ncms/wiki/WikiEditor.js:579
 msgid "Insert youtube film"
-msgstr ""
+msgstr "Вставить Youtube ролик"
 
 #: ncms/wiki/WikiEditor.js:587
 msgid "Gmap location"
-msgstr ""
+msgstr "Карта google map"
 
 #: ncms/wiki/WikiEditor.js:588
 msgid "Insert gmap location"
-msgstr ""
+msgstr "Вставить карту google map"
 
 #: ncms/wiki/WikiEditor.js:710
 msgid "Insert link to file"
-msgstr ""
+msgstr "Вставить ссылку на файл"
 
 #: ncms/wiki/WikiEditor.js:793 ncms/wiki/WikiEditor.js:805
 #: ncms/wiki/WikiEditor.js:817 ncms/wiki/WikiEditor.js:829
 msgid "First"
-msgstr ""
+msgstr "Первый"
 
 #: ncms/wiki/WikiEditor.js:795 ncms/wiki/WikiEditor.js:807
 #: ncms/wiki/WikiEditor.js:819 ncms/wiki/WikiEditor.js:831
 msgid "Second"
-msgstr ""
+msgstr "Второй"
 
 #: ncms/wiki/WikiEditor.js:796 ncms/wiki/WikiEditor.js:808
 #: ncms/wiki/WikiEditor.js:820 ncms/wiki/WikiEditor.js:832
 msgid "First for second"
-msgstr ""
+msgstr "Первый у второго"
 
 #: ncms/wiki/WikiEditor.js:797 ncms/wiki/WikiEditor.js:809
 #: ncms/wiki/WikiEditor.js:821 ncms/wiki/WikiEditor.js:833
 msgid "Third"
-msgstr ""
+msgstr "Третий"
 
 #: ncms/wiki/WikiEditor.js:846
 msgid "Child 1"
-msgstr ""
+msgstr "Потомок 1"
 
 #: ncms/wiki/WikiEditor.js:847
 msgid "Child level 3"
-msgstr ""
+msgstr "Потомок уровня вложенности 3"
 
 #: ncms/wiki/WikiEditor.js:848
 msgid "Child 2"
-msgstr ""
+msgstr "Потомок уровня вложености 2"
 
 #: ncms/wiki/WikiEditor.js:863
 msgid "Note text"
-msgstr ""
+msgstr "Заметка"
+
+#~ msgid "Bread crumbs"
+#~ msgstr "Вспомогательная навигация (Breadcrumbs)"

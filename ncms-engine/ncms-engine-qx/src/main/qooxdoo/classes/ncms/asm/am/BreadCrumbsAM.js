@@ -5,7 +5,7 @@ qx.Class.define("ncms.asm.am.BreadCrumbsAM", {
     statics : {
 
         getDescription : function() {
-            return qx.locale.Manager.tr("Bread crumbs");
+            return qx.locale.Manager.tr("Breadcrumbs");
         },
 
         getSupportedAttributeTypes : function() {

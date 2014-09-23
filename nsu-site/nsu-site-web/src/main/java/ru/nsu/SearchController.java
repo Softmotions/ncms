@@ -1,6 +1,5 @@
 package ru.nsu;
 
-import com.softmotions.commons.cont.Pair;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
@@ -22,12 +21,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -36,10 +30,8 @@ import java.util.concurrent.Callable;
 public class SearchController implements AsmController {
 
     protected static final int DEFAULT_MAX_RESULTS = 20;
-
     protected final Logger log;
     protected final AsmDAO adao;
-
     protected final SolrServer solr;
 
     @Inject

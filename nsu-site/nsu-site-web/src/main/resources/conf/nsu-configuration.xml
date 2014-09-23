@@ -123,6 +123,7 @@
         <module class="com.softmotions.ncms.media.MediaModule"/>
         <module class="com.softmotions.ncms.mediawiki.MediaWikiModule"/>
         <module class="com.softmotions.ncms.user.UserModule"/>
+        <module class="ru.nsu.NSUModule"/>
     </modules>
 
     <ui>

@@ -570,7 +570,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             this._addToolbarControl({
                 id : "Google",
                 icon : "ncms/icon/16/wiki/google.png",
-                tooltipText : this.tr("Google content"),
+                tooltipText : this.tr("Google services"),
                 menu : [
                     {
                         id : "Youtube",
