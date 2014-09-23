@@ -1,6 +1,6 @@
 package com.softmotions.ncms.adm;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.web.security.WSUser;
 
 import com.google.inject.Inject;
@@ -33,7 +33,7 @@ public class WorkspaceRS {
     private static final Logger log = LoggerFactory.getLogger(WorkspaceRS.class);
 
     @Inject
-    NcmsConfiguration cfg;
+    NcmsEnvironment env;
 
     @GET
     @Path("state")
@@ -63,7 +63,7 @@ public class WorkspaceRS {
                        @Context HttpServletResponse resp) {
         req.getSession().invalidate();
         try {
-            resp.sendRedirect(cfg.getLogoutRedirect());
+            resp.sendRedirect(env.getLogoutRedirect());
         } catch (IOException e) {
             log.error("", e);
         }
@@ -74,7 +74,7 @@ public class WorkspaceRS {
         final Map<String, Object> properties = new HashMap<>();
 
         public WSUserState(WSUser user, HttpServletRequest req) {
-            put("appName", cfg.getApplicationName());
+            put("appName", env.getApplicationName());
             put("sessionId", req.getSession().getId());
             put("userId", user.getName());
             put("userLogin", user.getName());
@@ -82,8 +82,8 @@ public class WorkspaceRS {
             put("roles", user.getRoleNames());
             put("email", user.getEmail());
             put("time", new Date());
-            put("helpSite", cfg.getHelpSite());
-            properties.put("ncmsPrefix", cfg.getNcmsPrefix());
+            put("helpSite", env.getHelpSite());
+            properties.put("ncmsPrefix", env.getNcmsPrefix());
             put("properties", properties);
         }
     }

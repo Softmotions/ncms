@@ -7,7 +7,7 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.guid.RandomGUID;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.commons.num.NumberUtils;
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
@@ -118,7 +118,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final Map<String, Long> lang2IndexPages;
 
-    private final NcmsConfiguration cfg;
+    private final NcmsEnvironment env;
 
     private final Provider<AsmAttributeManagerContext> amCtxProvider;
 
@@ -132,7 +132,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                   PageSecurityService pageSecurity,
                   NcmsEventBus ebus,
                   UserEnvRS userEnvRS,
-                  NcmsConfiguration cfg,
+                  NcmsEnvironment env,
                   Provider<AsmAttributeManagerContext> amCtxProvider) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
@@ -143,10 +143,10 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.pageSecurity = pageSecurity;
         this.ebus = ebus;
         this.userEnvRS = userEnvRS;
-        this.pagesCache = new PagesLRUMap(cfg.impl().getInt("pages.lru-cache-size", 1024));
+        this.pagesCache = new PagesLRUMap(env.xcfg().getInt("pages.lru-cache-size", 1024));
         this.pageGuid2Cache = new HashMap<>();
         this.lang2IndexPages = new HashMap<>();
-        this.cfg = cfg;
+        this.env = env;
         this.amCtxProvider = amCtxProvider;
         this.ebus.register(this);
     }
@@ -1242,7 +1242,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                     lang2IndexPages.put(lang, id);
                 }
                 if (!lang2IndexPages.containsKey("*")) {
-                    String dpl = this.cfg.impl().getString("pages.default-page-language", Locale.getDefault().getLanguage());
+                    String dpl = this.env.xcfg().getString("pages.default-page-language", Locale.getDefault().getLanguage());
                     if (lang2IndexPages.containsKey(dpl)) {
                         log.info("Registering page: '" + lp + "' as the MAIN PAGE for lang: *");
                         lang2IndexPages.put("*", lang2IndexPages.get(dpl));

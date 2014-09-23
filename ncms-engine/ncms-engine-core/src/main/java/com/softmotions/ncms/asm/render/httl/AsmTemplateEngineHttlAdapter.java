@@ -2,7 +2,7 @@ package com.softmotions.ncms.asm.render.httl;
 
 import httl.Engine;
 import httl.Template;
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
@@ -40,9 +40,9 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
     private final Engine engine;
 
     @Inject
-    public AsmTemplateEngineHttlAdapter(NcmsConfiguration cfg) {
+    public AsmTemplateEngineHttlAdapter(NcmsEnvironment cfg) {
         Properties httlProps = new Properties();
-        String extsStr = cfg.impl().getString("httl[@extensions]");
+        String extsStr = cfg.xcfg().getString("httl[@extensions]");
         if (!StringUtils.isBlank(extsStr)) {
             exts = extsStr.split(",");
             for (int i = 0; i < exts.length; ++i) {
@@ -51,7 +51,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
         } else {
             exts = DEFAULT_EXTS;
         }
-        String httlPropsStr = cfg.impl().getString("httl");
+        String httlPropsStr = cfg.xcfg().getString("httl");
         if (!StringUtils.isBlank(httlPropsStr)) {
             try {
                 httlProps.load(new StringReader(httlPropsStr));

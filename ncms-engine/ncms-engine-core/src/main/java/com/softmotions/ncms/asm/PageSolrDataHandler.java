@@ -12,7 +12,7 @@ import com.google.common.collect.AbstractIterator;
 import com.google.common.eventbus.Subscribe;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
@@ -52,7 +52,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
 
     public void init(Configuration cfg) {
         String[] attrs = cfg.getStringArray("extra-attributes");
-        if (attrs == null || attrs.length == 0 ||  (attrs.length == 1 && "*".equals(attrs[0]))) {
+        if (attrs == null || attrs.length == 0 || (attrs.length == 1 && "*".equals(attrs[0]))) {
             extraAttributeNames = null;
         } else {
             extraAttributeNames = new ArrayList<>();
@@ -88,7 +88,6 @@ public class PageSolrDataHandler implements SolrDataHandler {
         if (StringUtils.isBlank(asm.getType())) {
             return null;
         }
-
         SolrInputDocument res = new SolrInputDocument();
         res.addField("id", asm.getId());
         res.addField("name", asm.getHname());

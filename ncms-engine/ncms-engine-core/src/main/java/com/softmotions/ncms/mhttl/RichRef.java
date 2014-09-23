@@ -11,6 +11,8 @@ public class RichRef {
 
     private final String link;
 
+    private final String rawLink;
+
     private final String name;
 
     private final String style;
@@ -29,6 +31,10 @@ public class RichRef {
         return link;
     }
 
+    public String getRawLink() {
+        return rawLink;
+    }
+
     public String getName() {
         return name;
     }
@@ -41,10 +47,16 @@ public class RichRef {
         return style2;
     }
 
-    public RichRef(String name, String link, String description,
-                   Image image, String style, String style2) {
+    public RichRef(String name,
+                   String link,
+                   String rawLink,
+                   String description,
+                   Image image,
+                   String style,
+                   String style2) {
         this.name = name;
         this.link = link;
+        this.rawLink = rawLink;
         this.description = description;
         this.image = image;
         this.style = style;
@@ -57,6 +69,7 @@ public class RichRef {
         sb.append(", style='").append(style).append('\'');
         sb.append(", style2='").append(style2).append('\'');
         sb.append(", link='").append(link).append('\'');
+        sb.append(", rawLink='").append(rawLink).append('\'');
         sb.append(", description='").append(description).append('\'');
         sb.append(", image=").append(image);
         sb.append('}');

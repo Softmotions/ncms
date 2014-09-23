@@ -225,5 +225,13 @@
         </createIndex>
 
     </changeSet>
+    
+    <changeSet id="19" author="adamansky@gmail.com">
+        <createIndex tableName="ASMS"
+                     indexName="IDX_ASMS_NAVALIAS"
+                     unique="false">
+            <column name="NAV_ALIAS"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>

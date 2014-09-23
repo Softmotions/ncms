@@ -1,6 +1,6 @@
 package com.softmotions.ncms.asm.render;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.CachedPage;
@@ -11,7 +11,6 @@ import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.web.GenericResponseWrapper;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.XMLConfiguration;
@@ -20,7 +19,6 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Provider;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,19 +39,10 @@ public class AsmServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(AsmServlet.class);
 
     @Inject
-    private Injector injector;
-
-    @Inject
-    private Provider<AsmRenderer> rendererProvider;
-
-    @Inject
-    private Provider<AsmResourceLoader> loaderProvider;
+    private NcmsEnvironment env;
 
     @Inject
     private MediaRepository mediaRepository;
-
-    @Inject
-    private NcmsConfiguration cfg;
 
     @Inject
     private NcmsMessages messages;
@@ -63,6 +52,9 @@ public class AsmServlet extends HttpServlet {
 
     @Inject
     private PageService pageService;
+
+    @Inject
+    private AsmRendererContextFactory rendererContextFactory;
 
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -94,8 +86,6 @@ public class AsmServlet extends HttpServlet {
             return;
         }
 
-        AsmRenderer renderer = rendererProvider.get();
-        AsmResourceLoader loader = loaderProvider.get();
         AsmRendererContext ctx;
         HttpServletResponse renderResp = resp;
         StringWriter out = null;
@@ -104,12 +94,7 @@ public class AsmServlet extends HttpServlet {
             renderResp = new GenericResponseWrapper(resp, out, false);
         }
         try {
-            ctx = new AsmRendererContextImpl(cfg,
-                                             injector,
-                                             renderer,
-                                             loader,
-                                             messages,
-                                             req, renderResp, asmRef);
+            ctx = rendererContextFactory.createStandalone(req, renderResp, asmRef);
         } catch (AsmResourceNotFoundException e) {
             log.error("Resource not found: " + e.getResource() + " assembly: " + asmRef);
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -180,7 +165,7 @@ public class AsmServlet extends HttpServlet {
         if (pi == null || "/index.html".equals(pi)) {
             return false;
         }
-        XMLConfiguration xcfg = cfg.impl();
+        XMLConfiguration xcfg = env.xcfg();
         if (!xcfg.getBoolean("site-files-root[@resolveRelativePaths]", true)) {
             return false;
         }

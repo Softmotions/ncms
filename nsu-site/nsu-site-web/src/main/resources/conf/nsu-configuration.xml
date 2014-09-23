@@ -5,9 +5,12 @@
     <environment>${ncms.environment}</environment>
     <db-environment>${nsu.db.environment}</db-environment>
 
-    <site-root preferRequestUrl="true">http://127.0.0.1:8080</site-root>
-    <help-site>http://127.0.0.1:8080</help-site>
-    <logout-redirect>http://127.0.0.1:8080</logout-redirect>
+    <server-name>127.0.0.1</server-name>
+    <server-port>8080</server-port>
+
+    <site-root preferRequestUrl="true">http://${server-name}:{server-port}</site-root>
+    <help-site>http://${server-name}:{server-port}</help-site>
+    <logout-redirect>http://${server-name}:{server-port}</logout-redirect>
     <site-files-root resolveRelativePaths="true">/site</site-files-root>
     <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->
 
@@ -177,11 +180,9 @@
             </news>
         </mainpage>
         <!-- Архив и API для журналов(Пресса) -->
-        <pressa>
-            <template>
-                <name>pressa_archive</name>
-            </template>
-        </pressa>
+        <journals>
+            <uzh/>
+        </journals>
     </content>
 
 </configuration>

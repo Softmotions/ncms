@@ -2,7 +2,7 @@ package com.softmotions.ncms.mediawiki;
 
 import info.bliki.htmlcleaner.TagToken;
 import info.bliki.wiki.model.Configuration;
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -27,8 +27,8 @@ public class MediaWikiConfiguration extends Configuration {
     private static final Logger log = LoggerFactory.getLogger(MediaWikiConfiguration.class);
 
     @Inject
-    public MediaWikiConfiguration(Map<String, TagToken> tags, NcmsConfiguration cfg) {
-        XMLConfiguration xcfg = cfg.impl();
+    public MediaWikiConfiguration(Map<String, TagToken> tags, NcmsEnvironment env) {
+        XMLConfiguration xcfg = env.xcfg();
         for (final Map.Entry<String, TagToken> e : tags.entrySet()) {
             log.info("Mediawiki custom tag: '" + e.getKey() +
                      "' class: '" + e.getValue().getClass().getName() +
@@ -46,11 +46,11 @@ public class MediaWikiConfiguration extends Configuration {
             log.info("Interwiki link [" + key + ", " + value + "] added");
         }
         if (!this.getInterwikiMap().containsKey("page") && !this.getInterwikiMap().containsKey("Page")) {
-            String link = cfg.getServletContext().getContextPath();
+            String link = env.getServletContext().getContextPath();
             if (!link.endsWith("/")) {
                 link += '/';
             }
-            link += cfg.getNcmsPrefix().substring(1) + "/asm/${title}";
+            link += env.getNcmsPrefix().substring(1) + "/asm/${title}";
             this.addInterwikiLink("page", link);
             log.info("Interwiki link [page, " + link + "] added");
         }

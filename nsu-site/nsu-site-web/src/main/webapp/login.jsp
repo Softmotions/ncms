@@ -1,4 +1,4 @@
-<%@ page import="com.softmotions.ncms.NcmsConfiguration" %>
+<%@ page import="com.softmotions.ncms.NcmsEnvironment" %>
 <%@ page import="com.google.inject.Injector" %>
 <%@ page import="org.apache.commons.configuration.Configuration" %>
 <%@ page import="java.net.URLEncoder" %>
@@ -76,16 +76,13 @@
 <%
     StringBuffer requestURL = request.getRequestURL();
     String rootUrl = requestURL.substring(0, requestURL.length() - request.getRequestURI().length());
-
     if (request.getUserPrincipal() != null) {
         response.sendRedirect(rootUrl);
     }
-
     response.addHeader("X-Softmotions-Login", "true");
-
     Injector injector = (Injector) request.getServletContext().getAttribute(Injector.class.getName());
-    NcmsConfiguration ncmsCfg = injector.getInstance(NcmsConfiguration.class);
-    Configuration cfg = ncmsCfg.impl().subset("oauth2");
+    NcmsEnvironment ncmsCfg = injector.getInstance(NcmsEnvironment.class);
+    Configuration cfg = ncmsCfg.xcfg().subset("oauth2");
 
     String redirectUrl = rootUrl + "/j_security_check";
     String oauth2LoginUrl = cfg.getString("provider.auth-endpoint") + "?" +

@@ -69,7 +69,7 @@ public class HttlUtilsMethods {
     }
 
     public static String link(Asm asm) {
-        return (asm != null) ? AsmRendererContext.getSafe().getCfg().getAsmLink(asm.getName()) : null;
+        return (asm != null) ? AsmRendererContext.getSafe().getEnv().getAsmLink(asm.getName()) : null;
     }
 
     public static String format2(Date date, String format) {
@@ -81,6 +81,6 @@ public class HttlUtilsMethods {
     }
 
     public static String alias(String alias) {
-        return (alias != null) ? AsmRendererContext.getSafe().getCfg().getAsmLink(alias) : null;
+        return (alias != null) ? AsmRendererContext.getSafe().getEnv().getAsmLink(alias) : null;
     }
 }

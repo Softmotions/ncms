@@ -1,6 +1,6 @@
 package com.softmotions.ncms.security;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.web.AccessControlHDRFilter;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUserDatabase;
@@ -40,9 +40,9 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     }
 
     public void initServlets(WBServletModule m) {
-        NcmsConfiguration cfg = (NcmsConfiguration) m.getConfiguration();
-        String dbJndiName = cfg.impl().getString("security[@dbJndiName]");
-        String webAccessControlAllow = cfg.impl().getString("security.web-access-control-allow");
+        NcmsEnvironment env = (NcmsEnvironment) m.getConfiguration();
+        String dbJndiName = env.xcfg().getString("security[@dbJndiName]");
+        String webAccessControlAllow = env.xcfg().getString("security.web-access-control-allow");
 
         if (dbJndiName != null) {
             WSUserDatabase udb = locateWSUserDatabase(dbJndiName);
@@ -68,11 +68,11 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     public static class WSUserDatabaseProvider implements Provider<WSUserDatabase> {
 
         @Inject
-        NcmsConfiguration cfg;
+        NcmsEnvironment env;
 
         public WSUserDatabase get() {
             WSUserDatabase usersDb = null;
-            String jndiName = cfg.impl().getString("security[@dbJndiName]");
+            String jndiName = env.xcfg().getString("security[@dbJndiName]");
             if (!StringUtils.isBlank(jndiName)) {
                 log.info("Locating users database with JNDI name: " + jndiName);
                 usersDb = locateWSUserDatabase(jndiName);

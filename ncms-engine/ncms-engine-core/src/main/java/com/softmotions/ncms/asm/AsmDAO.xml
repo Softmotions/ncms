@@ -115,6 +115,7 @@
             <if test="name != null">asm.name = #{name}</if>
             <if test="type != null">AND asm.type = #{type}</if>
             <if test="location != null">AND core.location = #{location}</if>
+            <if test="alias != null">AND asm.</if>
         </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">
@@ -200,16 +201,23 @@
 
     <select id="asmIDByAlias" parameterType="string" resultType="long">
         SELECT
-            asm_id
-        FROM ASM_ATTRS
-        WHERE type = 'alias' AND value = #{alias}
+            id
+        FROM ASMS
+        WHERE nav_alias = #{name}
     </select>
 
-    <select id="asmCheckUniqueAlias" resultType="long">
-        SELECT COUNT(*)
-        FROM ASM_ATTRS
-        WHERE type = 'alias' AND id != #{aliasId} AND value = #{alias}
+    <select id="asmCheckUniqueAlias" resultType="long" parameterType="map">
+        SELECT
+            COUNT(*)
+        FROM ASMS
+        WHERE nav_alias = #{alias} AND id != #{id}
     </select>
+
+    <update id="asmUpdateAlias" parameterType="map">
+        UPDATE ASMS
+        SET nav_alias = #{alias}
+        WHERE id = #{id,jdbcType=VARCHAR}
+    </update>
 
     <select id="asmNameByID" parameterType="long" resultType="string">
         SELECT
@@ -327,6 +335,9 @@
             attr.name         AS "attr_name",
             attr.type         AS "attr_type",
             attr.value        AS "attr_value",
+            <if test="largeAttrValues">
+            attr.large_value  AS "attr_large_value",
+            </if>
             iv.attr_id        AS "iv_attr_id",
             iv.value          AS "iv_value",
             npasm.id          AS "np_id",
@@ -343,13 +354,15 @@
               LEFT JOIN ASM_PARENTS AS parent ON parent.asm_id = asm.id
               LEFT JOIN ASMS AS pasm ON parent.asm_parent_id = pasm.id
               </if>
-            WHERE
-            <trim prefixOverrides="AND | OR">
+            <where>
                     <if test="navParentId != null">
                     AND asm.nav_parent_id = #{navParentId}
                     </if>
                     <if test="published != null">
                     AND asm.published = #{published}
+                    </if>
+                    <if test="alias != null">
+                    AND asm.nav_alias = #{alias}
                     </if>
                     <if test="type != null">
                     AND asm.type LIKE #{type}
@@ -376,7 +389,7 @@
                       </trim>
                     )
                    </if>
-                </trim>
+            </where>
                 <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
                 <if test="CQ_LIMIT">
                     LIMIT ${CQ_LIMIT}

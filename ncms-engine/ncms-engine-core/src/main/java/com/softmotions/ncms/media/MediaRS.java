@@ -17,7 +17,7 @@ import com.softmotions.commons.io.watcher.FSWatcherEventHandler;
 import com.softmotions.commons.io.watcher.FSWatcherEventSupport;
 import com.softmotions.commons.io.watcher.FSWatcherModifyEvent;
 import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
@@ -140,7 +140,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private static final int PUT_SYSTEM = 1 << 1;
 
-    final NcmsConfiguration cfg;
+    final NcmsEnvironment env;
 
     final File basedir;
 
@@ -158,20 +158,20 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
 
     @Inject
-    public MediaRS(NcmsConfiguration cfg,
+    public MediaRS(NcmsEnvironment env,
                    SqlSession sess,
                    ObjectMapper mapper,
                    NcmsMessages message,
                    NcmsEventBus ebus,
                    WSUserDatabase userdb) throws IOException {
         super(MediaRS.class.getName(), sess);
-        this.cfg = cfg;
-        XMLConfiguration xcfg = cfg.impl();
+        this.env = env;
+        XMLConfiguration xcfg = env.xcfg();
         String dir = xcfg.getString("media[@basedir]");
         if (dir == null) {
             throw new RuntimeException("Missing required configuration property: media[@basedir]");
         }
-        dir = cfg.substitutePath(dir);
+        dir = env.substitutePath(dir);
         this.basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);
         this.locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 128));
@@ -1178,7 +1178,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         String path = folder + name;
-        XMLConfiguration xcfg = cfg.impl();
+        XMLConfiguration xcfg = env.xcfg();
         int thumbWidth = xcfg.getInt("media.thumbnails-width", 255);
         String ctype = (String) rec.get("content_type");
         String iconCtype = (String) rec.get("icon_content_type");
@@ -1244,7 +1244,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         } else if (ctype.startsWith("image/png")) {
             return "png";
         } else {
-            return cfg.impl().getString("media.resize-default-format", "jpeg");
+            return env.xcfg().getString("media.resize-default-format", "jpeg");
         }
     }
 
@@ -1603,10 +1603,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         if (!localPut) {
-            XMLConfiguration xcfg = cfg.impl();
+            XMLConfiguration xcfg = env.xcfg();
             int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB); //1Mb by default
             int uplTh = xcfg.getInt("media.max-upload-size", MB * 10); //10Mb by default
-            us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", cfg.getTmpdir());
+            us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", env.getTmpdir());
         }
 
         try (final ResourceLock l = new ResourceLock(folder + name, true)) {
@@ -1916,14 +1916,13 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private boolean isInSystemFolder(String path) {
         path = normalizeFolder(path);
-        List<Object> sdirs = cfg.impl().getList("media.system-directories.directory");
+        List<Object> sdirs = env.xcfg().getList("media.system-directories.directory");
         for (final Object sdirObj : sdirs) {
             String sdir = String.valueOf(sdirObj);
             if (path.startsWith(normalizeFolder(sdir))) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -2103,7 +2102,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         for (final Path path : deleted) {
             Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
             try {
-                deleteResource(target.toString(), new MediaRSLocalRequest(cfg, target.toFile()));
+                deleteResource(target.toString(), new MediaRSLocalRequest(env, target.toFile()));
             } catch (NotFoundException ignored) {
             } catch (Exception e) {
                 log.error("File deletion failed. Path: " + path + " target: " + target + " error: " + e.getMessage());
@@ -2232,7 +2231,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 if (system) {
                     flags |= PUT_SYSTEM;
                 }
-                _put(folder, name, new MediaRSLocalRequest(cfg, srcFile), fis, flags);
+                _put(folder, name, new MediaRSLocalRequest(env, srcFile), fis, flags);
             } catch (Exception e) {
                 throw new IOException(e);
             }

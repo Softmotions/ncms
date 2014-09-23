@@ -1,6 +1,6 @@
 package ru.nsu;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmController;
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
 import org.apache.commons.configuration.SubnodeConfiguration;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +45,10 @@ public class MainPageController implements AsmController {
     @Inject
     public MainPageController(AsmDAO adao,
                               ObjectMapper mapper,
-                              NcmsConfiguration cfg) {
+                              NcmsEnvironment env) {
         this.adao = adao;
         this.mapper = mapper;
-        this.mpCfg = cfg.impl().configurationAt("content.mainpage");
+        this.mpCfg = env.xcfg().configurationAt("content.mainpage");
     }
 
     @Transactional
@@ -76,7 +76,6 @@ public class MainPageController implements AsmController {
             ctx.getRenderer().renderTemplate(templateLocation, ctx, resp.getWriter());
             return true;
         }
-
         addNewsA(ctx);
         addNewsB(ctx);
         addNewsC(ctx);

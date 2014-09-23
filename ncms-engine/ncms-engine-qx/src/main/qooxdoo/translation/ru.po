@@ -382,7 +382,7 @@ msgstr "Не масштабировать маленькие"
 
 #: ncms/asm/am/ImageAMValueWidget.js:33
 msgid "Select image"
-msgstr "Выберите изображение"
+msgstr "Изображение"
 
 #: ncms/asm/am/ImageAMValueWidget.js:127
 msgid "Image size does not match restriction"

@@ -1,6 +1,6 @@
 package com.softmotions.ncms.events;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.weboot.mb.MBSqlSessionListener;
 import com.softmotions.weboot.mb.MBSqlSessionManager;
 
@@ -47,9 +47,9 @@ public class EventsModule extends AbstractModule {
         }
 
         @Inject
-        LocalEventBus(NcmsConfiguration cfg,
+        LocalEventBus(NcmsEnvironment env,
                       MBSqlSessionManager sessionManager) {
-            super(Executors.newFixedThreadPool(cfg.impl().getInt("events.num-workers", 1)), EX_INSTANCE);
+            super(Executors.newFixedThreadPool(env.xcfg().getInt("events.num-workers", 1)), EX_INSTANCE);
             this.sessionManager = sessionManager;
         }
 

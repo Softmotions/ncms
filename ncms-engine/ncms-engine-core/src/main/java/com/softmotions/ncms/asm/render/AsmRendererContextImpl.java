@@ -1,13 +1,16 @@
 package com.softmotions.ncms.asm.render;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.web.GenericResponseWrapper;
 
+import com.google.common.base.Objects;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.assistedinject.Assisted;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +41,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final boolean subcontext;
 
-    final NcmsConfiguration cfg;
+    final NcmsEnvironment env;
 
     final NcmsMessages messages;
 
@@ -51,7 +54,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     Asm rootAsm;
 
 
-    private AsmRendererContextImpl(NcmsConfiguration cfg,
+    private AsmRendererContextImpl(NcmsEnvironment env,
                                    Injector injector,
                                    ClassLoader classLoader,
                                    AsmRenderer renderer,
@@ -59,7 +62,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                    NcmsMessages messages,
                                    HttpServletRequest req, HttpServletResponse resp,
                                    Asm asm) {
-        this.cfg = cfg;
+        this.env = env;
         this.injector = injector;
         this.renderer = renderer;
         this.loader = loader;
@@ -72,16 +75,16 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.subcontext = true;
     }
 
-    public AsmRendererContextImpl(NcmsConfiguration cfg,
+    @Inject
+    public AsmRendererContextImpl(NcmsEnvironment env,
                                   Injector injector,
                                   AsmRenderer renderer,
                                   AsmResourceLoader loader,
                                   NcmsMessages messages,
-                                  HttpServletRequest req, HttpServletResponse resp,
-                                  Object asmRef)
-            throws AsmRenderingException {
-
-        this.cfg = cfg;
+                                  @Assisted HttpServletRequest req,
+                                  @Assisted HttpServletResponse resp,
+                                  @Assisted Object asmRef) throws AsmRenderingException {
+        this.env = env;
         this.injector = injector;
         this.renderer = renderer;
         this.loader = loader;
@@ -89,22 +92,24 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.req = req;
         this.resp = resp;
         this.subcontext = false;
-        if (Thread.currentThread().getContextClassLoader() != null) {
-            this.classLoader = Thread.currentThread().getContextClassLoader();
+        this.classLoader = Objects.firstNonNull(
+                Thread.currentThread().getContextClassLoader(),
+                getClass().getClassLoader());
+        Asm asm0;
+        if (asmRef instanceof Asm) {
+            asm0 = (Asm) asmRef;
         } else {
-            this.classLoader = getClass().getClassLoader();
-        }
-
-        PageService ps = injector.getInstance(PageService.class);
-        CachedPage cp;
-        if (asmRef instanceof Number) {
-            cp = ps.getCachedPage(((Number) asmRef).longValue(), true);
-        } else {
-            cp = ps.getCachedPage((String) asmRef, true);
-        }
-        Asm asm0 = (cp != null) ? cp.getAsm() : null;
-        if (asm0 == null) {
-            throw new AsmResourceNotFoundException("asm: " + asmRef);
+            PageService ps = injector.getInstance(PageService.class);
+            CachedPage cp;
+            if (asmRef instanceof Number) {
+                cp = ps.getCachedPage(((Number) asmRef).longValue(), true);
+            } else {
+                cp = ps.getCachedPage((String) asmRef, true);
+            }
+            asm0 = (cp != null) ? cp.getAsm() : null;
+            if (asm0 == null) {
+                throw new AsmResourceNotFoundException("asm: " + asmRef);
+            }
         }
         //Clone the assembly to allow
         //rendering routines be free to change assembly structure and properties
@@ -129,8 +134,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return injector;
     }
 
-    public NcmsConfiguration getCfg() {
-        return cfg;
+    public NcmsEnvironment getEnv() {
+        return env;
     }
 
     public Map<String, String[]> getDedicatedRequestParams() {
@@ -183,7 +188,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
             throw new AsmResourceNotFoundException("asm: '" + asmName + "'");
         }
         AsmRendererContextImpl nctx =
-                new AsmRendererContextImpl(cfg, injector, classLoader, renderer, loader,
+                new AsmRendererContextImpl(env, injector, classLoader, renderer, loader,
                                            messages,
                                            req, new GenericResponseWrapper(resp, out, false),
                                            nasm.cloneDeep(asmCloneContext));
@@ -201,7 +206,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
             return this;
         }
         AsmRendererContextImpl nctx =
-                new AsmRendererContextImpl(cfg, injector, classLoader, renderer, loader,
+                new AsmRendererContextImpl(env, injector, classLoader, renderer, loader,
                                            messages,
                                            req, resp,
                                            nasm.cloneDeep(asmCloneContext));

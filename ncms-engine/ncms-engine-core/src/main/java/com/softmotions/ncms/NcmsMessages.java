@@ -46,8 +46,8 @@ public class NcmsMessages {
     private final Map<Locale, ResourceBundle> bundleCache;
 
     @Inject
-    public NcmsMessages(NcmsConfiguration cfg) {
-        List<Object> blist = cfg.impl().getList("messages.bundle");
+    public NcmsMessages(NcmsEnvironment env) {
+        List<Object> blist = env.xcfg().getList("messages.bundle");
         if (!blist.contains("com.softmotions.ncms.Messages")) {
             blist.add("com.softmotions.ncms.Messages");
         }

@@ -1,6 +1,6 @@
 package com.softmotions.ncms.asm;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUser;
@@ -58,12 +58,12 @@ public class PageSecurityService extends MBDAOSupport {
     public PageSecurityService(SqlSession sess,
                                WSUserDatabase userdb,
                                NcmsMessages messages,
-                               NcmsConfiguration cfg,
+                               NcmsEnvironment env,
                                MBSqlSessionManager sessionManager) {
         super(PageSecurityService.class.getName(), sess);
         this.userdb = userdb;
         this.messages = messages;
-        this.aclCache = new LRUMap(cfg.impl().getInt("security.acl-lru-cache-size", 1024));
+        this.aclCache = new LRUMap(env.xcfg().getInt("security.acl-lru-cache-size", 1024));
         this.sessionManager = sessionManager;
     }
 

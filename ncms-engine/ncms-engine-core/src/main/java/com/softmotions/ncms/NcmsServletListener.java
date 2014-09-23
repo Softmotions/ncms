@@ -41,7 +41,7 @@ public class NcmsServletListener extends WBServletListener {
 
     public void contextInitialized(ServletContextEvent event) {
         ServletContext sctx = event.getServletContext();
-        sctx.setInitParameter("WEBOOT_CFG_CLASS", NcmsConfiguration.class.getName());
+        sctx.setInitParameter("WEBOOT_CFG_CLASS", NcmsEnvironment.class.getName());
 
         Logger.setLoggerType(Logger.LoggerType.SLF4J);
         sctx.setInitParameter("resteasy.document.expand.entity.references", "false");
@@ -49,30 +49,30 @@ public class NcmsServletListener extends WBServletListener {
 
         super.contextInitialized(event);
 
-        NcmsConfiguration cfg = (NcmsConfiguration) sctx.getAttribute(WEBOOT_CFG_SCTX_KEY);
+        NcmsEnvironment env = (NcmsEnvironment) sctx.getAttribute(WEBOOT_CFG_SCTX_KEY);
         resteasyBootstrap = getInjector().getInstance(GuiceResteasyBootstrapServletContextListener.class);
         resteasyBootstrap.contextInitialized(event);
 
         sctx.addFilter("charsetFilter", CharsetFilter.class)
                 .addMappingForUrlPatterns(null, false, "/*");
 
-        initSecurity(cfg, sctx);
+        initSecurity(env, sctx);
 
         sctx.addFilter("guiceFilter", GuiceFilter.class)
                 .addMappingForUrlPatterns(null, false, "/*");
 
         start();
 
-        log.info(LOGO, cfg.getNcmsVersion());
+        log.info(LOGO, env.getNcmsVersion());
     }
 
 
-    private void initSecurity(NcmsConfiguration cfg, ServletContext sctx) {
-        String webFakeUser = cfg.impl().getString("security.web-fakeuser");
+    private void initSecurity(NcmsEnvironment env, ServletContext sctx) {
+        String webFakeUser = env.xcfg().getString("security.web-fakeuser");
         if (webFakeUser == null) {
             return;
         }
-        String dbJndiName = cfg.impl().getString("security[@dbJndiName]");
+        String dbJndiName = env.xcfg().getString("security[@dbJndiName]");
         log.info("Setup SecurityFakeEnvFilter filter fake web user: " + webFakeUser);
         if (StringUtils.isBlank(dbJndiName)) {
             throw new RuntimeException("Missing required 'dbJndiName' attribute in the <security> configuration");
@@ -94,7 +94,7 @@ public class NcmsServletListener extends WBServletListener {
             }
             super.contextDestroyed(servletContextEvent);
         } finally {
-            NcmsConfiguration.INSTANCE = null;
+            NcmsEnvironment.INSTANCE = null;
         }
     }
 

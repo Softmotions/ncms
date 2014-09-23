@@ -1,6 +1,6 @@
 package com.softmotions.ncms.asm.am;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.CachedPage;
@@ -29,12 +29,12 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
 
     private final PageService pageService;
 
-    private final NcmsConfiguration cfg;
+    private final NcmsEnvironment env;
 
     @Inject
-    public AsmBreadCrumbsAM(PageService pageService, NcmsConfiguration cfg) {
+    public AsmBreadCrumbsAM(PageService pageService, NcmsEnvironment env) {
         this.pageService = pageService;
-        this.cfg = cfg;
+        this.env = env;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -62,7 +62,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
             Tree c = new Tree();
             c.setId(ip.getId());
             c.setName(ip.getHname());
-            c.setLink(cfg.getAsmLink(ip.getName()));
+            c.setLink(env.getAsmLink(ip.getName()));
             children.add(c);
         }
         for (int i = 0, l = idPaths.length; i < l; ++i) {
@@ -75,7 +75,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
             c.setId(idPaths[i]);
             c.setName(labelPaths[i]);
             if (p.isPublished() && i < l - 1) {
-                c.setLink(cfg.getAsmLink(guidPaths[i]));
+                c.setLink(env.getAsmLink(guidPaths[i]));
             }
             children.add(c);
         }

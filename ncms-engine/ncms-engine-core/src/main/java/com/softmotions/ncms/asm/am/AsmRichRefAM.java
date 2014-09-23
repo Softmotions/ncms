@@ -1,7 +1,7 @@
 package com.softmotions.ncms.asm.am;
 
 import com.softmotions.commons.json.JsonUtils;
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
@@ -38,15 +38,15 @@ public class AsmRichRefAM implements AsmAttributeManager {
 
     private final ObjectMapper mapper;
 
-    private final NcmsConfiguration cfg;
+    private final NcmsEnvironment env;
 
     @Inject
     public AsmRichRefAM(AsmImageAM imageAM,
                         ObjectMapper mapper,
-                        NcmsConfiguration cfg) {
+                        NcmsEnvironment env) {
         this.imageAM = imageAM;
         this.mapper = mapper;
-        this.cfg = cfg;
+        this.env = env;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -64,6 +64,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
     public RichRef renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) throws AsmRenderingException {
         JsonNode n;
         String link = null;
+        String rawLink = null;
         String name = null;
         String description = null;
         String style = null;
@@ -75,6 +76,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
         n = node.get("link");
         if (n != null && n.isTextual()) {
             link = n.asText().trim();
+            rawLink = link;
             int ind = link.indexOf('|');
             if (ind != -1) {
                 if (ind < link.length() - 1) {
@@ -82,7 +84,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
                 }
                 link = link.substring(0, ind).trim();
             }
-            link = cfg.getResourceLink(link);
+            link = env.getResourceLink(link);
         }
         if (node.hasNonNull("description")) {
             description = node.get("description").asText();
@@ -93,7 +95,8 @@ public class AsmRichRefAM implements AsmAttributeManager {
         if (node.hasNonNull("style2")) {
             style2 = node.get("style2").asText();
         }
-        return new RichRef(name, link, description, image, style, style2);
+        return new RichRef(name, link, rawLink,
+                           description, image, style, style2);
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
@@ -141,7 +144,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
         }
         n = val.get("link");
         if (n != null && n.isTextual()) {
-            Long fid = cfg.getFileIdByResourceSpec(n.asText());
+            Long fid = env.getFileIdByResourceSpec(n.asText());
             if (fid != null) {
                 ctx.registerMediaFileDependency(attr, fid);
             }

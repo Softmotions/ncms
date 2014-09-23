@@ -35,4 +35,8 @@
         <role-name>user</role-name>
     </security-role>-->
 
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
+
 </web-app>

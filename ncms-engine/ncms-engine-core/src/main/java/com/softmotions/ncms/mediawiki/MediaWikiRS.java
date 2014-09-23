@@ -1,7 +1,7 @@
 package com.softmotions.ncms.mediawiki;
 
 import com.softmotions.commons.ctype.CTypeUtils;
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.media.MediaRepository;
@@ -48,15 +48,15 @@ public class MediaWikiRS {
 
     private final NcmsMessages messages;
 
-    private final NcmsConfiguration cfg;
+    private final NcmsEnvironment env;
 
     @Inject
     public MediaWikiRS(MediaRepository repository,
                        NcmsMessages messages,
-                       NcmsConfiguration cfg) {
+                       NcmsEnvironment env) {
         this.repository = repository;
         this.messages = messages;
-        this.cfg = cfg;
+        this.env = env;
     }
 
     @GET
@@ -74,7 +74,7 @@ public class MediaWikiRS {
         if (widthStr != null) {
             width = Integer.parseInt(widthStr);
         } else {
-            int maxWidth = cfg.impl().getInt("mediawiki.max-inline-image-width-px", 0);
+            int maxWidth = env.xcfg().getInt("mediawiki.max-inline-image-width-px", 0);
             if (maxWidth > 0) {
                 MediaResource mres = repository.findMediaResource(id, messages.getLocale(req));
                 if (mres == null) {
@@ -109,11 +109,11 @@ public class MediaWikiRS {
     public Redirect pageLink(@PathParam("spec") String spec,
                              @Context HttpServletRequest req) throws Exception {
         String title = spec.substring("Page:".length());
-        String link = cfg.getServletContext().getContextPath();
+        String link = env.getServletContext().getContextPath();
         if (!link.endsWith("/")) {
             link += '/';
         }
-        link += cfg.getNcmsPrefix().substring(1) + "/asm/" + title;
+        link += env.getNcmsPrefix().substring(1) + "/asm/" + title;
         return new Redirect(link);
     }
 

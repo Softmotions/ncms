@@ -2,7 +2,7 @@ package com.softmotions.ncms.mediawiki;
 
 import info.bliki.htmlcleaner.TagToken;
 import info.bliki.wiki.filter.ITextConverter;
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
@@ -27,10 +27,10 @@ public class MediaWikiModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(MediaWikiModule.class);
 
-    private final NcmsConfiguration cfg;
+    private final NcmsEnvironment env;
 
-    public MediaWikiModule(NcmsConfiguration cfg) {
-        this.cfg = cfg;
+    public MediaWikiModule(NcmsEnvironment env) {
+        this.env = env;
     }
 
     protected void configure() {
@@ -40,7 +40,7 @@ public class MediaWikiModule extends AbstractModule {
                 getClass().getClassLoader()
         );
 
-        XMLConfiguration xcfg = cfg.impl();
+        XMLConfiguration xcfg = env.xcfg();
         MapBinder<String, TagToken> tagsBinder =
                 MapBinder.newMapBinder(binder(), String.class, TagToken.class);
 

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +52,7 @@ public class AsmAliasAM implements AsmAttributeManager {
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
-        Asm asm = ctx.getAsm();
-        AsmAttribute attr = asm.getEffectiveAttribute(attrname);
-        return attr == null || attr.getEffectiveValue() == null ? null : attr.getEffectiveValue();
+        return ctx.getAsm().getNavAlias();
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
@@ -68,16 +66,15 @@ public class AsmAliasAM implements AsmAttributeManager {
     }
 
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        String alias = attr.getEffectiveValue();
+        String alias = val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null;
         if (alias != null) {
             if (!alias.matches("^[0-9a-zA-Z\\._-]+$")) {
                 throw new NcmsMessageException(messages.get("ncms.asm.alias.non.allowed.symbols"), true);
             }
-            synchronized (AsmAliasAM.class) {
-                if (!adao.asmCheckUniqueAlias(attr.getId(), alias)) {
-                    throw new NcmsMessageException(messages.get("ncms.asm.alias.non.unique"), true);
-                }
+            if (!adao.asmCheckUniqueAlias(alias, ctx.getAsmId())) {
+                throw new NcmsMessageException(messages.get("ncms.asm.alias.non.unique"), true);
             }
         }
+        adao.asmUpdateAlias(ctx.getAsmId(), alias);
     }
 }

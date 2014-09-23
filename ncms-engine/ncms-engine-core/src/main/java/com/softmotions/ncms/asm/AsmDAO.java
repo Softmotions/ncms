@@ -9,6 +9,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
@@ -17,6 +18,9 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -177,9 +181,18 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public boolean asmCheckUniqueAlias(long aliasId, String alias) {
-        Number count = selectOne("asmCheckUniqueAlias", "aliasId", aliasId, "alias", alias);
-        return 0 == count.intValue();
+    public void asmUpdateAlias(long id, String alias) {
+        update("asmUpdateAlias",
+               "id", id,
+               "alias", alias);
+    }
+
+    @Transactional
+    public boolean asmCheckUniqueAlias(String alias, long asmId) {
+        Number count = selectOne("asmCheckUniqueAlias",
+                                 "alias", alias,
+                                 "id", asmId);
+        return (count.intValue() < 1);
     }
 
     @Transactional
@@ -408,6 +421,10 @@ public class AsmDAO extends MBDAOSupport {
             return withParam("type", type);
         }
 
+        public PageCriteria withAlias(String alias) {
+            return withParam("alias", alias);
+        }
+
         public PageCriteria withAttributeLike(String name, Object val) {
             attrs.add(new Pair<>(name, val));
             return this;
@@ -455,6 +472,18 @@ public class AsmDAO extends MBDAOSupport {
         }
 
 
+        public PageCriteria withLargeAttrValues() {
+            return withParam("largeAttrValues", true);
+        }
+
+        public Asm selectOneAsm() {
+            Collection<Asm> asms = selectAsAsms();
+            if (asms.isEmpty()) {
+                return null;
+            }
+            return asms.iterator().next();
+        }
+
         public Collection<Asm> selectAsAsms() {
             final Map<Long, Asm> asmGroup = new LinkedHashMap<>();
             //noinspection InnerClassTooDeeplyNested
@@ -480,6 +509,24 @@ public class AsmDAO extends MBDAOSupport {
                         attr.setName(attrName);
                         attr.setType((String) row.get("attr_type"));
                         attr.setValue((String) row.get("attr_value"));
+                        Clob lv = (Clob) row.get("attr_large_value");
+                        if (lv != null) {
+                            Reader lvr = null;
+                            try {
+                                lvr = lv.getCharacterStream();
+                                attr.setLargeValue(IOUtils.toString(lvr));
+                            } catch (IOException | SQLException e) {
+                                throw new RuntimeException(e);
+                            } finally {
+                                try {
+                                    if (lvr != null) {
+                                        lvr.close();
+                                    }
+                                } catch (IOException e) {
+                                    log.error("", e);
+                                }
+                            }
+                        }
                         asm.addAttribute(attr);
                     }
                     if (row.get("np_name") != null && asm.getAttribute("np_name") == null) {

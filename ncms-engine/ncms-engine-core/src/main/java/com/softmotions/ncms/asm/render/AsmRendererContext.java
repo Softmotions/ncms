@@ -1,7 +1,7 @@
 package com.softmotions.ncms.asm.render;
 
 import com.softmotions.commons.cont.Stack;
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 
@@ -122,7 +122,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     public abstract Injector getInjector();
 
-    public abstract NcmsConfiguration getCfg();
+    public abstract NcmsEnvironment getEnv();
 
     /**
      * Classloader used to load resources within this context.

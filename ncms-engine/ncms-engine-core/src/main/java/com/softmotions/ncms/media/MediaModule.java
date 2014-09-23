@@ -1,6 +1,6 @@
 package com.softmotions.ncms.media;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.weboot.lifecycle.Start;
 
 import com.google.inject.AbstractModule;
@@ -39,19 +39,19 @@ public class MediaModule extends AbstractModule {
 
     public static class MediaModuleInitializer {
 
-        final NcmsConfiguration cfg;
+        final NcmsEnvironment env;
 
         final MediaRepository mediaRepository;
 
         @Inject
-        public MediaModuleInitializer(NcmsConfiguration cfg, MediaRepository mediaRepository) {
-            this.cfg = cfg;
+        public MediaModuleInitializer(NcmsEnvironment env, MediaRepository mediaRepository) {
+            this.env = env;
             this.mediaRepository = mediaRepository;
         }
 
         @Start
         public void start() throws Exception {
-            XMLConfiguration xcfg = cfg.impl();
+            XMLConfiguration xcfg = env.xcfg();
             List<HierarchicalConfiguration> hcl = xcfg.configurationsAt("media.import");
             for (final HierarchicalConfiguration hc : hcl) {
                 processImportDir(hc);
@@ -59,7 +59,7 @@ public class MediaModule extends AbstractModule {
         }
 
         private void processImportDir(HierarchicalConfiguration c) {
-            String srcDir = cfg.substitutePath(c.getString("[@directory]"));
+            String srcDir = env.substitutePath(c.getString("[@directory]"));
             if (StringUtils.isBlank(srcDir)) {
                 log.error("Missing required media.import[@directory] configuration attribute");
                 return;

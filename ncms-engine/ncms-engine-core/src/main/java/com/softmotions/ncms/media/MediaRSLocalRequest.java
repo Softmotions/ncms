@@ -1,6 +1,6 @@
 package com.softmotions.ncms.media;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.web.HttpServletRequestAdapter;
 
 import javax.servlet.ServletContext;
@@ -14,11 +14,11 @@ public final class MediaRSLocalRequest extends HttpServletRequestAdapter {
 
     private final File file;
 
-    private final NcmsConfiguration cfg;
+    private final NcmsEnvironment env;
 
-    MediaRSLocalRequest(NcmsConfiguration cfg, File file) {
+    MediaRSLocalRequest(NcmsEnvironment env, File file) {
         this.file = file;
-        this.cfg = cfg;
+        this.env = env;
     }
 
     public File getFile() {
@@ -46,7 +46,7 @@ public final class MediaRSLocalRequest extends HttpServletRequestAdapter {
     }
 
     public ServletContext getServletContext() {
-        return cfg.getServletContext();
+        return env.getServletContext();
     }
 
     public String getCharacterEncoding() {

@@ -2,7 +2,7 @@ package com.softmotions.ncms.mediawiki;
 
 import info.bliki.wiki.filter.ITextConverter;
 import com.softmotions.commons.ebus.EBus;
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
@@ -34,7 +34,7 @@ public class MediaWikiRenderer {
 
 
     @Inject
-    public MediaWikiRenderer(NcmsConfiguration cfg,
+    public MediaWikiRenderer(NcmsEnvironment env,
                              MediaWikiConfiguration wikiCfg,
                              ITextConverter converter,
                              NcmsEventBus ebus,
@@ -43,11 +43,11 @@ public class MediaWikiRenderer {
         this.converter = converter;
         this.ebus = ebus;
         this.messages = messages;
-        XMLConfiguration xcfg = cfg.impl();
+        XMLConfiguration xcfg = env.xcfg();
         this.imageBaseUrl = xcfg.getString("mediawiki.image-base-url",
-                                           cfg.getNcmsPrefix() + "/rs/mw/res/" + "${image}");
+                                           env.getNcmsPrefix() + "/rs/mw/res/" + "${image}");
         this.linkBaseUrl = xcfg.getString("mediawiki.link-base-url",
-                                          cfg.getNcmsPrefix() + "/rs/mw/link/" + "${title}");
+                                          env.getNcmsPrefix() + "/rs/mw/link/" + "${title}");
     }
 
     public String render(String markup, HttpServletRequest req) {

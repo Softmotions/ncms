@@ -1,6 +1,6 @@
 package com.softmotions.ncms.adm;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.web.security.WSUser;
 
@@ -32,7 +32,7 @@ import javax.ws.rs.core.SecurityContext;
 public class AdmUIResourcesRS {
 
     @Inject
-    NcmsConfiguration cfg;
+    NcmsEnvironment env;
 
     @Inject
     ObjectMapper mapper;
@@ -52,7 +52,7 @@ public class AdmUIResourcesRS {
                           @PathParam("section") String section) {
         ArrayNode arr = mapper.createArrayNode();
         WSUser user = (WSUser) sctx.getUserPrincipal();
-        XMLConfiguration xcfg = cfg.impl();
+        XMLConfiguration xcfg = env.xcfg();
         String cpath = "ui." + section + ".widget";
         for (HierarchicalConfiguration hc : xcfg.configurationsAt(cpath)) {
             String[] widgetRoles = hc.getStringArray("[@roles]");

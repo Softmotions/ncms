@@ -22,41 +22,41 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
+public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
 
-    protected void init(NcmsConfiguration cfg) {
-        bind(NcmsConfiguration.class).toInstance(cfg);
-        initBefore(cfg);
-        initJAXRS(cfg);
-        initAsmServlet(cfg);
-        initJarResourcesServlet(cfg);
-        initAfter(cfg);
+    protected void init(NcmsEnvironment env) {
+        bind(NcmsEnvironment.class).toInstance(env);
+        initBefore(env);
+        initJAXRS(env);
+        initAsmServlet(env);
+        initJarResourcesServlet(env);
+        initAfter(env);
     }
 
-    protected void initAsmServlet(NcmsConfiguration cfg) {
+    protected void initAsmServlet(NcmsEnvironment env) {
         //Assembly rendering servlet
         Class<? extends AsmServlet> clazz = getAsmServletClass();
-        serve(cfg.getNcmsPrefix() + "/asm/*", clazz);
-        serve(cfg.getNcmsPrefix() + "/adm/asm/*", clazz);
+        serve(env.getNcmsPrefix() + "/asm/*", clazz);
+        serve(env.getNcmsPrefix() + "/adm/asm/*", clazz);
     }
 
-    protected void initJAXRS(NcmsConfiguration cfg) {
+    protected void initJAXRS(NcmsEnvironment env) {
         //Resteasy staff
         bind(NcmsRSExceptionHandler.class).in(Singleton.class);
         bind(NcmsJsonNodeReader.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
-        serve(cfg.getNcmsPrefix() + "/rs/*",
+        serve(env.getNcmsPrefix() + "/rs/*",
               HttpServletDispatcher.class,
-              new TinyParamMap().param("resteasy.servlet.mapping.prefix", cfg.getNcmsPrefix() + "/rs"));
+              new TinyParamMap().param("resteasy.servlet.mapping.prefix", env.getNcmsPrefix() + "/rs"));
 
         //Resteasy JS API
         bind(JSAPIServlet.class).in(Singleton.class);
-        serve(cfg.getNcmsPrefix() + "/rjs", JSAPIServlet.class);
+        serve(env.getNcmsPrefix() + "/rjs", JSAPIServlet.class);
     }
 
-    protected void initJarResourcesServlet(NcmsConfiguration cfg) {
+    protected void initJarResourcesServlet(NcmsEnvironment env) {
         Map<String, String> params = new LinkedHashMap<>();
-        List<HierarchicalConfiguration> rlist = cfg.impl().configurationsAt("jar-web-resources.resource");
+        List<HierarchicalConfiguration> rlist = env.xcfg().configurationsAt("jar-web-resources.resource");
         for (HierarchicalConfiguration rcfg : rlist) {
             String pp = rcfg.getString("path-prefix");
             String opts = rcfg.getString("options");
@@ -67,18 +67,18 @@ public class NcmsServletModule extends WBServletModule<NcmsConfiguration> {
         }
         bind(JarResourcesServlet.class).in(Singleton.class);
         bind(JarResourcesProvider.class).to(JarResourcesServlet.class);
-        serve(cfg.getNcmsPrefix() + "/*", JarResourcesServlet.class, params);
+        serve(env.getNcmsPrefix() + "/*", JarResourcesServlet.class, params);
     }
 
     protected Class<? extends AsmServlet> getAsmServletClass() {
         return AsmServlet.class;
     }
 
-    protected void initBefore(NcmsConfiguration cfg) {
+    protected void initBefore(NcmsEnvironment env) {
 
     }
 
-    protected void initAfter(NcmsConfiguration cfg) {
+    protected void initAfter(NcmsEnvironment env) {
 
     }
 }

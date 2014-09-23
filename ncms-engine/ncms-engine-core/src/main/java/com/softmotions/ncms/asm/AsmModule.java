@@ -1,6 +1,6 @@
 package com.softmotions.ncms.asm;
 
-import com.softmotions.ncms.NcmsConfiguration;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.am.AsmAliasAM;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
@@ -21,6 +21,9 @@ import com.softmotions.ncms.asm.am.AsmWebRefAM;
 import com.softmotions.ncms.asm.am.AsmWikiAM;
 import com.softmotions.ncms.asm.am.DefaultAsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.render.AsmRenderer;
+import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmRendererContextFactory;
+import com.softmotions.ncms.asm.render.AsmRendererContextImpl;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
 import com.softmotions.ncms.asm.render.ldrs.AsmClasspathResourceLoader;
@@ -30,6 +33,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
 
 import org.apache.commons.configuration.HierarchicalConfiguration;
@@ -52,6 +56,11 @@ public class AsmModule extends AbstractModule {
     private static final Logger log = LoggerFactory.getLogger(AsmModule.class);
 
     protected void configure() {
+
+        install(new FactoryModuleBuilder()
+                        .implement(AsmRendererContext.class, AsmRendererContextImpl.class)
+                        .build(AsmRendererContextFactory.class));
+
         bind(AsmDAO.class);
         bind(AsmRenderer.class).to(DefaultAsmRenderer.class);
         bind(AsmAttributeManagersRegistry.class).to(DefaultAsmAttributeManagersRegistry.class).in(Singleton.class);
@@ -83,7 +92,6 @@ public class AsmModule extends AbstractModule {
         bind(PageRS.class).in(Singleton.class);
         bind(PageService.class).to(PageRS.class);
         bind(PageSecurityService.class).in(Singleton.class);
-
     }
 
 
@@ -92,8 +100,8 @@ public class AsmModule extends AbstractModule {
         final AsmResourceLoader[] loaders;
 
         @Inject
-        AsmResourceLoaderImpl(NcmsConfiguration cfg, Injector injector) throws Exception {
-            XMLConfiguration xcfg = cfg.impl();
+        AsmResourceLoaderImpl(NcmsEnvironment env, Injector injector) throws Exception {
+            XMLConfiguration xcfg = env.xcfg();
             List<AsmResourceLoader> ldrs = new ArrayList<>();
             List<HierarchicalConfiguration> hcl = xcfg.configurationsAt("asm.resource-loaders");
             ClassLoader cl = ObjectUtils.firstNonNull(
