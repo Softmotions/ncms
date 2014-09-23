@@ -91,7 +91,7 @@ public class NSUPressaRS {
         AsmDAO.PageCriteria pc =
                 adao.newPageCriteria()
                         .withAlias(journal)
-                        .attributesInclude(aname)
+                        .withAttributes(aname)
                         .withLargeAttrValues();
         Asm p = pc.selectOneAsm();
         AsmAttribute attr = p.getAttribute(aname);

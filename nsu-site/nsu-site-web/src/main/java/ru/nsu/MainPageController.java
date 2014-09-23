@@ -88,7 +88,7 @@ public class MainPageController implements AsmController {
         Integer skip = (val != null) ? Integer.parseInt(val) : null;
 
         AsmDAO.PageCriteria crit = adao.newPageCriteria();
-        crit.attributesInclude(DEFAULT_ATTRS_INCLUDE);
+        crit.withAttributes(DEFAULT_ATTRS_INCLUDE);
         crit.withPublished(true);
         crit.withTypeLike("news.page");
         crit.withTemplates(mpCfg.getString("news.c[@template]", "faculty_news"));
@@ -111,7 +111,7 @@ public class MainPageController implements AsmController {
         Integer skip = (val != null) ? Integer.parseInt(val) : null;
 
         AsmDAO.PageCriteria crit = adao.newPageCriteria();
-        crit.attributesInclude(DEFAULT_ATTRS_INCLUDE);
+        crit.withAttributes(DEFAULT_ATTRS_INCLUDE);
         crit.withPublished(true);
         crit.withNavParentId(asm.getId());
         crit.withTypeLike("news.page");
@@ -141,7 +141,7 @@ public class MainPageController implements AsmController {
         }
 
         AsmDAO.PageCriteria crit = adao.newPageCriteria();
-        crit.attributesInclude(DEFAULT_ATTRS_INCLUDE);
+        crit.withAttributes(DEFAULT_ATTRS_INCLUDE);
         crit.withPublished(true);
         crit.withNavParentId(asm.getId());
         crit.withTypeLike("news.page");

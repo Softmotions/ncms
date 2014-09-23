@@ -449,7 +449,7 @@ public class AsmDAO extends MBDAOSupport {
             return prefixedBy("asm.");
         }
 
-        public PageCriteria attributesInclude(String... names) {
+        public PageCriteria withAttributes(String... names) {
             if (attrsInclude == null) {
                 attrsInclude = new ArrayList<>();
                 withParam("attrsInclude", attrsInclude);
@@ -458,7 +458,7 @@ public class AsmDAO extends MBDAOSupport {
             return this;
         }
 
-        public PageCriteria attrubutesExclude(String... names) {
+        public PageCriteria withoutAttributes(String... names) {
             if (attrsExclude == null) {
                 attrsExclude = new ArrayList<>();
                 withParam("attrsExclude", attrsExclude);
