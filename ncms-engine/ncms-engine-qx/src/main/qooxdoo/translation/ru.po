@@ -476,7 +476,7 @@ msgstr "Добавить изображения в галерею"
 
 #: ncms/asm/am/RichRefAM.js:12
 msgid "Rich reference"
-msgstr "Стилизованная ссылка"
+msgstr "Агрегат"
 
 #: ncms/pgs/PagesTreeSelector.js:32 ncms/asm/am/TreeAM.js:42
 #: ncms/asm/am/RichRefAM.js:36
