@@ -77,6 +77,7 @@ public class NSUPressaRS {
 
     @GET
     @Path("/issues/{journal}")
+    @Produces("application/json;charset=UTF-8")
     @Transactional
     public ArrayNode issues(@PathParam("journal") String journal,
                             @Context HttpServletRequest req,
