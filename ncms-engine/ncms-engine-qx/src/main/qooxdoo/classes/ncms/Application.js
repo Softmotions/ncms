@@ -405,8 +405,11 @@ qx.Class.define("ncms.Application", {
 
         __bootstrap : function() {
             sm.io.Request.LOGIN_ACTION = function() {
-                alert(this.tr("Your user session expired! Please login again"));
+                if (this.__logoutPending) {
+                    return;
+                }
                 this.__logoutPending = true;
+                alert(qx.locale.Manager.tr("Your user session expired! Please login again"));
                 window.location.reload(true);
             }.bind(this);
             ncms.Application.INSTANCE = this;

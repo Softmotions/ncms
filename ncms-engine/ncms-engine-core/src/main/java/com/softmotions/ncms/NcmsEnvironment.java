@@ -110,6 +110,14 @@ public class NcmsEnvironment extends WBConfiguration {
         return getAsmRoot() + id;
     }
 
+    public String getNcmsAdminRoot() {
+        return getServletContext().getContextPath() + getNcmsPrefix() + "/adm/index.html";
+    }
+
+    public String getNcmsAbsoluteAdminRoot(HttpServletRequest req) {
+        return getAbsoluteLink(req, getNcmsAdminRoot());
+    }
+
     public String getAsmRoot() {
         return getServletContext().getContextPath() + getNcmsPrefix() + "/asm/";
     }

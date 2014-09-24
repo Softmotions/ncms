@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -61,7 +62,10 @@ public class WorkspaceRS {
     @Path("logout")
     public void logout(@Context HttpServletRequest req,
                        @Context HttpServletResponse resp) {
-        req.getSession().invalidate();
+        HttpSession sess = req.getSession(false);
+        if (sess != null) {
+            sess.invalidate();
+        }
         try {
             resp.sendRedirect(env.getLogoutRedirect());
         } catch (IOException e) {
