@@ -28,7 +28,7 @@ import javax.ws.rs.core.SecurityContext;
  */
 
 @Path("adm/ui")
-@Produces("application/json")
+@Produces("application/json;charset=UTF-8")
 public class AdmUIResourcesRS {
 
     @Inject

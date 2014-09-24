@@ -86,7 +86,7 @@ import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.REMOVE;
  */
 @SuppressWarnings("unchecked")
 @Path("adm/pages")
-@Produces("application/json")
+@Produces("application/json;charset=UTF-8")
 @Singleton
 public class PageRS extends MBDAOSupport implements PageService {
 
@@ -662,8 +662,8 @@ public class PageRS extends MBDAOSupport implements PageService {
                 .build();
     }
 
-    @Path("/acl/{pid}")
     @GET
+    @Path("/acl/{pid}")
     public JsonNode getAcl(@PathParam("pid") Long pid,
                            @QueryParam("recursive") Boolean recursive) {
         ArrayNode res = mapper.createArrayNode();
@@ -675,8 +675,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         return res;
     }
 
-    @Path("/acl/{pid}/{user}")
     @PUT
+    @Path("/acl/{pid}/{user}")
     public void addToAcl(@Context HttpServletRequest req,
                          @PathParam("pid") Long pid,
                          @PathParam("user") String user,
@@ -693,8 +693,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         pageSecurity.addUserRights(pid, user, recursive);
     }
 
-    @Path("/acl/{pid}/{user}")
     @POST
+    @Path("/acl/{pid}/{user}")
     public void updateAcl(@Context HttpServletRequest req,
                           @PathParam("pid") Long pid,
                           @PathParam("user") String user,
@@ -713,8 +713,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         pageSecurity.updateUserRights(pid, user, rights, isAdd ? ADD : REMOVE, recursive);
     }
 
-    @Path("/acl/{pid}/{user}")
     @DELETE
+    @Path("/acl/{pid}/{user}")
     public void deleteFromAcl(@Context HttpServletRequest req,
                               @PathParam("pid") Long pid,
                               @PathParam("user") String user,

@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
  */
 
 @Path("test")
-@Produces("application/json")
+@Produces("application/json;charset=UTF-8")
 public class JAXRSExceptionHandlingRS {
 
     @GET

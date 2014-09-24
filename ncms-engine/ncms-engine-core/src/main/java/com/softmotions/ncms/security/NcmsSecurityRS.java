@@ -34,7 +34,7 @@ import java.util.Iterator;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Path("adm/security")
-@Produces("application/json")
+@Produces("application/json;charset=UTF-8")
 public class NcmsSecurityRS {
 
     private static final Logger log = LoggerFactory
