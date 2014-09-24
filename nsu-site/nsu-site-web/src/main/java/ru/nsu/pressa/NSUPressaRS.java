@@ -123,8 +123,6 @@ public class NSUPressaRS {
             } catch (NumberFormatException ignored) {
                 continue;
             }
-            ObjectNode item = mapper.createObjectNode();
-            item.put("year", year);
             for (final Tree inode : fld) {
                 if (!"file".equals(inode.getType()) ||
                     inode.getRichRef() == null ||
@@ -141,6 +139,8 @@ public class NSUPressaRS {
                 if (mr == null) {
                     continue;
                 }
+                ObjectNode item = mapper.createObjectNode();
+                item.put("year", year);
                 item.put("name", rr.getName());
                 item.put("description", rr.getDescription());
                 item.put("mdate", mr.getLastModified());
