@@ -49,6 +49,7 @@ public class SearchController implements AsmController {
         HttpServletResponse resp = ctx.getServletResponse();
         String action = req.getParameter("spc.action");
         if ("search".equals(action)) {
+            ctx.put("results_only", true);
             resp.setContentType("text/html");
             AsmAttribute results = ctx.getAsm().getEffectiveAttribute("results");
             ctx.getRenderer().renderTemplate(results.getEffectiveValue(), ctx, resp.getWriter());

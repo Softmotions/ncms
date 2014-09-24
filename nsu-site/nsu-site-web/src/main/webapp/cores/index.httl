@@ -74,7 +74,6 @@
                     </ul>
                 </div>
             </div>
-            <div class="loader" style="display: none;">&nbsp;</div>
             <a href="$!{page().link}" class="fetch-more" id="mpc-fetch-more" style="display: none;"><span>Еще больше новостей Вуза</span></a>
             <!-- EOF News -->
 

@@ -46,7 +46,6 @@
             <ul id="spc-search-results" class="news-list list2">
                 $!{asm("results")}
             </ul>
-            <div class="loader" style="display: none;">&nbsp;</div>
             <a class="fetch-more" id="spc-fetch-more" style="display: none"><span>Загрузить еще</span></a>
             ${include("inc/soclikes.httl")}
             ${include("inc/partners.httl")}

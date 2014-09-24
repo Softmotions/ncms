@@ -844,12 +844,10 @@ function initSearch(pageSize) {
         form : $('form#spc-search-form'),
         results : $('ul#spc-search-results'),
         fetchMore : $('a#spc-fetch-more'),
-        loader : $('.loader'),
         start : 0,
         pageSize : pageSize || 1
     };
 
-    spc.loader.hide();
     spc.results.find('li').show();
 
     function updateSearchButtons() {
@@ -863,14 +861,12 @@ function initSearch(pageSize) {
         if (reset) {
             spc.results.html(null);
         }
-        spc.loader.show();
         spc.start = reset ? 0 : (spc.start || 0) + spc.pageSize;
         var fdata = spc.form.serializeArray();
         fdata.push({name : "spc.action", value : "search"});
         fdata.push({name : "spc.start", value : spc.start});
         fdata.push({name : "spc.limit", value : spc.pageSize});
         $.post(spc.form[0].action, fdata).done(function(data) {
-            spc.loader.hide();
             spc.results.append(data);
             spc.results.find('li:hidden').slideDown();
             updateSearchButtons();
@@ -912,11 +908,9 @@ function initMainNews() {
             }
         ],
         main : $('div#news'),
-        fetchMore : $('a#mpc-fetch-more'),
-        loader : $('.loader')
+        fetchMore : $('a#mpc-fetch-more')
     };
 
-    mpc.loader.hide();
     mpc.fetchMore.hide();
 
     var subscribed = false;
@@ -950,6 +944,8 @@ function initMainNews() {
 
         mpc.fetchMore.hide();
 
+        var loading = 0;
+
         var updateView = function() {
             var subscribed = false;
             var minHeight = 0;
@@ -971,19 +967,15 @@ function initMainNews() {
 
             if (subscribed) {
                 mpc.main.height(minHeight);
-                mpc.fetchMore.show();
+                if (loading == 0) {
+                    mpc.fetchMore.show();
+                }
             } else {
                 mpc.main.height(maxHeight);
             }
-
-            if (loading == 0) {
-                mpc.loader.hide();
-            }
         };
 
-        var loading = 0;
         var fetchMore = function(def) {
-            mpc.loader.show();
             ++loading;
             var data = {
                 "mpc.action" : "fetchMore",
