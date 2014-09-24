@@ -125,7 +125,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 @SuppressWarnings("unchecked")
 @javax.ws.rs.Path("/media")
-@Produces("application/json")
+@Produces("application/json;charset=UTF-8")
 public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(MediaRS.class);

@@ -67,7 +67,7 @@ import java.util.Set;
  */
 @SuppressWarnings("unchecked")
 @Path("adm/asms")
-@Produces("application/json")
+@Produces("application/json;charset=UTF-8")
 public class AsmRS extends MBDAOSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmRS.class);
@@ -525,7 +525,6 @@ public class AsmRS extends MBDAOSupport {
 
     @GET
     @Path("select")
-    @Produces("application/json")
     public Response select(@Context final HttpServletRequest req) {
         return Response.ok(new StreamingOutput() {
             public void write(final OutputStream output) throws IOException, WebApplicationException {

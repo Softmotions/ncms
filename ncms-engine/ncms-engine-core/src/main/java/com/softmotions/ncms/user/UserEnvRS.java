@@ -26,7 +26,7 @@ import java.util.Map;
 
 @SuppressWarnings("unchecked")
 @Path("adm/user/env")
-@Produces("application/json")
+@Produces("application/json;charset=UTF-8")
 public class UserEnvRS extends MBDAOSupport {
 
     @Inject

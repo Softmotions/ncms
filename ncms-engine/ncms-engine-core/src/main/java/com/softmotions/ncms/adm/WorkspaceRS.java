@@ -28,7 +28,7 @@ import java.util.Map;
  */
 
 @Path("adm/ws")
-@Produces("application/json")
+@Produces("application/json;charset=UTF-8")
 public class WorkspaceRS {
 
     private static final Logger log = LoggerFactory.getLogger(WorkspaceRS.class);
