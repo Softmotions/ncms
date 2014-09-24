@@ -29,7 +29,8 @@ import java.util.Collection;
  */
 public class SearchController implements AsmController {
 
-    protected static final int DEFAULT_MAX_RESULTS = 20;
+    public static final int DEFAULT_MAX_RESULTS = 20;
+
     protected final Logger log;
     protected final AsmDAO adao;
     protected final SolrServer solr;
@@ -76,6 +77,9 @@ public class SearchController implements AsmController {
         try {
             limit = !StringUtils.isBlank(limitStr) ? Integer.parseInt(limitStr) : limit;
         } catch (NumberFormatException ignored) {
+        }
+        if (limit > Constants.MAX_TOTAL_ITEMS_LIMIT) {
+            limit = Constants.MAX_TOTAL_ITEMS_LIMIT;
         }
         ctx.put("search_limit", limit);
 

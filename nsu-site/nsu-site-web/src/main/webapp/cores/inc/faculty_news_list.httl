@@ -1,7 +1,5 @@
-#set(int offset = news_skip)
-#set(int limit = news_limit)
-#set(int index = offset)
-#foreach(Asm p in asmNavChilds("news.page", offset, limit))
+#set(int index = news_skip)
+#foreach(Asm p in asmNavChilds("news.page", (Number)news_skip, (Number)news_limit))
 #set(Date date = p.eventDate())
 #set(int index = index + 1)
 <li style="#if(offset != 0)display: none;#end #if(index % 2 == 1)clear: both;#end">

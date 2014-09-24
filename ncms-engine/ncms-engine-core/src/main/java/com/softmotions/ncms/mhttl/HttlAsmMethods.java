@@ -6,6 +6,7 @@ import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -146,6 +147,10 @@ public class HttlAsmMethods {
     }
 
     public static Collection<Asm> asmNavChilds(String type, int skip, int limit) {
+        return asmNavChilds(type, Integer.valueOf(skip), Integer.valueOf(limit));
+    }
+
+    public static Collection<Asm> asmNavChilds(String type, Number skip, Number limit) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         Asm asm = ctx.getAsm();
         AsmDAO adao = ctx.getInjector().getInstance(AsmDAO.class);
@@ -155,9 +160,32 @@ public class HttlAsmMethods {
         if (type != null) {
             crit.withTypeLike(type);
         }
-        crit.skip(skip);
-        crit.limit(limit);
+        if (skip != null) {
+            crit.skip(skip.intValue());
+        }
+        if (limit != null) {
+            crit.limit(limit.intValue());
+        }
         crit.onAsm().orderBy("ordinal").desc();
+        return crit.selectAsAsms();
+    }
+
+    public static Collection<Asm> asmPageQuery(Object critObj, int skip, int limit) {
+        return asmPageQuery(critObj, Integer.valueOf(skip), Integer.valueOf(limit));
+    }
+
+    public static Collection<Asm> asmPageQuery(Object critObj, Number skip, Number limit) {
+        //todo check it
+        AsmDAO.PageCriteria crit = (AsmDAO.PageCriteria) critObj;
+        if (crit == null) {
+            return Collections.EMPTY_LIST;
+        }
+        if (skip != null) {
+            crit.skip(skip.intValue());
+        }
+        if (limit != null) {
+            crit.limit(limit.intValue());
+        }
         return crit.selectAsAsms();
     }
 }

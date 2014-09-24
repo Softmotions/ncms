@@ -17,7 +17,10 @@ public class HttlMethods {
 
     public static Date eventDate(Asm n) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        Date date = null;
+        Date date = ctx.getAsm().getEdate();
+        if (date != null) {
+            return date;
+        }
         if (n.isHasAttribute("event_date")) {
             date = (Date) ctx.renderAttribute(n, "event_date", Collections.EMPTY_MAP);
         }

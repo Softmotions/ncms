@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class NewsDirectoryController implements AsmController {
 
-    private static final int MAX_TOTAL_NEWS_LIMIT = 8;
+    public static final int DEFAUL_NEWS_LIMIT = 8;
 
     @Transactional
     public boolean execute(AsmRendererContext ctx) throws Exception {
@@ -31,11 +31,14 @@ public class NewsDirectoryController implements AsmController {
         }
         ctx.put("news_skip", skip);
 
-        int limit = MAX_TOTAL_NEWS_LIMIT;
+        int limit = DEFAUL_NEWS_LIMIT;
         String limitStr = req.getParameter("news.limit");
         try {
             limit = !StringUtils.isBlank(limitStr) ? Integer.parseInt(limitStr) : limit;
         } catch (NumberFormatException ignored) {
+        }
+        if (limit > Constants.MAX_TOTAL_ITEMS_LIMIT) {
+            limit = Constants.MAX_TOTAL_ITEMS_LIMIT;
         }
         ctx.put("news_limit", limit);
 
@@ -45,7 +48,6 @@ public class NewsDirectoryController implements AsmController {
             ctx.getRenderer().renderTemplate(results.getEffectiveValue(), ctx, resp.getWriter());
             return true;
         }
-
         return false;
     }
 }

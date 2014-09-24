@@ -114,7 +114,7 @@
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    initMainNews("$!{activeType}");
+    window.initMainNews && initMainNews("$!{activeType}");
 </script>
 </body>
 </html>

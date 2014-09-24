@@ -36,7 +36,7 @@
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    initSearch($!{search_limit});
+    window.initSearch && initSearch($!{search_limit});
 </script>
 </body>
 </html>

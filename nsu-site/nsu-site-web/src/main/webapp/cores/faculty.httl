@@ -57,7 +57,7 @@
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    initFetchMore("a#fetch-more", "$!{page().link}", "ul.news-list", $!{news_limit}, "news");
+    window.initFetchMore && initFetchMore("a#fetch-more", "$!{page().link}", "ul.news-list", $!{news_limit}, "news");
 </script>
 </body>
 </html>

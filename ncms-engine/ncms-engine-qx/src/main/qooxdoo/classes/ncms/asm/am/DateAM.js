@@ -57,6 +57,7 @@ qx.Class.define("ncms.asm.am.DateAM", {
                 w.setValue(isNaN(val) ? new Date() : new Date(val));
             });
             w.setRequired(!!attrSpec["required"]);
+            w.setWidth(150);
             w.setAllowGrowX(false);
             this._valueWidget = w;
             return w;

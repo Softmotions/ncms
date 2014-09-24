@@ -16,7 +16,6 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
@@ -57,19 +56,7 @@ public class AsmDateAM implements AsmAttributeManager {
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
-        AsmAttribute attr = asm.getEffectiveAttribute(attrname);
-        if (attr == null || attr.getEffectiveValue() == null) {
-            return null;
-        }
-        String val = attr.getEffectiveValue();
-        Long ms;
-        try {
-            ms = Long.parseLong(val);
-        } catch (NumberFormatException e) {
-            log.error("", e);
-            return null;
-        }
-        return new Date(ms);
+        return asm.getEdate();
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
@@ -86,13 +73,8 @@ public class AsmDateAM implements AsmAttributeManager {
 
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         val = val.get("value");
-        if (val == null) {
-            return;
-        }
-        long date = val.asLong(0);
-        if (date == 0L) {
-            return;
-        }
-        adao.updateAttrsIdxNumberValues(attr, Arrays.asList(date));
+        adao.asmSetEdate(ctx.getAsmId(),
+                         (val == null || val.asLong(0) == 0L) ? null :
+                         new Date(val.asLong()));
     }
 }

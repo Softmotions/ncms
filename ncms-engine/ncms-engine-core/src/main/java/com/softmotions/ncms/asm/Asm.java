@@ -94,9 +94,11 @@ public class Asm implements Serializable {
     @JsonProperty
     String templateMode;
 
+    Date cdate;
+
     Date mdate;
 
-    Date cdate;
+    Date edate;
 
     KVOptions parsedOptions;
 
@@ -225,6 +227,14 @@ public class Asm implements Serializable {
 
     public void setCdate(Date cdate) {
         this.cdate = cdate;
+    }
+
+    public Date getEdate() {
+        return edate;
+    }
+
+    public void setEdate(Date edate) {
+        this.edate = edate;
     }
 
     public boolean isPublished() {
@@ -570,6 +580,9 @@ public class Asm implements Serializable {
         asm.template = template;
         asm.controller = controller;
         asm.core = (core != null) ? core.cloneDeep() : null;
+        asm.cdate = cdate;
+        asm.mdate = mdate;
+        asm.edate = edate;
         asm.attributes = (attributes != null) ? attributes.cloneDeep() : null;
         asm.navParentId = navParentId;
         asm.navAlias = navAlias;
