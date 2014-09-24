@@ -352,7 +352,7 @@
               asm.id,
               asm.ordinal,
               asm.edate
-              <if test="templates != null">, p_name</if>
+              <if test="templates != null">, pasm.name</if>
             FROM ASMS AS asm
               INNER JOIN ASM_ATTRS AS attr ON attr.asm_id = asm.id
               LEFT JOIN ASM_ATTR_IDXVALS AS iv1 ON iv1.attr_id = attr.id
