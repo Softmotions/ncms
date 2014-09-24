@@ -8,9 +8,9 @@
     <server-name>127.0.0.1</server-name>
     <server-port>8080</server-port>
 
-    <site-root preferRequestUrl="true">http://${server-name}:{server-port}</site-root>
-    <help-site>http://${server-name}:{server-port}</help-site>
-    <logout-redirect>http://${server-name}:{server-port}</logout-redirect>
+    <site-root preferRequestUrl="true">http://${server-name}:${server-port}</site-root>
+    <help-site>http://${server-name}:${server-port}</help-site>
+    <logout-redirect>http://${server-name}:${server-port}</logout-redirect>
     <site-files-root resolveRelativePaths="true">/site</site-files-root>
     <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->
 

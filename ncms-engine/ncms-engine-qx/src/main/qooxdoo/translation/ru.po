@@ -2,7 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:402
+#: ncms/Application.js:33
+msgid "Your user session expired! Please login again"
+msgstr "Ваша сессия закончилась, пожалуйста войдите заново"
+
+#: ncms/Application.js:419
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 

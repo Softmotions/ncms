@@ -20,13 +20,18 @@
 qx.Class.define("ncms.Application", {
     extend : qx.application.Standalone,
     include : [qx.locale.MTranslation],
+
     statics : {
 
         INSTANCE : null,
         APP_STATE : null,
         ACT : null,
-
         INFO_POPUP : null,
+
+        //translations
+        EXTERNAL_TRANSLATIONS : [
+            qx.locale.Manager.tr("Your user session expired! Please login again")
+        ],
 
         ///////////////////////////////////////////////////////////
         //                         Alerts
@@ -205,7 +210,7 @@ qx.Class.define("ncms.Application", {
         },
 
         logout : function() {
-            window.location.href = ncms.Application.ACT.getUrl("app.logout");
+            ncms.Application.INSTANCE.logout();
         }
     },
 
@@ -237,11 +242,19 @@ qx.Class.define("ncms.Application", {
 
         __nav : null,
 
+        __logoutPending : false,
+
 
         _createRootWidget : function() {
             var root = new qx.ui.root.Application(document);
             root.setWindowManager(new sm.ui.window.ExtendedWindowManager());
             return root;
+        },
+
+        logout : function() {
+            this.__logoutPending = true;
+            qx.log.Logger.info("href=" + ncms.Application.ACT.getUrl("app.logout"));
+            window.location.href = ncms.Application.ACT.getUrl("app.logout");
         },
 
         main : function() {
@@ -392,12 +405,16 @@ qx.Class.define("ncms.Application", {
         },
 
         __bootstrap : function() {
+            sm.io.Request.LOGIN_ACTION = this.logout.bind(this);
             ncms.Application.INSTANCE = this;
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
         },
 
         // overriden
         close : function(val) {
+            if (this.__logoutPending) {
+                return;
+            }
             var appName = ncms.Application.APP_STATE.getAppName() || "Application";
             return this.tr("You leave %1", appName);
         },
