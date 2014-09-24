@@ -85,6 +85,7 @@ public class AsmFileRefAM implements AsmAttributeManager {
             }
             return out.toString();
         }
+
         MediaResource resource = reader.findMediaResource(location, ctx.getLocale());
         if (resource == null) {
             return null;
@@ -112,7 +113,7 @@ public class AsmFileRefAM implements AsmAttributeManager {
                                         "asLocation",
                                         "asTemplate");
         attr.setOptions(opts.toString());
-        attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
+        applyAttributeValue(ctx, attr, val);
         return attr;
     }
 

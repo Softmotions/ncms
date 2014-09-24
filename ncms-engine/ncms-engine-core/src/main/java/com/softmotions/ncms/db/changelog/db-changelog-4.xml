@@ -225,12 +225,24 @@
         </createIndex>
 
     </changeSet>
-    
+
     <changeSet id="19" author="adamansky@gmail.com">
         <createIndex tableName="ASMS"
                      indexName="IDX_ASMS_NAVALIAS"
                      unique="false">
             <column name="NAV_ALIAS"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="20" author="adamansky@gmail.com">
+        <addColumn tableName="ASMS">
+            <column name="EDATE"
+                    type="TIMESTAMP"
+                    remarks="Date of user defined event associated with this assembly page"/>
+        </addColumn>
+        <createIndex tableName="ASMS"
+                     indexName="IDX_ASMS_EDATE">
+            <column name="EDATE"/>
         </createIndex>
     </changeSet>
 

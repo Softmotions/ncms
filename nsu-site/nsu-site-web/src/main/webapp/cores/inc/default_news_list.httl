@@ -1,6 +1,4 @@
-#set(int offset = news_skip)
-#set(int limit = news_limit)
-#foreach(Asm p in asmNavChilds("news.page", offset, limit))
+#foreach(Asm p in asmNavChilds("news.page", (Number)news_skip, (Number)news_limit))
 #set(Date date = p.eventDate())
 <li style="#if(offset != 0)display: none;#end">
     <div class="date-holder">

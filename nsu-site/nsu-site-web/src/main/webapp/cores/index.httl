@@ -112,7 +112,7 @@
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    initMainNews();
+    window.initMainNews && initMainNews();
 </script>
 </body>
 </html>

@@ -1045,3 +1045,15 @@ function initFetchMore(btn, action, results, pageSize, prefix) {
         $(btn).show();
     }
 }
+
+function initRemember() {
+    $('.event-list .remember').click(function(event) {
+        $('.remember-form').fadeOut(200);
+        $(this).closest('li').find('.remember-form').fadeIn(200);
+        event.preventDefault();
+    });
+    $('.remember-form .close').click(function(event) {
+        $('.remember-form').fadeOut(200);
+        event.preventDefault();
+    });
+}

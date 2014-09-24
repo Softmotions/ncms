@@ -28,13 +28,11 @@ public class MainPageController implements AsmController {
 
     private static final Logger log = LoggerFactory.getLogger(MainPageController.class);
 
-    private static final int MAX_TOTAL_NEWS_LIMIT = 1000;
-
-    private static final String[] DEFAULT_ATTRS_INCLUDE = {"annotation",
-                                                           "icon",
-                                                           "category",
-                                                           "subcategory",
-                                                           "event_date"};
+    public static final String[] DEFAULT_ATTRS_INCLUDE = {"annotation",
+                                                          "icon",
+                                                          "category",
+                                                          "subcategory",
+                                                          "event_date"};
 
     private final AsmDAO adao;
 
@@ -96,7 +94,7 @@ public class MainPageController implements AsmController {
         if (skip != null) {
             crit.skip(skip);
         }
-        crit.limit(mpCfg.getInt("news.c[@max]", MAX_TOTAL_NEWS_LIMIT));
+        crit.limit(mpCfg.getInt("news.c[@max]", Constants.MAX_TOTAL_ITEMS_LIMIT));
         crit.onAsm().orderBy("ordinal").desc();
 
         Collection<Asm> news = crit.selectAsAsms();
@@ -120,7 +118,7 @@ public class MainPageController implements AsmController {
         if (skip != null) {
             crit.skip(skip);
         }
-        crit.limit(mpCfg.getInt("news.b[@max]", MAX_TOTAL_NEWS_LIMIT));
+        crit.limit(mpCfg.getInt("news.b[@max]", Constants.MAX_TOTAL_ITEMS_LIMIT));
         crit.onAsm().orderBy("ordinal").desc();
 
         Collection<Asm> news = crit.selectAsAsms();
@@ -153,7 +151,7 @@ public class MainPageController implements AsmController {
         if (skip != null) {
             crit.skip(skip);
         }
-        crit.limit(mpCfg.getInt("news.a[@max]", MAX_TOTAL_NEWS_LIMIT));
+        crit.limit(mpCfg.getInt("news.a[@max]", Constants.MAX_TOTAL_ITEMS_LIMIT));
         crit.onAsm().orderBy("ordinal").desc();
 
         Collection<Asm> news = crit.selectAsAsms();

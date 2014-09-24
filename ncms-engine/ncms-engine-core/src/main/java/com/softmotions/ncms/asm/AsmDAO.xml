@@ -330,6 +330,7 @@
             asm.type          AS "type",
             asm.cdate         AS "cdate",
             asm.mdate         AS "mdate",
+            asm.edate         AS "edate",
             asm.nav_parent_id AS "nav_parent_id",
             attr.id           AS "attr_id",
             attr.name         AS "attr_name",
@@ -346,7 +347,8 @@
         FROM
             (SELECT DISTINCT
               asm.id,
-              asm.ordinal
+              asm.ordinal,
+              asm.edate
             FROM ASMS AS asm
               INNER JOIN ASM_ATTRS AS attr ON attr.asm_id = asm.id
               LEFT JOIN ASM_ATTR_IDXVALS AS iv1 ON iv1.attr_id = attr.id
@@ -357,6 +359,12 @@
             <where>
                     <if test="navParentId != null">
                     AND asm.nav_parent_id = #{navParentId}
+                    </if>
+                    <if test="edateLTE != null">
+                    AND asm.edate &lt;= #{edateLTE,jdbcType=TIMESTAMP}
+                    </if>
+                    <if test="edateGTE != null">
+                    AND asm.edate &gt;= #{edateGTE,jdbcType=TIMESTAMP}
                     </if>
                     <if test="published != null">
                     AND asm.published = #{published}
@@ -378,7 +386,7 @@
                       <trim prefixOverrides="OR">
                         <foreach collection="attrs" item="attr">
                             OR (
-                              attr.type NOT IN ( 'select', 'date' )
+                              attr.type NOT IN ( 'select' )
                                 AND attr.name = #{attr.one} AND attr.value LIKE #{attr.two}
                             )
                             OR (
@@ -397,7 +405,7 @@
                         OFFSET ${CQ_OFFSET}
                     </if>
                 </if>
-        ) AS restr(id, ordinal)
+        ) AS restr(id, ordinal, edate)
         INNER JOIN ASMS AS asm ON restr.id = asm.id
         LEFT JOIN ASM_ATTRS AS attr ON attr.asm_id = asm.id
         <if test="!attrsInclude.isEmpty">
@@ -434,6 +442,11 @@
         </foreach>
     </insert>
 
+    <update id="asmSetEdate" parameterType="map">
+        UPDATE ASMS
+        SET edate = #{edate,jdbcType=TIMESTAMP}
+        WHERE id = #{id}
+    </update>
 
     <!-- ======================== Result maps ============================= -->
 

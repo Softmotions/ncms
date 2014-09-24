@@ -1,0 +1,3 @@
+#foreach(Asm p in asmPageQuery(criteria, (Number)news_skip, (Number)news_limit))
+
+#end

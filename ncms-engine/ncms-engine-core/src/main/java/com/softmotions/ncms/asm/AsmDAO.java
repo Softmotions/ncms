@@ -343,16 +343,21 @@ public class AsmDAO extends MBDAOSupport {
         }
     }
 
-
     @Transactional
     public void bumpAsmOrdinal(long asmId) {
         update("bumpAsmOrdinal", asmId);
     }
 
-
     @Transactional
     public long asmChildrenCount(long asmId) {
         return ((Number) selectOne("selectChildrenCount", asmId)).longValue();
+    }
+
+    @Transactional
+    public void asmSetEdate(long asmId, Date date) {
+        update("asmSetEdate",
+               "id", asmId,
+               "edate", date);
     }
 
     public PageCriteria newPageCriteria() {
@@ -415,6 +420,14 @@ public class AsmDAO extends MBDAOSupport {
 
         public PageCriteria withPublished(boolean val) {
             return withParam("published", val);
+        }
+
+        public PageCriteria withEdateLTE(Date date) {
+            return withParam("edateLTE", date);
+        }
+
+        public PageCriteria withEdateGTE(Date date) {
+            return withParam("edateGTE", date);
         }
 
         public PageCriteria withTypeLike(String type) {
