@@ -107,95 +107,7 @@ ${include("inc/breadcrumbs.httl")}
         </li>
     </ul>
 </div>
-<div class="two-col">
-    <div class="col">
-        <h3>Последние новости</h3>
-
-        <div class="tab-holder">
-            <div class="tab active">
-                <ul class="news-list">
-                    <li>
-                        <div class="img-holder">
-                            <img src="images/img2.png" width="81" height="68" alt="image description"/>
-                            <span class="date">17</span>
-                            <span class="month">май</span>
-                            <span class="year">2014</span>
-                        </div>
-                        <div class="text-holder">
-                            <h3><a href="#">Дни Шекспира в НГУ</a></h3>
-
-                            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс
-                                мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ
-                                на спектакль «Ромео и Джульетта», флэшмоб по </p>
-                            <span class="tag">Атмосфера</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="img-holder">
-                            <img src="images/img3.png" width="81" height="68" alt="image description"/>
-                            <span class="date">13</span>
-                            <span class="month">май</span>
-                            <span class="year">2014</span>
-                        </div>
-                        <div class="text-holder">
-                            <h3><a href="#">Лекция «Хайтек <br/>в современном мире»</a></h3>
-
-                            <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт
-                                Израиля». Лекция состоится 12 мая в 17.45 в</p>
-                            <span class="tag">Образование</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="img-holder">
-                            <img src="images/img4.png" width="81" height="68" alt="image description"/>
-                            <span class="date">9</span>
-                            <span class="month">май</span>
-                            <span class="year">2014</span>
-                        </div>
-                        <div class="text-holder">
-                            <h3><a href="#">Возложение цветов</a></h3>
-
-                            <p>В рамках мероприятий, посвященных празднованию Дня Победы, социальное управление
-                                приглашает студентов и сотрудников</p>
-                            <span class="tag">Атмосфера</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="img-holder">
-                            <img src="images/img2.png" width="81" height="68" alt="image description"/>
-                            <span class="date">17</span>
-                            <span class="month">май</span>
-                            <span class="year">2014</span>
-                        </div>
-                        <div class="text-holder">
-                            <h3><a href="#">Дни Шекспира в НГУ</a></h3>
-
-                            <p>В число шекспировских мероприятий вошли 9 открытых лекций «Шекспир и его эпоха», конкурс
-                                мини-презентаций PechaKucha, конкурс переводов сонетов Шекспира, поездка студентов НГУ
-                                на спектакль «Ромео и Джульетта», флэшмоб по </p>
-                            <span class="tag">Атмосфера</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="img-holder">
-                            <img src="images/img3.png" width="81" height="68" alt="image description"/>
-                            <span class="date">13</span>
-                            <span class="month">май</span>
-                            <span class="year">2014</span>
-                        </div>
-                        <div class="text-holder">
-                            <h3><a href="#">Лекция «Хайтек <br/>в современном мире»</a></h3>
-
-                            <p>Израильский бизнесмен Виктор Ариэль выступит с лекцией «Хайтек в современном мире. Опыт
-                                Израиля». Лекция состоится 12 мая в 17.45 в</p>
-                            <span class="tag">Образование</span>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="col">
+<div class="news-holder">
         <ul class="tabset">
             <li class="active"><a href="#">Все</a></li>
             <li><a href="#">Новости факультетов</a></li>
@@ -203,74 +115,75 @@ ${include("inc/breadcrumbs.httl")}
             <li><a href="#">Репортажи</a></li>
             <li><a href="#">Сми</a></li>
         </ul>
-        <div class="list-holder">
-            <ul class="news-list2">
-                <li>
+        <div id="news-container" class="list-holder">
+            <!--<ul class="news-list2">-->
+                <div class="news-item">
                     <div class="holder">
                         <h4 class="interview">Интервью</h4>
                         <span class="date">21 май 2014</span>
                     </div>
-                    <img src="images/img49.jpg" width="227" height="126" alt="image description"/>
+                    <!-- TODO: img height -->
+                    <img src="images/img49.jpg" width="285" alt="image description"/>
 
                     <h3><a href="#">Геннадий Бахалов</a></h3>
                     <span class="position">проректор по воспитательной работе</span>
 
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
-                </li>
-                <li>
+                </div>
+                <div class="news-item">
                     <div class="holder">
                         <h4 class="photo">Репортаж</h4>
                         <span class="date">21 май 2014</span>
                     </div>
-                    <img src="images/img50.jpg" width="227" height="126" alt="image description"/>
+                    <img src="images/img50.jpg" width="285" alt="image description"/>
 
                     <h3><a href="#">В стенах НГУ</a></h3>
 
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
-                </li>
-                <li>
+                </div>
+                <div class="news-item">
                     <h4 class="doc">Приказы и документы</h4>
                     <span class="date">21 май 2014</span>
                     <h5><a href="#">О назначении проректора</a></h5>
 
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
-                </li>
-                <li>
+                </div>
+                <div class="news-item">
                     <h4 class="news">Новости факультетов</h4>
                     <span class="date">21 май 2014</span>
                     <h5><a href="#">Механико-математический</a></h5>
 
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
-                </li>
-            </ul>
-            <ul class="news-list2">
-                <li>
+                </div>
+            <!--</ul>-->
+            <!--<ul class="news-list2">-->
+                <div class="news-item">
                     <h4 class="news">Новости факультетов</h4>
                     <span class="date">21 май 2014</span>
                     <h5><a href="#">Механико-математический</a></h5>
 
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
-                </li>
-                <li>
+                </div>
+                <div class="news-item">
                     <div class="holder">
                         <h4 class="interview">Интервью</h4>
                         <span class="date">21 май 2014</span>
                     </div>
-                    <img src="images/img51.jpg" width="227" height="126" alt="image description"/>
+                    <img src="images/img51.jpg" width="285" alt="image description"/>
 
                     <h3><a href="#">Геннадий Бахалов</a></h3>
                     <span class="position">проректор по воспитательной работе</span>
 
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
-                </li>
-                <li>
+                </div>
+                <div class="news-item">
                     <h4 class="news">Новости факультетов</h4>
                     <span class="date">21 май 2014</span>
                     <h5><a href="#">Механико-математический</a></h5>
 
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
-                </li>
-                <li>
+                </div>
+                <div class="news-item">
                     <div class="holder">
                         <h4 class="smig">СМИ об НГУ</h4>
                         <span class="date">21 май 2014</span>
@@ -278,12 +191,11 @@ ${include("inc/breadcrumbs.httl")}
                     <h5><a href="#">Один из лучших ВУЗов России признан</a></h5>
 
                     <p>Студенты факультета не только слушают лекции выдающихся ученых...</p>
-                </li>
-            </ul>
-        </div>
+                </div>
+            <!--</ul>-->
     </div>
+    <a href="#" class="fetch-more"><span>Загрузить еще</span></a>
 </div>
-<a href="#" class="fetch-more"><span>Загрузить еще</span></a>
 
 <div class="video-holder">
     <h1>Видео</h1>
@@ -321,5 +233,10 @@ ${include("inc/partners.httl")}
 </div>
 </div>
 $!{include("inc/scripts.httl")}
+<script>
+    $(function() {
+        $('div#news-container').masonry({itemSelector : '.news-item'});
+    });
+</script>
 </body>
 </html>
