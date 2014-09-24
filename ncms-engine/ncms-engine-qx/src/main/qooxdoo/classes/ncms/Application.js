@@ -253,7 +253,6 @@ qx.Class.define("ncms.Application", {
 
         logout : function() {
             this.__logoutPending = true;
-            qx.log.Logger.info("href=" + ncms.Application.ACT.getUrl("app.logout"));
             window.location.href = ncms.Application.ACT.getUrl("app.logout");
         },
 
@@ -405,7 +404,11 @@ qx.Class.define("ncms.Application", {
         },
 
         __bootstrap : function() {
-            sm.io.Request.LOGIN_ACTION = this.logout.bind(this);
+            sm.io.Request.LOGIN_ACTION = function() {
+                alert(this.tr("Your user session expired! Please login again"));
+                this.__logoutPending = true;
+                window.location.reload(true);
+            }.bind(this);
             ncms.Application.INSTANCE = this;
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
         },
