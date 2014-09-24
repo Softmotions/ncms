@@ -513,6 +513,7 @@ public class AsmDAO extends MBDAOSupport {
                         asm.setType((String) row.get("type"));
                         asm.setMdate((Date) row.get("mdate"));
                         asm.setCdate((Date) row.get("cdate"));
+                        asm.setEdate((Date) row.get("edate"));
                         asmGroup.put(id, asm);
                     }
                     String attrName = (String) row.get("attr_name");
