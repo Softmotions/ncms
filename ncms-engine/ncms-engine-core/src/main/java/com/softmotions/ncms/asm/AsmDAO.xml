@@ -338,6 +338,9 @@
             <if test="largeAttrValues">
             attr.large_value  AS "attr_large_value",
             </if>
+            <if test="templates != null">
+            restr.p_name      AS "p_name",
+            </if>
             iv.attr_id        AS "iv_attr_id",
             iv.value          AS "iv_value",
             npasm.id          AS "np_id",
@@ -346,7 +349,7 @@
         FROM
             (SELECT DISTINCT
               asm.id,
-              asm.ordinal
+              asm.ordinal<if test="templates != null">, pasm.name</if>
             FROM ASMS AS asm
               INNER JOIN ASM_ATTRS AS attr ON attr.asm_id = asm.id
               LEFT JOIN ASM_ATTR_IDXVALS AS iv1 ON iv1.attr_id = attr.id
@@ -397,7 +400,7 @@
                         OFFSET ${CQ_OFFSET}
                     </if>
                 </if>
-        ) AS restr(id, ordinal)
+        ) AS restr(id, ordinal<if test="templates != null">, p_name</if>)
         INNER JOIN ASMS AS asm ON restr.id = asm.id
         LEFT JOIN ASM_ATTRS AS attr ON attr.asm_id = asm.id
         <if test="!attrsInclude.isEmpty">

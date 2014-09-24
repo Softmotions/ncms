@@ -885,14 +885,15 @@ function initSearch(pageSize) {
     updateSearchButtons();
 }
 
-function initMainNews() {
+function initMainNews(aType) {
     var mpc = {
         columns : [
             {
                 subscribed : true,
                 holder : $('div.news-holder'),
                 results : $('ul.news-list'),
-                type : 'a'
+                type : 'a',
+                subType: aType
             },
             {
                 subscribed : true,
@@ -982,6 +983,9 @@ function initMainNews() {
                 "mpc.fetch.type" : def.type
             };
             var prevSize = data["mpc." + def.type + ".skip"] = def.results.find('li').size();
+            if (!!def.subType) {
+                data["mpc." + def.type + ".subType"] = def.subType;
+            }
             $.post(mpc.fetchMore[0].href, data, function(html) {
                 def.results.append(html);
                 if (def.results.find('li').size() == prevSize) {
@@ -1035,5 +1039,36 @@ function initFetchMore(btn, action, results, pageSize, prefix) {
 
     if ($(results).find('li').size() >= pageSize) {
         $(btn).show();
+    }
+}
+
+function initNewsMain(pageSize) {
+    var container = $('div#news-container');
+    var fetchMore = $('a#news-fetch-more');
+
+    container.masonry({itemSelector : '.news-item'});
+
+    fetchMore.click(function(){
+        var count = container.find('.news-item').size();
+        fetchMore.hide();
+        $.post(null, {
+            "mnc.action" : "fetchMoreNews",
+            "mnc.news.skip" : count,
+            "mnc.news.limit" : pageSize
+        }, function(data) {
+            var html = $.parseHTML(data);
+            container.append(html);
+            container.masonry('appended', html);
+            if (container.find('.news-item').size() - count >= pageSize) {
+                fetchMore.fadeIn(500);
+            }
+        });
+        return false;
+    });
+
+    fetchMore.hide();
+
+    if (container.find('.news-item').size() >= pageSize) {
+        fetchMore.show();
     }
 }

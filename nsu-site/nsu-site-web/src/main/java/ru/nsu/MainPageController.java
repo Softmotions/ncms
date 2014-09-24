@@ -1,5 +1,6 @@
 package ru.nsu;
 
+import com.softmotions.commons.cont.Pair;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
@@ -9,7 +10,10 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -17,7 +21,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Main page {@link com.softmotions.ncms.asm.render.AsmController}
@@ -91,7 +99,11 @@ public class MainPageController implements AsmController {
         crit.withAttributes(DEFAULT_ATTRS_INCLUDE);
         crit.withPublished(true);
         crit.withTypeLike("news.page");
-        crit.withTemplates(mpCfg.getString("news.c[@template]", "faculty_news"));
+        String[] templates = mpCfg.getStringArray("news.c[@templates]");
+        if (templates == null) {
+            templates = new String[]{"faculty_news"};
+        }
+        crit.withTemplates(templates);
 
         if (skip != null) {
             crit.skip(skip);
@@ -115,7 +127,11 @@ public class MainPageController implements AsmController {
         crit.withPublished(true);
         crit.withNavParentId(asm.getId());
         crit.withTypeLike("news.page");
-        crit.withTemplates(mpCfg.getString("news.b[@template]", "index_announce"));
+        String[] templates = mpCfg.getStringArray("news.b[@templates]");
+        if (templates == null) {
+            templates = new String[]{"index_announce"};
+        }
+        crit.withTemplates(templates);
 
         if (skip != null) {
             crit.skip(skip);
@@ -132,12 +148,24 @@ public class MainPageController implements AsmController {
         HttpServletRequest req = ctx.getServletRequest();
 
         String val = req.getParameter("mpc.a.skip");
-        Integer skip = (val != null) ? Integer.parseInt(val) : null;
-        String activeCategory = req.getParameter("mpc.a.ac");
+        int skip = (val != null) ? Integer.parseInt(val) : 0;
+        String activeCategory = StringUtils.trimToEmpty(req.getParameter("mpc.a.subType"));
 
-        String[] newsCategories = asm.getEffectiveAttributeAsStringArray("news_categories", mapper);
-        if (activeCategory == null && newsCategories.length > 0) {
-            activeCategory = newsCategories[0];
+        String defaultCategory = null;
+        List<Pair<String, String>> newsCategories = new ArrayList<>();
+        Map<String, Configuration> ncConfigs = new HashMap<>();
+        for (HierarchicalConfiguration aCfg : mpCfg.configurationsAt("news.a")) {
+            String type = aCfg.getString("[@type]", "");
+            String title = aCfg.getString("[@title]", "");
+
+            newsCategories.add(new Pair<>(type, title));
+            ncConfigs.put(type, aCfg);
+            if (defaultCategory == null) {
+                defaultCategory = type;
+            }
+        }
+        if (activeCategory == null || !ncConfigs.containsKey(activeCategory)) {
+            activeCategory = defaultCategory;
         }
 
         AsmDAO.PageCriteria crit = adao.newPageCriteria();
@@ -145,15 +173,21 @@ public class MainPageController implements AsmController {
         crit.withPublished(true);
         crit.withNavParentId(asm.getId());
         crit.withTypeLike("news.page");
-        crit.withTemplates(mpCfg.getString("news.a[@template]", "index_news"));
 
-        if (activeCategory != null) {
-            crit.withAttributeLike("category", activeCategory);
+        Configuration aCfg = activeCategory != null ? ncConfigs.get(activeCategory) : null;
+        String[] templates = aCfg != null ? aCfg.getStringArray("[@templates]") : null;
+        if (templates == null) {
+            templates = new String[]{"index_news", "index_reportage", "index_interview"};
         }
-        if (skip != null) {
-            crit.skip(skip);
+        crit.withTemplates(templates);
+
+        crit.skip(skip);
+
+        int limit = MAX_TOTAL_NEWS_LIMIT;
+        if (aCfg != null) {
+            limit = aCfg.getInt("[@max]", limit);
         }
-        crit.limit(mpCfg.getInt("news.a[@max]", MAX_TOTAL_NEWS_LIMIT));
+        crit.limit(limit);
         crit.onAsm().orderBy("ordinal").desc();
 
         Collection<Asm> news = crit.selectAsAsms();

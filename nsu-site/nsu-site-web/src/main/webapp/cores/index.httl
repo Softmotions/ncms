@@ -42,14 +42,17 @@
             </ul>
             #end
             <!-- News -->
+            #set(String activeType = "")
             <div class="three-col" id="news">
                 <div class="news-holder">
                     <ul class="tabset">
-                        #foreach(String nc in newsCategories)
-                        #if(nc == activeCategory)
-                        <li class="active"><a href="#">${nc}</a></li>
+                        #foreach(Pair nc in newsCategories)
+                        #set(String type = nc.one)
+                        #if(type == activeCategory)
+                        #set(String activeType = type)
+                        <li class="active"><a href="#">${nc.two}</a></li>
                         #else
-                        <li><a href="?mpc.a.ac=${nc.encodeUriComponent}#news">${nc}</a></li>
+                        <li><a href="?mpc.a.subType=${type.encodeUriComponent}#news">${nc.two}</a></li>
                         #end
                         #end
                     </ul>
@@ -111,7 +114,7 @@
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    initMainNews();
+    initMainNews("$!{activeType}");
 </script>
 </body>
 </html>

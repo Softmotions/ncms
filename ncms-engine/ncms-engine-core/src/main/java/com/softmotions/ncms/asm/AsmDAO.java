@@ -538,6 +538,9 @@ public class AsmDAO extends MBDAOSupport {
                     if (row.get("np_id") != null && asm.getAttribute("np_id") == null) {
                         asm.addAttribute(new AsmAttribute("np_id", "string", row.get("np_id").toString()));
                     }
+                    if (row.get("p_name") != null && asm.getAttribute("p_name") == null) {
+                        asm.addAttribute(new AsmAttribute("p_name", "string", row.get("p_name").toString()));
+                    }
                 }
             });
             return asmGroup.values();

@@ -65,25 +65,26 @@ msgid "GUI Required"
 msgstr "Обязательное в GUI"
 
 #: ncms/asm/AsmSelectorDlg.js:46 ncms/asm/am/TreeAMFoldersDlg.js:51
-#: ncms/asm/AsmAttributeTypeSelectorDlg.js:49 ncms/wiki/TreeDlg.js:50
-#: ncms/asm/am/AMWrapperDlg.js:37 ncms/mmgr/MediaSelectFileDlg.js:81
-#: ncms/mmgr/PageFilesSelectorDlg.js:114 ncms/wiki/InsertGMapDlg.js:41
+#: ncms/wiki/TreeDlg.js:50 ncms/asm/am/AMWrapperDlg.js:37
+#: ncms/asm/AsmAttributeTypeSelectorDlg.js:49
+#: ncms/mmgr/MediaSelectFileDlg.js:81 ncms/wiki/InsertGMapDlg.js:41
 #: ncms/wiki/InsertYoutubeDlg.js:58 ncms/asm/AsmAttrEditorDlg.js:108
 #: ncms/pgs/PagesCollectionDlg.js:40 ncms/usr/UserNewDlg.js:64
 #: ncms/usr/UserSelectorDlg.js:38 ncms/pgs/PagesSelectorDlg.js:55
-#: ncms/mmgr/MediaSelectFolderDlg.js:55
+#: ncms/mmgr/PageFilesSelectorDlg.js:114 ncms/mmgr/MediaSelectFolderDlg.js:55
 msgid "Ok"
 msgstr "Ок"
 
 #: ncms/asm/AsmSelectorDlg.js:50 ncms/asm/am/TreeAMFoldersDlg.js:56
-#: ncms/asm/AsmAttributeTypeSelectorDlg.js:54 ncms/wiki/TreeDlg.js:54
-#: ncms/asm/am/AMWrapperDlg.js:41 ncms/mmgr/MediaSelectFileDlg.js:85
-#: ncms/mmgr/PageFilesSelectorDlg.js:118 ncms/wiki/InsertGMapDlg.js:45
+#: ncms/wiki/TreeDlg.js:54 ncms/asm/am/AMWrapperDlg.js:41
+#: ncms/asm/AsmAttributeTypeSelectorDlg.js:54
+#: ncms/mmgr/MediaSelectFileDlg.js:85 ncms/wiki/InsertGMapDlg.js:45
 #: ncms/wiki/InsertYoutubeDlg.js:62 ncms/asm/AsmAttrEditorDlg.js:112
 #: ncms/usr/UserEditForm.js:54 ncms/pgs/PagesCollectionDlg.js:45
 #: ncms/wiki/TableDlg.js:60 ncms/usr/UserNewDlg.js:68
 #: ncms/pgs/PageEditorEditPage.js:50 ncms/usr/UserSelectorDlg.js:42
-#: ncms/pgs/PagesSelectorDlg.js:59 ncms/mmgr/MediaSelectFolderDlg.js:59
+#: ncms/pgs/PagesSelectorDlg.js:59 ncms/mmgr/PageFilesSelectorDlg.js:118
+#: ncms/mmgr/MediaSelectFolderDlg.js:59
 msgid "Cancel"
 msgstr "Отмена"
 
@@ -91,11 +92,10 @@ msgstr "Отмена"
 msgid "Select assembly attribute type"
 msgstr "Выбор типа атрибута"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:54
-#: ncms/asm/AsmAttributeTypeSelectorDlg.js:157 ncms/mmgr/MediaFileEditor.js:48
+#: ncms/mmgr/MediaFileEditor.js:48 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
 #: ncms/mmgr/MediaFilesTable.js:13 ncms/asm/AsmTable.js:21
-#: ncms/asm/AsmEditor.js:105 ncms/asm/am/RichRefAM.js:44
-#: ncms/usr/UserRolesTable.js:158
+#: ncms/asm/am/RichRefAMValueWidget.js:54 ncms/asm/am/RichRefAM.js:44
+#: ncms/asm/AsmEditor.js:105 ncms/usr/UserRolesTable.js:158
 msgid "Description"
 msgstr "Описание"
 
@@ -331,8 +331,8 @@ msgstr "Файл"
 msgid "Please specify a file"
 msgstr "Пожалуйста, выберите файл"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:72 ncms/asm/am/ImageAM.js:14
-#: ncms/asm/am/RichRefAM.js:48 ncms/asm/am/RichRefAM.js:56
+#: ncms/asm/am/RichRefAMValueWidget.js:72 ncms/asm/am/RichRefAM.js:48
+#: ncms/asm/am/RichRefAM.js:56 ncms/asm/am/ImageAM.js:14
 msgid "Image"
 msgstr "Изображение"
 
@@ -482,13 +482,13 @@ msgstr "Добавить изображения в галерею"
 msgid "Rich reference"
 msgstr "Агрегат"
 
-#: ncms/pgs/PagesTreeSelector.js:32 ncms/asm/am/TreeAM.js:42
-#: ncms/asm/am/RichRefAM.js:36
+#: ncms/pgs/PagesTreeSelector.js:32 ncms/asm/am/RichRefAM.js:36
+#: ncms/asm/am/TreeAM.js:42
 msgid "Pages"
 msgstr "Страницы"
 
-#: ncms/asm/am/TreeAM.js:49 ncms/mmgr/MediaItemTreeSelector.js:20
-#: ncms/pgs/PageEditorEditPage.js:55 ncms/asm/am/RichRefAM.js:40
+#: ncms/asm/am/RichRefAM.js:40 ncms/asm/am/TreeAM.js:49
+#: ncms/mmgr/MediaItemTreeSelector.js:20 ncms/pgs/PageEditorEditPage.js:55
 msgid "Files"
 msgstr "Файлы"
 
@@ -673,7 +673,7 @@ msgstr ""
 msgid "Markup language"
 msgstr "Язык разметки"
 
-#: ncms/cc/tree/MFolderTree.js:60 ncms/wiki/WikiEditor.js:845
+#: ncms/wiki/WikiEditor.js:845 ncms/cc/tree/MFolderTree.js:60
 msgid "Root"
 msgstr "Корень"
 
