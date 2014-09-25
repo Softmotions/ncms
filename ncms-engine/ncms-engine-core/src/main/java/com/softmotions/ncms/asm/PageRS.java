@@ -517,6 +517,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         update("updatePageBasic",
                "id", id,
                "hname", name,
+               "description", name,
                "type", type,
                "muser", pageSecurity.getCurrentWSUserSafe(sctx).getName());
 

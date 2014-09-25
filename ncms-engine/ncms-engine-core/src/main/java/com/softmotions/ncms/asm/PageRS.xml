@@ -164,7 +164,7 @@
 
     <update id="updatePageBasic" parameterType="map">
         UPDATE ASMS
-        SET hname = #{hname}, type = #{type}, muser = #{muser}
+        SET hname = #{hname}, type = #{type}, muser = #{muser}, description = #{description}
         WHERE id = #{id}
     </update>
 
