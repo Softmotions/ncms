@@ -16,7 +16,7 @@
     </div>
 </div>
 <div class="header-info">
-    <strong class="logo"><a href="#">Новосибирский Государственный Университет</a></strong>
+    <strong class="logo"><a href="$!{alias('index.html')}">Новосибирский Государственный Университет</a></strong>
     <a href="#" class="language">Eng</a>
 
     <div class="personal-holder">
