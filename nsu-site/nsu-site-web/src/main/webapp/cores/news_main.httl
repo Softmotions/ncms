@@ -113,9 +113,9 @@ ${include("inc/breadcrumbs.httl")}
         #set(String type = nc.one)
         #if(type == news_active_type)
         #set(String activeType = type)
-        <li class="active"><a href="#">${nc.two}</a></li>
+        <li class="active"><a href="">${nc.two}</a></li>
         #else
-        <li><a href="$!{page().link}?mnc.news.type=${type.encodeUriComponent}#news-holder">${nc.two}</a></li>
+        <li><a href="$!{page().link}?mnc.news.type=${type.encodeUriComponent}">${nc.two}</a></li>
         #end
         #end
     </ul>
@@ -162,9 +162,10 @@ ${include("inc/partners.httl")}
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    if (initNewsMain) {
-        $(function(){initNewsMain(${news_limit});});
-    }
+    window.initNewsMain && window.initScroll && $(function(){
+        initNewsMain(${news_limit});
+        initScroll('ul.tabset > li > a');
+    });
 </script>
 </body>
 </html>

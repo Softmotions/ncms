@@ -1084,3 +1084,10 @@ function initRemember() {
         event.preventDefault();
     });
 }
+
+function initScroll(tabSelector) {
+    var sneaky = new ScrollSneak(location.hostname);
+    $(tabSelector).each(function(i, el) {
+        $(el).click(function(){sneaky.sneak()});
+    })
+}

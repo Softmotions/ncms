@@ -52,7 +52,7 @@
                         #set(String activeType = type)
                         <li class="active"><a href="#">${nc.two}</a></li>
                         #else
-                        <li><a href="?mpc.a.subType=${type.encodeUriComponent}#news">${nc.two}</a></li>
+                        <li><a href="?mpc.a.subType=${type.encodeUriComponent}">${nc.two}</a></li>
                         #end
                         #end
                     </ul>
@@ -115,6 +115,9 @@
 $!{include("inc/scripts.httl")}
 <script>
     window.initMainNews && initMainNews("$!{activeType}");
+    window.initScroll && $(function(){
+        initScroll('ul.tabset > li > a');
+    });
 </script>
 </body>
 </html>

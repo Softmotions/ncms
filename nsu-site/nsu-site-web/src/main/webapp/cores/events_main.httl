@@ -39,6 +39,9 @@ $!{include("inc/scripts.httl")}
 <script>
     window.initRemember && initRemember();
     window.initFetchMore && initFetchMore("a.fetch-more", "$!{page().link}?${ifTrue(events_past == true, "past")}", "ul.event-list", $!{news_limit}, "news");
+    window.initScroll && $(function(){
+        initScroll('ul.tabset-list > li > a');
+    });
 </script>
 </body>
 </html>
