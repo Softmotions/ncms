@@ -1073,7 +1073,6 @@ function initNewsMain(pageSize) {
     }
 }
 
-
 function initRemember() {
     $('.event-list .remember').click(function(event) {
         $('.remember-form').fadeOut(200);

@@ -14,15 +14,19 @@ ${include("inc/breadcrumbs.httl")}
 <div class="filter-holder">
     <h1>Календарь событий</h1>
     <ul class="tabset-list">
-        <li class="active"><a href="#">Все</a></li>
-        <li><a href="#">Грядущие</a></li>
-        <li><a href="#">Прошедшие</a></li>
+        #if(events_past == true)
+        <li><a href="$!{page().link}">Грядущие</a></li>
+        <li class="active"><a>Прошедшие</a></li>
+        #else
+        <li class="active"><a>Грядущие</a></li>
+        <li><a href="$!{page().link}?past">Прошедшие</a></li>
+        #end
     </ul>
 </div>
 <ul class="event-list tab active">
     $!{asm("news_list")}
 </ul>
-<a href="#" class="fetch-more"><span>Загрузить еще</span></a>
+<a class="fetch-more"><span>Загрузить еще</span></a>
 ${include("inc/soclikes.httl")}
 ${include("inc/partners.httl")}
 </div>
@@ -33,7 +37,8 @@ ${include("inc/partners.httl")}
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    window.initRemember && initRemember()
+    window.initRemember && initRemember();
+    window.initFetchMore && initFetchMore("a.fetch-more", "$!{page().link}?${ifTrue(events_past == true, "past")}", "ul.event-list", $!{news_limit}, "news");
 </script>
 </body>
 </html>
