@@ -13,14 +13,16 @@
 
         #if(img != null)
         <div style="width:285px;height:158px;overflow:hidden">
-            <img src="${img.link}" width="285" alt="${p.hname}"/>
+            <a href="$!{p.link}"><img src="$!{img.link}" width="285" alt="${p.hname}"/></a>
         </div>
         #end
 
-        <h3><a href="${p.link}">${p.hname}</a></h3>
+        <h3><a href="$!{p.link}">${p.hname}</a></h3>
 
-        <!-- TODO: position -->
-        <span class="position">проректор по воспитательной работе</span>
+        #set(String position = p.asmAny("position"))
+        #if(position != null)
+        <span class="position">${position}</span>
+        #end
 
     #elseif("index_reportage" == template)
         <!-- Репортаж -->
@@ -30,23 +32,23 @@
         </div>
         #if(img != null)
         <div style="width:285px;height:158px;overflow:hidden">
-            <img src="${img.link}" width="285" alt="${p.hname}"/>
+            <a href="$!{p.link}"><img src="$!{img.link}" width="285" alt="${p.hname}"/></a>
         </div>
         #end
 
-        <h3><a href="${p.link}">${p.hname}</a></h3>
+        <h3><a href="$!{p.link}">${p.hname}</a></h3>
 
     #else("index_orders" == template)
         <!-- Приказы и документы -->
         <h4 class="doc">Приказы и документы</h4>
         <span class="date">${edate.format2("dd")} ${edate.format2("MMM")} ${edate.format2("yyyy")}</span>
-        <h5><a href="${p.link}">${p.hname}</a></h5>
+        <h5><a href="$!{p.link}">${p.hname}</a></h5>
 
     #else("faculty_news" == template)
         <!-- Новости факультетов -->
-        <h4 class="news">Новости факультетов</h4>
+        <h4 class="news">$!{p.asmAny("np_hname")}</h4>
         <span class="date">${edate.format2("dd")} ${edate.format2("MMM")} ${edate.format2("yyyy")}</span>
-        <h5><a href="${p.link}">$!{p.asmAny("np_hname")}</a></h5>
+        <h5><a href="$!{p.link}">${p.hname}</a></h5>
 
     #else("index_smi" == template)
         <!-- СМИ (пока не существует) -->
@@ -54,13 +56,13 @@
             <h4 class="smig">СМИ об НГУ</h4>
             <span class="date">${edate.format2("dd")} ${edate.format2("MMM")} ${edate.format2("yyyy")}</span>
         </div>
-        <h5><a href="${p.link}">${p.hname}</a></h5>
+        <h5><a href="$!{p.link}">${p.hname}</a></h5>
 
     #else
         <!-- Остальные  -->
         <h4 class="news">Новости</h4>
         <span class="date">${edate.format2("dd")} ${edate.format2("MMM")} ${edate.format2("yyyy")}</span>
-        <h5><a href="${p.link}">${p.hname}</a></h5>
+        <h5><a href="$!{p.link}">${p.hname}</a></h5>
     #end
 
     <p>${p.asm("annotation")}</p>
