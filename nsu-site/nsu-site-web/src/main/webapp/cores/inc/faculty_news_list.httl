@@ -4,7 +4,7 @@
 #set(int index = index + 1)
 <li style="#if(offset != 0)display: none;#end #if(index % 2 == 1)clear: both;#end">
     <div class="img-holder">
-        #set(Image icon = p.asm("icon"))
+        #set(Image icon = p.asmAny("icon"))
         #if(icon != null)
         <img src="$!{icon.link}" alt="${p.hname}" width="81" height="68"/>
         #end

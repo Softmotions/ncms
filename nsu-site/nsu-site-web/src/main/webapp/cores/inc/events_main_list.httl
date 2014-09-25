@@ -1,9 +1,60 @@
 #foreach(Asm p in asmPageQuery(criteria, (Number)news_skip, (Number)news_limit))
-  #if(p.isTodayEvent())
-        a
-  #elseif(p.isFutureEvent())
-        b
-  #elseif(p.isPastEvent())
-        c
-  #end
+#set(Date date = p.eventDate())
+#set(Image bigicon = p.asmAny("bigicon"))
+#if(p.isTodayEvent())
+<li>
+    <div class="top-holder">
+        <span class="date">${date.format2("dd MMM YYYY")} <strong>${date.format2("HH:mm")}</strong></span>
+        <span class="now">Сегодня!</span>
+        <a href="#" class="remember"></a>
+    </div>
+    #if(bigicon != null)
+    <div style="width:287px;height:156px;overflow:hidden;">
+        <a href="$!{p.link}"><img src="$!{bigicon.link}" alt="${p.hname}"/></a>
+    </div>
+    #end
+    <h3><a href="$!{p.link}">${p.hname}</a></h3>
+    <p>${p.asm("annotation")}</p>
+</li>
+#elseif(p.isFutureEvent())
+<li>
+    <form action="#" class="remember-form">
+        <fieldset>
+            <a href="#" class="close">close</a>
+            <h4>Напомнить</h4>
+            <div class="input-holder">
+                <input type="text" name="contact" class="text" placeholder="Ваш email или телефон" />
+            </div>
+            <div class="submit-holder">
+                <input type="submit" value="Напомнить" />
+            </div>
+        </fieldset>
+    </form>
+    <div class="top-holder">
+        <span class="date">${date.format2("dd MMM YYYY")} <strong>${date.format2("HH:mm")}</strong></span>
+        <a href="#" class="remember">Напомнить</a>
+    </div>
+    #if(bigicon != null)
+    <div style="width:287px;height:156px;overflow:hidden;">
+    <a href="$!{p.link}"><img src="$!{bigicon.link}" alt="${p.hname}"/></a>
+    </div>
+    #end
+    <h3><a href="$!{p.link}">${p.hname}</a></h3>
+    <p>${p.asm("annotation")}</p>
+</li>
+#elseif(p.isPastEvent())
+<li class="end-item">
+    <div class="top-holder">
+        <span class="date">${date.format2("dd MMM YYYY")}</span>
+        <span class="end"></span>
+    </div>
+    #if(bigicon != null)
+    <div style="width:287px;height:156px;overflow:hidden;">
+        <a href="$!{p.link}"><img src="$!{bigicon.link}" alt="${p.hname}"/></a>
+    </div>
+    #end
+    <h3><a href="$!{p.link}">${p.hname}</a></h3>
+    <p>${p.asm("annotation")}</p>
+</li>
+#end
 #end
