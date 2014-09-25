@@ -13,11 +13,11 @@
 
         #if(img != null)
         <div style="width:285px;height:158px;overflow:hidden">
-            <img src="${img.link}" width="285" alt="${p.hname}"/>
+            <img src="$!{img.link}" alt="${p.hname}"/>
         </div>
         #end
 
-        <h3><a href="${p.link}">${p.hname}</a></h3>
+        <h3><a href="$!{p.link}">${p.hname}</a></h3>
 
         <!-- TODO: position -->
         <span class="position">проректор по воспитательной работе</span>
