@@ -58,8 +58,6 @@ import org.apache.commons.io.output.DeferredFileOutputStream;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.ResultContext;
-import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
@@ -81,7 +79,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
@@ -97,7 +94,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -386,30 +382,28 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 MBCriteriaQuery cq = createSelectQ(req, false);
                 gen.writeStartArray();
                 //noinspection InnerClassTooDeeplyNested
-                select(cq.getStatement(), new ResultHandler() {
-                    public void handleResult(ResultContext context) {
-                        Map<String, ?> row = (Map<String, ?>) context.getResultObject();
-                        try {
-                            gen.writeStartObject();
-                            gen.writeNumberField("id", ((Number) row.get("id")).longValue());
-                            gen.writeStringField("name", (String) row.get("name"));
-                            gen.writeStringField("folder", (String) row.get("folder"));
-                            gen.writeStringField("content_type", (String) row.get("content_type"));
-                            gen.writeStringField("owner", (String) row.get("owner"));
-                            String username = (String) row.get("owner");
-                            WSUser user = (username != null) ? userdb.findUser(username) : null;
-                            if (user != null) {
-                                gen.writeStringField("owner_fullName", user.getFullName());
-                            }
-                            if (row.get("content_length") != null) {
-                                gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
-                            }
-                            gen.writeStringField("description", (String) row.get("description"));
-                            gen.writeStringField("tags", row.get("tags") != null ? row.get("tags").toString() : null);
-                            gen.writeEndObject();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                select(cq.getStatement(), context -> {
+                    Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                    try {
+                        gen.writeStartObject();
+                        gen.writeNumberField("id", ((Number) row.get("id")).longValue());
+                        gen.writeStringField("name", (String) row.get("name"));
+                        gen.writeStringField("folder", (String) row.get("folder"));
+                        gen.writeStringField("content_type", (String) row.get("content_type"));
+                        gen.writeStringField("owner", (String) row.get("owner"));
+                        String username = (String) row.get("owner");
+                        WSUser user = (username != null) ? userdb.findUser(username) : null;
+                        if (user != null) {
+                            gen.writeStringField("owner_fullName", user.getFullName());
                         }
+                        if (row.get("content_length") != null) {
+                            gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
+                        }
+                        gen.writeStringField("description", (String) row.get("description"));
+                        gen.writeStringField("tags", row.get("tags") != null ? row.get("tags").toString() : null);
+                        gen.writeEndObject();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 }, cq);
             } finally {
@@ -1333,14 +1327,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
             if (transfer) {
                 l.releaseParent(); //unlock parent folder read-lock
-                rb.entity(
-                        new StreamingOutput() {
-                            public void write(OutputStream output) throws IOException, WebApplicationException {
-                                try (final FileInputStream fis = new FileInputStream(respFile)) {
-                                    IOUtils.copyLarge(fis, output);
-                                } finally {
-                                    l.close();
-                                }
+                rb.entity((StreamingOutput) output -> {
+                            try (final FileInputStream fis = new FileInputStream(respFile)) {
+                                IOUtils.copyLarge(fis, output);
+                            } finally {
+                                l.close();
                             }
                         }
                 );

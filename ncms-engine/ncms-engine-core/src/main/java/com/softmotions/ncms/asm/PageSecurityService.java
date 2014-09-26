@@ -6,7 +6,7 @@ import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBDAOSupport;
-import com.softmotions.weboot.mb.MBSqlSessionListener;
+import com.softmotions.weboot.mb.MBSqlSessionListenerSupport;
 import com.softmotions.weboot.mb.MBSqlSessionManager;
 
 import com.google.inject.Inject;
@@ -296,15 +296,9 @@ public class PageSecurityService extends MBDAOSupport {
                 delete("deleteAclUser", "acl", nracl, "user", user);
             }
         }
-        sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
+        sessionManager.registerNextEventSessionListener(new MBSqlSessionListenerSupport() {
             public void commit(boolean success) {
                 clearUserRights(user);
-            }
-
-            public void rollback() {
-            }
-
-            public void close(boolean success) {
             }
         });
     }
@@ -483,15 +477,9 @@ public class PageSecurityService extends MBDAOSupport {
             nrights = selectOne("selectUserRightsByAcl", "user", user, "acl", locAcl);
         }
         update("updateAclUserRights", "acl", locAcl, "user", user, "rights", calcRights(mode, nrights, rights));
-        sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
+        sessionManager.registerNextEventSessionListener(new MBSqlSessionListenerSupport() {
             public void commit(boolean success) {
                 cacheRights(user, pid, rights);
-            }
-
-            public void rollback() {
-            }
-
-            public void close(boolean success) {
             }
         });
     }
@@ -527,16 +515,10 @@ public class PageSecurityService extends MBDAOSupport {
 
             update("updateAclUserRights", "acl", nracl, "user", user, "rights", calcRights(mode, cr, rights));
         }
-        sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
+        sessionManager.registerNextEventSessionListener(new MBSqlSessionListenerSupport() {
             public void commit(boolean success) {
                 clearUserRights(user); //clear all user rights due to recursive acl
                 cacheRights(user, pid, rights);
-            }
-
-            public void rollback() {
-            }
-
-            public void close(boolean success) {
             }
         });
     }
