@@ -57,14 +57,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -601,64 +599,62 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     Response _selectLayer(@Context final HttpServletRequest req, final String path) {
 
-        return Response.ok(new StreamingOutput() {
-            public void write(OutputStream output) throws IOException, WebApplicationException {
-                final boolean includePath = BooleanUtils.toBoolean(req.getParameter("includePath"));
-                final JsonGenerator gen = new JsonFactory().createGenerator(output);
-                gen.writeStartArray();
-                Map q = createSelectLayerQ(path, req);
-                q.put("user", req.getRemoteUser());
-                String stmtName = q.containsKey("nav_parent_id") ? "selectChildLayer" : "selectRootLayer";
-                try {
-                    select(stmtName, new ResultHandler() {
-                        public void handleResult(ResultContext context) {
-                            Map<String, ?> row = (Map<String, ?>) context.getResultObject();
-                            try {
-                                gen.writeStartObject();
-                                gen.writeNumberField("id", ((Number) row.get("id")).longValue());
-                                gen.writeStringField("guid", (String) row.get("guid"));
-                                gen.writeStringField("label", (String) row.get("name"));
-                                gen.writeStringField("description", (String) row.get("description"));
-                                String type = (String) row.get("type");
-                                int status = 0;
-                                if ("page.folder".equals(type)) {
-                                    status |= PAGE_STATUS_FOLDER_FLAG;
-                                }
-                                if (!NumberUtils.number2Boolean((Number) row.get("published"))) { //page not published
-                                    status |= PAGE_STATUS_NOT_PUBLISHED_FLAG;
-                                }
-                                gen.writeNumberField("status", status);
-                                gen.writeStringField("type", type);
-                                gen.writeStringField("options", (String) row.get("options"));
-
-                                String am;
-                                if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
-                                    am = pageSecurity.getAllRights();
-                                } else {
-                                    am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
-                                }
-                                gen.writeStringField("accessMask", am);
-                                if (includePath) {
-                                    String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
-                                    gen.writeStringField("path",
-                                                         (path.length > 0 ? "/" + ArrayUtils.stringJoin(path, "/") : "") +
-                                                         "/" + row.get("hname"));
-                                }
-                                gen.writeEndObject();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+        return Response.ok((StreamingOutput) output -> {
+            final boolean includePath = BooleanUtils.toBoolean(req.getParameter("includePath"));
+            final JsonGenerator gen = new JsonFactory().createGenerator(output);
+            gen.writeStartArray();
+            Map q = createSelectLayerQ(path, req);
+            q.put("user", req.getRemoteUser());
+            String stmtName = q.containsKey("nav_parent_id") ? "selectChildLayer" : "selectRootLayer";
+            try {
+                select(stmtName, new ResultHandler() {
+                    public void handleResult(ResultContext context) {
+                        Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                        try {
+                            gen.writeStartObject();
+                            gen.writeNumberField("id", ((Number) row.get("id")).longValue());
+                            gen.writeStringField("guid", (String) row.get("guid"));
+                            gen.writeStringField("label", (String) row.get("name"));
+                            gen.writeStringField("description", (String) row.get("description"));
+                            String type = (String) row.get("type");
+                            int status = 0;
+                            if ("page.folder".equals(type)) {
+                                status |= PAGE_STATUS_FOLDER_FLAG;
                             }
+                            if (!NumberUtils.number2Boolean((Number) row.get("published"))) { //page not published
+                                status |= PAGE_STATUS_NOT_PUBLISHED_FLAG;
+                            }
+                            gen.writeNumberField("status", status);
+                            gen.writeStringField("type", type);
+                            gen.writeStringField("options", (String) row.get("options"));
+
+                            String am;
+                            if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
+                                am = pageSecurity.getAllRights();
+                            } else {
+                                am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
+                            }
+                            gen.writeStringField("accessMask", am);
+                            if (includePath) {
+                                String[] path1 = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
+                                gen.writeStringField("path",
+                                                     (path1.length > 0 ? "/" + ArrayUtils.stringJoin(path1, "/") : "") +
+                                                     "/" + row.get("hname"));
+                            }
+                            gen.writeEndObject();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
-                    }, q);
-                } finally {
-                    try {
-                        gen.writeEndArray();
-                    } catch (IOException e) {
-                        log.error("", e);
                     }
+                }, q);
+            } finally {
+                try {
+                    gen.writeEndArray();
+                } catch (IOException e) {
+                    log.error("", e);
                 }
-                gen.flush();
             }
+            gen.flush();
         }).type("application/json")
                 .encoding("UTF-8")
                 .build();
@@ -749,55 +745,53 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("search")
     @Transactional
     public Response searchPage(@Context final HttpServletRequest req) {
-        return Response.ok(new StreamingOutput() {
-            public void write(OutputStream output) throws IOException, WebApplicationException {
-                final boolean includePath = BooleanUtils.toBoolean(req.getParameter("includePath"));
-                final JsonGenerator gen = new JsonFactory().createGenerator(output);
-                try {
-                    MBCriteriaQuery cq = createSearchQ(req, false);
-                    gen.writeStartArray();
-                    //noinspection InnerClassTooDeeplyNested
-                    select(cq.getStatement(), new ResultHandler() {
-                        public void handleResult(ResultContext context) {
-                            Map<String, ?> row = (Map<String, ?>) context.getResultObject();
-                            try {
-                                boolean published = NumberUtils.number2Boolean((Number) row.get("published"));
+        return Response.ok((StreamingOutput) output -> {
+            final boolean includePath = BooleanUtils.toBoolean(req.getParameter("includePath"));
+            final JsonGenerator gen = new JsonFactory().createGenerator(output);
+            try {
+                MBCriteriaQuery cq = createSearchQ(req, false);
+                gen.writeStartArray();
+                //noinspection InnerClassTooDeeplyNested
+                select(cq.getStatement(), new ResultHandler() {
+                    public void handleResult(ResultContext context) {
+                        Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                        try {
+                            boolean published = NumberUtils.number2Boolean((Number) row.get("published"));
 
-                                gen.writeStartObject();
-                                gen.writeStringField("icon", published ? "" : "ncms/icon/16/misc/exclamation.png");
-                                gen.writeNumberField("id", NumberUtils.number2Long((Number) row.get("id"), 0));
-                                gen.writeStringField("label", (String) row.get("hname"));
-                                String am;
-                                if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
-                                    am = pageSecurity.getAllRights();
-                                } else {
-                                    am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
-                                }
-                                gen.writeStringField("accessMask", am);
-                                if (includePath) {
-                                    String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
-                                    gen.writeStringField("path",
-                                                         (path.length > 0 ? "/" + ArrayUtils.stringJoin(path, "/") : "") +
-                                                         "/" + row.get("hname"));
-                                }
-                                gen.writeBooleanField("published", published);
-                                gen.writeStringField("type", (String) row.get("type"));
-
-                                gen.writeEndObject();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+                            gen.writeStartObject();
+                            gen.writeStringField("icon", published ? "" : "ncms/icon/16/misc/exclamation.png");
+                            gen.writeNumberField("id", NumberUtils.number2Long((Number) row.get("id"), 0));
+                            gen.writeStringField("label", (String) row.get("hname"));
+                            String am;
+                            if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
+                                am = pageSecurity.getAllRights();
+                            } else {
+                                am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
                             }
+                            gen.writeStringField("accessMask", am);
+                            if (includePath) {
+                                String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
+                                gen.writeStringField("path",
+                                                     (path.length > 0 ? "/" + ArrayUtils.stringJoin(path, "/") : "") +
+                                                     "/" + row.get("hname"));
+                            }
+                            gen.writeBooleanField("published", published);
+                            gen.writeStringField("type", (String) row.get("type"));
+
+                            gen.writeEndObject();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
-                    }, cq);
-                } finally {
-                    try {
-                        gen.writeEndArray();
-                    } catch (IOException e) {
-                        log.error("", e);
                     }
+                }, cq);
+            } finally {
+                try {
+                    gen.writeEndArray();
+                } catch (IOException e) {
+                    log.error("", e);
                 }
-                gen.flush();
             }
+            gen.flush();
         }).type(MediaType.APPLICATION_JSON_TYPE).encoding("UTF-8").build();
     }
 
@@ -815,7 +809,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Produces("text/plain")
     @Transactional
     public String getAccessRights(@Context HttpServletRequest req,
-                               @PathParam("pid") Long pid) {
+                                  @PathParam("pid") Long pid) {
         return pageSecurity.getAccessRights(pid, req);
     }
 

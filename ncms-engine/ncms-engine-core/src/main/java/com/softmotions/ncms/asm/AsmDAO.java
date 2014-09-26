@@ -10,8 +10,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.ibatis.session.ResultContext;
-import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.guice.transactional.Transactional;
@@ -511,61 +509,59 @@ public class AsmDAO extends MBDAOSupport {
         public Collection<Asm> selectAsAsms() {
             final Map<Long, Asm> asmGroup = new LinkedHashMap<>();
             //noinspection InnerClassTooDeeplyNested
-            select(new ResultHandler() {
-                public void handleResult(ResultContext context) {
-                    @SuppressWarnings("unchecked")
-                    Map<String, Object> row = (Map<String, Object>) context.getResultObject();
-                    long id = ((Number) row.get("id")).longValue();
-                    Asm asm = asmGroup.get(id);
-                    if (asm == null) {
-                        asm = new Asm(id, (String) row.get("name"));
-                        asm.setHname((String) row.get("hname"));
-                        asm.setNavParentId((Long) row.get("nav_parent_id"));
-                        asm.setType((String) row.get("type"));
-                        asm.setMdate((Date) row.get("mdate"));
-                        asm.setCdate((Date) row.get("cdate"));
-                        asm.setEdate((Date) row.get("edate"));
-                        asmGroup.put(id, asm);
-                    }
-                    String attrName = (String) row.get("attr_name");
-                    if (attrName != null && asm.getAttribute(attrName) == null) {
-                        AsmAttribute attr = new AsmAttribute();
-                        attr.setId(((Number) row.get("attr_id")).longValue());
-                        attr.setName(attrName);
-                        attr.setType((String) row.get("attr_type"));
-                        attr.setValue((String) row.get("attr_value"));
-                        Clob lv = (Clob) row.get("attr_large_value");
-                        if (lv != null) {
-                            Reader lvr = null;
+            select(context -> {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> row = (Map<String, Object>) context.getResultObject();
+                long id = ((Number) row.get("id")).longValue();
+                Asm asm = asmGroup.get(id);
+                if (asm == null) {
+                    asm = new Asm(id, (String) row.get("name"));
+                    asm.setHname((String) row.get("hname"));
+                    asm.setNavParentId((Long) row.get("nav_parent_id"));
+                    asm.setType((String) row.get("type"));
+                    asm.setMdate((Date) row.get("mdate"));
+                    asm.setCdate((Date) row.get("cdate"));
+                    asm.setEdate((Date) row.get("edate"));
+                    asmGroup.put(id, asm);
+                }
+                String attrName = (String) row.get("attr_name");
+                if (attrName != null && asm.getAttribute(attrName) == null) {
+                    AsmAttribute attr = new AsmAttribute();
+                    attr.setId(((Number) row.get("attr_id")).longValue());
+                    attr.setName(attrName);
+                    attr.setType((String) row.get("attr_type"));
+                    attr.setValue((String) row.get("attr_value"));
+                    Clob lv = (Clob) row.get("attr_large_value");
+                    if (lv != null) {
+                        Reader lvr = null;
+                        try {
+                            lvr = lv.getCharacterStream();
+                            attr.setLargeValue(IOUtils.toString(lvr));
+                        } catch (IOException | SQLException e) {
+                            throw new RuntimeException(e);
+                        } finally {
                             try {
-                                lvr = lv.getCharacterStream();
-                                attr.setLargeValue(IOUtils.toString(lvr));
-                            } catch (IOException | SQLException e) {
-                                throw new RuntimeException(e);
-                            } finally {
-                                try {
-                                    if (lvr != null) {
-                                        lvr.close();
-                                    }
-                                } catch (IOException e) {
-                                    log.error("", e);
+                                if (lvr != null) {
+                                    lvr.close();
                                 }
+                            } catch (IOException e) {
+                                log.error("", e);
                             }
                         }
-                        asm.addAttribute(attr);
                     }
-                    if (row.get("np_name") != null && asm.getAttribute("np_name") == null) {
-                        asm.addAttribute(new AsmAttribute("np_name", "string", row.get("np_name").toString()));
-                    }
-                    if (row.get("np_hname") != null && asm.getAttribute("np_hname") == null) {
-                        asm.addAttribute(new AsmAttribute("np_hname", "string", row.get("np_hname").toString()));
-                    }
-                    if (row.get("np_id") != null && asm.getAttribute("np_id") == null) {
-                        asm.addAttribute(new AsmAttribute("np_id", "string", row.get("np_id").toString()));
-                    }
-                    if (row.get("p_name") != null && asm.getAttribute("p_name") == null) {
-                        asm.addAttribute(new AsmAttribute("p_name", "string", row.get("p_name").toString()));
-                    }
+                    asm.addAttribute(attr);
+                }
+                if (row.get("np_name") != null && asm.getAttribute("np_name") == null) {
+                    asm.addAttribute(new AsmAttribute("np_name", "string", row.get("np_name").toString()));
+                }
+                if (row.get("np_hname") != null && asm.getAttribute("np_hname") == null) {
+                    asm.addAttribute(new AsmAttribute("np_hname", "string", row.get("np_hname").toString()));
+                }
+                if (row.get("np_id") != null && asm.getAttribute("np_id") == null) {
+                    asm.addAttribute(new AsmAttribute("np_id", "string", row.get("np_id").toString()));
+                }
+                if (row.get("p_name") != null && asm.getAttribute("p_name") == null) {
+                    asm.addAttribute(new AsmAttribute("p_name", "string", row.get("p_name").toString()));
                 }
             });
             return asmGroup.values();

@@ -20,7 +20,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -161,11 +160,10 @@ public class AsmSelectAM implements AsmAttributeManager {
         Collection<String> items = new ArrayList<>();
         Object selectNodes = parseSelectNodes(value, false, false);
         if (selectNodes instanceof Collection) {
-            CollectionUtils.collect((Collection) selectNodes, new Transformer() {
-                public Object transform(Object input) {
-                    return input instanceof SelectNode ? ((SelectNode) input).getValue() : null;
-                }
-            }, items);
+            CollectionUtils.collect((Collection) selectNodes,
+                                    input -> (input instanceof SelectNode) ?
+                                             ((SelectNode) input).getValue() : null,
+                                    items);
         } else if (selectNodes instanceof SelectNode) {
             items.add(((SelectNode) selectNodes).getValue());
         }

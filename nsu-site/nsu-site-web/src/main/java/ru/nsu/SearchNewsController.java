@@ -9,7 +9,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.solr.client.solrj.SolrServer;
@@ -110,11 +109,8 @@ public class SearchNewsController extends SearchController {
         String categoriesFQ = "";
         Collection<String> selectedCategories = (Collection<String>) ctx.get("search_categories_selected");
         if (selectedCategories != null && !selectedCategories.isEmpty()) {
-            CollectionUtils.transform(selectedCategories, new Transformer() {
-                public Object transform(Object input) {
-                    return "asm_attr_s_subcategory:" + QueryParser.escape(String.valueOf(input));
-                }
-            });
+            CollectionUtils.transform(selectedCategories,
+                                      input -> "asm_attr_s_subcategory:" + QueryParser.escape(String.valueOf(input)));
 
             categoriesFQ = " +(" + StringUtils.join(selectedCategories, " ") + ")";
         }

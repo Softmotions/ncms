@@ -38,11 +38,7 @@ public final class MediaRSLocalRequest extends HttpServletRequestAdapter {
     }
 
     public Principal getUserPrincipal() {
-        return new Principal() {
-            public String getName() {
-                return getRemoteUser();
-            }
-        };
+        return this::getRemoteUser;
     }
 
     public ServletContext getServletContext() {

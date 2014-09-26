@@ -48,13 +48,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -526,42 +524,40 @@ public class AsmRS extends MBDAOSupport {
     @GET
     @Path("select")
     public Response select(@Context final HttpServletRequest req) {
-        return Response.ok(new StreamingOutput() {
-            public void write(final OutputStream output) throws IOException, WebApplicationException {
-                final JsonGenerator gen = new JsonFactory().createGenerator(output);
-                gen.writeStartArray();
-                selectByCriteria(createQ(req), new ResultHandler() {
-                    public void handleResult(ResultContext context) {
-                        Map<String, Object> row = (Map<String, Object>) context.getResultObject();
-                        try {
-                            gen.writeStartObject();
-                            int template = NumberUtils.number2Int((Number) row.get("template"), 0);
-                            String type = (String) row.get("type");
-                            if (template == 1) {
-                                gen.writeStringField("icon", "ncms/icon/16/asm/template.png");
-                            } else if ("news.page".equals(type)) {
-                                gen.writeStringField("icon", "ncms/icon/16/asm/news.png");
-                            } else if (!StringUtils.isBlank(type)) {
-                                gen.writeStringField("icon", "ncms/icon/16/asm/page.png");
-                            } else {
-                                gen.writeStringField("icon", "ncms/icon/16/asm/other.png");
-                            }
-                            gen.writeNumberField("id", ((Number) row.get("id")).longValue());
-                            gen.writeStringField("name", (String) row.get("name"));
-                            gen.writeStringField("hname", (String) row.get("hname"));
-                            gen.writeStringField("description", (String) row.get("description"));
-                            gen.writeStringField("type", (String) row.get("type"));
-                            gen.writeNumberField("published", NumberUtils.number2Int((Number) row.get("published"), 0));
-                            gen.writeNumberField("template", template);
-                            gen.writeEndObject();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+        return Response.ok((StreamingOutput) output -> {
+            final JsonGenerator gen = new JsonFactory().createGenerator(output);
+            gen.writeStartArray();
+            selectByCriteria(createQ(req), new ResultHandler() {
+                public void handleResult(ResultContext context) {
+                    Map<String, Object> row = (Map<String, Object>) context.getResultObject();
+                    try {
+                        gen.writeStartObject();
+                        int template = NumberUtils.number2Int((Number) row.get("template"), 0);
+                        String type = (String) row.get("type");
+                        if (template == 1) {
+                            gen.writeStringField("icon", "ncms/icon/16/asm/template.png");
+                        } else if ("news.page".equals(type)) {
+                            gen.writeStringField("icon", "ncms/icon/16/asm/news.png");
+                        } else if (!StringUtils.isBlank(type)) {
+                            gen.writeStringField("icon", "ncms/icon/16/asm/page.png");
+                        } else {
+                            gen.writeStringField("icon", "ncms/icon/16/asm/other.png");
                         }
+                        gen.writeNumberField("id", ((Number) row.get("id")).longValue());
+                        gen.writeStringField("name", (String) row.get("name"));
+                        gen.writeStringField("hname", (String) row.get("hname"));
+                        gen.writeStringField("description", (String) row.get("description"));
+                        gen.writeStringField("type", (String) row.get("type"));
+                        gen.writeNumberField("published", NumberUtils.number2Int((Number) row.get("published"), 0));
+                        gen.writeNumberField("template", template);
+                        gen.writeEndObject();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                }, "select");
-                gen.writeEndArray();
-                gen.flush();
-            }
+                }
+            }, "select");
+            gen.writeEndArray();
+            gen.flush();
         }).type("application/json")
                 .encoding("UTF-8")
                 .build();

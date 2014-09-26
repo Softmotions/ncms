@@ -3,7 +3,6 @@ package com.softmotions.ncms.io;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.KVOptions;
 
-import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.AutoDetectParser;
@@ -11,7 +10,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -32,11 +30,7 @@ public class MetadataDetector {
      * @return
      */
     public static Metadata detect(final MediaType type, InputStream is) {
-        AutoDetectParser parser = new AutoDetectParser(new Detector() {
-            public MediaType detect(InputStream input, Metadata metadata) throws IOException {
-                return type;
-            }
-        });
+        AutoDetectParser parser = new AutoDetectParser((input, metadata) -> type);
         Metadata metadata = new Metadata();
         try {
             parser.parse(is, new DefaultHandler(), metadata);

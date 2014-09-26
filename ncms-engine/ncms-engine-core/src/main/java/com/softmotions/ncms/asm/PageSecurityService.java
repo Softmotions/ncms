@@ -26,7 +26,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -154,11 +153,9 @@ public class PageSecurityService extends MBDAOSupport {
                        recursive == true ? "selectRecursiveUserRights" : "selectLocalUserRights";
         List<Map<String, ?>> acl = select(qname, "pid", pid);
         if (recursive == null) {
-            Collections.sort(acl, new Comparator<Map<String, ?>>() {
-                public int compare(Map<String, ?> a1, Map<String, ?> a2) {
-                    int res = (Integer) a1.get("recursive") - (Integer) a2.get("recursive");
-                    return res != 0 ? res : ((String) a1.get("user")).compareTo((String) a2.get("user"));
-                }
+            Collections.sort(acl, (a1, a2) -> {
+                int res = (Integer) a1.get("recursive") - (Integer) a2.get("recursive");
+                return res != 0 ? res : ((String) a1.get("user")).compareTo((String) a2.get("user"));
             });
         }
 
@@ -181,7 +178,7 @@ public class PageSecurityService extends MBDAOSupport {
     /**
      * Add new user acl entity:
      * - for recursive: if user already has rights for this page this rights will added for all childs recursively
-     * - non recursive: if user is owner of page rights will be updated to {@link ALL_RIGHTS}
+     * - non recursive: if user is owner of page rights will be updated to {@link #ALL_RIGHTS}
      *
      * @param pid       page id
      * @param user      user name
@@ -327,9 +324,6 @@ public class PageSecurityService extends MBDAOSupport {
 
     /**
      * Returns user rights for specifyed page
-     *
-     * @param pid  page id
-     * @param user user name
      */
     public String getAccessRights(long pid, HttpServletRequest req) {
         return getAccessRights(pid, toWSUser(req));
@@ -368,10 +362,6 @@ public class PageSecurityService extends MBDAOSupport {
 
     /**
      * Checks specifyed access user to page
-     *
-     * @param pid    page id
-     * @param user   user name
-     * @param access checked access
      */
     public boolean checkAccess(long pid, WSUser wsUser, char access) {
         if (wsUser == null || (!ArrayUtils.contains(ALL_RIGHTS, access))) {
@@ -407,9 +397,6 @@ public class PageSecurityService extends MBDAOSupport {
 
     /**
      * Checks user access to edit page
-     *
-     * @param pid page id
-     * @param req
      */
     public boolean canEdit2(Asm page, HttpServletRequest req) {
         return checkAccessAny2(page, req, "ow");
@@ -461,9 +448,6 @@ public class PageSecurityService extends MBDAOSupport {
 
     /**
      * Checks user access to edit news for page
-     *
-     * @param pid  page id
-     * @param user user name
      */
     public boolean canNewsEdit(long pid, HttpServletRequest req) {
         return checkAccess(pid, req, NEWS);

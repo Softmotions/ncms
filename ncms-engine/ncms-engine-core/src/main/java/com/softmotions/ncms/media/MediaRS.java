@@ -380,44 +380,42 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @javax.ws.rs.Path("/select")
     @Transactional
     public Response select(@Context final HttpServletRequest req) {
-        return Response.ok(new StreamingOutput() {
-            public void write(OutputStream output) throws IOException, WebApplicationException {
-                final JsonGenerator gen = new JsonFactory().createGenerator(output);
-                try {
-                    MBCriteriaQuery cq = createSelectQ(req, false);
-                    gen.writeStartArray();
-                    //noinspection InnerClassTooDeeplyNested
-                    select(cq.getStatement(), new ResultHandler() {
-                        public void handleResult(ResultContext context) {
-                            Map<String, ?> row = (Map<String, ?>) context.getResultObject();
-                            try {
-                                gen.writeStartObject();
-                                gen.writeNumberField("id", ((Number) row.get("id")).longValue());
-                                gen.writeStringField("name", (String) row.get("name"));
-                                gen.writeStringField("folder", (String) row.get("folder"));
-                                gen.writeStringField("content_type", (String) row.get("content_type"));
-                                gen.writeStringField("owner", (String) row.get("owner"));
-                                String username = (String) row.get("owner");
-                                WSUser user = (username != null) ? userdb.findUser(username) : null;
-                                if (user != null) {
-                                    gen.writeStringField("owner_fullName", user.getFullName());
-                                }
-                                if (row.get("content_length") != null) {
-                                    gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
-                                }
-                                gen.writeStringField("description", (String) row.get("description"));
-                                gen.writeStringField("tags", row.get("tags") != null ? row.get("tags").toString() : null);
-                                gen.writeEndObject();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
+        return Response.ok((StreamingOutput) output -> {
+            final JsonGenerator gen = new JsonFactory().createGenerator(output);
+            try {
+                MBCriteriaQuery cq = createSelectQ(req, false);
+                gen.writeStartArray();
+                //noinspection InnerClassTooDeeplyNested
+                select(cq.getStatement(), new ResultHandler() {
+                    public void handleResult(ResultContext context) {
+                        Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                        try {
+                            gen.writeStartObject();
+                            gen.writeNumberField("id", ((Number) row.get("id")).longValue());
+                            gen.writeStringField("name", (String) row.get("name"));
+                            gen.writeStringField("folder", (String) row.get("folder"));
+                            gen.writeStringField("content_type", (String) row.get("content_type"));
+                            gen.writeStringField("owner", (String) row.get("owner"));
+                            String username = (String) row.get("owner");
+                            WSUser user = (username != null) ? userdb.findUser(username) : null;
+                            if (user != null) {
+                                gen.writeStringField("owner_fullName", user.getFullName());
                             }
+                            if (row.get("content_length") != null) {
+                                gen.writeNumberField("content_length", ((Number) row.get("content_length")).longValue());
+                            }
+                            gen.writeStringField("description", (String) row.get("description"));
+                            gen.writeStringField("tags", row.get("tags") != null ? row.get("tags").toString() : null);
+                            gen.writeEndObject();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
                         }
-                    }, cq);
-                } finally {
-                    gen.writeEndArray();
-                }
-                gen.flush();
+                    }
+                }, cq);
+            } finally {
+                gen.writeEndArray();
             }
+            gen.flush();
         }).type(javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE)
                 .encoding("UTF-8")
                 .build();
@@ -1193,11 +1191,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
         if (icon != null) {
             final byte[] icondata = icon.getBytes(1, (int) icon.length());
-            return Response.ok(new StreamingOutput() {
-                public void write(OutputStream output) throws IOException, WebApplicationException {
-                    output.write(icondata);
-                }
-            }).type(iconCtype)
+            return Response.ok((StreamingOutput) output -> output.write(icondata)).type(iconCtype)
                     .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
                     .build();
         }
@@ -1231,11 +1225,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                "icon", icondata,
                "icon_content_type", iconCtype);
 
-        return Response.ok(new StreamingOutput() {
-            public void write(OutputStream output) throws IOException, WebApplicationException {
-                output.write(icondata);
-            }
-        }).type(iconCtype)
+        return Response.ok((StreamingOutput) output -> output.write(icondata)).type(iconCtype)
                 .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
                 .build();
     }
