@@ -214,7 +214,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             res.remove("muser");
         }
 
-        res.put("accessMask", pageSecurity.getUserRights(id, req));
+        res.put("accessMask", pageSecurity.getAccessRights(id, req));
         return res;
     }
 
@@ -426,7 +426,8 @@ public class PageRS extends MBDAOSupport implements PageService {
     public JsonNode setPageOwner(@Context HttpServletRequest req,
                                  @PathParam("id") Long id,
                                  @PathParam("owner") String owner) {
-        if (!pageSecurity.canEdit(id, req)) {
+
+        if (!pageSecurity.isOwner(id, req)) {
             throw new ForbiddenException("");
         }
         WSUser user = userdb.findUser(owner);
@@ -682,10 +683,10 @@ public class PageRS extends MBDAOSupport implements PageService {
                          @PathParam("pid") Long pid,
                          @PathParam("user") String user,
                          @QueryParam("recursive") boolean recursive) {
-        if (!pageSecurity.canEdit(pid, req)) {
+
+        if (!pageSecurity.isOwner(pid, req)) {
             throw new ForbiddenException("");
         }
-
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
             throw new BadRequestException("User not found");
@@ -702,7 +703,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                           @QueryParam("recursive") boolean recursive,
                           @QueryParam("rights") String rights,
                           @QueryParam("add") boolean isAdd) {
-        if (!pageSecurity.canEdit(pid, req)) {
+        if (!pageSecurity.isOwner(pid, req)) {
             throw new ForbiddenException("");
         }
 
@@ -721,10 +722,10 @@ public class PageRS extends MBDAOSupport implements PageService {
                               @PathParam("user") String user,
                               @QueryParam("recursive") boolean recursive,
                               @QueryParam("forceRecursive") boolean force) {
-        if (!pageSecurity.canEdit(pid, req)) {
+
+        if (!pageSecurity.isOwner(pid, req)) {
             throw new ForbiddenException("");
         }
-
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
             throw new BadRequestException("User not found");
@@ -801,13 +802,21 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     @GET
-    @Path("check/{pid}/{rights}")
+    @Path("rights/{pid}/{rights}")
     @Transactional
     public boolean checkAccess(@Context HttpServletRequest req,
                                @PathParam("pid") Long pid,
                                @PathParam("rights") String rights) {
-        Asm page = adao.asmSelectById(pid);
-        return pageSecurity.checkAccessAll2(page, req, rights);
+        return pageSecurity.checkAccessAll(pid, req, rights);
+    }
+
+    @GET
+    @Path("rights/{pid}")
+    @Produces("text/plain")
+    @Transactional
+    public String getAccessRights(@Context HttpServletRequest req,
+                               @PathParam("pid") Long pid) {
+        return pageSecurity.getAccessRights(pid, req);
     }
 
     @PUT

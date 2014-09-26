@@ -56,7 +56,7 @@ qx.Class.define("ncms.pgs.PagesCollectionTable", {
                                 }), "PUT");
                 req.send(function() {
                     dlg.close();
-                    this.getChildControl("selector").refresh();
+                    this.getChildControl("selector").refresh(true);
                 }, this);
             }, this);
             dlg.open();
@@ -75,7 +75,7 @@ qx.Class.define("ncms.pgs.PagesCollectionTable", {
                                 "id" : page["id"]
                             }), "DELETE");
             req.send(function() {
-                selector.refresh();
+                selector.refresh(true);
             }, this);
         },
 
@@ -112,7 +112,7 @@ qx.Class.define("ncms.pgs.PagesCollectionTable", {
                     control.set({searchIfEmpty : true});
                     control.addListener("itemSelected", this._syncState, this);
                     control.getTable().addListener("cellDbltap", this.forwardEvent, this);
-                    control.refresh();
+                    control.refresh(true);
                     this._add(control, {flex : 1});
                     break;
             }

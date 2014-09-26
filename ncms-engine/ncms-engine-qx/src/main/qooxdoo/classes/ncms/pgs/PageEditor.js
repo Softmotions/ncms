@@ -104,23 +104,18 @@ qx.Class.define("ncms.pgs.PageEditor", {
         },
 
         _applyPageSpec : function(spec) {
-            /*if (this._editPane) {
-                this._editPane.setEnabled(false);
-            }
-            if (this._accessPane) {
-                this._accessPane.setEnabled(false);
-            }*/
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.check.rights",
-                    {pid : spec["id"], rights : "w"}), "GET", "application/json");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.rights", {pid : spec["id"]}),
+                    "GET", "text/plain");
             req.send(function(resp) {
-                var access = !!resp.getContent();
+                var am = String(resp.getContent());
                 if (this._editPane) {
-                    this._editPane.setEnabled(access);
+                    this._editPane.setEnabled(am != null && am.indexOf("w") != -1);
                 }
                 if (this._accessPane) {
-                    this._accessPane.setEnabled(access);
+                    this._accessPane.setEnabled(am != null && am.indexOf("o") != -1);
                 }
-                if (!access) {
+                var sel = this.getSelection();
+                if (sel[0] && sel[0].getEnabled() == false) {
                     this.setSelection([this._infoPane]);
                 }
             }, this);

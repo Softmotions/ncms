@@ -105,7 +105,9 @@ public class AsmServlet extends HttpServlet {
         Asm asm = ctx.getAsm();
         if (!asm.isPublished()) {
             if (!(preview && pageSecurity.checkAccessAny(asm.getId(), req, "wnd"))) {
-                resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                if (asm.getType() != null && asm.getCore() != null) {
+                    resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                }
                 return;
             }
         }

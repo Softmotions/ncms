@@ -254,7 +254,7 @@
             <if test="roles != null">
             AND (
                 <trim prefixOverrides="AND | OR">
-                <if test="roles.length > 0">
+                <if test="roles.size > 0">
                     EXISTS (
                         SELECT r.asm_id FROM ASM_ACCESS_ROLES AS r
                         WHERE

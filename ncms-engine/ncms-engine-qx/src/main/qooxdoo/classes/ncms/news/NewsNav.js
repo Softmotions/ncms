@@ -136,7 +136,7 @@ qx.Class.define("ncms.news.NewsNav", {
             var dlg = new ncms.news.NewsRenameDlg(sp["id"], sp["label"]);
             dlg.addListener("completed", function(ev) {
                 dlg.close();
-                this.__ps.refresh();
+                this.__ps.refresh(true);
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.open();
@@ -152,7 +152,7 @@ qx.Class.define("ncms.news.NewsNav", {
                 var req = new sm.io.Request(
                         ncms.Application.ACT.getRestUrl("pages.delete", {id : sp["id"]}), "DELETE");
                 req.send(function() {
-                    this.__ps.refresh();
+                    this.__ps.refresh(true);
                 }, this);
             }, this);
         },
@@ -162,7 +162,7 @@ qx.Class.define("ncms.news.NewsNav", {
             var dlg = new ncms.news.NewsNewDlg(root["id"]);
             dlg.addListener("completed", function(ev) {
                 dlg.close();
-                this.__ps.refresh();
+                this.__ps.refresh(true);
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.open();

@@ -44,9 +44,10 @@ public class PageSecurityService extends MBDAOSupport {
     public static final char WRITE = 'w';
     public static final char NEWS = 'n';
     public static final char DELETE = 'd';
+    public static final char OWNER = 'o';
 
-    public static final char[] ALL_RIGHTS = {WRITE, NEWS, DELETE};
-    public static final String ALL_RIGHTS_STR = "" + WRITE + NEWS + DELETE;
+    public static final char[] ALL_RIGHTS = {OWNER, WRITE, NEWS, DELETE};
+    public static final String ALL_RIGHTS_STR = "" + OWNER + WRITE + NEWS + DELETE;
 
     private final WSUserDatabase userdb;
     private final NcmsMessages messages;
@@ -330,12 +331,12 @@ public class PageSecurityService extends MBDAOSupport {
      * @param pid  page id
      * @param user user name
      */
-    public String getUserRights(long pid, HttpServletRequest req) {
-        return getUserRights(pid, toWSUser(req));
+    public String getAccessRights(long pid, HttpServletRequest req) {
+        return getAccessRights(pid, toWSUser(req));
 
     }
 
-    public String getUserRights(long pid, WSUser wsUser) {
+    public String getAccessRights(long pid, WSUser wsUser) {
         if (wsUser == null) {
             return "";
         }
@@ -343,18 +344,21 @@ public class PageSecurityService extends MBDAOSupport {
         if (rights != null) {
             return rights;
         }
-        return getUserRightsDB(pid, wsUser);
+        return getAccessRightsDB(pid, wsUser);
     }
 
     @Transactional
-    protected String getUserRightsDB(long pid, WSUser wsUser) {
+    protected String getAccessRightsDB(long pid, WSUser wsUser) {
         String rights = "";
         Map<String, ?> row = selectOne("selectPageAclInfo", "pid", pid);
         String owner = (row != null) ? (String) row.get("owner") : null;
-        if (wsUser.getName().equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
+        if (wsUser.getName().equals(owner) ||
+            wsUser.isHasAnyRole("admin", "admin.structure")) {
             return getAllRights();
         }
-        List<String> arights = select("selectUserRightsForPage", "pid", pid, "user", wsUser.getName());
+        List<String> arights = select("selectUserRightsForPage",
+                                      "pid", pid,
+                                      "user", wsUser.getName());
         for (String aright : arights) {
             rights = mergeRights(rights, aright);
         }
@@ -373,7 +377,7 @@ public class PageSecurityService extends MBDAOSupport {
         if (wsUser == null || (!ArrayUtils.contains(ALL_RIGHTS, access))) {
             return false;
         }
-        String rights = getUserRights(pid, wsUser);
+        String rights = getAccessRights(pid, wsUser);
         return (rights.indexOf(access) != -1);
     }
 
@@ -382,7 +386,7 @@ public class PageSecurityService extends MBDAOSupport {
     }
 
     public boolean checkAccessAll(long pid, HttpServletRequest req, String amask) {
-        String umask = getUserRights(pid, req);
+        String umask = getAccessRights(pid, req);
         for (int i = 0, l = amask.length(); i < l; ++i) {
             if (umask.indexOf(amask.charAt(i)) == -1) {
                 return false;
@@ -392,7 +396,7 @@ public class PageSecurityService extends MBDAOSupport {
     }
 
     public boolean checkAccessAny(long pid, HttpServletRequest req, String amask) {
-        String umask = getUserRights(pid, req);
+        String umask = getAccessRights(pid, req);
         for (int i = 0, l = amask.length(); i < l; ++i) {
             if (umask.indexOf(amask.charAt(i)) != -1) {
                 return true;
@@ -408,7 +412,11 @@ public class PageSecurityService extends MBDAOSupport {
      * @param req
      */
     public boolean canEdit2(Asm page, HttpServletRequest req) {
-        return checkAccessAll2(page, req, "w");
+        return checkAccessAny2(page, req, "ow");
+    }
+
+    public boolean isOwner2(Asm page, HttpServletRequest req) {
+        return checkAccessAll2(page, req, "o");
     }
 
     public boolean checkAccessAll2(Asm page, HttpServletRequest req, String mask) {
@@ -433,8 +441,12 @@ public class PageSecurityService extends MBDAOSupport {
         }
     }
 
+    public boolean isOwner(long pid, HttpServletRequest req) {
+        return checkAccess(pid, req, OWNER);
+    }
+
     public boolean canEdit(long pid, HttpServletRequest req) {
-        return checkAccess(pid, req, WRITE);
+        return checkAccessAny(pid, req, "ow");
     }
 
     /**
