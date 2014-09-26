@@ -108,9 +108,9 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         },
 
         __applySearchIfEmpty : function(val) {
-            if (val) {
+            /*if (val) {
                 this.refresh();
-            }
+            }*/
         }
     },
 

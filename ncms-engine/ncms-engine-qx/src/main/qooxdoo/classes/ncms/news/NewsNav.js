@@ -63,7 +63,7 @@ qx.Class.define("ncms.news.NewsNav", {
                         sortable : false
                     }
                 }
-        ).set({searchIfEmpty : true});
+        );
         this._add(ps, {flex : 1});
 
         ps.addListener("itemSelected", function(ev) {
@@ -213,7 +213,7 @@ qx.Class.define("ncms.news.NewsNav", {
 
         __setNewsRoot : function(page) {
             var bf = this.__bf;
-            if (page == null) {
+            if (page == null || Object.keys(page).length == 0) {
                 bf.resetValue();
                 bf.setUserData("page", null);
                 this.__syncState();

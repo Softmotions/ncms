@@ -348,9 +348,9 @@ public class PageSecurityService extends MBDAOSupport {
 
     @Transactional
     protected String getUserRightsDB(long pid, WSUser wsUser) {
-        String rights = null;
+        String rights = "";
         Map<String, ?> row = selectOne("selectPageAclInfo", "pid", pid);
-        String owner = row != null ? (String) row.get("owner") : null;
+        String owner = (row != null) ? (String) row.get("owner") : null;
         if (wsUser.getName().equals(owner) || wsUser.isHasAnyRole("admin.structure")) {
             return getAllRights();
         }

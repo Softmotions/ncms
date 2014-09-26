@@ -112,6 +112,7 @@ qx.Class.define("ncms.pgs.PagesCollectionTable", {
                     control.set({searchIfEmpty : true});
                     control.addListener("itemSelected", this._syncState, this);
                     control.getTable().addListener("cellDbltap", this.forwardEvent, this);
+                    control.refresh();
                     this._add(control, {flex : 1});
                     break;
             }
