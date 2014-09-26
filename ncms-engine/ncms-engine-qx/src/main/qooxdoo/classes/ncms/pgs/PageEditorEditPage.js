@@ -390,7 +390,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     this.tr("Organize the page files"), {
                         allowModify : true,
                         linkText : false,
-                        noActions : true
+                        noActions : true,
+                        smode : qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION
                     });
             dlg.open();
         },
