@@ -863,7 +863,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                      (String) meta.get("content_type"),
                                      (mdate != null ? mdate.getTime() : 0),
                                      (length != null ? length.longValue() : -1L),
-                                     locale, kvmeta);
+                                     locale,
+                                     (String) meta.get("description"),
+                                     kvmeta);
     }
 
     public File getBasedir() {

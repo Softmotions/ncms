@@ -5,46 +5,88 @@ package com.softmotions.ncms.mhttl;
  */
 public class RichRef {
 
-    private final Image image;
+    private Image image;
 
-    private final String description;
+    private String description;
 
-    private final String link;
+    private String link;
 
-    private final String rawLink;
+    private String name;
 
-    private final String name;
+    private String rawLink;
 
-    private final String style;
+    private String style;
 
-    private final String style2;
+    private String style2;
+
 
     public Image getImage() {
         return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getLink() {
         return link;
     }
 
-    public String getRawLink() {
-        return rawLink;
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRawLink() {
+        return rawLink;
+    }
+
+    public void setRawLink(String rawLink) {
+        this.rawLink = rawLink;
+    }
+
     public String getStyle() {
         return style;
     }
 
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
     public String getStyle2() {
         return style2;
+    }
+
+    public void setStyle2(String style2) {
+        this.style2 = style2;
+    }
+
+    public RichRef() {
+    }
+
+    public RichRef(String name,
+                   String link,
+                   String description,
+                   Image image) {
+        this.name = name;
+        this.link = link;
+        this.description = description;
+        this.image = image;
     }
 
     public RichRef(String name,

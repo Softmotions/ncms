@@ -84,6 +84,10 @@ public final class HttlMediaResourceAdapter implements MediaResource {
         }
     }
 
+    public String getDescription() {
+        return null;
+    }
+
     public int getImageWidth() {
         return -1;
     }

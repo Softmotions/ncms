@@ -9,11 +9,11 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -32,6 +32,8 @@ import java.util.Map;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
+@Singleton
 public class MainPageController implements AsmController {
 
     private static final Logger log = LoggerFactory.getLogger(MainPageController.class);

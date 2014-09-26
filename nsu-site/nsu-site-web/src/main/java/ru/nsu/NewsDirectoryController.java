@@ -4,6 +4,8 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
+import com.google.inject.Singleton;
+
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.guice.transactional.Transactional;
 
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
+
+@Singleton
 public class NewsDirectoryController implements AsmController {
 
     public static final int DEFAUL_NEWS_LIMIT = 8;

@@ -6,6 +6,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.mhttl.SelectNode;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
@@ -28,6 +29,7 @@ import java.util.concurrent.Callable;
  * @version $Id$
  */
 @SuppressWarnings("unchecked")
+@Singleton
 public class SearchNewsController extends SearchController {
 
     protected static final Map<String, Callable<Pair<Date, Date>>> TIME_SCOPES;

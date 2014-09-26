@@ -1,5 +1,6 @@
 #if(asmHasAttribute("medialine"))
-<div class="fotorama"
+<div id="medialine"
+     class="fotorama"
      data-nav="thumbs"
      data-autoplay="5000"
      data-hash="true"

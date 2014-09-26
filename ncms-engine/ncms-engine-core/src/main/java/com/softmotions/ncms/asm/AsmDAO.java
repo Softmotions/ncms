@@ -413,6 +413,8 @@ public class AsmDAO extends MBDAOSupport {
 
         private List<String> attrsExclude;
 
+        private List<String> notNullAttributes;
+
         public PageCriteria(AsmDAO dao, String namespace) {
             super(dao, namespace);
             withStatement("queryByAttrs");
@@ -440,6 +442,15 @@ public class AsmDAO extends MBDAOSupport {
 
         public PageCriteria withAttributeLike(String name, Object val) {
             attrs.add(new Pair<>(name, val));
+            return this;
+        }
+
+        public PageCriteria withNotNullAttributes(String... names) {
+            if (notNullAttributes == null) {
+                notNullAttributes = new ArrayList<>();
+                withParam("nnAttrs", notNullAttributes);
+            }
+            Collections.addAll(notNullAttributes, names);
             return this;
         }
 

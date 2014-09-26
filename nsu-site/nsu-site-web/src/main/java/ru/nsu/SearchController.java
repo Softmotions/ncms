@@ -6,6 +6,8 @@ import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
+import com.google.inject.Singleton;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.solr.client.solrj.SolrServer;
@@ -27,6 +29,8 @@ import java.util.Collection;
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
+
+@Singleton
 public class SearchController implements AsmController {
 
     public static final int DEFAULT_MAX_RESULTS = 20;

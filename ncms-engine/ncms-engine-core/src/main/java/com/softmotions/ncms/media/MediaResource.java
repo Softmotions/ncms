@@ -113,4 +113,7 @@ public interface MediaResource {
      */
     int getImageHeight();
 
+
+    String getDescription();
+
 }

@@ -208,7 +208,11 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
             ebus.fireOnSuccessCommit(new EnsureResizedImageJobEvent(fileId, thumbWidth, null, MediaRepository.RESIZE_SKIP_SMALL));
             sval.add(fileId);
         }
-        attr.setEffectiveValue(sval.toString());
+        if (sval.size() > 0) {
+            attr.setEffectiveValue(sval.toString());
+        } else {
+            attr.setEffectiveValue(null);
+        }
         return attr;
     }
 

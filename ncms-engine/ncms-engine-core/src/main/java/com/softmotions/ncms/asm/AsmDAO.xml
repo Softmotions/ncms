@@ -401,6 +401,15 @@
                       </trim>
                     )
                    </if>
+                   <if test="nnAttrs != null and !nnAttrs.isEmpty">
+                    AND (
+                      <trim prefixOverrides="AND">
+                        <foreach collection="nnAttrs" item="attr">
+                            AND attr.name = #{attr} AND (attr.value IS NOT NULL OR attr.large_value IS NOT NULL)
+                        </foreach>
+                      </trim>
+                    )
+                   </if>
             </where>
                 <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
                 <if test="CQ_LIMIT">

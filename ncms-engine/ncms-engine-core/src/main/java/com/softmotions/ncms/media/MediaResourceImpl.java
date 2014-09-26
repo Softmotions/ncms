@@ -43,6 +43,8 @@ class MediaResourceImpl implements MediaResource, Serializable {
 
     private final KVOptions meta;
 
+    private final String description;
+
 
     MediaResourceImpl(MediaRS rs,
                       long id,
@@ -51,6 +53,7 @@ class MediaResourceImpl implements MediaResource, Serializable {
                       long lastModified,
                       long length,
                       Locale locale,
+                      String description,
                       KVOptions meta) {
         this.rs = rs;
         this.id = id;
@@ -60,6 +63,7 @@ class MediaResourceImpl implements MediaResource, Serializable {
         this.length = length;
         this.locale = locale;
         this.meta = meta;
+        this.description = description;
         if (contentType != null) {
             MediaType mt = MediaType.parse(contentType);
             this.encoding = mt.getParameters().get("charset");
@@ -163,6 +167,10 @@ class MediaResourceImpl implements MediaResource, Serializable {
 
     public int getImageHeight() {
         return (meta != null) ? meta.getInt("height", -1) : -1;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     private static class InputStreamSession extends InputStreamWrapper {

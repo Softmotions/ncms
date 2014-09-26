@@ -6,6 +6,7 @@ import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.mybatis.guice.transactional.Transactional;
 
@@ -15,6 +16,8 @@ import java.util.Date;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
+@Singleton
 public class EventsMainController implements AsmController {
 
     private final NewsDirectoryController ndc;

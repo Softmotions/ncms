@@ -5,164 +5,137 @@
 </head>
 <body>
 <div id="wrapper">
-<div class="w1">
-<header id="header">
-    ${include("inc/header.httl")}
-</header>
-<div id="main" class="newsmain-page">
-${include("inc/breadcrumbs.httl")}
-<h1>Главные события</h1>
-<ul class="news-list list3">
-    #foreach(Asm p in events)
-    <li>
-        #set(Image img = p.asm("bigicon"))
-        #if(img != null)
-        <div class="img-holder" style="width:314px;height:192px;overflow:hidden">
-            <a href="${p.link}"><img src="${img.link}" width="314" alt="${p.hname}"/></a>
-            #set(Date edate = p.eventDate)
-            <div class="date-holder">
-                <span class="date">${edate.format2("dd")}</span>
-                <span class="month">${edate.format2("MMM")}</span>
-                <span class="year">${edate.format2("yyyy")}</span>
+    <div class="w1">
+        <header id="header">
+            ${include("inc/header.httl")}
+        </header>
+        <div id="main" class="newsmain-page">
+            ${include("inc/breadcrumbs.httl")}
+            <h1>Главные события</h1>
+            <ul class="news-list list3">
+                #foreach(Asm p in events)
+                <li>
+                    #set(Image img = p.asm("bigicon"))
+                    #if(img != null)
+                    <div class="img-holder" style="width:314px;height:192px;overflow:hidden">
+                        <a href="${p.link}"><img src="${img.link}" width="314" alt="${p.hname}"/></a>
+                        #set(Date edate = p.eventDate)
+                        <div class="date-holder">
+                            <span class="date">${edate.format2("dd")}</span>
+                            <span class="month">${edate.format2("MMM")}</span>
+                            <span class="year">${edate.format2("yyyy")}</span>
+                        </div>
+                    </div>
+                    #end
+                    <div class="text-holder">
+                        <h3><a href="${p.link}">${p.hname}</a></h3>
+
+                        <p>${p.asm("annotation")}</p>
+                        #if(p.isHasAttribute("subcategory"))
+                        #foreach(SelectNode sn in p.asm("subcategory"))
+                        <span class="tag">${sn.key}</span>
+                        #end
+                        #end
+                    </div>
+                </li>
+                #end
+            </ul>
+
+            <h1>Фото</h1>
+            #set(Tree tree = photoline)
+            #if(tree != null && tree.hasChildren)
+            <div class="photo-line">
+                <div class="viewport">
+                    <ul class="overview ad-list2">
+                        #foreach(Tree n in tree)
+                        <li>
+                            <a href="$!{n.richRef.link}">
+                                #if(n.richRef.style != null)
+                                <span class="photo">${n.richRef.style}</span>
+                                #end
+                                <div>
+                                    <img src="$!{n.richRef.image.link}" alt="${n.richRef.name}"/>
+                                </div>
+                                #if(n.richRef.name != null)
+                                <h4>${n.richRef.name}</h4>
+                                #end
+                            </a>
+                        </li>
+                        #end
+                    </ul>
+                </div>
             </div>
-        </div>
-        #end
-        <div class="text-holder">
-            <h3><a href="${p.link}">${p.hname}</a></h3>
-
-            <p>${p.asm("annotation")}</p>
-            #if(p.isHasAttribute("subcategory"))
-            #foreach(SelectNode sn in p.asm("subcategory"))
-            <span class="tag">${sn.key}</span>
             #end
-            #end
+
+            <div class="instagramm-holder">
+                <div class="title-holder">
+                    <h1>NSU Instagram</h1>
+                    <span class="tag">Фотографии с тегом #nsu</span>
+                    <a href="#" class="view"><img src="images/img40.jpg" width="138" height="26"
+                                                  alt="image description"/></a>
+                </div>
+                <ul class="photo-list">
+                    <li>
+                        <a href="#">
+                            <img src="images/img41.jpg" width="150" height="150" alt="image description"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <img src="images/img42.jpg" width="150" height="150" alt="image description"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <img src="images/img43.jpg" width="150" height="150" alt="image description"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <img src="images/img44.jpg" width="150" height="150" alt="image description"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <img src="images/img45.jpg" width="150" height="150" alt="image description"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <img src="images/img46.jpg" width="150" height="150" alt="image description"/>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div id="news-holder" class="news-holder">
+                <ul class="tabset">
+                    #foreach(Pair nc in news_categories)
+                    #set(String type = nc.one)
+                    #if(type == news_active_type)
+                    #set(String activeType = type)
+                    <li class="active"><a href="">${nc.two}</a></li>
+                    #else
+                    <li><a href="$!{page().link}?mnc.news.type=${type.encodeUriComponent}">${nc.two}</a></li>
+                    #end
+                    #end
+                </ul>
+                <div id="news-container" class="list-holder">
+                    $!{include("inc/news_main_news.httl")}
+                </div>
+                <a id="news-fetch-more" class="fetch-more"><span>Загрузить еще</span></a>
+            </div>
+            ${include("inc/soclikes.httl")}
+            ${include("inc/partners.httl")}
         </div>
-    </li>
-    #end
-</ul>
-
-
-<h1>Фото</h1>
-<ul class="ad-list2 list2">
-    <li>
-        <a href="#">
-            <span class="photo">Фотоотчет</span>
-            <img src="images/img5.jpg" width="322" height="185" alt="image description"/>
-            <h4>Зооархеологические исследования</h4>
-        </a>
-    </li>
-    <li>
-        <a href="#">
-            <span class="photo">Фотоотчет</span>
-            <img src="images/img6.jpg" width="322" height="185" alt="image description"/>
-            <h4>Зооархеологические исследования</h4>
-        </a>
-    </li>
-    <li>
-        <a href="#">
-            <span class="photo">Фотоотчет</span>
-            <img src="images/img5.jpg" width="322" height="185" alt="image description"/>
-            <h4>Зооархеологические исследования</h4>
-        </a>
-    </li>
-</ul>
-
-
-<div class="instagramm-holder">
-    <div class="title-holder">
-        <h1>NSU Instagram</h1>
-        <span class="tag">Фотографии с тегом #nsu</span>
-        <a href="#" class="view"><img src="images/img40.jpg" width="138" height="26" alt="image description"/></a>
+        <footer id="footer">
+            ${include("inc/footer.httl")}
+        </footer>
     </div>
-    <ul class="photo-list">
-        <li>
-            <a href="#">
-                <img src="images/img41.jpg" width="150" height="150" alt="image description"/>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <img src="images/img42.jpg" width="150" height="150" alt="image description"/>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <img src="images/img43.jpg" width="150" height="150" alt="image description"/>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <img src="images/img44.jpg" width="150" height="150" alt="image description"/>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <img src="images/img45.jpg" width="150" height="150" alt="image description"/>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <img src="images/img46.jpg" width="150" height="150" alt="image description"/>
-            </a>
-        </li>
-    </ul>
-</div>
-<div id="news-holder" class="news-holder">
-    <ul class="tabset">
-        #foreach(Pair nc in news_categories)
-        #set(String type = nc.one)
-        #if(type == news_active_type)
-        #set(String activeType = type)
-        <li class="active"><a href="">${nc.two}</a></li>
-        #else
-        <li><a href="$!{page().link}?mnc.news.type=${type.encodeUriComponent}">${nc.two}</a></li>
-        #end
-        #end
-    </ul>
-    <div id="news-container" class="list-holder">
-        $!{include("inc/news_main_news.httl")}
-    </div>
-    <a id="news-fetch-more" class="fetch-more"><span>Загрузить еще</span></a>
-</div>
-
-<div class="video-holder">
-    <h1>Видео</h1>
-    <ul class="video-list">
-        <li>
-            <a href="#">
-                <img src="images/img47.jpg" width="322" height="185" alt="image description"/>
-                <span class="play">play</span>
-                <h4>Зооархеологические исследования</h4>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <img src="images/img48.jpg" width="322" height="185" alt="image description"/>
-                <span class="play">play</span>
-                <h4>Зооархеологические исследования</h4>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <img src="images/img47.jpg" width="322" height="185" alt="image description"/>
-                <span class="play">play</span>
-                <h4>Зооархеологические исследования</h4>
-            </a>
-        </li>
-    </ul>
-    <a href="#" class="fetch-more"><span>Загрузить еще</span></a>
-</div>
-${include("inc/soclikes.httl")}
-${include("inc/partners.httl")}
-</div>
-<footer id="footer">
-    ${include("inc/footer.httl")}
-</footer>
-</div>
 </div>
 $!{include("inc/scripts.httl")}
 <script>
-    window.initNewsMain && window.initScroll && $(function(){
+    window.initNewsMain && window.initScroll && $(function() {
         initNewsMain(${news_limit});
         initScroll('ul.tabset > li > a');
     });
