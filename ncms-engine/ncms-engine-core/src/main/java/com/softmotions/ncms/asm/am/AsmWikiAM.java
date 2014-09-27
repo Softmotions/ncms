@@ -1,9 +1,11 @@
 package com.softmotions.ncms.asm.am;
 
 import com.softmotions.commons.json.JsonUtils;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
@@ -22,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Markdown/Mediawiki attribute manager.
@@ -34,17 +38,26 @@ public class AsmWikiAM implements AsmAttributeManager {
 
     private static final Logger log = LoggerFactory.getLogger(AsmWikiAM.class);
 
-    public static final String[] TYPES = new String[]{"wiki"};
+    public static final String[] TYPES = {"wiki"};
 
     private final ObjectMapper mapper;
 
     private final MediaWikiRenderer mediaWikiRenderer;
 
+    private final Pattern pageRefsRE;
+
+    private final PageService pageService;
+
+
     @Inject
     public AsmWikiAM(ObjectMapper mapper,
-                     MediaWikiRenderer mediaWikiRenderer) {
+                     MediaWikiRenderer mediaWikiRenderer,
+                     NcmsEnvironment env,
+                     PageService pageService) {
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
+        this.pageService = pageService;
+        this.pageRefsRE = Pattern.compile(env.getNcmsRoot() + "/asm/" + "([0-9a-f]{32})");
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -94,8 +107,16 @@ public class AsmWikiAM implements AsmAttributeManager {
     }
 
     private String postProcessWikiHtml(String html) {
-        //todo apply page aliases
-        return html;
+        if (html == null) {
+            return "";
+        }
+        StringBuffer res = new StringBuffer(html.length());
+        Matcher m = pageRefsRE.matcher(html);
+        while (m.find()) {
+            m.appendReplacement(res, pageService.resolvePageLink(m.group(1)));
+        }
+        m.appendTail(res);
+        return res.toString();
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
