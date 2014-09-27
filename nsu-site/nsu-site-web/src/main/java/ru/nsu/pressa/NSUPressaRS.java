@@ -130,7 +130,7 @@ public class NSUPressaRS {
                     continue;
                 }
                 RichRef rr = inode.getRichRef();
-                Long fid = env.getFileIdByResourceSpec(rr.getRawLink());
+                Long fid = mediaReader.getFileIdByResourceSpec(rr.getRawLink());
                 if (fid == null) {
                     continue;
                 }

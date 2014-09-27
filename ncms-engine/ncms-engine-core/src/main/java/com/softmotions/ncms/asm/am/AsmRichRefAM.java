@@ -1,12 +1,13 @@
 package com.softmotions.ncms.asm.am;
 
 import com.softmotions.commons.json.JsonUtils;
-import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.mhttl.Image;
 import com.softmotions.ncms.mhttl.RichRef;
 
@@ -38,15 +39,19 @@ public class AsmRichRefAM implements AsmAttributeManager {
 
     private final ObjectMapper mapper;
 
-    private final NcmsEnvironment env;
+    private final MediaReader mediaReader;
+
+    private final PageService pageService;
 
     @Inject
     public AsmRichRefAM(AsmImageAM imageAM,
                         ObjectMapper mapper,
-                        NcmsEnvironment env) {
+                        MediaReader mediaReader,
+                        PageService pageService) {
         this.imageAM = imageAM;
         this.mapper = mapper;
-        this.env = env;
+        this.mediaReader = mediaReader;
+        this.pageService = pageService;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -84,7 +89,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
                 }
                 link = link.substring(0, ind).trim();
             }
-            link = env.getResourceLink(link);
+            link = pageService.resolveResourceLink(link);
         }
         if (node.hasNonNull("description")) {
             description = node.get("description").asText();
@@ -144,7 +149,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
         }
         n = val.get("link");
         if (n != null && n.isTextual()) {
-            Long fid = env.getFileIdByResourceSpec(n.asText());
+            Long fid = mediaReader.getFileIdByResourceSpec(n.asText());
             if (fid != null) {
                 ctx.registerMediaFileDependency(attr, fid);
             }

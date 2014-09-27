@@ -11,6 +11,12 @@ import java.util.Locale;
  */
 public interface MediaReader {
 
+    String resolveFileLink(Long id);
+
+    String resolveFileLink(Long id, boolean inline);
+
+    Long getFileIdByResourceSpec(String wikiResource);
+
     /**
      * Find media resource. Returns {@code null} if no resources found.
      * Path can be in the following forms:

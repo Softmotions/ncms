@@ -157,6 +157,7 @@
     <pages>
         <default-page-language>ru</default-page-language>
         <lru-cache-size>4096</lru-cache-size>
+        <lru-aliases-cache-size>16384</lru-aliases-cache-size>
     </pages>
 
     <oauth2>

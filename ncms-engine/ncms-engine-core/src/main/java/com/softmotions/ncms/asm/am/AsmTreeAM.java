@@ -74,13 +74,14 @@ public class AsmTreeAM implements AsmAttributeManager {
             return new Tree("root");
         }
         try {
-            return initTree((Tree) mapper.reader(Tree.class).readValue(attr.getEffectiveValue()), ctx);
+            return initTree(mapper.reader(Tree.class).readValue(attr.getEffectiveValue()), ctx);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private Tree initTree(Tree tree, AsmRendererContext ctx) throws IOException {
+        tree.setLink(ctx.getPageService().resolveResourceLink(tree.getLink()));
         if (!StringUtils.isBlank(tree.getNam())) {
             JsonNode namSpec = mapper.readTree(tree.getNam());
             if (!namSpec.hasNonNull("naClass")) {

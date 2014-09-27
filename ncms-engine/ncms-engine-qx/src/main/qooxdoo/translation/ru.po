@@ -641,11 +641,11 @@ msgstr "Переместить в другую папку"
 msgid "Select page"
 msgstr "Выбрать страницу"
 
-#: ncms/asm/am/TreeAMValueWidget.js:501
+#: ncms/asm/am/TreeAMValueWidget.js:500
 msgid "Select file for page: %1"
 msgstr "Выбрать файл для: %1"
 
-#: ncms/asm/am/TreeAMValueWidget.js:655
+#: ncms/asm/am/TreeAMValueWidget.js:654
 msgid "Please choose the target folder"
 msgstr "Пожалуйста выберите целевую папку"
 

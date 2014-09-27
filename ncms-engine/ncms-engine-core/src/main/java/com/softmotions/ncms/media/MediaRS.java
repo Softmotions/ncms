@@ -1328,12 +1328,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             if (transfer) {
                 l.releaseParent(); //unlock parent folder read-lock
                 rb.entity((StreamingOutput) output -> {
-                            try (final FileInputStream fis = new FileInputStream(respFile)) {
-                                IOUtils.copyLarge(fis, output);
-                            } finally {
-                                l.close();
-                            }
-                        }
+                              try (final FileInputStream fis = new FileInputStream(respFile)) {
+                                  IOUtils.copyLarge(fis, output);
+                              } finally {
+                                  l.close();
+                              }
+                          }
                 );
             } else {
                 rb.status(Response.Status.NO_CONTENT);
@@ -2135,6 +2135,41 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    target.toString(),
                    data.overwrite,
                    data.system);
+    }
+
+    public String resolveFileLink(Long id) {
+        return env.getNcmsRoot() + "/rs/media/fileid/" + id;
+    }
+
+    public String resolveFileLink(Long id, boolean inline) {
+        return resolveFileLink(id) + "?inline=true";
+    }
+
+    public Long getFileIdByResourceSpec(String spec) {
+        spec = spec.toLowerCase();
+        if (!spec.startsWith("media:") && !spec.startsWith("image:")) {
+            return null;
+        }
+        spec = spec.substring("media:".length()); /*'image:' string has the same length*/
+        if (spec.charAt(0) == '/') {
+            spec = spec.substring(1);
+        }
+        int ind;
+        int ind1 = spec.indexOf('/');
+        int ind2 = spec.indexOf('|');
+        if (ind1 == -1 || ind2 == -1) {
+            ind = Math.max(ind1, ind2);
+        } else {
+            ind = Math.min(ind1, ind2);
+        }
+        if (ind != -1) {
+            spec = spec.substring(0, ind);
+        }
+        try {
+            return Long.valueOf(spec);
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
     }
 
     @Transactional(executorType = ExecutorType.SIMPLE)

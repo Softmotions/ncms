@@ -481,8 +481,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                     node["name"] = data["linkText"];
                     node["type"] = "page";
                     node["extra"] = data["labelPath"].join("/");
-                    node["link"] = ncms.Application.APP_STATE.getStateProperty("ncmsPrefix") +
-                            "/asm/" + sm.lang.Array.lastElement(data["guidPath"]);
+                    node["link"] = "page:/" + sm.lang.Array.lastElement(data["guidPath"]);
                     node["icon"] = "page";
                     node["nam"] = null;
                 }

@@ -19,6 +19,8 @@ public interface CachedPage {
 
     Long getId();
 
+    String getAlias();
+
     String getName();
 
     String getHname();

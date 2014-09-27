@@ -6,6 +6,7 @@ import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.media.MediaRepository;
@@ -61,6 +62,8 @@ public class NewsMainPageController implements AsmController {
 
     private final NcmsEnvironment env;
 
+    private final PageService pageService;
+
     private final MediaRepository mediaRepository;
 
     private final ObjectMapper mapper;
@@ -75,11 +78,13 @@ public class NewsMainPageController implements AsmController {
                                   MediaRepository mediaRepository,
                                   ObjectMapper mapper,
                                   NcmsMessages messages,
+                                  PageService pageService,
                                   NcmsEnvironment env) {
         this.adao = adao;
         this.mediaRepository = mediaRepository;
         this.mapper = mapper;
         this.messages = messages;
+        this.pageService = pageService;
         this.npCfg = env.xcfg().configurationAt("content.newsmain");
         this.env = env;
     }
@@ -180,7 +185,7 @@ public class NewsMainPageController implements AsmController {
                     img.setOptionsHeight(szret.getTwo());
                     ref.setImage(img);
                     ref.setName(mres.getDescription());
-                    ref.setLink(env.getAsmLink(asm.getId()) + "#medialine");
+                    ref.setLink(pageService.resolvePageLink(asm.getName()) + "#medialine");
                     item.setRichRef(ref);
                     refs.add(item);
                     if (c >= 3) {

@@ -461,6 +461,11 @@
         WHERE id = #{id}
     </update>
 
+
+    <select id="asmSelectAliasByName" parameterType="string" resultType="string">
+        SELECT nav_alias FROM ASMS WHERE name = #{name}
+    </select>
+
     <!-- ======================== Result maps ============================= -->
 
     <resultMap id="coreRM"

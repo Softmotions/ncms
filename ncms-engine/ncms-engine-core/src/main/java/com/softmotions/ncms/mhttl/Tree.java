@@ -1,15 +1,16 @@
 package com.softmotions.ncms.mhttl;
 
-import com.softmotions.ncms.NcmsEnvironment;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Simple tree container
@@ -18,6 +19,8 @@ import java.util.Iterator;
  */
 @SuppressWarnings("unchecked")
 public class Tree implements Iterable<Tree>, Serializable {
+
+    private static final Logger log = LoggerFactory.getLogger(Tree.class);
 
     private Long id;
 
@@ -36,7 +39,8 @@ public class Tree implements Iterable<Tree>, Serializable {
     private RichRef richRef;
 
     @JsonProperty(required = true)
-    private ArrayList<Tree> children;
+    private List<Tree> children;
+
 
     public Tree() {
     }
@@ -86,10 +90,11 @@ public class Tree implements Iterable<Tree>, Serializable {
     }
 
     public String getLink() {
-        if ("file".equals(type) && id != null) {
-            return NcmsEnvironment.INSTANCE.getFileLink(id, true);
+        if (link == null && "file".equals(type) && id != null) {
+            return "media:/" + id;
+        } else {
+            return link;
         }
-        return link;
     }
 
     public void setLink(String link) {
@@ -113,7 +118,7 @@ public class Tree implements Iterable<Tree>, Serializable {
         this.richRef = richRef;
     }
 
-    public ArrayList<Tree> getChildren() {
+    public List<Tree> getChildren() {
         if (children == null) {
             children = new ArrayList<>();
         }

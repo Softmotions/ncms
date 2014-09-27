@@ -18,6 +18,7 @@ import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.user.UserEnvRS;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -74,6 +75,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import static com.softmotions.ncms.asm.CachedPage.PATH_TYPE;
 import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.ADD;
@@ -94,6 +96,8 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private static final Logger log = LoggerFactory.getLogger(PageRS.class);
 
+    private static final Pattern GUID_REGEXP = Pattern.compile("^[0-9a-f]{32}$");
+
     private final AsmDAO adao;
 
     private final ObjectMapper mapper;
@@ -110,15 +114,21 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final UserEnvRS userEnvRS;
 
+    private final MediaReader mediaReader;
+
     private final Map<Long, CachedPage> pagesCache;
 
     private final Map<String, CachedPage> pageGuid2Cache;
+
+    private final Map<String, String> guid2AliasCache;
 
     private final Map<String, Long> lang2IndexPages;
 
     private final NcmsEnvironment env;
 
     private final Provider<AsmAttributeManagerContext> amCtxProvider;
+
+    private final String asmRoot;
 
     @Inject
     public PageRS(SqlSession sess,
@@ -131,6 +141,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                   NcmsEventBus ebus,
                   UserEnvRS userEnvRS,
                   NcmsEnvironment env,
+                  MediaReader mediaReader,
                   Provider<AsmAttributeManagerContext> amCtxProvider) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
@@ -142,10 +153,13 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.ebus = ebus;
         this.userEnvRS = userEnvRS;
         this.pagesCache = new PagesLRUMap(env.xcfg().getInt("pages.lru-cache-size", 1024));
+        this.guid2AliasCache = new LRUMap(env.xcfg().getInt("pages.lru-aliases-cache-size", 4096));
         this.pageGuid2Cache = new HashMap<>();
         this.lang2IndexPages = new HashMap<>();
         this.env = env;
+        this.mediaReader = mediaReader;
         this.amCtxProvider = amCtxProvider;
+        this.asmRoot = env.getNcmsRoot() + "/asm/";
         this.ebus.register(this);
     }
 
@@ -1024,6 +1038,10 @@ public class PageRS extends MBDAOSupport implements PageService {
             return asm.getId();
         }
 
+        public String getAlias() {
+            return asm.getNavAlias();
+        }
+
         public String getName() {
             return asm.getName();
         }
@@ -1106,14 +1124,14 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @Subscribe
     public void onAsmModified(AsmModifiedEvent ev) {
-
-        long cc = adao.asmChildrenCount(ev.getId());
+        Long pid = ev.getId();
+        clearCachedPageAlias(pid);
+        long cc = adao.asmChildrenCount(pid);
         if (cc == 0) {
-            clearCachedPage(ev.getId());
+            clearCachedPage(pid);
         } else {
             clearCache();
         }
-
     }
 
     private void clearCachedPage(Long id) {
@@ -1161,20 +1179,18 @@ public class PageRS extends MBDAOSupport implements PageService {
         return cp;
     }
 
-    public CachedPage getCachedPage(String guid, boolean create) {
+    public CachedPage getCachedPage(String guidOrAlias, boolean create) {
         CachedPage cp;
         synchronized (pagesCache) {
-            cp = pageGuid2Cache.get(guid);
+            cp = pageGuid2Cache.get(guidOrAlias);
         }
         if (cp == null) {
             if (create) {
-                // TODO: move
                 Long id;
-                if (guid.matches("^[0-9a-f]{32}$")) {
-                    id = adao.asmSelectIdByName(guid);
+                if (GUID_REGEXP.matcher(guidOrAlias).matches()) {
+                    id = adao.asmSelectIdByName(guidOrAlias);
                 } else {
-                    // попытка найти по alias-у
-                    id = adao.asmSelectIdByAlias(guid);
+                    id = adao.asmSelectIdByAlias(guidOrAlias);
                 }
                 if (id != null) {
                     cp = getCachedPage(id, true);
@@ -1182,6 +1198,84 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
         }
         return cp;
+    }
+
+    public String resolvePageAlias(String guid) {
+        String alias;
+        synchronized (guid2AliasCache) {
+            alias = guid2AliasCache.get(guid);
+        }
+        if (alias != null) {
+            return ("@".equals(alias) ? null : alias);
+        }
+        alias = adao.asmSelectAliasByName(guid);
+        if (alias == null) {
+            alias = "@";
+        }
+        synchronized (guid2AliasCache) {
+            guid2AliasCache.put(guid, alias);
+        }
+        return ("@".equals(alias) ? null : alias);
+    }
+
+    public String resolvePageLink(Long id) {
+        if (id == null) {
+            return null;
+        }
+        //todo use alias
+        return asmRoot + id;
+    }
+
+    public String resolvePageLink(String guidOrAlias) {
+        if (guidOrAlias == null) {
+            return null;
+        }
+        String guid = GUID_REGEXP.matcher(guidOrAlias).matches() ? guidOrAlias : null;
+        String alias = (guid == null) ? guidOrAlias : null;
+        if (guid != null) {
+            alias = resolvePageAlias(guid);
+        }
+        return asmRoot + (alias != null ? alias : guid);
+    }
+
+    public String resolveResourceLink(String spec) {
+        if (spec == null) {
+            return null;
+        }
+        if (spec.contains("://")) {
+            return spec;
+        }
+        Long fid = mediaReader.getFileIdByResourceSpec(spec);
+        if (fid != null) {
+            return mediaReader.resolveFileLink(fid, true);
+        }
+        spec = spec.toLowerCase();
+        if (spec.startsWith("page:")) { //Page reference
+            spec = spec.substring("page:".length());
+            int ind = spec.indexOf('|');
+            if (ind != -1) {
+                spec = spec.substring(0, ind).trim();
+            }
+        } else if (spec.indexOf(asmRoot) == 0) {
+            spec = spec.substring(asmRoot.length());
+        }
+        return resolvePageLink(spec);
+    }
+
+    private void clearCachedPageAlias(Long pid) {
+        CachedPage cp = getCachedPage(pid, false);
+        if (cp != null) {
+            synchronized (guid2AliasCache) {
+                guid2AliasCache.remove(cp.getName());
+            }
+            return;
+        }
+        String guid = adao.asmSelectNameById(pid);
+        if (guid != null) {
+            synchronized (guid2AliasCache) {
+                guid2AliasCache.remove(guid);
+            }
+        }
     }
 
     public CachedPage getIndexPage(HttpServletRequest req) {

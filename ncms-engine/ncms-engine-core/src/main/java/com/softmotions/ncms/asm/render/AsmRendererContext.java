@@ -4,6 +4,8 @@ import com.softmotions.commons.cont.Stack;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.PageService;
+import com.softmotions.ncms.media.MediaRepository;
 
 import com.google.inject.Injector;
 
@@ -122,12 +124,16 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     public abstract Injector getInjector();
 
-    public abstract NcmsEnvironment getEnv();
+    public abstract NcmsEnvironment getEnvironment();
 
     /**
      * Classloader used to load resources within this context.
      */
     public abstract ClassLoader getClassLoader();
+
+    public abstract PageService getPageService();
+
+    public abstract MediaRepository getMediaRepository();
 
     /**
      * Locale used in this context.

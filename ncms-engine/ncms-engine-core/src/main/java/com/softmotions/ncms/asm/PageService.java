@@ -13,5 +13,13 @@ public interface PageService {
 
     CachedPage getCachedPage(Long id, boolean create);
 
-    CachedPage getCachedPage(String guid, boolean create);
+    CachedPage getCachedPage(String guidOrAlias, boolean create);
+
+    String resolvePageAlias(String guid);
+
+    String resolvePageLink(Long id);
+
+    String resolvePageLink(String guidOrAlias);
+
+    String resolveResourceLink(String wikiResource);
 }

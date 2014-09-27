@@ -18,8 +18,6 @@ import java.util.Properties;
  */
 public class NcmsEnvironment extends WBConfiguration {
 
-    public static volatile NcmsEnvironment INSTANCE;
-
     private static final String CORE_PROPS_LOCATION = "/com/softmotions/ncms/core/Core.properties";
 
     private final Properties coreProps;
@@ -29,13 +27,6 @@ public class NcmsEnvironment extends WBConfiguration {
     }
 
     public NcmsEnvironment() {
-        if (INSTANCE == null) {
-            synchronized (NcmsEnvironment.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = this;
-                }
-            }
-        }
         coreProps = new Properties();
         try (InputStream is = getClass().getResourceAsStream(CORE_PROPS_LOCATION)) {
             if (is == null) {
@@ -102,57 +93,11 @@ public class NcmsEnvironment extends WBConfiguration {
         return etype;
     }
 
-    public String getAsmLink(String guid) {
-        return getAsmRoot() + guid;
+    public String getNcmsRoot() {
+        return getServletContext().getContextPath() + getNcmsPrefix();
     }
 
-    public String getAsmLink(Long id) {
-        return getAsmRoot() + id;
-    }
-
-    public String getNcmsAdminRoot() {
-        return getServletContext().getContextPath() + getNcmsPrefix() + "/adm/index.html";
-    }
-
-    public String getNcmsAbsoluteAdminRoot(HttpServletRequest req) {
-        return getAbsoluteLink(req, getNcmsAdminRoot());
-    }
-
-    public String getAsmRoot() {
-        return getServletContext().getContextPath() + getNcmsPrefix() + "/asm/";
-    }
-
-    public String getFileLink(Long id) {
-        return getServletContext().getContextPath() + getNcmsPrefix() + "/rs/media/fileid/" + id;
-    }
-
-    public String getFileLink(Long id, boolean inline) {
-        return getServletContext().getContextPath() + getNcmsPrefix() + "/rs/media/fileid/" + id + "?inline=true";
-    }
-
-    public String getResourceLink(String spec) {
-        if (spec.contains("://")) {
-            return spec;
-        }
-        Long fid = getFileIdByResourceSpec(spec);
-        if (fid != null) {
-            return getFileLink(fid, true);
-        }
-        if (spec.toLowerCase().startsWith("page:")) { //Page reference
-            spec = spec.substring("page:".length());
-            int ind = spec.indexOf('|');
-            if (ind != -1) {
-                spec = spec.substring(0, ind).trim();
-            }
-        }
-        return getAsmLink(spec);
-    }
-
-    public String getAbsoluteResourceLink(HttpServletRequest req, String spec) {
-        return getAbsoluteLink(req, getResourceLink(spec));
-    }
-
-     public String getAbsoluteLink(HttpServletRequest req, String link) {
+    public String getAbsoluteLink(HttpServletRequest req, String link) {
         XMLConfiguration x = xcfg();
         boolean preferRequestUrl = x.getBoolean("site-root[@preferRequestUrl]", false);
         if (preferRequestUrl) {
@@ -165,33 +110,4 @@ public class NcmsEnvironment extends WBConfiguration {
         }
         return link;
     }
-
-    public Long getFileIdByResourceSpec(String spec) {
-        spec = spec.toLowerCase();
-        if (!spec.startsWith("media:") && !spec.startsWith("image:")) {
-            return null;
-        }
-        spec = spec.substring("media:".length()); /*'image:' string has the same length*/
-        if (spec.charAt(0) == '/') {
-            spec = spec.substring(1);
-        }
-        int ind;
-        int ind1 = spec.indexOf('/');
-        int ind2 = spec.indexOf('|');
-        if (ind1 == -1 || ind2 == -1) {
-            ind = Math.max(ind1, ind2);
-        } else {
-            ind = Math.min(ind1, ind2);
-        }
-        if (ind != -1) {
-            spec = spec.substring(0, ind);
-        }
-        try {
-            return Long.valueOf(spec);
-        } catch (NumberFormatException ignored) {
-            return null;
-        }
-    }
-
-
 }

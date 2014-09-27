@@ -62,7 +62,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
             Tree c = new Tree();
             c.setId(ip.getId());
             c.setName(ip.getHname());
-            c.setLink(env.getAsmLink(ip.getName()));
+            c.setLink(pageService.resolvePageLink(ip.getName()));
             children.add(c);
         }
         for (int i = 0, l = idPaths.length; i < l; ++i) {
@@ -75,7 +75,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
             c.setId(idPaths[i]);
             c.setName(labelPaths[i]);
             if (p.isPublished() && i < l - 1) {
-                c.setLink(env.getAsmLink(guidPaths[i]));
+                c.setLink(pageService.resolvePageLink(guidPaths[i]));
             }
             children.add(c);
         }

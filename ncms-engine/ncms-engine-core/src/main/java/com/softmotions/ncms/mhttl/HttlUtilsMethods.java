@@ -69,7 +69,15 @@ public class HttlUtilsMethods {
     }
 
     public static String link(Asm asm) {
-        return (asm != null) ? AsmRendererContext.getSafe().getEnv().getAsmLink(asm.getName()) : null;
+        return (asm != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(asm.getName()) : null;
+    }
+
+    public static String link(String alias) {
+        return (alias != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(alias) : null;
+    }
+
+    public static String resolve(String link) {
+        return (link != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(link) : null;
     }
 
     public static String format2(Date date, String format) {
@@ -80,7 +88,5 @@ public class HttlUtilsMethods {
         return ctx.getMessages().format(date, format, ctx.getLocale());
     }
 
-    public static String alias(String alias) {
-        return (alias != null) ? AsmRendererContext.getSafe().getEnv().getAsmLink(alias) : null;
-    }
+
 }

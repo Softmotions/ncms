@@ -5,6 +5,7 @@ import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageService;
+import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.web.GenericResponseWrapper;
 
 import com.google.common.base.Objects;
@@ -45,6 +46,10 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final NcmsMessages messages;
 
+    final PageService pageService;
+
+    final MediaRepository mediaRepository;
+
     Locale cachedLocale;
 
     Map<String, Asm> asmCloneContext;
@@ -60,6 +65,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                    AsmRenderer renderer,
                                    AsmResourceLoader loader,
                                    NcmsMessages messages,
+                                   PageService pageService,
+                                   MediaRepository mediaRepository,
                                    HttpServletRequest req, HttpServletResponse resp,
                                    Asm asm) {
         this.env = env;
@@ -71,6 +78,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.asm = asm;
         this.rootAsm = asm;
         this.classLoader = classLoader;
+        this.pageService = pageService;
+        this.mediaRepository = mediaRepository;
         this.messages = messages;
         this.subcontext = true;
     }
@@ -81,6 +90,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                   AsmRenderer renderer,
                                   AsmResourceLoader loader,
                                   NcmsMessages messages,
+                                  PageService pageService,
+                                  MediaRepository mediaRepository,
                                   @Assisted HttpServletRequest req,
                                   @Assisted HttpServletResponse resp,
                                   @Assisted Object asmRef) throws AsmRenderingException {
@@ -89,6 +100,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.renderer = renderer;
         this.loader = loader;
         this.messages = messages;
+        this.pageService = pageService;
+        this.mediaRepository = mediaRepository;
         this.req = req;
         this.resp = resp;
         this.subcontext = false;
@@ -134,7 +147,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return injector;
     }
 
-    public NcmsEnvironment getEnv() {
+    public NcmsEnvironment getEnvironment() {
         return env;
     }
 
@@ -189,7 +202,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         }
         AsmRendererContextImpl nctx =
                 new AsmRendererContextImpl(env, injector, classLoader, renderer, loader,
-                                           messages,
+                                           messages, pageService, mediaRepository,
                                            req, new GenericResponseWrapper(resp, out, false),
                                            nasm.cloneDeep(asmCloneContext));
         nctx.asmCloneContext = asmCloneContext;
@@ -207,7 +220,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         }
         AsmRendererContextImpl nctx =
                 new AsmRendererContextImpl(env, injector, classLoader, renderer, loader,
-                                           messages,
+                                           messages, pageService, mediaRepository,
                                            req, resp,
                                            nasm.cloneDeep(asmCloneContext));
         nctx.asmCloneContext = asmCloneContext;
@@ -219,6 +232,14 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    public PageService getPageService() {
+        return pageService;
+    }
+
+    public MediaRepository getMediaRepository() {
+        return mediaRepository;
     }
 
     public Locale getLocale() {

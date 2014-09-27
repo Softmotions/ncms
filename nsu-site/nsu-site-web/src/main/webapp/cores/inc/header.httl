@@ -5,18 +5,18 @@
     </nav>
     <div style="float: right; width: 0; position: relative;">
         <div id="search-popup">
-            <form action="$!{alias('search')}" class="search-form">
+            <form action="$!{link('search')}" class="search-form">
                 <fieldset>
                     <input class="input-text" name="spc.text" type="text" placeholder="Я ищу..."/>
                     <input type="submit" value="search"/>
                 </fieldset>
             </form>
         </div>
-        <a href="$!{alias('search')}" class="search">search</a>
+        <a href="$!{link('search')}" class="search">search</a>
     </div>
 </div>
 <div class="header-info">
-    <strong class="logo"><a href="$!{alias('index.html')}">Новосибирский Государственный Университет</a></strong>
+    <strong class="logo"><a href="$!{link('index.html')}">Новосибирский Государственный Университет</a></strong>
     <a href="#" class="language">Eng</a>
 
     <div class="personal-holder">

@@ -83,7 +83,7 @@ public final class Image {
     }
 
     public String getLink() {
-        String link = ctx.getEnv().getFileLink(id);
+        String link = ctx.getMediaRepository().resolveFileLink(id);
         if (resize || cover) {
             if (optionsWidth != null) {
                 link += "?w=" + optionsWidth;

@@ -147,7 +147,7 @@ public class AsmServlet extends HttpServlet {
                 log.warn("Unable to find index page");
                 return null;
             }
-            return cp.getId();
+            return cp.getAsm();
         }
         pi = pi.substring(1);
         if (pi.endsWith(".html")) {

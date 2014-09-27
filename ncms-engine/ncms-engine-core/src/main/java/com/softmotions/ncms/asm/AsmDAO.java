@@ -358,6 +358,12 @@ public class AsmDAO extends MBDAOSupport {
                "edate", date);
     }
 
+    @Transactional
+    public String asmSelectAliasByName(String name) {
+        return selectOne("asmSelectAliasByName", name);
+    }
+
+
     public PageCriteria newPageCriteria() {
         return new PageCriteria(this, this.namespace).withStatement("queryAttrs");
     }
