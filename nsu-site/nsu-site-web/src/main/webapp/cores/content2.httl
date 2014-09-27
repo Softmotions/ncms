@@ -14,19 +14,9 @@
             <div class="twocolumns type2">
                 <div id="content">
                     <h1>${page().hname}</h1>
-                    $!{asm("announce_wiki")}
-                    <div style="display:none;">
-                        $!{asm("structure_wiki")}
-                    </div>
-                    <a href="#" class="about"><span>Подробнее о структуре</span></a>
-
-                    <h2>Новости</h2>
-                    <ul class="post-list">
-                        $!{asm("news_list")}
-                    </ul>
-                    <a class="fetch-more" id="fetch-more" style="display: none"><span>Загрузить еще</span></a>
+                    $!{asm("content")}
                 </div>
-                #set(Tree tree = asm("dept_menu"))
+                #set(Tree tree = asm("aside_menu"))
                 #if(tree != null && tree.hasChildren)
                 <aside id="sidebar">
                     <ul class="side-list">
@@ -51,8 +41,5 @@
     </div>
 </div>
 $!{include("inc/scripts.httl")}
-<script>
-    window.initFetchMore && initFetchMore("a#fetch-more", "$!{page().link}", "ul.post-list", $!{news_limit}, "news");
-</script>
 </body>
 </html>

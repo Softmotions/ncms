@@ -180,7 +180,7 @@ msgstr "Редактирование атрибута: '%1'"
 msgid "Core"
 msgstr "Ядро (core)"
 
-#: ncms/asm/AsmEditor.js:108 ncms/asm/AsmEditor.js:246
+#: ncms/asm/AsmEditor.js:108 ncms/asm/AsmEditor.js:250
 msgid "Class name of an optional assembly controller"
 msgstr "Имя класса котроллера сборки (assembly)"
 
@@ -212,19 +212,19 @@ msgstr "Список ролей через запятую для доступа 
 msgid "Roles"
 msgstr "Роли"
 
-#: ncms/asm/AsmEditor.js:129
+#: ncms/asm/AsmEditor.js:134
 msgid "Parents"
 msgstr "Родители"
 
-#: ncms/asm/AsmEditor.js:135
+#: ncms/asm/AsmEditor.js:140
 msgid "Attributes"
 msgstr "Атрибуты"
 
-#: ncms/asm/AsmEditor.js:172
+#: ncms/asm/AsmEditor.js:177
 msgid "Select core file for '%1' assembly"
 msgstr "Выберите файл ядра(верстки) для сборки(assembly): '%1'"
 
-#: ncms/asm/AsmEditor.js:195
+#: ncms/asm/AsmEditor.js:200
 msgid "Are you sure to remove local assembly core?"
 msgstr ""
 "Вы действительно желаете удалить ссылку на ядро(core) сборки(assembly)"

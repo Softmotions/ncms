@@ -109,18 +109,23 @@ qx.Class.define("ncms.asm.AsmEditor", {
         el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Controller"), null, "controller");
 
-        el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(5));
+        var tg = el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(5));
         el.add(new qx.ui.form.RadioButton(this.tr("None")).set({model : "none"}));
         el.add(new qx.ui.form.RadioButton(this.tr("Page")).set({model : "page"}));
         el.add(new qx.ui.form.RadioButton(this.tr("News page")).set({model : "news"}));
         el.addListener("changeSelection", this.__saveSimpleProps, this);
         form.add(el, this.tr("Template"), null, "templateMode");
 
-        el = new qx.ui.form.TextField().set({maxLength : 255});
+        var rf = el = new qx.ui.form.TextField().set({maxLength : 255});
         el.setPlaceholder(this.tr("Comma separated list of roles used to access the assembly"));
         el.setEnabled(false);
         el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Roles"), null, "accessRoles");
+
+        tg.addListener("changeSelection", function(ev) {
+            var sel = ev.getData()[0];
+            rf.setEnabled(sel != null && sel.getModel() !== "none");
+        });
 
         el = new ncms.asm.AsmParentsTable();
         el.addListener("parentsChanged", function() {
@@ -228,7 +233,6 @@ qx.Class.define("ncms.asm.AsmEditor", {
                     ctls["name"].setValue(spec["name"]);
                     ctls["description"].setValue(spec["description"]);
                     ctls["templateMode"].setModelSelection([spec["templateMode"] || "none"]);
-                    ctls["accessRoles"].setEnabled(spec["templateMode"] != null && spec["templateMode"] !== "none");
                     if (!Array.isArray(spec["accessRoles"])) {
                         ctls["accessRoles"].resetValue();
                     } else {
