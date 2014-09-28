@@ -10,8 +10,8 @@ msgstr "Ваша сессия закончилась, пожалуйста во�
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
-#: ncms/wiki/WikiEditor.js:391 ncms/wiki/WikiEditor.js:395
-#: ncms/wiki/WikiEditor.js:398 ncms/wiki/WikiEditor.js:400 ncms/Toolbar.js:44
+#: ncms/wiki/WikiEditor.js:393 ncms/wiki/WikiEditor.js:397
+#: ncms/wiki/WikiEditor.js:400 ncms/wiki/WikiEditor.js:402 ncms/Toolbar.js:44
 #: ncms/Toolbar.js:49
 msgid "Help"
 msgstr "Справка"
@@ -673,7 +673,7 @@ msgstr ""
 msgid "Markup language"
 msgstr "Язык разметки"
 
-#: ncms/cc/tree/MFolderTree.js:60 ncms/wiki/WikiEditor.js:845
+#: ncms/cc/tree/MFolderTree.js:60 ncms/wiki/WikiEditor.js:847
 msgid "Root"
 msgstr "Корень"
 
@@ -1101,7 +1101,7 @@ msgstr "Другой размер"
 msgid "Invalid youtube video url or code"
 msgstr "Неправильная ссылка на видео youtube"
 
-#: ncms/wiki/WikiEditor.js:522 ncms/wiki/TableDlg.js:22
+#: ncms/wiki/WikiEditor.js:524 ncms/wiki/TableDlg.js:22
 #: ncms/wiki/TableDlg.js:53
 msgid "Insert table"
 msgstr "Вставить таблицу"
@@ -1118,7 +1118,7 @@ msgstr "Строк"
 msgid "Wide table"
 msgstr "Широкая таблица"
 
-#: ncms/wiki/WikiEditor.js:537 ncms/wiki/TreeDlg.js:18
+#: ncms/wiki/WikiEditor.js:539 ncms/wiki/TreeDlg.js:18
 msgid "Insert tree"
 msgstr "Вставить деево"
 
@@ -1142,138 +1142,138 @@ msgstr "Открыть все узлы"
 msgid "More..."
 msgstr "Больше..."
 
-#: ncms/wiki/WikiEditor.js:440
+#: ncms/wiki/WikiEditor.js:442
 msgid "Heading 1"
 msgstr "Заголовок 1"
 
-#: ncms/wiki/WikiEditor.js:441 ncms/wiki/WikiEditor.js:449
-#: ncms/wiki/WikiEditor.js:457
+#: ncms/wiki/WikiEditor.js:443 ncms/wiki/WikiEditor.js:451
+#: ncms/wiki/WikiEditor.js:459
 msgid "Header text"
 msgstr "Текст заголовка"
 
-#: ncms/wiki/WikiEditor.js:448
+#: ncms/wiki/WikiEditor.js:450
 msgid "Heading 2"
 msgstr "Заголовок 1"
 
-#: ncms/wiki/WikiEditor.js:456
+#: ncms/wiki/WikiEditor.js:458
 msgid "Heading 3"
 msgstr "Заголовок 3"
 
-#: ncms/wiki/WikiEditor.js:464
+#: ncms/wiki/WikiEditor.js:466
 msgid "Bold"
 msgstr "Жирный"
 
-#: ncms/wiki/WikiEditor.js:465
+#: ncms/wiki/WikiEditor.js:467
 msgid "Bold text"
 msgstr "Жирный текст"
 
-#: ncms/wiki/WikiEditor.js:472
+#: ncms/wiki/WikiEditor.js:474
 msgid "Italic"
 msgstr "Курсив"
 
-#: ncms/wiki/WikiEditor.js:473
+#: ncms/wiki/WikiEditor.js:475
 msgid "Italics text"
 msgstr "Текст курсивом"
 
-#: ncms/wiki/WikiEditor.js:481
+#: ncms/wiki/WikiEditor.js:483
 msgid "Bullet list"
 msgstr "Список"
 
-#: ncms/wiki/WikiEditor.js:488
+#: ncms/wiki/WikiEditor.js:490
 msgid "Numbered list"
 msgstr "Нумерованный список"
 
-#: ncms/wiki/WikiEditor.js:496 ncms/wiki/WikiEditor.js:497
-#: ncms/wiki/WikiEditor.js:678
+#: ncms/wiki/WikiEditor.js:498 ncms/wiki/WikiEditor.js:499
+#: ncms/wiki/WikiEditor.js:680
 msgid "Insert link"
 msgstr "Вставить ссылку"
 
-#: ncms/wiki/WikiEditor.js:504 ncms/wiki/WikiEditor.js:506
-#: ncms/wiki/WikiEditor.js:698
+#: ncms/wiki/WikiEditor.js:506 ncms/wiki/WikiEditor.js:508
+#: ncms/wiki/WikiEditor.js:700
 msgid "Insert image"
 msgstr "Вставить изображние"
 
-#: ncms/wiki/WikiEditor.js:512 ncms/wiki/WikiEditor.js:514
+#: ncms/wiki/WikiEditor.js:514 ncms/wiki/WikiEditor.js:516
 msgid "Insert file link"
 msgstr "Вставить ссылку на файл"
 
-#: ncms/wiki/WikiEditor.js:521
+#: ncms/wiki/WikiEditor.js:523
 msgid "Table"
 msgstr "Таблица"
 
-#: ncms/wiki/WikiEditor.js:536
+#: ncms/wiki/WikiEditor.js:538
 msgid "Tree"
 msgstr "Дерево"
 
-#: ncms/wiki/WikiEditor.js:551
+#: ncms/wiki/WikiEditor.js:553
 msgid "Create note"
 msgstr "Создать узел"
 
-#: ncms/wiki/WikiEditor.js:556 ncms/wiki/WikiEditor.js:557
+#: ncms/wiki/WikiEditor.js:558 ncms/wiki/WikiEditor.js:559
 msgid "Simple note"
 msgstr "Простая заметка"
 
-#: ncms/wiki/WikiEditor.js:563 ncms/wiki/WikiEditor.js:564
+#: ncms/wiki/WikiEditor.js:565 ncms/wiki/WikiEditor.js:566
 msgid "Warning note"
 msgstr "Заметка предупреждение"
 
-#: ncms/wiki/WikiEditor.js:573
+#: ncms/wiki/WikiEditor.js:575
 msgid "Google services"
 msgstr "Сервисы google"
 
-#: ncms/wiki/WikiEditor.js:578
+#: ncms/wiki/WikiEditor.js:580
 msgid "Youtube film"
 msgstr "Youtube ролик"
 
-#: ncms/wiki/WikiEditor.js:579
+#: ncms/wiki/WikiEditor.js:581
 msgid "Insert youtube film"
 msgstr "Вставить Youtube ролик"
 
-#: ncms/wiki/WikiEditor.js:587
+#: ncms/wiki/WikiEditor.js:589
 msgid "Gmap location"
 msgstr "Карта google map"
 
-#: ncms/wiki/WikiEditor.js:588
+#: ncms/wiki/WikiEditor.js:590
 msgid "Insert gmap location"
 msgstr "Вставить карту google map"
 
-#: ncms/wiki/WikiEditor.js:710
+#: ncms/wiki/WikiEditor.js:712
 msgid "Insert link to file"
 msgstr "Вставить ссылку на файл"
 
-#: ncms/wiki/WikiEditor.js:793 ncms/wiki/WikiEditor.js:805
-#: ncms/wiki/WikiEditor.js:817 ncms/wiki/WikiEditor.js:829
+#: ncms/wiki/WikiEditor.js:795 ncms/wiki/WikiEditor.js:807
+#: ncms/wiki/WikiEditor.js:819 ncms/wiki/WikiEditor.js:831
 msgid "First"
 msgstr "Первый"
 
-#: ncms/wiki/WikiEditor.js:795 ncms/wiki/WikiEditor.js:807
-#: ncms/wiki/WikiEditor.js:819 ncms/wiki/WikiEditor.js:831
+#: ncms/wiki/WikiEditor.js:797 ncms/wiki/WikiEditor.js:809
+#: ncms/wiki/WikiEditor.js:821 ncms/wiki/WikiEditor.js:833
 msgid "Second"
 msgstr "Второй"
 
-#: ncms/wiki/WikiEditor.js:796 ncms/wiki/WikiEditor.js:808
-#: ncms/wiki/WikiEditor.js:820 ncms/wiki/WikiEditor.js:832
+#: ncms/wiki/WikiEditor.js:798 ncms/wiki/WikiEditor.js:810
+#: ncms/wiki/WikiEditor.js:822 ncms/wiki/WikiEditor.js:834
 msgid "First for second"
 msgstr "Первый у второго"
 
-#: ncms/wiki/WikiEditor.js:797 ncms/wiki/WikiEditor.js:809
-#: ncms/wiki/WikiEditor.js:821 ncms/wiki/WikiEditor.js:833
+#: ncms/wiki/WikiEditor.js:799 ncms/wiki/WikiEditor.js:811
+#: ncms/wiki/WikiEditor.js:823 ncms/wiki/WikiEditor.js:835
 msgid "Third"
 msgstr "Третий"
 
-#: ncms/wiki/WikiEditor.js:846
+#: ncms/wiki/WikiEditor.js:848
 msgid "Child 1"
 msgstr "Потомок 1"
 
-#: ncms/wiki/WikiEditor.js:847
+#: ncms/wiki/WikiEditor.js:849
 msgid "Child level 3"
 msgstr "Потомок уровня вложенности 3"
 
-#: ncms/wiki/WikiEditor.js:848
+#: ncms/wiki/WikiEditor.js:850
 msgid "Child 2"
 msgstr "Потомок уровня вложености 2"
 
-#: ncms/wiki/WikiEditor.js:863
+#: ncms/wiki/WikiEditor.js:865
 msgid "Note text"
 msgstr "Заметка"
 
