@@ -71,7 +71,9 @@
                 <div class="title-holder">
                     <h1>NSU Instagram</h1>
                     <span class="tag"> </span>
-                    <a href="http://instagram.com/ignsu" class="view" target="_blank"><img src="images/img40.jpg" width="138" height="26" alt=""/></a>
+                    <a href="http://instagram.com/ignsu" class="view" target="_blank"><img src="images/img40.jpg"
+                                                                                           width="138" height="26"
+                                                                                           alt=""/></a>
                 </div>
                 <ul class="photo-list">
                 </ul>
@@ -103,22 +105,22 @@
     </div>
 </div>
 $!{include("inc/scripts.httl")}
+<script type="text/javascript" src="js/instagram.js"></script>
 <script type="text/javascript">
-    window.initNewsMain && window.initScroll && $(function(){
+    window.initNewsMain && window.initScroll && $(function() {
         initNewsMain(${news_limit});
         initScroll('ul.tabset > li > a');
-
         $('.instagramm-holder > ul.photo-list').instagramLite({
             // TODO: real client ID
-            clientID: 'c8f18d693f034a55bd22d7005d4da27c',
-            userID: 589054046,
-            limit: 6,
+            clientID : 'c8f18d693f034a55bd22d7005d4da27c',
+            userID : 589054046,
+            limit : 6,
             urls : true,
-            localstore: {
+            localstore : {
                 key : '_nsu_instagram',
                 timeout : 3600000
             },
-            success: function (fromCache) {
+            success : function(fromCache) {
                 if (fromCache) {
                     $('.instagramm-holder').show();
                 } else {
@@ -127,7 +129,6 @@ $!{include("inc/scripts.httl")}
             }
         });
     });
-
 </script>
 </body>
 </html>

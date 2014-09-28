@@ -28,13 +28,13 @@ function supports_html5_storage() {
             },
             success: function () {
             }
-        }
+        };
 
         //define plugin
         var plugin = this;
 
         //define settings
-        plugin.settings = {}
+        plugin.settings = {};
 
         //merge defaults and options
         plugin.settings = $.extend({}, defaults, options);
