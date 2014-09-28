@@ -172,6 +172,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
                 case "textarea":
                     control = new qx.ui.form.TextArea();
+                    control.setNativeContextMenu(true);
+                    control.getContentElement().setAttribute("spellcheck", true);
                     control.setLiveUpdate(true);
                     control.addListener("changeValue", this.forwardEvent, this);
                     this._add(control, {flex : 1});
