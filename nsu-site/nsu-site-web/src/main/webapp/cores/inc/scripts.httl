@@ -4,5 +4,6 @@
 <script type="text/javascript" src="fotorama/fotorama.js"></script>
 <script type="text/javascript" src="js/masonry.pkgd.min.js"></script>
 <script type="text/javascript" src="js/scroll-sneak.js"></script>
+<script type="text/javascript" src="js/instagramLite.js"></script>
 <script type="text/javascript" src="js/site.js"></script>
 #end

@@ -67,44 +67,13 @@
             </div>
             #end
 
-            <div class="instagramm-holder">
+            <div class="instagramm-holder" style="display: none;">
                 <div class="title-holder">
                     <h1>NSU Instagram</h1>
-                    <span class="tag">Фотографии с тегом #nsu</span>
-                    <a href="#" class="view"><img src="images/img40.jpg" width="138" height="26"
-                                                  alt="image description"/></a>
+                    <span class="tag"> </span>
+                    <a href="http://instagram.com/ignsu" class="view" target="_blank"><img src="images/img40.jpg" width="138" height="26" alt=""/></a>
                 </div>
                 <ul class="photo-list">
-                    <li>
-                        <a href="#">
-                            <img src="images/img41.jpg" width="150" height="150" alt="image description"/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="images/img42.jpg" width="150" height="150" alt="image description"/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="images/img43.jpg" width="150" height="150" alt="image description"/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="images/img44.jpg" width="150" height="150" alt="image description"/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="images/img45.jpg" width="150" height="150" alt="image description"/>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <img src="images/img46.jpg" width="150" height="150" alt="image description"/>
-                        </a>
-                    </li>
                 </ul>
             </div>
 
@@ -134,11 +103,31 @@
     </div>
 </div>
 $!{include("inc/scripts.httl")}
-<script>
-    window.initNewsMain && window.initScroll && $(function() {
+<script type="text/javascript">
+    window.initNewsMain && window.initScroll && $(function(){
         initNewsMain(${news_limit});
         initScroll('ul.tabset > li > a');
+
+        $('.instagramm-holder > ul.photo-list').instagramLite({
+            // TODO: real client ID
+            clientID: 'c8f18d693f034a55bd22d7005d4da27c',
+            userID: 589054046,
+            limit: 6,
+            urls : true,
+            localstore: {
+                key : '_nsu_instagram',
+                timeout : 3600000
+            },
+            success: function (fromCache) {
+                if (fromCache) {
+                    $('.instagramm-holder').show();
+                } else {
+                    $('.instagramm-holder').slideDown();
+                }
+            }
+        });
     });
+
 </script>
 </body>
 </html>
