@@ -1132,11 +1132,9 @@ function initRemember() {
     });
 }
 
-function initScroll(tabSelector) {
-    var sneaky = new ScrollSneak(location.hostname);
-    $(tabSelector).each(function(i, el) {
-        $(el).click(function() {
-            sneaky.sneak()
-        });
-    })
+function initScroll(tabSelector, prefix) {
+    var sneaky = new ScrollSneak(prefix);
+    $(tabSelector).click(function() {
+        return sneaky.sneak();
+    });
 }

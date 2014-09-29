@@ -116,7 +116,7 @@ $!{include("inc/scripts.httl")}
 <script>
     window.initMainNews && initMainNews("$!{activeType}");
     window.initScroll && $(function(){
-        initScroll('ul.tabset > li > a');
+        initScroll('ul.tabset > li > a', 'nsu:main');
     });
 </script>
 </body>

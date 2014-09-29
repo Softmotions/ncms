@@ -85,7 +85,7 @@
                     #set(String type = nc.one)
                     #if(type == news_active_type)
                     #set(String activeType = type)
-                    <li class="active"><a href="">${nc.two}</a></li>
+                    <li class="active"><a>${nc.two}</a></li>
                     #else
                     <li><a href="$!{page().link}?mnc.news.type=${type.encodeUriComponent}">${nc.two}</a></li>
                     #end
@@ -107,27 +107,28 @@
 $!{include("inc/scripts.httl")}
 <script type="text/javascript" src="js/instagram.js"></script>
 <script type="text/javascript">
-    window.initNewsMain && window.initScroll && $(function() {
-        initNewsMain(${news_limit});
-        initScroll('ul.tabset > li > a');
-        $('.instagramm-holder > ul.photo-list').instagramLite({
-            // TODO: real client ID
-            clientID : 'c8f18d693f034a55bd22d7005d4da27c',
-            userID : 589054046,
-            limit : 6,
-            urls : true,
-            localstore : {
-                key : '_nsu_instagram',
-                timeout : 3600000
-            },
-            success : function(fromCache) {
-                if (fromCache) {
-                    $('.instagramm-holder').show();
-                } else {
-                    $('.instagramm-holder').slideDown();
-                }
+    $('.instagramm-holder > ul.photo-list').instagramLite({
+        // TODO: real client ID
+        clientID : 'c8f18d693f034a55bd22d7005d4da27c',
+        userID : 589054046,
+        limit : 6,
+        urls : true,
+        localstore : {
+            key : '_nsu_instagram',
+            timeout : 3600000
+        },
+        success : function(fromCache) {
+            if (fromCache) {
+                $('.instagramm-holder').show();
+            } else {
+                $('.instagramm-holder').slideDown();
             }
-        });
+        }
+    });
+
+    window.initNewsMain && initNewsMain(${news_limit});
+    window.initScroll && $(function() {
+        initScroll('ul.tabset', 'nsu:news');
     });
 </script>
 </body>
