@@ -4,6 +4,7 @@ import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
@@ -40,6 +41,8 @@ public class AsmWikiAM implements AsmAttributeManager {
 
     public static final String[] TYPES = {"wiki"};
 
+    private static final Pattern MEDIAREF_REGEXP = Pattern.compile("\\[\\[(image|media):(/)?(\\d+).*\\]\\]", Pattern.CASE_INSENSITIVE);
+
     private final ObjectMapper mapper;
 
     private final MediaWikiRenderer mediaWikiRenderer;
@@ -48,16 +51,20 @@ public class AsmWikiAM implements AsmAttributeManager {
 
     private final PageService pageService;
 
+    private final AsmDAO adao;
+
 
     @Inject
     public AsmWikiAM(ObjectMapper mapper,
                      MediaWikiRenderer mediaWikiRenderer,
                      NcmsEnvironment env,
-                     PageService pageService) {
+                     PageService pageService,
+                     AsmDAO adao) {
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
         this.pageRefsRE = Pattern.compile(env.getNcmsRoot() + "/asm/" + "([0-9a-f]{32})");
+        this.adao = adao;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -135,7 +142,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         String html = null;
         if (!StringUtils.isBlank(value)) {
             if ("mediawiki".equals(markup)) {
-                html = mediaWikiRenderer.render(value, ctx.getRequest());
+                html = mediaWikiRenderer.render(preSaveWiki(ctx, attr, value), ctx.getRequest());
                 html = new StringBuilder(html.length() + 32)
                         .append("<div class=\"wiki\">")
                         .append(html)
@@ -155,6 +162,24 @@ public class AsmWikiAM implements AsmAttributeManager {
         root.put("value", value);
         attr.setEffectiveValue(root.toString());
         return attr;
+    }
+
+    private String preSaveWiki(AsmAttributeManagerContext ctx, AsmAttribute attr, String value) {
+        Matcher m = MEDIAREF_REGEXP.matcher(value);
+        while (m.find()) {
+            // \[\[(image|media):(/)?(\d+).*\]\]
+            String fileId = m.group(3);
+            if (fileId == null) {
+                continue;
+            }
+            try {
+                long fid = Long.parseLong(fileId);
+                ctx.registerMediaFileDependency(attr, fid);
+            } catch (NumberFormatException e) {
+                log.error("", e);
+            }
+        }
+        return value;
     }
 
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
