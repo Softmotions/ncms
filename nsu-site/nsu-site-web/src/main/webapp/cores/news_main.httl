@@ -7,7 +7,7 @@
 #set(XMLConfiguration cfg = config())
 #set(String iuserRef = cfg.getString("instagram.user-ref"))
 #set(String iclientId = cfg.getString("instagram.client-id"))
-#set(String iuserId = cfg.getString("instagram.user-id"))
+#set(Long iuserId = cfg.getLong("instagram.user-id"))
 <div id="wrapper">
     <div class="w1">
         <header id="header">
@@ -115,15 +115,23 @@ $!{include("inc/scripts.httl")}
 <script type="text/javascript" src="js/instagram.js"></script>
 <script type="text/javascript">
     #if(iclientId != null && iuserId != null)
+    #set(String icacheKey = cfg.getString("instagram.cache.key"))
+    #set(Long icacheTimeout = cfg.getLong("instagram.cache.timeout"))
     $('.instagramm-holder > ul.photo-list').instagramLite({
         clientID : '${iclientId}',
-        userID : '${iuserId}',
+        userID : ${iuserId},
         limit : 6,
         urls : true,
-        localstore : {
-            key : '_nsu_instagram',
-            timeout : 3600000 // кэш в локальном хранилище на 1 час
-        },
+        localstore :
+        #if(icacheKey != null)
+            {
+                key : '${icacheKey}',
+                timeout : #if(icacheTimeout != null)${icacheTimeout}#else 3600000#end
+            }
+        #else
+            null
+        #end
+        ,
         success : function(fromCache) {
             if (fromCache) {
                 $('.instagramm-holder').show();

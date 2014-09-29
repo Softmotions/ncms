@@ -176,6 +176,10 @@
         <user-ref>http://instagram.com/ignsu</user-ref>
         <user-id>589054046</user-id>
         <client-id>c8f18d693f034a55bd22d7005d4da27c</client-id>
+        <cache>
+            <key>_nsu_instagram</key>
+            <timeout>3600000</timeout>
+        </cache>
     </instagram>
 
     <content>
