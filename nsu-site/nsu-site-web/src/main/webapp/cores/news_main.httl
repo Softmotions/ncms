@@ -4,6 +4,10 @@
     $!{asm("head")}
 </head>
 <body>
+#set(XMLConfiguration cfg = config())
+#set(String iuserRef = cfg.getString("instagram.user-ref"))
+#set(String iclientId = cfg.getString("instagram.client-id"))
+#set(String iuserId = cfg.getString("instagram.user-id"))
 <div id="wrapper">
     <div class="w1">
         <header id="header">
@@ -67,17 +71,20 @@
             </div>
             #end
 
+            #if(iclientId != null && iuserId != null)
             <div class="instagramm-holder" style="display: none;">
                 <div class="title-holder">
                     <h1>NSU Instagram</h1>
-                    <span class="tag"> </span>
-                    <a href="http://instagram.com/ignsu" class="view" target="_blank"><img src="images/img40.jpg"
-                                                                                           width="138" height="26"
-                                                                                           alt=""/></a>
+                    #if(iuserRef != null)
+                    <a href="$!{iuserRef}" class="view" target="_blank">
+                        <img src="images/img40.jpg" width="138" height="26" alt=""/>
+                    </a>
+                    #end
                 </div>
                 <ul class="photo-list">
                 </ul>
             </div>
+            #end
 
             <div id="news-holder" class="news-holder">
                 <ul class="tabset">
@@ -107,15 +114,15 @@
 $!{include("inc/scripts.httl")}
 <script type="text/javascript" src="js/instagram.js"></script>
 <script type="text/javascript">
+    #if(iclientId != null && iuserId != null)
     $('.instagramm-holder > ul.photo-list').instagramLite({
-        // TODO: real client ID
-        clientID : 'c8f18d693f034a55bd22d7005d4da27c',
-        userID : 589054046,
+        clientID : '${iclientId}',
+        userID : '${iuserId}',
         limit : 6,
         urls : true,
         localstore : {
             key : '_nsu_instagram',
-            timeout : 3600000
+            timeout : 3600000 // кэш в локальном хранилище на 1 час
         },
         success : function(fromCache) {
             if (fromCache) {
@@ -125,6 +132,7 @@ $!{include("inc/scripts.httl")}
             }
         }
     });
+    #end
 
     window.initNewsMain && initNewsMain(${news_limit});
     window.initScroll && $(function() {

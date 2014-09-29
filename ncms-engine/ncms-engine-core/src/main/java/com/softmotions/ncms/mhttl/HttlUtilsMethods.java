@@ -1,8 +1,10 @@
 package com.softmotions.ncms.mhttl;
 
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
+import org.apache.commons.configuration.XMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,4 +91,10 @@ public class HttlUtilsMethods {
     }
 
 
+    public static XMLConfiguration config() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        NcmsEnvironment env = ctx.getInjector().getInstance(NcmsEnvironment.class);
+
+        return env.xcfg();
+    }
 }
