@@ -5,7 +5,13 @@
 
 <mapper namespace="com.softmotions.ncms.asm.am.AsmAttributeManagerContext">
 
-    <delete id="deleteDeps">
+    <update id="updateMUser" parameterType="map">
+        UPDATE ASMS
+        SET muser = #{muser,jdbcType=VARCHAR}, mdate = #{mdate,jdbcType=TIMESTAMP}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteFileDeps">
         DELETE FROM ASM_MEDIA_DEPS
         WHERE
         attr_id IN
@@ -28,10 +34,27 @@
         ELSE IGNORE
     </update>
 
-    <update id="updateMUser" parameterType="map">
-        UPDATE ASMS
-        SET muser = #{muser,jdbcType=VARCHAR}, mdate = #{mdate,jdbcType=TIMESTAMP}
-        WHERE id = #{id}
+    <delete id="deletePageDeps">
+        DELETE FROM ASM_PAGE_DEPS
+        WHERE
+        attr_id IN
+        <foreach collection="attrs" item="attr" open="(" separator="," close=")">
+            #{attr}
+        </foreach>
+    </delete>
+
+    <update id="mergePageDependencies" parameterType="list">
+        MERGE INTO ASM_PAGE_DEPS md
+        USING (VALUES
+        <foreach collection="list" item="r" separator=",">
+            (${r[0]}, '${r[1]}')
+        </foreach>
+        ) AS r(attr_id, asm_name)
+        ON md.attr_id = r.attr_id AND md.asm_name = r.asm_name
+        WHEN NOT MATCHED THEN
+          INSERT(attr_id, asm_name)
+          VALUES(r.attr_id, r.asm_name)
+        ELSE IGNORE
     </update>
 
 </mapper>

@@ -152,6 +152,11 @@ public class AsmRichRefAM implements AsmAttributeManager {
             Long fid = mediaReader.getFileIdByResourceSpec(n.asText());
             if (fid != null) {
                 ctx.registerMediaFileDependency(attr, fid);
+            } else {
+                String guid = pageService.resolvePageGuid(n.asText());
+                if (guid != null) {
+                    ctx.registerPageDependency(attr, guid);
+                }
             }
         }
         return val;

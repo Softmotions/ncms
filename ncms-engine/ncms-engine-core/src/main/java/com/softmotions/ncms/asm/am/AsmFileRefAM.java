@@ -76,7 +76,6 @@ public class AsmFileRefAM implements AsmAttributeManager {
         if (asTemplate) {
             AsmRenderer renderer = ctx.getRenderer();
             StringWriter out = new StringWriter(1024);
-            //ctx.setNextEscapeSkipping(!BooleanUtils.toBoolean(opts.getString("escape")));
             try {
                 renderer.renderTemplate(location, ctx, out);
             } catch (IOException e) {
@@ -103,7 +102,6 @@ public class AsmFileRefAM implements AsmAttributeManager {
             throw new AsmRenderingException("Failed to load resource: '" + location + '\'' +
                                             " asm: " + ctx.getAsm().getName() + " attribute: " + attrname, e);
         }
-        //ctx.setNextEscapeSkipping(!BooleanUtils.toBoolean(opts.getString("escape")));
         return sw.toString();
     }
 

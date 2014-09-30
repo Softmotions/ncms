@@ -242,8 +242,11 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             ncms.Application.confirm(this.tr("Are you sure to remove page: %1", label), function(yes) {
                 if (!yes) return;
                 var url = ncms.Application.ACT.getRestUrl("pages.delete", {id : item.getId()});
-                var req = new sm.io.Request(url, "DELETE");
+                var req = new sm.io.Request(url, "DELETE", "application/json");
                 req.send(function(resp) {
+                    var ret = resp.getContent();
+                    //todo
+                    qx.log.Logger.info("ret=" + JSON.stringify(ret));
                     this._refreshNode(parent);
                 }, this);
             }, this);

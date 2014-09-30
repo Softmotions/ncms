@@ -8,10 +8,9 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 
+import net.jcip.annotations.NotThreadSafe;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Assembly attribute manager context.
@@ -29,10 +29,11 @@ import java.util.Set;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 
+@NotThreadSafe
 @RequestScoped
 public class AsmAttributeManagerContext extends MBDAOSupport {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmAttributeManagerContext.class);
+    private static final Pattern GUID_REGEXP = Pattern.compile("^[0-9a-f]{32}$");
 
     private final HttpServletRequest request;
 
@@ -41,6 +42,8 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
     private Long asmId;
 
     private Map<AsmAttribute, Set<Long>> fileDeps;
+
+    private Map<AsmAttribute, Set<String>> pageDeps;
 
     public HttpServletRequest getRequest() {
         return request;
@@ -75,6 +78,18 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         fset.add(fileId);
     }
 
+    public void registerPageDependency(AsmAttribute attr, String guid) {
+        if (pageDeps == null) {
+            pageDeps = new HashMap<>();
+        }
+        Set<String> pset = pageDeps.get(attr);
+        if (pset == null) {
+            pset = new HashSet<>();
+            pageDeps.put(attr, pset);
+        }
+        pset.add(guid);
+    }
+
     @Transactional
     public void flush() {
         WSUser user = pageSecurity.getCurrentWSUserSafe(request);
@@ -82,7 +97,34 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
                "mdate", new Date(),
                "muser", (user != null) ? user.getName() : null,
                "id", asmId);
-        if (fileDeps == null || fileDeps.isEmpty()) {
+        flushFileDeps();
+        flushPageDeps();
+    }
+
+    private void flushPageDeps() {
+        if (pageDeps == null) {
+            return;
+        }
+        Collection<Long> attrs = new ArrayList<>(pageDeps.size());
+        List<Object[]> rows = new ArrayList<>(pageDeps.size() * 3);
+        for (final Map.Entry<AsmAttribute, Set<String>> e : pageDeps.entrySet()) {
+            attrs.add(e.getKey().getId());
+            for (final String name : e.getValue()) {
+                if (GUID_REGEXP.matcher(name).matches()) {
+                    rows.add(new Object[]{e.getKey().getId(), name});
+                }
+            }
+        }
+        delete("deletePageDeps", "attrs", attrs);
+        for (int i = 0, step = 128, to = Math.min(rows.size(), i + step);
+             i < rows.size();
+             i = to, to = Math.min(rows.size(), i + step)) {
+            update("mergePageDependencies", rows.subList(i, to));
+        }
+    }
+
+    private void flushFileDeps() {
+        if (fileDeps == null) {
             return;
         }
         Collection<Long> attrs = new ArrayList<>(fileDeps.size());
@@ -93,7 +135,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
                 rows.add(new Long[]{e.getKey().getId(), fid});
             }
         }
-        delete("deleteDeps", "attrs", attrs);
+        delete("deleteFileDeps", "attrs", attrs);
         for (int i = 0, step = 128, to = Math.min(rows.size(), i + step);
              i < rows.size();
              i = to, to = Math.min(rows.size(), i + step)) {

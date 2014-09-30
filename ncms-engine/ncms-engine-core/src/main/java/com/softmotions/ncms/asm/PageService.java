@@ -22,4 +22,6 @@ public interface PageService {
     String resolvePageLink(String guidOrAlias);
 
     String resolveResourceLink(String wikiResource);
+
+    String resolvePageGuid(String wikiResource);
 }

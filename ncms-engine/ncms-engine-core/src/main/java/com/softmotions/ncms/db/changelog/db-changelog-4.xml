@@ -246,4 +246,56 @@
         </createIndex>
     </changeSet>
 
+
+    <changeSet id="21" author="adamansky@gmail.com">
+
+        <createTable tableName="ASM_PAGE_DEPS">
+            <column name="ATTR_ID" type="BIGINT"
+                    remarks="Assembly attribute reference">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ASM_NAME" type="VARCHAR(127)"
+                    remarks="Referenced page name">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="ASMS"
+                             columnNames="NAME"/>
+
+        <addForeignKeyConstraint baseTableName="ASM_PAGE_DEPS"
+                                 baseColumnNames="ATTR_ID"
+                                 referencedTableName="ASM_ATTRS"
+                                 referencedColumnNames="ID"
+                                 constraintName="FK_ASMPAGEDEPS_ATTRS"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="ASM_PAGE_DEPS"
+                                 baseColumnNames="ASM_NAME"
+                                 constraintName="FK_ASMPAGEDEPS_ASMS"
+                                 referencedTableName="ASMS"
+                                 referencedColumnNames="NAME"
+                                 onDelete="CASCADE"/>
+
+        <createIndex tableName="ASM_PAGE_DEPS"
+                     indexName="IDX_ASMPAGEDEPS"
+                     unique="true">
+            <column name="ATTR_ID"/>
+            <column name="ASM_NAME"/>
+        </createIndex>
+
+
+    </changeSet>
+
+    <changeSet id="22" author="adamansky@gmail.com">
+        <dropForeignKeyConstraint baseTableName="ASM_PAGE_DEPS" constraintName="FK_ASMPAGEDEPS_ASMS"/>
+        <addForeignKeyConstraint baseTableName="ASM_PAGE_DEPS"
+                                 baseColumnNames="ASM_NAME"
+                                 constraintName="FK_ASMPAGEDEPS_ASMS"
+                                 referencedTableName="ASMS"
+                                 referencedColumnNames="NAME"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -4,7 +4,6 @@ import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
-import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
@@ -41,7 +40,11 @@ public class AsmWikiAM implements AsmAttributeManager {
 
     public static final String[] TYPES = {"wiki"};
 
-    private static final Pattern MEDIAREF_REGEXP = Pattern.compile("\\[\\[(image|media):(/)?(\\d+).*\\]\\]", Pattern.CASE_INSENSITIVE);
+    private static final Pattern MEDIAREF_REGEXP = Pattern.compile("\\[\\[(image|media):\\s*(/)?(\\d+).*\\]\\]",
+                                                                   Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern PAGEREF_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|.*)?\\]\\]",
+                                                                  Pattern.CASE_INSENSITIVE);
 
     private final ObjectMapper mapper;
 
@@ -51,20 +54,16 @@ public class AsmWikiAM implements AsmAttributeManager {
 
     private final PageService pageService;
 
-    private final AsmDAO adao;
-
 
     @Inject
     public AsmWikiAM(ObjectMapper mapper,
                      MediaWikiRenderer mediaWikiRenderer,
                      NcmsEnvironment env,
-                     PageService pageService,
-                     AsmDAO adao) {
+                     PageService pageService) {
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
         this.pageRefsRE = Pattern.compile(env.getNcmsRoot() + "/asm/" + "([0-9a-f]{32})");
-        this.adao = adao;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -165,7 +164,17 @@ public class AsmWikiAM implements AsmAttributeManager {
     }
 
     private String preSaveWiki(AsmAttributeManagerContext ctx, AsmAttribute attr, String value) {
-        Matcher m = MEDIAREF_REGEXP.matcher(value);
+
+        // \[\[page:\s*([0-9a-f]{32})(\s*\|.*)?\]\]
+        Matcher m = PAGEREF_REGEXP.matcher(value);
+        while (m.find()) {
+            String guid = m.group(1);
+            if (guid != null) {
+                ctx.registerPageDependency(attr, guid);
+            }
+        }
+
+        m = MEDIAREF_REGEXP.matcher(value);
         while (m.find()) {
             // \[\[(image|media):(/)?(\d+).*\]\]
             String fileId = m.group(3);

@@ -64,6 +64,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -586,17 +588,46 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
 
+    @GET
+    @Path("/referers/{id}")
+    public Response getPageReferers(@PathParam("id") Long id) {
+        return Response.ok((StreamingOutput) o -> {
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter(o, "UTF-8"));
+            pw.println("<!DOCTYPE html>");
+            pw.println("<html>");
+            pw.println("<body>");
+
+
+            //todo
+
+
+            pw.println("</body>");
+            pw.println("</html>");
+            pw.flush();
+        }).type("text/html")
+                .encoding("UTF-8")
+                .build();
+    }
+
+
     @DELETE
     @Path("/{id}")
     @Transactional
-    public void dropPage(@Context HttpServletRequest req,
-                         @PathParam("id") Long id) {
+    public ObjectNode dropPage(@Context HttpServletRequest req,
+                               @PathParam("id") Long id) {
+
+        ObjectNode ret = mapper.createObjectNode();
         Asm page = adao.asmSelectById(id);
         if (!pageSecurity.checkAccessAll2(page, req, "d")) {
             throw new ForbiddenException("");
         }
+        if (count("selectCountOfDependentAttrs", page.getName()) > 0) {
+            ret.put("error", "ncms.page.nodel.refs.found");
+            return ret;
+        }
         delete("dropPage", "id", id);
         ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id));
+        return ret;
     }
 
     @Path("/layer")
@@ -1236,6 +1267,27 @@ public class PageRS extends MBDAOSupport implements PageService {
             alias = resolvePageAlias(guid);
         }
         return asmRoot + (alias != null ? alias : guid);
+    }
+
+    public String resolvePageGuid(String spec) {
+        if (spec == null) {
+            return null;
+        }
+        spec = spec.toLowerCase();
+        if (spec.startsWith("page:")) { //Page reference
+            spec = spec.substring("page:".length());
+            int ind = spec.indexOf('|');
+            if (ind != -1) {
+                spec = spec.substring(0, ind).trim();
+            }
+        } else if (spec.indexOf(asmRoot) == 0) {
+            spec = spec.substring(asmRoot.length());
+        }
+        if (GUID_REGEXP.matcher(spec).matches()) {
+            return spec;
+        } else {
+            return null;
+        }
     }
 
     public String resolveResourceLink(String spec) {

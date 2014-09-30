@@ -383,4 +383,11 @@
               AND a.type LIKE #{pageType}
     </select>
 
+    <select id="selectCountOfDependentAttrs" resultType="long" parameterType="string">
+        SELECT
+            COUNT(*)
+        FROM ASM_PAGE_DEPS
+        WHERE ASM_NAME = #{name}
+    </select>
+
 </mapper>
