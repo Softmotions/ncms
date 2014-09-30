@@ -468,7 +468,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 // "linkText":"ddd",
                 // "externalLink":null}
                 var node = {
-                    "id" : data["id"]
+                    "id" : data["id"] || null
                 };
                 if (data["externalLink"] != null) {
                     node["name"] = data["linkText"];
@@ -514,7 +514,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 // "tags":null,"linkText":"my nsu главная (1)"}
                 var data = ev.getData();
                 var node = {
-                    "id" : data["id"],
+                    "id" : data["id"] || null,
                     "name" : data["linkText"],
                     "type" : "file",
                     "extra" : data["name"],
