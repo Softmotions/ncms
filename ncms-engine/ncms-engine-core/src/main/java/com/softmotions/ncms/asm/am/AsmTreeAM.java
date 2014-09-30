@@ -126,7 +126,15 @@ public class AsmTreeAM implements AsmAttributeManager {
 
     private void saveTree(AsmAttributeManagerContext ctx, AsmAttribute attr, ObjectNode tree) throws IOException {
         String type = tree.hasNonNull("type") ? tree.get("type").asText() : null;
-        Long id = tree.hasNonNull("id") ? tree.get("id").asLong() : null;
+        JsonNode node = tree.get("id");
+        Long id = null;
+        if (node != null) {
+            if (node.isNumber()) {
+                id = node.asLong();
+            } else {
+                tree.putNull("id");
+            }
+        }
         if ("file".equals(type) && id != null) {
             ctx.registerMediaFileDependency(attr, id);
         }

@@ -7,11 +7,13 @@
         #if(n.hasChildren)
         <div class="slide-holder">
             <div class="slide-frame">
-                <ul>
-                    #foreach(Tree c in n)
-                    <li><a href="$!{c.link}">${c.name}</a></li>
-                    #end
-                </ul>
+                #foreach(box in n.split(10))
+                  <ul>
+                      #foreach(Tree c in box)
+                      <li><a href="$!{c.link}">${c.name}</a></li>
+                      #end
+                  </ul>
+                #end
             </div>
         </div>
         #end

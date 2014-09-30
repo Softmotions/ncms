@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,6 +69,26 @@ public class HttlUtilsMethods {
         List<T> cc = new ArrayList<>(coll);
         Collections.shuffle(cc);
         return (cc.size() == max) ? cc : cc.subList(0, max);
+    }
+
+    public static <T> Collection<Collection<T>> split(Iterable<T> coll, int size) {
+        final List<Collection<T>> ret = new ArrayList<>();
+        final Iterator<T> it = coll.iterator();
+        Collection<T> box = null;
+        for (int i = 0; it.hasNext(); ++i) {
+            if (i % size == 0) {
+                if (box != null) {
+                    ret.add(box);
+                }
+                box = new ArrayList<>(size);
+            }
+            //noinspection ConstantConditions
+            box.add(it.next());
+        }
+        if (box != null) {
+            ret.add(box);
+        }
+        return ret;
     }
 
     public static String link(Asm asm) {

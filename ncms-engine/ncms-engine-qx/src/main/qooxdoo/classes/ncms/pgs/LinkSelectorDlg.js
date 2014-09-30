@@ -90,9 +90,6 @@ qx.Class.define("ncms.pgs.LinkSelectorDlg", {
                     }
                 }
                 this.__form.populateJSONObject(sp);
-                if (sp["id"] == null && sp["externalLink"]) {
-                    sp["id"] = sp["externalLink"];
-                }
                 this.fireDataEvent("completed", sp);
             }, this);
         }
