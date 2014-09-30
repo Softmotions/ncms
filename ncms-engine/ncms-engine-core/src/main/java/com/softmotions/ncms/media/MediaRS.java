@@ -68,6 +68,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
@@ -210,8 +211,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     public void put(@PathParam("folder") String folder,
                     @PathParam("name") String name,
                     @Context HttpServletRequest req,
+                    @Context HttpServletResponse resp,
                     InputStream in) throws Exception {
-        _put(folder, name, req, in, 0);
+        _put(folder, name, req, resp, in, 0);
     }
 
     @PUT
@@ -220,8 +222,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Transactional(executorType = ExecutorType.SIMPLE)
     public void put(@PathParam("name") String name,
                     @Context HttpServletRequest req,
+                    @Context HttpServletResponse resp,
                     InputStream in) throws Exception {
-        _put("", name, req, in, 0);
+        _put("", name, req, resp, in, 0);
     }
 
 
@@ -428,7 +431,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @javax.ws.rs.Path("/folder/{folder:.*}")
     @Transactional
     public JsonNode newFolder(@PathParam("folder") String folder,
-                              @Context HttpServletRequest req) throws Exception {
+                              @Context HttpServletRequest req,
+                              @Context HttpServletResponse resp) throws Exception {
+
+        ensureAuthenticated(req, resp);
 
         try (final ResourceLock l = new ResourceLock(folder, true)) {
             File f = new File(basedir, folder);
@@ -468,19 +474,26 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @javax.ws.rs.Path("/copy-batch/{target:.*}")
     @Transactional
     public void copy(@Context HttpServletRequest req,
+                     @Context HttpServletResponse resp,
                      @PathParam("target") String target,
                      ArrayNode files) throws Exception {
-        _copy(req, target, files);
+        _copy(req, resp, target, files);
     }
 
     @PUT
     @javax.ws.rs.Path("/copy-batch")
     @Transactional
-    public void copy(@Context HttpServletRequest req, ArrayNode files) throws Exception {
-        _copy(req, "", files);
+    public void copy(@Context HttpServletRequest req,
+                     @Context HttpServletResponse resp,
+                     ArrayNode files) throws Exception {
+        _copy(req, resp, "", files);
     }
 
-    private void _copy(HttpServletRequest req, String tfolder, ArrayNode files) throws Exception {
+    private void _copy(HttpServletRequest req, HttpServletResponse resp,
+                       String tfolder, ArrayNode files) throws Exception {
+
+        ensureAuthenticated(req, resp);
+
         checkFolder(tfolder);
         tfolder = normalizeFolder(tfolder);
         checkEditAccess(tfolder, req);
@@ -539,7 +552,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Transactional(executorType = ExecutorType.BATCH)
     public void move(@PathParam("path") String path,
                      @Context HttpServletRequest req,
+                     @Context HttpServletResponse resp,
                      String npath) throws Exception {
+
+        ensureAuthenticated(req, resp);
 
         path = StringUtils.strip(path, "/");
         npath = StringUtils.strip(npath, "/");
@@ -661,7 +677,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @javax.ws.rs.Path("/delete/{path:.*}")
     @Transactional(executorType = ExecutorType.BATCH)
     public void deleteResource(@PathParam("path") String path,
-                               @Context HttpServletRequest req) throws Exception {
+                               @Context HttpServletRequest req,
+                               @Context HttpServletResponse resp) throws Exception {
+
+        ensureAuthenticated(req, resp);
+
         path = StringUtils.strip(path, "/");
         checkFolder(path);
         if (log.isDebugEnabled()) {
@@ -736,10 +756,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @DELETE
     @javax.ws.rs.Path("/delete-batch")
     public void deleteBatch(@Context HttpServletRequest req,
+                            @Context HttpServletResponse resp,
                             ArrayNode files) throws Exception {
         for (int i = 0, l = files.size(); i < l; ++i) {
             String path = files.get(i).asText();
-            deleteResource(path, req);
+            deleteResource(path, req, resp);
         }
     }
 
@@ -795,11 +816,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             for (final String tag : tagSet) {
                 qtags[i++] = tag;
             }
-            Arrays.sort(qtags, new Comparator<Object>() {
-                public int compare(Object o1, Object o2) {
-                    return coll.compare(String.valueOf(o1), String.valueOf(o2));
-                }
-            });
+            Arrays.sort(qtags, (o1, o2) -> coll.compare(String.valueOf(o1), String.valueOf(o2)));
             qm.put("tags", ArrayUtils.stringJoin(qtags, ", "));
         }
         if (form.containsKey("description")) {
@@ -1557,11 +1574,23 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+
+    private void ensureAuthenticated(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        if (req.getRemoteUser() == null) {
+            if (resp == null || !req.authenticate(resp)) {
+                throw new ForbiddenException("");
+            }
+        }
+    }
+
     private Long _put(String folder,
                       String name,
                       HttpServletRequest req,
+                      HttpServletResponse resp,
                       InputStream in,
                       int flags) throws Exception {
+
+        ensureAuthenticated(req, resp);
 
         checkFolder(folder);
         Number id;
@@ -2085,7 +2114,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         for (final Path path : deleted) {
             Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
             try {
-                deleteResource(target.toString(), new MediaRSLocalRequest(env, target.toFile()));
+                deleteResource(target.toString(), new MediaRSLocalRequest(env, target.toFile()), null);
             } catch (NotFoundException ignored) {
             } catch (Exception e) {
                 log.error("File deletion failed. Path: " + path + " target: " + target + " error: " + e.getMessage());
@@ -2249,7 +2278,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 if (system) {
                     flags |= PUT_SYSTEM;
                 }
-                _put(folder, name, new MediaRSLocalRequest(env, srcFile), fis, flags);
+                _put(folder, name, new MediaRSLocalRequest(env, srcFile), null, fis, flags);
             } catch (Exception e) {
                 throw new IOException(e);
             }
