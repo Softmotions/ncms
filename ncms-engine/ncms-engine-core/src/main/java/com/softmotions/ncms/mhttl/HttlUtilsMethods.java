@@ -31,6 +31,10 @@ public class HttlUtilsMethods {
     private HttlUtilsMethods() {
     }
 
+    public static <T> boolean notNull(T t) {
+        return (t != null);
+    }
+
     public static String ifTrue(boolean res, String data) {
         return res ? data : null;
     }
@@ -72,6 +76,9 @@ public class HttlUtilsMethods {
     }
 
     public static <T> Collection<Collection<T>> split(Iterable<T> coll, int size) {
+        if (size < 1) {
+            return Collections.EMPTY_LIST;
+        }
         final List<Collection<T>> ret = new ArrayList<>();
         final Iterator<T> it = coll.iterator();
         Collection<T> box = null;
