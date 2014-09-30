@@ -1269,19 +1269,24 @@ public class PageRS extends MBDAOSupport implements PageService {
         return asmRoot + (alias != null ? alias : guid);
     }
 
+    //todo refactor it
     public String resolvePageGuid(String spec) {
         if (spec == null) {
             return null;
         }
         spec = spec.toLowerCase();
         if (spec.startsWith("page:")) { //Page reference
-            spec = spec.substring("page:".length());
+            int plen = "page:".length();
+            spec = (spec.length() > plen && spec.charAt(plen) == '/') ? spec.substring(plen + 1) : spec.substring(plen);
             int ind = spec.indexOf('|');
             if (ind != -1) {
                 spec = spec.substring(0, ind).trim();
             }
         } else if (spec.indexOf(asmRoot) == 0) {
             spec = spec.substring(asmRoot.length());
+        }
+        if (!spec.isEmpty() && spec.charAt(0) == '/') {
+            spec = spec.substring(1);
         }
         if (GUID_REGEXP.matcher(spec).matches()) {
             return spec;
@@ -1290,6 +1295,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
+    //todo refactor it
     public String resolveResourceLink(String spec) {
         if (spec == null) {
             return null;
@@ -1303,7 +1309,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         spec = spec.toLowerCase();
         if (spec.startsWith("page:")) { //Page reference
-            spec = spec.substring("page:".length());
+            int plen = "page:".length();
+            spec = (spec.length() > plen && spec.charAt(plen) == '/') ? spec.substring(plen + 1) : spec.substring(plen);
             int ind = spec.indexOf('|');
             if (ind != -1) {
                 spec = spec.substring(0, ind).trim();
