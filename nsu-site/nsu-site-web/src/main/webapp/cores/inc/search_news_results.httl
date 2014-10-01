@@ -6,7 +6,9 @@
     <div class="img-holder">
         #set(Image icon = pn.asm("icon"))
         #if(icon != null)
-        <img src="$!{icon.link}" alt="${pn.hname}" width="81" height="68"/>
+        <div class="news-img-holder">
+            <a href="$!{pn.link}"><img src="$!{icon.link}" alt="${pn.hname}"/></a>
+        </div>
         #end
         #set(Date event_date = pn.eventDate())
         <span class="date">${event_date.format2("dd")}</span>

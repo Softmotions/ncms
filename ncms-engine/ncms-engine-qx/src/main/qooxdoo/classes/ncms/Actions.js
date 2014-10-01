@@ -231,6 +231,9 @@ qx.Class.define("ncms.Actions", {
         //GET Single page element from named collection
         this._action("pages.single.get", "/rs/adm/pages/single/{collection}");
 
+        //GET The list page refferes
+        this._action("pages.referers", "/rs/adm/pages/referers/{guid}");
+
         //================== UserEnvRS
 
         /**

@@ -460,7 +460,7 @@ msgstr "Добавить изображения"
 msgid "Add video"
 msgstr "Добавить видео"
 
-#: ncms/news/NewsNav.js:125 ncms/pgs/PagesTreeSelector.js:152
+#: ncms/news/NewsNav.js:125 ncms/pgs/PagesTreeSelector.js:158
 #: ncms/mmgr/MediaItemTreeSelector.js:80
 #: ncms/asm/am/MedialineAMValueWidget.js:105
 msgid "Delete"
@@ -805,7 +805,7 @@ msgstr "Закрыть"
 msgid "Select the parent page for news"
 msgstr "Укажите родительскую страницу для новостей"
 
-#: ncms/news/NewsNav.js:150 ncms/pgs/PagesTreeSelector.js:242
+#: ncms/news/NewsNav.js:150 ncms/pgs/PagesTreeSelector.js:259
 msgid "Are you sure to remove page: %1"
 msgstr "Вы действительно желаете удалить страницу %1"
 
@@ -965,17 +965,38 @@ msgstr "Выбрать страницу"
 msgid "Path"
 msgstr "Путь"
 
-#: ncms/pgs/PagesTreeSelector.js:144
+#: ncms/pgs/PagesTreeSelector.js:143
+msgid "List of referer pages"
+msgstr "Список ссылающихся страниц"
+
+#: ncms/pgs/PagesTreeSelector.js:150
 msgid "Change/Rename"
 msgstr "Изменить/Переименовать"
 
-#: ncms/pgs/PagesTreeSelector.js:148
+#: ncms/pgs/PagesTreeSelector.js:154
 msgid "Move"
 msgstr "Переместить"
 
-#: ncms/pgs/PagesTreeSelector.js:168
+#: ncms/pgs/PagesTreeSelector.js:172
+msgid "List of pages referred %1"
+msgstr "Список страниц ссылающихся на %1"
+
+#: ncms/pgs/PagesTreeSelector.js:185
 msgid "Choose the target container page"
 msgstr "Укажите папку"
+
+#: ncms/pgs/PagesTreeSelector.js:266
+msgid "Unable to delete this page"
+msgstr "Невозможно удалить эту страницу"
+
+#: ncms/pgs/PagesTreeSelector.js:268
+msgid ""
+"This page cannot be removed because we found pages linked with this page. "
+"Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>"
+msgstr ""
+"Страница не может быть удалена поскольку найдены страницы ссылающиеся на эту"
+" страницу. Пожалуйста ознакомтесь со <a href=\"%1\" target='_blank'>списком "
+"ссылающихся страниц</a>"
 
 #: ncms/usr/UserEditForm.js:31 ncms/usr/UserNewDlg.js:43
 msgid "Full name"
@@ -1279,3 +1300,9 @@ msgstr "Заметка"
 
 #~ msgid "Bread crumbs"
 #~ msgstr "Вспомогательная навигация (Breadcrumbs)"
+
+#~ msgid "List of referring pages"
+#~ msgstr "Список ссылающихся страниц"
+
+#~ msgid "Unable to delete this page!"
+#~ msgstr "Невозможно удалить эту страницу"

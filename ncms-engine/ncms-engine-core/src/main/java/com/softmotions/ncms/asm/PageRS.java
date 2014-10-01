@@ -589,20 +589,30 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @GET
     @Path("/referers/{guid}")
-    public Response getPageReferers(@PathParam("guid") String guid) {
+    public Response getPageReferers(@PathParam("guid") String guid,
+                                    @Context HttpServletRequest req) {
         return Response.ok((StreamingOutput) o -> {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(o, "UTF-8"));
             pw.println("<!DOCTYPE html>");
             pw.println("<html>");
             pw.println("<body>");
+            CachedPage cp = getCachedPage(guid, true);
+            if (cp != null) {
+                pw.print("<h2>");
+                pw.print("<a href='" + (asmRoot + cp.getName()) + "'>");
+                pw.print(messages.get("ncms.page.nodel.refs.list", req, cp.getHname()));
+                pw.print("</a></h2>");
+            }
+            pw.println("<ol>");
             select("selectPagesDependentOn", context -> {
                 Map<String, Object> row = (Map<String, Object>) context.getResultObject();
                 String pguid = (String) row.get("guid");
                 String name = (String) row.get("name");
                 int published = NumberUtils.number2Int((Number) row.get("published"), 1);
-                pw.println("<a href='" + (asmRoot + pguid) + "'>" + name + "</a> " +
-                           (published == 0 ? "(not published)<br>" : "<br>"));
+                pw.println("<li><a href='" + (asmRoot + pguid) + "'>" + name + "</a> " +
+                           (published == 0 ? "(not published)</li>" : "</li>"));
             }, guid);
+            pw.println("</ol>");
             pw.println("</body>");
             pw.println("</html>");
             pw.flush();

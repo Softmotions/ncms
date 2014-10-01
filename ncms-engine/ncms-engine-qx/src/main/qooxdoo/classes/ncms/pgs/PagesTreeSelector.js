@@ -138,21 +138,38 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 menu.add(bt);
             }
 
-            if (sel != null && sel != root && (sel.getAccessMask().indexOf("d") != -1)) {
-                menu.add(new qx.ui.menu.Separator());
+            if (sel != null && sel != root) {
 
-                bt = new qx.ui.menu.Button(this.tr("Change/Rename"));
-                bt.addListenerOnce("execute", this.__onChangeOrRenamePage, this);
+                bt = new qx.ui.menu.Button(this.tr("List of referer pages"));
+                bt.addListenerOnce("execute", this.__onRefList, this);
                 menu.add(bt);
 
-                bt = new qx.ui.menu.Button(this.tr("Move"));
-                bt.addListenerOnce("execute", this.__onMovePage, this);
-                menu.add(bt);
+                if ((sel.getAccessMask().indexOf("d") != -1)) {
+                    menu.add(new qx.ui.menu.Separator());
 
-                bt = new qx.ui.menu.Button(this.tr("Delete"));
-                bt.addListenerOnce("execute", this.__onDeletePage, this);
-                menu.add(bt);
+                    bt = new qx.ui.menu.Button(this.tr("Change/Rename"));
+                    bt.addListenerOnce("execute", this.__onChangeOrRenamePage, this);
+                    menu.add(bt);
+
+                    bt = new qx.ui.menu.Button(this.tr("Move"));
+                    bt.addListenerOnce("execute", this.__onMovePage, this);
+                    menu.add(bt);
+
+                    bt = new qx.ui.menu.Button(this.tr("Delete"));
+                    bt.addListenerOnce("execute", this.__onDeletePage, this);
+                    menu.add(bt);
+                }
             }
+        },
+
+
+        __onRefList : function(ev) {
+            var item = this._tree.getSelection().getItem(0);
+            if (item == null) {
+                return;
+            }
+            qx.bom.Window.open(ncms.Application.ACT.getRestUrl("pages.referers", {guid : item.getGuid()}),
+                    this.tr("List of pages referred %1", item.getLabel()));
         },
 
         __onMovePage : function(ev) {
@@ -244,9 +261,16 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 var url = ncms.Application.ACT.getRestUrl("pages.delete", {id : item.getId()});
                 var req = new sm.io.Request(url, "DELETE", "application/json");
                 req.send(function(resp) {
-                    var ret = resp.getContent();
-                    //todo
-                    qx.log.Logger.info("ret=" + JSON.stringify(ret));
+                    var ret = resp.getContent() || {};
+                    if (ret["error"] === "ncms.page.nodel.refs.found") {
+                        var dlg = new sm.alert.AlertMessages(this.tr("Unable to delete this page"));
+                        dlg.addMessages("",
+                                this.tr("This page cannot be removed because we found pages linked with this page. Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>",
+                                        ncms.Application.ACT.getRestUrl("pages.referers", {guid : item.getGuid()}))
+                        );
+                        dlg.open();
+                        return;
+                    }
                     this._refreshNode(parent);
                 }, this);
             }, this);
