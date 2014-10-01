@@ -390,4 +390,20 @@
         WHERE ASM_NAME = #{name}
     </select>
 
+
+    <select id="selectPagesDependentOn" resultType="map" parameterType="string">
+        SELECT
+            DISTINCT
+            asm.name      AS "guid",
+            asm.hname     AS "name",
+            asm.published AS "published"
+        FROM ASM_PAGE_DEPS AS d
+            INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
+            INNER JOIN ASMS AS asm ON attr.asm_id = asm.id
+        WHERE
+            d.asm_name = #{name}
+        ORDER BY asm.hname
+    </select>
+
+
 </mapper>

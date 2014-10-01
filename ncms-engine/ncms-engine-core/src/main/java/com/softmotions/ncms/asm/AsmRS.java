@@ -558,8 +558,7 @@ public class AsmRS extends MBDAOSupport {
             }, "select");
             gen.writeEndArray();
             gen.flush();
-        }).type("application/json")
-                .encoding("UTF-8")
+        }).type("application/json;charset=UTF-8")
                 .build();
     }
 

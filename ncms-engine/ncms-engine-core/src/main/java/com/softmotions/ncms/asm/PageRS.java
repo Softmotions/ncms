@@ -59,7 +59,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.StreamingOutput;
@@ -589,23 +588,25 @@ public class PageRS extends MBDAOSupport implements PageService {
 
 
     @GET
-    @Path("/referers/{id}")
-    public Response getPageReferers(@PathParam("id") Long id) {
+    @Path("/referers/{guid}")
+    public Response getPageReferers(@PathParam("guid") String guid) {
         return Response.ok((StreamingOutput) o -> {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(o, "UTF-8"));
             pw.println("<!DOCTYPE html>");
             pw.println("<html>");
             pw.println("<body>");
-
-
-            //todo
-
-
+            select("selectPagesDependentOn", context -> {
+                Map<String, Object> row = (Map<String, Object>) context.getResultObject();
+                String pguid = (String) row.get("guid");
+                String name = (String) row.get("name");
+                int published = NumberUtils.number2Int((Number) row.get("published"), 1);
+                pw.println("<a href='" + (asmRoot + pguid) + "'>" + name + "</a> " +
+                           (published == 0 ? "(not published)<br>" : "<br>"));
+            }, guid);
             pw.println("</body>");
             pw.println("</html>");
             pw.flush();
-        }).type("text/html")
-                .encoding("UTF-8")
+        }).type("text/html;charset=UTF-8")
                 .build();
     }
 
@@ -700,8 +701,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 }
             }
             gen.flush();
-        }).type("application/json")
-                .encoding("UTF-8")
+        }).type("application/json;charset=UTF-8")
                 .build();
     }
 
@@ -837,7 +837,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 }
             }
             gen.flush();
-        }).type(MediaType.APPLICATION_JSON_TYPE).encoding("UTF-8").build();
+        }).type("application/json;charset=UTF-8").build();
     }
 
     @GET
@@ -1269,7 +1269,6 @@ public class PageRS extends MBDAOSupport implements PageService {
         return asmRoot + (alias != null ? alias : guid);
     }
 
-    //todo refactor it
     public String resolvePageGuid(String spec) {
         if (spec == null) {
             return null;
@@ -1295,7 +1294,6 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
-    //todo refactor it
     public String resolveResourceLink(String spec) {
         if (spec == null) {
             return null;

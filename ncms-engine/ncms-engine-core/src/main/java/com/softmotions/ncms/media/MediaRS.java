@@ -414,9 +414,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 gen.writeEndArray();
             }
             gen.flush();
-        }).type(javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE)
-                .encoding("UTF-8")
-                .build();
+        }).type("application/json;charset=UTF-8").build();
     }
 
     @GET
