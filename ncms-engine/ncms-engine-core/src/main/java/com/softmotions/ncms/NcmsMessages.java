@@ -5,9 +5,11 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.resourceloading.AggregateResourceBundleLocator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,9 +26,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
+@ThreadSafe
 public class NcmsMessages {
 
-    private static final Logger log = LoggerFactory.getLogger(NcmsMessages.class);
+    public static final String NCMS_LNG_COOKIE_NAME = "NCMSLNG";
+
+    public static final String NCMS_REQ_LOCALE_ATTR_NAME = "NCMSREQLOCALE";
 
     private static final ThreadLocal<Map<String, SimpleDateFormat>> LOCAL_SDF_CACHE = new ThreadLocal<>();
 
@@ -63,48 +68,69 @@ public class NcmsMessages {
         bundleCache = new ConcurrentHashMap<>();
     }
 
-
+    @Nonnull
     public ResourceBundle getResourceBundle(Locale locale) {
         ResourceBundle bundle = bundleCache.get(locale);
         if (bundle == null) {
             bundle = bundleLocator.getResourceBundle(locale);
-            if (bundle != null) {
-                bundleCache.put(locale, bundle);
+            if (bundle == null) {
+                bundle = bundleLocator.getResourceBundle(Locale.ENGLISH);
             }
+            if (bundle == null) {
+                throw new RuntimeException("Unable to locate any resource bundle for locale: " + locale);
+            }
+            bundleCache.put(locale, bundle);
         }
         return bundle;
     }
 
+    @Nonnull
     public ResourceBundle getResourceBundle(HttpServletRequest req) {
         return getResourceBundle(getLocale(req));
     }
 
+    @Nullable
     public String get(String key, String... params) {
         return get(key, Locale.getDefault(), params);
     }
 
+    @Nullable
     public String get(String key, Locale locale, String... params) {
-        ResourceBundle bundle = getResourceBundle(locale);
-        if (bundle == null) {
-            return null;
-        }
-        String msg = bundle.getString(key);
-        return (msg != null) ? String.format(locale, msg, params) : null;
+        return String.format(locale, getResourceBundle(locale).getString(key), params);
     }
 
+    @Nullable
     public String get(String key, HttpServletRequest req, String... params) {
         return get(key, getLocale(req), params);
     }
 
+    @Nonnull
     public Locale getLocale(HttpServletRequest req) {
         if (req == null) {
             return Locale.getDefault();
         }
-        //todo locale selection
-        return Locale.getDefault();
+        Locale l = (Locale) req.getAttribute(NCMS_REQ_LOCALE_ATTR_NAME);
+        if (l != null) {
+            return l;
+        }
+        for (final Cookie c : req.getCookies()) {
+            if (NCMS_LNG_COOKIE_NAME.equals(c.getName())) {
+                String val = c.getValue();
+                if (!StringUtils.isBlank(val)) {
+                    l = new Locale(val);
+                    req.setAttribute(NCMS_REQ_LOCALE_ATTR_NAME, l);
+                    return l;
+                }
+                break;
+            }
+        }
+        return req.getLocale();
     }
 
-    public String format(Date date, String format, Locale locale) {
+    @Nonnull
+    public String format(@Nonnull Date date,
+                         @Nonnull String format,
+                         @Nullable Locale locale) {
         if (locale == null) {
             locale = Locale.getDefault();
         }
@@ -125,8 +151,9 @@ public class NcmsMessages {
         return sdf.format(date);
     }
 
-
-    private String getLocaleAwareMonth(Date date, Locale locale) {
+    @Nonnull
+    private String getLocaleAwareMonth(@Nonnull Date date,
+                                       @Nonnull Locale locale) {
         Calendar cal = Calendar.getInstance(locale);
         cal.setTime(date);
         String lng = locale.getLanguage();
