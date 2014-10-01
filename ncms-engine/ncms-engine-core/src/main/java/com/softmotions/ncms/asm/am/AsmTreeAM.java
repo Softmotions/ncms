@@ -131,7 +131,6 @@ public class AsmTreeAM implements AsmAttributeManager {
     }
 
     private void saveTree(AsmAttributeManagerContext ctx, AsmAttribute attr, ObjectNode tree) throws IOException {
-        //log.info("tree=" + tree);
         String type = tree.hasNonNull("type") ? tree.get("type").asText() : null;
         JsonNode node = tree.get("id");
         JsonNode linkNode = tree.get("link");

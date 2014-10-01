@@ -113,15 +113,18 @@ public class NcmsMessages {
         if (l != null) {
             return l;
         }
-        for (final Cookie c : req.getCookies()) {
-            if (NCMS_LNG_COOKIE_NAME.equals(c.getName())) {
-                String val = c.getValue();
-                if (!StringUtils.isBlank(val)) {
-                    l = new Locale(val);
-                    req.setAttribute(NCMS_REQ_LOCALE_ATTR_NAME, l);
-                    return l;
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null) {
+            for (final Cookie c : cookies) {
+                if (NCMS_LNG_COOKIE_NAME.equals(c.getName())) {
+                    String val = c.getValue();
+                    if (!StringUtils.isBlank(val)) {
+                        l = new Locale(val);
+                        req.setAttribute(NCMS_REQ_LOCALE_ATTR_NAME, l);
+                        return l;
+                    }
+                    break;
                 }
-                break;
             }
         }
         return req.getLocale();
