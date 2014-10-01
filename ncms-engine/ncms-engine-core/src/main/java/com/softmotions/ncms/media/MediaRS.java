@@ -66,6 +66,7 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1252,6 +1253,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
 
+    @Nonnull
     public Response get(Long id,
                         HttpServletRequest req,
                         Integer width,
@@ -2166,10 +2168,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    data.system);
     }
 
+    @Nonnull
     public String resolveFileLink(Long id) {
         return env.getNcmsRoot() + "/rs/media/fileid/" + id;
     }
 
+    @Nonnull
     public String resolveFileLink(Long id, boolean inline) {
         return resolveFileLink(id) + "?inline=true";
     }

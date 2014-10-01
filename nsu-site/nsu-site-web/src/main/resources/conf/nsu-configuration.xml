@@ -9,12 +9,16 @@
     <server-port>8080</server-port>
 
     <site-root preferRequestUrl="true">http://${server-name}:${server-port}</site-root>
-    <help-site>http://${server-name}:${server-port}</help-site>
-    <logout-redirect>http://${server-name}:${server-port}</logout-redirect>
     <site-files-root resolveRelativePaths="true">/site</site-files-root>
+
+
+    <help>
+        <site alias="help"/>
+        <wiki alias="wiki"/>
+    </help>
+
+    <!--<logout-redirect>http://${server-name}:${server-port}</logout-redirect>-->
     <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->
-
-
     <ncms-prefix>/ncms</ncms-prefix>
 
     <messages>

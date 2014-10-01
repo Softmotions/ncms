@@ -58,7 +58,11 @@ qx.Class.define("ncms.asm.am.WikiAM", {
             if (opts["markup"] != null) {
                 w.setMarkup(opts["markup"])
             }
-            w.setHelpSite(ncms.Application.APP_STATE.getHelpSite());
+            var hs = ncms.Application.APP_STATE.getStateProperty("helpWiki");
+            if (hs == null) {
+                hs = ncms.Application.APP_STATE.getHelpSite();
+            }
+            w.setHelpSite(hs);
             this._fetchAttributeValue(attrSpec, function(val) {
                 if (sm.lang.String.isEmpty(val)) {
                     return;

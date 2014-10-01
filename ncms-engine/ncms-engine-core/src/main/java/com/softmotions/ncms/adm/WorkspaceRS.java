@@ -1,10 +1,12 @@
 package com.softmotions.ncms.adm;
 
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.web.security.WSUser;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +35,15 @@ public class WorkspaceRS {
 
     private static final Logger log = LoggerFactory.getLogger(WorkspaceRS.class);
 
+    private final NcmsEnvironment env;
+
+    private final PageService pageService;
+
     @Inject
-    NcmsEnvironment env;
+    public WorkspaceRS(NcmsEnvironment env, PageService pageService) {
+        this.env = env;
+        this.pageService = pageService;
+    }
 
     @GET
     @Path("state")
@@ -86,8 +95,27 @@ public class WorkspaceRS {
             put("roles", user.getRoleNames());
             put("email", user.getEmail());
             put("time", new Date());
-            put("helpSite", env.getHelpSite());
+            put("helpSite", getHelpSite());
+            properties.put("helpWiki", getHelpWikiSite());
             put("properties", properties);
+        }
+    }
+
+    private String getHelpSite() {
+        String alias = env.xcfg().getString("help.site[@alias]");
+        if (!StringUtils.isBlank(alias)) {
+            return pageService.resolvePageLink(alias);
+        } else {
+            return env.xcfg().getString("help.site");
+        }
+    }
+
+    private String getHelpWikiSite() {
+        String alias = env.xcfg().getString("help.wiki[@alias]");
+        if (!StringUtils.isBlank(alias)) {
+            return pageService.resolvePageLink(alias);
+        } else {
+            return env.xcfg().getString("help.wiki");
         }
     }
 }

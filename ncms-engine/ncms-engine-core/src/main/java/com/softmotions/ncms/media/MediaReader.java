@@ -1,5 +1,8 @@
 package com.softmotions.ncms.media;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import java.util.Locale;
@@ -9,12 +12,16 @@ import java.util.Locale;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@ThreadSafe
 public interface MediaReader {
 
+    @Nonnull
     String resolveFileLink(Long id);
 
+    @Nonnull
     String resolveFileLink(Long id, boolean inline);
 
+    @Nullable
     Long getFileIdByResourceSpec(String wikiResource);
 
     /**
@@ -27,8 +34,10 @@ public interface MediaReader {
      * @param locale Desired locale, can be null.
      * @return
      */
+    @Nullable
     MediaResource findMediaResource(String path, Locale locale);
 
+    @Nullable
     MediaResource findMediaResource(Long id, Locale locale);
 
     /**
@@ -42,6 +51,7 @@ public interface MediaReader {
      * @return
      * @throws Exception
      */
+    @Nonnull
     Response get(Long id,
                  HttpServletRequest req,
                  Integer width,

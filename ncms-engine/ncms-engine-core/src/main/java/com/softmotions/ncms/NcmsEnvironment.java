@@ -5,6 +5,9 @@ import com.softmotions.weboot.WBConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.util.Properties;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@ThreadSafe
 public class NcmsEnvironment extends WBConfiguration {
 
     private static final String CORE_PROPS_LOCATION = "/com/softmotions/ncms/core/Core.properties";
@@ -58,23 +62,27 @@ public class NcmsEnvironment extends WBConfiguration {
         }
     }
 
+    @Nonnull
     public String getApplicationName() {
         return xcfg().getString("app-name", "Ncms");
     }
 
-    public String getHelpSite() {
-        return xcfg().getString("help-site");
-    }
-
+    @Nullable
     public String getLogoutRedirect() {
-        return xcfg().getString("logout-redirect");
+        String ret = xcfg().getString("logout-redirect");
+        if (StringUtils.isBlank(ret)) {
+            return xcfg.getString("site-root");
+        }
+        return null;
     }
 
+    @Nonnull
     public String getNcmsPrefix() {
         String p = xcfg().getString("ncms-prefix", "/ncms");
         return p.charAt(0) != '/' ? '/' + p : p;
     }
 
+    @Nonnull
     public String getEnvironmentType() {
         String etype = xcfg.getString("environment");
         if (etype == null) {
@@ -84,6 +92,7 @@ public class NcmsEnvironment extends WBConfiguration {
         return etype;
     }
 
+    @Nonnull
     public String getDBEnvironmentType() {
         String etype = xcfg.getString("db-environment");
         if (etype == null) {
@@ -93,10 +102,12 @@ public class NcmsEnvironment extends WBConfiguration {
         return etype;
     }
 
+    @Nonnull
     public String getNcmsRoot() {
         return getServletContext().getContextPath() + getNcmsPrefix();
     }
 
+    @Nonnull
     public String getAbsoluteLink(HttpServletRequest req, String link) {
         XMLConfiguration x = xcfg();
         boolean preferRequestUrl = x.getBoolean("site-root[@preferRequestUrl]", false);
