@@ -1,17 +1,38 @@
 &.dept-page {
 
+  .dept-description {
+    display: none;
+    @media print {
+      display: block !important;
+    }
+  }
+
+  .about {
+    @media print {
+      display: none;
+    }
+  }
+
   .type2 {
     padding: 7px 0 0;
 
     #sidebar {
       width: 277px;
       float: left;
+      @media print {
+        display: none;
+      }
     }
 
     #content {
       float: right;
       width: 690px;
       padding: 9px 0 0;
+
+      @media print {
+        float: right;
+        width: 999px;
+      }
 
       h1 {
         margin: 0 0 20px;
@@ -23,15 +44,20 @@
 
       h2 {
         margin: 0 0 31px;
+        @media print {
+          display: none;
+        }
       }
 
       .post-list li {
         border: 0;
         padding: 0;
         margin: 0 0 17px;
+        @media print {
+          display: none;
+        }
       }
     }
   }
 }
-
 

@@ -15,7 +15,7 @@
                 <div id="content">
                     <h1>${page().hname}</h1>
                     $!{asm("announce_wiki")}
-                    <div style="display:none;">
+                    <div class="dept-description">
                         $!{asm("structure_wiki")}
                     </div>
                     <a href="#" class="about"><span>Подробнее о структуре</span></a>

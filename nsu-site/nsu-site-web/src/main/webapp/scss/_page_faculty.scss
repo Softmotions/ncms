@@ -1,0 +1,21 @@
+&.faculty-page {
+  @extend .dept-page;
+
+  @media print {
+    #nav2 {
+      display: none;
+    }
+
+    .news-list {
+      display: none;
+    }
+
+    .slide .more {
+      display: none;
+    }
+
+    .gallery-holder a {
+      display: none;
+    }
+  }
+}

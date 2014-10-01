@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
+
+    <changeSet id="43" author="tyutyunkov@gmail.com">
+
+        <createTable tableName="GENERAL_REF_DATA"
+                     remarks="">
+            <column name="REF"
+                    type="VARCHAR(64)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="CONTENT_TYPE"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <!--32 Mb -->
+            <column name="DATA"
+                    type="BLOB(33554432)">
+            </column>
+        </createTable>
+        <createIndex tableName="GENERAL_REF_DATA"
+                     indexName="IDX_GENERAL_REF_DATA_REF">
+            <column name="REF"/>
+        </createIndex>
+
+        <!--<addForeignKeyConstraint baseTableName="DATA"-->
+                                 <!--baseColumnNames="ASM_ID"-->
+                                 <!--constraintName="FK_"-->
+                                 <!--referencedTableName="ASMS"-->
+                                 <!--referencedColumnNames="ID"-->
+                                 <!--onDelete="CASCADE"/>-->
+
+    </changeSet>
+</databaseChangeLog>

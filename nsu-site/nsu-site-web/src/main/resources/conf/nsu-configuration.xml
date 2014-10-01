@@ -130,6 +130,7 @@
         <module class="com.softmotions.ncms.media.MediaModule"/>
         <module class="com.softmotions.ncms.mediawiki.MediaWikiModule"/>
         <module class="com.softmotions.ncms.user.UserModule"/>
+        <module class="com.softmotions.ncms.asm.HtmlToPdfModule"/>
         <module class="ru.nsu.NSUModule"/>
     </modules>
 
@@ -210,5 +211,11 @@
             <uzh/>
         </journals>
     </content>
+
+    <html-to-pdf>
+        <exec-path>/usr/local/bin/wkhtmltopdf</exec-path>
+        <page-url-template>${site-root}${ncms-prefix}/asm/{id}</page-url-template>
+        <!-- TODO: configure html to pdf module-->
+    </html-to-pdf>
 
 </configuration>

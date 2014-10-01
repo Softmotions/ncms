@@ -1,5 +1,8 @@
 <div class="breadcrumbs-holder">
-    <a href="#" class="pdf">pdf</a>
+    #if(pagePdfExists())
+    <!-- TODO: -->
+    <a href="/ncms/rs/ad/pagepdf/${page().id}?inline" target="_blank" class="pdf">pdf</a>
+    #end
     <ul class="breadcrumbs">
         #set(Tree breadcrumbs = asm("breadcrumbs"))
         #foreach(Tree b in breadcrumbs)

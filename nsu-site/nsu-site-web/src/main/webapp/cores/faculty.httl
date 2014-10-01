@@ -38,7 +38,7 @@
             ${include("inc/menu.httl", ["menuAttr" : "fmenu"])}
         </nav>
     </div>
-    <div style="display:none;">
+    <div class="dept-description">
         $!{asm("description")}
     </div>
     <a href="#" class="about"><span>${page().hname}</span></a>

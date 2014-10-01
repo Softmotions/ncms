@@ -19,6 +19,10 @@
   margin: 0 -9999px;
   //border-top: 1px solid #9c9c9c;
 
+  @media print {
+    display: none;
+  }
+
   a {
     text-decoration: none;
   }
@@ -332,6 +336,10 @@
     @include sp-icons-sprite(bg-pdf);
     text-indent: -9999px;
     overflow: hidden;
+    @media print {
+      display: none;
+    }
+
   }
 
   .align-block {
@@ -1012,6 +1020,10 @@
     overflow: hidden;
     margin: 0 0 35px;
 
+    @media print {
+      display: none;
+    }
+
     h2 {
       margin: 0 0 28px;
       font: 700 25px/29px $basic_sans_font;
@@ -1288,6 +1300,7 @@
   @import "page_events";
   @import "page_newsmain";
   @import "page_dept";
+  @import "page_faculty";
   @import "page_search";
 }
 

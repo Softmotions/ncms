@@ -6,6 +6,11 @@
   background: #323232 url(../images/bg-footer.jpg) repeat-x 50% 0;
   font: 13px/18px $basic_font;
 
+  @media print {
+    display: none;
+    background-image: none;
+  }
+
   p {
     margin: 0;
   }

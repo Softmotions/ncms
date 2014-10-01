@@ -1,5 +1,9 @@
 #header {
   width: 100%;
+  @media print {
+    display: none;
+  }
+
 
   .list {
     padding: 0;
