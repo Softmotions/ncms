@@ -4,6 +4,7 @@ import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.mhttl.Tree;
@@ -40,10 +41,15 @@ public class AsmTreeAM implements AsmAttributeManager {
 
     private final AsmRichRefAM richRefAM;
 
+    private final PageService pageService;
+
     @Inject
-    public AsmTreeAM(ObjectMapper mapper, AsmRichRefAM richRefAM) {
+    public AsmTreeAM(ObjectMapper mapper,
+                     AsmRichRefAM richRefAM,
+                     PageService pageService) {
         this.mapper = mapper;
         this.richRefAM = richRefAM;
+        this.pageService = pageService;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -125,8 +131,10 @@ public class AsmTreeAM implements AsmAttributeManager {
     }
 
     private void saveTree(AsmAttributeManagerContext ctx, AsmAttribute attr, ObjectNode tree) throws IOException {
+        //log.info("tree=" + tree);
         String type = tree.hasNonNull("type") ? tree.get("type").asText() : null;
         JsonNode node = tree.get("id");
+        JsonNode linkNode = tree.get("link");
         Long id = null;
         if (node != null) {
             if (node.isNumber()) {
@@ -137,6 +145,11 @@ public class AsmTreeAM implements AsmAttributeManager {
         }
         if ("file".equals(type) && id != null) {
             ctx.registerMediaFileDependency(attr, id);
+        } else if ("page".equals(type) && linkNode.isTextual()) {
+            String guid = pageService.resolvePageGuid(linkNode.asText());
+            if (guid != null) {
+                ctx.registerPageDependency(attr, guid);
+            }
         }
         JsonNode val = tree.get("nam");
         if (val != null && val.isTextual()) {

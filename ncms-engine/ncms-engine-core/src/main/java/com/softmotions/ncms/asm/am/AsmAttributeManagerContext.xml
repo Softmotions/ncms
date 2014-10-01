@@ -51,7 +51,7 @@
         </foreach>
         ) AS r(attr_id, asm_name)
         ON md.attr_id = r.attr_id AND md.asm_name = r.asm_name
-        WHEN NOT MATCHED THEN
+        WHEN NOT MATCHED AND EXISTS (SELECT 1 FROM ASMS a WHERE a.name = r.asm_name) THEN
           INSERT(attr_id, asm_name)
           VALUES(r.attr_id, r.asm_name)
         ELSE IGNORE
