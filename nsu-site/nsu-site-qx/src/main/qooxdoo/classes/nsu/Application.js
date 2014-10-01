@@ -8,10 +8,10 @@ qx.Class.define("nsu.Application", {
 
         main : function() {
             this.base(arguments);
-        }
-    },
+        },
 
-    destruct : function() {
-        //this._disposeObjects("__field_name");                                
+        createActions : function() {
+            return new nsu.Actions();
+        }
     }
 });

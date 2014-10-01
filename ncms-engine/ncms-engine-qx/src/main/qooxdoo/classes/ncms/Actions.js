@@ -263,12 +263,16 @@ qx.Class.define("ncms.Actions", {
         _resourceManager : null,
 
         _action : function(id, path) {
-            path = "/ncms" + path; //todo make it configurable
+            path = this._prefix() + path;
             if (qx.core.Environment.get("ncms.testing.urls")) {
                 this._addAction(id, this._resourceManager.toUri(this._testPrefix + path));
             } else {
                 this._addAction(id, this._resourceManager.toUri(path));
             }
+        },
+
+        _prefix : function() {
+            return "/ncms"; //todo make it configurable
         }
     }
 });

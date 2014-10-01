@@ -244,6 +244,7 @@ qx.Class.define("ncms.Application", {
 
         __logoutPending : false,
 
+        __construct : sm.lang.Object.newInstance,
 
         _createRootWidget : function() {
             var root = new qx.ui.root.Application(document);
@@ -257,6 +258,8 @@ qx.Class.define("ncms.Application", {
         },
 
         main : function() {
+
+            ncms.Application.ACT = this.createActions();
 
             //load AsmAttrManagersRegistry
             ncms.asm.am.AsmAttrManagersRegistry
@@ -425,12 +428,12 @@ qx.Class.define("ncms.Application", {
             return this.tr("You leave %1", appName);
         },
 
-        __construct : sm.lang.Object.newInstance
+
+        createActions : function() {
+            return new ncms.Actions();
+        }
     },
 
     defer : function(statics) {
-        if (statics.ACT == null) {
-            statics.ACT = new ncms.Actions();
-        }
     }
 });
