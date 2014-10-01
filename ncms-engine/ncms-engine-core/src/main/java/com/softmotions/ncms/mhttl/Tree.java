@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,8 +18,6 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public class Tree implements Iterable<Tree>, Serializable {
-
-    private static final Logger log = LoggerFactory.getLogger(Tree.class);
 
     private Long id;
 
@@ -125,10 +122,11 @@ public class Tree implements Iterable<Tree>, Serializable {
         return children;
     }
 
-    public void setChildren(ArrayList<Tree> children) {
+    public void setChildren(List<Tree> children) {
         this.children = children;
     }
 
+    @Nonnull
     public Iterator<Tree> iterator() {
         if (children == null) {
             return IteratorUtils.EMPTY_ITERATOR;
@@ -141,6 +139,7 @@ public class Tree implements Iterable<Tree>, Serializable {
         return (children != null && !children.isEmpty());
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     public String toString() {
         final StringBuilder sb = new StringBuilder("Tree{");
         sb.append("id=").append(id);

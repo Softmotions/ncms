@@ -29,6 +29,7 @@ public class Medialine {
         this.description = description;
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     public String toString() {
         final StringBuilder sb = new StringBuilder("Medialine{");
         sb.append("image=").append(image);
