@@ -1413,7 +1413,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                             ));
                         }
                     } else if (!h.isEmpty()) {
-                        hints.add(new Pair<Integer, Integer>(Integer.parseInt(h), null));
+                        hints.add(new Pair<>(Integer.parseInt(h), null));
                     }
                 } catch (NumberFormatException ignored) {
                 }
@@ -1464,6 +1464,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 log.warn("ensureResizedImage: Not applicable file content type: " + ctype);
                 return null;
             }
+            @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
             KVOptions kvmeta = new KVOptions((String) info.get("meta"));
             Integer iWidth = kvmeta.getIntObject("width", null);
             Integer iHeight = kvmeta.getIntObject("height", null);
