@@ -36,7 +36,6 @@ public class MediaModule extends AbstractModule {
         bind(MediaModuleInitializer.class).asEagerSingleton();
     }
 
-
     public static class MediaModuleInitializer {
 
         final NcmsEnvironment env;
@@ -96,9 +95,6 @@ public class MediaModule extends AbstractModule {
             } catch (IOException e) {
                 log.error("Failed to import directory: ", e);
             }
-
         }
-
-
     }
 }
