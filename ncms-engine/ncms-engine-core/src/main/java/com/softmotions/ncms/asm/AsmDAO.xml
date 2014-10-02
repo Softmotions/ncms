@@ -149,6 +149,19 @@
         WHERE id = #{id}
     </update>
 
+    <select id="asmPlainByIdWithTemplates" parameterType="map" resultType="com.softmotions.ncms.asm.Asm">
+        SELECT asm.*
+        FROM ASMS AS asm
+        INNER JOIN ASM_PARENTS AS parent ON parent.asm_id = asm.id
+        INNER JOIN ASMS AS pasm ON parent.asm_parent_id = pasm.id AND pasm.name IN
+        <foreach collection="templates" item="t" open="(" separator="," close=")">
+           #{t}
+        </foreach>
+        WHERE asm.id = #{id}
+        LIMIT 1
+    </select>
+
+
     <!-- ======================= Nested selects =========================== -->
 
     <select id="selectAsmParents"

@@ -363,6 +363,10 @@ public class AsmDAO extends MBDAOSupport {
         return selectOne("asmSelectAliasByName", name);
     }
 
+    @Transactional
+    public Asm asmPlainByIdWithTemplates(long asmId, String... templates) {
+        return selectOne("asmPlainByIdWithTemplates", "id", asmId, "templates", templates);
+    }
 
     public PageCriteria newPageCriteria() {
         return new PageCriteria(this, this.namespace).withStatement("queryAttrs");

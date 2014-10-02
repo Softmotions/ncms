@@ -214,8 +214,11 @@
 
     <html-to-pdf>
         <exec-path>/usr/local/bin/wkhtmltopdf</exec-path>
+        <exec-extra-params>
+            --print-media-type
+        </exec-extra-params>
         <page-url-template>${site-root}${ncms-prefix}/asm/{id}</page-url-template>
-        <!-- TODO: configure html to pdf module-->
+        <asm-templates>journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce</asm-templates>
     </html-to-pdf>
 
 </configuration>
