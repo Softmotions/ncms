@@ -171,8 +171,9 @@ public class AsmImageAM implements AsmAttributeManager {
 
         ctx.registerMediaFileDependency(attr, id);
 
-        if ((opts.hasNonNull("resize") && opts.get("resize").asBoolean() ||
-             opts.hasNonNull("cover") && opts.get("cover").asBoolean()) &&
+        if (((opts.hasNonNull("resize") && opts.get("resize").asBoolean()) ||
+             (opts.hasNonNull("cover") && opts.get("cover").asBoolean()))
+            &&
             (opts.hasNonNull("width") || opts.hasNonNull("height"))) {
 
             Integer width = opts.hasNonNull("width") ? opts.get("width").asInt() : 0;
@@ -187,7 +188,7 @@ public class AsmImageAM implements AsmAttributeManager {
             if (width != null && height != null &&
                 opts.hasNonNull("cover") && opts.get("cover").asBoolean()) {
                 flags |= MediaRepository.RESIZE_COVER_AREA;
-            } else if (!opts.hasNonNull("skipSmall") || opts.get("skipSmall").asBoolean(true)) {
+            } else if (opts.hasNonNull("skipSmall") && opts.get("skipSmall").asBoolean()) {
                 flags |= MediaRepository.RESIZE_SKIP_SMALL;
             }
             try {

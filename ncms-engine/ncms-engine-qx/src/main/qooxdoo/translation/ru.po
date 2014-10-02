@@ -909,19 +909,19 @@ msgstr "Управление файлами страницы"
 msgid "General"
 msgstr "Общее"
 
-#: ncms/pgs/PageEditorInfoPage.js:118
+#: ncms/pgs/PageEditorInfoPage.js:117
 msgid "Last modification: %1, %2"
 msgstr "Последнее редактирование: %1, %2"
 
-#: ncms/pgs/PageEditorInfoPage.js:127
+#: ncms/pgs/PageEditorInfoPage.js:126
 msgid "This page is not pulished yet"
 msgstr "Эта страница еще не опубликована"
 
-#: ncms/pgs/PageEditorInfoPage.js:176
+#: ncms/pgs/PageEditorInfoPage.js:175
 msgid "Choose the owner of %1"
 msgstr "Выберите владельца: %1"
 
-#: ncms/pgs/PageEditorInfoPage.js:177
+#: ncms/pgs/PageEditorInfoPage.js:176
 msgid "Choose the owner"
 msgstr "Выберите владельца"
 
