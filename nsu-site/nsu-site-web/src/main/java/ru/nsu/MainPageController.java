@@ -7,7 +7,6 @@ import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -46,16 +45,12 @@ public class MainPageController implements AsmController {
 
     private final AsmDAO adao;
 
-    private final ObjectMapper mapper;
-
     private final SubnodeConfiguration mpCfg;
 
     @Inject
     public MainPageController(AsmDAO adao,
-                              ObjectMapper mapper,
                               NcmsEnvironment env) {
         this.adao = adao;
-        this.mapper = mapper;
         this.mpCfg = env.xcfg().configurationAt("content.mainpage");
     }
 

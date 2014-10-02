@@ -1421,7 +1421,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
 
-    @Start(order = 90)
+    @Start(order = 90, parallel = true)
     public void start() {
         reloadIndexPages();
     }

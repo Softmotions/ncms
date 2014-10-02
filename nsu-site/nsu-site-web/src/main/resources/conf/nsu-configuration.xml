@@ -40,9 +40,10 @@
         JDBC.driver=${nsu.JDBC.driver}
     </mybatis>
 
-    <!--<mongo propsFile="{home}/.nsusite-import.ds"
-           defaultDB="nsu_site_production">
-    </mongo>-->
+    <!-- propsFile="{home}/.nsusite-import.ds" -->
+    <mongo defaultDB="nsu_site_production">
+        connectionUrl=localhost/nsu_site_production
+    </mongo>
 
     <solr rebuildIndex="false">
         <provider class="com.softmotions.weboot.solr.EmbeddedSolrServerProvider" name="core">
@@ -141,6 +142,7 @@
         <module class="com.softmotions.ncms.rds.RefDataStoreModule"/>
         <module class="ru.nsu.NSUModule"/>
         <module class="ru.nsu.pagepdf.HtmlToPdfModule"/>
+        <module class="ru.nsu.legacy.NSULegacyModule"/>
     </modules>
 
     <ui>
@@ -227,7 +229,9 @@
             --print-media-type
         </exec-extra-params>
         <page-url-template>${site-root}${ncms-prefix}/asm/{id}</page-url-template>
-        <asm-templates>journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce</asm-templates>
+        <asm-templates>
+            journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce
+        </asm-templates>
     </html-to-pdf>
 
 </configuration>

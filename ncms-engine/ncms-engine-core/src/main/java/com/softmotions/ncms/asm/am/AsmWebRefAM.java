@@ -234,7 +234,7 @@ public class AsmWebRefAM implements AsmAttributeManager {
     }
 
 
-    @Start(order = 10)
+    @Start(order = 10, parallel = true)
     public void start() {
         httpclient = HttpClients.createSystem();
     }
