@@ -26,6 +26,16 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         this.__mdateLabel = new qx.ui.basic.Label();
         this.add(this.__mdateLabel);
 
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
+
+        var bt = new qx.ui.form.Button(null, "ncms/icon/16/misc/monitor.png");
+        bt.setToolTipText(this.tr("Preview"));
+        bt.addListener("execute", function() {
+            var pp = ncms.Application.ACT.getRestUrl("pages.preview", this.getPageSpec());
+            qx.bom.Window.open(pp, "Preview", {}, false, false);
+        }, this);
+        hcont.add(bt);
+
         //Page owner
         this.__ownerSelector =
                 new sm.ui.form.ButtonField(this.tr("Owner"),
@@ -33,7 +43,8 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
                         true);
         this.__ownerSelector.setReadOnly(true);
         this.__ownerSelector.addListener("execute", this.__chooseOwner, this);
-        this.add(this.__ownerSelector);
+        hcont.add(this.__ownerSelector, {flex : 1});
+        this.add(hcont);
 
         this.addListener("loadPane", this.__onLoadPane, this);
 

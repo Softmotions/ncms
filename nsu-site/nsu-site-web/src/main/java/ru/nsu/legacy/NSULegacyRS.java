@@ -29,9 +29,9 @@ public class NSULegacyRS {
     }
 
     @PUT
-    @Path("/import/{guid}")
-    public void importMedia(@PathParam("guid") String guid,
+    @Path("/import/{id}")
+    public void importMedia(@PathParam("id") Long id,
                             String resource) {
-        log.info("Importing nsu legacy media: " + resource + " guid=" + guid);
+        log.info("Importing nsu legacy media: " + resource + " id=" + id);
     }
 }

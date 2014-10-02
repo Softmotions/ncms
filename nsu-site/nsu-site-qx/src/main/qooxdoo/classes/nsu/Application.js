@@ -26,10 +26,15 @@ qx.Class.define("nsu.Application", {
         __initLegacyEP : function(ep, cont) {
             var bt = new qx.ui.menu.Button(this.tr("Import files from old nsu.ru"));
             cont.add(bt);
-            bt.addListener("execute", function() {
-                qx.log.Logger.info("Import file from old nsu.ru");
+            bt.addListener("execute", function(ev) {
+                var dlg = new nsu.legacy.ImportLegacyDataDlg(ep.getPageSpec()["id"]);
+                dlg.addListener("completed", function(ev) {
+                    qx.log.Logger.info("ev=" + ev);
+                    dlg.close();
+                });
+                dlg.placeToWidget(ev.getTarget(), false);
+                dlg.open();
             });
         }
-
     }
 });

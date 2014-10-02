@@ -697,7 +697,7 @@ msgstr "Изменить"
 msgid "Choose the new file owner"
 msgstr "Выберите нового владельца файла"
 
-#: ncms/mmgr/MediaFileEditor.js:62 ncms/pgs/PageEditorInfoPage.js:31
+#: ncms/mmgr/MediaFileEditor.js:62 ncms/pgs/PageEditorInfoPage.js:41
 msgid "Owner"
 msgstr "Владелец"
 
@@ -722,8 +722,8 @@ msgstr "Папка"
 msgid "Image size"
 msgstr "Размер изображения"
 
-#: ncms/mmgr/MediaFileEditor.js:291 ncms/pgs/PageEditorEditPage.js:73
-#: ncms/mmgr/MediaFilesSelector.js:505
+#: ncms/mmgr/MediaFileEditor.js:291 ncms/pgs/PageEditorInfoPage.js:32
+#: ncms/pgs/PageEditorEditPage.js:73 ncms/mmgr/MediaFilesSelector.js:505
 msgid "Preview"
 msgstr "Предпросмотр"
 
@@ -909,19 +909,19 @@ msgstr "Управление файлами страницы"
 msgid "General"
 msgstr "Общее"
 
-#: ncms/pgs/PageEditorInfoPage.js:106
+#: ncms/pgs/PageEditorInfoPage.js:118
 msgid "Last modification: %1, %2"
 msgstr "Последнее редактирование: %1, %2"
 
-#: ncms/pgs/PageEditorInfoPage.js:115
+#: ncms/pgs/PageEditorInfoPage.js:127
 msgid "This page is not pulished yet"
 msgstr "Эта страница еще не опубликована"
 
-#: ncms/pgs/PageEditorInfoPage.js:164
+#: ncms/pgs/PageEditorInfoPage.js:176
 msgid "Choose the owner of %1"
 msgstr "Выберите владельца: %1"
 
-#: ncms/pgs/PageEditorInfoPage.js:165
+#: ncms/pgs/PageEditorInfoPage.js:177
 msgid "Choose the owner"
 msgstr "Выберите владельца"
 

@@ -4,4 +4,12 @@ msgstr ""
 
 #: nsu/Application.js:27
 msgid "Import files from old nsu.ru"
-msgstr "Импортировать файлы со старого nsu.ru"
+msgstr "Импортировать файлы из старого nsu.ru"
+
+#: nsu/legacy/ImportLegacyDataDlg.js:17
+msgid "Page address: http://nsu.ru/exp/...."
+msgstr ""
+
+#: nsu/legacy/ImportLegacyDataDlg.js:23
+msgid "URL"
+msgstr ""
