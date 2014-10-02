@@ -1123,12 +1123,38 @@ function initNewsMain(pageSize) {
 function initRemember() {
     $('.event-list .remember').click(function(event) {
         $('.remember-form').fadeOut(200);
-        $(this).closest('li').find('.remember-form').fadeIn(200);
+        var form = $(this).closest('li').find('.remember-form');
+        var contact = form.find('input[name=contact]');
+        contact.val('');
+        contact.focus();
+        form.fadeIn(200);
         event.preventDefault();
     });
     $('.remember-form .close').click(function(event) {
-        $('.remember-form').fadeOut(200);
+        var form = $('.remember-form');
+        form.fadeOut(200);
         event.preventDefault();
+    });
+    $('.remember-form').submit(function(event){
+        event.preventDefault();
+        var form = $(event.target);
+        if ($.trim(form.find('input[name=contact]').val()) == '') {
+            return;
+        }
+
+        var data = form.serializeArray();
+        data.push({name: 'action', value: 'remember'});
+        $.post(event.target.action, data, function(resp) {
+            var success = resp['success'];
+            if (success) {
+                form.find('input[type=text]').val('');
+                form.parent().find('.remember').hide();
+                form.fadeOut(500);
+            } else {
+                alert(resp['message'] || 'Ошибка сохранения напоминания');
+            }
+        }).fail(function(){
+        });
     });
 }
 

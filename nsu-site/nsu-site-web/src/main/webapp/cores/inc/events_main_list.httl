@@ -2,7 +2,7 @@
 #set(Date date = p.eventDate())
 #set(Image bigicon = p.asmAny("bigicon"))
 #if(p.isTodayEvent())
-<li style="#if(offset != 0)display: none;#end">
+<li style="#if(news_skip != 0)display: none;#end">
     <div class="top-holder">
         <span class="date">${date.format2("dd MMM YYYY")} <strong>${date.format2("HH:mm")}</strong></span>
         <span class="now">Сегодня!</span>
@@ -17,10 +17,11 @@
     <p>${p.asm("annotation")}</p>
 </li>
 #elseif(p.isFutureEvent())
-<li style="#if(offset != 0)display: none;#end">
-    <form action="#" class="remember-form">
+<li style="#if(news_skip != 0)display: none;#end">
+    <form action="$!{page().link}" class="remember-form">
         <fieldset>
-            <a href="#" class="close">close</a>
+            <a class="close">close</a>
+            <input type="hidden" name="eventId" value="${p.id}"/>
             <h4>Напомнить</h4>
             <div class="input-holder">
                 <input type="text" name="contact" class="text" placeholder="Ваш email или телефон" />
@@ -43,7 +44,7 @@
     <p>${p.asm("annotation")}</p>
 </li>
 #elseif(p.isPastEvent())
-<li class="end-item" style="#if(offset != 0)display: none;#end">
+<li class="end-item" style="#if(news_skip != 0)display: none;#end">
     <div class="top-holder">
         <span class="date">${date.format2("dd MMM YYYY")}</span>
         <span class="end"></span>

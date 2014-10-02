@@ -479,6 +479,20 @@
         SELECT nav_alias FROM ASMS WHERE name = #{name}
     </select>
 
+    <update id="setAsmRefData" parameterType="map">
+        MERGE INTO ASM_REFDATA ard
+        USING (
+                  VALUES (#{id}, #{type}, #{svalue}, #{ivalue})
+              ) AS s(asm_id, type, svalue, ivalue)
+        ON ard.asm_id = s.asm_id AND ard.type = s.type
+          <if test="svalue != null"> AND ard.svalue = s.svalue</if>
+          <if test="ivalue != null"> AND ard.ivalue = s.ivalue</if>
+        WHEN NOT MATCHED THEN
+        INSERT (asm_id, type, svalue, ivalue)
+        VALUES (s.asm_id, s.type, s.svalue, s.ivalue)
+        ELSE IGNORE
+    </update>
+
     <!-- ======================== Result maps ============================= -->
 
     <resultMap id="coreRM"

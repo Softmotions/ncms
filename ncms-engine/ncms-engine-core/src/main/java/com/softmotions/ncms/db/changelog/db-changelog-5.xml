@@ -6,6 +6,44 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.2.xsd">
 
+    <changeSet id="42" author="tyutyunkov@gmail.com">
+
+        <createTable tableName="ASM_REFDATA"
+                     remarks="Assembly additional data">
+            <column name="ASM_ID"
+                    type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE"
+                    type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SVALUE"
+                    type="VARCHAR(1024)">
+            </column>
+            <column name="IVALUE"
+                    type="BIGINT">
+            </column>
+        </createTable>
+        <createIndex tableName="ASM_REFDATA"
+                     indexName="IDX_ASM_REFDATA_SVAL">
+            <column name="TYPE"/>
+            <column name="SVALUE"/>
+        </createIndex>
+        <createIndex tableName="ASM_REFDATA"
+                     indexName="IDX_ASM_REFDATA_IVAL">
+            <column name="IVALUE"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="ASM_REFDATA"
+                                 baseColumnNames="ASM_ID"
+                                 constraintName="FK_ASM_REFDATA"
+                                 referencedTableName="ASMS"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+
     <changeSet id="43" author="tyutyunkov@gmail.com">
 
         <createTable tableName="GENERAL_REF_DATA"
@@ -29,4 +67,5 @@
         </createIndex>
 
     </changeSet>
+
 </databaseChangeLog>
