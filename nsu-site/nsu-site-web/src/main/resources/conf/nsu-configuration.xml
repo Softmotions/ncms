@@ -122,6 +122,9 @@
     </events>
 
     <modules>
+        <module class="com.softmotions.weboot.mb.MBMyBatisModule"/>
+        <module class="com.softmotions.weboot.liquibase.WBLiquibaseModule"/>
+        <module class="com.softmotions.weboot.solr.SolrModule"/>
         <module class="com.softmotions.ncms.events.EventsModule"/>
         <module class="com.softmotions.ncms.security.NcmsSecurityModule"/>
         <module class="com.softmotions.ncms.asm.AsmModule"/>

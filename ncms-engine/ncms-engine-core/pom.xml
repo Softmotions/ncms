@@ -69,16 +69,18 @@
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-weboot</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>bouncycastle</groupId>
-                    <artifactId>bcmail-jdk14</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>bouncycastle</groupId>
-                    <artifactId>bcprov-jdk14</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot-liquibase</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot-solr</artifactId>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>

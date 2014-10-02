@@ -191,6 +191,21 @@
             </dependency>
             <dependency>
                 <groupId>softmotions</groupId>
+                <artifactId>softmotions-weboot-solr</artifactId>
+                <version>${softmotions.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
+                <artifactId>softmotions-weboot-mybatis</artifactId>
+                <version>${softmotions.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
+                <artifactId>softmotions-weboot-liquibase</artifactId>
+                <version>${softmotions.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
                 <artifactId>softmotions-web-realms</artifactId>
                 <version>${softmotions.commons.version}</version>
             </dependency>
