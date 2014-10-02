@@ -1,7 +1,5 @@
 package ru.nsu.pagepdf;
 
-import com.softmotions.ncms.asm.Asm;
-import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.rds.RefDataStore;
 import com.softmotions.web.ResponseUtils;
 
@@ -13,7 +11,6 @@ import org.mybatis.guice.transactional.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
@@ -34,27 +31,19 @@ public class PagePdfRS {
 
     private final RefDataStore ds;
 
-    private final AsmDAO adao;
-
     @Inject
-    public PagePdfRS(RefDataStore ds, AsmDAO adao) {
+    public PagePdfRS(RefDataStore ds) {
         this.ds = ds;
-        this.adao = adao;
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/{id}/{name}")
     @Transactional
     public Response getPagePdf(@Context HttpServletRequest req,
-                               @PathParam("id") Long id) throws Exception {
-        Asm asm = adao.asmSelectById(id);
-        if (asm == null) {
-            throw new NotFoundException();
-        }
+                               @PathParam("id") Long id,
+                               @PathParam("name") String name) throws Exception {
         final Response.ResponseBuilder rb = Response.ok();
-        rb.header(HttpHeaders.CONTENT_DISPOSITION,
-                  ResponseUtils.encodeContentDisposition(asm.getHname(),
-                                                         null != req.getParameter("inline")));
+        rb.header(HttpHeaders.CONTENT_DISPOSITION, ResponseUtils.encodeContentDisposition(name, true));
         ds.getData(PAGE_PDF_REF_TEMPLATE.replace("{id}", String.valueOf(id)), (type, data) -> {
             if (type == null || data == null) {
                 rb.status(Response.Status.NO_CONTENT);

@@ -1,9 +1,12 @@
 package ru.nsu;
 
 import ru.nsu.pagepdf.PagePdfRS;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -55,5 +58,15 @@ public class HttlMethods {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         PagePdfRS datars = ctx.getInjector().getInstance(PagePdfRS.class);
         return datars.isPagePdfExists(ctx.getAsm().getId());
+    }
+
+    public static String pagePdfLink() throws UnsupportedEncodingException {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        NcmsEnvironment env = ctx.getEnvironment();
+        String hname = ctx.getAsm().getHname();
+        return env.getNcmsRoot()
+               + "/rs/pagepdf/"
+               + ctx.getAsm().getId() + '/'
+               + URLEncoder.encode(hname + ".pdf", "UTF-8");
     }
 }
