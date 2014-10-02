@@ -1,9 +1,8 @@
 package ru.nsu.pagepdf;
 
-import com.softmotions.commons.cont.Pair;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
-import com.softmotions.ncms.ds.GeneralDataStore;
+import com.softmotions.ncms.rds.RefDataStore;
 import com.softmotions.web.ResponseUtils;
 
 import com.google.inject.Inject;
@@ -33,12 +32,12 @@ public class PagePdfRS {
 
     public static final String PAGE_PDF_REF_TEMPLATE = "page.pdf:{id}";
 
-    private final GeneralDataStore ds;
+    private final RefDataStore ds;
 
     private final AsmDAO adao;
 
     @Inject
-    public PagePdfRS(GeneralDataStore ds, AsmDAO adao) {
+    public PagePdfRS(RefDataStore ds, AsmDAO adao) {
         this.ds = ds;
         this.adao = adao;
     }
@@ -48,28 +47,22 @@ public class PagePdfRS {
     @Transactional
     public Response getPagePdf(@Context HttpServletRequest req,
                                @PathParam("id") Long id) throws Exception {
-
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
             throw new NotFoundException();
         }
-
         final Response.ResponseBuilder rb = Response.ok();
-
-        rb.header(HttpHeaders.CONTENT_DISPOSITION, ResponseUtils.encodeContentDisposition(asm.getHname(), null != req.getParameter("inline")));
-
+        rb.header(HttpHeaders.CONTENT_DISPOSITION,
+                  ResponseUtils.encodeContentDisposition(asm.getHname(),
+                                                         null != req.getParameter("inline")));
         ds.getData(PAGE_PDF_REF_TEMPLATE.replace("{id}", String.valueOf(id)), (type, data) -> {
             if (type == null || data == null) {
                 rb.status(Response.Status.NO_CONTENT);
             } else {
                 rb.type(type);
-
-                rb.entity((StreamingOutput) output -> {
-                    IOUtils.copyLarge(data, output);
-                });
+                rb.entity((StreamingOutput) output -> IOUtils.copyLarge(data, output));
             }
         });
-
         return rb.build();
     }
 

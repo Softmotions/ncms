@@ -125,4 +125,9 @@ public class HttlUtilsMethods {
 
         return env.xcfg();
     }
+
+    public static NcmsEnvironment env() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getInjector().getInstance(NcmsEnvironment.class);
+    }
 }

@@ -68,4 +68,15 @@
 
     </changeSet>
 
+    <changeSet id="44" author="adamansky@gmail.com">
+        <renameTable oldTableName="GENERAL_REF_DATA" newTableName="REF_DATA"/>
+    </changeSet>
+
+    <changeSet id="45" author="adamansky@gmail.com">
+        <renameTable oldTableName="REF_DATA" newTableName="REFDATA"/>
+        <createIndex tableName="REFDATA" indexName="IDX_REFDATA_REF" unique="true">
+            <column name="REF"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

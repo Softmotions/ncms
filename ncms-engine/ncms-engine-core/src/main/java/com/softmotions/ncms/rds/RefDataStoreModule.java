@@ -1,4 +1,4 @@
-package com.softmotions.ncms.ds;
+package com.softmotions.ncms.rds;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
@@ -7,9 +7,9 @@ import com.google.inject.Singleton;
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
-public class GeneralDataStoreModule extends AbstractModule {
+public class RefDataStoreModule extends AbstractModule {
 
     protected void configure() {
-        bind(GeneralDataStore.class).in(Singleton.class);
+        bind(RefDataStore.class).in(Singleton.class);
     }
 }

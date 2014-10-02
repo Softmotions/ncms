@@ -246,6 +246,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot-mongo</artifactId>
+            <version>${softmotions.commons.version}</version>
+        </dependency>
+        <dependency>
             <groupId>nsu</groupId>
             <artifactId>nsu-site-qx</artifactId>
             <version>${project.parent.version}</version>

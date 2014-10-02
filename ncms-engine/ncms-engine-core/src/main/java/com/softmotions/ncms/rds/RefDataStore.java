@@ -1,5 +1,6 @@
-package com.softmotions.ncms.ds;
+package com.softmotions.ncms.rds;
 
+import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.google.inject.Inject;
@@ -17,28 +18,26 @@ import java.util.Map;
  * @version $Id$
  */
 @Singleton
-public class GeneralDataStore extends MBDAOSupport {
+public class RefDataStore extends MBDAOSupport {
 
     @Inject
-    public GeneralDataStore(SqlSession sess) {
-        super(GeneralDataStore.class.getName(), sess);
+    public RefDataStore(SqlSession sess) {
+        super(RefDataStore.class.getName(), sess);
     }
 
     @Transactional
-    public void getData(String ref, DataApplyCallback callback) throws Exception {
+    public void getData(String ref, RefDataAcceptor callback) throws Exception {
         if (callback == null) {
             throw new IllegalArgumentException("callback");
         }
-
         Map<String, Object> row = selectOne("getData", ref);
         if (row == null) {
-            callback.apply(null, null);
+            callback.data(null, null);
             return;
         }
-
         String type = (String) row.get("content_type");
         try (InputStream data = (InputStream) row.get("data")) {
-            callback.apply(type, data);
+            callback.data(type, data);
         }
     }
 
@@ -47,7 +46,8 @@ public class GeneralDataStore extends MBDAOSupport {
         if (StringUtils.isBlank(ref)) {
             throw new IllegalArgumentException("ref");
         }
-        return ((Long) selectOne("checkDataExists", StringUtils.trim(ref))) > 0;
+        return (NumberUtils.number2Long(selectOne("checkDataExists",
+                                                  StringUtils.trim(ref)), 0) > 0);
     }
 
     @Transactional
@@ -58,8 +58,10 @@ public class GeneralDataStore extends MBDAOSupport {
         if (StringUtils.isBlank(type)) {
             throw new IllegalArgumentException("type");
         }
-
-        update("saveData", "ref", ref, "data", data, "content_type", type);
+        update("saveData",
+               "ref", ref,
+               "data", data,
+               "content_type", type);
     }
 
     @Transactional
@@ -70,7 +72,4 @@ public class GeneralDataStore extends MBDAOSupport {
         update("removeData", StringUtils.trim(ref));
     }
 
-    public interface DataApplyCallback {
-        void apply(String type, InputStream data);
-    }
 }

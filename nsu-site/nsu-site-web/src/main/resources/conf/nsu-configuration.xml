@@ -40,6 +40,10 @@
         JDBC.driver=${nsu.JDBC.driver}
     </mybatis>
 
+    <!--<mongo propsFile="{home}/.nsusite-import.ds"
+           defaultDB="nsu_site_production">
+    </mongo>-->
+
     <solr rebuildIndex="false">
         <provider class="com.softmotions.weboot.solr.EmbeddedSolrServerProvider" name="core">
             <instance-dir>{home}/.nsusite/solr</instance-dir>
@@ -122,9 +126,10 @@
     </events>
 
     <modules>
-        <module class="com.softmotions.weboot.mb.MBMyBatisModule"/>
+        <module class="com.softmotions.weboot.mb.WBMyBatisModule"/>
         <module class="com.softmotions.weboot.liquibase.WBLiquibaseModule"/>
-        <module class="com.softmotions.weboot.solr.SolrModule"/>
+        <module class="com.softmotions.weboot.mongo.WBMongoModule"/>
+        <module class="com.softmotions.weboot.solr.WBSolrModule"/>
         <module class="com.softmotions.ncms.events.EventsModule"/>
         <module class="com.softmotions.ncms.security.NcmsSecurityModule"/>
         <module class="com.softmotions.ncms.asm.AsmModule"/>
@@ -133,7 +138,7 @@
         <module class="com.softmotions.ncms.media.MediaModule"/>
         <module class="com.softmotions.ncms.mediawiki.MediaWikiModule"/>
         <module class="com.softmotions.ncms.user.UserModule"/>
-        <module class="com.softmotions.ncms.ds.GeneralDataStoreModule"/>
+        <module class="com.softmotions.ncms.rds.RefDataStoreModule"/>
         <module class="ru.nsu.NSUModule"/>
         <module class="ru.nsu.pagepdf.HtmlToPdfModule"/>
     </modules>

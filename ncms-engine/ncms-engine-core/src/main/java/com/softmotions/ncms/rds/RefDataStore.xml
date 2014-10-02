@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.softmotions.ncms.ds.GeneralDataStore">
+<mapper namespace="com.softmotions.ncms.rds.RefDataStore">
 
     <resultMap type="map" id="data">
         <result property="content_type" column="content_type"/>
@@ -12,39 +12,41 @@
 
     <select id="getData" resultMap="data" parameterType="string">
         SELECT
-          content_type AS "content_type",
-          data         AS "data"
-        FROM GENERAL_REF_DATA
+            content_type AS "content_type",
+            data         AS "data"
+        FROM REFDATA
         WHERE ref = #{ref}
     </select>
 
-    <select id="checkDataExists"  resultType="long" parameterType="string">
-        SELECT COUNT(*)
-        FROM GENERAL_REF_DATA
+    <select id="checkDataExists" resultType="long" parameterType="string">
+        SELECT
+            COUNT(*)
+        FROM REFDATA
         WHERE ref = #{ref}
     </select>
 
     <update id="saveData" databaseId="DB2" parameterType="map">
-        MERGE INTO GENERAL_REF_DATA n
+        MERGE INTO REFDATA n
         USING (
-                VALUES (#{ref}, #{content_type}, #{data})
+                  VALUES (#{ref}, #{content_type}, #{data})
               ) AS o ("REF", "CONTENT_TYPE", "DATA")
         ON o.ref = n.ref
         WHEN MATCHED THEN
-        UPDATE SET n.content_type = o.content_type, n.data = o.data
+          UPDATE SET n.content_type = o.content_type, n.data = o.data
         WHEN NOT MATCHED THEN
-        INSERT (ref, content_type, data)
-        VALUES (o.ref, o.content_type, o.data)
+          INSERT (ref, content_type, data)
+          VALUES (o.ref, o.content_type, o.data)
     </update>
 
     <update id="saveData" databaseId="H2" parameterType="map">
-        MERGE INTO GENERAL_REF_DATA (ref, content_type, data)
-        KEY (ref)
+        MERGE INTO REFDATA (ref, content_type, DATA )
+        KEY (REF)
         VALUE (#{ref}, #{content_type}, #{data})
     </update>
 
     <delete id="removeData" parameterType="map">
-        DELETE FROM GENERAL_REF_DATA
+        DELETE
+        FROM REFDATA
         WHERE ref = #{ref}
     </delete>
 
