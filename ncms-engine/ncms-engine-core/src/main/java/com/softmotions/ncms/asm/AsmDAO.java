@@ -368,6 +368,23 @@ public class AsmDAO extends MBDAOSupport {
         return new PageCriteria(this, this.namespace).withStatement("queryAttrs");
     }
 
+    public void setAsmRefData(Long asmId, String type, Number ivalue) {
+        setAsmRefData(asmId, type, null, ivalue);
+    }
+
+    public void setAsmRefData(Long asmId, String type, String svalue) {
+        setAsmRefData(asmId, type, svalue, null);
+    }
+
+    @Transactional
+    public void setAsmRefData(Long asmId, String type, String svalue, Number ivalue) {
+        if (svalue == null && ivalue == null) {
+            throw new IllegalArgumentException("At least one of values must be not null");
+        }
+
+        update("setAsmRefData", "id", asmId, "type", type, "svalue", svalue, "ivalue", ivalue);
+    }
+
     @SuppressWarnings("unchecked")
     static class CriteriaBase<T extends CriteriaBase> extends MBCriteriaQuery<T> {
 
