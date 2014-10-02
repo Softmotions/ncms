@@ -7,6 +7,7 @@ import com.softmotions.ncms.ds.GeneralDataStore;
 import com.softmotions.web.ResponseUtils;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import org.apache.commons.io.IOUtils;
 import org.mybatis.guice.transactional.Transactional;
@@ -26,7 +27,8 @@ import java.io.InputStream;
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
-@Path("ad")
+@Path("pagepdf")
+@Singleton
 public class PagePdfRS {
 
     public static final String PAGE_PDF_REF_TEMPLATE = "page.pdf:{id}";
@@ -42,7 +44,7 @@ public class PagePdfRS {
     }
 
     @GET
-    @Path("/pagepdf/{id}")
+    @Path("/{id}")
     @Transactional
     public Response getPagePdf(@Context HttpServletRequest req,
                                @PathParam("id") Long id) throws Exception {

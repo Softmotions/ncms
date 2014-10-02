@@ -1,7 +1,6 @@
 package com.softmotions.ncms.ds;
 
 import com.softmotions.commons.cont.Pair;
-import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.google.inject.Inject;
@@ -12,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 
-import javax.ws.rs.Path;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Map;
@@ -21,7 +19,6 @@ import java.util.Map;
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
-@Path("ad")
 @Singleton
 public class GeneralDataStore extends MBDAOSupport {
 
