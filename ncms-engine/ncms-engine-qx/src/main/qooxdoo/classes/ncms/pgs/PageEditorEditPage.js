@@ -8,6 +8,7 @@
  * @asset(ncms/icon/16/misc/light-bulb.png)
  * @asset(ncms/icon/16/misc/light-bulb-off.png)
  * @asset(ncms/icon/16/misc/images.png)
+ * @asset(ncms/icon/16/misc/puzzle.png)
  */
 qx.Class.define("ncms.pgs.PageEditorEditPage", {
     extend : qx.ui.tabview.Page,
@@ -55,6 +56,17 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt = new qx.ui.form.Button(this.tr("Files"), "ncms/icon/16/misc/images.png");
         bt.addListener("execute", this.__files, this);
         hcont.add(bt);
+
+        var epoins = ncms.Application.extensionPoints("ncms.pgs.PageEditorEditPage.HEADER_BUTTONS");
+        if (epoins.length > 0) {
+            var menu = new qx.ui.menu.Menu();
+            var embt = new qx.ui.form.MenuButton(null, "ncms/icon/16/misc/puzzle.png", menu);
+            hcont.add(embt);
+            epoins.forEach(function(ep) {
+                ep(this, menu);
+            }, this);
+        }
+
         header.add(hcont);
 
         var hcont2 = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));

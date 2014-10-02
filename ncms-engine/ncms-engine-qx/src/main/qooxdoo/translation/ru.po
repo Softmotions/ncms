@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:33 ncms/Application.js:415
+#: ncms/Application.js:33 ncms/Application.js:451
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста войдите заново"
 
-#: ncms/Application.js:428
+#: ncms/Application.js:464
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -27,7 +27,7 @@ msgstr "Редактирование атрибута страницы"
 #: ncms/asm/am/FileRefAM.js:145 ncms/asm/am/ImageAMValueWidget.js:99
 #: ncms/asm/AsmAttrEditorDlg.js:56 ncms/usr/UserEditForm.js:22
 #: ncms/usr/UserNewDlg.js:34 ncms/asm/AsmEditor.js:90
-#: ncms/pgs/PageEditorEditPage.js:136
+#: ncms/pgs/PageEditorEditPage.js:148
 msgid "This field is required"
 msgstr "Обязательное поле"
 
@@ -82,7 +82,7 @@ msgstr "Ок"
 #: ncms/wiki/InsertYoutubeDlg.js:62 ncms/asm/AsmAttrEditorDlg.js:112
 #: ncms/usr/UserEditForm.js:54 ncms/pgs/PagesCollectionDlg.js:45
 #: ncms/wiki/TableDlg.js:60 ncms/usr/UserNewDlg.js:68
-#: ncms/pgs/PageEditorEditPage.js:50 ncms/usr/UserSelectorDlg.js:42
+#: ncms/pgs/PageEditorEditPage.js:51 ncms/usr/UserSelectorDlg.js:42
 #: ncms/pgs/PagesSelectorDlg.js:59 ncms/mmgr/MediaSelectFolderDlg.js:59
 msgid "Cancel"
 msgstr "Отмена"
@@ -133,7 +133,7 @@ msgstr "Перезаписать атрибут"
 msgid "New"
 msgstr "Создать"
 
-#: ncms/asm/am/TreeAMValueWidget.js:365 ncms/pgs/PageEditorEditPage.js:29
+#: ncms/asm/am/TreeAMValueWidget.js:365 ncms/pgs/PageEditorEditPage.js:30
 #: ncms/asm/AsmAttrsTable.js:201
 msgid "Edit"
 msgstr "Редактировать"
@@ -200,7 +200,7 @@ msgstr "Страница"
 msgid "News page"
 msgstr "Новость"
 
-#: ncms/asm/AsmEditor.js:117 ncms/pgs/PageEditorEditPage.js:66
+#: ncms/asm/AsmEditor.js:117 ncms/pgs/PageEditorEditPage.js:78
 msgid "Template"
 msgstr "Шаблон"
 
@@ -488,7 +488,7 @@ msgid "Pages"
 msgstr "Страницы"
 
 #: ncms/asm/am/TreeAM.js:49 ncms/mmgr/MediaItemTreeSelector.js:20
-#: ncms/pgs/PageEditorEditPage.js:55 ncms/asm/am/RichRefAM.js:40
+#: ncms/pgs/PageEditorEditPage.js:56 ncms/asm/am/RichRefAM.js:40
 msgid "Files"
 msgstr "Файлы"
 
@@ -722,7 +722,7 @@ msgstr "Папка"
 msgid "Image size"
 msgstr "Размер изображения"
 
-#: ncms/mmgr/MediaFileEditor.js:291 ncms/pgs/PageEditorEditPage.js:61
+#: ncms/mmgr/MediaFileEditor.js:291 ncms/pgs/PageEditorEditPage.js:73
 #: ncms/mmgr/MediaFilesSelector.js:505
 msgid "Preview"
 msgstr "Предпросмотр"
@@ -784,7 +784,7 @@ msgid "Are you sure to remove folder: %1"
 msgstr "Вы действительно желаете безвозвратно удалить папку: %1"
 
 #: ncms/mmgr/MediaTextFileEditor.js:46 ncms/usr/UserEditForm.js:50
-#: ncms/pgs/PageEditorEditPage.js:45
+#: ncms/pgs/PageEditorEditPage.js:46
 msgid "Save"
 msgstr "Сохранить"
 
@@ -869,39 +869,39 @@ msgstr "Добавить пользователя в список прав"
 msgid "Remove user recursively"
 msgstr "Убрать пользователя (рекурсивно)"
 
-#: ncms/pgs/PageEditorEditPage.js:41 ncms/pgs/PageEditorEditPage.js:372
+#: ncms/pgs/PageEditorEditPage.js:42 ncms/pgs/PageEditorEditPage.js:384
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:69 ncms/pgs/PageEditorEditPage.js:260
+#: ncms/pgs/PageEditorEditPage.js:81 ncms/pgs/PageEditorEditPage.js:272
 msgid "Please select the template page"
 msgstr "Пожалуйста выберите шаблон для страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:298
+#: ncms/pgs/PageEditorEditPage.js:310
 msgid "Page fields contain errors"
 msgstr "В полях страницы обнаружены ошибки"
 
-#: ncms/pgs/PageEditorEditPage.js:321
+#: ncms/pgs/PageEditorEditPage.js:333
 msgid "Failed to save page."
 msgstr "Ошибка при сохранении страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:339
+#: ncms/pgs/PageEditorEditPage.js:351
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:347
+#: ncms/pgs/PageEditorEditPage.js:359
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:372
+#: ncms/pgs/PageEditorEditPage.js:384
 msgid "Published"
 msgstr "Опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:378
+#: ncms/pgs/PageEditorEditPage.js:390
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения"
 
-#: ncms/pgs/PageEditorEditPage.js:390
+#: ncms/pgs/PageEditorEditPage.js:402
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 

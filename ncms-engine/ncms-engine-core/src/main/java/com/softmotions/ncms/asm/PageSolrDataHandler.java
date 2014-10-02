@@ -43,7 +43,10 @@ public class PageSolrDataHandler implements SolrDataHandler {
     private Collection<String> extraAttributeNames;
 
     @Inject
-    public PageSolrDataHandler(AsmAttributeManagersRegistry aamr, NcmsEventBus ebus, SolrServer solr, AsmDAO adao) {
+    public PageSolrDataHandler(AsmAttributeManagersRegistry aamr,
+                               NcmsEventBus ebus,
+                               SolrServer solr,
+                               AsmDAO adao) {
         this.aamr = aamr;
         this.ebus = ebus;
         this.solr = solr;

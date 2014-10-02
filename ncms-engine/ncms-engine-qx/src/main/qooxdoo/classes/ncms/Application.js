@@ -211,6 +211,14 @@ qx.Class.define("ncms.Application", {
 
         logout : function() {
             ncms.Application.INSTANCE.logout();
+        },
+
+        extensionPoints : function(key) {
+            return ncms.Application.INSTANCE.extensionPoints(key);
+        },
+
+        registerExtensionPoint : function(key, point) {
+            return ncms.Application.INSTANCE.registerExtensionPoint(key, point);
         }
     },
 
@@ -246,6 +254,8 @@ qx.Class.define("ncms.Application", {
 
         __construct : sm.lang.Object.newInstance,
 
+        __extensionPoints : null,
+
         _createRootWidget : function() {
             var root = new qx.ui.root.Application(document);
             root.setWindowManager(new sm.ui.window.ExtendedWindowManager());
@@ -259,6 +269,7 @@ qx.Class.define("ncms.Application", {
 
         main : function() {
 
+            this.__extensionPoints = {};
             ncms.Application.ACT = this.createActions();
 
             //load AsmAttrManagersRegistry
@@ -395,6 +406,31 @@ qx.Class.define("ncms.Application", {
          */
         registerWSA : function(widgetId, factory, opts, self) {
             this.getComponent("right-stack").registerWidget(widgetId, factory, opts, self);
+        },
+
+
+        /**
+         * Register extension point function.
+         *
+         * @param key {String} Extension points group
+         * @param point {Function} Extension point
+         */
+        registerExtensionPoint : function(key, point) {
+            if (typeof key !== "string") {
+                throw new Error("Extension point key must be a string");
+            }
+            if (typeof point !== "function") {
+                throw new Error("Extension point must be a function");
+            }
+            var epl = this.__extensionPoints[key];
+            if (!Array.isArray(epl)) {
+                epl = this.__extensionPoints[key] = [];
+            }
+            epl.push(point);
+        },
+
+        extensionPoints : function(key) {
+            return this.__extensionPoints[key] || [];
         },
 
         __createRightStack : function() {

@@ -1,3 +1,7 @@
 # 
 msgid ""
 msgstr ""
+
+#: nsu/Application.js:27
+msgid "Import files from old nsu.ru"
+msgstr "Импортировать файлы со старого nsu.ru"
