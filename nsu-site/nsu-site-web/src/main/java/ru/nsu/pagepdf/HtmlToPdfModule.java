@@ -107,7 +107,7 @@ public class HtmlToPdfModule extends AbstractModule {
 
                         if (wkhtmltopdf.waitFor() == 0) {
                             try (final FileInputStream fis = new FileInputStream(tmpFile)) {
-                                datars.savePagePdf(asm.getId(), IOUtils.toByteArray(fis));
+                                datars.savePagePdf(asm.getId(), fis);
                             }
                         }
                     } catch (Exception e) {

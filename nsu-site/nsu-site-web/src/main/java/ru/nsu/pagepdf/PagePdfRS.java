@@ -73,7 +73,7 @@ public class PagePdfRS {
         return rb.build();
     }
 
-    public void savePagePdf(Long id, byte[] data) {
+    public void savePagePdf(Long id, InputStream data) {
         ds.saveData(PAGE_PDF_REF_TEMPLATE.replace("{id}", String.valueOf(id)), data, "application/pdf");
     }
 

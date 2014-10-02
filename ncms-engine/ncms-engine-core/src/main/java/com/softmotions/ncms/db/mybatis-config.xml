@@ -20,6 +20,7 @@
 
     <typeHandlers>
         <typeHandler handler="com.softmotions.weboot.mb.ArrayTypeHandler"/>
+        <typeHandler handler="com.softmotions.weboot.mb.InputStreamTypeHandler"/>
     </typeHandlers>
 
     <environments default="development">

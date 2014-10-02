@@ -5,7 +5,12 @@
 
 <mapper namespace="com.softmotions.ncms.ds.GeneralDataStore">
 
-    <select id="getData" resultType="map" parameterType="string">
+    <resultMap type="map" id="data">
+        <result property="content_type" column="content_type"/>
+        <result property="data" column="data" typeHandler="com.softmotions.weboot.mb.InputStreamTypeHandler"/>
+    </resultMap>
+
+    <select id="getData" resultMap="data" parameterType="string">
         SELECT
           content_type AS "content_type",
           data         AS "data"

@@ -6,13 +6,11 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 
 import java.io.InputStream;
-import java.sql.Blob;
 import java.util.Map;
 
 /**
@@ -35,9 +33,11 @@ public class GeneralDataStore extends MBDAOSupport {
         }
 
         String type = (String) row.get("content_type");
-        Blob data = (Blob) row.get("data");
+        InputStream data = (InputStream) row.get("data");
 
-        return type == null || data == null ? null : new Pair(type, data.getBinaryStream());
+        // TODO: export data by callback
+
+        return type == null || data == null ? null : new Pair(type, data);
     }
 
     @Transactional
@@ -49,16 +49,12 @@ public class GeneralDataStore extends MBDAOSupport {
     }
 
     @Transactional
-    public void saveData(String ref, byte[] data, String type) {
+    public void saveData(String ref, InputStream data, String type) {
         if (StringUtils.isBlank(ref)) {
             throw new IllegalArgumentException("ref");
         }
         if (StringUtils.isBlank(type)) {
             throw new IllegalArgumentException("type");
-        }
-
-        if (data == null) {
-            data = ArrayUtils.EMPTY_BYTE_ARRAY;
         }
 
         update("saveData", "ref", ref, "data", data, "content_type", type);
