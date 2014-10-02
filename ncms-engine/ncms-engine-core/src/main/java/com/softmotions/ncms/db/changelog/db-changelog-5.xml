@@ -28,12 +28,5 @@
             <column name="REF"/>
         </createIndex>
 
-        <!--<addForeignKeyConstraint baseTableName="DATA"-->
-                                 <!--baseColumnNames="ASM_ID"-->
-                                 <!--constraintName="FK_"-->
-                                 <!--referencedTableName="ASMS"-->
-                                 <!--referencedColumnNames="ID"-->
-                                 <!--onDelete="CASCADE"/>-->
-
     </changeSet>
 </databaseChangeLog>

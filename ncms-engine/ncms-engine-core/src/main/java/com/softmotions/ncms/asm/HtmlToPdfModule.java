@@ -2,8 +2,8 @@ package com.softmotions.ncms.asm;
 
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
+import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
-import com.softmotions.ncms.media.MediaRS;
 import com.softmotions.weboot.lifecycle.Start;
 
 import com.google.common.eventbus.Subscribe;
@@ -63,7 +63,7 @@ public class HtmlToPdfModule extends AbstractModule {
         }
 
         @Subscribe
-        public void onAsmModify(final AsmModifiedEvent event) {
+        public void onAsmModified(final AsmModifiedEvent event) {
             saver.execute(() -> {
                 // todo: filter by templates
                 Asm asm = adao.asmSelectById(event.getId());
@@ -91,6 +91,11 @@ public class HtmlToPdfModule extends AbstractModule {
                     }
                 }
             });
+        }
+
+        @Subscribe
+        public void onAsmRemoved(final AsmRemovedEvent event) {
+            saver.execute(() -> datars.removePagePdf(event.getId()));
         }
     }
 }

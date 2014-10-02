@@ -6,7 +6,10 @@ import com.softmotions.commons.cont.Pair;
 import com.softmotions.web.ResponseUtils;
 import com.softmotions.weboot.mb.MBDAOSupport;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
+import org.mybatis.guice.transactional.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -27,7 +30,7 @@ import java.util.Map;
  */
 @Path("ad")
 @Singleton
-public class GeneralDataRS extends MBDAOSupport {
+public class GeneralDataRS extends MBDAOSupport implements GeneralDataService {
 
     public static final String PAGE_PDF_REF_TEMPLATE = "page.pdf:{id}";
 
@@ -41,6 +44,7 @@ public class GeneralDataRS extends MBDAOSupport {
 
     @GET
     @Path("/pagepdf/{id}")
+    @Transactional
     public Response getPagePdf(@Context HttpServletRequest req,
                                @PathParam("id") Long id) throws Exception {
 
@@ -72,13 +76,16 @@ public class GeneralDataRS extends MBDAOSupport {
         saveAdditionalData(PAGE_PDF_REF_TEMPLATE.replace("{id}", String.valueOf(id)), data, "application/pdf");
     }
 
-    public boolean isPdfExists(Long id) {
+    public boolean isPagePdfExists(Long id) {
         return isAdditionalDataExists(PAGE_PDF_REF_TEMPLATE.replace("{id}", String.valueOf(id)));
     }
 
+    public void removePagePdf(Long id) {
+        removeAdditionalData(PAGE_PDF_REF_TEMPLATE.replace("{id}", String.valueOf(id)));
+    }
 
+    @Transactional
     public Pair<String, InputStream> getAdditionalData(String ref) throws Exception {
-        // TODO: checks
         Map<String, Object> row = selectOne("getData", ref);
         if (row == null) {
             return null;
@@ -87,21 +94,38 @@ public class GeneralDataRS extends MBDAOSupport {
         String type = (String) row.get("content_type");
         Blob data = (Blob) row.get("data");
 
-        return new Pair(type, data.getBinaryStream());
+        return type == null || data == null ? null : new Pair(type, data.getBinaryStream());
     }
 
+    @Transactional
     public boolean isAdditionalDataExists(String ref) {
-        // TODO: checks
-        return ((Long) selectOne("checkDataExists", ref)) > 0;
+        if (StringUtils.isBlank(ref)) {
+            throw new IllegalArgumentException("ref");
+        }
+        return ((Long) selectOne("checkDataExists", StringUtils.trim(ref))) > 0;
     }
 
+    @Transactional
     public void saveAdditionalData(String ref, byte[] data, String type) {
-        // TODO: checks
+        if (StringUtils.isBlank(ref)) {
+            throw new IllegalArgumentException("ref");
+        }
+        if (StringUtils.isBlank(type)) {
+            throw new IllegalArgumentException("type");
+        }
+
+        if (data == null) {
+            data = ArrayUtils.EMPTY_BYTE_ARRAY;
+        }
+
         update("saveData", "ref", ref, "data", data, "content_type", type);
     }
 
+    @Transactional
     public void removeAdditionalData(String ref) {
-        // TODO: checks
-        update("removeData", ref);
+        if (StringUtils.isBlank(ref)) {
+            throw new IllegalArgumentException("ref");
+        }
+        update("removeData", StringUtils.trim(ref));
     }
 }

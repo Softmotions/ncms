@@ -5,7 +5,6 @@ import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.GeneralDataRS;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
-import com.softmotions.ncms.media.MediaRS;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -194,6 +193,6 @@ public class HttlAsmMethods {
     public static boolean pagePdfExists() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         GeneralDataRS datars = ctx.getInjector().getInstance(GeneralDataRS.class);
-        return datars.isPdfExists(ctx.getAsm().getId());
+        return datars.isPagePdfExists(ctx.getAsm().getId());
     }
 }
