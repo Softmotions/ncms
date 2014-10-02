@@ -1,3 +1,4 @@
+#set(XMLConfiguration cfg = config())
 <div class="nav-holder">
     <a href="#" class="link">link</a>
     <nav id="nav">
@@ -5,9 +6,9 @@
     </nav>
     <div style="float: right; width: 0; position: relative;">
         <div id="search-popup">
-            <form action="$!{link('search')}" class="search-form">
+            <form action="$!{link('search')}" class="search-form" style="width: 211px;">
                 <fieldset>
-                    <input class="input-text" name="spc.text" type="text" placeholder="Я ищу..."/>
+                    <input class="input-text" name="spc.text" type="text" placeholder="Я ищу..." style="width: 160px;"/>
                     <input type="submit" value="search"/>
                 </fieldset>
             </form>
@@ -27,7 +28,10 @@
                 <li><a href="#" class="facebook">facebook</a></li>
                 <li><a href="#" class="vk">vk</a></li>
                 <li><a href="#" class="twitter">twitter</a></li>
-                <li><a href="#" class="instagramm">instagramm</a></li>
+                #set(String iuserRef = cfg.getString("instagram.user-ref"))
+                #if(iuserRef != null)
+                <li><a href="$!{iuserRef}" target="_blank" class="instagramm">instagramm</a></li>
+                #end
             </ul>
         </div>
         <ul class="menu">
