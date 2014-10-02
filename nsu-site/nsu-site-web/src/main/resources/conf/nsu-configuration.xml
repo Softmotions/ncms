@@ -133,8 +133,9 @@
         <module class="com.softmotions.ncms.media.MediaModule"/>
         <module class="com.softmotions.ncms.mediawiki.MediaWikiModule"/>
         <module class="com.softmotions.ncms.user.UserModule"/>
-        <module class="com.softmotions.ncms.asm.HtmlToPdfModule"/>
+        <module class="com.softmotions.ncms.ds.GeneralDataStoreModule"/>
         <module class="ru.nsu.NSUModule"/>
+        <module class="ru.nsu.pagepdf.HtmlToPdfModule"/>
     </modules>
 
     <ui>
@@ -221,7 +222,7 @@
             --print-media-type
         </exec-extra-params>
         <page-url-template>${site-root}${ncms-prefix}/asm/{id}</page-url-template>
-        <asm-templates>journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce</asm-templates>
+        <asm-templates>journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce</asm-templates>
     </html-to-pdf>
 
 </configuration>

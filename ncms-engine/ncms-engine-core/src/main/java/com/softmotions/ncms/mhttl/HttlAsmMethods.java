@@ -3,7 +3,6 @@ package com.softmotions.ncms.mhttl;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
-import com.softmotions.ncms.asm.GeneralDataRS;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 import java.util.Collection;
@@ -188,11 +187,5 @@ public class HttlAsmMethods {
             crit.limit(limit.intValue());
         }
         return crit.selectAsAsms();
-    }
-
-    public static boolean pagePdfExists() {
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        GeneralDataRS datars = ctx.getInjector().getInstance(GeneralDataRS.class);
-        return datars.isPagePdfExists(ctx.getAsm().getId());
     }
 }

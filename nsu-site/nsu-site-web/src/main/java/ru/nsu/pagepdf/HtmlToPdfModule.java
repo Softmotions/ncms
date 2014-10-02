@@ -1,6 +1,8 @@
-package com.softmotions.ncms.asm;
+package ru.nsu.pagepdf;
 
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
@@ -42,7 +44,7 @@ public class HtmlToPdfModule extends AbstractModule {
 
         private final AsmDAO adao;
 
-        private final GeneralDataRS datars;
+        private final PagePdfRS datars;
 
         private final NcmsEventBus ebus;
 
@@ -53,7 +55,7 @@ public class HtmlToPdfModule extends AbstractModule {
         private final String[] cmdargstmpl;
 
         @Inject
-        public HtmlToPdfModuleInitializer(NcmsEnvironment env, AsmDAO adao, GeneralDataRS datars, NcmsEventBus ebus) {
+        public HtmlToPdfModuleInitializer(NcmsEnvironment env, AsmDAO adao, PagePdfRS datars, NcmsEventBus ebus) {
             this.adao = adao;
             this.datars = datars;
             this.ebus = ebus;

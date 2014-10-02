@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.softmotions.ncms.asm.GeneralDataRS">
+<mapper namespace="com.softmotions.ncms.ds.GeneralDataStore">
 
     <select id="getData" resultType="map" parameterType="string">
         SELECT

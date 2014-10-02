@@ -1,5 +1,6 @@
 package ru.nsu;
 
+import ru.nsu.pagepdf.PagePdfRS;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
@@ -48,5 +49,11 @@ public class HttlMethods {
 
     public static boolean isFutureEvent(Asm n) {
         return (eventDate(n).getTime() > System.currentTimeMillis());
+    }
+
+    public static boolean pagePdfExists() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        PagePdfRS datars = ctx.getInjector().getInstance(PagePdfRS.class);
+        return datars.isPagePdfExists(ctx.getAsm().getId());
     }
 }
