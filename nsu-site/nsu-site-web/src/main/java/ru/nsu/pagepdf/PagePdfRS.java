@@ -54,21 +54,21 @@ public class PagePdfRS {
             throw new NotFoundException();
         }
 
-        Response.ResponseBuilder rb = Response.ok();
+        final Response.ResponseBuilder rb = Response.ok();
 
-        Pair<String, InputStream> pdfData = ds.getData(PAGE_PDF_REF_TEMPLATE.replace("{id}", String.valueOf(id)));
-        if (pdfData == null) {
-            rb.status(Response.Status.NO_CONTENT);
-        } else {
-            rb.type(pdfData.getOne());
-            rb.header(HttpHeaders.CONTENT_DISPOSITION, ResponseUtils.encodeContentDisposition(asm.getHname(), null != req.getParameter("inline")));
+        rb.header(HttpHeaders.CONTENT_DISPOSITION, ResponseUtils.encodeContentDisposition(asm.getHname(), null != req.getParameter("inline")));
 
-            rb.entity((StreamingOutput) output -> {
-                try (final InputStream fis = pdfData.getTwo()) {
-                    IOUtils.copyLarge(fis, output);
-                }
-            });
-        }
+        ds.getData(PAGE_PDF_REF_TEMPLATE.replace("{id}", String.valueOf(id)), (type, data) -> {
+            if (type == null || data == null) {
+                rb.status(Response.Status.NO_CONTENT);
+            } else {
+                rb.type(type);
+
+                rb.entity((StreamingOutput) output -> {
+                    IOUtils.copyLarge(data, output);
+                });
+            }
+        });
 
         return rb.build();
     }

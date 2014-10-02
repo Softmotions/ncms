@@ -1,6 +1,5 @@
 package com.softmotions.ncms.ds;
 
-import com.softmotions.commons.cont.Pair;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.google.inject.Inject;
@@ -26,18 +25,21 @@ public class GeneralDataStore extends MBDAOSupport {
     }
 
     @Transactional
-    public Pair<String, InputStream> getData(String ref) throws Exception {
+    public void getData(String ref, DataApplyCallback callback) throws Exception {
+        if (callback == null) {
+            throw new IllegalArgumentException("callback");
+        }
+
         Map<String, Object> row = selectOne("getData", ref);
         if (row == null) {
-            return null;
+            callback.apply(null, null);
+            return;
         }
 
         String type = (String) row.get("content_type");
-        InputStream data = (InputStream) row.get("data");
-
-        // TODO: export data by callback
-
-        return type == null || data == null ? null : new Pair(type, data);
+        try (InputStream data = (InputStream) row.get("data")) {
+            callback.apply(type, data);
+        }
     }
 
     @Transactional
@@ -66,5 +68,9 @@ public class GeneralDataStore extends MBDAOSupport {
             throw new IllegalArgumentException("ref");
         }
         update("removeData", StringUtils.trim(ref));
+    }
+
+    public interface DataApplyCallback {
+        void apply(String type, InputStream data);
     }
 }
