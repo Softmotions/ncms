@@ -77,7 +77,7 @@
                     </ul>
                 </div>
             </div>
-            <a href="$!{page().link}" class="fetch-more" id="mpc-fetch-more" style="display: none;"><span>Еще больше новостей Вуза</span></a>
+            <a href="$!{page().link}" class="fetch-more" id="mpc-fetch-more" style="display: none;"><span>Еще больше новостей</span></a>
             <!-- EOF News -->
 
             #set(Tree tree = asm("photoline"))

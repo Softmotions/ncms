@@ -1,5 +1,6 @@
 package ru.nsu.legacy;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -15,7 +16,7 @@ import javax.ws.rs.PathParam;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 
-@Path("legacy")
+@Path("adm/legacy")
 @Singleton
 public class NSULegacyRS {
 
@@ -31,7 +32,7 @@ public class NSULegacyRS {
     @PUT
     @Path("/import/{id}")
     public void importMedia(@PathParam("id") Long id,
-                            String resource) {
-        log.info("Importing nsu legacy media: " + resource + " id=" + id);
+                            ObjectNode importSpec) {
+        log.info("Importing nsu legacy media: " + importSpec + " id=" + id);
     }
 }

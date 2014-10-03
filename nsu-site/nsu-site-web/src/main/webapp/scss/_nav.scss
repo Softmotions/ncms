@@ -57,18 +57,18 @@
         @include box-shadow(0px 4px 4px 0px rgba(0, 0, 0, 0.15));
 
         ul {
-          padding: 0 0 0 21px;
+          padding: 0 10px 0 21px;
           margin: 0 0 -8px;
           border-left: 1px solid #e2e2e2;
           list-style: none;
           overflow: hidden;
           font: 15px/18px $basic_font;
           float: left;
-          width: 132px;
+          width: 200px;
 
           &:first-child {
             margin: 0 0 0 51px;
-            padding: 0;
+            padding: 0 10px 0 0;
             border: 0;
           }
 

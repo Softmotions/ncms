@@ -32,7 +32,7 @@ qx.Class.define("nsu.Application", {
                     qx.log.Logger.info("ev=" + ev);
                     dlg.close();
                 });
-                dlg.placeToWidget(ev.getTarget(), false);
+                //dlg.placeToWidget(ev.getTarget(), false);
                 dlg.open();
             });
         }

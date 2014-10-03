@@ -6,10 +6,26 @@ msgstr ""
 msgid "Import files from old nsu.ru"
 msgstr "Импортировать файлы из старого nsu.ru"
 
-#: nsu/legacy/ImportLegacyDataDlg.js:17
+#: nsu/legacy/ImportLegacyDataDlg.js:10
+msgid "Importing page from old nsu.ru"
+msgstr ""
+
+#: nsu/legacy/ImportLegacyDataDlg.js:22
+msgid "This field is required"
+msgstr ""
+
+#: nsu/legacy/ImportLegacyDataDlg.js:28
 msgid "Page address: http://nsu.ru/exp/...."
 msgstr ""
 
-#: nsu/legacy/ImportLegacyDataDlg.js:23
+#: nsu/legacy/ImportLegacyDataDlg.js:29
 msgid "URL"
+msgstr ""
+
+#: nsu/legacy/ImportLegacyDataDlg.js:42
+msgid "Ok"
+msgstr ""
+
+#: nsu/legacy/ImportLegacyDataDlg.js:47
+msgid "Cancel"
 msgstr ""
