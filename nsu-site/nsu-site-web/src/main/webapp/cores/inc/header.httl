@@ -4,23 +4,19 @@
     <nav id="nav">
         ${include("menu.httl", ["menuAttr" : "menu"])}
     </nav>
-    <a href="$!{link('search')}" class="search">search</a>
 </div>
 <div class="header-info">
-    <div id="search-popup">
-        <form action="$!{link('search')}" class="search-form">
-            <fieldset>
-                <input class="input-text" name="spc.text" type="text" placeholder="Я ищу..."/>
-                <input type="submit" value="search"/>
-            </fieldset>
-        </form>
-    </div>
     <strong class="logo"><a href="$!{link('index.html')}">Новосибирский Государственный Университет</a></strong>
-    <a href="#" class="language">Eng</a>
+    <!--<a href="#" class="language">Eng</a>-->
 
     <div class="personal-holder">
         <div class="personal-row">
-            <a href="#" class="personal">Личный кабинет</a>
+            <form action="$!{link('search')}" class="search-form">
+                <fieldset>
+                    <input class="input-text" name="spc.text" type="text" placeholder="Я ищу..."/>
+                    <input type="submit" value="search"/>
+                </fieldset>
+            </form>
             <ul class="social-networks">
                 <li><a href="#" class="plus">plus</a></li>
                 <li><a href="#" class="facebook">facebook</a></li>
