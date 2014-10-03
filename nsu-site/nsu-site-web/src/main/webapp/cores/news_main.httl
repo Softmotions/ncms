@@ -143,9 +143,11 @@ $!{include("inc/scripts.httl")}
     });
     #end
 
-    window.initNewsMain && initNewsMain(${news_limit});
     window.initScroll && $(function() {
         initScroll('ul.tabset', 'nsu:news');
+    });
+    window.initNewsMain && $(function(){
+        initNewsMain(${news_limit});
     });
 </script>
 #end

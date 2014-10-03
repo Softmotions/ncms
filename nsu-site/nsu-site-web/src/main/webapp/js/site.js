@@ -1093,7 +1093,9 @@ function initNewsMain(pageSize) {
     var container = $('div#news-container');
     var fetchMore = $('a#news-fetch-more');
 
-    container.masonry({itemSelector : '.news-item'});
+    container.imagesLoaded(function(){
+        container.masonry({itemSelector : '.news-item'})
+    });
 
     fetchMore.click(function() {
         var count = container.find('.news-item').size();

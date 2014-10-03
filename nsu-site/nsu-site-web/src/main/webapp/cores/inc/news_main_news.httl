@@ -24,6 +24,21 @@
         <span class="position">${position}</span>
         #end
 
+    #elseif("index_announce" == template)
+        <!-- Анонс -->
+        <div class="holder">
+            <h4 class="announce">Анонс</h4>
+            <span class="date">${edate.format2("dd")} ${edate.format2("MMM")} ${edate.format2("yyyy")}</span>
+        </div>
+
+        #if(img != null)
+        <div style="width:285px;height:158px;overflow:hidden">
+            <a href="$!{p.link}"><img src="$!{img.link}" width="285" alt="${p.hname}"/></a>
+        </div>
+        #end
+
+        <h3><a href="$!{p.link}">${p.hname}</a></h3>
+
     #elseif("index_reportage" == template)
         <!-- Репортаж -->
         <div class="holder">

@@ -99,6 +99,12 @@
         padding: 0 0 0 23px;
       }
 
+      .announce {
+        background: url(../images/bg-news.png) no-repeat 0 5px;
+//        @include sp-icons-sprite(bg-news, $offset-y: 5px);
+        padding: 0 0 0 23px;
+      }
+
       .smig {
         background: url(../images/bg-smig.png) no-repeat 0 3px;
 //        @include sp-icons-sprite(bg-smig, $offset-y: 3px);

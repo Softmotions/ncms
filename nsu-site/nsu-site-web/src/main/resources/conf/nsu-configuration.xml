@@ -201,19 +201,20 @@
     <content>
         <mainpage>
             <news>
-                <a templates="index_news,index_interview,index_reportage" title="Новости" max="10"/>
-                <a templates="index_interview" type="interview" title="Интервью" max="10"/>
-                <a templates="index_reportage" type="reportage" title="Репортаж" max="10"/>
-                <b templates="index_announce" max="12"/>
-                <c templates="faculty_news" max="12"/>
+                <a templates="index_news,index_interview,index_reportage" title="Новости" max="6"/>
+                <a templates="index_interview" type="interview" title="Интервью" max="6"/>
+                <a templates="index_reportage" type="reportage" title="Репортаж" max="6"/>
+                <b templates="index_announce" max="8"/>
+                <c templates="faculty_news" max="10"/>
             </news>
         </mainpage>
         <newsmain>
             <news>
-                <type templates="index_news,index_interview,index_reportage,faculty_news,index_orders" title="Все"/>
+                <type templates="index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce" title="Все"/>
                 <type templates="faculty_news" type="faculty" title="Новости факультетов"/>
                 <type templates="index_interview" type="interview" title="Интервью"/>
                 <type templates="index_reportage" type="reportage" title="Репортажи"/>
+                <type templates="index_announce,faculty_announce" type="announce" title="Анонсы"/>
                 <type templates="index_orders" type="orders" title="Приказы и документы"/>
             </news>
         </newsmain>
