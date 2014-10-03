@@ -4,7 +4,6 @@ jQuery(function() {
     initSlideShow();
     initAccordion();
     initAboutSections();
-    initSearchPopup();
 });
 
 /*
@@ -147,23 +146,6 @@ function initSlideShow() {
     });
     $('.photo-line').tinycarousel({
         interval : true
-    });
-}
-
-function initSearchPopup() {
-    $('a.search').click(function() {
-        $('div#search-popup').toggle();
-        var sf = $('div#search-popup:visible').find('input[type=text]');
-        sf.val('');
-        sf.focus();
-        return false;
-    });
-    $(document).click(function(event){
-        if ($(event.target).closest('div#search-popup').length) {
-            return;
-        }
-        $('div#search-popup').hide();
-        event.stopPropagation();
     });
 }
 
@@ -907,9 +889,9 @@ function initSearch(pageSize) {
     spc.results.find('li').show();
 
     function updateSearchButtons() {
-        spc.fetchMore.hide();
         if (spc.results.find('li').size() >= ((spc.start || 0) + spc.pageSize)) {
-            spc.fetchMore.show()
+            spc.fetchMore.finish();
+            spc.fetchMore.show();
         }
     }
 
@@ -927,7 +909,7 @@ function initSearch(pageSize) {
             spc.results.find('li:hidden').slideDown();
             updateSearchButtons();
         });
-        updateSearchButtons();
+        spc.fetchMore.slideUp(500);
     }
 
     spc.form.submit(function() {
@@ -938,6 +920,8 @@ function initSearch(pageSize) {
         doSearch(false);
         return false;
     });
+
+    spc.fetchMore.hide();
     updateSearchButtons();
 }
 
@@ -963,111 +947,123 @@ function initMainNews(aType) {
                 type : 'c'
             }
         ];
-    var pageHeight = 500;
+
+    var k;
+    var sheight = 0;
+    for (k = 0; k < columns.length; ++k) {
+        columns[k].dh = columns[k].holder.height() - columns[k].results.height();
+        if (sheight < columns[k].dh) {
+            sheight = columns[k].dh;
+        }
+    }
+
+    for (k = 0; k < columns.length; ++k) {
+        columns[k].oh = columns[k].dh - sheight;
+    }
+
+    var listHeight = sheight;
+    var pageHeight = 350; // TODO: calculate
     var main = $('div#news');
     var fetchMoreBtn = $('a#mpc-fetch-more');
 
-    fetchMoreBtn.hide();
+    var processing = 0;
 
-    var subscribed = false;
-    var minHeight = 0;
-    for (var i = 0; i < columns.length; ++i) {
-        var column = columns[i];
-        if (column.subscribed) {
-            column.subscribed = column.results.find('li').size() > 0;
+    var update = function(clh) {
+        if (processing != 0) {
+            return;
         }
-        var height = column.holder.height();
-        if ((height > pageHeight && (height < minHeight || minHeight < pageHeight)) || height > minHeight) {
-            minHeight = height;
-        }
-        subscribed = subscribed || column.subscribed;
-    }
 
-    main.height(minHeight);
-    if (subscribed) {
-        fetchMoreBtn.show();
-    }
-
-    var loadMore = function() {
-        var height = main.height();
-        var toload = [];
+        var subscribed = false;
         for (var i = 0; i < columns.length; ++i) {
             var column = columns[i];
-            if (column.subscribed && ((column.holder.height() - pageHeight) < height)) {
-                toload.push(column);
+            subscribed = subscribed || column.subscribed;
+
+            var nh = false;
+            var ch = 0;
+            column.results.find('li').each(function(i, el) {
+                        el = $(el);
+                        ch += el.outerHeight();
+                        if (nh || (ch > clh - column.dh)) {
+                            nh = true;
+                            el.hide();
+                        } else {
+                            el.show();
+                        }
+                    });
+
+            if (column.holder.height() > listHeight) {
+                listHeight = column.holder.height();
             }
         }
 
-        fetchMoreBtn.hide();
+        main.height(listHeight);
 
-        var loading = 0;
-
-        var updateView = function() {
-            var subscribed = false;
-            var minHeight = main.height() + pageHeight;
-            var maxHeight = 0;
-            for (var i = 0; i < columns.length; ++i) {
-                var column = columns[i];
-                if (column.subscribed) {
-                    column.subscribed = column.results.find('li').size() > 0;
-                }
-                var height = column.holder.height();
-                if ((height > pageHeight && minHeight < pageHeight) || height > minHeight) {
-                    minHeight = height;
-                }
-                if (height > maxHeight) {
-                    maxHeight = height;
-                }
-                subscribed = subscribed || column.subscribed;
-            }
-
-            if (subscribed) {
-                main.height(minHeight);
-                if (loading == 0) {
-                    fetchMoreBtn.show();
-                }
-            } else {
-                main.height(maxHeight);
-            }
-        };
-
-        var fetchMore = function(def) {
-            ++loading;
-            var data = {
-                "mpc.action" : "fetchMore",
-                "mpc.fetch.type" : def.type
-            };
-            var prevSize = data["mpc." + def.type + ".skip"] = def.results.find('li').size();
-            if (!!def.subType) {
-                data["mpc." + def.type + ".subType"] = def.subType;
-            }
-            $.post(fetchMoreBtn[0].href, data, function(html) {
-                def.results.append(html);
-                if (def.results.find('li').size() == prevSize) {
-                    def.subscribed = false;
-                }
-            }).fail(function() {
-                def.subscribed = false;
-            }).always(function() {
-                if (--loading == 0) {
-                    updateView();
-                }
-            });
-        };
-
-        for (var j = 0; j < toload.length; ++j) {
-            fetchMore(toload[j]);
-        }
-
-        if (loading == 0) {
-            updateView();
+        if (subscribed) {
+            fetchMoreBtn.finish();
+            fetchMoreBtn.show();
         }
     };
 
+    var checkHeight = function(def, height) {
+        var cheight = 0;
+        def.results.find('li').each(function(i, el){
+            cheight += $(el).outerHeight();
+        });
+
+        return cheight < height - def.dh;
+    };
+
+    var tryLoadData = function(def, needHeight) {
+        var data = {
+            "mpc.action" : "fetchMore",
+            "mpc.fetch.type" : def.type
+        };
+        var prevSize = data["mpc." + def.type + ".skip"] = def.results.find('li').size();
+        if (!!def.subType) {
+            data["mpc." + def.type + ".subType"] = def.subType;
+        }
+        $.post(fetchMoreBtn[0].href, data, function(html) {
+            $(html).find('li').hide();
+            def.results.append(html);
+            if (def.results.find('li').size() == prevSize) {
+                def.subscribed = false;
+            }
+            if (checkHeight(def, needHeight) && def.subscribed) {
+                ++processing;
+                tryLoadData(def, needHeight);
+            }
+        }).fail(function() {
+            def.subscribed = false;
+        }).always(function() {
+            --processing;
+            update(needHeight);
+        });
+    };
+
+    var loadPage = function() {
+        fetchMoreBtn.slideUp(500);
+
+        var tph = listHeight + pageHeight - sheight;
+        for (var i = 0; i < columns.length; ++i) {
+            ++processing;
+            var column = columns[i];
+            if (checkHeight(column, tph) && column.subscribed) {
+                tryLoadData(column, tph);
+            } else {
+                --processing;
+            }
+        }
+
+        update(tph + sheight);
+    };
+
     fetchMoreBtn.click(function() {
-        loadMore();
+        loadPage();
         return false;
     });
+
+    fetchMoreBtn.hide();
+    loadPage();
 }
 
 function initFetchMore(btn, action, results, pageSize, prefix) {

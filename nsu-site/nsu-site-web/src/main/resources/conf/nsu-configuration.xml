@@ -201,11 +201,11 @@
     <content>
         <mainpage>
             <news>
-                <a templates="index_news,index_interview,index_reportage" title="Новости" max="6"/>
-                <a templates="index_interview" type="interview" title="Интервью" max="6"/>
-                <a templates="index_reportage" type="reportage" title="Репортаж" max="6"/>
-                <b templates="index_announce" max="8"/>
-                <c templates="faculty_news" max="10"/>
+                <a templates="index_news,index_interview,index_reportage" title="Новости" max="12"/>
+                <a templates="index_interview" type="interview" title="Интервью" max="12"/>
+                <a templates="index_reportage" type="reportage" title="Репортаж" max="12"/>
+                <b templates="index_announce" max="16"/>
+                <c templates="faculty_news" max="20"/>
             </news>
         </mainpage>
         <newsmain>

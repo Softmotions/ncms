@@ -271,24 +271,25 @@
 
   @import "nav";
 
-
-  div#search-popup {
-    display: none;
-  }
-
   @import "search_form";
 
-  .search-form{
-    margin-top: -17px;
+  .search-form {
+    margin: 0;
+    width: 346px;
+    float: left;
     border-style: solid !important;
     border-top-width: thin;
-    border-top-color: #000000;
+    border-top-color: grey;
     border-right-width: thin;
-    border-right-color: #000000;
+    border-right-color: grey;
     border-left-width: thin;
-    border-left-color: #000000;
+    border-left-color: grey;
     border-bottom-width: thin;
-    border-bottom-color: #000000;
+    border-bottom-color: grey;
+
+    .input-text {
+      width: 295px;
+    }
   }
 }
 
