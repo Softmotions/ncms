@@ -22,7 +22,7 @@
                     #set(Image img = p.asm("bigicon"))
                     #if(img != null)
                     <div class="img-holder" style="width:314px;height:192px;overflow:hidden">
-                        <a href="${p.link}"><img src="${img.link}" width="314" alt="${p.hname}"/></a>
+                        <a href="${p.link}"><img src="${img.link}" alt="${p.hname}"/></a>
                         #set(Date edate = p.eventDate)
                         <div class="date-holder">
                             <span class="date">${edate.format2("dd")}</span>
