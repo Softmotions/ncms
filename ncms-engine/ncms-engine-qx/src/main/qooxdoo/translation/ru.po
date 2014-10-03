@@ -813,9 +813,10 @@ msgstr "Вы действительно желаете удалить стран
 msgid "Please select the parent page for news"
 msgstr "Пожалуйста укажите родительскую страницу для новостей"
 
-#: ncms/news/NewsNewDlg.js:21 ncms/news/NewsNewDlg.js:22
-msgid "News caption"
-msgstr "Заголовок новости"
+#: ncms/wiki/InsertImageDlg.js:23 ncms/news/NewsNewDlg.js:21
+#: ncms/news/NewsNewDlg.js:22
+msgid "Caption"
+msgstr "Заголовок"
 
 #: ncms/pgs/LinkSelectorDlg.js:60
 msgid "Or set external link"
@@ -1058,10 +1059,6 @@ msgstr "Вставьте сюда сгенерированный google map <ifr
 msgid "Invalid google map location code"
 msgstr ""
 
-#: ncms/wiki/InsertImageDlg.js:23
-msgid "Caption"
-msgstr "Заголовок"
-
 #: ncms/wiki/InsertImageDlg.js:26
 msgid "original"
 msgstr "оригинальный"
@@ -1303,6 +1300,9 @@ msgstr "Заметка"
 
 #~ msgid "List of referring pages"
 #~ msgstr "Список ссылающихся страниц"
+
+#~ msgid "News caption"
+#~ msgstr "Заголовок новости"
 
 #~ msgid "Unable to delete this page!"
 #~ msgstr "Невозможно удалить эту страницу"

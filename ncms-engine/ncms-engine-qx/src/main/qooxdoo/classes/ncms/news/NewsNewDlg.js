@@ -18,8 +18,8 @@ qx.Class.define("ncms.news.NewsNewDlg", {
                     this.save();
                 }
             }, this);
-            el.setToolTipText(this.tr("News caption"));
-            this._form.add(el, this.tr("News caption"), null, "name");
+            el.setToolTipText(this.tr("Caption"));
+            this._form.add(el, this.tr("Caption"), null, "name");
             el.focus();
         },
 
