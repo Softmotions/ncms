@@ -271,6 +271,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         _addToolbarControl : function(options) {
             var toolbar = this.getChildControl("toolbar");
+            var editor = this.getTextArea();
             var callback = null;
             var bt = null;
             var bts = [];
@@ -317,6 +318,10 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                             callback, options);
                     bt.setUserData("opts", options);
                     bts.push(bt);
+                }
+                if (options["shortcut"]) {
+                    var shortcut = new ncms.bom.Shortcut(options["shortcut"], editor);
+                    shortcut.addListener("execute", callback, this);
                 }
             }
             this.__controls.concat(bts);
@@ -465,6 +470,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 icon : "ncms/icon/16/wiki/text_bold.png",
                 tooltipText : this.tr("Bold"),
                 prompt : cprompt(this.tr("Bold text")),
+                shortcut : "Ctrl+B",
                 insertMediawiki : surround(1, "'''", ""),
                 insertMarkdown : surround(2, "*", "")
             });
@@ -473,6 +479,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 icon : "ncms/icon/16/wiki/text_italic.png",
                 tooltipText : this.tr("Italic"),
                 prompt : cprompt(this.tr("Italics text")),
+                shortcut : "Ctrl+I",
                 insertMediawiki : surround(2, "'", ""),
                 insertMarkdown : surround(1, "*", "")
             });
@@ -481,6 +488,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 id : "UL",
                 icon : "ncms/icon/16/wiki/text_list_bullets.png",
                 tooltipText : this.tr("Bullet list"),
+                shortcut : "Ctrl+U",
                 insertMediawiki : wrap(this.__mediaWikiUL),
                 insertMarkdown : wrap(this.__markdownUL)
             });
@@ -488,6 +496,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 id : "OL",
                 icon : "ncms/icon/16/wiki/text_list_numbers.png",
                 tooltipText : this.tr("Numbered list"),
+                shortcut : "Ctrl+O",
                 insertMediawiki : wrap(this.__mediaWikiOL, this),
                 insertMarkdown : wrap(this.__markdownOL, this)
             });
