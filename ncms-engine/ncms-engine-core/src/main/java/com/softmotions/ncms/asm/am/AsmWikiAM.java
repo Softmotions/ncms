@@ -75,9 +75,10 @@ public class AsmWikiAM implements AsmAttributeManager {
     }
 
     public Object[] fetchFTSData(AsmAttribute attr) {
-        if (!StringUtils.isBlank(attr.getValue())) {
+        String effectiveValue = attr.getEffectiveValue();
+        if (!StringUtils.isBlank(effectiveValue)) {
             try {
-                JsonNode value = mapper.readTree(attr.getValue());
+                JsonNode value = mapper.readTree(effectiveValue);
                 return new String[]{value.get("value").asText()};
             } catch (IOException ignored) {
                 return null;
