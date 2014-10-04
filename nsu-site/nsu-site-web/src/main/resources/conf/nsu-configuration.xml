@@ -127,6 +127,7 @@
     </events>
 
     <modules>
+        <module class="com.softmotions.weboot.scheduler.SchedulerModule"/>
         <module class="com.softmotions.weboot.mb.WBMyBatisModule"/>
         <module class="com.softmotions.weboot.liquibase.WBLiquibaseModule"/>
         <module class="com.softmotions.weboot.mongo.WBMongoModule"/>

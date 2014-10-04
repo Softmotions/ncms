@@ -206,6 +206,11 @@
             </dependency>
             <dependency>
                 <groupId>softmotions</groupId>
+                <artifactId>softmotions-weboot-scheduler</artifactId>
+                <version>${softmotions.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
                 <artifactId>softmotions-web-realms</artifactId>
                 <version>${softmotions.commons.version}</version>
             </dependency>

@@ -76,6 +76,10 @@
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot-scheduler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
             <artifactId>softmotions-weboot-liquibase</artifactId>
         </dependency>
         <dependency>
