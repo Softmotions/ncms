@@ -320,7 +320,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     bts.push(bt);
                 }
                 if (options["shortcut"]) {
-                    var shortcut = new ncms.bom.Shortcut(options["shortcut"], editor);
+                    var shortcut = new sm.bom.ExtendedShortcut(options["shortcut"], false, editor);
                     shortcut.addListener("execute", callback, this);
                 }
             }
