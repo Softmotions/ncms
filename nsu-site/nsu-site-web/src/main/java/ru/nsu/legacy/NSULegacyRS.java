@@ -5,9 +5,12 @@ import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.media.MediaRepository;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 
@@ -22,15 +25,16 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-
 @Path("adm/legacy")
 @Singleton
 public class NSULegacyRS {
@@ -45,6 +49,7 @@ public class NSULegacyRS {
 
     private final MediaRepository mediaRepository;
 
+    private final ObjectMapper mapper;
 
     /**
      * MongoDB model Item
@@ -92,27 +97,38 @@ public class NSULegacyRS {
     public NSULegacyRS(Jongo jongo,
                        AsmDAO adao,
                        GridFS gridFS,
-                       MediaRepository mediaRepository) {
+                       MediaRepository mediaRepository,
+                       ObjectMapper mapper) {
         this.jongo = jongo;
         this.adao = adao;
         this.gridFS = gridFS;
         this.mediaRepository = mediaRepository;
+        this.mapper = mapper;
     }
 
     @PUT
     @Path("/import/{id}")
+    @Produces("application/json;charset=UTF-8")
     @Transactional
-    public void importMedia(@PathParam("id") Long id,
-                            ObjectNode importSpec) throws Exception {
+    public ObjectNode importMedia(@PathParam("id") Long id,
+                                  ObjectNode importSpec) throws Exception {
         log.info("Importing nsu legacy media: " + importSpec + " id=" + id);
+        ObjectNode ret = mapper.createObjectNode();
         JsonNode n = importSpec.get("url");
         if (n == null || !n.isTextual()) {
             throw new BadRequestException();
         }
-        String guid = fetchNSUGuid(n.asText());
+        String url = n.asText();
+        String guid = fetchNSUGuid(url);
         if (guid == null) {
-            throw new BadRequestException("Invalid url passed");
+            throw new BadRequestException("Invalid URL passed");
         }
+        n = importSpec.get("wiki");
+        boolean importWiki = (n != null && n.booleanValue());
+        n = importSpec.get("links");
+        boolean fixLinks = (n != null && n.booleanValue());
+        ImportCtx ctx = new ImportCtx(url, guid, fixLinks, importWiki);
+
         log.info("Processing legacy page with guid: " + guid);
         String legacyAlias = fetchLegacyAlias(guid);
         log.info("Found legacy alias: " + legacyAlias);
@@ -129,17 +145,77 @@ public class NSULegacyRS {
             String target = pFolder + '/' + fn;
             log.info("Processing file: " + fn + " into: " + target);
             try (InputStream is = f.getInputStream()) {
-                mediaRepository.importFile(is, target, false);
+                Long fid = mediaRepository.importFile(is, target, false);
+                ctx.files.put(fn, fid);
+            }
+        }
+        if (ctx.importWiki) {
+            String wiki = importWiki(ctx);
+            if (!StringUtils.isBlank(wiki)) {
+                ret.put("wiki", wiki);
             }
         }
         log.info("Import completed");
+        return ret;
     }
 
+    private String importWiki(ImportCtx ctx) {
+        DBCollection navtree = jongo.getCollection("navtree").getDBCollection();
+        DBObject page = navtree.findOne(jongo.createQuery("{_id: #}", new ObjectId(ctx.guid)).toDBObject());
+        DBObject extra = (DBObject) page.get("extra");
+        if (extra == null) {
+            return null;
+        }
+        String content = (String) extra.get("content");
+        if (StringUtils.isBlank(content)) {
+            return null;
+        }
+        return processWikiContent(content, ctx);
+    }
+
+    private String processWikiContent(String wiki, ImportCtx ctx) {
+        wiki = wiki.replaceAll("class='tableShort'", "class='short'");
+        if (!ctx.fixLinks) {
+            return wiki;
+        }
+        StringBuffer sb = new StringBuffer(wiki.length());
+        Pattern p = Pattern.compile("\\[\\[(image|media):" + ctx.guid + "([^\\|]+)((\\|[^\\|\\]]+)*)\\]\\]",
+                                    Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+
+        Matcher m = p.matcher(wiki);
+        while (m.find()) {
+            String all = m.group(0);
+            String type = m.group(1);
+            String fname = m.group(2);
+            String spec = m.group(3);
+            spec = spec.replaceAll("\\|link=$", "");
+            if (!spec.contains("none")) {
+                spec = "|none" + spec;
+            }
+            Long fid = ctx.files.get(fname);
+            if (fid == null) {
+                log.warn("Seems to be file: " + fname + " is not imported");
+                m.appendReplacement(sb, all);
+                continue;
+            }
+            StringBuilder nl = new StringBuilder(all.length());
+            nl.append("[[");
+            nl.append(StringUtils.capitalize(type));
+            nl.append(":/");
+            nl.append(fid);
+            nl.append('/');
+            nl.append(fname);
+            nl.append(spec);
+            nl.append("]]");
+            m.appendReplacement(sb, nl.toString());
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
 
     private String fetchLegacyAlias(String guid) throws Exception {
         return jongo.getCollection("navtree").findOne("{_id: #}", new ObjectId(guid)).projection("{alias:1}")
                 .map(res -> res.get("alias").toString());
-
     }
 
     private String fetchNSUGuid(String url) throws Exception {
@@ -165,5 +241,20 @@ public class NSULegacyRS {
             });
         }
         return guid;
+    }
+
+    private static class ImportCtx {
+        private final String url;
+        private final String guid;
+        private final boolean fixLinks;
+        private final boolean importWiki;
+        private final Map<String, Long> files = new HashMap<>();
+
+        private ImportCtx(String url, String guid, boolean fixLinks, boolean importWiki) {
+            this.url = url;
+            this.guid = guid;
+            this.fixLinks = fixLinks;
+            this.importWiki = importWiki;
+        }
     }
 }

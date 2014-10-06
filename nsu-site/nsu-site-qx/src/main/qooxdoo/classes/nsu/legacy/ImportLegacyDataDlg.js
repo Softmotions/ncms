@@ -14,7 +14,7 @@ qx.Class.define("nsu.legacy.ImportLegacyDataDlg", {
             showMinimize : false,
             showMaximize : true,
             allowMaximize : true,
-            width : 450
+            width : 550
         });
 
         var form = this.__form = new sm.ui.form.ExtendedForm();
@@ -30,6 +30,18 @@ qx.Class.define("nsu.legacy.ImportLegacyDataDlg", {
         el.addListener("input", function(ev) {
             this.__okBt.setEnabled(!sm.lang.String.isEmpty(ev.getData()));
         }, this);
+
+        var wikiCb = el = new qx.ui.form.CheckBox();
+        form.add(el, this.tr("Import wiki"), null, "wiki");
+
+        var fixLinks = el = new qx.ui.form.CheckBox();
+        fixLinks.setEnabled(false);
+        fixLinks.setValue(true);
+        form.add(el, this.tr("Fix links"), null, "links");
+
+        wikiCb.addListener("changeValue", function(ev) {
+            fixLinks.setEnabled(ev.getData() == true);
+        });
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
         fr.setPaddingBottom(10);
@@ -66,18 +78,14 @@ qx.Class.define("nsu.legacy.ImportLegacyDataDlg", {
             if (!this.__form.validate()) {
                 return;
             }
-            var items = this.__form.getItems();
-            var data = {
-                url : items["url"].getValue()
-            };
+            this.__form.getItems();
+            var data = this.__form.populateJSONObject({});
             var req = new sm.io.Request(
                     ncms.Application.ACT.getRestUrl("nsu.legacy.import", {id : this.__id}),
                     "PUT", "application/json");
             req.setData(JSON.stringify(data));
             req.send(function(resp) {
-                var rdata = resp.getContent();
-                qx.log.Logger.info("rdata=" + JSON.stringify(rdata));
-                this.fireDataEvent("completed", data);
+                this.fireDataEvent("completed", resp.getContent());
             }, this);
         }
     },

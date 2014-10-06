@@ -27,7 +27,7 @@ msgstr "Редактирование атрибута страницы"
 #: ncms/asm/am/FileRefAM.js:145 ncms/asm/am/ImageAMValueWidget.js:99
 #: ncms/asm/AsmAttrEditorDlg.js:56 ncms/usr/UserEditForm.js:22
 #: ncms/usr/UserNewDlg.js:34 ncms/asm/AsmEditor.js:90
-#: ncms/pgs/PageEditorEditPage.js:148
+#: ncms/pgs/PageEditorEditPage.js:153
 msgid "This field is required"
 msgstr "Обязательное поле"
 
@@ -870,39 +870,39 @@ msgstr "Добавить пользователя в список прав"
 msgid "Remove user recursively"
 msgstr "Убрать пользователя (рекурсивно)"
 
-#: ncms/pgs/PageEditorEditPage.js:42 ncms/pgs/PageEditorEditPage.js:384
+#: ncms/pgs/PageEditorEditPage.js:42 ncms/pgs/PageEditorEditPage.js:389
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:81 ncms/pgs/PageEditorEditPage.js:272
+#: ncms/pgs/PageEditorEditPage.js:81 ncms/pgs/PageEditorEditPage.js:277
 msgid "Please select the template page"
 msgstr "Пожалуйста выберите шаблон для страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:310
+#: ncms/pgs/PageEditorEditPage.js:315
 msgid "Page fields contain errors"
 msgstr "В полях страницы обнаружены ошибки"
 
-#: ncms/pgs/PageEditorEditPage.js:333
+#: ncms/pgs/PageEditorEditPage.js:338
 msgid "Failed to save page."
 msgstr "Ошибка при сохранении страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:351
+#: ncms/pgs/PageEditorEditPage.js:356
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:359
+#: ncms/pgs/PageEditorEditPage.js:364
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:384
+#: ncms/pgs/PageEditorEditPage.js:389
 msgid "Published"
 msgstr "Опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:390
+#: ncms/pgs/PageEditorEditPage.js:395
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения"
 
-#: ncms/pgs/PageEditorEditPage.js:402
+#: ncms/pgs/PageEditorEditPage.js:407
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 

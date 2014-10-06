@@ -113,6 +113,11 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __previewBt : null,
 
+
+        getForm : function() {
+            return this.__form;
+        },
+
         __onLoadPane : function(ev) {
             var spec = ev.getData();
             this.__pageNameLabel.setValue(spec["name"]);

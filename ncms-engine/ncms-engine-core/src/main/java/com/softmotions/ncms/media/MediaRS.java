@@ -198,7 +198,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         return String.valueOf(row.get("folder")) + row.get("name");
     }
 
-
     /**
      * Save uploaded file.
      * <p/>
@@ -1403,7 +1402,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 try {
                     int ind = h.indexOf('x');
                     if (ind == 0) {
-                        hints.add(new Pair<Integer, Integer>(
+                        hints.add(new Pair<>(
                                 null, Integer.parseInt(h.substring(1))));
                     } else if (ind > 0) {
                         if (ind < h.length() - 1) {
@@ -2079,7 +2078,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     //                       Import resources staff                          //
     ///////////////////////////////////////////////////////////////////////////
 
-    private final List<DirectoryScanner> watchScanners = Collections.synchronizedList(new ArrayList<DirectoryScanner>());
+    private final List<DirectoryScanner> watchScanners = Collections.synchronizedList(new ArrayList<>());
 
     private final FSWatcherCollectEventHandler watchHandler = new FSWatcherCollectEventHandler(
             FSWatcherCollectEventHandler.MOVE_CREATED_INTO_MODIFIED
@@ -2250,9 +2249,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
-
     @Transactional(executorType = ExecutorType.SIMPLE)
-    public void importFile(String source, String target, boolean overwrite, boolean system) throws IOException {
+    public Long importFile(String source, String target, boolean overwrite, boolean system) throws IOException {
         File srcFile = new File(source);
         if (!srcFile.isFile()) {
             throw new IOException(srcFile.getAbsolutePath() + " is not a file");
@@ -2271,7 +2269,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                   "name", name,
                                   "folder", folder);
             if (id != null) {
-                return;
+                return id.longValue();
             }
         }
         log.info("Importing " + target);
@@ -2281,14 +2279,14 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 if (system) {
                     flags |= PUT_SYSTEM;
                 }
-                _put(folder, name, new MediaRSLocalRequest(env, srcFile), null, fis, flags);
+                return _put(folder, name, new MediaRSLocalRequest(env, srcFile), null, fis, flags);
             } catch (Exception e) {
                 throw new IOException(e);
             }
         }
     }
 
-    public void importFile(InputStream source, String target, boolean system) throws IOException {
+    public Long importFile(InputStream source, String target, boolean system) throws IOException {
         String name = getResourceName(target);
         String folder = getResourceParentFolder(target);
         try {
@@ -2296,7 +2294,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             if (system) {
                 flags |= PUT_SYSTEM;
             }
-            _put(folder, name, new MediaRSLocalRequest(env), null, source, flags);
+            return _put(folder, name, new MediaRSLocalRequest(env), null, source, flags);
         } catch (Exception e) {
             throw new IOException(e);
         }
@@ -2318,7 +2316,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             this.system = system;
         }
     }
-
 
     @Dispose
     public void close() throws IOException {

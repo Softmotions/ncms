@@ -41,13 +41,13 @@ public interface MediaRepository extends MediaReader, Closeable {
      * @param target    Path to to the target file in the repository.
      * @param overwrite If {@code false} pre-existed file will not be overriten it
      */
-    void importFile(String source,
+    Long importFile(String source,
                     String target,
                     boolean overwrite,
                     boolean system) throws IOException;
 
 
-    void importFile(InputStream source,
+    Long importFile(InputStream source,
                     String target,
                     boolean system) throws IOException;
 
