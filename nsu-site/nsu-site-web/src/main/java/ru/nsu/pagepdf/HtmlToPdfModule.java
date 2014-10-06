@@ -6,6 +6,7 @@ import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
+import com.softmotions.weboot.lifecycle.Dispose;
 import com.softmotions.weboot.lifecycle.Start;
 
 import com.google.common.eventbus.Subscribe;
@@ -14,7 +15,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,11 @@ public class HtmlToPdfModule extends AbstractModule {
         @Start
         public void init() {
             ebus.register(this);
+        }
 
+        @Dispose
+        public void shutdown() {
+            saver.shutdown();
         }
 
         @Subscribe
