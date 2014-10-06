@@ -16,6 +16,10 @@ public final class MediaRSLocalRequest extends HttpServletRequestAdapter {
 
     private final NcmsEnvironment env;
 
+    MediaRSLocalRequest(NcmsEnvironment env) {
+        this(env, null);
+    }
+
     MediaRSLocalRequest(NcmsEnvironment env, File file) {
         this.file = file;
         this.env = env;

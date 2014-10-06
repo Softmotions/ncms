@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Generic media service.
@@ -46,6 +47,10 @@ public interface MediaRepository extends MediaReader, Closeable {
                     boolean system) throws IOException;
 
 
+    void importFile(InputStream source,
+                    String target,
+                    boolean system) throws IOException;
+
     /**
      * Ensure existensce of resized image file
      * for specified image source file identified by path.
@@ -70,4 +75,8 @@ public interface MediaRepository extends MediaReader, Closeable {
     void updateResizedImages(String path) throws IOException;
 
     void updateResizedImages(long id) throws IOException;
+
+    String getPageLocalFolderPath(Long pageId);
+
 }
+

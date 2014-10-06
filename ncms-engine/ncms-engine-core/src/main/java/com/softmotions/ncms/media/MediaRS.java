@@ -1600,7 +1600,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         //Used in order to detect ctype with TIKA (mark/reset are supported by BufferedInputStream)
         BufferedInputStream bis = new BufferedInputStream(in);
         FileUploadStream us = null;
-        boolean localPut = (req instanceof MediaRSLocalRequest);
+        boolean localFilePut = ((req instanceof MediaRSLocalRequest) && ((MediaRSLocalRequest) req).getFile() != null);
         String rctype = (req.getContentType() == null) ?
                         req.getServletContext().getMimeType(name) :
                         req.getContentType();
@@ -1615,7 +1615,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
         }
 
-        if (!localPut) {
+        if (!localFilePut) {
             XMLConfiguration xcfg = env.xcfg();
             int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB); //1Mb by default
             int uplTh = xcfg.getInt("media.max-upload-size", MB * 10); //10Mb by default
@@ -1630,7 +1630,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             checkEditAccess(folder + name, req);
 
             long actualLength;
-            if (localPut) {
+            if (localFilePut) {
                 actualLength = ((MediaRSLocalRequest) req).getFile().length();
             } else {
                 actualLength = IOUtils.copyLarge(bis, us);
@@ -2010,10 +2010,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
-    private String getPageLocalFolderPath(long pageId) {
+    public String getPageLocalFolderPath(Long pageId) {
         StringBuilder sb = new StringBuilder(16);
         sb.append("/pages");
-        String sPageId = Long.toString(pageId);
+        String sPageId = pageId.toString();
         for (int i = 0, l = sPageId.length(); i < l; ++i) {
             if (i % 3 == 0) {
                 sb.append('/');
@@ -2285,6 +2285,20 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             } catch (Exception e) {
                 throw new IOException(e);
             }
+        }
+    }
+
+    public void importFile(InputStream source, String target, boolean system) throws IOException {
+        String name = getResourceName(target);
+        String folder = getResourceParentFolder(target);
+        try {
+            int flags = 0;
+            if (system) {
+                flags |= PUT_SYSTEM;
+            }
+            _put(folder, name, new MediaRSLocalRequest(env), null, source, flags);
+        } catch (Exception e) {
+            throw new IOException(e);
         }
     }
 

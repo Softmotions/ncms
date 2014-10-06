@@ -79,4 +79,13 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="46" author="adamansky@gmail.com">
+        <addColumn tableName="ASMS">
+            <column name="NAV_ALIAS2" type="VARCHAR(255)"/>
+        </addColumn>
+        <createIndex tableName="ASMS" indexName="IDX_ASMS_NAVALIAS2">
+            <column name="NAV_ALIAS2"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

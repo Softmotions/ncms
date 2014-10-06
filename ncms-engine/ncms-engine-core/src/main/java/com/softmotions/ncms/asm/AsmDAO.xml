@@ -228,8 +228,14 @@
 
     <update id="asmUpdateAlias" parameterType="map">
         UPDATE ASMS
-        SET nav_alias = #{alias}
-        WHERE id = #{id,jdbcType=VARCHAR}
+        SET nav_alias = #{alias,jdbcType=VARCHAR}
+        WHERE id = #{id}
+    </update>
+
+    <update id="asmUpdateAlias2" parameterType="map">
+        UPDATE ASMS
+        SET nav_alias2 = #{alias,jdbcType=VARCHAR}
+        WHERE id = #{id}
     </update>
 
     <select id="asmNameByID" parameterType="long" resultType="string">

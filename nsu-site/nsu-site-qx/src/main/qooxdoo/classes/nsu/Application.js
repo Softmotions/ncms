@@ -29,12 +29,11 @@ qx.Class.define("nsu.Application", {
             bt.addListener("execute", function(ev) {
                 var dlg = new nsu.legacy.ImportLegacyDataDlg(ep.getPageSpec()["id"]);
                 dlg.addListener("completed", function(ev) {
-                    qx.log.Logger.info("ev=" + ev);
                     dlg.close();
-                });
-                //dlg.placeToWidget(ev.getTarget(), false);
+                    ncms.Application.infoPopup(this.tr("Files successfully imported"));
+                }, this);
                 dlg.open();
-            });
+            }, this);
         }
     }
 });

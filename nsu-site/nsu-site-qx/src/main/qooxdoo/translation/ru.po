@@ -6,6 +6,10 @@ msgstr ""
 msgid "Import files from old nsu.ru"
 msgstr "Импортировать файлы из старого nsu.ru"
 
+#: nsu/Application.js:33
+msgid "Files successfully imported"
+msgstr ""
+
 #: nsu/legacy/ImportLegacyDataDlg.js:10
 msgid "Importing page from old nsu.ru"
 msgstr ""
