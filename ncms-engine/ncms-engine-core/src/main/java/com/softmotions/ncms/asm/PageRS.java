@@ -160,7 +160,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.env = env;
         this.mediaReader = mediaReader;
         this.amCtxProvider = amCtxProvider;
-        this.asmRoot = env.getNcmsRoot() + "/asm/";
+        this.asmRoot = env.getNcmsRoot() + "/";
         this.ebus.register(this);
     }
 
@@ -1323,10 +1323,10 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (ind != -1) {
                 spec = spec.substring(0, ind).trim();
             }
+        } else if (spec.indexOf("/ncms/asm/") == 0) { //it is the legacy case todo remove it
+            spec = spec.substring("/ncms/asm/".length());
         } else if (spec.indexOf(asmRoot) == 0) {
             spec = spec.substring(asmRoot.length());
-        } else if (spec.indexOf("/ncms/asm/") == 0) { //it is legacy case
-            spec = spec.substring("/ncms/asm/".length());
         }
         return resolvePageLink(spec);
     }

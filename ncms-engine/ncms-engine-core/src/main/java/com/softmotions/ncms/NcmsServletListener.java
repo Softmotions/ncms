@@ -100,9 +100,7 @@ public class NcmsServletListener extends WBServletListener {
         reg.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
         reg.setInitParameter("dbJndiName", dbJndiName);
         reg.setInitParameter("username", webFakeUser);
-
     }
-
 
     protected void initJarResources(NcmsEnvironment env, ServletContext sctx) {
         FilterRegistration.Dynamic fr = sctx.addFilter("jarResourcesFilter", JarResourcesFilter.class);

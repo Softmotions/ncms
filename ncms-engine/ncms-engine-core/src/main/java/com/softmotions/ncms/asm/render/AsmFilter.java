@@ -15,17 +15,25 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 /**
  * Asm handler.
@@ -34,9 +42,9 @@ import java.io.StringWriter;
  */
 
 @Singleton
-public class AsmServlet extends HttpServlet {
+public class AsmFilter implements Filter {
 
-    private static final Logger log = LoggerFactory.getLogger(AsmServlet.class);
+    private static final Logger log = LoggerFactory.getLogger(AsmFilter.class);
 
     @Inject
     private NcmsEnvironment env;
@@ -56,34 +64,85 @@ public class AsmServlet extends HttpServlet {
     @Inject
     private AsmRendererContextFactory rendererContextFactory;
 
+    private String[] stripPrefixes;
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        getContent(req, resp, true);
+    private String[] excludePrefixes;
+
+
+    public void init(FilterConfig cfg) throws ServletException {
+        stripPrefixes = null;
+        excludePrefixes = null;
+
+        String ss = cfg.getInitParameter("strip-prefixes");
+        if (ss != null) {
+            ArrayList<String> arr = new ArrayList<>();
+            StringTokenizer st = new StringTokenizer(ss, ",");
+            while (st.hasMoreTokens()) {
+                String sp = st.nextToken().trim();
+                if ("/".equals(sp)) {
+                    sp = "";
+                }
+                arr.add(sp);
+            }
+            stripPrefixes = arr.toArray(new String[arr.size()]);
+        } else {
+            stripPrefixes = ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+
+        ss = cfg.getInitParameter("exclude-prefixes");
+        if (ss != null) {
+            ArrayList<String> arr = new ArrayList<>();
+            StringTokenizer st = new StringTokenizer(ss, ",");
+            while (st.hasMoreTokens()) {
+                arr.add(st.nextToken().trim());
+            }
+            excludePrefixes = arr.toArray(new String[arr.size()]);
+        } else {
+            excludePrefixes = ArrayUtils.EMPTY_STRING_ARRAY;
+        }
+
+        log.info("Strip prefixes: " + Arrays.asList(stripPrefixes));
+        log.info("Exclude prefixes: " + Arrays.asList(excludePrefixes));
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        getContent(req, resp, true);
+    public void doFilter(ServletRequest sreq, ServletResponse sresp, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) sreq;
+        HttpServletResponse resp = (HttpServletResponse) sresp;
+        if (!getContent(req, resp, !"HEAD".equals(req.getMethod()))) {
+            chain.doFilter(req, resp);
+        }
     }
 
-    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        getContent(req, resp, false);
+    public void destroy() {
     }
+
 
     @Transactional
-    protected void getContent(HttpServletRequest req, HttpServletResponse resp, boolean transfer) throws ServletException, IOException {
-
-        if (processResources(req, resp)) { //find resources
-            return;
+    protected boolean getContent(HttpServletRequest req, HttpServletResponse resp, boolean transfer) throws ServletException, IOException {
+        String pi = req.getRequestURI();
+        for (final String ep : excludePrefixes) {
+            if (pi.startsWith(ep)) {
+                return false;
+            }
+        }
+        for (final String sp : stripPrefixes) {
+            if (pi.startsWith(sp)) {
+                pi = pi.substring(sp.length());
+                break;
+            }
+        }
+        if (processResources(pi, req, resp)) { //find resources
+            return true;
         }
         //Set charset before calling javax.servlet.ServletResponse.getWriter()
         //Assumed all assemblies generated as utf8 encoded text data.
         //Content-Type can be overriden by assembly renderer.
         resp.setContentType("text/html;charset=UTF-8");
 
-        Object asmRef = fetchAsmRef(req);
+        Object asmRef = fetchAsmRef(pi, req);
         if (asmRef == null) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return;
+            //resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return false;
         }
 
         AsmRendererContext ctx;
@@ -97,8 +156,8 @@ public class AsmServlet extends HttpServlet {
             ctx = rendererContextFactory.createStandalone(req, renderResp, asmRef);
         } catch (AsmResourceNotFoundException e) {
             log.error("Resource not found: " + e.getResource() + " assembly: " + asmRef);
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
+            //resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return false;
         }
 
         boolean preview = "1".equals(req.getParameter("preview"));
@@ -108,7 +167,7 @@ public class AsmServlet extends HttpServlet {
                 if (asm.getType() != null && asm.getCore() != null) {
                     resp.sendError(HttpServletResponse.SC_FORBIDDEN);
                 }
-                return;
+                return true;
             }
         }
 
@@ -137,11 +196,11 @@ public class AsmServlet extends HttpServlet {
             Thread.currentThread().setContextClassLoader(old);
             resp.flushBuffer();
         }
+        return true;
     }
 
-    protected Object fetchAsmRef(HttpServletRequest req) {
-        String pi = req.getPathInfo();
-        if (pi == null || pi.length() < 2 || "/index.html".equals(pi)) {
+    protected Object fetchAsmRef(String pi, HttpServletRequest req) {
+        if (pi.length() < 2 || "/index.html".equals(pi)) {
             CachedPage cp = pageService.getIndexPage(req);
             if (cp == null) {
                 log.warn("Unable to find index page");
@@ -162,16 +221,15 @@ public class AsmServlet extends HttpServlet {
         return pi;
     }
 
-    protected boolean processResources(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String pi = req.getPathInfo();
-        if (pi == null || "/index.html".equals(pi)) {
+    protected boolean processResources(String pi, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        if ("/index.html".equals(pi)) {
             return false;
         }
         XMLConfiguration xcfg = env.xcfg();
-        if (!xcfg.getBoolean("site-files-root[@resolveRelativePaths]", true)) {
+        if (!xcfg.getBoolean("asm.site-files-root[@resolveRelativePaths]", true)) {
             return false;
         }
-        String siteRoot = xcfg.getString("site-files-root");
+        String siteRoot = xcfg.getString("asm.site-files-root");
         MediaResource mres = mediaRepository.findMediaResource(siteRoot + pi, messages.getLocale(req));
         if (mres == null) {
             return false;
@@ -186,5 +244,4 @@ public class AsmServlet extends HttpServlet {
         }
         return true;
     }
-
 }

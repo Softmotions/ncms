@@ -44,10 +44,8 @@ public class MediaWikiRenderer {
         this.ebus = ebus;
         this.messages = messages;
         XMLConfiguration xcfg = env.xcfg();
-        this.imageBaseUrl = xcfg.getString("mediawiki.image-base-url",
-                                           env.getNcmsPrefix() + "/rs/mw/res/" + "${image}");
-        this.linkBaseUrl = xcfg.getString("mediawiki.link-base-url",
-                                          env.getNcmsPrefix() + "/rs/mw/link/" + "${title}");
+        this.imageBaseUrl = env.getNcmsPrefix() + xcfg.getString("mediawiki.image-base-url", "/rs/mw/res/" + "${image}");
+        this.linkBaseUrl = env.getNcmsPrefix() + xcfg.getString("mediawiki.link-base-url", "/rs/mw/link/" + "${title}");
     }
 
     public String render(String markup, HttpServletRequest req) {

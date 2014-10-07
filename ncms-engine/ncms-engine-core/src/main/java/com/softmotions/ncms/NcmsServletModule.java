@@ -1,7 +1,9 @@
 package com.softmotions.ncms;
 
+import com.softmotions.commons.cont.ArrayUtils;
+import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.ncms.asm.render.AsmServlet;
+import com.softmotions.ncms.asm.render.AsmFilter;
 import com.softmotions.ncms.jaxrs.NcmsJsonNodeReader;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
 import com.softmotions.weboot.WBServletModule;
@@ -20,31 +22,40 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
     protected void init(NcmsEnvironment env) {
         bind(NcmsEnvironment.class).toInstance(env);
         initJAXRS(env);
-        initAsmServlet(env);
+        initAsmFilter(env);
     }
 
-    protected void initAsmServlet(NcmsEnvironment env) {
-        //Assembly rendering servlet
-        Class<? extends AsmServlet> clazz = getAsmServletClass();
-        serve(env.getNcmsPrefix() + "/asm/*", clazz);
-        serve(env.getNcmsPrefix() + "/adm/asm/*", clazz);
+    protected void initAsmFilter(NcmsEnvironment env) {
+        //Assembly rendering filter
+        Class<? extends AsmFilter> clazz = getAsmFilterClass();
+        String ncmsp = env.getNcmsPrefix();
+        KVOptions opts = new KVOptions();
+        opts.put("strip-prefixes", ncmsp + "/adm/asm," + (ncmsp.isEmpty() ? "/" : ncmsp));
+        String[] exclude = env.xcfg().getStringArray("asm.exclude");
+        if (exclude.length == 0) {
+            exclude = new String[]{ncmsp + "/rs", ncmsp + "/rjs"};
+        }
+        opts.put("exclude-prefixes", ArrayUtils.stringJoin(exclude, ","));
+        filter(ncmsp + "/*", clazz, opts);
     }
 
     protected void initJAXRS(NcmsEnvironment env) {
+        String ncmsp = env.getNcmsPrefix();
         //Resteasy staff
         bind(NcmsRSExceptionHandler.class).in(Singleton.class);
         bind(NcmsJsonNodeReader.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
-        serve(env.getNcmsPrefix() + "/rs/*",
-              HttpServletDispatcher.class,
-              new TinyParamMap().param("resteasy.servlet.mapping.prefix", env.getNcmsPrefix() + "/rs"));
+        serve(ncmsp + "/rs/*")
+                .with(HttpServletDispatcher.class,
+                      new TinyParamMap().param("resteasy.servlet.mapping.prefix", ncmsp + "/rs"));
 
         //Resteasy JS API
         bind(JSAPIServlet.class).in(Singleton.class);
-        serve(env.getNcmsPrefix() + "/rjs", JSAPIServlet.class);
+        serve(ncmsp + "/rjs")
+                .with(JSAPIServlet.class);
     }
 
-    protected Class<? extends AsmServlet> getAsmServletClass() {
-        return AsmServlet.class;
+    protected Class<? extends AsmFilter> getAsmFilterClass() {
+        return AsmFilter.class;
     }
 }

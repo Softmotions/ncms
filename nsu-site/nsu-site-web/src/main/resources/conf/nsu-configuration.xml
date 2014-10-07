@@ -7,9 +7,7 @@
 
     <server-name>127.0.0.1</server-name>
     <server-port>8080</server-port>
-
     <site-root preferRequestUrl="true">http://${server-name}:${server-port}</site-root>
-    <site-files-root resolveRelativePaths="true">/site</site-files-root>
 
     <help>
         <site alias="help"/>
@@ -19,6 +17,11 @@
     <!--<logout-redirect>http://${server-name}:${server-port}</logout-redirect>-->
     <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->
     <ncms-prefix>/</ncms-prefix>
+
+    <asm>
+        <site-files-root resolveRelativePaths="true">/site</site-files-root>
+        <exclude>/rs,/rjs,/ncms/rs,/ncms/rjs</exclude>
+    </asm>
 
     <messages>
         <bundle>com.softmotions.ncms.Messages</bundle>
@@ -156,8 +159,8 @@
     </ui>
 
     <mediawiki>
-        <image-base-url>${ncms-prefix}/rs/mw/res/${image}</image-base-url>
-        <link-base-url>${ncms-prefix}/rs/mw/link/${title}</link-base-url>
+        <image-base-url>/rs/mw/res/${image}</image-base-url>
+        <link-base-url>/rs/mw/link/${title}</link-base-url>
         <max-inline-image-width-px>900</max-inline-image-width-px>
         <tags>
             <tag name="note" class="com.softmotions.ncms.mediawiki.NoteTag"/>
@@ -229,7 +232,7 @@
         <exec-extra-params>
             --print-media-type
         </exec-extra-params>
-        <page-url-template>${site-root}${ncms-prefix}/asm/{id}</page-url-template>
+        <page-url-template>${site-root}/{id}</page-url-template>
         <asm-templates>
             journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce
         </asm-templates>
