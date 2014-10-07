@@ -19,10 +19,8 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
 
     protected void init(NcmsEnvironment env) {
         bind(NcmsEnvironment.class).toInstance(env);
-        initBefore(env);
         initJAXRS(env);
         initAsmServlet(env);
-        initAfter(env);
     }
 
     protected void initAsmServlet(NcmsEnvironment env) {
@@ -48,13 +46,5 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
 
     protected Class<? extends AsmServlet> getAsmServletClass() {
         return AsmServlet.class;
-    }
-
-    protected void initBefore(NcmsEnvironment env) {
-
-    }
-
-    protected void initAfter(NcmsEnvironment env) {
-
     }
 }
