@@ -13,13 +13,13 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.SecurityContext;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,9 +47,19 @@ public class WorkspaceRS {
 
     @GET
     @Path("state")
-    public WSUserState state(@Context SecurityContext sctx,
-                             @Context HttpServletRequest req) {
-        WSUser user = (WSUser) sctx.getUserPrincipal();
+    public WSUserState state(@Context HttpServletRequest req,
+                             @Context HttpServletResponse resp) throws Exception {
+        WSUser user = (WSUser) req.getUserPrincipal();
+        if (user == null) {
+            if (!req.authenticate(resp)) {
+                throw new ForbiddenException("");
+            } else {
+                user = (WSUser) req.getUserPrincipal();
+            }
+            if (user == null) {
+                throw new ForbiddenException("");
+            }
+        }
         return new WSUserState(user, req);
     }
 
