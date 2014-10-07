@@ -8,7 +8,9 @@ qx.Class.define("nsu.Actions", {
     },
 
     members : {
-
+        _prefix : function() {
+            return ""; //todo make it configurable
+        }
     },
 
     destruct : function() {

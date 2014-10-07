@@ -50,7 +50,9 @@ public class NcmsEnvironment extends WBConfiguration {
 
     private void normalizePrefix(String property) {
         String val = xcfg().getString(property);
-        if (!StringUtils.isBlank(val)) {
+        if (StringUtils.isBlank(val) || "/".equals(val)) {
+            val = "";
+        } else {
             val = val.trim();
             if (!val.startsWith("/")) {
                 val = '/' + val;
@@ -58,8 +60,8 @@ public class NcmsEnvironment extends WBConfiguration {
             if (val.endsWith("/")) {
                 val = val.substring(0, val.length() - 1);
             }
-            xcfg().setProperty(property, val);
         }
+        xcfg().setProperty(property, val);
     }
 
     @Nonnull
@@ -78,8 +80,8 @@ public class NcmsEnvironment extends WBConfiguration {
 
     @Nonnull
     public String getNcmsPrefix() {
-        String p = xcfg().getString("ncms-prefix", "/ncms");
-        return p.charAt(0) != '/' ? '/' + p : p;
+        return xcfg().getString("ncms-prefix", "/ncms");
+        //return (p.length() > 0 && p.charAt(0) != '/') ? '/' + p : (p.length() == 1 && p.charAt(0) == '/' ? "" : p);
     }
 
     @Nonnull

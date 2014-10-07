@@ -1325,6 +1325,8 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
         } else if (spec.indexOf(asmRoot) == 0) {
             spec = spec.substring(asmRoot.length());
+        } else if (spec.indexOf("/ncms/asm/") == 0) { //it is legacy case
+            spec = spec.substring("/ncms/asm/".length());
         }
         return resolvePageLink(spec);
     }

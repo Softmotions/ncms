@@ -109,11 +109,7 @@ public class MediaWikiRS {
     public Redirect pageLink(@PathParam("spec") String spec,
                              @Context HttpServletRequest req) throws Exception {
         String title = spec.substring("Page:".length());
-        String link = env.getServletContext().getContextPath();
-        if (!link.endsWith("/")) {
-            link += '/';
-        }
-        link += env.getNcmsPrefix().substring(1) + "/asm/" + title;
+        String link = env.getServletContext().getContextPath() + env.getNcmsPrefix() + "/asm/" + title;
         return new Redirect(link);
     }
 

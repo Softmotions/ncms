@@ -11,7 +11,6 @@
     <site-root preferRequestUrl="true">http://${server-name}:${server-port}</site-root>
     <site-files-root resolveRelativePaths="true">/site</site-files-root>
 
-
     <help>
         <site alias="help"/>
         <wiki alias="wiki"/>
@@ -19,7 +18,7 @@
 
     <!--<logout-redirect>http://${server-name}:${server-port}</logout-redirect>-->
     <!--<tmpdir>used java.io.tmpdir by default</tmpdir>-->
-    <ncms-prefix>/ncms</ncms-prefix>
+    <ncms-prefix>/</ncms-prefix>
 
     <messages>
         <bundle>com.softmotions.ncms.Messages</bundle>

@@ -1,12 +1,14 @@
 package com.softmotions.ncms;
 
 import com.softmotions.web.CharsetFilter;
+import com.softmotions.web.JarResourcesFilter;
 import com.softmotions.web.security.SecurityFakeEnvFilter;
 import com.softmotions.weboot.WBServletListener;
 
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.logging.Logger;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
@@ -16,10 +18,12 @@ import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletRegistration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -53,6 +57,8 @@ public class NcmsServletListener extends WBServletListener {
         resteasyBootstrap = getInjector().getInstance(GuiceResteasyBootstrapServletContextListener.class);
         resteasyBootstrap.contextInitialized(event);
 
+        initJarResources(env, sctx);
+
         sctx.addFilter("charsetFilter", CharsetFilter.class)
                 .addMappingForUrlPatterns(null, false, "/*");
 
@@ -63,6 +69,18 @@ public class NcmsServletListener extends WBServletListener {
 
         start();
 
+        for (Map.Entry<String, ? extends FilterRegistration> e : sctx.getFilterRegistrations().entrySet()) {
+            FilterRegistration sreg = e.getValue();
+            for (String m : sreg.getUrlPatternMappings()) {
+                log.info(m + " => " + sreg.getName() + " (" + sreg.getClassName() + ")");
+            }
+        }
+        for (Map.Entry<String, ? extends ServletRegistration> e : sctx.getServletRegistrations().entrySet()) {
+            ServletRegistration sreg = e.getValue();
+            for (String m : sreg.getMappings()) {
+                log.info(m + " => " + sreg.getName() + " (" + sreg.getClassName() + ")");
+            }
+        }
         log.info(LOGO, env.getNcmsVersion());
     }
 
@@ -83,6 +101,22 @@ public class NcmsServletListener extends WBServletListener {
         reg.setInitParameter("dbJndiName", dbJndiName);
         reg.setInitParameter("username", webFakeUser);
 
+    }
+
+
+    protected void initJarResources(NcmsEnvironment env, ServletContext sctx) {
+        FilterRegistration.Dynamic fr = sctx.addFilter("jarResourcesFilter", JarResourcesFilter.class);
+        fr.addMappingForUrlPatterns(null, false, env.getNcmsPrefix() + "/*");
+        List<HierarchicalConfiguration> rlist = env.xcfg().configurationsAt("jar-web-resources.resource");
+        for (HierarchicalConfiguration rcfg : rlist) {
+            String pp = rcfg.getString("path-prefix");
+            String opts = rcfg.getString("options");
+            if (pp == null || opts == null) {
+                continue;
+            }
+            fr.setInitParameter(pp, opts);
+        }
+        fr.setInitParameter("strip-prefix", env.getNcmsPrefix());
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {

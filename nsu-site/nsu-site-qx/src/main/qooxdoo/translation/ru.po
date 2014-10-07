@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: nsu/Application.js:24
+#: nsu/Application.js:22
 msgid "Import data from old nsu.ru"
 msgstr "Импорт данных со старого nsu.ru"
 
-#: nsu/Application.js:38
+#: nsu/Application.js:35
 msgid "Import completed successfully"
 msgstr "Импорт данных успешно выполнен"
 

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -18,6 +20,8 @@ import java.util.List;
  */
 @SuppressWarnings("unchecked")
 public class Tree implements Iterable<Tree>, Serializable {
+
+    private static final Logger log = LoggerFactory.getLogger(Tree.class);
 
     private Long id;
 
