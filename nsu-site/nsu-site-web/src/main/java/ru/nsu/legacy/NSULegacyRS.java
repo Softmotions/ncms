@@ -175,6 +175,7 @@ public class NSULegacyRS {
 
     private String processWikiContent(String wiki, ImportCtx ctx) {
         wiki = wiki.replaceAll("class='tableShort'", "class='short'");
+        wiki = wiki.replaceAll("class='tableWide'", "class='wide'");
         if (!ctx.fixLinks) {
             return wiki;
         }
