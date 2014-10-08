@@ -48,6 +48,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt.addListener("execute", this.__save, this);
         hcont.add(bt);
 
+        this.__saveSc = new sm.bom.ExtendedShortcut("Ctrl+S", false, this);
+        this.__saveSc.addListener("execute", this.__save, this);
+
         bt = this.__cancelBt = new qx.ui.form.Button(this.tr("Cancel"), "ncms/icon/16/misc/cross-script.png");
         bt.setEnabled(false);
         bt.addListener("execute", this.__cancel, this);
@@ -112,6 +115,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         __publishBt : null,
 
         __previewBt : null,
+
+        __saveSc : null,
 
 
         getForm : function() {
@@ -434,5 +439,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__saveBt = null;
         this.__cancelBt = null;
         this.__publishBt = null;
+        this.__saveSc = null;
     }
 });

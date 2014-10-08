@@ -3,10 +3,6 @@ ul.tree {
   margin: 0;
   padding: 0;
 
-  > li:first-child {
-    padding: 0 !important;
-  }
-
   ul {
     list-style: none;
     padding: 0;
@@ -63,7 +59,7 @@ ul.tree {
 ul.dynamic {
   list-style: none;
   margin: 0;
-  padding: 0 0 0 5px;
+  padding: 0;
   display: block;
 
   ul {
@@ -72,18 +68,10 @@ ul.dynamic {
     padding: 0;
   }
 
-  > li:first-child {
-    padding: 0 !important;
-    background: none !important;
-    > span {
-      background: none !important;
-    }
-  }
-
-  li, ul li {
+  li {
     padding: 15px 0px 0px 15px;
     margin: 0;
-    background: url(../images/tr2.png) 0px 0px repeat-y;
+    background: none;
 
     &:after {
       display: none;
@@ -113,7 +101,7 @@ ul.dynamic {
     }
 
     > span {
-      background: url(../images/tr1.png) 0px 9px no-repeat;
+      background: none;
       width: 17px;
       height: 1em;
       float: left;
@@ -133,9 +121,20 @@ ul.dynamic {
         top: 0px;
       }
     }
+  }
 
-    /* &:last-of-type > span {
-       background: url(../images/tr3.png) 1px 8px no-repeat !important;
-     }*/
+  ul li {
+    background: url(../images/tr2.png) 0px 0px repeat-y !important;
+    > span {
+      background: url(../images/tr1.png) 0px 9px no-repeat !important;
+    }
+
+    &:last-child {
+      background: url(../images/tr2.png) 0px 0px no-repeat !important;
+
+      > span {
+        background: url(../images/tr3.png) 0px 4px no-repeat !important;
+      }
+    }
   }
 }
