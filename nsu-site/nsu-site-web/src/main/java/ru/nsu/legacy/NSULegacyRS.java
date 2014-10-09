@@ -26,8 +26,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +37,7 @@ import java.util.regex.Pattern;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@SuppressWarnings("unchecked")
 @Path("adm/legacy")
 @Singleton
 public class NSULegacyRS {
@@ -127,16 +130,22 @@ public class NSULegacyRS {
         boolean importWiki = (n != null && n.booleanValue());
         n = importSpec.get("links");
         boolean fixLinks = (n != null && n.booleanValue());
-        ImportCtx ctx = new ImportCtx(url, guid, fixLinks, importWiki);
+        ImportCtx ctx = new ImportCtx(id, url, guid, fixLinks, importWiki);
 
         log.info("Processing legacy page with guid: " + guid);
         String legacyAlias = fetchLegacyAlias(guid);
         log.info("Found legacy alias: " + legacyAlias);
         adao.asmUpdateAlias2(id, legacyAlias);
 
-        Pattern fnRE = Pattern.compile(guid + "(.*)");
         String pFolder = mediaRepository.getPageLocalFolderPath(id);
-        for (GridFSDBFile f : gridFS.find(jongo.createQuery("{filename : #}", fnRE).toDBObject())) {
+        List<String> fnames =
+                jongo.getCollection("navtree")
+                        .findOne("{_id : #}", new ObjectId(guid))
+                        .projection("{media : 1}")
+                        .map(result -> (List<String>) result.get("media"));
+
+        List<GridFSDBFile> files = gridFS.find(jongo.createQuery("{filename : {$in : #}}", fnames).toDBObject());
+        for (GridFSDBFile f : files) {
             String fn = f.getFilename();
             if (fn.endsWith(".thumb") || fn.startsWith("pdfview")) {
                 continue;
@@ -159,7 +168,7 @@ public class NSULegacyRS {
         return ret;
     }
 
-    private String importWiki(ImportCtx ctx) {
+    private String importWiki(ImportCtx ctx) throws IOException {
         DBCollection navtree = jongo.getCollection("navtree").getDBCollection();
         DBObject page = navtree.findOne(jongo.createQuery("{_id: #}", new ObjectId(ctx.guid)).toDBObject());
         DBObject extra = (DBObject) page.get("extra");
@@ -173,31 +182,49 @@ public class NSULegacyRS {
         return processWikiContent(content, ctx);
     }
 
-    private String processWikiContent(String wiki, ImportCtx ctx) {
+    private String processWikiContent(String wiki, ImportCtx ctx) throws IOException {
         wiki = wiki.replaceAll("class='tableShort'", "class='short'");
         wiki = wiki.replaceAll("class='tableWide'", "class='wide'");
         if (!ctx.fixLinks) {
             return wiki;
         }
+        String pFolder = mediaRepository.getPageLocalFolderPath(ctx.id);
         StringBuffer sb = new StringBuffer(wiki.length());
-        Pattern p = Pattern.compile("\\[\\[(image|media):" + ctx.guid + "([^\\|]+)((\\|[^\\|\\]]+)*)\\]\\]",
+        Pattern p = Pattern.compile("\\[\\[(image|media):([0-9a-f]{24})([^\\|]+)((\\|[^\\|\\]]+)*)\\]\\]",
                                     Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 
         Matcher m = p.matcher(wiki);
         while (m.find()) {
             String all = m.group(0);
-            String type = m.group(1);
-            String fname = m.group(2);
-            String spec = m.group(3);
+            String type = m.group(1).toLowerCase();
+            String guid = m.group(2);
+            String fname = m.group(3);
+            String spec = m.group(4);
             spec = spec.replaceAll("\\|link=$", "");
-            if (!spec.contains("none")) {
+            if ("image".equals(type) && !spec.contains("none")) {
                 spec = "|none" + spec;
             }
             Long fid = ctx.files.get(fname);
             if (fid == null) {
-                log.warn("Seems to be file: " + fname + " is not imported");
-                m.appendReplacement(sb, all);
-                continue;
+                GridFSDBFile f = gridFS.findOne(jongo.createQuery("{filename : #}", guid + fname).toDBObject());
+                if (f != null) {
+                    String fn = f.getFilename();
+                    if (fn.endsWith(".thumb") || fn.startsWith("pdfview")) {
+                        continue;
+                    }
+                    fn = fn.substring(guid.length());
+                    String target = pFolder + '/' + fn;
+                    log.info("Processing file: " + fn + " into: " + target);
+                    try (InputStream is = f.getInputStream()) {
+                        fid = mediaRepository.importFile(is, target, false);
+                        ctx.files.put(fn, fid);
+                    }
+                }
+                if (fid == null) {
+                    log.warn("The file: " + fname + " is not imported");
+                    m.appendReplacement(sb, all);
+                    continue;
+                }
             }
             StringBuilder nl = new StringBuilder(all.length());
             nl.append("[[");
@@ -245,13 +272,15 @@ public class NSULegacyRS {
     }
 
     private static class ImportCtx {
+        private final Long id;
         private final String url;
         private final String guid;
         private final boolean fixLinks;
         private final boolean importWiki;
         private final Map<String, Long> files = new HashMap<>();
 
-        private ImportCtx(String url, String guid, boolean fixLinks, boolean importWiki) {
+        private ImportCtx(Long id, String url, String guid, boolean fixLinks, boolean importWiki) {
+            this.id = id;
             this.url = url;
             this.guid = guid;
             this.fixLinks = fixLinks;
