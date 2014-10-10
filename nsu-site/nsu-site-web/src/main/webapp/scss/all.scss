@@ -530,8 +530,10 @@
         display: block;
         padding: 12px 19px 16px;
         position: relative;
-        text-decoration: none;
-        background: url(../images/arrow-list.png) no-repeat 246px 50%;
+        text-decoration: underline;
+        &:hover {
+          text-decoration: none;
+        }
       }
 
       &.active > a/*, > a:hover*/                                            {
@@ -539,6 +541,17 @@
         color: #fff;
         margin: -1px;
         padding: 13px 20px 17px;
+      }
+    }
+
+    > li.box {
+      > a {
+        text-decoration: none;
+        background: url(../images/arrow-list.png) no-repeat 246px 50%;
+      }
+
+      &.active > a/*, > a:hover*/                                            {
+        text-decoration: none;
         background: #3395e1 url(../images/arrow-list-hover.png) no-repeat 246px 50%;
       }
 
