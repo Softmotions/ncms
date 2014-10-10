@@ -88,4 +88,14 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="47" author="adamansky@gmail.com">
+        <modifyDataType tableName="MEDIA_ENTITY"
+                        columnName="CONTENT_TYPE"
+                        newDataType="VARCHAR(128)"/>
+
+        <modifyDataType tableName="MEDIA_ENTITY"
+                        columnName="PUT_CONTENT_TYPE"
+                        newDataType="VARCHAR(128)"/>
+    </changeSet>
+
 </databaseChangeLog>
