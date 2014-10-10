@@ -112,19 +112,18 @@ public class SearchController implements AsmController {
         //  id - идентификатор
         //  score - "баллы" поиска, для сортировки по релевантности
         //  cdate - дата создания
-        params.add(CommonParams.FL, "id,score,cdate");
+        params.add(CommonParams.FL, "id,score,cdate,name,hname," + getCustomFields());
         // выставляем сортировку по релевантности и дате создания
         params.add(CommonParams.SORT, "score desc, cdate desc");
 
         QueryResponse queryResponse = solr.query(params);
         SolrDocumentList results = queryResponse.getResults();
 
-        Collection<Asm> asms = new ArrayList<>(results.size());
-        for (SolrDocument document : results) {
-            asms.add(adao.asmSelectById(Long.valueOf(String.valueOf(document.getFieldValue("id")))));
-        }
+        ctx.put("search_documents", results);
+    }
 
-        ctx.put("search_result", asms);
+    protected String getCustomFields() {
+        return "asm_attr_s_annotation";
     }
 
     protected String buildFilterQuery(AsmRendererContext ctx) throws Exception {

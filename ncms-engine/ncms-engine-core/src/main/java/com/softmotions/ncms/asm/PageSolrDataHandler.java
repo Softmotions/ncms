@@ -6,12 +6,14 @@ import com.softmotions.ncms.asm.events.AsmCreatedEvent;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
+import com.softmotions.ncms.mhttl.ImageMeta;
 import com.softmotions.weboot.solr.SolrDataHandler;
 
 import com.google.common.collect.AbstractIterator;
 import com.google.common.eventbus.Subscribe;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.common.SolrInputDocument;
@@ -93,7 +95,8 @@ public class PageSolrDataHandler implements SolrDataHandler {
         }
         SolrInputDocument res = new SolrInputDocument();
         res.addField("id", asm.getId());
-        res.addField("name", asm.getHname());
+        res.addField("name", asm.getName());
+        res.addField("hname", asm.getHname());
         res.addField("description", asm.getDescription());
         res.addField("published", asm.isPublished());
         res.addField("type", asm.getType());
@@ -111,10 +114,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
                     Object[] data = aam.fetchFTSData(attr);
                     if (data != null) {
                         for (Object obj : data) {
-                            String suff = getFieldSuffixByObject(obj);
-                            if (obj != null) {
-                                res.addField("asm_attr_" + suff + "_" + attrName, obj);
-                            }
+                            addData(res, "asm_attr", attrName, obj);
                         }
                     }
                 }
@@ -128,17 +128,19 @@ public class PageSolrDataHandler implements SolrDataHandler {
         return res;
     }
 
-    private String getFieldSuffixByObject(Object obj) {
-        //noinspection ChainOfInstanceofChecks
-        if (obj instanceof Long || obj instanceof Integer) {
-            return "l";
-        } else if (obj instanceof Boolean) {
-            return "b";
+    private void addData(SolrInputDocument sid, String prefix, String suffix, Object data) {
+        //noinspection IfStatementWithTooManyBranches
+        if (data == null) {
+        } else if (data instanceof Long || data instanceof Integer) {
+            sid.addField(prefix + "_l_" + suffix, data);
+        } else if (data instanceof Boolean) {
+            sid.addField(prefix + "_b_" + suffix, data);
+        } else if (data instanceof ImageMeta) {
+            sid.addField(prefix + "_image_" + suffix, SerializationUtils.serialize((ImageMeta) data));
         } else {
-            return "s";
+            sid.addField(prefix + "_s_" + suffix, data);
         }
     }
-
 
     @Subscribe
     public void onAsmCreate(AsmCreatedEvent e) {

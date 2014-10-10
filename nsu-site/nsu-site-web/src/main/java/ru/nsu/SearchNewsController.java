@@ -104,6 +104,10 @@ public class SearchNewsController extends SearchController {
         ctx.put("search_categories_selected", selectedCategories);
     }
 
+    protected String getCustomFields() {
+        return "asm_attr_s_annotation,asm_attr_image_icon,asm_attr_l_event_date,asm_attr_s_subcategory";
+    }
+
     protected String buildFilterQuery(AsmRendererContext ctx) throws Exception {
         // фильтр на категорию новости
         String categoriesFQ = "";

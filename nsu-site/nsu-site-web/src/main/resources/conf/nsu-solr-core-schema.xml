@@ -10,7 +10,8 @@
     <field name="published" type="bool" indexed="true" stored="true" multiValued="false"/>
 
     <!-- asm fileds -->
-    <field name="name" type="text_general" indexed="true" stored="true" multiValued="false"/>
+    <field name="name" type="string" indexed="true" stored="true" multiValued="false"/>
+    <field name="hname" type="text_general" indexed="true" stored="true" multiValued="false"/>
     <field name="description" type="text_general" indexed="true" stored="true" multiValued="false"/>
     <field name="cdate" type="long" indexed="true" stored="true" multiValued="false"/>
     <field name="mdate" type="long" indexed="true" stored="true" multiValued="false"/>
@@ -19,13 +20,14 @@
     <dynamicField name="asm_attr_s_*" type="text_general" indexed="true" stored="true" multiValued="true"/>
     <dynamicField name="asm_attr_l_*" type="long" indexed="true" stored="true" multiValued="true"/>
     <dynamicField name="asm_attr_b_*" type="bool" indexed="true" stored="true" multiValued="true"/>
+    <dynamicField name="asm_attr_image_*" type="binary" indexed="true" stored="true" multiValued="true"/>
 
     <!-- default search field-->
     <field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
     <defaultSearchField>text</defaultSearchField>
 
     <!--copy text fields to default search -->
-    <copyField source="name" dest="text"/>
+    <copyField source="hname" dest="text"/>
     <copyField source="description" dest="text"/>
     <!--<copyField source="asm_attr_*" dest="text"/>-->
     <copyField source="asm_attr_s_annotation" dest="text"/>
@@ -40,6 +42,7 @@
     <fieldtype name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
     <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
     <fieldType name="bool" class="solr.BoolField"/>
+    <fieldType name="binary" class="solr.BinaryField"/>
 
     <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
         <analyzer type="index">

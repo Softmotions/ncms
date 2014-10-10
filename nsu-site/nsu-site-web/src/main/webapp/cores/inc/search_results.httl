@@ -1,11 +1,11 @@
 #set(Integer index = search_start)
 #set(Integer offset = search_start)
-#foreach(Asm pn in search_result)
+#foreach(SolrDocument sd in search_documents)
 #set(Integer index = index + 1)
 <li style="#if(offset != 0 || results_only == true)display: none;#end #if(index % 2 == 1)clear: both;#end">
     <div class="text-holder">
-        <h3><a href="$!{pn.link}">${pn.hname}</a></h3>
-        <p>${pn.asmAny("annotation")}</p>
+        <h3><a href="$!{link(sd.solrString("name"))}">${sd.solrString("hname")}</a></h3>
+        <p>${sd.solrString("asm_attr_s_annotation")}</p>
     </div>
 </li>
 #end

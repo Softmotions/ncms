@@ -9,6 +9,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.mhttl.Image;
+import com.softmotions.ncms.mhttl.ImageMeta;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -23,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -56,7 +56,15 @@ public class AsmImageAM implements AsmAttributeManager {
     }
 
     public Object[] fetchFTSData(AsmAttribute attr) {
-        return null;
+        String value = attr.getEffectiveValue();
+        if (StringUtils.isBlank(value)) {
+            return null;
+        }
+        ImageMeta meta = new ImageMeta();
+        if (!parseImageMeta(value, meta)) {
+            return null;
+        }
+        return meta.getId() != null ? new Object[]{meta} : null;
     }
 
     public Image renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) {
@@ -98,10 +106,21 @@ public class AsmImageAM implements AsmAttributeManager {
             return null;
         }
         Image res = new Image(ctx);
+        if (!parseImageMeta(value, res)) {
+            return null;
+        }
+
+        if (res.getId() == null || res.getId().longValue() == 0L) {
+            return null;
+        }
+        return res;
+    }
+
+    private boolean parseImageMeta(String value, ImageMeta res) {
         try (JsonParser parser = mapper.getFactory().createParser(value)) {
             String key;
             if (parser.nextToken() != JsonToken.START_OBJECT) {
-                return Collections.EMPTY_LIST;
+                return false;
             }
             while (parser.nextValue() != null) {
                 key = parser.getCurrentName();
@@ -137,10 +156,7 @@ public class AsmImageAM implements AsmAttributeManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        if (res.getId() == null || res.getId().longValue() == 0L) {
-            return null;
-        }
-        return res;
+        return true;
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {

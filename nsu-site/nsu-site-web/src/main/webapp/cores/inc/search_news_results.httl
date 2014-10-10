@@ -1,26 +1,32 @@
 #set(Integer index = search_start)
 #set(Integer offset = search_start)
-#foreach(Asm pn in search_result)
+#foreach(SolrDocument sd in search_documents)
 #set(Integer index = index + 1)
 <li style="#if(offset != 0 || results_only == true)display: none;#end #if(index % 2 == 1)clear: both;#end">
     <div class="img-holder">
-        #set(Image icon = pn.asm("icon"))
+        #set(Image icon = sd.solrImage("asm_attr_image_icon"))
         #if(icon != null)
         <div class="news-img-holder">
-            <a href="$!{pn.link}"><img src="$!{icon.link}" alt="${pn.hname}"/></a>
+            <a href="$!{link(sd.solrString("name"))}"><img src="$!{icon.link}" alt="${sd.solrString("hname")}"/></a>
         </div>
         #end
-        #set(Date event_date = pn.eventDate())
+
+        #set(Date event_date = sd.solrDate("asm_attr_l_event_date"))
+        #if(event_date == null)
+        #set(Date event_date = sd.solrDate("cdate"))
+        #end
         <span class="date">${event_date.format2("dd")}</span>
         <span class="mounth">${event_date.format2("LMMMMM")}</span>
         <span class="year">${event_date.format2("yyyy")}</span>
     </div>
     <div class="text-holder">
-        <h3><a href="$!{pn.link}">${pn.hname}</a></h3>
-        <p>${pn.asm("annotation")}</p>
-        #if(pn.isHasAttribute("subcategory"))
-        #foreach(SelectNode sn in pn.asm("subcategory"))
-        <span class="tag">${sn.key}</span>
+        <h3><a href="$!{link(sd.solrString("name"))}">${sd.solrString("hname")}</a></h3>
+        <p>${sd.solrString("asm_attr_s_annotation")}</p>
+
+        #set(Collection scs = sd.solrCollection("asm_attr_s_subcategory"))
+        #if(scs != null && !scs.empty)
+        #foreach(String sc in scs)
+        <span class="tag">${sc}</span>
         #end
         #end
     </div>
