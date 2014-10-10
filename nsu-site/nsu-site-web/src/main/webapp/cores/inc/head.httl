@@ -1,10 +1,11 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=10"/>
-<title>${page().hname}</title>
+<title>${page().hname} | Новосибирский государственный университет</title>
 <link rel="stylesheet" href="css/all.css" type="text/css"/>
 <link rel="stylesheet" href="fotorama/fotorama.css" type="text/css"/>
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,600,700&subset=latin,cyrillic-ext,cyrillic" type="text/css">
+<link REL="shortcut icon" HREF="images/nsu_ico.png" TYPE="image/png">
 <!--[if lt IE 9]>
 <script type="text/javascript" src="js/html5shiv.min.js"/>
 <![endif]>-->
