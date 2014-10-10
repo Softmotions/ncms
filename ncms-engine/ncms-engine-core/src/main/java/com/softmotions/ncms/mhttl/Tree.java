@@ -39,6 +39,9 @@ public class Tree implements Iterable<Tree>, Serializable {
 
     private RichRef richRef;
 
+    private Long syncWithId;
+
+
     @JsonProperty(required = true)
     private List<Tree> children;
 
@@ -143,10 +146,19 @@ public class Tree implements Iterable<Tree>, Serializable {
         return (children != null && !children.isEmpty());
     }
 
+    public Long getSyncWithId() {
+        return syncWithId;
+    }
+
+    public void setSyncWithId(Long syncWithId) {
+        this.syncWithId = syncWithId;
+    }
+
     @SuppressWarnings("StringBufferReplaceableByString")
     public String toString() {
         final StringBuilder sb = new StringBuilder("Tree{");
         sb.append("id=").append(id);
+        sb.append(", syncWithId=").append(syncWithId);
         sb.append(", name='").append(name).append('\'');
         sb.append(", type='").append(type).append('\'');
         sb.append(", extra='").append(extra).append('\'');

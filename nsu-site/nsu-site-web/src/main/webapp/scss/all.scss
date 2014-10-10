@@ -235,11 +235,11 @@
       padding: 0;
     }
 
-    &.short tr:hover td {
+    &.short tr:hover td, &.tableShort tr:hover td{
       border-color: inherit;
     }
 
-    &.wide {
+    &.wide, &.tableWide {
       width: 100%;
       tr {
         padding: 0;

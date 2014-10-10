@@ -40,7 +40,7 @@ public class AsmWikiAM implements AsmAttributeManager {
 
     public static final String[] TYPES = {"wiki"};
 
-    private static final Pattern MEDIAREF_REGEXP = Pattern.compile("\\[\\[(image|media):\\s*(/)?(\\d+).*\\]\\]",
+    private static final Pattern MEDIAREF_REGEXP = Pattern.compile("\\[\\[(image|media):\\s*(/)?(\\d+)/.*\\]\\]",
                                                                    Pattern.CASE_INSENSITIVE);
 
     private static final Pattern PAGEREF_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|.*)?\\]\\]",
@@ -165,7 +165,6 @@ public class AsmWikiAM implements AsmAttributeManager {
     }
 
     private String preSaveWiki(AsmAttributeManagerContext ctx, AsmAttribute attr, String value) {
-
         // \[\[page:\s*([0-9a-f]{32})(\s*\|.*)?\]\]
         Matcher m = PAGEREF_REGEXP.matcher(value);
         while (m.find()) {
@@ -174,10 +173,8 @@ public class AsmWikiAM implements AsmAttributeManager {
                 ctx.registerPageDependency(attr, guid);
             }
         }
-
         m = MEDIAREF_REGEXP.matcher(value);
         while (m.find()) {
-            // \[\[(image|media):(/)?(\d+).*\]\]
             String fileId = m.group(3);
             if (fileId == null) {
                 continue;

@@ -92,6 +92,9 @@ public class AsmModule extends AbstractModule {
         bind(PageRS.class).in(Singleton.class);
         bind(PageService.class).to(PageRS.class);
         bind(PageSecurityService.class).in(Singleton.class);
+
+        //todo review registration
+        bind(AsmTreeAM.class).in(Singleton.class);
     }
 
 

@@ -28,6 +28,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +145,9 @@ public class NSULegacyRS {
                         .projection("{media : 1}")
                         .map(result -> (List<String>) result.get("media"));
 
-        List<GridFSDBFile> files = gridFS.find(jongo.createQuery("{filename : {$in : #}}", fnames).toDBObject());
+        List<GridFSDBFile> files =
+                (fnames != null && !fnames.isEmpty()) ? gridFS.find(jongo.createQuery("{filename : {$in : #}}", fnames).toDBObject()) :
+                Collections.emptyList();
         for (GridFSDBFile f : files) {
             String fn = f.getFilename();
             if (fn.endsWith(".thumb") || fn.startsWith("pdfview")) {

@@ -4,6 +4,7 @@ import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
@@ -21,7 +22,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -30,7 +37,10 @@ import java.util.Map;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 
+@SuppressWarnings("unchecked")
 @Singleton
+@Path("adm/am/tree")
+@Produces("application/json;charset=UTF-8")
 public class AsmTreeAM implements AsmAttributeManager {
 
     private static final Logger log = LoggerFactory.getLogger(AsmTreeAM.class);
@@ -43,6 +53,8 @@ public class AsmTreeAM implements AsmAttributeManager {
 
     private final PageService pageService;
 
+
+
     @Inject
     public AsmTreeAM(ObjectMapper mapper,
                      AsmRichRefAM richRefAM,
@@ -51,6 +63,33 @@ public class AsmTreeAM implements AsmAttributeManager {
         this.richRefAM = richRefAM;
         this.pageService = pageService;
     }
+
+
+    @PUT
+    @Path("/sync")
+    @Consumes("application/json")
+    public ObjectNode syncWith(ObjectNode spec) {
+        ObjectNode tree = mapper.createObjectNode();
+        Long srcPage;
+        Long tgtPage;
+        String attrname;
+        JsonNode n = spec.get("srcPage");
+        srcPage = (n != null && n.isNumber()) ? n.longValue() : null;
+        n = spec.get("tgtPage");
+        tgtPage = (n != null && n.isNumber()) ? n.longValue() : null;
+        n = spec.get("attrname");
+        attrname = n.asText(null);
+        if (srcPage == null || tgtPage == null || attrname == null) {
+            throw new BadRequestException("");
+        }
+        //Asm srcAsm =
+
+
+
+
+        return tree;
+    }
+
 
     public String[] getSupportedAttributeTypes() {
         return TYPES;
@@ -79,11 +118,31 @@ public class AsmTreeAM implements AsmAttributeManager {
         if (attr == null || attr.getEffectiveValue() == null) {
             return new Tree("root");
         }
+        Tree tree;
         try {
-            return initTree(mapper.reader(Tree.class).readValue(attr.getEffectiveValue()), ctx);
+            tree = initTree(mapper.reader(Tree.class).readValue(attr.getEffectiveValue()), ctx);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        Long syncWithId = tree.getSyncWithId();
+        if (syncWithId != null) {
+            CachedPage syncPage = pageService.getCachedPage(syncWithId, true);
+            if (syncPage == null) {
+                log.warn("Failed to find referenced page with id: " + syncWithId);
+                return tree;
+            }
+            Asm syncAsm = syncPage.getAsm();
+            AsmAttribute syncAttr = syncAsm.getEffectiveAttribute(attrname);
+            if (syncAttr == null || !attr.getType().equals(syncAttr.getType())) {
+                log.warn("Found incompatible sync attributes. " +
+                         "Source asm: " + syncWithId +
+                         " attr name: " + attrname +
+                         " sync attr: " + syncAttr);
+                return tree;
+            }
+            tree = (Tree) ctx.renderAttribute(syncAsm, attrname, Collections.EMPTY_MAP);
+        }
+        return tree;
     }
 
     private Tree initTree(Tree tree, AsmRendererContext ctx) throws IOException {

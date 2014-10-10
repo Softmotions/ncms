@@ -8,6 +8,9 @@
  * @asset(ncms/icon/16/misc/box.png)
  * @asset(ncms/icon/16/misc/block.png)
  * @asset(ncms/icon/16/misc/document-text-image.png)
+ * @asset(ncms/icon/16/misc/arrow-transition-270.png)
+ * @asset(ncms/icon/16/misc/arrow_up.png)
+ * @asset(ncms/icon/16/misc/arrow_down.png)
  * @asset(ncms/icon/22/places/folder.png)
  * @asset(ncms/icon/22/places/folder-open.png)
  * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
@@ -169,6 +172,12 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             el.setToolTipText(this.tr("Drop element"));
             part.add(el);
 
+
+            el = this._createButton(this.tr("Sync with"), "ncms/icon/16/misc/arrow-transition-270.png",
+                    this.__onSync, this);
+            el.setToolTipText(this.tr("Synchronize attribute content with another page"));
+            part.add(el);
+
             toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
 
             part = new qx.ui.toolbar.Part()
@@ -218,6 +227,19 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             b.setSel(item != null);
             b.setUp(this.__canMoveUp(item));
             b.setDown(this.__canMoveDown(item));
+        },
+
+
+        __onSync : function() {
+            //qx.log.Logger.info("on sync!!!!");
+            qx.log.Logger.info("attrSpec=" + JSON.stringify(this.__attrSpec));
+            var dlg = new ncms.pgs.PagesSelectorDlg(this.tr("Please select the page this attribute should be synchronized"));
+            dlg.addListener("completed", function(ev) {
+                var spec = ev.getData();
+                qx.log.Logger.info("spec=" + JSON.stringify(spec));
+                dlg.close();
+            }, this);
+            dlg.open();
         },
 
         __canMoveUp : function(item) {

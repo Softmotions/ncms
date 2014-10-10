@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
@@ -147,6 +149,7 @@ public class Asm implements Serializable {
         this.id = id;
     }
 
+    @Nonnull
     public String getName() {
         return name;
     }
@@ -155,6 +158,7 @@ public class Asm implements Serializable {
         this.name = name;
     }
 
+    @Nullable
     public String getHname() {
         return hname;
     }
@@ -171,6 +175,7 @@ public class Asm implements Serializable {
         this.type = type;
     }
 
+    @Nullable
     public String getDescription() {
         return description;
     }
@@ -179,6 +184,7 @@ public class Asm implements Serializable {
         this.description = description;
     }
 
+    @Nullable
     public String getOptions() {
         return options;
     }
@@ -188,6 +194,7 @@ public class Asm implements Serializable {
         this.parsedOptions = null;
     }
 
+    @Nullable
     public KVOptions getParsedOptions() {
         String opts = this.options;
         if (opts == null) {
@@ -205,6 +212,7 @@ public class Asm implements Serializable {
         this.template = template;
     }
 
+    @Nullable
     public String getTemplateMode() {
         return templateMode;
     }
@@ -213,6 +221,7 @@ public class Asm implements Serializable {
         this.templateMode = templateMode;
     }
 
+    @Nullable
     public Date getMdate() {
         return mdate;
     }
@@ -221,6 +230,7 @@ public class Asm implements Serializable {
         this.mdate = mdate;
     }
 
+    @Nullable
     public Date getCdate() {
         return cdate;
     }
@@ -229,6 +239,7 @@ public class Asm implements Serializable {
         this.cdate = cdate;
     }
 
+    @Nullable
     public Date getEdate() {
         return edate;
     }
@@ -245,6 +256,7 @@ public class Asm implements Serializable {
         this.published = published;
     }
 
+    @Nullable
     public String getController() {
         return controller;
     }
@@ -268,6 +280,7 @@ public class Asm implements Serializable {
         return null;
     }
 
+    @Nullable
     public AsmCore getCore() {
         return core;
     }
@@ -276,6 +289,7 @@ public class Asm implements Serializable {
         this.core = core;
     }
 
+    @Nullable
     @JsonProperty
     public AsmCore getEffectiveCore() {
         AsmCore c = getCore();
@@ -304,6 +318,7 @@ public class Asm implements Serializable {
         this.parents = parents;
     }
 
+    @Nullable
     public Long getNavParentId() {
         return navParentId;
     }
@@ -312,6 +327,7 @@ public class Asm implements Serializable {
         this.navParentId = navParentId;
     }
 
+    @Nullable
     public String getNavAlias() {
         return navAlias;
     }
@@ -320,6 +336,7 @@ public class Asm implements Serializable {
         this.navAlias = navAlias;
     }
 
+    @Nullable
     public String getNavCachedPath() {
         return navCachedPath;
     }
@@ -391,6 +408,7 @@ public class Asm implements Serializable {
         return prefs;
     }
 
+    @Nullable
     public AsmAttribute getEffectiveAttribute(String name) {
         AsmAttribute attr = getAttribute(name);
         if (attr != null || getParents() == null) {
@@ -409,6 +427,7 @@ public class Asm implements Serializable {
         return (getEffectiveAttribute(name) != null);
     }
 
+    @Nullable
     public String getEffectiveAttributeAsString(String name, String defVal) {
         AsmAttribute attr = getEffectiveAttribute(name);
         if (attr == null) {
@@ -443,6 +462,7 @@ public class Asm implements Serializable {
         }
     }
 
+    @Nullable
     public AsmAttribute getAttribute(String name) {
         return (getAttributes() != null) ? attributes.getIndex().get(name) : null;
     }
