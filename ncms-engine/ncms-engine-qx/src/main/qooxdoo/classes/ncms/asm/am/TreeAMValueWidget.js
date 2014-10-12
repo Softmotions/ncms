@@ -35,6 +35,12 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             apply : "__applyModel"
         },
 
+        syncWith : {
+            check : "Number",
+            nullable : true,
+            apply : "__applySyncWith"
+        },
+
         "options" : {
             check : "Map",
             nullable : false,
@@ -45,7 +51,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
     },
 
     construct : function(attrSpec, asmSpec, model, options) {
-
+        this.__btns = {};
         this.__broadcaster = sm.event.Broadcaster.create({
             "up" : false,
             "down" : false,
@@ -68,6 +74,8 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
     },
 
     members : {
+
+        __btns : null,
 
         __asmSpec : null,
 
@@ -162,18 +170,19 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             toolbar.add(part);
 
             var el = this.__addBt = new qx.ui.toolbar.MenuButton(null, "ncms/icon/16/actions/add.png");
+            this.__btns["add"] = el;
             el.setAppearance("toolbar-table-menubutton");
             el.setShowArrow(true);
             part.add(el);
 
-            el = this._createButton(null, "ncms/icon/16/actions/delete.png",
+            el = this._createButton(null, "ncms/icon/16/actions/delete.png", "delete",
                     this.__onRemove, this);
             this.__broadcaster.attach(el, "sel", "enabled");
             el.setToolTipText(this.tr("Drop element"));
             part.add(el);
 
 
-            el = this._createButton(this.tr("Sync with"), "ncms/icon/16/misc/arrow-transition-270.png",
+            el = this._createButton(this.tr("Sync with"), "ncms/icon/16/misc/arrow-transition-270.png", "sync",
                     this.__onSync, this);
             el.setToolTipText(this.tr("Synchronize attribute content with another page"));
             part.add(el);
@@ -184,24 +193,25 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                     .set({"appearance" : "toolbar-table/part"});
             toolbar.add(part);
 
-            el = this._createButton(null, "ncms/icon/16/misc/arrow_up.png",
+            el = this._createButton(null, "ncms/icon/16/misc/arrow_up.png", "up",
                     this.__onMoveUp, this);
             el.setToolTipText(this.tr("Move item up"));
             this.__broadcaster.attach(el, "up", "enabled");
             part.add(el);
 
-            el = this._createButton(null, "ncms/icon/16/misc/arrow_down.png",
+            el = this._createButton(null, "ncms/icon/16/misc/arrow_down.png", "down",
                     this.__onMoveDown, this);
             el.setToolTipText(this.tr("Move item down"));
             this.__broadcaster.attach(el, "down", "enabled");
             part.add(el);
         },
 
-        _createButton : function(label, icon, handler, self) {
+        _createButton : function(label, icon, name, handler, self) {
             var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance" : "toolbar-table-button"});
             if (handler != null) {
                 bt.addListener("execute", handler, self);
             }
+            this.__btns[name] = bt;
             return bt;
         },
 
@@ -231,13 +241,39 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
 
 
         __onSync : function() {
-            //qx.log.Logger.info("on sync!!!!");
-            qx.log.Logger.info("attrSpec=" + JSON.stringify(this.__attrSpec));
+            if (this.getSyncWith() != null) { //reset synchronization
+                ncms.Application.confirm(this.tr("Are you sure to reset synchronization?"), function(yes) {
+                    this.setSyncWith(null);
+                    this.fireEvent("modified");
+                    this.fireEvent("requestSave");
+                }, this);
+                return;
+            }
+
             var dlg = new ncms.pgs.PagesSelectorDlg(this.tr("Please select the page this attribute should be synchronized"));
             dlg.addListener("completed", function(ev) {
-                var spec = ev.getData();
-                qx.log.Logger.info("spec=" + JSON.stringify(spec));
-                dlg.close();
+                var pspec = ev.getData();
+                var rdata = {
+                    src : pspec["id"],
+                    tgt : this.__attrSpec["asmId"],
+                    attr : this.__attrSpec["name"]
+                };
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("am.tree.sync"), "PUT", "application/json");
+                req.setRequestContentType("application/json");
+                req.setData(JSON.stringify(rdata));
+                req.send(function(resp) {
+                    var spec = resp.getContent();
+                    if (spec != null && typeof spec["src"] === "number") {
+                        this.setSyncWith(spec["src"]);
+                        if (spec["tree"] != null && typeof spec["tree"] === "object") {
+                            var model = qx.data.marshal.Json.createModel(spec["tree"], true);
+                            this.setModel(model);
+                        }
+                        this.fireEvent("modified");
+                        this.fireEvent("requestSave");
+                    }
+                    dlg.close();
+                }, this);
             }, this);
             dlg.open();
         },
@@ -304,6 +340,9 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             var bt;
             var menu = new qx.ui.menu.Menu();
 
+            if (opts["syncWith"] != null && !isNaN(Number(opts["syncWith"]))) {
+                this.setSyncWith(Number(opts["syncWith"]));
+            }
             bt = new qx.ui.menu.Button(this.tr("New folder"));
             bt.addListener("execute", this.__onNewFolder, this);
             bt.addListener("appear", function(ev) {
@@ -337,6 +376,29 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             }, this);
 
             this.__addBt.setMenu(menu);
+        },
+
+        __applySyncWith : function(val) {
+            var btns = [];
+            Object.keys(this.__btns).forEach(function(k) {
+                if (k !== "sync") {
+                    btns.push(this.__btns[k]);
+                }
+            }, this);
+            btns.forEach(function(bt) {
+                bt.setEnabled(val == null);
+            });
+            this.__tree.setEnabled(val == null);
+            var sbt = this.__btns["sync"];
+            if (val == null) {
+                sbt.setLabel(this.tr("Sync with"));
+            } else {
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.path", {id : val}), "GET", "application/json");
+                req.send(function(resp) {
+                    var info = resp.getContent();
+                    sbt.setLabel(this.tr("Synchronized with %1", info["labelPath"].join("/")));
+                }, this);
+            }
         },
 
         __beforeContextmenuOpen : function(ev) {
@@ -720,6 +782,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         }
         this.__tree = null;
         this.__addBt = null;
+        this.__btns = null;
         //this._disposeObjects("__field_name");
     }
 });

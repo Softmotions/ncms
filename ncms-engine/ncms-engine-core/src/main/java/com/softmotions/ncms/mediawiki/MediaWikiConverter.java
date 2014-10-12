@@ -212,12 +212,8 @@ public class MediaWikiConverter implements ITextConverter {
             clazz.append(location);
         }*/
         if (type != null) {
-            if (clazz == null) {
-                clazz = new StringBuilder(64);
-                clazz.append(" class=\"");
-            } else {
-                clazz.append(" ");
-            }
+            clazz = new StringBuilder(64);
+            clazz.append(" class=\"");
             clazz.append("type-").append(type);
         }
         if (clazz != null) {

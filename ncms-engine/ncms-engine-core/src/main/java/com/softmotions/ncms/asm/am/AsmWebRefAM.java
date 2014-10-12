@@ -29,6 +29,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +64,12 @@ public class AsmWebRefAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
+    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
+                                            HttpServletResponse resp,
+                                            Asm page,
+                                            Asm template,
+                                            AsmAttribute tmplAttr,
+                                            AsmAttribute attr) throws Exception {
         return attr;
     }
 
@@ -72,7 +78,7 @@ public class AsmWebRefAM implements AsmAttributeManager {
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
-                                     Map<String, String> options) throws AsmRenderingException {
+                                     @Nonnull Map<String, String> options) throws AsmRenderingException {
 
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);

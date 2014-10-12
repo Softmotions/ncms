@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +43,12 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
+    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
+                                            HttpServletResponse resp,
+                                            Asm page,
+                                            Asm template,
+                                            AsmAttribute tmplAttr,
+                                            AsmAttribute attr) throws Exception {
         return attr;
     }
 
@@ -50,12 +57,15 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
+        Tree res = new Tree();
         CachedPage cp = pageService.getCachedPage(ctx.getAsm().getId(), true);
+        if (cp == null) {
+            return res;
+        }
         Map<CachedPage.PATH_TYPE, Object> navpaths = cp.fetchNavPaths();
         Long[] idPaths = (Long[]) navpaths.get(PATH_TYPE.ID);
         String[] labelPaths = (String[]) navpaths.get(PATH_TYPE.LABEL);
         String[] guidPaths = (String[]) navpaths.get(PATH_TYPE.GUID);
-        Tree res = new Tree();
         List<Tree> children = res.getChildren();
         CachedPage ip = pageService.getIndexPage(ctx.getServletRequest());
         if (ip != null) {

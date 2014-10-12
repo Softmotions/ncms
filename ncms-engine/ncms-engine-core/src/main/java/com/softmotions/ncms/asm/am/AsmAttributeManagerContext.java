@@ -13,6 +13,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -37,6 +38,8 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
 
     private final HttpServletRequest request;
 
+    private final HttpServletResponse response;
+
     private final PageSecurityService pageSecurity;
 
     private Long asmId;
@@ -49,6 +52,10 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         return request;
     }
 
+    public HttpServletResponse getResponse() {
+        return response;
+    }
+
     public void setAsmId(Long asmId) {
         this.asmId = asmId;
     }
@@ -59,11 +66,13 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
 
     @Inject
     public AsmAttributeManagerContext(HttpServletRequest request,
+                                      HttpServletResponse response,
                                       PageSecurityService pageSecurity,
                                       SqlSession sess) {
         super(AsmAttributeManagerContext.class.getName(), sess);
         this.pageSecurity = pageSecurity;
         this.request = request;
+        this.response = response;
     }
 
     public void registerMediaFileDependency(AsmAttribute attr, Long fileId) {

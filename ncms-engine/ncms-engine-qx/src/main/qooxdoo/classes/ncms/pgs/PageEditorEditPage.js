@@ -237,6 +237,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             //Listen modified events
             if (qx.Class.hasInterface(awclass, ncms.asm.am.IValueWidget)) {
                 aw.addListener("modified", this._onModifiedWidget, this);
+                aw.addListener("requestSave", this._onRequestSavePage, this);
             } else if (oou.supportsEvent(awclass, "input") && !((typeof aw.getReadOnly === "function") && aw.getReadOnly() === true)) {
                 aw.addListener("input", this._onModifiedWidget, this);
             } else if (oou.supportsEvent(awclass, "changeValue")) {
@@ -270,6 +271,10 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 }
             }
             this.setModified(true);
+        },
+
+        _onRequestSavePage : function(ev) {
+            this.__save();
         },
 
         _applyModified : function(val) {

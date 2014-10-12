@@ -33,7 +33,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -148,14 +147,8 @@ public class NSUPressaRS {
                 snodes.add(item);
             }
         }
-        Collections.sort(snodes, new Comparator<ObjectNode>() {
-            public int compare(ObjectNode o1, ObjectNode o2) {
-                return Long.compare(o1.get("mdate").asLong(), o2.get("mdate").asLong());
-            }
-        });
-        for (ObjectNode n : snodes) {
-            anodes.add(n);
-        }
+        Collections.sort(snodes, (o1, o2) -> Long.compare(o1.get("mdate").asLong(), o2.get("mdate").asLong()));
+        snodes.forEach(anodes::add);
         return anodes;
     }
 }

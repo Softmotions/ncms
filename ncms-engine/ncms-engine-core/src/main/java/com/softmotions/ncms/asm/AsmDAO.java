@@ -575,9 +575,7 @@ public class AsmDAO extends MBDAOSupport {
                             throw new RuntimeException(e);
                         } finally {
                             try {
-                                if (lvr != null) {
-                                    lvr.close();
-                                }
+                                lvr.close();
                             } catch (IOException e) {
                                 log.error("", e);
                             }

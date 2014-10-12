@@ -7,6 +7,12 @@ qx.Interface.define("ncms.asm.am.IValueWidget", {
         /**
          * Fired if internal state of this widget modified by user input.
          */
-        modified : "qx.event.type.Event"
+        modified : "qx.event.type.Event",
+
+        /**
+         * Fire if need to save a the page
+         */
+        requestSave : "qx.event.type.Event"
+
     }
 });

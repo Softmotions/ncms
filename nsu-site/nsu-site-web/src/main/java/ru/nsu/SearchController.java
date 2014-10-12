@@ -1,6 +1,5 @@
 package ru.nsu;
 
-import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmController;
@@ -12,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.CommonParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
@@ -22,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -57,8 +53,11 @@ public class SearchController implements AsmController {
             ctx.put("results_only", true);
             resp.setContentType("text/html");
             AsmAttribute results = ctx.getAsm().getEffectiveAttribute("results");
-            ctx.getRenderer().renderTemplate(results.getEffectiveValue(), ctx, resp.getWriter());
-
+            if (results != null) {
+                ctx.getRenderer().renderTemplate(results.getEffectiveValue(), ctx, resp.getWriter());
+            } else {
+                log.error("Atribute 'results' is not found");
+            }
             return true;
         }
         return false;

@@ -7,6 +7,8 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -16,7 +18,10 @@ public interface AsmAttributeManager {
 
     String[] getSupportedAttributeTypes();
 
-    AsmAttribute prepareGUIAttribute(Asm page, Asm template,
+    AsmAttribute prepareGUIAttribute(HttpServletRequest req,
+                                     HttpServletResponse resp,
+                                     Asm page,
+                                     Asm template,
                                      AsmAttribute tmplAttr,
                                      AsmAttribute attr) throws Exception;
 

@@ -254,6 +254,19 @@ qx.Class.define("ncms.Actions", {
          */
         this._action("user.env.clear", "/rs/adm/user/env/clear/{type}");
 
+
+        //================== Attribute managers
+
+        /**
+         * PUT Sync asm attribute.
+         * Data: {
+         *   src: {Number} Page ID
+         *   tgt: {Number} Target page ID
+         *   attr: {String} Attribute name
+         * }
+         */
+        this._action("am.tree.sync", "/rs/adm/am/tree/sync");
+
     },
 
     members : {

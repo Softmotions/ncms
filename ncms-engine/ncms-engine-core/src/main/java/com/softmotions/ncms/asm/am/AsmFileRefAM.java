@@ -21,6 +21,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
@@ -50,7 +52,12 @@ public class AsmFileRefAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
+    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
+                                            HttpServletResponse resp,
+                                            Asm page,
+                                            Asm template,
+                                            AsmAttribute tmplAttr,
+                                            AsmAttribute attr) throws Exception {
         return attr;
     }
 

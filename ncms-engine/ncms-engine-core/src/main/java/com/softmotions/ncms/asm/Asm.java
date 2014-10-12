@@ -26,7 +26,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -194,11 +193,11 @@ public class Asm implements Serializable {
         this.parsedOptions = null;
     }
 
-    @Nullable
+    @Nonnull
     public KVOptions getParsedOptions() {
         String opts = this.options;
         if (opts == null) {
-            return null;
+            return new KVOptions();
         }
         this.parsedOptions = new KVOptions(opts);
         return parsedOptions;
@@ -348,15 +347,13 @@ public class Asm implements Serializable {
     public Iterator<Asm> getAllParentsIterator() {
         List<Pair<Asm, Integer>> plist = new ArrayList<>();
         fetchParentsCumulative(plist, 0);
-        Collections.sort(plist, new Comparator<Pair<Asm, Integer>>() {
-            public int compare(Pair<Asm, Integer> o1, Pair<Asm, Integer> o2) {
-                int res = Integer.compare(o1.getTwo(), o2.getTwo());
-                if (res == 0) {
-                    Collator coll = Collator.getInstance();
-                    res = coll.compare(o1.getOne().getName(), o2.getOne().getName());
-                }
-                return res;
+        Collections.sort(plist, (o1, o2) -> {
+            int res = Integer.compare(o1.getTwo(), o2.getTwo());
+            if (res == 0) {
+                Collator coll = Collator.getInstance();
+                res = coll.compare(o1.getOne().getName(), o2.getOne().getName());
             }
+            return res;
         });
         final Iterator<Pair<Asm, Integer>> pit = plist.iterator();
         return new AbstractIterator<Asm>() {

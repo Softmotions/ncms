@@ -176,6 +176,9 @@ public class NewsMainPageController implements AsmController {
                     } catch (IOException ignored) {
                         continue;
                     }
+                    if (szret == null) {
+                        continue;
+                    }
                     Tree item = new Tree();
                     RichRef ref = new RichRef();
                     Image img = new Image(ctx);

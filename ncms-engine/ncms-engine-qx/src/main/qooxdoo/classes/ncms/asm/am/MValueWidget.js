@@ -6,6 +6,8 @@ qx.Mixin.define("ncms.asm.am.MValueWidget", {
         /**
          * Fired if internal state of this widget modified by user input.
          */
-        modified : "qx.event.type.Event"
+        modified : "qx.event.type.Event",
+
+        requestSave : "qx.event.type.Event"
     }
 });

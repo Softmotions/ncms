@@ -14,6 +14,8 @@ import com.google.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 /**
@@ -29,7 +31,12 @@ public class AsmBooleanAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
+    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
+                                            HttpServletResponse resp,
+                                            Asm page,
+                                            Asm template,
+                                            AsmAttribute tmplAttr,
+                                            AsmAttribute attr) throws Exception {
         if (StringUtils.isBlank(attr.getEffectiveValue())) {
             attr.setEffectiveValue("false");
         }
@@ -43,7 +50,7 @@ public class AsmBooleanAM implements AsmAttributeManager {
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
-        return BooleanUtils.toBooleanObject(attr.getValue());
+        return attr == null ? Boolean.FALSE : BooleanUtils.toBooleanObject(attr.getValue());
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {

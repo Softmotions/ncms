@@ -116,6 +116,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
                 return {};
             }
             model = qx.util.Serializer.toNativeObject(model);
+            model["syncWith"] = w.getSyncWith();
             return model;
         },
 

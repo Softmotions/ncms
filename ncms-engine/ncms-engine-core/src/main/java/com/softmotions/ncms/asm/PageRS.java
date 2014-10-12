@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
@@ -233,7 +234,9 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @GET
     @Path("/edit/{id}")
-    public ObjectNode selectPageEdit(@Context HttpServletRequest req, @PathParam("id") Long id) throws Exception {
+    public ObjectNode selectPageEdit(@Context HttpServletRequest req,
+                                     @Context HttpServletResponse resp,
+                                     @PathParam("id") Long id) throws Exception {
         ObjectNode res = mapper.createObjectNode();
         Asm page = adao.asmSelectById(id);
         if (page == null) {
@@ -267,16 +270,9 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (!StringUtils.isBlank(a.getLabel())) { //it is GUI attribute?
                 if (template != null) {
                     AsmAttribute tmplAttr = template.getEffectiveAttribute(a.getName());
-                    if (tmplAttr != null && Objects.equals(tmplAttr.getType(), a.getType())) {
-                        if (!Objects.equals(tmplAttr.getOptions(), a.getOptions())) {
-                            //force template attribute options
-                            a.setOptions(tmplAttr.getOptions());
-                            update("updateAttributeOptions", a);
-                        }
-                    }
                     AsmAttributeManager am = amRegistry.getByType(a.getType());
                     if (am != null) {
-                        a = am.prepareGUIAttribute(page, template, tmplAttr, a);
+                        a = am.prepareGUIAttribute(req, resp, page, template, tmplAttr, a);
                         if (a == null) {
                             continue;
                         }
@@ -382,6 +378,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/template/{id}/{templateId}")
     @Transactional
     public ObjectNode setTemplate(@Context HttpServletRequest req,
+                                  @Context HttpServletResponse resp,
                                   @PathParam("id") Long id,
                                   @PathParam("templateId") Long templateId) throws Exception {
         Asm page = adao.asmSelectById(id);
@@ -424,7 +421,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
 
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
-        return selectPageEdit(req, id);
+        return selectPageEdit(req, resp, id);
     }
 
     /**

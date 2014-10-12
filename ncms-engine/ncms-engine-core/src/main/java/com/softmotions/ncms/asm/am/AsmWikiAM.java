@@ -22,6 +22,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -70,7 +73,12 @@ public class AsmWikiAM implements AsmAttributeManager {
         return TYPES;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
+    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
+                                            HttpServletResponse resp,
+                                            Asm page,
+                                            Asm template,
+                                            AsmAttribute tmplAttr,
+                                            AsmAttribute attr) throws Exception {
         return attr;
     }
 
@@ -87,7 +95,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return null;
     }
 
-    public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
+    public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, @Nonnull Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
         if (attr == null || attr.getEffectiveValue() == null) {
@@ -120,7 +128,12 @@ public class AsmWikiAM implements AsmAttributeManager {
         StringBuffer res = new StringBuffer(html.length());
         Matcher m = pageRefsRE.matcher(html);
         while (m.find()) {
-            m.appendReplacement(res, pageService.resolvePageLink(m.group(1)));
+            String repl = m.group(1);
+            if (repl != null) {
+                m.appendReplacement(res, repl);
+            } else {
+                m.appendReplacement(res, m.group());
+            }
         }
         m.appendTail(res);
         return res.toString();

@@ -30,6 +30,8 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,7 +72,13 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
     }
 
     @Transactional
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
+    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
+                                            HttpServletResponse resp,
+                                            Asm page,
+                                            Asm template,
+                                            AsmAttribute tmplAttr,
+                                            AsmAttribute attr) throws Exception {
+
         String eval = attr.getEffectiveValue();
         if (StringUtils.isBlank(eval)) {
             eval = "[]";
@@ -117,6 +125,9 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
+        if (attr == null) {
+            return Collections.EMPTY_LIST;
+        }
 
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         AsmOptions opts = new AsmOptions(attr.getOptions());

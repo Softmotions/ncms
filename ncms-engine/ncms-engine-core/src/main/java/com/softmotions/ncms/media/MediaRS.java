@@ -106,7 +106,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1130,14 +1129,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             final Collator collator = Collator.getInstance(message.getLocale(req));
             File[] files = f.listFiles(filter);
             if (files == null) files = EMPTY_FILES_ARRAY;
-            Arrays.sort(files, new Comparator<File>() {
-                public int compare(File f1, File f2) {
-                    int res = Integer.compare(f2.isDirectory() ? 1 : 0, f1.isDirectory() ? 1 : 0);
-                    if (res == 0) {
-                        return collator.compare(f1.getName(), f2.getName());
-                    }
-                    return res;
+            Arrays.sort(files, (f1, f2) -> {
+                int res1 = Integer.compare(f2.isDirectory() ? 1 : 0, f1.isDirectory() ? 1 : 0);
+                if (res1 == 0) {
+                    return collator.compare(f1.getName(), f2.getName());
                 }
+                return res1;
             });
             folder = normalizeFolder(folder);
             boolean parentInSystem = isInSystemFolder(folder);

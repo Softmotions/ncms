@@ -9,6 +9,8 @@ import com.softmotions.ncms.media.MediaRepository;
 
 import com.google.inject.Injector;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -60,6 +62,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
         return sctx.peek();
     }
 
+    @Nullable
     public static AsmRendererContext get() {
         Stack<AsmRendererContext> sctx = ASM_CTX.get();
         if (sctx == null || sctx.isEmpty()) {
@@ -145,12 +148,15 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public abstract void render() throws AsmRenderingException, IOException;
 
+    @Nullable
     public abstract Object renderAttribute(String attributeName, Map<String, String> opts);
 
+    @Nullable
     public abstract Object renderAttribute(Asm asm, String attributeName, Map<String, String> opts);
 
     public abstract AsmResourceLoader getLoader();
 
+    @Nonnull
     public String toString() {
         return "AsmRendererContext{asm=" + getAsm() + ", context=" + super.toString() + '}';
     }

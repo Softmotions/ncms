@@ -25,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,6 +75,9 @@ public class AsmSelectAM implements AsmAttributeManager {
         }
         Long id = page.getId();
         CachedPage npPage = pageService.getCachedPage(id, true);
+        if (npPage == null) {
+            return null;
+        }
         id = npPage.getNavParentId();
         if (id == null) {
             return null;
@@ -102,8 +107,12 @@ public class AsmSelectAM implements AsmAttributeManager {
         return res;
     }
 
-    public AsmAttribute prepareGUIAttribute(Asm page, Asm template,
-                                            AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
+    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
+                                            HttpServletResponse resp,
+                                            Asm page,
+                                            Asm template,
+                                            AsmAttribute tmplAttr,
+                                            AsmAttribute attr) throws Exception {
         ArrayNode tArr = checkFetchFrom(page, attr);
         if (tArr == null && (tmplAttr == null || StringUtils.isBlank(tmplAttr.getEffectiveValue()))) {
             if (StringUtils.isBlank(attr.getEffectiveValue())) {
@@ -174,6 +183,9 @@ public class AsmSelectAM implements AsmAttributeManager {
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
+        if (attr == null) {
+            return Collections.EMPTY_LIST;
+        }
         String value = attr.getEffectiveValue();
         if (StringUtils.isEmpty(value)) {
             return Collections.EMPTY_LIST;
@@ -184,7 +196,7 @@ public class AsmSelectAM implements AsmAttributeManager {
     }
 
     private Object parseSelectNodes(String value, boolean first, boolean all) {
-        List<SelectNode> nodes = first ? null : new ArrayList<SelectNode>();
+        List<SelectNode> nodes = first ? null : new ArrayList<>();
         try (JsonParser parser = mapper.getFactory().createParser(value)) {
             if (parser.nextToken() != JsonToken.START_ARRAY) {
                 return Collections.EMPTY_LIST;

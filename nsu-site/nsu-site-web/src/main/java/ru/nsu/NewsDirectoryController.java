@@ -8,6 +8,8 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 
 @Singleton
 public class NewsDirectoryController implements AsmController {
+
+    private static final Logger log = LoggerFactory.getLogger(NewsDirectoryController.class);
 
     public static final int DEFAUL_NEWS_LIMIT = 8;
 
@@ -49,7 +53,11 @@ public class NewsDirectoryController implements AsmController {
         String action = req.getParameter("news.action");
         if ("fetchMore".equals(action)) {
             AsmAttribute results = ctx.getAsm().getEffectiveAttribute("news_list");
-            ctx.getRenderer().renderTemplate(results.getEffectiveValue(), ctx, resp.getWriter());
+            if (results != null) {
+                ctx.getRenderer().renderTemplate(results.getEffectiveValue(), ctx, resp.getWriter());
+            } else {
+                log.error("Atribute 'news_list' is not found");
+            }
             return true;
         }
         return false;
