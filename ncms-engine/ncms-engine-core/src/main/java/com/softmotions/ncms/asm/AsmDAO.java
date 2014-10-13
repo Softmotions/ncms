@@ -16,6 +16,7 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.Clob;
@@ -160,6 +161,7 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
+    @Nullable
     public Asm asmSelectByName(String name) {
         return selectOne("selectAsmByCriteria",
                          "name", name);
@@ -167,12 +169,14 @@ public class AsmDAO extends MBDAOSupport {
 
 
     @Transactional
+    @Nullable
     public Long asmSelectIdByName(String name) {
         Number id = sess.selectOne(toStatementId("asmIDByName"), name);
         return id != null ? id.longValue() : null;
     }
 
     @Transactional
+    @Nullable
     public Long asmSelectIdByAlias(String alias) {
         Number id = sess.selectOne(toStatementId("asmIDByAlias"), alias);
         return id != null ? id.longValue() : null;
@@ -201,11 +205,13 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
+    @Nullable
     public String asmSelectNameById(Long id) {
         return sess.selectOne(toStatementId("asmNameByID"), id);
     }
 
     @Transactional
+    @Nullable
     public Asm asmSelectById(Number id) {
         return selectOne("selectAsmByCriteria",
                          "id", id);
@@ -313,6 +319,7 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
+    @Nullable
     public String asmSelectSysprop(Long asmId, String property) {
         return selectOne("asmSelectSysprop",
                          "asmId", asmId,
@@ -371,6 +378,7 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
+    @Nullable
     public Asm asmPlainByIdWithTemplates(long asmId, String... templates) {
         return selectOne("asmPlainByIdWithTemplates", "id", asmId, "templates", templates);
     }

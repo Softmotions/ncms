@@ -261,6 +261,10 @@ public class AsmTreeAM implements AsmAttributeManager {
                 opts.remove("syncWith");
             } else {
                 opts.put("syncWith", n.asLong());
+                String guid = adao.asmSelectNameById(n.asLong());
+                if (guid != null) {
+                    ctx.registerPageDependency(attr, guid);
+                }
             }
         } else {
             opts.remove("syncWith");
