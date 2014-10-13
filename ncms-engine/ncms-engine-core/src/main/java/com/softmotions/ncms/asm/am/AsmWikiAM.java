@@ -8,6 +8,7 @@ import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.ncms.mediawiki.GMapTag;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -49,6 +50,9 @@ public class AsmWikiAM implements AsmAttributeManager {
     private static final Pattern PAGEREF_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|.*)?\\]\\]",
                                                                   Pattern.CASE_INSENSITIVE);
 
+    private static final Pattern PAGENAME_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|(.*))?\\]\\]",
+                                                                  Pattern.CASE_INSENSITIVE);
+
     private final ObjectMapper mapper;
 
     private final MediaWikiRenderer mediaWikiRenderer;
@@ -87,7 +91,11 @@ public class AsmWikiAM implements AsmAttributeManager {
         if (!StringUtils.isBlank(effectiveValue)) {
             try {
                 JsonNode value = mapper.readTree(effectiveValue);
-                return new String[]{value.get("value").asText()};
+                String text = mediaWikiRenderer.toText(value.get("value").asText());
+                text = GMapTag.GMAP_FRAME_PATTERN.matcher(text).replaceAll("");
+                text = MEDIAREF_REGEXP.matcher(text).replaceAll("");
+                text = PAGENAME_REGEXP.matcher(text).replaceAll("$3");
+                return new String[]{text};
             } catch (IOException ignored) {
                 return null;
             }

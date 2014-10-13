@@ -111,7 +111,7 @@ public class SearchController implements AsmController {
         //  id - идентификатор
         //  score - "баллы" поиска, для сортировки по релевантности
         //  cdate - дата создания
-        params.add(CommonParams.FL, "id,score,cdate,name,hname," + getCustomFields());
+        params.add(CommonParams.FL, "id,score,cdate,name,hname,annotation," + getCustomFields());
         // выставляем сортировку по релевантности и дате создания
         params.add(CommonParams.SORT, "score desc, cdate desc");
 

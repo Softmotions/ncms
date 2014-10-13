@@ -23,7 +23,7 @@ public class GMapTag extends HTMLTag implements INoBodyParsingTag {
 
     private static final Logger log = LoggerFactory.getLogger(GMapTag.class);
 
-    private static final Pattern GMAP_FRAME_PATTERN =
+    public static final Pattern GMAP_FRAME_PATTERN =
             Pattern.compile("<iframe.* src=\"http(s)?://(www\\.)?(maps\\.)?google\\.com/maps/.*>.*</iframe>");
 
     public GMapTag() {

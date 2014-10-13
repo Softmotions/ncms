@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -33,6 +35,9 @@ import java.util.Iterator;
 public class PageSolrDataHandler implements SolrDataHandler {
 
     protected static final Logger log = LoggerFactory.getLogger(PageSolrDataHandler.class);
+
+    private static final Pattern ANNOTATION_BREAKER_PATTERN = Pattern.compile("[.;,:\\n]");
+    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s");
 
     private final AsmAttributeManagersRegistry aamr;
 
@@ -43,6 +48,8 @@ public class PageSolrDataHandler implements SolrDataHandler {
     private final AsmDAO adao;
 
     private Collection<String> extraAttributeNames;
+
+    private int annotationLength;
 
     @Inject
     public PageSolrDataHandler(AsmAttributeManagersRegistry aamr,
@@ -65,6 +72,8 @@ public class PageSolrDataHandler implements SolrDataHandler {
                 extraAttributeNames.addAll(Arrays.asList(attrs));
             }
         }
+
+        annotationLength = cfg.getInt("annotation-length", 300);
 
         ebus.register(this);
     }
@@ -118,6 +127,36 @@ public class PageSolrDataHandler implements SolrDataHandler {
                         }
                     }
                 }
+            }
+        }
+
+        String annotation = (String) res.getFieldValue("asm_attr_s_annotation");
+
+        if (!StringUtils.isBlank(annotation)) {
+            res.addField("annotation", annotation);
+        } else {
+            String content = (String) res.getFieldValue("asm_attr_s_content");
+            if (!StringUtils.isBlank(content)) {
+                if (content.length() < annotationLength) {
+                    annotation = content;
+                } else {
+                    Matcher matcher = ANNOTATION_BREAKER_PATTERN.matcher(content);
+                    int start;
+                    if (matcher.find(annotationLength / 2) && ((start = matcher.start()) < annotationLength)) {
+                        annotation = content.substring(0, start + 1).trim();
+                    } else {
+                        matcher = WHITESPACE_PATTERN.matcher(content);
+                        if (matcher.find(annotationLength / 2) && ((start = matcher.start()) < annotationLength)) {
+                            annotation = content.substring(0, start);
+                        } else {
+                            annotation = content.substring(0, annotationLength);
+                        }
+                    }
+                }
+            }
+
+            if (!StringUtils.isBlank(annotation)) {
+                res.addField("annotation", StringUtils.normalizeSpace(annotation.replaceAll("(\\n\\s*)+", "<br/>")));
             }
         }
 

@@ -1,6 +1,7 @@
 package com.softmotions.ncms.mediawiki;
 
 import info.bliki.wiki.filter.ITextConverter;
+import info.bliki.wiki.filter.PlainTextConverter;
 import com.softmotions.commons.ebus.EBus;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
@@ -24,10 +25,11 @@ public class MediaWikiRenderer {
 
     private final ITextConverter converter;
 
+    private final ITextConverter plaintextConverter;
+
     private final String imageBaseUrl;
 
     private final String linkBaseUrl;
-
     private final EBus ebus;
 
     private NcmsMessages messages;
@@ -41,6 +43,7 @@ public class MediaWikiRenderer {
                              NcmsMessages messages) {
         this.wikiCfg = wikiCfg;
         this.converter = converter;
+        this.plaintextConverter = new PlainTextConverter(this.converter.noLinks());
         this.ebus = ebus;
         this.messages = messages;
         XMLConfiguration xcfg = env.xcfg();
@@ -53,5 +56,10 @@ public class MediaWikiRenderer {
         String html = wiki.render(this.converter, markup);
         ebus.fire(new MediaWikiHTMLRenderEvent(markup, html));
         return html;
+    }
+
+    public String toText(String markup) {
+        WikiModel wiki = new WikiModel(wikiCfg, imageBaseUrl, linkBaseUrl, messages, null);
+        return wiki.render(plaintextConverter, markup);
     }
 }

@@ -59,6 +59,7 @@
         <!--</provider>-->
         <data-handlers>
             <data-handler class="com.softmotions.ncms.asm.PageSolrDataHandler">
+                <annotation-length>300</annotation-length>
                 <!--<extra-attributes>category</extra-attributes>-->
                 <!--<extra-attributes>*</extra-attributes>-->
             </data-handler>

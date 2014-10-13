@@ -5,7 +5,7 @@
 <li style="#if(offset != 0 || results_only == true)display: none;#end #if(index % 2 == 1)clear: both;#end">
     <div class="text-holder">
         <h3><a href="$!{link(sd.solrString("name"))}">${sd.solrString("hname")}</a></h3>
-        <p>${sd.solrString("asm_attr_s_annotation")}</p>
+        <p>$!{sd.solrString("annotation")}</p>
     </div>
 </li>
 #end

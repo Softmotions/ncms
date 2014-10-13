@@ -12,6 +12,7 @@
     <!-- asm fileds -->
     <field name="name" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="hname" type="text_general" indexed="true" stored="true" multiValued="false"/>
+    <field name="annotation" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="description" type="text_general" indexed="true" stored="true" multiValued="false"/>
     <field name="cdate" type="long" indexed="true" stored="true" multiValued="false"/>
     <field name="mdate" type="long" indexed="true" stored="true" multiValued="false"/>

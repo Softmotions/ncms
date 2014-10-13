@@ -21,7 +21,7 @@
     </div>
     <div class="text-holder">
         <h3><a href="$!{link(sd.solrString("name"))}">${sd.solrString("hname")}</a></h3>
-        <p>${sd.solrString("asm_attr_s_annotation")}</p>
+        <p>$!{sd.solrString("annotation")}</p>
 
         #set(Collection scs = sd.solrCollection("asm_attr_s_subcategory"))
         #if(scs != null && !scs.empty)
