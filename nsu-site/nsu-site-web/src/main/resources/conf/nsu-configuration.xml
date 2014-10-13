@@ -59,9 +59,10 @@
         <!--</provider>-->
         <data-handlers>
             <data-handler class="com.softmotions.ncms.asm.PageSolrDataHandler">
+                <general-fields-boost>1.0</general-fields-boost>
+                <dynamic-fields-boost>0.3</dynamic-fields-boost>
                 <annotation-length>300</annotation-length>
-                <!--<extra-attributes>category</extra-attributes>-->
-                <!--<extra-attributes>*</extra-attributes>-->
+                <annotation-candidates>asm_attr_s_annotation,asm_attr_s_content,asm_attr_s_description</annotation-candidates>
             </data-handler>
         </data-handlers>
     </solr>

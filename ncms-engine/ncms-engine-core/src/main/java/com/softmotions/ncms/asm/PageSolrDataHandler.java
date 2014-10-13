@@ -13,6 +13,7 @@ import com.google.common.collect.AbstractIterator;
 import com.google.common.eventbus.Subscribe;
 
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrServer;
@@ -49,7 +50,11 @@ public class PageSolrDataHandler implements SolrDataHandler {
 
     private Collection<String> extraAttributeNames;
 
+    private float gfBoost;
+    private float dfBoost;
+
     private int annotationLength;
+    private String[] annotationCandidates;
 
     @Inject
     public PageSolrDataHandler(AsmAttributeManagersRegistry aamr,
@@ -73,6 +78,13 @@ public class PageSolrDataHandler implements SolrDataHandler {
             }
         }
 
+        gfBoost = cfg.getFloat("general-field-boost", 1.0F);
+        dfBoost = cfg.getFloat("dynamic-field-boost", 1.0F);
+
+        annotationCandidates = cfg.getStringArray("annotation-candidates");
+        if (annotationCandidates == null) {
+            annotationCandidates = ArrayUtils.EMPTY_STRING_ARRAY;
+        }
         annotationLength = cfg.getInt("annotation-length", 300);
 
         ebus.register(this);
@@ -103,17 +115,17 @@ public class PageSolrDataHandler implements SolrDataHandler {
             return null;
         }
         SolrInputDocument res = new SolrInputDocument();
-        res.addField("id", asm.getId());
-        res.addField("name", asm.getName());
-        res.addField("hname", asm.getHname());
-        res.addField("description", asm.getDescription());
-        res.addField("published", asm.isPublished());
-        res.addField("type", asm.getType());
+        res.addField("id", asm.getId(), gfBoost);
+        res.addField("name", asm.getName(), gfBoost);
+        res.addField("hname", asm.getHname(), gfBoost);
+        res.addField("description", asm.getDescription(), gfBoost);
+        res.addField("published", asm.isPublished(), gfBoost);
+        res.addField("type", asm.getType(), gfBoost);
         if (asm.getCdate() != null) {
-            res.addField("cdate", asm.getCdate().getTime());
+            res.addField("cdate", asm.getCdate().getTime(), gfBoost);
         }
         if (asm.getMdate() != null) {
-            res.addField("mdate", asm.getMdate().getTime());
+            res.addField("mdate", asm.getMdate().getTime(), gfBoost);
         }
         for (String attrName : extraAttributeNames == null ? asm.getEffectiveAttributeNames() : extraAttributeNames) {
             AsmAttribute attr = asm.getEffectiveAttribute(attrName);
@@ -130,35 +142,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
             }
         }
 
-        String annotation = (String) res.getFieldValue("asm_attr_s_annotation");
-
-        if (!StringUtils.isBlank(annotation)) {
-            res.addField("annotation", annotation);
-        } else {
-            String content = (String) res.getFieldValue("asm_attr_s_content");
-            if (!StringUtils.isBlank(content)) {
-                if (content.length() < annotationLength) {
-                    annotation = content;
-                } else {
-                    Matcher matcher = ANNOTATION_BREAKER_PATTERN.matcher(content);
-                    int start;
-                    if (matcher.find(annotationLength / 2) && ((start = matcher.start()) < annotationLength)) {
-                        annotation = content.substring(0, start + 1).trim();
-                    } else {
-                        matcher = WHITESPACE_PATTERN.matcher(content);
-                        if (matcher.find(annotationLength / 2) && ((start = matcher.start()) < annotationLength)) {
-                            annotation = content.substring(0, start);
-                        } else {
-                            annotation = content.substring(0, annotationLength);
-                        }
-                    }
-                }
-            }
-
-            if (!StringUtils.isBlank(annotation)) {
-                res.addField("annotation", StringUtils.normalizeSpace(annotation.replaceAll("(\\n\\s*)+", "<br/>")));
-            }
-        }
+        extractAnnotation(res);
 
         if (log.isDebugEnabled()) {
             log.debug("SolrDocument: " + res);
@@ -167,17 +151,44 @@ public class PageSolrDataHandler implements SolrDataHandler {
         return res;
     }
 
+    private void extractAnnotation(SolrInputDocument res) {
+        String annotation = null;
+        for (int i = 0; i < annotationCandidates.length && StringUtils.isBlank(annotation); ++i) {
+            annotation = (String) res.getFieldValue(annotationCandidates[i]);
+        }
+        if (annotation != null && !StringUtils.isBlank(annotation)) {
+            if (annotation.length() > annotationLength) {
+                Matcher matcher = ANNOTATION_BREAKER_PATTERN.matcher(annotation);
+                int start;
+                if (matcher.find(annotationLength / 2) && ((start = matcher.start()) < annotationLength)) {
+                    annotation = annotation.substring(0, start + 1).trim();
+                } else {
+                    matcher = WHITESPACE_PATTERN.matcher(annotation);
+                    if (matcher.find(annotationLength / 2) && ((start = matcher.start()) < annotationLength)) {
+                        annotation = annotation.substring(0, start);
+                    } else {
+                        annotation = annotation.substring(0, annotationLength);
+                    }
+                }
+            }
+
+            if (!StringUtils.isBlank(annotation)) {
+                res.addField("annotation", StringUtils.normalizeSpace(annotation.replaceAll("(\\n\\s*)+", "<br/>")));
+            }
+        }
+    }
+
     private void addData(SolrInputDocument sid, String prefix, String suffix, Object data) {
         //noinspection IfStatementWithTooManyBranches
         if (data == null) {
         } else if (data instanceof Long || data instanceof Integer) {
-            sid.addField(prefix + "_l_" + suffix, data);
+            sid.addField(prefix + "_l_" + suffix, data, dfBoost);
         } else if (data instanceof Boolean) {
-            sid.addField(prefix + "_b_" + suffix, data);
+            sid.addField(prefix + "_b_" + suffix, data, dfBoost);
         } else if (data instanceof ImageMeta) {
-            sid.addField(prefix + "_image_" + suffix, SerializationUtils.serialize((ImageMeta) data));
+            sid.addField(prefix + "_image_" + suffix, SerializationUtils.serialize((ImageMeta) data), dfBoost);
         } else {
-            sid.addField(prefix + "_s_" + suffix, data);
+            sid.addField(prefix + "_s_" + suffix, data, dfBoost);
         }
     }
 
