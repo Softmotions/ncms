@@ -17,14 +17,14 @@
   }
 
   input[type="submit"] {
-    float: left;
+    float: right;
     width: 16px;
     height: 16px;
     background: url(../images/btn-submit.png) no-repeat;
     text-indent: -9999px;
     overflow: hidden;
     padding: 0;
-    margin: 7px 5px 0 0;
+    margin: 7px 5px 0 5px;
     border: 0;
     cursor: pointer;
     font-size: 0;

@@ -4,6 +4,7 @@ jQuery(function() {
     initSlideShow();
     initAccordion();
     initAboutSections();
+    initNavSearch();
 });
 
 /*
@@ -601,6 +602,20 @@ function initAccordion() {
 }(jQuery));
 
 
+function initNavSearch() {
+    $('.search-form .search-directions').click(function(ev){
+        var tgt = $(ev.target);
+        tgt.closest('div.search-where').find('.search-directions-list').toggle();
+        ev.stopPropagation();
+    });
+    $('.search-form .search-directions-list li').click(function(ev){
+        var tgt = $(ev.target);
+        tgt.closest('div.search-directions-list').hide();
+        tgt.closest('form')[0].action = tgt.attr('value');
+        tgt.closest('div.search-where').find('span.value').html(tgt.html());
+        ev.stopPropagation()
+    });
+}
 /*!
  * Scroll Sneak
  * http://mrcoles.com/scroll-sneak/

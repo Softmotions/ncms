@@ -15,6 +15,18 @@
                 <fieldset>
                     <input class="input-text" name="spc.text" type="text" placeholder="Я ищу..."/>
                     <input type="submit" value="search"/>
+                    <div class="search-where">
+                        <a class="search-directions">
+                            <span class="expanded-row"><!-- --></span>
+                            <span class="value">По всему</span>
+                        </a>
+                        <div class="search-directions-list">
+                            <ul>
+                                <li value="$!{link('search')}">По всему</li>
+                                <li value="$!{link('search_news')}">Новости</li>
+                            </ul>
+                        </div>
+                    </div>
                 </fieldset>
             </form>
             <ul class="social-networks">
