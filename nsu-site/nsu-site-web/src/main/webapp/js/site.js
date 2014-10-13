@@ -295,7 +295,9 @@ function initAccordion() {
         }
         event.preventDefault();
     });
-    $('.side-list > .box').first().addClass('active');
+    $('.side-list > .box').find('li.self').each(function(i, el){
+        $(el).parent().parent().addClass('active');
+    });
     $('.side-list > .box > a').click(function(event) {
         if (!$(this).parent().hasClass('active')) {
             $(this).parents('.side-list').children('li.active').find('ul').slideUp(200, function() {
