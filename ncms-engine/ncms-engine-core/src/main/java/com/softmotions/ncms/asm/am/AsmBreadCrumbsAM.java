@@ -76,7 +76,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
             children.add(c);
         }
         for (int i = 0, l = idPaths.length; i < l; ++i) {
-            CachedPage p = pageService.getCachedPage(idPaths[i], true);
+            CachedPage p = idPaths[i] != null ? pageService.getCachedPage(idPaths[i], true) : null;
             if (p == null ||
                 (ip != null && p.getId().equals(ip.getId()))) {
                 continue;

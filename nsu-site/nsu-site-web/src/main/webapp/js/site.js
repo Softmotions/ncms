@@ -295,9 +295,12 @@ function initAccordion() {
         }
         event.preventDefault();
     });
-    $('.side-list > .box').find('li.self').each(function(i, el){
-        $(el).parent().parent().addClass('active');
-    });
+    var selfs = $('.side-list > .box').find('li.self');
+    if (selfs.length < 1) {
+        $('.side-list > .box').first().addClass('active');
+    } else {
+        $(selfs[0]).closest('li.box').addClass('active');
+    }
     $('.side-list > .box > a').click(function(event) {
         if (!$(this).parent().hasClass('active')) {
             $(this).parents('.side-list').children('li.active').find('ul').slideUp(200, function() {
