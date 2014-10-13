@@ -164,7 +164,6 @@ public class AsmTreeAM implements AsmAttributeManager {
     }
 
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
-
         Tree tree = EMPTY_TREE;
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
@@ -174,16 +173,10 @@ public class AsmTreeAM implements AsmAttributeManager {
         KVOptions opts = new KVOptions();
         opts.loadOptions(attr.getOptions());
         tree = getSyncTree(opts.getLongObject("syncWith", null), ctx, attr);
-        if (tree != null) {
-            try {
-                initTree(tree, ctx);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            return tree;
-        }
         try {
-            tree = mapper.reader(Tree.class).readValue(attr.getEffectiveValue());
+            if (tree == null) {
+                tree = mapper.reader(Tree.class).readValue(attr.getEffectiveValue());
+            }
             if (!"true".equals(options.get("noinit"))) {
                 tree = initTree(tree, ctx);
             }

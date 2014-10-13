@@ -1,6 +1,5 @@
 package com.softmotions.ncms.asm.am;
 
-import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.CachedPage;
@@ -31,12 +30,9 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
 
     private final PageService pageService;
 
-    private final NcmsEnvironment env;
-
     @Inject
-    public AsmBreadCrumbsAM(PageService pageService, NcmsEnvironment env) {
+    public AsmBreadCrumbsAM(PageService pageService) {
         this.pageService = pageService;
-        this.env = env;
     }
 
     public String[] getSupportedAttributeTypes() {
