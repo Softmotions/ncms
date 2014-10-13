@@ -175,6 +175,11 @@ public class AsmTreeAM implements AsmAttributeManager {
         opts.loadOptions(attr.getOptions());
         tree = getSyncTree(opts.getLongObject("syncWith", null), ctx, attr);
         if (tree != null) {
+            try {
+                initTree(tree, ctx);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return tree;
         }
         try {

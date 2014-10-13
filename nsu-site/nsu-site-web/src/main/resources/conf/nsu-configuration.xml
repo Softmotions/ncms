@@ -144,6 +144,7 @@
         <module class="com.softmotions.ncms.mediawiki.MediaWikiModule"/>
         <module class="com.softmotions.ncms.user.UserModule"/>
         <module class="com.softmotions.ncms.rds.RefDataStoreModule"/>
+        <!--<module class="com.softmotions.ncms.qa.QAModule"/>-->
         <module class="ru.nsu.NSUModule"/>
         <module class="ru.nsu.pagepdf.HtmlToPdfModule"/>
         <module class="ru.nsu.legacy.NSULegacyModule"/>
@@ -214,7 +215,8 @@
         </mainpage>
         <newsmain>
             <news>
-                <type templates="index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce" title="Все"/>
+                <type templates="index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce"
+                      title="Все"/>
                 <type templates="faculty_news" type="faculty" title="Новости факультетов"/>
                 <type templates="index_interview" type="interview" title="Интервью"/>
                 <type templates="index_reportage" type="reportage" title="Репортажи"/>
@@ -238,5 +240,9 @@
             journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce
         </asm-templates>
     </html-to-pdf>
+
+    <page-qa>
+        <check-period>* * * * *</check-period>
+    </page-qa>
 
 </configuration>

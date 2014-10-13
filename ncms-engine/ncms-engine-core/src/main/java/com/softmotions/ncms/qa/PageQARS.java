@@ -1,10 +1,12 @@
 package com.softmotions.ncms.qa;
 
-import com.softmotions.weboot.scheduler.Scheduled;
+import it.sauronsoftware.cron4j.Scheduler;
+import com.softmotions.ncms.NcmsEnvironment;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import org.apache.commons.configuration.XMLConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,16 +22,31 @@ public class PageQARS {
 
     private static final Logger log = LoggerFactory.getLogger(PageQARS.class);
 
-    private final Set<PageQAModule> modules;
+    private final Set<PageQAPlugin> plugins;
+
+    private final Scheduler scheduler;
+
+    private final NcmsEnvironment env;
 
     @Inject
-    public PageQARS(Set<PageQAModule> modules) {
-        this.modules = modules;
+    public PageQARS(Set<PageQAPlugin> plugins, Scheduler scheduler, NcmsEnvironment env) {
+        this.plugins = plugins;
+        this.scheduler = scheduler;
+        this.env = env;
+
+
+        XMLConfiguration xcfg = env.xcfg();
+        //String checkPattern = xcfg.getString("")
     }
 
-
-    @Scheduled("* * * * *")
     public void checkPages() {
-       log.info("Check pages");
+        log.info("Check pages");
+    }
+
+    private class CheckPagesTask implements Runnable {
+
+        public void run() {
+            checkPages();
+        }
     }
 }
