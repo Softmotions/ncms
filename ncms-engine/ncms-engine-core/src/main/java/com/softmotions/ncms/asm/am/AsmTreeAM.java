@@ -266,6 +266,7 @@ public class AsmTreeAM implements AsmAttributeManager {
             opts.remove("syncWith");
         }
         tree.remove("syncWith");
+        tree.remove("syncWithId"); //legacy
 
         attr.setOptions(opts.toString());
         try {
