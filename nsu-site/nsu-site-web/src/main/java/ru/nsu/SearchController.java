@@ -122,7 +122,7 @@ public class SearchController implements AsmController {
     }
 
     protected String getCustomFields() {
-        return "asm_attr_s_annotation";
+        return "asm_attr_image_icon";
     }
 
     protected String buildFilterQuery(AsmRendererContext ctx) throws Exception {
