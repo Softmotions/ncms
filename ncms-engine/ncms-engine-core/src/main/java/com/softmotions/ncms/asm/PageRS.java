@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -937,15 +938,35 @@ public class PageRS extends MBDAOSupport implements PageService {
             return org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
         }
         Long[] ids = new Long[ct];
-        for (int i = 0; i < ids.length; ++i) {
+        String[] labels = new String[ct];
+        boolean hasNotCached = false;
+        for (int i = 0, l = ids.length; i < l; ++i) {
             ids[i] = Long.parseLong(st.nextToken());
+            CachedPage cp = getCachedPage(ids[i], false);
+            if (cp != null) {
+                labels[i] = cp.getHname();
+                ids[i] = -1L;
+            } else {
+                hasNotCached = true;
+            }
+        }
+        if (!hasNotCached) {
+            return labels;
         }
         Map<Number, Map> rows = selectMap("selectPageInfoIN", "id",
                                           "ids", ids);
-        String[] labels = new String[rows.size()];
-        for (int i = 0; i < ids.length; ++i) {
-            Map row = rows.get(ids[i]);
-            labels[i] = (String) row.get("name");
+        for (int i = 0, l = labels.length; i < l; ++i) {
+            if (labels[i] == null) {
+                Map row = rows.get(ids[i]);
+                if (row != null) {
+                    labels[i] = (String) row.get("name");
+                }
+            }
+        }
+        for (String l : labels) {
+            if (l == null) {
+                return Arrays.stream(labels).filter(s -> s != null).toArray(String[]::new);
+            }
         }
         return labels;
     }
