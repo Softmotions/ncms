@@ -39,6 +39,7 @@ ul.nav2 {
       background: #efefef;
       font: 15px/18px Arial, Helvetica, sans-serif;
       padding: 0 10px 5px 10px;
+      z-index: 1000;
       @include box-shadow(4px 4px 4px 0px rgba(0, 0, 0, 0.15));
 
       li {
