@@ -221,11 +221,11 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
 
         __applyModel : function(model) {
             this.__tree.setModel(model);
-            this.__tree.getLookupTable().forEach(function(item) {
+            /*this.__tree.getLookupTable().forEach(function(item) {
                 if (this.__tree.isNode(item)) {
                     this.__tree.openNode(item);
                 }
-            }, this);
+            }, this);*/
         },
 
         __syncState : function() {
