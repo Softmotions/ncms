@@ -209,8 +209,7 @@
   }
 
   .personal-row {
-    overflow: hidden;
-    margin: 0 0 20px;
+    overflow: none;
     .personal {
       float: left;
       margin: 7px 0 0;
@@ -231,7 +230,7 @@
     float: left;
     clear: left;
     padding: 0;
-    margin: 0;
+    margin: 20px 0 0 0;
     list-style: none;
     font: 16px/19px $basic_font;
 
@@ -277,18 +276,71 @@
     margin: 0;
     width: 346px;
     float: left;
-    border-style: solid !important;
-    border-top-width: thin;
-    border-top-color: grey;
-    border-right-width: thin;
-    border-right-color: grey;
-    border-left-width: thin;
-    border-left-color: grey;
-    border-bottom-width: thin;
-    border-bottom-color: grey;
+
+    fieldset {
+      border-style: solid !important;
+      border-width: thin;
+      border-color: grey;
+    }
 
     .input-text {
-      width: 295px;
+      width: 196px;
+    }
+
+    .search-where {
+      float: right;
+      white-space: nowrap;
+      height: 30px;
+      line-height: 22px;
+      margin: 0;
+      padding: 0 7px;
+      border-left: 1px dotted #999;
+      border-right: 1px dotted #999;
+      width: 80px;
+      position: relative;
+
+      .search-directions {
+        background-color: #fff;
+        color: #333;
+        text-decoration: none;
+        display: block;
+        margin-top: 3px;
+
+        .expanded-row {
+          @include sp-icons-sprite(bg-expand);
+          float: right;
+          width: 10px;
+          height: 7px;
+          overflow: hidden;
+          font-size: 0;
+          margin: 8px 0 0 5px;
+        }
+      }
+
+      .search-directions-list {
+        display: none;
+        position: absolute;
+        left: -1px;
+        top: 30px;
+        background-color: #fff;
+        border-top: 1px dotted #b7b7b7;
+        border-right: 1px solid #b7b7b7;
+        border-bottom: 1px solid #b7b7b7;
+        border-left: 1px solid #b7b7b7;
+        width: 94px;
+        z-index: 10000;
+
+        ul {
+          padding: 0;
+          margin: 0;
+        }
+
+        li {
+          list-style: none;
+          cursor: pointer;
+          padding: 0 10px;
+        }
+      }
     }
   }
 }

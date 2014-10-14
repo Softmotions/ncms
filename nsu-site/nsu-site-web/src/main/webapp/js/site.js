@@ -4,6 +4,7 @@ jQuery(function() {
     initSlideShow();
     initAccordion();
     initAboutSections();
+    initNavSearch();
 });
 
 /*
@@ -94,7 +95,7 @@ function initNav() {
         flexible : true,
         multiLine : true
     });
-    var _nav = $('#nav, #nav2');
+    var _nav = $('#nav');
     _nav.find('> ul > li > a').hover(function() {
         var _this = $(this);
         var _lnav = _this.closest('#nav, #nav2');
@@ -129,8 +130,14 @@ function initNav() {
             return;
         }
         $('.nav-holder').removeClass('active');
-        $('#nav, #nav2').find('> ul > li.active').removeClass('active');
+        $('#nav').find('> ul > li.active').removeClass('active');
         event.stopPropagation();
+    });
+
+    $('ul.nav2 > li > ul').hover(function(){
+        $(this).closest('li').find('> a').addClass('active');
+    }, function(){
+        $(this).closest('li').find('> a').removeClass('active');
     });
 }
 
@@ -601,6 +608,20 @@ function initAccordion() {
 }(jQuery));
 
 
+function initNavSearch() {
+    $('.search-form .search-directions').click(function(ev){
+        var tgt = $(ev.target);
+        tgt.closest('div.search-where').find('.search-directions-list').toggle();
+        ev.stopPropagation();
+    });
+    $('.search-form .search-directions-list li').click(function(ev){
+        var tgt = $(ev.target);
+        tgt.closest('div.search-directions-list').hide();
+        tgt.closest('form')[0].action = tgt.attr('value');
+        tgt.closest('div.search-where').find('span.value').html(tgt.html());
+        ev.stopPropagation()
+    });
+}
 /*!
  * Scroll Sneak
  * http://mrcoles.com/scroll-sneak/
