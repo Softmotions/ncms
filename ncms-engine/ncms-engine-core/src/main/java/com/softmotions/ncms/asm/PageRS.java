@@ -805,36 +805,34 @@ public class PageRS extends MBDAOSupport implements PageService {
                 MBCriteriaQuery cq = createSearchQ(req, false);
                 gen.writeStartArray();
                 //noinspection InnerClassTooDeeplyNested
-                select(cq.getStatement(), new ResultHandler() {
-                    public void handleResult(ResultContext context) {
-                        Map<String, ?> row = (Map<String, ?>) context.getResultObject();
-                        try {
-                            boolean published = NumberUtils.number2Boolean((Number) row.get("published"));
+                select(cq.getStatement(), context -> {
+                    Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                    try {
+                        boolean published = NumberUtils.number2Boolean((Number) row.get("published"));
 
-                            gen.writeStartObject();
-                            gen.writeStringField("icon", published ? "" : "ncms/icon/16/misc/exclamation.png");
-                            gen.writeNumberField("id", NumberUtils.number2Long((Number) row.get("id"), 0));
-                            gen.writeStringField("label", (String) row.get("hname"));
-                            String am;
-                            if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
-                                am = pageSecurity.getAllRights();
-                            } else {
-                                am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
-                            }
-                            gen.writeStringField("accessMask", am);
-                            if (includePath) {
-                                String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
-                                gen.writeStringField("path",
-                                                     (path.length > 0 ? ArrayUtils.stringJoin(path, "/") : "") +
-                                                     "/" + row.get("hname"));
-                            }
-                            gen.writeBooleanField("published", published);
-                            gen.writeStringField("type", (String) row.get("type"));
-
-                            gen.writeEndObject();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                        gen.writeStartObject();
+                        gen.writeStringField("icon", published ? "" : "ncms/icon/16/misc/exclamation.png");
+                        gen.writeNumberField("id", NumberUtils.number2Long((Number) row.get("id"), 0));
+                        gen.writeStringField("label", (String) row.get("hname"));
+                        String am;
+                        if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
+                            am = pageSecurity.getAllRights();
+                        } else {
+                            am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
                         }
+                        gen.writeStringField("accessMask", am);
+                        if (includePath) {
+                            String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
+                            gen.writeStringField("path",
+                                                 (path.length > 0 ? ArrayUtils.stringJoin(path, "/") : "") +
+                                                 "/" + row.get("hname"));
+                        }
+                        gen.writeBooleanField("published", published);
+                        gen.writeStringField("type", (String) row.get("type"));
+
+                        gen.writeEndObject();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 }, cq);
             } finally {
