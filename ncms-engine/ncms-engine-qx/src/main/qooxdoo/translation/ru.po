@@ -24,7 +24,7 @@ msgstr "Выход"
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
-#: ncms/asm/am/FileRefAM.js:145 ncms/asm/am/ImageAMValueWidget.js:99
+#: ncms/asm/am/FileRefAM.js:145 ncms/asm/am/ImageAMValueWidget.js:104
 #: ncms/asm/AsmAttrEditorDlg.js:56 ncms/usr/UserEditForm.js:22
 #: ncms/usr/UserNewDlg.js:34 ncms/asm/AsmEditor.js:90
 #: ncms/pgs/PageEditorEditPage.js:158
@@ -91,7 +91,7 @@ msgstr "Отмена"
 msgid "Select assembly attribute type"
 msgstr "Выбор типа атрибута"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:54
+#: ncms/asm/am/RichRefAMValueWidget.js:63
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:157 ncms/mmgr/MediaFileEditor.js:48
 #: ncms/mmgr/MediaFilesTable.js:13 ncms/asm/AsmTable.js:21
 #: ncms/asm/AsmEditor.js:105 ncms/asm/am/RichRefAM.js:44
@@ -331,8 +331,8 @@ msgstr "Файл"
 msgid "Please specify a file"
 msgstr "Пожалуйста, выберите файл"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:72 ncms/asm/am/ImageAM.js:14
-#: ncms/asm/am/RichRefAM.js:48 ncms/asm/am/RichRefAM.js:56
+#: ncms/asm/am/RichRefAMValueWidget.js:81 ncms/asm/am/ImageAM.js:14
+#: ncms/asm/am/RichRefAM.js:52 ncms/asm/am/RichRefAM.js:60
 msgid "Image"
 msgstr "Изображение"
 
@@ -388,27 +388,27 @@ msgstr "Не масштабировать маленькие"
 msgid "Select image"
 msgstr "Изображение"
 
-#: ncms/asm/am/ImageAMValueWidget.js:127
+#: ncms/asm/am/ImageAMValueWidget.js:132
 msgid "Image size does not match restriction"
 msgstr "Размер изображения не совпадает с указанными ограничениями"
 
-#: ncms/asm/am/ImageAMValueWidget.js:140
+#: ncms/asm/am/ImageAMValueWidget.js:145
 msgid "Select image file"
 msgstr "Выберите файл с изображением"
 
-#: ncms/asm/am/ImageAMValueWidget.js:180
+#: ncms/asm/am/ImageAMValueWidget.js:185
 msgid "Original size"
 msgstr "Оригинальный размер"
 
-#: ncms/asm/am/ImageAMValueWidget.js:188
+#: ncms/asm/am/ImageAMValueWidget.js:193
 msgid "Cover the given area"
 msgstr "Заполнить заданную область"
 
-#: ncms/asm/am/ImageAMValueWidget.js:195
+#: ncms/asm/am/ImageAMValueWidget.js:200
 msgid "Automatic resize"
 msgstr "Автоматическое масштабирование"
 
-#: ncms/asm/am/ImageAMValueWidget.js:202
+#: ncms/asm/am/ImageAMValueWidget.js:207
 msgid "Image size required"
 msgstr "Изображение должно быть следующего размера"
 
@@ -492,15 +492,19 @@ msgstr "Страницы"
 msgid "Files"
 msgstr "Файлы"
 
-#: ncms/asm/am/RichRefAM.js:63 ncms/asm/am/RichRefAM.js:70
+#: ncms/asm/am/RichRefAM.js:48
+msgid "Optional links"
+msgstr "Ссылки опционально"
+
+#: ncms/asm/am/RichRefAM.js:67 ncms/asm/am/RichRefAM.js:74
 msgid "style=value,style2=value2,..."
 msgstr ""
 
-#: ncms/asm/am/RichRefAM.js:64
+#: ncms/asm/am/RichRefAM.js:68
 msgid "Styles"
 msgstr "Стили"
 
-#: ncms/asm/am/RichRefAM.js:71
+#: ncms/asm/am/RichRefAM.js:75
 msgid "Styles2"
 msgstr "Стили2"
 
@@ -512,23 +516,23 @@ msgstr "Ссылка на страницу"
 msgid "File link"
 msgstr "Ссылка на файл"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:47 ncms/wiki/InsertImageDlg.js:61
+#: ncms/asm/am/RichRefAMValueWidget.js:56 ncms/wiki/InsertImageDlg.js:61
 msgid "Link"
 msgstr "Ссылка"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:81
+#: ncms/asm/am/RichRefAMValueWidget.js:90
 msgid "Style"
 msgstr "Стиль"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:90
+#: ncms/asm/am/RichRefAMValueWidget.js:99
 msgid "Style2"
 msgstr "Стиль2"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:120
+#: ncms/asm/am/RichRefAMValueWidget.js:129
 msgid "Please set the page link"
 msgstr "Пожалуйста укажите ссылку на страницу"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:142
+#: ncms/asm/am/RichRefAMValueWidget.js:150
 msgid "Please set the file link"
 msgstr "Пожалуйста укажите ссылку на файл"
 

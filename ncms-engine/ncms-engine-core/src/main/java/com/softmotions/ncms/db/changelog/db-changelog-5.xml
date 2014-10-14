@@ -98,4 +98,39 @@
                         newDataType="VARCHAR(128)"/>
     </changeSet>
 
+    <changeSet id="48" author="adamansky@gmail.com">
+        <addColumn tableName="ASMS">
+            <column name="QA_CHECK_DATE" type="TIMESTAMP"/>
+        </addColumn>
+
+        <createTable tableName="PAGE_QA_STATUS">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="ASM_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ERROR_TYPE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ERROR_DATA" type="VARCHAR(1024)"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="FK_PAGEQASTATUS_ASMS"
+                                 baseTableName="PAGE_QA_STATUS"
+                                 baseColumnNames="ASM_ID"
+                                 referencedTableName="ASMS"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+        <createIndex tableName="PAGE_QA_STATUS" indexName="IDX_PAGEQASTATUS_ETYPE">
+            <column name="ERROR_TYPE"/>
+            <column name="ID"/>
+        </createIndex>
+
+        <createIndex tableName="ASMS" indexName="IDX_ASMS_QACHECKDATE">
+            <column name="QA_CHECK_DATE"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>

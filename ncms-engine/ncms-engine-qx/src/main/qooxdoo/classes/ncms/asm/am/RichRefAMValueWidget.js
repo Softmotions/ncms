@@ -40,8 +40,17 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             menuspec.push([this.tr("File link").toString(), "file"]);
         }
         var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain-plus.png", true, menuspec);
+        if (opts["optionalLinks"] === "true") {
+            bf.setShowResetButton(true);
+            bf.setRequired(false);
+            bf.addListener("reset", function() {
+                bf.resetValue();
+            });
+        } else {
+            bf.setRequired(true);
+        }
+
         bf.setReadOnly(true);
-        bf.setRequired(true);
         bf.addListener("execute", this.__onSetLink, this);
         bf.addListener("changeValue", this.__modified, this);
         form.add(bf, this.tr("Link"), null, "link");
@@ -122,7 +131,6 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
                 });
                 dlg.addListener("completed", function(ev) {
                     var data = ev.getData();
-                    qx.log.Logger.info("data=" + JSON.stringify(data));
                     var val = [];
                     if (!sm.lang.String.isEmpty(data["externalLink"])) {
                         val.push(data["externalLink"]);
@@ -206,12 +214,13 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             if (this.__imageAM) {
                 data["image"] = this.__imageAM.valueAsJSON();
             }
+            qx.log.Logger.info("data.image=" + JSON.stringify(data["image"]));
             var items = this.__form.getItems();
             var link = data["link"] = items["link"].getValue();
             if (items["description"]) {
                 data["description"] = items["description"].getValue();
             }
-            data["name"] = link.split("|")[1];
+            data["name"] = link && link.split("|")[1];
             if (data["name"]) {
                 data["name"] = data["name"].trim();
                 if (items["styles"]) {
@@ -220,6 +229,8 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
                         data["name"] = data["name"] + " (" + String(item.getLabel()) + ")";
                     }
                 }
+            } else if (data["image"] != null) {
+                data["name"] = data["image"]["path"];
             }
             if (items["styles"]) {
                 data["style"] = items["styles"].getModelSelection().getItem(0);

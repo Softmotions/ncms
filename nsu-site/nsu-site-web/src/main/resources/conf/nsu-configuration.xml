@@ -144,7 +144,7 @@
         <module class="com.softmotions.ncms.mediawiki.MediaWikiModule"/>
         <module class="com.softmotions.ncms.user.UserModule"/>
         <module class="com.softmotions.ncms.rds.RefDataStoreModule"/>
-        <!--<module class="com.softmotions.ncms.qa.QAModule"/>-->
+        <module class="com.softmotions.ncms.qa.QAModule"/>
         <module class="ru.nsu.NSUModule"/>
         <module class="ru.nsu.pagepdf.HtmlToPdfModule"/>
         <module class="ru.nsu.legacy.NSULegacyModule"/>
@@ -241,8 +241,11 @@
         </asm-templates>
     </html-to-pdf>
 
-    <page-qa>
-        <check-period>* * * * *</check-period>
-    </page-qa>
+    <qa>
+        <pages>
+            <batch-size>2</batch-size>
+            <batch-pause-seconds>10</batch-pause-seconds>
+        </pages>
+    </qa>
 
 </configuration>

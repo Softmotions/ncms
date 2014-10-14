@@ -35,6 +35,11 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
         bf.setReadOnly(true);
         bf.addListener("execute", this.__onExecuteBf, this);
         bf.addListener("changeValue", this.__modified, this);
+        bf.addListener("changeValue", function(ev) {
+           if (this.__value) {
+               this.__value["path"] = ev.getData();
+           }
+        }, this);
         this._add(bf);
 
         //Labels

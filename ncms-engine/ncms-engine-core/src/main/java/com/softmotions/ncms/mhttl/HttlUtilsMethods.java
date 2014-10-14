@@ -5,6 +5,7 @@ import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,10 @@ public class HttlUtilsMethods {
 
     public static <T> boolean notNull(T t) {
         return (t != null);
+    }
+
+    public static boolean blank(String str) {
+        return StringUtils.isBlank(str);
     }
 
     public static String ifTrue(boolean res, String data) {

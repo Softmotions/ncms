@@ -18,8 +18,7 @@
                     <div class="dept-description">
                         $!{asm("structure_wiki")}
                     </div>
-                    <a href="#" class="about"><span>Подробнее о структуре</span></a>
-
+                    <a href="#" class="about"><span>Подробнее</span></a>
                     <h2>Новости</h2>
                     <ul class="post-list">
                         $!{asm("news_list")}

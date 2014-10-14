@@ -44,8 +44,12 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             form.add(el, this.tr("Description"), null, "allowDescription", null, {flex : 0});
 
             el = new qx.ui.form.CheckBox();
+            el.setValue(opts["optionalLinks"] === "true");
+            form.add(el, this.tr("Optional links"), null, "optionalLinks", {flex : 0, fullRow : true});
+
+            el = new qx.ui.form.CheckBox();
             el.setValue(opts["allowImage"] === "true");
-            form.add(el, this.tr("Image"), null, "allowImage", null, {flex : 1});
+            form.add(el, this.tr("Image"), null, "allowImage", null, {flex : 0, fullRow : true});
 
             //Wrap nested image am
             var imageAm = this._imageAM = new ncms.asm.am.ImageAM();
@@ -83,6 +87,7 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             var items = this._form.getItems();
             data["allowPages"] = items["allowPages"].getValue();
             data["allowFiles"] = items["allowFiles"].getValue();
+            data["optionalLinks"] = items["optionalLinks"].getValue();
             data["allowDescription"] = items["allowDescription"].getValue();
             data["allowImage"] = items["allowImage"].getValue();
             if (data["allowImage"]) {

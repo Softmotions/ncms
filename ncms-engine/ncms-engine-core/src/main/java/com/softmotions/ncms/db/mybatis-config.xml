@@ -68,5 +68,6 @@
         <mapper resource="com/softmotions/ncms/asm/am/AsmAttributeManagerContext.xml"/>
         <mapper resource="com/softmotions/ncms/asm/am/AsmMedialineAM.xml"/>
         <mapper resource="com/softmotions/ncms/rds/RefDataStore.xml"/>
+        <mapper resource="com/softmotions/ncms/qa/PageQARS.xml"/>
     </mappers>
 </configuration>

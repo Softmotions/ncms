@@ -7,5 +7,5 @@ import com.softmotions.ncms.asm.Asm;
    */
  public interface PageQAPlugin {
 
-     void checkPage(Asm page, PageQAContext ctx);
+     void checkPage(Asm page, PageQAContext ctx) throws Exception;
  }
