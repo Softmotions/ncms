@@ -2,7 +2,7 @@
   @extend .dept-page;
 
   @media print {
-    #nav2 {
+    .nav2 {
       display: none;
     }
 

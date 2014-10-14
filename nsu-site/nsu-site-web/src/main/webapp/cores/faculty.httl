@@ -33,11 +33,22 @@
         <a href="#" class="btn-next">next</a>
     </div>
     #end
-    <div class="nav-holder">
-        <nav id="nav2">
-            ${include("inc/menu.httl", ["menuAttr" : "fmenu"])}
-        </nav>
-    </div>
+    #set(Tree menuTree = asm("fmenu"))
+    #if(menuTree != null)
+    <ul class="nav2">
+        #foreach(Tree n in menuTree)
+        <li><a>${n.name}</a>
+            #if(n.hasChildren)
+            <ul>
+                #foreach(Tree c in n)
+                <li><a href="$!{c.link}">${c.name}</a></li>
+                #end
+            </ul>
+            #end
+        </li>
+        #end
+    </ul>
+    #end
     <div class="dept-description">
         $!{asm("description")}
     </div>
