@@ -825,7 +825,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                             if (includePath) {
                                 String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
                                 gen.writeStringField("path",
-                                                     (path.length > 0 ? "/" + ArrayUtils.stringJoin(path, "/") : "") +
+                                                     (path.length > 0 ? ArrayUtils.stringJoin(path, "/") : "") +
                                                      "/" + row.get("hname"));
                             }
                             gen.writeBooleanField("published", published);
