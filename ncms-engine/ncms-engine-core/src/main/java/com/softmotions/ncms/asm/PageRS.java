@@ -823,9 +823,13 @@ public class PageRS extends MBDAOSupport implements PageService {
                         gen.writeStringField("accessMask", am);
                         if (includePath) {
                             String[] path = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
-                            gen.writeStringField("path",
-                                                 (path.length > 0 ? ArrayUtils.stringJoin(path, "/") : "") +
-                                                 "/" + row.get("hname"));
+                            if (path.length > 0) {
+                                gen.writeStringField("path",
+                                                     ArrayUtils.stringJoin(path, "/") + "/" + row.get("hname"));
+                            } else {
+                                gen.writeStringField("path",
+                                                     (String) row.get("hname"));
+                            }
                         }
                         gen.writeBooleanField("published", published);
                         gen.writeStringField("type", (String) row.get("type"));
