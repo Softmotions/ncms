@@ -4,7 +4,7 @@ ul.nav2 {
   list-style: none;
   font: 600 14px/18px $basic_sans_font;
   overflow: visible;
-  background: #f0f0f0;
+  background: #efefef;
 
   &:after {
     display: block;
@@ -36,7 +36,7 @@ ul.nav2 {
       left: -10px;
       top: 27px;
       display: none;
-      background: #f0f0f0;
+      background: #efefef;
       font: 15px/18px Arial, Helvetica, sans-serif;
       padding: 0 10px 5px 10px;
       @include box-shadow(4px 4px 4px 0px rgba(0, 0, 0, 0.15));
