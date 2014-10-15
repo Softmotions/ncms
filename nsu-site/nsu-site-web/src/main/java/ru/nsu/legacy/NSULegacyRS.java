@@ -167,6 +167,7 @@ public class NSULegacyRS {
                 ret.put("wiki", wiki);
             }
         }
+        adao.asmSetSysprop(id, "nsu.legacy.guid", guid);
         log.info("Import completed");
         return ret;
     }

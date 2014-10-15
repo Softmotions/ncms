@@ -111,6 +111,8 @@ public class Asm implements Serializable {
 
     String navAlias;
 
+    String navAlias2;
+
     String navCachedPath;
 
     Collection<String> accessRoles;
@@ -329,6 +331,11 @@ public class Asm implements Serializable {
     @Nullable
     public String getNavAlias() {
         return navAlias;
+    }
+
+    @Nullable
+    public String getNavAlias2() {
+        return navAlias2;
     }
 
     public void setNavAlias(String navAlias) {
@@ -603,6 +610,7 @@ public class Asm implements Serializable {
         asm.attributes = (attributes != null) ? attributes.cloneDeep() : null;
         asm.navParentId = navParentId;
         asm.navAlias = navAlias;
+        asm.navAlias2 = navAlias2;
         asm.navCachedPath = navCachedPath;
         if (getParents() != null) {
             asm.parents = new ArrayList<>(getParents().size());

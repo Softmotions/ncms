@@ -378,8 +378,16 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public String asmSelectAliasByName(String name) {
-        return selectOne("asmSelectAliasByName", name);
+    public String asmSelectAliasByGuid(String guid) {
+        Map<String, String> row = selectOne("asmSelectAliasByGuid", guid);
+        if (row == null) {
+            return null;
+        }
+        String alias = row.get("nav_alias");
+        if (alias == null) {
+            alias = row.get("nav_alias2");
+        }
+        return alias;
     }
 
     @Transactional

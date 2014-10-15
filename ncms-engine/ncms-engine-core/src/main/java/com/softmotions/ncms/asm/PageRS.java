@@ -47,6 +47,7 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.concurrent.GuardedBy;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
@@ -119,10 +120,16 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final MediaReader mediaReader;
 
+    @GuardedBy("pagesCache")
     private final Map<Long, CachedPage> pagesCache;
 
+    @GuardedBy("pagesCache")
     private final Map<String, CachedPage> pageGuid2Cache;
 
+    @GuardedBy("pagesCache")
+    private final Map<String, CachedPage> pageAlias2Cache;
+
+    @GuardedBy("guid2AliasCache")
     private final Map<String, String> guid2AliasCache;
 
     private final Map<String, Long> lang2IndexPages;
@@ -158,6 +165,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.pagesCache = new PagesLRUMap(env.xcfg().getInt("pages.lru-cache-size", 1024));
         this.guid2AliasCache = new LRUMap(env.xcfg().getInt("pages.lru-aliases-cache-size", 4096));
         this.pageGuid2Cache = new HashMap<>();
+        this.pageAlias2Cache = new HashMap<>();
         this.lang2IndexPages = new HashMap<>();
         this.env = env;
         this.mediaReader = mediaReader;
@@ -1078,9 +1086,12 @@ public class PageRS extends MBDAOSupport implements PageService {
                     }
                 }
             }
-            if (cp.getName() != null) {
-                synchronized (pagesCache) {
+            synchronized (pagesCache) {
+                if (cp.getName() != null) {
                     pageGuid2Cache.remove(cp.getName());
+                }
+                if (cp.getAlias() != null) {
+                    pageAlias2Cache.remove(cp.getAlias());
                 }
             }
             return true;
@@ -1100,7 +1111,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
 
         public String getAlias() {
-            return asm.getNavAlias();
+            return (asm.getNavAlias() != null ? asm.getNavAlias() : asm.getNavAlias2());
         }
 
         public String getName() {
@@ -1198,8 +1209,13 @@ public class PageRS extends MBDAOSupport implements PageService {
     private void clearCachedPage(Long id) {
         synchronized (pagesCache) {
             CachedPage p = pagesCache.remove(id);
-            if (p != null && p.getName() != null) {
-                pageGuid2Cache.remove(p.getName());
+            if (p != null) {
+                if (p.getName() != null) {
+                    pageGuid2Cache.remove(p.getName());
+                }
+                if (p.getAlias() != null) {
+                    pageAlias2Cache.remove(p.getAlias());
+                }
             }
         }
     }
@@ -1208,6 +1224,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         synchronized (pagesCache) {
             pagesCache.clear();
             pageGuid2Cache.clear();
+            pageAlias2Cache.clear();
         }
     }
 
@@ -1229,10 +1246,13 @@ public class PageRS extends MBDAOSupport implements PageService {
         synchronized (pagesCache) {
             CachedPage cp2 = pagesCache.get(id);
             if (cp2 == null) {
+                pagesCache.put(id, cp);
                 if (cp.getName() != null) {
                     pageGuid2Cache.put(cp.getName(), cp);
                 }
-                pagesCache.put(id, cp);
+                if (cp.getAlias() != null) {
+                    pageAlias2Cache.put(cp.getAlias(), cp);
+                }
             } else {
                 cp = cp2;
             }
@@ -1244,6 +1264,9 @@ public class PageRS extends MBDAOSupport implements PageService {
         CachedPage cp;
         synchronized (pagesCache) {
             cp = pageGuid2Cache.get(guidOrAlias);
+            if (cp == null) {
+                cp = pageAlias2Cache.get(guidOrAlias);
+            }
         }
         if (cp == null) {
             if (create) {
@@ -1269,7 +1292,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (alias != null) {
             return ("@".equals(alias) ? null : alias);
         }
-        alias = adao.asmSelectAliasByName(guid);
+        alias = adao.asmSelectAliasByGuid(guid);
         if (alias == null) {
             alias = "@";
         }
@@ -1278,6 +1301,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         return ("@".equals(alias) ? null : alias);
     }
+
 
     public String resolvePageLink(Long id) {
         if (id == null) {

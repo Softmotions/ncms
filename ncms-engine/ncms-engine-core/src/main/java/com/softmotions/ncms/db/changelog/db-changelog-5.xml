@@ -132,5 +132,5 @@
             <column name="QA_CHECK_DATE"/>
         </createIndex>
     </changeSet>
-
+    
 </databaseChangeLog>

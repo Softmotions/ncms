@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -30,6 +31,8 @@ public class AsmAliasAM implements AsmAttributeManager {
     private static final Logger log = LoggerFactory.getLogger(AsmAliasAM.class);
 
     public static final String[] TYPES = new String[]{"alias"};
+
+    private static final Pattern ALIAS_PATTERN = Pattern.compile("^[0-9a-zA-Z\\._\\-/]+$");
 
     private final NcmsMessages messages;
 
@@ -75,7 +78,7 @@ public class AsmAliasAM implements AsmAttributeManager {
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         String alias = val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null;
         if (alias != null) {
-            if (!alias.matches("^[0-9a-zA-Z\\._-]+$")) {
+            if (!ALIAS_PATTERN.matcher(alias).matches()) {
                 throw new NcmsMessageException(messages.get("ncms.asm.alias.non.allowed.symbols"), true);
             }
             if (!adao.asmCheckUniqueAlias(alias, ctx.getAsmId())) {

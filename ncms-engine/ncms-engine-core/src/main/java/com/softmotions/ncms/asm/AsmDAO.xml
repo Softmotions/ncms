@@ -216,7 +216,7 @@
         SELECT
             id
         FROM ASMS
-        WHERE nav_alias = #{name}
+        WHERE (nav_alias = #{name} OR nav_alias2 = #{name})
     </select>
 
     <select id="asmCheckUniqueAlias" resultType="long" parameterType="map">
@@ -393,7 +393,7 @@
                     AND asm.published = #{published}
                     </if>
                     <if test="alias != null">
-                    AND asm.nav_alias = #{alias}
+                    AND (asm.nav_alias = #{alias} OR asm.nav_alias2 = #{alias})
                     </if>
                     <if test="type != null">
                     AND asm.type LIKE #{type}
@@ -481,8 +481,14 @@
     </update>
 
 
-    <select id="asmSelectAliasByName" parameterType="string" resultType="string">
-        SELECT nav_alias FROM ASMS WHERE name = #{name}
+    <select id="asmSelectAliasByGuid"
+            parameterType="string"
+            resultType="map">
+        SELECT
+            nav_alias AS "nav_alias",
+            nav_alias2 AS "nav_alias2"
+        FROM ASMS
+        WHERE name = #{guid}
     </select>
 
     <update id="setAsmRefData" parameterType="map">
