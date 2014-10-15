@@ -4,7 +4,7 @@ ul.nav2 {
   list-style: none;
   font: 600 14px/18px $basic_sans_font;
   overflow: visible;
-  background: #efefef;
+  background: #3395e1;
 
   &:after {
     display: block;
@@ -21,14 +21,9 @@ ul.nav2 {
     padding: 0 13px 0 0;
 
     > a {
-      color: #575757;
+      color: white;
       text-decoration: none;
       padding-bottom: 9px;
-
-      &:hover, &.active {
-        padding-bottom: 7px;
-        border-bottom: 2px solid #3395e1
-      }
     }
 
     ul {
@@ -36,7 +31,7 @@ ul.nav2 {
       left: -10px;
       top: 27px;
       display: none;
-      background: #efefef;
+      background: $bg_color;
       font: 15px/18px Arial, Helvetica, sans-serif;
       padding: 0 10px 5px 10px;
       z-index: 1000;
@@ -48,9 +43,12 @@ ul.nav2 {
         margin: 5px 10px;
         white-space: nowrap;
 
-        a:hover {
-          border: none !important;
-          color: #3395e1;
+        a {
+          color: grey;
+
+          &:hover {
+            color: #3395e1;
+          }
         }
       }
     }

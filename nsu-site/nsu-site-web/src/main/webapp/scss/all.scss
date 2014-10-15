@@ -501,7 +501,7 @@
     }
 
     span {
-      @include sp-icons-sprite(bg-about, $offset-y: 5px);
+      @include sp-icons-sprite(bg-about, $offset-y: 6px);
       padding: 0 0 0 27px;
     }
   }
