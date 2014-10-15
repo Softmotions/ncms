@@ -312,7 +312,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private void updatePublishStatus(HttpServletRequest req, Long id, boolean published) {
         Asm page = adao.asmSelectById(id);
-        if (!pageSecurity.canEdit2(page, req)) {
+        if (page == null || !pageSecurity.canEdit2(page, req)) {
             throw new ForbiddenException("Not authenticated");
         }
         update("updatePublishStatus",

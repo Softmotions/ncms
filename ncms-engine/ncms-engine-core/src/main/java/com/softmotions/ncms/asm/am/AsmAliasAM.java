@@ -71,7 +71,11 @@ public class AsmAliasAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        attr.setEffectiveValue(val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null);
+        String alias = val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null;
+        while (alias != null && alias.length() > 0 && alias.charAt(0) == '/') {
+            alias = alias.substring(1);
+        }
+        attr.setEffectiveValue(alias);
         return attr;
     }
 
@@ -80,6 +84,9 @@ public class AsmAliasAM implements AsmAttributeManager {
         if (alias != null) {
             if (!ALIAS_PATTERN.matcher(alias).matches()) {
                 throw new NcmsMessageException(messages.get("ncms.asm.alias.non.allowed.symbols"), true);
+            }
+            while (alias.length() > 0 && alias.charAt(0) == '/') {
+                alias = alias.substring(1);
             }
             if (!adao.asmCheckUniqueAlias(alias, ctx.getAsmId())) {
                 throw new NcmsMessageException(messages.get("ncms.asm.alias.non.unique"), true);

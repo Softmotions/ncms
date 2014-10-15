@@ -246,8 +246,12 @@ public class NSULegacyRS {
     }
 
     private String fetchLegacyAlias(String guid) throws Exception {
-        return jongo.getCollection("navtree").findOne("{_id: #}", new ObjectId(guid)).projection("{alias:1}")
+        String alias = jongo.getCollection("navtree").findOne("{_id: #}", new ObjectId(guid)).projection("{alias:1}")
                 .map(res -> res.get("alias").toString());
+        while (alias != null && alias.length() > 0 && alias.charAt(0) == '/') {
+            alias = alias.substring(1);
+        }
+        return alias;
     }
 
     private String fetchNSUGuid(String url) throws Exception {
