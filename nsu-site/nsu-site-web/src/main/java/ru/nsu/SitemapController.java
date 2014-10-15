@@ -32,7 +32,6 @@ public class SitemapController implements AsmController {
     private final PageService pageService;
 
     @Inject
-
     public SitemapController(AsmDAO adao, PageService pageService) {
         this.adao = adao;
         this.pageService = pageService;
@@ -40,8 +39,6 @@ public class SitemapController implements AsmController {
 
 
     public boolean execute(AsmRendererContext ctx) throws Exception {
-        // TODO:
-
         HttpServletRequest req = ctx.getServletRequest();
         HttpServletResponse resp = ctx.getServletResponse();
 
