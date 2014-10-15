@@ -499,6 +499,27 @@
         ELSE IGNORE
     </update>
 
+    <select id="selectPageLayer" resultType="com.softmotions.ncms.asm.Asm" parameterType="map">
+        SELECT
+            p.id              AS "id",
+            p.name            AS "name",
+            p.hname           AS "hname",
+            p.description     AS "description",
+            p.type            AS "type",
+            p.published       AS "published",
+            p.template        AS "template",
+            p.nav_cached_path AS "nav_cached_path"
+        FROM ASMS AS p
+        WHERE
+          <choose>
+              <when test="nav_parent_id == null">p.nav_parent_id IS NULL</when>
+              <otherwise>p.nav_parent_id = #{nav_parent_id}</otherwise>
+          </choose>
+          AND p.type LIKE #{page_type}
+        ORDER BY p.hname ASC
+    </select>
+
+
     <!-- ======================== Result maps ============================= -->
 
     <resultMap id="coreRM"

@@ -1,0 +1,11 @@
+#foreach(Asm a in layer)
+<li class="${ifTrue(a.type == 'page.folder', 'close node', 'file')}" value="${a.id}">
+    <span></span>
+    #if(a.published == true)
+    <a href="$!{a.link}">${a.hname}</a>
+    #else
+    ${a.hname}
+    #end
+    <ul></ul>
+</li>
+#end

@@ -243,6 +243,11 @@ public class AsmDAO extends MBDAOSupport {
         }
     }
 
+    @Transactional
+    public Collection<Asm> selectPageLayer(Long parent) {
+        return select("selectPageLayer", "nav_parent_id", parent, "page_type", "page%");
+    }
+
     /**
      * Insert new assembly with generated name
      *

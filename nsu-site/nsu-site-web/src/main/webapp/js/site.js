@@ -1197,3 +1197,32 @@ function initScroll(tabSelector, prefix) {
         return sneaky.sneak();
     });
 }
+
+function initSiteMap(href) {
+    var initLoad = function(el, level) {
+        $(el).find('li.node > span').click(function() {
+            var li = $(this).parent();
+            var ul = li.find('> ul');
+            if (ul.html() == '') {
+                ul.html('&nbsp;');
+                $.post(href, {parent : li.attr('value')}, function(data) {
+                    ul.html(data);
+                    initLoad(ul, level + 1);
+                });
+            }
+            // first level already initialized
+            if (level > 0) {
+                var flag = li.hasClass('open');
+                if (flag == true) {
+                    li.removeClass('open');
+                    li.addClass('close');
+                } else {
+                    li.removeClass('close');
+                    li.addClass('open');
+                }
+            }
+        })
+    };
+
+    initLoad('#sitemap', 0);
+}
