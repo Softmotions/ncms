@@ -479,7 +479,10 @@ public class PageSecurityService extends MBDAOSupport {
         update("updateAclUserRights", "acl", locAcl, "user", user, "rights", calcRights(mode, nrights, rights));
         sessionManager.registerNextEventSessionListener(new MBSqlSessionListenerSupport() {
             public void commit(boolean success) {
-                cacheRights(user, pid, rights);
+                // clear rights.
+                // real user rights must be collected from all (local and recursive) acl.
+                // it will be done on next user request to page
+                clearUserRights(user, pid);
             }
         });
     }
@@ -518,7 +521,6 @@ public class PageSecurityService extends MBDAOSupport {
         sessionManager.registerNextEventSessionListener(new MBSqlSessionListenerSupport() {
             public void commit(boolean success) {
                 clearUserRights(user); //clear all user rights due to recursive acl
-                cacheRights(user, pid, rights);
             }
         });
     }
