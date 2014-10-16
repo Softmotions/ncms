@@ -547,6 +547,24 @@
     </select>
 
 
+    <select id="selectAsmEventRef" resultType="map" parameterType="map">
+        SELECT
+          a.id        AS "asm_id",
+          ard.svalue  AS "svalue"
+        FROM ASM_REFDATA AS ard
+        INNER JOIN ASMS AS a ON ard.asm_id = a.id
+        WHERE ard.type = #{type}
+          AND (YEAR(a.edate) &lt; #{edateLTYear} OR (YEAR(a.edate) = #{edateLTYear} AND DAYOFYEAR(a.edate) &lt;= #{edateLTDay}))
+          AND (YEAR(a.edate) &gt; #{edateGTYear} OR (YEAR(a.edate) = #{edateGTYear} AND DAYOFYEAR(a.edate) &gt;= #{edateGTDay}))
+        ORDER BY a.id
+    </select>
+
+    <delete id="deleteAsmRefByType" parameterType="map">
+        DELETE FROM ASM_REFDATA
+        WHERE asm_id IN <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+          AND type = #{type}
+    </delete>
+
     <!-- ======================== Result maps ============================= -->
 
     <resultMap id="coreRM"

@@ -283,6 +283,11 @@
             <version>${softmotions.commons.version}</version>
         </dependency>
         <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot-scheduler</artifactId>
+            <version>${softmotions.commons.version}</version>
+        </dependency>
+        <dependency>
             <groupId>nsu</groupId>
             <artifactId>nsu-site-qx</artifactId>
             <version>${project.parent.version}</version>
@@ -298,6 +303,11 @@
             <groupId>com.ibm</groupId>
             <artifactId>db2jcc_license_cu</artifactId>
             <version>4.16.53</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
         </dependency>
     </dependencies>
 </project>
