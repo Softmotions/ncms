@@ -647,7 +647,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (count("selectNumberOfDirectChilds", id) > 0) {
             throw new NcmsMessageException(messages.get("ncms.page.nodel.children", req), true);
         }
-        if (count("selectCountOfDependentAttrs", id) > 0) {
+        if (count("selectCountOfDependentAttrs", page.getName()) > 0) {
             ret.put("error", "ncms.page.nodel.refs.found");
             return ret;
         }
