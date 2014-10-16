@@ -384,9 +384,9 @@ public class AsmDAO extends MBDAOSupport {
             return null;
         }
         String alias = row.get("nav_alias");
-        /*if (alias == null) {
+        if (alias == null) {
             alias = row.get("nav_alias2");
-        }*/
+        }
         return alias;
     }
 

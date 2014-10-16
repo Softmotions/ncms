@@ -1111,7 +1111,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
 
         public String getAlias() {
-            return asm.getNavAlias();//(asm.getNavAlias() != null ? asm.getNavAlias() : asm.getNavAlias2());
+            return (asm.getNavAlias() != null ? asm.getNavAlias() : asm.getNavAlias2());
         }
 
         public String getName() {

@@ -129,6 +129,10 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.asmCloneContext = new HashMap<>();
         this.asm = asm0.cloneDeep(this.asmCloneContext);
         this.rootAsm = asm;
+
+        //Set basic content parameters
+        this.put("ncmsroot", env.getNcmsRoot());
+
     }
 
     public AsmRenderer getRenderer() {
