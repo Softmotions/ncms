@@ -216,7 +216,16 @@
         SELECT
             id
         FROM ASMS
-        WHERE (nav_alias = #{name} OR nav_alias2 = #{name})
+        WHERE nav_alias = #{name}
+        UNION
+        SELECT
+            id
+        FROM ASMS
+        WHERE nav_alias2 = #{name}
+              AND NOT EXISTS(SELECT
+                                 1
+                             FROM ASMS
+                             WHERE nav_alias = #{name})
     </select>
 
     <select id="asmCheckUniqueAlias" resultType="long" parameterType="map">

@@ -4,7 +4,8 @@
 qx.Class.define("ncms.Actions", {
     extend : sm.conn.Actions,
 
-    construct : function() {
+    construct : function(prefix) {
+        this._prefix = (typeof prefix === "string") ? prefix : "/ncms";
         this.base(arguments);
         this._testPrefix = "http://localhost:8080";
         this._resourceManager = qx.util.ResourceManager.getInstance();
@@ -271,21 +272,19 @@ qx.Class.define("ncms.Actions", {
 
     members : {
 
+        _prefix : null,
+
         _testPrefix : null,
 
         _resourceManager : null,
 
         _action : function(id, path) {
-            path = this._prefix() + path;
+            path = this._prefix + path;
             if (qx.core.Environment.get("ncms.testing.urls")) {
                 this._addAction(id, this._resourceManager.toUri(this._testPrefix + path));
             } else {
                 this._addAction(id, this._resourceManager.toUri(path));
             }
-        },
-
-        _prefix : function() {
-            return "/ncms"; //todo make it configurable
         }
     }
 });
