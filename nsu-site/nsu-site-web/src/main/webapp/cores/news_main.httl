@@ -113,7 +113,6 @@
 </div>
 $!{include("inc/scripts.httl")}
 #if(!requestParamMatched("preview_frame", 1))
-<script type="text/javascript" src="js/instagram.js"></script>
 <script type="text/javascript">
     #if(iclientId != null && iuserId != null)
     #set(String icacheKey = cfg.getString("instagram.cache.key"))

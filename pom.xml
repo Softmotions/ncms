@@ -98,6 +98,7 @@
                 <ncms.environment>prerelease</ncms.environment>
                 <ncms.debug>true</ncms.debug>
                 <web.context.reloadable>true</web.context.reloadable>
+                <sass.compile.options></sass.compile.options>
             </properties>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -109,6 +110,7 @@
                 <ncms.environment>debug</ncms.environment>
                 <ncms.debug>true</ncms.debug>
                 <web.context.reloadable>true</web.context.reloadable>
+                <sass.compile.options></sass.compile.options>
             </properties>
         </profile>
         <profile>
@@ -117,6 +119,7 @@
                 <ncms.environment>production</ncms.environment>
                 <ncms.production>true</ncms.production>
                 <web.context.reloadable>false</web.context.reloadable>
+                <sass.compile.options>-s compressed</sass.compile.options>
             </properties>
         </profile>
         <profile>
@@ -125,6 +128,7 @@
                 <ncms.environment>prerelease</ncms.environment>
                 <ncms.debug>true</ncms.debug>
                 <web.context.reloadable>false</web.context.reloadable>
+                <sass.compile.options></sass.compile.options>
             </properties>
         </profile>
     </profiles>

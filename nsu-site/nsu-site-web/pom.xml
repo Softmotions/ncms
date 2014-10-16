@@ -15,10 +15,42 @@
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>com.samaxes.maven</groupId>
+                <artifactId>minify-maven-plugin</artifactId>
+                <version>1.7.4</version>
+                <executions>
+                    <execution>
+                        <id>default-minify</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                        <configuration>
+                            <jsEngine>CLOSURE</jsEngine>
+                            <closureCompilationLevel>SIMPLE_OPTIMIZATIONS</closureCompilationLevel>
+                            <jsSourceDir>js</jsSourceDir>
+                            <jsSourceFiles>
+                                <jsSourceFile>jquery-1.11.1.js</jsSourceFile>
+                                <jsSourceFile>jquery.placeholder.js</jsSourceFile>
+                                <jsSourceFile>imagesloaded.pkgd.js</jsSourceFile>
+                                <jsSourceFile>masonry.pkgd.js</jsSourceFile>
+                                <jsSourceFile>instagram.js</jsSourceFile>
+                                <jsSourceFile>site.js</jsSourceFile>
+                            </jsSourceFiles>
+                            <webappTargetDir>${basedir}/src/main/webapp</webappTargetDir>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -35,7 +67,7 @@
                     <workingDirectory>${basedir}</workingDirectory>
                     <detail>true</detail>
                     <executable>compass</executable>
-                    <commandlineArgs>compile ${basedir}</commandlineArgs>
+                    <commandlineArgs>compile ${basedir} ${sass.compile.options}</commandlineArgs>
                 </configuration>
             </plugin>
 
