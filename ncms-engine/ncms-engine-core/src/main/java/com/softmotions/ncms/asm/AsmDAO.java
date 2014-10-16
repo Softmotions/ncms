@@ -184,6 +184,7 @@ public class AsmDAO extends MBDAOSupport {
 
     @Transactional
     public void asmUpdateAlias(Long id, String alias) {
+        update("asmResetAlias", alias);
         update("asmUpdateAlias",
                "id", id,
                "alias", alias);
@@ -191,6 +192,7 @@ public class AsmDAO extends MBDAOSupport {
 
     @Transactional
     public void asmUpdateAlias2(Long id, String alias) {
+        update("asmResetAlias2", alias);
         update("asmUpdateAlias2",
                "id", id,
                "alias", alias);

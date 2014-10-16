@@ -241,10 +241,22 @@
         WHERE id = #{id}
     </update>
 
+    <update id="asmResetAlias" parameterType="string">
+        UPDATE ASMS
+        SET nav_alias = NULL
+        WHERE nav_alias = #{alias}
+    </update>
+
     <update id="asmUpdateAlias2" parameterType="map">
         UPDATE ASMS
         SET nav_alias2 = #{alias,jdbcType=VARCHAR}
         WHERE id = #{id}
+    </update>
+
+    <update id="asmResetAlias2" parameterType="string">
+        UPDATE ASMS
+        SET nav_alias2 = NULL
+        WHERE nav_alias2 = #{alias}
     </update>
 
     <select id="asmNameByID" parameterType="long" resultType="string">
