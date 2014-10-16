@@ -179,7 +179,7 @@ public class AsmDAO extends MBDAOSupport {
     @Nullable
     public Long asmSelectIdByAlias(String alias) {
         Number id = sess.selectOne(toStatementId("asmIDByAlias"), alias);
-        return id != null ? id.longValue() : null;
+        return (id != null) ? id.longValue() : null;
     }
 
     @Transactional

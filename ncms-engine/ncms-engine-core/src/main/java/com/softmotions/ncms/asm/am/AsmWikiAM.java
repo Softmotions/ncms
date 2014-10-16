@@ -51,7 +51,7 @@ public class AsmWikiAM implements AsmAttributeManager {
                                                                   Pattern.CASE_INSENSITIVE);
 
     private static final Pattern PAGENAME_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|(.*))?\\]\\]",
-                                                                  Pattern.CASE_INSENSITIVE);
+                                                                   Pattern.CASE_INSENSITIVE);
 
     private final ObjectMapper mapper;
 
@@ -136,9 +136,14 @@ public class AsmWikiAM implements AsmAttributeManager {
         StringBuffer res = new StringBuffer(html.length());
         Matcher m = pageRefsRE.matcher(html);
         while (m.find()) {
-            String repl = m.group(1);
-            if (repl != null) {
-                m.appendReplacement(res, repl);
+            String guid = m.group(1);
+            if (guid != null) {
+                String link = pageService.resolvePageLink(guid);
+                if (link != null) {
+                    m.appendReplacement(res, link);
+                } else {
+                    m.appendReplacement(res, m.group());
+                }
             } else {
                 m.appendReplacement(res, m.group());
             }
