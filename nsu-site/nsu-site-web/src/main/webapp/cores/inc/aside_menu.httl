@@ -17,7 +17,7 @@
                 #foreach(Tree nn in n)
                 #if(!self && page.link == nn.link)
                 #set(boolean self = true)
-                <li class="self"><a href="${nn.link}"><strong>${nn.name}</strong></a></li>
+                <li class="self"><a href="${nn.link}" style="font-weight:bold">${nn.name}</a></li>
                 #else
                 <li><a href="${nn.link}">${nn.name}</a></li>
                 #end
