@@ -119,7 +119,7 @@
                 <ncms.environment>production</ncms.environment>
                 <ncms.production>true</ncms.production>
                 <web.context.reloadable>false</web.context.reloadable>
-                <sass.compile.options>-s compressed</sass.compile.options>
+                <sass.compile.options>--force -s compressed</sass.compile.options>
             </properties>
         </profile>
         <profile>
