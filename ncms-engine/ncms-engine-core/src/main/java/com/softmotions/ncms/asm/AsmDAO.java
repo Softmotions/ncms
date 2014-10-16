@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.guice.transactional.Transactional;
@@ -236,7 +237,11 @@ public class AsmDAO extends MBDAOSupport {
     @Transactional
     public void setAsmAccessRoles(long id, String... roles) {
         Set<String> rset = new HashSet<>(roles.length);
-        Collections.addAll(rset, roles);
+        for (String r : roles) {
+            if (!StringUtils.isBlank(r)) {
+                rset.add(r);
+            }
+        }
         delete("deleteAsmAccessRoles", id);
         if (roles.length > 0) {
             insert("insertAsmAccessRoles",

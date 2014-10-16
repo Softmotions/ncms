@@ -1,4 +1,8 @@
 #if(!requestParamMatched("preview_frame", 1))
-<script type="text/javascript" src="${ncmsroot}/js/script.min.js"></script>
+<script type="text/javascript" src="${ncmsroot}/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="${ncmsroot}/fotorama/fotorama.js"></script>
+<script type="text/javascript" src="${ncmsroot}/js/masonry.pkgd.min.js"></script>
+<script type="text/javascript" src="${ncmsroot}/js/script.min.js"></script>
 #end
+
+
