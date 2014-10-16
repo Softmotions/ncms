@@ -1,11 +1,12 @@
 package ru.nsu;
 
+import ru.nsu.events.EventsRemember;
 import com.softmotions.commons.date.DateHelper;
 import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.jaxrs.NcmsMessageException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -13,7 +14,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,12 +40,15 @@ public class EventsMainController implements AsmController {
 
     private final NcmsMessages messages;
 
+    private final EventsRemember remember;
+
     @Inject
-    public EventsMainController(NewsDirectoryController ndc, AsmDAO adao, ObjectMapper mapper, NcmsMessages messages) {
+    public EventsMainController(NewsDirectoryController ndc, AsmDAO adao, ObjectMapper mapper, NcmsMessages messages, EventsRemember remember) {
         this.ndc = ndc;
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
+        this.remember = remember;
     }
 
     @Transactional
@@ -72,29 +75,11 @@ public class EventsMainController implements AsmController {
             Long eventId = Long.valueOf(req.getParameter("eventId"));
             String contact = StringUtils.trimToEmpty(req.getParameter("contact")).toLowerCase();
 
-            if (StringUtils.isBlank(contact)) {
-                result.put("message", messages.get("ncms.events.remember.contacts.empty"));
-                return;
-            }
-            Asm event = adao.asmSelectById(eventId);
-            if (event == null) {
-                result.put("message", messages.get("ncms.events.remember.event.not.found"));
-                return;
-            }
-
-            // contacts as email
-            if (!EmailValidator.getInstance().isValid(contact)) {
-                contact = contact.replaceAll("[\\(\\)\\- ]", "");
-                // todo: phone validator?
-                if (!contact.matches("^(\\+7|8)?\\d{10}$")) {
-                    result.put("message", messages.get("ncms.events.remember.contacts.not.valid"));
-                    return;
-                }
-            }
-
-            adao.setAsmRefData(event.getId(), "remember_event", contact);
+            remember.saveRememeber(eventId, contact);
 
             result.put("success", true);
+        } catch (NcmsMessageException e) {
+            result.put("message", e.getMessage());
         } catch (Exception e) {
             result.put("message", messages.get("ncms.events.remember.unexpected.error"));
             log.error("", e);

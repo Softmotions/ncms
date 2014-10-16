@@ -249,4 +249,30 @@
         </pages>
     </qa>
 
+    <events-remember>
+        <notification-days-before>3</notification-days-before>
+        <!-- email notificator: if dryRun is true - send mail, otherwise - write to log-->
+        <notificator class="ru.nsu.events.EmailNotificator" dryRun="true">
+            <mail-server-config>
+                mail.smtp.host=mx.nsu.ru
+                mail.transport.protocol=smtp
+            </mail-server-config>
+            <!--
+                for templates:
+                    {date} replaced to event date with format "dd.MM.yyyy HH:mm"
+                    {name} replaced to event name
+            -->
+            <notification>
+                <from>NSU &lt;noreply@nsu.ru&gt;</from>
+                <content-type>text/plain;charset=UTF-8</content-type>
+                <subject>{name}</subject>
+                <message><![CDATA[{date} состоится {name}]]></message>
+            </notification>
+        </notificator>
+        <notificator class="ru.nsu.events.SMSNotificator">
+            <phone-pattern><![CDATA[^(\+7|8)?\d{10}$]]></phone-pattern>
+            <!-- TODO: cfg sms notificator -->
+        </notificator>
+    </events-remember>
+
 </configuration>
