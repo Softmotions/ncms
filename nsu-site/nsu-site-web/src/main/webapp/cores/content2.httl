@@ -22,7 +22,7 @@
                     <ul class="side-list">
                         #set(boolean self = false)
                         #foreach(Tree n in tree)
-                        <li class='${ifTrue(n.hasChildren, "box")}' id="side-list-item-${ti}"><a href="${n.link}">${n.name}</a>
+                        <li class='${ifTrue("file" != n.type, "box")}'><a href="${n.link}">${n.name}</a>
                             #if(n.hasChildren)
                             <ul>
                                 #foreach(Tree nn in n)
