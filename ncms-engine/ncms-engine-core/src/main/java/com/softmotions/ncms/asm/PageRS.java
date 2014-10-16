@@ -40,8 +40,6 @@ import com.google.inject.Singleton;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.ResultContext;
-import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -414,6 +412,9 @@ public class PageRS extends MBDAOSupport implements PageService {
         //Strore incompatible attribute names to clean-up
         List<String> attrsToRemove = new ArrayList<>();
         page = adao.asmSelectById(id);
+        if (page == null) {
+            throw new NotFoundException("");
+        }
         Collection<AsmAttribute> attrs = page.getEffectiveAttributes();
 
         for (AsmAttribute a : attrs) {
@@ -637,10 +638,16 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         ObjectNode ret = mapper.createObjectNode();
         Asm page = adao.asmSelectById(id);
+        if (page == null) {
+            throw new NotFoundException("");
+        }
         if (!pageSecurity.checkAccessAll2(page, req, "d")) {
             throw new ForbiddenException("");
         }
-        if (count("selectCountOfDependentAttrs", page.getName()) > 0) {
+        if (count("selectNumberOfDirectChilds", id) > 0) {
+            throw new NcmsMessageException(messages.get("ncms.page.nodel.children", req), true);
+        }
+        if (count("selectCountOfDependentAttrs", id) > 0) {
             ret.put("error", "ncms.page.nodel.refs.found");
             return ret;
         }
@@ -671,44 +678,42 @@ public class PageRS extends MBDAOSupport implements PageService {
             q.put("user", req.getRemoteUser());
             String stmtName = q.containsKey("nav_parent_id") ? "selectChildLayer" : "selectRootLayer";
             try {
-                select(stmtName, new ResultHandler() {
-                    public void handleResult(ResultContext context) {
-                        Map<String, ?> row = (Map<String, ?>) context.getResultObject();
-                        try {
-                            gen.writeStartObject();
-                            gen.writeNumberField("id", ((Number) row.get("id")).longValue());
-                            gen.writeStringField("guid", (String) row.get("guid"));
-                            gen.writeStringField("label", (String) row.get("name"));
-                            gen.writeStringField("description", (String) row.get("description"));
-                            String type = (String) row.get("type");
-                            int status = 0;
-                            if ("page.folder".equals(type)) {
-                                status |= PAGE_STATUS_FOLDER_FLAG;
-                            }
-                            if (!NumberUtils.number2Boolean((Number) row.get("published"))) { //page not published
-                                status |= PAGE_STATUS_NOT_PUBLISHED_FLAG;
-                            }
-                            gen.writeNumberField("status", status);
-                            gen.writeStringField("type", type);
-                            gen.writeStringField("options", (String) row.get("options"));
-
-                            String am;
-                            if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
-                                am = pageSecurity.getAllRights();
-                            } else {
-                                am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
-                            }
-                            gen.writeStringField("accessMask", am);
-                            if (includePath) {
-                                String[] path1 = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
-                                gen.writeStringField("path",
-                                                     (path1.length > 0 ? "/" + ArrayUtils.stringJoin(path1, "/") : "") +
-                                                     "/" + row.get("hname"));
-                            }
-                            gen.writeEndObject();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
+                select(stmtName, context -> {
+                    Map<String, ?> row = (Map<String, ?>) context.getResultObject();
+                    try {
+                        gen.writeStartObject();
+                        gen.writeNumberField("id", ((Number) row.get("id")).longValue());
+                        gen.writeStringField("guid", (String) row.get("guid"));
+                        gen.writeStringField("label", (String) row.get("name"));
+                        gen.writeStringField("description", (String) row.get("description"));
+                        String type = (String) row.get("type");
+                        int status = 0;
+                        if ("page.folder".equals(type)) {
+                            status |= PAGE_STATUS_FOLDER_FLAG;
                         }
+                        if (!NumberUtils.number2Boolean((Number) row.get("published"))) { //page not published
+                            status |= PAGE_STATUS_NOT_PUBLISHED_FLAG;
+                        }
+                        gen.writeNumberField("status", status);
+                        gen.writeStringField("type", type);
+                        gen.writeStringField("options", (String) row.get("options"));
+
+                        String am;
+                        if (req.isUserInRole("admin.structure") || req.getRemoteUser().equals(row.get("owner"))) {
+                            am = pageSecurity.getAllRights();
+                        } else {
+                            am = pageSecurity.mergeRights((String) row.get("local_rights"), (String) row.get("recursive_rights"));
+                        }
+                        gen.writeStringField("accessMask", am);
+                        if (includePath) {
+                            String[] path1 = convertPageIDPath2LabelPath((String) row.get("nav_cached_path"));
+                            gen.writeStringField("path",
+                                                 (path1.length > 0 ? "/" + ArrayUtils.stringJoin(path1, "/") : "") +
+                                                 "/" + row.get("hname"));
+                        }
+                        gen.writeEndObject();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 }, q);
             } finally {

@@ -383,11 +383,11 @@
               AND a.type LIKE #{pageType}
     </select>
 
-    <select id="selectCountOfDependentAttrs" resultType="long" parameterType="string">
+    <select id="selectCountOfDependentAttrs" resultType="long" parameterType="long">
         SELECT
             COUNT(*)
         FROM ASM_PAGE_DEPS
-        WHERE ASM_NAME = #{name}
+        WHERE id = #{id}
     </select>
 
 
