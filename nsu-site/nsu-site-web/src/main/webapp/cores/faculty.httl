@@ -16,7 +16,7 @@
     <div class="gallery-holder">
         <ul class="slideset">
             #foreach(Tree h in tree)
-            <li class="slide">
+            <li class="slide" style="display:none">
                 <div class="text-holder">
                     <h2>${h.richRef.name}</h2>
                     <p>${h.richRef.description}</p>
