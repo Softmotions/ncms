@@ -315,10 +315,12 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (page == null || !pageSecurity.canEdit2(page, req)) {
             throw new ForbiddenException("Not authenticated");
         }
+        if (published && page.getEffectiveCore() == null) {
+            throw new NcmsMessageException(messages.get("ncms.page.template.publish.error", req), true);
+        }
         update("updatePublishStatus",
                "id", id,
                "published", published);
-
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
     }
 
