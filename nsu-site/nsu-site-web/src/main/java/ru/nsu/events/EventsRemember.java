@@ -6,12 +6,15 @@ import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.weboot.lifecycle.Dispose;
+import com.softmotions.weboot.lifecycle.Start;
 import com.softmotions.weboot.scheduler.Scheduled;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
+import it.sauronsoftware.cron4j.Scheduler;
+import it.sauronsoftware.cron4j.SchedulingPattern;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
@@ -37,22 +40,30 @@ public class EventsRemember {
 
     private static final Logger log = LoggerFactory.getLogger(EventsRemember.class);
 
+    private final Injector injector;
+
     private final AsmDAO adao;
 
     private final NcmsMessages messages;
 
-    private final Configuration cfg;
+    private final SubnodeConfiguration cfg;
 
-    private final Collection<Notificator> notificators;
+    private final Scheduler scheduler;
+
+    private Collection<Notificator> notificators;
 
     @Inject
-    public EventsRemember(Injector injector, AsmDAO adao, NcmsMessages messages, NcmsEnvironment env) {
+    public EventsRemember(Injector injector, AsmDAO adao, NcmsMessages messages, Scheduler scheduler, NcmsEnvironment env) {
+        this.injector = injector;
         this.adao = adao;
         this.messages = messages;
+        this.scheduler = scheduler;
 
-        SubnodeConfiguration cfg = env.xcfg().configurationAt("events-remember");
-        this.cfg = cfg;
+        this.cfg = env.xcfg().configurationAt("events-remember");
+    }
 
+    @Start(order = 150)
+    public void startup() {
         ClassLoader cl = ObjectUtils.firstNonNull(
                 Thread.currentThread().getContextClassLoader(),
                 getClass().getClassLoader()
@@ -70,7 +81,7 @@ public class EventsRemember {
             Class<? extends Notificator> nclass;
             try {
                 nclass = (Class<? extends Notificator>) cl.loadClass(ncname);
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException ignored) {
                 log.warn("Not found notificator class: '{}'", ncname);
                 continue;
             }
@@ -86,6 +97,16 @@ public class EventsRemember {
 
         if (notificators.isEmpty()) {
             log.error("Not registered notificators for EventsRemember");
+        } else {
+            String sendPattern = cfg.getString("sender-pattern");
+            if (StringUtils.isBlank(sendPattern)) {
+                log.error("Not specified notification job pattern");
+            } else if (!SchedulingPattern.validate(sendPattern)) {
+                log.error("Invalid pattern for notification job: '{}'", sendPattern);
+            } else {
+                log.info("Register sender");
+                scheduler.schedule(sendPattern, this::sendNotify);
+            }
         }
     }
 
@@ -119,7 +140,6 @@ public class EventsRemember {
         adao.setAsmRefData(event.getId(), TYPE, n.prepareContact(contact));
     }
 
-    @Scheduled("0 6 * * *")
     public void sendNotify() {
         log.info("Send notify");
 
