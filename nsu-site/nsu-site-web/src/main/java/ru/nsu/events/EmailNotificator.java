@@ -37,7 +37,7 @@ public class EmailNotificator implements Notificator {
 
     private final Object senderLock = new Object();
 
-
+    // TODO: username & password
     public void init(Configuration cfg) throws Exception {
         String from = cfg.getString("notification.from");
         contentType = cfg.getString("notification.content-type", "text/plain;charset=UTF-8");
@@ -83,6 +83,9 @@ public class EmailNotificator implements Notificator {
                         if (!dryRun) {
                             log.info("Send message {} to {}:\n{}", mm.getSubject(), mm.getAllRecipients(), mm.getContent());
                         } else {
+                            if (!transport.isConnected()) {
+                                transport.connect();
+                            }
                             transport.sendMessage(mm, mm.getAllRecipients());
                         }
                     } catch (Throwable tr) {
