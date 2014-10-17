@@ -251,7 +251,8 @@ public class AsmTreeAM implements AsmAttributeManager {
         KVOptions opts = new KVOptions();
         opts.loadOptions(attr.getOptions());
         JsonNode n = tree.get("syncWith");
-        if (n != null && n.isNumber()) {
+        boolean inSync = (n != null && n.isNumber());
+        if (inSync) {
             Tree stree = getSyncTree(n.asLong(),
                                      rendererContextFactory.createStandalone(ctx.getRequest(), ctx.getResponse(), attr.getAsmId()),
                                      attr);
@@ -272,7 +273,7 @@ public class AsmTreeAM implements AsmAttributeManager {
 
         attr.setOptions(opts.toString());
         try {
-            saveTree(ctx, attr, tree);
+            saveTree(ctx, attr, tree, inSync);
         } catch (IOException e) {
             log.error("", e);
             throw new RuntimeException(e);
@@ -281,7 +282,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         return attr;
     }
 
-    private void saveTree(AsmAttributeManagerContext ctx, AsmAttribute attr, ObjectNode tree) throws IOException {
+    private void saveTree(AsmAttributeManagerContext ctx, AsmAttribute attr, ObjectNode tree, boolean inSync) throws IOException {
         String type = tree.hasNonNull("type") ? tree.get("type").asText() : null;
         JsonNode node = tree.get("id");
         JsonNode linkNode = tree.get("link");
@@ -293,14 +294,18 @@ public class AsmTreeAM implements AsmAttributeManager {
                 tree.putNull("id");
             }
         }
-        if ("file".equals(type) && id != null) {
-            ctx.registerMediaFileDependency(attr, id);
-        } else if ("page".equals(type) && linkNode.isTextual()) {
-            String guid = pageService.resolvePageGuid(linkNode.asText());
-            if (guid != null) {
-                ctx.registerPageDependency(attr, guid);
+
+        if (!inSync) {
+            if ("file".equals(type) && id != null) {
+                ctx.registerMediaFileDependency(attr, id);
+            } else if ("page".equals(type) && linkNode.isTextual()) {
+                String guid = pageService.resolvePageGuid(linkNode.asText());
+                if (guid != null) {
+                    ctx.registerPageDependency(attr, guid);
+                }
             }
         }
+
         JsonNode val = tree.get("nam");
         if (val != null && val.isTextual()) {
             JsonNode naSpec = mapper.readTree(val.asText());
@@ -314,7 +319,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         if (val instanceof ArrayNode) {
             for (JsonNode n : val) {
                 if (n instanceof ObjectNode) {
-                    saveTree(ctx, attr, (ObjectNode) n);
+                    saveTree(ctx, attr, (ObjectNode) n, inSync);
                 }
             }
         }
