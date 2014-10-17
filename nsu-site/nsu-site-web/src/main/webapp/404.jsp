@@ -1,11 +1,13 @@
 <%@ page import="com.softmotions.ncms.NcmsEnvironment" %>
 <%@ page import="com.softmotions.ncms.asm.PageService" %>
 <%@ page import="com.google.inject.Injector" %>
+<%@ page import="com.softmotions.ncms.NcmsMessages" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     Injector injector = (Injector) request.getServletContext().getAttribute(Injector.class.getName());
     PageService pageService = injector.getInstance(PageService.class);
     NcmsEnvironment env = injector.getInstance(NcmsEnvironment.class);
+    NcmsMessages messages = injector.getInstance(NcmsMessages.class);
     String indexLink = env.getAbsoluteLink(request, pageService.resolveResourceLink("index.html"));
     String searchLink = env.getAbsoluteLink(request, pageService.resolveResourceLink("search"));
 %>
@@ -96,10 +98,7 @@
     <div class="box">
         <a href="<%=indexLink%>"><img src="/images/logo2.png"/></a>
 
-        <p>
-            Запрашиваемая Вами страница не найдена.<br/>
-            Воспользуйтесь поиском, чтобы её отыскать:
-        </p>
+        <p><%=messages.get("ncms.error.status.404", request)%></p>
 
         <form action="<%=searchLink%>">
             <fieldset>

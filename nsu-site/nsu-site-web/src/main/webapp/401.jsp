@@ -1,11 +1,13 @@
 <%@ page import="com.softmotions.ncms.NcmsEnvironment" %>
 <%@ page import="com.softmotions.ncms.asm.PageService" %>
 <%@ page import="com.google.inject.Injector" %>
+<%@ page import="com.softmotions.ncms.NcmsMessages" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     Injector injector = (Injector) request.getServletContext().getAttribute(Injector.class.getName());
     PageService pageService = injector.getInstance(PageService.class);
     NcmsEnvironment env = injector.getInstance(NcmsEnvironment.class);
+    NcmsMessages messages = injector.getInstance(NcmsMessages.class);
     String indexLink = env.getAbsoluteLink(request, pageService.resolveResourceLink("index.html"));
 %>
 <!DOCTYPE html>
@@ -58,9 +60,7 @@
     <div class="box">
         <a href="<%=indexLink%>"><img src="/images/logo2.png"/></a>
 
-        <p>
-            Запрос требует аутентификации.
-        </p>
+        <p><%=messages.get("ncms.error.status.401", request)%></p>
     </div>
 </div>
 </body>
