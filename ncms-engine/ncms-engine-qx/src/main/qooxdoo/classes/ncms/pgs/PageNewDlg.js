@@ -15,7 +15,7 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
         _id : null,
 
         _configureForm : function() {
-            var el = new qx.ui.form.TextField().set({allowGrowY : true, maxLength : 64, required : true});
+            var el = new qx.ui.form.TextField().set({allowGrowY : true, maxLength : 70, required : true});
             el.addListener("keypress", function(ev) {
                 if (ev.getKeyIdentifier() == "Enter") {
                     this.save();
