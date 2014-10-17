@@ -32,6 +32,11 @@ public class NcmsEnvironment extends WBConfiguration {
 
     private String adminRoot;
 
+    private String environmentType;
+
+    private String dbEnvironment;
+
+
     public String getNcmsVersion() {
         return coreProps.getProperty("project.version");
     }
@@ -52,9 +57,11 @@ public class NcmsEnvironment extends WBConfiguration {
         super.load(location, sctx);
         normalizePrefix("site-files-root");
         normalizePrefix("ncms-prefix");
-        this.ncmsPrefix = xcfg().getString("ncms-prefix", "/ncms");
+        this.ncmsPrefix = xcfg.getString("ncms-prefix", "/ncms");
         this.ncmsRoot = sctx.getContextPath() + this.ncmsPrefix;
         this.adminRoot = this.ncmsRoot + "/adm";
+        this.environmentType = xcfg.getString("environment", "production");
+        this.dbEnvironment = xcfg.getString("db-environment", "production");
     }
 
     private void normalizePrefix(String property) {
@@ -94,22 +101,12 @@ public class NcmsEnvironment extends WBConfiguration {
 
     @Nonnull
     public String getEnvironmentType() {
-        String etype = xcfg.getString("environment");
-        if (etype == null) {
-            throw new RuntimeException("Missing required '<environment>' " +
-                                       "property in application config");
-        }
-        return etype;
+        return environmentType;
     }
 
     @Nonnull
     public String getDBEnvironmentType() {
-        String etype = xcfg.getString("db-environment");
-        if (etype == null) {
-            throw new RuntimeException("Missing required 'ncms.db.environment' " +
-                                       "property in 'application.conf'");
-        }
-        return etype;
+        return dbEnvironment;
     }
 
     @Nonnull
