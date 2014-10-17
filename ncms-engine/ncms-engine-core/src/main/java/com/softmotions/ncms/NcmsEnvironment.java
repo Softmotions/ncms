@@ -26,6 +26,12 @@ public class NcmsEnvironment extends WBConfiguration {
 
     private final Properties coreProps;
 
+    private String ncmsPrefix;
+
+    private String ncmsRoot;
+
+    private String adminRoot;
+
     public String getNcmsVersion() {
         return coreProps.getProperty("project.version");
     }
@@ -46,6 +52,9 @@ public class NcmsEnvironment extends WBConfiguration {
         super.load(location, sctx);
         normalizePrefix("site-files-root");
         normalizePrefix("ncms-prefix");
+        this.ncmsPrefix = xcfg().getString("ncms-prefix", "/ncms");
+        this.ncmsRoot = sctx.getContextPath() + this.ncmsPrefix;
+        this.adminRoot = this.ncmsRoot + "/adm";
     }
 
     private void normalizePrefix(String property) {
@@ -80,8 +89,7 @@ public class NcmsEnvironment extends WBConfiguration {
 
     @Nonnull
     public String getNcmsPrefix() {
-        return xcfg().getString("ncms-prefix", "/ncms");
-        //return (p.length() > 0 && p.charAt(0) != '/') ? '/' + p : (p.length() == 1 && p.charAt(0) == '/' ? "" : p);
+        return ncmsPrefix;
     }
 
     @Nonnull
@@ -106,7 +114,12 @@ public class NcmsEnvironment extends WBConfiguration {
 
     @Nonnull
     public String getNcmsRoot() {
-        return getServletContext().getContextPath() + getNcmsPrefix();
+        return ncmsRoot;
+    }
+
+    @Nonnull
+    public String getNcmsAdminRoot() {
+        return adminRoot;
     }
 
     @Nonnull

@@ -167,7 +167,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         Tree tree = EMPTY_TREE;
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
-        if (attr == null) {
+        if (attr == null || StringUtils.isBlank(attr.getEffectiveValue())) {
             return tree;
         }
         KVOptions opts = new KVOptions();

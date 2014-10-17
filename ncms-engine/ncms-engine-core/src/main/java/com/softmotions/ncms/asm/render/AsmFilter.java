@@ -125,6 +125,7 @@ public class AsmFilter implements Filter {
                 return false;
             }
         }
+        boolean isAdmRequest = pi.startsWith(env.getNcmsAdminRoot());
         for (final String sp : stripPrefixes) {
             if (pi.startsWith(sp)) {
                 pi = pi.substring(sp.length());
@@ -134,16 +135,15 @@ public class AsmFilter implements Filter {
         if (processResources(pi, req, resp)) { //find resources
             return true;
         }
+        Object asmRef = fetchAsmRef(pi, req);
+        if (asmRef == null) {
+            return false;
+        }
+
         //Set charset before calling javax.servlet.ServletResponse.getWriter()
         //Assumed all assemblies generated as utf8 encoded text data.
         //Content-Type can be overriden by assembly renderer.
         resp.setContentType("text/html;charset=UTF-8");
-
-        Object asmRef = fetchAsmRef(pi, req);
-        if (asmRef == null) {
-            //resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            return false;
-        }
 
         AsmRendererContext ctx;
         HttpServletResponse renderResp = resp;
@@ -164,8 +164,8 @@ public class AsmFilter implements Filter {
         Asm asm = ctx.getAsm();
         if (!asm.isPublished()) {
             if (!(preview && pageSecurity.checkAccessAny(asm.getId(), req, "wnd"))) {
-                if (asm.getType() != null && asm.getCore() != null) {
-                    resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+                if (req.getUserPrincipal() == null || !isAdmRequest) {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
                 return true;
             }
@@ -212,7 +212,7 @@ public class AsmFilter implements Filter {
         if (pi.endsWith(".html")) {
             pi = pi.substring(0, pi.length() - ".html".length());
         }
-        if (pi.length() != 32) { // may be it is a number? (asm ID)
+        if (pi.length() != 32 && pi.length() > 0 && Character.isDigit(pi.charAt(0))) { // may be it is a number? (asm ID)
             try {
                 return Long.parseLong(pi);
             } catch (NumberFormatException ignored) {
