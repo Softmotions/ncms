@@ -81,12 +81,17 @@ function initTree() {
 }
 
 function initAboutSections() {
-    $('a.about').click(function(event) {
+    var about = $('a.about');
+    about.click(function(event) {
         var _this = $(this);
         _this.slideUp(300);
         _this.prev("div").slideDown(300);
         event.preventDefault();
     });
+    if ($('div#main.faculty-page ul.news-list li').length == 0) {
+        about.hide();
+        about.prev("div").show();
+    }
 }
 
 function initNav() {
@@ -134,9 +139,9 @@ function initNav() {
         event.stopPropagation();
     });
 
-    $('ul.nav2 > li > ul').hover(function(){
+    $('ul.nav2 > li > ul').hover(function() {
         $(this).closest('li').find('> a').addClass('active');
-    }, function(){
+    }, function() {
         $(this).closest('li').find('> a').removeClass('active');
     });
 }
@@ -609,12 +614,12 @@ function initAccordion() {
 
 
 function initNavSearch() {
-    $('.search-form .search-directions').click(function(ev){
+    $('.search-form .search-directions').click(function(ev) {
         var tgt = $(ev.target);
         tgt.closest('div.search-where').find('.search-directions-list').toggle();
         ev.stopPropagation();
     });
-    $('.search-form .search-directions-list li').click(function(ev){
+    $('.search-form .search-directions-list li').click(function(ev) {
         var tgt = $(ev.target);
         tgt.closest('div.search-directions-list').hide();
         tgt.closest('form')[0].action = tgt.attr('value');
@@ -953,27 +958,27 @@ function initSearch(pageSize) {
 }
 
 function initMainNews(aType) {
-        var columns = [
-            {
-                subscribed : true,
-                holder : $('div.news-holder'),
-                results : $('ul.news-list'),
-                type : 'a',
-                subType : aType
-            },
-            {
-                subscribed : true,
-                holder : $('div.announcement-holder'),
-                results : $('ul.announcement-list'),
-                type : 'b'
-            },
-            {
-                subscribed : true,
-                holder : $('div.faculty-holder'),
-                results : $('ul.faculty-list'),
-                type : 'c'
-            }
-        ];
+    var columns = [
+        {
+            subscribed : true,
+            holder : $('div.news-holder'),
+            results : $('ul.news-list'),
+            type : 'a',
+            subType : aType
+        },
+        {
+            subscribed : true,
+            holder : $('div.announcement-holder'),
+            results : $('ul.announcement-list'),
+            type : 'b'
+        },
+        {
+            subscribed : true,
+            holder : $('div.faculty-holder'),
+            results : $('ul.faculty-list'),
+            type : 'c'
+        }
+    ];
 
     var k;
     var sheight = 0;
@@ -1008,15 +1013,15 @@ function initMainNews(aType) {
             var nh = false;
             var ch = 0;
             column.results.find('li').each(function(i, el) {
-                        el = $(el);
-                        ch += el.outerHeight();
-                        if (nh || (ch > clh - column.dh)) {
-                            nh = true;
-                            el.hide();
-                        } else {
-                            el.show();
-                        }
-                    });
+                el = $(el);
+                ch += el.outerHeight();
+                if (nh || (ch > clh - column.dh)) {
+                    nh = true;
+                    el.hide();
+                } else {
+                    el.show();
+                }
+            });
 
             if (column.holder.height() > listHeight) {
                 listHeight = column.holder.height();
@@ -1033,7 +1038,7 @@ function initMainNews(aType) {
 
     var checkHeight = function(def, height) {
         var cheight = 0;
-        def.results.find('li').each(function(i, el){
+        def.results.find('li').each(function(i, el) {
             cheight += $(el).outerHeight();
         });
 
@@ -1124,7 +1129,7 @@ function initNewsMain(pageSize) {
     var container = $('div#news-container');
     var fetchMore = $('a#news-fetch-more');
 
-    container.imagesLoaded(function(){
+    container.imagesLoaded(function() {
         container.masonry({itemSelector : '.news-item'})
     });
 
@@ -1168,7 +1173,7 @@ function initRemember() {
         form.fadeOut(200);
         event.preventDefault();
     });
-    $('.remember-form').submit(function(event){
+    $('.remember-form').submit(function(event) {
         event.preventDefault();
         var form = $(event.target);
         if ($.trim(form.find('input[name=contact]').val()) == '') {
@@ -1176,7 +1181,7 @@ function initRemember() {
         }
 
         var data = form.serializeArray();
-        data.push({name: 'action', value: 'remember'});
+        data.push({name : 'action', value : 'remember'});
         $.post(event.target.action, data, function(resp) {
             var success = resp['success'];
             if (success) {
@@ -1186,7 +1191,7 @@ function initRemember() {
             } else {
                 alert(resp['message'] || 'Ошибка сохранения напоминания');
             }
-        }).fail(function(){
+        }).fail(function() {
         });
     });
 }
