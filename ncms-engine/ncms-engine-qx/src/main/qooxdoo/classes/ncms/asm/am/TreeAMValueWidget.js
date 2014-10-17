@@ -243,9 +243,11 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
         __onSync : function() {
             if (this.getSyncWith() != null) { //reset synchronization
                 ncms.Application.confirm(this.tr("Are you sure to reset synchronization?"), function(yes) {
-                    this.setSyncWith(null);
-                    this.fireEvent("modified");
-                    this.fireEvent("requestSave");
+                    if (yes) {
+                        this.setSyncWith(null);
+                        this.fireEvent("modified");
+                        this.fireEvent("requestSave");
+                    }
                 }, this);
                 return;
             }
