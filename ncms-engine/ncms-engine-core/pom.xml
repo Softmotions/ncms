@@ -233,8 +233,12 @@
             <artifactId>solr-solrj</artifactId>
             <version>4.9.0</version>
             <exclusions>
-
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.samaxes.filter</groupId>
+            <artifactId>cachefilter</artifactId>
+            <version>2.3.0</version>
         </dependency>
     </dependencies>
 </project>

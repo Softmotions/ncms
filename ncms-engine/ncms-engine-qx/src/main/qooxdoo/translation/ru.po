@@ -34,7 +34,7 @@ msgstr "Обязательное поле"
 #: ncms/mmgr/MediaFileEditor.js:269 ncms/mmgr/MediaFilesTable.js:9
 #: ncms/asm/AsmTable.js:17 ncms/usr/UsersTable.js:10
 #: ncms/asm/AsmAttrEditorDlg.js:65 ncms/usr/UserEditForm.js:27
-#: ncms/asm/AsmParentsTable.js:99 ncms/asm/am/TreeAMValueWidget.js:477
+#: ncms/asm/AsmParentsTable.js:99 ncms/asm/am/TreeAMValueWidget.js:479
 #: ncms/usr/UserNewDlg.js:39 ncms/asm/AsmEditor.js:94
 #: ncms/asm/AsmAttrsTable.js:112 ncms/asm/am/SelectAMTable.js:65
 #: ncms/asm/am/TreeAMNewFolderDlg.js:22 ncms/pgs/PagesTable.js:21
@@ -133,13 +133,13 @@ msgstr "Перезаписать атрибут"
 msgid "New"
 msgstr "Создать"
 
-#: ncms/asm/am/TreeAMValueWidget.js:449 ncms/pgs/PageEditorEditPage.js:30
+#: ncms/asm/am/TreeAMValueWidget.js:451 ncms/pgs/PageEditorEditPage.js:30
 #: ncms/asm/AsmAttrsTable.js:201
 msgid "Edit"
 msgstr "Редактировать"
 
 #: ncms/usr/UsersNav.js:85 ncms/asm/AsmNav.js:84
-#: ncms/asm/am/TreeAMValueWidget.js:458 ncms/asm/AsmAttrsTable.js:205
+#: ncms/asm/am/TreeAMValueWidget.js:460 ncms/asm/AsmAttrsTable.js:205
 #: ncms/mmgr/MediaFilesSelector.js:529
 msgid "Remove"
 msgstr "Удалить"
@@ -238,7 +238,7 @@ msgid "Refresh"
 msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:121 ncms/asm/AsmNav.js:80
-#: ncms/asm/am/TreeAMValueWidget.js:454 ncms/mmgr/MediaItemTreeSelector.js:72
+#: ncms/asm/am/TreeAMValueWidget.js:456 ncms/mmgr/MediaItemTreeSelector.js:72
 #: ncms/mmgr/MediaFilesSelector.js:518
 msgid "Rename"
 msgstr "Переименовать"
@@ -616,7 +616,7 @@ msgstr "Название папки"
 msgid "Drop element"
 msgstr "Удалить элемент"
 
-#: ncms/asm/am/TreeAMValueWidget.js:185 ncms/asm/am/TreeAMValueWidget.js:394
+#: ncms/asm/am/TreeAMValueWidget.js:185 ncms/asm/am/TreeAMValueWidget.js:396
 msgid "Sync with"
 msgstr "Синхронизовать"
 
@@ -636,40 +636,40 @@ msgstr "Переместить вниз"
 msgid "Are you sure to reset synchronization?"
 msgstr "Вы действительно желаете прекратить синхронизацию?"
 
-#: ncms/asm/am/TreeAMValueWidget.js:253
+#: ncms/asm/am/TreeAMValueWidget.js:255
 msgid "Please select the page this attribute should be synchronized"
 msgstr "Выберите страницу будет синхронизирован этот атрибут"
 
-#: ncms/asm/am/TreeAMValueWidget.js:346 ncms/asm/am/TreeAMValueWidget.js:416
+#: ncms/asm/am/TreeAMValueWidget.js:348 ncms/asm/am/TreeAMValueWidget.js:418
 msgid "New folder"
 msgstr "Новая папка"
 
-#: ncms/asm/am/TreeAMValueWidget.js:356 ncms/asm/am/TreeAMValueWidget.js:422
+#: ncms/asm/am/TreeAMValueWidget.js:358 ncms/asm/am/TreeAMValueWidget.js:424
 msgid "Add page reference"
 msgstr "Добавить ссылку на страницу"
 
-#: ncms/asm/am/TreeAMValueWidget.js:361 ncms/asm/am/TreeAMValueWidget.js:427
+#: ncms/asm/am/TreeAMValueWidget.js:363 ncms/asm/am/TreeAMValueWidget.js:429
 msgid "Add file reference"
 msgstr "Добавить ссылку на файл"
 
-#: ncms/asm/am/TreeAMValueWidget.js:399
+#: ncms/asm/am/TreeAMValueWidget.js:401
 msgid "Synchronized with %1"
 msgstr "Синхронизовано с %1"
 
-#: ncms/asm/am/TreeAMValueWidget.js:462 ncms/mmgr/MediaItemTreeSelector.js:76
+#: ncms/asm/am/TreeAMValueWidget.js:464 ncms/mmgr/MediaItemTreeSelector.js:76
 #: ncms/mmgr/MediaFilesSelector.js:524
 msgid "Move to another folder"
 msgstr "Переместить в другую папку"
 
-#: ncms/asm/am/TreeAMValueWidget.js:542
+#: ncms/asm/am/TreeAMValueWidget.js:544
 msgid "Select page"
 msgstr "Выбрать страницу"
 
-#: ncms/asm/am/TreeAMValueWidget.js:584
+#: ncms/asm/am/TreeAMValueWidget.js:586
 msgid "Select file for page: %1"
 msgstr "Выбрать файл для: %1"
 
-#: ncms/asm/am/TreeAMValueWidget.js:738
+#: ncms/asm/am/TreeAMValueWidget.js:740
 msgid "Please choose the target folder"
 msgstr "Пожалуйста выберите целевую папку"
 

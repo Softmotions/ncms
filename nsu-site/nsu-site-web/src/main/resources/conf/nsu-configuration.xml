@@ -36,6 +36,15 @@
         </resource>
     </jar-web-resources>
 
+    <cache-headers-groups>
+        <cache-group patterns="*.css,*.js">
+            <expiration>7200</expiration>
+        </cache-group>
+        <cache-group patterns="/rs/media/fileid/*,/images/*">
+            <expiration>7200</expiration>
+        </cache-group>
+    </cache-headers-groups>
+
     <mybatis config="com/softmotions/ncms/db/mybatis-config.xml"
              propsFile="{home}/.nsusite.ds"
              bindDatasource="true">
@@ -62,7 +71,8 @@
                 <general-fields-boost>1.0</general-fields-boost>
                 <dynamic-fields-boost>0.3</dynamic-fields-boost>
                 <annotation-length>300</annotation-length>
-                <annotation-candidates>asm_attr_s_annotation,asm_attr_s_content,asm_attr_s_description</annotation-candidates>
+                <annotation-candidates>asm_attr_s_annotation,asm_attr_s_content,asm_attr_s_description
+                </annotation-candidates>
             </data-handler>
         </data-handlers>
     </solr>
