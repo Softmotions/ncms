@@ -67,8 +67,8 @@ public class NcmsSecurityRS {
     @GET
     @Path("users/count")
     @Produces("text/plain")
-    public Integer usersCount(@QueryParam("stext") String stext) {
-        return userDatabase.getUsersCount(stext);
+    public Integer usersCount(@QueryParam("stext") String stext, @QueryParam("onlyActive") boolean onlyActive) {
+        return onlyActive ? userDatabase.getActiveUsersCount(stext) : userDatabase.getUsersCount(stext);
     }
 
     /**
@@ -150,10 +150,13 @@ public class NcmsSecurityRS {
                           @QueryParam("lastRow") int lastRow,
                           @QueryParam("sortAsc") String ascField,
                           @QueryParam("sortDesc") String descField,
-                          @QueryParam("stext") String stext) {
+                          @QueryParam("stext") String stext,
+                          @QueryParam("onlyActive") boolean onlyActive) {
         String sortField = (!StringUtils.isBlank(ascField)) ? ascField : (!StringUtils.isBlank(descField)) ? descField : null;
         int limit = firstRow == 0 && lastRow == 0 ? Integer.MAX_VALUE : Math.abs(lastRow - firstRow) + 1;
-        Iterator<WSUser> users = userDatabase.getUsers(stext, sortField, !StringUtils.isBlank(descField), firstRow, limit);
+        Iterator<WSUser> users = onlyActive ?
+                                 userDatabase.getActiveUsers(stext, sortField, !StringUtils.isBlank(descField), firstRow, limit) :
+                                 userDatabase.getUsers(stext, sortField, !StringUtils.isBlank(descField), firstRow, limit);
         ArrayNode res = mapper.createArrayNode();
         while (users.hasNext()) {
             WSUser user = users.next();

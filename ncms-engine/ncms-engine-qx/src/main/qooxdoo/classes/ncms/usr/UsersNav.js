@@ -2,7 +2,7 @@
  * Users navigation pane.
  */
 qx.Class.define("ncms.usr.UsersNav", {
-    extend : qx.ui.core.Widget,
+    extend : qx.ui.tabview.TabView,
 
     statics : {
         USER_EDITOR_CLAZZ : "ncms.usr.UserEditor"
@@ -15,13 +15,25 @@ qx.Class.define("ncms.usr.UsersNav", {
     },
 
     construct : function() {
-        this.base(arguments);
-        this._setLayout(new qx.ui.layout.Grow());
-        this.setPaddingLeft(10);
+        this.base(arguments, "top");
+        this.set({paddingTop : 5, paddingBottom : 5});
 
-        this.__selector = new ncms.usr.UserSelector();
-        this.__selector.addListener("userSelected", this.__userSelected, this);
-        this._add(this.__selector);
+        this.__selectors = [];
+        var page = new qx.ui.tabview.Page(this.tr("All"));
+        page.setLayout(new qx.ui.layout.Grow());
+        var us = new ncms.usr.UserSelector();
+        this.__selectors.push(us);
+        us.addListener("userSelected", this.__userSelected, this);
+        page.add(us);
+        this.add(page);
+
+        page = new qx.ui.tabview.Page(this.tr("Active only"));
+        page.setLayout(new qx.ui.layout.Grow());
+        us = new ncms.usr.UserSelector({onlyActive : true});
+        this.__selectors.push(us);
+        us.addListener("userSelected", this.__userSelected, this);
+        page.add(us);
+        this.add(page);
 
         var req = new sm.io.Request(ncms.Application.ACT.getUrl("security.settings"), "GET", "application/json");
         req.setAsynchronous(false);
@@ -43,7 +55,7 @@ qx.Class.define("ncms.usr.UsersNav", {
                 }
             }, this);
             this.addListener("appear", function() {
-                if (app.getActiveWSAID() != eclazz && this.__selector.getSelectedUser() != null) {
+                if (app.getActiveWSAID() != eclazz && this.__getSelectedUser() != null) {
                     app.showWSA(eclazz);
                 }
             }, this);
@@ -53,11 +65,15 @@ qx.Class.define("ncms.usr.UsersNav", {
                 this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             }
         }, this);
+
+        this.addListener("changeSelection", function(ev){
+            ev.getData()[0].getChildren()[0].reload();
+        }, this);
     },
 
     members : {
 
-        __selector : null,
+        __selectors : null,
 
         __userSelected : function(ev) {
             var data = ev.getData();
@@ -72,6 +88,10 @@ qx.Class.define("ncms.usr.UsersNav", {
             app.showWSA(eclazz);
         },
 
+        __getSelectedUser : function() {
+            return this.getSelection()[0].getChildren()[0].getSelectedUser();
+        },
+
         __beforeContextmenuOpen : function(ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
@@ -80,7 +100,7 @@ qx.Class.define("ncms.usr.UsersNav", {
             bt.addListenerOnce("execute", this.__onNewUser, this);
             menu.add(bt);
 
-            var user = this.__selector.getSelectedUser();
+            var user = this.__getSelectedUser();
             if (user !== null) {
                 bt = new qx.ui.menu.Button(this.tr("Remove"));
                 bt.addListenerOnce("execute", this.__onRemoveUser, this);
@@ -92,13 +112,15 @@ qx.Class.define("ncms.usr.UsersNav", {
             var dlg = new ncms.usr.UserNewDlg();
             dlg.addListener("completed", function(ev) {
                 dlg.close();
-                this.__selector.reload();
+                for (var i = 0; i < this.__selectors.length; ++i) {
+                    this.__selectors[i].reload();
+                }
             }, this);
             dlg.open();
         },
 
         __onRemoveUser : function(ev) {
-            var user = this.__selector.getSelectedUser();
+            var user = this.__getSelectedUser();
             if (user == null) {
                 return;
             }
@@ -108,16 +130,21 @@ qx.Class.define("ncms.usr.UsersNav", {
                         if (!yes) return;
                         var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : user["name"]}), "DELETE");
                         req.send(function(resp) {
-                            this.__selector.reload();
+                            for (var i = 0; i < this.__selectors.length; ++i) {
+                                this.__selectors[i].reload();
+                            }
                         }, this);
                     }, this);
         },
 
         __userUpdated : function(ev) {
-            this.__selector.reloadData();
+            for (var i = 0; i < this.__selectors.length; ++i) {
+                this.__selectors[i].reloadData();
+            }
         }
     },
 
     destruct : function() {
+        this.__selectors = null;
     }
 });
