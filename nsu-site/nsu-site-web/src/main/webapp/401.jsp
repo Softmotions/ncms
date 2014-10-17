@@ -59,7 +59,7 @@
         <a href="<%=indexLink%>"><img src="/images/logo2.png"/></a>
 
         <p>
-            Что-то пошло не так.
+            Запрос требует аутентификации.
         </p>
     </div>
 </div>

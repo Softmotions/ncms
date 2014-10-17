@@ -7,6 +7,7 @@
     PageService pageService = injector.getInstance(PageService.class);
     NcmsEnvironment env = injector.getInstance(NcmsEnvironment.class);
     String indexLink = env.getAbsoluteLink(request, pageService.resolveResourceLink("index.html"));
+    String searchLink = env.getAbsoluteLink(request, pageService.resolveResourceLink("search"));
 %>
 <!DOCTYPE html>
 <html>
@@ -51,6 +52,43 @@
             padding: 0;
             text-align: center;
         }
+
+        form {
+            width: 322px;
+        }
+
+        fieldset {
+            width: 316px;
+            margin: 0;
+            padding: 2px;
+            border: thin solid grey;
+        }
+
+        input[type=text] {
+            float: left;
+            width: 260px;
+            margin: 0;
+            background: none;
+            padding: 1px 13px;
+            border: 0;
+            color: #343434;
+            font: 15px/18px Arial, Helvetica, sans-serif;
+        }
+
+        input[type=submit] {
+            float: right;
+            width: 16px;
+            height: 16px;
+            background: url(/images/btn-submit.png) no-repeat;
+            text-indent: -9999px;
+            overflow: hidden;
+            padding: 0;
+            margin: 3px 5px 0 5px;
+            border: 0;
+            cursor: pointer;
+            font-size: 0;
+            line-height: 0;
+        }
     </style>
 </head>
 <body>
@@ -59,8 +97,17 @@
         <a href="<%=indexLink%>"><img src="/images/logo2.png"/></a>
 
         <p>
-            Что-то пошло не так.
+            Запрашиваемая Вами страница не найдена.<br/>
+            Воспользуйтесь поиском, чтобы её отыскать:
         </p>
+
+        <form action="<%=searchLink%>">
+            <fieldset>
+                <input type="text" name="spc.text" placeholder=""/>
+                <input type="submit" value=""/>
+            </fieldset>
+        </form>
+
     </div>
 </div>
 </body>
