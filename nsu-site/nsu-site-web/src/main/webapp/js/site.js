@@ -994,7 +994,7 @@ function initMainNews(aType) {
     }
 
     var listHeight = sheight;
-    var pageHeight = 350; // TODO: calculate
+    var pageHeight = Math.max(window.innerHeight, 350);
     var main = $('div#news');
     var fetchMoreBtn = $('a#mpc-fetch-more');
 
