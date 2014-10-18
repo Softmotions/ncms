@@ -138,7 +138,7 @@ msgstr "Создать"
 msgid "Edit"
 msgstr "Редактировать"
 
-#: ncms/usr/UsersNav.js:85 ncms/asm/AsmNav.js:84
+#: ncms/usr/UsersNav.js:105 ncms/asm/AsmNav.js:84
 #: ncms/asm/am/TreeAMValueWidget.js:460 ncms/asm/AsmAttrsTable.js:205
 #: ncms/mmgr/MediaFilesSelector.js:529
 msgid "Remove"
@@ -1047,7 +1047,7 @@ msgstr "Пароли не соответствуют"
 msgid "Roles/Groups"
 msgstr "Роли/Группы"
 
-#: ncms/usr/UsersNav.js:79 ncms/usr/UserNewDlg.js:21
+#: ncms/usr/UsersNav.js:99 ncms/usr/UserNewDlg.js:21
 msgid "New user"
 msgstr "Новый пользователь"
 
@@ -1059,7 +1059,15 @@ msgstr "Назначить"
 msgid "Role/Group"
 msgstr "Роль/Группа"
 
-#: ncms/usr/UsersNav.js:106
+#: ncms/usr/UsersNav.js:22
+msgid "All"
+msgstr "Все"
+
+#: ncms/usr/UsersNav.js:30
+msgid "Active only"
+msgstr "Имеющие доступ"
+
+#: ncms/usr/UsersNav.js:128
 msgid "Are you sure to remove user: \"%1\"?"
 msgstr "Вы действительно желаете удалить пользователя \"%1\"?"
 
