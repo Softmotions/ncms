@@ -155,6 +155,9 @@ public class PageSolrDataHandler implements SolrDataHandler {
         String annotation = null;
         for (int i = 0; i < annotationCandidates.length && StringUtils.isBlank(annotation); ++i) {
             annotation = (String) res.getFieldValue(annotationCandidates[i]);
+            if ("null".equals(annotation)) {
+                annotation = null;
+            }
         }
         if (annotation != null && !StringUtils.isBlank(annotation)) {
             if (annotation.length() > annotationLength) {
