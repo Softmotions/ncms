@@ -1196,6 +1196,39 @@ function initRemember() {
     });
 }
 
+function initEventsMain(action, pageSize) {
+    var results = $('ul.event-list');
+    var fetchMore = $('a.fetch-more');
+
+    results.imagesLoaded(function() {
+        results.masonry({itemSelector : 'li'})
+    });
+
+    fetchMore.click(function() {
+        var count = results.find('li').size();
+        fetchMore.hide();
+        $.post(action, {
+            "news.action" : "fetchMore",
+            "news.skip" : count,
+            "news.limit" : pageSize
+        }, function(data) {
+            var html = $.parseHTML(data);
+            results.append(html);
+            results.masonry('appended', html);
+            if (results.find('li').size() - count >= pageSize) {
+                fetchMore.fadeIn(500);
+            }
+        });
+        return false;
+    });
+
+    fetchMore.hide();
+
+    if (results.find('li').size() >= pageSize) {
+        fetchMore.show();
+    }
+}
+
 function initScroll(tabSelector, prefix) {
     var sneaky = new ScrollSneak(prefix);
     $(tabSelector).click(function() {
