@@ -27,9 +27,9 @@ ${include("inc/breadcrumbs.httl")}
     $!{asm("news_list")}
 </ul>
 <a class="fetch-more"><span>Загрузить еще</span></a>
-${include("inc/soclikes.httl")}
 ${include("inc/partners.httl")}
 </div>
+${include("inc/soclikes.httl")}
 <footer id="footer">
     ${include("inc/footer.httl")}
 </footer>

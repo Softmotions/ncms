@@ -13,23 +13,36 @@
 }
 
 .placeholder {
-  overflow: hidden;
   text-align: center;
   padding: 18px 9999px;
-  margin: 0 -9999px;
+  margin: 0 -9999px 20px;
   //border-top: 1px solid #9c9c9c;
 
   @media print {
     display: none;
   }
 
-  a {
-    text-decoration: none;
+  div {
+    position: relative;
+    float: left !important;
   }
 
-  img {
-    vertical-align: top;
-    margin: 0 6px;
+  #vk_like {
+    margin-left: 220px !important;
+    margin-top: 2px !important;
+  }
+
+  #tw_like {
+    margin-top: 2px !important;
+  }
+
+  #f_like {
+    margin-left: 10px !important;
+  }
+
+  #g_like {
+    margin-left: 40px !important;
+    margin-top: 2px !important;
   }
 }
 
@@ -235,7 +248,7 @@
       padding: 0;
     }
 
-    &.short tr:hover td, &.tableShort tr:hover td{
+    &.short tr:hover td, &.tableShort tr:hover td {
       border-color: inherit;
     }
 
@@ -536,7 +549,7 @@
         }
       }
 
-      &.active > a/*, > a:hover*/                                            {
+      &.active > a/*, > a:hover*/                                             {
         text-decoration: none;
         color: #fff;
         margin: -1px;
@@ -550,7 +563,7 @@
         background: url(../images/arrow-list.png) no-repeat 246px 50%;
       }
 
-      &.active > a/*, > a:hover*/                                            {
+      &.active > a/*, > a:hover*/                                             {
         text-decoration: none;
         background: #3395e1 url(../images/arrow-list-hover.png) no-repeat 246px 50%;
       }

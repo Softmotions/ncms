@@ -13,8 +13,8 @@
             ${include("inc/breadcrumbs.httl")}
             $!{asm("content")}
             ${include("inc/medialine.httl")}
-            ${include("inc/soclikes.httl")}
         </div>
+        ${include("inc/soclikes.httl")}
         <footer id="footer">
             ${include("inc/footer.httl")}
         </footer>

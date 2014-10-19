@@ -1,7 +1,47 @@
 <div class="placeholder">
-    <a href="#"><img src="${ncmsroot}/images/img11.png" width="109" height="21" alt="image description"/></a>
-    <a href="#"><img src="${ncmsroot}/images/img12.png" width="81" height="20" alt="image description"/></a>
-    <a href="#"><img src="${ncmsroot}/images/img13.png" width="106" height="20" alt="image description"/></a>
-    <a href="#"><img src="${ncmsroot}/images/img14.png" width="120" height="20" alt="image description"/></a>
-    <a href="#"><img src="${ncmsroot}/images/img15.png" width="88" height="20" alt="image description"/></a>
+    #if(!requestParamMatched("preview_frame", 1))
+    #set(XMLConfiguration cfg = config())
+
+    <!-- VK-->
+    #set(String vkApp = cfg.getString("social.vk[@app-id]"))
+    #if(!vkApp.blank)
+    <script type="text/javascript" src="//vk.com/js/api/openapi.js?115"></script>
+    <div id="vk_like"></div>
+    <script type="text/javascript">
+        VK.init({apiId: ${vkApp}, onlyWidgets: true});
+        VK.Widgets.Like('vk_like', {height: 20, type: 'button'});
+    </script>
+    #end
+
+    <!-- tweet -->
+    <div id="tw_like">
+        <a class="twitter-share-button"></a>
+    </div>
+    <script type="text/javascript">
+    window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return}js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
+    </script>
+    <!-- follow @twitter -->
+    <!--<a href="#"><img src="${ncmsroot}/images/img13.png" width="106" height="20" alt="image description"/></a>-->
+
+    <!-- Facebook-->
+    <div id="fb_like" class="fb-like" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
+    <div id="fb-root"></div>
+    <script>(function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        // todo: facabook app id
+        js.src = '//connect.facebook.net/ru_RU/sdk.js#xfbml=1&version=v2.0';
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <!-- G+-->
+    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+    <div id="g_like"></div>
+    <script type="text/javascript">
+        gapi.plusone.render('g_like', {size: 'medium', expandTo: 'bottom'});
+    </script>
+    #end
 </div>
