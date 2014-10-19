@@ -30,12 +30,24 @@
                 </fieldset>
             </form>
             <ul class="social-networks">
-                <li><a href="#" class="plus">plus</a></li>
-                <li><a href="#" class="facebook">facebook</a></li>
-                <li><a href="#" class="vk">vk</a></li>
-                <li><a href="#" class="twitter">twitter</a></li>
+                #set(String gpur = cfg.getString("social.google[@user-ref]"))
+                #if(!gpur.blank)
+                <li><a href="$!{gpur}" target="_blank" class="plus">plus</a></li>
+                #end
+                #set(String fbur = cfg.getString("social.facebook[@user-ref]"))
+                #if(!fbur.blank)
+                <li><a href="$!{fbur}" target="_blank" class="facebook">facebook</a></li>
+                #end
+                #set(String vkur = cfg.getString("social.vk[@user-ref]"))
+                #if(!vkur.blank)
+                <li><a href="$!{vkur}" target="_blank" class="vk">vk</a></li>
+                #end
+                #set(String twur = cfg.getString("social.twitter[@user-ref]"))
+                #if(!twur.blank)
+                <li><a href="$!{twur}" target="_blank" class="twitter">twitter</a></li>
+                #end
                 #set(String iuserRef = cfg.getString("instagram.user-ref"))
-                #if(iuserRef != null)
+                #if(!iuserRef.blank)
                 <li><a href="$!{iuserRef}" target="_blank" class="instagramm">instagramm</a></li>
                 #end
             </ul>

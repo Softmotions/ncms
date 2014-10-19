@@ -287,8 +287,11 @@
     </events-remember>
 
     <social>
-        <vk app-id="4596711"/> <!-- for tests! -->
-        <!--<vk app-id="37080997"/> &lt;!&ndash; for real nsu.ru &ndash;&gt;-->
+        <!--<vk app-id="37080997"/>--> <!-- for real nsu.ru -->
+        <vk app-id="4596711" user-ref="http://vk.com/nsu24"/> <!-- for tests! -->
+        <twitter user-ref="https://twitter.com/NskUniversity"/>
+        <facebook user-ref="https://www.facebook.com/NovosibirskUniversity"/>
+        <google user-ref=""/>
     </social>
 
 </configuration>
