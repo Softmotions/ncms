@@ -9,3 +9,5 @@
 <!--[if lt IE 9]>
 <script type="text/javascript" src="${ncmsroot}/js/html5shiv.min.js"/>
 <![endif]>-->
+
+$!{include("head_social.httl")}

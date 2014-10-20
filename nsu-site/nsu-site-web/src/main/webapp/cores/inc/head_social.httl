@@ -1,0 +1,24 @@
+<!-- for social like&share -->
+#set(Asm page = page())
+#set(String rootUrl = rootUrl())
+#set(XMLConfiguration cfg = config())
+#set(String fbApp = cfg.getString("social.facebook[@app-id]"))
+#if(fbApp != null && !fbApp.blank)
+<meta property="fb:app_id" content="${fbApp}" />
+#end
+<meta property="og:type" content="article"/>
+<meta property="og:title" content="${page.hname}" />
+<meta property="og:site_name" content="nsu.ru" />
+#set(Image icon = page.asmAny("bigicon"))
+#if(icon == null)
+#set(Image icon = page.asmAny("icon"))
+#end
+#if(icon != null)
+<meta property="og:image" content="${rootUrl}$!{icon.link}"/>
+#else
+<meta property="og:image" content="${rootUrl}${ncmsroot}/images/facebook-nsu-icon.png"/>
+#end
+#set(String annotation = page.asmAny("annotation"))
+#if(annotation != null && !annotation.blank)
+<meta property="og:description" content="${annotation}"/>
+#end

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:og="http://ogp.me/ns#">
 <head>
     $!{asm("head")}
 </head>

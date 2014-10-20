@@ -1,6 +1,12 @@
 <div class="placeholder">
+    #set(Asm page = page())
     #if(!requestParamMatched("preview_frame", 1))
     #set(XMLConfiguration cfg = config())
+
+    #set(Image icon = page.asmAny("bigicon"))
+    #if(icon == null)
+    #set(Image icon = page.asmAny("icon"))
+    #end
 
     <!-- VK-->
     #set(String vkApp = cfg.getString("social.vk[@app-id]"))
@@ -15,7 +21,7 @@
 
     <!-- tweet -->
     <div id="tw_like">
-        <a class="twitter-share-button"></a>
+        <a class="twitter-share-button" data-text="${page.hname}"></a>
     </div>
     <script type="text/javascript">
     window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return}js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
@@ -24,14 +30,18 @@
     <!--<a href="#"><img src="${ncmsroot}/images/img13.png" width="106" height="20" alt="image description"/></a>-->
 
     <!-- Facebook-->
-    <div id="fb_like" class="fb-like" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
+    <div id="fb_like"
+         class="fb-like"
+         data-layout="button_count"
+         data-action="like"
+         data-show-faces="false"
+         data-share="false"></div>
     <div id="fb-root"></div>
     <script>(function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s);
         js.id = id;
-        // todo: facabook app id
         js.src = '//connect.facebook.net/ru_RU/sdk.js#xfbml=1&version=v2.0';
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));

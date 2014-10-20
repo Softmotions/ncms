@@ -135,4 +135,12 @@ public class HttlUtilsMethods {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         return ctx.getInjector().getInstance(NcmsEnvironment.class);
     }
+
+    public static String rootUrl() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        HttpServletRequest request = ctx.getServletRequest();
+        StringBuffer requestURL = request.getRequestURL();
+        String requestURI = request.getRequestURI();
+        return requestURL.substring(0, requestURL.length() - requestURI.length());
+    }
 }
