@@ -10,7 +10,7 @@
 
     <!-- VK-->
     #set(String vkApp = cfg.getString("social.vk[@app-id]"))
-    #if(!vkApp.blank)
+    #if(vkApp!= null && !vkApp.blank)
     <script type="text/javascript" src="//vk.com/js/api/openapi.js?115"></script>
     <div id="vk_like"></div>
     <script type="text/javascript">
@@ -54,4 +54,11 @@
         gapi.plusone.render('g_like', {size: 'medium', expandTo: 'bottom'});
     </script>
     #end
+
+    #set(String adApp = cfg.getString("social.add-this[@app-id]"))
+    #if(adApp!= null && !adApp.blank)
+    <div id="add_this" class="addthis_sharing_toolbox"></div>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=$!{adApp}" async></script>
+    #end
+
 </div>

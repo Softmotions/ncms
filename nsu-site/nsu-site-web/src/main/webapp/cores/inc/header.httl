@@ -30,10 +30,7 @@
                 </fieldset>
             </form>
             <ul class="social-networks">
-                #set(String gpur = cfg.getString("social.google[@user-ref]"))
-                #if(!gpur.blank)
-                <li><a href="$!{gpur}" target="_blank" class="plus">plus</a></li>
-                #end
+                <!--<li><a href="#" target="_blank" class="plus">plus</a></li>-->
                 #set(String fbur = cfg.getString("social.facebook[@user-ref]"))
                 #if(!fbur.blank)
                 <li><a href="$!{fbur}" target="_blank" class="facebook">facebook</a></li>

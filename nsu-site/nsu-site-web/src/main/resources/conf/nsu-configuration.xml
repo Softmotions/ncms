@@ -293,6 +293,7 @@
         <!-- TODO: replace app id by real id!    -->
         <facebook app-id="913933761970156" user-ref="https://www.facebook.com/NovosibirskUniversity"/>
         <google user-ref=""/>
+        <add-this app-id="ra-5444c91965bd1f82"/>
     </social>
 
 </configuration>
