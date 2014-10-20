@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -108,11 +109,11 @@ public class HtmlToPdfModule extends AbstractModule {
                         cmdargs[cmdargs.length - 2] = cfg.getString("page-url-template").replace("{id}", String.valueOf(asm.getId()));
                         cmdargs[cmdargs.length - 1] = tmpFile.getAbsolutePath();
                         Process wkhtmltopdf = Runtime.getRuntime().exec(cmdargs);
-
-                        if (wkhtmltopdf.waitFor() == 0) {
+                        if (wkhtmltopdf.waitFor(1, TimeUnit.MINUTES)) {
                             try (final FileInputStream fis = new FileInputStream(tmpFile)) {
                                 datars.savePagePdf(asm.getId(), fis);
                             }
+                            log.info("Fetched PDF from " + cmdargs[cmdargs.length - 2]);
                         }
                     } catch (Exception e) {
                         log.error("", e);

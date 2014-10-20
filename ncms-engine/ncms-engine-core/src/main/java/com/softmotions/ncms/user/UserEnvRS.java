@@ -31,7 +31,7 @@ public class UserEnvRS extends MBDAOSupport {
 
     @Inject
     public UserEnvRS(SqlSession sess) {
-        super(UserEnvRS.class.getName(), sess);
+        super(UserEnvRS.class, sess);
     }
 
     @PUT

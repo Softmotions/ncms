@@ -1,5 +1,7 @@
 package ru.nsu.events;
 
+import it.sauronsoftware.cron4j.Scheduler;
+import it.sauronsoftware.cron4j.SchedulingPattern;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
@@ -7,15 +9,11 @@ import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.weboot.lifecycle.Dispose;
 import com.softmotions.weboot.lifecycle.Start;
-import com.softmotions.weboot.scheduler.Scheduled;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
-import it.sauronsoftware.cron4j.Scheduler;
-import it.sauronsoftware.cron4j.SchedulingPattern;
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.lang3.ObjectUtils;
@@ -98,7 +96,7 @@ public class EventsRemember {
         if (notificators.isEmpty()) {
             log.error("Not registered notificators for EventsRemember");
         } else {
-            String sendPattern = cfg.getString("sender-pattern");
+            String sendPattern = cfg.getString("cron-spec");
             if (StringUtils.isBlank(sendPattern)) {
                 log.error("Not specified notification job pattern");
             } else if (!SchedulingPattern.validate(sendPattern)) {

@@ -34,7 +34,7 @@ public class PageQARS extends MBDAOSupport implements Runnable {
 
     @Inject
     public PageQARS(Set<PageQAPlugin> plugins, NcmsEnvironment env, SqlSession sess) {
-        super(PageQARS.class.getName(), sess);
+        super(PageQARS.class, sess);
         this.plugins = plugins;
         this.env = env;
     }

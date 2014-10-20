@@ -90,7 +90,7 @@ public class AsmRS extends MBDAOSupport {
                  NcmsMessages messages,
                  NcmsEventBus ebus,
                  Provider<AsmAttributeManagerContext> amCtxProvider) {
-        super(AsmRS.class.getName(), sess);
+        super(AsmRS.class, sess);
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
@@ -483,7 +483,7 @@ public class AsmRS extends MBDAOSupport {
             log.warn("Missing atribute manager for given type: '" + attr.getType() + '\'');
         }
         attr.asmId = id;
-        update("upsertAttribute", attr);
+        adao.asmUpsertAttribute(attr);
         if (attr.getId() == null) {
             Number gid = selectOne("prevAttrID");
             if (gid != null) {

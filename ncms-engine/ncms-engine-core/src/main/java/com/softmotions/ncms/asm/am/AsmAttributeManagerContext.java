@@ -69,7 +69,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
                                       HttpServletResponse response,
                                       PageSecurityService pageSecurity,
                                       SqlSession sess) {
-        super(AsmAttributeManagerContext.class.getName(), sess);
+        super(AsmAttributeManagerContext.class, sess);
         this.pageSecurity = pageSecurity;
         this.request = request;
         this.response = response;
@@ -110,7 +110,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         flushPageDeps();
     }
 
-    private void flushPageDeps() {
+    public void flushPageDeps() {
         if (pageDeps == null) {
             return;
         }
@@ -132,7 +132,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         }
     }
 
-    private void flushFileDeps() {
+    public void flushFileDeps() {
         if (fileDeps == null) {
             return;
         }

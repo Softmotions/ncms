@@ -42,7 +42,7 @@ public class NcmsServletListener extends WBServletListener {
             "| | | |   --| | | |__   |  |   __|   | . | |   | -_|\n" +
             "|_|___|_____|_|_|_|_____|  |_____|_|_|_  |_|_|_|___|\n" +
             "                                     |___|          \n" +
-            "Version: {}                                         \n";
+            "Version: {} Max heap {}                             \n";
 
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
 
@@ -86,7 +86,7 @@ public class NcmsServletListener extends WBServletListener {
                 log.info(m + " => " + sreg.getName() + " (" + sreg.getClassName() + ")");
             }
         }
-        log.info(LOGO, env.getNcmsVersion());
+        log.info(LOGO, env.getNcmsVersion(), Runtime.getRuntime().maxMemory());
     }
 
 

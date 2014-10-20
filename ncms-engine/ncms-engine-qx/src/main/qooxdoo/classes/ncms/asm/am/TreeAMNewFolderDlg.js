@@ -12,7 +12,7 @@ qx.Class.define("ncms.asm.am.TreeAMNewFolderDlg", {
     members : {
 
         _configureForm : function() {
-            var el = new qx.ui.form.TextField().set({allowGrowY : true, maxLength : 32, required : true});
+            var el = new qx.ui.form.TextField().set({allowGrowY : true, maxLength : 128, required : true});
             el.addListener("keypress", function(ev) {
                 if (ev.getKeyIdentifier() == "Enter") {
                     this.save();

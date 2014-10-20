@@ -364,7 +364,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 attr.asmId = id;
             }
             am.applyAttributeValue(amCtx, attr, data.get(fname));
-            update("upsertAttribute", attr);
+            adao.asmUpsertAttribute(attr);
             if (attr.getId() == null) {
                 Number gid = selectOne("prevAttrID");
                 if (gid != null) {
@@ -512,6 +512,10 @@ public class PageRS extends MBDAOSupport implements PageService {
         id = adao.asmSelectIdByName(guid);
         ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
     }
+
+
+
+
 
     @PUT
     @Path("/update/basic")
@@ -928,7 +932,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         return info;
     }
 
-    private String getPageIDsPath(Long id) {
+    public String getPageIDsPath(Long id) {
         if (id == null) {
             return "/";
         }

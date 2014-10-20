@@ -48,7 +48,12 @@
     <mybatis config="com/softmotions/ncms/db/mybatis-config.xml"
              propsFile="{home}/.nsusite.ds"
              bindDatasource="true">
-        JDBC.driver=${nsu.JDBC.driver}
+        <extra-properties>
+            JDBC.driver=${nsu.JDBC.driver}
+        </extra-properties>
+        <extra-mappers>
+            <mapper resource="ru/nsu/legacy/NSULegacyRS.xml"/>
+        </extra-mappers>
     </mybatis>
 
     <!-- propsFile="{home}/.nsusite-import.ds" -->
@@ -260,7 +265,7 @@
     </qa>
 
     <events-remember>
-        <sender-pattern>0 9 * * *</sender-pattern>
+        <cron-spec>0 9 * * *</cron-spec>
         <notification-days-before>3</notification-days-before>
         <!-- email notificator: if dryRun is true - send mail, otherwise - write to log-->
         <notificator class="ru.nsu.events.EmailNotificator" dryRun="false">
@@ -286,9 +291,27 @@
         </notificator>
     </events-remember>
 
+
+    <nsu>
+        <import-news>
+            <!--<branch root="http://www.nsu.ru/exp/p0bfdf54de4235e6296000000"
+                    attach="5"
+                    template="index_news"/>-->
+            <!--<branch root="http://www.nsu.ru/exp/ff" attach="901"/>
+            <branch root="http://nsu.ru/exp/medf" attach="1187"/>
+            <branch root="http://www.nsu.ru/exp/ef" attach="2263"/>
+            <branch root="http://www.nsu.ru/exp/ggf" attach="1124"/>
+            <branch root="http://www.nsu.ru/exp/fiya" attach="1188"/>
+            <branch root="http://www.nsu.ru/exp/yurf" attach="1186"/>
+            <branch root="http://www.nsu.ru/exp/filf" attach="1125"/>-->
+        </import-news>
+    </nsu>
+
+
     <social>
         <!--<vk app-id="37080997"/>--> <!-- for real nsu.ru -->
-        <vk app-id="4596711" user-ref="http://vk.com/nsu24"/> <!-- for tests! -->
+        <vk app-id="4596711" user-ref="http://vk.com/nsu24"/>
+        <!-- for tests! -->
         <twitter user-ref="https://twitter.com/NskUniversity"/>
         <!-- TODO: replace app id by real id!    -->
         <facebook app-id="913933761970156" user-ref="https://www.facebook.com/NovosibirskUniversity"/>

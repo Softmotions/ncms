@@ -22,7 +22,7 @@ public class AsmEventsListener extends MBDAOSupport {
 
     @Inject
     public AsmEventsListener(NcmsEventBus ebus, SqlSession sess) {
-        super(AsmEventsListener.class.getName(), sess);
+        super(AsmEventsListener.class, sess);
         ebus.register(this);
     }
 

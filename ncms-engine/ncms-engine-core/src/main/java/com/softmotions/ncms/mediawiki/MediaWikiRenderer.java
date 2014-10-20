@@ -13,7 +13,7 @@ import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.XMLConfiguration;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -51,8 +51,8 @@ public class MediaWikiRenderer {
         this.linkBaseUrl = env.getNcmsPrefix() + xcfg.getString("mediawiki.link-base-url", "/rs/mw/link/" + "${title}");
     }
 
-    public String render(String markup, HttpServletRequest req) {
-        WikiModel wiki = new WikiModel(wikiCfg, imageBaseUrl, linkBaseUrl, messages, req);
+    public String render(String markup, Locale locale) {
+        WikiModel wiki = new WikiModel(wikiCfg, imageBaseUrl, linkBaseUrl, messages, locale);
         String html = wiki.render(this.converter, markup);
         ebus.fire(new MediaWikiHTMLRenderEvent(markup, html));
         return html;

@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm.am;
 
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
@@ -61,16 +62,20 @@ public class AsmWikiAM implements AsmAttributeManager {
 
     private final PageService pageService;
 
+    private final NcmsMessages messages;
+
 
     @Inject
     public AsmWikiAM(ObjectMapper mapper,
                      MediaWikiRenderer mediaWikiRenderer,
                      NcmsEnvironment env,
-                     PageService pageService) {
+                     PageService pageService,
+                     NcmsMessages messages) {
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
         this.pageRefsRE = Pattern.compile(env.getNcmsRoot() + "/asm/" + "([0-9a-f]{32})");
+        this.messages = messages;
     }
 
     public String[] getSupportedAttributeTypes() {
@@ -168,7 +173,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         String html = null;
         if (!StringUtils.isBlank(value)) {
             if ("mediawiki".equals(markup)) {
-                html = mediaWikiRenderer.render(preSaveWiki(ctx, attr, value), ctx.getRequest());
+                html = mediaWikiRenderer.render(preSaveWiki(ctx, attr, value), messages.getLocale(ctx.getRequest()));
                 html = new StringBuilder(html.length() + 32)
                         .append("<div class=\"wiki\">")
                         .append(html)

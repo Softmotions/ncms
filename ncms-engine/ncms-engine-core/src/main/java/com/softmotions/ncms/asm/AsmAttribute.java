@@ -60,21 +60,21 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
     public AsmAttribute(String name, String value) {
         this.name = name;
-        this.value = value;
         this.type = "string";
+        setEffectiveValue(value);
     }
 
     public AsmAttribute(String name, String type, String value) {
         this.name = name;
-        this.value = value;
         this.type = type;
+        setEffectiveValue(value);
     }
 
     public AsmAttribute(String name, String label, String type, String value) {
         this.name = name;
         this.label = label;
-        this.value = value;
         this.type = type;
+        setEffectiveValue(value);
     }
 
     public Long getId() {
@@ -87,6 +87,10 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
     public long getAsmId() {
         return asmId;
+    }
+
+    public void setAsmId(long asmId) {
+        this.asmId = asmId;
     }
 
     public String getName() {

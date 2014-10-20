@@ -161,7 +161,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    NcmsMessages message,
                    NcmsEventBus ebus,
                    WSUserDatabase userdb) throws IOException {
-        super(MediaRS.class.getName(), sess);
+        super(MediaRS.class, sess);
         this.env = env;
         XMLConfiguration xcfg = env.xcfg();
         String dir = xcfg.getString("media[@basedir]");

@@ -80,7 +80,7 @@ qx.Class.define("ncms.mmgr.PageFilesSelectorDlg", {
         var form = this._form = new sm.ui.form.ExtendedForm();
         var linkTextTf = null;
         if (options["linkText"] !== false) {
-            linkTextTf = new qx.ui.form.TextField().set({maxLength : 64});
+            linkTextTf = new qx.ui.form.TextField().set({maxLength : 128});
             form.add(linkTextTf, this.tr("Link text"), null, "linkText");
         }
         this._initForm(form);

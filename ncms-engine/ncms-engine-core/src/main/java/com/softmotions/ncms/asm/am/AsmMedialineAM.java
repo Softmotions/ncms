@@ -62,7 +62,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
     public AsmMedialineAM(ObjectMapper mapper,
                           NcmsEventBus ebus,
                           SqlSession sqlSession) {
-        super(AsmMedialineAM.class.getName(), sqlSession);
+        super(AsmMedialineAM.class, sqlSession);
         this.mapper = mapper;
         this.ebus = ebus;
     }

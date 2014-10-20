@@ -47,7 +47,7 @@ public class AsmDAO extends MBDAOSupport {
 
     @Inject
     public AsmDAO(SqlSession sess, SqlSessionFactory sessionFactory) {
-        super("com.softmotions.ncms.asm.AsmDAO", sess);
+        super(AsmDAO.class, sess);
         this.sessionFactory = sessionFactory;
     }
 
@@ -161,6 +161,12 @@ public class AsmDAO extends MBDAOSupport {
         return sess.insert(toStatementId("asmSetAttribute"), attr);
     }
 
+
+    @Transactional
+    public int asmUpsertAttribute(AsmAttribute attr) {
+        return update("upsertAttribute", attr);
+    }
+
     @Transactional
     @Nullable
     public Asm asmSelectByName(String name) {
@@ -249,6 +255,14 @@ public class AsmDAO extends MBDAOSupport {
                    "roles", rset);
         }
     }
+
+    @Transactional
+    public AsmAttribute asmAttributeByName(long asmId, String name) {
+        return selectOne("asmAttributeByName",
+                         "asmId", asmId,
+                         "name", name);
+    }
+
 
     @Transactional
     public Collection<Asm> selectPageLayer(Long parent) {

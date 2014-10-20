@@ -25,6 +25,7 @@
     <logger name="com.softmotions.ncms.asm.PageSecurityService" level="INFO"/>
     <logger name="com.softmotions.ncms.user.UserEnvRS" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.am.AsmAttributeManagerContext" level="INFO"/>
+    <logger name="ru.nsu.legacy.NSULegacyRS" level="INFO"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

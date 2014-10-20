@@ -60,7 +60,7 @@ public class PageSecurityService extends MBDAOSupport {
                                NcmsMessages messages,
                                NcmsEnvironment env,
                                MBSqlSessionManager sessionManager) {
-        super(PageSecurityService.class.getName(), sess);
+        super(PageSecurityService.class, sess);
         this.userdb = userdb;
         this.messages = messages;
         this.aclCache = new LRUMap(env.xcfg().getInt("security.acl-lru-cache-size", 1024));

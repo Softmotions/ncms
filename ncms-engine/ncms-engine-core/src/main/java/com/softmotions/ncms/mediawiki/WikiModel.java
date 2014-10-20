@@ -6,7 +6,7 @@ import com.softmotions.ncms.NcmsMessages;
 
 import net.jcip.annotations.NotThreadSafe;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
@@ -21,7 +21,7 @@ public class WikiModel extends info.bliki.wiki.model.WikiModel {
 
     private final NcmsMessages messages;
 
-    private final HttpServletRequest req;
+    private final Locale locale;
 
     private ResourceBundle bundle;
 
@@ -35,22 +35,22 @@ public class WikiModel extends info.bliki.wiki.model.WikiModel {
         if (bundle != null) {
             return bundle;
         }
-        bundle = messages.getResourceBundle(req);
+        bundle = messages.getResourceBundle(locale);
         return bundle;
     }
 
     public WikiModel(WikiModel src) {
         this(src.cfg, src.getImageBaseURL(), src.getWikiBaseURL(),
-             src.messages, src.req);
+             src.messages, src.locale);
     }
 
     public WikiModel(Configuration cfg,
                      String imageBaseURL, String linkBaseURL,
                      NcmsMessages messages,
-                     HttpServletRequest req) {
+                     Locale locale) {
         super(cfg, imageBaseURL, linkBaseURL);
         this.cfg = cfg;
         this.messages = messages;
-        this.req = req;
+        this.locale = locale;
     }
 }

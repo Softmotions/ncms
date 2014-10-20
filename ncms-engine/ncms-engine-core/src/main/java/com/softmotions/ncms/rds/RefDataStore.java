@@ -22,7 +22,7 @@ public class RefDataStore extends MBDAOSupport {
 
     @Inject
     public RefDataStore(SqlSession sess) {
-        super(RefDataStore.class.getName(), sess);
+        super(RefDataStore.class, sess);
     }
 
     @Transactional
