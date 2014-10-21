@@ -615,6 +615,12 @@
     </select>
 
 
+    <select id="countAsmRefByType" parameterType="map" resultType="long">
+        SELECT COUNT(*)
+        FROM ASM_REFDATA
+        WHERE asm_id = #{id} AND type = #{type}
+    </select>
+
     <!-- ======================== Result maps ============================= -->
 
     <resultMap id="coreRM"

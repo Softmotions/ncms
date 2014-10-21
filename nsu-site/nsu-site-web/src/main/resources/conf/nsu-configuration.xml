@@ -311,8 +311,14 @@
     <social>
         <!--<vk app-id="37080997"/>--> <!-- for real nsu.ru -->
         <vk app-id="4596711" user-ref="http://vk.com/nsu24"/>
-        <!-- for tests! -->
-        <twitter user-ref="https://twitter.com/NskUniversity"/>
+        <twitter user-ref="https://twitter.com/NskUniversity">
+            <config-properties>
+                <!--oauth.consumerKey=-->
+                <!--oauth.consumerSecret=-->
+                <!--oauth.accessToken=-->
+                <!--oauth.accessTokenSecret=-->
+            </config-properties>
+        </twitter>
         <!-- TODO: replace app id by real id!    -->
         <facebook app-id="913933761970156" user-ref="https://www.facebook.com/NovosibirskUniversity"/>
         <google user-ref=""/>
