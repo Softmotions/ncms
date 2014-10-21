@@ -49,6 +49,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -218,6 +219,9 @@ public class NSULegacyRS extends MBDAOSupport {
                 log.error("Import aborted for: " + pdbo.get("_id") + " " + pdbo.get("alias") +
                           " MSG: " + e.getMessage() + "\n" + pdbo);
                 //throw e;
+            } finally {
+                ctx.files = new HashMap<>();
+                ctx.lastInWikiResources = new ArrayList<>();
             }
             ctx.id = attach;
             ctx.lguid = lguid;
@@ -381,12 +385,6 @@ public class NSULegacyRS extends MBDAOSupport {
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, asm.getId()));
     }
 
-
-    private void resavePage() {
-
-    }
-
-
     @PUT
     @Path("/import/{id}")
     @Produces("application/json;charset=UTF-8")
@@ -478,9 +476,10 @@ public class NSULegacyRS extends MBDAOSupport {
         if (!ctx.fixLinks) {
             return wiki;
         }
+
         String pFolder = mediaRepository.getPageLocalFolderPath(ctx.id);
         StringBuffer sb = new StringBuffer(wiki.length());
-        Pattern p = Pattern.compile("\\[\\[(image|media):([0-9a-f]{24})([^\\|]+)((\\|[^\\|\\]]+)*)\\]\\]",
+        Pattern p = Pattern.compile("\\[\\[(image|media):([0-9a-f]{24})([^\\|\\]]+)((\\|[^\\|\\]]+)*)\\]\\]",
                                     Pattern.CASE_INSENSITIVE);
 
         Matcher m = p.matcher(wiki);
@@ -490,6 +489,7 @@ public class NSULegacyRS extends MBDAOSupport {
             String guid = m.group(2);
             String fname = m.group(3);
             String spec = m.group(4);
+
             spec = spec.replaceAll("\\|link=$", "");
             if ("image".equals(type) && !spec.contains("none")) {
                 spec = "|none" + spec;
@@ -608,10 +608,12 @@ public class NSULegacyRS extends MBDAOSupport {
         String lguid;
         boolean fixLinks;
         boolean importWiki;
-        Map<String, Long> files = new HashMap<>();
         HierarchicalConfiguration cfg;
         Asm template;
         Asm asm;
+        Map<String, Long> files = new HashMap<>();
+        List<MediaResource> lastInWikiResources = new ArrayList<>();
+
 
         ImportCtx(Long id, String url, String lguid, boolean fixLinks, boolean importWiki) {
             this.id = id;
@@ -619,6 +621,7 @@ public class NSULegacyRS extends MBDAOSupport {
             this.lguid = lguid;
             this.fixLinks = fixLinks;
             this.importWiki = importWiki;
+
         }
     }
 

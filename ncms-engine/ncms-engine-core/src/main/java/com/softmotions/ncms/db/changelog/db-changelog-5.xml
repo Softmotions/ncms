@@ -132,5 +132,44 @@
             <column name="QA_CHECK_DATE"/>
         </createIndex>
     </changeSet>
+
+    <changeSet id="49" author="adamansky@gmail.com">
+        <sql dbms="db2">
+            CREATE UNIQUE INDEX "IDX1410210525480"
+            ON "ASMS" ("NAME" ASC) INCLUDE ("ID") ALLOW
+            REVERSE SCANS COLLECT SAMPLED DETAILED STATISTICS;
+            COMMIT WORK;
+
+            CREATE UNIQUE INDEX "IDX1410210525430"
+            ON "ASM_PARENTS" ("ASM_PARENT_ID" ASC,
+                              "ASM_ID" ASC) ALLOW REVERSE SCANS COLLECT SAMPLED DETAILED STATISTICS;
+            COMMIT WORK;
+
+            CREATE UNIQUE INDEX "IDX1410210525510"
+            ON "ASMS" ("ID" ASC) INCLUDE ("TYPE", "NAV_PARENT_ID",
+                                          "PUBLISHED", "ORDINAL", "EDATE") ALLOW REVERSE SCANS COLLECT SAMPLED DETAILED STATISTICS;
+            COMMIT WORK;
+
+            CREATE INDEX "IDX1410210525410" ON "ASM_ATTRS"
+            ("ASM_ID" ASC, "ID" ASC) ALLOW REVERSE SCANS COLLECT SAMPLED DETAILED STATISTICS;
+            COMMIT WORK;
+
+            CREATE UNIQUE INDEX "IDX1410210526040"
+            ON "ASMS" ("ID" ASC) INCLUDE ("ORDINAL",
+                                          "EDATE", "MDATE", "CDATE", "TYPE", "HNAME", "NAME",
+                                          "NAV_PARENT_ID") ALLOW REVERSE SCANS COLLECT SAMPLED DETAILED STATISTICS;
+            COMMIT WORK;
+
+            CREATE INDEX "IDX1410210526140" ON "ASM_ATTRS"
+            ("ASM_ID" ASC, "ID" ASC, "VALUE" ASC, "TYPE" ASC,
+             "NAME" ASC) ALLOW REVERSE SCANS COLLECT SAMPLED DETAILED STATISTICS;
+            COMMIT WORK;
+
+            CREATE UNIQUE INDEX "IDX1410210526170"
+            ON "ASMS" ("ID" ASC) INCLUDE ("NAME", "HNAME")
+            ALLOW REVERSE SCANS COLLECT SAMPLED DETAILED STATISTICS;
+            COMMIT WORK;
+        </sql>
+    </changeSet>
     
 </databaseChangeLog>
