@@ -318,6 +318,8 @@
                 <!--oauth.accessToken=-->
                 <!--oauth.accessTokenSecret=-->
             </config-properties>
+            <tweet-attribute>tweet</tweet-attribute>
+            <annotation-attribute>annotation</annotation-attribute>
         </twitter>
         <!-- TODO: replace app id by real id!    -->
         <facebook app-id="913933761970156" user-ref="https://www.facebook.com/NovosibirskUniversity"/>
