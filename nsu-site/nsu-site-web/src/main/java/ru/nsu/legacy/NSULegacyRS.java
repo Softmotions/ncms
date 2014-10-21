@@ -1,5 +1,6 @@
 package ru.nsu.legacy;
 
+import com.softmotions.commons.cont.Pair;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
@@ -202,7 +203,8 @@ public class NSULegacyRS extends MBDAOSupport {
         DBRef refpage = new DBRef("navtree", new ObjectId(ctx.lguid));
         MongoCursor<DBObject> cur = navtree
                 .find("{type : 2, refpage:#}", refpage)
-                .sort("{cdate : 1}")
+                .sort("{cdate : -1}")
+                .limit(10)
                 .map(res -> {
                     return res;
                 });
@@ -221,7 +223,6 @@ public class NSULegacyRS extends MBDAOSupport {
                 //throw e;
             } finally {
                 ctx.files = new HashMap<>();
-                ctx.lastInWikiResources = new ArrayList<>();
             }
             ctx.id = attach;
             ctx.lguid = lguid;
@@ -296,11 +297,15 @@ public class NSULegacyRS extends MBDAOSupport {
 
         importFiles(ctx);
 
+        List<MediaResource> files = new ArrayList<>(ctx.files.values());
+        Collections.sort(files, (o1, o2) -> Long.compare(o1.getId(), o2.getId()));
+
         String image = DBObjectUtils.get(p, "attrs.image.value");
         if (image != null) {
             image = image.substring(ctx.lguid.length());
             String ipath = mediaRepository.getPageLocalFolderPath(asm.getId()) + '/' + image;
-            if (mediaRepository.ensureResizedImage(ipath, 81, 68, MediaRepository.RESIZE_COVER_AREA) != null) {
+            Pair<Integer, Integer> rp;
+            if ((rp = mediaRepository.ensureResizedImage(ipath, 81, 68, MediaRepository.RESIZE_COVER_AREA)) != null) {
                 MediaResource mres = mediaRepository.findMediaResource(ipath, null);
                 AsmAttributeManagerContext actx = new AsmAttributeManagerContext(null, null, pageSecurityService, sess);
                 attr = adao.asmAttributeByName(asm.getId(), "icon");
@@ -312,7 +317,10 @@ public class NSULegacyRS extends MBDAOSupport {
                 attr.setType("image");
                 attr.setOptions("restrict=false,width=81,height=68,skipSmall=false,cover=true,resize=false");
                 attr.setEffectiveValue(String.format(
-                        "{\"id\":%d,\"options\":{\"restrict\":\"false\",\"width\":81,\"height\":null,\"skipSmall\":\"false\",\"cover\":\"true\",\"resize\":\"false\"},\"path\":\"%s\"}"
+                        "{\"id\":%d,\"options\":{\"restrict\":\"false\"," +
+                        "\"width\":" + (rp.getOne() != null ? rp.getOne() : "null") + "," +
+                        "\"height\":" + (rp.getTwo() != null ? rp.getTwo() : "null") + "," +
+                        "\"skipSmall\":\"false\",\"cover\":\"true\",\"resize\":\"false\"},\"path\":\"%s\"}"
                         , mres.getId(), StringEscapeUtils.escapeJson(ipath)));
                 attr.setAsmId(asm.getId());
 
@@ -324,6 +332,37 @@ public class NSULegacyRS extends MBDAOSupport {
                     }
                 }
                 actx.registerMediaFileDependency(attr, mres.getId());
+
+                for (MediaResource mr : files) {
+                    if (mr.getImageWidth() > 300) {
+                        attr = adao.asmAttributeByName(asm.getId(), "bigicon");
+                        if (attr == null) {
+                            attr = new AsmAttribute();
+                        }
+                        attr.setName("bigicon");
+                        attr.setLabel("Презентационное изображение");
+                        attr.setType("image");
+                        attr.setOptions("restrict=false,width=314,height=192,skipSmall=false,cover=true,resize=false");
+                        attr.setEffectiveValue(String.format(
+                                "{\"id\":%d,\"options\":{\"restrict\":\"false\"," +
+                                "\"width\":" + (rp.getOne() != null ? rp.getOne() : "null") + "," +
+                                "\"height\":" + (rp.getTwo() != null ? rp.getTwo() : "null") + "," +
+                                "\"skipSmall\":\"false\",\"cover\":\"true\",\"resize\":\"false\"},\"path\":\"%s\"}"
+                                , mr.getId(), StringEscapeUtils.escapeJson(ipath)));
+                        attr.setAsmId(asm.getId());
+
+                        adao.asmUpsertAttribute(attr);
+                        if (attr.getId() == null) {
+                            Number gid = selectOne("prevAttrID");
+                            if (gid != null) {
+                                attr.setId(gid.longValue());
+                            }
+                        }
+                        actx.registerMediaFileDependency(attr, mr.getId());
+                        break;
+                    }
+                }
+
                 actx.flushFileDeps();
             }
         }
@@ -448,7 +487,10 @@ public class NSULegacyRS extends MBDAOSupport {
             //log.info("Processing file: " + fn + " into: " + target);
             try (InputStream is = f.getInputStream()) {
                 Long fid = mediaRepository.importFile(is, target, false);
-                ctx.files.put(fn, fid);
+                MediaResource mres = mediaRepository.findMediaResource(fid, null);
+                if (mres != null) {
+                    ctx.files.put(fn, mres);
+                }
             } catch (Exception e) {
                 log.error("File was not imported", e);
             }
@@ -494,8 +536,8 @@ public class NSULegacyRS extends MBDAOSupport {
             if ("image".equals(type) && !spec.contains("none")) {
                 spec = "|none" + spec;
             }
-            Long fid = ctx.files.get(fname);
-            if (fid == null) {
+            MediaResource mres = ctx.files.get(fname);
+            if (mres == null) {
                 GridFSDBFile f = gridFS.findOne(jongo.createQuery("{filename : #}", guid + fname).toDBObject());
                 if (f != null) {
                     String fn = f.getFilename();
@@ -506,13 +548,14 @@ public class NSULegacyRS extends MBDAOSupport {
                     String target = pFolder + '/' + fn;
                     //log.info("Processing file: " + fn + " into: " + target);
                     try (InputStream is = f.getInputStream()) {
-                        fid = mediaRepository.importFile(is, target, false);
-                        ctx.files.put(fn, fid);
+                        Long fid = mediaRepository.importFile(is, target, false);
+                        mres = mediaRepository.findMediaResource(fid, null);
+                        ctx.files.put(fn, mres);
                     } catch (Exception e) {
                         log.error("File was not imported", e);
                     }
                 }
-                if (fid == null) {
+                if (mres == null) {
                     log.warn("The file: " + fname + " is not imported");
                     m.appendReplacement(sb, all);
                     continue;
@@ -522,7 +565,7 @@ public class NSULegacyRS extends MBDAOSupport {
             nl.append("[[");
             nl.append(StringUtils.capitalize(type));
             nl.append(":/");
-            nl.append(fid);
+            nl.append(mres.getId());
             nl.append('/');
             nl.append(fname);
             nl.append(spec);
@@ -611,8 +654,7 @@ public class NSULegacyRS extends MBDAOSupport {
         HierarchicalConfiguration cfg;
         Asm template;
         Asm asm;
-        Map<String, Long> files = new HashMap<>();
-        List<MediaResource> lastInWikiResources = new ArrayList<>();
+        Map<String, MediaResource> files = new HashMap<>();
 
 
         ImportCtx(Long id, String url, String lguid, boolean fixLinks, boolean importWiki) {

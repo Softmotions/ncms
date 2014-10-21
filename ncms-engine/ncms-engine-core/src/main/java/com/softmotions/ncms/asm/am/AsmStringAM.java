@@ -62,7 +62,7 @@ public class AsmStringAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
+        attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText() : null);
         return attr;
     }
 
