@@ -80,7 +80,7 @@ public class SitemapController implements AsmController {
     private List<Asm> loadPageLayer(Long parent) {
         Collection<Asm> asms = adao.selectPageLayer(parent);
         List<Asm> result = new ArrayList<>(asms.size());
-        asms.stream().filter((asm) -> asm.isPublished() || "page.folder".equals(asm.getType())).forEach(result::add);
+        asms.stream().filter(Asm::isPublished).forEach(result::add);
         return result;
     }
 }
