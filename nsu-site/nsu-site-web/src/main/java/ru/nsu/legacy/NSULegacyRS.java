@@ -59,6 +59,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Грязный код импорта легаси данных старого nsu.ru
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
@@ -332,7 +334,7 @@ public class NSULegacyRS extends MBDAOSupport {
                 actx.registerMediaFileDependency(attr, mres.getId());
 
                 for (MediaResource mr : files) {
-                    if (mr.getImageWidth() > 300) {
+                    if (mr.getImageWidth() > 300 && (rp = mediaRepository.ensureResizedImage(ipath, 314, 192, MediaRepository.RESIZE_COVER_AREA)) != null) {
                         attr = adao.asmAttributeByName(asm.getId(), "bigicon");
                         if (attr == null) {
                             attr = new AsmAttribute();
@@ -340,6 +342,7 @@ public class NSULegacyRS extends MBDAOSupport {
                         attr.setName("bigicon");
                         attr.setLabel("Презентационное изображение");
                         attr.setType("image");
+
                         attr.setOptions("restrict=false,width=314,height=192,skipSmall=false,cover=true,resize=false");
                         attr.setEffectiveValue(String.format(
                                 "{\"id\":%d,\"options\":{\"restrict\":\"false\"," +

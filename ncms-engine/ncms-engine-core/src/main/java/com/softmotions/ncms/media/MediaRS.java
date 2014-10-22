@@ -1978,8 +1978,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         try (final ResourceLock l = new ResourceLock(path, true)) {
             File pdir = new File(basedir, path);
             if (pdir.isDirectory()) {
-                log.info("Removing page dir: " + path);
-                FileUtils.deleteDirectory(pdir);
+                File[] files = pdir.listFiles(f -> (!f.isDirectory()) || SIZE_CACHE_FOLDER.equals(f.getName()));
+                for (final File f : files) {
+                    log.info("Remove file/dir: " + f);
+                    FileUtils.deleteQuietly(f);
+                }
             }
         } catch (IOException e) {
             log.error("Failed to drop page files dir: " + path, e);

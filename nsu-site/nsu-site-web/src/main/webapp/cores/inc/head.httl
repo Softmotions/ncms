@@ -1,6 +1,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=10"/>
+<meta http-equiv="X-Softmotions-Page-GUID" content="${page().name}"/>
 <title>${page().hname} | Новосибирский государственный университет</title>
 <link rel="stylesheet" href="${ncmsroot}/css/all.css" type="text/css"/>
 <link rel="stylesheet" href="${ncmsroot}/fotorama/fotorama.css" type="text/css"/>

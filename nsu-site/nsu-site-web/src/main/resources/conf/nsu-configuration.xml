@@ -237,7 +237,7 @@
         </mainpage>
         <newsmain>
             <news>
-                <type templates="index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce"
+                <type templates="index_news,index_interview,index_reportage,faculty_news,dept_news,index_orders,index_announce,faculty_announce"
                       title="Все"/>
                 <type templates="faculty_news" type="faculty" title="Новости факультетов"/>
                 <type templates="index_interview" type="interview" title="Интервью"/>
@@ -259,7 +259,7 @@
         </exec-extra-params>
         <page-url-template>${site-root}/{id}</page-url-template>
         <asm-templates>
-            journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,index_orders,index_announce,faculty_announce
+            journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,dept_news,index_orders,index_announce,faculty_announce
         </asm-templates>
     </html-to-pdf>
 
@@ -314,6 +314,12 @@
             <branch root="http://www.nsu.ru/exp/fiya" attach="1188" template="faculty_news"/>
             <branch root="http://www.nsu.ru/exp/yurf" attach="1186" template="faculty_news"/>
             <branch root="http://www.nsu.ru/exp/filf" attach="1125" template="faculty_news"/>-->
+
+            <!--<branch root="http://www.nsu.ru/exp/mmf/kafedra_diskretnoi_matematiki_i_informatiki" attach="3321" template="dept_news"/>
+            <branch root="http://www.nsu.ru/exp/life/sport" attach="1093" template="dept_news"/>
+            <branch root="http://www.nsu.ru/exp/p52425b5850afe7d11045049d" attach="1194" template="dept_news"/>
+            <branch root="http://www.nsu.ru/exp/ef/kafedra_ef_obschei_sociologii" attach="2368" template="dept_news"/>
+            <branch root="http://www.nsu.ru/exp/university/oms" attach="1089" template="dept_news"/>-->
         </import-news>
     </nsu>
 
