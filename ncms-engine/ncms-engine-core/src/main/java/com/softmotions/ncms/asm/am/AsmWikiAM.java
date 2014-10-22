@@ -74,7 +74,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
-        this.pageRefsRE = Pattern.compile(env.getNcmsRoot() + "/asm/" + "([0-9a-f]{32})");
+        this.pageRefsRE = Pattern.compile(env.getNcmsRoot() + "/(asm/)?" + "([0-9a-f]{32})");
         this.messages = messages;
     }
 
@@ -141,7 +141,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         StringBuffer res = new StringBuffer(html.length());
         Matcher m = pageRefsRE.matcher(html);
         while (m.find()) {
-            String guid = m.group(1);
+            String guid = m.group(2);
             if (guid != null) {
                 String link = pageService.resolvePageLink(guid);
                 if (link != null) {
