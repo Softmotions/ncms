@@ -203,8 +203,7 @@ public class NSULegacyRS extends MBDAOSupport {
         DBRef refpage = new DBRef("navtree", new ObjectId(ctx.lguid));
         MongoCursor<DBObject> cur = navtree
                 .find("{type : 2, refpage:#}", refpage)
-                .sort("{cdate : -1}")
-                .limit(10)
+                .sort("{cdate : 1}")
                 .map(res -> {
                     return res;
                 });
