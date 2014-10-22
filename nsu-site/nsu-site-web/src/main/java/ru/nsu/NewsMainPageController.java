@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -197,6 +198,7 @@ public class NewsMainPageController implements AsmController {
             } catch (IOException e) {
                 log.error("", e);
             }
+            Collections.shuffle(refs);
         }
         ctx.put("photoline", photoline);
     }
