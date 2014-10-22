@@ -1009,7 +1009,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         val = req.getParameter("name");
         if (!StringUtils.isBlank(val)) {
-            cq.withParam("name", val + "%");
+            cq.withParam("name_lower", val.toLowerCase() + "%");
         }
         String type = "page%";
         val = req.getParameter("type");
