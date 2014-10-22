@@ -129,6 +129,32 @@
         margin: 0;
       }
 
+      img {
+        float: left;
+        height: 50px;
+        border: none;
+        margin: 12px 0 6px 32px;
+      }
+
+      .reload-captcha {
+        float: right;
+        display: block;
+        padding: 0;
+        margin: 24px 32px 0 0;
+        border: none;
+        color: #3395e1;
+        font: 600 18px/21px $basic_sans_font;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+
+        span {
+          @include sp-icons-sprite(bg-more, $offset-y: 5px);
+          padding: 0 0 0 15px;
+        }
+      }
+
+
       input[type="submit"] {
         float: left;
         width: 272px;

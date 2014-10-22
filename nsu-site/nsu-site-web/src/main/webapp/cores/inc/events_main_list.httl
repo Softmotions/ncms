@@ -25,6 +25,9 @@
             <h4>Напомнить</h4>
             <div class="input-holder">
                 <input type="text" name="contact" class="text" placeholder="Ваш email или телефон" />
+                <img />
+                <a class="reload-captcha"><span>&nbsp;</span></a>
+                <input type="text" name="captcha" class="text" placeholder="Текст с картинки" />
             </div>
             <div class="submit-holder">
                 <input type="submit" value="Напомнить" />

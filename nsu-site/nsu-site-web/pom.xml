@@ -311,5 +311,10 @@
             <artifactId>twitter4j-core</artifactId>
             <version>4.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.cage</groupId>
+            <artifactId>cage</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>
