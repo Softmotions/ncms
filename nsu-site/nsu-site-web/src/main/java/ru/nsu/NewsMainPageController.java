@@ -187,7 +187,11 @@ public class NewsMainPageController implements AsmController {
                     img.setOptionsWidth(szret.getOne());
                     img.setOptionsHeight(szret.getTwo());
                     ref.setImage(img);
-                    ref.setName(mres.getDescription());
+                    if (!StringUtils.isBlank(mres.getDescription())) {
+                        ref.setName(mres.getDescription());
+                    } else {
+                        ref.setName(asm.getHname());
+                    }
                     ref.setLink(pageService.resolvePageLink(asm.getName()) + "#medialine");
                     item.setRichRef(ref);
                     refs.add(item);
