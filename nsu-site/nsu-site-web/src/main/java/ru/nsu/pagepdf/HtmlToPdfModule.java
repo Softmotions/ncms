@@ -85,7 +85,11 @@ public class HtmlToPdfModule extends AbstractModule {
 
         @Dispose
         public void shutdown() {
-            saver.shutdown();
+            try {
+                saver.shutdownNow();
+            } catch (Exception e) {
+                log.error("", e);
+            }
         }
 
         @Subscribe
