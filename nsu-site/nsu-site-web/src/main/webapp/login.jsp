@@ -6,6 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link REL="shortcut icon" HREF="/images/nsu_ico.png" TYPE="image/png">
     <style type="text/css">
         body {
             margin: 0;

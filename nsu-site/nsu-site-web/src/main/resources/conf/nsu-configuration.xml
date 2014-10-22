@@ -23,6 +23,12 @@
         <exclude>/rs,/rjs,/ncms/rs,/ncms/rjs</exclude>
     </asm>
 
+    <browser-filter>
+        <min-trident>6</min-trident>
+        <bad-browser-uri>/unsupported_browser.html</bad-browser-uri>
+        <exclude>/rs,/rjs,/ncms/rs,/ncms/rjs,/images,/css,/js,</exclude>
+    </browser-filter>
+
     <messages>
         <bundle>com.softmotions.ncms.Messages</bundle>
     </messages>

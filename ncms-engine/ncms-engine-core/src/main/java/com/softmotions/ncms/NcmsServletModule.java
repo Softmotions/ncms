@@ -6,12 +6,16 @@ import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.ncms.asm.render.AsmFilter;
 import com.softmotions.ncms.jaxrs.NcmsJsonNodeReader;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
+import com.softmotions.ncms.utils.BrowserFilter;
 import com.softmotions.weboot.WBServletModule;
 
 import com.google.inject.Singleton;
 
+import org.apache.commons.configuration.XMLConfiguration;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+
+import javax.servlet.Filter;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -21,6 +25,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
 
     protected void init(NcmsEnvironment env) {
         bind(NcmsEnvironment.class).toInstance(env);
+        initBrowserFilter(env);
         initJAXRS(env);
         initAsmFilter(env);
     }
@@ -57,5 +62,24 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
 
     protected Class<? extends AsmFilter> getAsmFilterClass() {
         return AsmFilter.class;
+    }
+
+    protected void initBrowserFilter(NcmsEnvironment env) {
+        XMLConfiguration xcfg = env.xcfg();
+        if (xcfg.configurationsAt("browser-filter").isEmpty()) {
+            return;
+        }
+
+        String ncmsp = env.getNcmsPrefix();
+        KVOptions opts = new KVOptions();
+        opts.put("min-trident", String.valueOf(xcfg.getFloat("browser-filter.min-trident", 0)));
+        String badUrl = xcfg.getString("browser-filter.bad-browser-uri", "");
+        opts.put("redirect-uri", badUrl.isEmpty() ? null : ncmsp + badUrl);
+        String[] exclude = xcfg.getStringArray("browser-filter.exclude");
+        if (exclude.length == 0) {
+            exclude = new String[]{ncmsp + "/rs", ncmsp + "/rjs"};
+        }
+        opts.put("exclude-prefixes", ArrayUtils.stringJoin(exclude, ","));
+        filter(ncmsp + "/*", BrowserFilter.class, opts);
     }
 }
