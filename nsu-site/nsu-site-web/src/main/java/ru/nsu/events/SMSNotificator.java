@@ -4,7 +4,6 @@ import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 
 import org.apache.commons.configuration.Configuration;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -18,6 +17,7 @@ import org.apache.http.protocol.HTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -114,7 +114,7 @@ public class SMSNotificator implements Notificator {
                 HttpPost request = createRequest(prepareContact(contact), message);
                 try (CloseableHttpResponse response = httpClient.execute(request)) {
                     StatusLine statusLine = response.getStatusLine();
-                    if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
+                    if (statusLine.getStatusCode() != HttpServletResponse.SC_OK) {
                         // TODO: parse XML for checking errors
                         log.warn("Error sending SMS. Server response status: {}", statusLine.getStatusCode());
                     }
