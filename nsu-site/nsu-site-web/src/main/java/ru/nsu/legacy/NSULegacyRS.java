@@ -43,7 +43,6 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.IIOException;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -216,7 +215,7 @@ public class NSULegacyRS extends MBDAOSupport {
             DBObject pdbo = cur.next();
             try {
                 importNewsNode(ctx, pdbo);
-            } catch (LegacyImportAbortException | IIOException e) {
+            } catch (Exception e) {
                 log.error("Import aborted for: " + pdbo.get("_id") + " " + pdbo.get("alias") +
                           " MSG: " + e.getMessage() + "\n" + pdbo);
                 //throw e;
@@ -361,7 +360,6 @@ public class NSULegacyRS extends MBDAOSupport {
                         break;
                     }
                 }
-
                 actx.flushFileDeps();
             }
         }
