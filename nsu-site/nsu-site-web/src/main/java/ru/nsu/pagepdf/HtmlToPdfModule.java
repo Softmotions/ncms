@@ -119,10 +119,13 @@ public class HtmlToPdfModule extends AbstractModule {
                             }
                             log.info("Fetched PDF from " + cmdargs[cmdargs.length - 2]);
                         }
+                    } catch (InterruptedException ignored) {
                     } catch (Exception e) {
                         log.error("", e);
                     }
                 }
+
+                log.info("PDF Fetcher terminated");
             });
         }
 

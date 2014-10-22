@@ -297,13 +297,13 @@
             <!--<branch root="http://www.nsu.ru/exp/p0bfdf54de4235e6296000000"
                     attach="5"
                     template="index_news"/>-->
-            <!--<branch root="http://www.nsu.ru/exp/ff" attach="901"/>
-            <branch root="http://nsu.ru/exp/medf" attach="1187"/>
-            <branch root="http://www.nsu.ru/exp/ef" attach="2263"/>
-            <branch root="http://www.nsu.ru/exp/ggf" attach="1124"/>
-            <branch root="http://www.nsu.ru/exp/fiya" attach="1188"/>
-            <branch root="http://www.nsu.ru/exp/yurf" attach="1186"/>
-            <branch root="http://www.nsu.ru/exp/filf" attach="1125"/>-->
+            <!--<branch root="http://www.nsu.ru/exp/ff" attach="901" template="faculty_news"/>
+            <branch root="http://nsu.ru/exp/medf" attach="1187" template="faculty_news"/>
+            <branch root="http://www.nsu.ru/exp/ef" attach="2263" template="faculty_news"/>
+            <branch root="http://www.nsu.ru/exp/ggf" attach="1124" template="faculty_news"/>
+            <branch root="http://www.nsu.ru/exp/fiya" attach="1188" template="faculty_news"/>
+            <branch root="http://www.nsu.ru/exp/yurf" attach="1186" template="faculty_news"/>
+            <branch root="http://www.nsu.ru/exp/filf" attach="1125" template="faculty_news"/>-->
         </import-news>
     </nsu>
 

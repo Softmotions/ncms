@@ -30,7 +30,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         Class<? extends AsmFilter> clazz = getAsmFilterClass();
         String ncmsp = env.getNcmsPrefix();
         KVOptions opts = new KVOptions();
-        opts.put("strip-prefixes", ncmsp + "/adm/asm," + (ncmsp.isEmpty() ? "/" : ncmsp));
+        opts.put("strip-prefixes", (ncmsp + "/asm,") + (ncmsp + "/adm/asm,") + (ncmsp.isEmpty() ? "/" : ncmsp));
         String[] exclude = env.xcfg().getStringArray("asm.exclude");
         if (exclude.length == 0) {
             exclude = new String[]{ncmsp + "/rs", ncmsp + "/rjs"};
