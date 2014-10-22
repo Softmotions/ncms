@@ -48,6 +48,8 @@ public class EventsRemember {
 
     private final Scheduler scheduler;
 
+    private final NcmsEnvironment env;
+
     private Collection<Notificator> notificators;
 
     @Inject
@@ -56,6 +58,7 @@ public class EventsRemember {
         this.adao = adao;
         this.messages = messages;
         this.scheduler = scheduler;
+        this.env = env;
 
         this.cfg = env.xcfg().configurationAt("events-remember");
     }
@@ -86,7 +89,7 @@ public class EventsRemember {
 
             Notificator instance = injector.getInstance(nclass);
             try {
-                instance.init(ncfg);
+                instance.init(env, ncfg);
                 notificators.add(instance);
             } catch (Exception e) {
                 log.error("", e);
@@ -102,7 +105,7 @@ public class EventsRemember {
             } else if (!SchedulingPattern.validate(sendPattern)) {
                 log.error("Invalid pattern for notification job: '{}'", sendPattern);
             } else {
-                log.info("Register sender");
+                log.info("Registering events remember service.");
                 scheduler.schedule(sendPattern, this::sendNotify);
             }
         }

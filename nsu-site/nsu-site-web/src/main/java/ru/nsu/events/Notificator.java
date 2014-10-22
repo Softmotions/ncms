@@ -1,6 +1,7 @@
 package ru.nsu.events;
 
 
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 
 import org.apache.commons.configuration.Configuration;
@@ -15,7 +16,7 @@ import java.text.SimpleDateFormat;
 public interface Notificator {
     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 
-    void init(Configuration cfg) throws Exception;
+    void init(NcmsEnvironment env, Configuration cfg) throws Exception;
 
     String prepareContact(String contact);
 

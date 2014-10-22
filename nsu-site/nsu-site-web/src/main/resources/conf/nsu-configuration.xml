@@ -265,7 +265,7 @@
     </qa>
 
     <events-remember>
-        <cron-spec>0 9 * * *</cron-spec>
+        <cron-spec>* * * * *</cron-spec>
         <notification-days-before>3</notification-days-before>
         <!-- email notificator: if dryRun is true - send mail, otherwise - write to log-->
         <notificator class="ru.nsu.events.EmailNotificator" dryRun="false">
@@ -282,12 +282,16 @@
                 <from>NSU &lt;noreply@nsu.ru&gt;</from>
                 <content-type>text/plain;charset=UTF-8</content-type>
                 <subject>{name}</subject>
-                <message><![CDATA[{date} состоится {name}]]></message>
+                <message><![CDATA[НГУ: {date} состоится {name}]]></message>
             </notification>
         </notificator>
         <notificator class="ru.nsu.events.SMSNotificator">
-            <phone-pattern><![CDATA[^(\+7|8)?\d{10}$]]></phone-pattern>
-            <!-- TODO: cfg sms notificator -->
+            <phone-pattern><![CDATA[^(\+?7|8)?\d{10}$]]></phone-pattern>
+            <sms-server-api-url>https://500sms.ru/api.php</sms-server-api-url>
+            <sender-props>{home}/.500-sms.ds</sender-props>
+            <notification>
+                <message><![CDATA[НГУ: {date} состоится {name}]]></message>
+            </notification>
         </notificator>
     </events-remember>
 

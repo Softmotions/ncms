@@ -1,5 +1,6 @@
 package ru.nsu.events;
 
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 
 import org.apache.commons.configuration.Configuration;
@@ -38,7 +39,7 @@ public class EmailNotificator implements Notificator {
     private final Object senderLock = new Object();
 
     // TODO: username & password
-    public void init(Configuration cfg) throws Exception {
+    public void init(NcmsEnvironment env, Configuration cfg) throws Exception {
         String from = cfg.getString("notification.from");
         contentType = cfg.getString("notification.content-type", "text/plain;charset=UTF-8");
         subjectTemplate = cfg.getString("notification.subject");
