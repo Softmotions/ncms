@@ -59,6 +59,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Грязный код импорта легаси данных старого nsu.ru
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")

@@ -56,11 +56,11 @@ public class NewsMainPageController implements AsmController {
 
     private static final int MAX_PHOTOLINE_ITEMS = 30;
 
+    private static final int MAX_PHOTOLINE_ITEMS_PER_ASM = 1;
+
     private final AsmDAO adao;
 
     private final SubnodeConfiguration npCfg;
-
-    private final NcmsEnvironment env;
 
     private final PageService pageService;
 
@@ -86,7 +86,6 @@ public class NewsMainPageController implements AsmController {
         this.messages = messages;
         this.pageService = pageService;
         this.npCfg = env.xcfg().configurationAt("content.newsmain");
-        this.env = env;
     }
 
     @Transactional
@@ -159,7 +158,7 @@ public class NewsMainPageController implements AsmController {
             }
             try {
                 ArrayNode idsArr = (ArrayNode) mapper.readTree(json);
-                for (int i = 0, l = idsArr.size(); i < l && refs.size() < MAX_PHOTOLINE_ITEMS; ++i) {
+                for (int i = 0, l = idsArr.size(); i < l && i < MAX_PHOTOLINE_ITEMS_PER_ASM && refs.size() < MAX_PHOTOLINE_ITEMS; ++i) {
                     JsonNode n = idsArr.get(i);
                     if (n == null || !n.isNumber()) {
                         continue;
@@ -171,7 +170,7 @@ public class NewsMainPageController implements AsmController {
                     }
                     Pair<Integer, Integer> szret;
                     try {
-                        szret = mediaRepository.ensureResizedImage(id, 322, 185, //todo hardcoded
+                        szret = mediaRepository.ensureResizedImage(id, 322, 185, //todo design-hardcoded
                                                                    MediaRepository.RESIZE_COVER_AREA);
                     } catch (IOException ignored) {
                         continue;
@@ -264,7 +263,7 @@ public class NewsMainPageController implements AsmController {
         Configuration nCfg = activeType != null ? ncConfigs.get(activeType) : null;
         String[] templates = nCfg != null ? nCfg.getStringArray("[@templates]") : null;
         if (templates == null) {
-            templates = new String[]{"index_news", "index_interview", "index_reportage", "faculty_news", "index_orders"};
+            templates = new String[]{"index_news", "index_interview", "index_reportage", "faculty_news", "dept_news", "index_orders"};
         }
         crit.withTemplates(templates);
 
