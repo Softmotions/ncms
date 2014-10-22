@@ -286,7 +286,7 @@
             </notification>
         </notificator>
         <notificator class="ru.nsu.events.SMSNotificator">
-            <phone-pattern><![CDATA[^(\+?7|8)?\d{10}$]]></phone-pattern>
+            <phone-pattern><![CDATA[^(\+?7|8)\d{10}$]]></phone-pattern>
             <sms-server-api-url>https://500sms.ru/api.php</sms-server-api-url>
             <sender-props>{home}/.500-sms.ds</sender-props>
             <notification>
