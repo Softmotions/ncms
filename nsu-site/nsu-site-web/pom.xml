@@ -37,7 +37,6 @@
                             <closureCompilationLevel>SIMPLE_OPTIMIZATIONS</closureCompilationLevel>
                             <jsSourceDir>js</jsSourceDir>
                             <jsSourceFiles>
-                                <jsSourceFile>jquery.placeholder.js</jsSourceFile>
                                 <jsSourceFile>imagesloaded.pkgd.js</jsSourceFile>
                                 <jsSourceFile>instagram.js</jsSourceFile>
                                 <jsSourceFile>site.js</jsSourceFile>
