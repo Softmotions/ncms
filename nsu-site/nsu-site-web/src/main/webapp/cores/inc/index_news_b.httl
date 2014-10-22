@@ -5,7 +5,7 @@
     <span class="date">${date.format2("dd")} ${date.format2("LMMMMM")} <span
             class="year">${date.format2("yyyy")}</span></span>
 
-    #if(annotation != null)
+    #if(!blank(annotation))
     <p><a href="$!{pn.link}">${annotation}</a></p>
     #else
     <p><a href="$!{pn.link}">${pn.hname}</a></p>
