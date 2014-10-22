@@ -1,9 +1,14 @@
 #foreach(Asm pn in news_c)
 #set(Date date = pn.eventDate())
+#set(String annotation = pn.asm("annotation"))
 <li>
     <span class="date">${date.format2("dd")} ${date.format2("LMMMMM")} ${date.format2("yyyy")}</span>
     <span class="faculty">${pn.asm("np_hname")}</span>
 
-    <p><a href="$!{pn.link}">${pn.asm("annotation")}</a></p>
+    #if(annotation != null)
+    <p><a href="$!{pn.link}">${annotation}</a></p>
+    #else
+    <p><a href="$!{pn.link}">${pn.hname}</a></p>
+    #end
 </li>
 #end

@@ -1378,7 +1378,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (ind != -1) {
                 spec = spec.substring(0, ind).trim();
             }
-        } else if (spec.indexOf("/ncms/asm/") == 0) { //it is the legacy case todo remove it
+        } else if (spec.indexOf("/ncms/asm/") == 0) { //todo it is legacy staff!!
             spec = spec.substring("/ncms/asm/".length());
         } else if (spec.indexOf(asmRoot) == 0) {
             spec = spec.substring(asmRoot.length());
