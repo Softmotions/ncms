@@ -62,9 +62,14 @@
     #else("faculty_news" == template)
         <!-- Новости факультетов -->
         <h4 class="news">${p.asmAny("np_hname")}</h4>
-        <span class="date">${edate.format2("dd")} ${edate.format2("MMM")} ${edate.format2("yyyy")}</span>
+        #if(img != null)
+        <div style="width:285px;height:158px;overflow:hidden">
+            <a href="$!{p.link}"><img src="$!{img.link}" width="285" alt="${p.hname}"/></a>
+        </div>
+        <h3><a href="$!{p.link}">${p.hname}</a></h3>
+        #else
         <h5><a href="$!{p.link}">${p.hname}</a></h5>
-
+        #end
     #else("index_smi" == template)
         <!-- СМИ (пока не существует) -->
         <div class="holder">
