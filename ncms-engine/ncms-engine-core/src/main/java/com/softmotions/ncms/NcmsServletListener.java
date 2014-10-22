@@ -42,7 +42,7 @@ public class NcmsServletListener extends WBServletListener {
             "| | | |   --| | | |__   |  |   __|   | . | |   | -_|\n" +
             "|_|___|_____|_|_|_|_____|  |_____|_|_|_  |_|_|_|___|\n" +
             "                                     |___|          \n" +
-            "Version: {} Max heap {}                             \n";
+            "Version: {} Max heap: {}                             \n";
 
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
 
