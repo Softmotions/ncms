@@ -124,8 +124,6 @@ public class HtmlToPdfModule extends AbstractModule {
                         log.error("", e);
                     }
                 }
-
-                log.info("PDF Fetcher terminated");
             });
         }
 
