@@ -126,10 +126,10 @@ public class NSULegacyRS extends MBDAOSupport {
     // http://www.nsu.ru/exp/university/top-5-100/upravlenie_programmoi
 
     //4
-    private static final Pattern L_GUID = Pattern.compile("(http|https)?://(www.)?nsu.ru/exp/(p|pp)([0-9a-f]{24})");
+    private static final Pattern L_GUID = Pattern.compile("(http|https)?://(www.|old.)?nsu.ru/exp/(p|pp)([0-9a-f]{24})");
 
     //3
-    private static final Pattern L_ALIAS = Pattern.compile("(http|https)?://(www.)?nsu.ru/exp/(.*)");
+    private static final Pattern L_ALIAS = Pattern.compile("(http|https)?://(www.|old.)?nsu.ru/exp/(.*)");
 
     @Inject
     public NSULegacyRS(Jongo jongo,
@@ -520,11 +520,24 @@ public class NSULegacyRS extends MBDAOSupport {
         }
 
         String pFolder = mediaRepository.getPageLocalFolderPath(ctx.id);
-        StringBuffer sb = new StringBuffer(wiki.length());
         Pattern p = Pattern.compile("\\[\\[(image|media):([0-9a-f]{24})([^\\|\\]]+)((\\|[^\\|\\]]+)*)\\]\\]",
                                     Pattern.CASE_INSENSITIVE);
 
-        Matcher m = p.matcher(wiki);
+        StringBuffer sb = new StringBuffer(wiki.length());
+        Matcher m = Pattern.compile("(\\[\\[[^|]+)(\\|+)([^|]+\\]\\])").matcher(wiki);
+        while (m.find()) {
+            String e = m.group(2);
+            if (e != null) {
+                m.appendReplacement(sb, m.group(1) + "|" + m.group(3));
+            } else {
+                m.appendReplacement(sb, m.group());
+            }
+        }
+        m.appendTail(sb);
+        wiki = sb.toString();
+
+        sb = new StringBuffer(wiki.length());
+        m = p.matcher(wiki);
         while (m.find()) {
             String all = m.group(0);
             String type = m.group(1).toLowerCase();
