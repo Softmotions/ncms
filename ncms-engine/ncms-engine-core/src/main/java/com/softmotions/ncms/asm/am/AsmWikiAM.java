@@ -74,7 +74,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
-        this.pageRefsRE = Pattern.compile(env.getNcmsRoot() + "/(asm/)?" + "([0-9a-f]{32})");
+        this.pageRefsRE = Pattern.compile(Pattern.quote(env.getNcmsRoot()) + "/(asm/)?" + "([0-9a-f]{32})");
         this.messages = messages;
     }
 

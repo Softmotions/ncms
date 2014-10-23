@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-
     <server className="net.sf.j2ep.servers.BaseServer"
             domainName="apollo.nsu.ru:3399"
             path="/exp">
@@ -15,9 +14,380 @@
 
     <server className="net.sf.j2ep.servers.BaseServer"
             domainName="old.nsu.ru"
+            path="/jspui">
+        <rule directory="/jspui" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
             path="/phpBB">
         <rule directory="/phpBB" className="net.sf.j2ep.rules.DirectoryRule"/>
     </server>
 
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/root.php"
+            redirect="http://old.nsu.ru/root.php/index.xml">
+        <rule directory="/root.php" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
 
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/vestnik">
+        <rule directory="/vestnik" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/stopp"
+            redirect="http://stopp.nsu.ru">
+        <rule directory="/stopp" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/stats">
+        <rule directory="/stats" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/ssc/siv">
+        <rule directory="/ssc/siv" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/srd/lls">
+        <rule directory="/srd/lls" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/sovet">
+        <rule directory="/sovet" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/smk/">
+        <rule directory="/smk/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/ric/">
+        <rule directory="/ric/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/research/">
+        <rule directory="/research/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/psych/">
+        <rule directory="/psych/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/psj">
+        <rule directory="/psj" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/profilak/">
+        <rule directory="/profilak/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/phorum">
+        <rule directory="/phorum" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/personal/">
+        <rule directory="/personal/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/orient/">
+        <rule directory="/orient/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/oai">
+        <rule directory="/oai" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/nirs">
+        <rule directory="/nirs" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/nif">
+        <rule directory="/nif" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/mmf/tvims">
+        <rule directory="/mmf/tvims" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/miss2002">
+        <rule directory="/miss2002" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/materials/">
+        <rule directory="/materials/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <!-- <server className="net.sf.j2ep.servers.BaseServer"
+             domainName="old.nsu.ru"
+             path="/map/">
+         <rule directory="/map/" className="net.sf.j2ep.rules.DirectoryRule"/>
+     </server>-->
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/library">
+        <rule directory="/library" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/kvn/">
+        <rule directory="/kvn/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/kf/">
+        <rule directory="/kf/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+
+    <!-- <server className="net.sf.j2ep.servers.BaseServer"
+             domainName="old.nsu.ru"
+             path="/kadry">
+         <rule directory="/kadry" className="net.sf.j2ep.rules.DirectoryRule"/>
+     </server>-->
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/journals/phys_stud">
+        <rule directory="/journals/phys_stud" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/ip/">
+        <rule directory="/ip/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/interweek">
+        <rule directory="/interweek" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/interweek2006/">
+        <rule directory="/interweek2006/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/interweek2005/">
+        <rule directory="/interweek2005/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/interweek2004/">
+        <rule directory="/interweek2004/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/in2lin">
+        <rule directory="/in2lin" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/icen/grants/market">
+        <rule directory="/icen/grants/market" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/humanity/">
+        <rule directory="/humanity/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/goszakupki/">
+        <rule directory="/goszakupki/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/french">
+        <rule directory="/french" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/fractals">
+        <rule directory="/fractals" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/fpk/">
+        <rule directory="/fpk/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/fire/">
+        <rule directory="/fire/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/filf">
+        <rule directory="/filf" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <!-- <server className="net.sf.j2ep.servers.BaseServer"
+             domainName="old.nsu.ru"
+             path="/fen/">
+         <rule directory="/fen/" className="net.sf.j2ep.rules.DirectoryRule"/>
+     </server>-->
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/english">
+        <rule directory="/english" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/education/">
+        <rule directory="/education/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/edit/">
+        <rule directory="/edit/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/dri">
+        <rule directory="/dri" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+-->
+    <!-- <server className="net.sf.j2ep.servers.BaseServer"
+             domainName="old.nsu.ru"
+             path="/decision">
+         <rule directory="/decision" className="net.sf.j2ep.rules.DirectoryRule"/>
+     </server>-->
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/cult/">
+        <rule directory="/cult/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/conf">
+        <rule directory="/conf" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/community/">
+        <rule directory="/community/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/classics">
+        <rule directory="/classics" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/aw">
+        <rule directory="/aw" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/athletics">
+        <rule directory="/athletics" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/assoz">
+        <rule directory="/assoz" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/asf">
+        <rule directory="/asf" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/archive/">
+        <rule directory="/archive/" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+
+    <!--<server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/alumni">
+        <rule directory="/alumni" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>-->
+
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/8ka">
+        <rule directory="/8ka" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
 </config>
