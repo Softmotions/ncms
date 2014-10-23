@@ -24,7 +24,9 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -63,8 +65,6 @@ public class NewsTwitterHandler {
         this.pageService = pageService;
         this.ebus = ebus;
 
-        Properties twProps = new Properties();
-
         XMLConfiguration xcfg = env.xcfg();
         siteRoot = xcfg.getString("site-root");
 
@@ -73,15 +73,25 @@ public class NewsTwitterHandler {
         tweetAttr = twCfg.getString("tweet-attribute", "tweet");
         annotationAttr = twCfg.getString("annotation-attribute", "annotation");
 
-        twProps.load(new StringReader(twCfg.getString("config-properties", "")));
+        tweetSender = Executors.newSingleThreadExecutor();
 
-        if (twProps.isEmpty()) {
+        Properties twProps = new Properties();
+        String propsFileName = twCfg.getString("config-properties-file", "");
+        if (!StringUtils.isBlank(propsFileName)) {
+            File propsFile = new File(env.substitutePath(propsFileName));
+            if (propsFile.exists()) {
+                try (InputStream is = new FileInputStream(propsFile)) {
+                    twProps.load(is);
+                }
+            }
+        }
+
+        if (!twProps.isEmpty()) {
+            twFactory = new TwitterFactory(new PropertyConfiguration(twProps));
+        } else {
             log.warn("Not configured news twitter sender!");
             twFactory = null;
-        } else {
-            twFactory = new TwitterFactory(new PropertyConfiguration(twProps));
         }
-        tweetSender = Executors.newSingleThreadExecutor();
     }
 
     @Start

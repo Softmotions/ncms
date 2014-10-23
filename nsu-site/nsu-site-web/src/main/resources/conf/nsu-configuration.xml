@@ -325,20 +325,14 @@
 
 
     <social>
-        <!--<vk app-id="37080997"/>--> <!-- for real nsu.ru -->
-        <vk app-id="4596711" user-ref="http://vk.com/nsu24"/>
+        <vk app-id="37080997" user-ref="http://vk.com/nsu24"/>
         <twitter user-ref="https://twitter.com/NskUniversity">
-            <config-properties>
-                <!--oauth.consumerKey=-->
-                <!--oauth.consumerSecret=-->
-                <!--oauth.accessToken=-->
-                <!--oauth.accessTokenSecret=-->
-            </config-properties>
+            <config-properties-file>{home}/.twitter.ds</config-properties-file>
             <tweet-attribute>tweet</tweet-attribute>
             <annotation-attribute>annotation</annotation-attribute>
         </twitter>
         <!-- TODO: replace app id by real id!    -->
-        <facebook app-id="913933761970156" user-ref="https://www.facebook.com/NovosibirskUniversity"/>
+        <facebook app-id="" user-ref="https://www.facebook.com/NovosibirskUniversity"/>
         <google user-ref=""/>
         <add-this app-id="ra-5444c91965bd1f82"/>
     </social>

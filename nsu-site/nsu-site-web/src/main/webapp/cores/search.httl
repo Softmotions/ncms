@@ -16,7 +16,7 @@
             <form action="${page().link}" class="search-form2" id="spc-search-form">
                 <fieldset>
                     <div class="row">
-                        <input name="spc.text" class="text" type="text" value="$!{search_query}" placeholder="" style="width: 778px"/>
+                        <input name="spc.text" class="text" type="text" value="${search_query}" placeholder="" style="width: 778px"/>
                         <input type="submit" value="Искать"/>
                     </div>
                 </fieldset>

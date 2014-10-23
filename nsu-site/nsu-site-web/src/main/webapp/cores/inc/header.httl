@@ -13,7 +13,7 @@
         <div class="personal-row">
             <form action="$!{link('search')}" class="search-form">
                 <fieldset>
-                    <input class="input-text" name="spc.text" type="text" placeholder="Я ищу..."/>
+                    <input class="input-text" name="spc.text" type="text" value="${search_query}" placeholder="Я ищу..."/>
                     <input type="submit" value="search"/>
                     <div class="search-where">
                         <a class="search-directions">
