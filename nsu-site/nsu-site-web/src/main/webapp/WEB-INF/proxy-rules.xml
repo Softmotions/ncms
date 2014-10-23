@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="apollo.nsu.ru:3399"
+            path="/exp">
+        <rule directory="/exp" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/xmlui">
+        <rule directory="/xmlui" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
+            path="/phpBB">
+        <rule directory="/phpBB" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+
+</config>

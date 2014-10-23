@@ -316,5 +316,10 @@
             <artifactId>cage</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>J2EP</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project>

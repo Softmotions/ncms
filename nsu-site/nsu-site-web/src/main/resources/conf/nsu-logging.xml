@@ -26,6 +26,7 @@
     <logger name="com.softmotions.ncms.user.UserEnvRS" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.am.AsmAttributeManagerContext" level="INFO"/>
     <logger name="ru.nsu.legacy.NSULegacyRS" level="INFO"/>
+    <logger name="net.sf.j2ep.ProxyFilter" level="DEBUG"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

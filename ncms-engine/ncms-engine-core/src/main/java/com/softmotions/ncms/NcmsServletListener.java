@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class NcmsServletListener extends WBServletListener {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(NcmsServletListener.class);
+    protected final org.slf4j.Logger log;
 
     private static final String LOGO =
             "                                                    \n" +
@@ -45,6 +45,10 @@ public class NcmsServletListener extends WBServletListener {
             "Version: {} Max heap: {}                             \n";
 
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
+
+    public NcmsServletListener() {
+        log = LoggerFactory.getLogger(getClass());
+    }
 
     public void contextInitialized(ServletContextEvent event) {
         ServletContext sctx = event.getServletContext();
@@ -60,6 +64,8 @@ public class NcmsServletListener extends WBServletListener {
         resteasyBootstrap = getInjector().getInstance(GuiceResteasyBootstrapServletContextListener.class);
         resteasyBootstrap.contextInitialized(event);
 
+        initBeforeFilters(env, sctx);
+
         initCacheHeadersFilters(env, sctx);
 
         initJarResources(env, sctx);
@@ -71,6 +77,8 @@ public class NcmsServletListener extends WBServletListener {
 
         sctx.addFilter("guiceFilter", GuiceFilter.class)
                 .addMappingForUrlPatterns(null, false, "/*");
+
+        initAfterFilters(env, sctx);
 
         start();
 
@@ -87,6 +95,15 @@ public class NcmsServletListener extends WBServletListener {
             }
         }
         log.info(LOGO, env.getNcmsVersion(), Runtime.getRuntime().maxMemory());
+    }
+
+
+    protected void initBeforeFilters(NcmsEnvironment env, ServletContext sctx) {
+
+    }
+
+    protected void initAfterFilters(NcmsEnvironment env, ServletContext sctx) {
+
     }
 
 
