@@ -3,7 +3,6 @@ package ru.nsu;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.cage.Cage;
-import com.github.cage.image.ConstantColorGenerator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.date.DateHelper;
@@ -22,7 +21,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.awt.*;
 import java.io.IOException;
 import java.util.Date;
 
@@ -47,15 +45,16 @@ public class EventsMainController implements AsmController {
 
     private final EventsRemember remember;
 
-    private static final Cage cage = new Cage(null, null, new ConstantColorGenerator(Color.BLACK), "png", null, null, null);
+    private final Cage cage;
 
     @Inject
-    public EventsMainController(NewsDirectoryController ndc, AsmDAO adao, ObjectMapper mapper, NcmsMessages messages, EventsRemember remember) {
+    public EventsMainController(NewsDirectoryController ndc, AsmDAO adao, ObjectMapper mapper, NcmsMessages messages, EventsRemember remember, Cage cage) {
         this.ndc = ndc;
         this.adao = adao;
         this.mapper = mapper;
         this.messages = messages;
         this.remember = remember;
+        this.cage = cage;
     }
 
     @Transactional
