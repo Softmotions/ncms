@@ -46,7 +46,7 @@
         <cache-group patterns="*.css,*.js">
             <expiration>7200</expiration>
         </cache-group>
-        <cache-group patterns="/rs/media/fileid/*,/images/*">
+        <cache-group patterns="/rs/media/fileid/*,/images/*,/adm/resource/*">
             <expiration>7200</expiration>
         </cache-group>
     </cache-headers-groups>
