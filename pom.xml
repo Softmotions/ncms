@@ -37,6 +37,8 @@
     </developers>
 
     <properties>
+        <maven.test.skip>true</maven.test.skip>
+
         <softmotions.commons.version>1.0-SNAPSHOT</softmotions.commons.version>
         <slf4j-api.version>1.7.6</slf4j-api.version>
         <python.exec>python</python.exec>
