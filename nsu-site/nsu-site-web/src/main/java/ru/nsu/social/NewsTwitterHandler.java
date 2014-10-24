@@ -66,10 +66,10 @@ public class NewsTwitterHandler {
         this.ebus = ebus;
 
         XMLConfiguration xcfg = env.xcfg();
-        siteRoot = xcfg.getString("site-root");
 
         SubnodeConfiguration twCfg = xcfg.configurationAt("social.twitter");
 
+        siteRoot = twCfg.getString("site-root");
         tweetAttr = twCfg.getString("tweet-attribute", "tweet");
         annotationAttr = twCfg.getString("annotation-attribute", "annotation");
 
