@@ -259,7 +259,7 @@
         </exec-extra-params>
         <page-url-template>${site-root}/{id}</page-url-template>
         <asm-templates>
-            journal,content,dept,faculty,index_news,index_interview,index_reportage,faculty_news,dept_news,index_orders,index_announce,faculty_announce
+            journal,content,content2,dept,faculty,index_news,index_interview,index_reportage,faculty_news,dept_news,index_orders,index_announce,faculty_announce
         </asm-templates>
     </html-to-pdf>
 

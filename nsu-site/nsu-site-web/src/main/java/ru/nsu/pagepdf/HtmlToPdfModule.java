@@ -116,16 +116,14 @@ public class HtmlToPdfModule extends AbstractModule {
                 } else {
                     asm = adao.asmPlainByIdWithTemplates(event.getId(), templates);
                 }
-
                 if (asm != null && asm.isPublished()) {
                     try {
                         datars.removePagePdf(asm.getId());
-
                         File tmpFile = File.createTempFile("html2pdf", String.valueOf(asm.getId()));
                         tmpFile.deleteOnExit();
                         String[] cmdargs = cmdargstmpl.clone();
                         String url = cfg.getString("page-url-template").replace("{id}", String.valueOf(asm.getId()));
-                        log.info("Fetched PDF from: " + url);
+                        log.info("PDF from: " + url);
                         cmdargs[cmdargs.length - 2] = url;
                         cmdargs[cmdargs.length - 1] = tmpFile.getAbsolutePath();
                         Process wkhtmltopdf = Runtime.getRuntime().exec(cmdargs);
