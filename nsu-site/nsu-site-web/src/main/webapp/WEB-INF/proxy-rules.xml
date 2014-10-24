@@ -364,11 +364,11 @@
     </server>-->
 
 
-    <!--<server className="net.sf.j2ep.servers.BaseServer"
+    <server className="net.sf.j2ep.servers.BaseServer"
             domainName="old.nsu.ru"
             path="/asf">
         <rule directory="/asf" className="net.sf.j2ep.rules.DirectoryRule"/>
-    </server>-->
+    </server>
 
 
     <server className="net.sf.j2ep.servers.BaseServer"

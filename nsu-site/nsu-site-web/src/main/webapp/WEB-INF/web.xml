@@ -10,6 +10,12 @@
         <listener-class>ru.nsu.NSUServletListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>
+            net.sf.ehcache.constructs.web.ShutdownListener
+        </listener-class>
+    </listener>
+
     <!-- включение авторизации на (используется с MyNSUOAuth2) -->
     <!--<security-constraint>
         <web-resource-collection>
