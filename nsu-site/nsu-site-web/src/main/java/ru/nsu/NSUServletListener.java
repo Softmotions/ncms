@@ -17,6 +17,7 @@ public class NSUServletListener extends NcmsServletListener {
         FilterRegistration.Dynamic fr = sctx.addFilter("nsuProxy", ProxyFilter.class);
         fr.addMappingForUrlPatterns(null, false, "/*");
         fr.setInitParameter("dataUrl", "/WEB-INF/proxy-rules.xml");
+        fr.setInitParameter("cache", "true");
         fr.setInitParameter("cacheDir", "/tmp/nsusite-proxy");
         fr.setInitParameter("maxCacheEntries", "10000");
         fr.setInitParameter("maxCacheEntitySize", "1048576"); //1Mb
