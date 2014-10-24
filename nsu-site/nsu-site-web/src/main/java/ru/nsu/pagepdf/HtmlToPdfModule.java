@@ -124,7 +124,9 @@ public class HtmlToPdfModule extends AbstractModule {
                         File tmpFile = File.createTempFile("html2pdf", String.valueOf(asm.getId()));
                         tmpFile.deleteOnExit();
                         String[] cmdargs = cmdargstmpl.clone();
-                        cmdargs[cmdargs.length - 2] = cfg.getString("page-url-template").replace("{id}", String.valueOf(asm.getId()));
+                        String url = cfg.getString("page-url-template").replace("{id}", String.valueOf(asm.getId()));
+                        log.info("Fetched PDF from: " + url);
+                        cmdargs[cmdargs.length - 2] = url;
                         cmdargs[cmdargs.length - 1] = tmpFile.getAbsolutePath();
                         Process wkhtmltopdf = Runtime.getRuntime().exec(cmdargs);
                         if (wkhtmltopdf.waitFor(1, TimeUnit.MINUTES)) {
@@ -133,7 +135,7 @@ public class HtmlToPdfModule extends AbstractModule {
                             }
                             Thread.sleep(100);
                             tmpFile.delete();
-                            log.info("Fetched PDF from " + cmdargs[cmdargs.length - 2]);
+                            log.info("Fetched PDF from: " + url);
                         } else {
                             log.error("No response from wkhtmltopdf");
                         }
