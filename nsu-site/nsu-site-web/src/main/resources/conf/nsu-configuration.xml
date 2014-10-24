@@ -328,6 +328,7 @@
         <vk app-id="4596711" user-ref="http://vk.com/nsu24"/>
         <twitter user-ref="https://twitter.com/NskUniversity">
             <config-properties-file>{home}/.twitter.ds</config-properties-file>
+            <site-root>http://${server-name}</site-root>
             <tweet-attribute>tweet</tweet-attribute>
             <annotation-attribute>annotation</annotation-attribute>
         </twitter>
