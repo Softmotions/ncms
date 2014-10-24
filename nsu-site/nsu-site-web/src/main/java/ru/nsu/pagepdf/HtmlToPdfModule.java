@@ -51,7 +51,7 @@ public class HtmlToPdfModule extends AbstractModule {
 
         private final Configuration cfg;
 
-        private final ExecutorService saver;
+        private ExecutorService saver;
 
         private final String[] cmdargstmpl;
 
@@ -61,7 +61,11 @@ public class HtmlToPdfModule extends AbstractModule {
             this.datars = datars;
             this.ebus = ebus;
 
-            this.saver = Executors.newSingleThreadExecutor();
+            this.saver = Executors.newSingleThreadExecutor(r -> {
+                Thread sf = new Thread(r);
+                sf.setName("HtmlToPdfModuleSaver");
+                return sf;
+            });
             this.cfg = env.xcfg().configurationAt("html-to-pdf");
 
             List<String> cmdargs = new ArrayList<>();
@@ -94,6 +98,10 @@ public class HtmlToPdfModule extends AbstractModule {
 
         @Subscribe
         public void onAsmModified(final AsmModifiedEvent event) {
+            log.info("Got html2pdf job, page: " + event.getId());
+            if (saver.isTerminated()) {
+                saver = Executors.newSingleThreadExecutor();
+            }
             saver.execute(() -> {
                 Asm asm = null;
                 String[] templates = cfg.getStringArray("asm-templates");
