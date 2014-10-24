@@ -325,7 +325,7 @@
 
 
     <social>
-        <vk app-id="37080997" user-ref="http://vk.com/nsu24"/>
+        <vk app-id="4596711" user-ref="http://vk.com/nsu24"/>
         <twitter user-ref="https://twitter.com/NskUniversity">
             <config-properties-file>{home}/.twitter.ds</config-properties-file>
             <tweet-attribute>tweet</tweet-attribute>
