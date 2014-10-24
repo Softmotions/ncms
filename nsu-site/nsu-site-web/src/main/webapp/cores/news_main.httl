@@ -15,8 +15,11 @@
         </header>
         <div id="main" class="newsmain-page">
             ${include("inc/breadcrumbs.httl")}
-            <h1>Главные события</h1>
-            <ul class="news-list list3">
+            <div style="margin-bottom: 13px; height: 32px;">
+                <h1 style="float: left; margin: 0;">Главные события</h1>
+                <a href="$!{link('search_news')}" class="news-search-btn">Поиск по новостям</a>
+            </div>
+            <ul class="news-list list3" style="clear: both;">
                 #foreach(Asm p in events)
                 <li>
                     #set(Image img = p.asm("bigicon"))

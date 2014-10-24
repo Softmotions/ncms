@@ -1,4 +1,17 @@
 &.newsmain-page {
+  a.news-search-btn {
+    float: right;
+    font: 700 17px/20px $basic_sans_font;
+    margin: 9px 6px 0 0;
+    padding: 0 0 0;
+    text-decoration: none;
+    color: #1e1e1e;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .news-holder {
     width: 999px;
     margin: 0;
