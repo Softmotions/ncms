@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
     <server className="net.sf.j2ep.servers.BaseServer"
-            domainName="apollo.nsu.ru:3399"
+            domainName="old.nsu.ru"
             path="/exp">
         <rule directory="/exp" className="net.sf.j2ep.rules.DirectoryRule"/>
     </server>
@@ -378,11 +378,11 @@
     </server>
 
 
-    <!--<server className="net.sf.j2ep.servers.BaseServer"
+    <server className="net.sf.j2ep.servers.BaseServer"
             domainName="old.nsu.ru"
             path="/alumni">
         <rule directory="/alumni" className="net.sf.j2ep.rules.DirectoryRule"/>
-    </server>-->
+    </server>
 
 
     <server className="net.sf.j2ep.servers.BaseServer"
