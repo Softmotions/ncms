@@ -52,5 +52,6 @@ public class EhcacheHttpClientStorage implements HttpCacheStorage {
             throw new RuntimeException("Cache: " + cacheName + " not found");
         }
         es = new EhcacheHttpCacheStorage(cache, cc);
+        log.info("Using cache: " + cache);
     }
 }

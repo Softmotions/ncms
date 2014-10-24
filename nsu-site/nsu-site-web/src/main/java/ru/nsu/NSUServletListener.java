@@ -4,10 +4,13 @@ import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsServletListener;
 
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.management.ManagementService;
 import net.sf.j2ep.ProxyFilter;
 
+import javax.management.MBeanServer;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
+import java.lang.management.ManagementFactory;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -37,6 +40,8 @@ public class NSUServletListener extends NcmsServletListener {
     private void initEhcache(NcmsEnvironment env, ServletContext sctx) {
         String ecfg = sctx.getRealPath("/WEB-INF/ehcache.xml");
         log.info("Using EHCache config: " + ecfg);
-        CacheManager.create(ecfg);
+        CacheManager cm = CacheManager.create(ecfg);
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ManagementService.registerMBeans(cm, mbs, true, true, true, true);
     }
 }
