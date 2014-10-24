@@ -52,6 +52,12 @@
 
     <server className="net.sf.j2ep.servers.BaseServer"
             domainName="old.nsu.ru"
+            path="/science">
+        <rule directory="/science" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="old.nsu.ru"
             path="/ssc/siv">
         <rule directory="/ssc/siv" className="net.sf.j2ep.rules.DirectoryRule"/>
     </server>
