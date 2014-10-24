@@ -69,8 +69,8 @@ public class BrowserFilter implements Filter {
 
         String userAgent = req.getHeader("User-Agent");
         Pattern pattern = IE_PATTERN;
-        Matcher matcher = pattern.matcher(userAgent);
-        if (!matcher.find()) {
+        Matcher matcher = (userAgent != null) ? pattern.matcher(userAgent) : null;
+        if (matcher == null || !matcher.find()) {
             chain.doFilter(request, response);
             return;
         }
