@@ -13,7 +13,6 @@ import com.softmotions.web.GenericResponseWrapper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.mybatis.guice.transactional.Transactional;
@@ -64,14 +63,20 @@ public class AsmFilter implements Filter {
     @Inject
     private AsmRendererContextFactory rendererContextFactory;
 
+    private boolean resolveRelativePaths;
+
+    private String siteFilesRoot;
+
     private String[] stripPrefixes;
 
     private String[] excludePrefixes;
 
 
     public void init(FilterConfig cfg) throws ServletException {
-        stripPrefixes = null;
-        excludePrefixes = null;
+        this.stripPrefixes = null;
+        this.excludePrefixes = null;
+        this.resolveRelativePaths = env.xcfg().getBoolean("asm.site-files-root[@resolveRelativePaths]", true);
+        this.siteFilesRoot = env.xcfg().getString("asm.site-files-root", "");
 
         String ss = cfg.getInitParameter("strip-prefixes");
         if (ss != null) {
@@ -155,8 +160,7 @@ public class AsmFilter implements Filter {
         try {
             ctx = rendererContextFactory.createStandalone(req, renderResp, asmRef);
         } catch (AsmResourceNotFoundException e) {
-            log.error("Resource not found: " + e.getResource() + " assembly: " + asmRef);
-            //resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            log.info("NOT FOUND: " + e.getResource());
             return false;
         }
 
@@ -225,12 +229,10 @@ public class AsmFilter implements Filter {
         if ("/index.html".equals(pi)) {
             return false;
         }
-        XMLConfiguration xcfg = env.xcfg();
-        if (!xcfg.getBoolean("asm.site-files-root[@resolveRelativePaths]", true)) {
+        if (!resolveRelativePaths) {
             return false;
         }
-        String siteRoot = xcfg.getString("asm.site-files-root");
-        MediaResource mres = mediaRepository.findMediaResource(siteRoot + pi, messages.getLocale(req));
+        MediaResource mres = mediaRepository.findMediaResource(siteFilesRoot + pi, messages.getLocale(req));
         if (mres == null) {
             return false;
         }
@@ -240,7 +242,6 @@ public class AsmFilter implements Filter {
         }
         try (InputStream is = mres.openStream()) {
             IOUtils.copyLarge(is, resp.getOutputStream());
-
         }
         return true;
     }
