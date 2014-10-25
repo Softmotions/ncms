@@ -6,7 +6,7 @@
     </nav>
 </div>
 <div class="header-info">
-    <strong class="logo"><a href="$!{link('index.html')}">Новосибирский государственный университет</a></strong>
+    <strong class="logo"><a href="$!{link('')}">Новосибирский государственный университет</a></strong>
     <!--<a href="#" class="language">Eng</a>-->
 
     <div class="personal-holder">
