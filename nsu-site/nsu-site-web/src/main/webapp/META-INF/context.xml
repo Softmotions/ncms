@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context useNaming="true">
+<Context useNaming="true"
+         cacheMaxSize="71680"
+         cacheTTL="60000"
+         cachingAllowed="true">
 
      <Resource name="WSUserDatabase"
                auth="Container"

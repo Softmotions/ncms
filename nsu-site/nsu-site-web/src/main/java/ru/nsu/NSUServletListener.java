@@ -22,6 +22,7 @@ public class NSUServletListener extends NcmsServletListener {
         initEhcache(env, sctx);
 
         FilterRegistration.Dynamic fr = sctx.addFilter("nsuProxy", ProxyFilter.class);
+        fr.setAsyncSupported(true);
         fr.addMappingForUrlPatterns(null, false, "/*");
         fr.setInitParameter("dataUrl", "/WEB-INF/proxy-rules.xml");
         fr.setInitParameter("cache", "true");
