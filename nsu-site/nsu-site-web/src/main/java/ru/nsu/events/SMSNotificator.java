@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -39,7 +40,8 @@ public class SMSNotificator implements Notificator {
 
     private boolean initialized;
 
-    private Pattern PHONE_PATTERN;
+    private Pattern phonePattern;
+    private String phoneReplacePattern;
 
     private String messageTemplate;
 
@@ -49,7 +51,8 @@ public class SMSNotificator implements Notificator {
     private ExecutorService smsExecutor;
 
     public void init(NcmsEnvironment env, Configuration cfg) {
-        PHONE_PATTERN = Pattern.compile(cfg.getString("phone-pattern", "^(\\+?7|8)?\\d{10}$"));
+        phonePattern = Pattern.compile(cfg.getString("phone-pattern", "^(\\+?7|8)?(\\d{10})$"));
+        phoneReplacePattern = cfg.getString("phone-replace-pattern", "7$2");
 
         apiUrl = cfg.getString("sms-server-api-url");
         if (StringUtils.isBlank(apiUrl)) {
@@ -95,12 +98,13 @@ public class SMSNotificator implements Notificator {
         }
 
         String phone = contact.replaceAll("[\\(\\)\\- ]", "");
-        phone = phone.replaceFirst("^(\\+7|8)", "7");
-        return phone;
+        Matcher matcher = phonePattern.matcher(phone);
+
+        return matcher.matches() ? matcher.replaceAll(phoneReplacePattern) : null;
     }
 
     public boolean isAcceptContact(String contact) {
-        return initialized && PHONE_PATTERN.matcher(prepareContact(contact)).matches();
+        return initialized && prepareContact(contact) != null;
     }
 
     public void sendNotification(final String contact, Asm event) {
