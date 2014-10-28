@@ -422,6 +422,17 @@ public class PageSecurityService extends MBDAOSupport {
         }
     }
 
+    public String getAccessRights2(Asm page, HttpServletRequest req) {
+        if (page == null || page.getId() == null) {
+            return "";
+        } else if ("news.page".equals(page.getType())) {
+            return mergeRights(getAccessRights(page.getId(), req),
+                               page.getNavParentId() != null && canNewsEdit(page.getNavParentId(), req) ? String.valueOf(WRITE) : "");
+        } else {
+            return getAccessRights(page.getId(), req);
+        }
+    }
+
     public boolean isOwner(long pid, HttpServletRequest req) {
         return checkAccess(pid, req, OWNER);
     }

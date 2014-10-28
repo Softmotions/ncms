@@ -875,7 +875,11 @@ public class PageRS extends MBDAOSupport implements PageService {
     public boolean checkAccess(@Context HttpServletRequest req,
                                @PathParam("pid") Long pid,
                                @PathParam("rights") String rights) {
-        return pageSecurity.checkAccessAll(pid, req, rights);
+        Asm page = adao.asmSelectById(pid);
+        if (page == null) {
+            throw new NotFoundException("");
+        }
+        return pageSecurity.checkAccessAll2(page, req, rights);
     }
 
     @GET
@@ -884,7 +888,11 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public String getAccessRights(@Context HttpServletRequest req,
                                   @PathParam("pid") Long pid) {
-        return pageSecurity.getAccessRights(pid, req);
+        Asm page = adao.asmSelectById(pid);
+        if (page == null) {
+            throw new NotFoundException("");
+        }
+        return pageSecurity.getAccessRights2(page, req);
     }
 
     @PUT
