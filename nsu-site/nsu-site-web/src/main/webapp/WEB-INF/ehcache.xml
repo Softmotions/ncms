@@ -290,9 +290,10 @@
 
     <cache name="pageProxyCache"
            timeToLiveSeconds="86400"
-           maxBytesLocalHeap="52428800"
+           maxBytesLocalOffHeap="52428800"
            maxBytesLocalDisk="314572800"
-           diskExpiryThreadIntervalSeconds="120">
+           diskExpiryThreadIntervalSeconds="120"
+           statistics="true">
         <persistence strategy="localTempSwap"/>
     </cache>
 
