@@ -1143,7 +1143,9 @@ function initNewsMain(pageSize) {
         }, function(data) {
             var html = $.parseHTML(data);
             container.append(html);
-            container.masonry('appended', html);
+            container.imagesLoaded(function(){
+                container.masonry('appended', html);
+            });
             if (container.find('.news-item').size() - count >= pageSize) {
                 fetchMore.fadeIn(500);
             }
