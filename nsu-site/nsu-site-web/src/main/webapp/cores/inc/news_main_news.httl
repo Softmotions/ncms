@@ -12,8 +12,8 @@
         </div>
 
         #if(img != null)
-        <div style="width:285px;max-height:174px;overflow:hidden">
-            <a href="$!{p.link}"><img src="$!{img.link}" width="283" alt="${p.hname}"/></a>
+        <div style="width:285px;max-height:174px;overflow:hidden;border: 1px solid #d6d6d6;">
+            <a href="$!{p.link}"><img src="$!{img.link}" width="285" alt="${p.hname}"/></a>
         </div>
         #end
 
@@ -32,8 +32,8 @@
         </div>
 
         #if(img != null)
-        <div style="width:285px;max-height:174px;overflow:hidden">
-            <a href="$!{p.link}"><img src="$!{img.link}" width="283" alt="${p.hname}"/></a>
+        <div style="width:285px;max-height:174px;overflow:hidden;border: 1px solid #d6d6d6;">
+            <a href="$!{p.link}"><img src="$!{img.link}" width="285" alt="${p.hname}"/></a>
         </div>
         #end
 
@@ -46,8 +46,8 @@
             <span class="date">${edate.format2("dd")} ${edate.format2("MMM")} ${edate.format2("yyyy")}</span>
         </div>
         #if(img != null)
-        <div style="width:285px;height:158px;overflow:hidden">
-            <a href="$!{p.link}"><img src="$!{img.link}" width="283" alt="${p.hname}"/></a>
+        <div style="width:285px;height:158px;overflow:hidden;border: 1px solid #d6d6d6;">
+            <a href="$!{p.link}"><img src="$!{img.link}" width="285" alt="${p.hname}"/></a>
         </div>
         #end
 
@@ -63,8 +63,8 @@
         <!-- Новости факультетов -->
         <h4 class="news">${p.asmAny("np_hname")}</h4>
         #if(img != null)
-        <div style="width:285px;max-height:174px;overflow:hidden">
-            <a href="$!{p.link}"><img src="$!{img.link}" width="283" alt="${p.hname}"/></a>
+        <div style="width:285px;max-height:174px;overflow:hidden;border: 1px solid #d6d6d6;">
+            <a href="$!{p.link}"><img src="$!{img.link}" width="285" alt="${p.hname}"/></a>
         </div>
         <h3><a href="$!{p.link}">${p.hname}</a></h3>
         #else
@@ -83,8 +83,8 @@
         <h4 class="news">Новости</h4>
         <span class="date">${edate.format2("dd")} ${edate.format2("MMM")} ${edate.format2("yyyy")}</span>
         #if(img != null)
-        <div style="width:285px;max-height:174px;overflow:hidden">
-            <a href="$!{p.link}"><img src="$!{img.link}" width="283" alt="${p.hname}"/></a>
+        <div style="width:285px;max-height:174px;overflow:hidden;border: 1px solid #d6d6d6;">
+            <a href="$!{p.link}"><img src="$!{img.link}" width="285" alt="${p.hname}"/></a>
         </div>
         <h3><a href="$!{p.link}">${p.hname}</a></h3>
         #else

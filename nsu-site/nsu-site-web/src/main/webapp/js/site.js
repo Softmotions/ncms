@@ -1229,7 +1229,9 @@ function initEventsMain(action, pageSize) {
         }, function(data) {
             var html = $.parseHTML(data);
             results.append(html);
-            results.masonry('appended', html);
+            results.imagesLoaded(function(){
+                results.masonry('appended', html);
+            });
             if (results.find('li').size() - count >= pageSize) {
                 fetchMore.fadeIn(500);
             }

@@ -9,8 +9,8 @@
         <a href="#" class="remember"></a>
     </div>
     #if(bigicon != null)
-    <div style="width:285px;max-height:174px;overflow:hidden;">
-        <a href="$!{p.link}"><img src="$!{bigicon.link}" width="283" alt="${p.hname}"/></a>
+    <div style="width:285px;max-height:174px;overflow:hidden;border: 1px solid #d6d6d6;">
+        <a href="$!{p.link}"><img src="$!{bigicon.link}" width="285" alt="${p.hname}"/></a>
     </div>
     #end
     <h3><a href="$!{p.link}">${p.hname}</a></h3>
@@ -39,8 +39,8 @@
         <a href="#" class="remember">Напомнить</a>
     </div>
     #if(bigicon != null)
-    <div style="width:285px;max-height:174px;overflow:hidden;">
-    <a href="$!{p.link}"><img src="$!{bigicon.link}" width="283" alt="${p.hname}"/></a>
+    <div style="width:285px;max-height:174px;overflow:hidden;border: 1px solid #d6d6d6;">
+    <a href="$!{p.link}"><img src="$!{bigicon.link}" width="285" alt="${p.hname}"/></a>
     </div>
     #end
     <h3><a href="$!{p.link}">${p.hname}</a></h3>
@@ -53,8 +53,8 @@
         <span class="end"></span>
     </div>
     #if(bigicon != null)
-    <div style="width:285px;max-height:174px;overflow:hidden;">
-        <a href="$!{p.link}"><img src="$!{bigicon.link}" width="283" alt="${p.hname}"/></a>
+    <div style="width:285px;max-height:174px;overflow:hidden;border: 1px solid #d6d6d6;">
+        <a href="$!{p.link}"><img src="$!{bigicon.link}" width="285" alt="${p.hname}"/></a>
     </div>
     #end
     <h3><a href="$!{p.link}">${p.hname}</a></h3>
