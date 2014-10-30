@@ -157,6 +157,7 @@
         <module class="com.softmotions.weboot.liquibase.WBLiquibaseModule"/>
         <module class="com.softmotions.weboot.mongo.WBMongoModule"/>
         <module class="com.softmotions.weboot.solr.WBSolrModule"/>
+        <module class="com.softmotions.ncms.update.UpdateModule"/>
         <module class="com.softmotions.ncms.events.EventsModule"/>
         <module class="com.softmotions.ncms.security.NcmsSecurityModule"/>
         <module class="com.softmotions.ncms.asm.AsmModule"/>

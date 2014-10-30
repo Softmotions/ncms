@@ -76,6 +76,7 @@
     <modules>
         <module class="com.softmotions.ncms.events.EventsModule"/>
         <module class="com.softmotions.ncms.db.DevDBInitializerModule"/>
+        <module class="com.softmotions.ncms.update.UpdateModule"/>
         <module class="com.softmotions.ncms.security.NcmsSecurityModule"/>
         <module class="com.softmotions.ncms.asm.AsmModule"/>
         <module class="com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule"/>

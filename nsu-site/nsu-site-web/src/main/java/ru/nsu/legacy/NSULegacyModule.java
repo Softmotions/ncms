@@ -10,6 +10,5 @@ public class NSULegacyModule extends AbstractModule {
 
     protected void configure() {
         bind(NSULegacyRS.class).in(Singleton.class);
-
     }
 }
