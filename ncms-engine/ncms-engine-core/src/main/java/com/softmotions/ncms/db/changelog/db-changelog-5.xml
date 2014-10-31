@@ -220,5 +220,15 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="56" author="tyutyunkov@gmail.com">
+        <sql>
+            CALL SYSPROC.ADMIN_CMD('REORG TABLE UPDATE_STATE');
+            SET INTEGRITY FOR UPDATE_STATE OFF;
+            ALTER TABLE UPDATE_STATE ADD APPLY_DATE TIMESTAMP NOT NULL WITH DEFAULT CURRENT TIMESTAMP;
+            SET INTEGRITY FOR UPDATE_STATE IMMEDIATE CHECKED FORCE GENERATED;
+            CALL SYSPROC.ADMIN_CMD('REORG TABLE UPDATE_STATE');
+        </sql>
+    </changeSet>
     
 </databaseChangeLog>
