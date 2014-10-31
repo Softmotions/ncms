@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.update.UpdateModule$UpdateInitializer">
+
+    <select id="isApplied" resultType="long" parameterType="string">
+        SELECT COUNT(*) FROM UPDATE_STATE WHERE ID = #{id}
+    </select>
+
+    <update id="setApplied" parameterType="string">
+        INSERT INTO UPDATE_STATE(ID) VALUES (#{id})
+    </update>
+
+</mapper>
+

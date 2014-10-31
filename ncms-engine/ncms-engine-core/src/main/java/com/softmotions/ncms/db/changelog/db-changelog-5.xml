@@ -211,5 +211,14 @@
             CREATE INDEX "IDX_ASMS_SCOLS" ON "ASMS" ("HNAME_LOWER" ASC) ALLOW REVERSE SCANS COLLECT SAMPLED DETAILED STATISTICS;
         </sql>
     </changeSet>
+
+    <changeSet id="55" author="tyutyunkov@gmail.com">
+        <createTable tableName="UPDATE_STATE"
+                     remarks="Applied updates list">
+            <column name="ID" type="VARCHAR(64)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
     
 </databaseChangeLog>
