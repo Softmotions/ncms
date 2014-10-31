@@ -7,7 +7,7 @@
     </server>
 
     <server className="net.sf.j2ep.servers.BaseServer"
-            domainName="old.nsu.ru"
+            domainName="lib.nsu.ru"
             path="/xmlui">
         <rule directory="/xmlui" className="net.sf.j2ep.rules.DirectoryRule"/>
     </server>
@@ -16,6 +16,12 @@
             domainName="lib.nsu.ru"
             path="/jspui">
         <rule directory="/jspui" className="net.sf.j2ep.rules.DirectoryRule"/>
+    </server>
+
+    <server className="net.sf.j2ep.servers.BaseServer"
+            domainName="lib.nsu.ru"
+            path="/solr">
+        <rule directory="/solr" className="net.sf.j2ep.rules.DirectoryRule"/>
     </server>
 
     <server className="net.sf.j2ep.servers.BaseServer"
