@@ -1,6 +1,7 @@
 package ru.nsu;
 
 import ru.nsu.events.EventsRemember;
+import ru.nsu.hotfixes.NavCachedPathFixes;
 import ru.nsu.pagepdf.PagePdfRS;
 import ru.nsu.pressa.NSUPressaRS;
 import ru.nsu.social.NewsTwitterHandler;
@@ -44,5 +45,6 @@ public class NSUModule extends AbstractModule {
         // hotfixes.addBinding().toInstance();
         // hotfixes.addBinding().toProvider();
         // hotfixes.addBinding().to();
+        hotfixes.addBinding().to(NavCachedPathFixes.class);
     }
 }

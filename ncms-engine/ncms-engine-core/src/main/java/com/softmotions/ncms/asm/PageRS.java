@@ -591,10 +591,14 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new ForbiddenException("");
         }
 
+        update("prepareMove", "nav_cached_path", getPageIDsPath(src));
+
         update("movePage",
                "id", src,
                "nav_cached_path", getPageIDsPath(tgt != 0 ? tgt : null),
                "nav_parent_id", (tgt != 0) ? tgt : null);
+
+        while(update("finishMove") > 0);
 
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, srcPage.getId()));
     }

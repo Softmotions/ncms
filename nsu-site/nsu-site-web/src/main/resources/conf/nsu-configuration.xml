@@ -59,6 +59,7 @@
         </extra-properties>
         <extra-mappers>
             <mapper resource="ru/nsu/legacy/NSULegacyRS.xml"/>
+            <mapper resource="ru/nsu/hotfixes/hotfixes.xml"/>
         </extra-mappers>
     </mybatis>
 
