@@ -23,6 +23,7 @@ public class NavCachedPathFixes extends MBDAOSupport implements HotFix {
     @Override
     public void apply() throws Exception {
         update("NavCachedPathFixes:prepare");
-        while (update("NavCachedPathFixes:update") > 0) ;
+        update("NavCachedPathFixes:updateRoot");
+        while (update("NavCachedPathFixes:updateChildren") > 0) ;
     }
 }
