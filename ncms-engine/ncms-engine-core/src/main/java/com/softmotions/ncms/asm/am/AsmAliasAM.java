@@ -88,7 +88,7 @@ public class AsmAliasAM implements AsmAttributeManager {
             while (alias.length() > 0 && alias.charAt(0) == '/') {
                 alias = alias.substring(1);
             }
-            if (!adao.asmCheckUniqueAlias(alias, ctx.getAsmId())) {
+            if (!adao.asmIsUniqueAlias(alias, ctx.getAsmId())) {
                 throw new NcmsMessageException(messages.get("ncms.asm.alias.non.unique"), true);
             }
         }

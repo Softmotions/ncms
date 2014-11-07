@@ -206,8 +206,8 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public boolean asmCheckUniqueAlias(String alias, long asmId) {
-        Number count = selectOne("asmCheckUniqueAlias",
+    public boolean asmIsUniqueAlias(String alias, long asmId) {
+        Number count = selectOne("asmIsUniqueAlias",
                                  "alias", alias,
                                  "id", asmId);
         return (count.intValue() < 1);

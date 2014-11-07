@@ -45,6 +45,7 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -499,6 +500,8 @@ public class PageRS extends MBDAOSupport implements PageService {
             id = adao.asmSelectIdByName(guid);
         } while (id != null); //very uncommon
 
+
+        String pageIDsPath = getPageIDsPath(parent);
         update("mergeNewPage",
                "guid", guid,
                "name", name,
@@ -506,16 +509,24 @@ public class PageRS extends MBDAOSupport implements PageService {
                "type", type,
                "user", req.getRemoteUser(),
                "nav_parent_id", parent,
-               "nav_cached_path", getPageIDsPath(parent),
+               "nav_cached_path", pageIDsPath,
                "recursive_acl", selectOne("getRecursiveAcl", "pid", parent));
 
         id = adao.asmSelectIdByName(guid);
+
+        /*if ("news.page".equals(type)) {
+            String alias = generateNewsAlias(name);
+
+        }*/
+
         ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
     }
 
-
-
-
+    private String generateNewsAlias(String name) {
+        //todo locale dependent!!!
+        //name = TranslitHelper.translitRussian()
+        return null;
+    }
 
     @PUT
     @Path("/update/basic")
@@ -598,7 +609,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                "nav_cached_path", getPageIDsPath(tgt != 0 ? tgt : null),
                "nav_parent_id", (tgt != 0) ? tgt : null);
 
-        while(update("finishMove") > 0);
+        while (update("finishMove") > 0) ;
 
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, srcPage.getId()));
     }
@@ -944,6 +955,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         return info;
     }
 
+    @Nonnull
     public String getPageIDsPath(Long id) {
         if (id == null) {
             return "/";

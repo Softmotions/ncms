@@ -228,7 +228,7 @@
                              WHERE nav_alias = #{name})
     </select>
 
-    <select id="asmCheckUniqueAlias" resultType="long" parameterType="map">
+    <select id="asmIsUniqueAlias" resultType="long" parameterType="map">
         SELECT
             COUNT(*)
         FROM ASMS
