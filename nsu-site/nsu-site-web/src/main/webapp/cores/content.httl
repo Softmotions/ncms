@@ -13,6 +13,11 @@
             ${include("inc/breadcrumbs.httl")}
             $!{asm("content")}
             ${include("inc/medialine.httl")}
+
+            #set(Date mdate = page().mdate)
+            <p style="clear: both; text-align: right; color: grey; font-style: italic; font-size: small; margin-top: 10px;">
+                Последняя редакция: ${mdate.format2("dd.MM.YYYY HH:mm")}
+            </p>
         </div>
         ${include("inc/soclikes.httl")}
         <footer id="footer">
