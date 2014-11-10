@@ -95,19 +95,25 @@ public class NewsMainPageController implements AsmController {
         HttpServletResponse resp = ctx.getServletResponse();
 
         String action = StringUtils.trimToEmpty(req.getParameter("mnc.action"));
-        String partialResource;
-        switch (action) {
-            case "fetchMoreNews":
-                addNews(ctx);
-                partialResource = "/site/cores/inc/news_main_news.httl";
-                break;
+        String contentType = "text/html";
+        String partialResource = null;
+        if (null != req.getParameter("rss")) {
+            addNews(ctx);
+            contentType = "application/xml; charset=UTF-8";
+            partialResource = "/site/cores/inc/news_main_rss.httl";
+        } else {
+            switch (action) {
+                case "fetchMoreNews":
+                    addNews(ctx);
+                    partialResource = "/site/cores/inc/news_main_news.httl";
+                    break;
 
-            default:
-                partialResource = null;
+                default:
+            }
         }
 
         if (partialResource != null) {
-            resp.setContentType("text/html");
+            resp.setContentType(contentType);
             ctx.getRenderer().renderTemplate(partialResource, ctx, resp.getWriter());
             return true;
         }

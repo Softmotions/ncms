@@ -50,15 +50,21 @@ public class NewsDirectoryController implements AsmController {
         }
         ctx.put("news_limit", limit);
 
-        String action = req.getParameter("news.action");
-        if ("fetchMore".equals(action)) {
-            AsmAttribute results = ctx.getAsm().getEffectiveAttribute("news_list");
-            if (results != null) {
-                ctx.getRenderer().renderTemplate(results.getEffectiveValue(), ctx, resp.getWriter());
-            } else {
-                log.error("Atribute 'news_list' is not found");
-            }
+        if (req.getParameter("rss") != null) {
+            resp.setContentType("application/xml; charset=UTF-8");
+            ctx.getRenderer().renderTemplate("/site/cores/inc/news_rss.httl", ctx, resp.getWriter());
             return true;
+        } else {
+            String action = req.getParameter("news.action");
+            if ("fetchMore".equals(action)) {
+                AsmAttribute results = ctx.getAsm().getEffectiveAttribute("news_list");
+                if (results != null) {
+                    ctx.getRenderer().renderTemplate(results.getEffectiveValue(), ctx, resp.getWriter());
+                } else {
+                    log.error("Atribute 'news_list' is not found");
+                }
+                return true;
+            }
         }
         return false;
     }

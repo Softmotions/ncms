@@ -10,6 +10,7 @@
             ${include("inc/header.httl")}
         </header>
         <div id="main" class="dept-page">
+            #set(String rssLink = page().link + "?rss")
             ${include("inc/breadcrumbs.httl")}
             <div class="twocolumns type2">
                 <div id="content">

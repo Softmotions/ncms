@@ -343,20 +343,41 @@
     padding: 14px 18px 16px 55px;
   }
 
-  .pdf {
+  .bclinks-holder {
     position: absolute;
     top: -4px;
     right: 0;
+    height: 24px;
+    width: auto;
+
+    @media print {
+      display: none;
+    }
+  }
+
+  .pdf {
+    position: relative;
+    float: right;
+    margin-left: 4px;
     width: 22px;
     height: 24px;
     //background: url(../images/bg-pdf.png) no-repeat;
     @include sp-icons-sprite(bg-pdf);
     text-indent: -9999px;
     overflow: hidden;
-    @media print {
-      display: none;
-    }
+  }
 
+ .rss {
+
+    position: relative;
+    float: right;
+    margin-left: 4px;
+    width: 24px;
+    height: 24px;
+    //background: url(../images/bg-rss.png) no-repeat;
+    @include sp-icons-sprite(bg-rss);
+    text-indent: -9999px;
+    overflow: hidden;
   }
 
   .align-block {
@@ -804,22 +825,22 @@
 
     .ad1 a {
       padding: 33px 5px 35px 94px;
-      background: url(../images/bg-ad1.png) no-repeat;
+      background: url(../images/bg-index-button1.png) no-repeat;
     }
 
     .ad2 a {
       padding: 33px 5px 35px 81px;
-      background: url(../images/bg-ad2.png) no-repeat;
+      background: url(../images/bg-index-button2.png) no-repeat;
     }
 
     .ad3 a {
       padding: 33px 5px 35px 100px;
-      background: url(../images/bg-ad3.png) no-repeat;
+      background: url(../images/bg-index-button3.png) no-repeat;
     }
 
     .ad4 a {
       padding: 33px 5px 35px 81px;
-      background: url(../images/bg-ad4.png) no-repeat;
+      background: url(../images/bg-index-button4.png) no-repeat;
     }
   }
 

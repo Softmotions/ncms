@@ -10,6 +10,7 @@
     ${include("inc/header.httl")}
 </header>
 <div id="main" class="faculty-page">
+    #set(String rssLink = page().link + "?rss")
     ${include("inc/breadcrumbs.httl")}
     #set(Tree tree = asm("headline"))
     #if(tree.hasChildren)

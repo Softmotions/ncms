@@ -131,6 +131,10 @@ hr {
       }
     }
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 div.loader {

@@ -14,6 +14,7 @@
             ${include("inc/header.httl")}
         </header>
         <div id="main" class="newsmain-page">
+            #set(String rssLink = page().link + "?rss")
             ${include("inc/breadcrumbs.httl")}
             <div style="margin-bottom: 13px; height: 32px;">
                 <h1 style="float: left; margin: 0;">Главные события</h1>

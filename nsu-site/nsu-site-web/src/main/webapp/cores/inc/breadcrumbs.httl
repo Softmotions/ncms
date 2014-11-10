@@ -1,8 +1,12 @@
 <div class="breadcrumbs-holder">
-    #if(pagePdfExists())
-    <!-- TODO: -->
-    <a href="${pagePdfLink()}" target="_blank" class="pdf">pdf</a>
-    #end
+    <div class="bclinks-holder">
+        #if(pagePdfExists())
+        <a href="$!{pagePdfLink()}" target="_blank" class="pdf">pdf</a>
+        #end
+        #if(rssLink != null)
+        <a href="$!{rssLink}" target="_blank" class="rss">rss</a>
+        #end
+    </div>
     <ul class="breadcrumbs">
         #set(Tree breadcrumbs = asm("breadcrumbs"))
         #foreach(Tree b in breadcrumbs)
