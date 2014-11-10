@@ -1332,13 +1332,13 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 rb.type(mtype.toString());
                 rb.encoding(mtype.getParameters().get("charset"));
             }
-            if (clength != null) {
-                rb.header(HttpHeaders.CONTENT_LENGTH, clength);
-            }
             rb.header(HttpHeaders.CONTENT_DISPOSITION,
                       ResponseUtils.encodeContentDisposition(name, inline));
 
             if (transfer) {
+                if (clength != null) {
+                    rb.header(HttpHeaders.CONTENT_LENGTH, clength);
+                }
                 l.releaseParent(); //unlock parent folder read-lock
                 rb.entity((StreamingOutput) output -> {
                               try (final FileInputStream fis = new FileInputStream(respFile)) {
@@ -1349,6 +1349,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                           }
                 );
             } else {
+                if (clength != null) {
+                    rb.header("X-Content-Length", clength);
+                }
                 rb.status(Response.Status.NO_CONTENT);
             }
             r = rb.build();
