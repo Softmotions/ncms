@@ -18,3 +18,4 @@
 <![endif]>-->
 
 $!{include("head_social.httl")}
+$!{include("head_ga.httl")}

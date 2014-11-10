@@ -341,4 +341,6 @@
         <add-this app-id="ra-5444c91965bd1f82"/>
     </social>
 
+    <google-analytics tracking-id="UA-312210-2"/>
+
 </configuration>
