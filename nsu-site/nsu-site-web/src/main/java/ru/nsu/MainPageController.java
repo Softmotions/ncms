@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -128,11 +129,18 @@ public class MainPageController implements AsmController {
         }
         crit.withTemplates(templates);
 
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        crit.withEdateGTE(cal.getTime());
+
         if (skip != null) {
             crit.skip(skip);
         }
         crit.limit(mpCfg.getInt("news.b[@max]", Constants.MAX_TOTAL_ITEMS_LIMIT));
-        crit.onAsm().orderBy("ordinal").desc();
+        crit.onAsm().orderBy("edate").desc();
 
         Collection<Asm> news = crit.selectAsAsms();
         ctx.put("news_b", news);
