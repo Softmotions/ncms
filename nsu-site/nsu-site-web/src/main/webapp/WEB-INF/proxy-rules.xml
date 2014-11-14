@@ -138,7 +138,7 @@
     </server>
 
     <server className="net.sf.j2ep.servers.BaseServer"
-            domainName="old.nsu.ru"
+            domainName="lib.nsu.ru"
             path="/oai">
         <rule directory="/oai" className="net.sf.j2ep.rules.DirectoryRule"/>
     </server>
