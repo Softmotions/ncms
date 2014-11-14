@@ -21,7 +21,7 @@
                     </div>
                     <a href="#" class="about"><span>Подробнее</span></a>
                     <h2>Новости</h2>
-                    <ul class="post-list">
+                    <ul class="post-list news-list">
                         $!{asm("news_list")}
                     </ul>
                     <a class="fetch-more" id="fetch-more" style="display: none"><span>Загрузить еще</span></a>

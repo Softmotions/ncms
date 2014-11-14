@@ -1,11 +1,23 @@
 #foreach(Asm p in asmNavChilds("news.page", (Number)news_skip, (Number)news_limit))
 #set(Date date = p.eventDate())
 <li style="#if(offset != 0)display: none;#end">
+    #set(Image icon = p.asmAny("icon"))
+    #if(icon != null)
+    <div class="img-holder">
+        <div class="news-img-holder">
+            <a href="$!{p.link}"><img src="$!{icon.link}" alt="${p.hname}"/></a>
+        </div>
+        <span class="date">${date.format2("dd")}</span>
+        <span class="month">${date.format2("MMM")}</span>
+        <span class="year">${date.format2("yyyy")}</span>
+    </div>
+    #else
     <div class="date-holder">
         <span class="date">${date.format2("dd")}</span>
         <span class="month">${date.format2("MMM")}</span>
         <span class="year">${date.format2("yyyy")}</span>
     </div>
+    #end
     <div class="text-holder">
         <h1><a href="$!{p.link}">${p.hname}</a></h1>
 
