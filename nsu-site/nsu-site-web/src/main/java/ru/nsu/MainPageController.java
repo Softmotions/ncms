@@ -140,7 +140,7 @@ public class MainPageController implements AsmController {
             crit.skip(skip);
         }
         crit.limit(mpCfg.getInt("news.b[@max]", Constants.MAX_TOTAL_ITEMS_LIMIT));
-        crit.onAsm().orderBy("edate").desc();
+        crit.onAsm().orderBy("edate").asc();
 
         Collection<Asm> news = crit.selectAsAsms();
         ctx.put("news_b", news);
