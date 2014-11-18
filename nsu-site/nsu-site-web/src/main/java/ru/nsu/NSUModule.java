@@ -13,6 +13,7 @@ import com.github.cage.token.RandomTokenGenerator;
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
+import ru.nsu.weather.WeatherChartRS;
 
 import java.awt.*;
 
@@ -26,6 +27,7 @@ public class NSUModule extends AbstractModule {
         bind(PagePdfRS.class).in(Singleton.class);
         bind(EventsRemember.class).in(Singleton.class);
         bind(NewsTwitterHandler.class).in(Singleton.class);
+        bind(WeatherChartRS.class).in(Singleton.class);
 
         initCaptcha();
 
