@@ -49,6 +49,10 @@
                 #end
             </ul>
         </div>
+        <div style="float: left; width: 71px">
+            <img style="float: right; margin: 0 3px" src="/images/wchart_icon.png">
+            <span style="float: right; margin: 0 3px">2</span>
+        </div>
         <ul class="menu">
             #foreach(Tree n in asm("menu2"))
             <li><a href="$!{n.link}">${n.name}</a></li>
