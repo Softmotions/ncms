@@ -49,9 +49,11 @@
                 #end
             </ul>
         </div>
-        <div style="float: left; width: 71px">
-            <img style="float: right; margin: 0 3px" src="/images/wchart_icon.png">
-            <span style="float: right; margin: 0 3px">2</span>
+        <div style="float: left; min-width: 55px; margin: 0 7px;
+                    background: url(/images/wchart_icon.png)right 3px no-repeat;
+                    text-align: right; display: none">
+            <span id="curr-temp" style="margin: 0 24px 0 0;
+                                        font-size: 10px"></span>
         </div>
         <ul class="menu">
             #foreach(Tree n in asm("menu2"))

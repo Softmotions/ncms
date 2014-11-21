@@ -5,6 +5,7 @@ jQuery(function() {
     initAccordion();
     initAboutSections();
     initNavSearch();
+    initWearherChart();
 });
 
 /*
@@ -1255,6 +1256,7 @@ function initScroll(tabSelector, prefix) {
     });
 }
 
+
 function initSiteMap(href) {
     var initLoad = function(el, level) {
         $(el).find('li.node > span').click(function() {
@@ -1282,4 +1284,18 @@ function initSiteMap(href) {
     };
 
     initLoad('#sitemap', 0);
+}
+
+function initWearherChart() {
+//    alert("wchart init");
+    $.get("/rs/weather/currtemp", function(temp) {
+        $('#curr-temp').html(temp + '\u2103');
+//        alert("currtemp recived");
+    }).done(function() {
+        var parent = $('#curr-temp').parent();
+        parent.show();
+        parent.click(function() {
+            $('#wchart').attr("src", "/rs/weather/chart");
+        })
+    });
 }
