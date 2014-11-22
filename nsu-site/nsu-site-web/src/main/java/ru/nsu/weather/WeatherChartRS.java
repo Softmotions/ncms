@@ -3,15 +3,15 @@ package ru.nsu.weather;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.ncms.NcmsEnvironment;
+import org.apache.commons.configuration.SubnodeConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -27,7 +27,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.xml.parsers.DocumentBuilder;
@@ -43,7 +42,6 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -53,8 +51,6 @@ import java.util.ArrayList;
 public class WeatherChartRS {
 
     private static final Logger log = LoggerFactory.getLogger(WeatherChartRS.class);
-
-    private final NcmsEnvironment env;
 
     private static final String BACKGROUND_COLOR = "0xEEEEEE";
     private static final String ZERO_LINE_COLOR = "0x000080";
@@ -66,6 +62,7 @@ public class WeatherChartRS {
     private int cPaddingX = 20;
     private int cPaddingY = 30;
     private String cHeader = "Температура около НГУ    {current} \u2103";
+    private String cImgFormat = "png";
     private String wURL = "http://weather.nsu.ru/xml.php";
     private int wTimeback = 3 * 60 * 60 * 24;
 
@@ -74,7 +71,21 @@ public class WeatherChartRS {
 
     @Inject
     public WeatherChartRS(NcmsEnvironment env) {
-        this.env = env;
+     /*   XMLConfiguration cfg = env.xcfg();
+
+        SubnodeConfiguration chartCfg = cfg.configurationAt("wchart.chart");
+
+        cWidth = chartCfg.getInt("width");
+        cHeight = chartCfg.getInt("height");
+        cPaddingX = chartCfg.getInt("padding-x");
+        cPaddingY = chartCfg.getInt("padding-y");
+        cHeader = chartCfg.getString("header");
+        cImgFormat = chartCfg.getString("img-format");
+
+        SubnodeConfiguration weatherCfg = cfg.configurationAt("wchart.weather");
+
+        wURL = weatherCfg.getString("url");
+        wTimeback = weatherCfg.getInt("timeback");*/
     }
 
     @GET
@@ -87,50 +98,37 @@ public class WeatherChartRS {
 
     @GET
     @Path("/chart")
-//    @Produces("image/png")
     public Response getChart(@Context HttpServletRequest req,
                              @Context HttpServletResponse resp) throws Exception {
+        fetchData();
         BufferedImage chartImage = drawChart();
 
-        return Response.ok((StreamingOutput)output -> ImageIO.write(chartImage, "png", output))
-                .type("image/png")
+        return Response.ok((StreamingOutput)output -> ImageIO.write(chartImage, cImgFormat, output))
+                .type("image/" + cImgFormat)
                 .build();
     }
 
     private void fetchData() throws IOException {
-        String tempXML = getXML();
-        parseXML(tempXML);
-    }
 
-    private String getXML() throws IOException {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            //Get weather XML file
             HttpGet httpGet = new HttpGet(wURL);
 
-            ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-                @Override
-                public String handleResponse(final HttpResponse response)
-                        throws ClientProtocolException, IOException {
-                    int status = response.getStatusLine().getStatusCode();
+            ResponseHandler<String> responseHandler = (response) -> {
+                int status = response.getStatusLine().getStatusCode();
 
-                    if (status >= 200 && status < 300) {
-                        HttpEntity entity = response.getEntity();
-                        return entity != null ? EntityUtils.toString(entity) : null;
-                    } else {
-                        throw new ClientProtocolException("Unexpected response status: "
-                                + status);
-                    }
+                if (status >= 200 && status < 300) {
+                    HttpEntity entity = response.getEntity();
+                    return entity != null ? EntityUtils.toString(entity) : null;
+                } else {
+                    throw new ClientProtocolException("Unexpected response status: "
+                            + status);
                 }
             };
 
-            return httpClient.execute(httpGet, responseHandler);
-        } catch (IOException ioex) {
-            throw ioex;
-        }
-    }
+            String xmlEntity = httpClient.execute(httpGet, responseHandler);
 
-    private void parseXML(String xmlEntity) {
-
-        try {
+            //Parse weather XML file
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             DocumentBuilder db = factory.newDocumentBuilder();
@@ -145,14 +143,12 @@ public class WeatherChartRS {
 
             tempData = (NodeList)xPath.compile(requiredNodes).evaluate(wxml, XPathConstants.NODESET);
             currTemp = Float.parseFloat(wxml.getElementsByTagName("current").item(0).getTextContent());
-        } catch (SAXException | ParserConfigurationException | IOException
-                | XPathExpressionException ex) {
+        } catch (SAXException | ParserConfigurationException | XPathExpressionException ex) {
             ex.printStackTrace();
         }
     }
 
     public BufferedImage drawChart() throws IOException {
-        fetchData();
 
         //Actual height/width
         int aHeight = cHeight - cPaddingY * 2;
@@ -234,8 +230,6 @@ public class WeatherChartRS {
         ig2.setPaint(Color.decode(CHART_COLOR));
 
         Path2D chart = new Path2D.Float();
-
-
         chart.moveTo(cPaddingX, zeroY - points.get(0) * scaleTemp);
         float nextX = 0, nextY = 0;
         for (int i = 1; i < points.size(); i++) {
@@ -247,7 +241,7 @@ public class WeatherChartRS {
 
         ig2.draw(chart);
 
-        //Last bold point
+        //Draw last bold point
         int dim = 5;
         Ellipse2D bold = new Ellipse2D.Float(nextX - dim / 2,
                 nextY - dim / 2,
@@ -262,8 +256,6 @@ public class WeatherChartRS {
         ig2.setFont(new Font("Impact", Font.PLAIN, 8));
         ig2.drawString("0 \u2103", cPaddingX, zeroY - 3);
 
-        //Output image (should be modified to ImageOutputStream)
-        //ImageIO.write(chartImage, "PNG", new File("wchart.png"));
         return chartImage;
     }
 }
