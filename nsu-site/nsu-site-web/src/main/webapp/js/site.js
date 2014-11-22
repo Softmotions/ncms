@@ -1295,7 +1295,31 @@ function initWearherChart() {
         var parent = $('#curr-temp').parent();
         parent.show();
         parent.click(function() {
-            $('#wchart').attr("src", "/rs/weather/chart");
+//            alert("on click");
+
+            jQuery('<div/>', {
+                id: 'blackout',
+                style: "width: 100%; height: 100%; position: fixed; \
+                        top: 0%; left: 0%; background: rgba(192, 192, 192, .85)"
+            }).appendTo('body');
+
+            $("#blackout").click(function() {
+                $('#wchart').remove();
+                $(this).remove();
+            });
+
+            jQuery('<div/>', {
+                id: 'wchart',
+                style: "position: fixed; top: 10%; left: 30%; \
+                        border: 1px solid #1a1a1a"
+            }).appendTo('body');
+
+            jQuery('<img/>', {
+                src: '/rs/weather/chart',
+                style: "display: block"
+            }).appendTo('#wchart');
+
+//            alert("added img");
         })
     });
 }
