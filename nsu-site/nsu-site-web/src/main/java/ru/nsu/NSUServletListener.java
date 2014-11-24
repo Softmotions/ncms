@@ -28,7 +28,7 @@ public class NSUServletListener extends NcmsServletListener {
         fr.setInitParameter("cache", "true");
         fr.setInitParameter("httpCacheStorage", "ru.nsu.cache.EhcacheHttpClientStorage");
         fr.setInitParameter("ehcacheCache", "pageProxyCache");
-        fr.setInitParameter("useHeuristicCaching", "true");
+        fr.setInitParameter("useHeuristicCaching", "false");
         fr.setInitParameter("connectionRequestTimeout", "1000"); //1sec
         fr.setInitParameter("connectTimeout", "1000"); //1sec
         fr.setInitParameter("socketTimeout", "10000"); //10sec
