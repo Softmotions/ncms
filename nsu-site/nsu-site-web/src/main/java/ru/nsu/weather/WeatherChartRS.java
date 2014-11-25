@@ -57,42 +57,48 @@ public class WeatherChartRS {
     private static final String CHART_COLOR = "0xBF0303";
     private static final String TEXT_COLOR = "0x000000";
 
-    private int cWidth = 520;
-    private int cHeight = 340;
-    private int cPaddingX = 20;
-    private int cPaddingY = 30;
-    private String cHeader = "Температура около НГУ    {current} \u2103";
-    private String cImgFormat = "png";
-    private String wURL = "http://weather.nsu.ru/xml.php";
-    private int wTimeback = 3 * 60 * 60 * 24;
+    private int cWidth;
+    private int cHeight;
+    private int cPaddingX;
+    private int cPaddingY;
+    private String cHeader;
+    private String cImgFormat;
 
-    private Float currTemp;
+    private String wURL;
+    private int wTimeback;
+    private int wCacheTime;
+
+    private Float currTemp = null;
+    private BufferedImage currChart = null;
+    private long dataTimestamp = 0;
     private NodeList tempData = null;
 
     @Inject
     public WeatherChartRS(NcmsEnvironment env) {
-     /*   XMLConfiguration cfg = env.xcfg();
+        XMLConfiguration cfg = env.xcfg();
 
         SubnodeConfiguration chartCfg = cfg.configurationAt("wchart.chart");
 
-        cWidth = chartCfg.getInt("width");
-        cHeight = chartCfg.getInt("height");
-        cPaddingX = chartCfg.getInt("padding-x");
-        cPaddingY = chartCfg.getInt("padding-y");
-        cHeader = chartCfg.getString("header");
-        cImgFormat = chartCfg.getString("img-format");
+        cWidth = chartCfg.getInt("width", 520);
+        cHeight = chartCfg.getInt("height", 340);
+        cPaddingX = chartCfg.getInt("padding-x", 20);
+        cPaddingY = chartCfg.getInt("padding-y", 30);
+        cHeader = chartCfg.getString("header", "Температура около НГУ    {current} \u2103");
+        cImgFormat = chartCfg.getString("img-format", "png");
 
         SubnodeConfiguration weatherCfg = cfg.configurationAt("wchart.weather");
 
-        wURL = weatherCfg.getString("url");
-        wTimeback = weatherCfg.getInt("timeback");*/
+        wURL = weatherCfg.getString("url", "http://weather.nsu.ru/xml.php");
+        wTimeback = weatherCfg.getInt("timeback", 3 * 60 * 60 * 24);
+        wCacheTime = weatherCfg.getInt("cache-time", 300);
     }
 
     @GET
     @Path("/currtemp")
     @Produces("text/plain")
     public Float getCurrentTemp(@Context HttpServletRequest req) throws Exception {
-        fetchData();
+        checkCache();
+
         return currTemp;
     }
 
@@ -100,12 +106,20 @@ public class WeatherChartRS {
     @Path("/chart")
     public Response getChart(@Context HttpServletRequest req,
                              @Context HttpServletResponse resp) throws Exception {
-        fetchData();
-        BufferedImage chartImage = drawChart();
+        checkCache();
 
-        return Response.ok((StreamingOutput)output -> ImageIO.write(chartImage, cImgFormat, output))
+        return Response.ok((StreamingOutput)output -> ImageIO.write(currChart, cImgFormat, output))
                 .type("image/" + cImgFormat)
                 .build();
+    }
+
+    private synchronized void checkCache() throws IOException {
+        long currDate = System.currentTimeMillis() / 1000;
+
+        if (dataTimestamp < currDate - wCacheTime) {
+            fetchData();
+            currChart = drawChart();
+        }
     }
 
     private void fetchData() throws IOException {
@@ -135,14 +149,15 @@ public class WeatherChartRS {
 
             Document wxml = db.parse(new InputSource(new StringReader(xmlEntity)));
 
-            long cDate = System.currentTimeMillis() / 1000; //Current (end) date
-            long sDate = cDate - wTimeback; //Start date
+            long currDate = System.currentTimeMillis() / 1000; //End date
+            long startDate = currDate - wTimeback;
 
             XPath xPath = XPathFactory.newInstance().newXPath();
-            String requiredNodes = "/weather/graph/temp[@timestamp>'" + sDate + "']";
+            String requiredNodes = "/weather/graph/temp[@timestamp>'" + startDate + "']";
 
             tempData = (NodeList)xPath.compile(requiredNodes).evaluate(wxml, XPathConstants.NODESET);
             currTemp = Float.parseFloat(wxml.getElementsByTagName("current").item(0).getTextContent());
+            dataTimestamp = currDate;
         } catch (SAXException | ParserConfigurationException | XPathExpressionException ex) {
             ex.printStackTrace();
         }
@@ -253,7 +268,7 @@ public class WeatherChartRS {
         ig2.setPaint(Color.decode(TEXT_COLOR));
         cHeader = cHeader.replace("{current}", currTemp.toString());
         ig2.drawString(cHeader, cPaddingX, cPaddingY - 5);
-        ig2.setFont(new Font("Impact", Font.PLAIN, 8));
+        ig2.setFont(new Font("Impact", Font.PLAIN, 10));
         ig2.drawString("0 \u2103", cPaddingX, zeroY - 3);
 
         return chartImage;
