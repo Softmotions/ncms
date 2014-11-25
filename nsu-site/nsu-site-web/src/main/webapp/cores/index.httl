@@ -4,10 +4,6 @@
     $!{asm("head")}
 </head>
 <body>
-<!--<div>
-    <img id="wchart"
-         src="/images/loader.gif">
-</div>-->
 <div id="wrapper">
     <div class="w1 home">
         <header id="header">

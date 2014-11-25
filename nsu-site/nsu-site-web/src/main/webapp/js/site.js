@@ -1288,37 +1288,47 @@ function initSiteMap(href) {
 
 function initWearherChart() {
 //    alert("wchart init");
-    $.get("/rs/weather/currtemp", function(temp) {
-        $('#curr-temp').html(temp + '\u2103');
+    var blackout =
+        jQuery('<div/>', {
+            id: 'blackout',
+            style: "width: 100%; height: 100%; position: fixed;\
+                    left: 0; top: 0; display: none; z-index: 10000;"
+                        /*background: rgba(192, 192, 192, .85); */
+        });
+    blackout.appendTo('body');
+    blackout.click(function() {
+        blackout.fadeOut(250);
+    });
+
+    var wchart_container =
+        jQuery('<div/>', {
+            id: 'wchart-container',
+            style: "margin: 0 0 0 -500px; border: 1px solid #1a1a1a"
+        });
+    wchart_container.appendTo(blackout);
+
+    var wchart =
+        jQuery('<img/>', {
+            id: 'wchart',
+            style: "display: block"
+        });
+    wchart.appendTo(wchart_container);
+    wchart.click(function() {
+        window.open("http://weather.nsu.ru/");
+    });
+
+    var curr_temp = $('#curr-temp');
+    $.get("/rs/weather/currtemp" + '?' + new Date().getTime(), function(temp) {
+        curr_temp.html(temp + '\u2103');
 //        alert("currtemp recived");
     }).done(function() {
-        var parent = $('#curr-temp').parent();
+        var parent = curr_temp.parent();
         parent.show();
-        parent.click(function() {
+        parent.click(function(e) {
 //            alert("on click");
-
-            jQuery('<div/>', {
-                id: 'blackout',
-                style: "width: 100%; height: 100%; position: fixed; \
-                        top: 0%; left: 0%; background: rgba(192, 192, 192, .85)"
-            }).appendTo('body');
-
-            $("#blackout").click(function() {
-                $('#wchart').remove();
-                $(this).remove();
-            });
-
-            jQuery('<div/>', {
-                id: 'wchart',
-                style: "position: fixed; top: 10%; left: 30%; \
-                        border: 1px solid #1a1a1a"
-            }).appendTo('body');
-
-            jQuery('<img/>', {
-                src: '/rs/weather/chart',
-                style: "display: block"
-            }).appendTo('#wchart');
-
+            blackout.fadeIn(250);
+            wchart_container.css({position: 'absolute', top: e.pageY, left: e.pageX});
+            wchart.attr('src', '/rs/weather/chart' + '?' + new Date().getTime());
 //            alert("added img");
         })
     });
