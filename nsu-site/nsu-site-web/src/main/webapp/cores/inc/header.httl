@@ -4,6 +4,9 @@
     <nav id="nav">
         ${include("menu.httl", ["menuAttr" : "menu"])}
     </nav>
+    <div class="temp-holder">
+        <span id="curr-temp" class="temp"></span>
+    </div>
 </div>
 <div class="header-info">
     <strong class="logo"><a href="$!{link('')}">Новосибирский государственный университет</a></strong>

@@ -5,6 +5,7 @@ jQuery(function() {
     initAccordion();
     initAboutSections();
     initNavSearch();
+    initWearherChart();
 });
 
 /*
@@ -1255,6 +1256,7 @@ function initScroll(tabSelector, prefix) {
     });
 }
 
+
 function initSiteMap(href) {
     var initLoad = function(el, level) {
         $(el).find('li.node > span').click(function() {
@@ -1282,4 +1284,46 @@ function initSiteMap(href) {
     };
 
     initLoad('#sitemap', 0);
+}
+
+function initWearherChart() {
+    $(
+            '<div id="wchart-blackout">' +
+                '<div class="wchart-container">' +
+                    '<img src="/images/loader.gif" \
+                          class="loader" />' +
+                    '<a href="http://weather.nsu.ru/" \
+                        target="_blank">' +
+                        '<img class="wchart"/>' +
+                    '</a>' +
+                '</div>' +
+            '</div>').appendTo('body');
+
+    var blackout = $('#wchart-blackout');
+    var wchart_container = $('.wchart-container');
+    var loader = $('.loader');
+    var wchart = $('.wchart');
+
+    blackout.click(function() {
+        blackout.fadeOut(250);
+    });
+
+    wchart.imagesLoaded(function() {
+        loader.hide();
+        wchart.fadeIn(250);
+    });
+
+    var currTemp = $('#curr-temp');
+    var currTempHolder = currTemp.parent();
+    
+    currTempHolder.click(function(e) {
+        blackout.fadeIn(250);
+        wchart_container.css({position: 'absolute', top: e.pageY, left: e.pageX});
+        wchart.attr('src', '/rs/weather/chart' + '?' + new Date().getTime());
+    });
+
+    $.get("/rs/weather/currtemp?" + new Date().getTime(), function(temp) {
+        currTemp.html(temp + '\u2103');
+        currTempHolder.show();
+    });
 }

@@ -343,4 +343,20 @@
 
     <google-analytics tracking-id="UA-312210-2"/>
 
+    <wchart>
+        <chart>
+            <width>500</width>
+            <height>300</height>
+            <padding-x>20</padding-x>
+            <padding-y>30</padding-y>
+            <header><![CDATA[Температура около НГУ    {current} ℃]]></header>
+            <img-format>png</img-format>
+        </chart>
+        <weather>
+            <url>http://weather.nsu.ru/xml.php</url>
+            <timeback>259200</timeback> <!--3 * 60 * 60 * 24 - 3 days in sec-->
+            <cache-time>300</cache-time>
+        </weather>
+    </wchart>
+
 </configuration>
