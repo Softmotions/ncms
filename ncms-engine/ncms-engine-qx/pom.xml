@@ -17,7 +17,6 @@
         <qooxdoo.application.name>ncms</qooxdoo.application.name>
         <qooxdoo.application.summary>${project.name}</qooxdoo.application.summary>
         <qooxdoo.application.description>${project.description}</qooxdoo.application.description>
-        <qooxdoo.submodules.dir>${basedir}/../../submodules</qooxdoo.submodules.dir>
     </properties>
 
     <build>
@@ -42,6 +41,13 @@
             <groupId>org.qooxdoo</groupId>
             <artifactId>qooxdoo-sdk</artifactId>
             <version>${qooxdoo.sdk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>qx-client</artifactId>
+            <classifier>sources</classifier>
+            <version>1.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

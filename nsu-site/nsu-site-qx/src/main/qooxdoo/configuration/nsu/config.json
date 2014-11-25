@@ -17,8 +17,7 @@
         "CACHE" : "${qooxdoo.application.cacheDirectory}",
         "ROOT" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}",
         "SOURCE_PATH" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}/siteroot",
-        "BUILD_PATH" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}/siteroot",
-        "SUBMODULES_PATH" : "${qooxdoo.submodules.dir}"
+        "BUILD_PATH" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}/siteroot"
     },
 
     "jobs" : {
@@ -40,8 +39,8 @@
                     "uri" : "${QOOXDOO_PATH}/framework"
                 },
                 {
-                    "manifest" : "${SUBMODULES_PATH}/qx-softmotions/client/Manifest.json",
-                    "uri" : "${SUBMODULES_PATH}/qx-softmotions/client"
+                    "manifest" : "${MODULES_PATH}/qx-client/Manifest.json",
+                    "uri" : "${MODULES_PATH}/qx-client"
                 },
                 {
                     "manifest" : "${MODULES_PATH}/ncms-engine-qx/Manifest.json",

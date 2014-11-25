@@ -24,9 +24,9 @@ msgstr "Выход"
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
-#: ncms/asm/am/FileRefAM.js:145 ncms/asm/am/ImageAMValueWidget.js:104
-#: ncms/asm/AsmAttrEditorDlg.js:56 ncms/usr/UserEditForm.js:22
-#: ncms/usr/UserNewDlg.js:34 ncms/asm/AsmEditor.js:90
+#: ncms/asm/am/ImageAMValueWidget.js:104 ncms/asm/AsmAttrEditorDlg.js:56
+#: ncms/usr/UserEditForm.js:22 ncms/usr/UserNewDlg.js:34
+#: ncms/asm/am/FileRefAM.js:145 ncms/asm/AsmEditor.js:90
 #: ncms/pgs/PageEditorEditPage.js:158
 msgid "This field is required"
 msgstr "Обязательное поле"
