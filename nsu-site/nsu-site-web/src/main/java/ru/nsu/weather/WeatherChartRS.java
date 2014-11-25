@@ -1,8 +1,10 @@
 package ru.nsu.weather;
 
+import com.softmotions.ncms.NcmsEnvironment;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.softmotions.ncms.NcmsEnvironment;
+
 import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.http.HttpEntity;
@@ -45,6 +47,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 @Path("weather")
 @Singleton
@@ -68,10 +71,10 @@ public class WeatherChartRS {
     private int wTimeback;
     private int wCacheTime;
 
-    private Float currTemp = null;
-    private BufferedImage currChart = null;
-    private long dataTimestamp = 0;
-    private NodeList tempData = null;
+    private Float currTemp;
+    private BufferedImage currChart;
+    private long dataTimestamp;
+    private NodeList tempData;
 
     @Inject
     public WeatherChartRS(NcmsEnvironment env) {
@@ -107,15 +110,13 @@ public class WeatherChartRS {
     public Response getChart(@Context HttpServletRequest req,
                              @Context HttpServletResponse resp) throws Exception {
         checkCache();
-
-        return Response.ok((StreamingOutput)output -> ImageIO.write(currChart, cImgFormat, output))
+        return Response.ok((StreamingOutput) output -> ImageIO.write(currChart, cImgFormat, output))
                 .type("image/" + cImgFormat)
                 .build();
     }
 
     private synchronized void checkCache() throws IOException {
         long currDate = System.currentTimeMillis() / 1000;
-
         if (dataTimestamp < currDate - wCacheTime) {
             fetchData();
             currChart = drawChart();
@@ -127,16 +128,14 @@ public class WeatherChartRS {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             //Get weather XML file
             HttpGet httpGet = new HttpGet(wURL);
-
             ResponseHandler<String> responseHandler = (response) -> {
                 int status = response.getStatusLine().getStatusCode();
-
                 if (status >= 200 && status < 300) {
                     HttpEntity entity = response.getEntity();
                     return entity != null ? EntityUtils.toString(entity) : null;
                 } else {
                     throw new ClientProtocolException("Unexpected response status: "
-                            + status);
+                                                      + status);
                 }
             };
 
@@ -155,11 +154,11 @@ public class WeatherChartRS {
             XPath xPath = XPathFactory.newInstance().newXPath();
             String requiredNodes = "/weather/graph/temp[@timestamp>'" + startDate + "']";
 
-            tempData = (NodeList)xPath.compile(requiredNodes).evaluate(wxml, XPathConstants.NODESET);
+            tempData = (NodeList) xPath.compile(requiredNodes).evaluate(wxml, XPathConstants.NODESET);
             currTemp = Float.parseFloat(wxml.getElementsByTagName("current").item(0).getTextContent());
             dataTimestamp = currDate;
         } catch (SAXException | ParserConfigurationException | XPathExpressionException ex) {
-            ex.printStackTrace();
+            log.warn("", ex);
         }
     }
 
@@ -182,21 +181,18 @@ public class WeatherChartRS {
                 RenderingHints.KEY_TEXT_ANTIALIASING,
                 RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-
         int sign = 0;
         float tMax = Float.parseFloat(tempData.item(0).getTextContent());
 
         try {
-            for (int curr  = 0; curr < tempData.getLength(); curr++) {
+            for (int curr = 0; curr < tempData.getLength(); curr++) {
                 Element elem = (Element) tempData.item(curr);
                 float temp = Float.parseFloat(elem.getTextContent());
-
                 sign |= (temp > 0 ? 1 : 2);
-
                 tMax = Math.max(tMax, Math.abs(temp));
             }
-        } catch (NumberFormatException nfe) {
-            System.err.println("Error parsing chart point");
+        } catch (NumberFormatException e) {
+            log.error("", e);
         }
 
         if (2 == sign) { //Only negative temperature
@@ -214,11 +210,11 @@ public class WeatherChartRS {
         ig2.setStroke(new BasicStroke(0.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         ig2.setPaint(Color.decode(ZERO_LINE_COLOR));
         ig2.draw(new Line2D.Float(cPaddingX, zeroY,
-                cWidth - cPaddingX, zeroY));
+                                  cWidth - cPaddingX, zeroY));
 
         //Draw chart
-        int mergedPoints = (int)Math.ceil((float)tempData.getLength() / aWidth);
-        java.util.List<Float> points = new ArrayList<>();
+        int mergedPoints = (int) Math.ceil((float) tempData.getLength() / aWidth);
+        List<Float> points = new ArrayList<>();
         float avgValue = 0;
 
         int currPoint = 1;
@@ -236,10 +232,10 @@ public class WeatherChartRS {
             currPoint++;
         }
 
-        float scaleTime = (float)aWidth / points.size();
+        float scaleTime = (float) aWidth / points.size();
         float scaleTemp = (1 == sign) ?
-                ((float)(zeroY - cPaddingY) / tMax) :
-                ((float)(aHeight - zeroY) / tMax);
+                          ((float) (zeroY - cPaddingY) / tMax) :
+                          ((float) (aHeight - zeroY) / tMax);
 
         ig2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         ig2.setPaint(Color.decode(CHART_COLOR));
@@ -257,10 +253,8 @@ public class WeatherChartRS {
         ig2.draw(chart);
 
         //Draw last bold point
-        int dim = 5;
-        Ellipse2D bold = new Ellipse2D.Float(nextX - dim / 2,
-                nextY - dim / 2,
-                dim, dim);
+        float dim = 5;
+        Ellipse2D bold = new Ellipse2D.Float(nextX - dim / 2, nextY - dim / 2, dim, dim);
         ig2.fill(bold);
 
         //Draw header
@@ -270,7 +264,6 @@ public class WeatherChartRS {
         ig2.drawString(cHeader, cPaddingX, cPaddingY - 5);
         ig2.setFont(new Font("Impact", Font.PLAIN, 10));
         ig2.drawString("0 \u2103", cPaddingX, zeroY - 3);
-
         return chartImage;
     }
 }
