@@ -1288,6 +1288,7 @@ function initSiteMap(href) {
 
 function initWearherChart() {
 //    alert("wchart init");
+
     var blackout =
         jQuery('<div/>', {
             id: 'blackout',
@@ -1303,22 +1304,40 @@ function initWearherChart() {
     var wchart_container =
         jQuery('<div/>', {
             id: 'wchart-container',
-            style: "margin: 0 0 0 -500px; border: 1px solid #1a1a1a"
+            style: "width: 500px; height:300px; background: #eeeeee; \
+                    margin: 0 0 0 -500px; "
         });
     wchart_container.appendTo(blackout);
+
+    var wchart_ref =
+        jQuery('<a/>', {
+            href: "http://weather.nsu.ru/",
+            target: "_blank"
+        });
+    wchart_ref.appendTo(wchart_container);
+
+    var loader =
+        jQuery('<img/>', {
+            src: "/images/loader.gif",
+            style: "position: absolute; top: 50%; left: 50%; \
+                    margin: -5px 0 0 -21px"
+        });
+    loader.appendTo(wchart_container);
 
     var wchart =
         jQuery('<img/>', {
             id: 'wchart',
-            style: "display: block"
+            style: "display: none; border: 1px solid #1a1a1a;"
         });
-    wchart.appendTo(wchart_container);
-    wchart.click(function() {
-        window.open("http://weather.nsu.ru/");
+    wchart.appendTo(wchart_ref);
+    wchart.imagesLoaded(function() {
+        loader.hide();
+//        wchart.css('display', 'block');
+        wchart.fadeIn(250);
     });
 
     var curr_temp = $('#curr-temp');
-    $.get("/rs/weather/currtemp" + '?' + new Date().getTime(), function(temp) {
+    $.get("/rs/weather/currtemp?" + new Date().getTime(), function(temp) {
         curr_temp.html(temp + '\u2103');
 //        alert("currtemp recived");
     }).done(function() {

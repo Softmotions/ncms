@@ -5,7 +5,8 @@
         ${include("menu.httl", ["menuAttr" : "menu"])}
     </nav>
     <div style="float: right; margin: 0 7px 0 1px;
-                text-align: right; display: none">
+                text-align: right; display: none;
+                cursor: pointer">
         <span id="curr-temp" style='font: 600 18px/22px "Open Sans", Arial, Helvetica,sans-serif;
                                     color: #fff'></span>
     </div>
