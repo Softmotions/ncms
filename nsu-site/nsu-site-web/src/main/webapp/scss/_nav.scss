@@ -158,4 +158,17 @@
       @include sp-icons-sprite(btn-search-active);
     }
   }
+
+  .temp-holder {
+    float: right;
+    margin: 0 7px 0 1px;
+    text-align: right;
+    display: none;
+    cursor: pointer;
+  }
+
+  .temp {
+    font: 600 18px/22px $basic_sans_font;
+    color: #fff;
+  }
 }

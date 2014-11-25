@@ -1287,68 +1287,43 @@ function initSiteMap(href) {
 }
 
 function initWearherChart() {
-//    alert("wchart init");
+    $(
+            '<div id="wchart-blackout">' +
+                '<div class="wchart-container">' +
+                    '<img src="/images/loader.gif" \
+                          class="loader" />' +
+                    '<a href="http://weather.nsu.ru/" \
+                        target="_blank">' +
+                        '<img class="wchart"/>' +
+                    '</a>' +
+                '</div>' +
+            '</div>').appendTo('body');
 
-    var blackout =
-        jQuery('<div/>', {
-            id: 'blackout',
-            style: "width: 100%; height: 100%; position: fixed;\
-                    left: 0; top: 0; display: none; z-index: 10000;"
-                        /*background: rgba(192, 192, 192, .85); */
-        });
-    blackout.appendTo('body');
+    var blackout = $('#wchart-blackout');
+    var wchart_container = $('.wchart-container');
+    var loader = $('.loader');
+    var wchart = $('.wchart');
+
     blackout.click(function() {
         blackout.fadeOut(250);
     });
 
-    var wchart_container =
-        jQuery('<div/>', {
-            id: 'wchart-container',
-            style: "width: 500px; height:300px; background: #eeeeee; \
-                    margin: 0 0 0 -500px; "
-        });
-    wchart_container.appendTo(blackout);
-
-    var wchart_ref =
-        jQuery('<a/>', {
-            href: "http://weather.nsu.ru/",
-            target: "_blank"
-        });
-    wchart_ref.appendTo(wchart_container);
-
-    var loader =
-        jQuery('<img/>', {
-            src: "/images/loader.gif",
-            style: "position: absolute; top: 50%; left: 50%; \
-                    margin: -5px 0 0 -21px"
-        });
-    loader.appendTo(wchart_container);
-
-    var wchart =
-        jQuery('<img/>', {
-            id: 'wchart',
-            style: "display: none; border: 1px solid #1a1a1a;"
-        });
-    wchart.appendTo(wchart_ref);
     wchart.imagesLoaded(function() {
         loader.hide();
-//        wchart.css('display', 'block');
         wchart.fadeIn(250);
     });
 
-    var curr_temp = $('#curr-temp');
+    var currTemp = $('#curr-temp');
+    var currTempHolder = currTemp.parent();
+    
+    currTempHolder.click(function(e) {
+        blackout.fadeIn(250);
+        wchart_container.css({position: 'absolute', top: e.pageY, left: e.pageX});
+        wchart.attr('src', '/rs/weather/chart' + '?' + new Date().getTime());
+    });
+
     $.get("/rs/weather/currtemp?" + new Date().getTime(), function(temp) {
-        curr_temp.html(temp + '\u2103');
-//        alert("currtemp recived");
-    }).done(function() {
-        var parent = curr_temp.parent();
-        parent.show();
-        parent.click(function(e) {
-//            alert("on click");
-            blackout.fadeIn(250);
-            wchart_container.css({position: 'absolute', top: e.pageY, left: e.pageX});
-            wchart.attr('src', '/rs/weather/chart' + '?' + new Date().getTime());
-//            alert("added img");
-        })
+        currTemp.html(temp + '\u2103');
+        currTempHolder.show();
     });
 }
