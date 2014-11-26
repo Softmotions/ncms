@@ -13,7 +13,7 @@
     <packaging>qooxdoo-jar</packaging>
 
     <properties>
-        <qooxdoo.build.job>${ncms.environment}</qooxdoo.build.job>
+        <qooxdoo.build.job>build</qooxdoo.build.job>
         <qooxdoo.application.name>ncms</qooxdoo.application.name>
         <qooxdoo.application.summary>${project.name}</qooxdoo.application.summary>
         <qooxdoo.application.description>${project.description}</qooxdoo.application.description>

@@ -6,7 +6,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>ncms-engine</module>
-        <module>nsu-site</module>
     </modules>
 
     <parent>
@@ -50,20 +49,19 @@
         <qooxdoo.sdk.version>4.0.1</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
-        <jackson.version>2.4.2</jackson.version>
-        <resteasy.version>3.0.8.Final</resteasy.version>
+        <jackson.version>2.4.3</jackson.version>
+        <resteasy.version>3.0.10.Final</resteasy.version>
         <commons.collection.version>3.2.1</commons.collection.version>
         <commons.validator.version>1.4.0</commons.validator.version>
-        <httpcomponents.version>4.3.5</httpcomponents.version>
-        <tomcat.version>7.0.55</tomcat.version>
+        <httpcomponents.version>4.3.6</httpcomponents.version>
+        <tomcat.version>7.0.57</tomcat.version>
         <!--<tomcat.version>8.0.11</tomcat.version>-->
         <httl.version>1.0.11-SNAPSHOT</httl.version>
         <jericho.version>3.3</jericho.version>
-        <guava.version>17.0</guava.version>
         <jetty.version>9.2.1.v20140609</jetty.version>
-        <tika.version>1.5</tika.version>
+        <tika.version>1.6</tika.version>
         <h2.version>1.4.179</h2.version>
-        <mybatis.version>3.2.7</mybatis.version>
+        <mybatis.version>3.2.8</mybatis.version>
         <mybatis-guice.version>3.6</mybatis-guice.version>
         <web.run.port>8080</web.run.port>
         <web.context.reloadable>true</web.context.reloadable>
@@ -91,49 +89,6 @@
             </snapshots>
         </repository>
     </repositories>
-
-
-    <profiles>
-        <profile>
-            <id>prerelease</id>
-            <properties>
-                <ncms.environment>prerelease</ncms.environment>
-                <ncms.debug>true</ncms.debug>
-                <web.context.reloadable>true</web.context.reloadable>
-                <sass.compile.options></sass.compile.options>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>debug</id>
-            <properties>
-                <ncms.environment>debug</ncms.environment>
-                <ncms.debug>true</ncms.debug>
-                <web.context.reloadable>true</web.context.reloadable>
-                <sass.compile.options></sass.compile.options>
-            </properties>
-        </profile>
-        <profile>
-            <id>production</id>
-            <properties>
-                <ncms.environment>production</ncms.environment>
-                <ncms.production>true</ncms.production>
-                <web.context.reloadable>false</web.context.reloadable>
-                <sass.compile.options>--force -s compressed</sass.compile.options>
-            </properties>
-        </profile>
-        <profile>
-            <id>qxdev</id>
-            <properties>
-                <ncms.environment>prerelease</ncms.environment>
-                <ncms.debug>true</ncms.debug>
-                <web.context.reloadable>false</web.context.reloadable>
-                <sass.compile.options></sass.compile.options>
-            </properties>
-        </profile>
-    </profiles>
 
     <build>
         <defaultGoal>install</defaultGoal>
@@ -269,12 +224,6 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
                 <version>${httpcomponents.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>commons-logging</artifactId>
-                        <groupId>commons-logging</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -332,11 +281,6 @@
                 <version>${resteasy.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
                 <version>${tika.version}</version>
@@ -345,24 +289,6 @@
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-parsers</artifactId>
                 <version>${tika.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>xerces</groupId>
-                        <artifactId>xercesImpl</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>edu.ucar</groupId>
-                        <artifactId>netcdf</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcmail-jdk15</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcprov-jdk15</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.h2database</groupId>

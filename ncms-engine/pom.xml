@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>ncms-engine-qx</module>
-        <module>ncms-engine-web</module>
         <module>ncms-engine-core</module>
     </modules>
 </project>

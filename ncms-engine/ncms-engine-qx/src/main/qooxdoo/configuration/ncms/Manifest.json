@@ -15,6 +15,6 @@
         "class" : "${qooxdoo.application.sourcesDirectory}",
         "resource" : "${qooxdoo.application.resourcesDirectory}",
         "translation" : "${qooxdoo.application.translationDirectory}",
-        "type" : "application"
+        "type" : "library"
     }
 }

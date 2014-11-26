@@ -22,62 +22,8 @@
 
     "jobs" : {
 
-        "build-files" : {
-            "=copy-files" : {
-                "files" : []
-            }
-        },
-
-        "ncms-common" : {
-            "library" : [
-                {
-                    "manifest" : "./Manifest.json",
-                    "uri" : "./"
-                },
-                {
-                    "manifest" : "${QOOXDOO_PATH}/framework/Manifest.json",
-                    "uri" : "${QOOXDOO_PATH}/framework"
-                },
-                {
-                    "manifest" : "${MODULES_PATH}/qx-client/Manifest.json",
-                    "uri" : "${MODULES_PATH}/qx-client"
-                }
-            ]
-        },
-        "debug" : {
-            "extend" : ["source-hybrid", "ncms-common", "translation"],
-            "environment" : {
-                "qx.debug" : true,
-                "ncms.debug" : true,
-                "ncms.testing.urls" : true
-            }
-        },
-
-        "prerelease" : {
-            "extend" : ["build", "ncms-common", "translation"],
-            "environment" : {
-                "qx.debug" : true,
-                "ncms.debug" : false,
-                "ncms.testing.urls" : false
-            },
-            "let" : {
-                "OPTIMIZE" : ["comments"]
-            }
-        },
-
-        "production" : {
-            "extend" : ["prerelease"],
-            "let" : {
-                "OPTIMIZE" : [
-                    "basecalls",
-                    "comments",
-                    "privates",
-                    "strings",
-                    "variables",
-                    "variants",
-                    "whitespace"
-                ]
-            }
+        "=build" : {
+            "extend" : ["translation"]
         }
     }
 }

@@ -25,6 +25,7 @@ import java.util.Objects;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@SuppressWarnings("unchecked")
 public class HttlUtilsMethods {
 
     private static final Logger log = LoggerFactory.getLogger(HttlUtilsMethods.class);
