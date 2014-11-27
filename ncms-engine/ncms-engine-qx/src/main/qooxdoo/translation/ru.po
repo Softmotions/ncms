@@ -437,7 +437,7 @@ msgstr "Максимальная высота изображения"
 
 #: ncms/asm/am/MedialineAM.js:44
 msgid "Max thumbnail width"
-msgstr "Максимальная высота миниатюры"
+msgstr "Максимальная ширина миниатюры"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:65
 msgid "Add images to the gallery"

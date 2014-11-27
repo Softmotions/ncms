@@ -50,7 +50,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
 
     public static final int DEFAULT_IMG_WIDTH = 800;
 
-    public static final int DEFAULT_IMG_THUMB_WIDTH = 64;
+    public static final int DEFAULT_IMG_THUMB_WIDTH = 96;
 
     private static final String[] TYPE = new String[]{"medialine"};
 

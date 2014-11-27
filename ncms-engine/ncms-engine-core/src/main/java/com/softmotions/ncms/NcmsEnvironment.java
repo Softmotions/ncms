@@ -57,7 +57,7 @@ public class NcmsEnvironment extends WBConfiguration {
         super.load(location, sctx);
         normalizePrefix("site-files-root");
         normalizePrefix("ncms-prefix");
-        this.ncmsPrefix = xcfg.getString("ncms-prefix", "/ncms");
+        this.ncmsPrefix = xcfg.getString("ncms-prefix", "");
         this.ncmsRoot = sctx.getContextPath() + this.ncmsPrefix;
         this.adminRoot = this.ncmsRoot + "/adm";
         this.environmentType = xcfg.getString("environment", "production");

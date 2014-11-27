@@ -39,7 +39,7 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
             if (opts["thumb_width"] != null) {
                 el.setValue(opts["thumb_width"]);
             } else {
-                el.setValue("64");
+                el.setValue("96");
             }
             form.add(el, this.tr("Max thumbnail width"), sm.util.Validate.canBeRangeNumber(10, 256, true), "thumb_width");
 
