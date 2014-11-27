@@ -33,6 +33,19 @@
                     <cacheDirectory>${project.basedir}/../../.cache/.qx</cacheDirectory>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <!-- explicitly define maven-deploy-plugin after other to force exec order -->
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>deploy</id>
+                        <phase>deploy</phase>
+                        <goals><goal>deploy</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
