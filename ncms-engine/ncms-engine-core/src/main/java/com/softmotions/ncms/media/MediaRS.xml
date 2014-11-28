@@ -115,7 +115,7 @@
             databaseId="DB2"
             parameterType="map">
         UPDATE MEDIA_ENTITY e
-        SET e.folder = #{new_prefix} || substr(e.folder, #{prefix_like_len}),
+        SET e.folder = #{new_prefix} || SUBSTRING(e.folder, #{prefix_like_len}, CODEUNITS32),
             e.mdate  = CURRENT_TIMESTAMP
         WHERE e.folder LIKE #{prefix_like}
     </update>
