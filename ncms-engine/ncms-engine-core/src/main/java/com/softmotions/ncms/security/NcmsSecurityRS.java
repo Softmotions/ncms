@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.validator.routines.EmailValidator;
+import org.hibernate.validator.internal.constraintvalidators.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -249,7 +249,9 @@ public class NcmsSecurityRS {
         }
         // force update fields if user already exists
         user.setFullName(fullName);
-        if (EmailValidator.getInstance().isValid(email)) {
+
+        EmailValidator v = new EmailValidator();
+        if (v.isValid(email, null)) { //todo iternal implementation dependent
             user.setEmail(email.toLowerCase());
         }
 
