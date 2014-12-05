@@ -94,22 +94,13 @@
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
-            <artifactId>softmotions-weboot-solr</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm-commons</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>softmotions</groupId>
             <artifactId>softmotions-web-realms</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>4.9.1</version>
         </dependency>
         <dependency>
             <groupId>commons-collections</groupId>

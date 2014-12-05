@@ -1,5 +1,8 @@
-package com.softmotions.ncms.asm;
+package com.softmotions.ncms.solr;
 
+import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.events.AsmCreatedEvent;

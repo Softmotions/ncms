@@ -14,5 +14,6 @@
     <modules>
         <module>ncms-engine-qx</module>
         <module>ncms-engine-core</module>
+        <module>ncms-engine-solr</module>
     </modules>
 </project>
