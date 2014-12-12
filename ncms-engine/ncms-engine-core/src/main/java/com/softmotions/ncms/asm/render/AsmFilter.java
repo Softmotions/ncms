@@ -207,7 +207,9 @@ public class AsmFilter implements Filter {
         if (pi.length() < 2 || "/index.html".equals(pi)) {
             CachedPage cp = pageService.getIndexPage(req);
             if (cp == null) {
-                log.warn("Unable to find index page");
+                if (log.isDebugEnabled()) {
+                    log.debug("Unable to find index page");
+                }
                 return null;
             }
             return cp.getAsm();
