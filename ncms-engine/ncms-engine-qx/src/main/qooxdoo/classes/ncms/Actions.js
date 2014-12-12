@@ -5,7 +5,7 @@ qx.Class.define("ncms.Actions", {
     extend : sm.conn.Actions,
 
     construct : function(prefix) {
-        this._prefix = (typeof prefix === "string") ? prefix : "/ncms";
+        this._prefix = (typeof prefix === "string") ? prefix : "";
         this.base(arguments);
         this._testPrefix = "http://localhost:8080";
         this._resourceManager = qx.util.ResourceManager.getInstance();
