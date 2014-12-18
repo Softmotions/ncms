@@ -249,7 +249,7 @@ public class AsmDAO extends MBDAOSupport {
             }
         }
         delete("deleteAsmAccessRoles", id);
-        if (roles.length > 0) {
+        if (!rset.isEmpty()) {
             insert("insertAsmAccessRoles",
                    "id", id,
                    "roles", rset);
