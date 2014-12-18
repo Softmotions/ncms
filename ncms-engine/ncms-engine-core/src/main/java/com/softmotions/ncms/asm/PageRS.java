@@ -1482,7 +1482,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                     continue;
                 }
                 String langs = (String) options.get("lang");
-                String[] lcodes = ArrayUtils.split(langs, " ,;");
+                String[] lcodes = langs != null ? ArrayUtils.split(langs, " ,;") : org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
                 for (String lang : lcodes) {
                     log.info("Registering page: '" + lp + "' as the MAIN PAGE for lang: " + lang);
                     lang2IndexPages.put(lang, id);
