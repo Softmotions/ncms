@@ -20,6 +20,13 @@ public interface MediaRepository extends MediaReader, Closeable {
 
     int RESIZE_COVER_AREA = 1 << 1;
 
+    int IMPORT_OVERWRITE = 1;
+
+    int IMPORT_WATCH = 1 << 1;
+
+    int IMPORT_CLEANUP_MISSING = 1 << 2;
+
+    int IMPORT_SYSTEM = 1 << 3;
 
     /**
      * Import given directory
@@ -29,9 +36,7 @@ public interface MediaRepository extends MediaReader, Closeable {
                          String target,
                          String[] includes,
                          String[] excludes,
-                         boolean overwrite,
-                         boolean watch,
-                         boolean system) throws IOException;
+                         int flags) throws IOException;
 
     /**
      * Import given file

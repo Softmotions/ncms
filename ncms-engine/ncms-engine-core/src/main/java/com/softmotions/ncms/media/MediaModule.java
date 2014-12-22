@@ -73,9 +73,21 @@ public class MediaModule extends AbstractModule {
                 log.error("Failed to import: " + srcPath + " is not a directory");
                 return;
             }
-            boolean watch = c.getBoolean("[@watch]", false);
-            boolean overwrite = c.getBoolean("[@overwrite]", false);
-            boolean system = c.getBoolean("[@system]", false);
+
+            int flags = 0;
+            if (c.getBoolean("[@watch]", false)) {
+                flags |= MediaRepository.IMPORT_WATCH;
+            }
+            if (c.getBoolean("[@overwrite]", false)) {
+                flags |= MediaRepository.IMPORT_OVERWRITE;
+            }
+            if (c.getBoolean("[@system]", false)) {
+                flags |= MediaRepository.IMPORT_SYSTEM;
+            }
+            if (c.getBoolean("[@cleanupMissing]", false)) {
+                flags |= MediaRepository.IMPORT_CLEANUP_MISSING;
+            }
+
             List<String> includes = new ArrayList<>();
             List<String> excludes = new ArrayList<>();
             for (Object o : c.getList("includes.include")) {
@@ -89,9 +101,7 @@ public class MediaModule extends AbstractModule {
                                                 target,
                                                 includes.toArray(new String[includes.size()]),
                                                 excludes.toArray(new String[excludes.size()]),
-                                                overwrite,
-                                                watch,
-                                                system);
+                                                flags);
             } catch (IOException e) {
                 log.error("Failed to import directory: ", e);
             }

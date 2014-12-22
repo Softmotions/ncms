@@ -2211,14 +2211,18 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                 String target,
                                 String[] includes,
                                 String[] excludes,
-                                final boolean overwrite,
-                                final boolean watch,
-                                final boolean system) throws IOException {
+                                int flags) throws IOException {
+
+        final boolean overwrite = (flags & IMPORT_OVERWRITE) != 0;
+        final boolean watch = (flags & IMPORT_WATCH) != 0;
+        final boolean system = (flags & IMPORT_SYSTEM) != 0;
+
 
         if (target.startsWith("/")) {
             target = target.substring(1);
         }
-        log.info("Importing " + source + " into " + target + " watch=" + watch);
+        log.info("Importing " + source + " into " + target + " flags=" + flags);
+        final String importTarget = target;
         final DirectoryScannerFactory sf = new DirectoryScannerFactory(Paths.get(source));
         for (final String inc : includes) {
             sf.include(inc);
@@ -2235,7 +2239,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                                                overwrite,
                                                                system));
         } else {
-            final String importTarget = target;
             try (DirectoryScanner ds = sf.createScanner()) {
                 ds.scan(new DirectoryScannerVisitor() {
                     public void visit(Path path, BasicFileAttributes basicFileAttributes) throws IOException {
@@ -2248,6 +2251,51 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                         log.error("Failed to scan path: " + path, e);
                     }
                 });
+            }
+        }
+
+        if ((flags & IMPORT_CLEANUP_MISSING) != 0) {
+            Set<Path> srcPaths = new HashSet<>();
+            Set<Path> tgtPaths = new HashSet<>();
+            try (DirectoryScanner ds = sf.createScanner()) {
+                ds.scan(new DirectoryScannerVisitor() {
+                    public void visit(Path path, BasicFileAttributes attrs) throws IOException {
+                        srcPaths.add(path);
+                    }
+
+                    public void error(Path path, IOException e) throws IOException {
+                    }
+                });
+            }
+
+            try (DirectoryScanner ds = new DirectoryScannerFactory(
+                    getBasedir().toPath().resolve(importTarget)).createScanner()) {
+
+                ds.scan(new DirectoryScannerVisitor() {
+                    public void visit(Path path, BasicFileAttributes attrs) throws IOException {
+                        tgtPaths.add(path);
+                    }
+
+                    public void error(Path path, IOException exc) throws IOException {
+                    }
+                });
+            }
+
+            for (final Path tpath : tgtPaths) {
+                if (srcPaths.contains(tpath)) {
+                    continue;
+                }
+                String path = importTarget + '/' + tpath;
+                log.info("Removing missing resource: " + path);
+                String name = getResourceName(path);
+                String folder = getResourceParentFolder(path);
+                try (final ResourceLock l = new ResourceLock(path, true)) {
+                    File f = new File(basedir, path);
+                    FileUtils.deleteQuietly(f);
+                    delete("deleteFile",
+                           "folder", folder,
+                           "name", name);
+                }
             }
         }
     }
