@@ -27,7 +27,7 @@ public class YoutubeTag extends HTMLTag implements INoBodyParsingTag {
             Pattern.compile("(http|https)://(www.)?youtube.com/watch\\?v=(\\w{3,15})[\\w#!:\\.\\+=&%@!\\-/]*");
 
     private static final Pattern CODE_PATTERN =
-            Pattern.compile("^\\w{3,15}$");
+            Pattern.compile("^(\\w|\\-){3,15}$");
 
 
     public YoutubeTag() {
