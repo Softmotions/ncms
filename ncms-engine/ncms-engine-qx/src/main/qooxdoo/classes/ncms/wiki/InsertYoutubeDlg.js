@@ -85,7 +85,7 @@ qx.Class.define("ncms.wiki.InsertYoutubeDlg", {
                 return null;
             }
             val = val.trim();
-            var res = /(http|https):\/\/(www.)?youtube.com\/watch\?v=(\w{3,15})[\w#!:\.\+=&%@!\-\/]*/.exec(val);
+            var res = /(http|https):\/\/(www.)?youtube.com\/watch\?v=((\w|\-){3,15})[\w#!:\.\+=&%@!\-\/]*/.exec(val);
             if (res == null) {
                 res = /^\w{3,15}$/.exec(val);
                 return res ? res[0] : null;
