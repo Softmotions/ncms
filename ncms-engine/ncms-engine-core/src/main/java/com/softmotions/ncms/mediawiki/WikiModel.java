@@ -1,5 +1,6 @@
 package com.softmotions.ncms.mediawiki;
 
+import info.bliki.wiki.filter.Encoder;
 import info.bliki.wiki.model.Configuration;
 import info.bliki.wiki.model.ImageFormat;
 import com.softmotions.ncms.NcmsMessages;
@@ -52,5 +53,10 @@ public class WikiModel extends info.bliki.wiki.model.WikiModel {
         this.cfg = cfg;
         this.messages = messages;
         this.locale = locale;
+    }
+
+    @Override
+    public String encodeTitleToUrl(String wikiTitle, boolean firstCharacterAsUpperCase) {
+        return Encoder.normaliseTitle(wikiTitle, false, ' ', firstCharacterAsUpperCase, true);
     }
 }
