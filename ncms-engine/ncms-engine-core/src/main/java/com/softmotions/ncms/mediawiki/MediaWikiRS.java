@@ -1,5 +1,6 @@
 package com.softmotions.ncms.mediawiki;
 
+import info.bliki.wiki.filter.Encoder;
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
@@ -44,6 +45,8 @@ public class MediaWikiRS {
     private static final Pattern EXT_LINK_REGEXP
             = Pattern.compile("((Http|Https|Ftp|Smb|Sftp|Scp)://)(.*)");
 
+    private static final Pattern HOST_NAME_REGEXP
+            = Pattern.compile("([^:/]+)(.*)");
 
     private final MediaRepository repository;
 
@@ -123,6 +126,12 @@ public class MediaWikiRS {
         if (!matcher.matches()) {
             throw new BadRequestException();
         }
-        return new Redirect(new URI(matcher.group(1).toLowerCase() + IDN.toASCII(matcher.group(3))));
+
+        Matcher hmatcher = HOST_NAME_REGEXP.matcher(matcher.group(3));
+        if (!hmatcher.matches()) {
+            throw new BadRequestException();
+        }
+
+        return new Redirect(new URI(matcher.group(1).toLowerCase() + IDN.toASCII(hmatcher.group(1)) + Encoder.encodeUrl(hmatcher.group(2))));
     }
 }
