@@ -18,6 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import java.net.IDN;
 import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -122,6 +123,6 @@ public class MediaWikiRS {
         if (!matcher.matches()) {
             throw new BadRequestException();
         }
-        return new Redirect(new URI(matcher.group(1).toLowerCase() + matcher.group(3)));
+        return new Redirect(new URI(matcher.group(1).toLowerCase() + IDN.toASCII(matcher.group(3))));
     }
 }
