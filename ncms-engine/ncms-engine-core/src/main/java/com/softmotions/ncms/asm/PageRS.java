@@ -537,12 +537,17 @@ public class PageRS extends MBDAOSupport implements PageService {
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
         Long id = spec.hasNonNull("id") ? spec.get("id").asLong() : null;
         String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
+        final CachedPage page = getCachedPage(id, true);
+        Long parent = page.getNavParentId();
+
         if (id == null || name == null || type == null ||
             (!"page.folder".equals(type) && !"page".equals(type) && !"news.page".equals(type))) {
             throw new BadRequestException("");
         }
 
-        if (!pageSecurity.canDelete(id, req)) {
+        if ("news.page".equals(type) ?
+            !(parent != null && pageSecurity.canNewsEdit(parent, req)) :
+            !pageSecurity.canDelete(id, req)) {
             throw new ForbiddenException("");
         }
 
