@@ -46,7 +46,7 @@ public class MediaWikiRS {
             = Pattern.compile("((Http|Https|Ftp|Smb|Sftp|Scp)://)(.*)");
 
     private static final Pattern HOST_NAME_REGEXP
-            = Pattern.compile("([^:/]+)(.*)");
+            = Pattern.compile("([^:/]+)([^/]*)(.*)");
 
     private final MediaRepository repository;
 
@@ -132,6 +132,9 @@ public class MediaWikiRS {
             throw new BadRequestException();
         }
 
-        return new Redirect(new URI(matcher.group(1).toLowerCase() + IDN.toASCII(hmatcher.group(1)) + Encoder.encodeUrl(hmatcher.group(2))));
+        return new Redirect(new URI(matcher.group(1).toLowerCase()
+                                    + IDN.toASCII(hmatcher.group(1))
+                                    + hmatcher.group(2)
+                                    + Encoder.encodeUrl(hmatcher.group(3))));
     }
 }
