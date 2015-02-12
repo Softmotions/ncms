@@ -43,10 +43,10 @@ public class MediaWikiRS {
             = Pattern.compile("(Image|File|Media):((\\d+)px\\-)?/?(\\d+)/?.*");
 
     private static final Pattern EXT_LINK_REGEXP
-            = Pattern.compile("((Http|Https|Ftp|Smb|Sftp|Scp)://)(.*)");
+            = Pattern.compile("((Http|Https|Ftp|Smb|Sftp|Scp)://)([^:/]+)([^/]*)(.*)");
 
-    private static final Pattern HOST_NAME_REGEXP
-            = Pattern.compile("([^:/]+)([^/]*)(.*)");
+    private static final Pattern CHECK_ENCODED_REGEXP
+            = Pattern.compile(".*[^a-zA-Z0-9-_.!~*'()/#%]+.*");
 
     private final MediaRepository repository;
 
@@ -127,14 +127,12 @@ public class MediaWikiRS {
             throw new BadRequestException();
         }
 
-        Matcher hmatcher = HOST_NAME_REGEXP.matcher(matcher.group(3));
-        if (!hmatcher.matches()) {
-            throw new BadRequestException();
-        }
+        Matcher cematcher = CHECK_ENCODED_REGEXP.matcher(matcher.group(5));
+        String path = cematcher.matches() ? Encoder.encodeUrl(matcher.group(5)) : matcher.group(5);
 
         return new Redirect(new URI(matcher.group(1).toLowerCase()
-                                    + IDN.toASCII(hmatcher.group(1))
-                                    + hmatcher.group(2)
-                                    + Encoder.encodeUrl(hmatcher.group(3))));
+                                    + IDN.toASCII(matcher.group(3))
+                                    + matcher.group(4)
+                                    + path));
     }
 }
