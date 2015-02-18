@@ -607,6 +607,7 @@ public class AsmRS extends MBDAOSupport {
                     cq.withParam("template_mode", "news");
                     String pname = (String) prow.get("pname");
                     if (pname != null) {
+                        pname = pname.indexOf('_') > 0 ? pname.substring(0, pname.indexOf('_')) : pname;
                         cq.withParam("name_restriction", pname + "_%");
                     }
                 } else {
