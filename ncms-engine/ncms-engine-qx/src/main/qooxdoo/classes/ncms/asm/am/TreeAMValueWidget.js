@@ -257,7 +257,7 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
                 var pspec = ev.getData();
                 var rdata = {
                     src : pspec["id"],
-                    tgt : this.__attrSpec["asmId"],
+                    tgt : this.__asmSpec["id"],
                     attr : this.__attrSpec["name"]
                 };
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("am.tree.sync"), "PUT", "application/json");

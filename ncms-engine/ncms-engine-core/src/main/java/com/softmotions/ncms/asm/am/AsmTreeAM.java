@@ -35,6 +35,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -123,6 +124,40 @@ public class AsmTreeAM implements AsmAttributeManager {
                                  req, tgtAsm.getHname(), attrName),
                     true);
         }
+
+        int syncIndex;
+        Long syncId;
+        Asm syncAsm;
+        AsmAttribute syncAttr;
+        String opts = srcAttr.getOptions();
+        HashSet<Long> syncAsmIds = new HashSet<>();
+        syncAsmIds.add(tgtId);
+
+        while ((syncIndex = opts.indexOf("syncWith")) >= 0) {
+            syncId = Long.decode(opts.substring(syncIndex + 9, opts.indexOf(',', syncIndex)));
+
+            if (!syncAsmIds.add(syncId)) {
+                throw new NcmsMessageException(
+                        messages.get("ncms.page.sync.cycle", req),
+                        true);
+            }
+
+            syncAsm = adao.asmSelectById(syncId);
+            if (syncAsm == null) {
+                log.warn("Assembly not found for id: " + syncId);
+                throw new BadRequestException("");
+            }
+
+            syncAttr = syncAsm.getEffectiveAttribute(attrName);
+            if (syncAttr == null) {
+                throw new NcmsMessageException(
+                        messages.get("ncms.page.attr.notFound",
+                                     req, syncAsm.getHname(), attrName),
+                        true);
+            }
+            opts = syncAttr.getOptions();
+        }
+
         AsmRendererContext ctx = rendererContextFactory.createStandalone(req, resp, tgtId);
         Tree stree = getSyncTree(srcId, ctx, tgtAttr);
         spec.putPOJO("tree", stree);
