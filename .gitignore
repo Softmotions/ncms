@@ -1,9 +1,15 @@
+# Maven
+target/
+
+# IDEA
+.idea/
+*.iml
+
+# NCMS
 .cache/
-.idea/workspace.xml
-.idea/libraries/*
 /ncms-engine/ncms-engine-qx/target/
 /ncms-engine/ncms-engine-web/target/
-/.idea
-*.iml
-/target
-logs
+/ncms-engine/ncms-engine-solr/target/
+
+# Logs
+logs/
