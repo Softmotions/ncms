@@ -1506,11 +1506,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 return null;
             }
             if (width != null && height != null) {
-                image = Scalr.resize(image, Scalr.Mode.FIT_EXACT, width, height);
+                image = Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_EXACT, width, height);
             } else if (width != null) {
-                image = Scalr.resize(image, Scalr.Mode.FIT_TO_WIDTH, width);
+                image = Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, width);
             } else {
-                image = Scalr.resize(image, Scalr.Mode.FIT_TO_HEIGHT, height);
+                image = Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_HEIGHT, height);
             }
 
             //Unlock read lock before acuiring exclusive write lock

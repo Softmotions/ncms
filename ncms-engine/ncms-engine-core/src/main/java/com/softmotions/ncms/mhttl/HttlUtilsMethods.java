@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -124,6 +125,13 @@ public class HttlUtilsMethods {
         return ctx.getMessages().format(date, format, ctx.getLocale());
     }
 
+    public static String formatEng(Date date, String format) {
+        if (date == null) {
+            return null;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getMessages().format(date, format, Locale.ENGLISH);
+    }
 
     public static XMLConfiguration config() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
