@@ -103,6 +103,7 @@
             <tag name="note" class="com.softmotions.ncms.mediawiki.NoteTag"/>
             <tag name="gmap" class="com.softmotions.ncms.mediawiki.GMapTag"/>
             <tag name="youtube" class="com.softmotions.ncms.mediawiki.YoutubeTag"/>
+            <tag name="slideshare" class="com.softmotions.ncms.mediawiki.SlideSharePresentationTag"/>
             <tag name="tree" class="com.softmotions.ncms.mediawiki.TreeTag"/>
         </tags>
         <interwiki-links>
