@@ -602,6 +602,15 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     }
                 ]
             });
+
+            this._addToolbarControl({
+                id : "SlideShare",
+                icon : "ncms/icon/16/wiki/slideshare.png",
+                title : this.tr("Slideshare"),
+                tooltipText : this.tr("Insert presentation"),
+                prompt : this.__insertSlideSharePresentationPrompt.bind(this),
+                insertMediawiki : wrap(this.__mediaWikiSlideSharePresentation, this)
+            });
         },
 
         _getSelectionStart : function() {
@@ -916,6 +925,28 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             val.push("/>");
             return val.join("");
         },
+
+        __insertSlideSharePresentationPrompt : function(stext, cb) {
+            var dlg = new ncms.wiki.InsertSlideSharePresentationDlg();
+            dlg.addListener("completed", function(event) {
+                var data = event.getData();
+                dlg.close();
+                cb(data);
+            });
+            dlg.open();
+        },
+
+        __mediaWikiSlideSharePresentation : function(data) {
+            var val = [];
+            val.push('<slideshare code="' + data['code'] + '"');
+            if (data['custom']) {
+                val.push(' width="' + data['width'] + '"');
+                val.push(' height="' + data['height'] + '"');
+            }
+            val.push("/>");
+            return val.join("");
+        },
+
 
         __mediaWikiTable : function(tm, isWide) {
             /*
