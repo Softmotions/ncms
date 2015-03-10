@@ -1139,19 +1139,24 @@ msgid "Insert slideshare presentation"
 msgstr "Вставка презентации slideshare"
 
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:28
-msgid "http://www.slideshare.com/presentation_url"
+msgid "http://www.slideshare.com/presentation_url or embed_code"
 msgstr ""
 
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:30
-msgid "Code"
-msgstr "Код"
+msgid "URL or code"
+msgstr "URL или код"
 
 #: ncms/wiki/InsertYoutubeDlg.js:39
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:33
 msgid "Custom size"
 msgstr "Другой размер"
 
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:74
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:92
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:170
+msgid "Invalid SlideShare URL"
+msgstr "Неправильный SlideShare URL"
+
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:119
 msgid "Invalid SlideShare code"
 msgstr "Неправильный SlideShare код"
 
@@ -1355,17 +1360,14 @@ msgstr "Потомок уровня вложенности 2"
 msgid "Note text"
 msgstr "Заметка"
 
-#~ msgid "Aborted Unnable to load slideshare presentation info."
-#~ msgstr ""
-
 #~ msgid "Bread crumbs"
 #~ msgstr "Вспомогательная навигация (Breadcrumbs)"
 
 #~ msgid "Cancel sync"
 #~ msgstr "Отменить синхронизацию"
 
-#~ msgid "Failed Unnable to load slideshare presentation info."
-#~ msgstr ""
+#~ msgid "Code"
+#~ msgstr "Код"
 
 #~ msgid "List of referring pages"
 #~ msgstr "Список ссылающихся страниц"
@@ -1373,20 +1375,11 @@ msgstr "Заметка"
 #~ msgid "News caption"
 #~ msgstr "Заголовок новости"
 
-#~ msgid "Timeout Unnable to load slideshare presentation info."
-#~ msgstr ""
-
 #~ msgid "URL"
 #~ msgstr ""
 
 #~ msgid "Unable to delete this page!"
 #~ msgstr "Невозможно удалить эту страницу"
 
-#~ msgid "Unnable to load slideshare presentation info."
-#~ msgstr ""
-
-#~ msgid "Url"
-#~ msgstr ""
-
-#~ msgid "slideshare.url"
-#~ msgstr "URL"
+#~ msgid "Unnable to load slideshare presentation info"
+#~ msgstr "Не удалось загрузить информацию о презентации с сервиса SlideShare"

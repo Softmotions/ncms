@@ -21,13 +21,13 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
 
         var form = this.__form = new sm.ui.form.ExtendedForm();
 
-        var presentationURLTextField = new qx.ui.form.TextField().set({
+        var presentationIdentifierTextField = new qx.ui.form.TextField().set({
             maxLength : 128,
             required : true
         });
-        presentationURLTextField.setPlaceholder(this.tr("http://www.slideshare.com/presentation_url"));
+        presentationIdentifierTextField.setPlaceholder(this.tr("http://www.slideshare.com/presentation_url or embed_code"));
 
-        form.add(presentationURLTextField, this.tr("Code"), this.__validateCode, "code", this, {fullRow : true});
+        form.add(presentationIdentifierTextField, this.tr("URL or code"), this.__validateSlideShareIdentifier, "identifier", this, {fullRow : true});
 
         var customSizeCheckBox = new qx.ui.form.CheckBox();
         form.add(customSizeCheckBox, this.tr("Custom size"), null, "custom", null, {fullRow : true, flex : 1});
@@ -49,11 +49,11 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
         var footer = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
         footer.setPadding(5);
 
-        var okButton = new qx.ui.form.Button(this.tr("Ok"));
+        var okButton = this.__okButton = new qx.ui.form.Button(this.tr("Ok"));
         okButton.addListener("execute", this.__ok, this);
         footer.add(okButton);
 
-        var cancelButton = new qx.ui.form.Button(this.tr("Cancel"));
+        var cancelButton = this.__cancelButton = new qx.ui.form.Button(this.tr("Cancel"));
         cancelButton.addListener("execute", this.close, this);
         footer.add(cancelButton);
 
@@ -67,28 +67,114 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
     members : {
         __form : null,
 
+        __okButton: null,
+
+        __cancelButton: null,
+
+        __code: null,
+
+        __isCodeLoading: false,
+
+        __validateSlideShareIdentifier: function(identifier) {
+            identifier = identifier.trim();
+
+            if (identifier.indexOf('http') === 0) {
+                this.__validateURL(identifier);
+            } else {
+                this.__validateCode(identifier);
+            }
+        },
+
+        __validateURL : function(url) {
+            var isSlideShareURL = /(http|https):\/\/(www.)?slideshare.net\/.+/.test(url);
+
+            if (!isSlideShareURL) {
+                throw new qx.core.ValidationError('Validation Error', this.tr('Invalid SlideShare URL'));
+            }
+
+            var self = this;
+
+            var slideShareCodeRequest = new qx.io.request.Jsonp();
+            slideShareCodeRequest.setUrl('http://www.slideshare.net/api/oembed/2?url=' + url + '&format=json');
+            slideShareCodeRequest.addListener("success", function(event) {
+                self.__onSlideShareResponse(event.getTarget().getResponse());
+            }, this);
+            slideShareCodeRequest.send();
+
+            this.__isCodeLoading = true;
+
+            setTimeout(function() {
+                self.__onError();
+            }, 5 * 1000);
+
+            this.__okButton.setEnabled(false);
+
+            this.__cancelButton.setEnabled(false);
+        },
+
         __validateCode : function(code) {
             var isNumber = /^\d*$/.test(code);
 
             if (!isNumber) {
-                throw new qx.core.ValidationError("Validation Error", this.tr("Invalid SlideShare code"));
+                throw new qx.core.ValidationError('Validation Error', this.tr('Invalid SlideShare code'));
             }
 
-            return /^\d*$/.test(code);
+            this.__code = code;
+
+            this.__isCodeLoading = false;
+
+            this.__onFormReady();
+        },
+
+        __onSlideShareResponse: function(response) {
+            if (response.hasOwnProperty("error")) {
+                this.__onError();
+            } else {
+                this.__code = response['slideshow_id'];
+
+                this.__isCodeLoading = false;
+
+                this.__okButton.setEnabled(true);
+
+                this.__cancelButton.setEnabled(true);
+
+                this.__onFormReady();
+            }
         },
 
         __ok : function() {
             if (!this.__form.validate()) {
                 return;
             }
+        },
 
-            var data = {};
+        __onFormReady: function() {
+            var data = {
+                code: this.__code
+            };
+
             this.__form.populateJSONObject(data);
 
             this.fireDataEvent("completed", data);
         },
 
+        __onError: function() {
+            this.__isCodeLoading = false;
+
+            this.__okButton.setEnabled(true);
+
+            this.__cancelButton.setEnabled(true);
+
+            var identifierField = this.__form.getItems()["identifier"];
+            identifierField.setValid(false);
+            identifierField.setInvalidMessage(this.tr('Invalid SlideShare URL'));
+        },
+
         close : function() {
+            if (this.__isCodeLoading) {
+                return;
+            }
+
             this.base(arguments);
             this.destroy();
         }

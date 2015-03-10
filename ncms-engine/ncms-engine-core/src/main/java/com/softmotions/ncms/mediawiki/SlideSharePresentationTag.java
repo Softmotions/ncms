@@ -10,6 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+
 /**
  * SlideShare embedded presentation tag.
  */
@@ -30,7 +33,7 @@ public class SlideSharePresentationTag extends HTMLTag implements INoBodyParsing
     public void renderHTML(ITextConverter textConverter, Appendable buffer, IWikiModel wikiModel) throws IOException {
         Map<String, String> tagAttributes = getAttributes();
 
-        String embedCodeAttribute = StringUtils.trimToEmpty(tagAttributes.get("code"));
+        String embedCodeAttribute = trimToEmpty(tagAttributes.get("code"));
 
         if (!StringUtils.isNumeric(embedCodeAttribute)) {
             return;
@@ -38,7 +41,7 @@ public class SlideSharePresentationTag extends HTMLTag implements INoBodyParsing
 
         int embedCode = Integer.parseInt(embedCodeAttribute);
 
-        String widthAttribute = StringUtils.trimToEmpty(tagAttributes.getOrDefault("width", "640"));
+        String widthAttribute = defaultIfEmpty(trimToEmpty(tagAttributes.get("width")), "640");
 
         if (!StringUtils.isNumeric(widthAttribute)) {
             return;
@@ -46,7 +49,7 @@ public class SlideSharePresentationTag extends HTMLTag implements INoBodyParsing
 
         int width = Integer.parseInt(widthAttribute);
 
-        String heightAttribute = StringUtils.trimToEmpty(tagAttributes.getOrDefault("height", "320"));
+        String heightAttribute = defaultIfEmpty(trimToEmpty(tagAttributes.get("height")), "320");
 
         if (!StringUtils.isNumeric(heightAttribute)) {
             return;
