@@ -16,7 +16,7 @@ qx.Class.define("ncms.wiki.InsertYoutubeDlg", {
     },
 
     construct : function() {
-        this.base(arguments, this.tr("Insert youtube video"));
+        this.base(arguments, this.tr("Insert YouTube video"));
         this.setLayout(new qx.ui.layout.VBox(4));
         this.set({
             modal : true,
@@ -32,7 +32,7 @@ qx.Class.define("ncms.wiki.InsertYoutubeDlg", {
         var tf = new qx.ui.form.TextField()
                 .set({maxLength : 128, required : true});
         tf.setPlaceholder(this.tr("http://www.youtube.com/watch?v=? or video code"));
-        form.add(tf, this.tr("Url or code"),
+        form.add(tf, this.tr("URL or code"),
                 this.__validateYoutubeId, "code", this, {fullRow : true});
 
         var cb = new qx.ui.form.CheckBox();
@@ -76,7 +76,7 @@ qx.Class.define("ncms.wiki.InsertYoutubeDlg", {
         __validateYoutubeId : function(val) {
             var id = this.__getYoutubeId(val);
             if (id == null) {
-                throw new qx.core.ValidationError("Validation Error", this.tr("Invalid youtube video url or code"));
+                throw new qx.core.ValidationError("Validation Error", this.tr("Invalid YouTube video url or code"));
             }
         },
 

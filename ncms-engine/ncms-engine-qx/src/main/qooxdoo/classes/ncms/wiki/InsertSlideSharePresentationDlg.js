@@ -9,7 +9,7 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
     },
 
     construct : function() {
-        this.base(arguments, this.tr("Insert slideshare presentation"));
+        this.base(arguments, this.tr("Insert SlideShare presentation"));
         this.setLayout(new qx.ui.layout.VBox(4));
         this.set({
             modal : true,
@@ -99,17 +99,22 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
             slideShareCodeRequest.addListener("success", function(event) {
                 self.__onSlideShareResponse(event.getTarget().getResponse());
             }, this);
+            slideShareCodeRequest.setTimeout(5 * 1000);
+            slideShareCodeRequest.addListener("fail", function(event) {
+                if (this.__isCodeLoading == false) {
+                    return;
+                }
+
+                if (event.getTarget().getPhase() == "statusError") {
+                    self.__onInvalidResp();
+                    return;
+                }
+
+                self.__onError();
+            }, this);
             slideShareCodeRequest.send();
 
-            this.__isCodeLoading = true;
-
-            setTimeout(function() {
-                self.__onError();
-            }, 5 * 1000);
-
-            this.__okButton.setEnabled(false);
-
-            this.__cancelButton.setEnabled(false);
+            this.__disableForm(true);
         },
 
         __validateCode : function(code) {
@@ -127,25 +132,31 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
         },
 
         __onSlideShareResponse: function(response) {
-            if (response.hasOwnProperty("error")) {
-                this.__onError();
-            } else {
-                this.__code = response['slideshow_id'];
+            this.__code = response['slideshow_id'];
 
-                this.__isCodeLoading = false;
+            this.__disableForm(false);
 
-                this.__okButton.setEnabled(true);
-
-                this.__cancelButton.setEnabled(true);
-
-                this.__onFormReady();
-            }
+            this.__onFormReady();
         },
 
         __ok : function() {
             if (!this.__form.validate()) {
                 return;
             }
+        },
+
+        __disableForm : function(enabled) {
+            this.__isCodeLoading = enabled;
+
+            var fitems = this.__form.getItems();
+            for (var key in fitems) {
+                var item = fitems[key];
+                item.setEnabled(!enabled);
+            }
+
+            this.__okButton.setEnabled(!enabled);
+
+            this.__cancelButton.setEnabled(!enabled);
         },
 
         __onFormReady: function() {
@@ -158,16 +169,20 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
             this.fireDataEvent("completed", data);
         },
 
-        __onError: function() {
-            this.__isCodeLoading = false;
-
-            this.__okButton.setEnabled(true);
-
-            this.__cancelButton.setEnabled(true);
+        __onInvalidResp: function() {
+            this.__disableForm(false);
 
             var identifierField = this.__form.getItems()["identifier"];
             identifierField.setValid(false);
             identifierField.setInvalidMessage(this.tr('Invalid SlideShare URL'));
+        },
+
+        __onError: function() {
+            this.__disableForm(false);
+
+            var identifierField = this.__form.getItems()["identifier"];
+            identifierField.setValid(false);
+            identifierField.setInvalidMessage(this.tr('Failed to connect to SlideShare server. Try again later'));
         },
 
         close : function() {

@@ -32,9 +32,9 @@ msgid "This field is required"
 msgstr "Обязательное поле"
 
 #: ncms/asm/AsmParentsTable.js:99 ncms/asm/am/SelectAMTable.js:65
-#: ncms/asm/AsmEditor.js:94 ncms/usr/UserEditForm.js:27
-#: ncms/mmgr/MediaFileEditor.js:269 ncms/pgs/PagesTable.js:21
-#: ncms/asm/AsmAttrsTable.js:112 ncms/asm/am/TreeAMNewFolderDlg.js:22
+#: ncms/asm/AsmEditor.js:94 ncms/asm/am/TreeAMNewFolderDlg.js:22
+#: ncms/usr/UserEditForm.js:27 ncms/mmgr/MediaFileEditor.js:269
+#: ncms/pgs/PagesTable.js:21 ncms/asm/AsmAttrsTable.js:112
 #: ncms/asm/am/TreeAMValueWidget.js:479 ncms/asm/AsmTable.js:17
 #: ncms/usr/UserNewDlg.js:39 ncms/mmgr/MediaFilesTable.js:9
 #: ncms/asm/AsmAttrEditorDlg.js:65 ncms/usr/UsersTable.js:10
@@ -69,9 +69,9 @@ msgstr "Обязательное в GUI"
 #: ncms/pgs/PagesSelectorDlg.js:55 ncms/wiki/InsertYoutubeDlg.js:58
 #: ncms/wiki/TreeDlg.js:50 ncms/usr/UserSelectorDlg.js:38
 #: ncms/mmgr/MediaSelectFolderDlg.js:55 ncms/wiki/InsertGMapDlg.js:41
-#: ncms/mmgr/MediaSelectFileDlg.js:81 ncms/usr/UserNewDlg.js:64
+#: ncms/mmgr/MediaSelectFileDlg.js:81
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:52 ncms/usr/UserNewDlg.js:64
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:49 ncms/asm/AsmAttrEditorDlg.js:108
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:52
 #: ncms/pgs/PagesCollectionDlg.js:40
 msgid "Ok"
 msgstr "Ок"
@@ -83,9 +83,8 @@ msgstr "Ок"
 #: ncms/wiki/TreeDlg.js:54 ncms/usr/UserSelectorDlg.js:42
 #: ncms/mmgr/MediaSelectFolderDlg.js:59 ncms/usr/UserEditForm.js:54
 #: ncms/wiki/InsertGMapDlg.js:45 ncms/mmgr/MediaSelectFileDlg.js:85
-#: ncms/usr/UserNewDlg.js:68 ncms/asm/AsmAttributeTypeSelectorDlg.js:54
-#: ncms/asm/AsmAttrEditorDlg.js:112
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:56
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:56 ncms/usr/UserNewDlg.js:68
+#: ncms/asm/AsmAttributeTypeSelectorDlg.js:54 ncms/asm/AsmAttrEditorDlg.js:112
 #: ncms/pgs/PagesCollectionDlg.js:45
 msgid "Cancel"
 msgstr "Отмена"
@@ -117,8 +116,8 @@ msgstr "Удалить атрибут"
 msgid "Label"
 msgstr "Подпись"
 
-#: ncms/asm/am/SelectAMTable.js:72 ncms/asm/am/StringAM.js:62
-#: ncms/mmgr/MediaFileEditor.js:153 ncms/asm/AsmAttrsTable.js:130
+#: ncms/asm/am/SelectAMTable.js:72 ncms/mmgr/MediaFileEditor.js:153
+#: ncms/asm/AsmAttrsTable.js:130 ncms/asm/am/StringAM.js:62
 msgid "Value"
 msgstr "Значение"
 
@@ -338,13 +337,13 @@ msgstr "Пожалуйста, выберите файл"
 msgid "Image"
 msgstr "Изображение"
 
-#: ncms/wiki/InsertYoutubeDlg.js:42 ncms/asm/am/ImageAM.js:38
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:36
+#: ncms/wiki/InsertYoutubeDlg.js:42
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:36 ncms/asm/am/ImageAM.js:38
 msgid "Width"
 msgstr "Ширина"
 
-#: ncms/wiki/InsertYoutubeDlg.js:45 ncms/asm/am/ImageAM.js:44
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:39
+#: ncms/wiki/InsertYoutubeDlg.js:45
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:39 ncms/asm/am/ImageAM.js:44
 msgid "Height"
 msgstr "Высота"
 
@@ -1134,14 +1133,15 @@ msgstr "Расположение"
 msgid "Select image link"
 msgstr "Укажите ссылку на изображение"
 
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:12
-msgid "Insert slideshare presentation"
-msgstr "Вставка презентации slideshare"
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:12 ncms/wiki/WikiEditor.js:610
+msgid "Insert SlideShare presentation"
+msgstr "Вставить презентацию SlideShare"
 
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:28
 msgid "http://www.slideshare.com/presentation_url or embed_code"
 msgstr ""
 
+#: ncms/wiki/InsertYoutubeDlg.js:35
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:30
 msgid "URL or code"
 msgstr "URL или код"
@@ -1152,29 +1152,29 @@ msgid "Custom size"
 msgstr "Другой размер"
 
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:92
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:170
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:177
 msgid "Invalid SlideShare URL"
 msgstr "Неправильный SlideShare URL"
 
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:119
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:124
 msgid "Invalid SlideShare code"
 msgstr "Неправильный SlideShare код"
 
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:185
+msgid "Failed to connect to SlideShare server. Try again later"
+msgstr "Не удалось соединиться с сервером SlideShare. Повторите попытку позже"
+
 #: ncms/wiki/InsertYoutubeDlg.js:19
-msgid "Insert youtube video"
-msgstr "Вставка ролика youtube"
+msgid "Insert YouTube video"
+msgstr "Вставить ролик YouTube"
 
 #: ncms/wiki/InsertYoutubeDlg.js:34
 msgid "http://www.youtube.com/watch?v=? or video code"
 msgstr ""
 
-#: ncms/wiki/InsertYoutubeDlg.js:35
-msgid "Url or code"
-msgstr ""
-
 #: ncms/wiki/InsertYoutubeDlg.js:79
-msgid "Invalid youtube video url or code"
-msgstr "Неправильная ссылка на видео youtube"
+msgid "Invalid YouTube video url or code"
+msgstr "Неправильный код или ссылка на видео YouTube"
 
 #: ncms/wiki/TableDlg.js:22 ncms/wiki/TableDlg.js:53
 #: ncms/wiki/WikiEditor.js:533
@@ -1297,12 +1297,12 @@ msgid "Google services"
 msgstr "Сервисы google"
 
 #: ncms/wiki/WikiEditor.js:589
-msgid "Youtube film"
-msgstr "Youtube ролик"
+msgid "YouTube film"
+msgstr "Ролик YouTube"
 
 #: ncms/wiki/WikiEditor.js:590
-msgid "Insert youtube film"
-msgstr "Вставить Youtube ролик"
+msgid "Insert YouTube film"
+msgstr "Вставить ролик YouTube"
 
 #: ncms/wiki/WikiEditor.js:598
 msgid "Gmap location"
@@ -1313,12 +1313,8 @@ msgid "Insert gmap location"
 msgstr "Вставить карту google map"
 
 #: ncms/wiki/WikiEditor.js:609
-msgid "Slideshare"
+msgid "SlideShare"
 msgstr "Сервис презентаций"
-
-#: ncms/wiki/WikiEditor.js:610
-msgid "Insert presentation"
-msgstr "Вставить презентацию"
 
 #: ncms/wiki/WikiEditor.js:730
 msgid "Insert link to file"
@@ -1369,11 +1365,32 @@ msgstr "Заметка"
 #~ msgid "Code"
 #~ msgstr "Код"
 
+#~ msgid "Insert slideshare presentation"
+#~ msgstr "Вставка презентации slideshare"
+
+#~ msgid "Insert youtube film"
+#~ msgstr "Вставить Youtube ролик"
+
+#~ msgid "Invalid youtube video url or code"
+#~ msgstr "Неправильная ссылка на видео youtube"
+
+#~ msgid "Slideshare"
+#~ msgstr "Сервис презентаций"
+
+#~ msgid "Insert presentation"
+#~ msgstr "Вставить презентацию"
+
+#~ msgid "Insert youtube video"
+#~ msgstr "Вставка ролика youtube"
+
 #~ msgid "List of referring pages"
 #~ msgstr "Список ссылающихся страниц"
 
 #~ msgid "News caption"
 #~ msgstr "Заголовок новости"
+
+#~ msgid "Request timed out. Try again later"
+#~ msgstr "Сервер SlideShare не отвечает. Повторите попытку позже"
 
 #~ msgid "URL"
 #~ msgstr ""
@@ -1383,3 +1400,9 @@ msgstr "Заметка"
 
 #~ msgid "Unnable to load slideshare presentation info"
 #~ msgstr "Не удалось загрузить информацию о презентации с сервиса SlideShare"
+
+#~ msgid "Url or code"
+#~ msgstr ""
+
+#~ msgid "Youtube film"
+#~ msgstr "Youtube ролик"

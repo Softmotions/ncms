@@ -586,8 +586,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     {
                         id : "Youtube",
                         icon : "ncms/icon/16/wiki/youtube.png",
-                        title : this.tr("Youtube film"),
-                        tooltipText : this.tr("Insert youtube film"),
+                        title : this.tr("YouTube film"),
+                        tooltipText : this.tr("Insert YouTube film"),
                         prompt : this.__insertYoutubePrompt.bind(this),
                         insertMediawiki : wrap(this.__mediaWikiYoutube, this)
                     },
@@ -606,8 +606,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             this._addToolbarControl({
                 id : "SlideShare",
                 icon : "ncms/icon/16/wiki/slideshare.png",
-                title : this.tr("Slideshare"),
-                tooltipText : this.tr("Insert presentation"),
+                title : this.tr("SlideShare"),
+                tooltipText : this.tr("Insert SlideShare presentation"),
                 prompt : this.__insertSlideSharePresentationPrompt.bind(this),
                 insertMediawiki : wrap(this.__mediaWikiSlideSharePresentation, this)
             });
