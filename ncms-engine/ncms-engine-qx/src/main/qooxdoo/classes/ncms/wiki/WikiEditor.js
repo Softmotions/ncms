@@ -586,8 +586,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     {
                         id : "Youtube",
                         icon : "ncms/icon/16/wiki/youtube.png",
-                        title : this.tr("Youtube film"),
-                        tooltipText : this.tr("Insert youtube film"),
+                        title : this.tr("YouTube film"),
+                        tooltipText : this.tr("Insert YouTube film"),
                         prompt : this.__insertYoutubePrompt.bind(this),
                         insertMediawiki : wrap(this.__mediaWikiYoutube, this)
                     },
@@ -601,6 +601,15 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                         insertMediawiki : wrap(this.__mediaWikiGmap, this)
                     }
                 ]
+            });
+
+            this._addToolbarControl({
+                id : "SlideShare",
+                icon : "ncms/icon/16/wiki/slideshare.png",
+                title : this.tr("SlideShare"),
+                tooltipText : this.tr("Insert SlideShare presentation"),
+                prompt : this.__insertSlideSharePresentationPrompt.bind(this),
+                insertMediawiki : wrap(this.__mediaWikiSlideSharePresentation, this)
             });
         },
 
@@ -916,6 +925,28 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             val.push("/>");
             return val.join("");
         },
+
+        __insertSlideSharePresentationPrompt : function(stext, cb) {
+            var dlg = new ncms.wiki.InsertSlideSharePresentationDlg();
+            dlg.addListener("completed", function(event) {
+                var data = event.getData();
+                dlg.close();
+                cb(data);
+            });
+            dlg.open();
+        },
+
+        __mediaWikiSlideSharePresentation : function(data) {
+            var val = [];
+            val.push('<slideshare code="' + data['code'] + '"');
+            if (data['custom']) {
+                val.push(' width="' + data['width'] + '"');
+                val.push(' height="' + data['height'] + '"');
+            }
+            val.push("/>");
+            return val.join("");
+        },
+
 
         __mediaWikiTable : function(tm, isWide) {
             /*
