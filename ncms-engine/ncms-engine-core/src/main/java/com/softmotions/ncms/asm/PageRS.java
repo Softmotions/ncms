@@ -653,6 +653,16 @@ public class PageRS extends MBDAOSupport implements PageService {
                 .build();
     }
 
+    @GET
+    @Path("/referers/count/{id}")
+    public Number getPageReferersCount(@PathParam("id") Long id) {
+        Asm page = adao.asmSelectById(id);
+        if (page == null) {
+            throw new NotFoundException("");
+        }
+
+        return count("selectCountOfDependentAttrs", page.getName());
+    }
 
     @DELETE
     @Path("/{id}")

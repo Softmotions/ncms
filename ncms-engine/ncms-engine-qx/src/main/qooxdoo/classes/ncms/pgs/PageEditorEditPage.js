@@ -381,17 +381,48 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __publish : function(ev) {
             var val = ev.getTarget().getValue();
+
+            if (!val) { //unpublish
+                this.__unpublishPrompt();
+                return;
+            }
+
+            this.__doPublish(val); //publish
+        },
+
+        __doPublish : function(publish) {
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl(
-                    val ? "pages.publish" : "pages.unpublish",
+                    publish ? "pages.publish" : "pages.unpublish",
                     {"id" : this.getPageSpec()["id"]}), "PUT");
             req.send(function() {
                 var spec = this.getPageEditSpec();
                 spec["published"] = true;
-                this.__setPublishState(val);
+                this.__setPublishState(publish);
                 ncms.Events.getInstance().fireDataEvent("pageChangePublished", {
                     id : spec["id"],
-                    published : val
+                    published : publish
                 });
+            }, this);
+        },
+
+        __unpublishPrompt : function() {
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl(
+                    "pages.referers.count", {"id" : this.getPageSpec()["id"]}), "GET");
+            req.send(function(resp) {
+                var rc = resp.getContent();
+                if (!isNaN(rc) && rc > 0) {
+                    ncms.Application.confirm(
+                            this.tr("Are you sure to unpublish this page? There are pages linked with this page. Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>",
+                                    ncms.Application.ACT.getRestUrl("pages.referers", {guid : this.getPageEditSpec()["guid"]})),
+                            function(yes) {
+                                if (!yes) {
+                                    this.__publishBt.setValue(true);
+                                    return;
+                                }
+
+                                this.__doPublish(false);
+                            }, this);
+                }
             }, this);
         },
 

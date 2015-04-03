@@ -896,7 +896,7 @@ msgstr "Добавить пользователя в список прав"
 msgid "Remove user recursively"
 msgstr "Убрать пользователя (рекурсивно)"
 
-#: ncms/pgs/PageEditorEditPage.js:42 ncms/pgs/PageEditorEditPage.js:399
+#: ncms/pgs/PageEditorEditPage.js:42 ncms/pgs/PageEditorEditPage.js:430
 msgid "Not published"
 msgstr "Не опубликовано"
 
@@ -920,15 +920,24 @@ msgstr "Страница успешно сохранена"
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:399
+#: ncms/pgs/PageEditorEditPage.js:415
+msgid ""
+"Are you sure to unpublish this page? There are pages linked with this page. "
+"Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>"
+msgstr ""
+"Вы действительно хотите снять страницу с публикации? Существуют ссылки на "
+"эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" "
+"target='_blank'>списком ссылающихся страниц</a>"
+
+#: ncms/pgs/PageEditorEditPage.js:430
 msgid "Published"
 msgstr "Опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:405
+#: ncms/pgs/PageEditorEditPage.js:436
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:417
+#: ncms/pgs/PageEditorEditPage.js:448
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 
@@ -1365,23 +1374,20 @@ msgstr "Заметка"
 #~ msgid "Code"
 #~ msgstr "Код"
 
+#~ msgid "Insert presentation"
+#~ msgstr "Вставить презентацию"
+
 #~ msgid "Insert slideshare presentation"
 #~ msgstr "Вставка презентации slideshare"
 
 #~ msgid "Insert youtube film"
 #~ msgstr "Вставить Youtube ролик"
 
-#~ msgid "Invalid youtube video url or code"
-#~ msgstr "Неправильная ссылка на видео youtube"
-
-#~ msgid "Slideshare"
-#~ msgstr "Сервис презентаций"
-
-#~ msgid "Insert presentation"
-#~ msgstr "Вставить презентацию"
-
 #~ msgid "Insert youtube video"
 #~ msgstr "Вставка ролика youtube"
+
+#~ msgid "Invalid youtube video url or code"
+#~ msgstr "Неправильная ссылка на видео youtube"
 
 #~ msgid "List of referring pages"
 #~ msgstr "Список ссылающихся страниц"
@@ -1391,6 +1397,9 @@ msgstr "Заметка"
 
 #~ msgid "Request timed out. Try again later"
 #~ msgstr "Сервер SlideShare не отвечает. Повторите попытку позже"
+
+#~ msgid "Slideshare"
+#~ msgstr "Сервис презентаций"
 
 #~ msgid "URL"
 #~ msgstr ""
