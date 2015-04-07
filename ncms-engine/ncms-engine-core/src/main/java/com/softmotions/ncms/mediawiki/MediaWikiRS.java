@@ -19,6 +19,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.net.IDN;
@@ -122,6 +123,7 @@ public class MediaWikiRS {
 
     @GET
     @Path("link/{spec:(Http|Https|Ftp|Smb|Sftp|Scp)://.*}")
+    @Produces("text/html")
     public Redirect externalLink(@PathParam("spec") String spec,
                                  @Context HttpServletRequest req,
                                  @Context HttpServletResponse resp) throws Exception {
