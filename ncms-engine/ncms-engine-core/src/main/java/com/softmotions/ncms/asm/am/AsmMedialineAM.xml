@@ -16,6 +16,7 @@
         <foreach collection="list" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+        ORDER BY e.mdate ASC
     </select>
 
 </mapper>
