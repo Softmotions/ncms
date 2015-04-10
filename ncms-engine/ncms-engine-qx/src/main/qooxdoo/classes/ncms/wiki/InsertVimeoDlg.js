@@ -102,7 +102,7 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
                     return;
                 }
 
-                if (event.getTarget().getPhase() == "statusError") {
+                if (event.getTarget().getPhase() == "loading") {
                     this.__onInvalidResp();
                     return;
                 }

@@ -947,10 +947,10 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __mediaWikiSlideSharePresentation : function(data) {
             var val = [];
-            val.push('<slideshare code="' + data['code'] + '"');
-            if (data['custom']) {
-                val.push(' width="' + data['width'] + '"');
-                val.push(' height="' + data['height'] + '"');
+            val.push("<slideshare code=\"" + data["code"] + "\"");
+            if (data["custom"]) {
+                val.push(" width=\"" + data["width"] + "\"");
+                val.push(" height=\"" + data["height"] + "\"");
             }
             val.push("/>");
             return val.join("");

@@ -21,13 +21,13 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
 
         var form = this.__form = new sm.ui.form.ExtendedForm();
 
-        var presentationIdentifierTextField = new qx.ui.form.TextField().set({
+        var presentationIdTextField = new qx.ui.form.TextField().set({
             maxLength : 128,
             required : true
         });
-        presentationIdentifierTextField.setPlaceholder(this.tr("http://www.slideshare.com/presentation_url or embed_code"));
+        presentationIdTextField.setPlaceholder(this.tr("http://www.slideshare.com/presentation_url or embed_code"));
 
-        form.add(presentationIdentifierTextField, this.tr("URL or code"), this.__validateSlideShareIdentifier, "identifier", this, {fullRow : true});
+        form.add(presentationIdTextField, this.tr("URL or code"), this.__validateSlideShareIdentifier, "identifier", this, {fullRow : true});
 
         var customSizeCheckBox = new qx.ui.form.CheckBox();
         form.add(customSizeCheckBox, this.tr("Custom size"), null, "custom", null, {fullRow : true, flex : 1});
@@ -92,12 +92,10 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
                 throw new qx.core.ValidationError('Validation Error', this.tr('Invalid SlideShare URL'));
             }
 
-            var self = this;
-
             var slideShareCodeRequest = new qx.io.request.Jsonp();
             slideShareCodeRequest.setUrl('http://www.slideshare.net/api/oembed/2?url=' + url + '&format=json');
             slideShareCodeRequest.addListener("success", function(event) {
-                self.__onSlideShareResponse(event.getTarget().getResponse());
+                this.__onSlideShareResponse(event.getTarget().getResponse());
             }, this);
             slideShareCodeRequest.setTimeout(5 * 1000);
             slideShareCodeRequest.addListener("fail", function(event) {
@@ -106,11 +104,11 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
                 }
 
                 if (event.getTarget().getPhase() == "statusError") {
-                    self.__onInvalidResp();
+                    this.__onInvalidResp();
                     return;
                 }
 
-                self.__onError();
+                this.__onError();
             }, this);
             slideShareCodeRequest.send();
 
@@ -125,24 +123,18 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
             }
 
             this.__code = code;
-
             this.__isCodeLoading = false;
-
             this.__onFormReady();
         },
 
         __onSlideShareResponse: function(response) {
             this.__code = response['slideshow_id'];
-
             this.__disableForm(false);
-
             this.__onFormReady();
         },
 
         __ok : function() {
-            if (!this.__form.validate()) {
-                return;
-            }
+            this.__form.validate();
         },
 
         __disableForm : function(enabled) {
@@ -155,7 +147,6 @@ qx.Class.define("ncms.wiki.InsertSlideSharePresentationDlg", {
             }
 
             this.__okButton.setEnabled(!enabled);
-
             this.__cancelButton.setEnabled(!enabled);
         },
 

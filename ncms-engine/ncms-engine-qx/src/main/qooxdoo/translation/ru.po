@@ -1162,15 +1162,15 @@ msgid "Custom size"
 msgstr "Другой размер"
 
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:92
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:177
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:168
 msgid "Invalid SlideShare URL"
 msgstr "Неправильный SlideShare URL"
 
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:124
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:122
 msgid "Invalid SlideShare code"
 msgstr "Неправильный SlideShare код"
 
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:185
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:176
 msgid "Failed to connect to SlideShare server. Try again later"
 msgstr "Не удалось соединиться с сервером SlideShare. Повторите попытку позже"
 
