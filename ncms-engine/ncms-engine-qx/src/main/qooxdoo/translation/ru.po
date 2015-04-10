@@ -68,8 +68,8 @@ msgstr "Обязательное в GUI"
 #: ncms/asm/am/AMWrapperDlg.js:37 ncms/asm/AsmSelectorDlg.js:46
 #: ncms/pgs/PagesSelectorDlg.js:55 ncms/wiki/InsertYoutubeDlg.js:58
 #: ncms/wiki/TreeDlg.js:50 ncms/usr/UserSelectorDlg.js:38
-#: ncms/mmgr/MediaSelectFolderDlg.js:55 ncms/wiki/InsertGMapDlg.js:41
-#: ncms/mmgr/MediaSelectFileDlg.js:81
+#: ncms/mmgr/MediaSelectFolderDlg.js:55 ncms/wiki/InsertVimeoDlg.js:51
+#: ncms/wiki/InsertGMapDlg.js:41 ncms/mmgr/MediaSelectFileDlg.js:81
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:52 ncms/usr/UserNewDlg.js:64
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:49 ncms/asm/AsmAttrEditorDlg.js:108
 #: ncms/pgs/PagesCollectionDlg.js:40
@@ -81,8 +81,9 @@ msgstr "Ок"
 #: ncms/asm/am/AMWrapperDlg.js:41 ncms/asm/AsmSelectorDlg.js:50
 #: ncms/pgs/PagesSelectorDlg.js:59 ncms/wiki/InsertYoutubeDlg.js:62
 #: ncms/wiki/TreeDlg.js:54 ncms/usr/UserSelectorDlg.js:42
-#: ncms/mmgr/MediaSelectFolderDlg.js:59 ncms/usr/UserEditForm.js:54
-#: ncms/wiki/InsertGMapDlg.js:45 ncms/mmgr/MediaSelectFileDlg.js:85
+#: ncms/mmgr/MediaSelectFolderDlg.js:59 ncms/wiki/InsertVimeoDlg.js:55
+#: ncms/usr/UserEditForm.js:54 ncms/wiki/InsertGMapDlg.js:45
+#: ncms/mmgr/MediaSelectFileDlg.js:85
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:56 ncms/usr/UserNewDlg.js:68
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:54 ncms/asm/AsmAttrEditorDlg.js:112
 #: ncms/pgs/PagesCollectionDlg.js:45
@@ -337,12 +338,12 @@ msgstr "Пожалуйста, выберите файл"
 msgid "Image"
 msgstr "Изображение"
 
-#: ncms/wiki/InsertYoutubeDlg.js:42
+#: ncms/wiki/InsertYoutubeDlg.js:42 ncms/wiki/InsertVimeoDlg.js:36
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:36 ncms/asm/am/ImageAM.js:38
 msgid "Width"
 msgstr "Ширина"
 
-#: ncms/wiki/InsertYoutubeDlg.js:45
+#: ncms/wiki/InsertYoutubeDlg.js:45 ncms/wiki/InsertVimeoDlg.js:39
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:39 ncms/asm/am/ImageAM.js:44
 msgid "Height"
 msgstr "Высота"
@@ -699,7 +700,7 @@ msgstr ""
 msgid "Markup language"
 msgstr "Язык разметки"
 
-#: ncms/cc/tree/MFolderTree.js:60 ncms/wiki/WikiEditor.js:865
+#: ncms/cc/tree/MFolderTree.js:60 ncms/wiki/WikiEditor.js:874
 msgid "Root"
 msgstr "Корень"
 
@@ -1150,12 +1151,12 @@ msgstr "Вставить презентацию SlideShare"
 msgid "http://www.slideshare.com/presentation_url or embed_code"
 msgstr ""
 
-#: ncms/wiki/InsertYoutubeDlg.js:35
+#: ncms/wiki/InsertYoutubeDlg.js:35 ncms/wiki/InsertVimeoDlg.js:29
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:30
 msgid "URL or code"
 msgstr "URL или код"
 
-#: ncms/wiki/InsertYoutubeDlg.js:39
+#: ncms/wiki/InsertYoutubeDlg.js:39 ncms/wiki/InsertVimeoDlg.js:33
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:33
 msgid "Custom size"
 msgstr "Другой размер"
@@ -1172,6 +1173,26 @@ msgstr "Неправильный SlideShare код"
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:185
 msgid "Failed to connect to SlideShare server. Try again later"
 msgstr "Не удалось соединиться с сервером SlideShare. Повторите попытку позже"
+
+#: ncms/wiki/InsertVimeoDlg.js:12 ncms/wiki/WikiEditor.js:619
+msgid "Insert Vimeo video"
+msgstr "Вставить Vimeo ролик"
+
+#: ncms/wiki/InsertVimeoDlg.js:28
+msgid "https://vimeo.com/video_url or video code"
+msgstr ""
+
+#: ncms/wiki/InsertVimeoDlg.js:91 ncms/wiki/InsertVimeoDlg.js:167
+msgid "Invalid Vimeo URL"
+msgstr "Неправильный Vimeo URL"
+
+#: ncms/wiki/InsertVimeoDlg.js:121
+msgid "Invalid Vimeo code"
+msgstr "Неправильный Vimeo код"
+
+#: ncms/wiki/InsertVimeoDlg.js:175
+msgid "Failed to connect to Vimeo server. Try again later"
+msgstr "Не удалось соединиться с сервером Vimeo. Повторите попытку позже"
 
 #: ncms/wiki/InsertYoutubeDlg.js:19
 msgid "Insert YouTube video"
@@ -1268,12 +1289,12 @@ msgid "Numbered list"
 msgstr "Нумерованный список"
 
 #: ncms/wiki/WikiEditor.js:507 ncms/wiki/WikiEditor.js:508
-#: ncms/wiki/WikiEditor.js:698
+#: ncms/wiki/WikiEditor.js:707
 msgid "Insert link"
 msgstr "Вставить ссылку"
 
 #: ncms/wiki/WikiEditor.js:515 ncms/wiki/WikiEditor.js:517
-#: ncms/wiki/WikiEditor.js:718
+#: ncms/wiki/WikiEditor.js:727
 msgid "Insert image"
 msgstr "Вставить изображение"
 
@@ -1325,43 +1346,47 @@ msgstr "Вставить карту google map"
 msgid "SlideShare"
 msgstr "Сервис презентаций"
 
-#: ncms/wiki/WikiEditor.js:730
+#: ncms/wiki/WikiEditor.js:618
+msgid "Vimeo video"
+msgstr "Ролик Vimeo"
+
+#: ncms/wiki/WikiEditor.js:739
 msgid "Insert link to file"
 msgstr "Вставить ссылку на файл"
 
-#: ncms/wiki/WikiEditor.js:813 ncms/wiki/WikiEditor.js:825
-#: ncms/wiki/WikiEditor.js:837 ncms/wiki/WikiEditor.js:849
+#: ncms/wiki/WikiEditor.js:822 ncms/wiki/WikiEditor.js:834
+#: ncms/wiki/WikiEditor.js:846 ncms/wiki/WikiEditor.js:858
 msgid "First"
 msgstr "Первый"
 
-#: ncms/wiki/WikiEditor.js:815 ncms/wiki/WikiEditor.js:827
-#: ncms/wiki/WikiEditor.js:839 ncms/wiki/WikiEditor.js:851
+#: ncms/wiki/WikiEditor.js:824 ncms/wiki/WikiEditor.js:836
+#: ncms/wiki/WikiEditor.js:848 ncms/wiki/WikiEditor.js:860
 msgid "Second"
 msgstr "Второй"
 
-#: ncms/wiki/WikiEditor.js:816 ncms/wiki/WikiEditor.js:828
-#: ncms/wiki/WikiEditor.js:840 ncms/wiki/WikiEditor.js:852
+#: ncms/wiki/WikiEditor.js:825 ncms/wiki/WikiEditor.js:837
+#: ncms/wiki/WikiEditor.js:849 ncms/wiki/WikiEditor.js:861
 msgid "First for second"
 msgstr "Первый у второго"
 
-#: ncms/wiki/WikiEditor.js:817 ncms/wiki/WikiEditor.js:829
-#: ncms/wiki/WikiEditor.js:841 ncms/wiki/WikiEditor.js:853
+#: ncms/wiki/WikiEditor.js:826 ncms/wiki/WikiEditor.js:838
+#: ncms/wiki/WikiEditor.js:850 ncms/wiki/WikiEditor.js:862
 msgid "Third"
 msgstr "Третий"
 
-#: ncms/wiki/WikiEditor.js:866
+#: ncms/wiki/WikiEditor.js:875
 msgid "Child 1"
 msgstr "Потомок 1"
 
-#: ncms/wiki/WikiEditor.js:867
+#: ncms/wiki/WikiEditor.js:876
 msgid "Child level 3"
 msgstr "Потомок уровня вложенности 3"
 
-#: ncms/wiki/WikiEditor.js:868
+#: ncms/wiki/WikiEditor.js:877
 msgid "Child 2"
 msgstr "Потомок уровня вложенности 2"
 
-#: ncms/wiki/WikiEditor.js:883
+#: ncms/wiki/WikiEditor.js:892
 msgid "Note text"
 msgstr "Заметка"
 

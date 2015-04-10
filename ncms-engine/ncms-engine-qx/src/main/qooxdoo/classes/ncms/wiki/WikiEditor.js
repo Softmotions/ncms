@@ -611,6 +611,15 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 prompt : this.__insertSlideSharePresentationPrompt.bind(this),
                 insertMediawiki : wrap(this.__mediaWikiSlideSharePresentation, this)
             });
+
+            this.addToolbarControl({
+                id : "Vimeo",
+                icon : "ncms/icon/16/wiki/vimeo.png",
+                title : this.tr("Vimeo video"),
+                tooltipText : this.tr("Insert Vimeo video"),
+                prompt : this.__insertVimeoPrompt.bind(this),
+                insertMediawiki : wrap(this.__mediaWikiVimeo, this)
+            });
         },
 
         _getSelectionStart : function() {
@@ -947,6 +956,26 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             return val.join("");
         },
 
+        __insertVimeoPrompt : function(stext, cb) {
+            var dlg = new ncms.wiki.InsertVimeoDlg();
+            dlg.addListener("completed", function(event) {
+                var data = event.getData();
+                dlg.close();
+                cb(data);
+            });
+            dlg.open();
+        },
+
+        __mediaWikiVimeo : function(data) {
+            var val = [];
+            val.push("<vimeo code=\"" + data["code"] + "\"");
+            if (data["custom"]) {
+                val.push(" width=\"" + data["width"] + "\"");
+                val.push(" height=\"" + data["height"] + "\"");
+            }
+            val.push("/>");
+            return val.join("");
+        },
 
         __mediaWikiTable : function(tm, isWide) {
             /*
