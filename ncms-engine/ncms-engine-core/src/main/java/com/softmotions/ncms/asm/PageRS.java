@@ -664,6 +664,35 @@ public class PageRS extends MBDAOSupport implements PageService {
         return count("selectCountOfDependentAttrs", page.getName());
     }
 
+    @GET
+    @Path("/referers/orphans")
+    public Response getOrphanPages() {
+        return Response.ok((StreamingOutput) o -> {
+            PrintWriter pw = new PrintWriter(new OutputStreamWriter(o, "UTF-8"));
+            pw.println("<!DOCTYPE html>");
+            pw.println("<html>");
+            pw.println("<body>");
+            pw.print("<h2>");
+            pw.print(messages.get("ncms.page.orphan.list"));
+            pw.print("</h2>");
+
+            pw.println("<ol>");
+            select("selectOrphanPages", context -> {
+                Map<String, Object> row = (Map<String, Object>) context.getResultObject();
+                String pguid = (String) row.get("guid");
+                String name = (String) row.get("name");
+                int published = NumberUtils.number2Int((Number) row.get("published"), 1);
+                pw.println("<li><a href='" + (asmRoot + pguid) + "'>" + name + "</a> " +
+                           (published == 0 ? "(not published)</li>" : "</li>"));
+            });
+            pw.println("</ol>");
+            pw.println("</body>");
+            pw.println("</html>");
+            pw.flush();
+        }).type("text/html;charset=UTF-8")
+                .build();
+    }
+
     @DELETE
     @Path("/{id}")
     @Transactional

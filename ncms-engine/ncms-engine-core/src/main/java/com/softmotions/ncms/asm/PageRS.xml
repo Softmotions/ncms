@@ -377,5 +377,14 @@
         ORDER BY asm.hname
     </select>
 
+    <select id="selectOrphanPages" resultType="map" parameterType="string">
+        SELECT
+            asm.name      AS "guid",
+            asm.hname     AS "name",
+            asm.published AS "published"
+        FROM ASMS AS asm
+        WHERE asm.name NOT IN (SELECT asm_name FROM ASM_PAGE_DEPS)
+        ORDER BY asm.hname
+    </select>
 
 </mapper>
