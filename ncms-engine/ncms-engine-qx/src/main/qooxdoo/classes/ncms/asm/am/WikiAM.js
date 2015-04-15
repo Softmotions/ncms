@@ -58,7 +58,7 @@ qx.Class.define("ncms.asm.am.WikiAM", {
             if (opts["markup"] != null) {
                 w.setMarkup(opts["markup"])
             }
-            var hs = ncms.Application.APP_STATE.getStateProperty("helpWiki");
+            var hs = ncms.Application.APP_STATE.getHelpSiteTopicUrl("wiki");
             if (hs == null) {
                 hs = ncms.Application.APP_STATE.getHelpSite();
             }

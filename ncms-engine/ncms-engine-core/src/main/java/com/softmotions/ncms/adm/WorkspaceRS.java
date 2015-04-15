@@ -3,9 +3,11 @@ package com.softmotions.ncms.adm;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.web.security.WSUser;
+import com.softmotions.weboot.lifecycle.Start;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,7 @@ import javax.ws.rs.core.Context;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,10 +42,30 @@ public class WorkspaceRS {
 
     private final PageService pageService;
 
+    private Map<String, String> helpTopics = new HashMap<>();
+
     @Inject
     public WorkspaceRS(NcmsEnvironment env, PageService pageService) {
         this.env = env;
         this.pageService = pageService;
+    }
+
+    @Start
+    public void start() {
+        List<HierarchicalConfiguration> topics = env.xcfg().configurationsAt("help.topics.topic");
+        for (HierarchicalConfiguration topic : topics) {
+            String key = topic.getString("[@key]");
+            if (StringUtils.isBlank(key)) {
+                continue;
+            }
+
+            String alias = topic.getString("[@alias]");
+            if (!StringUtils.isBlank(alias)) {
+                helpTopics.put(key, pageService.resolvePageLink(alias));
+            } else {
+                helpTopics.put(key, topic.getString("")); //get config tag content
+            }
+        }
     }
 
     @GET
@@ -106,8 +129,8 @@ public class WorkspaceRS {
             put("email", user.getEmail());
             put("time", new Date());
             put("helpSite", getHelpSite());
-            properties.put("helpWiki", getHelpWikiSite());
             put("properties", properties);
+            put("helpTopics", getHelpTopics());
         }
     }
 
@@ -120,12 +143,7 @@ public class WorkspaceRS {
         }
     }
 
-    private String getHelpWikiSite() {
-        String alias = env.xcfg().getString("help.wiki[@alias]");
-        if (!StringUtils.isBlank(alias)) {
-            return pageService.resolvePageLink(alias);
-        } else {
-            return env.xcfg().getString("help.wiki");
-        }
+    private Map<String, String> getHelpTopics() {
+        return helpTopics;
     }
 }

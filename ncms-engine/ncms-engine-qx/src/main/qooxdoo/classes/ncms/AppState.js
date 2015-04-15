@@ -114,8 +114,8 @@ qx.Class.define("ncms.AppState", {
         },
 
         getHelpSiteTopicUrl : function(topic) {
-            //todo
-            return this._getStateConstant("helpSite");
+            return  (this.__stateObject && this.__stateObject["helpTopics"])
+                    ? this.__stateObject["helpTopics"][topic] : null;
         },
 
         getSessionId : function() {
