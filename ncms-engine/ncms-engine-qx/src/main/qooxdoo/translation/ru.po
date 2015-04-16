@@ -897,7 +897,7 @@ msgstr "Добавить пользователя в список прав"
 msgid "Remove user recursively"
 msgstr "Убрать пользователя (рекурсивно)"
 
-#: ncms/pgs/PageEditorEditPage.js:42 ncms/pgs/PageEditorEditPage.js:430
+#: ncms/pgs/PageEditorEditPage.js:42 ncms/pgs/PageEditorEditPage.js:432
 msgid "Not published"
 msgstr "Не опубликовано"
 
@@ -930,15 +930,15 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" "
 "target='_blank'>списком ссылающихся страниц</a>"
 
-#: ncms/pgs/PageEditorEditPage.js:430
+#: ncms/pgs/PageEditorEditPage.js:432
 msgid "Published"
 msgstr "Опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:436
+#: ncms/pgs/PageEditorEditPage.js:438
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:448
+#: ncms/pgs/PageEditorEditPage.js:450
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 
@@ -1032,7 +1032,7 @@ msgid ""
 "Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>"
 msgstr ""
 "Страница не может быть удалена, поскольку найдены страницы, ссылающиеся на "
-"эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" "
+"эту страницу. Пожалуйста, ознакомьтесь со <a href=\"%1\" "
 "target='_blank'>списком ссылающихся страниц</a>"
 
 #: ncms/usr/UserEditForm.js:31 ncms/usr/UserNewDlg.js:43

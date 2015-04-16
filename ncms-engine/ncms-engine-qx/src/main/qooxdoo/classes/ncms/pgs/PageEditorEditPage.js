@@ -410,7 +410,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     "pages.referers.count", {"id" : this.getPageSpec()["id"]}), "GET");
             req.send(function(resp) {
                 var rc = resp.getContent();
-                if (!isNaN(rc) && rc > 0) {
+                if (rc > 0) {
                     ncms.Application.confirm(
                             this.tr("Are you sure to unpublish this page? There are pages linked with this page. Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>",
                                     ncms.Application.ACT.getRestUrl("pages.referers", {guid : this.getPageEditSpec()["guid"]})),
@@ -422,6 +422,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
                                 this.__doPublish(false);
                             }, this);
+                } else {
+                    this.__doPublish(false);
                 }
             }, this);
         },
