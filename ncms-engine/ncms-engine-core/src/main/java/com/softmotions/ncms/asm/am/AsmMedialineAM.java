@@ -201,6 +201,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         int thumbWidth = opts.getInt("thumb_width", DEFAULT_IMG_THUMB_WIDTH);
         ArrayNode sval = mapper.createArrayNode();
         ArrayNode aval = (ArrayNode) val;
+        ctx.clearFileDeps(attr);
         for (int i = 0, l = aval.size(); i < l; ++i) {
             JsonNode node = aval.get(i);
             if (node == null || !node.isArray()) {

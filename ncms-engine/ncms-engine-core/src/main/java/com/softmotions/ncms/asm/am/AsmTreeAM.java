@@ -278,6 +278,9 @@ public class AsmTreeAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+        ctx.clearPageDeps(attr);
+        ctx.clearFileDeps(attr);
+
         ObjectNode tree = (ObjectNode) val;
         if (tree == null) {
             attr.setEffectiveValue(null);

@@ -87,6 +87,14 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         fset.add(fileId);
     }
 
+    public void clearFileDeps(AsmAttribute attr) {
+        if (fileDeps == null) {
+            fileDeps = new HashMap<>();
+        }
+
+        fileDeps.put(attr, new HashSet<>());
+    }
+
     public void registerPageDependency(AsmAttribute attr, String guid) {
         if (pageDeps == null) {
             pageDeps = new HashMap<>();
@@ -97,6 +105,14 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
             pageDeps.put(attr, pset);
         }
         pset.add(guid);
+    }
+
+    public void clearPageDeps(AsmAttribute attr) {
+        if (pageDeps == null) {
+            pageDeps = new HashMap<>();
+        }
+
+        pageDeps.put(attr, new HashSet<>());
     }
 
     @Transactional

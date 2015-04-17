@@ -168,6 +168,9 @@ public class AsmWikiAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+        ctx.clearPageDeps(attr);
+        ctx.clearFileDeps(attr);
+
         String value = val.hasNonNull("value") ? val.get("value").asText() : "";
         String markup = val.hasNonNull("markup") ? val.get("markup").asText() : "mediawiki";
         String html = null;
