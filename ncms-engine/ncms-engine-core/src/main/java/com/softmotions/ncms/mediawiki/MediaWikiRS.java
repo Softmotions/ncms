@@ -121,12 +121,25 @@ public class MediaWikiRS {
         return new Redirect(link);
     }
 
+    /**
+     * Perform external link processing.
+     *
+     * <p>According to
+     * {@link <a href="http://download.oracle.com/otn-pub/jcp/jaxrs-2_0-fr-eval-spec/jsr339-jaxrs-2.0-final-spec.pdf">
+     * JAX-RS specification section 3.7.3</a>}:
+     * "4. If the resulting string ends with ‘/’ then remove the final character".
+     * To differentiate links the trailing slash is checked manually.</p>
+     */
     @GET
     @Path("link/{spec:(Http|Https|Ftp|Smb|Sftp|Scp)://.*}")
     @Produces("text/html")
     public Redirect externalLink(@PathParam("spec") String spec,
                                  @Context HttpServletRequest req,
                                  @Context HttpServletResponse resp) throws Exception {
+
+        if (req.getRequestURI().endsWith("/") && !spec.endsWith("/")) {
+            spec = spec + "/";
+        }
 
         Matcher matcher = EXT_LINK_REGEXP.matcher(spec);
         if (!matcher.matches()) {
