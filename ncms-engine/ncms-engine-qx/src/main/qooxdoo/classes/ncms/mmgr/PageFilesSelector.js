@@ -28,11 +28,14 @@ qx.Class.define("ncms.mmgr.PageFilesSelector", {
         if (opts["allowSubfoldersView"] === undefined) {
             opts["allowSubfoldersView"] = false;
         }
-        this.base(arguments, !!opts["allowModify"], {inpages : true}, opts);
-        this.setItem({
+        var item = {
             status : 1,
             path : path
-        });
+        };
+        var constViewSpec = this._resolveViewSpec(item);
+        constViewSpec["inpages"] = true;
+        this.base(arguments, !!opts["allowModify"], constViewSpec, opts);
+        this.setItem(item);
     },
 
     members : {

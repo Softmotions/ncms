@@ -295,13 +295,17 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.updateViewSpec({stext : val || ""});
         },
 
-        __applyItem : function(item) {
+        _resolveViewSpec : function(item) {
             if (item != null && (item["status"] & 1) != 0) { //folder
                 var folder = "/" + item["path"].join("/");
-                this.setConstViewSpec({"folder" : folder, "status" : 0, fts : true});
+                return {"folder" : folder, "status" : 0, fts : true};
             } else {
-                this.setConstViewSpec({"status" : 0, fts : true});
+                return {"status" : 0, fts : true};
             }
+        },
+
+        __applyItem : function(item) {
+            this.setConstViewSpec(this._resolveViewSpec(item));
         },
 
         __addFiles : function() {

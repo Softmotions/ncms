@@ -45,6 +45,12 @@
             </if>
         </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            LIMIT ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                OFFSET ${CQ_OFFSET}
+            </if>
+        </if>
     </select>
 
     <select id="count" resultType="int" parameterType="map">
