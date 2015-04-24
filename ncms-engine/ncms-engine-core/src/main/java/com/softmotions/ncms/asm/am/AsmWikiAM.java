@@ -9,6 +9,7 @@ import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.mediawiki.GMapTag;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
 
@@ -52,6 +53,9 @@ public class AsmWikiAM implements AsmAttributeManager {
                                                                   Pattern.CASE_INSENSITIVE);
 
     private static final Pattern PAGENAME_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|(.*))?\\]\\]",
+                                                                   Pattern.CASE_INSENSITIVE);
+
+    private  static final Pattern ADMPAGE_REGEXP = Pattern.compile("http(s)?://(www\\.)?nsu.ru/adm/.*",
                                                                    Pattern.CASE_INSENSITIVE);
 
     private final ObjectMapper mapper;
@@ -199,8 +203,13 @@ public class AsmWikiAM implements AsmAttributeManager {
     }
 
     private String preSaveWiki(AsmAttributeManagerContext ctx, AsmAttribute attr, String value) {
+        Matcher m = ADMPAGE_REGEXP.matcher(value);
+        if (m.find()) {
+            throw new NcmsMessageException(messages.get("ncms.page.nosav.adm.link"), true);
+        }
+
         // \[\[page:\s*([0-9a-f]{32})(\s*\|.*)?\]\]
-        Matcher m = PAGEREF_REGEXP.matcher(value);
+        m = PAGEREF_REGEXP.matcher(value);
         while (m.find()) {
             String guid = m.group(1);
             if (guid != null) {
