@@ -113,6 +113,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -153,6 +155,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     final WSUserDatabase userdb;
 
+    private final Executor resizer;
 
     @Inject
     public MediaRS(NcmsEnvironment env,
@@ -178,6 +181,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         this.ebus = ebus;
         this.userdb = userdb;
         this.ebus.register(this);
+        this.resizer = Executors.newSingleThreadExecutor();
     }
 
 
@@ -2005,6 +2009,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @Subscribe
     public void ensureResizedImage(EnsureResizedImageJobEvent ev) {
+        resizer.execute(() -> _ensureResizedImage(ev));
+    }
+
+    private void _ensureResizedImage(EnsureResizedImageJobEvent ev) {
         try {
             ensureResizedImage(ev.getId(), ev.getWidth(), ev.getHeight(), ev.getFlags());
         } catch (Exception e) {
