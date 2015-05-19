@@ -140,6 +140,8 @@ public class AsmFilter implements Filter {
         if (processResources(pi, req, resp)) { //find resources
             return true;
         }
+        messages.initRequestI18N(req, resp);
+
         Object asmRef = fetchAsmRef(pi, req);
         if (asmRef == null) {
             return false;
@@ -225,6 +227,10 @@ public class AsmFilter implements Filter {
             }
         }
         return pi;
+    }
+
+    protected void processLocale(HttpServletRequest req, HttpServletResponse resp) {
+        //todo String locale =
     }
 
     protected boolean processResources(String pi, HttpServletRequest req, HttpServletResponse resp) throws IOException {

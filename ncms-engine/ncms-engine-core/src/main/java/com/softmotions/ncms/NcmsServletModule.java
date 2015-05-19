@@ -15,8 +15,6 @@ import org.apache.commons.configuration.XMLConfiguration;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
-import javax.servlet.Filter;
-
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */

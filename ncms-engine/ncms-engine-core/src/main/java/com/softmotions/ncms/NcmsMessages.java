@@ -11,14 +11,17 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,10 +36,19 @@ public class NcmsMessages {
 
     public static final String NCMS_REQ_LOCALE_ATTR_NAME = "NCMSREQLOCALE";
 
+    public static final String NCMS_REQ_LOCALE_PARAM_NAME = "lang";
+
     private static final ThreadLocal<Map<String, SimpleDateFormat>> LOCAL_SDF_CACHE = new ThreadLocal<>();
 
     @SuppressWarnings("StaticCollection")
     private static final Map<String, String[]> LNG_MONTHS = new HashMap<>();
+
+    private static final String[] ISO2_LANGUAGES;
+
+    static {
+        ISO2_LANGUAGES = Locale.getISOLanguages();
+        Arrays.sort(ISO2_LANGUAGES);
+    }
 
     static {
 
@@ -110,24 +122,64 @@ public class NcmsMessages {
             return Locale.getDefault();
         }
         Locale l = (Locale) req.getAttribute(NCMS_REQ_LOCALE_ATTR_NAME);
-        if (l != null) {
-            return l;
+        if (l == null) {
+            l = new Locale(fetchRequestLanguage(req));
+            req.setAttribute(NCMS_REQ_LOCALE_ATTR_NAME, l);
         }
+        return l;
+    }
+
+    public boolean isValidISO2Language(String lang) {
+        return (lang != null && Arrays.binarySearch(ISO2_LANGUAGES, lang) >= 0);
+    }
+
+    @Nonnull
+    private String fetchRequestLanguage(HttpServletRequest req) {
+        String lang = req.getParameter(NCMS_REQ_LOCALE_PARAM_NAME);
+        if (StringUtils.isBlank(lang)) {
+            Cookie[] cookies = req.getCookies();
+            if (cookies != null) {
+                for (final Cookie c : cookies) {
+                    if (NCMS_LNG_COOKIE_NAME.equals(c.getName())) {
+                        lang = c.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+        if (lang != null) {
+            lang = lang.toLowerCase();
+        }
+        if (!isValidISO2Language(lang)) {
+            lang = req.getLocale().getLanguage();
+        }
+        return isValidISO2Language(lang) ? lang : Locale.getDefault().getLanguage();
+    }
+
+    public void initRequestI18N(HttpServletRequest req, HttpServletResponse resp) {
+        if (req == null) {
+            return;
+        }
+        String lang = req.getParameter(NCMS_REQ_LOCALE_PARAM_NAME);
+        if (StringUtils.isBlank(lang)) {
+            return;
+        }
+        lang = fetchRequestLanguage(req);
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
             for (final Cookie c : cookies) {
                 if (NCMS_LNG_COOKIE_NAME.equals(c.getName())) {
-                    String val = c.getValue();
-                    if (!StringUtils.isBlank(val)) {
-                        l = new Locale(val);
-                        req.setAttribute(NCMS_REQ_LOCALE_ATTR_NAME, l);
-                        return l;
+                    String clang = c.getValue();
+                    if (Objects.equals(lang, clang)) {
+                        return;
                     }
                     break;
                 }
             }
         }
-        return req.getLocale();
+        Cookie c = new Cookie(NCMS_LNG_COOKIE_NAME, lang);
+        c.setMaxAge(60 * 60 * 24 * 7); //1 week todo configurable
+        resp.addCookie(c);
     }
 
     @Nonnull
