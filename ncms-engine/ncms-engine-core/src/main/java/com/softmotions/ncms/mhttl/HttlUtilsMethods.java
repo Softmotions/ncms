@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Objects;
 
 /**
@@ -134,37 +135,33 @@ public class HttlUtilsMethods {
     }
 
     public static String translate(String key) {
-        if (key == null) {
-            return null;
-        }
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return ctx.getMessages().get(key, ctx.getLocale());
+        return translateImpl(key);
     }
 
     public static String translate(String key, String v1) {
-        if (key == null) {
-            return null;
-        }
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return ctx.getMessages().get(key, ctx.getLocale(), v1);
+        return translateImpl(key, v1);
     }
 
     public static String translate(String key, String v1, String v2) {
-        if (key == null) {
-            return null;
-        }
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return ctx.getMessages().get(key, ctx.getLocale(), v1, v2);
+        return translateImpl(key, v1, v2);
     }
 
     public static String translate(String key, String v1, String v2, String v3) {
+        return translateImpl(key, v1, v2, v3);
+    }
+
+    private static String translateImpl(String key, String... args) {
         if (key == null) {
             return null;
         }
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return ctx.getMessages().get(key, ctx.getLocale(), v1, v2, v3);
+        try {
+            return ctx.getMessages().get(key, ctx.getLocale(), args);
+        } catch (MissingResourceException e) {
+            log.error("", e);
+            return null;
+        }
     }
-
 
     public static XMLConfiguration config() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();

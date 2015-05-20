@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
@@ -102,17 +103,17 @@ public class NcmsMessages {
     }
 
     @Nullable
-    public String get(String key, String... params) {
+    public String get(String key, String... params) throws MissingResourceException {
         return get(key, Locale.getDefault(), params);
     }
 
     @Nullable
-    public String get(String key, Locale locale, String... params) {
+    public String get(String key, Locale locale, String... params) throws MissingResourceException {
         return String.format(locale, getResourceBundle(locale).getString(key), params);
     }
 
     @Nullable
-    public String get(String key, HttpServletRequest req, String... params) {
+    public String get(String key, HttpServletRequest req, String... params) throws MissingResourceException {
         return get(key, getLocale(req), params);
     }
 
