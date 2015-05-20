@@ -133,6 +133,39 @@ public class HttlUtilsMethods {
         return ctx.getMessages().format(date, format, Locale.ENGLISH);
     }
 
+    public static String translate(String key) {
+        if (key == null) {
+            return null;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getMessages().get(key, ctx.getLocale());
+    }
+
+    public static String translate(String key, String v1) {
+        if (key == null) {
+            return null;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getMessages().get(key, ctx.getLocale(), v1);
+    }
+
+    public static String translate(String key, String v1, String v2) {
+        if (key == null) {
+            return null;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getMessages().get(key, ctx.getLocale(), v1, v2);
+    }
+
+    public static String translate(String key, String v1, String v2, String v3) {
+        if (key == null) {
+            return null;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getMessages().get(key, ctx.getLocale(), v1, v2, v3);
+    }
+
+
     public static XMLConfiguration config() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         NcmsEnvironment env = ctx.getInjector().getInstance(NcmsEnvironment.class);

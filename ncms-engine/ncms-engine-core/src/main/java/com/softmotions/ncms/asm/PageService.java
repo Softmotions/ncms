@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface PageService {
 
     @Nullable
-    CachedPage getIndexPage(HttpServletRequest req);
+    CachedPage getIndexPage(HttpServletRequest req, boolean requirePublished);
 
     @Nullable
     CachedPage getCachedPage(Long id, boolean create);

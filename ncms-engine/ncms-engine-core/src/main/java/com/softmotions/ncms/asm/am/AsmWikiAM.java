@@ -55,9 +55,6 @@ public class AsmWikiAM implements AsmAttributeManager {
     private static final Pattern PAGENAME_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|(.*))?\\]\\]",
                                                                    Pattern.CASE_INSENSITIVE);
 
-    private  static final Pattern ADMPAGE_REGEXP = Pattern.compile("http(s)?://(www\\.)?nsu.ru/adm/.*",
-                                                                   Pattern.CASE_INSENSITIVE);
-
     private final ObjectMapper mapper;
 
     private final MediaWikiRenderer mediaWikiRenderer;
@@ -68,6 +65,8 @@ public class AsmWikiAM implements AsmAttributeManager {
 
     private final NcmsMessages messages;
 
+    private final NcmsEnvironment env;
+
 
     @Inject
     public AsmWikiAM(ObjectMapper mapper,
@@ -75,6 +74,7 @@ public class AsmWikiAM implements AsmAttributeManager {
                      NcmsEnvironment env,
                      PageService pageService,
                      NcmsMessages messages) {
+        this.env = env;
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
@@ -203,7 +203,13 @@ public class AsmWikiAM implements AsmAttributeManager {
     }
 
     private String preSaveWiki(AsmAttributeManagerContext ctx, AsmAttribute attr, String value) {
-        Matcher m = ADMPAGE_REGEXP.matcher(value);
+
+        String admRoot = env.getNcmsAdminRoot();
+        HttpServletRequest req = ctx.getRequest();
+        Pattern adminResourcePattern =
+                Pattern.compile("http(s)?://(www\\.)?" + req.getServerName() + "(:\\d+)?" + admRoot + "/.*");
+
+        Matcher m = adminResourcePattern.matcher(value);
         if (m.find()) {
             throw new NcmsMessageException(messages.get("ncms.page.nosav.adm.link"), true);
         }

@@ -169,8 +169,8 @@ public class AsmFilter implements Filter {
         boolean preview = "1".equals(req.getParameter("preview"));
         Asm asm = ctx.getAsm();
         if (!asm.isPublished()) {
-            if (!(preview && pageSecurity.checkAccessAny(asm.getId(), req, "wnd"))) {
-                if (req.getUserPrincipal() == null || !isAdmRequest) {
+            if (!(isAdmRequest && pageSecurity.checkAccessAny(asm.getId(), req, "wnd"))) {
+                if (req.getUserPrincipal() == null) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 }
                 return true;
@@ -207,7 +207,7 @@ public class AsmFilter implements Filter {
 
     protected Object fetchAsmRef(String pi, HttpServletRequest req) {
         if (pi.length() < 2 || "/index.html".equals(pi)) {
-            CachedPage cp = pageService.getIndexPage(req);
+            CachedPage cp = pageService.getIndexPage(req, true);
             if (cp == null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Unable to find index page");

@@ -94,7 +94,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attributeName);
         if (attr == null) {
-            CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest());
+            CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest(), false);
             if (indexPage != null && !asm.equals(indexPage.getAsm())) {
                 return ctx.renderAttribute(indexPage.getAsm(), attributeName, options);
             }

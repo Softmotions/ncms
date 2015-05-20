@@ -63,7 +63,7 @@ public class AsmBreadCrumbsAM implements AsmAttributeManager {
         String[] labelPaths = (String[]) navpaths.get(PATH_TYPE.LABEL);
         String[] guidPaths = (String[]) navpaths.get(PATH_TYPE.GUID);
         List<Tree> children = res.getChildren();
-        CachedPage ip = pageService.getIndexPage(ctx.getServletRequest());
+        CachedPage ip = pageService.getIndexPage(ctx.getServletRequest(), false);
         if (ip != null) {
             Tree c = new Tree();
             c.setId(ip.getId());

@@ -1470,7 +1470,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
-    public CachedPage getIndexPage(HttpServletRequest req) {
+    public CachedPage getIndexPage(HttpServletRequest req, boolean requirePublished) {
         Locale locale = messages.getLocale(req);
         Long pid;
         synchronized (lang2IndexPages) {
@@ -1497,6 +1497,16 @@ public class PageRS extends MBDAOSupport implements PageService {
                         lang2IndexPages.remove(l);
                     }
                 }
+            }
+        } else if (requirePublished && !p.isPublished()) {
+            synchronized (lang2IndexPages) {
+                pid = lang2IndexPages.get("*");
+            }
+            if (pid != null) {
+                p = getCachedPage(pid, true);
+            }
+            if (p != null && !p.isPublished()) {
+                p = null;
             }
         }
         return p;
