@@ -146,7 +146,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public abstract NcmsMessages getMessages();
 
-    public abstract void render() throws AsmRenderingException, IOException;
+    public abstract void render(@Nullable Writer writer) throws AsmRenderingException, IOException;
 
     @Nullable
     public abstract Object renderAttribute(String attributeName, Map<String, String> opts);

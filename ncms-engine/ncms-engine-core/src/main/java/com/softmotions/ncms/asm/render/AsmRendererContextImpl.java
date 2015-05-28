@@ -277,8 +277,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return res;
     }
 
-    public void render() throws AsmRenderingException, IOException {
-        renderer.renderAsm(this);
+    public void render(Writer writer) throws AsmRenderingException, IOException {
+        renderer.renderAsm(this, writer);
     }
 
     public AsmResourceLoader getLoader() {

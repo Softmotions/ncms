@@ -78,7 +78,7 @@ public class AsmRefAM implements AsmAttributeManager {
         out = new StringWriter(4096);
         try {
             subcontext = ctx.createSubcontext(asmName, out);
-            subcontext.render();
+            subcontext.render(null);
         } catch (Exception e) {
             log.warn("Exception " + e.getMessage() +
                      " during sub-assembly rendering: " + asmName +

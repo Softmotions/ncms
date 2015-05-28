@@ -123,7 +123,10 @@ public class AsmFilter implements Filter {
 
 
     @Transactional
-    protected boolean getContent(HttpServletRequest req, HttpServletResponse resp, boolean transfer) throws ServletException, IOException {
+    protected boolean getContent(HttpServletRequest req,
+                                 HttpServletResponse resp,
+                                 boolean transfer)
+            throws ServletException, IOException, AsmRenderingException {
         String pi = req.getRequestURI();
         for (final String ep : excludePrefixes) {
             if (pi.startsWith(ep)) {
@@ -151,6 +154,7 @@ public class AsmFilter implements Filter {
         //Assumed all assemblies generated as utf8 encoded text data.
         //Content-Type can be overriden by assembly renderer.
         resp.setContentType("text/html;charset=UTF-8");
+        resp.setBufferSize(65536); //todo
 
         AsmRendererContext ctx;
         HttpServletResponse renderResp = resp;
@@ -183,11 +187,12 @@ public class AsmFilter implements Filter {
             Thread.currentThread().setContextClassLoader(ctx.getClassLoader());
         }
         try {
-            ctx.render();
+            ctx.render(null);
             if (!transfer) {
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 resp.setContentLength(out.getBuffer().length());
             }
+            resp.flushBuffer();
         } catch (AsmMissingCoreException e) {
             if (preview) {
                 //ignore it
@@ -200,7 +205,6 @@ public class AsmFilter implements Filter {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
-            resp.flushBuffer();
         }
         return true;
     }

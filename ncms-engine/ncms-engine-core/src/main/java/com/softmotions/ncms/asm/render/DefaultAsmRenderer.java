@@ -59,7 +59,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         te.renderTemplate(location, ctx, out);
     }
 
-    public void renderAsm(AsmRendererContext ctx) throws AsmRenderingException, IOException {
+    public void renderAsm(AsmRendererContext ctx, Writer writer) throws AsmRenderingException, IOException {
         Asm asm = ctx.getAsm();
         AsmCore core = asm.getEffectiveCore();
         if (core == null) {
@@ -79,8 +79,9 @@ public class DefaultAsmRenderer implements AsmRenderer {
                 log.trace("Selected template engine: " + te.getClass().getName() +
                           " assembly: " + asm.getName());
             }
-
-            te.renderTemplate(core.getLocation(), ctx, ctx.getServletResponse().getWriter());
+            te.renderTemplate(core.getLocation(),
+                              ctx,
+                              (writer != null) ? writer : ctx.getServletResponse().getWriter());
         } finally {
             ctx.pop();
         }
@@ -137,22 +138,19 @@ public class DefaultAsmRenderer implements AsmRenderer {
                                                 " interface for assembly: " + asm.getName());
             }
         } catch (ClassNotFoundException e) {
-            log.error("", e);
             throw new AsmRenderingException("AsmHandler class: '" + controllerClassName +
-                                            "' not found for assembly: " + asm.getName());
+                                            "' not found for assembly: " + asm.getName(), e);
         }
 
         try {
             AsmController controller = (AsmController) ctx.getInjector().getInstance(controllerClass);
             return controller.execute(ctx);
         } catch (ClassNotFoundException e) {
-            log.error("", e);
             throw new AsmRenderingException("AsmHandler class: '" + controllerClassName +
-                                            "' not found for assembly: " + asm.getName());
+                                            "' not found for assembly: " + asm.getName(), e);
         } catch (Exception e) {
-            log.error("", e);
             throw new AsmRenderingException("Failed to execute assembly handler: '" + controllerClassName +
-                                            "' for assembly: " + asm.getName());
+                                            "' for assembly: " + asm.getName(), e);
         }
     }
 
