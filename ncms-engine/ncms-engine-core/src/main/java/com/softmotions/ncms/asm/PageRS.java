@@ -509,17 +509,25 @@ public class PageRS extends MBDAOSupport implements PageService {
                "type", type,
                "user", req.getRemoteUser(),
                "nav_parent_id", parent,
+               "lang", getPageLang(pageIDsPath),
                "nav_cached_path", pageIDsPath,
                "recursive_acl", selectOne("getRecursiveAcl", "pid", parent));
 
         id = adao.asmSelectIdByName(guid);
-
+        if (id == null) {
+            throw new NotFoundException("");
+        }
         /*if ("news.page".equals(type)) {
             String alias = generateNewsAlias(name);
 
         }*/
-
         ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
+    }
+
+
+    private String getPageLang(String pageIDsPath) {
+
+        return null;
     }
 
     private String generateNewsAlias(String name) {
@@ -538,8 +546,10 @@ public class PageRS extends MBDAOSupport implements PageService {
         Long id = spec.hasNonNull("id") ? spec.get("id").asLong() : null;
         String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
         final CachedPage page = getCachedPage(id, true);
+        if (page == null) {
+            throw new NotFoundException("");
+        }
         Long parent = page.getNavParentId();
-
         if (id == null || name == null || type == null ||
             (!"page.folder".equals(type) && !"page".equals(type) && !"news.page".equals(type))) {
             throw new BadRequestException("");
@@ -608,11 +618,12 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
 
         update("prepareMove", "nav_cached_path", getPageIDsPath(src));
-
+        String pageIDsPath = getPageIDsPath(tgt != 0 ? tgt : null);
         update("movePage",
                "id", src,
-               "nav_cached_path", getPageIDsPath(tgt != 0 ? tgt : null),
-               "nav_parent_id", (tgt != 0) ? tgt : null);
+               "nav_cached_path", pageIDsPath,
+               "nav_parent_id", (tgt != 0) ? tgt : null,
+               "lang", getPageLang(pageIDsPath));
 
         while (update("finishMove") > 0) ;
 

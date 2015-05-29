@@ -115,6 +115,11 @@ public class Asm implements Serializable {
 
     String navCachedPath;
 
+    /**
+     * Default language of asm content data
+     */
+    String lang;
+
     Collection<String> accessRoles;
 
 
@@ -563,6 +568,14 @@ public class Asm implements Serializable {
         return local;
     }
 
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
     public static class AttrsList extends AbstractIndexedCollection<String, AsmAttribute> implements Serializable {
 
         protected String getElementKey(AsmAttribute el) {
@@ -612,6 +625,7 @@ public class Asm implements Serializable {
         asm.navAlias = navAlias;
         asm.navAlias2 = navAlias2;
         asm.navCachedPath = navCachedPath;
+        asm.lang = lang;
         if (getParents() != null) {
             asm.parents = new ArrayList<>(getParents().size());
             for (Asm parent : getParents()) {

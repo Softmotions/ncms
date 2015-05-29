@@ -249,6 +249,9 @@ public class AsmRS extends MBDAOSupport {
             adao.asmRemoveParent(id, pnode.get("id").asLong());
         }
         asm = adao.asmSelectById(id); //refresh
+        if (asm == null) {
+            throw new NotFoundException("");
+        }
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return asm.getParentRefs();
     }
@@ -293,6 +296,9 @@ public class AsmRS extends MBDAOSupport {
             adao.asmSetParent(asm, np);
         }
         asm = adao.asmSelectById(id); //refresh
+        if (asm == null) {
+            throw new NotFoundException("");
+        }
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return asm.getParentRefs();
     }
@@ -397,8 +403,8 @@ public class AsmRS extends MBDAOSupport {
     /**
      * Reorder assembly attributes.
      *
-     * @param ordinalForm Assembly attribute ordinal
-     * @param ordinalTo   Ordinal of another assembly attribute
+     * @param ordinal1 Assembly attribute ordinal
+     * @param ordinal2 Ordinal of another assembly attribute
      */
     @PUT
     @Path("/attributes/reorder/{ordinal1}/{ordinal2}")
@@ -418,7 +424,7 @@ public class AsmRS extends MBDAOSupport {
 
     /**
      * PUT asm attributes values/options
-     * <p/>
+     * <p>
      * Attributes JSON data spec:
      * <pre>
      *     {

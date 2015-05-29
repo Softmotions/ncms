@@ -28,7 +28,7 @@ public class MediaWikiServices {
     private static final Logger log = LoggerFactory.getLogger(MediaWikiServices.class);
 
     private static final Pattern WIKI_IMAGE_REGEXP =
-            Pattern.compile("\\[\\[(Image|File):/(\\d+)/.*(\\|(\\d+)(px|x\\d+px)\\|).*\\]\\]",
+            Pattern.compile("\\[\\[(Image|File):/(\\d+)/[^\\[]*(\\|(\\d+)(px|x\\d+px)\\|)[^\\[]*\\]\\]",
                             MULTILINE | CASE_INSENSITIVE);
 
     private final MediaRepository repository;
