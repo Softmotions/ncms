@@ -64,6 +64,10 @@ public class HttlUtilsMethods {
         return Objects.equals(req.getParameter(param), value);
     }
 
+    public static String requestLanguage() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getMessages().getLocale(ctx.getServletRequest()).getLanguage();
+    }
 
     public static String encodeUriComponent(String s) {
         if (s == null) {
