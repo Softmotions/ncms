@@ -496,8 +496,8 @@ public class AsmRS extends MBDAOSupport {
                 attr.setId(gid.longValue());
             }
         }
-        if (am != null && spec.hasNonNull("value")) {
-            am.attributePersisted(amCtx, attr, spec.get("value"));
+        if (am != null) {
+            am.attributePersisted(amCtx, attr, spec.get("value"),  spec.get("options"));
         }
         amCtx.flush();
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));

@@ -372,7 +372,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                     attr.setId(gid.longValue());
                 }
             }
-            am.attributePersisted(amCtx, attr, data.get(fname));
+            am.attributePersisted(amCtx, attr, data.get(fname), null);
         }
         amCtx.flush();
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
@@ -524,10 +524,38 @@ public class PageRS extends MBDAOSupport implements PageService {
         ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
     }
 
-
-    private String getPageLang(String pageIDsPath) {
-
-        return null;
+    @Nonnull
+    public String getPageLang(String pageIDsPath) {
+        int ind = pageIDsPath.indexOf('/', 1);
+        String lang = null;
+        Long pid = (ind == -1 || ind == 1) ? null : Long.parseLong(pageIDsPath.substring(1, ind));
+        if (pid != null) {
+            synchronized (lang2IndexPages) {
+                for (Map.Entry<String, Long> e : lang2IndexPages.entrySet()) {
+                    if (!"*".equals(e.getKey()) && pid.equals(e.getValue())) {
+                        lang = e.getKey();
+                        break;
+                    }
+                }
+            }
+        }
+        if (lang == null) {
+            synchronized (lang2IndexPages) {
+                pid = lang2IndexPages.get("*");
+                if (pid != null) {
+                    for (Map.Entry<String, Long> e : lang2IndexPages.entrySet()) {
+                        if (!"*".equals(e.getKey()) && pid.equals(e.getValue())) {
+                            lang = e.getKey();
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (lang == null) {
+            lang = messages.getLocale(null).getLanguage();
+        }
+        return lang;
     }
 
     private String generateNewsAlias(String name) {

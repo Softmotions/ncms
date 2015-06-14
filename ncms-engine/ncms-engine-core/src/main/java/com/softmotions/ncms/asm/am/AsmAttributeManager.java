@@ -41,6 +41,7 @@ public interface AsmAttributeManager {
 
     void attributePersisted(AsmAttributeManagerContext ctx,
                             AsmAttribute attr,
-                            JsonNode val) throws Exception;
+                            JsonNode val,
+                            JsonNode opts) throws Exception;
 
 }

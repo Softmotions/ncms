@@ -71,6 +71,6 @@ public class AsmBooleanAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
     }
 }

@@ -48,6 +48,8 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
 
     private Map<AsmAttribute, Set<String>> pageDeps;
 
+    private Map<String, Object> userData;
+
     public HttpServletRequest getRequest() {
         return request;
     }
@@ -166,5 +168,16 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
              i = to, to = Math.min(rows.size(), i + step)) {
             update("mergeFileDependencies", rows.subList(i, to));
         }
+    }
+
+    public void setUserData(String key, Object value) {
+        if (userData == null) {
+            userData = new HashMap<>();
+        }
+        userData.put(key, value);
+    }
+
+    public Object getUserData(String key) {
+        return (userData == null) ? null : userData.get(key);
     }
 }

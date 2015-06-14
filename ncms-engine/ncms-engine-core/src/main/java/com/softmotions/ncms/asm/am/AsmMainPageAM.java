@@ -4,11 +4,13 @@ import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.ncms.asm.PageRS;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Main(index) page marker template attribute.
@@ -31,8 +34,15 @@ public class AsmMainPageAM implements AsmAttributeManager {
 
     public static final String[] TYPES = new String[]{"mainpage"};
 
+    private PageRS pageRS;
+
     public String[] getSupportedAttributeTypes() {
         return TYPES;
+    }
+
+    @Inject
+    public AsmMainPageAM(PageRS pageRS) {
+        this.pageRS = pageRS;
     }
 
     public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
@@ -53,9 +63,14 @@ public class AsmMainPageAM implements AsmAttributeManager {
     }
 
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+        AsmOptions old = new AsmOptions(attr.getOptions());
         AsmOptions opts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "enabled");
         attr.setOptions(opts.toString());
+        if (!Objects.equals(old.get("lang"), opts.get("lang")) ||
+            !Objects.equals(old.get("enabled"), opts.get("enabled"))) {
+            ctx.setUserData("reload", Boolean.TRUE);
+        }
         return attr;
     }
 
@@ -63,7 +78,11 @@ public class AsmMainPageAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
+        //noinspection ObjectEquality
+        if (ctx.getUserData("reload") == Boolean.TRUE) {
+            log.info("Trigger index pages reloading");
+            pageRS.reloadIndexPages();
+        }
     }
 }

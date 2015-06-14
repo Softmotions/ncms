@@ -510,6 +510,10 @@ public class AsmDAO extends MBDAOSupport {
             return withParam("type", type);
         }
 
+        public PageCriteria withLang(String lang) {
+            return withParam("lang", lang);
+        }
+
         public PageCriteria withAlias(String alias) {
             return withParam("alias", alias);
         }

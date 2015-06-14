@@ -371,6 +371,7 @@
             asm.cdate         AS "cdate",
             asm.mdate         AS "mdate",
             asm.edate         AS "edate",
+            asm.lang          AS "lang",
             asm.nav_parent_id AS "nav_parent_id",
             attr.id           AS "attr_id",
             attr.name         AS "attr_name",
@@ -418,6 +419,9 @@
                     </if>
                     <if test="type != null">
                     AND asm.type LIKE #{type}
+                    </if>
+                    <if test="lang != null">
+                    AND asm.lang = #{lang}
                     </if>
                     <if test="templates != null">
                     AND pasm.name IN

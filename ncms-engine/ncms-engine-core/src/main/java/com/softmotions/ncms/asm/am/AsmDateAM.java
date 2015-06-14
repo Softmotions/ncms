@@ -78,7 +78,10 @@ public class AsmDateAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
+        if (val == null) {
+            return;
+        }
         val = val.get("value");
         adao.asmSetEdate(ctx.getAsmId(),
                          (val == null || val.asLong(0) == 0L) ? null :

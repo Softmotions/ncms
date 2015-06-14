@@ -79,7 +79,10 @@ public class AsmAliasAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
+        if (val == null) {
+            return;
+        }
         String alias = val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null;
         if (alias != null) {
             if (!ALIAS_PATTERN.matcher(alias).matches()) {

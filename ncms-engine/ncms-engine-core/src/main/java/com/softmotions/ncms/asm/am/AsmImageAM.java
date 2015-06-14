@@ -236,7 +236,7 @@ public class AsmImageAM implements AsmAttributeManager {
     }
 
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }
 

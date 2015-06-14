@@ -238,7 +238,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return value;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }
 }

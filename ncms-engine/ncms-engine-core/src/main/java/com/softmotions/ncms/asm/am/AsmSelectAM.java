@@ -253,7 +253,10 @@ public class AsmSelectAM implements AsmAttributeManager {
         return attr;
     }
 
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
+        if (val == null) {
+            return;
+        }
         JsonNode value = val.get("value");
         List<String> mvals = new ArrayList<>();
         if (value != null && value.isArray()) {
