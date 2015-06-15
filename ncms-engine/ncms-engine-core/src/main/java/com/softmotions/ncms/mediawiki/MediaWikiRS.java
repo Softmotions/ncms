@@ -106,7 +106,7 @@ public class MediaWikiRS {
         Matcher matcher = LINK_FILE_REGEXP.matcher(spec);
         if (!matcher.matches()) {
             //todo fallback for old site format
-            throw new BadRequestException("");
+            throw new BadRequestException("spec: " + spec);
         }
         Long id = Long.parseLong(matcher.group(4));
         return repository.get(id, req, null, null, true);
