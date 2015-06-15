@@ -46,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -1549,6 +1550,29 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
         }
         return p;
+    }
+
+    @Nullable
+    public String getIndexPageLanguage(HttpServletRequest req) {
+        Long pid;
+        Locale locale = messages.getLocale(req);
+        synchronized (lang2IndexPages) {
+           pid = lang2IndexPages.get(locale.getLanguage());
+        }
+        if (pid != null) {
+            return locale.getLanguage();
+        }
+        synchronized (lang2IndexPages) {
+            pid = lang2IndexPages.get("*");
+            if (pid != null) {
+                for (Map.Entry<String, Long> e : lang2IndexPages.entrySet()) {
+                    if (pid.equals(e.getValue()) && !"*".equals(e.getKey())) {
+                        return e.getKey();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     @Transactional

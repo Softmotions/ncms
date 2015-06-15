@@ -16,6 +16,9 @@ public interface PageService {
     CachedPage getIndexPage(HttpServletRequest req, boolean requirePublished);
 
     @Nullable
+    String getIndexPageLanguage(HttpServletRequest req);
+
+    @Nullable
     CachedPage getCachedPage(Long id, boolean create);
 
     @Nullable
