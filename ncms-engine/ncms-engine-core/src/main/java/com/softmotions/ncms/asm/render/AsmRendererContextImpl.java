@@ -8,7 +8,7 @@ import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.web.GenericResponseWrapper;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.assistedinject.Assisted;
@@ -105,7 +105,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.req = req;
         this.resp = resp;
         this.subcontext = false;
-        this.classLoader = Objects.firstNonNull(
+        this.classLoader = MoreObjects.firstNonNull(
                 Thread.currentThread().getContextClassLoader(),
                 getClass().getClassLoader());
         Asm asm0;
