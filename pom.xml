@@ -61,7 +61,7 @@
         <jetty.version>9.2.1.v20140609</jetty.version>
         <tika.version>1.6</tika.version>
         <h2.version>1.4.179</h2.version>
-        <mybatis.version>3.2.8</mybatis.version>
+        <mybatis.version>3.3.0</mybatis.version>
         <mybatis-guice.version>3.6</mybatis-guice.version>
         <web.run.port>8080</web.run.port>
         <web.context.reloadable>true</web.context.reloadable>

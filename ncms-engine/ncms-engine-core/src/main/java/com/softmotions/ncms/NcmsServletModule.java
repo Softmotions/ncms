@@ -23,6 +23,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
 
     protected void init(NcmsEnvironment env) {
         bind(NcmsEnvironment.class).toInstance(env);
+        bind(XMLConfiguration.class).toInstance(env.xcfg());
         initBrowserFilter(env);
         initJAXRS(env);
         initAsmFilter(env);
