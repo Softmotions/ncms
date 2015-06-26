@@ -53,7 +53,7 @@
         <resteasy.version>3.0.11.Final</resteasy.version>
         <commons.collection.version>3.2.1</commons.collection.version>
         <commons.validator.version>1.4.0</commons.validator.version>
-        <httpcomponents.version>4.4.1</httpcomponents.version>
+        <httpcomponents.version>4.5</httpcomponents.version>
         <tomcat.version>7.0.62</tomcat.version>
         <!--<tomcat.version>8.0.11</tomcat.version>-->
         <httl.version>1.0.11-SNAPSHOT</httl.version>
