@@ -7,18 +7,6 @@ mvn liquibase:update tomcat7:run
 mvn liquibase:dropAll
 
 
-На wiki
-http://java.dzone.com/articles/will-another-play-style
-
-
-POST file
-curl --header "Content-Type:application/octet-stream" --trace-ascii debugdump.txt --data-binary @asdf.file http://server:1234/url
-
-
-PUT file
-curl --upload-file uploadfile http://www.example.com/receive.cgi
-
-
 DB2 INTEGRATION
 
 to enable offset and limit:
