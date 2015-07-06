@@ -79,8 +79,8 @@ qx.Class.define("ncms.news.NewsNav", {
             }
         }, this);
 
-        ps.getTable().setContextMenu(new qx.ui.menu.Menu());
-        ps.getTable().addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+        ps.setContextMenu(new qx.ui.menu.Menu());
+        ps.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
 
         this.__syncState();
         this.__loadCurrentNewsRoot();
@@ -106,6 +106,7 @@ qx.Class.define("ncms.news.NewsNav", {
         },
 
         __beforeContextmenuOpen : function(ev) {
+            console.log("!!!! __beforeContextmenuOpen !!!")
             var menu = ev.getData().getTarget();
             menu.removeAll();
             var bt;
