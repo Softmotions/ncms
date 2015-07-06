@@ -10,8 +10,11 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Simple tree container
@@ -38,6 +41,8 @@ public class Tree implements Iterable<Tree>, Serializable {
     private String nam; //Nested attribute manager serialized JSON model
 
     private RichRef richRef;
+
+    private Map<String, Object> attributes;
 
 
     @JsonProperty(required = true)
@@ -148,6 +153,22 @@ public class Tree implements Iterable<Tree>, Serializable {
         return (children != null ? children.size() : 0);
     }
 
+    public Map<String, Object> getAttributes() {
+        return attributes != null ? attributes : Collections.emptyMap();
+    }
+
+    public <T> T getAttribute(String name) {
+        return (attributes != null ? (T) attributes.get(name) : null);
+    }
+
+    public void setAttribute(String name, Object val) {
+        if (attributes == null) {
+            attributes = new HashMap<>();
+        }
+        attributes.put(name, val);
+    }
+
+
     @SuppressWarnings("StringBufferReplaceableByString")
     public String toString() {
         final StringBuilder sb = new StringBuilder("Tree{");
@@ -159,6 +180,7 @@ public class Tree implements Iterable<Tree>, Serializable {
         sb.append(", link='").append(link).append('\'');
         sb.append(", nam='").append(nam).append('\'');
         sb.append(", richRef='").append(richRef).append('\'');
+        sb.append(", attributes='").append(attributes).append('\'');
         sb.append(", children=").append(children);
         sb.append('}');
         return sb.toString();

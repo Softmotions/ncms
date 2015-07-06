@@ -106,7 +106,6 @@ qx.Class.define("ncms.news.NewsNav", {
         },
 
         __beforeContextmenuOpen : function(ev) {
-            console.log("!!!! __beforeContextmenuOpen !!!")
             var menu = ev.getData().getTarget();
             menu.removeAll();
             var bt;
