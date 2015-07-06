@@ -144,6 +144,10 @@ public class Tree implements Iterable<Tree>, Serializable {
         return (children != null && !children.isEmpty());
     }
 
+    public int size() {
+        return (children != null ? children.size() : 0);
+    }
+
     @SuppressWarnings("StringBufferReplaceableByString")
     public String toString() {
         final StringBuilder sb = new StringBuilder("Tree{");
