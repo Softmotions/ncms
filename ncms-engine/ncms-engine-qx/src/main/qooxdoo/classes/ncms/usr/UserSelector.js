@@ -76,7 +76,7 @@ qx.Class.define("ncms.usr.UserSelector", {
 
         /**
          * Users virtual table
-         * @type {ncms.usr.UserTable}
+         * @type {ncms.usr.UsersTable}
          */
         __table : null,
 
