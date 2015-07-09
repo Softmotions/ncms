@@ -40,14 +40,18 @@ public class DefaultAsmRenderer implements AsmRenderer {
 
     private final PageService pageService;
 
+    private final AsmRendererHelper helper;
+
 
     @Inject
     public DefaultAsmRenderer(Set<AsmTemplateEngineAdapter> templateEgines,
                               AsmAttributeManagersRegistry amRegistry,
-                              PageService pageService) {
+                              PageService pageService,
+                              AsmRendererHelper helper) {
         this.templateEgines = templateEgines;
         this.amRegistry = amRegistry;
         this.pageService = pageService;
+        this.helper = helper;
     }
 
     public void renderTemplate(String location, AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException {
@@ -125,29 +129,13 @@ public class DefaultAsmRenderer implements AsmRenderer {
      * @return True if handler commits the response.
      */
     protected boolean executeAsmController(Asm asm, AsmRendererContext ctx) {
-        Class controllerClass;
         String controllerClassName = asm.getEffectiveController();
         if (StringUtils.isBlank(controllerClassName)) {
             return false;
         }
+        AsmController controller = helper.createControllerInstance(asm, controllerClassName);
         try {
-            controllerClass = ctx.getClassLoader().loadClass(controllerClassName);
-            if (!AsmController.class.isAssignableFrom(controllerClass)) {
-                throw new AsmRenderingException("AsmHandler: '" + controllerClassName + "' " +
-                                                "' class does not implement: " + AsmController.class.getName() +
-                                                " interface for assembly: " + asm.getName());
-            }
-        } catch (ClassNotFoundException e) {
-            throw new AsmRenderingException("AsmHandler class: '" + controllerClassName +
-                                            "' not found for assembly: " + asm.getName(), e);
-        }
-
-        try {
-            AsmController controller = (AsmController) ctx.getInjector().getInstance(controllerClass);
             return controller.execute(ctx);
-        } catch (ClassNotFoundException e) {
-            throw new AsmRenderingException("AsmHandler class: '" + controllerClassName +
-                                            "' not found for assembly: " + asm.getName(), e);
         } catch (Exception e) {
             throw new AsmRenderingException("Failed to execute assembly handler: '" + controllerClassName +
                                             "' for assembly: " + asm.getName(), e);

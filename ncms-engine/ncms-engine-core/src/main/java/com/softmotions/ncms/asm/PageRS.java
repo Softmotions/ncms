@@ -15,6 +15,8 @@ import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.events.AsmCreatedEvent;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
+import com.softmotions.ncms.asm.render.AsmAttributesHandler;
+import com.softmotions.ncms.asm.render.AsmRendererHelper;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
@@ -140,6 +142,8 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final String asmRoot;
 
+    private final AsmRendererHelper helper;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao,
@@ -152,7 +156,8 @@ public class PageRS extends MBDAOSupport implements PageService {
                   UserEnvRS userEnvRS,
                   NcmsEnvironment env,
                   MediaReader mediaReader,
-                  Provider<AsmAttributeManagerContext> amCtxProvider) {
+                  Provider<AsmAttributeManagerContext> amCtxProvider,
+                  AsmRendererHelper helper) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -171,6 +176,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.mediaReader = mediaReader;
         this.amCtxProvider = amCtxProvider;
         this.asmRoot = env.getNcmsRoot() + "/";
+        this.helper = helper;
         this.ebus.register(this);
     }
 
@@ -290,6 +296,22 @@ public class PageRS extends MBDAOSupport implements PageService {
                 gattrs.add(a);
             }
         }
+        String contollerClassName = page.getEffectiveController();
+        if (!StringUtils.isBlank(contollerClassName)) {
+            Object controller = helper
+                    .createControllerInstance(page,
+                                              contollerClassName);
+            if (controller instanceof AsmAttributesHandler) {
+                Collection<AsmAttribute> iattrs =
+                        ((AsmAttributesHandler) controller)
+                                .onLoadedAttributes(page, gattrs);
+                if (iattrs != null) {
+                    gattrs = iattrs;
+                }
+            }
+        }
+
+
         res.putPOJO("attributes", gattrs);
         return res;
     }
@@ -1557,7 +1579,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         Long pid;
         Locale locale = messages.getLocale(req);
         synchronized (lang2IndexPages) {
-           pid = lang2IndexPages.get(locale.getLanguage());
+            pid = lang2IndexPages.get(locale.getLanguage());
         }
         if (pid != null) {
             return locale.getLanguage();
