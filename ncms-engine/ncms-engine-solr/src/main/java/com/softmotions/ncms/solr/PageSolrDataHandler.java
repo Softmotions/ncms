@@ -224,8 +224,14 @@ public class PageSolrDataHandler implements SolrDataHandler {
     }
 
     protected void updateAsmInSolr(Long id) {
-        Asm asm = adao.asmSelectById(id);
-        SolrInputDocument solrDocument = asm != null ? asmToSolrDocument(asm) : null;
+        if (id == null) {
+            return;
+        }
+        updateAsmInSolr(id, adao.asmSelectById(id));
+    }
+
+    protected void updateAsmInSolr(Long id, Asm asm) {
+        SolrInputDocument solrDocument = asmToSolrDocument(asm);
         try {
             if (solrDocument == null) {
                 solr.deleteById(String.valueOf(id));
