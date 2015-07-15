@@ -423,6 +423,9 @@
                     <if test="lang != null">
                     AND asm.lang = #{lang}
                     </if>
+                    <if test="owner != null">
+                    AND asm.owner = #{owner}
+                    </if>
                     <if test="templates != null">
                     AND pasm.name IN
                     <foreach collection="templates" item="t" open="(" separator="," close=")">

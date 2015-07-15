@@ -491,7 +491,7 @@ public class AsmDAO extends MBDAOSupport {
 
         public PageCriteria(AsmDAO dao, String namespace) {
             super(dao, namespace);
-            withStatement("queryByAttrs");
+            withStatement("queryAttrs");
         }
 
         public PageCriteria withPublished(boolean val) {
@@ -516,6 +516,10 @@ public class AsmDAO extends MBDAOSupport {
 
         public PageCriteria withAlias(String alias) {
             return withParam("alias", alias);
+        }
+
+        public PageCriteria withOwner(String owner) {
+            return withParam("owner", owner);
         }
 
         public PageCriteria withAttributeLike(String name, Object val) {
