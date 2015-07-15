@@ -14,10 +14,12 @@ import com.softmotions.weboot.solr.SolrDataHandler;
 
 import com.google.common.collect.AbstractIterator;
 import com.google.common.eventbus.Subscribe;
+import com.google.inject.Singleton;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.common.SolrInputDocument;
@@ -29,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,28 +40,34 @@ import java.util.regex.Pattern;
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
+
+@Singleton
 public class PageSolrDataHandler implements SolrDataHandler {
 
     protected static final Logger log = LoggerFactory.getLogger(PageSolrDataHandler.class);
 
-    private static final Pattern ANNOTATION_BREAKER_PATTERN = Pattern.compile("[.;,:\\n]");
-    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s");
+    protected static final Pattern ANNOTATION_BREAKER_PATTERN = Pattern.compile("[.;,:\\n]");
 
-    private final AsmAttributeManagersRegistry aamr;
+    protected static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s");
 
-    private final NcmsEventBus ebus;
+    protected final AsmAttributeManagersRegistry aamr;
 
-    private final SolrServer solr;
+    protected final NcmsEventBus ebus;
 
-    private final AsmDAO adao;
+    protected final SolrServer solr;
 
-    private Collection<String> extraAttributeNames;
+    protected final AsmDAO adao;
 
-    private float gfBoost;
-    private float dfBoost;
+    protected float gfBoost;
 
-    private int annotationLength;
-    private String[] annotationCandidates;
+    protected float dfBoost;
+
+    protected int annotationLength;
+
+    protected String[] annotationCandidates;
+
+    protected Collection<String> extraAttributeNames;
+
 
     @Inject
     public PageSolrDataHandler(AsmAttributeManagersRegistry aamr,
@@ -80,32 +90,32 @@ public class PageSolrDataHandler implements SolrDataHandler {
                 extraAttributeNames.addAll(Arrays.asList(attrs));
             }
         }
-
         gfBoost = cfg.getFloat("general-field-boost", 1.0F);
         dfBoost = cfg.getFloat("dynamic-field-boost", 1.0F);
-
         annotationCandidates = cfg.getStringArray("annotation-candidates");
         if (annotationCandidates == null) {
             annotationCandidates = ArrayUtils.EMPTY_STRING_ARRAY;
         }
         annotationLength = cfg.getInt("annotation-length", 300);
-
         ebus.register(this);
     }
 
 
     public Iterator<SolrInputDocument> getData() {
-        final Iterator<Asm> asmsi = adao.asmSelectAllPlain().iterator();
-
+        final Iterator asmsi = ((List) adao.select("asmSelectAllIds")).iterator();
+        AtomicInteger cnt = new AtomicInteger(0);
         return new AbstractIterator<SolrInputDocument>() {
             protected SolrInputDocument computeNext() {
                 while (true) {
                     if (!asmsi.hasNext()) {
+                        log.info("Indexed " + cnt.get() + " solr documents");
                         return endOfData();
                     }
-
-                    SolrInputDocument solrDocument = asmToSolrDocument(adao.asmSelectById(asmsi.next().getId()));
+                    SolrInputDocument solrDocument = asmToSolrDocument(adao.asmSelectById((Number) asmsi.next()));
                     if (solrDocument != null) {
+                        if ((cnt.addAndGet(1) % 100) == 0) {
+                            log.info("Indexed " + cnt.get() + " solr documents");
+                        }
                         return solrDocument;
                     }
                 }
@@ -113,12 +123,12 @@ public class PageSolrDataHandler implements SolrDataHandler {
         };
     }
 
-    private SolrInputDocument asmToSolrDocument(Asm asm) {
-        if (StringUtils.isBlank(asm.getType())) {
+    protected SolrInputDocument asmToSolrDocument(Asm asm) {
+        if (asm == null || StringUtils.isBlank(asm.getType())) {
             return null;
         }
         SolrInputDocument res = new SolrInputDocument();
-        res.addField("id", asm.getId(), gfBoost);
+        res.addField("id", String.valueOf(asm.getId()), gfBoost);
         res.addField("name", asm.getName(), gfBoost);
         res.addField("hname", asm.getHname(), gfBoost);
         res.addField("description", asm.getDescription(), gfBoost);
@@ -154,7 +164,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
         return res;
     }
 
-    private void extractAnnotation(SolrInputDocument res) {
+    protected void extractAnnotation(SolrInputDocument res) {
         String annotation = null;
         for (int i = 0; i < annotationCandidates.length && StringUtils.isBlank(annotation); ++i) {
             annotation = (String) res.getFieldValue(annotationCandidates[i]);
@@ -177,14 +187,14 @@ public class PageSolrDataHandler implements SolrDataHandler {
                     }
                 }
             }
-
+            annotation = StringEscapeUtils.escapeHtml4(annotation);
             if (!StringUtils.isBlank(annotation)) {
                 res.addField("annotation", StringUtils.normalizeSpace(annotation.replaceAll("(\\n\\s*)+", "<br/>")));
             }
         }
     }
 
-    private void addData(SolrInputDocument sid, String prefix, String suffix, Object data) {
+    protected void addData(SolrInputDocument sid, String prefix, String suffix, Object data) {
         //noinspection IfStatementWithTooManyBranches
         if (data == null) {
         } else if (data instanceof Long || data instanceof Integer) {
@@ -213,7 +223,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
         updateAsmInSolr(e.getId());
     }
 
-    private void updateAsmInSolr(Long id) {
+    protected void updateAsmInSolr(Long id) {
         Asm asm = adao.asmSelectById(id);
         SolrInputDocument solrDocument = asm != null ? asmToSolrDocument(asm) : null;
         try {

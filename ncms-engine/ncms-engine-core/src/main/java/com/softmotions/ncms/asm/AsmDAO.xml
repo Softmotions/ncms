@@ -143,6 +143,11 @@
         LIMIT 10000 -- Limit hardcoded for mem safety
     </select>
 
+
+    <select id="asmSelectAllIds" resultType="long">
+        SELECT id FROM ASMS
+    </select>
+
     <update id="asmRename" parameterType="map">
         UPDATE ASMS
         SET name = #{name}
