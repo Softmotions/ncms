@@ -7,15 +7,25 @@ import org.apache.commons.beanutils.BeanUtils;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public final class Image extends ImageMeta {
+public class Image extends ImageMeta {
 
     private final AsmRendererContext ctx;
+
+    private String forceLink;
 
     public Image(AsmRendererContext ctx) {
         this.ctx = ctx;
     }
 
+    public Image(AsmRendererContext ctx, String forceLink) {
+        this.forceLink = forceLink;
+        this.ctx = ctx;
+    }
+
     public String getLink() {
+        if (forceLink != null) {
+            return forceLink;
+        }
         String link = ctx.getMediaRepository().resolveFileLink(id);
         if (resize || cover) {
             if (optionsWidth != null) {
