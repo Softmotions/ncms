@@ -58,14 +58,14 @@ public class MediaModule extends AbstractModule {
         }
 
         private void processImportDir(HierarchicalConfiguration c) {
-            String srcDir = c.getString("[@directory]");
+            String srcDir = c.getString("directory");
             if (StringUtils.isBlank(srcDir)) {
-                log.error("Missing required media.import[@directory] configuration attribute");
+                log.error("Missing required media.import.directory configuration attribute");
                 return;
             }
-            String target = c.getString("[@target]");
+            String target = c.getString("target");
             if (StringUtils.isBlank(target)) {
-                log.error("Missing required media.import[@target] configuration attribute");
+                log.error("Missing required media.import.target configuration attribute");
                 return;
             }
             Path srcPath = Paths.get(srcDir).toAbsolutePath().normalize();
@@ -75,16 +75,16 @@ public class MediaModule extends AbstractModule {
             }
 
             int flags = 0;
-            if (c.getBoolean("[@watch]", false)) {
+            if (c.getBoolean("watch", false)) {
                 flags |= MediaRepository.IMPORT_WATCH;
             }
-            if (c.getBoolean("[@overwrite]", false)) {
+            if (c.getBoolean("overwrite", false)) {
                 flags |= MediaRepository.IMPORT_OVERWRITE;
             }
-            if (c.getBoolean("[@system]", false)) {
+            if (c.getBoolean("system", false)) {
                 flags |= MediaRepository.IMPORT_SYSTEM;
             }
-            if (c.getBoolean("[@cleanupMissing]", false)) {
+            if (c.getBoolean("cleanupMissing", false)) {
                 flags |= MediaRepository.IMPORT_CLEANUP_MISSING;
             }
 

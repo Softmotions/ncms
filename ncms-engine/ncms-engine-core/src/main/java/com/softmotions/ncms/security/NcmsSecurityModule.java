@@ -43,7 +43,7 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     @Override
     public void initServlets(WBServletModule m) {
         NcmsEnvironment env = (NcmsEnvironment) m.getConfiguration();
-        String dbJndiName = env.xcfg().getString("security[@dbJndiName]");
+        String dbJndiName = env.xcfg().getString("security.dbJndiName");
         String webAccessControlAllow = env.xcfg().getString("security.web-access-control-allow");
 
         if (dbJndiName != null) {
@@ -75,7 +75,7 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
         @Override
         public WSUserDatabase get() {
             WSUserDatabase usersDb = null;
-            String jndiName = env.xcfg().getString("security[@dbJndiName]");
+            String jndiName = env.xcfg().getString("security.dbJndiName");
             if (!StringUtils.isBlank(jndiName)) {
                 log.info("Locating users database with JNDI name: {}", jndiName);
                 usersDb = locateWSUserDatabase(jndiName);

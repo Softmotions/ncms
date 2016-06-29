@@ -167,9 +167,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         super(MediaRS.class, sess);
         this.env = env;
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
-        String dir = xcfg.getString("media[@basedir]");
+        String dir = xcfg.getString("media.basedir");
         if (dir == null) {
-            throw new RuntimeException("Missing required configuration property: media[@basedir]");
+            throw new RuntimeException("Missing required configuration property: media.basedir");
         }
         this.basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);

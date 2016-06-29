@@ -112,7 +112,7 @@ public class AsmModule extends AbstractModule {
                     getClass().getClassLoader()
             );
             for (HierarchicalConfiguration hc : hcl) {
-                String className = hc.getString("loader[@class]");
+                String className = hc.getString("loader");
                 if (StringUtils.isBlank(className)) {
                     continue;
                 }

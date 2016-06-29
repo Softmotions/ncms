@@ -89,10 +89,10 @@ public class NcmsServletListener extends WBServletListener {
         if (webFakeUser == null) {
             return;
         }
-        String dbJndiName = env.xcfg().getString("security[@dbJndiName]");
+        String dbJndiName = env.xcfg().getString("security.dbJndiName");
         log.info("Setup SecurityFakeEnvFilter filter fake web user: {}", webFakeUser);
         if (StringUtils.isBlank(dbJndiName)) {
-            throw new RuntimeException("Missing required 'dbJndiName' attribute in the <security> configuration");
+            throw new RuntimeException("Missing required 'dbJndiName' element in the <security> configuration");
         }
         FilterRegistration.Dynamic reg = sctx.addFilter(SecurityFakeEnvFilter.class.getName(),
                                                         SecurityFakeEnvFilter.class);
