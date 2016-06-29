@@ -10,9 +10,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,6 +17,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
+
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
 
 /**
  * Accessible GUI resources configuration provider.
@@ -52,10 +52,10 @@ public class AdmUIResourcesRS {
                           @PathParam("section") String section) {
         ArrayNode arr = mapper.createArrayNode();
         WSUser user = (WSUser) sctx.getUserPrincipal();
-        XMLConfiguration xcfg = env.xcfg();
+        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         String cpath = "ui." + section + ".widget";
         for (HierarchicalConfiguration hc : xcfg.configurationsAt(cpath)) {
-            String[] widgetRoles = hc.getStringArray("[@roles]");
+            String[] widgetRoles = env.attrArray(hc.getString("[@roles]"));
             if (widgetRoles.length == 0 || user.isHasAnyRole(widgetRoles)) {
                 String qxClass = hc.getString("[@qxClass]");
                 String icon = hc.getString("[@qxIcon]");
@@ -67,7 +67,7 @@ public class AdmUIResourcesRS {
                     on.put("icon", icon);
                 }
                 ArrayNode argsNode = on.putArray("args");
-                for (String arg : hc.getStringArray("[@args]")) {
+                for (String arg : env.attrArray(hc.getString("[@args]"))) {
                     argsNode.add(arg);
                 }
                 arr.add(on);

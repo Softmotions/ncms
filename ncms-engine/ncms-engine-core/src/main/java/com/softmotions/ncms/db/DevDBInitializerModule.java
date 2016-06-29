@@ -1,17 +1,16 @@
 package com.softmotions.ncms.db;
 
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
 import com.softmotions.ncms.asm.AsmDAO;
-import com.softmotions.weboot.lifecycle.Start;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Initiates development database with initial data.
@@ -22,6 +21,7 @@ public class DevDBInitializerModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(DevDBInitializerModule.class);
 
+    @Override
     protected void configure() {
         bind(DevDBInitializer.class).asEagerSingleton();
     }

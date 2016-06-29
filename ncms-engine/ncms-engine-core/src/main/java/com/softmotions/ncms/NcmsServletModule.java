@@ -1,19 +1,21 @@
 package com.softmotions.ncms;
 
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.jboss.resteasy.jsapi.JSAPIServlet;
+import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+
+import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.ncms.asm.render.AsmFilter;
-import com.softmotions.ncms.jaxrs.NcmsJsonNodeReader;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
+import com.softmotions.ncms.jaxrs.ResteasyUTF8CharsetFilter;
 import com.softmotions.ncms.utils.BrowserFilter;
 import com.softmotions.weboot.WBServletModule;
-
-import com.google.inject.Singleton;
-
-import org.apache.commons.configuration.XMLConfiguration;
-import org.jboss.resteasy.jsapi.JSAPIServlet;
-import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+import com.softmotions.weboot.jaxrs.WBJaxrsModule;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -21,9 +23,11 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 @SuppressWarnings("unchecked")
 public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
 
+    @Override
     protected void init(NcmsEnvironment env) {
         bind(NcmsEnvironment.class).toInstance(env);
-        bind(XMLConfiguration.class).toInstance(env.xcfg());
+        bind(new TypeLiteral<HierarchicalConfiguration<ImmutableNode>>() {
+        }).toInstance(env.xcfg());
         initBrowserFilter(env);
         initJAXRS(env);
         initAsmFilter(env);
@@ -32,7 +36,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
     protected void initAsmFilter(NcmsEnvironment env) {
         //Assembly rendering filter
         Class<? extends AsmFilter> clazz = getAsmFilterClass();
-        String ncmsp = env.getNcmsPrefix();
+        String ncmsp = env.getAppPrefix();
         KVOptions opts = new KVOptions();
         opts.put("strip-prefixes", (ncmsp + "/asm,") + (ncmsp + "/adm/asm,") + (ncmsp.isEmpty() ? "/" : ncmsp));
         String[] exclude = env.xcfg().getStringArray("asm.exclude");
@@ -44,18 +48,20 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
     }
 
     protected void initJAXRS(NcmsEnvironment env) {
-        String ncmsp = env.getNcmsPrefix();
+        String appPrefix = env.getAppPrefix();
         //Resteasy staff
+        install(new WBJaxrsModule());
         bind(NcmsRSExceptionHandler.class).in(Singleton.class);
-        bind(NcmsJsonNodeReader.class).in(Singleton.class);
+        bind(ResteasyUTF8CharsetFilter.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
-        serve(ncmsp + "/rs/*")
+        log.info("Resteasy serving on {}", appPrefix + "/rs/*");
+        serve(appPrefix + "/rs/*")
                 .with(HttpServletDispatcher.class,
-                      new TinyParamMap().param("resteasy.servlet.mapping.prefix", ncmsp + "/rs"));
+                      new TinyParamMap().param("resteasy.servlet.mapping.prefix", appPrefix + "/rs"));
 
         //Resteasy JS API
         bind(JSAPIServlet.class).in(Singleton.class);
-        serve(ncmsp + "/rjs")
+        serve(appPrefix + "/rjs")
                 .with(JSAPIServlet.class);
     }
 
@@ -64,12 +70,11 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
     }
 
     protected void initBrowserFilter(NcmsEnvironment env) {
-        XMLConfiguration xcfg = env.xcfg();
+        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         if (xcfg.configurationsAt("browser-filter").isEmpty()) {
             return;
         }
-
-        String ncmsp = env.getNcmsPrefix();
+        String ncmsp = env.getAppPrefix();
         KVOptions opts = new KVOptions();
         opts.put("min-trident", String.valueOf(xcfg.getFloat("browser-filter.min-trident", 0)));
         String badUrl = xcfg.getString("browser-filter.bad-browser-uri", "");

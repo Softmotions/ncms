@@ -131,30 +131,36 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.rootAsm = asm;
 
         //Set basic content parameters
-        this.put("ncmsroot", env.getNcmsRoot());
+        this.put("ncmsroot", env.getAppRoot());
 
     }
 
+    @Override
     public AsmRenderer getRenderer() {
         return renderer;
     }
 
+    @Override
     public HttpServletRequest getServletRequest() {
         return req;
     }
 
+    @Override
     public HttpServletResponse getServletResponse() {
         return resp;
     }
 
+    @Override
     public Injector getInjector() {
         return injector;
     }
 
+    @Override
     public NcmsEnvironment getEnvironment() {
         return env;
     }
 
+    @Override
     public Map<String, String[]> getDedicatedRequestParams() {
         if (dedicatedParams != null) {
             return dedicatedParams;
@@ -176,6 +182,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return dedicatedParams;
     }
 
+    @Override
     public String getDedicatedParam(String pname) {
         Map<String, String[]> dparams = getDedicatedRequestParams();
         String[] pvals = dparams.get(pname);
@@ -185,18 +192,22 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return pvals[0];
     }
 
+    @Override
     public Asm getAsm() {
         return asm;
     }
 
+    @Override
     public Asm getRootAsm() {
         return rootAsm;
     }
 
+    @Override
     public boolean isSubcontext() {
         return subcontext;
     }
 
+    @Override
     public AsmRendererContext createSubcontext(String asmName, Writer out) throws AsmResourceNotFoundException {
         PageService ps = injector.getInstance(PageService.class);
         CachedPage cp = ps.getCachedPage(asmName, true);
@@ -234,18 +245,22 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     }
 
 
+    @Override
     public ClassLoader getClassLoader() {
         return classLoader;
     }
 
+    @Override
     public PageService getPageService() {
         return pageService;
     }
 
+    @Override
     public MediaRepository getMediaRepository() {
         return mediaRepository;
     }
 
+    @Override
     public Locale getLocale() {
         if (cachedLocale != null) {
             return cachedLocale;
@@ -254,14 +269,17 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return cachedLocale;
     }
 
+    @Override
     public NcmsMessages getMessages() {
         return messages;
     }
 
+    @Override
     public Object renderAttribute(String attributeName, Map<String, String> opts) {
         return renderer.renderAsmAttribute(this, attributeName, opts);
     }
 
+    @Override
     public Object renderAttribute(Asm nasm, String attributeName, Map<String, String> opts) {
         if (this.asm.equals(nasm)) {
             return renderAttribute(attributeName, opts);
@@ -277,10 +295,12 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return res;
     }
 
+    @Override
     public void render(Writer writer) throws AsmRenderingException, IOException {
         renderer.renderAsm(this, writer);
     }
 
+    @Override
     public AsmResourceLoader getLoader() {
         return loader;
     }

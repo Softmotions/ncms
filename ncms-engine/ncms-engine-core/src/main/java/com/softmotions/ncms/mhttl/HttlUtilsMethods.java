@@ -1,15 +1,5 @@
 package com.softmotions.ncms.mhttl;
 
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.asm.Asm;
-import com.softmotions.ncms.asm.render.AsmRendererContext;
-
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -21,6 +11,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 /**
  * Various template utils.
@@ -167,10 +168,9 @@ public class HttlUtilsMethods {
         }
     }
 
-    public static XMLConfiguration config() {
+    public static HierarchicalConfiguration<ImmutableNode> config() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         NcmsEnvironment env = ctx.getInjector().getInstance(NcmsEnvironment.class);
-
         return env.xcfg();
     }
 

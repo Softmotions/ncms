@@ -1,6 +1,6 @@
 package com.softmotions.ncms.update;
 
-import com.softmotions.weboot.lifecycle.Start;
+import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 import com.google.inject.AbstractModule;
@@ -23,9 +23,9 @@ import java.util.Set;
 public class UpdateModule extends AbstractModule {
     private static final Logger log = LoggerFactory.getLogger(UpdateModule.class);
 
+    @Override
     protected void configure() {
         bind(UpdateInitializer.class).asEagerSingleton();
-
         // default: empty collection of updates
         Multibinder<HotFix> hotfixes = Multibinder.newSetBinder(binder(), HotFix.class);
     }

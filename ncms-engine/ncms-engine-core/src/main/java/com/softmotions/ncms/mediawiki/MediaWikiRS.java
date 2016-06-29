@@ -117,7 +117,7 @@ public class MediaWikiRS {
     public Redirect pageLink(@PathParam("spec") String spec,
                              @Context HttpServletRequest req) throws Exception {
         String title = spec.substring("Page:".length());
-        String link = env.getServletContext().getContextPath() + env.getNcmsPrefix() + "/" + title;
+        String link = env.getServletContext().getContextPath() + env.getAppPrefix() + "/" + title;
         return new Redirect(link);
     }
 
@@ -138,7 +138,7 @@ public class MediaWikiRS {
                                  @Context HttpServletResponse resp) throws Exception {
 
         if (req.getRequestURI().endsWith("/") && !spec.endsWith("/")) {
-            spec = spec + "/";
+            spec += "/";
         }
 
         Matcher matcher = EXT_LINK_REGEXP.matcher(spec);

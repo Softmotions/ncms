@@ -1,18 +1,21 @@
 package com.softmotions.ncms.asm.am;
 
-import com.softmotions.commons.json.JsonUtils;
-import com.softmotions.ncms.asm.Asm;
-import com.softmotions.ncms.asm.AsmAttribute;
-import com.softmotions.ncms.asm.AsmOptions;
-import com.softmotions.ncms.asm.render.AsmRendererContext;
-import com.softmotions.ncms.asm.render.AsmRenderingException;
-import com.softmotions.web.GenericResponseWrapper;
-import com.softmotions.weboot.lifecycle.Dispose;
-import com.softmotions.weboot.lifecycle.Start;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Singleton;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Nonnull;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.map.Flat3Map;
@@ -29,22 +32,18 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Singleton;
+import com.softmotions.commons.json.JsonUtils;
+import com.softmotions.commons.lifecycle.Dispose;
+import com.softmotions.commons.lifecycle.Start;
+import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmOptions;
+import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.web.GenericResponseWrapper;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -60,10 +59,12 @@ public class AsmWebRefAM implements AsmAttributeManager {
 
     CloseableHttpClient httpclient;
 
+    @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
+    @Override
     public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
                                             HttpServletResponse resp,
                                             Asm page,
@@ -73,10 +74,12 @@ public class AsmWebRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
 
+    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      @Nonnull Map<String, String> options) throws AsmRenderingException {
 
@@ -94,16 +97,14 @@ public class AsmWebRefAM implements AsmAttributeManager {
         try {
             uri = new URI(location);
         } catch (URISyntaxException e) {
-            log.warn("Invalid resource location: " + location +
-                     " asm: " + ctx.getAsm() + " attribute: " + attrname +
-                     " error: " + e.getMessage());
+            log.warn("Invalid resource location: {} asm: {} attribute: {} error: {}", location, ctx.getAsm(), attrname, e.getMessage());
             return null;
         }
         if (BooleanUtils.toBoolean(opts.getString("asLocation"))) {
             return location;
         }
         if (log.isDebugEnabled()) {
-            log.debug("Including resource: '" + uri + '\'');
+            log.debug("Including resource: '{}" + '\'', uri);
         }
         Object res;
         if (uri.getScheme() == null) {
@@ -139,11 +140,8 @@ public class AsmWebRefAM implements AsmAttributeManager {
                     httpclient = HttpClients.createSystem();
                     hresp = httpclient.execute(httpGet);
                     if (hresp.getStatusLine().getStatusCode() != HttpServletResponse.SC_OK) {
-                        log.warn("Invalid resource response status code: " + hresp.getStatusLine().getStatusCode() +
-                                 " location: " + location +
-                                 " asm: " + ctx.getAsm() +
-                                 " attribute: " + attrname +
-                                 " response: " + out.toString());
+                        log.warn("Invalid resource response status code: {} location: {} asm: {} attribute: {} response: {}",
+                                 hresp.getStatusLine().getStatusCode(), location, ctx.getAsm(), attrname, out.toString());
                         return null;
                     }
                     is = hresp.getEntity().getContent();
@@ -172,9 +170,7 @@ public class AsmWebRefAM implements AsmAttributeManager {
                 }
             }
         } catch (Exception e) {
-            log.warn("Unable to load resource: " + location +
-                     " asm: " + ctx.getAsm() +
-                     " attribute: " + attrname, e);
+            log.warn("Unable to load resource: {} asm: {} attribute: {}", location, ctx.getAsm(), attrname, e);
             return null;
         }
         return out.toString();
@@ -204,23 +200,20 @@ public class AsmWebRefAM implements AsmAttributeManager {
         try {
             rd.include(req, resp);
         } catch (IOException | ServletException e) {
-            log.warn("Failed to include resource: " + location +
-                     " asm: " + ctx.getAsm() +
-                     " attribute: " + attrname, e);
+            log.warn("Failed to include resource: {} asm: {} attribute: {}",
+                     location, ctx.getAsm(), attrname, e);
             return null;
         }
         if (resp.getStatus() == HttpServletResponse.SC_OK) {
             return out.toString();
         } else {
-            log.warn("Invalid resource response status code: " + resp.getStatus() +
-                     " location: " + location +
-                     " asm: " + ctx.getAsm() +
-                     " attribute: " + attrname +
-                     " response: " + out.toString());
+            log.warn("Invalid resource response status code: {} location: {} asm: {} attribute: {} response: {}",
+                     resp.getStatus(), location, ctx.getAsm(), attrname, out.toString());
             return null;
         }
     }
 
+    @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions opts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts,
@@ -230,11 +223,13 @@ public class AsmWebRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText().trim() : null);
         return attr;
     }
 
+    @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }
@@ -271,10 +266,12 @@ public class AsmWebRefAM implements AsmAttributeManager {
 
         }
 
+        @Override
         public String getParameter(String name) {
             return params.get(name);
         }
 
+        @Override
         public Map<String, String[]> getParameterMap() {
             if (paramsArr != null) {
                 return paramsArr;
@@ -285,10 +282,12 @@ public class AsmWebRefAM implements AsmAttributeManager {
             return paramsArr;
         }
 
+        @Override
         public Enumeration<String> getParameterNames() {
             return IteratorUtils.asEnumeration(params.keySet().iterator());
         }
 
+        @Override
         public String[] getParameterValues(String name) {
             String pv = params.get(name);
             return pv != null ? new String[]{pv} : null;

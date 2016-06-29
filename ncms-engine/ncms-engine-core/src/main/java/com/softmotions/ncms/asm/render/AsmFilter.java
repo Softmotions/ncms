@@ -72,6 +72,7 @@ public class AsmFilter implements Filter {
     private String[] excludePrefixes;
 
 
+    @Override
     public void init(FilterConfig cfg) throws ServletException {
         this.stripPrefixes = null;
         this.excludePrefixes = null;
@@ -106,10 +107,11 @@ public class AsmFilter implements Filter {
             excludePrefixes = ArrayUtils.EMPTY_STRING_ARRAY;
         }
 
-        log.info("Strip prefixes: " + Arrays.asList(stripPrefixes));
-        log.info("Exclude prefixes: " + Arrays.asList(excludePrefixes));
+        log.info("Strip prefixes: {}", Arrays.asList(stripPrefixes));
+        log.info("Exclude prefixes: {}", Arrays.asList(excludePrefixes));
     }
 
+    @Override
     public void doFilter(ServletRequest sreq, ServletResponse sresp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) sreq;
         HttpServletResponse resp = (HttpServletResponse) sresp;
@@ -118,6 +120,7 @@ public class AsmFilter implements Filter {
         }
     }
 
+    @Override
     public void destroy() {
     }
 
@@ -166,7 +169,7 @@ public class AsmFilter implements Filter {
         try {
             ctx = rendererContextFactory.createStandalone(req, renderResp, asmRef);
         } catch (AsmResourceNotFoundException e) {
-            log.info("NOT FOUND: " + e.getResource());
+            log.info("NOT FOUND: {}", e.getResource());
             return false;
         }
 
@@ -201,7 +204,7 @@ public class AsmFilter implements Filter {
                 throw e;
             }
         } catch (AsmResourceNotFoundException e) {
-            log.error("Resource not found: " + e.getResource() + " assembly: " + asm.getName());
+            log.error("Resource not found: {} assembly: {}", e.getResource(), asm.getName());
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
@@ -224,7 +227,7 @@ public class AsmFilter implements Filter {
         if (pi.endsWith(".html")) {
             pi = pi.substring(0, pi.length() - ".html".length());
         }
-        if (pi.length() != 32 && pi.length() > 0 && Character.isDigit(pi.charAt(0))) { // may be it is a number? (asm ID)
+        if (pi.length() != 32 && !pi.isEmpty() && Character.isDigit(pi.charAt(0))) { // may be it is a number? (asm ID)
             try {
                 return Long.parseLong(pi);
             } catch (NumberFormatException ignored) {

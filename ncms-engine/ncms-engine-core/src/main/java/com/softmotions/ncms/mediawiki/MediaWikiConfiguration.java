@@ -1,20 +1,20 @@
 package com.softmotions.ncms.mediawiki;
 
-import info.bliki.htmlcleaner.TagToken;
-import info.bliki.wiki.model.Configuration;
-import com.softmotions.ncms.NcmsEnvironment;
+import java.util.List;
+import java.util.Map;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
+import info.bliki.htmlcleaner.TagToken;
+import info.bliki.wiki.model.Configuration;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.softmotions.ncms.NcmsEnvironment;
 
 /**
  * Mediawiki configuration.
@@ -28,14 +28,12 @@ public class MediaWikiConfiguration extends Configuration {
 
     @Inject
     public MediaWikiConfiguration(Map<String, TagToken> tags, NcmsEnvironment env) {
-        XMLConfiguration xcfg = env.xcfg();
+        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         for (final Map.Entry<String, TagToken> e : tags.entrySet()) {
-            log.info("Mediawiki custom tag: '" + e.getKey() +
-                     "' class: '" + e.getValue().getClass().getName() +
-                     "' registered");
+            log.info("Mediawiki custom tag: '{}' class: '{}' registered", e.getKey(), e.getValue().getClass().getName());
             this.addTokenTag(e.getKey(), e.getValue());
         }
-        List<HierarchicalConfiguration> cfgs = xcfg.configurationsAt("mediawiki.interwiki-links.link");
+        List<HierarchicalConfiguration<ImmutableNode>> cfgs = xcfg.configurationsAt("mediawiki.interwiki-links.link");
         for (final HierarchicalConfiguration c : cfgs) {
             String key = c.getString("[@key]");
             String value = c.getString("[@value]");
@@ -43,12 +41,12 @@ public class MediaWikiConfiguration extends Configuration {
                 continue;
             }
             this.addInterwikiLink(key, value);
-            log.info("Interwiki link [" + key + ", " + value + "] added");
+            log.info("Interwiki link [{}, {}] added", key, value);
         }
         if (!this.getInterwikiMap().containsKey("page") && !this.getInterwikiMap().containsKey("Page")) {
-            String link = env.getServletContext().getContextPath() + env.getNcmsPrefix() + "/${title}";
+            String link = env.getServletContext().getContextPath() + env.getAppPrefix() + "/${title}";
             this.addInterwikiLink("page", link);
-            log.info("Interwiki link [page, " + link + "] added");
+            log.info("Interwiki link [page, {}] added", link);
         }
     }
 }

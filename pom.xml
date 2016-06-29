@@ -37,8 +37,8 @@
 
     <properties>
         <maven.test.skip>true</maven.test.skip>
-        <softmotions.commons.version>1.0-SNAPSHOT</softmotions.commons.version>
-        <slf4j-api.version>1.7.12</slf4j-api.version>
+        <softmotions.commons.version>1.3-SNAPSHOT</softmotions.commons.version>
+        <slf4j-api.version>1.7.21</slf4j-api.version>
         <python.exec>python</python.exec>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,20 +49,20 @@
         <qooxdoo.sdk.version>4.1.1</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.build.python>${python.exec}</qooxdoo.build.python>
-        <jackson.version>2.5.3</jackson.version>
-        <resteasy.version>3.0.11.Final</resteasy.version>
-        <commons.collection.version>3.2.1</commons.collection.version>
+        <jackson.version>2.7.4</jackson.version>
+        <resteasy.version>3.0.17.Final</resteasy.version>
+        <commons.collection.version>3.2.2</commons.collection.version>
         <commons.validator.version>1.4.0</commons.validator.version>
-        <httpcomponents.version>4.5</httpcomponents.version>
-        <tomcat.version>7.0.62</tomcat.version>
+        <httpcomponents.version>4.5.2</httpcomponents.version>
+        <tomcat.version>8.5.0</tomcat.version>
         <!--<tomcat.version>8.0.11</tomcat.version>-->
         <httl.version>1.0.11-SNAPSHOT</httl.version>
-        <jericho.version>3.3</jericho.version>
+        <jericho.version>3.4</jericho.version>
         <jetty.version>9.2.1.v20140609</jetty.version>
-        <tika.version>1.6</tika.version>
-        <h2.version>1.4.179</h2.version>
-        <mybatis.version>3.3.0</mybatis.version>
-        <mybatis-guice.version>3.6</mybatis-guice.version>
+        <tika.version>1.12</tika.version>
+        <h2.version>1.4.191</h2.version>
+        <mybatis.version>3.4.0</mybatis.version>
+        <mybatis-guice.version>3.7.1</mybatis-guice.version>
         <web.run.port>8080</web.run.port>
         <web.context.reloadable>true</web.context.reloadable>
     </properties>
@@ -97,17 +97,17 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>2.4</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>2.6.1</version>
+                    <version>3.0.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.3</version>
+                    <version>3.5.1</version>
                     <configuration>
                         <source>${java.source.version}</source>
                         <target>${java.source.version}</target>
@@ -119,7 +119,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.5.4</version>
+                    <version>2.6</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -183,6 +183,11 @@
             <dependency>
                 <groupId>softmotions</groupId>
                 <artifactId>softmotions-utils</artifactId>
+                <version>${softmotions.commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
+                <artifactId>softmotions-weboot-jaxrs</artifactId>
                 <version>${softmotions.commons.version}</version>
             </dependency>
             <dependency>

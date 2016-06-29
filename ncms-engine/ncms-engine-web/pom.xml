@@ -31,7 +31,7 @@
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.3.3</version>
+                <version>3.5.1</version>
                 <configuration>
                     <changeLogFile>
                         src/main/java/com/softmotions/ncms/db/changelog/db-changelog-master.xml
@@ -43,6 +43,7 @@
                 </configuration>
             </plugin>
 
+<!--
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
@@ -162,15 +163,16 @@
                     <path>/</path>
                     <contextReloadable>${web.context.reloadable}</contextReloadable>
                     <useSeparateTomcatClassLoader>false</useSeparateTomcatClassLoader>
-                    <!-- <systemProperties>
+                    &lt;!&ndash; <systemProperties>
                          <ninja.mode>${ninja.mode}</ninja.mode>
-                     </systemProperties>-->
+                     </systemProperties>&ndash;&gt;
                     <server>ncms-tomcat-server</server>
                     <useNaming>true</useNaming>
                     <uriEncoding>UTF-8</uriEncoding>
                     <contextFile>src/main/webapp/META-INF/context.xml</contextFile>
                 </configuration>
             </plugin>
+-->
         </plugins>
 
         <resources>

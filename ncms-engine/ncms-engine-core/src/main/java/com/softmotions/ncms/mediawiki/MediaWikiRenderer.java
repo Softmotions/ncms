@@ -11,9 +11,10 @@ import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import org.apache.commons.configuration.XMLConfiguration;
-
 import java.util.Locale;
+
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -46,9 +47,9 @@ public class MediaWikiRenderer {
         this.plaintextConverter = new PlainTextConverter(this.converter.noLinks());
         this.ebus = ebus;
         this.messages = messages;
-        XMLConfiguration xcfg = env.xcfg();
-        this.imageBaseUrl = env.getNcmsPrefix() + xcfg.getString("mediawiki.image-base-url", "/rs/mw/res/" + "${image}");
-        this.linkBaseUrl = env.getNcmsPrefix() + xcfg.getString("mediawiki.link-base-url", "/rs/mw/link/" + "${title}");
+        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
+        this.imageBaseUrl = env.getAppPrefix() + xcfg.getString("mediawiki.image-base-url", "/rs/mw/res/" + "${image}");
+        this.linkBaseUrl = env.getAppPrefix() + xcfg.getString("mediawiki.link-base-url", "/rs/mw/link/" + "${title}");
     }
 
     public String render(String markup, Locale locale) {

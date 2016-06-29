@@ -16,7 +16,7 @@ import com.google.common.collect.AbstractIterator;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Singleton;
 
-import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -80,6 +80,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
         this.adao = adao;
     }
 
+    @Override
     public void init(Configuration cfg) {
         String[] attrs = cfg.getStringArray("extra-attributes");
         if (attrs == null || attrs.length == 0 || (attrs.length == 1 && "*".equals(attrs[0]))) {
@@ -101,20 +102,22 @@ public class PageSolrDataHandler implements SolrDataHandler {
     }
 
 
+    @Override
     public Iterator<SolrInputDocument> getData() {
         final Iterator asmsi = ((List) adao.select("asmSelectAllIds")).iterator();
         AtomicInteger cnt = new AtomicInteger(0);
         return new AbstractIterator<SolrInputDocument>() {
+            @Override
             protected SolrInputDocument computeNext() {
                 while (true) {
                     if (!asmsi.hasNext()) {
-                        log.info("Indexed " + cnt.get() + " solr documents");
+                        log.info("Indexed {} solr documents", cnt.get());
                         return endOfData();
                     }
                     SolrInputDocument solrDocument = asmToSolrDocument(adao.asmSelectById((Number) asmsi.next()));
                     if (solrDocument != null) {
                         if ((cnt.addAndGet(1) % 100) == 0) {
-                            log.info("Indexed " + cnt.get() + " solr documents");
+                            log.info("Indexed {} solr documents", cnt.get());
                         }
                         return solrDocument;
                     }
@@ -156,11 +159,9 @@ public class PageSolrDataHandler implements SolrDataHandler {
         }
 
         extractAnnotation(res);
-
         if (log.isDebugEnabled()) {
-            log.debug("SolrDocument: " + res);
+            log.debug("SolrDocument: {}", res);
         }
-
         return res;
     }
 

@@ -1,17 +1,10 @@
 package com.softmotions.ncms.adm;
 
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.asm.PageService;
-import com.softmotions.web.security.WSUser;
-import com.softmotions.weboot.lifecycle.Start;
-
-import com.google.inject.Inject;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,11 +15,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.softmotions.commons.lifecycle.Start;
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.asm.PageService;
+import com.softmotions.web.security.WSUser;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -52,7 +52,7 @@ public class WorkspaceRS {
 
     @Start
     public void start() {
-        List<HierarchicalConfiguration> topics = env.xcfg().configurationsAt("help.topics.topic");
+        List<HierarchicalConfiguration<ImmutableNode>> topics = env.xcfg().configurationsAt("help.topics.topic");
         for (HierarchicalConfiguration topic : topics) {
             String key = topic.getString("[@key]");
             if (StringUtils.isBlank(key)) {
@@ -89,14 +89,14 @@ public class WorkspaceRS {
     @PUT
     @Path("state")
     public void saveState(Map<String, Object> props) {
-        log.info("Save state: " + props);
+        log.info("Save state: {}", props);
         //todo
     }
 
     @PUT
     @Path("state/{property}")
     public void saveStateProperty(@PathParam("property") String property, String value) {
-        log.info("Save state[ " + property + "] = " + value);
+        log.info("Save state[ {}] = {}", property, value);
         //todo
     }
 

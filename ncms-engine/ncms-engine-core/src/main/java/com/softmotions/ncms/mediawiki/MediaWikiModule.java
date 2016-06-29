@@ -1,21 +1,21 @@
 package com.softmotions.ncms.mediawiki;
 
-import info.bliki.htmlcleaner.TagToken;
-import info.bliki.wiki.filter.ITextConverter;
-import com.softmotions.ncms.NcmsEnvironment;
+import java.util.List;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import com.google.inject.multibindings.MapBinder;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
+import info.bliki.htmlcleaner.TagToken;
+import info.bliki.wiki.filter.ITextConverter;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import com.google.inject.multibindings.MapBinder;
+import com.softmotions.ncms.NcmsEnvironment;
 
 /**
  * MediaWiki integration module.
@@ -33,6 +33,7 @@ public class MediaWikiModule extends AbstractModule {
         this.env = env;
     }
 
+    @Override
     protected void configure() {
 
         ClassLoader cl = ObjectUtils.firstNonNull(
@@ -40,11 +41,11 @@ public class MediaWikiModule extends AbstractModule {
                 getClass().getClassLoader()
         );
 
-        XMLConfiguration xcfg = env.xcfg();
+        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         MapBinder<String, TagToken> tagsBinder =
                 MapBinder.newMapBinder(binder(), String.class, TagToken.class);
 
-        List<HierarchicalConfiguration> tcfgs = xcfg.configurationsAt("mediawiki.tags.tag");
+        List<HierarchicalConfiguration<ImmutableNode>> tcfgs = xcfg.configurationsAt("mediawiki.tags.tag");
         for (final HierarchicalConfiguration tcfg : tcfgs) {
             String name = tcfg.getString("[@name]");
             if (StringUtils.isBlank(name)) {

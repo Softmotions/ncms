@@ -1,5 +1,28 @@
 package com.softmotions.ncms.asm.am;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsMessages;
@@ -14,29 +37,6 @@ import com.softmotions.ncms.asm.render.AsmRendererContextFactory;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.mhttl.Tree;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Tree strucrure attribute manager.
@@ -109,7 +109,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         Asm srcAsm = adao.asmSelectById(srcId);
         Asm tgtAsm = adao.asmSelectById(tgtId);
         if (srcAsm == null || tgtAsm == null) {
-            log.warn("One of assembly not found for spec: " + spec);
+            log.warn("One of assembly not found for spec: {}", spec);
             throw new BadRequestException("");
         }
         AsmAttribute tgtAttr = tgtAsm.getEffectiveAttribute(attrName);
@@ -130,7 +130,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         Asm syncAsm;
         AsmAttribute syncAttr;
         String opts = srcAttr.getOptions();
-        HashSet<Long> syncAsmIds = new HashSet<>();
+        Set<Long> syncAsmIds = new HashSet<>();
         syncAsmIds.add(tgtId);
 
         while ((syncIndex = opts.indexOf("syncWith")) >= 0) {
@@ -144,7 +144,7 @@ public class AsmTreeAM implements AsmAttributeManager {
 
             syncAsm = adao.asmSelectById(syncId);
             if (syncAsm == null) {
-                log.warn("Assembly not found for id: " + syncId);
+                log.warn("Assembly not found for id: {}", syncId);
                 throw new BadRequestException("");
             }
 
@@ -164,10 +164,12 @@ public class AsmTreeAM implements AsmAttributeManager {
         return spec;
     }
 
+    @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
+    @Override
     public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
                                             HttpServletResponse resp,
                                             Asm page,
@@ -194,10 +196,12 @@ public class AsmTreeAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
 
+    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Tree tree = EMPTY_TREE;
         Asm asm = ctx.getAsm();
@@ -210,7 +214,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         tree = getSyncTree(opts.getLongObject("syncWith", null), ctx, attr);
         try {
             if (tree == null) {
-                tree = mapper.reader(Tree.class).readValue(attr.getEffectiveValue());
+                tree = mapper.readerFor(Tree.class).readValue(attr.getEffectiveValue());
             }
             if (!"true".equals(options.get("noinit"))) {
                 tree = initTree(tree, ctx);
@@ -227,21 +231,19 @@ public class AsmTreeAM implements AsmAttributeManager {
         }
         CachedPage syncPage = pageService.getCachedPage(syncPageId, true);
         if (syncPage == null) {
-            log.warn("Failed to find referenced page with id: " + syncPageId);
+            log.warn("Failed to find referenced page with id: {}", syncPageId);
             return null;
         }
         Asm syncAsm = syncPage.getAsm();
         if (syncAsm.getId().equals(ctx.getAsm().getId())) { //avoid recursion
-            log.warn("Recursive attribute sychronization. " +
-                     "Asm: " + syncAsm.getName() + " attr: " + attr.getName());
+            log.warn("Recursive attribute sychronization. Asm: {} attr: {}",
+                     syncAsm.getName(), attr.getName());
             return null;
         }
         AsmAttribute syncAttr = syncAsm.getEffectiveAttribute(attr.getName());
         if (syncAttr == null || !attr.getType().equals(syncAttr.getType())) {
-            log.warn("Found incompatible sync attributes. " +
-                     "Source asm: " + syncPageId +
-                     " attr name: " + attr.getName() +
-                     " sync attr: " + syncAttr);
+            log.warn("Found incompatible sync attributes. Source asm: {} attr name: {} sync attr: {}",
+                     syncPageId, attr.getName(), syncAttr);
             return null;
         }
         KVOptions opts = new KVOptions();
@@ -270,6 +272,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         return tree;
     }
 
+    @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts);
@@ -277,6 +280,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         ctx.clearPageDeps(attr);
         ctx.clearFileDeps(attr);
@@ -363,6 +367,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         }
     }
 
+    @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }

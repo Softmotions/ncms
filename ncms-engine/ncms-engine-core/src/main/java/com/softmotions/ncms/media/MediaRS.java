@@ -1,91 +1,5 @@
 package com.softmotions.ncms.media;
 
-import com.softmotions.commons.cont.ArrayUtils;
-import com.softmotions.commons.cont.KVOptions;
-import com.softmotions.commons.cont.Pair;
-import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.commons.ctype.CTypeUtils;
-import com.softmotions.commons.io.DirUtils;
-import com.softmotions.commons.io.scanner.DirectoryScanner;
-import com.softmotions.commons.io.scanner.DirectoryScannerFactory;
-import com.softmotions.commons.io.scanner.DirectoryScannerVisitor;
-import com.softmotions.commons.io.watcher.FSWatcher;
-import com.softmotions.commons.io.watcher.FSWatcherCollectEventHandler;
-import com.softmotions.commons.io.watcher.FSWatcherCreateEvent;
-import com.softmotions.commons.io.watcher.FSWatcherDeleteEvent;
-import com.softmotions.commons.io.watcher.FSWatcherEventHandler;
-import com.softmotions.commons.io.watcher.FSWatcherEventSupport;
-import com.softmotions.commons.io.watcher.FSWatcherModifyEvent;
-import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.ncms.asm.events.AsmRemovedEvent;
-import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
-import com.softmotions.ncms.events.NcmsEventBus;
-import com.softmotions.ncms.fts.FTSUtils;
-import com.softmotions.ncms.io.MetadataDetector;
-import com.softmotions.ncms.io.MimeTypeDetector;
-import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.ncms.jaxrs.NcmsMessageException;
-import com.softmotions.ncms.media.events.MediaDeleteEvent;
-import com.softmotions.ncms.media.events.MediaMoveEvent;
-import com.softmotions.ncms.media.events.MediaUpdateEvent;
-import com.softmotions.web.ResponseUtils;
-import com.softmotions.web.security.WSUser;
-import com.softmotions.web.security.WSUserDatabase;
-import com.softmotions.weboot.lifecycle.Dispose;
-import com.softmotions.weboot.mb.MBCriteriaQuery;
-import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.eventbus.Subscribe;
-import com.google.inject.Inject;
-
-import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FileFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.io.output.DeferredFileOutputStream;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.ExecutorType;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
-import org.imgscalr.Scalr;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.GET;
-import javax.ws.rs.HEAD;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -116,6 +30,92 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import javax.annotation.Nonnull;
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+
+import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.output.DeferredFileOutputStream;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.mime.MediaType;
+import org.imgscalr.Scalr;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.softmotions.commons.cont.ArrayUtils;
+import com.softmotions.commons.cont.KVOptions;
+import com.softmotions.commons.cont.Pair;
+import com.softmotions.commons.cont.TinyParamMap;
+import com.softmotions.commons.ctype.CTypeUtils;
+import com.softmotions.commons.io.DirUtils;
+import com.softmotions.commons.io.scanner.DirectoryScanner;
+import com.softmotions.commons.io.scanner.DirectoryScannerFactory;
+import com.softmotions.commons.io.scanner.DirectoryScannerVisitor;
+import com.softmotions.commons.io.watcher.FSWatcher;
+import com.softmotions.commons.io.watcher.FSWatcherCollectEventHandler;
+import com.softmotions.commons.io.watcher.FSWatcherCreateEvent;
+import com.softmotions.commons.io.watcher.FSWatcherDeleteEvent;
+import com.softmotions.commons.io.watcher.FSWatcherEventHandler;
+import com.softmotions.commons.io.watcher.FSWatcherEventSupport;
+import com.softmotions.commons.io.watcher.FSWatcherModifyEvent;
+import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
+import com.softmotions.commons.lifecycle.Dispose;
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.asm.events.AsmRemovedEvent;
+import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
+import com.softmotions.ncms.events.NcmsEventBus;
+import com.softmotions.ncms.fts.FTSUtils;
+import com.softmotions.ncms.io.MetadataDetector;
+import com.softmotions.ncms.io.MimeTypeDetector;
+import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.media.events.MediaDeleteEvent;
+import com.softmotions.ncms.media.events.MediaMoveEvent;
+import com.softmotions.ncms.media.events.MediaUpdateEvent;
+import com.softmotions.web.ResponseUtils;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.mb.MBCriteriaQuery;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
  * Media files manager rest service.
@@ -166,12 +166,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    WSUserDatabase userdb) throws IOException {
         super(MediaRS.class, sess);
         this.env = env;
-        XMLConfiguration xcfg = env.xcfg();
+        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         String dir = xcfg.getString("media[@basedir]");
         if (dir == null) {
             throw new RuntimeException("Missing required configuration property: media[@basedir]");
         }
-        dir = env.substitutePath(dir);
         this.basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);
         this.locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 128));
@@ -465,9 +464,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
             }
             return mapper.createObjectNode()
-                    .put("label", name)
-                    .put("status", 1)
-                    .put("system", isInSystemFolder(dirname + name));
+                         .put("label", name)
+                         .put("status", 1)
+                         .put("system", isInSystemFolder(dirname + name));
         }
     }
 
@@ -520,7 +519,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                                         "folder", sfolder,
                                                         "name", sname);
                     if (row == null) {
-                        log.error("File to be copied: " + spath + " is missing in DB");
+                        log.error("File to be copied: {} is missing in DB", spath);
                         continue;
                     }
 
@@ -541,7 +540,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     }
 
                 } catch (IOException e) {
-                    log.error("Failed to copy " + spath + " => " + tpath, e);
+                    log.error("Failed to copy {} => {}", spath, tpath, e);
                     throw e;
                 }
             }
@@ -590,7 +589,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     throw new IOException("Cannot create the target directory");
                 }
                 if (log.isDebugEnabled()) {
-                    log.debug("Moving " + f1 + " => " + f2);
+                    log.debug("Moving {} => {}", f1, f2);
                 }
                 if (f1.isDirectory()) {
 
@@ -658,8 +657,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                     FileUtils.deleteDirectory(nrdir);
                                     FileUtils.moveDirectory(rdir, pnrdir);
                                 } catch (IOException e) {
-                                    log.error("Failed to move directory: " +
-                                              rdir + " to " + nrdir, e);
+                                    log.error("Failed to move directory: {} to {}", rdir, nrdir, e);
                                 }
                             }
                         }
@@ -686,7 +684,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         path = StringUtils.strip(path, "/");
         checkFolder(path);
         if (log.isDebugEnabled()) {
-            log.debug("deleteResource: " + path);
+            log.debug("deleteResource: {}", path);
         }
 
         boolean isdir;
@@ -838,10 +836,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+    @Override
     public MediaResource findMediaResource(Long id, Locale locale) {
         return findMediaResource("entity:" + id, locale);
     }
 
+    @Override
     @Transactional
     public MediaResource findMediaResource(String path, Locale locale) {
         Map<String, Object> meta;
@@ -993,12 +993,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 } else {
                     boolean exists = sf.exists();
                     if (!sf.delete() && exists) {
-                        log.error("Cannot to delete file: " + sf.getAbsolutePath());
+                        log.error("Cannot to delete file: {}", sf.getAbsolutePath());
                     }
                 }
             }
             if (!f.delete()) {
-                log.error("Cannot delete directory: " + f.getAbsolutePath());
+                log.error("Cannot delete directory: {}", f.getAbsolutePath());
                 res = false;
             }
         } finally {
@@ -1152,9 +1152,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     continue;
                 }
                 res.addObject()
-                        .put("label", file.getName())
-                        .put("status", file.isDirectory() ? 1 : 0)
-                        .put("system", inSystem ? 1 : 0);
+                   .put("label", file.getName())
+                   .put("status", file.isDirectory() ? 1 : 0)
+                   .put("system", inSystem ? 1 : 0);
             }
         } finally {
             rwlock.readLock().unlock();
@@ -1188,7 +1188,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         String path = folder + name;
-        XMLConfiguration xcfg = env.xcfg();
+        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         int thumbWidth = xcfg.getInt("media.thumbnails-width", 255);
         String ctype = (String) rec.get("content_type");
         String iconCtype = (String) rec.get("icon_content_type");
@@ -1202,8 +1202,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (icon != null) {
             final byte[] icondata = icon.getBytes(1, (int) icon.length());
             return Response.ok((StreamingOutput) output -> output.write(icondata)).type(iconCtype)
-                    .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
-                    .build();
+                           .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
+                           .build();
         }
 
         BufferedImage image;
@@ -1215,8 +1215,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             image = ImageIO.read(f);
         }
         if (image == null) {
-            log.warn("Unable to generated thumbnail. Content type: " + ctype +
-                     " cannot read source image: " + path);
+            log.warn("Unable to generated thumbnail. Content type: {} cannot read source image: {}", ctype, path);
             return Response.serverError().build();
         }
 
@@ -1236,8 +1235,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                "icon_content_type", iconCtype);
 
         return Response.ok((StreamingOutput) output -> output.write(icondata)).type(iconCtype)
-                .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
-                .build();
+                       .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
+                       .build();
     }
 
     private String getImageFileResizeFormat(String ctype) {
@@ -1251,6 +1250,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
 
+    @Override
     @Nonnull
     public Response get(Long id,
                         HttpServletRequest req,
@@ -1371,6 +1371,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
 
+    @Override
     @Transactional
     public void updateResizedImages(long id) throws IOException {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
@@ -1380,6 +1381,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         updateResizedImages(String.valueOf(row.get("folder")) + row.get("name"));
     }
 
+    @Override
     @Transactional
     public void updateResizedImages(String path) throws IOException {
         if (path == null) {
@@ -1427,6 +1429,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+    @Override
     @Transactional
     public Pair<Integer, Integer> ensureResizedImage(long id, Integer width, Integer height,
                                                      int flags) throws IOException {
@@ -1438,6 +1441,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                   width, height, flags);
     }
 
+    @Override
     @Transactional
     public Pair<Integer, Integer> ensureResizedImage(String path,
                                                      Integer width, Integer height,
@@ -1464,7 +1468,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             long id = ((Number) info.get("id")).longValue();
             String ctype = (String) info.get("content_type");
             if (!CTypeUtils.isImageContentType(ctype)) {
-                log.warn("ensureResizedImage: Not applicable file content type: " + ctype);
+                log.warn("ensureResizedImage: Not applicable file content type: {}", ctype);
                 return null;
             }
             @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
@@ -1472,13 +1476,13 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             Integer iWidth = kvmeta.getIntObject("width", null);
             Integer iHeight = kvmeta.getIntObject("height", null);
             if (iWidth != null && iHeight != null) {
-                if ((width == null || (width.intValue() == kvmeta.getInt("width", Integer.MAX_VALUE))) &&
-                    (height == null || (height.intValue() == kvmeta.getInt("height", Integer.MAX_VALUE)))) {
+                if ((width == null || (width == kvmeta.getInt("width", Integer.MAX_VALUE))) &&
+                    (height == null || (height == kvmeta.getInt("height", Integer.MAX_VALUE)))) {
                     return new Pair<>(iWidth, iHeight);
                 }
                 if (skipSmall) {
-                    if ((width == null || (width.intValue() > kvmeta.getInt("width", Integer.MAX_VALUE))) &&
-                        (height == null || (height.intValue() > kvmeta.getInt("height", Integer.MAX_VALUE)))) {
+                    if ((width == null || (width > kvmeta.getInt("width", Integer.MAX_VALUE))) &&
+                        (height == null || (height > kvmeta.getInt("height", Integer.MAX_VALUE)))) {
                         return new Pair<>(iWidth, iHeight);
                     }
                 }
@@ -1493,7 +1497,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             if (coverArea &&
                 width != null && height != null &&
                 iWidth != null && iHeight != null &&
-                iWidth.intValue() > 0 && iHeight.intValue() > 0) {
+                iWidth > 0 && iHeight > 0) {
 
                 double mul = Math.max(width.doubleValue() / iWidth.doubleValue(), height.doubleValue() / iHeight.doubleValue());
                 width = (int) Math.ceil(mul * (double) iWidth);
@@ -1506,7 +1510,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
             BufferedImage image = ImageIO.read(source);
             if (image == null) {
-                log.warn("Cannot read file as image: " + source);
+                log.warn("Cannot read file as image: {}", source);
                 return null;
             }
             if (width != null && height != null) {
@@ -1619,7 +1623,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         if (!localFilePut) {
-            XMLConfiguration xcfg = env.xcfg();
+            HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
             int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB); //1Mb by default
             int uplTh = xcfg.getInt("media.max-upload-size", MB * 10); //10Mb by default
             us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", env.getTmpdir());
@@ -1828,7 +1832,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             path = path.substring(0, path.length() - 1);
         }
         if (log.isDebugEnabled()) {
-            log.debug("Locking: " + path + " W: " + acquireWrite);
+            log.debug("Locking: {} W: {}", path, acquireWrite);
         }
         ReentrantReadWriteLock rwlock;
         while (true) {
@@ -1894,7 +1898,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 throw new ForbiddenException(msg);
             }
         } else {
-            File f = new File(basedir, (path.length() > 0 && path.charAt(0) == '/') ? path.substring(1) : path);
+            File f = new File(basedir, (!path.isEmpty() && path.charAt(0) == '/') ? path.substring(1) : path);
             if (!f.isDirectory()) {
                 return;
             }
@@ -1987,12 +1991,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             if (pdir.isDirectory()) {
                 File[] files = pdir.listFiles(f -> (!f.isDirectory()) || SIZE_CACHE_FOLDER.equals(f.getName()));
                 for (final File f : files) {
-                    log.info("Remove file/dir: " + f);
+                    log.info("Remove file/dir: {}", f);
                     FileUtils.deleteQuietly(f);
                 }
             }
         } catch (IOException e) {
-            log.error("Failed to drop page files dir: " + path, e);
+            log.error("Failed to drop page files dir: {}", path, e);
         }
     }
 
@@ -2020,6 +2024,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+    @Override
     public String getPageLocalFolderPath(Long pageId) {
         StringBuilder sb = new StringBuilder(16);
         sb.append("/pages");
@@ -2040,6 +2045,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         //we must be already in synchronized block!
+        @Override
         protected boolean removeLRU(LinkEntry entry) {
             ReentrantReadWriteLock lock = (ReentrantReadWriteLock) entry.getValue();
             if (lock.writeLock().tryLock()) { //check if rwlock is completely free
@@ -2069,16 +2075,19 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
         }
 
+        @Override
         public void write(int b) throws IOException {
             check(1);
             super.write(b);
         }
 
+        @Override
         public void write(byte[] b) throws IOException {
             check(b.length);
             super.write(b);
         }
 
+        @Override
         public void write(byte[] b, int off, int len) throws IOException {
             check(len);
             super.write(b, off, len);
@@ -2095,9 +2104,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             FSWatcherCollectEventHandler.MOVE_CREATED_INTO_MODIFIED
     );
 
+    @Override
     public void init(FSWatcher watcher) {
     }
 
+    @Override
     public void handlePollTimeout(FSWatcher watcher) {
         FSWatcherCollectEventHandler snapshot;
         synchronized (watchHandler) {
@@ -2128,7 +2139,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 deleteResource(target.toString(), new MediaRSLocalRequest(env, target.toFile()), null);
             } catch (NotFoundException ignored) {
             } catch (Exception e) {
-                log.error("File deletion failed. Path: " + path + " target: " + target + " error: " + e.getMessage());
+                log.error("File deletion failed. Path: {} target: {} error: {}", path, target, e.getMessage());
             }
         }
 
@@ -2140,28 +2151,32 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                            data.overwrite,
                            data.system);
             } catch (IOException e) {
-                log.error("File import failed. Path: " + path + " target: " + target + " error: " + e.getMessage());
+                log.error("File import failed. Path: {} target: {} error: {}", path, target, e.getMessage());
             }
 
         }
     }
 
+    @Override
     public void handleRegisterEvent(FSWatcherRegisterEvent ev) throws Exception {
         watcherImportFile(ev);
     }
 
+    @Override
     public void handleCreateEvent(FSWatcherCreateEvent ev) {
         synchronized (watchHandler) {
             watchHandler.handleCreateEvent(ev);
         }
     }
 
+    @Override
     public void handleModifyEvent(FSWatcherModifyEvent ev) {
         synchronized (watchHandler) {
             watchHandler.handleModifyEvent(ev);
         }
     }
 
+    @Override
     public void handleDeleteEvent(FSWatcherDeleteEvent ev) throws Exception {
         synchronized (watchHandler) {
             watchHandler.handleDeleteEvent(ev);
@@ -2177,16 +2192,19 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    data.system);
     }
 
+    @Override
     @Nonnull
     public String resolveFileLink(Long id) {
-        return env.getNcmsRoot() + "/rs/media/fileid/" + id;
+        return env.getAppRoot() + "/rs/media/fileid/" + id;
     }
 
+    @Override
     @Nonnull
     public String resolveFileLink(Long id, boolean inline) {
         return resolveFileLink(id) + "?inline=true";
     }
 
+    @Override
     public Long getFileIdByResourceSpec(String spec) {
         spec = spec.toLowerCase();
         if (!spec.startsWith("media:") && !spec.startsWith("image:")) {
@@ -2214,6 +2232,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+    @Override
     @Transactional(executorType = ExecutorType.SIMPLE)
     public void importDirectory(String source,
                                 String target,
@@ -2229,7 +2248,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (target.startsWith("/")) {
             target = target.substring(1);
         }
-        log.info("Importing " + source + " into " + target + " flags=" + flags);
+        log.info("Importing {} into {} flags={}", source, target, flags);
         final String importTarget = target;
         final DirectoryScannerFactory sf = new DirectoryScannerFactory(Paths.get(source));
         for (final String inc : includes) {
@@ -2255,8 +2274,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                    overwrite, system);
                     }
 
+                    @Override
                     public void error(Path path, IOException e) throws IOException {
-                        log.error("Failed to scan path: " + path, e);
+                        log.error("Failed to scan path: {}", path, e);
                     }
                 });
             }
@@ -2267,10 +2287,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             Set<Path> tgtPaths = new HashSet<>();
             try (DirectoryScanner ds = sf.createScanner()) {
                 ds.scan(new DirectoryScannerVisitor() {
+                    @Override
                     public void visit(Path path, BasicFileAttributes attrs) throws IOException {
                         srcPaths.add(path);
                     }
 
+                    @Override
                     public void error(Path path, IOException e) throws IOException {
                     }
                 });
@@ -2280,10 +2302,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     getBasedir().toPath().resolve(importTarget)).createScanner()) {
 
                 ds.scan(new DirectoryScannerVisitor() {
+                    @Override
                     public void visit(Path path, BasicFileAttributes attrs) throws IOException {
                         tgtPaths.add(path);
                     }
 
+                    @Override
                     public void error(Path path, IOException exc) throws IOException {
                     }
                 });
@@ -2294,7 +2318,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     continue;
                 }
                 String path = importTarget + '/' + tpath;
-                log.info("Removing missing resource: " + path);
+                log.info("Removing missing resource: {}", path);
                 String name = getResourceName(path);
                 String folder = getResourceParentFolder(path);
                 try (final ResourceLock l = new ResourceLock(path, true)) {
@@ -2308,6 +2332,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+    @Override
     @Transactional(executorType = ExecutorType.SIMPLE)
     public Long importFile(String source, String target, boolean overwrite, boolean system) throws IOException {
         File srcFile = new File(source);
@@ -2331,7 +2356,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 return id.longValue();
             }
         }
-        log.info("Importing " + target);
+        log.info("Importing {}", target);
         try (final FileInputStream fis = new FileInputStream(srcFile)) {
             try {
                 int flags = 0;
@@ -2345,6 +2370,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+    @Override
     public Long importFile(InputStream source, String target, boolean system) throws IOException {
         String name = getResourceName(target);
         String folder = getResourceParentFolder(target);
@@ -2376,6 +2402,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+    @Override
     @Dispose
     public void close() throws IOException {
         log.info("Disposing all directory scanners");

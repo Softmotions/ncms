@@ -34,11 +34,13 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
 
     private static final Logger log = LoggerFactory.getLogger(NcmsSecurityModule.class);
 
+    @Override
     protected void configure() {
         bind(WSUserDatabase.class).toProvider(WSUserDatabaseProvider.class).asEagerSingleton();
         bind(NcmsSecurityRS.class).in(Singleton.class);
     }
 
+    @Override
     public void initServlets(WBServletModule m) {
         NcmsEnvironment env = (NcmsEnvironment) m.getConfiguration();
         String dbJndiName = env.xcfg().getString("security[@dbJndiName]");
@@ -52,12 +54,12 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
                 WSRole role = roles.next();
                 roleNames.add(role.getName());
             }
-            log.info("Roles declared in the current servlet context: " + roleNames);
+            log.info("Roles declared in the current servlet context: {}", roleNames);
             m.getWBServletContext().declareRoles(roleNames.toArray(new String[roleNames.size()]));
         }
 
         if (webAccessControlAllow != null) {
-            log.info("Enabled Access-Control-Allow-{Origin|Headers|Methods}=" + webAccessControlAllow);
+            log.info("Enabled Access-Control-Allow-{Origin|Headers|Methods}={}", webAccessControlAllow);
             Map<String, String> params = new Flat3Map();
             params.put("enabled", "true");
             params.put("headerValue", webAccessControlAllow);
@@ -70,17 +72,18 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
         @Inject
         NcmsEnvironment env;
 
+        @Override
         public WSUserDatabase get() {
             WSUserDatabase usersDb = null;
             String jndiName = env.xcfg().getString("security[@dbJndiName]");
             if (!StringUtils.isBlank(jndiName)) {
-                log.info("Locating users database with JNDI name: " + jndiName);
+                log.info("Locating users database with JNDI name: {}", jndiName);
                 usersDb = locateWSUserDatabase(jndiName);
             }
             if (usersDb == null) {
                 throw new RuntimeException("Unable to locate users database, please check the Ncms config");
             }
-            log.info("Users database: " + usersDb);
+            log.info("Users database: {}", usersDb);
             return usersDb;
         }
     }

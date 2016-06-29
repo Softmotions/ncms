@@ -1,5 +1,23 @@
 package com.softmotions.ncms.asm;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.multibindings.Multibinder;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.am.AsmAliasAM;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
@@ -29,25 +47,6 @@ import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
 import com.softmotions.ncms.asm.render.ldrs.AsmClasspathResourceLoader;
 import com.softmotions.ncms.media.MediaResource;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Singleton;
-import com.google.inject.assistedinject.FactoryModuleBuilder;
-import com.google.inject.multibindings.Multibinder;
-
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
@@ -55,6 +54,7 @@ public class AsmModule extends AbstractModule {
 
     private static final Logger log = LoggerFactory.getLogger(AsmModule.class);
 
+    @Override
     protected void configure() {
 
         install(new FactoryModuleBuilder()
@@ -104,9 +104,9 @@ public class AsmModule extends AbstractModule {
 
         @Inject
         AsmResourceLoaderImpl(NcmsEnvironment env, Injector injector) throws Exception {
-            XMLConfiguration xcfg = env.xcfg();
+            HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
             List<AsmResourceLoader> ldrs = new ArrayList<>();
-            List<HierarchicalConfiguration> hcl = xcfg.configurationsAt("asm.resource-loaders");
+            List<HierarchicalConfiguration<ImmutableNode>> hcl = xcfg.configurationsAt("asm.resource-loaders");
             ClassLoader cl = ObjectUtils.firstNonNull(
                     Thread.currentThread().getContextClassLoader(),
                     getClass().getClassLoader()
@@ -118,17 +118,17 @@ public class AsmModule extends AbstractModule {
                 }
                 AsmResourceLoader ldr = (AsmResourceLoader)
                         injector.getInstance(cl.loadClass(className));
-                log.info("Register resource loader: " + className);
+                log.info("Register resource loader: {}", className);
                 ldrs.add(ldr);
             }
             if (ldrs.isEmpty()) {
-                log.warn("No resource loaders configured " +
-                         "using fallback loader: " + AsmClasspathResourceLoader.class);
+                log.warn("No resource loaders configured using fallback loader: {}", AsmClasspathResourceLoader.class);
                 ldrs.add(injector.getInstance(AsmClasspathResourceLoader.class));
             }
             loaders = ldrs.toArray(new AsmResourceLoader[ldrs.size()]);
         }
 
+        @Override
         public boolean exists(String name, Locale locale) {
             if (loaders.length == 1) {
                 return loaders[0].exists(name, locale);
@@ -141,6 +141,7 @@ public class AsmModule extends AbstractModule {
             return false;
         }
 
+        @Override
         public MediaResource load(String name, Locale locale) throws IOException {
             if (loaders.length == 1) {
                 return loaders[0].load(name, locale);
@@ -149,7 +150,7 @@ public class AsmModule extends AbstractModule {
             for (final AsmResourceLoader l : loaders) {
                 try {
                     res = l.load(name, locale);
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                     ;
                 }
                 if (res != null) {

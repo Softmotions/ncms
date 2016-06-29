@@ -78,14 +78,16 @@ public class AsmWikiAM implements AsmAttributeManager {
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
-        this.pageRefsRE = Pattern.compile(Pattern.quote(env.getNcmsRoot()) + "/(asm/)?" + "([0-9a-f]{32})");
+        this.pageRefsRE = Pattern.compile(Pattern.quote(env.getAppRoot()) + "/(asm/)?" + "([0-9a-f]{32})");
         this.messages = messages;
     }
 
+    @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
+    @Override
     public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
                                             HttpServletResponse resp,
                                             Asm page,
@@ -95,6 +97,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
         String effectiveValue = attr.getEffectiveValue();
         if (!StringUtils.isBlank(effectiveValue)) {
@@ -112,6 +115,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return null;
     }
 
+    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, @Nonnull Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
@@ -161,6 +165,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return res.toString();
     }
 
+    @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         if (attr.getOptions() != null) {
@@ -171,6 +176,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         ctx.clearPageDeps(attr);
         ctx.clearFileDeps(attr);
@@ -181,18 +187,16 @@ public class AsmWikiAM implements AsmAttributeManager {
         if (!StringUtils.isBlank(value)) {
             if ("mediawiki".equals(markup)) {
                 html = mediaWikiRenderer.render(preSaveWiki(ctx, attr, value), messages.getLocale(ctx.getRequest()));
-                html = new StringBuilder(html.length() + 32)
-                        .append("<div class=\"wiki\">")
-                        .append(html)
-                        .append("\n</div>")
-                        .toString();
+                html = "<div class=\"wiki\">" +
+                       html +
+                       "\n</div>";
             } else {
-                log.warn("Unsupported markup language: " + markup);
+                log.warn("Unsupported markup language: {}", markup);
                 html = null;
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("Rendered HTML=" + html);
+            log.debug("Rendered HTML={}", html);
         }
         ObjectNode root = mapper.createObjectNode();
         root.put("html", html);
@@ -238,6 +242,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         return value;
     }
 
+    @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }

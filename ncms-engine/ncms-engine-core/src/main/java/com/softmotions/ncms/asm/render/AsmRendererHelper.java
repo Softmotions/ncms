@@ -1,11 +1,10 @@
 package com.softmotions.ncms.asm.render;
 
-import com.softmotions.ncms.asm.Asm;
-
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.softmotions.ncms.asm.Asm;
 
 /**
  * Various helpers.

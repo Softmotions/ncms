@@ -1,20 +1,19 @@
 package com.softmotions.ncms.qa;
 
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.web.HttpServletRequestAdapter;
-import com.softmotions.weboot.lifecycle.Dispose;
-import com.softmotions.weboot.lifecycle.Start;
-import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.util.Set;
+import javax.ws.rs.Path;
 
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.Path;
-import java.util.Set;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.softmotions.commons.lifecycle.Dispose;
+import com.softmotions.commons.lifecycle.Start;
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.web.HttpServletRequestAdapter;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -57,39 +56,40 @@ public class PageQARS extends MBDAOSupport implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         while (true) {
             long sleep = env.xcfg().getLong("getLongbatch-pause-seconds", 60) * 1000;
             processBatch();
             try {
                 Thread.sleep(sleep);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
                 break;
             }
         }
-        log.info(Thread.currentThread().getName() + " finished");
+        log.info("{} finished", Thread.currentThread().getName());
     }
 
 
-
     void processBatch() {
-        PageQAContext ctx = createPageQAContext();
+        //PageQAContext ctx = createPageQAContext();
 
     }
 
 
     private PageQAContext createPageQAContext() {
-        PageQAContext ctx = new PageQAContext();
-        return ctx;
+        return new PageQAContext();
     }
 
 
-    private class PageQARequest extends HttpServletRequestAdapter {
+    private static class PageQARequest extends HttpServletRequestAdapter {
 
+        @Override
         public String getMethod() {
             return "GET";
         }
 
+        @Override
         public String getRemoteUser() {
             return "system";
         }

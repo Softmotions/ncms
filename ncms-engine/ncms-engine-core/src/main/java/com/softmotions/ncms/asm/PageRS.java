@@ -1,52 +1,21 @@
 package com.softmotions.ncms.asm;
 
-import com.softmotions.commons.cont.ArrayUtils;
-import com.softmotions.commons.cont.CollectionUtils;
-import com.softmotions.commons.cont.KVOptions;
-import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.commons.guid.RandomGUID;
-import com.softmotions.commons.json.JsonUtils;
-import com.softmotions.commons.num.NumberUtils;
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.ncms.asm.am.AsmAttributeManager;
-import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
-import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
-import com.softmotions.ncms.asm.events.AsmCreatedEvent;
-import com.softmotions.ncms.asm.events.AsmModifiedEvent;
-import com.softmotions.ncms.asm.events.AsmRemovedEvent;
-import com.softmotions.ncms.asm.render.AsmAttributesHandler;
-import com.softmotions.ncms.asm.render.AsmRendererHelper;
-import com.softmotions.ncms.events.NcmsEventBus;
-import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.ncms.jaxrs.NcmsMessageException;
-import com.softmotions.ncms.media.MediaReader;
-import com.softmotions.ncms.user.UserEnvRS;
-import com.softmotions.web.security.WSUser;
-import com.softmotions.web.security.WSUserDatabase;
-import com.softmotions.weboot.lifecycle.Start;
-import com.softmotions.weboot.mb.MBCriteriaQuery;
-import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.eventbus.Subscribe;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
-
-import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
@@ -66,26 +35,56 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringTokenizer;
-import java.util.regex.Pattern;
+
+import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSession;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.softmotions.ncms.asm.CachedPage.PATH_TYPE;
 import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.ADD;
 import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.REMOVE;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import com.softmotions.commons.cont.ArrayUtils;
+import com.softmotions.commons.cont.CollectionUtils;
+import com.softmotions.commons.cont.KVOptions;
+import com.softmotions.commons.cont.TinyParamMap;
+import com.softmotions.commons.guid.RandomGUID;
+import com.softmotions.commons.json.JsonUtils;
+import com.softmotions.commons.lifecycle.Start;
+import com.softmotions.commons.num.NumberUtils;
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
+import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.events.AsmCreatedEvent;
+import com.softmotions.ncms.asm.events.AsmModifiedEvent;
+import com.softmotions.ncms.asm.events.AsmRemovedEvent;
+import com.softmotions.ncms.asm.render.AsmAttributesHandler;
+import com.softmotions.ncms.asm.render.AsmRendererHelper;
+import com.softmotions.ncms.events.NcmsEventBus;
+import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.media.MediaReader;
+import com.softmotions.ncms.user.UserEnvRS;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.mb.MBCriteriaQuery;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -175,7 +174,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.env = env;
         this.mediaReader = mediaReader;
         this.amCtxProvider = amCtxProvider;
-        this.asmRoot = env.getNcmsRoot() + "/";
+        this.asmRoot = env.getAppRoot() + "/";
         this.helper = helper;
         this.ebus.register(this);
     }
@@ -275,9 +274,9 @@ public class PageRS extends MBDAOSupport implements PageService {
             res.putNull("template");
         } else {
             res.putObject("template")
-                    .put("id", template.getId())
-                    .put("name", template.getName())
-                    .put("description", template.getDescription());
+               .put("id", template.getId())
+               .put("name", template.getName())
+               .put("description", template.getDescription());
         }
         Collection<AsmAttribute> eattrs = page.getEffectiveAttributes();
         Collection<AsmAttribute> gattrs = new ArrayList<>(eattrs.size());
@@ -712,7 +711,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             pw.println("</html>");
             pw.flush();
         }).type("text/html;charset=UTF-8")
-                .build();
+                       .build();
     }
 
     @GET
@@ -752,7 +751,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             pw.println("</html>");
             pw.flush();
         }).type("text/html;charset=UTF-8")
-                .build();
+                       .build();
     }
 
     @DELETE
@@ -850,7 +849,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             gen.flush();
         }).type("application/json;charset=UTF-8")
-                .build();
+                       .build();
     }
 
     @GET
@@ -1217,6 +1216,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             super(maxSize, true);
         }
 
+        @Override
         protected boolean removeLRU(LinkEntry entry) {
             CachedPage cp = (CachedPage) entry.getValue();
             Long pid = cp.getId();
@@ -1243,34 +1243,42 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         private final Asm asm;
 
+        @Override
         public Asm getAsm() {
             return asm;
         }
 
+        @Override
         public Long getId() {
             return asm.getId();
         }
 
+        @Override
         public String getAlias() {
             return (asm.getNavAlias() != null ? asm.getNavAlias() : asm.getNavAlias2());
         }
 
+        @Override
         public String getName() {
             return asm.getName();
         }
 
+        @Override
         public String getHname() {
             return asm.getHname();
         }
 
+        @Override
         public boolean isPublished() {
             return asm.isPublished();
         }
 
+        @Override
         public Long getNavParentId() {
             return asm.getNavParentId();
         }
 
+        @Override
         public Map<PATH_TYPE, Object> fetchNavPaths() {
             String cpath = asm.getNavCachedPath();
             Map<PATH_TYPE, Object> res = new EnumMap<>(PATH_TYPE.class);
@@ -1369,6 +1377,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
+    @Override
     public CachedPage getCachedPage(Long id, boolean create) {
         CachedPage cp;
         synchronized (pagesCache) {
@@ -1401,6 +1410,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         return cp;
     }
 
+    @Override
     public CachedPage getCachedPage(String guidOrAlias, boolean create) {
         CachedPage cp;
         synchronized (pagesCache) {
@@ -1425,6 +1435,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         return cp;
     }
 
+    @Override
     public String resolvePageAlias(String guid) {
         String alias;
         synchronized (guid2AliasCache) {
@@ -1444,6 +1455,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
 
+    @Override
     public String resolvePageLink(Long id) {
         if (id == null) {
             return null;
@@ -1452,6 +1464,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         return asmRoot + id;
     }
 
+    @Override
     public String resolvePageLink(String guidOrAlias) {
         if (guidOrAlias == null) {
             return null;
@@ -1464,6 +1477,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         return asmRoot + (alias != null ? alias : guid);
     }
 
+    @Override
     public String resolvePageGuid(String spec) {
         if (spec == null) {
             return null;
@@ -1489,6 +1503,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
+    @Override
     public String resolveResourceLink(String spec) {
         if (spec == null) {
             return null;
@@ -1532,6 +1547,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
+    @Override
     public CachedPage getIndexPage(HttpServletRequest req, boolean requirePublished) {
         Locale locale = messages.getLocale(req);
         Long pid;
@@ -1574,6 +1590,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         return p;
     }
 
+    @Override
     @Nullable
     public String getIndexPageLanguage(HttpServletRequest req) {
         Long pid;
@@ -1607,7 +1624,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             lang2IndexPages.clear();
             for (Map row : ipages) {
                 Long id = NumberUtils.number2Long((Number) row.get("id"), -1L);
-                if (id.longValue() == -1L) {
+                if (id == -1L) {
                     continue;
                 }
                 CachedPage cp = getCachedPage(id, true);
@@ -1623,13 +1640,13 @@ public class PageRS extends MBDAOSupport implements PageService {
                 String langs = (String) options.get("lang");
                 String[] lcodes = langs != null ? ArrayUtils.split(langs, " ,;") : org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
                 for (String lang : lcodes) {
-                    log.info("Registering page: '" + lp + "' as the MAIN PAGE for lang: " + lang);
+                    log.info("Registering page: '{}' as the MAIN PAGE for lang: {}", lp, lang);
                     lang2IndexPages.put(lang, id);
                 }
                 if (!lang2IndexPages.containsKey("*")) {
                     String dpl = this.env.xcfg().getString("pages.default-page-language", Locale.getDefault().getLanguage());
                     if (lang2IndexPages.containsKey(dpl)) {
-                        log.info("Registering page: '" + lp + "' as the MAIN PAGE for lang: *");
+                        log.info("Registering page: '{}' as the MAIN PAGE for lang: *", lp);
                         lang2IndexPages.put("*", lang2IndexPages.get(dpl));
                     }
                 }
