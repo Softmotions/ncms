@@ -64,6 +64,7 @@ public class NcmsServletListener extends WBServletListener {
         resteasyBootstrap = getInjector().getInstance(GuiceResteasyBootstrapServletContextListener.class);
         resteasyBootstrap.contextInitialized(event);
 
+        initBeforeFilters(env, sctx);
 
         initCacheHeadersFilters(env, sctx);
         initJarResources(env, sctx);
@@ -79,6 +80,9 @@ public class NcmsServletListener extends WBServletListener {
         start();
     }
 
+
+    protected void initBeforeFilters(NcmsEnvironment env, ServletContext sctx) {
+    }
 
     private void initSecurity(NcmsEnvironment env, ServletContext sctx) {
         String webFakeUser = env.xcfg().getString("security.web-fakeuser");
