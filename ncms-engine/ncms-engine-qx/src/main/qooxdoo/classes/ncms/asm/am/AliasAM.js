@@ -23,11 +23,28 @@ qx.Class.define("ncms.asm.am.AliasAM", {
     },
 
     members : {
+
         activateOptionsWidget : function(attrSpec, asmSpec) {
+            var form = new qx.ui.form.Form();
+            var el = new qx.ui.form.TextField();
+            this._fetchAttributeValue(attrSpec, function (val) {
+                el.setValue(val);
+            });
+            form.add(el, this.tr("Alias"), null, "alias");
+            var fr = new sm.ui.form.FlexFormRenderer(form);
+            fr.setLastRowFlexible();
+            this._form = form;
+            return fr;
         },
 
         optionsAsJSON : function() {
-            return {};
+            if (this._form == null || !this._form.validate()) {
+                return null;
+            }
+            var items = this._form.getItems();
+            return {
+                value: items["alias"].getValue()
+            };
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
@@ -36,7 +53,6 @@ qx.Class.define("ncms.asm.am.AliasAM", {
                 w.setValue(val);
             });
             w.setRequired(!!attrSpec["required"]);
-
             this._valueWidget = w;
             return w;
         },

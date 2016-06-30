@@ -146,7 +146,7 @@ public class HttlUtilsMethods {
             }
         }
         if (spath.startsWith(sfRoot)) {
-            return spath.substring(sfRoot.length());
+            return spath.substring(sfRoot.length() - 1);
         } else {
             return spath;
         }

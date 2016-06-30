@@ -86,10 +86,14 @@ public class AsmAliasAM implements AsmAttributeManager {
 
     @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-        if (val == null) {
+        String alias;
+        if (val != null) {
+            alias = val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null;
+        } else if (opts != null) {
+            alias = opts.hasNonNull("value") ? StringUtils.trimToNull(opts.get("value").asText()) : null;
+        } else {
             return;
         }
-        String alias = val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null;
         if (alias != null) {
             if (!ALIAS_PATTERN.matcher(alias).matches()) {
                 throw new NcmsMessageException(messages.get("ncms.asm.alias.non.allowed.symbols"), true);

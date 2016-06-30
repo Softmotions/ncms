@@ -187,6 +187,7 @@
         <set>
             <if test="template != null">template = #{template},</if>
             <if test="template_mode != null">template_mode = #{template_mode},</if>
+            published = #{published},
             description = #{description},
             controller = #{controller},
         </set>

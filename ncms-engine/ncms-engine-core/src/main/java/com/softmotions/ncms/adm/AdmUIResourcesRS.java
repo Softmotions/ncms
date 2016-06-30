@@ -1,6 +1,5 @@
 package com.softmotions.ncms.adm;
 
-import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -61,7 +60,6 @@ public class AdmUIResourcesRS {
                           @PathParam("section") String section) {
         ArrayNode arr = mapper.createArrayNode();
         WSUser user = (WSUser) sctx.getUserPrincipal();
-        log.info("user=" + user);
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         String cpath = "ui." + section + ".widget";
         for (HierarchicalConfiguration hc : xcfg.configurationsAt(cpath)) {

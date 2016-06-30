@@ -182,7 +182,7 @@ msgstr "Редактирование атрибута: '%1'"
 msgid "Core"
 msgstr "Ядро (core)"
 
-#: ncms/asm/AsmEditor.js:108 ncms/asm/AsmEditor.js:250
+#: ncms/asm/AsmEditor.js:108 ncms/asm/AsmEditor.js:255
 msgid "Class name of an optional assembly controller"
 msgstr "Имя класса контроллера сборки (assembly)"
 
@@ -190,43 +190,47 @@ msgstr "Имя класса контроллера сборки (assembly)"
 msgid "Controller"
 msgstr "Контроллер"
 
-#: ncms/asm/AsmEditor.js:113
+#: ncms/pgs/PageEditorEditPage.js:432 ncms/asm/AsmEditor.js:114
+msgid "Published"
+msgstr "Опубликовано"
+
+#: ncms/asm/AsmEditor.js:117
 msgid "None"
 msgstr "Нет"
 
-#: ncms/asm/AsmEditor.js:114
+#: ncms/asm/AsmEditor.js:118
 msgid "Page"
 msgstr "Страница"
 
-#: ncms/asm/AsmEditor.js:115
+#: ncms/asm/AsmEditor.js:119
 msgid "News page"
 msgstr "Новость"
 
-#: ncms/pgs/PageEditorEditPage.js:81 ncms/asm/AsmEditor.js:117
+#: ncms/pgs/PageEditorEditPage.js:81 ncms/asm/AsmEditor.js:121
 msgid "Template"
 msgstr "Шаблон"
 
-#: ncms/asm/AsmEditor.js:120
+#: ncms/asm/AsmEditor.js:124
 msgid "Comma separated list of roles used to access the assembly"
 msgstr "Список ролей через запятую для доступа к данной сборке (assembly)"
 
-#: ncms/asm/AsmEditor.js:123
+#: ncms/asm/AsmEditor.js:127
 msgid "Roles"
 msgstr "Роли"
 
-#: ncms/asm/AsmEditor.js:134
+#: ncms/asm/AsmEditor.js:138
 msgid "Parents"
 msgstr "Родители"
 
-#: ncms/asm/AsmEditor.js:140
+#: ncms/asm/AsmEditor.js:144
 msgid "Attributes"
 msgstr "Атрибуты"
 
-#: ncms/asm/AsmEditor.js:177
+#: ncms/asm/AsmEditor.js:181
 msgid "Select core file for '%1' assembly"
 msgstr "Выберите файл ядра(верстки) для сборки(assembly): '%1'"
 
-#: ncms/asm/AsmEditor.js:200
+#: ncms/asm/AsmEditor.js:204
 msgid "Are you sure to remove local assembly core?"
 msgstr ""
 "Вы действительно желаете удалить ссылку на ядро(core) сборки(assembly)?"
@@ -273,7 +277,7 @@ msgstr "Добавить родителя"
 msgid "Select assembly"
 msgstr "Выбор сборки (assembly)"
 
-#: ncms/asm/am/AliasAM.js:13
+#: ncms/asm/am/AliasAM.js:13 ncms/asm/am/AliasAM.js:33
 msgid "Alias"
 msgstr "Псевдоним"
 
@@ -313,7 +317,7 @@ msgstr "Формат даты"
 msgid "Include file resource"
 msgstr "Вставить файл"
 
-#: ncms/asm/am/WebRefAM.js:52 ncms/asm/am/FileRefAM.js:53
+#: ncms/asm/am/WebRefAM.js:51 ncms/asm/am/FileRefAM.js:53
 msgid "Location"
 msgstr "Местоположение"
 
@@ -321,7 +325,7 @@ msgstr "Местоположение"
 msgid "Render as template"
 msgstr "Отображать как шаблон"
 
-#: ncms/asm/am/WebRefAM.js:67 ncms/asm/am/FileRefAM.js:73
+#: ncms/asm/am/WebRefAM.js:66 ncms/asm/am/FileRefAM.js:73
 msgid "Render only location"
 msgstr "Отображать как местоположение"
 
@@ -680,7 +684,7 @@ msgstr "Пожалуйста, выберите целевую папку"
 msgid "Include web resource"
 msgstr "Веб ресурс"
 
-#: ncms/asm/am/WebRefAM.js:48 ncms/asm/am/WebRefAM.js:89
+#: ncms/asm/am/WebRefAM.js:47 ncms/asm/am/WebRefAM.js:88
 msgid "Please specify web resource url"
 msgstr "Пожалуйста укажите адрес веб ресурса"
 
@@ -929,10 +933,6 @@ msgstr ""
 "Вы действительно хотите снять страницу с публикации? Существуют ссылки на "
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" "
 "target='_blank'>списком ссылающихся страниц</a>"
-
-#: ncms/pgs/PageEditorEditPage.js:432
-msgid "Published"
-msgstr "Опубликовано"
 
 #: ncms/pgs/PageEditorEditPage.js:438
 msgid "Dow you really want to dispose pending changes?"

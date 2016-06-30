@@ -44,7 +44,6 @@ qx.Class.define("ncms.asm.am.WebRefAM", {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.TextField();
-            el.setRequired(true);
             el.setPlaceholder(this.tr("Please specify web resource url"));
             this._fetchAttributeValue(attrSpec, function(val) {
                 el.setValue(val);

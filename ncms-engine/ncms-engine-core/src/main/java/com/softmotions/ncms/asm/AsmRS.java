@@ -1,5 +1,45 @@
 package com.softmotions.ncms.asm;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.StreamingOutput;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.ResultContext;
+import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.NcmsMessages;
@@ -16,47 +56,6 @@ import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.ResultContext;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.StreamingOutput;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Редактирование выбранного экземпляра ассембли.
@@ -313,6 +312,9 @@ public class AsmRS extends MBDAOSupport {
         if (props.hasNonNull("description")) {
             args.param("description", props.get("description").asText());
         }
+        if (props.hasNonNull("published")) {
+            args.param("published", props.get("published").asBoolean());
+        }
         if (props.hasNonNull("templateMode")) {
             String mode = props.get("templateMode").asText();
             args.param("template", "none".equals(mode) ? 0 : 1);
@@ -329,11 +331,11 @@ public class AsmRS extends MBDAOSupport {
                     Class clazz = cl.loadClass(controller);
                     if (!AsmController.class.isAssignableFrom(clazz)) {
                         //todo report error to user
-                        log.warn("Assembly controller does not implement: " + AsmController.class.getName());
+                        log.warn("Assembly controller does not implement: {}", AsmController.class.getName());
                     }
                 } catch (ClassNotFoundException ignored) {
                     //todo report error to user
-                    log.warn("Failed to find assembly controller class: " + controller);
+                    log.warn("Failed to find assembly controller class: {}", controller);
                     controller = "";
                 }
             } else {
@@ -424,7 +426,7 @@ public class AsmRS extends MBDAOSupport {
 
     /**
      * PUT asm attributes values/options
-     * <p>
+     * <p/>
      * Attributes JSON data spec:
      * <pre>
      *     {
@@ -486,7 +488,7 @@ public class AsmRS extends MBDAOSupport {
                 attr = am.applyAttributeValue(amCtx, attr, spec.get("value"));
             }
         } else {
-            log.warn("Missing atribute manager for given type: '" + attr.getType() + '\'');
+            log.warn("Missing atribute manager for given type: '{}'", attr.getType());
         }
         attr.asmId = id;
         adao.asmUpsertAttribute(attr);
@@ -497,7 +499,7 @@ public class AsmRS extends MBDAOSupport {
             }
         }
         if (am != null) {
-            am.attributePersisted(amCtx, attr, spec.get("value"),  spec.get("options"));
+            am.attributePersisted(amCtx, attr, spec.get("value"), spec.get("options"));
         }
         amCtx.flush();
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
@@ -565,7 +567,7 @@ public class AsmRS extends MBDAOSupport {
             gen.writeEndArray();
             gen.flush();
         }).type("application/json;charset=UTF-8")
-                .build();
+                       .build();
     }
 
     @GET
