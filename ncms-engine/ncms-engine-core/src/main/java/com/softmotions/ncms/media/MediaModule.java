@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
@@ -51,6 +52,11 @@ public class MediaModule extends AbstractModule {
         @Start
         public void start() throws Exception {
             HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
+            Iterator<String> mkeys = xcfg.getKeys("media");
+            while (mkeys.hasNext()) {
+                String mk = mkeys.next();
+                log.info("{}: {}", mk, xcfg.getString(mk));
+            }
             List<HierarchicalConfiguration<ImmutableNode>> hcl = xcfg.configurationsAt("media.import");
             for (final HierarchicalConfiguration hc : hcl) {
                 processImportDir(hc);
@@ -96,6 +102,7 @@ public class MediaModule extends AbstractModule {
             for (Object o : c.getList("excludes.exclude")) {
                 excludes.add(String.valueOf(o));
             }
+
             try {
                 mediaRepository.importDirectory(srcPath.toString(),
                                                 target,

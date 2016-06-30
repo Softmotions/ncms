@@ -1,15 +1,6 @@
 package com.softmotions.ncms.adm;
 
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.web.security.WSUser;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-
+import java.util.Iterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,6 +11,17 @@ import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.web.security.WSUser;
 
 /**
  * Accessible GUI resources configuration provider.
@@ -31,14 +33,21 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 @Produces("application/json;charset=UTF-8")
 public class AdmUIResourcesRS {
 
-    @Inject
-    NcmsEnvironment env;
+    private static final Logger log = LoggerFactory.getLogger(AdmUIResourcesRS.class);
+
+    final NcmsEnvironment env;
+
+    final ObjectMapper mapper;
+
+    final NcmsMessages msg;
+
 
     @Inject
-    ObjectMapper mapper;
-
-    @Inject
-    NcmsMessages msg;
+    public AdmUIResourcesRS(NcmsEnvironment env, ObjectMapper mapper, NcmsMessages msg) {
+        this.env = env;
+        this.mapper = mapper;
+        this.msg = msg;
+    }
 
     /**
      * List of qooxdoo widgets available for user.
@@ -52,6 +61,7 @@ public class AdmUIResourcesRS {
                           @PathParam("section") String section) {
         ArrayNode arr = mapper.createArrayNode();
         WSUser user = (WSUser) sctx.getUserPrincipal();
+        log.info("user=" + user);
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         String cpath = "ui." + section + ".widget";
         for (HierarchicalConfiguration hc : xcfg.configurationsAt(cpath)) {
@@ -60,7 +70,7 @@ public class AdmUIResourcesRS {
                 String qxClass = hc.getString("[@qxClass]");
                 String icon = hc.getString("[@qxIcon]");
                 ObjectNode on = mapper.createObjectNode()
-                        .put("qxClass", qxClass);
+                                      .put("qxClass", qxClass);
                 String label = msg.get(qxClass + ".label", req);
                 on.put("label", label != null ? label : qxClass);
                 if (icon != null) {

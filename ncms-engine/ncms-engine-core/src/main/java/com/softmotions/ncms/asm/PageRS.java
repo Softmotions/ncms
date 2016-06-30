@@ -111,7 +111,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final WSUserDatabase userdb;
 
-    private final AsmAttributeManagersRegistry amRegistry;
+    private final Provider<AsmAttributeManagersRegistry> amRegistry;
 
     private final PageSecurityService pageSecurity;
 
@@ -149,12 +149,12 @@ public class PageRS extends MBDAOSupport implements PageService {
                   ObjectMapper mapper,
                   NcmsMessages messages,
                   WSUserDatabase userdb,
-                  AsmAttributeManagersRegistry amRegistry,
                   PageSecurityService pageSecurity,
                   NcmsEventBus ebus,
                   UserEnvRS userEnvRS,
                   NcmsEnvironment env,
                   MediaReader mediaReader,
+                  Provider<AsmAttributeManagersRegistry> amRegistry,
                   Provider<AsmAttributeManagerContext> amCtxProvider,
                   AsmRendererHelper helper) {
         super(PageRS.class.getName(), sess);
@@ -280,11 +280,12 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         Collection<AsmAttribute> eattrs = page.getEffectiveAttributes();
         Collection<AsmAttribute> gattrs = new ArrayList<>(eattrs.size());
+        AsmAttributeManagersRegistry amreg = amRegistry.get();
         for (AsmAttribute a : eattrs) {
             if (!StringUtils.isBlank(a.getLabel())) { //it is GUI attribute?
                 if (template != null) {
                     AsmAttribute tmplAttr = template.getEffectiveAttribute(a.getName());
-                    AsmAttributeManager am = amRegistry.getByType(a.getType());
+                    AsmAttributeManager am = amreg.getByType(a.getType());
                     if (am != null) {
                         a = am.prepareGUIAttribute(req, resp, page, template, tmplAttr, a);
                         if (a == null) {
@@ -371,13 +372,14 @@ public class PageRS extends MBDAOSupport implements PageService {
             attrIdx.put(attr.getName(), attr);
         }
         Iterator<String> fnamesIt = data.fieldNames();
+        AsmAttributeManagersRegistry amreg = amRegistry.get();
         while (fnamesIt.hasNext()) {
             String fname = fnamesIt.next();
             AsmAttribute attr = attrIdx.get(fname);
             if (attr == null) {
                 continue;
             }
-            AsmAttributeManager am = amRegistry.getByType(attr.getType());
+            AsmAttributeManager am = amreg.getByType(attr.getType());
             if (am == null) {
                 log.warn("Missing attribute manager for type: " + attr.getType());
                 continue;

@@ -61,10 +61,6 @@ public class AsmModule extends AbstractModule {
                         .implement(AsmRendererContext.class, AsmRendererContextImpl.class)
                         .build(AsmRendererContextFactory.class));
 
-        bind(AsmDAO.class);
-        bind(AsmRenderer.class).to(DefaultAsmRenderer.class);
-        bind(AsmAttributeManagersRegistry.class).to(DefaultAsmAttributeManagersRegistry.class).in(Singleton.class);
-
         Multibinder<AsmAttributeManager> attrBinder =
                 Multibinder.newSetBinder(binder(), AsmAttributeManager.class);
         attrBinder.addBinding().to(AsmStringAM.class);
@@ -88,13 +84,17 @@ public class AsmModule extends AbstractModule {
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);
         bind(AsmEventsListener.class).asEagerSingleton();
 
-        bind(AsmRS.class).in(Singleton.class);
-        bind(PageRS.class).in(Singleton.class);
-        bind(PageService.class).to(PageRS.class);
-        bind(PageSecurityService.class).in(Singleton.class);
+        bind(AsmDAO.class);
+        bind(AsmRenderer.class).to(DefaultAsmRenderer.class);
 
         //todo review registration
-        bind(AsmTreeAM.class).in(Singleton.class);
+        //bind(AsmTreeAM.class).in(Singleton.class);
+        bind(AsmAttributeManagersRegistry.class).to(DefaultAsmAttributeManagersRegistry.class).in(Singleton.class);
+        bind(PageSecurityService.class).in(Singleton.class);
+        bind(PageService.class).to(PageRS.class);
+
+        bind(AsmRS.class).in(Singleton.class);
+        bind(PageRS.class).in(Singleton.class);
     }
 
 
