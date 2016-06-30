@@ -1,5 +1,28 @@
 package com.softmotions.ncms.asm.am;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSession;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.commons.num.NumberUtils;
@@ -14,30 +37,6 @@ import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.mhttl.Image;
 import com.softmotions.ncms.mhttl.Medialine;
 import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -67,10 +66,12 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         this.ebus = ebus;
     }
 
+    @Override
     public String[] getSupportedAttributeTypes() {
         return TYPE;
     }
 
+    @Override
     @Transactional
     public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
                                             HttpServletResponse resp,
@@ -117,10 +118,12 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         return attr;
     }
 
+    @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
 
+    @Override
     @Transactional
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
@@ -183,6 +186,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         return res;
     }
 
+    @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
@@ -191,6 +195,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         return attr;
     }
 
+    @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         if (!val.isArray()) {
             return attr;
@@ -228,6 +233,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         return attr;
     }
 
+    @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }

@@ -1,13 +1,13 @@
 package com.softmotions.ncms.asm.am;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -38,6 +38,7 @@ public class DefaultAsmAttributeManagersRegistry implements AsmAttributeManagers
         }
     }
 
+    @Override
     public AsmAttributeManager getByType(String type) {
         if (type == null) {
             return null;
@@ -45,6 +46,7 @@ public class DefaultAsmAttributeManagersRegistry implements AsmAttributeManagers
         return typeAttributeManagersMap.get(type);
     }
 
+    @Override
     public Collection<AsmAttributeManager> getAll() {
         return Collections.unmodifiableCollection(attributeManagers);
     }

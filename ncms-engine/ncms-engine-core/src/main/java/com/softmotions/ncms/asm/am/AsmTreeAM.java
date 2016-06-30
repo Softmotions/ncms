@@ -114,7 +114,7 @@ public class AsmTreeAM implements AsmAttributeManager {
         }
         AsmAttribute tgtAttr = tgtAsm.getEffectiveAttribute(attrName);
         if (tgtAttr == null) {
-            log.warn("Target attribute not found in: " + tgtAsm);
+            log.warn("Target attribute not found in: {}", tgtAsm);
             throw new BadRequestException("");
         }
         AsmAttribute srcAttr = srcAsm.getEffectiveAttribute(attrName);

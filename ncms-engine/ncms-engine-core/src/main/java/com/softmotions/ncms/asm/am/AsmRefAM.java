@@ -1,23 +1,21 @@
 package com.softmotions.ncms.asm.am;
 
-import com.softmotions.ncms.asm.Asm;
-import com.softmotions.ncms.asm.AsmAttribute;
-import com.softmotions.ncms.asm.AsmDAO;
-import com.softmotions.ncms.asm.PageService;
-import com.softmotions.ncms.asm.render.AsmRendererContext;
-import com.softmotions.ncms.asm.render.AsmRenderingException;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.io.StringWriter;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.StringWriter;
-import java.util.Map;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -32,19 +30,17 @@ public class AsmRefAM implements AsmAttributeManager {
 
     private final AsmDAO adao;
 
-    private final PageService pageService;
-
-
     @Inject
-    public AsmRefAM(AsmDAO adao, PageService pageService) {
+    public AsmRefAM(AsmDAO adao) {
         this.adao = adao;
-        this.pageService = pageService;
     }
 
+    @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
+    @Override
     public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
                                             HttpServletResponse resp,
                                             Asm page,
@@ -54,10 +50,12 @@ public class AsmRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
 
+    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx,
                                      String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
@@ -80,18 +78,14 @@ public class AsmRefAM implements AsmAttributeManager {
             subcontext = ctx.createSubcontext(asmName, out);
             subcontext.render(null);
         } catch (Exception e) {
-            log.warn("Exception " + e.getMessage() +
-                     " during sub-assembly rendering: " + asmName +
-                     " asm: " + asm.getName() +
-                     " attribute: " + attr.getName(), e);
+            log.warn("Exception {} during sub-assembly rendering: {} asm: {} attribute: {}",
+                     e.getMessage(), asmName, asm.getName(), attr.getName(), e);
             return null;
         }
         resp = subcontext.getServletResponse();
         if (resp.getStatus() != HttpServletResponse.SC_OK) {
-            log.warn("Unexpected status code: " + resp.getStatus() +
-                     " during sub-assembly rendering: " + asmName +
-                     " asm: " + asm.getName() +
-                     " attribute: " + attr.getName());
+            log.warn("Unexpected status code: {} during sub-assembly rendering: {} asm: {} attribute: {}",
+                     resp.getStatus(), asmName, asm.getName(), attr.getName());
             return null;
         }
         //Schedule skip escaping on this attribute
@@ -99,10 +93,12 @@ public class AsmRefAM implements AsmAttributeManager {
         return out.toString();
     }
 
+    @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         return applyAttributeValue(ctx, attr, val);
     }
 
+    @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         if (!val.get("value").canConvertToLong()) {
             attr.setEffectiveValue(null);
@@ -113,6 +109,7 @@ public class AsmRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }

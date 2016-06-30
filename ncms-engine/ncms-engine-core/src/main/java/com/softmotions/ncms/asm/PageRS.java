@@ -1629,16 +1629,16 @@ public class PageRS extends MBDAOSupport implements PageService {
                 if (id == -1L) {
                     continue;
                 }
-                CachedPage cp = getCachedPage(id, true);
-                if (cp == null) {
-                    continue;
-                }
-                String lp = ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/");
                 KVOptions options = new KVOptions();
                 options.loadOptions((String) row.get("options"));
                 if (!"true".equals(options.get("enabled"))) {
                     continue;
                 }
+                CachedPage cp = getCachedPage(id, true);
+                if (cp == null) {
+                    continue;
+                }
+                String lp = ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/");
                 String langs = (String) options.get("lang");
                 String[] lcodes = langs != null ? ArrayUtils.split(langs, " ,;") : org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
                 for (String lang : lcodes) {

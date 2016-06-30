@@ -1,5 +1,21 @@
 package com.softmotions.ncms.asm.am;
 
+import java.io.IOException;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.softmotions.commons.cont.Pair;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
@@ -10,23 +26,6 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.mhttl.Image;
 import com.softmotions.ncms.mhttl.ImageMeta;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -49,10 +48,12 @@ public class AsmImageAM implements AsmAttributeManager {
         this.mapper = mapper;
     }
 
+    @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
+    @Override
     public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
                                             HttpServletResponse resp,
                                             Asm page,
@@ -62,6 +63,7 @@ public class AsmImageAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
         String value = attr.getEffectiveValue();
         if (StringUtils.isBlank(value)) {
@@ -76,7 +78,7 @@ public class AsmImageAM implements AsmAttributeManager {
 
     public Image renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) {
         Long id = node.hasNonNull("id") ? node.get("id").asLong() : null;
-        if (id == null || id.longValue() == 0L) {
+        if (id == null || id == 0L) {
             return null;
         }
         Image image = new Image(ctx);
@@ -105,6 +107,7 @@ public class AsmImageAM implements AsmAttributeManager {
         return image;
     }
 
+    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
@@ -117,7 +120,7 @@ public class AsmImageAM implements AsmAttributeManager {
             return null;
         }
 
-        if (res.getId() == null || res.getId().longValue() == 0L) {
+        if (res.getId() == null || res.getId() == 0L) {
             return null;
         }
         return res;
@@ -166,6 +169,7 @@ public class AsmImageAM implements AsmAttributeManager {
         return true;
     }
 
+    @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
@@ -176,6 +180,7 @@ public class AsmImageAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         attr.setEffectiveValue(val != null ? applyJSONAttributeValue(ctx, attr, val).toString() : null);
         return attr;
@@ -201,10 +206,10 @@ public class AsmImageAM implements AsmAttributeManager {
 
             Integer width = opts.hasNonNull("width") ? opts.get("width").asInt() : 0;
             Integer height = opts.hasNonNull("height") ? opts.get("height").asInt() : 0;
-            if (width.intValue() == 0) {
+            if (width == 0) {
                 width = null;
             }
-            if (height.intValue() == 0) {
+            if (height == 0) {
                 height = null;
             }
             int flags = 0;
@@ -236,6 +241,7 @@ public class AsmImageAM implements AsmAttributeManager {
     }
 
 
+    @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }

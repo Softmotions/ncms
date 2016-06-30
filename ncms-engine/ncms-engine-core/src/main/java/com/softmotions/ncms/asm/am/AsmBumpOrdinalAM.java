@@ -1,14 +1,13 @@
 package com.softmotions.ncms.asm.am;
 
-import com.softmotions.ncms.asm.AsmAttribute;
-import com.softmotions.ncms.asm.AsmDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmDAO;
 
 
 /**
@@ -29,19 +28,23 @@ public class AsmBumpOrdinalAM extends AsmBooleanAM {
         this.adao = adao;
     }
 
+    @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
+    @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
 
+    @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         return attr;
     }
 
 
+    @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         JsonNode bval = val.get("value");
         if (bval != null && bval.asBoolean()) {

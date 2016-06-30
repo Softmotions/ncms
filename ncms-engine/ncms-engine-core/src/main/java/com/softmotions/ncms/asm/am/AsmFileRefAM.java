@@ -1,5 +1,19 @@
 package com.softmotions.ncms.asm.am;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsMessages;
@@ -11,21 +25,6 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.media.MediaResource;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -48,10 +47,12 @@ public class AsmFileRefAM implements AsmAttributeManager {
         this.messages = messages;
     }
 
+    @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
+    @Override
     public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
                                             HttpServletResponse resp,
                                             Asm page,
@@ -61,10 +62,12 @@ public class AsmFileRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
 
+    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
@@ -97,9 +100,8 @@ public class AsmFileRefAM implements AsmAttributeManager {
             return null;
         }
         if (!CTypeUtils.isTextualContentType(resource.getContentType())) {
-            log.warn("Only textual resources allowed. Location: " +
-                     location + " content-type: " + resource.getContentType() +
-                     " asm: " + asm.getName() + " attribute: " + attrname);
+            log.warn("Only textual resources allowed. Location: {} content-type: {} asm: {} attribute: {}",
+                     location, resource.getContentType(), asm.getName(), attrname);
             return null;
         }
         StringWriter sw = new StringWriter(1024);
@@ -112,6 +114,7 @@ public class AsmFileRefAM implements AsmAttributeManager {
         return sw.toString();
     }
 
+    @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions opts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts,
@@ -122,6 +125,7 @@ public class AsmFileRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         String location = val.hasNonNull("value") ? val.get("value").asText().trim() : null;
         attr.setEffectiveValue(location);
@@ -134,6 +138,7 @@ public class AsmFileRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }

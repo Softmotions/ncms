@@ -33,6 +33,7 @@ public class HttlUtilsMethods {
 
     private static final Logger log = LoggerFactory.getLogger(HttlUtilsMethods.class);
 
+    @SuppressWarnings("StaticNonFinalField")
     private static volatile String sfRoot = null;
 
     private HttlUtilsMethods() {

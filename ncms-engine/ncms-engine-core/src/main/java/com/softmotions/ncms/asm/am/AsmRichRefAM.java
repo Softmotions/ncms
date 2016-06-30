@@ -1,5 +1,19 @@
 package com.softmotions.ncms.asm.am;
 
+import java.io.IOException;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
@@ -10,21 +24,6 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.mhttl.Image;
 import com.softmotions.ncms.mhttl.RichRef;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -56,10 +55,12 @@ public class AsmRichRefAM implements AsmAttributeManager {
         this.pageService = pageService;
     }
 
+    @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
+    @Override
     public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
                                             HttpServletResponse resp,
                                             Asm page,
@@ -69,6 +70,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
         return null;
     }
@@ -111,6 +113,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
                            description, image, style, style2);
     }
 
+    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         // {
         // "image":{"id":561,"options":{"restrict":"false","width":"693","skipSmall":"false","resize":"true"}},
@@ -129,10 +132,10 @@ public class AsmRichRefAM implements AsmAttributeManager {
         } catch (IOException e) {
             throw new AsmRenderingException(e);
         }
-        //log.info("res=" + res);
         return res;
     }
 
+    @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts);
@@ -140,6 +143,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
         return attr;
     }
 
+    @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         if (val == null) {
             attr.setEffectiveValue(null);
@@ -169,6 +173,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
         return val;
     }
 
+    @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }
