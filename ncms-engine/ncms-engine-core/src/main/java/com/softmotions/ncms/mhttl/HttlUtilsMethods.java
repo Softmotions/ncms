@@ -33,6 +33,8 @@ public class HttlUtilsMethods {
 
     private static final Logger log = LoggerFactory.getLogger(HttlUtilsMethods.class);
 
+    private static volatile String sfRoot = null;
+
     private HttlUtilsMethods() {
     }
 
@@ -121,6 +123,32 @@ public class HttlUtilsMethods {
 
     public static String resolve(String link) {
         return (link != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(link) : null;
+    }
+
+    public static String siteFile(Object path) {
+        if (path == null) {
+            return null;
+        }
+        String spath = path.toString();
+        if (StringUtils.isBlank(spath)) {
+            return spath;
+        }
+        if (sfRoot == null) {
+            synchronized (HttlUtilsMethods.class) {
+                if (sfRoot == null) {
+                    String sfr = env().xcfg().getString("asm.site-files-root", "");
+                    if (!sfr.endsWith("/")) {
+                        sfr += "/";
+                    }
+                    sfRoot = sfr;
+                }
+            }
+        }
+        if (spath.startsWith(sfRoot)) {
+            return spath.substring(sfRoot.length());
+        } else {
+            return spath;
+        }
     }
 
     public static String format2(Date date, String format) {
