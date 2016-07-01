@@ -21,6 +21,8 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 
 /**
+ * Page alias manager.
+ *
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */

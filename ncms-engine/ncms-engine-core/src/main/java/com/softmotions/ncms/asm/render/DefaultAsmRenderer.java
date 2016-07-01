@@ -1,5 +1,18 @@
 package com.softmotions.ncms.asm.render;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmCore;
@@ -7,20 +20,6 @@ import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -54,6 +53,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         this.helper = helper;
     }
 
+    @Override
     public void renderTemplate(String location, AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException {
         AsmTemplateEngineAdapter te = selectTemplateEngineForLocation(location);
         if (te == null) {
@@ -63,6 +63,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         te.renderTemplate(location, ctx, out);
     }
 
+    @Override
     public void renderAsm(AsmRendererContext ctx, Writer writer) throws AsmRenderingException, IOException {
         Asm asm = ctx.getAsm();
         AsmCore core = asm.getEffectiveCore();
@@ -80,8 +81,8 @@ public class DefaultAsmRenderer implements AsmRenderer {
                                                 "core: " + core + " assembly: " + asm.getName());
             }
             if (log.isTraceEnabled()) {
-                log.trace("Selected template engine: " + te.getClass().getName() +
-                          " assembly: " + asm.getName());
+                log.trace("Selected template engine: {} assembly: {}",
+                          te.getClass().getName(), asm.getName());
             }
             te.renderTemplate(core.getLocation(),
                               ctx,
@@ -91,6 +92,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
     }
 
+    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attributeName,
                                      Map<String, String> options) throws AsmRenderingException {
         if (options == null) {
@@ -103,8 +105,8 @@ public class DefaultAsmRenderer implements AsmRenderer {
             if (indexPage != null && !asm.equals(indexPage.getAsm())) {
                 return ctx.renderAttribute(indexPage.getAsm(), attributeName, options);
             }
-            log.warn("Attribute: '" + attributeName +
-                     "' not found in assembly: '" + ctx.getRootAsm().getName() + '\'');
+            log.warn("Attribute: '{}' not found in assembly: '{}" + '\'',
+                     attributeName, ctx.getRootAsm().getName());
             return null;
         }
         String type = attr.getType();

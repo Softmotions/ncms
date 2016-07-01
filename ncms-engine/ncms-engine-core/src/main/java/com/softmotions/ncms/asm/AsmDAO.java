@@ -1,23 +1,5 @@
 package com.softmotions.ncms.asm;
 
-import com.softmotions.commons.cont.Pair;
-import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.weboot.mb.MBAction;
-import com.softmotions.weboot.mb.MBCriteriaQuery;
-import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.Clob;
@@ -31,6 +13,23 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.softmotions.commons.cont.Pair;
+import com.softmotions.commons.cont.TinyParamMap;
+import com.softmotions.weboot.mb.MBAction;
+import com.softmotions.weboot.mb.MBCriteriaQuery;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
  * Assembly access DAO.
@@ -71,6 +70,7 @@ public class AsmDAO extends MBDAOSupport {
                 .withStatement("selectAsmByCriteria");
     }
 
+    @Override
     @Transactional
     public <T> T withinTransaction(MBAction<T> action) throws SQLException {
         return super.withinTransaction(action);
@@ -317,6 +317,37 @@ public class AsmDAO extends MBDAOSupport {
      */
     public int asmRemoveParentFromAll(Long asmId) {
         return sess.delete("asmRemoveParentFromAll", asmId);
+    }
+
+    /**
+     * Set a new assembly core
+     *
+     * @param asm      Assembly
+     * @param location New assemly core location
+     */
+    @Nullable
+    @Transactional
+    public AsmCore asmSetCore(Asm asm, String location) {
+        AsmCore core = null;
+        if (StringUtils.isBlank(location)) {
+            if (asm.getCore() != null) {
+                coreDelete(asm.getCore().getId(), null);
+                asm.setCore(null);
+                update("asmUpdateCore",
+                       "id", asm.getId(),
+                       "coreId", null);
+            }
+            return core;
+        }
+        core = selectOne("selectAsmCore", "location", location);
+        if (core == null) {
+            core = new AsmCore(location);
+            coreInsert(core);
+        }
+        update("asmUpdateCore",
+               "id", asm.getId(),
+               "coreId", core.getId());
+        return core;
     }
 
 

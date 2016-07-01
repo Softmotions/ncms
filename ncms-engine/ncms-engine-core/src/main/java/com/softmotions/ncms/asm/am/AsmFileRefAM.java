@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,7 +130,7 @@ public class AsmFileRefAM implements AsmAttributeManager {
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         String location = val.hasNonNull("value") ? val.get("value").asText().trim() : null;
         attr.setEffectiveValue(location);
-        if (location != null) {
+        if (!StringUtils.isBlank(location)) {
             MediaResource resource = reader.findMediaResource(location, messages.getLocale(ctx.getRequest()));
             if (resource != null) {
                 ctx.registerMediaFileDependency(attr, resource.getId());

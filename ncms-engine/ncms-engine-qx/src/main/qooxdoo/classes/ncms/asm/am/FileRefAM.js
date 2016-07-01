@@ -40,25 +40,16 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
          * },
          */
         activateOptionsWidget : function(attrSpec, asmSpec) {
-
             var form = new qx.ui.form.Form();
             //---------- Options
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             //Button field
-            var bf = this.__initFileSelectorBf();
+            var bf = this._initFileSelectorBf(attrSpec, true);
             this._fetchAttributeValue(attrSpec, function(val) {
                 bf.setValue(val);
             });
             form.add(bf, this.tr("Location"), null, "location");
-
-            /*var escCb = new qx.ui.form.CheckBox();
-            if (opts["escape"] != null) {
-                escCb.setValue("true" == opts["escape"]);
-            } else {
-                escCb.setValue(true);
-            }
-            form.add(escCb, this.tr("Escape data"), null, "escape");*/
 
             var astCb = new qx.ui.form.CheckBox();
             astCb.setValue("true" == opts["asTemplate"]);
@@ -93,7 +84,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
         },
 
         activateValueEditorWidget : function(attrSpec, asmSpec) {
-            var bf = this.__initFileSelectorBf();
+            var bf = this._initFileSelectorBf(attrSpec);
             this._fetchAttributeValue(attrSpec, function(val) {
                 bf.setValue(val);
             });
@@ -102,12 +93,14 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             return bf;
         },
 
-        __initFileSelectorBf : function() {
+        _initFileSelectorBf: function (attrSpec, inOpts) {
             var bf = new sm.ui.form.ButtonField(this.tr("File"),
                     "ncms/icon/16/misc/document-text.png");
             bf.setShowResetButton(true);
             bf.setReadOnly(true);
-            bf.setRequired(true);
+            if (!inOpts) {
+                bf.setRequired(!!attrSpec["required"]);
+            }
             bf.setPlaceholder(this.tr("Please specify a file"));
             bf.addListener("reset", function() {
                 bf.resetValue();

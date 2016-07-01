@@ -24,10 +24,10 @@ msgstr "Выход"
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:158 ncms/asm/am/ImageAMValueWidget.js:104
-#: ncms/asm/AsmEditor.js:90 ncms/usr/UserEditForm.js:22
-#: ncms/usr/UserNewDlg.js:34 ncms/asm/am/FileRefAM.js:145
-#: ncms/asm/AsmAttrEditorDlg.js:56
+#: ncms/pgs/PageEditorEditPage.js:158 ncms/asm/am/AsmCoreAM.js:87
+#: ncms/asm/am/ImageAMValueWidget.js:104 ncms/asm/AsmEditor.js:90
+#: ncms/usr/UserEditForm.js:22 ncms/usr/UserNewDlg.js:34
+#: ncms/asm/am/FileRefAM.js:138 ncms/asm/AsmAttrEditorDlg.js:56
 msgid "This field is required"
 msgstr "Обязательное поле"
 
@@ -180,7 +180,7 @@ msgstr "Редактирование атрибута: '%1'"
 
 #: ncms/asm/AsmEditor.js:101
 msgid "Core"
-msgstr "Ядро (core)"
+msgstr "Разметка"
 
 #: ncms/asm/AsmEditor.js:108 ncms/asm/AsmEditor.js:255
 msgid "Class name of an optional assembly controller"
@@ -281,6 +281,18 @@ msgstr "Выбор сборки (assembly)"
 msgid "Alias"
 msgstr "Псевдоним"
 
+#: ncms/asm/am/AsmCoreAM.js:9
+msgid "Assembly core selector"
+msgstr "Разметка страницы"
+
+#: ncms/asm/am/AsmCoreAM.js:48 ncms/asm/am/FileRefAM.js:97
+msgid "File"
+msgstr "Файл"
+
+#: ncms/asm/am/AsmCoreAM.js:53 ncms/asm/am/AsmCoreAM.js:60
+msgid "Please specify a core location"
+msgstr "Пожалуйста укажите httl файл разметки"
+
 #: ncms/asm/am/AsmRefAM.js:16
 msgid "Include assembly"
 msgstr "Вставка сборки (assembly)"
@@ -299,7 +311,7 @@ msgstr "Значение"
 
 #: ncms/asm/am/BreadCrumbsAM.js:8
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Breadcrumbs"
 
 #: ncms/asm/am/BumpOrdinalAM.js:9
 msgid "Bump page ordinal"
@@ -317,23 +329,19 @@ msgstr "Формат даты"
 msgid "Include file resource"
 msgstr "Вставить файл"
 
-#: ncms/asm/am/WebRefAM.js:51 ncms/asm/am/FileRefAM.js:53
+#: ncms/asm/am/WebRefAM.js:51 ncms/asm/am/FileRefAM.js:52
 msgid "Location"
 msgstr "Местоположение"
 
-#: ncms/asm/am/FileRefAM.js:65
+#: ncms/asm/am/FileRefAM.js:56
 msgid "Render as template"
 msgstr "Отображать как шаблон"
 
-#: ncms/asm/am/WebRefAM.js:66 ncms/asm/am/FileRefAM.js:73
+#: ncms/asm/am/WebRefAM.js:66 ncms/asm/am/FileRefAM.js:64
 msgid "Render only location"
 msgstr "Отображать как местоположение"
 
-#: ncms/asm/am/FileRefAM.js:106
-msgid "File"
-msgstr "Файл"
-
-#: ncms/asm/am/FileRefAM.js:111 ncms/asm/am/FileRefAM.js:118
+#: ncms/asm/am/FileRefAM.js:104 ncms/asm/am/FileRefAM.js:111
 msgid "Please specify a file"
 msgstr "Пожалуйста, выберите файл"
 
@@ -475,7 +483,7 @@ msgstr "Удалить"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:115
 msgid "Image/video"
-msgstr ""
+msgstr "Картинка/видео"
 
 #: ncms/asm/am/MedialineAMValueWidget.js:121
 msgid "Title"
@@ -545,15 +553,15 @@ msgstr "Пожалуйста, укажите ссылку на файл"
 
 #: ncms/asm/am/SelectAM.js:12
 msgid "Selectbox"
-msgstr ""
+msgstr "Селектбокс"
 
 #: ncms/asm/am/SelectAM.js:35
 msgid "list"
-msgstr ""
+msgstr "list"
 
 #: ncms/asm/am/SelectAM.js:36
 msgid "selectbox"
-msgstr ""
+msgstr "selectbox"
 
 #: ncms/asm/am/SelectAM.js:39 ncms/asm/am/StringAM.js:49
 msgid "Display as"
@@ -565,7 +573,7 @@ msgstr "Выбор множества значений"
 
 #: ncms/asm/am/SelectAM.js:55
 msgid "Fetch from"
-msgstr ""
+msgstr "Получить из"
 
 #: ncms/asm/am/SelectAM.js:65
 msgid "Items"
@@ -589,11 +597,11 @@ msgstr "Строка"
 
 #: ncms/asm/am/StringAM.js:46
 msgid "field"
-msgstr ""
+msgstr "поле"
 
 #: ncms/asm/am/StringAM.js:47
 msgid "area"
-msgstr ""
+msgstr "зона ввода"
 
 #: ncms/asm/am/StringAM.js:56
 msgid "Max length"
@@ -601,7 +609,7 @@ msgstr "Max length"
 
 #: ncms/asm/am/StringAM.js:68
 msgid "Placeholder"
-msgstr ""
+msgstr "Placeholder"
 
 #: ncms/asm/am/TreeAM.js:14
 msgid "Tree/Menu"
@@ -694,11 +702,11 @@ msgstr "Wiki редактор"
 
 #: ncms/asm/am/WikiAM.js:33
 msgid "mediawiki"
-msgstr ""
+msgstr "mediawiki"
 
 #: ncms/asm/am/WikiAM.js:34
 msgid "markdown"
-msgstr ""
+msgstr "markdown"
 
 #: ncms/asm/am/WikiAM.js:36
 msgid "Markup language"
@@ -1041,7 +1049,7 @@ msgstr "Полное имя"
 
 #: ncms/usr/UserEditForm.js:35 ncms/usr/UserNewDlg.js:47
 msgid "E-Mail"
-msgstr ""
+msgstr "Электропочта"
 
 #: ncms/usr/UserEditForm.js:38 ncms/usr/UserNewDlg.js:51
 msgid "Password"
@@ -1398,6 +1406,9 @@ msgstr "Заметка"
 
 #~ msgid "Code"
 #~ msgstr "Код"
+
+#~ msgid "Core location"
+#~ msgstr "Разметка"
 
 #~ msgid "Insert presentation"
 #~ msgstr "Вставить презентацию"

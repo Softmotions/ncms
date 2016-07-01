@@ -158,24 +158,9 @@ public class AsmRS extends MBDAOSupport {
             throw new NotFoundException("");
         }
         ObjectNode res = mapper.createObjectNode();
-        String locaton = coreSpec.get("location").asText();
-        if (StringUtils.isBlank(locaton)) {
-            if (asm.getCore() != null) {
-                adao.coreDelete(asm.getCore().getId(), null);
-                asm.setCore(null);
-            }
-        }
-        AsmCore core = adao.selectOne("selectAsmCore", "location", locaton);
-        if (core == null) {
-            core = new AsmCore(locaton);
-            adao.coreInsert(core);
-        }
-        adao.update("asmUpdateCore",
-                    "id", id,
-                    "coreId", core.getId());
+        AsmCore core = adao.asmSetCore(asm, coreSpec.get("location").asText());
         res.putPOJO("core", core);
         res.putPOJO("effectiveCore", core);
-
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return res;
     }

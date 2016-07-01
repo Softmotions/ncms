@@ -19,25 +19,7 @@ import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.Multibinder;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.asm.am.AsmAliasAM;
-import com.softmotions.ncms.asm.am.AsmAttributeManager;
-import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
-import com.softmotions.ncms.asm.am.AsmBooleanAM;
-import com.softmotions.ncms.asm.am.AsmBreadCrumbsAM;
-import com.softmotions.ncms.asm.am.AsmBumpOrdinalAM;
-import com.softmotions.ncms.asm.am.AsmDateAM;
-import com.softmotions.ncms.asm.am.AsmFileRefAM;
-import com.softmotions.ncms.asm.am.AsmImageAM;
-import com.softmotions.ncms.asm.am.AsmMainPageAM;
-import com.softmotions.ncms.asm.am.AsmMedialineAM;
-import com.softmotions.ncms.asm.am.AsmRefAM;
-import com.softmotions.ncms.asm.am.AsmRichRefAM;
-import com.softmotions.ncms.asm.am.AsmSelectAM;
-import com.softmotions.ncms.asm.am.AsmStringAM;
-import com.softmotions.ncms.asm.am.AsmTreeAM;
-import com.softmotions.ncms.asm.am.AsmWebRefAM;
-import com.softmotions.ncms.asm.am.AsmWikiAM;
-import com.softmotions.ncms.asm.am.DefaultAsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.am.*;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRendererContextFactory;
@@ -79,6 +61,7 @@ public class AsmModule extends AbstractModule {
         attrBinder.addBinding().to(AsmBumpOrdinalAM.class);
         attrBinder.addBinding().to(AsmMedialineAM.class);
         attrBinder.addBinding().to(AsmAliasAM.class);
+        attrBinder.addBinding().to(AsmCoreAM.class);
 
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);
