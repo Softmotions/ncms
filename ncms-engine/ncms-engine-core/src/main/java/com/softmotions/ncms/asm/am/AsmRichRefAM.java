@@ -83,6 +83,7 @@ public class AsmRichRefAM implements AsmAttributeManager {
         String description = null;
         String style = null;
         String style2 = null;
+        String style3 = null;
         Image image = null;
         if (node.hasNonNull("image")) {
             image = imageAM.renderAsmAttribute(ctx, (ObjectNode) node.get("image"));
@@ -109,8 +110,12 @@ public class AsmRichRefAM implements AsmAttributeManager {
         if (node.hasNonNull("style2")) {
             style2 = node.get("style2").asText();
         }
+        if (node.hasNonNull("style3")) {
+            style3 = node.get("style3").asText();
+        }
         return new RichRef(name, link, rawLink,
-                           description, image, style, style2);
+                           description, image, style,
+                           style2, style3);
     }
 
     @Override

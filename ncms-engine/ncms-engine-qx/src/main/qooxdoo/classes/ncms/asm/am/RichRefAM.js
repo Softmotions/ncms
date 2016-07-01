@@ -40,16 +40,20 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             form.add(el, this.tr("Files"), null, "allowFiles", null, {flex : 1});
 
             el = new qx.ui.form.CheckBox();
+            el.setValue(opts["allowName"] === "true");
+            form.add(el, this.tr("Name"), null, "allowName", null, {flex: 0});
+
+            el = new qx.ui.form.CheckBox();
             el.setValue(opts["allowDescription"] === "true");
-            form.add(el, this.tr("Description"), null, "allowDescription", null, {flex : 0});
+            form.add(el, this.tr("Description"), null, "allowDescription", null, {flex: 1});
 
             el = new qx.ui.form.CheckBox();
             el.setValue(opts["optionalLinks"] === "true");
-            form.add(el, this.tr("Optional links"), null, "optionalLinks", {flex : 0, fullRow : true});
+            form.add(el, this.tr("Optional links"), null, "optionalLinks", {flex: 0});
 
             el = new qx.ui.form.CheckBox();
             el.setValue(opts["allowImage"] === "true");
-            form.add(el, this.tr("Image"), null, "allowImage", null, {flex : 0, fullRow : true});
+            form.add(el, this.tr("Image"), null, "allowImage", null, {flex: 1});
 
             //Wrap nested image am
             var imageAm = this._imageAM = new ncms.asm.am.ImageAM();
@@ -64,15 +68,22 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             if (opts["styles"] != null) {
                 el.setValue(opts["styles"]);
             }
-            el.setPlaceholder(this.tr("style=value,style2=value2,..."));
-            form.add(el, this.tr("Styles"), null, "styles", null, {fullRow : true});
+            el.setPlaceholder(this.tr("option=value,option2=value2,..."));
+            form.add(el, this.tr("Options"), null, "styles", null, {fullRow: true});
 
             el = new qx.ui.form.TextField();
             if (opts["styles2"] != null) {
                 el.setValue(opts["styles2"]);
             }
-            el.setPlaceholder(this.tr("style=value,style2=value2,..."));
-            form.add(el, this.tr("Styles2"), null, "styles2", null, {fullRow : true});
+            el.setPlaceholder(this.tr("option=value,option2=value2,..."));
+            form.add(el, this.tr("Options"), null, "styles2", null, {fullRow: true});
+
+            el = new qx.ui.form.TextField();
+            if (opts["styles3"] != null) {
+                el.setValue(opts["styles3"]);
+            }
+            el.setPlaceholder(this.tr("option=value,option2=value2,..."));
+            form.add(el, this.tr("Options"), null, "styles3", null, {fullRow: true});
 
             var fr = new sm.ui.form.ExtendedDoubleFormRenderer(form);//sm.ui.form.FlexFormRenderer(form);
             this._form = form;
@@ -87,6 +98,7 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             var items = this._form.getItems();
             data["allowPages"] = items["allowPages"].getValue();
             data["allowFiles"] = items["allowFiles"].getValue();
+            data["allowName"] = items["allowName"].getValue();
             data["optionalLinks"] = items["optionalLinks"].getValue();
             data["allowDescription"] = items["allowDescription"].getValue();
             data["allowImage"] = items["allowImage"].getValue();
@@ -98,6 +110,7 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             }
             data["styles"] = items["styles"].getValue();
             data["styles2"] = items["styles2"].getValue();
+            data["styles3"] = items["styles3"].getValue();
             return data;
         },
 

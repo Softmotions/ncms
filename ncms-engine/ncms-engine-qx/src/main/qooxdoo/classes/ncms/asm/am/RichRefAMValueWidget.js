@@ -3,21 +3,21 @@
  * @asset (ncms/icon/16/misc/chain-plus.png)
  */
 qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
-    extend : qx.ui.core.Widget,
-    implement : [ qx.ui.form.IModel,
-                  ncms.asm.am.IValueWidget],
-    include : [ ncms.asm.am.MValueWidget ],
+    extend: qx.ui.core.Widget,
+    implement: [qx.ui.form.IModel,
+        ncms.asm.am.IValueWidget],
+    include: [ncms.asm.am.MValueWidget],
 
-    properties : {
-        model : {
-            check : "Object",
-            nullable : true,
-            event : "changeModel",
-            apply : "__applyModel"
+    properties: {
+        model: {
+            check: "Object",
+            nullable: true,
+            event: "changeModel",
+            apply: "__applyModel"
         }
     },
 
-    construct : function(attrSpec, asmSpec) {
+    construct: function (attrSpec, asmSpec) {
         this.__asmSpec = asmSpec;
         this.__attrSpec = attrSpec;
 
@@ -27,11 +27,8 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
         this.addState("widgetNotReady");
 
         var opts = ncms.Utils.parseOptions(attrSpec["options"]);
-        //qx.log.Logger.info("OPTS=" + JSON.stringify(opts));
-
         var el;
         var form = this.__form = new qx.ui.form.Form();
-
         var menuspec = [];
         if (opts["allowPages"] == null || opts["allowPages"] === "true") {
             menuspec.push([this.tr("Page link").toString(), "page"]);
@@ -39,30 +36,30 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
         if (opts["allowFiles"] === "true") {
             menuspec.push([this.tr("File link").toString(), "file"]);
         }
-        var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain-plus.png", true, menuspec);
-        if (opts["optionalLinks"] === "true") {
-            bf.setShowResetButton(true);
-            bf.setRequired(false);
-            bf.addListener("reset", function() {
-                bf.resetValue();
-            });
-        } else {
-            bf.setRequired(true);
-        }
-
-        bf.setReadOnly(true);
-        bf.addListener("execute", this.__onSetLink, this);
-        bf.addListener("changeValue", this.__modified, this);
-        form.add(bf, this.tr("Link"), null, "link");
-
-        if (opts["allowDescription"] === "true") {
-            el = new qx.ui.form.TextArea();
+        if (opts["allowName"] === "true") {
+            el = new qx.ui.form.TextField();
             el.setRequired(true);
-            el.setMaxLength(1024); //todo
+            el.setMaxLength(64);
             el.addListener("input", this.__modified, this);
-            form.add(el, this.tr("Description"), null, "description");
-
+            form.add(el, this.tr("Name"), null, "customName");
         }
+        if (menuspec.length > 0) {
+            var bf = this.__bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/misc/chain-plus.png", true, menuspec);
+            if (opts["optionalLinks"] === "true") {
+                bf.setShowResetButton(true);
+                bf.setRequired(false);
+                bf.addListener("reset", function () {
+                    bf.resetValue();
+                });
+            } else {
+                bf.setRequired(true);
+            }
+            bf.setReadOnly(true);
+            bf.addListener("execute", this.__onSetLink, this);
+            bf.addListener("changeValue", this.__modified, this);
+            form.add(bf, this.tr("Link"), null, "link");
+        }
+
         if (opts["allowImage"] === "true") {
             var iAttrSpec = sm.lang.Object.shallowClone(attrSpec);
             iAttrSpec["hasLargeValue"] = false;
@@ -84,52 +81,71 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
         var styles = ncms.Utils.parseOptions(opts["styles"]);
         if (Object.keys(styles).length > 0) { //we have a styles
             el = new qx.ui.form.SelectBox();
-            Object.keys(styles).forEach(function(k) {
+            Object.keys(styles).forEach(function (k) {
                 el.add(new qx.ui.form.ListItem(k, null, styles[k]));
             });
-            form.add(el, this.tr("Style"), null, "styles");
+            form.add(el, this.tr("Option"), null, "styles");
         }
 
         styles = ncms.Utils.parseOptions(opts["styles2"]);
         if (Object.keys(styles).length > 0) { //we have a styles
             el = new qx.ui.form.SelectBox();
-            Object.keys(styles).forEach(function(k) {
+            Object.keys(styles).forEach(function (k) {
                 el.add(new qx.ui.form.ListItem(k, null, styles[k]));
             });
-            form.add(el, this.tr("Style2"), null, "styles2");
+            form.add(el, this.tr("Option"), null, "styles2");
+        }
+
+        styles = ncms.Utils.parseOptions(opts["styles3"]);
+        if (Object.keys(styles).length > 0) { //we have a styles
+            el = new qx.ui.form.SelectBox();
+            Object.keys(styles).forEach(function (k) {
+                el.add(new qx.ui.form.ListItem(k, null, styles[k]));
+            });
+            form.add(el, this.tr("Option"), null, "styles3");
+        }
+
+        if (opts["allowDescription"] === "true") {
+            el = new qx.ui.form.TextArea();
+            el.setAutoSize(true);
+            el.setRequired(false);
+            el.setMaxLength(1024); //todo
+            el.addListener("input", this.__modified, this);
+            form.add(el, this.tr("Description"), null, "description");
         }
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
+        fr.setLastRowFlexible();
         this._add(fr);
     },
 
-    members : {
+    members: {
 
-        __bf : null,
+        __bf: null,
 
-        __imageAM : null,
+        __imageAM: null,
 
-        __form : null,
+        __form: null,
 
-        __asmSpec : null,
+        __asmSpec: null,
 
-        __attrSpec : null,
+        __attrSpec: null,
 
-        __modified : function() {
+        __modified: function () {
             if (this.hasState("widgetNotReady")) {
                 return;
             }
             this.fireEvent("modified");
         },
 
-        __onSetLink : function(ev) {
+        __onSetLink: function (ev) {
             var dlg;
             var data = ev.getData();
             if (data == null || data === "page") {
                 dlg = new ncms.pgs.LinkSelectorDlg(this.tr("Please set the page link"), {
-                    allowExternalLinks : true
+                    allowExternalLinks: true
                 });
-                dlg.addListener("completed", function(ev) {
+                dlg.addListener("completed", function (ev) {
                     var data = ev.getData();
                     var val = [];
                     if (!sm.lang.String.isEmpty(data["externalLink"])) {
@@ -146,15 +162,15 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
                 dlg.open();
             } else {
                 dlg = new ncms.mmgr.PageFilesSelectorDlg(
-                        this.__asmSpec["id"],
-                        this.tr("Please set the file link"),
-                        {
-                            allowModify : true,
-                            allowSubfoldersView : true,
-                            smode : qx.ui.table.selection.Model.SINGLE_SELECTION
-                        }
+                    this.__asmSpec["id"],
+                    this.tr("Please set the file link"),
+                    {
+                        allowModify: true,
+                        allowSubfoldersView: true,
+                        smode: qx.ui.table.selection.Model.SINGLE_SELECTION
+                    }
                 );
-                dlg.addListener("completed", function(ev) {
+                dlg.addListener("completed", function (ev) {
                     var data = ev.getData();
                     //{"id":1221,"name":"зеленый цветок.jpg",
                     //"folder":"/pages/963/","content_type":"image/jpeg",
@@ -171,7 +187,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             }
         },
 
-        __applyModel : function(model) {
+        __applyModel: function (model) {
             model = model || {};
             //qx.log.Logger.info("Apply model " + JSON.stringify(model));
             this.addState("widgetNotReady");
@@ -183,10 +199,12 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             if (items["image"] && model["image"] != null) {
                 items["image"].setModel(model["image"]);
             }
-            if (model["link"] != null) {
-                this.__bf.setValue(model["link"]);
-            } else {
-                this.__bf.resetValue();
+            if (this.__bf) {
+                if (model["link"] != null) {
+                    this.__bf.setValue(model["link"]);
+                } else {
+                    this.__bf.resetValue();
+                }
             }
             if (items["description"]) {
                 if (model["description"] != null) {
@@ -195,18 +213,27 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
                     items["description"].resetValue();
                 }
             }
-            if (items["styles"] && model["style"] != null) {
-                items["styles"].setModelSelection([ model["style"] ]);
+            if (items["customName"]) {
+                if (model["name"] != null) {
+                    items["customName"].setValue(model["name"]);
+                } else {
+                    items["customName"].resetValue();
+                }
             }
-
+            if (items["styles"] && model["style"] != null) {
+                items["styles"].setModelSelection([model["style"]]);
+            }
             if (items["styles2"] && model["style2"] != null) {
-                items["styles2"].setModelSelection([ model["style2"] ]);
+                items["styles2"].setModelSelection([model["style2"]]);
+            }
+            if (items["styles3"] && model["style3"] != null) {
+                items["styles3"].setModelSelection([model["style3"]]);
             }
 
             this.removeState("widgetNotReady");
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             if (!this.__form.validate()) {
                 return null;
             }
@@ -214,35 +241,44 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             if (this.__imageAM) {
                 data["image"] = this.__imageAM.valueAsJSON();
             }
-            qx.log.Logger.info("data.image=" + JSON.stringify(data["image"]));
+            //qx.log.Logger.info("data.image=" + JSON.stringify(data["image"]));
             var items = this.__form.getItems();
-            var link = data["link"] = items["link"].getValue();
+            var link = data["link"] = (items["link"] != null) ? items["link"].getValue() : null;
             if (items["description"]) {
                 data["description"] = items["description"].getValue();
             }
-            data["name"] = link && link.split("|")[1];
-            if (data["name"]) {
-                data["name"] = data["name"].trim();
-                if (items["styles"]) {
-                    var item = items["styles"].getSelection()[0];
-                    if (item != null) {
-                        data["name"] = data["name"] + " (" + String(item.getLabel()) + ")";
+
+            if (items["customName"]) {
+                data["name"] = items["customName"].getValue();
+            } else {
+                data["name"] = link && link.split("|")[1];
+                if (data["name"]) {
+                    data["name"] = data["name"].trim();
+                    if (items["styles"]) {
+                        var item = items["styles"].getSelection()[0];
+                        if (item != null) {
+                            data["name"] = data["name"] + " (" + String(item.getLabel()) + ")";
+                        }
                     }
+                } else if (data["image"] != null) {
+                    data["name"] = data["image"]["path"];
                 }
-            } else if (data["image"] != null) {
-                data["name"] = data["image"]["path"];
             }
+
             if (items["styles"]) {
                 data["style"] = items["styles"].getModelSelection().getItem(0);
             }
             if (items["styles2"]) {
                 data["style2"] = items["styles2"].getModelSelection().getItem(0);
             }
+            if (items["styles3"]) {
+                data["style3"] = items["styles3"].getModelSelection().getItem(0);
+            }
             return data;
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__bf = null;
         this.__asmSpec = null;
         this.__attrSpec = null;

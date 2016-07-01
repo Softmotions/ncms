@@ -31,12 +31,13 @@ msgstr "Редактирование атрибута страницы"
 msgid "This field is required"
 msgstr "Обязательное поле"
 
-#: ncms/asm/AsmParentsTable.js:99 ncms/asm/am/SelectAMTable.js:65
-#: ncms/asm/AsmEditor.js:94 ncms/asm/am/TreeAMNewFolderDlg.js:22
-#: ncms/usr/UserEditForm.js:27 ncms/mmgr/MediaFileEditor.js:269
-#: ncms/pgs/PagesTable.js:21 ncms/asm/AsmAttrsTable.js:112
-#: ncms/asm/am/TreeAMValueWidget.js:479 ncms/asm/AsmTable.js:17
-#: ncms/usr/UserNewDlg.js:39 ncms/mmgr/MediaFilesTable.js:9
+#: ncms/asm/am/RichRefAMValueWidget.js:44 ncms/asm/AsmParentsTable.js:99
+#: ncms/asm/am/SelectAMTable.js:65 ncms/asm/AsmEditor.js:94
+#: ncms/asm/am/TreeAMNewFolderDlg.js:22 ncms/usr/UserEditForm.js:27
+#: ncms/mmgr/MediaFileEditor.js:269 ncms/pgs/PagesTable.js:21
+#: ncms/asm/AsmAttrsTable.js:112 ncms/asm/am/TreeAMValueWidget.js:479
+#: ncms/asm/AsmTable.js:17 ncms/usr/UserNewDlg.js:39
+#: ncms/asm/am/RichRefAM.js:44 ncms/mmgr/MediaFilesTable.js:9
 #: ncms/asm/AsmAttrEditorDlg.js:65 ncms/usr/UsersTable.js:10
 msgid "Name"
 msgstr "Название"
@@ -94,9 +95,9 @@ msgstr "Отмена"
 msgid "Select assembly attribute type"
 msgstr "Выбор типа атрибута"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:63 ncms/asm/AsmEditor.js:105
+#: ncms/asm/am/RichRefAMValueWidget.js:114 ncms/asm/AsmEditor.js:105
 #: ncms/mmgr/MediaFileEditor.js:48 ncms/asm/AsmTable.js:21
-#: ncms/asm/am/RichRefAM.js:44 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
+#: ncms/asm/am/RichRefAM.js:48 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
 #: ncms/mmgr/MediaFilesTable.js:13 ncms/usr/UserRolesTable.js:158
 msgid "Description"
 msgstr "Описание"
@@ -345,8 +346,8 @@ msgstr "Отображать как местоположение"
 msgid "Please specify a file"
 msgstr "Пожалуйста, выберите файл"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:81 ncms/asm/am/ImageAM.js:14
-#: ncms/asm/am/RichRefAM.js:52 ncms/asm/am/RichRefAM.js:60
+#: ncms/asm/am/RichRefAMValueWidget.js:78 ncms/asm/am/ImageAM.js:14
+#: ncms/asm/am/RichRefAM.js:56 ncms/asm/am/RichRefAM.js:64
 msgid "Image"
 msgstr "Изображение"
 
@@ -507,47 +508,43 @@ msgstr "Страницы"
 msgid "Files"
 msgstr "Файлы"
 
-#: ncms/asm/am/RichRefAM.js:48
+#: ncms/asm/am/RichRefAM.js:52
 msgid "Optional links"
 msgstr "Ссылки опционально"
 
-#: ncms/asm/am/RichRefAM.js:67 ncms/asm/am/RichRefAM.js:74
-msgid "style=value,style2=value2,..."
+#: ncms/asm/am/RichRefAM.js:71 ncms/asm/am/RichRefAM.js:78
+#: ncms/asm/am/RichRefAM.js:85
+msgid "option=value,option2=value2,..."
 msgstr ""
 
-#: ncms/asm/am/RichRefAM.js:68
-msgid "Styles"
-msgstr "Стили"
+#: ncms/asm/am/RichRefAM.js:72 ncms/asm/am/RichRefAM.js:79
+#: ncms/asm/am/RichRefAM.js:86
+msgid "Options"
+msgstr "Опции"
 
-#: ncms/asm/am/RichRefAM.js:75
-msgid "Styles2"
-msgstr "Стили2"
-
-#: ncms/asm/am/RichRefAMValueWidget.js:37
+#: ncms/asm/am/RichRefAMValueWidget.js:34
 msgid "Page link"
 msgstr "Ссылка на страницу"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:40
+#: ncms/asm/am/RichRefAMValueWidget.js:37
 msgid "File link"
 msgstr "Ссылка на файл"
 
-#: ncms/wiki/InsertImageDlg.js:61 ncms/asm/am/RichRefAMValueWidget.js:56
+#: ncms/wiki/InsertImageDlg.js:61 ncms/asm/am/RichRefAMValueWidget.js:60
 msgid "Link"
 msgstr "Ссылка"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:90
-msgid "Style"
-msgstr "Стиль"
+#: ncms/asm/am/RichRefAMValueWidget.js:87
+#: ncms/asm/am/RichRefAMValueWidget.js:96
+#: ncms/asm/am/RichRefAMValueWidget.js:105
+msgid "Option"
+msgstr "Опция"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:99
-msgid "Style2"
-msgstr "Стиль2"
-
-#: ncms/asm/am/RichRefAMValueWidget.js:129
+#: ncms/asm/am/RichRefAMValueWidget.js:145
 msgid "Please set the page link"
 msgstr "Пожалуйста, укажите ссылку на страницу"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:150
+#: ncms/asm/am/RichRefAMValueWidget.js:166
 msgid "Please set the file link"
 msgstr "Пожалуйста, укажите ссылку на файл"
 
@@ -1437,6 +1434,18 @@ msgstr "Заметка"
 #~ msgid "Slideshare"
 #~ msgstr "Сервис презентаций"
 
+#~ msgid "Style"
+#~ msgstr "Стиль"
+
+#~ msgid "Style2"
+#~ msgstr "Стиль2"
+
+#~ msgid "Styles"
+#~ msgstr "Стили"
+
+#~ msgid "Styles2"
+#~ msgstr "Стили2"
+
 #~ msgid "URL"
 #~ msgstr ""
 
@@ -1451,3 +1460,6 @@ msgstr "Заметка"
 
 #~ msgid "Youtube film"
 #~ msgstr "Youtube ролик"
+
+#~ msgid "style=value,style2=value2,..."
+#~ msgstr ""
