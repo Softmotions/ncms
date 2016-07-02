@@ -1,11 +1,11 @@
 package com.softmotions.ncms.media;
 
+import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-import java.util.Locale;
 
 /**
  * Read-only access interface for media resources.

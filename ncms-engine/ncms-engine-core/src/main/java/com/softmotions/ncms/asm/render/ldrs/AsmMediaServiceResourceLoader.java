@@ -1,14 +1,13 @@
 package com.softmotions.ncms.asm.render.ldrs;
 
-import com.softmotions.ncms.asm.render.AsmResourceLoader;
-import com.softmotions.ncms.media.MediaReader;
-import com.softmotions.ncms.media.MediaResource;
+import java.io.IOException;
+import java.util.Locale;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import java.io.IOException;
-import java.util.Locale;
+import com.softmotions.ncms.asm.render.AsmResourceLoader;
+import com.softmotions.ncms.media.MediaReader;
+import com.softmotions.ncms.media.MediaResource;
 
 /**
  * Template loader based on {@link com.softmotions.ncms.media.MediaRepository}

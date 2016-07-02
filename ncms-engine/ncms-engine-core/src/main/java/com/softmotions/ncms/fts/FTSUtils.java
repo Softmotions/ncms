@@ -1,6 +1,12 @@
 package com.softmotions.ncms.fts;
 
-import com.softmotions.commons.cont.CollectionUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.tika.language.LanguageIdentifier;
 import org.slf4j.Logger;
@@ -13,13 +19,7 @@ import org.tartarus.snowball.ext.ItalianStemmer;
 import org.tartarus.snowball.ext.RussianStemmer;
 import org.tartarus.snowball.ext.SpanishStemmer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.StringTokenizer;
+import com.softmotions.commons.cont.CollectionUtils;
 
 /**
  * Full text search utilities.

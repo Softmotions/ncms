@@ -8,37 +8,37 @@
  */
 
 qx.Theme.define("ncms.theme.Appearance", {
-    extend : qx.theme.simple.Appearance,
-    include : [ sm.Appearance ],
+    extend: qx.theme.simple.Appearance,
+    include: [sm.Appearance],
 
-    appearances : {
+    appearances: {
 
 
-        "window/captionbar" : {
-            style : function(states) {
+        "window/captionbar": {
+            style: function (states) {
                 return {
-                    backgroundColor : states.active ? "background" : "background-disabled",
-                    padding : [8, 8, 0, 8],
-                    font : "bold"
+                    backgroundColor: states.active ? "background" : "background-disabled",
+                    padding: [8, 8, 0, 8],
+                    font: "bold"
                 };
             }
         },
 
 
-        "virtual-tree" : {
-            include : "tree",
-            alias : "tree",
+        "virtual-tree": {
+            include: "tree",
+            alias: "tree",
 
-            style : function(states) {
+            style: function (states) {
                 return {
-                    itemHeight : 24
+                    itemHeight: 24
                 };
             }
         },
 
 
-        "tree-folder" : {
-            style : function(states) {
+        "tree-folder": {
+            style: function (states) {
                 var backgroundColor;
                 if (states.selected) {
                     backgroundColor = "background-selected";
@@ -47,66 +47,66 @@ qx.Theme.define("ncms.theme.Appearance", {
                     }
                 }
                 return {
-                    padding : [0, 8, 0, 5],
-                    icon : states.opened ? "ncms/icon/22/places/folder-open.png" : "ncms/icon/22/places/folder.png",
-                    backgroundColor : backgroundColor,
-                    iconOpened : "ncms/icon/22/places/folder-open.png",
-                    opacity : (states.drag || states.locked) ? 0.5 : undefined
+                    padding: [0, 8, 0, 5],
+                    icon: states.opened ? "ncms/icon/22/places/folder-open.png" : "ncms/icon/22/places/folder.png",
+                    backgroundColor: backgroundColor,
+                    iconOpened: "ncms/icon/22/places/folder-open.png",
+                    opacity: (states.drag || states.locked) ? 0.5 : undefined
                 };
             }
         },
 
 
-        "tree-file" : {
-            include : "tree-folder",
-            alias : "tree-folder",
+        "tree-file": {
+            include: "tree-folder",
+            alias: "tree-folder",
 
-            style : function(states) {
+            style: function (states) {
                 return {
-                    icon : "icon/16/mimetypes/text-plain.png",
-                    opacity : (states.drag || states.locked) ? 0.5 : undefined
+                    icon: "icon/16/mimetypes/text-plain.png",
+                    opacity: (states.drag || states.locked) ? 0.5 : undefined
                 };
             }
         },
 
 
-        "tree-folder/icon" : {
-            include : "image",
-            style : function(states) {
+        "tree-folder/icon": {
+            include: "image",
+            style: function (states) {
                 return {
-                    padding : [0, 4, 0, 0]
+                    padding: [0, 4, 0, 0]
                 };
             }
         },
 
-        "toolbar-table/toolbar" : {
-            include : "toolbar",
-            alias : "toolbar",
+        "toolbar-table/toolbar": {
+            include: "toolbar",
+            alias: "toolbar",
 
-            style : function(states) {
+            style: function (states) {
                 return {
-                    backgroundColor : "#ededed",
-                    padding : 0
+                    backgroundColor: "#ededed",
+                    padding: 0
                 };
             }
 
         },
 
-        "atom/label" : {
-            include : "label",
-            style : function(states) {
+        "atom/label": {
+            include: "label",
+            style: function (states) {
                 return {
-                    textColor : states.disabled ? "text-disabled" : "#444"
+                    textColor: states.disabled ? "text-disabled" : "#444"
                 };
             }
         },
 
-        "button/label" : {
-            include : "atom/label"
+        "button/label": {
+            include: "atom/label"
         },
 
-        "table" : {
-            style : function(states) {
+        "table": {
+            style: function (states) {
                 var textColor;
                 if (states.disabled) {
                     textColor = "text-disabled";
@@ -131,105 +131,102 @@ qx.Theme.define("ncms.theme.Appearance", {
                     decorator = "inset";
                 }
                 return {
-                    decorator : decorator,
-                    padding : padding,
-                    textColor : textColor,
-                    backgroundColor : states.disabled ? "background-disabled" : "white"
+                    decorator: decorator,
+                    padding: padding,
+                    textColor: textColor,
+                    backgroundColor: states.disabled ? "background-disabled" : "white"
                 };
             }
         },
 
-        "splitpane/splitter" : {
-            style : function(states) {
+        "splitpane/splitter": {
+            style: function (states) {
                 return {
-                    backgroundColor : "background"
+                    backgroundColor: "background"
                 };
             }
         },
 
-        "sm-search-field/clear" : {
-            include : "atom",
-            alias : "atom",
-            style : function(states) {
+        "sm-search-field/clear": {
+            include: "atom",
+            alias: "atom",
+            style: function (states) {
                 return {
-                    icon : "ncms/icon/16/misc/cross.png",
-                    padding : 0
+                    icon: "ncms/icon/16/misc/cross.png",
+                    padding: 0
                 }
             }
         },
 
-        "ncms-main-toolbar" : {
-            alias : "toolbar",
-            include : "toolbar",
-            style : function(states) {
+        "ncms-main-toolbar": {
+            alias: "toolbar",
+            include: "toolbar",
+            style: function (states) {
                 return {
-                    backgroundColor : "background"
+                    backgroundColor: "background"
                 }
             }
         },
 
-        "ncms-main-toolbar/part" : {
-            include : "toolbar/part",
+        "ncms-main-toolbar/part": {
+            include: "toolbar/part",
 
-            style : function(states) {
+            style: function (states) {
                 return {
-                    margin : [0, 15, 0, 10]
+                    margin: [0, 15, 0, 10]
                 };
             }
         },
 
-        "ncms-tree-am" : {
-        },
+        "ncms-tree-am": {},
 
-        "ncms-tree-am/tree" : "virtual-tree",
+        "ncms-tree-am/tree": "virtual-tree",
 
 
         /* Assemblies selector */
-        "ncms-asm-selector" : {
-            style : function(states) {
-                return {
-                }
+        "ncms-asm-selector": {
+            style: function (states) {
+                return {}
             }
         },
 
         /* Media files selector */
-        "ncms-mf-selector" : {
-            style : function(states) {
-                return {
-                }
+        "ncms-mf-selector": {
+            style: function (states) {
+                return {}
             }
         },
 
         //empty placeholder on workspace pane
-        "ncms-wsa-placeholder" : {
-            style : function(states) {
+        "ncms-wsa-placeholder": {
+            style: function (states) {
                 return {
-                    backgroundColor : "background"
+                    backgroundColor: "background"
                 }
             }
         },
 
         //form on workspace pane
-        "ncms-wsa-form" : {
-            style : function(states) {
+        "ncms-wsa-form": {
+            style: function (states) {
                 return {
-                    padding : [10, 50, 10, 10],
-                    maxWidth : 700
+                    padding: [10, 50, 10, 10],
+                    maxWidth: 700
                 }
             }
         },
 
-        "wiki-editor-toolbar-button" : "toolbar-table-button",
+        "wiki-editor-toolbar-button": "toolbar-table-button",
 
-        "wiki-editor-toolbar-menubutton" : "toolbar-table-menubutton",
+        "wiki-editor-toolbar-menubutton": "toolbar-table-menubutton",
 
         // message info popup (on top of page, auto hide)
-        "ncms-info-popup" : {
-            style : function(states) {
+        "ncms-info-popup": {
+            style: function (states) {
                 return {
-                    padding : [5, 10, 5, 10],
-                    maxWidth : 350,
-                    backgroundColor : "background"
+                    padding: [5, 10, 5, 10],
+                    maxWidth: 350,
+                    backgroundColor: "background"
                 }
             }
         }

@@ -52,44 +52,42 @@
  * @asset(ncms/icon/16/actions/core_link.png)
  */
 qx.Class.define("ncms.asm.AsmEditor", {
-    extend : qx.ui.container.Scroll,
+    extend: qx.ui.container.Scroll,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
-    },
+    events: {},
 
-    properties : {
+    properties: {
 
         /**
          * Assembly ID to load in editor
          */
-        "asmId" : {
-            apply : "__applyAsmId",
-            nullable : true,
-            check : "Number"
+        "asmId": {
+            apply: "__applyAsmId",
+            nullable: true,
+            check: "Number"
         },
 
         /**
          * Set assembly JSON representation
          * of com.softmotions.ncms.asm.Asm
          */
-        "asmSpec" : {
-            apply : "__applyAsmSpec",
-            nullable : true,
-            check : "Object"
+        "asmSpec": {
+            apply: "__applyAsmSpec",
+            nullable: true,
+            check: "Object"
         }
     },
 
-    construct : function() {
+    construct: function () {
         this.base(arguments);
 
         var form = this.__form = new sm.ui.form.ExtendedForm();
         var vmgr = form.getValidationManager();
         vmgr.setRequiredFieldMessage(this.tr("This field is required"));
 
-        var el = new qx.ui.form.TextField().set({maxLength : 127});
+        var el = new qx.ui.form.TextField().set({maxLength: 127});
         el.setReadOnly(true);
         form.add(el, this.tr("Name"), null, "name");
 
@@ -100,11 +98,11 @@ qx.Class.define("ncms.asm.AsmEditor", {
         el.addListener("reset", this.__resetCore, this);
         form.add(el, this.tr("Core"), null, "core");
 
-        el = new qx.ui.form.TextField().set({maxLength : 255});
+        el = new qx.ui.form.TextField().set({maxLength: 255});
         el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Description"), null, "description");
 
-        el = new qx.ui.form.TextField().set({maxLength : 127});
+        el = new qx.ui.form.TextField().set({maxLength: 127});
         el.setPlaceholder(this.tr("Class name of an optional assembly controller"));
         el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Controller"), null, "controller");
@@ -114,31 +112,31 @@ qx.Class.define("ncms.asm.AsmEditor", {
         form.add(el, this.tr("Published"), null, "published");
 
         var tg = el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(5));
-        el.add(new qx.ui.form.RadioButton(this.tr("None")).set({model : "none"}));
-        el.add(new qx.ui.form.RadioButton(this.tr("Page")).set({model : "page"}));
-        el.add(new qx.ui.form.RadioButton(this.tr("News page")).set({model : "news"}));
+        el.add(new qx.ui.form.RadioButton(this.tr("None")).set({model: "none"}));
+        el.add(new qx.ui.form.RadioButton(this.tr("Page")).set({model: "page"}));
+        el.add(new qx.ui.form.RadioButton(this.tr("News page")).set({model: "news"}));
         el.addListener("changeSelection", this.__saveSimpleProps, this);
         form.add(el, this.tr("Template"), null, "templateMode");
 
-        var rf = el = new qx.ui.form.TextField().set({maxLength : 255});
+        var rf = el = new qx.ui.form.TextField().set({maxLength: 255});
         el.setPlaceholder(this.tr("Comma separated list of roles used to access the assembly"));
         el.setEnabled(false);
         el.addListener("changeValue", this.__saveSimpleProps, this);
         form.add(el, this.tr("Roles"), null, "accessRoles");
 
-        tg.addListener("changeSelection", function(ev) {
+        tg.addListener("changeSelection", function (ev) {
             var sel = ev.getData()[0];
             rf.setEnabled(sel != null && sel.getModel() !== "none");
         });
 
         el = new ncms.asm.AsmParentsTable();
-        el.addListener("parentsChanged", function() {
+        el.addListener("parentsChanged", function () {
             this.__reload("parents");
         }, this);
         form.add(el, this.tr("Parents"), null, "parents");
 
         el = new ncms.asm.AsmAttrsTable();
-        el.addListener("attributesChanged", function() {
+        el.addListener("attributesChanged", function () {
             this.__reload("attributes");
         }, this);
         form.add(el, this.tr("Attributes"), null, "attributes");
@@ -149,15 +147,15 @@ qx.Class.define("ncms.asm.AsmEditor", {
         this.add(fr);
     },
 
-    members : {
+    members: {
 
-        __form : null,
-
-
-        __applyProgress : false,
+        __form: null,
 
 
-        __saveSimpleProps : function() {
+        __applyProgress: false,
+
+
+        __saveSimpleProps: function () {
             if (this.__applyProgress === true || !this.__form.validate()) {
                 return;
             }
@@ -169,26 +167,26 @@ qx.Class.define("ncms.asm.AsmEditor", {
             req.setData(JSON.stringify(data));
             data["id"] = aspec["id"];
             data["type"] = aspec["type"];
-            req.send(function() {
+            req.send(function () {
                 ncms.Events.getInstance().fireDataEvent("asmPropsChanged", data);
             });
         },
 
-        __setCore : function() {
+        __setCore: function () {
             var spec = this.getAsmSpec();
             var dlg = new ncms.mmgr.MediaSelectFileDlg(
-                    true,
-                    this.tr("Select core file for '%1' assembly", spec["name"] || ''));
+                true,
+                this.tr("Select core file for '%1' assembly", spec["name"] || ''));
             dlg.setCtypeAcceptor(ncms.Utils.isTextualContentType.bind(ncms.Utils));
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 var fspec = ev.getData()[0];
                 var url = ncms.Application.ACT.getRestUrl("asms.core", spec);
                 var req = new sm.io.Request(url, "PUT", "application/json");
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify({
-                    location : fspec["folder"] + fspec["name"]
+                    location: fspec["folder"] + fspec["name"]
                 }));
-                req.send(function(resp) {
+                req.send(function (resp) {
                     var specPart = resp.getContent();
                     qx.lang.Object.mergeWith(spec, specPart, true);
                     dlg.close();
@@ -200,15 +198,15 @@ qx.Class.define("ncms.asm.AsmEditor", {
         },
 
 
-        __resetCore : function() {
-            ncms.Application.confirm(this.tr("Are you sure to remove local assembly core?"), function(ok) {
+        __resetCore: function () {
+            ncms.Application.confirm(this.tr("Are you sure to remove local assembly core?"), function (ok) {
                 if (!ok) {
                     return;
                 }
                 var spec = this.getAsmSpec();
                 var url = ncms.Application.ACT.getRestUrl("asms.core", spec);
                 var req = new sm.io.Request(url, "DELETE", "application/json");
-                req.send(function(resp) {
+                req.send(function (resp) {
                     var specPart = resp.getContent();
                     qx.lang.Object.mergeWith(spec, specPart, true);
                     //clone needed to force execution of __applyAsmSpec
@@ -217,7 +215,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
             }, this);
         },
 
-        __applyAsmId : function(value, old) {
+        __applyAsmId: function (value, old) {
             if (value == null) {
                 this.setAsmSpec(null);
                 return;
@@ -225,7 +223,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
             this.__reload();
         },
 
-        __applyAsmSpec : function(spec) {
+        __applyAsmSpec: function (spec) {
             this.__applyProgress = true;
             try {
                 if (spec == null) {
@@ -244,7 +242,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
                         ctls["accessRoles"].setValue(spec["accessRoles"].join(", "));
                     }
                     if (!sm.lang.String.isEmpty(spec["effectiveController"]) &&
-                            sm.lang.String.isEmpty(spec["controller"])) {
+                        sm.lang.String.isEmpty(spec["controller"])) {
                         ctls["controller"].setPlaceholder(spec["effectiveController"]);
                     }
                     if (sm.lang.String.isEmpty(spec["controller"])) {
@@ -275,11 +273,11 @@ qx.Class.define("ncms.asm.AsmEditor", {
             }
         },
 
-        __reload : function(part) {
+        __reload: function (part) {
             var req = new sm.io.Request(
-                    ncms.Application.ACT.getRestUrl("asms", {id : this.getAsmId()}),
-                    "GET", "application/json");
-            req.send(function(resp) {
+                ncms.Application.ACT.getRestUrl("asms", {id: this.getAsmId()}),
+                "GET", "application/json");
+            req.send(function (resp) {
                 var asmSpec = resp.getContent();
                 //Prevent overriding of non related form values in `__applyAsmSpec`
                 //if we are loading the specific 'part' of data
@@ -290,7 +288,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("__form");
     }
 });

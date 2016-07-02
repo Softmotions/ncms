@@ -1,25 +1,24 @@
 package com.softmotions.ncms.jaxrs;
 
-import com.softmotions.ncms.NcmsMessages;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.google.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.resteasy.spi.ReaderException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.resteasy.spi.ReaderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.inject.Inject;
+import com.softmotions.ncms.NcmsMessages;
 
 /**
  * Handles Ncms REST API exceptions in friendly to qooxdoo GUI clients way.
@@ -61,8 +60,8 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
         if (ex instanceof NotFoundException) {
             log.warn("HTTP 404: " + ex.getMessage());
             rb = Response.status(Response.Status.NOT_FOUND)
-                    .type(MediaType.TEXT_PLAIN_TYPE)
-                    .entity(ex.getMessage());
+                         .type(MediaType.TEXT_PLAIN_TYPE)
+                         .entity(ex.getMessage());
             rb.header("X-Softmotions-Err0", toHeaderMsg(messages.get("ncms.jaxrs.notfound")));
 
         } else if (ex instanceof NcmsMessageException) {
@@ -84,9 +83,9 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
 
         } else if (ex instanceof ForbiddenException) {
             rb = Response.status(Response.Status.FORBIDDEN)
-                    .header("X-Softmotions-Err0",
-                            toHeaderMsg(!StringUtils.isBlank(ex.getMessage()) ? ex.getMessage() :
-                                        messages.get("ncms.jaxrs.forbidden")));
+                         .header("X-Softmotions-Err0",
+                                 toHeaderMsg(!StringUtils.isBlank(ex.getMessage()) ? ex.getMessage() :
+                                             messages.get("ncms.jaxrs.forbidden")));
 
         } else if (ex instanceof JsonMappingException ||
                    ex instanceof JsonParseException ||
@@ -96,14 +95,14 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
 
             log.warn("", ex);
             rb = Response.status(Response.Status.BAD_REQUEST)
-                    .header("X-Softmotions-Err0",
-                            toHeaderMsg(!StringUtils.isBlank(ex.getMessage()) ? ex.getMessage() : ex.toString()));
+                         .header("X-Softmotions-Err0",
+                                 toHeaderMsg(!StringUtils.isBlank(ex.getMessage()) ? ex.getMessage() : ex.toString()));
         } else {
 
             log.error("", ex);
             rb = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .header("X-Softmotions-Err0",
-                            toHeaderMsg(!StringUtils.isBlank(ex.getMessage()) ? ex.getMessage() : ex.toString()));
+                         .header("X-Softmotions-Err0",
+                                 toHeaderMsg(!StringUtils.isBlank(ex.getMessage()) ? ex.getMessage() : ex.toString()));
         }
 
         return rb != null ? rb.build() : Response.serverError().build();

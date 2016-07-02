@@ -1,19 +1,19 @@
 package com.softmotions.ncms.mediawiki;
 
-import com.google.inject.Singleton;
+import java.io.IOException;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import info.bliki.htmlcleaner.Utils;
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.model.IWikiModel;
 import info.bliki.wiki.tags.HTMLTag;
 import info.bliki.wiki.tags.util.INoBodyParsingTag;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.util.Map;
-
 import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+
+import com.google.inject.Singleton;
 
 /**
  * SlideShare embedded presentation tag.
@@ -56,4 +56,4 @@ public class SlideSharePresentationTag extends HTMLTag implements INoBodyParsing
 
         buffer.append(html);
     }
- }
+}

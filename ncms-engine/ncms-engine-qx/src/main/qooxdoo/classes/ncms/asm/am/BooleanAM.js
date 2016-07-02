@@ -2,41 +2,41 @@
  * Boolean checkbox attrubute manager.
  */
 qx.Class.define("ncms.asm.am.BooleanAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Checkbox");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "boolean" ];
+        getSupportedAttributeTypes: function () {
+            return ["boolean"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        __form : null,
+        __form: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = this._form = new qx.ui.form.Form();
             var cb = this.activateValueEditorWidget(attrSpec, asmSpec);
             form.add(cb, this.tr("Boolean value"), null, "checkbox");
             return new sm.ui.form.FlexFormRenderer(form);
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             return this.valueAsJSON();
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var val = attrSpec["value"];
             var cb = new qx.ui.form.CheckBox();
             cb.setValue(val != null && (val === "true"));
@@ -44,14 +44,14 @@ qx.Class.define("ncms.asm.am.BooleanAM", {
             return cb;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             return {
-                "value" : this._valueWidget.getValue()
+                "value": this._valueWidget.getValue()
             };
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("_form");
     }
 });

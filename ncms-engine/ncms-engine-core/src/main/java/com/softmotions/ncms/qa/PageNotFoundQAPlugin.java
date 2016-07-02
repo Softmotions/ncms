@@ -10,7 +10,6 @@ public class PageNotFoundQAPlugin implements PageQAPlugin {
     public void checkPage(Asm page, PageQAContext ctx) throws Exception {
 
 
-
         //todo
     }
 }

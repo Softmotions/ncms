@@ -4,42 +4,42 @@
  * @asset(ncms/icon/16/asm/*)
  */
 qx.Class.define("ncms.asm.AsmTable", {
-    extend : sm.table.Table,
+    extend: sm.table.Table,
 
-    construct : function(useColumns) {
+    construct: function (useColumns) {
         var cmeta = {
-            icon : {
-                title : "",
-                type : "image",
-                width : 26
+            icon: {
+                title: "",
+                type: "image",
+                width: 26
             },
-            name : {
-                title : this.tr("Name").toString(),
-                width : "2*"
+            name: {
+                title: this.tr("Name").toString(),
+                width: "2*"
             },
-            description : {
-                title : this.tr("Description").toString(),
-                width : "3*"
+            description: {
+                title: this.tr("Description").toString(),
+                width: "3*"
             },
-            type : {
-                title : this.tr("Type").toString(),
-                width : "1*",
-                visible : false
+            type: {
+                title: this.tr("Type").toString(),
+                width: "1*",
+                visible: false
             }
         };
         useColumns = useColumns || ["icon", "name", "description", "type"];
         var tm = new sm.model.RemoteVirtualTableModel(cmeta).set({
-            "useColumns" : useColumns,
-            "rowdataUrl" : ncms.Application.ACT.getUrl("asms.select"),
-            "rowcountUrl" : ncms.Application.ACT.getUrl("asms.select.count")
+            "useColumns": useColumns,
+            "rowdataUrl": ncms.Application.ACT.getUrl("asms.select"),
+            "rowcountUrl": ncms.Application.ACT.getUrl("asms.select.count")
         });
 
         var custom = {
-            tableColumnModel : function() {
+            tableColumnModel: function () {
                 return new sm.model.JsonTableColumnModel(
-                        useColumns.map(function(cname) {
-                            return cmeta[cname];
-                        }));
+                    useColumns.map(function (cname) {
+                        return cmeta[cname];
+                    }));
             }
         };
 
@@ -47,7 +47,7 @@ qx.Class.define("ncms.asm.AsmTable", {
 
         var rr = new sm.table.renderer.CustomRowRenderer();
         var colorm = qx.theme.manager.Color.getInstance();
-        rr.setBgColorInterceptor(qx.lang.Function.bind(function(rowInfo) {
+        rr.setBgColorInterceptor(qx.lang.Function.bind(function (rowInfo) {
             return colorm.resolve("background");
         }, this));
         this.setDataRowRenderer(rr);
@@ -55,34 +55,34 @@ qx.Class.define("ncms.asm.AsmTable", {
         ncms.Events.getInstance().addListener("asmPropsChanged", this.__onAsmPropsChanged, this);
     },
 
-    members : {
+    members: {
 
-        getSelectedAsmInd : function() {
+        getSelectedAsmInd: function () {
             return this.getSelectionModel().getAnchorSelectionIndex();
         },
 
-        getSelectedAsm : function() {
+        getSelectedAsm: function () {
             var sind = this.getSelectedAsmInd();
             return sind != -1 ? this.getTableModel().getRowData(sind) : null;
         },
 
-        getSelectedAsms : function() {
+        getSelectedAsms: function () {
             var me = this;
             var asms = [];
-            this.getSelectionModel().iterateSelection(function(ind) {
+            this.getSelectionModel().iterateSelection(function (ind) {
                 asms.push(me.getTableModel().getRowData(ind));
             });
             return asms;
         },
 
-        cleanup : function() {
+        cleanup: function () {
             this.getTableModel().cleanup();
         },
 
-        __onAsmPropsChanged : function(ev) {
+        __onAsmPropsChanged: function (ev) {
             var data = ev.getData();
             var id = data["id"];
-            this.getTableModel().updateCachedRows(function(ind, rowdata) {
+            this.getTableModel().updateCachedRows(function (ind, rowdata) {
                 if (rowdata["id"] === id) {
                     rowdata["name"] = data["name"];
                     rowdata["description"] = data["description"];
@@ -103,7 +103,7 @@ qx.Class.define("ncms.asm.AsmTable", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         ncms.Events.getInstance().removeListener("asmPropsChanged", this.__onAsmPropsChanged, this);
     }
 });

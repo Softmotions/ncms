@@ -4,37 +4,37 @@
  * @asset(ncms/icon/16/misc/gear.png)
  */
 qx.Class.define("ncms.asm.am.TreeAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Tree/Menu");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "tree" ];
+        getSupportedAttributeTypes: function () {
+            return ["tree"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         },
 
-        NESTED_AMS : [
+        NESTED_AMS: [
             ncms.asm.am.RichRefAM
         ]
     },
 
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
-        _opts : null,
+        _opts: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = this._form = new sm.ui.form.ExtendedForm();
             var opts = this._opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
@@ -70,7 +70,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
                 el.setUserData("naClass", clazz);
                 el.setUserData("naOptions", opts[clazz.classname]);
                 el.setValue(opts[clazz.classname] != null);
-                el.addListener("iconClicked", function(ev) {
+                el.addListener("iconClicked", function (ev) {
                     this.__openNAMCSettings(ev, attrSpec, asmSpec);
                 }, this);
                 form.add(el, clazz.getDescription(), null, clazz.classname);
@@ -79,7 +79,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             return new sm.ui.form.ExtendedDoubleFormRenderer(form);
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             var opts = this._form.populateJSONObject({}, false, true);
             var items = this._form.getItems();
             for (var k in items) {
@@ -97,9 +97,9 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             return opts;
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var w = new ncms.asm.am.TreeAMValueWidget(attrSpec, asmSpec);
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 var opts = ncms.Utils.parseOptions(attrSpec["options"]);
                 var model = qx.data.marshal.Json.createModel(JSON.parse(val), true);
                 w.setModel(model);
@@ -109,7 +109,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             return w;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             var w = this._valueWidget;
             var model = w.getModel();
             if (model == null) {
@@ -120,17 +120,17 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             return model;
         },
 
-        __openNAMCSettings : function(ev, attrSpec, asmSpec) {
+        __openNAMCSettings: function (ev, attrSpec, asmSpec) {
             var w = ev.getTarget();
             var clazz = w.getUserData("naClass");
             var naOpts = ncms.Utils.parseOptions(w.getUserData("naOptions"));
             attrSpec = sm.lang.Object.shallowClone(attrSpec);
             attrSpec["options"] = naOpts;
             var dlg = new ncms.asm.am.AMWrapperDlg(clazz, attrSpec, asmSpec, {
-                mode : "options"
+                mode: "options"
             });
             //{"allowDescription":true,"allowImage":true,"image":{"width":"10","height":null,"resize":false,"restrict":false,"skipSmall":true}}
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 var data = ev.getData();
                 w.setUserData("naOptions", data);
                 dlg.close();
@@ -139,7 +139,7 @@ qx.Class.define("ncms.asm.am.TreeAM", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._opts = null;
         this._disposeObjects("_form");
     }

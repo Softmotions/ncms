@@ -2,91 +2,91 @@
  * Select box options table.
  */
 qx.Class.define("ncms.asm.am.SelectAMTable", {
-    extend : sm.table.ToolbarLocalTable,
-    implement : [
+    extend: sm.table.ToolbarLocalTable,
+    implement: [
         qx.ui.form.IStringForm,
         qx.ui.form.IForm
     ],
-    include : [
+    include: [
         sm.ui.form.MStringForm,
         sm.table.MTableMutator
     ],
 
-    properties : {
+    properties: {
 
         /**
          * Array of key-value pairs.
          */
-        data : {
-            check : "Array",
-            nullable : true,
-            apply : "__applyData"
+        data: {
+            check: "Array",
+            nullable: true,
+            apply: "__applyData"
         },
 
 
         /**
          * Item select mode
          */
-        checkMode : {
-            check : ["single", "multiply"],
-            nullable : false,
-            init : "single",
-            apply : "__applyCheckMode"
+        checkMode: {
+            check: ["single", "multiply"],
+            nullable: false,
+            init: "single",
+            apply: "__applyCheckMode"
         }
     },
 
-    construct : function(data) {
+    construct: function (data) {
         this.__broadcaster = sm.event.Broadcaster.create({
-            "up" : false,
-            "down" : false,
-            "sel" : false
+            "up": false,
+            "down": false,
+            "sel": false
         });
         this.base(arguments);
-        this.set({height : 200});
+        this.set({height: 200});
         this.setData(data || []);
     },
 
-    members : {
+    members: {
 
-        __broadcaster : null,
+        __broadcaster: null,
 
-        _setJsonTableData : function(tm, items) {
+        _setJsonTableData: function (tm, items) {
             var data = {
-                "columns" : [
+                "columns": [
                     {
-                        "title" : this.tr("Selected").toString(),
-                        "id" : "checked",
-                        "sortable" : false,
-                        "type" : "boolean",
-                        "editable" : true,
-                        "width" : 60
+                        "title": this.tr("Selected").toString(),
+                        "id": "checked",
+                        "sortable": false,
+                        "type": "boolean",
+                        "editable": true,
+                        "width": 60
                     },
                     {
-                        "title" : this.tr("Name").toString(),
-                        "id" : "name",
-                        "sortable" : false,
-                        "editable" : true,
-                        "width" : "1*"
+                        "title": this.tr("Name").toString(),
+                        "id": "name",
+                        "sortable": false,
+                        "editable": true,
+                        "width": "1*"
                     },
                     {
-                        "title" : this.tr("Value").toString(),
-                        "id" : "value",
-                        "sortable" : false,
-                        "editable" : true,
-                        "width" : "1*"
+                        "title": this.tr("Value").toString(),
+                        "id": "value",
+                        "sortable": false,
+                        "editable": true,
+                        "width": "1*"
                     }
                 ],
-                "items" : items
+                "items": items
             };
             tm.setJsonData(data);
         },
 
-        _createTable : function(tableModel) {
+        _createTable: function (tableModel) {
             var table = new sm.table.Table(tableModel, tableModel.getCustom());
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
 
-            table.addListener("dataEdited", function(ev) {
+            table.addListener("dataEdited", function (ev) {
                 var data = ev.getData();
                 if (data.col !== 0 || this.getCheckMode() === "multiply") {
                     return;
@@ -102,64 +102,64 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
                 }
             }, this);
             table.getSelectionModel()
-                    .addListener("changeSelection", this.__syncState, this);
+            .addListener("changeSelection", this.__syncState, this);
             return table;
         },
 
-        _createToolbarItems : function(toolbar) {
-            var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
+        _createToolbarItems: function (toolbar) {
+            var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
             var el = this._createButton(null, "ncms/icon/16/actions/add.png",
-                    this.__onAdd, this);
+                this.__onAdd, this);
             el.setToolTipText(this.tr("Add record"));
             part.add(el);
 
             el = this._createButton(null, "ncms/icon/16/actions/delete.png",
-                    this.__onRemove, this);
+                this.__onRemove, this);
             el.setToolTipText(this.tr("Drop record"));
             this.__broadcaster.attach(el, "sel", "enabled");
             part.add(el);
 
-            toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
+            toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
 
             part = new qx.ui.toolbar.Part()
-                    .set({"appearance" : "toolbar-table/part"});
+            .set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
 
             el = this._createButton(null, "ncms/icon/16/misc/arrow_up.png",
-                    this.__onMoveUp, this);
+                this.__onMoveUp, this);
             this.__broadcaster.attach(el, "up", "enabled");
             part.add(el);
 
             el = this._createButton(null, "ncms/icon/16/misc/arrow_down.png",
-                    this.__onMoveDown, this);
+                this.__onMoveDown, this);
             this.__broadcaster.attach(el, "down", "enabled");
             part.add(el);
 
             return toolbar;
         },
 
-        _createButton : function(label, icon, handler, self) {
-            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance" : "toolbar-table-button"});
+        _createButton: function (label, icon, handler, self) {
+            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance": "toolbar-table-button"});
             if (handler != null) {
                 bt.addListener("execute", handler, self);
             }
             return bt;
         },
 
-        __beforeContextmenuOpen : function(ev) {
+        __beforeContextmenuOpen: function (ev) {
             var rd = this.getSelectedRowData2();
             var menu = ev.getData().getTarget();
             menu.removeAll();
         },
 
-        __applyData : function(data) {
+        __applyData: function (data) {
             if (data == null) {
                 this._reload([]);
                 return;
             }
             var items = [];
-            data.forEach(function(el) {
+            data.forEach(function (el) {
                 items.push([
                     [!!el[0], el[1], el[2]],
                     {}
@@ -168,11 +168,11 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             this._reload(items);
         },
 
-        __onAdd : function(ev) {
+        __onAdd: function (ev) {
             this.addRow({}, [false, "", ""]);
         },
 
-        __onRemove : function(ev) {
+        __onRemove: function (ev) {
             var ind = this.getSelectedRowIndex();
             if (ind == -1) {
                 return;
@@ -181,15 +181,15 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             this._table.resetSelection();
         },
 
-        __onMoveUp : function() {
+        __onMoveUp: function () {
             this.moveRowByIndex(this.getSelectedRowIndex(), -1, true);
         },
 
-        __onMoveDown : function() {
+        __onMoveDown: function () {
             this.moveRowByIndex(this.getSelectedRowIndex(), 1, true);
         },
 
-        __applyCheckMode : function(val) {
+        __applyCheckMode: function (val) {
             if (val == "single") {
                 var rc = this.getTableModel().getRowCount();
                 while (--rc >= 0) {
@@ -200,7 +200,7 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             }
         },
 
-        __syncState : function() {
+        __syncState: function () {
             var rc = this.getRowCount();
             var rd = this._table.getSelectedRowData2();
             var b = this.__broadcaster;
@@ -215,7 +215,7 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             }
         },
 
-        toJSONValue : function() {
+        toJSONValue: function () {
             var rc = this.getTableModel().getRowCount();
             var arr = [];
             for (var i = 0; i < rc; ++i) {
@@ -228,7 +228,7 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         if (this.__broadcaster) {
             this.__broadcaster.destruct();
             this.__broadcaster = null;

@@ -3,7 +3,7 @@
  */
 qx.Class.define("ncms.Utils", {
 
-    statics : {
+    statics: {
 
         /**
          * Checks if all access rights specified in the {@code pattern} are included
@@ -11,7 +11,7 @@ qx.Class.define("ncms.Utils", {
          * @param accessMask {String} Access mask
          * @param pattern {String} Access mask rights to check.
          */
-        checkAccessAll : function(accessMask, pattern) {
+        checkAccessAll: function (accessMask, pattern) {
             if (pattern == null || accessMask == null) {
                 return false;
             }
@@ -32,7 +32,7 @@ qx.Class.define("ncms.Utils", {
          * @param spec {String}
          * @return {Object}
          */
-        parseOptions : function(spec) {
+        parseOptions: function (spec) {
             if (spec == null) {
                 return {};
             }
@@ -64,7 +64,7 @@ qx.Class.define("ncms.Utils", {
                 if (idx != -1 && idx < len) {
                     if (escaped) {
                         res[part.substring(0, idx).replace(/\\,/g, ",").trim()] =
-                                part.substring(idx + 1).replace(/\\,/g, ",").trim();
+                            part.substring(idx + 1).replace(/\\,/g, ",").trim();
                         escaped = false;
                     } else {
                         res[part.substring(0, idx).trim()] = part.substring(idx + 1).trim();
@@ -75,8 +75,8 @@ qx.Class.define("ncms.Utils", {
         },
 
 
-        stringifyObjectValues : function(o) {
-            Object.keys(o).forEach(function(k) {
+        stringifyObjectValues: function (o) {
+            Object.keys(o).forEach(function (k) {
                 var v = o[k];
                 if (v != null) {
                     if (typeof v === "object") {
@@ -95,7 +95,7 @@ qx.Class.define("ncms.Utils", {
          * @param ctype {String}
          * @returns {boolean}
          */
-        isImageContentType : function(ctype) {
+        isImageContentType: function (ctype) {
             if (ctype == null) {
                 return false;
             }
@@ -107,7 +107,7 @@ qx.Class.define("ncms.Utils", {
          * @param ctype {String}
          * @returns {boolean}
          */
-        isTextualContentType : function(ctype) {
+        isTextualContentType: function (ctype) {
             if (ctype == null) {
                 return false;
             }
@@ -129,7 +129,7 @@ qx.Class.define("ncms.Utils", {
          * @param pageId {Number}
          * @returns {Array}
          */
-        getPageLocalFolders : function(pageId) {
+        getPageLocalFolders: function (pageId) {
             var path = ["pages"];
             pageId = String(pageId);
             var node = [];
@@ -147,7 +147,7 @@ qx.Class.define("ncms.Utils", {
         }
     },
 
-    defer : function(statics, members) {
+    defer: function (statics, members) {
         statics.TXT_CTYPES = [
             "application/atom+xml",
             "application/rdf+xml",

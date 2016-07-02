@@ -2,28 +2,28 @@
  * Web resource reference
  */
 qx.Class.define("ncms.asm.am.WebRefAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Include web resource");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "webref" ];
+        getSupportedAttributeTypes: function () {
+            return ["webref"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
         /**
          * attrSpec example:
@@ -37,7 +37,7 @@ qx.Class.define("ncms.asm.am.WebRefAM", {
          *   "hasLargeValue" : false
          * },
          */
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
 
             var form = new qx.ui.form.Form();
             //---------- Options
@@ -45,7 +45,7 @@ qx.Class.define("ncms.asm.am.WebRefAM", {
 
             var el = new qx.ui.form.TextField();
             el.setPlaceholder(this.tr("Please specify web resource url"));
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 el.setValue(val);
             });
             form.add(el, this.tr("Location"), null, "location");
@@ -71,39 +71,39 @@ qx.Class.define("ncms.asm.am.WebRefAM", {
             return fr;
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this._form == null || !this._form.validate()) {
                 return null;
             }
             var items = this._form.getItems();
             return {
-                asLocation : items["asLocation"].getValue(),
+                asLocation: items["asLocation"].getValue(),
                 //escape : items["escape"].getValue(),
-                value : items["location"].getValue()
+                value: items["location"].getValue()
             };
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var tf = new qx.ui.form.TextField();
             tf.setPlaceholder(this.tr("Please specify web resource url"));
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 tf.setValue(val);
             });
             this._valueWidget = tf;
             return tf;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             if (this._valueWidget == null) {
                 return;
             }
             return {
-                value : this._valueWidget.getValue()
+                value: this._valueWidget.getValue()
             }
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("_form");
     }
 });

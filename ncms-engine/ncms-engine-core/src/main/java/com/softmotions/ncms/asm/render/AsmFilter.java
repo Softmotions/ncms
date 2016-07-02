@@ -1,5 +1,28 @@
 package com.softmotions.ncms.asm.render;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.mybatis.guice.transactional.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
@@ -9,30 +32,6 @@ import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.web.GenericResponseWrapper;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.StringTokenizer;
 
 /**
  * Asm handler.

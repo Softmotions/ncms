@@ -2,45 +2,43 @@
  * Assembly selector dialog window.
  */
 qx.Class.define("ncms.asm.AsmSelectorDlg", {
-    extend : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
+    events: {
         /**
          * Data: [] an array of selected asms.
          * @see ncms.asm.AsmSelector
          */
-        "completed" : "qx.event.type.Data"
+        "completed": "qx.event.type.Data"
     },
 
-    properties : {
-    },
+    properties: {},
 
-    construct : function(caption, icon, constViewSpec, useColumns) {
+    construct: function (caption, icon, constViewSpec, useColumns) {
         this.base(arguments, caption != null ? caption : this.tr("Select assembly"), icon);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
-            modal : true,
-            showMinimize : false,
-            showMaximize : true,
-            allowMaximize : true,
-            width : 620,
-            height : 400
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 620,
+            height: 400
         });
 
         var selector = this.__selector =
-                new ncms.asm.AsmSelector(
-                        constViewSpec,
-                        new qx.ui.table.selection.Model()
-                                .set({selectionMode : qx.ui.table.selection.Model.SINGLE_SELECTION}),
-                        useColumns);
+            new ncms.asm.AsmSelector(
+                constViewSpec,
+                new qx.ui.table.selection.Model()
+                .set({selectionMode: qx.ui.table.selection.Model.SINGLE_SELECTION}),
+                useColumns);
         selector.getTable().addListener("cellDbltap", this.__ok, this);
 
-        this.add(selector, {flex : 1});
+        this.add(selector, {flex: 1});
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
         hcont.setPadding(5);
 
         var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Ok"));
@@ -52,7 +50,7 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-        var cmd  = this.createCommand("Esc");
+        var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
 
         cmd = this.createCommand("Enter");
@@ -64,13 +62,13 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
         this.__syncState();
     },
 
-    members : {
+    members: {
 
-        __saveBt : null,
+        __saveBt: null,
 
-        __selector : null,
+        __selector: null,
 
-        __ok : function() {
+        __ok: function () {
             if (!this.__saveBt.getEnabled()) {
                 return;
             }
@@ -81,19 +79,19 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
             this.fireDataEvent("completed", asms)
         },
 
-        __syncState : function() {
+        __syncState: function () {
             var asms = this.__selector.getSelectedAsms();
             this.__saveBt.setEnabled(asms.length > 0);
         },
 
-        close : function() {
+        close: function () {
             this.base(arguments);
             this.destroy();
         }
 
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__selector = null;
         this.__saveBt = null;
     }

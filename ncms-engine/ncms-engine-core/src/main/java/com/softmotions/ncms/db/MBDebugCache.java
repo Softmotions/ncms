@@ -1,13 +1,13 @@
 package com.softmotions.ncms.db;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.locks.ReadWriteLock;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

@@ -4,59 +4,59 @@
  * @asset(ncms/icon/16/misc/image.png)
  */
 qx.Class.define("ncms.asm.am.ImageAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Image");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "image" ];
+        getSupportedAttributeTypes: function () {
+            return ["image"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var form = this._form = new sm.ui.form.ExtendedForm();
 
-            var wTb = new qx.ui.form.TextField().set({maxLength : 3});
+            var wTb = new qx.ui.form.TextField().set({maxLength: 3});
             if (opts["width"] != null) {
                 wTb.setValue(opts["width"]);
             }
             form.add(wTb, this.tr("Width"), sm.util.Validate.canBeRangeNumber(10, 2048, true), "width");
 
-            var hTb = new qx.ui.form.TextField().set({maxLength : 3});
+            var hTb = new qx.ui.form.TextField().set({maxLength: 3});
             if (opts["height"] != null) {
                 hTb.setValue(opts["height"]);
             }
             form.add(hTb, this.tr("Height"), sm.util.Validate.canBeRangeNumber(10, 2048, true), "height");
 
-            wTb.addListener("input", function() {
+            wTb.addListener("input", function () {
                 coverCb.setEnabled(!sm.lang.String.isEmpty(wTb.getValue()) && !sm.lang.String.isEmpty(hTb.getValue()))
             });
 
-            hTb.addListener("input", function() {
+            hTb.addListener("input", function () {
                 coverCb.setEnabled(!sm.lang.String.isEmpty(wTb.getValue()) && !sm.lang.String.isEmpty(hTb.getValue()))
             });
 
             var autoCb = new qx.ui.form.CheckBox();
             autoCb.setValue(opts["resize"] === "true");
             autoCb.setToolTipText(
-                    this.tr("Automatic image resizing to given height and width values"));
+                this.tr("Automatic image resizing to given height and width values"));
             form.add(autoCb, this.tr("Auto resize"), null, "resize");
-            autoCb.addListener("changeValue", function(ev) {
+            autoCb.addListener("changeValue", function (ev) {
                 var val = ev.getData();
                 if (val === true) {
                     restrictCb.setValue(false);
@@ -67,10 +67,10 @@ qx.Class.define("ncms.asm.am.ImageAM", {
             var coverCb = new qx.ui.form.CheckBox();
             coverCb.setValue(opts["cover"] === "true");
             coverCb.setToolTipText(
-                    this.tr("Automatic image resizing to cover given area. Image's original aspect ratio is preserved.")
+                this.tr("Automatic image resizing to cover given area. Image's original aspect ratio is preserved.")
             );
             coverCb.setEnabled(!sm.lang.String.isEmpty(wTb.getValue()) && !sm.lang.String.isEmpty(hTb.getValue()));
-            coverCb.addListener("changeValue", function(ev) {
+            coverCb.addListener("changeValue", function (ev) {
                 var val = ev.getData();
                 if (val === true) {
                     autoCb.setValue(false);
@@ -83,9 +83,9 @@ qx.Class.define("ncms.asm.am.ImageAM", {
             var restrictCb = new qx.ui.form.CheckBox();
             restrictCb.setValue(opts["restrict"] === "true");
             restrictCb.setToolTipText(
-                    this.tr("Restrict image size to given height and width values"));
+                this.tr("Restrict image size to given height and width values"));
             form.add(restrictCb, this.tr("Restrict size"), null, "restrict");
-            restrictCb.addListener("changeValue", function(ev) {
+            restrictCb.addListener("changeValue", function (ev) {
                 var val = ev.getData();
                 if (val === true) {
                     autoCb.setValue(false);
@@ -100,8 +100,9 @@ qx.Class.define("ncms.asm.am.ImageAM", {
                 skipSmall.setValue(true);
             }
             skipSmall.setToolTipText(
-                    this.tr("Skip resizing/checking image with dimensions smaller or equal to given height and width values"));
-            skipSmall.addListener("changeValue", function(ev) {
+                this.tr(
+                    "Skip resizing/checking image with dimensions smaller or equal to given height and width values"));
+            skipSmall.addListener("changeValue", function (ev) {
                 var val = ev.getData();
                 if (val === true) {
                     coverCb.setValue(false);
@@ -110,19 +111,19 @@ qx.Class.define("ncms.asm.am.ImageAM", {
             form.add(skipSmall, this.tr("Skip small"), null, "skipSmall");
 
             return new qx.ui.form.renderer.Single(form)
-                    .set({allowGrowX : false});
+            .set({allowGrowX: false});
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this._form == null || !this._form.validate()) {
                 return null;
             }
             return this._form.populateJSONObject({});
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var w = new ncms.asm.am.ImageAMValueWidget(attrSpec, asmSpec);
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 w.setModel(val);
             });
             w.setRequired(!!attrSpec["required"]);
@@ -130,12 +131,12 @@ qx.Class.define("ncms.asm.am.ImageAM", {
             return w;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             return this._valueWidget.getWidgetValue() || {};
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("_form");
     }
 });

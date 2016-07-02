@@ -3,42 +3,42 @@
  * Similar to new page popup dialog.
  */
 qx.Class.define("ncms.pgs.PageChangeOrRenameDlg", {
-    extend : ncms.pgs.PageNewDlg,
+    extend: ncms.pgs.PageNewDlg,
 
-    construct : function(spec) {
+    construct: function (spec) {
         this._spec = spec;
         this.base(arguments);
     },
 
-    members : {
+    members: {
 
-        _spec : null,
+        _spec: null,
 
-        _configureForm : function() {
+        _configureForm: function () {
             this.base(arguments);
             var items = this._form.getItems();
             items["name"].setValue(this._spec["label"]);
             items["container"].setValue((this._spec["status"] & 1) != 0);
         },
 
-        _save : function() {
+        _save: function () {
             var items = this._form.getItems();
             var data = {
-                id : this._spec["id"],
-                name : items["name"].getValue(),
-                type : items["container"].getValue() ? "page.folder" : "page"
+                id: this._spec["id"],
+                name: items["name"].getValue(),
+                type: items["container"].getValue() ? "page.folder" : "page"
             };
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.update.basic"), "PUT");
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
-            req.send(function(resp) {
+            req.send(function (resp) {
                 this.fireDataEvent("completed", data);
             }, this);
         }
 
     },
 
-    destruct : function() {
+    destruct: function () {
         //this._disposeObjects("__field_name");
     }
 });

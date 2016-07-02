@@ -1,17 +1,17 @@
 package com.softmotions.ncms.mediawiki;
 
+import java.io.IOException;
+import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.model.IWikiModel;
 import info.bliki.wiki.tags.HTMLTag;
 import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import com.google.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.regex.Pattern;
 
 /**
  * Google map tag.

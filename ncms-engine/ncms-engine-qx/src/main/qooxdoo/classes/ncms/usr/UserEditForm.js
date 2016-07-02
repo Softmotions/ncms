@@ -2,16 +2,16 @@
  * Panel for editing user general information
  */
 qx.Class.define("ncms.usr.UserEditForm", {
-    extend : qx.ui.container.Composite,
+    extend: qx.ui.container.Composite,
 
-    events : {
+    events: {
         /**
          * Data: updated user data.
          */
-        "userUpdated" : "qx.event.type.Data"
+        "userUpdated": "qx.event.type.Data"
     },
 
-    construct : function(editable) {
+    construct: function (editable) {
         this.base(arguments);
         this.setLayout(new qx.ui.layout.VBox(5));
 
@@ -42,9 +42,10 @@ qx.Class.define("ncms.usr.UserEditForm", {
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
         fr._getLayout().setRowFlex(fr._row - 1, 1);
-        this.add(fr, {flex : 1});
+        this.add(fr, {flex: 1});
 
-        var hcont = this.__buttonsCont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = this.__buttonsCont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set(
+            {"alignX": "right"}));
         hcont.setPadding(5);
 
         var bt = new qx.ui.form.Button(this.tr("Save"));
@@ -58,30 +59,33 @@ qx.Class.define("ncms.usr.UserEditForm", {
         this.add(hcont);
     },
 
-    members : {
-        __form : null,
+    members: {
+        __form: null,
 
-        __user : null,
+        __user: null,
 
-        __buttonsCont : null,
+        __buttonsCont: null,
 
-        __editable : null,
+        __editable: null,
 
-        setUser : function(name) {
+        setUser: function (name) {
             this.__user = name;
             this.__form.reset();
             var fitems = this.__form.getItems();
 
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : this.__user}), "GET", "application/json");
-            req.send(function(resp) {
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user",
+                {name: this.__user}), "GET", "application/json");
+            req.send(function (resp) {
                 var data = resp.getContent();
                 fitems["name"].setEnabled(false);
                 fitems["name"].setValue(data["name"]);
                 fitems["fullName"].setEnabled(this.__editable);
                 fitems["fullName"].setValue(data["fullName"]);
-                fitems["email"].setEnabled(this.__editable);;
+                fitems["email"].setEnabled(this.__editable);
+                ;
                 fitems["email"].setValue(data["email"]);
-                fitems["password"].setEnabled(this.__editable);;
+                fitems["password"].setEnabled(this.__editable);
+                ;
                 fitems["password"].setRequired(false);
                 fitems["password"].setValue(null);
                 fitems["passwordCfrm"].setEnabled(this.__editable);
@@ -100,30 +104,31 @@ qx.Class.define("ncms.usr.UserEditForm", {
             }, this);
         },
 
-        __save : function() {
+        __save: function () {
             if (!this.__form.validate() || !this.__editable) {
                 return;
             }
 
             var fitems = this.__form.getItems();
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : fitems["name"].getValue()}), "POST", "application/json");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user",
+                {name: fitems["name"].getValue()}), "POST", "application/json");
             req.setParameter("email", fitems["email"].getValue());
             req.setParameter("fullname", fitems["fullName"].getValue());
             if (!!fitems["password"].getValue() && qx.lang.String.trimLeft(fitems["password"].getValue()) != "") {
                 req.setParameter("password", fitems["password"].getValue());
             }
 
-            req.send(function(resp) {
+            req.send(function (resp) {
                 this.fireDataEvent("userUpdated", resp.getContent());
                 this.setUser(this.__user);
             }, this);
         },
 
-        __cancel : function() {
+        __cancel: function () {
             this.setUser(this.__user);
         },
 
-        __passwordCfrmValidator : function(value, item) {
+        __passwordCfrmValidator: function (value, item) {
             var password = this.__form.getItems()["password"].getValue();
             if (!!password && !value) {
                 item.setValid(false);
@@ -138,7 +143,7 @@ qx.Class.define("ncms.usr.UserEditForm", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__user = null;
         this.__editable = null;
         this.__buttonsCont = null;

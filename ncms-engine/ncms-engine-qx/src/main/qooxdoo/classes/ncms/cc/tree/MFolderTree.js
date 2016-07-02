@@ -8,7 +8,7 @@
  */
 qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
-    events : {
+    events: {
 
         /**
          * DATA: var item = {
@@ -20,17 +20,17 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          *       };
          * or null if selection cleared
          */
-        itemSelected : "qx.event.type.Data",
+        itemSelected: "qx.event.type.Data",
 
 
-        "treeLoaded" : "qx.event.type.Event"
+        "treeLoaded": "qx.event.type.Event"
     },
 
-    members : {
+    members: {
 
-        _treeConfig : null,
+        _treeConfig: null,
 
-        _tree : null,
+        _tree: null,
 
 
         /**
@@ -52,29 +52,29 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          *   iconConverter : {Function?}
          * }
          */
-        _initTree : function(cfg) {
+        _initTree: function (cfg) {
             cfg = this._treeConfig = cfg || {};
             var me = this;
             var root = qx.data.marshal.Json.createModel({
-                "id" : null, //generic node ID
-                "label" : (cfg["rootLabel"] || this.tr("Root")),   // node name
-                "status" : 1,       // (statis & 1) != 0 - it is folder, == 0 - otherwise
-                "icon" : "default", // icon alias
-                "loaded" : true,    // is loaded
-                "children" : []     // node children
+                "id": null, //generic node ID
+                "label": (cfg["rootLabel"] || this.tr("Root")),   // node name
+                "status": 1,       // (statis & 1) != 0 - it is folder, == 0 - otherwise
+                "icon": "default", // icon alias
+                "loaded": true,    // is loaded
+                "children": []     // node children
             }, true);
 
-            this._loadChildren(root, function() {
+            this._loadChildren(root, function () {
                 var tree = this._tree = new sm.ui.tree.ExtendedVirtualTree(root, "label", "children");
                 tree.setHideRoot(false);
                 tree.setIconPath("icon");
                 if (typeof cfg["iconConverter"] === "function") {
                     tree.setIconOptions({
-                        converter : cfg["iconConverter"]
+                        converter: cfg["iconConverter"]
                     });
                 } else {
                     tree.setIconOptions({
-                        converter : function(value, model, source, target) {
+                        converter: function (value, model, source, target) {
                             switch (value) {
                                 case "default":
                                     if (model.getChildren != null) {
@@ -94,7 +94,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                 var cfgDelegate = cfg["delegate"];
                 var delegate = {
 
-                    createItem : function() {
+                    createItem: function () {
                         if (cfgDelegate && typeof cfgDelegate["createItem"] === "function") {
                             return cfgDelegate["createItem"]();
                         } else {
@@ -102,20 +102,20 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                         }
                     },
 
-                    configureItem : function(item) {
+                    configureItem: function (item) {
                         item.setOpenSymbolMode("always");
                         if (cfgDelegate && typeof cfgDelegate["configureItem"] === "function") {
                             cfgDelegate["configureItem"]();
                         }
                     },
 
-                    bindItem : function(controller, item, index) {
+                    bindItem: function (controller, item, index) {
                         controller.bindDefaultProperties(item, index);
                         controller.bindProperty("", "open", {
-                            converter : function(value, model, source, target) {
+                            converter: function (value, model, source, target) {
                                 var open = target.isOpen();
                                 if (open && !value.getLoaded()) {
-                                    me._loadChildren(value, function() {
+                                    me._loadChildren(value, function () {
                                         value.setLoaded(true);
                                     });
                                 }
@@ -133,7 +133,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                 }
 
                 tree.setDelegate(delegate);
-                tree.getSelection().addListener("change", function(e) {
+                tree.getSelection().addListener("change", function (e) {
                     this._onSelected(e.getTarget().getItem(0));
                 }, this);
 
@@ -142,14 +142,14 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             }, this);
         },
 
-        addTree : function(tree) {
+        addTree: function (tree) {
             this._add(tree);
         },
 
-        _getItemPathSegments : function(item) {
+        _getItemPathSegments: function (item) {
             if (this._tree == null ||
-                    item == null ||
-                    item == this._tree.getModel()) {
+                item == null ||
+                item == this._tree.getModel()) {
                 return [];
             }
             var cfg = this._treeConfig;
@@ -164,7 +164,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             return path;
         },
 
-        _getItemParentId : function(item) {
+        _getItemParentId: function (item) {
             if (item == null) {
                 return null;
             }
@@ -173,7 +173,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
         },
 
-        _getItemParentLabel : function(item) {
+        _getItemParentLabel: function (item) {
             if (item == null) {
                 return null;
             }
@@ -181,9 +181,9 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             return pp != null ? pp.getId() : null;
         },
 
-        _refreshNode : function(node, cb, self) {
+        _refreshNode: function (node, cb, self) {
             if (this._tree.isNode(node)) {
-                this._loadChildren(node, function() {
+                this._loadChildren(node, function () {
                     this._tree.openNodeAndParents(node);
                     if (cb != null) {
                         cb.call(self);
@@ -198,14 +198,14 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             }
         },
 
-        _onSelected : function(item) {
+        _onSelected: function (item) {
             var cfg = this._treeConfig;
             var data = (item == null || (cfg["selectRootAsNull"] && item == this._tree.getModel())) ? null : {
-                "id" : item.getId(),
-                "label" : item.getLabel(),
-                "status" : item.getStatus(),
-                "path" : this._getItemPathSegments(item),
-                "accessMask" : (item.getAccessMask != null) ? item.getAccessMask() : null
+                "id": item.getId(),
+                "label": item.getLabel(),
+                "status": item.getStatus(),
+                "path": this._getItemPathSegments(item),
+                "accessMask": (item.getAccessMask != null) ? item.getAccessMask() : null
 
             };
             if (this.hasListener("itemSelected")) {
@@ -213,15 +213,15 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             }
         },
 
-        _loadChildren : function(parent, cb, self) {
+        _loadChildren: function (parent, cb, self) {
             var cfg = this._treeConfig;
             var url = ncms.Application.ACT.getRestUrl(cfg["action"],
-                    this._getItemPathSegments(parent));
+                this._getItemPathSegments(parent));
             var req = new sm.io.Request(url, "GET", "application/json");
             if (typeof cfg["setupChildrenRequestFn"] === "function") {
                 cfg["setupChildrenRequestFn"].call(this, req);
             }
-            req.send(function(resp) {
+            req.send(function (resp) {
                 var data = resp.getContent();
                 var children = parent.getChildren();
                 children.removeAll();
@@ -235,8 +235,8 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                         node["loaded"] = false;
                         node["children"] = [
                             {
-                                label : "Loading",
-                                icon : "loading"
+                                label: "Loading",
+                                icon: "loading"
                             }
                         ]
                     } else {
@@ -251,7 +251,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._treeConfig = null;
         this._tree = null;
     }

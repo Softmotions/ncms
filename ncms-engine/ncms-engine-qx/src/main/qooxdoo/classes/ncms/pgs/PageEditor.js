@@ -2,15 +2,13 @@
  * Generic page editor.
  */
 qx.Class.define("ncms.pgs.PageEditor", {
-    extend : qx.ui.tabview.TabView,
+    extend: qx.ui.tabview.TabView,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
-    },
+    events: {},
 
-    properties : {
+    properties: {
 
         /**
          * pageSpec:
@@ -19,17 +17,17 @@ qx.Class.define("ncms.pgs.PageEditor", {
          *   name : {String} Page name
          * }
          */
-        "pageSpec" : {
-            check : "Object",
-            nullable : true,
-            event : "changePage",
-            apply : "_applyPageSpec"
+        "pageSpec": {
+            check: "Object",
+            nullable: true,
+            event: "changePage",
+            apply: "_applyPageSpec"
         }
     },
 
-    construct : function() {
+    construct: function () {
         this.base(arguments, "top");
-        this.set({padding : 5, paddingLeft : 0 });
+        this.set({padding: 5, paddingLeft: 0});
 
         var page = this._createInfoPage();
         if (page != null) {
@@ -45,16 +43,16 @@ qx.Class.define("ncms.pgs.PageEditor", {
         }
     },
 
-    members : {
+    members: {
 
-        _infoPane : null,
+        _infoPane: null,
 
-        _editPane : null,
+        _editPane: null,
 
-        _accessPane : null,
+        _accessPane: null,
 
 
-        getFirstModifiedPane : function() {
+        getFirstModifiedPane: function () {
             var editors = this.getChildren();
             for (var i = 0; i < editors.length; ++i) {
                 if (editors[i].getModified() === true) {
@@ -64,7 +62,7 @@ qx.Class.define("ncms.pgs.PageEditor", {
             return null;
         },
 
-        resetModifiedState : function() {
+        resetModifiedState: function () {
             var editors = this.getChildren();
             for (var i = 0; i < editors.length; ++i) {
                 if (editors[i].getModified() === true) {
@@ -73,14 +71,14 @@ qx.Class.define("ncms.pgs.PageEditor", {
             }
         },
 
-        _createInfoPage : function() {
+        _createInfoPage: function () {
             var page = new ncms.pgs.PageEditorInfoPage();
             this.bind("pageSpec", page, "pageSpec");
             this._infoPane = page;
             return page;
         },
 
-        _createEditPage : function() {
+        _createEditPage: function () {
             var page = new ncms.pgs.PageEditorEditPage();
             this.bind("pageSpec", page, "pageSpec");
             page.addListener("modified", this.__onModified, this);
@@ -88,7 +86,7 @@ qx.Class.define("ncms.pgs.PageEditor", {
             return page;
         },
 
-        _createAccessPane : function() {
+        _createAccessPane: function () {
             var page = new ncms.pgs.PageEditorAccessPane();
             this.bind("pageSpec", page, "pageSpec");
             page.addListener("modified", this.__onModified, this);
@@ -96,17 +94,17 @@ qx.Class.define("ncms.pgs.PageEditor", {
             return page;
         },
 
-        __onModified : function() {
+        __onModified: function () {
             var awp = ncms.Application.getActiveWorkspace();
             if (awp) {
                 awp.setEnabled(this.getFirstModifiedPane() == null);
             }
         },
 
-        _applyPageSpec : function(spec) {
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.rights", {pid : spec["id"]}),
-                    "GET", "text/plain");
-            req.send(function(resp) {
+        _applyPageSpec: function (spec) {
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.rights", {pid: spec["id"]}),
+                "GET", "text/plain");
+            req.send(function (resp) {
                 var am = String(resp.getContent());
                 if (this._editPane) {
                     this._editPane.setEnabled(am != null && am.indexOf("w") != -1);
@@ -122,7 +120,7 @@ qx.Class.define("ncms.pgs.PageEditor", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._infoPane = null;
         this._editPane = null;
         this._accessPane = null;

@@ -6,21 +6,21 @@
  */
 qx.Mixin.define("ncms.pgs.MPageEditorPane", {
 
-    events : {
+    events: {
         /**
          * Fired if pane should be populated by page specific data
          *
          * Data: pageSpec property value.
          */
-        "loadPane" : "qx.event.type.Data",
+        "loadPane": "qx.event.type.Data",
 
         /**
          * Fired if pane should be cleared.
          */
-        "clearPane" : "qx.event.type.Event"
+        "clearPane": "qx.event.type.Event"
     },
 
-    properties : {
+    properties: {
 
         /**
          * pageSpec:
@@ -31,10 +31,10 @@ qx.Mixin.define("ncms.pgs.MPageEditorPane", {
          *
          * @see ncms.pgs.PageEditor
          */
-        "pageSpec" : {
-            check : "Object",
-            nullable : true,
-            apply : "__applyPageSpec"
+        "pageSpec": {
+            check: "Object",
+            nullable: true,
+            apply: "__applyPageSpec"
         },
 
 
@@ -42,28 +42,28 @@ qx.Mixin.define("ncms.pgs.MPageEditorPane", {
          * If editor data is modified by user
          * and needs to be saved
          */
-        modified : {
-            check : "Boolean",
-            nullable : false,
-            init : false,
-            event : "modified",
-            apply : "_applyModified"
+        modified: {
+            check: "Boolean",
+            nullable: false,
+            init: false,
+            event: "modified",
+            apply: "_applyModified"
         }
     },
 
-    construct : function() {
-        this.addListener("appear", function() {
+    construct: function () {
+        this.addListener("appear", function () {
             if (this.__stateDeffered) {
                 this.__applyPageSpec(this.getPageSpec());
             }
         }, this);
     },
 
-    members : {
+    members: {
 
-        __stateDeffered : false,
+        __stateDeffered: false,
 
-        __applyPageSpec : function(spec) {
+        __applyPageSpec: function (spec) {
             if (!this.isVisible()) {
                 this.__stateDeffered = true;
                 return;

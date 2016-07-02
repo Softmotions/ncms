@@ -1,10 +1,9 @@
 package com.softmotions.ncms.qa;
 
-import com.softmotions.ncms.NcmsEnvironment;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.Multibinder;
+import com.softmotions.ncms.NcmsEnvironment;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

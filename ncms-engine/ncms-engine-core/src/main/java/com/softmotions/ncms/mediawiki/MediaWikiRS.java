@@ -1,18 +1,10 @@
 package com.softmotions.ncms.mediawiki;
 
-import info.bliki.wiki.filter.Encoder;
-import com.softmotions.commons.ctype.CTypeUtils;
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.ncms.media.MediaRepository;
-import com.softmotions.ncms.media.MediaResource;
-
-import com.google.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jboss.resteasy.plugins.providers.html.Redirect;
-
+import java.net.IDN;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
@@ -22,11 +14,19 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import java.net.IDN;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jboss.resteasy.plugins.providers.html.Redirect;
+
+import info.bliki.wiki.filter.Encoder;
+
+import com.google.inject.Inject;
+import com.softmotions.commons.ctype.CTypeUtils;
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.ncms.media.MediaRepository;
+import com.softmotions.ncms.media.MediaResource;
 
 /**
  * Media-wiki services.
@@ -123,7 +123,7 @@ public class MediaWikiRS {
 
     /**
      * Perform external link processing.
-     *
+     * <p/>
      * <p>According to
      * {@link <a href="http://download.oracle.com/otn-pub/jcp/jaxrs-2_0-fr-eval-spec/jsr339-jaxrs-2.0-final-spec.pdf">
      * JAX-RS specification section 3.7.3</a>}:

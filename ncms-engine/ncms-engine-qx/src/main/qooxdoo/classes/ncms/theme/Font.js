@@ -3,8 +3,7 @@
  ************************************************************************ */
 
 qx.Theme.define("ncms.theme.Font", {
-    extend : qx.theme.simple.Font,
+    extend: qx.theme.simple.Font,
 
-    fonts : {
-    }
+    fonts: {}
 });

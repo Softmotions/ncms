@@ -1,24 +1,24 @@
 package com.softmotions.ncms.mediawiki;
 
-import info.bliki.wiki.filter.ITextConverter;
-import info.bliki.wiki.model.IWikiModel;
-import info.bliki.wiki.tags.HTMLTag;
-import info.bliki.wiki.tags.util.INoBodyParsingTag;
-import com.softmotions.commons.cont.Pair;
-
-import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import info.bliki.wiki.filter.ITextConverter;
+import info.bliki.wiki.model.IWikiModel;
+import info.bliki.wiki.tags.HTMLTag;
+import info.bliki.wiki.tags.util.INoBodyParsingTag;
+
+import com.google.inject.Singleton;
+import com.softmotions.commons.cont.Pair;
 
 /**
  * <code>

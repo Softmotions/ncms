@@ -103,13 +103,15 @@ public interface MediaResource {
 
     /**
      * Width of image.
+     *
      * @return -1 if width is not known
      */
     int getImageWidth();
 
     /**
      * Height of image.
-     *  @return -1 if width is not known
+     *
+     * @return -1 if width is not known
      */
     int getImageHeight();
 

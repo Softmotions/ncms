@@ -5,42 +5,42 @@
  * @asset(ncms/icon/16/actions/delete.png)
  */
 qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
-    extend : sm.table.ToolbarLocalTable,
-    implement : [ qx.ui.form.IModel,
-                  ncms.asm.am.IValueWidget ],
-    include : [ ncms.asm.am.MValueWidget,
-                sm.table.MTableMutator ],
+    extend: sm.table.ToolbarLocalTable,
+    implement: [qx.ui.form.IModel,
+        ncms.asm.am.IValueWidget],
+    include: [ncms.asm.am.MValueWidget,
+        sm.table.MTableMutator],
 
-    events : {
+    events: {
         /** Fired when the model data changes */
-        "changeModel" : "qx.event.type.Data"
+        "changeModel": "qx.event.type.Data"
     },
 
 
-    construct : function(asmSpec, attrSpec) {
+    construct: function (asmSpec, attrSpec) {
         this.__asmSpec = asmSpec;
         this.__attrSpec = attrSpec;
         this.__broadcaster = sm.event.Broadcaster.create({
-            "del" : false
+            "del": false
         });
 
         this.base(arguments);
-        this.set({height : 200});
+        this.set({height: 200});
         this._reload([]);
     },
 
 
-    members : {
+    members: {
 
-        __broadcaster : null,
+        __broadcaster: null,
 
-        __asmSpec : null,
+        __asmSpec: null,
 
-        __attrSpec : null,
+        __attrSpec: null,
 
-        _createTable : function(tm) {
+        _createTable: function (tm) {
             var custom = tm.getCustom() || {};
-            custom["selectionModel"] = function() {
+            custom["selectionModel"] = function () {
                 var res = new qx.ui.table.selection.Model();
                 res.setSelectionMode(qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION);
                 return res;
@@ -48,17 +48,18 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
             var table = new sm.table.Table(tm, custom);
             table.getSelectionModel().addListener("changeSelection", this.__syncState, this);
             table.set({
-                showCellFocusIndicator : false,
-                statusBarVisible : false,
-                focusCellOnPointerMove : false});
+                showCellFocusIndicator: false,
+                statusBarVisible: false,
+                focusCellOnPointerMove: false
+            });
 
             table.setContextMenu(new qx.ui.menu.Menu());
             table.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             return table;
         },
 
-        _createToolbarItems : function(toolbar) {
-            var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
+        _createToolbarItems: function (toolbar) {
+            var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
 
             var bt = this._createButton(null, "ncms/icon/16/misc/image-plus.png");
@@ -80,15 +81,15 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
             return toolbar;
         },
 
-        _createButton : function(label, icon, handler, self) {
-            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance" : "toolbar-table-button"});
+        _createButton: function (label, icon, handler, self) {
+            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance": "toolbar-table-button"});
             if (handler != null) {
                 bt.addListener("execute", handler, self);
             }
             return bt;
         },
 
-        __beforeContextmenuOpen : function(ev) {
+        __beforeContextmenuOpen: function (ev) {
             var rd = this.getSelectedRowData();
             var menu = ev.getData().getTarget();
             menu.removeAll();
@@ -108,39 +109,39 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
             }
         },
 
-        _setJsonTableData : function(tm, items) {
+        _setJsonTableData: function (tm, items) {
             var data = {
-                "columns" : [
+                "columns": [
                     {
-                        "title" : this.tr("Image/video").toString(),
-                        "id" : "resource",
-                        "sortable" : true,
-                        "width" : "1*"
+                        "title": this.tr("Image/video").toString(),
+                        "id": "resource",
+                        "sortable": true,
+                        "width": "1*"
                     },
                     {
-                        "title" : this.tr("Title").toString(),
-                        "id" : "description",
-                        "sortable" : false,
-                        "width" : "2*"
+                        "title": this.tr("Title").toString(),
+                        "id": "description",
+                        "sortable": false,
+                        "width": "2*"
                     }
                 ],
-                "items" : items
+                "items": items
             };
             tm.setJsonData(data);
             this.__syncState();
         },
 
-        __addImages : function() {
+        __addImages: function () {
             var asmSpec = this.__asmSpec;
             var dlg = new ncms.mmgr.PageFilesSelectorDlg(
-                    asmSpec["id"],
-                    this.tr("Add images into the media gallery"), {
-                        allowModify : true,
-                        linkText : false,
-                        smode : qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION
-                    });
+                asmSpec["id"],
+                this.tr("Add images into the media gallery"), {
+                    allowModify: true,
+                    linkText: false,
+                    smode: qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION
+                });
             dlg.setCtypeAcceptor(ncms.Utils.isImageContentType.bind(ncms.Utils));
-            dlg.addListener("completed", function(evt) {
+            dlg.addListener("completed", function (evt) {
                 var files = dlg.getSelectedFiles();
                 this.__pushFiles(files);
                 dlg.close();
@@ -148,30 +149,30 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
             dlg.open();
         },
 
-        __pushFiles : function(files) {
-            files.forEach(function(f) {
+        __pushFiles: function (files) {
+            files.forEach(function (f) {
                 this.addRow(f["id"], [f["name"], f["description"]]);
             }, this);
             this.fireEvent("modified");
         },
 
-        __addVideo : function() {
+        __addVideo: function () {
             qx.log.Logger.info("Add video!!!");
         },
 
 
-        __delete : function() {
+        __delete: function () {
             this.removeSelected();
             this.__syncState();
             this.fireEvent("modified");
         },
 
-        __syncState : function() {
+        __syncState: function () {
             var rd = this.getSelectedRowData();
             this.__broadcaster.setDel(rd != null);
         },
 
-        setModel : function(model) {
+        setModel: function (model) {
             if (!Array.isArray(model)) {
                 model = [];
             }
@@ -179,7 +180,7 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
             this.fireDataEvent("changeModel", model);
         },
 
-        getModel : function() {
+        getModel: function () {
             var tm = this._table.getTableModel();
             if (tm == null) {
                 return [];
@@ -187,13 +188,13 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
             return tm.getData();
         },
 
-        resetModel : function() {
+        resetModel: function () {
             this.setModel([]);
         }
 
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__asmSpec = null;
         this.__attrSpec = null;
         this._disposeObjects("__broadcaster");

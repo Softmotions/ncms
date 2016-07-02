@@ -1,9 +1,8 @@
 package com.softmotions.ncms.asm.render.httl;
 
-import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
+import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

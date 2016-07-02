@@ -1,9 +1,9 @@
 package com.softmotions.ncms.asm.render;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * Assembly {@link com.softmotions.ncms.asm.Asm} renderer.

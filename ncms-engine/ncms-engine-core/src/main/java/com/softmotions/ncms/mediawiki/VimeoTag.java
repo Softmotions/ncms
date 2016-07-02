@@ -1,5 +1,10 @@
 package com.softmotions.ncms.mediawiki;
 
+import java.io.IOException;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import info.bliki.htmlcleaner.Utils;
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.model.IWikiModel;
@@ -7,11 +12,6 @@ import info.bliki.wiki.tags.HTMLTag;
 import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * Vimeo embedded player tag.

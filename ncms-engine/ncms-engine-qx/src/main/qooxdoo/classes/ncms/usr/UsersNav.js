@@ -2,21 +2,19 @@
  * Users navigation pane.
  */
 qx.Class.define("ncms.usr.UsersNav", {
-    extend : qx.ui.tabview.TabView,
+    extend: qx.ui.tabview.TabView,
 
-    statics : {
-        USER_EDITOR_CLAZZ : "ncms.usr.UserEditor"
+    statics: {
+        USER_EDITOR_CLAZZ: "ncms.usr.UserEditor"
     },
 
-    events : {
-    },
+    events: {},
 
-    properties : {
-    },
+    properties: {},
 
-    construct : function() {
+    construct: function () {
         this.base(arguments, "top");
-        this.set({paddingTop : 5, paddingBottom : 5});
+        this.set({paddingTop: 5, paddingBottom: 5});
 
         this.__selectors = [];
         var page = new qx.ui.tabview.Page(this.tr("All"));
@@ -29,7 +27,7 @@ qx.Class.define("ncms.usr.UsersNav", {
 
         page = new qx.ui.tabview.Page(this.tr("Active only"));
         page.setLayout(new qx.ui.layout.Grow());
-        us = new ncms.usr.UserSelector({onlyActive : true});
+        us = new ncms.usr.UserSelector({onlyActive: true});
         this.__selectors.push(us);
         us.addListener("userSelected", this.__userSelected, this);
         page.add(us);
@@ -37,24 +35,24 @@ qx.Class.define("ncms.usr.UsersNav", {
 
         var req = new sm.io.Request(ncms.Application.ACT.getUrl("security.settings"), "GET", "application/json");
         req.setAsynchronous(false);
-        req.send(function(resp) {
+        req.send(function (resp) {
             var settings = resp.getContent() || {};
             var userEditable = !!settings["usersWritable"];
             var accessEditable = !!settings["usersAccessWritable"];
 
             var eclazz = ncms.usr.UsersNav.USER_EDITOR_CLAZZ;
             var app = ncms.Application.INSTANCE;
-            app.registerWSA(eclazz, function() {
+            app.registerWSA(eclazz, function () {
                 return new ncms.usr.UserEditor(userEditable, accessEditable);
             }, null, this);
 
-            this.addListener("disappear", function() {
+            this.addListener("disappear", function () {
                 //Navigation side is inactive so hide user editor pane if it not done already
                 if (app.getActiveWSAID() == eclazz) {
                     app.showDefaultWSA();
                 }
             }, this);
-            this.addListener("appear", function() {
+            this.addListener("appear", function () {
                 if (app.getActiveWSAID() != eclazz && this.__getSelectedUser() != null) {
                     app.showWSA(eclazz);
                 }
@@ -66,16 +64,16 @@ qx.Class.define("ncms.usr.UsersNav", {
             }
         }, this);
 
-        this.addListener("changeSelection", function(ev){
+        this.addListener("changeSelection", function (ev) {
             ev.getData()[0].getChildren()[0].reload();
         }, this);
     },
 
-    members : {
+    members: {
 
-        __selectors : null,
+        __selectors: null,
 
-        __userSelected : function(ev) {
+        __userSelected: function (ev) {
             var data = ev.getData();
             var app = ncms.Application.INSTANCE;
             var eclazz = ncms.usr.UsersNav.USER_EDITOR_CLAZZ;
@@ -88,11 +86,11 @@ qx.Class.define("ncms.usr.UsersNav", {
             app.showWSA(eclazz);
         },
 
-        __getSelectedUser : function() {
+        __getSelectedUser: function () {
             return this.getSelection()[0].getChildren()[0].getSelectedUser();
         },
 
-        __beforeContextmenuOpen : function(ev) {
+        __beforeContextmenuOpen: function (ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
 
@@ -108,9 +106,9 @@ qx.Class.define("ncms.usr.UsersNav", {
             }
         },
 
-        __onNewUser : function(ev) {
+        __onNewUser: function (ev) {
             var dlg = new ncms.usr.UserNewDlg();
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 dlg.close();
                 for (var i = 0; i < this.__selectors.length; ++i) {
                     this.__selectors[i].reload();
@@ -119,32 +117,33 @@ qx.Class.define("ncms.usr.UsersNav", {
             dlg.open();
         },
 
-        __onRemoveUser : function(ev) {
+        __onRemoveUser: function (ev) {
             var user = this.__getSelectedUser();
             if (user == null) {
                 return;
             }
             ncms.Application.confirm(
-                    this.tr("Are you sure to remove user: \"%1\"?", user["name"]),
-                    function(yes) {
-                        if (!yes) return;
-                        var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : user["name"]}), "DELETE");
-                        req.send(function(resp) {
-                            for (var i = 0; i < this.__selectors.length; ++i) {
-                                this.__selectors[i].reload();
-                            }
-                        }, this);
+                this.tr("Are you sure to remove user: \"%1\"?", user["name"]),
+                function (yes) {
+                    if (!yes) return;
+                    var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user",
+                        {name: user["name"]}), "DELETE");
+                    req.send(function (resp) {
+                        for (var i = 0; i < this.__selectors.length; ++i) {
+                            this.__selectors[i].reload();
+                        }
                     }, this);
+                }, this);
         },
 
-        __userUpdated : function(ev) {
+        __userUpdated: function (ev) {
             for (var i = 0; i < this.__selectors.length; ++i) {
                 this.__selectors[i].reloadData();
             }
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__selectors = null;
     }
 });

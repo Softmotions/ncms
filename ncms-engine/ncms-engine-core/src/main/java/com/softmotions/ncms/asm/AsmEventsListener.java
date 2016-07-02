@@ -1,17 +1,16 @@
 package com.softmotions.ncms.asm;
 
-import com.softmotions.ncms.events.NcmsEventBus;
-import com.softmotions.ncms.media.events.MediaDeleteEvent;
-import com.softmotions.ncms.media.events.MediaMoveEvent;
-import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.google.common.eventbus.Subscribe;
-import com.google.inject.Inject;
-
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.softmotions.ncms.events.NcmsEventBus;
+import com.softmotions.ncms.media.events.MediaDeleteEvent;
+import com.softmotions.ncms.media.events.MediaMoveEvent;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

@@ -4,28 +4,28 @@
  * @asset(ncms/icon/16/misc/document-text.png)
  */
 qx.Class.define("ncms.asm.am.FileRefAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Include file resource");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "fileref" ];
+        getSupportedAttributeTypes: function () {
+            return ["fileref"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
         /**
          * attrSpec example:
@@ -39,14 +39,14 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
          *   "hasLargeValue" : false
          * },
          */
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = new qx.ui.form.Form();
             //---------- Options
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             //Button field
             var bf = this._initFileSelectorBf(attrSpec, true);
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 bf.setValue(val);
             });
             form.add(bf, this.tr("Location"), null, "location");
@@ -57,7 +57,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
 
             var aslocCb = new qx.ui.form.CheckBox();
             aslocCb.setValue("true" == opts["asLocation"]);
-            aslocCb.addListener("changeValue", function(ev) {
+            aslocCb.addListener("changeValue", function (ev) {
                 //escCb.setEnabled(ev.getData() == false);
                 astCb.setEnabled(ev.getData() == false);
             });
@@ -70,22 +70,22 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             return fr;
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this._form == null || !this._form.validate()) {
                 return null;
             }
             var items = this._form.getItems();
             return {
-                asTemplate : items["asTemplate"].getValue(),
-                asLocation : items["asLocation"].getValue(),
+                asTemplate: items["asTemplate"].getValue(),
+                asLocation: items["asLocation"].getValue(),
                 //escape : items["escape"].getValue(),
-                value : items["location"].getValue()
+                value: items["location"].getValue()
             };
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var bf = this._initFileSelectorBf(attrSpec);
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 bf.setValue(val);
             });
             bf.setUserData("ncms.asm.validator", this.__validateFileSelector);
@@ -95,22 +95,22 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
 
         _initFileSelectorBf: function (attrSpec, inOpts) {
             var bf = new sm.ui.form.ButtonField(this.tr("File"),
-                    "ncms/icon/16/misc/document-text.png");
+                "ncms/icon/16/misc/document-text.png");
             bf.setShowResetButton(true);
             bf.setReadOnly(true);
             if (!inOpts) {
                 bf.setRequired(!!attrSpec["required"]);
             }
             bf.setPlaceholder(this.tr("Please specify a file"));
-            bf.addListener("reset", function() {
+            bf.addListener("reset", function () {
                 bf.resetValue();
             });
-            bf.addListener("execute", function() {
+            bf.addListener("execute", function () {
                 var dlg = new ncms.mmgr.MediaSelectFileDlg(
-                        true,
-                        this.tr("Please specify a file"));
+                    true,
+                    this.tr("Please specify a file"));
                 dlg.setCtypeAcceptor(ncms.Utils.isTextualContentType.bind(ncms.Utils));
-                dlg.addListener("completed", function(ev) {
+                dlg.addListener("completed", function (ev) {
                     var fspec = ev.getData()[0];
                     //fspec={"id":115,"name":"head.httl",
                     // "folder":"/site/cores/inc/",
@@ -133,7 +133,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             return bf;
         },
 
-        __validateFileSelector : function(value, bf) {
+        __validateFileSelector: function (value, bf) {
             if (bf.getRequired() && sm.lang.String.isEmpty(bf.getValue())) {
                 bf.setInvalidMessage(this.tr("This field is required"));
                 bf.setValid(false);
@@ -144,17 +144,17 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             }
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             if (this._valueWidget == null) {
                 return;
             }
             return {
-                value : this._valueWidget.getValue()
+                value: this._valueWidget.getValue()
             }
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("_form");
     }
 });

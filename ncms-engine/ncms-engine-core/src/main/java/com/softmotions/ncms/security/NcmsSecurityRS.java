@@ -1,22 +1,6 @@
 package com.softmotions.ncms.security;
 
-import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.web.security.WSGroup;
-import com.softmotions.web.security.WSRole;
-import com.softmotions.web.security.WSUser;
-import com.softmotions.web.security.WSUserDatabase;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.internal.constraintvalidators.EmailValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.Iterator;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -26,7 +10,22 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import java.util.Iterator;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.internal.constraintvalidators.EmailValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.softmotions.ncms.jaxrs.BadRequestException;
+import com.softmotions.web.security.WSGroup;
+import com.softmotions.web.security.WSRole;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.web.security.WSUserDatabase;
 
 /**
  * Rest service for operations on users database.
@@ -94,7 +93,7 @@ public class NcmsSecurityRS {
             WSGroup g = groups.next();
             ObjectNode node = res.addObject();
             node.put("name", g.getName())
-                    .put("description", g.getDescription());
+                .put("description", g.getDescription());
             ArrayNode roles = node.putArray("roles");
             Iterator<WSRole> rolesit = g.getRoles();
             while (rolesit.hasNext()) {
@@ -126,7 +125,7 @@ public class NcmsSecurityRS {
         while (roles.hasNext()) {
             WSRole role = roles.next();
             res.addObject().put("name", role.getName())
-                    .put("description", role.getDescription());
+               .put("description", role.getDescription());
         }
         return res;
     }
@@ -161,9 +160,9 @@ public class NcmsSecurityRS {
         while (users.hasNext()) {
             WSUser user = users.next();
             res.addObject()
-                    .put("name", user.getName())
-                    .put("email", user.getEmail())
-                    .put("fullName", user.getFullName());
+               .put("name", user.getName())
+               .put("email", user.getEmail())
+               .put("fullName", user.getFullName());
         }
         return res;
     }
@@ -189,8 +188,8 @@ public class NcmsSecurityRS {
         assertion(name != null, "Parameter 'name' of group can not be empty");
         WSGroup group = userDatabase.createGroup(name, description);
         return mapper.createObjectNode()
-                .put("name", group.getName())
-                .put("description", group.getDescription());
+                     .put("name", group.getName())
+                     .put("description", group.getDescription());
     }
 
     /**
@@ -214,8 +213,8 @@ public class NcmsSecurityRS {
         WSRole role = userDatabase.createRole(name, description);
 
         return mapper.createObjectNode()
-                .put("name", role.getName())
-                .put("description", role.getDescription());
+                     .put("name", role.getName())
+                     .put("description", role.getDescription());
     }
 
     /**
@@ -256,9 +255,9 @@ public class NcmsSecurityRS {
         }
 
         return mapper.createObjectNode()
-                .put("name", user.getName())
-                .put("email", user.getEmail())
-                .put("fullName", user.getFullName());
+                     .put("name", user.getName())
+                     .put("email", user.getEmail())
+                     .put("fullName", user.getFullName());
     }
 
     /**
@@ -285,7 +284,7 @@ public class NcmsSecurityRS {
         if (group != null) {
             res = mapper.createObjectNode();
             res.put("name", group.getName())
-                    .put("description", group.getDescription());
+               .put("description", group.getDescription());
         }
         return res;
     }
@@ -346,9 +345,9 @@ public class NcmsSecurityRS {
             throw new NotFoundException(name);
         }
         ObjectNode res = mapper.createObjectNode()
-                .put("name", user.getName())
-                .put("email", user.getEmail())
-                .put("fullName", user.getFullName());
+                               .put("name", user.getName())
+                               .put("email", user.getEmail())
+                               .put("fullName", user.getFullName());
 
         ArrayNode roles = res.putArray("roles");
         for (final String r : user.getRoleNames()) {

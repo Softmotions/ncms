@@ -1,5 +1,8 @@
 package com.softmotions.ncms.mediawiki;
 
+import java.io.IOException;
+import java.util.Map;
+
 import info.bliki.wiki.filter.Encoder;
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.model.IWikiModel;
@@ -7,9 +10,6 @@ import info.bliki.wiki.tags.HTMLTag;
 import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import com.google.inject.Singleton;
-
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * Simple note tag.

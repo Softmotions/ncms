@@ -4,12 +4,11 @@
  * @asset(ncms/icon/16/misc/application-form.png)
  */
 qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
-    extend : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
+    events: {
         /**
          * Data: assembly attribute JSON representation.
          * Example:
@@ -23,23 +22,22 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
          *    "required" : true
          *  }
          */
-        "completed" : "qx.event.type.Data"
+        "completed": "qx.event.type.Data"
     },
 
-    properties : {
-    },
+    properties: {},
 
 
-    construct : function(caption, asmSpec, attrSpec) {
+    construct: function (caption, asmSpec, attrSpec) {
         this.base(arguments, caption != null ? caption : this.tr("Edit assembly attribute"));
         this.setLayout(new qx.ui.layout.VBox(5, "top", "separator-vertical"));
         this.set({
-            modal : true,
-            showMinimize : false,
-            showMaximize : true,
-            allowMaximize : true,
-            width : 620,
-            height : 400
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 620,
+            height: 400
         });
         qx.core.Assert.assertMap(asmSpec, "Missing 'asmSpec' constructor argument");
 
@@ -98,11 +96,11 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         this.__typeEditorStack = this.__createTypeWidgetStack();
         this.__typeEditorStack.setPaddingBottom(10);
-        this.add(this.__typeEditorStack, {flex : 1});
+        this.add(this.__typeEditorStack, {flex: 1});
 
         //----------------- Footer
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
         hcont.setPadding(5);
 
         var bt = new qx.ui.form.Button(this.tr("Ok"));
@@ -123,26 +121,26 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         }
     },
 
-    members : {
+    members: {
 
-        __form : null,
+        __form: null,
 
-        __attrSpec : null,
+        __attrSpec: null,
 
-        __asmSpec : null,
+        __asmSpec: null,
 
-        __typeEditorStack : null,
+        __typeEditorStack: null,
 
-        __getAttributeSpec : function() {
+        __getAttributeSpec: function () {
             return this.__attrSpec || {};
         },
 
-        __createTypeWidgetStack : function() {
+        __createTypeWidgetStack: function () {
             var ts = new sm.ui.cont.LazyStack();
             ts.setWidgetsHidePolicy("exclude");
             var me = this;
-            ts.setOnDemandFactoryFunctionProvider(function() {
-                return function(id) {
+            ts.setOnDemandFactoryFunctionProvider(function () {
+                return function (id) {
                     var editor = ncms.asm.am.AsmAttrManagersRegistry.createAttrManagerInstance(id);
                     var aspec = me.__getAttributeSpec();
                     var w = editor.activateOptionsWidget(aspec, me.__asmSpec);
@@ -156,9 +154,9 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             return ts;
         },
 
-        __selectType : function() {
+        __selectType: function () {
             var dlg = new ncms.asm.AsmAttributeTypeSelectorDlg();
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 var data = ev.getData();
                 dlg.destroy();
                 //Data: [type, editor clazz]
@@ -167,7 +165,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             dlg.show();
         },
 
-        __setType : function(type, editorClazz) {
+        __setType: function (type, editorClazz) {
             var items = this.__form.getItems();
             items["type"].setValue(type);
             var hidden = (editorClazz.isHidden && editorClazz.isHidden());
@@ -179,7 +177,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             this.__typeEditorStack.showWidget(editorClazz.classname);
         },
 
-        __ok : function() {
+        __ok: function () {
             if (!this.__form.validate()) {
                 return;
             }
@@ -203,24 +201,24 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             sobj["options"] = optsJson;
 
             var req = new sm.io.Request(
-                    ncms.Application.ACT.getRestUrl("asms.attributes", {id : sobj["asmId"]}),
-                    "PUT", "application/json");
+                ncms.Application.ACT.getRestUrl("asms.attributes", {id: sobj["asmId"]}),
+                "PUT", "application/json");
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(sobj));
-            req.send(function(resp) {
+            req.send(function (resp) {
                 this.fireDataEvent("completed", sobj);
             }, this);
         },
 
-        close : function() {
+        close: function () {
             this.base(arguments);
             this.destroy();
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         if (this.__typeEditorStack) {
-            this.__typeEditorStack.getActivatedWidgets().forEach(function(w) {
+            this.__typeEditorStack.getActivatedWidgets().forEach(function (w) {
                 var editor = w.getUserData("eidtor");
                 if (editor) {
                     editor.dispose();

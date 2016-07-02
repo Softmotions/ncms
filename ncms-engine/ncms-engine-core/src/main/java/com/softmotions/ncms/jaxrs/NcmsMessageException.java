@@ -1,9 +1,9 @@
 package com.softmotions.ncms.jaxrs;
 
-import com.softmotions.commons.cont.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.softmotions.commons.cont.Pair;
 
 /**
  * Exception used to generate messages

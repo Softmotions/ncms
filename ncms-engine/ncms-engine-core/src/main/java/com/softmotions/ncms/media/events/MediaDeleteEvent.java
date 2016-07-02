@@ -1,9 +1,9 @@
 package com.softmotions.ncms.media.events;
 
-import com.softmotions.ncms.events.BasicEvent;
-
 import static com.softmotions.ncms.media.MediaRS.normalizeFolder;
 import static com.softmotions.ncms.media.MediaRS.normalizePath;
+
+import com.softmotions.ncms.events.BasicEvent;
 
 /**
  * Fired if media item was removed.

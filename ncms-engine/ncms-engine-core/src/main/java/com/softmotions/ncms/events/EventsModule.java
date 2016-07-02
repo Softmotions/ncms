@@ -1,8 +1,9 @@
 package com.softmotions.ncms.events;
 
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.weboot.mb.MBSqlSessionListener;
-import com.softmotions.weboot.mb.MBSqlSessionManager;
+import java.util.concurrent.Executors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.SubscriberExceptionContext;
@@ -10,11 +11,9 @@ import com.google.common.eventbus.SubscriberExceptionHandler;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.Executors;
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.weboot.mb.MBSqlSessionListener;
+import com.softmotions.weboot.mb.MBSqlSessionManager;
 
 /**
  * Application-wide event-bus based on Guava {@link com.google.common.eventbus.EventBus}

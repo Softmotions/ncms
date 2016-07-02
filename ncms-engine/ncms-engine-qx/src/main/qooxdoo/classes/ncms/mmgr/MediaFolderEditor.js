@@ -3,16 +3,13 @@
  * and displays/upload file content
  */
 qx.Class.define("ncms.mmgr.MediaFolderEditor", {
-    extend : qx.ui.core.Widget,
+    extend: qx.ui.core.Widget,
 
-    statics : {
+    statics: {},
 
-    },
+    events: {},
 
-    events : {
-    },
-
-    properties : {
+    properties: {
 
         /**
          * Set media item:
@@ -23,13 +20,13 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
          *        "path"   : {Array} Path to the item (from tree root)
          *  };
          */
-        "item" : {
-            event : "changeItem",
-            nullable : true
+        "item": {
+            event: "changeItem",
+            nullable: true
         }
     },
 
-    construct : function() {
+    construct: function () {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
 
@@ -47,16 +44,16 @@ qx.Class.define("ncms.mmgr.MediaFolderEditor", {
         this._add(hsp);
     },
 
-    members : {
+    members: {
 
-        __selector : null,
+        __selector: null,
 
-        __editor : null,
+        __editor: null,
 
-        __dropFun : null
+        __dropFun: null
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__selector = null;
         this.__editor = null;
         this.removeAllBindings();

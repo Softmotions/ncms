@@ -2,38 +2,37 @@
  * Assembly attribute type selector dialog.
  */
 qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
-    extend : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
+    events: {
         /**
          * Data:
          * [type, attribute editor class instance]
          *
          */
-        "completed" : "qx.event.type.Data"
+        "completed": "qx.event.type.Data"
     },
 
 
-    construct : function(caption) {
+    construct: function (caption) {
         this.base(arguments, caption || this.tr("Select assembly attribute type"));
         this.setLayout(new qx.ui.layout.VBox());
         this.set({
-            modal : true,
-            showMinimize : false,
-            showMaximize : true,
-            allowMaximize : true,
-            width : 620,
-            height : 400
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 620,
+            height: 400
         });
 
         var sf = this.__sf = new sm.ui.form.SearchField();
-        sf.addListener("clear", function() {
+        sf.addListener("clear", function () {
             this.__search(null);
         }, this);
-        sf.addListener("input", function(ev) {
+        sf.addListener("input", function (ev) {
             this.__search(ev.getData());
         }, this);
         sf.addListener("keypress", this.__searchKeypress, this);
@@ -41,9 +40,9 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
 
         this.__items = this.__createItems();
         this.__table = this.__createTable();
-        this.add(this.__table, {flex : 1});
+        this.add(this.__table, {flex: 1});
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
         hcont.setPadding(5);
 
         var bt = this.__okBt = new qx.ui.form.Button(this.tr("Ok"));
@@ -63,22 +62,22 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
         cmd.addListener("execute", this.__ok, this);
 
         this.addListenerOnce("resize", this.center, this);
-        this.addListenerOnce("appear", function() {
+        this.addListenerOnce("appear", function () {
             sf.focus();
         });
     },
 
-    members : {
+    members: {
 
-        __items : null,
+        __items: null,
 
-        __okBt : null,
+        __okBt: null,
 
-        __sf : null,
+        __sf: null,
 
-        __table : null,
+        __table: null,
 
-        __ok : function() {
+        __ok: function () {
             var clazz = this.__table.getSelectedRowData();
             var row = this.__table.getSelectedRowData2();
             if (clazz == null || row == null) {
@@ -87,13 +86,13 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             this.fireDataEvent("completed", [row[1], clazz]);
         },
 
-        __search : function(text) {
+        __search: function (text) {
             if (text == null) {
                 this.__setTableData(null, this.__items);
                 return;
             }
             text = text.toLocaleLowerCase();
-            var items = this.__items.filter(function(el) {
+            var items = this.__items.filter(function (el) {
                 var desc = (el[0][0] == null) ? "" : el[0][0].toLocaleLowerCase();
                 var type = (el[0][1] == null) ? "" : el[0][1].toLocaleLowerCase();
                 return ((desc.indexOf(text) === 0) || (type.indexOf(text) === 0));
@@ -101,23 +100,23 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             this.__setTableData(null, items);
         },
 
-        __searchKeypress : function(ev) {
+        __searchKeypress: function (ev) {
             if ("Down" === ev.getKeyIdentifier()) {
                 this.__table.handleFocus();
             }
         },
 
-        __createItems : function() {
+        __createItems: function () {
             var items = [];
             ncms.asm.am.AsmAttrManagersRegistry.forEachAttributeManagerTypeClassPair(
-                    function(type, clazz) {
-                        items.push([
-                            [(clazz.getDescription() || ""), type, (clazz.classname || clazz.toString())],
-                            clazz
-                        ]);
-                    }
+                function (type, clazz) {
+                    items.push([
+                        [(clazz.getDescription() || ""), type, (clazz.classname || clazz.toString())],
+                        clazz
+                    ]);
+                }
             );
-            items.sort(function(o1, o2) {
+            items.sort(function (o1, o2) {
                 var d1 = o1[0][0];
                 var d2 = o2[0][0];
                 return (d1 > d2) ? 1 : (d1 < d2 ? -1 : 0);
@@ -125,7 +124,7 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             return items;
         },
 
-        __createTable : function() {
+        __createTable: function () {
             var tm = new sm.model.JsonTableModel();
             this.__setTableData(tm, this.__items);
 
@@ -134,63 +133,64 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
             table.getSelectionModel().addListener("changeSelection", this.__syncState, this);
 
             table.set({
-                showCellFocusIndicator : false,
-                statusBarVisible : true,
-                focusCellOnPointerMove : true,
-                height : 150,
-                allowGrowY : true});
+                showCellFocusIndicator: false,
+                statusBarVisible: true,
+                focusCellOnPointerMove: true,
+                height: 150,
+                allowGrowY: true
+            });
             return table;
         },
 
-        __syncState : function() {
+        __syncState: function () {
             this.__okBt.setEnabled(!this.__table.getSelectionModel().isSelectionEmpty());
         },
 
-        __setTableData : function(tm, items) {
+        __setTableData: function (tm, items) {
             if (tm == null) {
                 tm = this.__table.getTableModel();
             }
             items = items || [];
             tm.setJsonData({
-                "columns" : [
+                "columns": [
                     {
-                        "title" : this.tr("Description").toString(),
-                        "id" : "description",
-                        "sortable" : true,
-                        "width" : "2*"
+                        "title": this.tr("Description").toString(),
+                        "id": "description",
+                        "sortable": true,
+                        "width": "2*"
                     },
                     {
-                        "title" : this.tr("Type").toString(),
-                        "id" : "type",
-                        "sortable" : true,
-                        "width" : "1*"
+                        "title": this.tr("Type").toString(),
+                        "id": "type",
+                        "sortable": true,
+                        "width": "1*"
                     },
                     {
-                        "title" : this.tr("Class").toString(),
-                        "id" : "class",
-                        "sortable" : true,
-                        "width" : "1*",
-                        visible : false
+                        "title": this.tr("Class").toString(),
+                        "id": "class",
+                        "sortable": true,
+                        "width": "1*",
+                        visible: false
                     }
                 ],
-                "items" : items
+                "items": items
             });
         },
 
-        __dispose : function() {
+        __dispose: function () {
             this.__items = null;
             this.__sf = null;
             this.__table = null;
             this.__okBt = null;
         },
 
-        close : function() {
+        close: function () {
             this.base(arguments);
             this.destroy();
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__dispose();
     }
 });

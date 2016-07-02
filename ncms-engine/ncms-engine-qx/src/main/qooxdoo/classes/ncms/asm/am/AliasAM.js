@@ -3,28 +3,28 @@
  * @version $Id$
  */
 qx.Class.define("ncms.asm.am.AliasAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Alias");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "alias" ];
+        getSupportedAttributeTypes: function () {
+            return ["alias"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = new qx.ui.form.Form();
             var el = new qx.ui.form.TextField();
             this._fetchAttributeValue(attrSpec, function (val) {
@@ -37,7 +37,7 @@ qx.Class.define("ncms.asm.am.AliasAM", {
             return fr;
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this._form == null || !this._form.validate()) {
                 return null;
             }
@@ -47,9 +47,9 @@ qx.Class.define("ncms.asm.am.AliasAM", {
             };
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var w = new qx.ui.form.TextField();
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 w.setValue(val);
             });
             w.setRequired(!!attrSpec["required"]);
@@ -57,16 +57,16 @@ qx.Class.define("ncms.asm.am.AliasAM", {
             return w;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             if (this._valueWidget == null) {
                 return;
             }
             return {
-                value : this._valueWidget.getValue()
+                value: this._valueWidget.getValue()
             }
         }
     },
 
-    destruct : function() {
+    destruct: function () {
     }
 });

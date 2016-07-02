@@ -2,30 +2,29 @@
  * User editor pane
  */
 qx.Class.define("ncms.usr.UserEditor", {
-    extend : qx.ui.tabview.TabView,
+    extend: qx.ui.tabview.TabView,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
+    events: {
         /**
          * Data: updated user data.
          */
-        "userUpdated" : "qx.event.type.Data"
+        "userUpdated": "qx.event.type.Data"
     },
 
-    properties : {
+    properties: {
         /**
          * User name to load in editor
          */
-        "userName" : {
-            apply : "__applyUserName",
-            nullable : true,
-            check : "String"
+        "userName": {
+            apply: "__applyUserName",
+            nullable: true,
+            check: "String"
         }
     },
 
-    construct : function(userEditable, accessEditable) {
+    construct: function (userEditable, accessEditable) {
         this.base(arguments, "top");
         this.setPadding(5);
 
@@ -45,20 +44,20 @@ qx.Class.define("ncms.usr.UserEditor", {
         this.add(epage);
     },
 
-    members : {
-        __userRoles : null,
-        __userInfoForm : null,
+    members: {
+        __userRoles: null,
+        __userInfoForm: null,
 
-        __applyUserName : function(userName) {
+        __applyUserName: function (userName) {
             this.__userRoles.setUser(userName);
             this.__userInfoForm.setUser(userName);
         },
 
-        __userUpdated : function(ev) {
+        __userUpdated: function (ev) {
             this.fireDataEvent("userUpdated", ev.getData());
         }
     },
 
-    destruct : function() {
+    destruct: function () {
     }
 });

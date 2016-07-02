@@ -1,12 +1,9 @@
 package com.softmotions.ncms.user;
 
-import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.google.inject.Inject;
-
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.guice.transactional.Transactional;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,10 +12,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+
+import org.apache.ibatis.session.SqlSession;
+import org.mybatis.guice.transactional.Transactional;
+
+import com.google.inject.Inject;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

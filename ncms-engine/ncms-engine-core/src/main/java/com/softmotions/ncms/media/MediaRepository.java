@@ -1,12 +1,12 @@
 package com.softmotions.ncms.media;
 
-import com.softmotions.commons.cont.Pair;
-
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
+
+import com.softmotions.commons.cont.Pair;
 
 /**
  * Generic media service.

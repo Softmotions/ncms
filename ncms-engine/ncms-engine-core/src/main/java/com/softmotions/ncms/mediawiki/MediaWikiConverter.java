@@ -1,5 +1,10 @@
 package com.softmotions.ncms.mediawiki;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import info.bliki.htmlcleaner.ContentToken;
 import info.bliki.htmlcleaner.EndTagToken;
 import info.bliki.htmlcleaner.TagNode;
@@ -12,11 +17,6 @@ import info.bliki.wiki.model.ImageFormat;
 import info.bliki.wiki.tags.HTMLTag;
 
 import com.google.inject.Singleton;
-
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A converter which renders the internal tree node representation as HTML text

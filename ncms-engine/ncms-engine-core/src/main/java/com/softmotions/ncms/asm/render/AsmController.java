@@ -2,11 +2,11 @@ package com.softmotions.ncms.asm.render;
 
 /**
  * Assembly controller.
- * <p>
+ * <p/>
  * Handler may contain custom presentation logic.
  * Handler instance called by {@link com.softmotions.ncms.asm.render.AsmRenderer}
  * just before rendering the content of assembly.
- * <p>
+ * <p/>
  * Handler's class can contain Guice IoC binding annotations.
  *
  * @author Adamansky Anton (adamansky@gmail.com)

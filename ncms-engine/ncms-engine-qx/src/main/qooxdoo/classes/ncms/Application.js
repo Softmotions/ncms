@@ -18,18 +18,18 @@
  * @asset(ncms/icon/32/exclamation.png)
  */
 qx.Class.define("ncms.Application", {
-    extend : qx.application.Standalone,
-    include : [qx.locale.MTranslation],
+    extend: qx.application.Standalone,
+    include: [qx.locale.MTranslation],
 
-    statics : {
+    statics: {
 
-        INSTANCE : null,
-        APP_STATE : null,
-        ACT : null,
-        INFO_POPUP : null,
+        INSTANCE: null,
+        APP_STATE: null,
+        ACT: null,
+        INFO_POPUP: null,
 
         //translations
-        EXTERNAL_TRANSLATIONS : [
+        EXTERNAL_TRANSLATIONS: [
             qx.locale.Manager.tr("Your user session expired! Please login again")
         ],
 
@@ -38,45 +38,45 @@ qx.Class.define("ncms.Application", {
         ///////////////////////////////////////////////////////////
 
 
-        confirmCb : function(message, cblabel, cbvalue, callback, context) {
+        confirmCb: function (message, cblabel, cbvalue, callback, context) {
             (new sm.dialog.Confirm({
-                "message" : message,
-                "callback" : callback || null,
-                "context" : context || null,
-                "checkbox" : {
-                    "label" : cblabel,
-                    "value" : cbvalue
+                "message": message,
+                "callback": callback || null,
+                "context": context || null,
+                "checkbox": {
+                    "label": cblabel,
+                    "value": cbvalue
                 }
             })).open();
         },
 
-        confirm : function(message, callback, context) {
+        confirm: function (message, callback, context) {
             (new sm.dialog.Confirm({
-                "message" : message,
-                "callback" : callback || null,
-                "context" : context || null
+                "message": message,
+                "callback": callback || null,
+                "context": context || null
             })).open();
         },
 
-        alert : function(message, callback, context) {
+        alert: function (message, callback, context) {
             (new sm.dialog.Message({
-                "message" : message,
-                "callback" : callback || null,
-                "context" : context || null
+                "message": message,
+                "callback": callback || null,
+                "context": context || null
             })).open();
         },
 
-        warning : function(message, callback, context) {
+        warning: function (message, callback, context) {
             (new sm.dialog.Message({
-                "message" : message,
-                "callback" : callback || null,
-                "context" : context || null,
-                "image" : "ncms/icon/32/exclamation.png"
+                "message": message,
+                "callback": callback || null,
+                "context": context || null,
+                "image": "ncms/icon/32/exclamation.png"
             })).open();
         },
 
 
-        errorPopup : function(message, options) {
+        errorPopup: function (message, options) {
             options = options || {};
             if (options["icon"] === undefined) {
                 options["icon"] = "ncms/icon/32/error.png";
@@ -97,15 +97,16 @@ qx.Class.define("ncms.Application", {
          *       - showTime {Number?} time in ms to show message, default 1500 ms
          *       - hideTime {Number?} fade out animation duration, default 500 ms
          */
-        infoPopup : function(message, options) {
+        infoPopup: function (message, options) {
             options = options || {};
             var showTime = options["showTime"];
             var hideTime = options["hideTime"];
             var root = qx.core.Init.getApplication().getRoot();
             var info = ncms.Application.INFO_POPUP;
             if (!info) {
-                info = ncms.Application.INFO_POPUP = new qx.ui.container.Composite(new qx.ui.layout.VBox(0).set({alignX : "center"}));
-                info.addListener("resize", function() {
+                info = ncms.Application.INFO_POPUP = new qx.ui.container.Composite(new qx.ui.layout.VBox(0).set(
+                    {alignX: "center"}));
+                info.addListener("resize", function () {
                     var parent = this.getLayoutParent();
                     if (parent) {
                         var bounds = parent.getBounds();
@@ -113,8 +114,8 @@ qx.Class.define("ncms.Application", {
                             var hint = this.getSizeHint();
                             var left = Math.round((bounds.width - hint.width) / 2);
                             this.setLayoutProperties({
-                                left : left,
-                                top : 10
+                                left: left,
+                                top: 10
                             });
                         }
                     }
@@ -133,69 +134,69 @@ qx.Class.define("ncms.Application", {
             }
             options["icon"] = (options["icon"] !== undefined) ? options["icon"] : "ncms/icon/32/information.png";
             var el = new qx.ui.basic.Atom(message, options["icon"]).set({
-                center : true,
-                rich : true,
-                selectable : true,
-                appearance : "ncms-info-popup"
+                center: true,
+                rich: true,
+                selectable: true,
+                appearance: "ncms-info-popup"
             });
             info.add(el);
 
             var fadeOut = {
-                duration : hideTime || 500,
-                delay : showTime || 1500,
-                timing : "ease-out",
-                keep : 100,
-                keyFrames : {
-                    0 : {opacity : 1},
-                    100 : {opacity : 0, display : "none"}
+                duration: hideTime || 500,
+                delay: showTime || 1500,
+                timing: "ease-out",
+                keep: 100,
+                keyFrames: {
+                    0: {opacity: 1},
+                    100: {opacity: 0, display: "none"}
                 }
             };
 
-            el.addListenerOnce("appear", function() {
+            el.addListenerOnce("appear", function () {
                 var ah = qx.bom.element.Animation.animate(this.getContentElement().getDomElement(), fadeOut);
-                ah.once("end", function() {
+                ah.once("end", function () {
                     this.destroy();
                 }, this);
-                this.addListener("click", function() {
+                this.addListener("click", function () {
                     ah.stop();
                     this.destroy();
                 }, this);
             }, el);
         },
 
-        getComponent : function(name) {
+        getComponent: function (name) {
             return ncms.Application.INSTANCE.getComponent(name);
         },
 
-        registerComponent : function(name, component) {
+        registerComponent: function (name, component) {
             return ncms.Application.INSTANCE.registerComponent(name, component);
         },
 
-        getUserId : function() {
+        getUserId: function () {
             return ncms.Application.APP_STATE.getUserId();
         },
 
-        userHasRole : function(role) {
+        userHasRole: function (role) {
             return ncms.Application.APP_STATE.userHasRole(role);
         },
 
-        userInRoles : function(roles) {
+        userInRoles: function (roles) {
             return ncms.Application.APP_STATE.userInRoles(roles);
         },
 
-        activateWorkspace : function(wsSpec) {
+        activateWorkspace: function (wsSpec) {
             return ncms.Application.INSTANCE.activateWorkspace(wsSpec);
         },
 
-        registerWorkspaces : function(wsSpec) {
+        registerWorkspaces: function (wsSpec) {
             return ncms.Application.INSTANCE.registerWorkspaces(wsSpec);
         },
 
-        getActiveWorkspace : function() {
+        getActiveWorkspace: function () {
             return ncms.Application.INSTANCE.getActiveWorkspace();
         },
 
-        formatDate : function(date, formatName) {
+        formatDate: function (date, formatName) {
             if (typeof date === "number") {
                 date = new Date(date);
             } else if (typeof date === "string") {
@@ -209,26 +210,26 @@ qx.Class.define("ncms.Application", {
             return df.format(date);
         },
 
-        logout : function() {
+        logout: function () {
             ncms.Application.INSTANCE.logout();
         },
 
-        extensionPoints : function(key) {
+        extensionPoints: function (key) {
             return ncms.Application.INSTANCE.extensionPoints(key);
         },
 
-        registerExtensionPoint : function(key, point) {
+        registerExtensionPoint: function (key, point) {
             return ncms.Application.INSTANCE.registerExtensionPoint(key, point);
         }
     },
 
 
-    events : {
+    events: {
 
         /**
          * Fired when main gui widget created and attached
          */
-        "guiInitialized" : "qx.event.type.Event",
+        "guiInitialized": "qx.event.type.Event",
 
 
         /**
@@ -236,38 +237,38 @@ qx.Class.define("ncms.Application", {
          * Data: {"qxClass":<workspace loader class>, "label":<workspace name>}
          * Example data: {"qxClass":"ncms.pgs.PagesNav","label":"Страницы"}
          */
-        "workspaceActivated" : "qx.event.type.Data"
+        "workspaceActivated": "qx.event.type.Data"
     },
 
-    members : {
+    members: {
 
         /**
          * Refs to gui components
          */
-        __components : null,
+        __components: null,
 
-        __header : null,
+        __header: null,
 
-        __nav : null,
+        __nav: null,
 
-        __logoutPending : false,
+        __logoutPending: false,
 
-        __construct : sm.lang.Object.newInstance,
+        __construct: sm.lang.Object.newInstance,
 
-        __extensionPoints : null,
+        __extensionPoints: null,
 
-        _createRootWidget : function() {
+        _createRootWidget: function () {
             var root = new qx.ui.root.Application(document);
             root.setWindowManager(new sm.ui.window.ExtendedWindowManager());
             return root;
         },
 
-        logout : function() {
+        logout: function () {
             this.__logoutPending = true;
             window.location.href = ncms.Application.ACT.getUrl("app.logout");
         },
 
-        main : function() {
+        main: function () {
 
             this.__extensionPoints = {};
             ncms.Application.ACT = this.createActions();
@@ -291,11 +292,11 @@ qx.Class.define("ncms.Application", {
             this.getRoot().setBlockerOpacity(0.5);
 
             var comp = new qx.ui.container.Composite(new qx.ui.layout.Dock());
-            this.getRoot().add(comp, {edge : 0});
+            this.getRoot().add(comp, {edge: 0});
 
             //Toolbar
             var toolbar = new ncms.Toolbar();
-            comp.add(toolbar, {edge : "north"});
+            comp.add(toolbar, {edge: "north"});
 
             var hsp = new qx.ui.splitpane.Pane();
             comp.add(hsp);
@@ -317,7 +318,7 @@ qx.Class.define("ncms.Application", {
             this.fireEvent("guiInitialized");
         },
 
-        getComponent : function(name) {
+        getComponent: function (name) {
             var val = this.__components[name];
             if (!val) {
                 throw new Error("Unknown component: '" + name + "'");
@@ -325,7 +326,7 @@ qx.Class.define("ncms.Application", {
             return val;
         },
 
-        registerComponent : function(name, component) {
+        registerComponent: function (name, component) {
             var val = this.__components[name];
             if (val) {
                 throw new Error("Component with name: " + name + " already registered");
@@ -333,13 +334,13 @@ qx.Class.define("ncms.Application", {
             this.__components[name] = component;
         },
 
-        activateWorkspace : function(wsSpec) {
+        activateWorkspace: function (wsSpec) {
             qx.log.Logger.info("Activate workspace: " + JSON.stringify(wsSpec));
             this.getComponent("nav-stack").showWidget(wsSpec["qxClass"]);
             this.fireDataEvent("workspaceActivated", wsSpec);
         },
 
-        registerWorkspaces : function(wsList) {
+        registerWorkspaces: function (wsList) {
             //it is LazyStack
             var ns = this.getComponent("nav-stack");
             for (var i = 0, l = wsList.length; i < l; ++i) {
@@ -349,7 +350,7 @@ qx.Class.define("ncms.Application", {
                 if (cname == null) {
                     continue;
                 }
-                ns.registerWidget(cname, function(id, opts) {
+                ns.registerWidget(cname, function (id, opts) {
                     var clazz = qx.Class.getByName(id);
                     var wspec = opts["wspec"];
                     qx.log.Logger.info("Creating new instance of workspace: " + clazz);
@@ -358,11 +359,11 @@ qx.Class.define("ncms.Application", {
                     }
                     var cargs = Array.isArray(wspec["args"]) ? wspec["args"] : undefined;
                     return this.__construct(clazz, cargs);
-                }, {cache : true, wspec : wspec}, this);
+                }, {cache: true, wspec: wspec}, this);
             }
         },
 
-        getActiveWorkspace : function() {
+        getActiveWorkspace: function () {
             return this.getComponent("nav-stack").getActiveWidget();
         },
 
@@ -371,7 +372,7 @@ qx.Class.define("ncms.Application", {
          * Display default workspace area placeholder
          * widget (ncms.wsa.WSAPlaceholder)
          */
-        showDefaultWSA : function() {
+        showDefaultWSA: function () {
             return this.showWSA("ncms.wsa.WSAPlaceholder");
         },
 
@@ -379,7 +380,7 @@ qx.Class.define("ncms.Application", {
          * WSA abbrev means: workspace area (big right side zone)
          * @param widgetId {String}
          */
-        showWSA : function(widgetId) {
+        showWSA: function (widgetId) {
             return this.getComponent("right-stack").showWidget(widgetId);
         },
 
@@ -388,7 +389,7 @@ qx.Class.define("ncms.Application", {
          * @param widgetId {String}
          * @returns {Widget|null|*}
          */
-        getWSA : function(widgetId) {
+        getWSA: function (widgetId) {
             return this.getComponent("right-stack").getWidget(widgetId, true);
         },
 
@@ -396,7 +397,7 @@ qx.Class.define("ncms.Application", {
          * Return active WSA ID
          * @returns {String|null}
          */
-        getActiveWSAID : function() {
+        getActiveWSAID: function () {
             return this.getComponent("right-stack").getActiveWidgetId();
         },
 
@@ -404,7 +405,7 @@ qx.Class.define("ncms.Application", {
          * WSA abbrev means: workspace area (big right side zone)
          * @see sm.ui.cont.LazyStack.registerWidget
          */
-        registerWSA : function(widgetId, factory, opts, self) {
+        registerWSA: function (widgetId, factory, opts, self) {
             this.getComponent("right-stack").registerWidget(widgetId, factory, opts, self);
         },
 
@@ -415,7 +416,7 @@ qx.Class.define("ncms.Application", {
          * @param key {String} Extension points group
          * @param point {Function} Extension point
          */
-        registerExtensionPoint : function(key, point) {
+        registerExtensionPoint: function (key, point) {
             if (typeof key !== "string") {
                 throw new Error("Extension point key must be a string");
             }
@@ -429,21 +430,21 @@ qx.Class.define("ncms.Application", {
             epl.push(point);
         },
 
-        extensionPoints : function(key) {
+        extensionPoints: function (key) {
             return this.__extensionPoints[key] || [];
         },
 
-        __createRightStack : function() {
+        __createRightStack: function () {
             var rs = new sm.ui.cont.LazyStack();
             rs.setWidgetsHidePolicy("exclude");
-            rs.registerWidget("ncms.wsa.WSAPlaceholder", function() {
+            rs.registerWidget("ncms.wsa.WSAPlaceholder", function () {
                 return new ncms.wsa.WSAPlaceholder()
             }, null, this);
             return rs;
         },
 
-        __bootstrap : function() {
-            sm.io.Request.LOGIN_ACTION = function() {
+        __bootstrap: function () {
+            sm.io.Request.LOGIN_ACTION = function () {
                 if (this.__logoutPending) {
                     return;
                 }
@@ -456,7 +457,7 @@ qx.Class.define("ncms.Application", {
         },
 
         // overriden
-        close : function(val) {
+        close: function (val) {
             if (this.__logoutPending) {
                 return;
             }
@@ -465,11 +466,11 @@ qx.Class.define("ncms.Application", {
         },
 
 
-        createActions : function() {
+        createActions: function () {
             return new ncms.Actions();
         }
     },
 
-    defer : function(statics) {
+    defer: function (statics) {
     }
 });

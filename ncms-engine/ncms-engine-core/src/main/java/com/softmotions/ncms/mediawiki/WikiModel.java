@@ -1,14 +1,14 @@
 package com.softmotions.ncms.mediawiki;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import info.bliki.wiki.filter.Encoder;
 import info.bliki.wiki.model.Configuration;
 import info.bliki.wiki.model.ImageFormat;
-import com.softmotions.ncms.NcmsMessages;
-
 import net.jcip.annotations.NotThreadSafe;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
+import com.softmotions.ncms.NcmsMessages;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

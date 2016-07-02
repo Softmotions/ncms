@@ -3,16 +3,14 @@
  ************************************************************************ */
 
 qx.Theme.define("ncms.theme.Decoration", {
-    extend : qx.theme.simple.Decoration,
+    extend: qx.theme.simple.Decoration,
 
-    decorations : {
+    decorations: {
 
-        "separator-bottom-vertical" :
-        {
-            style :
-            {
-                widthBottom : 1,
-                colorBottom : "border-separator"
+        "separator-bottom-vertical": {
+            style: {
+                widthBottom: 1,
+                colorBottom: "border-separator"
             }
         }
     }

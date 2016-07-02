@@ -1,21 +1,20 @@
 package com.softmotions.ncms.mediawiki;
 
-import com.softmotions.ncms.events.NcmsEventBus;
-import com.softmotions.ncms.media.MediaRepository;
-import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
-
-import com.google.common.eventbus.Subscribe;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.MULTILINE;
+
+import com.google.common.eventbus.Subscribe;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.softmotions.ncms.events.NcmsEventBus;
+import com.softmotions.ncms.media.MediaRepository;
+import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
 
 /**
  * Auxiliary

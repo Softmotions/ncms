@@ -3,14 +3,14 @@
  */
 qx.Mixin.define("ncms.asm.am.MAttributeManager", {
 
-    members : {
+    members: {
 
-        _optionsWidget : null,
+        _optionsWidget: null,
 
-        _valueWidget : null,
+        _valueWidget: null,
 
 
-        _fetchAttributeValue : function(attrSpec, cb, cbContext) {
+        _fetchAttributeValue: function (attrSpec, cb, cbContext) {
             if (attrSpec == null) {
                 cb(null);
                 return;
@@ -25,12 +25,12 @@ qx.Mixin.define("ncms.asm.am.MAttributeManager", {
             }
             //make attribute value request
             var req = new sm.io.Request(
-                    ncms.Application.ACT.getRestUrl("asms.attribute", {
-                        id : attrSpec["asmId"],
-                        name : attrSpec["name"]
-                    }),
-                    "GET", "application/json");
-            req.send(function(resp) {
+                ncms.Application.ACT.getRestUrl("asms.attribute", {
+                    id: attrSpec["asmId"],
+                    name: attrSpec["name"]
+                }),
+                "GET", "application/json");
+            req.send(function (resp) {
                 var attr = resp.getContent();
                 var eval = attr["hasLargeValue"] ? attr["largeValue"] : attr["value"];
                 attrSpec["largeValue"] = attr["largeValue"];
@@ -40,7 +40,7 @@ qx.Mixin.define("ncms.asm.am.MAttributeManager", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._optionsWidget = null;
         this._valueWidget = null;
     }

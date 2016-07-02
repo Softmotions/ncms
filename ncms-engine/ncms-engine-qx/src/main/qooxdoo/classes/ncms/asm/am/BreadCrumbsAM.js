@@ -1,38 +1,38 @@
 qx.Class.define("ncms.asm.am.BreadCrumbsAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Breadcrumbs");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "breadcrumbs" ];
+        getSupportedAttributeTypes: function () {
+            return ["breadcrumbs"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return true;
         }
     },
 
 
-    members : {
+    members: {
 
-        activateOptionsWidget : function() {
+        activateOptionsWidget: function () {
             return null;
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             return {};
         },
 
-        activateValueEditorWidget : function() {
+        activateValueEditorWidget: function () {
             return null;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             return {}
         }
     }

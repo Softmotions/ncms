@@ -1,20 +1,19 @@
 package com.softmotions.ncms.update;
 
-import com.softmotions.commons.lifecycle.Start;
-import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.multibindings.Multibinder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.multibindings.Multibinder;
+import com.softmotions.commons.lifecycle.Start;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)

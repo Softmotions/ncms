@@ -1,16 +1,16 @@
 package com.softmotions.ncms.io;
 
-import com.softmotions.commons.cont.ArrayUtils;
-import com.softmotions.commons.cont.KVOptions;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.AutoDetectParser;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import com.softmotions.commons.cont.ArrayUtils;
+import com.softmotions.commons.cont.KVOptions;
 
 /**
  * Tika metadata detector.

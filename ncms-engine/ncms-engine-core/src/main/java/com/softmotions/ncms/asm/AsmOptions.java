@@ -1,8 +1,8 @@
 package com.softmotions.ncms.asm;
 
-import com.softmotions.commons.cont.KVOptions;
-
 import java.util.Map;
+
+import com.softmotions.commons.cont.KVOptions;
 
 /**
  * Parsed assembly options.

@@ -1,28 +1,28 @@
 qx.Class.define("ncms.asm.am.MedialineAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Medialine");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "medialine" ];
+        getSupportedAttributeTypes: function () {
+            return ["medialine"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        __form : null,
+        __form: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = new qx.ui.form.Form();
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var el = new qx.ui.form.TextField();
@@ -41,7 +41,8 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
             } else {
                 el.setValue("96");
             }
-            form.add(el, this.tr("Max thumbnail width"), sm.util.Validate.canBeRangeNumber(10, 256, true), "thumb_width");
+            form.add(el, this.tr("Max thumbnail width"), sm.util.Validate.canBeRangeNumber(10, 256, true),
+                "thumb_width");
 
             var fr = new qx.ui.form.renderer.Single(form);
             this.__form = form;
@@ -49,26 +50,26 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
             return fr;
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this.__form == null || !this.__form.validate()) {
                 return null;
             }
             var items = this.__form.getItems();
             return {
-                width : items["width"].getValue(),
-                thumb_width : items["thumb_width"].getValue()
+                width: items["width"].getValue(),
+                thumb_width: items["thumb_width"].getValue()
             };
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var w = new ncms.asm.am.MedialineAMValueWidget(asmSpec, attrSpec);
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 var model = sm.lang.String.isEmpty(val) ? [] : JSON.parse(val);
                 if (!Array.isArray(model)) {
                     model = [];
                 }
                 //[[964,"корея.jpg","Крыша из кореи"],[966,"желтые цветы.jpg",null],[967,"зеленый цветок.jpg",""]]
-                w.setModel(model.map(function(el) {
+                w.setModel(model.map(function (el) {
                     return [
                         [el[1], el[2]],
                         el[0]
@@ -79,18 +80,18 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
             return w;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             var w = this._valueWidget;
             if (w == null) {
                 return null;
             }
-            return w.getModel().map(function(el) {
-                return [ el.rowData ].concat(el);
+            return w.getModel().map(function (el) {
+                return [el.rowData].concat(el);
             });
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("__form");
     }
 });

@@ -1,17 +1,16 @@
 package com.softmotions.ncms.rds;
 
-import com.softmotions.commons.num.NumberUtils;
-import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import java.io.InputStream;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 
-import java.io.InputStream;
-import java.util.Map;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.softmotions.commons.num.NumberUtils;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)

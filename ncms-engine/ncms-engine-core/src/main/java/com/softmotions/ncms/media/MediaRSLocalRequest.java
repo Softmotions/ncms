@@ -1,11 +1,11 @@
 package com.softmotions.ncms.media;
 
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.web.HttpServletRequestAdapter;
-
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.security.Principal;
+import javax.servlet.ServletContext;
+
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.web.HttpServletRequestAdapter;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

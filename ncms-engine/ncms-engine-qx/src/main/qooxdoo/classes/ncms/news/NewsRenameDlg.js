@@ -1,33 +1,33 @@
 qx.Class.define("ncms.news.NewsRenameDlg", {
-    extend : ncms.news.NewsNewDlg,
+    extend: ncms.news.NewsNewDlg,
 
-    construct : function(id, name) {
+    construct: function (id, name) {
         this._name = name;
         this.base(arguments, id);
         this._form.getItems()["name"].setValue(name);
 
     },
 
-    members : {
+    members: {
 
-        _name : null,
+        _name: null,
 
-        _save : function() {
+        _save: function () {
             var items = this._form.getItems();
             var data = {
-                id : this._id,
-                name : items["name"].getValue(),
-                type : "news.page"
+                id: this._id,
+                name: items["name"].getValue(),
+                type: "news.page"
             };
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.update.basic"), "PUT");
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
-            req.send(function(resp) {
+            req.send(function (resp) {
                 this.fireDataEvent("completed", data);
             }, this);
         },
 
-        destruct : function() {
+        destruct: function () {
             this._name = null;
         }
     }

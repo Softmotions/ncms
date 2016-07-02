@@ -1,9 +1,9 @@
 package com.softmotions.ncms.asm.render;
 
-import com.softmotions.ncms.media.MediaResource;
-
 import java.io.IOException;
 import java.util.Locale;
+
+import com.softmotions.ncms.media.MediaResource;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

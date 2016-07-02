@@ -2,13 +2,13 @@
  * Dialog wraps AM
  */
 qx.Class.define("ncms.asm.am.AMWrapperDlg", {
-    extend : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    events : {
-        completed : "qx.event.type.Data"
+    events: {
+        completed: "qx.event.type.Data"
     },
 
-    construct : function(amClass, attrSpec, asmSpec, opts) {
+    construct: function (amClass, attrSpec, asmSpec, opts) {
         opts = this.__opts = opts || {};
         if (["value", "options"].indexOf(opts["mode"]) === -1) {
             opts["mode"] = "options";
@@ -16,12 +16,12 @@ qx.Class.define("ncms.asm.am.AMWrapperDlg", {
         this.base(arguments, amClass.getDescription());
         this.setLayout(new qx.ui.layout.VBox());
         this.set({
-            modal : true,
-            showMinimize : false,
-            showMaximize : true,
-            allowMaximize : true,
-            width : 620,
-            height : 400
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 620,
+            height: 400
         });
 
         var am = this.__am = new amClass();
@@ -29,9 +29,9 @@ qx.Class.define("ncms.asm.am.AMWrapperDlg", {
                 am.activateValueEditorWidget(attrSpec, asmSpec) :
                 am.activateOptionsWidget(attrSpec, asmSpec);
 
-        this.add(w, {flex : 1});
+        this.add(w, {flex: 1});
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
         hcont.setPadding(5);
 
         var bt = this.__okBt = new qx.ui.form.Button(this.tr("Ok"));
@@ -48,15 +48,15 @@ qx.Class.define("ncms.asm.am.AMWrapperDlg", {
         this.addListenerOnce("resize", this.center, this);
     },
 
-    members : {
+    members: {
 
-        __am : null,
+        __am: null,
 
-        __opts : null,
+        __opts: null,
 
-        __okBt : null,
+        __okBt: null,
 
-        __ok : function() {
+        __ok: function () {
             var data = (this.__opts["mode"] === "value") ? this.__am.valueAsJSON() : this.__am.optionsAsJSON();
             if (data == null) {
                 return;
@@ -64,13 +64,13 @@ qx.Class.define("ncms.asm.am.AMWrapperDlg", {
             this.fireDataEvent("completed", data);
         },
 
-        close : function() {
+        close: function () {
             this.base(arguments);
             this.destroy();
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__okBt = null;
         this.__opts = null;
         this._disposeObjects("__am");

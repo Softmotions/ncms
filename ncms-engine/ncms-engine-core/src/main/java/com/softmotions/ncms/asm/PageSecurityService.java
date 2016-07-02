@@ -1,15 +1,16 @@
 package com.softmotions.ncms.asm;
 
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
-import com.softmotions.web.security.WSRole;
-import com.softmotions.web.security.WSUser;
-import com.softmotions.web.security.WSUserDatabase;
-import com.softmotions.weboot.mb.MBDAOSupport;
-import com.softmotions.weboot.mb.MBSqlSessionListenerSupport;
-import com.softmotions.weboot.mb.MBSqlSessionManager;
-
-import com.google.inject.Inject;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang3.ArrayUtils;
@@ -19,17 +20,15 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.core.SecurityContext;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.google.inject.Inject;
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.web.security.WSRole;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.mb.MBDAOSupport;
+import com.softmotions.weboot.mb.MBSqlSessionListenerSupport;
+import com.softmotions.weboot.mb.MBSqlSessionManager;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)

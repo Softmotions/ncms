@@ -1,28 +1,28 @@
 qx.Class.define("ncms.asm.am.DateAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Date selector");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "date" ];
+        getSupportedAttributeTypes: function () {
+            return ["date"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        __form : null,
+        __form: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = new qx.ui.form.Form();
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var el = new qx.ui.form.TextField();
@@ -36,23 +36,23 @@ qx.Class.define("ncms.asm.am.DateAM", {
             return fr;
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this.__form == null || !this.__form.validate()) {
                 return null;
             }
             var items = this.__form.getItems();
             return {
-                format : items["format"].getValue()
+                format: items["format"].getValue()
             }
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var w = new qx.ui.form.DateField();
             if (!sm.lang.String.isEmpty(opts["format"])) {
                 w.setDateFormat(new qx.util.format.DateFormat(opts["format"]));
             }
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 val = (val != null) ? Number(val) : NaN;
                 w.setValue(isNaN(val) ? new Date() : new Date(val));
             });
@@ -63,18 +63,18 @@ qx.Class.define("ncms.asm.am.DateAM", {
             return w;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             if (this._valueWidget == null) {
                 return;
             }
             var date = this._valueWidget.getValue();
             return {
-                value : (date != null) ? +date : null
+                value: (date != null) ? +date : null
             }
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("__form");
     }
 });

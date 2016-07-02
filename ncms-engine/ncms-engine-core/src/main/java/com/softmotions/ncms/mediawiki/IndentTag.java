@@ -1,11 +1,11 @@
 package com.softmotions.ncms.mediawiki;
 
+import java.io.IOException;
+
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.model.IWikiModel;
 import info.bliki.wiki.tags.HTMLTag;
 import info.bliki.wiki.tags.util.INoBodyParsingTag;
-
-import java.io.IOException;
 
 public class IndentTag extends HTMLTag implements INoBodyParsingTag {
 

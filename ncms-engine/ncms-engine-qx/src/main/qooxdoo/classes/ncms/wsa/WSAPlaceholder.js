@@ -1,16 +1,16 @@
 qx.Class.define("ncms.wsa.WSAPlaceholder", {
-    extend : qx.ui.core.Widget,
+    extend: qx.ui.core.Widget,
 
-    properties : {
+    properties: {
 
-        appearance : {
-            refine : true,
-            init : "ncms-wsa-placeholder"
+        appearance: {
+            refine: true,
+            init: "ncms-wsa-placeholder"
         }
 
     },
 
-    construct : function() {
+    construct: function () {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
     }

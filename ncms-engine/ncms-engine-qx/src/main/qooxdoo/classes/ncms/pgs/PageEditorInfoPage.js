@@ -4,11 +4,11 @@
  * @asset(ncms/icon/16/user/user-blue.png)
  */
 qx.Class.define("ncms.pgs.PageEditorInfoPage", {
-    extend : qx.ui.tabview.Page,
-    include : [ ncms.pgs.MPageEditorPane ],
+    extend: qx.ui.tabview.Page,
+    include: [ncms.pgs.MPageEditorPane],
 
 
-    construct : function() {
+    construct: function () {
         this.base(arguments, this.tr("General"));
         this.setLayout(new qx.ui.layout.VBox(4));
 
@@ -30,7 +30,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
 
         var bt = new qx.ui.form.Button(null, "ncms/icon/16/misc/monitor.png");
         bt.setToolTipText(this.tr("Preview"));
-        bt.addListener("execute", function() {
+        bt.addListener("execute", function () {
             var pp = ncms.Application.ACT.getRestUrl("pages.preview", this.getPageSpec());
             qx.bom.Window.open(pp, "Preview", {}, false, false);
         }, this);
@@ -38,58 +38,58 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
 
         //Page owner
         this.__ownerSelector =
-                new sm.ui.form.ButtonField(this.tr("Owner"),
-                        "ncms/icon/16/user/user-blue.png",
-                        true);
+            new sm.ui.form.ButtonField(this.tr("Owner"),
+                "ncms/icon/16/user/user-blue.png",
+                true);
         this.__ownerSelector.setReadOnly(true);
         this.__ownerSelector.addListener("execute", this.__chooseOwner, this);
-        hcont.add(this.__ownerSelector, {flex : 1});
+        hcont.add(this.__ownerSelector, {flex: 1});
         this.add(hcont);
 
         this.addListener("loadPane", this.__onLoadPane, this);
 
-        this.__previewFrame = new sm.ui.embed.ScaledIframe().set({fitWidth : true});
+        this.__previewFrame = new sm.ui.embed.ScaledIframe().set({fitWidth: true});
         this.__previewFrame.setPadding([10, 15, 5, 15]);
-        this.add(this.__previewFrame, {flex : 1});
+        this.add(this.__previewFrame, {flex: 1});
 
         ncms.Events.getInstance().addListener("pageEdited", this.__onPageEdited, this);
         ncms.Events.getInstance().addListener("pageChangePublished", this.__onPageEdited, this);
         ncms.Events.getInstance().addListener("pageChangeTemplate", this.__onPageEdited, this);
     },
 
-    members : {
+    members: {
 
-        __pendingRefresh : false,
+        __pendingRefresh: false,
 
-        __previewFrame : null,
+        __previewFrame: null,
 
         /**
          * Page name label
          */
-        __pageNameLabel : null,
+        __pageNameLabel: null,
 
         /**
          * Modification date
          */
-        __mdateLabel : null,
+        __mdateLabel: null,
 
         /**
          * Optional warning/alert box
          */
-        __alertBox : null,
+        __alertBox: null,
 
         /**
          * Owner
          */
-        __ownerSelector : null,
+        __ownerSelector: null,
 
         /**
          * Extra page info
          */
-        __info : null,
+        __info: null,
 
 
-        __onPageEdited : function(ev) {
+        __onPageEdited: function (ev) {
             var myspec = this.getPageSpec();
             var evspec = ev.getData();
             if (myspec != null && evspec != null && myspec["id"] === evspec["id"]) {
@@ -98,25 +98,25 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         },
 
 
-        __reload : function() {
+        __reload: function () {
             var spec = this.getPageSpec();
             if (spec != null) {
                 this.setPageSpec(sm.lang.Object.shallowClone(spec));
             }
         },
 
-        __onLoadPane : function(ev) {
+        __onLoadPane: function (ev) {
             var spec = ev.getData();
             this.__pageNameLabel.setValue(spec["name"]);
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.info", spec),
-                    "GET", "application/json");
-            req.send(function(resp) {
+                "GET", "application/json");
+            req.send(function (resp) {
                 var info = resp.getContent();
                 this.__info = info;
                 if (info["mdate"] != null) {
                     this.__mdateLabel.setValue(this.tr("Last modification: %1, %2",
-                                    ncms.Application.formatDate(info["mdate"]),
-                                    info["muser"] ? info["muser"]["fullName"] : "-")
+                        ncms.Application.formatDate(info["mdate"]),
+                        info["muser"] ? info["muser"]["fullName"] : "-")
                     );
                 } else {
                     this.__mdateLabel.setValue("");
@@ -134,7 +134,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
             this.__initPreview(spec);
         },
 
-        __initPreview : function(spec) {
+        __initPreview: function (spec) {
             if (spec == null) {
                 return;
             }
@@ -145,7 +145,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
             this.__previewFrame.setSource(pp);
         },
 
-        __setOwner : function(info) {
+        __setOwner: function (info) {
             var owner = info["owner"];
             var am = info["accessMask"] || "r";
             this.__ownerSelector.setMainButtonEnabled(am.indexOf("o") !== -1);
@@ -165,24 +165,24 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         },
 
 
-        __chooseOwner : function() {
+        __chooseOwner: function () {
             var info = this.__info;
             if (info == null) {
                 return;
             }
             var dlg = new ncms.usr.UserSelectorDlg(
-                    (info["name"] != null) ?
-                    this.tr("Choose the owner of %1", info["name"]) :
-                    this.tr("Choose the owner")
+                (info["name"] != null) ?
+                this.tr("Choose the owner of %1", info["name"]) :
+                this.tr("Choose the owner")
             );
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 var user = ev.getData()[0];
                 qx.log.Logger.info("User choosen: " + JSON.stringify(user));
                 var req = new sm.io.Request(
-                        ncms.Application.ACT.getRestUrl("pages.owner",
-                                {id : info["id"], owner : user["name"]}
-                        ), "PUT", "application/json");
-                req.send(function(resp) {
+                    ncms.Application.ACT.getRestUrl("pages.owner",
+                        {id: info["id"], owner: user["name"]}
+                    ), "PUT", "application/json");
+                req.send(function (resp) {
                     resp = resp.getContent();
                     qx.lang.Object.mergeWith(this.__info, resp, true);
                     this.__setOwner(this.__info);
@@ -192,11 +192,11 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
             dlg.open();
         },
 
-        _applyModified : function(val) {
+        _applyModified: function (val) {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__ownerSelector = null;
         this.__pageNameLabel = null;
         this.__mdateLabel = null;

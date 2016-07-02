@@ -1,8 +1,8 @@
 qx.Class.define("ncms.Events", {
-    extend : qx.core.Object,
-    type : "singleton",
+    extend: qx.core.Object,
+    type: "singleton",
 
-    events : {
+    events: {
 
         /**
          * Page content edited.
@@ -13,7 +13,7 @@ qx.Class.define("ncms.Events", {
          *  ...
          *  ...
          */
-        "pageEdited" : "qx.event.type.Data",
+        "pageEdited": "qx.event.type.Data",
 
 
         /**
@@ -25,7 +25,7 @@ qx.Class.define("ncms.Events", {
          *  published : {Boolean} Is page published
          * }
          */
-        "pageChangePublished" : "qx.event.type.Data",
+        "pageChangePublished": "qx.event.type.Data",
 
 
         /**
@@ -38,13 +38,13 @@ qx.Class.define("ncms.Events", {
          * }
          *
          */
-        "pageChangeTemplate" : "qx.event.type.Data",
+        "pageChangeTemplate": "qx.event.type.Data",
 
 
         /**
          * Basic assembly properties changed in the assembly editor GUI.
          */
-        "asmPropsChanged" : "qx.event.type.Data"
+        "asmPropsChanged": "qx.event.type.Data"
     }
 
 });

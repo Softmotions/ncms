@@ -2,28 +2,25 @@
  * News editor main pane.
  */
 qx.Class.define("ncms.news.NewsEditor", {
-    extend : ncms.pgs.PageEditor,
+    extend: ncms.pgs.PageEditor,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
-    },
+    events: {},
 
-    properties : {
-    },
+    properties: {},
 
-    construct : function() {
+    construct: function () {
         this.base(arguments);
     },
 
-    members : {
-        _createAccessPane : function() {
+    members: {
+        _createAccessPane: function () {
             return null;
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         //this._disposeObjects("__field_name");
     }
 });

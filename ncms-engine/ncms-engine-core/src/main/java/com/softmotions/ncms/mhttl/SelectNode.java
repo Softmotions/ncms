@@ -3,8 +3,8 @@ package com.softmotions.ncms.mhttl;
 import java.io.Serializable;
 
 /**
-* @author Adamansky Anton (adamansky@gmail.com)
-*/
+ * @author Adamansky Anton (adamansky@gmail.com)
+ */
 public final class SelectNode implements Serializable {
 
     final String key;

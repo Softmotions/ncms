@@ -1,17 +1,5 @@
 package com.softmotions.ncms;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.resourceloading.AggregateResourceBundleLocator;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.ThreadSafe;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +13,18 @@ import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.resourceloading.AggregateResourceBundleLocator;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

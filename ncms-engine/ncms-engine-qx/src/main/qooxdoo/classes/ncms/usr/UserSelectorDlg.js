@@ -2,37 +2,35 @@
  * User selector
  */
 qx.Class.define("ncms.usr.UserSelectorDlg", {
-    extend : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
+    events: {
         /**
          * Data: [] array of selected users.
          * @see ncms.usr.UserSelector
          */
-        "completed" : "qx.event.type.Data"
+        "completed": "qx.event.type.Data"
     },
 
-    properties : {
-    },
+    properties: {},
 
-    construct : function(caption, icon, constViewSpec, smodel) {
+    construct: function (caption, icon, constViewSpec, smodel) {
         this.base(arguments, caption, icon);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
-            modal : true,
-            showMinimize : false,
-            showMaximize : true,
-            allowMaximize : true,
-            width : 620,
-            height : 400
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 620,
+            height: 400
         });
         var selector = this.__selector = new ncms.usr.UserSelector(constViewSpec, smodel);
-        this.add(selector, {flex : 1});
+        this.add(selector, {flex: 1});
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
         hcont.setPadding(5);
 
         var bt = this.__okBt = new qx.ui.form.Button(this.tr("Ok"));
@@ -44,7 +42,7 @@ qx.Class.define("ncms.usr.UserSelectorDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-        var cmd  = this.createCommand("Esc");
+        var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
 
         cmd = this.createCommand("Enter");
@@ -57,36 +55,36 @@ qx.Class.define("ncms.usr.UserSelectorDlg", {
         this.__syncState();
     },
 
-    members : {
+    members: {
         /**
          * Users selector
          */
-        __selector : null,
+        __selector: null,
 
         /**
          * Okay button
          */
-        __okBt : null,
+        __okBt: null,
 
-        __ok : function() {
+        __ok: function () {
             if (!this.__okBt.getEnabled()) {
                 return;
             }
             this.fireDataEvent("completed", this.__selector.getSelectedUsers())
         },
 
-        __syncState : function() {
+        __syncState: function () {
             var user = this.__selector.getSelectedUser();
             this.__okBt.setEnabled(user != null);
         },
 
-        close : function() {
+        close: function () {
             this.base(arguments);
             this.destroy();
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__selector = null;
         this.__okBt = null;
     }

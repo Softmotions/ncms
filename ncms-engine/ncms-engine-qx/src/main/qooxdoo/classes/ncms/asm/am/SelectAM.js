@@ -2,38 +2,38 @@
  * Select box/list attribute controller
  */
 qx.Class.define("ncms.asm.am.SelectAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Selectbox");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "select" ];
+        getSupportedAttributeTypes: function () {
+            return ["select"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
 
             var form = new qx.ui.form.Form();
 
             //---------- Options
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(4));
-            el.add(new qx.ui.form.RadioButton(this.tr("list")).set({"model" : "list"}));
-            el.add(new qx.ui.form.RadioButton(this.tr("selectbox")).set({"model" : "selectbox"}));
+            el.add(new qx.ui.form.RadioButton(this.tr("list")).set({"model": "list"}));
+            el.add(new qx.ui.form.RadioButton(this.tr("selectbox")).set({"model": "selectbox"}));
             el.setModelSelection(opts["display"] ? [opts["display"]] : ["selectbox"]);
             el.addListener("changeSelection", this.__syncState, this);
             form.add(el, this.tr("Display as"), null, "display");
@@ -55,7 +55,7 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             form.add(el, this.tr("Fetch from"), null, "fetchfrom");
 
             //---------- Table
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 try {
                     table.setData(JSON.parse(val));
                 } catch (e) {
@@ -69,7 +69,7 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             return new sm.ui.form.FlexFormRenderer(form);
         },
 
-        __syncState : function() {
+        __syncState: function () {
             if (this._form == null) {
                 return;
             }
@@ -83,19 +83,19 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             table.setEnabled(sm.lang.String.isEmpty(fetchfrom.getValue()));
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             var items = this._form.getItems();
             var table = items["table"];
             var value = (table.isEnabled() ? table.toJSONValue() : null);
             return {
-                multiselect : items["multiselect"].getEnabled() ? items["multiselect"].getValue() : false,
-                display : items["display"].getModelSelection().getItem(0),
-                fetchfrom : items["fetchfrom"].getValue(),
-                value : value
+                multiselect: items["multiselect"].getEnabled() ? items["multiselect"].getValue() : false,
+                display: items["display"].getModelSelection().getItem(0),
+                fetchfrom: items["fetchfrom"].getValue(),
+                value: value
             };
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var display = opts["display"];
             var w = null;
@@ -111,13 +111,13 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             return w;
         },
 
-        __createSingleSelectVW : function(attrSpec, asmSpec, opts) {
+        __createSingleSelectVW: function (attrSpec, asmSpec, opts) {
             var w = new qx.ui.form.SelectBox();
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 var items = JSON.parse(val);
                 if (items != null) {
                     var selected = null;
-                    items.forEach(function(el) {
+                    items.forEach(function (el) {
                         var li = new qx.ui.form.ListItem(el[1], null, el[2]);
                         if (el[0] === true && selected == null) {
                             selected = li;
@@ -133,15 +133,15 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             return w;
         },
 
-        __applySingleSelectVW : function(w) {
+        __applySingleSelectVW: function (w) {
             var value = w.getUserData("value");
             var sel = w.getSelection()[0];
             if (sel == null) {
                 return {
-                    "value" : value
+                    "value": value
                 };
             }
-            value.forEach(function(v) {
+            value.forEach(function (v) {
                 v[0] = false;
             });
             var sval = sel.getModel();
@@ -153,11 +153,11 @@ qx.Class.define("ncms.asm.am.SelectAM", {
                 }
             }
             return {
-                "value" : value
+                "value": value
             };
         },
 
-        __createListVW : function(attrSpec, asmSpec, opts) {
+        __createListVW: function (attrSpec, asmSpec, opts) {
             var w = new qx.ui.form.List();
             w.setHeight(100);
             if (opts["multiselect"] == "true") {
@@ -165,11 +165,11 @@ qx.Class.define("ncms.asm.am.SelectAM", {
             } else {
                 w.setSelectionMode("single");
             }
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 var items = JSON.parse(val);
                 if (items != null) {
                     var selection = [];
-                    items.forEach(function(el) {
+                    items.forEach(function (el) {
                         var li = new qx.ui.form.ListItem(el[1], null, el[2]);
                         if (el[0] === true) {
                             selection.push(li);
@@ -184,26 +184,26 @@ qx.Class.define("ncms.asm.am.SelectAM", {
         },
 
 
-        __applyListVW : function(w) {
+        __applyListVW: function (w) {
             var value = w.getUserData("value");
             var vmap = {};
-            value.forEach(function(v) {
+            value.forEach(function (v) {
                 v[0] = false;
                 vmap[v[2]] = v;
             });
             var selection = w.getSelection();
-            selection.forEach(function(li) {
+            selection.forEach(function (li) {
                 var v = vmap[li.getModel()];
                 if (v) {
                     v[0] = true;
                 }
             });
             return {
-                "value" : value
+                "value": value
             };
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             var w = this._valueWidget;
             var opts = w.getUserData("options");
             var display = opts["display"];
@@ -216,7 +216,7 @@ qx.Class.define("ncms.asm.am.SelectAM", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("_form");
     }
 });

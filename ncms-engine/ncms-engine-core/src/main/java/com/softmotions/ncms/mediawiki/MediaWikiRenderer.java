@@ -1,20 +1,20 @@
 package com.softmotions.ncms.mediawiki;
 
+import java.util.Locale;
+
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
+
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.filter.PlainTextConverter;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.softmotions.commons.ebus.EBus;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import java.util.Locale;
-
-import org.apache.commons.configuration2.HierarchicalConfiguration;
-import org.apache.commons.configuration2.tree.ImmutableNode;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

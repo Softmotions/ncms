@@ -4,19 +4,17 @@
  * and assembly editor workspace.
  */
 qx.Class.define("ncms.asm.AsmNav", {
-    extend : qx.ui.core.Widget,
+    extend: qx.ui.core.Widget,
 
-    statics : {
-        ASM_EDITOR_CLAZZ : "ncms.asm.AsmEditor"
+    statics: {
+        ASM_EDITOR_CLAZZ: "ncms.asm.AsmEditor"
     },
 
-    events : {
-    },
+    events: {},
 
-    properties : {
-    },
+    properties: {},
 
-    construct : function() {
+    construct: function () {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
         this.setPaddingLeft(10);
@@ -27,17 +25,17 @@ qx.Class.define("ncms.asm.AsmNav", {
         //Register assembly instance editor
         var eclazz = ncms.asm.AsmNav.ASM_EDITOR_CLAZZ;
         var app = ncms.Application.INSTANCE;
-        app.registerWSA(eclazz, function() {
+        app.registerWSA(eclazz, function () {
             return new ncms.asm.AsmEditor();
         }, null, this);
 
-        this.addListener("disappear", function() {
+        this.addListener("disappear", function () {
             //Navigation side is inactive so hide assembly editor pane if it not done already
             if (app.getActiveWSAID() == eclazz) {
                 app.showDefaultWSA();
             }
         }, this);
-        this.addListener("appear", function() {
+        this.addListener("appear", function () {
             if (app.getActiveWSAID() != eclazz && this.__selector.getSelectedAsm() != null) {
                 app.showWSA(eclazz);
             }
@@ -48,11 +46,11 @@ qx.Class.define("ncms.asm.AsmNav", {
         this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
     },
 
-    members : {
+    members: {
 
-        __selector : null,
+        __selector: null,
 
-        __asmSelected : function(ev) {
+        __asmSelected: function (ev) {
             var data = ev.getData();
             var app = ncms.Application.INSTANCE;
             var eclazz = ncms.asm.AsmNav.ASM_EDITOR_CLAZZ;
@@ -64,7 +62,7 @@ qx.Class.define("ncms.asm.AsmNav", {
             app.showWSA(eclazz);
         },
 
-        __beforeContextmenuOpen : function(ev) {
+        __beforeContextmenuOpen: function (ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
             var bt = new qx.ui.menu.Button(this.tr("New assembly"));
@@ -87,30 +85,30 @@ qx.Class.define("ncms.asm.AsmNav", {
             }
         },
 
-        __onRemoveAssembly : function(ev) {
+        __onRemoveAssembly: function (ev) {
             var asm = this.__selector.getSelectedAsm();
             if (asm == null) {
                 return;
             }
             ncms.Application.confirm(
-                    this.tr("Are you sure to remove assembly: \"%1\"?", asm["name"]),
-                    function(yes) {
-                        if (!yes) return;
-                        var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms", {id : asm["id"]}), "DELETE");
-                        req.send(function(resp) {
-                            this.__selector.reload();
-                        }, this);
+                this.tr("Are you sure to remove assembly: \"%1\"?", asm["name"]),
+                function (yes) {
+                    if (!yes) return;
+                    var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms", {id: asm["id"]}), "DELETE");
+                    req.send(function (resp) {
+                        this.__selector.reload();
                     }, this);
+                }, this);
         },
 
-        __onRenameAssembly : function(ev) {
+        __onRenameAssembly: function (ev) {
             var asm = this.__selector.getSelectedAsm();
             if (asm == null) {
                 return;
             }
             var dlg = new ncms.asm.AsmRenameDlg(asm["id"], asm["name"]);
             dlg.setPosition("bottom-right");
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 dlg.close();
                 qx.log.Logger.info("Rename completed");
                 this.__selector.reload();
@@ -120,14 +118,14 @@ qx.Class.define("ncms.asm.AsmNav", {
 
         },
 
-        __onRefresh : function() {
+        __onRefresh: function () {
             this.__selector.reload();
         },
 
-        __onNewAssembly : function(ev) {
+        __onNewAssembly: function (ev) {
             var dlg = new ncms.asm.AsmNewDlg();
             dlg.setPosition("bottom-right");
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 dlg.close();
                 var spec = ev.getData();
                 this.__selector.setSearchBoxValue(spec["name"]);
@@ -137,7 +135,7 @@ qx.Class.define("ncms.asm.AsmNav", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__selector = null;
     }
 });

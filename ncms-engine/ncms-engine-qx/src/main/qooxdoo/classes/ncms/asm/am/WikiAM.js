@@ -2,43 +2,43 @@
  * Markdown/Mediawiki attribute manager.
  */
 qx.Class.define("ncms.asm.am.WikiAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Wiki editor");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "wiki" ];
+        getSupportedAttributeTypes: function () {
+            return ["wiki"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = this._form = new sm.ui.form.ExtendedForm();
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(4));
-            el.add(new qx.ui.form.RadioButton(this.tr("mediawiki")).set({"model" : "mediawiki"}));
-            el.add(new qx.ui.form.RadioButton(this.tr("markdown")).set({"model" : "markdown"}));
+            el.add(new qx.ui.form.RadioButton(this.tr("mediawiki")).set({"model": "mediawiki"}));
+            el.add(new qx.ui.form.RadioButton(this.tr("markdown")).set({"model": "markdown"}));
             el.setModelSelection(opts["markup"] ? [opts["markup"]] : ["mediawiki"]);
             form.add(el, this.tr("Markup language"), null, "markup");
 
             return new sm.ui.form.FlexFormRenderer(form);
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this._form == null || !this._form.validate()) {
                 return null;
             }
@@ -49,7 +49,7 @@ qx.Class.define("ncms.asm.am.WikiAM", {
             return res;
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var w = new ncms.wiki.WikiEditor(attrSpec, asmSpec);
             //w.getTextArea().setAutoSize(true);
@@ -63,7 +63,7 @@ qx.Class.define("ncms.asm.am.WikiAM", {
                 hs = ncms.Application.APP_STATE.getHelpSite();
             }
             w.setHelpSite(hs);
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 if (sm.lang.String.isEmpty(val)) {
                     return;
                 }
@@ -74,16 +74,16 @@ qx.Class.define("ncms.asm.am.WikiAM", {
             return w;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             var w = this._valueWidget;
             return {
-                markup : w.getMarkup(),
-                value : w.getValue()
+                markup: w.getMarkup(),
+                value: w.getValue()
             };
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("_form");
     }
 });

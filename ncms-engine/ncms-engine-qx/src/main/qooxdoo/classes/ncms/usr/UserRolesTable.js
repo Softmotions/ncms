@@ -2,15 +2,15 @@
  * User roles table^ set/unset roles and groups for user
  */
 qx.Class.define("ncms.usr.UserRolesTable", {
-    extend : sm.table.Table,
+    extend: sm.table.Table,
 
-    construct : function(editable) {
+    construct: function (editable) {
         this.__editable = editable === undefined ? true : !!editable;
         var tm = this._createTableModel();
         this.base(arguments, tm, tm.getCustom());
-        this.set({statusBarVisible : false});
+        this.set({statusBarVisible: false});
 
-        this.addListener("dataEdited", function(ev) {
+        this.addListener("dataEdited", function (ev) {
             if (this.__user == null) {
                 return;
             }
@@ -26,7 +26,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
         }, this);
 
         var rr = new sm.table.renderer.CustomRowRenderer();
-        rr.setBgColorInterceptor(qx.lang.Function.bind(function(rowInfo) {
+        rr.setBgColorInterceptor(qx.lang.Function.bind(function (rowInfo) {
             return rowInfo.rowData.rowData["activeInGroup"] ? "#FFFF99" : "white";
         }, this));
         this.setDataRowRenderer(rr);
@@ -34,38 +34,39 @@ qx.Class.define("ncms.usr.UserRolesTable", {
         this._reload(null, null);
     },
 
-    members : {
+    members: {
 
-        __user : null,
+        __user: null,
 
-        __editable : null,
+        __editable: null,
 
-        setUser : function(login) {
+        setUser: function (login) {
             if (login == null) {
                 this._reload();
                 this.__user = null;
                 return;
             }
 
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : login}), "GET", "application/json");
-            req.send(function(resp) {
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user",
+                {name: login}), "GET", "application/json");
+            req.send(function (resp) {
                 var data = resp.getContent();
                 this._reload(data["roles"], data["groups"]);
                 this.__user = login;
             }, this);
         },
 
-        _createTableModel : function() {
+        _createTableModel: function () {
             var tm = new sm.model.JsonTableModel();
             this._setJsonTableData(tm, null);
             return tm;
         },
 
-        _reload : function(uroles, ugroups) {
+        _reload: function (uroles, ugroups) {
             uroles = uroles || [];
             ugroups = ugroups || [];
 
-            var rolesComparator = function(a, b) {
+            var rolesComparator = function (a, b) {
                 return a["name"] < b["name"] ? -1 : (a["name"] > b["name"] ? 1 : 0)
             };
 
@@ -74,7 +75,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
 
             var req = new sm.io.Request(ncms.Application.ACT.getUrl("security.roles"), "GET", "application/json");
             req.setAsynchronous(false);
-            req.send(function(resp) {
+            req.send(function (resp) {
                 var data = resp.getContent() || [];
                 for (var i = 0; i < data.length; ++i) {
                     roles.push(qx.lang.Object.mergeWith(data[i], {type: "role"}));
@@ -84,7 +85,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
 
             req = new sm.io.Request(ncms.Application.ACT.getUrl("security.groups"), "GET", "application/json");
             req.setAsynchronous(false);
-            req.send(function(resp) {
+            req.send(function (resp) {
                 var data = resp.getContent() || [];
                 for (var i = 0; i < data.length; ++i) {
                     groups.push(qx.lang.Object.mergeWith(data[i], {type: "group"}));
@@ -115,7 +116,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
                 if (groupItem) {
                     groupItem[0][0] = groupItem[1]["active"] = true;
                     var groles = groupItem[1]["roles"] || [];
-                    for(var j = 0; j < groles.length; ++j) {
+                    for (var j = 0; j < groles.length; ++j) {
                         dataItem = dataMap[groles[j]];
                         if (dataItem) {
                             dataItem[1]["activeInGroup"] = true;
@@ -133,53 +134,54 @@ qx.Class.define("ncms.usr.UserRolesTable", {
         },
 
         //overriden
-        _setJsonTableData : function(tm, items) {
+        _setJsonTableData: function (tm, items) {
             var data = {
-                "title" : "",
-                "columns" : [
+                "title": "",
+                "columns": [
                     {
-                        "title" : this.tr("Assign").toString(),
-                        "id" : "active",
-                        "type" : "boolean",
-                        "editable" : this.__editable,
-                        "width" : 75
+                        "title": this.tr("Assign").toString(),
+                        "id": "active",
+                        "type": "boolean",
+                        "editable": this.__editable,
+                        "width": 75
                     },
                     {
-                        "title" : this.tr("Role/Group").toString(),
-                        "id" : "id",
-                        "width" : "1*"
+                        "title": this.tr("Role/Group").toString(),
+                        "id": "id",
+                        "width": "1*"
                     },
                     {
-                        "title" : this.tr("Type").toString(),
-                        "id" : "type",
-                        "width" : 150
+                        "title": this.tr("Type").toString(),
+                        "id": "type",
+                        "width": 150
                     },
                     {
-                        "title" : this.tr("Description").toString(),
-                        "id" : "description",
-                        "width" : "2*"
+                        "title": this.tr("Description").toString(),
+                        "id": "description",
+                        "width": "2*"
                     }
                 ],
-                "items" : items ? items : []
+                "items": items ? items : []
             };
             tm.setJsonData(data);
         },
 
-        __updateUserRole : function(user, data, value) {
+        __updateUserRole: function (user, data, value) {
             if (user == null) {
                 return;
             }
 
-            var params = {name : user};
+            var params = {name: user};
             params[data["type"]] = data["name"];
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user." + data["type"], params), value ? "PUT" : "DELETE", "application/json");
-            req.send(function(resp){
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user." + data["type"],
+                params), value ? "PUT" : "DELETE", "application/json");
+            req.send(function (resp) {
                 this.setUser(user);
             }, this);
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__user = null;
         this.__editable = null;
     }

@@ -4,11 +4,11 @@
  * Require a set of custom AM components:
  */
 qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
-    type : "static",
+    type: "static",
 
-    statics : {
+    statics: {
 
-        CLASSES : [
+        CLASSES: [
             ncms.asm.am.AliasAM,
             ncms.asm.am.StringAM,
             ncms.asm.am.SelectAM,
@@ -30,7 +30,7 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
         ],
 
 
-        createAttrManagerInstanceForType : function(type) {
+        createAttrManagerInstanceForType: function (type) {
             var clazz = this.findEditorClassForType(type);
             if (clazz == null) {
                 return null;
@@ -39,7 +39,7 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
         },
 
 
-        createAttrManagerInstance : function(amClassName) {
+        createAttrManagerInstance: function (amClassName) {
             var clazz = (typeof amClassName === "string") ? qx.Class.getByName(amClassName) : amClassName;
             qx.core.Assert.assertTrue(clazz != null);
             qx.core.Assert.assertTrue(qx.Class.hasInterface(clazz, ncms.asm.IAsmAttributeManager));
@@ -60,11 +60,11 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
          * @param type {String}
          * @param clazz {qx.Class}
          */
-        forEachAttributeManagerTypeClassPair : function(cb) {
-            sm.lang.Object.forEachClass(function(clazz) {
+        forEachAttributeManagerTypeClassPair: function (cb) {
+            sm.lang.Object.forEachClass(function (clazz) {
                 if (!qx.Class.hasInterface(clazz, ncms.asm.IAsmAttributeManager) ||
-                        typeof clazz.getSupportedAttributeTypes !== "function" ||
-                        typeof clazz.getDescription !== "function") {
+                    typeof clazz.getSupportedAttributeTypes !== "function" ||
+                    typeof clazz.getDescription !== "function") {
                     return;
                 }
                 var types = clazz.getSupportedAttributeTypes() || [];
@@ -85,9 +85,9 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
          * @param type {String} Type supported by editor
          * @return {qx.Class|null} Editor class for specified attribute type.
          */
-        findEditorClassForType : function(type) {
+        findEditorClassForType: function (type) {
             var ret = null;
-            this.forEachAttributeManagerTypeClassPair(function(itype, clazz) {
+            this.forEachAttributeManagerTypeClassPair(function (itype, clazz) {
                 if (itype === type) {
                     ret = clazz;
                     return false;

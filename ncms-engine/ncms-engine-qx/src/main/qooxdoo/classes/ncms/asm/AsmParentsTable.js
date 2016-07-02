@@ -5,55 +5,55 @@
  * @asset(ncms/icon/16/actions/delete.png)
  */
 qx.Class.define("ncms.asm.AsmParentsTable", {
-    extend : sm.table.ToolbarLocalTable,
-    implement : [
+    extend: sm.table.ToolbarLocalTable,
+    implement: [
         qx.ui.form.IStringForm,
         qx.ui.form.IForm
     ],
-    include : [
+    include: [
         sm.ui.form.MStringForm,
         sm.table.MTableMutator
     ],
 
-    events : {
-        "parentsChanged" : "qx.event.type.Event"
+    events: {
+        "parentsChanged": "qx.event.type.Event"
     },
 
-    construct : function() {
+    construct: function () {
         this.base(arguments);
-        this.set({allowGrowX : true, allowGrowY : false, height : 100});
+        this.set({allowGrowX: true, allowGrowY: false, height: 100});
         this._reload([]);
     },
 
-    members : {
+    members: {
 
-        __spec : null,
+        __spec: null,
 
-        __delBt : null,
+        __delBt: null,
 
         /**
          */
-        setAsmSpec : function(spec) {
+        setAsmSpec: function (spec) {
             this.__spec = spec || {};
             this.setParentRefs(spec["parentRefs"] || []);
         },
 
-        setParentRefs : function(parentRefs) {
+        setParentRefs: function (parentRefs) {
             var items = [];
-            parentRefs.forEach(function(el) {
+            parentRefs.forEach(function (el) {
                 var ind = el.indexOf(":");
                 if (ind === -1) return;
                 var id = el.substring(0, ind);
                 var name = el.substring(ind + 1);
                 var row = [name];
-                items.push([row, {"id" : id, "name" : name}]);
+                items.push([row, {"id": id, "name": name}]);
             }, this);
             this._reload(items);
         },
 
         //overriden
-        _createToolbarItems : function(toolbar) {
-            var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
+        _createToolbarItems: function (toolbar) {
+            var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
 
             var bt = this._createButton(null, "ncms/icon/16/actions/add.png");
@@ -61,7 +61,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             bt.addListener("execute", this.__addParents, this);
             part.add(bt);
 
-            bt = this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png").set({enabled : false});
+            bt = this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png").set({enabled: false});
             bt.setToolTipText(this.tr("Remove parent"));
             bt.addListener("execute", this.__removeParent, this);
             part.add(bt);
@@ -70,21 +70,22 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
         },
 
         //overriden
-        _createTable : function(tm) {
+        _createTable: function (tm) {
             var table = new sm.table.Table(tm, tm.getCustom());
             table.getSelectionModel().addListener("changeSelection", this._syncState, this);
             table.set({
-                showCellFocusIndicator : false,
-                statusBarVisible : false,
-                focusCellOnPointerMove : false});
+                showCellFocusIndicator: false,
+                statusBarVisible: false,
+                focusCellOnPointerMove: false
+            });
 
             table.setContextMenu(new qx.ui.menu.Menu());
             table.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             return table;
         },
 
-        _createButton : function(label, icon, handler, self) {
-            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance" : "toolbar-table-button"});
+        _createButton: function (label, icon, handler, self) {
+            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance": "toolbar-table-button"});
             if (handler != null) {
                 bt.addListener("execute", handler, self);
             }
@@ -92,59 +93,59 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
         },
 
         //overriden
-        _setJsonTableData : function(tm, items) {
+        _setJsonTableData: function (tm, items) {
             var data = {
-                "columns" : [
+                "columns": [
                     {
-                        "title" : this.tr("Name").toString(),
-                        "id" : "name",
-                        "sortable" : false,
-                        "width" : "1*"
+                        "title": this.tr("Name").toString(),
+                        "id": "name",
+                        "sortable": false,
+                        "width": "1*"
                     }
                 ],
-                "items" : items
+                "items": items
             };
             tm.setJsonData(data);
             this._syncState();
         },
 
-        _syncState : function() {
+        _syncState: function () {
             var ri = this.getSelectedRowIndex();
             this.__delBt.setEnabled(ri != null && ri !== -1);
         },
 
-        __removeParent : function() {
+        __removeParent: function () {
             var spec = this.__spec;
             var asmId = spec["id"];
             var rd = this.getSelectedRowData();
             if (rd == null) {
                 return;
             }
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.parents", {id : asmId}),
-                    "DELETE", "application/json");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.parents", {id: asmId}),
+                "DELETE", "application/json");
             req.setData(JSON.stringify([rd]));
             req.setRequestHeader("Content-Type", "application/json");
-            req.send(function(resp) {
+            req.send(function (resp) {
                 this.fireEvent("parentsChanged");
             }, this);
         },
 
-        __addParents : function() {
+        __addParents: function () {
             var spec = this.__spec;
             var asmName = spec["name"];
             var asmId = spec["id"];
             var dlg = new ncms.asm.AsmSelectorDlg(
-                    this.tr("Select parents for: %1", asmName),
-                    null,
-                    {"notIN" : [asmId]}
+                this.tr("Select parents for: %1", asmName),
+                null,
+                {"notIN": [asmId]}
             );
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 var asms = ev.getData();
                 //[{"name":"pub.base","id":1},{"name":"pub.main","id":2}]
-                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.parents", {id : asmId}),
-                        "PUT", "application/json");
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.parents", {id: asmId}),
+                    "PUT", "application/json");
                 req.setData(JSON.stringify(asms));
-                req.send(function(resp) {
+                req.send(function (resp) {
                     this.fireEvent("parentsChanged");
                     dlg.close();
                 }, this);
@@ -152,7 +153,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             dlg.open();
         },
 
-        __beforeContextmenuOpen : function(ev) {
+        __beforeContextmenuOpen: function (ev) {
             var rd = this.getSelectedRowData();
             var menu = ev.getData().getTarget();
             menu.removeAll();
@@ -167,7 +168,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__spec = null;
         //this._disposeObjects("__field_name");
     }

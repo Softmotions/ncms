@@ -4,9 +4,9 @@
  * and assembly table.
  */
 qx.Class.define("ncms.asm.AsmSelector", {
-    extend : qx.ui.core.Widget,
+    extend: qx.ui.core.Widget,
 
-    events : {
+    events: {
 
         /**
          * Event fired if assembly was selected/deselected
@@ -18,133 +18,134 @@ qx.Class.define("ncms.asm.AsmSelector", {
          *       };
          * or null if selection cleared
          */
-        "asmSelected" : "qx.event.type.Data"
+        "asmSelected": "qx.event.type.Data"
     },
 
-    properties : {
+    properties: {
 
-        appearance : {
-            refine : true,
-            init : "ncms-asm-selector"
+        appearance: {
+            refine: true,
+            init: "ncms-asm-selector"
         }
     },
 
-    construct : function(constViewSpec, smodel, useColumns) {
+    construct: function (constViewSpec, smodel, useColumns) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
 
         var sf = this.__sf = new sm.ui.form.SearchField();
-        sf.addListener("clear", function() {
+        sf.addListener("clear", function () {
             this.__search(null);
         }, this);
-        sf.addListener("input", function(ev) {
+        sf.addListener("input", function (ev) {
             this.__search(ev.getData());
         }, this);
         sf.addListener("keypress", this.__searchKeypress, this);
 
 
         this.__table = new ncms.asm.AsmTable(useColumns).set({
-            "statusBarVisible" : true,
-            "showCellFocusIndicator" : false});
+            "statusBarVisible": true,
+            "showCellFocusIndicator": false
+        });
 
         if (smodel != null) {
             this.__table.setSelectionModel(smodel);
         }
-        this.__table.getSelectionModel().addListener("changeSelection", function() {
+        this.__table.getSelectionModel().addListener("changeSelection", function () {
             var asm = this.getSelectedAsm();
             this.fireDataEvent("asmSelected", asm ? asm : null);
         }, this);
 
         this._add(this.__sf);
-        this._add(this.__table, {flex : 1});
+        this._add(this.__table, {flex: 1});
 
         this.setConstViewSpec(constViewSpec || null);
 
-        this.addListener("appear", function() {
+        this.addListener("appear", function () {
             sf.focus();
         });
     },
 
-    members : {
+    members: {
 
         /**
          * Search field
          * @type {sm.ui.form.SearchField}
          */
-        __sf : null,
+        __sf: null,
 
         /**
          * Assemblies virtual table
          * @type {ncms.asm.AsmTable}
          */
-        __table : null,
+        __table: null,
 
 
-        setSearchBoxValue : function(val) {
+        setSearchBoxValue: function (val) {
             this.__sf.setValue(val);
             this.__search(val);
         },
 
-        setViewSpec : function(vs) {
+        setViewSpec: function (vs) {
             this.__table.resetSelection();
             this.__table.getTableModel().setViewSpec(vs);
         },
 
-        updateViewSpec : function(vs) {
+        updateViewSpec: function (vs) {
             this.__table.resetSelection();
             this.__table.getTableModel().updateViewSpec(vs);
         },
 
-        setConstViewSpec : function(vs, noupdate) {
+        setConstViewSpec: function (vs, noupdate) {
             this.__table.resetSelection();
             this.__table.getTableModel().setConstViewSpec(vs, noupdate);
         },
 
-        reload : function(vspec) {
+        reload: function (vspec) {
             this.__table.getTableModel().reloadData();
             this.__table.resetSelection();
         },
 
-        resetSelection : function() {
+        resetSelection: function () {
             this.__table.resetSelection();
         },
 
-        getTable : function() {
+        getTable: function () {
             return this.__table;
         },
 
-        getSelectedAsmInd : function() {
+        getSelectedAsmInd: function () {
             return this.__table.getSelectedAsmInd();
         },
 
-        getSelectedAsm : function() {
+        getSelectedAsm: function () {
             return this.__table.getSelectedAsm();
         },
 
-        getSelectedAsms : function() {
+        getSelectedAsms: function () {
             return this.__table.getSelectedAsms();
         },
 
-        cleanup : function() {
+        cleanup: function () {
             this.__table.cleanup();
         },
 
-        __search : function(val) {
-            this.updateViewSpec({stext : val || ""});
+        __search: function (val) {
+            this.updateViewSpec({stext: val || ""});
         },
 
-        __applyConstViewSpec : function() {
+        __applyConstViewSpec: function () {
             this.__search();
         },
 
-        __searchKeypress : function(ev) {
+        __searchKeypress: function (ev) {
             if ("Down" === ev.getKeyIdentifier()) {
                 this.__table.handleFocus();
             }
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__sf = null;
         this.__table = null;
     }

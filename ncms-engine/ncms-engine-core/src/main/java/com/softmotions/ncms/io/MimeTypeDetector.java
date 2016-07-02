@@ -1,15 +1,15 @@
 package com.softmotions.ncms.io;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.detect.Detector;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.txt.UniversalEncodingDetector;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
 
 /**
  * Simple tika-based mime type detector.

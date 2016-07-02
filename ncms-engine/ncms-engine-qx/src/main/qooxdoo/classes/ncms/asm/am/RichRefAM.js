@@ -2,42 +2,42 @@
  * Rich resource ref
  */
 qx.Class.define("ncms.asm.am.RichRefAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Rich reference");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "richref" ];
+        getSupportedAttributeTypes: function () {
+            return ["richref"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
-        _imageAM : null,
+        _imageAM: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = new qx.ui.form.Form();
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.CheckBox();
             el.setValue(opts["allowPages"] == null || opts["allowPages"] === "true");
-            form.add(el, this.tr("Pages"), null, "allowPages", null, {flex : 0});
+            form.add(el, this.tr("Pages"), null, "allowPages", null, {flex: 0});
 
             el = new qx.ui.form.CheckBox();
             el.setValue(opts["allowFiles"] === "true");
-            form.add(el, this.tr("Files"), null, "allowFiles", null, {flex : 1});
+            form.add(el, this.tr("Files"), null, "allowFiles", null, {flex: 1});
 
             el = new qx.ui.form.CheckBox();
             el.setValue(opts["allowName"] === "true");
@@ -61,7 +61,7 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             imageAttrSpec["options"] = opts["image"];
 
             var iopts = new sm.ui.form.FormWidgetAdapter(imageAm.activateOptionsWidget(imageAttrSpec, asmSpec));
-            form.add(iopts, this.tr("Image"), null, "image", null, {fullRow : true});
+            form.add(iopts, this.tr("Image"), null, "image", null, {fullRow: true});
             el.bind("value", iopts, "enabled");
 
             el = new qx.ui.form.TextField();
@@ -90,7 +90,7 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             return fr;
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this._form == null || !this._form.validate()) {
                 return null;
             }
@@ -114,21 +114,21 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
             return data;
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var w = new ncms.asm.am.RichRefAMValueWidget(attrSpec, asmSpec);
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 w.setModel(JSON.parse(val));
             });
             this._valueWidget = w;
             return w;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             return this._valueWidget.valueAsJSON();
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("_form", "_imageAM");
     }
 });

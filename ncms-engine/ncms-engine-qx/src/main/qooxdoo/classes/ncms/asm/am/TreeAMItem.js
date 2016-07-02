@@ -2,34 +2,34 @@
  * Tree item for ncms.asm.am.TreeAMValueWidget
  */
 qx.Class.define("ncms.asm.am.TreeAMItem", {
-    extend : qx.ui.tree.VirtualTreeItem,
+    extend: qx.ui.tree.VirtualTreeItem,
 
-    properties : {
+    properties: {
 
-        extra : {
-            check : "String",
-            event : "changeExtra",
-            nullable : true
+        extra: {
+            check: "String",
+            event: "changeExtra",
+            nullable: true
         }
     },
 
-    construct : function() {
+    construct: function () {
         this.base(arguments);
 
     },
 
-    members : {
+    members: {
 
-        _addWidgets : function() {
+        _addWidgets: function () {
             this.addSpacer();
             this.addOpenButton();
             this.addIcon();
             this.addLabel();
-            this.addWidget(new qx.ui.core.Spacer(), {flex : 1});
+            this.addWidget(new qx.ui.core.Spacer(), {flex: 1});
             var extra = new qx.ui.basic.Label();
             this.bind("extra", extra, "value");
             this.addWidget(extra);
-            this.addWidget(new qx.ui.core.Spacer().set({width : 70}));
+            this.addWidget(new qx.ui.core.Spacer().set({width: 70}));
         }
     }
 });

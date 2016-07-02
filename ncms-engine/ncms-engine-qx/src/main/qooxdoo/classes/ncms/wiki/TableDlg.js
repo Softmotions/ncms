@@ -5,37 +5,36 @@
  * @version $Id$
  */
 qx.Class.define("ncms.wiki.TableDlg", {
-    extend  : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    events : {
+    events: {
         /**
          * Fired if insert table button clicked
          * data: [{@link qx.ui.table.model.Simple}, isWide] Table model of current table & wide table flag
          */
-        "completed" : "qx.event.type.Data"
+        "completed": "qx.event.type.Data"
     },
 
-    properties : {
-    },
+    properties: {},
 
-    construct : function() {
+    construct: function () {
         this.base(arguments, this.tr("Insert table"));
         this.setLayout(new qx.ui.layout.Dock(5, 5));
         this.set({
-            modal         : true,
-            showMinimize  : false,
-            showMaximize  : true,
-            allowMaximize : true,
-            width : 520,
-            height : 460
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 520,
+            height: 460
         });
 
-        var cmd  = this.createCommand("Esc");
-        cmd.addListener("execute", function() {
+        var cmd = this.createCommand("Esc");
+        cmd.addListener("execute", function () {
             this.close();
         }, this);
 
-        var header = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({alignY : "middle"}));
+        var header = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({alignY: "middle"}));
         this.__spCols = new qx.ui.form.Spinner(1, 2, 10);
         this.__spCols.addListener("changeValue", this._updateTable, this);
         this.__spRows = new qx.ui.form.Spinner(1, 2, 100);
@@ -45,53 +44,53 @@ qx.Class.define("ncms.wiki.TableDlg", {
         header.add(this.__spCols);
         header.add(new qx.ui.basic.Label(this.tr("Rows")));
         header.add(this.__spRows);
-        this.add(header, {edge : "north"});
+        this.add(header, {edge: "north"});
 
         this._updateTable();
 
-        var footer = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({alignX : "right"}));
+        var footer = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({alignX: "right"}));
         var ok = new qx.ui.form.Button(this.tr("Insert table"));
-        ok.addListener("execute", function(ev) {
+        ok.addListener("execute", function (ev) {
             if (this.__table.isEditing()) {
                 this.__table.stopEditing();
             }
             this.fireDataEvent("completed", [this.__table.getTableModel(), wideCb.getValue()]);
         }, this);
         var cancel = new qx.ui.form.Button(this.tr("Cancel"));
-        cancel.addListener("execute", function(ev) {
+        cancel.addListener("execute", function (ev) {
             this.close();
         }, this);
 
         footer.add(ok);
         footer.add(cancel);
-        this.add(footer, {edge : "south"});
+        this.add(footer, {edge: "south"});
 
         var wideCb = new qx.ui.form.CheckBox(this.tr("Wide table"));
         wideCb.setValue(true);
-        this.add(wideCb, {edge : "south"});
+        this.add(wideCb, {edge: "south"});
 
-        this.addListenerOnce("resize", function() {
+        this.addListenerOnce("resize", function () {
             this.center();
         }, this);
     },
 
-    members : {
-        __spCols : null,
+    members: {
+        __spCols: null,
 
-        __spRows : null,
+        __spRows: null,
 
-        __table : null,
+        __table: null,
 
-        open : function() {
+        open: function () {
             this.base(arguments);
         },
 
-        close : function() {
+        close: function () {
             this.base(arguments);
             this.destroy();
         },
 
-        _updateTable : function() {
+        _updateTable: function () {
             var oldTable = this.__table;
             var oldTm = oldTable ? oldTable.getTableModel() : null;
 
@@ -128,7 +127,7 @@ qx.Class.define("ncms.wiki.TableDlg", {
                 if (oldTable) {
                     this.remove(oldTable);
                 }
-                this.add(this.__table, {edge : "center"});
+                this.add(this.__table, {edge: "center"});
                 if (oldTable) {
                     oldTable.dispose();
                 }
@@ -144,7 +143,7 @@ qx.Class.define("ncms.wiki.TableDlg", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__spCols = null
         this.__spRows = null;
         this.__table = null;

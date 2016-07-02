@@ -2,30 +2,30 @@
  * Main(index) page marker template attribute.
  */
 qx.Class.define("ncms.asm.am.MainPageAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Main page marker");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "mainpage" ];
+        getSupportedAttributeTypes: function () {
+            return ["mainpage"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return true;
         }
     },
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = this._form = new qx.ui.form.Form();
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var el = new qx.ui.form.TextField();
@@ -43,26 +43,26 @@ qx.Class.define("ncms.asm.am.MainPageAM", {
             return new sm.ui.form.FlexFormRenderer(form);
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this._form == null || !this._form.validate()) {
                 return null;
             }
             return {
-                "lang" : this._form.getItems()["lang"].getValue(),
-                "enabled" : this._form.getItems()["enabled"].getValue()
+                "lang": this._form.getItems()["lang"].getValue(),
+                "enabled": this._form.getItems()["enabled"].getValue()
             };
         },
 
-        activateValueEditorWidget : function() {
+        activateValueEditorWidget: function () {
             return null;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             return {}
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("_form");
     }
 

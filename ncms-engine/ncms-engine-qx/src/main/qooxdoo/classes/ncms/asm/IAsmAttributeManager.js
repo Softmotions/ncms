@@ -40,7 +40,7 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
 //        }
 //    },
 
-    members : {
+    members: {
 
         /**
          * Return attribute-options editor widget.
@@ -59,7 +59,7 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
          * @param asmSpec {Object}
          * @return {qx.ui.core.Widget} settings editor widget.
          */
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             this.assertMap(attrSpec);
             this.assertMap(asmSpec);
         },
@@ -67,7 +67,7 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
         /**
          * @return {Object}
          */
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
         },
 
         /**
@@ -77,7 +77,7 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
          * @param asmSpec {Object}
          * @return {qx.ui.core.Widget} value editor widget.
          */
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             this.assertMap(attrSpec);
             this.assertMap(asmSpec);
         },
@@ -85,7 +85,7 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
         /**
          * @return {Object}
          */
-        valueAsJSON : function() {
+        valueAsJSON: function () {
         }
     }
 });

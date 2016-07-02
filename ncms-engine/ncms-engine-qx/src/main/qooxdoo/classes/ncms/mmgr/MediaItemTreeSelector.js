@@ -9,16 +9,16 @@
  * @asset(ncms/icon/22/state/loading.gif)
  */
 qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
-    extend : qx.ui.core.Widget,
-    include : [ ncms.cc.tree.MFolderTree ],
+    extend: qx.ui.core.Widget,
+    include: [ncms.cc.tree.MFolderTree],
 
-    construct : function(allowModify) {
+    construct: function (allowModify) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
         this._initTree({
-            action : "media.folders",
-            rootLabel : this.tr("Files"),
-            iconConverter : this.__treeIconConverter.bind(this)
+            action: "media.folders",
+            rootLabel: this.tr("Files"),
+            iconConverter: this.__treeIconConverter.bind(this)
         });
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
@@ -26,10 +26,10 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
         }
     },
 
-    members : {
+    members: {
 
 
-        __treeIconConverter : function(value, model, source, target) {
+        __treeIconConverter: function (value, model, source, target) {
             switch (value) {
                 case "default":
                     if (model.getChildren != null) {
@@ -45,7 +45,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             }
         },
 
-        __beforeContextmenuOpen : function(ev) {
+        __beforeContextmenuOpen: function (ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
             var bt;
@@ -89,7 +89,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             menu.add(bt);
         },
 
-        __onRefresh : function(ev) {
+        __onRefresh: function (ev) {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
@@ -97,24 +97,24 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             this._refreshNode(item);
         },
 
-        __onDelete : function(ev) {
+        __onDelete: function (ev) {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
             }
             var parent = this._tree.getParent(item) || this._tree.getModel();
             var path = this._getItemPathSegments(item);
-            ncms.Application.confirm(this.tr("Are you sure to remove folder: %1", path.join("/")), function(yes) {
+            ncms.Application.confirm(this.tr("Are you sure to remove folder: %1", path.join("/")), function (yes) {
                 if (!yes) return;
                 var url = ncms.Application.ACT.getRestUrl("media.delete", path);
                 var req = new sm.io.Request(url, "DELETE", "application/json");
-                req.send(function(resp) {
+                req.send(function (resp) {
                     this._refreshNode(parent);
                 }, this);
             }, this);
         },
 
-        __onRename : function(ev) {
+        __onRename: function (ev) {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
@@ -122,7 +122,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             var path = this._getItemPathSegments(item);
             var dlg = new ncms.mmgr.MediaItemRenameDlg(path, item.getLabel());
             dlg.setPosition("bottom-right");
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 dlg.close();
                 var data = ev.getData();
                 item.setLoaded(false);
@@ -133,7 +133,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             dlg.open();
         },
 
-        __onMove : function(ev) {
+        __onMove: function (ev) {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
@@ -142,17 +142,17 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             var parent = this._tree.getParent(item) || this._tree.getModel();
 
             var dlg = new ncms.mmgr.MediaSelectFolderDlg(
-                    this.tr("Move '%1' to another folder", path.join("/"))
+                this.tr("Move '%1' to another folder", path.join("/"))
             );
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 var target = ev.getData();
                 var npath = [].concat(target, item.getLabel());
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.move", path),
-                        "PUT", "application/json");
+                    "PUT", "application/json");
                 req.setData(npath.join("/"));
-                req.send(function() {
+                req.send(function () {
                     dlg.close();
-                    this._refreshNode(parent, function() {
+                    this._refreshNode(parent, function () {
                         target = this._tree.findCachedNodeByPath(target, "label");
                         if (target != null) {
                             this._refreshNode(target);
@@ -163,19 +163,19 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             dlg.open();
         },
 
-        __onNewFolder : function(ev) {
+        __onNewFolder: function (ev) {
             this.__newFolder(ev, this._tree.getSelection().getItem(0) || this._tree.getModel());
         },
 
-        __onNewRootFolder : function(ev) {
+        __onNewRootFolder: function (ev) {
             this.__newFolder(ev, this._tree.getModel());
         },
 
-        __newFolder : function(ev, parent) {
+        __newFolder: function (ev, parent) {
             var path = this._getItemPathSegments(parent);
             var dlg = new ncms.mmgr.MediaFolderNewDlg(path);
             dlg.setPosition("bottom-right");
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 dlg.close();
                 this._refreshNode(parent);
             }, this);
@@ -184,7 +184,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         //this._disposeObjects("__field_name");
     }
 });

@@ -7,8 +7,8 @@
  * @asset(ncms/icon/22/places/folder-exclamation-open.png)
  */
 qx.Class.define("ncms.pgs.PagesTreeSelector", {
-    extend : qx.ui.core.Widget,
-    include : [ ncms.cc.tree.MFolderTree ],
+    extend: qx.ui.core.Widget,
+    include: [ncms.cc.tree.MFolderTree],
 
     /**
      * @param allowModify {Boolean?false} Allow CRUD operations on pages
@@ -20,30 +20,30 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
      *                    }
      *                </code>
      */
-    construct : function(allowModify, options) {
+    construct: function (allowModify, options) {
         this.__options = options || {};
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
         var me = this;
         this._initTree(
-                {
-                    action : "pages.layer",
-                    idPathSegments : true,
-                    rootLabel : this.tr("Pages"),
-                    selectRootAsNull : true,
-                    setupChildrenRequestFn : this.__setupChildrenRequest,
-                    iconConverter : this.__treeIconConverter.bind(this),
-                    delegate : {
-                        bindItem : function(controller, item, index) {
-                            controller.bindProperty("", "model", {
-                                converter : function(value, model, source, target) {
-                                    me.__configureItem(value, target);
-                                    return value;
-                                }
-                            }, item, index);
-                        }
+            {
+                action: "pages.layer",
+                idPathSegments: true,
+                rootLabel: this.tr("Pages"),
+                selectRootAsNull: true,
+                setupChildrenRequestFn: this.__setupChildrenRequest,
+                iconConverter: this.__treeIconConverter.bind(this),
+                delegate: {
+                    bindItem: function (controller, item, index) {
+                        controller.bindProperty("", "model", {
+                            converter: function (value, model, source, target) {
+                                me.__configureItem(value, target);
+                                return value;
+                            }
+                        }, item, index);
                     }
-                });
+                }
+            });
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
@@ -51,15 +51,15 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         ncms.Events.getInstance().addListener("pageChangePublished", this.__onPagePublished, this);
     },
 
-    members : {
+    members: {
 
-        __options : null,
+        __options: null,
 
-        getTree : function() {
+        getTree: function () {
             return this._tree;
         },
 
-        __configureItem : function(model, item) {
+        __configureItem: function (model, item) {
             var checkAm = this.__options["accessAll"];
             if (checkAm == null) {
                 return;
@@ -76,11 +76,11 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             }
         },
 
-        __onPagePublished : function(ev) {
+        __onPagePublished: function (ev) {
             var data = ev.getData();
             var published = data["published"];
             var id = data["id"];
-            this._tree.iterateOverCachedNodes(function(node) {
+            this._tree.iterateOverCachedNodes(function (node) {
                 if (node.getId() === id && node.getStatus != null) {
                     var status = node.getStatus();
                     if (published) {
@@ -96,7 +96,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             });
         },
 
-        __treeIconConverter : function(value, model, source, target) {
+        __treeIconConverter: function (value, model, source, target) {
             var statusPrefix = "";
             if (model.getStatus && (model.getStatus() & (1 << 1)) != 0) {
                 statusPrefix = "-exclamation";
@@ -117,13 +117,13 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             }
         },
 
-        __setupChildrenRequest : function(req) {
+        __setupChildrenRequest: function (req) {
             if (this.__options["foldersOnly"]) {
                 req.setParameter("foldersOnly", "true");
             }
         },
 
-        __beforeContextmenuOpen : function(ev) {
+        __beforeContextmenuOpen: function (ev) {
             var menu = ev.getData().getTarget();
             menu.removeAll();
             var tree = this._tree;
@@ -132,7 +132,8 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             var bt;
 
             var parent = this.__calcFirstFolderParent(sel);
-            if (ncms.Application.userInRoles("admin.structure") || (parent != root && parent.getAccessMask().indexOf("w") != -1)) {
+            if (ncms.Application.userInRoles("admin.structure") || (parent != root && parent.getAccessMask()
+                .indexOf("w") != -1)) {
                 bt = new qx.ui.menu.Button(this.tr("New"));
                 bt.addListenerOnce("execute", this.__onNewPage, this);
                 menu.add(bt);
@@ -163,16 +164,16 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         },
 
 
-        __onRefList : function(ev) {
+        __onRefList: function (ev) {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
             }
-            qx.bom.Window.open(ncms.Application.ACT.getRestUrl("pages.referers", {guid : item.getGuid()}),
-                    this.tr("List of pages referred %1", item.getLabel()));
+            qx.bom.Window.open(ncms.Application.ACT.getRestUrl("pages.referers", {guid: item.getGuid()}),
+                this.tr("List of pages referred %1", item.getLabel()));
         },
 
-        __onMovePage : function(ev) {
+        __onMovePage: function (ev) {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
@@ -182,29 +183,29 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             // "options":null,"accessMask":"wnd","icon":"default","loaded":true}
             var parent = this._tree.getParent(item) || this._tree.getModel();
             var dlg = new ncms.pgs.PagesSelectorDlg(
-                    this.tr("Choose the target container page"),
-                    false,
-                    {
-                        foldersOnly : true,
-                        allowRootSelection : true
-                    });
-            dlg.addListener("completed", function(ev) {
+                this.tr("Choose the target container page"),
+                false,
+                {
+                    foldersOnly: true,
+                    allowRootSelection: true
+                });
+            dlg.addListener("completed", function (ev) {
                 var target = ev.getData();
                 //{"id":7,"name":"Test2","idPath":[7],"labelPath":["Test2"],"guidPath":["dd67c81082248a0241937f0ebbbd01d3"]}
                 var req = new sm.io.Request(ncms.Application.ACT.getUrl("pages.move"), "PUT");
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify({
-                    src : item.getId(),
-                    tgt : target != null ? target["id"] : 0
+                    src: item.getId(),
+                    tgt: target != null ? target["id"] : 0
                 }));
-                req.send(function() {
+                req.send(function () {
                     dlg.close();
-                    this._refreshNode(parent, function() {
+                    this._refreshNode(parent, function () {
                         if (target == null) { //refresh root
                             this._refreshNode(this._tree.getModel());
                             return;
                         }
-                        this._tree.iterateOverCachedNodes(function(node) {
+                        this._tree.iterateOverCachedNodes(function (node) {
                             if (node.getId() === target["id"]) {
                                 if (parent != node) {
                                     this._refreshNode(node);
@@ -218,18 +219,18 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             dlg.open();
         },
 
-        __onChangeOrRenamePage : function(ev) {
+        __onChangeOrRenamePage: function (ev) {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
             }
             var parent = this._tree.getParent(item) || this._tree.getModel();
             var dlg = new ncms.pgs.PageChangeOrRenameDlg({
-                id : item.getId(),
-                label : item.getLabel(),
-                status : item.getStatus()
+                id: item.getId(),
+                label: item.getLabel(),
+                status: item.getStatus()
             });
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 this._refreshNode(parent);
                 dlg.close();
             }, this);
@@ -237,11 +238,11 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             dlg.open();
         },
 
-        __onNewPage : function(ev) {
+        __onNewPage: function (ev) {
             var parent = this.__calcFirstFolderParent(this._tree.getSelection().getItem(0));
             var parentId = parent.getId();
             var dlg = new ncms.pgs.PageNewDlg(parentId);
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 this._refreshNode(parent);
                 dlg.close();
             }, this);
@@ -249,24 +250,25 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             dlg.open();
         },
 
-        __onDeletePage : function(ev) {
+        __onDeletePage: function (ev) {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
             }
             var parent = this._tree.getParent(item) || this._tree.getModel();
             var label = item.getLabel();
-            ncms.Application.confirm(this.tr("Are you sure to remove page: %1", label), function(yes) {
+            ncms.Application.confirm(this.tr("Are you sure to remove page: %1", label), function (yes) {
                 if (!yes) return;
-                var url = ncms.Application.ACT.getRestUrl("pages.delete", {id : item.getId()});
+                var url = ncms.Application.ACT.getRestUrl("pages.delete", {id: item.getId()});
                 var req = new sm.io.Request(url, "DELETE", "application/json");
-                req.send(function(resp) {
+                req.send(function (resp) {
                     var ret = resp.getContent() || {};
                     if (ret["error"] === "ncms.page.nodel.refs.found") {
                         var dlg = new sm.alert.AlertMessages(this.tr("Unable to delete this page"));
                         dlg.addMessages("",
-                                this.tr("This page cannot be removed because we found pages linked with this page. Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>",
-                                        ncms.Application.ACT.getRestUrl("pages.referers", {guid : item.getGuid()}))
+                            this.tr(
+                                "This page cannot be removed because we found pages linked with this page. Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>",
+                                ncms.Application.ACT.getRestUrl("pages.referers", {guid: item.getGuid()}))
                         );
                         dlg.open();
                         return;
@@ -276,7 +278,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             }, this);
         },
 
-        __calcFirstFolderParent : function(item) {
+        __calcFirstFolderParent: function (item) {
             var parent = item;
             while (parent && (parent.getStatus() & 1) === 0) {
                 parent = this._tree.getParent(parent);
@@ -285,7 +287,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         //this._disposeObjects("__field_name");
         ncms.Events.getInstance().removeListener("pageChangePublished", this.__onPagePublished, this);
     }

@@ -1,12 +1,5 @@
 package com.softmotions.ncms.media;
 
-import com.softmotions.commons.cont.KVOptions;
-import com.softmotions.commons.ctype.CTypeUtils;
-import com.softmotions.commons.io.InputStreamWrapper;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.tika.mime.MediaType;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +12,13 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.tika.mime.MediaType;
+
+import com.softmotions.commons.cont.KVOptions;
+import com.softmotions.commons.ctype.CTypeUtils;
+import com.softmotions.commons.io.InputStreamWrapper;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

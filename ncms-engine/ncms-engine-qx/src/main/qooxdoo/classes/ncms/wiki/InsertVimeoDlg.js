@@ -2,41 +2,41 @@
  *
  */
 qx.Class.define("ncms.wiki.InsertVimeoDlg", {
-    extend : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    events : {
-        "completed" : "qx.event.type.Data"
+    events: {
+        "completed": "qx.event.type.Data"
     },
 
-    construct : function() {
+    construct: function () {
         this.base(arguments, this.tr("Insert Vimeo video"));
         this.setLayout(new qx.ui.layout.VBox(4));
         this.set({
-            modal : true,
-            showMinimize : false,
-            showMaximize : true,
-            allowMaximize : true,
-            width : 450
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 450
         });
 
         var form = this.__form = new sm.ui.form.ExtendedForm();
 
         var tf = new qx.ui.form.TextField().set({
-            maxLength : 128,
-            required : true
+            maxLength: 128,
+            required: true
         });
         tf.setPlaceholder(this.tr("https://vimeo.com/video_url or video code"));
         form.add(tf, this.tr("URL or code"),
-                this.__validateVimeoId, "id", this, {fullRow : true});
+            this.__validateVimeoId, "id", this, {fullRow: true});
 
         var cb = new qx.ui.form.CheckBox();
-        form.add(cb, this.tr("Custom size"), null, "custom", null, {fullRow : true, flex : 1});
+        form.add(cb, this.tr("Custom size"), null, "custom", null, {fullRow: true, flex: 1});
 
         var wsp = new qx.ui.form.Spinner(100, 640, 3000);
-        form.add(wsp, this.tr("Width"), null, "width", null, {flex : 1});
+        form.add(wsp, this.tr("Width"), null, "width", null, {flex: 1});
 
         var hsp = new qx.ui.form.Spinner(100, 360, 3000);
-        form.add(hsp, this.tr("Height"), null, "height", null, {flex : 1});
+        form.add(hsp, this.tr("Height"), null, "height", null, {flex: 1});
 
         cb.bind("value", wsp, "enabled");
         cb.bind("value", hsp, "enabled");
@@ -45,14 +45,14 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
         fr.setAllowGrowX(true);
         this.add(fr);
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
         hcont.setPadding(5);
 
         var bt = this.__okButton = new qx.ui.form.Button(this.tr("Ok"));
         bt.addListener("execute", this.__ok, this);
         hcont.add(bt);
 
-        bt = this.__cancelButton =  new qx.ui.form.Button(this.tr("Cancel"));
+        bt = this.__cancelButton = new qx.ui.form.Button(this.tr("Cancel"));
         bt.addListener("execute", this.close, this);
         hcont.add(bt);
         this.add(hcont);
@@ -63,18 +63,18 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
         this.addListenerOnce("resize", this.center, this);
     },
 
-    members : {
-        __form : null,
+    members: {
+        __form: null,
 
-        __okButton : null,
+        __okButton: null,
 
-        __cancelButton : null,
+        __cancelButton: null,
 
-        __code : null,
+        __code: null,
 
-        __isCodeLoading : false,
+        __isCodeLoading: false,
 
-        __validateVimeoId: function(id) {
+        __validateVimeoId: function (id) {
             id = id.trim();
 
             if (id.indexOf('http') === 0) {
@@ -84,7 +84,7 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
             }
         },
 
-        __validateURL : function(url) {
+        __validateURL: function (url) {
             var isValid = /(http|https):\/\/(www.)?vimeo.com\/.+/.test(url);
 
             if (!isValid) {
@@ -93,11 +93,11 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
 
             var vimeoCodeReq = new qx.io.request.Jsonp();
             vimeoCodeReq.setUrl('https://vimeo.com/api/oembed.json?url=' + url);
-            vimeoCodeReq.addListener("success", function(event) {
+            vimeoCodeReq.addListener("success", function (event) {
                 this.__onVimeoResponse(event.getTarget().getResponse());
             }, this);
             vimeoCodeReq.setTimeout(5 * 1000);
-            vimeoCodeReq.addListener("fail", function(event) {
+            vimeoCodeReq.addListener("fail", function (event) {
                 if (this.__isCodeLoading == false) {
                     return;
                 }
@@ -114,7 +114,7 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
             this.__disableForm(true);
         },
 
-        __validateCode : function(code) {
+        __validateCode: function (code) {
             var isValid = /^\d+$/.test(code);
 
             if (!isValid) {
@@ -126,17 +126,17 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
             this.__onFormReady();
         },
 
-        __onVimeoResponse: function(response) {
+        __onVimeoResponse: function (response) {
             this.__code = response['video_id'];
             this.__disableForm(false);
             this.__onFormReady();
         },
 
-        __ok : function() {
+        __ok: function () {
             this.__form.validate();
         },
 
-        __disableForm : function(enabled) {
+        __disableForm: function (enabled) {
             this.__isCodeLoading = enabled;
 
             var fitems = this.__form.getItems();
@@ -149,7 +149,7 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
             this.__cancelButton.setEnabled(!enabled);
         },
 
-        __onFormReady: function() {
+        __onFormReady: function () {
             var data = {
                 code: this.__code
             };
@@ -159,7 +159,7 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
             this.fireDataEvent("completed", data);
         },
 
-        __onInvalidResp: function() {
+        __onInvalidResp: function () {
             this.__disableForm(false);
 
             var idField = this.__form.getItems()["id"];
@@ -167,7 +167,7 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
             idField.setInvalidMessage(this.tr('Invalid Vimeo URL'));
         },
 
-        __onError: function() {
+        __onError: function () {
             this.__disableForm(false);
 
             var idField = this.__form.getItems()["id"];
@@ -175,7 +175,7 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
             idField.setInvalidMessage(this.tr('Failed to connect to Vimeo server. Try again later'));
         },
 
-        close : function() {
+        close: function () {
             if (this.__isCodeLoading) {
                 return;
             }
@@ -185,7 +185,7 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("__form");
     }
 });

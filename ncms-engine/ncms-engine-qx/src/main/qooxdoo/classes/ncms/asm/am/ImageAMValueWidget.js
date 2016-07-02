@@ -4,23 +4,23 @@
  * @asset(ncms/icon/16/misc/image.png)
  */
 qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
-    extend : qx.ui.core.Widget,
-    implement : [ qx.ui.form.IModel,
-                  qx.ui.form.IForm,
-                  qx.ui.form.IStringForm,
-                  ncms.asm.am.IValueWidget],
-    include : [ ncms.asm.am.MValueWidget,
-                sm.ui.form.MStringForm ],
+    extend: qx.ui.core.Widget,
+    implement: [qx.ui.form.IModel,
+        qx.ui.form.IForm,
+        qx.ui.form.IStringForm,
+        ncms.asm.am.IValueWidget],
+    include: [ncms.asm.am.MValueWidget,
+        sm.ui.form.MStringForm],
 
-    properties : {
-        model : {
-            nullable : true,
-            event : "changeModel",
-            apply : "__applyModel"
+    properties: {
+        model: {
+            nullable: true,
+            event: "changeModel",
+            apply: "__applyModel"
         }
     },
 
-    construct : function(attrSpec, asmSpec) {
+    construct: function (attrSpec, asmSpec) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(5));
         this.addState("widgetNotReady");
@@ -31,20 +31,20 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
 
         //Button field
         var bf = this.__bf = new sm.ui.form.ButtonField(this.tr("Select image"),
-                "ncms/icon/16/misc/image.png", true);
+            "ncms/icon/16/misc/image.png", true);
         bf.setReadOnly(true);
         bf.addListener("execute", this.__onExecuteBf, this);
         bf.addListener("changeValue", this.__modified, this);
-        bf.addListener("changeValue", function(ev) {
-           if (this.__value) {
-               this.__value["path"] = ev.getData();
-           }
+        bf.addListener("changeValue", function (ev) {
+            if (this.__value) {
+                this.__value["path"] = ev.getData();
+            }
         }, this);
         this._add(bf);
 
         //Labels
         this.__labels = [new qx.ui.basic.Label(), new qx.ui.basic.Label()];
-        this.__labels.forEach(function(l) {
+        this.__labels.forEach(function (l) {
             this._add(l);
             l.exclude();
         }, this);
@@ -53,7 +53,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
         var image = this.__image = new qx.ui.basic.Image();
         image.setCursor("pointer");
         this._add(image);
-        image.addListener("tap", function() {
+        image.addListener("tap", function () {
             var udata = this.__value;
             if (udata == null || udata["id"] == null) {
                 return;
@@ -67,37 +67,37 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
         this.setUserData("ncms.asm.validator", this.__validate.bind(this));
     },
 
-    members : {
+    members: {
 
-        __bf : null,
+        __bf: null,
 
-        __labels : null,
+        __labels: null,
 
-        __image : null,
+        __image: null,
 
-        __attrSpec : null,
+        __attrSpec: null,
 
-        __asmSpec : null,
+        __asmSpec: null,
 
-        __options : null,
+        __options: null,
 
-        __meta : null,
+        __meta: null,
 
-        __value : null,
+        __value: null,
 
         /*_forwardStates : {
          invalid : true
          },
          */
 
-        __modified : function() {
+        __modified: function () {
             if (this.hasState("widgetNotReady")) {
                 return;
             }
             this.fireEvent("modified");
         },
 
-        __validate : function() {
+        __validate: function () {
 
             if (this.getRequired() && sm.lang.String.isEmpty(this.__bf.getValue())) {
                 this.setValid(false);
@@ -137,24 +137,24 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
             return true;
         },
 
-        __onExecuteBf : function(ev) {
+        __onExecuteBf: function (ev) {
             var attrSpec = this.__attrSpec;
             var asmSpec = this.__asmSpec;
             var dlg = new ncms.mmgr.PageFilesSelectorDlg(
-                    asmSpec["id"],
-                    this.tr("Select image file"), {
-                        allowModify : true,
-                        linkText : false,
-                        smode : qx.ui.table.selection.Model.SINGLE_SELECTION
-                    });
+                asmSpec["id"],
+                this.tr("Select image file"), {
+                    allowModify: true,
+                    linkText: false,
+                    smode: qx.ui.table.selection.Model.SINGLE_SELECTION
+                });
             dlg.setCtypeAcceptor(ncms.Utils.isImageContentType.bind(ncms.Utils));
             dlg.open();
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 var data = ev.getData();
                 this.__options = ncms.Utils.parseOptions(attrSpec["options"]);
                 var udata = {
-                    id : data["id"],
-                    options : this.__options
+                    id: data["id"],
+                    options: this.__options
                 };
 
                 this.__value = udata;
@@ -164,15 +164,15 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
                 dlg.close();
 
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.meta", udata),
-                        "GET", "application/json");
+                    "GET", "application/json");
                 req.setShowMessages(false);
-                req.send(function(resp) {
+                req.send(function (resp) {
                     this.__setImageInfo(resp.getContent());
                 }, this);
             }, this);
         },
 
-        __setImageInfo : function(info) {
+        __setImageInfo: function (info) {
             qx.core.Assert.assertTrue(info != null);
 
             this.__bf.setValue(info["folder"] + info["name"]);
@@ -183,7 +183,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
 
             if (meta["width"] && meta["height"]) {
                 infoLabel.setValue(this.tr("Original size") +
-                        ": " + meta["width"] + " x " + meta["height"]);
+                    ": " + meta["width"] + " x " + meta["height"]);
                 infoLabel.show();
             } else {
                 infoLabel.resetValue();
@@ -219,7 +219,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
             this.__validate();
         },
 
-        __applyModel : function(val) {
+        __applyModel: function (val) {
             this.addState("widgetNotReady");
             val = (typeof val === "string") ? JSON.parse(val) : val;
             if (val == null || val["id"] == null) {
@@ -233,24 +233,24 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
             }
             this.__value = val;
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.meta", val),
-                    "GET", "application/json");
+                "GET", "application/json");
             req.setShowMessages(false);
-            req.send(function(resp) {
+            req.send(function (resp) {
                 this.__setImageInfo(resp.getContent());
             }, this);
-            req.addListener("finished", function() {
+            req.addListener("finished", function () {
                 this.removeState("widgetNotReady");
             }, this);
 
             this.__image.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail2", val));
         },
 
-        getWidgetValue : function() {
+        getWidgetValue: function () {
             return this.__value;
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__options = null;
         this.__bf = null;
         this.__labels = null;

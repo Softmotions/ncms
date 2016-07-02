@@ -2,18 +2,15 @@
  * Rename folder dialog
  */
 qx.Class.define("ncms.mmgr.MediaItemRenameDlg", {
-    extend : sm.ui.form.BaseSavePopupDlg,
+    extend: sm.ui.form.BaseSavePopupDlg,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
-    },
+    events: {},
 
-    properties : {
-    },
+    properties: {},
 
-    construct : function(path, name) {
+    construct: function (path, name) {
         this.base(arguments);
         qx.core.Assert.assertArray(path);
         qx.core.Assert.assertString(name);
@@ -23,13 +20,13 @@ qx.Class.define("ncms.mmgr.MediaItemRenameDlg", {
         tf.selectAllText();
     },
 
-    members : {
+    members: {
 
-        _path : null,
+        _path: null,
 
-        _configureForm : function() {
-            var page = new qx.ui.form.TextField().set({allowGrowY : true, maxLength : 64, required : true});
-            page.addListener("keypress", function(ev) {
+        _configureForm: function () {
+            var page = new qx.ui.form.TextField().set({allowGrowY: true, maxLength: 64, required: true});
+            page.addListener("keypress", function (ev) {
                 if (ev.getKeyIdentifier() == "Enter") {
                     this.save();
                 }
@@ -38,20 +35,20 @@ qx.Class.define("ncms.mmgr.MediaItemRenameDlg", {
             page.focus();
         },
 
-        _save : function() {
+        _save: function () {
             var fitems = this._form.getItems();
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.move", this._path),
-                    "PUT", "application/json");
+                "PUT", "application/json");
             var nname = fitems["name"].getValue();
             var npath = this._path.slice(0, -1).concat(nname).join("/");
             req.setData(npath);
-            req.send(function(resp) {
+            req.send(function (resp) {
                 this.fireDataEvent("completed", [nname, npath]);
             }, this);
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         //this._disposeObjects("__field_name");
     }
 });

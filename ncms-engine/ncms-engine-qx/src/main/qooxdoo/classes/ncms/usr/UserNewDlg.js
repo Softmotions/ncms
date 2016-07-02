@@ -2,31 +2,29 @@
  * New user dialog
  */
 qx.Class.define("ncms.usr.UserNewDlg", {
-    extend : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    statics : {
-    },
+    statics: {},
 
-    events : {
+    events: {
         /**
          * Data: created user.
          */
-        "completed" : "qx.event.type.Data"
+        "completed": "qx.event.type.Data"
     },
 
-    properties : {
-    },
+    properties: {},
 
-    construct : function(caption, icon, constViewSpec) {
+    construct: function (caption, icon, constViewSpec) {
         this.base(arguments, caption != null ? caption : this.tr("New user"), icon);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
-            modal : true,
-            showMinimize : false,
-            showMaximize : true,
-            allowMaximize : true,
-            width : 540,
-            height : 150
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 540,
+            height: 150
         });
 
         var form = this.__form = new qx.ui.form.Form();
@@ -56,9 +54,9 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
         var fr = new sm.ui.form.FlexFormRenderer(form);
         fr._getLayout().setRowFlex(fr._row - 1, 1);
-        this.add(fr, {flex : 1});
+        this.add(fr, {flex: 1});
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
         hcont.setPadding(5);
 
         var bt = new qx.ui.form.Button(this.tr("Ok"));
@@ -71,32 +69,33 @@ qx.Class.define("ncms.usr.UserNewDlg", {
 
         this.add(hcont);
 
-        var cmd  = this.createCommand("Esc");
+        var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
     },
 
-    members : {
+    members: {
 
-        __form : null,
+        __form: null,
 
-        __ok : function(ev) {
+        __ok: function (ev) {
             if (!this.__form.validate()) {
                 return;
             }
 
             var fitems = this.__form.getItems();
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user", {name : fitems["name"].getValue()}), "POST", "application/json");
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("security.user",
+                {name: fitems["name"].getValue()}), "POST", "application/json");
             req.setParameter("email", fitems["email"].getValue());
             req.setParameter("fullname", fitems["fullname"].getValue());
             req.setParameter("password", fitems["password"].getValue());
 
-            req.send(function(resp) {
+            req.send(function (resp) {
                 this.fireDataEvent("completed", resp.getContent());
             }, this);
         },
 
-        __passwordCfrmValidator : function(value, item) {
+        __passwordCfrmValidator: function (value, item) {
             var password = this.__form.getItems()["password"].getValue();
             if (item.isRequired() && !value) {
                 item.setValid(false);
@@ -110,13 +109,13 @@ qx.Class.define("ncms.usr.UserNewDlg", {
             return true;
         },
 
-        close : function() {
+        close: function () {
             this.base(arguments);
             this.destroy();
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("__form");
     }
 });

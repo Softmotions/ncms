@@ -1,5 +1,24 @@
 package com.softmotions.ncms.asm.am;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
@@ -12,26 +31,6 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.mediawiki.GMapTag;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Markdown/Mediawiki attribute manager.

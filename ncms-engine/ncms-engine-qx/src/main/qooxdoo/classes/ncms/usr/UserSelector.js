@@ -3,9 +3,9 @@
  * which include search text box and table of users
  */
 qx.Class.define("ncms.usr.UserSelector", {
-    extend : qx.ui.core.Widget,
+    extend: qx.ui.core.Widget,
 
-    events : {
+    events: {
 
         /**
          * Event fired if user was selected/deselected
@@ -16,119 +16,120 @@ qx.Class.define("ncms.usr.UserSelector", {
          *       };
          * or null if selection cleared
          */
-        "userSelected" : "qx.event.type.Data"
+        "userSelected": "qx.event.type.Data"
     },
 
-    properties : {
+    properties: {
 
-        constViewSpec : {
-            check : "Object",
-            nullable : true,
-            apply : "__applyConstViewSpec"
+        constViewSpec: {
+            check: "Object",
+            nullable: true,
+            apply: "__applyConstViewSpec"
         }
     },
 
-    construct : function(constViewSpec, smodel) {
+    construct: function (constViewSpec, smodel) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
 
         var sf = this.__sf = new sm.ui.form.SearchField();
-        sf.addListener("clear", function() {
+        sf.addListener("clear", function () {
             this.__search(null);
         }, this);
-        sf.addListener("input", function(ev) {
+        sf.addListener("input", function (ev) {
             this.__search(ev.getData());
         }, this);
-        sf.addListener("keypress", function(ev) {
+        sf.addListener("keypress", function (ev) {
             if ("Down" === ev.getKeyIdentifier()) {
                 this.__table.handleFocus();
             }
         }, this);
-        this.addListener("appear", function() {
+        this.addListener("appear", function () {
             sf.focus();
         });
 
 
         this.__table = new ncms.usr.UsersTable().set({
-            "statusBarVisible" : false,
-            "showCellFocusIndicator" : false});
+            "statusBarVisible": false,
+            "showCellFocusIndicator": false
+        });
 
         if (smodel != null) {
             this.__table.setSelectionModel(smodel);
         }
-        this.__table.getSelectionModel().addListener("changeSelection", function() {
+        this.__table.getSelectionModel().addListener("changeSelection", function () {
             var user = this.getSelectedUser();
             this.fireDataEvent("userSelected", user ? user : null);
         }, this);
 
         this._add(this.__sf);
-        this._add(this.__table, {flex : 1});
+        this._add(this.__table, {flex: 1});
 
         this.setConstViewSpec(constViewSpec || null);
     },
 
-    members : {
+    members: {
         /**
          * Search field
          * @type {sm.ui.form.SearchField}
          */
-        __sf : null,
+        __sf: null,
 
         /**
          * Users virtual table
          * @type {ncms.usr.UsersTable}
          */
-        __table : null,
+        __table: null,
 
 
-        setViewSpec : function(vspec) {
+        setViewSpec: function (vspec) {
             this.__table.resetSelection();
             this.__table.getTableModel().setViewSpec(this.__createViewSpec(vspec));
         },
 
-        updateViewSpec : function(vspec) {
+        updateViewSpec: function (vspec) {
             this.__table.resetSelection();
             this.__table.getTableModel().updateViewSpec(this.__createViewSpec(vspec));
         },
 
-        reloadData : function(vspec) {
+        reloadData: function (vspec) {
             this.__table.getTableModel().reloadData();
         },
 
-        reload : function(vspec) {
+        reload: function (vspec) {
             this.__table.getTableModel().reloadData();
             this.__table.resetSelection();
         },
 
-        resetSelection : function() {
+        resetSelection: function () {
             this.__table.resetSelection();
         },
 
-        getTable : function() {
+        getTable: function () {
             return this.__table;
         },
 
-        getSelectedUserInd : function() {
+        getSelectedUserInd: function () {
             return this.__table.getSelectedUserInd();
         },
 
-        getSelectedUser : function() {
+        getSelectedUser: function () {
             return this.__table.getSelectedUser();
         },
 
-        getSelectedUsers : function() {
+        getSelectedUsers: function () {
             return this.__table.getSelectedUsers();
         },
 
-        cleanup : function() {
+        cleanup: function () {
             this.__table.cleanup();
         },
 
-        getSearchField : function() {
+        getSearchField: function () {
             return this.__sf;
         },
 
-        __createViewSpec : function(vspec) {
+        __createViewSpec: function (vspec) {
             if (this.getConstViewSpec() == null) {
                 return vspec;
             }
@@ -138,16 +139,16 @@ qx.Class.define("ncms.usr.UserSelector", {
             return nspec;
         },
 
-        __search : function(val) {
-            this.updateViewSpec({stext : val || ""});
+        __search: function (val) {
+            this.updateViewSpec({stext: val || ""});
         },
 
-        __applyConstViewSpec : function() {
+        __applyConstViewSpec: function () {
             this.__search();
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__sf = null;
         this.__table = null;
     }

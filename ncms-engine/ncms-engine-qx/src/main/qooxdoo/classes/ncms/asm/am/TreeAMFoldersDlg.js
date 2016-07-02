@@ -6,32 +6,32 @@
  * @asset(qx/icon/${qx.icontheme}/22/mimetypes/office-document.png)
  */
 qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
-    extend : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    events : {
+    events: {
         /**
          * DATA: Selected tree model item.
          */
-        "completed" : "qx.event.type.Event"
+        "completed": "qx.event.type.Event"
     },
 
 
-    construct : function(model, caption) {
+    construct: function (model, caption) {
         this.base(arguments, caption);
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
-            modal : true,
-            showMinimize : false,
-            showMaximize : true,
-            allowMaximize : true,
-            width : 620,
-            height : 400
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 620,
+            height: 400
         });
 
         var tree = this.__tree = new qx.ui.tree.VirtualTree(null, "name", "children");
         tree.setIconPath("icon");
         tree.setIconOptions({
-            converter : function(value, model, source, target) {
+            converter: function (value, model, source, target) {
                 if (model.getChildren != null) {
                     var fdSuffix = target.isOpen() ? "-open" : "";
                     return "ncms/icon/22/places/folder" + fdSuffix + ".png";
@@ -43,9 +43,9 @@ qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
         tree.setModel(model);
         tree.getSelection().addListener("change", this.__onChangeSelection, this);
 
-        this.add(tree, {flex : 1});
+        this.add(tree, {flex: 1});
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
         //hcont.setPadding(5);
 
         var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Ok"));
@@ -58,22 +58,22 @@ qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
         hcont.add(bt);
         this.add(hcont);
 
-        var cmd  = this.createCommand("Esc");
+        var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
     },
 
-    members : {
+    members: {
 
-        __tree : null,
+        __tree: null,
 
-        __saveBt : null,
+        __saveBt: null,
 
-        __onChangeSelection : function(ev) {
+        __onChangeSelection: function (ev) {
             this.__saveBt.setEnabled(this.__tree.getSelection().getItem(0) != null);
         },
 
-        __ok : function() {
+        __ok: function () {
             var item = this.__tree.getSelection().getItem(0);
             if (item == null) {
                 return;
@@ -81,14 +81,14 @@ qx.Class.define("ncms.asm.am.TreeAMFoldersDlg", {
             this.fireDataEvent("completed", item);
         },
 
-        close : function() {
+        close: function () {
             this.base(arguments);
             this.destroy();
         }
     },
 
 
-    destruct : function() {
+    destruct: function () {
         if (this.__tree) {
             this.__tree.getSelection().removeListener("change", this.__onChangeSelection, this);
             this.__tree.resetModel();

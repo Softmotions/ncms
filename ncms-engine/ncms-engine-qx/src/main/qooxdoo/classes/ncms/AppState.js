@@ -8,23 +8,22 @@
  */
 
 qx.Class.define("ncms.AppState", {
-    extend : qx.core.Object,
+    extend: qx.core.Object,
 
-    events : {
+    events: {
 
         /**
          * В качестве данных события используется текущий экземпляр AppState.__stateObject
          */
-        "stateChanged" : "qx.event.type.Data"
+        "stateChanged": "qx.event.type.Data"
     },
 
-    properties : {
-    },
+    properties: {},
 
     /**
      * @param urlName {String} Адрес сервиса ответственнго за обновление состояния
      */
-    construct : function(urlName) {
+    construct: function (urlName) {
         this.base(arguments);
         this.__urlName = urlName;
         this.__url = ncms.Application.ACT.getUrl(urlName);
@@ -35,15 +34,15 @@ qx.Class.define("ncms.AppState", {
         this.__json.setRequest(req);
     },
 
-    members : {
-        __urlName : null,
-        __url : null,
-        __json : null,
-        __stateObject : null,
+    members: {
+        __urlName: null,
+        __url: null,
+        __json: null,
+        __stateObject: null,
 
-        reload : function(cb) {
+        reload: function (cb) {
             var req = new sm.io.Request(
-                    this.__url, "GET", "application/json");
+                this.__url, "GET", "application/json");
             if (cb != null) {
                 req.addListenerOnce("finished", cb);
             }
@@ -54,7 +53,7 @@ qx.Class.define("ncms.AppState", {
          * Устанавливает значение property объекта состояния текущего приложения
          * @param props {Object}
          */
-        setStateProperties : function(props) {
+        setStateProperties: function (props) {
             if (this.__stateObject == null) {
                 throw new Error("AppState must be synchronized before changing state props");
             }
@@ -62,7 +61,7 @@ qx.Class.define("ncms.AppState", {
             if (!sprops) {
                 throw new Error("Invalid state object, 'properties' section must be presented");
             }
-            Object.getOwnPropertyNames(props).forEach(function(pn) {
+            Object.getOwnPropertyNames(props).forEach(function (pn) {
                 sprops[pn] = props[pn];
             });
             var req = new sm.io.Request(this.__url, "PUT", "application/json");
@@ -75,7 +74,7 @@ qx.Class.define("ncms.AppState", {
          * @param pname {String}
          * @param pval {Object}
          */
-        setStateProperty : function(pname, pval) {
+        setStateProperty: function (pname, pval) {
             if (this.__stateObject == null) {
                 throw new Error("AppState must be synchronized before changing state props");
             }
@@ -86,7 +85,7 @@ qx.Class.define("ncms.AppState", {
             var url = ncms.Application.ACT.getRestUrl(this.__urlName, pname);
             var req = new sm.io.Request(url, "POST", "application/json");
             req.setData(JSON.stringify(pval));
-            req.send(function() {
+            req.send(function () {
                 sprops[pname] = pval;
                 this.fireDataEvent("stateChanged", this.__stateObject);
             }, this);
@@ -96,53 +95,53 @@ qx.Class.define("ncms.AppState", {
          * Get state property value
          * @param pname {String}
          */
-        getStateProperty : function(pname) {
-            return  (this.__stateObject && this.__stateObject["properties"])
-                    ? this.__stateObject["properties"][pname] : null;
+        getStateProperty: function (pname) {
+            return (this.__stateObject && this.__stateObject["properties"])
+                ? this.__stateObject["properties"][pname] : null;
         },
 
-        _getStateConstant : function(pname) {
-            return  (this.__stateObject) ? this.__stateObject[pname] : null;
+        _getStateConstant: function (pname) {
+            return (this.__stateObject) ? this.__stateObject[pname] : null;
         },
 
-        getAppName : function() {
+        getAppName: function () {
             return this._getStateConstant("appName");
         },
 
-        getHelpSite : function() {
+        getHelpSite: function () {
             return this._getStateConstant("helpSite");
         },
 
-        getHelpSiteTopicUrl : function(topic) {
-            return  (this.__stateObject && this.__stateObject["helpTopics"])
-                    ? this.__stateObject["helpTopics"][topic] : null;
+        getHelpSiteTopicUrl: function (topic) {
+            return (this.__stateObject && this.__stateObject["helpTopics"])
+                ? this.__stateObject["helpTopics"][topic] : null;
         },
 
-        getSessionId : function() {
+        getSessionId: function () {
             return this._getStateConstant("sessionId");
         },
 
-        getUserId : function() {
+        getUserId: function () {
             return this._getStateConstant("userId");
         },
 
-        getUserLogin : function() {
+        getUserLogin: function () {
             return this._getStateConstant("userLogin");
         },
 
-        getUserFullName : function() {
+        getUserFullName: function () {
             return this._getStateConstant("userFullName");
         },
 
-        getUserNickname : function() {
+        getUserNickname: function () {
             return this._getStateConstant("userNickname");
         },
 
-        getUserEmail : function() {
+        getUserEmail: function () {
             return this._getStateConstant("email");
         },
 
-        userHasRole : function(role) {
+        userHasRole: function (role) {
             var aroles = this._getStateConstant("roles");
             if (qx.lang.Type.isArray(aroles)) {
                 return aroles.indexOf(role) != -1;
@@ -153,7 +152,7 @@ qx.Class.define("ncms.AppState", {
             }
         },
 
-        userInRoles : function(role) {
+        userInRoles: function (role) {
             if (role == null) {
                 return false;
             }
@@ -168,7 +167,7 @@ qx.Class.define("ncms.AppState", {
             return false;
         },
 
-        _applyJsonData : function(ev) {
+        _applyJsonData: function (ev) {
             var data = ev.getData();
             if (data == null) {
                 this.warn("No data found in json model");

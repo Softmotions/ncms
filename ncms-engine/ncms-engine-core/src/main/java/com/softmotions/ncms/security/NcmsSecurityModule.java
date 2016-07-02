@@ -1,29 +1,28 @@
 package com.softmotions.ncms.security;
 
-import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.web.AccessControlHDRFilter;
-import com.softmotions.web.security.WSRole;
-import com.softmotions.web.security.WSUserDatabase;
-import com.softmotions.weboot.WBServletInitializerModule;
-import com.softmotions.weboot.WBServletModule;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import org.apache.commons.collections.map.Flat3Map;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.web.AccessControlHDRFilter;
+import com.softmotions.web.security.WSRole;
+import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.WBServletInitializerModule;
+import com.softmotions.weboot.WBServletModule;
 
 
 /**

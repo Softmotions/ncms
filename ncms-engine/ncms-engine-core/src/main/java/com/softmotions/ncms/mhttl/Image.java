@@ -1,8 +1,8 @@
 package com.softmotions.ncms.mhttl;
 
-import com.softmotions.ncms.asm.render.AsmRendererContext;
-
 import org.apache.commons.beanutils.BeanUtils;
+
+import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

@@ -2,20 +2,20 @@
  * Virtual table of users.
  */
 qx.Class.define("ncms.usr.UsersTable", {
-    extend : sm.table.Table,
+    extend: sm.table.Table,
 
-    construct : function(useColumns) {
+    construct: function (useColumns) {
         var tm = new sm.model.RemoteVirtualTableModel({
-            "name" : this.tr("Login"),
-            "fullName" : this.tr("Name")
+            "name": this.tr("Login"),
+            "fullName": this.tr("Name")
         }).set({
-                    "useColumns" : useColumns || ["name", "fullName"],
-                    "rowdataUrl" : ncms.Application.ACT.getUrl("security.users"),
-                    "rowcountUrl" : ncms.Application.ACT.getUrl("security.users.count")
-                });
+            "useColumns": useColumns || ["name", "fullName"],
+            "rowdataUrl": ncms.Application.ACT.getUrl("security.users"),
+            "rowcountUrl": ncms.Application.ACT.getUrl("security.users.count")
+        });
 
         var custom = {
-            tableColumnModel : function(obj) {
+            tableColumnModel: function (obj) {
                 return new qx.ui.table.columnmodel.Resize(obj);
             }
         };
@@ -24,7 +24,7 @@ qx.Class.define("ncms.usr.UsersTable", {
 
         var rr = new sm.table.renderer.CustomRowRenderer();
         var colorm = qx.theme.manager.Color.getInstance();
-        rr.setBgColorInterceptor(qx.lang.Function.bind(function(rowInfo) {
+        rr.setBgColorInterceptor(qx.lang.Function.bind(function (rowInfo) {
             return colorm.resolve("background");
         }, this));
         this.setDataRowRenderer(rr);
@@ -41,32 +41,32 @@ qx.Class.define("ncms.usr.UsersTable", {
         }
     },
 
-    members : {
+    members: {
 
-        getSelectedUserInd : function() {
+        getSelectedUserInd: function () {
             return this.getSelectionModel().getAnchorSelectionIndex();
         },
 
-        getSelectedUser : function() {
+        getSelectedUser: function () {
             var sind = this.getSelectedUserInd();
             return sind != -1 ? this.getTableModel().getRowData(sind) : null;
         },
 
-        getSelectedUsers : function() {
+        getSelectedUsers: function () {
             var me = this;
             var users = [];
-            this.getSelectionModel().iterateSelection(function(ind) {
+            this.getSelectionModel().iterateSelection(function (ind) {
                 users.push(me.getTableModel().getRowData(ind));
             });
             return users;
         },
 
-        cleanup : function() {
+        cleanup: function () {
             this.getTableModel().cleanup();
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         //this._disposeObjects("__field_name");
     }
 });

@@ -9,35 +9,35 @@
  * @asset(ncms/icon/16/misc/arrow_down.png)
  */
 qx.Class.define("ncms.asm.AsmAttrsTable", {
-    extend : sm.table.ToolbarLocalTable,
-    implement : [
+    extend: sm.table.ToolbarLocalTable,
+    implement: [
         qx.ui.form.IStringForm,
         qx.ui.form.IForm
     ],
-    include : [
+    include: [
         sm.ui.form.MStringForm,
         sm.table.MTableMutator
     ],
 
-    events : {
-        "attributesChanged" : "qx.event.type.Event"
+    events: {
+        "attributesChanged": "qx.event.type.Event"
     },
 
-    construct : function() {
+    construct: function () {
         this.base(arguments);
-        this.set({allowGrowX : true, allowGrowY : true});
+        this.set({allowGrowX: true, allowGrowY: true});
         this._reload([]);
     },
 
-    members : {
+    members: {
 
-        __editBt : null,
+        __editBt: null,
 
-        __delBt : null,
+        __delBt: null,
 
-        __spec : null,
+        __spec: null,
 
-        setAsmSpec : function(spec) {
+        setAsmSpec: function (spec) {
             this.__spec = spec;
             var items = [];
             if (this.__spec == null || !Array.isArray(spec["effectiveAttributes"])) {
@@ -45,7 +45,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                 return;
             }
             var attrs = spec["effectiveAttributes"];
-            attrs.forEach(function(el) {
+            attrs.forEach(function (el) {
                 var icon = el["overriden"] ? "ncms/icon/16/misc/asterisk.png" : "";
                 var row = [icon, el["name"], el["label"], el["type"], el["value"]];
                 items.push([row, el]);
@@ -54,42 +54,42 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         },
 
         //overriden
-        _createToolbarItems : function(toolbar) {
-            var part = new qx.ui.toolbar.Part().set({"appearance" : "toolbar-table/part"});
+        _createToolbarItems: function (toolbar) {
+            var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
             var el = this._createButton(null, "ncms/icon/16/actions/add.png",
-                    this.__onAdd, this);
+                this.__onAdd, this);
             el.setToolTipText(this.tr("Add new attribute"));
             part.add(el);
 
             this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png",
-                    this.__onRemove, this);
+                this.__onRemove, this);
             this.__delBt.setToolTipText(this.tr("Drop attribute"));
             part.add(this.__delBt);
 
             this.__editBt = this._createButton(null, "ncms/icon/16/actions/application_form_edit.png",
-                    this.__onEditOrOverride, this);
+                this.__onEditOrOverride, this);
             part.add(this.__editBt);
 
-            toolbar.add(new qx.ui.core.Spacer(), {flex : 1});
+            toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
 
             part = new qx.ui.toolbar.Part()
-                    .set({"appearance" : "toolbar-table/part"});
+            .set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
 
             this.__upBt = this._createButton(null, "ncms/icon/16/misc/arrow_up.png",
-                    this.__onMoveUp, this);
+                this.__onMoveUp, this);
             part.add(this.__upBt);
 
             this.__downBt = this._createButton(null, "ncms/icon/16/misc/arrow_down.png",
-                    this.__onMoveDown, this);
+                this.__onMoveDown, this);
             part.add(this.__downBt);
 
             return toolbar;
         },
 
-        _createButton : function(label, icon, handler, self) {
-            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance" : "toolbar-table-button"});
+        _createButton: function (label, icon, handler, self) {
+            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance": "toolbar-table-button"});
             if (handler != null) {
                 bt.addListener("execute", handler, self);
             }
@@ -97,55 +97,55 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         },
 
         //overriden
-        _setJsonTableData : function(tm, items) {
+        _setJsonTableData: function (tm, items) {
             var data = {
-                "title" : "",
-                "columns" : [
+                "title": "",
+                "columns": [
                     {
-                        "title" : "",
-                        "id" : "icon",
-                        "sortable" : false,
-                        "width" : 30,
-                        "type" : "image"
+                        "title": "",
+                        "id": "icon",
+                        "sortable": false,
+                        "width": 30,
+                        "type": "image"
                     },
                     {
-                        "title" : this.tr("Name").toString(),
-                        "id" : "name",
-                        "sortable" : false,
-                        "width" : "1*"
+                        "title": this.tr("Name").toString(),
+                        "id": "name",
+                        "sortable": false,
+                        "width": "1*"
                     },
                     {
-                        "title" : this.tr("Label").toString(),
-                        "id" : "label",
-                        "sortable" : false,
-                        "width" : "1*"
+                        "title": this.tr("Label").toString(),
+                        "id": "label",
+                        "sortable": false,
+                        "width": "1*"
                     },
                     {
-                        "title" : this.tr("Type").toString(),
-                        "id" : "type",
-                        "sortable" : false,
-                        "width" : 90
+                        "title": this.tr("Type").toString(),
+                        "id": "type",
+                        "sortable": false,
+                        "width": 90
                     },
                     {
-                        "title" : this.tr("Value").toString(),
-                        "id" : "value",
-                        "sortable" : false,
-                        "width" : "1*"
+                        "title": this.tr("Value").toString(),
+                        "id": "value",
+                        "sortable": false,
+                        "width": "1*"
                     }
                 ],
-                "items" : items
+                "items": items
             };
             tm.setJsonData(data);
             this._syncState();
         },
 
         //overriden
-        _createTable : function(tableModel) {
+        _createTable: function (tableModel) {
             var table = new sm.table.Table(tableModel, tableModel.getCustom());
 
             var colorm = qx.theme.manager.Color.getInstance();
             var rr = new sm.table.renderer.CustomRowRenderer();
-            rr.setBgColorInterceptor(qx.lang.Function.bind(function(rowInfo) {
+            rr.setBgColorInterceptor(qx.lang.Function.bind(function (rowInfo) {
                 var rdata = rowInfo.rowData.rowData;
                 if (rdata["asmId"] !== this.__spec["id"]) {
                     return colorm.resolve("table-row-gray");
@@ -156,12 +156,13 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             table.setDataRowRenderer(rr);
             table.addListener("cellDbltap", this.__onEditOrOverride, this);
             table.set({
-                showCellFocusIndicator : false,
-                statusBarVisible : true,
-                focusCellOnPointerMove : false});
+                showCellFocusIndicator: false,
+                statusBarVisible: true,
+                focusCellOnPointerMove: false
+            });
 
             table.getSelectionModel()
-                    .addListener("changeSelection", this._syncState, this);
+            .addListener("changeSelection", this._syncState, this);
 
 
             this.setContextMenu(new qx.ui.menu.Menu());
@@ -170,7 +171,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             return table;
         },
 
-        _syncState : function() {
+        _syncState: function () {
             var sInd = this.getSelectedRowIndex();
             var rd = this.getSelectedRowData();
             this.__delBt.setEnabled(rd != null && rd["asmId"] == this.__spec["id"]);
@@ -186,7 +187,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             this.__downBt.setEnabled(!!this.__canMove(sInd, -1));
         },
 
-        __beforeContextmenuOpen : function(ev) {
+        __beforeContextmenuOpen: function (ev) {
             var rd = this.getSelectedRowData();
             var menu = ev.getData().getTarget();
             menu.removeAll();
@@ -219,15 +220,15 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             }
         },
 
-        __onMoveUp : function() {
+        __onMoveUp: function () {
             this.__move(this.getSelectedRowIndex(), 1);
         },
 
-        __onMoveDown : function() {
+        __onMoveDown: function () {
             this.__move(this.getSelectedRowIndex(), -1);
         },
 
-        __move : function(sInd, dir) {
+        __move: function (sInd, dir) {
             var rd = this.getRowData(sInd);
             var buddy = this.__canMove(sInd, dir);
             if (!buddy) {
@@ -235,12 +236,12 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             }
             var buddyInd = (dir == 1) ? sInd - 1 : sInd + 1;
             var url = ncms.Application.ACT.getRestUrl("asms.attributes.exchange",
-                    {
-                        "ordinal1" : rd["ordinal"],
-                        "ordinal2" : buddy["ordinal"]
-                    });
+                {
+                    "ordinal1": rd["ordinal"],
+                    "ordinal2": buddy["ordinal"]
+                });
             var req = new sm.io.Request(url, "PUT");
-            req.send(function() {
+            req.send(function () {
                 var data = this.getTableModel().getData();
                 qx.core.Assert.assertTrue(data[sInd] != null && data[buddyInd] != null);
                 var tmp = data[sInd];
@@ -255,7 +256,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         },
 
 
-        __canMove : function(sInd, dir) {
+        __canMove: function (sInd, dir) {
             if (sInd == null || sInd === -1) {
                 return false;
             }
@@ -263,7 +264,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             if (rd == null) {
                 return false;
             }
-            var isValidBuddy = function(buddy) {
+            var isValidBuddy = function (buddy) {
                 return !(buddy["asmId"] !== this.__spec["id"] || buddy["overriden"]);
             }.bind(this);
 
@@ -289,45 +290,45 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             return false;
         },
 
-        __onAdd : function() {
+        __onAdd: function () {
             var dlg = new ncms.asm.AsmAttrEditorDlg(
-                    this.tr("New attribute for assembly: %1", this.__spec["name"]),
-                    this.__spec
+                this.tr("New attribute for assembly: %1", this.__spec["name"]),
+                this.__spec
             );
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 dlg.close();
                 this.fireEvent("attributesChanged");
             }, this);
             dlg.open();
         },
 
-        __onRemove : function() {
+        __onRemove: function () {
             var rd = this.getSelectedRowData();
             if (rd == null || rd["asmId"] != this.__spec["id"]) {
                 return;
             }
             ncms.Application.confirmCb(
-                    this.tr("A you sure to remove attribute?"),
-                    this.tr("Recursive?"),
-                    false,
-                    function(yes, recursive) {
-                        if (!yes) {
-                            return;
-                        }
-                        var req = new sm.io.Request(
-                                ncms.Application.ACT.getRestUrl("asms.attribute",
-                                        {id : rd["asmId"], name : rd["name"]}),
-                                "DELETE", "application/json");
-                        req.setParameter("recursive", !!recursive);
-                        req.send(function() {
-                            this.fireEvent("attributesChanged");
-                        }, this);
-                    },
-                    this
+                this.tr("A you sure to remove attribute?"),
+                this.tr("Recursive?"),
+                false,
+                function (yes, recursive) {
+                    if (!yes) {
+                        return;
+                    }
+                    var req = new sm.io.Request(
+                        ncms.Application.ACT.getRestUrl("asms.attribute",
+                            {id: rd["asmId"], name: rd["name"]}),
+                        "DELETE", "application/json");
+                    req.setParameter("recursive", !!recursive);
+                    req.send(function () {
+                        this.fireEvent("attributesChanged");
+                    }, this);
+                },
+                this
             );
         },
 
-        __onEdit : function(ev, rd) {
+        __onEdit: function (ev, rd) {
             rd = (rd == null) ? this.getSelectedRowData() : rd;
             if (rd == null) {
                 return;
@@ -342,7 +343,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             }
 
             var dlg = new ncms.asm.AsmAttrEditorDlg(caption, this.__spec, rd);
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 dlg.close();
                 this.fireEvent("attributesChanged");
             }, this);
@@ -350,7 +351,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         },
 
 
-        __onEditOrOverride : function(ev) {
+        __onEditOrOverride: function (ev) {
             var rd = this.getSelectedRowData();
             if (rd == null) {
                 return;
@@ -365,7 +366,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
 
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__spec = null;
         this.__delBt = null;
         this.__editBt = null;

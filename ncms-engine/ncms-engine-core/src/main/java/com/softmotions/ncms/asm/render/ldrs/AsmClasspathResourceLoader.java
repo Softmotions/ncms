@@ -1,13 +1,13 @@
 package com.softmotions.ncms.asm.render.ldrs;
 
-import httl.spi.loaders.ClasspathLoader;
-import com.softmotions.ncms.asm.render.AsmResourceLoader;
-import com.softmotions.ncms.media.MediaResource;
-
-import com.google.inject.Singleton;
-
 import java.io.IOException;
 import java.util.Locale;
+
+import httl.spi.loaders.ClasspathLoader;
+
+import com.google.inject.Singleton;
+import com.softmotions.ncms.asm.render.AsmResourceLoader;
+import com.softmotions.ncms.media.MediaResource;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

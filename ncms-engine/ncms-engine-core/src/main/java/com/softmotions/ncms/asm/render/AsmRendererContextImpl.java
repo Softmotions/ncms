@@ -1,5 +1,17 @@
 package com.softmotions.ncms.asm.render;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.base.MoreObjects;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.assistedinject.Assisted;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
@@ -7,19 +19,6 @@ import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.web.GenericResponseWrapper;
-
-import com.google.common.base.MoreObjects;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.assistedinject.Assisted;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)

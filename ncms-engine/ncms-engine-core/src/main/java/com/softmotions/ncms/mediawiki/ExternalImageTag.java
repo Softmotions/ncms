@@ -1,5 +1,10 @@
 package com.softmotions.ncms.mediawiki;
 
+import java.io.IOException;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import info.bliki.htmlcleaner.Utils;
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.model.IWikiModel;
@@ -7,11 +12,6 @@ import info.bliki.wiki.tags.HTMLTag;
 import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import com.google.inject.Singleton;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * Wiki tag for pasting external images.
@@ -64,7 +64,7 @@ public class ExternalImageTag extends HTMLTag implements INoBodyParsingTag {
             buffer.append(String.format("<a href=\"%s\">\n", link));
             buffer.append(ibuff);
             buffer.append(String.format("</a>"));
-        }  else {
+        } else {
             buffer.append(ibuff);
         }
     }

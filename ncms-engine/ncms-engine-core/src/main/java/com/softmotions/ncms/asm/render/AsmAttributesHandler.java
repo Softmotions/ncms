@@ -1,9 +1,9 @@
 package com.softmotions.ncms.asm.render;
 
+import java.util.Collection;
+
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
-
-import java.util.Collection;
 
 /**
  * Modify the assembly attribute set

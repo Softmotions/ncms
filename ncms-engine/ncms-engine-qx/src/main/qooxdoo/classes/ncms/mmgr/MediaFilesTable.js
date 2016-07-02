@@ -2,28 +2,28 @@
  *  Virtual table for media files.
  */
 qx.Class.define("ncms.mmgr.MediaFilesTable", {
-    extend : sm.table.Table,
+    extend: sm.table.Table,
 
-    construct : function(useColumns, hideColumns, editableColumns, smode) {
+    construct: function (useColumns, hideColumns, editableColumns, smode) {
         var tm = new sm.model.RemoteVirtualTableModel({
-            "name" : this.tr("Name"),
-            "content_type" : this.tr("Type"),
-            "content_length" : this.tr("Length"),
-            "folder" : this.tr("Folder"),
-            "description" : this.tr("Description")
+            "name": this.tr("Name"),
+            "content_type": this.tr("Type"),
+            "content_length": this.tr("Length"),
+            "folder": this.tr("Folder"),
+            "description": this.tr("Description")
         }).set({
-                    "useColumns" : useColumns || ["name", "description", "content_type", "content_length"],
-                    "rowdataUrl" : ncms.Application.ACT.getUrl("media.select"),
-                    "rowcountUrl" : ncms.Application.ACT.getUrl("media.select.count")
-                });
+            "useColumns": useColumns || ["name", "description", "content_type", "content_length"],
+            "rowdataUrl": ncms.Application.ACT.getUrl("media.select"),
+            "rowcountUrl": ncms.Application.ACT.getUrl("media.select.count")
+        });
 
         var custom = {
 
-            tableColumnModel : function(obj) {
+            tableColumnModel: function (obj) {
                 return new qx.ui.table.columnmodel.Resize(obj);
             },
 
-            selectionModel : function(obj) {
+            selectionModel: function (obj) {
                 var res = new qx.ui.table.selection.Model();
                 if (smode != null) {
                     res.setSelectionMode(smode);
@@ -53,7 +53,7 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
         }
 
         hideColumns = hideColumns || ["content_type", "content_length"];
-        hideColumns.forEach(function(cn) {
+        hideColumns.forEach(function (cn) {
             cInd = tm.getColumnIndexById(cn);
             if (cInd != null) {
                 tcm.setColumnVisible(cInd, false);
@@ -61,7 +61,7 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
         }, this);
 
         editableColumns = editableColumns || [];
-        editableColumns.forEach(function(cn) {
+        editableColumns.forEach(function (cn) {
             cInd = tm.getColumnIndexById(cn);
             if (cInd != null) {
                 tcm.setCellEditorFactory(cInd, new sm.model.TextFieldCellEditor());
@@ -70,21 +70,21 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
         }, this);
     },
 
-    members : {
+    members: {
 
-        getSelectedFileInd : function() {
+        getSelectedFileInd: function () {
             return this.getSelectionModel().getAnchorSelectionIndex();
         },
 
-        getSelectedFile : function() {
+        getSelectedFile: function () {
             var sind = this.getSelectedFileInd();
             return sind != -1 ? this.getTableModel().getRowData(sind) : null;
         },
 
-        getSelectedFiles : function() {
+        getSelectedFiles: function () {
             var me = this;
             var items = [];
-            this.getSelectionModel().iterateSelection(function(ind) {
+            this.getSelectionModel().iterateSelection(function (ind) {
                 var rd = me.getTableModel().getRowData(ind);
                 if (rd != null) {
                     items.push(rd);
@@ -93,12 +93,12 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
             return items;
         },
 
-        cleanup : function() {
+        cleanup: function () {
             this.getTableModel().cleanup();
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         //this._disposeObjects("__field_name");
     }
 });

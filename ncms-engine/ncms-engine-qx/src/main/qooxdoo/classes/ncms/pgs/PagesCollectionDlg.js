@@ -2,9 +2,9 @@
  * User's pages collection dialog
  */
 qx.Class.define("ncms.pgs.PagesCollectionDlg", {
-    extend : qx.ui.window.Window,
+    extend: qx.ui.window.Window,
 
-    events : {
+    events: {
         /**
          * Data: {
          *   id : {Number} Page ID,
@@ -13,28 +13,28 @@ qx.Class.define("ncms.pgs.PagesCollectionDlg", {
          *   path : {String} Page label path starting with leading slash.
          * }
          */
-        "completed" : "qx.event.type.Data"
+        "completed": "qx.event.type.Data"
     },
 
-    construct : function(caption, options) {
+    construct: function (caption, options) {
         this.__options = options || {};
         this.base(arguments, caption != null ? caption : this.tr("Page collection"));
         this.setLayout(new qx.ui.layout.VBox(5));
         this.set({
-            modal : true,
-            showMinimize : false,
-            showMaximize : true,
-            allowMaximize : true,
-            width : 620,
-            height : 400
+            modal: true,
+            showMinimize: false,
+            showMaximize: true,
+            allowMaximize: true,
+            width: 620,
+            height: 400
         });
 
         var table = this.__table = new ncms.pgs.PagesCollectionTable(options);
         table.addListener("cellDbltap", this.__ok, this);
         table.addListener("syncState", this.__syncState, this);
-        this.add(table, {flex : 1});
+        this.add(table, {flex: 1});
 
-        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX" : "right"}));
+        var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
         hcont.setPadding(5);
 
         var bt = this.__okBt = new qx.ui.form.Button(this.tr("Ok"));
@@ -54,15 +54,15 @@ qx.Class.define("ncms.pgs.PagesCollectionDlg", {
         this.__syncState();
     },
 
-    members : {
+    members: {
 
-        __options : null,
+        __options: null,
 
-        __okBt : null,
+        __okBt: null,
 
-        __table : null,
+        __table: null,
 
-        __ok : function() {
+        __ok: function () {
             var page = this.__table.getSelectedPage();
             if (page == null) {
                 return;
@@ -70,13 +70,13 @@ qx.Class.define("ncms.pgs.PagesCollectionDlg", {
             this.fireDataEvent("completed", page);
         },
 
-        __syncState : function() {
+        __syncState: function () {
             var page = this.__table.getSelectedPage();
             this.__okBt.setEnabled(page != null);
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this.__options = null;
         this.__okBt = null;
         this.__table = null;

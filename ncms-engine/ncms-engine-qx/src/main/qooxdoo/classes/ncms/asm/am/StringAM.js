@@ -2,28 +2,28 @@
  * Simple string attribute manager.
  */
 qx.Class.define("ncms.asm.am.StringAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("String");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "string" ];
+        getSupportedAttributeTypes: function () {
+            return ["string"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
         /**
          * attrSpec example:
@@ -37,14 +37,14 @@ qx.Class.define("ncms.asm.am.StringAM", {
          *   "hasLargeValue" : false
          * },
          */
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
 
             var form = new qx.ui.form.Form();
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             var el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(4));
-            el.add(new qx.ui.form.RadioButton(this.tr("field")).set({"model" : "field"}));
-            el.add(new qx.ui.form.RadioButton(this.tr("area")).set({"model" : "area"}));
+            el.add(new qx.ui.form.RadioButton(this.tr("field")).set({"model": "field"}));
+            el.add(new qx.ui.form.RadioButton(this.tr("area")).set({"model": "area"}));
             el.setModelSelection(opts["display"] ? [opts["display"]] : ["field"]);
             form.add(el, this.tr("Display as"), null, "display");
 
@@ -56,7 +56,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
             form.add(el, this.tr("Max length"), null, "maxLength");
 
             var ta = new qx.ui.form.TextArea();
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 ta.setValue(val);
             });
             form.add(ta, this.tr("Value"), null, "value");
@@ -73,7 +73,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
             return fr;
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this._form == null || !this._form.validate()) {
                 return null;
             }
@@ -89,7 +89,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
             return opts;
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var display = opts["display"] || "field";
             var w = (display === "area") ? new qx.ui.form.TextArea() : new qx.ui.form.TextField();
@@ -99,7 +99,7 @@ qx.Class.define("ncms.asm.am.StringAM", {
                     w.setMaxLength(val);
                 }
             }
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 w.setValue(val);
             });
             w.setRequired(!!attrSpec["required"]);
@@ -110,17 +110,17 @@ qx.Class.define("ncms.asm.am.StringAM", {
             return w;
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             if (this._valueWidget == null) {
                 return;
             }
             return {
-                value : this._valueWidget.getValue()
+                value: this._valueWidget.getValue()
             }
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._disposeObjects("_form");
     }
 });

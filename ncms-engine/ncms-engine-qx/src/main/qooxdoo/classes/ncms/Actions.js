@@ -2,9 +2,9 @@
  * Actions repository
  */
 qx.Class.define("ncms.Actions", {
-    extend : sm.conn.Actions,
+    extend: sm.conn.Actions,
 
-    construct : function(prefix) {
+    construct: function (prefix) {
         this._prefix = (typeof prefix === "string") ? prefix : "";
         this.base(arguments);
         this._testPrefix = "http://localhost:8080";
@@ -273,15 +273,15 @@ qx.Class.define("ncms.Actions", {
 
     },
 
-    members : {
+    members: {
 
-        _prefix : null,
+        _prefix: null,
 
-        _testPrefix : null,
+        _testPrefix: null,
 
-        _resourceManager : null,
+        _resourceManager: null,
 
-        _action : function(id, path) {
+        _action: function (id, path) {
             path = this._prefix + path;
             if (qx.core.Environment.get("ncms.testing.urls")) {
                 this._addAction(id, this._resourceManager.toUri(this._testPrefix + path));

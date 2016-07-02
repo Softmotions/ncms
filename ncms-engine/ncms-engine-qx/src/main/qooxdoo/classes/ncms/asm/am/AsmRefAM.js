@@ -6,32 +6,32 @@
  * @asset(ncms/icon/16/misc/document-import.png)
  */
 qx.Class.define("ncms.asm.am.AsmRefAM", {
-    extend : qx.core.Object,
-    implement : [ ncms.asm.IAsmAttributeManager ],
-    include : [ qx.locale.MTranslation, ncms.asm.am.MAttributeManager ],
+    extend: qx.core.Object,
+    implement: [ncms.asm.IAsmAttributeManager],
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
-    statics : {
+    statics: {
 
-        getDescription : function() {
+        getDescription: function () {
             return qx.locale.Manager.tr("Include assembly");
         },
 
-        getSupportedAttributeTypes : function() {
-            return [ "asmref" ];
+        getSupportedAttributeTypes: function () {
+            return ["asmref"];
         },
 
-        isHidden : function() {
+        isHidden: function () {
             return false;
         }
     },
 
-    members : {
+    members: {
 
-        _form : null,
+        _form: null,
 
-        _bf : null,
+        _bf: null,
 
-        activateOptionsWidget : function(attrSpec, asmSpec) {
+        activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = new qx.ui.form.Form();
             var bf = this.__createBf(attrSpec, asmSpec);
             form.add(bf, this.tr("Assembly"), null, "assembly");
@@ -40,24 +40,24 @@ qx.Class.define("ncms.asm.am.AsmRefAM", {
         },
 
 
-        __createBf : function(attrSpec, asmSpec) {
+        __createBf: function (attrSpec, asmSpec) {
             var bf = this._bf = new sm.ui.form.ButtonField(this.tr("Select assembly"),
-                    "ncms/icon/16/misc/document-import.png");
+                "ncms/icon/16/misc/document-import.png");
             bf.setPlaceholder(this.tr("Please select assembly to include"));
             bf.setReadOnly(true);
-            bf.addListener("execute", function() {
+            bf.addListener("execute", function () {
                 this.__onSelectAssembly(attrSpec, asmSpec);
             }, this);
-            this._fetchAttributeValue(attrSpec, function(val) {
+            this._fetchAttributeValue(attrSpec, function (val) {
                 if (val == null || val == "") {
                     bf.setValue(val);
                     return;
                 }
                 bf.setValue(val);
                 var req = new sm.io.Request(
-                        ncms.Application.ACT.getRestUrl("asms.basic", {"name" : val}),
-                        "GET", "application/json");
-                req.send(function(resp) {
+                    ncms.Application.ACT.getRestUrl("asms.basic", {"name": val}),
+                    "GET", "application/json");
+                req.send(function (resp) {
                     var data = resp.getContent();
                     var sb = [];
                     if (data["description"]) {
@@ -73,13 +73,13 @@ qx.Class.define("ncms.asm.am.AsmRefAM", {
             return bf;
         },
 
-        __onSelectAssembly : function(attrSpec, asmSpec) {
+        __onSelectAssembly: function (attrSpec, asmSpec) {
             var dlg = new ncms.asm.AsmSelectorDlg(
-                    this.tr("Please select assembly to include"), null,
-                    {type : "", exclude : asmSpec["id"]},
-                    ["name", "description"]);
+                this.tr("Please select assembly to include"), null,
+                {type: "", exclude: asmSpec["id"]},
+                ["name", "description"]);
             dlg.open();
-            dlg.addListener("completed", function(ev) {
+            dlg.addListener("completed", function (ev) {
                 var data = ev.getData()[0];
                 var sb = [];
                 if (data["description"]) {
@@ -93,32 +93,32 @@ qx.Class.define("ncms.asm.am.AsmRefAM", {
             }, this);
         },
 
-        optionsAsJSON : function() {
+        optionsAsJSON: function () {
             if (this._form == null || this._bf == null || !this._form.validate()) {
                 return null;
             }
             var ref = this._bf.getUserData("ref");
             return {
-                value : ref["id"]
+                value: ref["id"]
             };
         },
 
-        activateValueEditorWidget : function(attrSpec, asmSpec) {
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
             return this.__createBf(attrSpec, asmSpec);
         },
 
-        valueAsJSON : function() {
+        valueAsJSON: function () {
             if (this._bf == null) {
                 return null;
             }
             var ref = this._bf.getUserData("ref");
             return {
-                value : ref["id"]
+                value: ref["id"]
             };
         }
     },
 
-    destruct : function() {
+    destruct: function () {
         this._bf = null;
         this._disposeObjects("_form");
     }
