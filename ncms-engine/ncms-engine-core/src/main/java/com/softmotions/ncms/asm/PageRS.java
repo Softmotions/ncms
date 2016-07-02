@@ -256,10 +256,14 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (page == null) {
             throw new NotFoundException("");
         }
+        Asm firstParent = null;
         Asm template = null;
         Iterator<Asm> piter = page.getAllParentsIterator();
         while (piter.hasNext()) {
             Asm next = piter.next();
+            if (firstParent == null) {
+                firstParent = next;
+            }
             if (next.isTemplate()) {
                 template = next;
                 break;
@@ -278,6 +282,13 @@ public class PageRS extends MBDAOSupport implements PageService {
                .put("name", template.getName())
                .put("description", template.getDescription());
         }
+        if (firstParent != null) {
+            res.putObject("firstParent")
+               .put("id", firstParent.id)
+               .put("name", firstParent.getName())
+               .put("description", firstParent.getDescription());
+        }
+
         Collection<AsmAttribute> eattrs = page.getEffectiveAttributes();
         Collection<AsmAttribute> gattrs = new ArrayList<>(eattrs.size());
         AsmAttributeManagersRegistry amreg = amRegistry.get();
@@ -381,7 +392,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             AsmAttributeManager am = amreg.getByType(attr.getType());
             if (am == null) {
-                log.warn("Missing attribute manager for type: " + attr.getType());
+                log.warn("Missing attribute manager for type: {}", attr.getType());
                 continue;
             }
             if (attr.getAsmId() != id) { //parent attr
@@ -419,16 +430,33 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (!pageSecurity.canEdit2(page, req)) {
             throw new ForbiddenException("");
         }
+
+
         Integer ts = selectOne("selectPageTemplateStatus", templateId);
-        if (ts == null || ts.intValue() == 0) {
-            log.warn("Assembly: " + templateId + " is not page template");
-            throw new BadRequestException("");
+        if (ts == null) {
+            log.warn("Assembly template: {} not found", templateId);
+            throw new NotFoundException("");
         }
-        //adao.
-        Collection<Long> aTemplates = pageSecurity.getAccessibleTemplates(req);
-        if (!aTemplates.contains(templateId)) {
-            log.warn("Template: " + templateId + " is not accesible for user");
-            throw new ForbiddenException(messages.get("ncms.page.template.access.denied", req));
+
+// todo review this check
+//        if (ts == 0) {
+//            log.warn("Assembly: {} is not a page template", templateId);
+//            throw new BadRequestException("");
+//        }
+
+        if (id.equals(templateId)) {
+            log.warn("The page {} cannot reference itself as template", id);
+            throw new ForbiddenException(messages.get("ncms.page.template.same", req));
+        }
+
+        if (ts > 0) {
+            Collection<Long> aTemplates = pageSecurity.getAccessibleTemplates(req);
+            if (!aTemplates.contains(templateId)) {
+                log.warn("Template: {} is not accesible for user", templateId);
+                throw new ForbiddenException(messages.get("ncms.page.template.access.denied", req));
+            }
+        } else {
+            // todo check permissions to assign arbitrary assembly as template?
         }
 
         adao.asmRemoveAllParents(id);
@@ -441,22 +469,19 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new NotFoundException("");
         }
         Collection<AsmAttribute> attrs = page.getEffectiveAttributes();
-
         for (AsmAttribute a : attrs) {
             AsmAttribute oa = a.getOverridenParent();
             if (oa != null &&
-                a.getAsmId() == id.longValue() &&
+                a.getAsmId() == id &&
                 !Objects.equals(oa.getType(), a.getType())) { //types incompatible
                 attrsToRemove.add(a.getName());
             }
         }
-
         if (!attrsToRemove.isEmpty()) {
             delete("deleteAttrsByNames",
                    "asmId", id,
                    "names", attrsToRemove);
         }
-
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return selectPageEdit(req, resp, id);
     }
@@ -1525,8 +1550,6 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (ind != -1) {
                 spec = spec.substring(0, ind).trim();
             }
-        } else if (spec.indexOf("/ncms/asm/") == 0) { //todo it is legacy staff!!
-            spec = spec.substring("/ncms/asm/".length());
         } else if (spec.indexOf(asmRoot) == 0) {
             spec = spec.substring(asmRoot.length());
         }

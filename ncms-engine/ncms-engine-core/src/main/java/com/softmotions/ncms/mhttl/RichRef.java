@@ -83,6 +83,14 @@ public class RichRef {
 
     public RichRef(String name,
                    String link,
+                   String rawLink) {
+        this.name = name;
+        this.link = link;
+        this.rawLink = rawLink;
+    }
+
+    public RichRef(String name,
+                   String link,
                    String description,
                    Image image) {
         this.name = name;

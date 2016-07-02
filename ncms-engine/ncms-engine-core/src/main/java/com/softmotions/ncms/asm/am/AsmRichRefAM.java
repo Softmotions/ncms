@@ -159,6 +159,14 @@ public class AsmRichRefAM implements AsmAttributeManager {
     }
 
     public JsonNode applyJSONAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+        return applyJSONAttributeValue(ctx, attr, val, false);
+    }
+
+    public JsonNode applyJSONAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, boolean nested) {
+        if (!nested) {
+            ctx.clearFileDeps(attr);
+            ctx.clearPageDeps(attr);
+        }
         JsonNode n = val.get("image");
         if (n != null) {
             imageAM.applyJSONAttributeValue(ctx, attr, n);

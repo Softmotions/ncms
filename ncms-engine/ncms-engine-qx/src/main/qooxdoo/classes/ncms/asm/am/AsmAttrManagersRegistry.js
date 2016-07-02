@@ -16,6 +16,7 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
             ncms.asm.am.AsmRefAM,
             ncms.asm.am.WebRefAM,
             ncms.asm.am.FileRefAM,
+            ncms.asm.am.PageRefAM,
             ncms.asm.am.TreeAM,
             ncms.asm.am.WikiAM,
             ncms.asm.am.ImageAM,

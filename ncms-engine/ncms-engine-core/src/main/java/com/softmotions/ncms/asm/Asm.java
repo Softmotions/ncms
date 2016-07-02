@@ -1,26 +1,5 @@
 package com.softmotions.ncms.asm;
 
-import com.softmotions.commons.cont.AbstractIndexedCollection;
-import com.softmotions.commons.cont.KVOptions;
-import com.softmotions.commons.cont.Pair;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.google.common.collect.AbstractIterator;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -34,6 +13,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.common.collect.AbstractIterator;
+import com.softmotions.commons.cont.AbstractIndexedCollection;
+import com.softmotions.commons.cont.KVOptions;
+import com.softmotions.commons.cont.Pair;
 
 /**
  * Assembly.
@@ -369,6 +368,7 @@ public class Asm implements Serializable {
         });
         final Iterator<Pair<Asm, Integer>> pit = plist.iterator();
         return new AbstractIterator<Asm>() {
+            @Override
             protected Asm computeNext() {
                 if (pit.hasNext()) {
                     return pit.next().getOne();
@@ -511,7 +511,7 @@ public class Asm implements Serializable {
 
 
     public Collection<String> getEffectiveAttributeNames() {
-        final Set<String> anames = new HashSet<>(getAttributes().size() * 2);
+        final Set<String> anames = new HashSet<>(getAttributes().size() << 1);
         if (attributes != null) {
             for (final AsmAttribute a : attributes) {
                 anames.add(a.getName());
@@ -530,7 +530,7 @@ public class Asm implements Serializable {
         Collection<AsmAttribute> attrs = getAttributes();
         ArrayList<AsmAttribute> res =
                 new ArrayList<>(attrs != null && attrs.size() > 10 ?
-                                attrs.size() * 2 : 10);
+                                attrs.size() << 1 : 10);
         addSortedChainAttributes(res, this);
         Map<String, Integer> pmap = new HashMap<>();
         for (int i = 0; i < res.size(); ++i) {
@@ -578,6 +578,7 @@ public class Asm implements Serializable {
 
     public static class AttrsList extends AbstractIndexedCollection<String, AsmAttribute> implements Serializable {
 
+        @Override
         protected String getElementKey(AsmAttribute el) {
             return el.getName();
         }

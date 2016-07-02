@@ -353,7 +353,7 @@ public class AsmTreeAM implements AsmAttributeManager {
             JsonNode naSpec = mapper.readTree(val.asText());
             String naClass = naSpec.hasNonNull("naClass") ? naSpec.get("naClass").asText() : null;
             if ("ncms.asm.am.RichRefAM".equals(naClass)) {
-                richRefAM.applyJSONAttributeValue(ctx, attr, naSpec);
+                richRefAM.applyJSONAttributeValue(ctx, attr, naSpec, true);
                 tree.set("nam", tree.textNode(naSpec.toString()));
             }
         }

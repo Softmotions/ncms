@@ -113,9 +113,10 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             el.addListener("input", this.__modified, this);
             form.add(el, this.tr("Description"), null, "description");
         }
-
         var fr = new sm.ui.form.FlexFormRenderer(form);
-        fr.setLastRowFlexible();
+        if (opts["allowDescription"] === "true") { // expand only description
+            fr.setLastRowFlexible();
+        }
         this._add(fr);
     },
 
@@ -142,7 +143,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             var dlg;
             var data = ev.getData();
             if (data == null || data === "page") {
-                dlg = new ncms.pgs.LinkSelectorDlg(this.tr("Please set the page link"), {
+                dlg = new ncms.pgs.LinkSelectorDlg(this.tr("Please set a page link"), {
                     allowExternalLinks: true
                 });
                 dlg.addListener("completed", function (ev) {

@@ -28,6 +28,8 @@ import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.media.MediaResource;
 
 /**
+ * File reference attribute manager.
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 
@@ -69,7 +71,8 @@ public class AsmFileRefAM implements AsmAttributeManager {
     }
 
     @Override
-    public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
+    public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
+                                     Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
         if (attr == null || attr.getEffectiveValue() == null) {
@@ -128,6 +131,7 @@ public class AsmFileRefAM implements AsmAttributeManager {
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+        ctx.clearFileDeps(attr);
         String location = val.hasNonNull("value") ? val.get("value").asText().trim() : null;
         attr.setEffectiveValue(location);
         if (!StringUtils.isBlank(location)) {

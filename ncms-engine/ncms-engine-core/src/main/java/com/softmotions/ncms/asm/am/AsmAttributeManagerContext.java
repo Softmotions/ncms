@@ -1,19 +1,5 @@
 package com.softmotions.ncms.asm.am;
 
-import com.softmotions.ncms.asm.AsmAttribute;
-import com.softmotions.ncms.asm.PageSecurityService;
-import com.softmotions.web.security.WSUser;
-import com.softmotions.weboot.mb.MBDAOSupport;
-
-import com.google.inject.Inject;
-import com.google.inject.servlet.RequestScoped;
-
-import net.jcip.annotations.NotThreadSafe;
-import org.apache.ibatis.session.SqlSession;
-import org.mybatis.guice.transactional.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -23,6 +9,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.ibatis.session.SqlSession;
+import org.mybatis.guice.transactional.Transactional;
+
+import net.jcip.annotations.NotThreadSafe;
+
+import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
+import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.PageSecurityService;
+import com.softmotions.web.security.WSUser;
+import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
  * Assembly attribute manager context.
@@ -113,7 +113,6 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         if (pageDeps == null) {
             pageDeps = new HashMap<>();
         }
-
         pageDeps.put(attr, new HashSet<>());
     }
 

@@ -128,7 +128,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
                         this.__validateFileSelector(path, bf);
                     }
                 }, this);
-                dlg.show();
+                dlg.open();
             }, this);
             return bf;
         },

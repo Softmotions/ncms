@@ -9,7 +9,7 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
 
     events : {
         /**
-         * Data: [] array of selected asms.
+         * Data: [] an array of selected asms.
          * @see ncms.asm.AsmSelector
          */
         "completed" : "qx.event.type.Data"

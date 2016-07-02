@@ -54,6 +54,7 @@ public class AsmModule extends AbstractModule {
         attrBinder.addBinding().to(AsmWikiAM.class);
         attrBinder.addBinding().to(AsmImageAM.class);
         attrBinder.addBinding().to(AsmFileRefAM.class);
+        attrBinder.addBinding().to(AsmPageRefAM.class);
         attrBinder.addBinding().to(AsmBreadCrumbsAM.class);
         attrBinder.addBinding().to(AsmMainPageAM.class);
         attrBinder.addBinding().to(AsmRichRefAM.class);

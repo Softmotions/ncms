@@ -24,10 +24,11 @@ msgstr "Выход"
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:158 ncms/asm/am/AsmCoreAM.js:87
+#: ncms/pgs/PageEditorEditPage.js:159 ncms/asm/am/AsmCoreAM.js:87
 #: ncms/asm/am/ImageAMValueWidget.js:104 ncms/asm/AsmEditor.js:90
 #: ncms/usr/UserEditForm.js:22 ncms/usr/UserNewDlg.js:34
-#: ncms/asm/am/FileRefAM.js:138 ncms/asm/AsmAttrEditorDlg.js:56
+#: ncms/asm/am/PageRefAM.js:120 ncms/asm/am/FileRefAM.js:138
+#: ncms/asm/AsmAttrEditorDlg.js:56
 msgid "This field is required"
 msgstr "Обязательное поле"
 
@@ -67,7 +68,7 @@ msgstr "Обязательное в GUI"
 
 #: ncms/asm/am/TreeAMFoldersDlg.js:51 ncms/mmgr/PageFilesSelectorDlg.js:114
 #: ncms/asm/am/AMWrapperDlg.js:37 ncms/asm/AsmSelectorDlg.js:46
-#: ncms/pgs/PagesSelectorDlg.js:55 ncms/wiki/InsertYoutubeDlg.js:58
+#: ncms/pgs/PagesSelectorDlg.js:54 ncms/wiki/InsertYoutubeDlg.js:58
 #: ncms/wiki/TreeDlg.js:50 ncms/usr/UserSelectorDlg.js:38
 #: ncms/mmgr/MediaSelectFolderDlg.js:55 ncms/wiki/InsertVimeoDlg.js:51
 #: ncms/wiki/InsertGMapDlg.js:41 ncms/mmgr/MediaSelectFileDlg.js:81
@@ -77,10 +78,10 @@ msgstr "Обязательное в GUI"
 msgid "Ok"
 msgstr "Ок"
 
-#: ncms/pgs/PageEditorEditPage.js:54 ncms/asm/am/TreeAMFoldersDlg.js:56
+#: ncms/pgs/PageEditorEditPage.js:55 ncms/asm/am/TreeAMFoldersDlg.js:56
 #: ncms/mmgr/PageFilesSelectorDlg.js:118 ncms/wiki/TableDlg.js:60
 #: ncms/asm/am/AMWrapperDlg.js:41 ncms/asm/AsmSelectorDlg.js:50
-#: ncms/pgs/PagesSelectorDlg.js:59 ncms/wiki/InsertYoutubeDlg.js:62
+#: ncms/pgs/PagesSelectorDlg.js:58 ncms/wiki/InsertYoutubeDlg.js:62
 #: ncms/wiki/TreeDlg.js:54 ncms/usr/UserSelectorDlg.js:42
 #: ncms/mmgr/MediaSelectFolderDlg.js:59 ncms/wiki/InsertVimeoDlg.js:55
 #: ncms/usr/UserEditForm.js:54 ncms/wiki/InsertGMapDlg.js:45
@@ -191,7 +192,7 @@ msgstr "Имя класса контроллера сборки (assembly)"
 msgid "Controller"
 msgstr "Контроллер"
 
-#: ncms/pgs/PageEditorEditPage.js:432 ncms/asm/AsmEditor.js:114
+#: ncms/pgs/PageEditorEditPage.js:453 ncms/asm/AsmEditor.js:114
 msgid "Published"
 msgstr "Опубликовано"
 
@@ -199,7 +200,7 @@ msgstr "Опубликовано"
 msgid "None"
 msgstr "Нет"
 
-#: ncms/asm/AsmEditor.js:118
+#: ncms/asm/AsmEditor.js:118 ncms/asm/am/PageRefAM.js:79
 msgid "Page"
 msgstr "Страница"
 
@@ -207,7 +208,7 @@ msgstr "Страница"
 msgid "News page"
 msgstr "Новость"
 
-#: ncms/pgs/PageEditorEditPage.js:81 ncms/asm/AsmEditor.js:121
+#: ncms/pgs/PageEditorEditPage.js:82 ncms/asm/AsmEditor.js:121
 msgid "Template"
 msgstr "Шаблон"
 
@@ -494,6 +495,24 @@ msgstr "Заголовок"
 msgid "Add images into the media gallery"
 msgstr "Добавить изображения в галерею"
 
+#: ncms/asm/am/PageRefAM.js:13
+msgid "Page reference"
+msgstr "Ссылка на страницу"
+
+#: ncms/wiki/InsertImageDlg.js:61 ncms/asm/am/RichRefAMValueWidget.js:60
+#: ncms/asm/am/PageRefAM.js:36
+msgid "Link"
+msgstr "Ссылка"
+
+#: ncms/asm/am/PageRefAM.js:40
+msgid "Allow external links"
+msgstr "Внешние ссылки"
+
+#: ncms/asm/am/RichRefAMValueWidget.js:146 ncms/asm/am/PageRefAM.js:85
+#: ncms/asm/am/PageRefAM.js:90
+msgid "Please set a page link"
+msgstr "Пожалуйста укажите ссылку"
+
 #: ncms/asm/am/RichRefAM.js:12
 msgid "Rich reference"
 msgstr "Агрегат"
@@ -503,7 +522,7 @@ msgstr "Агрегат"
 msgid "Pages"
 msgstr "Страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:59 ncms/mmgr/MediaItemTreeSelector.js:20
+#: ncms/pgs/PageEditorEditPage.js:60 ncms/mmgr/MediaItemTreeSelector.js:20
 #: ncms/asm/am/TreeAM.js:49 ncms/asm/am/RichRefAM.js:40
 msgid "Files"
 msgstr "Файлы"
@@ -530,21 +549,13 @@ msgstr "Ссылка на страницу"
 msgid "File link"
 msgstr "Ссылка на файл"
 
-#: ncms/wiki/InsertImageDlg.js:61 ncms/asm/am/RichRefAMValueWidget.js:60
-msgid "Link"
-msgstr "Ссылка"
-
 #: ncms/asm/am/RichRefAMValueWidget.js:87
 #: ncms/asm/am/RichRefAMValueWidget.js:96
 #: ncms/asm/am/RichRefAMValueWidget.js:105
 msgid "Option"
 msgstr "Опция"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:145
-msgid "Please set the page link"
-msgstr "Пожалуйста, укажите ссылку на страницу"
-
-#: ncms/asm/am/RichRefAMValueWidget.js:166
+#: ncms/asm/am/RichRefAMValueWidget.js:167
 msgid "Please set the file link"
 msgstr "Пожалуйста, укажите ссылку на файл"
 
@@ -758,7 +769,7 @@ msgstr "Папка"
 msgid "Image size"
 msgstr "Размер изображения"
 
-#: ncms/pgs/PageEditorEditPage.js:76 ncms/mmgr/MediaFilesSelector.js:509
+#: ncms/pgs/PageEditorEditPage.js:77 ncms/mmgr/MediaFilesSelector.js:509
 #: ncms/mmgr/MediaFileEditor.js:291 ncms/pgs/PageEditorInfoPage.js:32
 msgid "Preview"
 msgstr "Предпросмотр"
@@ -819,7 +830,7 @@ msgstr "Новая папка верхнего уровня"
 msgid "Are you sure to remove folder: %1"
 msgstr "Вы действительно желаете безвозвратно удалить папку: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:46 ncms/mmgr/MediaTextFileEditor.js:46
+#: ncms/pgs/PageEditorEditPage.js:47 ncms/mmgr/MediaTextFileEditor.js:46
 #: ncms/usr/UserEditForm.js:50
 msgid "Save"
 msgstr "Сохранить"
@@ -906,31 +917,35 @@ msgstr "Добавить пользователя в список прав"
 msgid "Remove user recursively"
 msgstr "Убрать пользователя (рекурсивно)"
 
-#: ncms/pgs/PageEditorEditPage.js:42 ncms/pgs/PageEditorEditPage.js:432
+#: ncms/pgs/PageEditorEditPage.js:43 ncms/pgs/PageEditorEditPage.js:453
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:84 ncms/pgs/PageEditorEditPage.js:287
+#: ncms/pgs/PageEditorEditPage.js:85 ncms/pgs/PageEditorEditPage.js:293
 msgid "Please select the template page"
 msgstr "Пожалуйста, выберите шаблон для страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:325
+#: ncms/pgs/PageEditorEditPage.js:297
+msgid "Templates"
+msgstr "Шаблоны"
+
+#: ncms/pgs/PageEditorEditPage.js:345
 msgid "Page fields contain errors"
 msgstr "В полях страницы обнаружены ошибки"
 
-#: ncms/pgs/PageEditorEditPage.js:348
+#: ncms/pgs/PageEditorEditPage.js:368
 msgid "Failed to save page."
 msgstr "Ошибка при сохранении страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:366
+#: ncms/pgs/PageEditorEditPage.js:386
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:374
+#: ncms/pgs/PageEditorEditPage.js:394
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:415
+#: ncms/pgs/PageEditorEditPage.js:436
 msgid ""
 "Are you sure to unpublish this page? There are pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>"
@@ -939,11 +954,11 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" "
 "target='_blank'>списком ссылающихся страниц</a>"
 
-#: ncms/pgs/PageEditorEditPage.js:438
+#: ncms/pgs/PageEditorEditPage.js:459
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:450
+#: ncms/pgs/PageEditorEditPage.js:471
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 
@@ -991,15 +1006,19 @@ msgstr "Добавить страницу"
 msgid "Remove page"
 msgstr "Удалить страницу"
 
-#: ncms/pgs/PagesSelector.js:35
+#: ncms/pgs/PagesSelector.js:68
+msgid "Assemblies"
+msgstr ""
+
+#: ncms/pgs/PagesSelector.js:83
 msgid "Structure"
 msgstr "Структура"
 
-#: ncms/pgs/PagesSelector.js:42
+#: ncms/pgs/PagesSelector.js:90
 msgid "Search"
 msgstr "Поиск"
 
-#: ncms/pgs/PagesSelectorDlg.js:36
+#: ncms/pgs/PagesSelectorDlg.js:35
 msgid "Select the page"
 msgstr "Выбрать страницу"
 
@@ -1395,6 +1414,9 @@ msgstr "Потомок уровня вложенности 2"
 msgid "Note text"
 msgstr "Заметка"
 
+#~ msgid "111Please select the template page"
+#~ msgstr ""
+
 #~ msgid "Bread crumbs"
 #~ msgstr "Вспомогательная навигация (Breadcrumbs)"
 
@@ -1427,6 +1449,9 @@ msgstr "Заметка"
 
 #~ msgid "News caption"
 #~ msgstr "Заголовок новости"
+
+#~ msgid "Please set the page link"
+#~ msgstr "Пожалуйста, укажите ссылку на страницу"
 
 #~ msgid "Request timed out. Try again later"
 #~ msgstr "Сервер SlideShare не отвечает. Повторите попытку позже"
