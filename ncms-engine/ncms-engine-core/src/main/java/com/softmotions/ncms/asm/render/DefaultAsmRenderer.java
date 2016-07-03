@@ -64,6 +64,18 @@ public class DefaultAsmRenderer implements AsmRenderer {
     }
 
     @Override
+    public boolean isHasRenderableAsmAttribute(Asm asm, AsmRendererContext ctx, String name) {
+        boolean ret = asm.isHasAttribute(name);
+        if (!ret) {
+            CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest(), false);
+            if (indexPage != null && !asm.equals(indexPage.getAsm())) {
+                return indexPage.getAsm().isHasAttribute(name);
+            }
+        }
+        return ret;
+    }
+
+    @Override
     public void renderAsm(AsmRendererContext ctx, Writer writer) throws AsmRenderingException, IOException {
         Asm asm = ctx.getAsm();
         AsmCore core = asm.getEffectiveCore();

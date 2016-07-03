@@ -4,9 +4,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
+import com.google.inject.Injector;
+import com.softmotions.commons.JVMResources;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 /**
@@ -15,7 +18,12 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 @SuppressWarnings("unchecked")
 public class HttlAsmMethods {
 
+    // todo use it
+    private final PageService pageService;
+
     private HttlAsmMethods() {
+        Injector injector = JVMResources.getOrFail("com.softmotions.weboot.WBServletListener.Injector");
+        pageService = injector.getInstance(PageService.class);
     }
 
     public static Asm page() {
@@ -23,18 +31,21 @@ public class HttlAsmMethods {
     }
 
     public static boolean asmHasAttribute(String name) {
-        return AsmRendererContext.getSafe().getAsm().isHasAttribute(name);
+        AsmRendererContext rctx = AsmRendererContext.getSafe();
+        return rctx.getRenderer().isHasRenderableAsmAttribute(rctx.getAsm(), rctx, name);
     }
 
-    public static Object asmAny(String val) {
-        return asmHasAttribute(val) ? asm(val) : null;
+    public static Object asmAny(String name) {
+        AsmRendererContext rctx = AsmRendererContext.getSafe();
+        return rctx.getRenderer().isHasRenderableAsmAttribute(rctx.getAsm(), rctx, name) ? asm(name) : null;
     }
 
-    public static Object asmAny(Asm asm, String val) {
+    public static Object asmAny(Asm asm, String name) {
         if (asm == null) {
             return null;
         }
-        return asm.isHasAttribute(val) ? asm(asm, val) : null;
+        AsmRendererContext rctx = AsmRendererContext.getSafe();
+        return rctx.getRenderer().isHasRenderableAsmAttribute(rctx.getAsm(), rctx, name) ? asm(name) : null;
     }
 
     public static Object asm(String val) {

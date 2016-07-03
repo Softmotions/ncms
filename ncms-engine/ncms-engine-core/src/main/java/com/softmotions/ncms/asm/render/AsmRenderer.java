@@ -5,6 +5,8 @@ import java.io.Writer;
 import java.util.Map;
 import javax.annotation.Nullable;
 
+import com.softmotions.ncms.asm.Asm;
+
 /**
  * Assembly {@link com.softmotions.ncms.asm.Asm} renderer.
  *
@@ -13,6 +15,8 @@ import javax.annotation.Nullable;
 public interface AsmRenderer {
 
     void renderTemplate(String location, AsmRendererContext ctx, Writer out) throws AsmRenderingException, IOException;
+
+    boolean isHasRenderableAsmAttribute(Asm asm, AsmRendererContext ctx, String name);
 
     void renderAsm(AsmRendererContext ctx, @Nullable Writer writer) throws AsmRenderingException, IOException;
 

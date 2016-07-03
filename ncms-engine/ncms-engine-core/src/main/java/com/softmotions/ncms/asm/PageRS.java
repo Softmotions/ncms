@@ -82,7 +82,6 @@ import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.user.UserEnvRS;
-import com.softmotions.web.HttpUtils;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
@@ -96,6 +95,8 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 @Produces("application/json;charset=UTF-8")
 @Singleton
 public class PageRS extends MBDAOSupport implements PageService {
+
+    public static final String INDEX_PAGE_REQUEST_ATTR_NAME = "_PAGERS_INDEX_PAGE";
 
     public static final int PAGE_STATUS_FOLDER_FLAG = 1;
 
@@ -1594,7 +1595,16 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Override
     public CachedPage getIndexPage(HttpServletRequest req, boolean requirePublished) {
 
-        Long pid = null;
+        CachedPage p;
+        Long pid = (Long) req.getAttribute(INDEX_PAGE_REQUEST_ATTR_NAME);
+        if (pid != null) {
+            p = getCachedPage(pid, true);
+            if (p != null && (!requirePublished || (requirePublished && p.isPublished()))) {
+                return p;
+            }
+            req.removeAttribute(INDEX_PAGE_REQUEST_ATTR_NAME);
+            pid = null;
+        }
         Locale locale = messages.getLocale(req);
         String rlang = locale.getLanguage();
         String rhost = req.getServerName();
@@ -1623,11 +1633,14 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (pid == null) {
             return null;
         }
-        CachedPage p = getCachedPage(pid, true);
+        p = getCachedPage(pid, true);
         if (p == null) {
             removeFromIndexPages(pid);
         } else if (requirePublished && !p.isPublished()) {
             p = null;
+        }
+        if (p != null) {
+            req.setAttribute(INDEX_PAGE_REQUEST_ATTR_NAME, pid);
         }
         return p;
     }
