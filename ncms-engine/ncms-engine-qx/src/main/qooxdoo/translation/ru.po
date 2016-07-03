@@ -914,7 +914,7 @@ msgstr "Редактирование"
 
 #: ncms/pgs/PageEditorAccessTable.js:175
 msgid "News"
-msgstr "Новости"
+msgstr "Ленты"
 
 #: ncms/pgs/PageEditorAccessTable.js:182
 msgid "Deleting"

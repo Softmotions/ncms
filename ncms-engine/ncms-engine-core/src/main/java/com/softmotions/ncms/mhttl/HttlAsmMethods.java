@@ -18,12 +18,8 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 @SuppressWarnings("unchecked")
 public class HttlAsmMethods {
 
-    // todo use it
-    private final PageService pageService;
 
     private HttlAsmMethods() {
-        Injector injector = JVMResources.getOrFail("com.softmotions.weboot.WBServletListener.Injector");
-        pageService = injector.getInstance(PageService.class);
     }
 
     public static Asm page() {

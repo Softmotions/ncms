@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
@@ -37,6 +39,21 @@ public class HttlUtilsMethods {
     private static volatile String sfRoot = null;
 
     private HttlUtilsMethods() {
+    }
+
+    public static boolean in(String el, String[] args) {
+        return !(el == null || args == null) && (ArrayUtils.indexOf(args, el) != -1);
+    }
+
+    public static boolean inICase(String el, String[] args) {
+        if (el == null || args == null) {
+            return false;
+        }
+        el = el.toLowerCase();
+        for (int i = 0; i < args.length; ++i) {
+            args[i] = args[i].toLowerCase();
+        }
+        return in(el, args);
     }
 
     public static <T> boolean notNull(T t) {
@@ -126,6 +143,31 @@ public class HttlUtilsMethods {
         return (link != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(link) : null;
     }
 
+    public static String link(RichRef ref) {
+        if (ref == null) {
+            return null;
+        }
+        return ref.getLink();
+    }
+
+    public static String linkHtml(Object ref) {
+        return linkHtml(ref, null);
+    }
+
+    public static String linkHtml(Object ref, Map<String, String> attrs) {
+        if (ref == null) {
+            return null;
+        }
+        //noinspection ChainOfInstanceofChecks
+        if (ref instanceof String) {
+            ref = new RichRef((String) ref, AsmRendererContext.getSafe().getPageService());
+        }
+        if (!(ref instanceof RichRef)) {
+            return null;
+        }
+        return ((RichRef) ref).toHtml(attrs);
+    }
+
     public static String siteFile(Object path) {
         if (path == null) {
             return null;
@@ -197,10 +239,19 @@ public class HttlUtilsMethods {
         }
     }
 
+    public static String config(String key) {
+        HierarchicalConfiguration<ImmutableNode> config = config();
+        return config.getString(key);
+    }
+
+    public static String config(String key, String def) {
+        HierarchicalConfiguration<ImmutableNode> config = config();
+        return config.getString(key, def);
+    }
+
     public static HierarchicalConfiguration<ImmutableNode> config() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        NcmsEnvironment env = ctx.getInjector().getInstance(NcmsEnvironment.class);
-        return env.xcfg();
+        return ctx.getEnvironment().xcfg();
     }
 
     public static NcmsEnvironment env() {

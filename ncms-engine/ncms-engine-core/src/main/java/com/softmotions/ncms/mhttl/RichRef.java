@@ -1,5 +1,11 @@
 package com.softmotions.ncms.mhttl;
 
+import java.util.Map;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+
+import com.softmotions.ncms.asm.PageService;
+
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
@@ -78,7 +84,56 @@ public class RichRef {
         this.style2 = style2;
     }
 
+    public String getStyle3() {
+        return style3;
+    }
+
+    public void setStyle3(String style3) {
+        this.style3 = style3;
+    }
+
+    public String toHtml() {
+        return toHtml(null);
+    }
+
+    public String toHtml(Map<String, String> amap) {
+        if (link == null) {
+            return null;
+        }
+        if (name == null) {
+            name = link;
+        }
+        StringBuilder attrs = null;
+        if (amap != null && !amap.isEmpty()) {
+            attrs = new StringBuilder();
+            for (Map.Entry<String, String> e : amap.entrySet()) {
+                attrs.append(' ').append(e.getKey()).append('=').append(e.getValue());
+            }
+        }
+        return String.format("<a href=\"%s\"%s>%s</a>",
+                             link,
+                             attrs != null ? attrs : "",
+                             StringEscapeUtils.escapeHtml4(name));
+    }
+
     public RichRef() {
+    }
+
+    public RichRef(String rawLink, PageService pageService) {
+        this.name = null;
+        this.rawLink = rawLink;
+        link = rawLink;
+        int ind = link.indexOf('|');
+        if (ind != -1) {
+            if (ind < link.length() - 1) {
+                name = link.substring(ind + 1).trim();
+            }
+            link = link.substring(0, ind).trim();
+        }
+        if (name == null) {
+            name = link;
+        }
+        link = pageService.resolveResourceLink(link);
     }
 
     public RichRef(String name,

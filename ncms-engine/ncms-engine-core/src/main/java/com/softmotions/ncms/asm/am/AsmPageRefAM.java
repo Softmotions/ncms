@@ -65,18 +65,7 @@ public class AsmPageRefAM implements AsmAttributeManager {
         if (attr == null || attr.getEffectiveValue() == null) {
             return null;
         }
-        String link = attr.getEffectiveValue().trim();
-        String rawLink = link;
-        String name = null;
-        int ind = link.indexOf('|');
-        if (ind != -1) {
-            if (ind < link.length() - 1) {
-                name = link.substring(ind + 1).trim();
-            }
-            link = link.substring(0, ind).trim();
-        }
-        link = pageService.resolveResourceLink(link);
-        return new RichRef(name, link, rawLink);
+        return new RichRef(attr.getEffectiveValue().trim(), pageService);
     }
 
     @Override
