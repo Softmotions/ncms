@@ -434,15 +434,23 @@ msgstr "Изображение должно быть следующего раз
 msgid "Main page marker"
 msgstr "Маркер главной страницы"
 
-#: ncms/asm/am/MainPageAM.js:35
-msgid "Comma separated list of applicable language codes"
-msgstr "Список кодов языка через запятую"
-
 #: ncms/asm/am/MainPageAM.js:36
+msgid "Two letter language codes separated by comma"
+msgstr "Двухбуквенные коды языков через запятую"
+
+#: ncms/asm/am/MainPageAM.js:37
 msgid "Language codes"
 msgstr "Коды языка"
 
-#: ncms/asm/am/MainPageAM.js:42
+#: ncms/asm/am/MainPageAM.js:44
+msgid "Comma separated virtual hosts"
+msgstr ""
+
+#: ncms/asm/am/MainPageAM.js:45
+msgid "Visrtual hosts"
+msgstr ""
+
+#: ncms/asm/am/MainPageAM.js:51
 msgid "Enabled"
 msgstr "Активировано"
 
@@ -850,7 +858,7 @@ msgstr "Закрыть"
 
 #: ncms/news/NewsNav.js:48 ncms/news/NewsNav.js:50
 msgid "Select the parent page for news"
-msgstr "Укажите родительскую страницу для новостей"
+msgstr "Укажите родительскую страницу для ленты"
 
 #: ncms/news/NewsNav.js:148 ncms/pgs/PagesTreeSelector.js:260
 msgid "Are you sure to remove page: %1"
@@ -858,7 +866,7 @@ msgstr "Вы действительно желаете удалить стран
 
 #: ncms/news/NewsNav.js:183
 msgid "Please select the parent page for news"
-msgstr "Пожалуйста, укажите родительскую страницу для новостей"
+msgstr "Пожалуйста, укажите родительскую страницу для ленты"
 
 #: ncms/wiki/InsertImageDlg.js:23 ncms/news/NewsNewDlg.js:21
 #: ncms/news/NewsNewDlg.js:22

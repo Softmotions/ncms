@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -81,6 +82,7 @@ import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.user.UserEnvRS;
+import com.softmotions.web.HttpUtils;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
@@ -133,9 +135,22 @@ public class PageRS extends MBDAOSupport implements PageService {
     @GuardedBy("guid2AliasCache")
     private final Map<String, String> guid2AliasCache;
 
-    private final Map<String, Long> lang2IndexPages;
+    /**
+     * Map:  langCode => virtualHost => pageId
+     * Star `*` included in this collection
+     */
+    @GuardedBy("lvh2IndexPages")
+    private final Map<String, Map<String, Long>> lvh2IndexPages;
 
-    private final NcmsEnvironment env;
+    /**
+     * Map: pageId => langCode (First page language)
+     * Star `*` lang is used as `null` in this collection
+     */
+    @GuardedBy("lvh2IndexPages")
+    private final Map<Long, String> indexPage2FirstLang;
+
+    @GuardedBy("lvh2IndexPages")
+    private final Map<Long, String> indexPage2SecondLang;
 
     private final Provider<AsmAttributeManagerContext> amCtxProvider;
 
@@ -170,8 +185,9 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.guid2AliasCache = new LRUMap(env.xcfg().getInt("pages.lru-aliases-cache-size", 4096));
         this.pageGuid2Cache = new HashMap<>();
         this.pageAlias2Cache = new HashMap<>();
-        this.lang2IndexPages = new HashMap<>();
-        this.env = env;
+        this.lvh2IndexPages = new HashMap<>();
+        this.indexPage2FirstLang = new HashMap<>();
+        this.indexPage2SecondLang = new HashMap<>();
         this.mediaReader = mediaReader;
         this.amCtxProvider = amCtxProvider;
         this.asmRoot = env.getAppRoot() + "/";
@@ -321,8 +337,6 @@ public class PageRS extends MBDAOSupport implements PageService {
                 }
             }
         }
-
-
         res.putPOJO("attributes", gattrs);
         return res;
     }
@@ -579,25 +593,10 @@ public class PageRS extends MBDAOSupport implements PageService {
         String lang = null;
         Long pid = (ind == -1 || ind == 1) ? null : Long.parseLong(pageIDsPath.substring(1, ind));
         if (pid != null) {
-            synchronized (lang2IndexPages) {
-                for (Map.Entry<String, Long> e : lang2IndexPages.entrySet()) {
-                    if (!"*".equals(e.getKey()) && pid.equals(e.getValue())) {
-                        lang = e.getKey();
-                        break;
-                    }
-                }
-            }
-        }
-        if (lang == null) {
-            synchronized (lang2IndexPages) {
-                pid = lang2IndexPages.get("*");
-                if (pid != null) {
-                    for (Map.Entry<String, Long> e : lang2IndexPages.entrySet()) {
-                        if (!"*".equals(e.getKey()) && pid.equals(e.getValue())) {
-                            lang = e.getKey();
-                            break;
-                        }
-                    }
+            synchronized (lvh2IndexPages) {
+                lang = indexPage2FirstLang.get(pid);
+                if (lang == null) {
+                    lang = indexPage2SecondLang.get(pid);
                 }
             }
         }
@@ -605,12 +604,6 @@ public class PageRS extends MBDAOSupport implements PageService {
             lang = messages.getLocale(null).getLanguage();
         }
         return lang;
-    }
-
-    private String generateNewsAlias(String name) {
-        //todo locale dependent!!!
-        //name = TranslitHelper.translitRussian()
-        return null;
     }
 
     @PUT
@@ -643,7 +636,6 @@ public class PageRS extends MBDAOSupport implements PageService {
                 type = "page.folder";
             }
         }
-
         update("updatePageBasic",
                "id", id,
                "hname", name,
@@ -712,6 +704,8 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/referers/{guid}")
     public Response getPageReferers(@PathParam("guid") String guid,
                                     @Context HttpServletRequest req) {
+
+        // todo Use more user friendly template
         return Response.ok((StreamingOutput) o -> {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(o, "UTF-8"));
             pw.println("<!DOCTYPE html>");
@@ -884,11 +878,9 @@ public class PageRS extends MBDAOSupport implements PageService {
     public JsonNode getAcl(@PathParam("pid") Long pid,
                            @QueryParam("recursive") Boolean recursive) {
         ArrayNode res = mapper.createArrayNode();
-
         for (PageSecurityService.AclEntity aclEntity : pageSecurity.getAcl(pid, recursive)) {
             res.addPOJO(aclEntity);
         }
-
         return res;
     }
 
@@ -918,10 +910,10 @@ public class PageRS extends MBDAOSupport implements PageService {
                           @QueryParam("recursive") boolean recursive,
                           @QueryParam("rights") String rights,
                           @QueryParam("add") boolean isAdd) {
+
         if (!pageSecurity.isOwner(pid, req)) {
             throw new ForbiddenException("");
         }
-
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
             throw new BadRequestException("User not found");
@@ -945,7 +937,6 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (wsUser == null) {
             throw new BadRequestException("User not found");
         }
-
         if (force) {
             pageSecurity.deleteUserRecursive(pid, user);
         } else {
@@ -964,6 +955,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("search")
     @Transactional
     public Response searchPage(@Context final HttpServletRequest req) {
+
         return Response.ok((StreamingOutput) output -> {
             final boolean includePath = BooleanUtils.toBoolean(req.getParameter("includePath"));
             final JsonGenerator gen = new JsonFactory().createGenerator(output);
@@ -1077,6 +1069,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     public ObjectNode getSinglePageIntoUserCollection(@Context HttpServletRequest req,
                                                       @Context SecurityContext sctx,
                                                       @PathParam("collection") String collection) {
+
         Collection set = userEnvRS.getSet(req, collection);
         if (set.isEmpty() || !(set.iterator().next() instanceof Number)) {
             return mapper.createObjectNode(); //empty object
@@ -1089,6 +1082,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @Nonnull
     public String getPageIDsPath(Long id) {
+
         if (id == null) {
             return "/";
         }
@@ -1106,6 +1100,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     private String[] convertPageIDPath2LabelPath(String idpath) {
+
         if (idpath == null || "/".equals(idpath)) {
             return org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
         }
@@ -1149,6 +1144,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     private MBCriteriaQuery createSearchQ(HttpServletRequest req, boolean count) {
+
         MBCriteriaQuery cq = createCriteria();
         String val;
         if (!count) {
@@ -1247,11 +1243,10 @@ public class PageRS extends MBDAOSupport implements PageService {
         protected boolean removeLRU(LinkEntry entry) {
             CachedPage cp = (CachedPage) entry.getValue();
             Long pid = cp.getId();
-            synchronized (lang2IndexPages) {
-                for (Long ipid : lang2IndexPages.values()) {
-                    if (ipid.equals(pid)) {  //this is the index page, keep it in the cache!
-                        return false;
-                    }
+            // Index pages not evicted from cache
+            synchronized (lvh2IndexPages) {
+                if (indexPage2FirstLang.containsKey(pid)) {
+                    return false;
                 }
             }
             synchronized (pagesCache) {
@@ -1355,17 +1350,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     public void onAsmRemoved(AsmRemovedEvent ev) {
         Long pid = ev.getId();
         clearCachedPage(pid);
-        boolean isIndex = false;
-        synchronized (lang2IndexPages) {
-            String[] lngs = lang2IndexPages.keySet().toArray(new String[lang2IndexPages.size()]);
-            for (final String l : lngs) {
-                if (pid.equals(lang2IndexPages.get(l))) {
-                    isIndex = true;
-                    break;
-                }
-            }
-        }
-        if (isIndex) {
+        if (removeFromIndexPages(pid)) {
             reloadIndexPages();
         }
     }
@@ -1572,45 +1557,77 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
-    @Override
-    public CachedPage getIndexPage(HttpServletRequest req, boolean requirePublished) {
-        Locale locale = messages.getLocale(req);
-        Long pid;
-        synchronized (lang2IndexPages) {
-            pid = lang2IndexPages.get(locale.getLanguage());
-            if (pid == null) {
-                if (!locale.equals(Locale.getDefault())) {
-                    pid = lang2IndexPages.get(Locale.getDefault().getLanguage());
-                }
-                if (pid == null) {
-                    pid = lang2IndexPages.get("*");
+    private boolean removeFromIndexPages(Long pid) {
+        if (pid == null) {
+            return false;
+        }
+        boolean ret = false;
+        synchronized (lvh2IndexPages) {
+            if (indexPage2FirstLang.containsKey(pid)) {
+                ret = true;
+                indexPage2FirstLang.remove(pid);
+                indexPage2SecondLang.remove(pid);
+                List<String> vhosts = new ArrayList<>(10);
+                for (Map<String, Long> ve : lvh2IndexPages.values()) {
+                    for (Map.Entry<String, Long> e : ve.entrySet()) {
+                        if (pid.equals(e.getValue())) {
+                            vhosts.add(e.getKey());
+                        }
+                    }
+                    for (String vh : vhosts) {
+                        ve.remove(vh);
+                    }
                 }
             }
+        }
+        return ret;
+    }
+
+    private Long getVHostPage(String rhost, Map<String, Long> vh2i) {
+        Long pid = vh2i.get(rhost);
+        if (pid == null) {
+            pid = vh2i.get("*");
+        }
+        return pid;
+    }
+
+    @Override
+    public CachedPage getIndexPage(HttpServletRequest req, boolean requirePublished) {
+
+        Long pid = null;
+        Locale locale = messages.getLocale(req);
+        String rlang = locale.getLanguage();
+        String rhost = req.getServerName();
+
+        synchronized (lvh2IndexPages) {
+            //noinspection LoopStatementThatDoesntLoop
+            do {
+                Map<String, Long> vh2i = lvh2IndexPages.get(rlang);
+                if (vh2i == null) {
+                    vh2i = lvh2IndexPages.get("*");
+                }
+                if (vh2i != null) {
+                    pid = getVHostPage(rhost, vh2i);
+                    if (pid != null) {
+                        break;
+                    }
+                }
+                for (Map<String, Long> vh2i2 : lvh2IndexPages.values()) {
+                    pid = getVHostPage(rhost, vh2i2);
+                    if (pid != null) {
+                        break;
+                    }
+                }
+            } while (false);
         }
         if (pid == null) {
             return null;
         }
         CachedPage p = getCachedPage(pid, true);
         if (p == null) {
-            synchronized (lang2IndexPages) {
-                String[] lngs = lang2IndexPages.keySet().toArray(new String[lang2IndexPages.size()]);
-                for (final String l : lngs) {
-                    Long id = lang2IndexPages.get(l);
-                    if (pid.equals(id)) {
-                        lang2IndexPages.remove(l);
-                    }
-                }
-            }
+            removeFromIndexPages(pid);
         } else if (requirePublished && !p.isPublished()) {
-            synchronized (lang2IndexPages) {
-                pid = lang2IndexPages.get("*");
-            }
-            if (pid != null) {
-                p = getCachedPage(pid, true);
-            }
-            if (p != null && !p.isPublished()) {
-                p = null;
-            }
+            p = null;
         }
         return p;
     }
@@ -1618,38 +1635,37 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Override
     @Nullable
     public String getIndexPageLanguage(HttpServletRequest req) {
-        Long pid;
-        Locale locale = messages.getLocale(req);
-        synchronized (lang2IndexPages) {
-            pid = lang2IndexPages.get(locale.getLanguage());
-        }
-        if (pid != null) {
-            return locale.getLanguage();
-        }
-        synchronized (lang2IndexPages) {
-            pid = lang2IndexPages.get("*");
-            if (pid != null) {
-                for (Map.Entry<String, Long> e : lang2IndexPages.entrySet()) {
-                    if (pid.equals(e.getValue()) && !"*".equals(e.getKey())) {
-                        return e.getKey();
-                    }
-                }
+        String lang = null;
+        CachedPage p = getIndexPage(req, false);
+        if (p != null) {
+            lang = indexPage2FirstLang.get(p.getId());
+            if (lang == null) {
+                lang = indexPage2SecondLang.get(p.getId());
             }
         }
-        return null;
+        return (lang == null) ? messages.getLocale(req).getLanguage() : lang;
     }
 
     @Transactional
     public void reloadIndexPages() {
+
+        // Map<String, Map<String, Long>> lvh2IndexPages; // Star `*` included in this collection
+        // Map<Long, String> indexPage2FirstLang; // Star `*` lang is used as `null` in this collection
+
         List<Map<String, Object>> ipages =
                 select("selectAttrOptions",
                        "attrType", "mainpage",
                        "pageType", "page%");
-        synchronized (lang2IndexPages) {
-            lang2IndexPages.clear();
+
+        synchronized (lvh2IndexPages) {
+
+            lvh2IndexPages.clear();
+            indexPage2FirstLang.clear();
+            indexPage2SecondLang.clear();
+
             for (Map row : ipages) {
-                Long id = NumberUtils.number2Long((Number) row.get("id"), -1L);
-                if (id == -1L) {
+                Long pid = NumberUtils.number2Long((Number) row.get("id"), -1L);
+                if (pid == -1L) {
                     continue;
                 }
                 KVOptions options = new KVOptions();
@@ -1657,26 +1673,44 @@ public class PageRS extends MBDAOSupport implements PageService {
                 if (!"true".equals(options.get("enabled"))) {
                     continue;
                 }
-                CachedPage cp = getCachedPage(id, true);
+                CachedPage cp = getCachedPage(pid, true);
                 if (cp == null) {
                     continue;
                 }
                 String lp = ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/");
-                String langs = (String) options.get("lang");
-                String[] lcodes = langs != null ? ArrayUtils.split(langs, " ,;") : org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
-                for (String lang : lcodes) {
-                    log.info("Registering page: '{}' as the MAIN PAGE for lang: {}", lp, lang);
-                    lang2IndexPages.put(lang, id);
+                String ln = (String) options.get("lang");
+                if (StringUtils.isBlank(ln)) {
+                    ln = "*";
                 }
-                if (!lang2IndexPages.containsKey("*")) {
-                    String dpl = this.env.xcfg().getString("pages.default-page-language", Locale.getDefault().getLanguage());
-                    if (lang2IndexPages.containsKey(dpl)) {
-                        log.info("Registering page: '{}' as the MAIN PAGE for lang: *", lp);
-                        lang2IndexPages.put("*", lang2IndexPages.get(dpl));
+                String vh = (String) options.get("vhost");
+                if (StringUtils.isBlank(vh)) {
+                    vh = "*";
+                }
+                String[] lcodes = ArrayUtils.split(ln, " ,;");
+                String[] vhosts = ArrayUtils.split(vh, " ,;");
+
+                for (int i = 0, c = 0; i < lcodes.length; ++i) {
+                    String lc = lcodes[i].trim();
+                    if (lc.isEmpty()) continue;
+                    if (c++ == 0) {
+                        indexPage2FirstLang.put(pid, "*".equals(lc) ? null : lc);
+                    } else if (c == 1 && !"*".equals(lc)) {
+                        indexPage2SecondLang.put(pid, lc);
+                    }
+                    for (int j = 0; j < vhosts.length; ++j) {
+                        vh = vhosts[i].trim();
+                        if (vh.isEmpty()) continue;
+                        Map<String, Long> vh2i = lvh2IndexPages.get(lc);
+                        if (vh2i == null) {
+                            vh2i = new LinkedHashMap<>();
+                            lvh2IndexPages.put(lc, vh2i);
+                        }
+                        log.info("BIND MAIN PAGE lang:{} vhost:{} TO {}", lc, vh, lp);
+                        vh2i.put(vh, pid);
                     }
                 }
             }
-            if (lang2IndexPages.isEmpty()) {
+            if (indexPage2FirstLang.isEmpty()) {
                 log.warn("No main pages found!");
             }
         }

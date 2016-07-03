@@ -67,11 +67,13 @@ public class AsmMainPageAM implements AsmAttributeManager {
 
     @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         AsmOptions old = new AsmOptions(attr.getOptions());
         AsmOptions opts = new AsmOptions();
-        JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "enabled");
+        JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "enabled", "vhost");
         attr.setOptions(opts.toString());
         if (!Objects.equals(old.get("lang"), opts.get("lang")) ||
+            !Objects.equals(old.get("vhost"), opts.get("vhost")) ||
             !Objects.equals(old.get("enabled"), opts.get("enabled"))) {
             ctx.setUserData("reload", Boolean.TRUE);
         }
