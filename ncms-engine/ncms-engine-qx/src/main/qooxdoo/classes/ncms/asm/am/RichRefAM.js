@@ -45,7 +45,7 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
 
             el = new qx.ui.form.CheckBox();
             el.setValue(opts["allowDescription"] === "true");
-            form.add(el, this.tr("Description"), null, "allowDescription", null, {flex: 1});
+            form.add(el, this.tr("Extra"), null, "allowDescription", null, {flex: 1});
 
             el = new qx.ui.form.CheckBox();
             el.setValue(opts["optionalLinks"] === "true");

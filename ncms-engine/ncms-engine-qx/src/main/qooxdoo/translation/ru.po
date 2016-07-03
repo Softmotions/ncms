@@ -96,9 +96,8 @@ msgstr "Отмена"
 msgid "Select assembly attribute type"
 msgstr "Выбор типа атрибута"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:114 ncms/asm/AsmEditor.js:103
-#: ncms/mmgr/MediaFileEditor.js:48 ncms/asm/AsmTable.js:21
-#: ncms/asm/am/RichRefAM.js:48 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
+#: ncms/asm/AsmEditor.js:103 ncms/mmgr/MediaFileEditor.js:48
+#: ncms/asm/AsmTable.js:21 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
 #: ncms/mmgr/MediaFilesTable.js:13 ncms/usr/UserRolesTable.js:159
 msgid "Description"
 msgstr "Описание"
@@ -534,6 +533,10 @@ msgstr "Страницы"
 #: ncms/asm/am/TreeAM.js:49 ncms/asm/am/RichRefAM.js:40
 msgid "Files"
 msgstr "Файлы"
+
+#: ncms/asm/am/RichRefAMValueWidget.js:114 ncms/asm/am/RichRefAM.js:48
+msgid "Extra"
+msgstr "Дополнительно"
 
 #: ncms/asm/am/RichRefAM.js:52
 msgid "Optional links"

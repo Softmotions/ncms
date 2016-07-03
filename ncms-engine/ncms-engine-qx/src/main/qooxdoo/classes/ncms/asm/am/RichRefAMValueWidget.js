@@ -111,7 +111,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             el.setRequired(false);
             el.setMaxLength(1024); //todo
             el.addListener("input", this.__modified, this);
-            form.add(el, this.tr("Description"), null, "description");
+            form.add(el, this.tr("Extra"), null, "description");
         }
         var fr = new sm.ui.form.FlexFormRenderer(form);
         if (opts["allowDescription"] === "true") { // expand only description
