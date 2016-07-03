@@ -444,11 +444,11 @@ msgstr "Коды языка"
 
 #: ncms/asm/am/MainPageAM.js:44
 msgid "Comma separated virtual hosts"
-msgstr ""
+msgstr "Список виртуальных хостов через запятую"
 
 #: ncms/asm/am/MainPageAM.js:45
 msgid "Visrtual hosts"
-msgstr ""
+msgstr "Виртуальные хосты"
 
 #: ncms/asm/am/MainPageAM.js:51
 msgid "Enabled"
@@ -1016,7 +1016,7 @@ msgstr "Удалить страницу"
 
 #: ncms/pgs/PagesSelector.js:68
 msgid "Assemblies"
-msgstr ""
+msgstr "Сборки"
 
 #: ncms/pgs/PagesSelector.js:83
 msgid "Structure"
