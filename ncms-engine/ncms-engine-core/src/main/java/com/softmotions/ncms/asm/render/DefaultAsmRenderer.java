@@ -67,16 +67,14 @@ public class DefaultAsmRenderer implements AsmRenderer {
     public boolean isHasRenderableAsmAttribute(Asm asm, AsmRendererContext ctx, String name) {
         boolean ret = asm.isHasAttribute(name);
         if (!ret) {
+            CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest(), false);
+            if (indexPage != null && !asm.equals(indexPage.getAsm())) {
+                return indexPage.getAsm().isHasAttribute(name);
+            }
             if (asm.getNavParentId() != null) {
                 CachedPage p = pageService.getCachedPage(asm.getNavParentId(), true);
                 if (p != null) {
-                    ret = p.getAsm().isHasAttribute(name);
-                }
-            }
-            if (!ret) {
-                CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest(), false);
-                if (indexPage != null && !asm.equals(indexPage.getAsm())) {
-                    return indexPage.getAsm().isHasAttribute(name);
+                    return p.getAsm().isHasAttribute(name);
                 }
             }
         }
@@ -120,6 +118,12 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attributeName);
+        if (attr == null) {
+            CachedPage p = pageService.getIndexPage(ctx.getServletRequest(), false);
+            if (p != null && !asm.equals(p.getAsm())) {
+                return ctx.renderAttribute(p.getAsm(), attributeName, options);
+            }
+        }
         if (attr == null && asm.getNavParentId() != null) {
             CachedPage p = pageService.getCachedPage(asm.getNavParentId(), true);
             if (p != null && !asm.equals(p.getAsm())) {
@@ -127,14 +131,11 @@ public class DefaultAsmRenderer implements AsmRenderer {
             }
         }
         if (attr == null) {
-            CachedPage p = pageService.getIndexPage(ctx.getServletRequest(), false);
-            if (p != null && !asm.equals(p.getAsm())) {
-                return ctx.renderAttribute(p.getAsm(), attributeName, options);
-            }
             log.warn("Attribute: '{}' not found in assembly: '{}" + '\'',
                      attributeName, ctx.getRootAsm().getName());
             return null;
         }
+
         String type = attr.getType();
         if (type == null) {
             type = "*";
