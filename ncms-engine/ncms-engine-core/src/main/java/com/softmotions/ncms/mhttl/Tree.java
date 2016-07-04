@@ -176,7 +176,7 @@ public class Tree implements Iterable<Tree>, Serializable {
 
     public String toHtmlLink(Map<String, String> amap) {
         if (link == null) {
-            return null;
+            return richRef != null ? richRef.toHtmlLink(amap) : null;
         }
         if (name == null) {
             name = link;
