@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,6 +167,31 @@ public class Tree implements Iterable<Tree>, Serializable {
             attributes = new HashMap<>();
         }
         attributes.put(name, val);
+    }
+
+
+    public String toHtmlLink() {
+        return toHtmlLink(null);
+    }
+
+    public String toHtmlLink(Map<String, String> amap) {
+        if (link == null) {
+            return null;
+        }
+        if (name == null) {
+            name = link;
+        }
+        StringBuilder attrs = null;
+        if (amap != null && !amap.isEmpty()) {
+            attrs = new StringBuilder();
+            for (Map.Entry<String, String> e : amap.entrySet()) {
+                attrs.append(' ').append(e.getKey()).append('=').append(e.getValue());
+            }
+        }
+        return String.format("<a href=\"%s\"%s>%s</a>",
+                             link,
+                             attrs != null ? attrs : "",
+                             StringEscapeUtils.escapeHtml4(name));
     }
 
 

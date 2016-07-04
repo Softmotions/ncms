@@ -92,11 +92,11 @@ public class RichRef {
         this.style3 = style3;
     }
 
-    public String toHtml() {
-        return toHtml(null);
+    public String toHtmlLink() {
+        return toHtmlLink(null);
     }
 
-    public String toHtml(Map<String, String> amap) {
+    public String toHtmlLink(Map<String, String> amap) {
         if (link == null) {
             return null;
         }

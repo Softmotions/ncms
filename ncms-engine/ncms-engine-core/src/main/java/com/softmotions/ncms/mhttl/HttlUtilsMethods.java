@@ -159,13 +159,16 @@ public class HttlUtilsMethods {
             return null;
         }
         //noinspection ChainOfInstanceofChecks
+        if (ref instanceof Tree) {
+            return ((Tree) ref).toHtmlLink(attrs);
+        }
         if (ref instanceof String) {
             ref = new RichRef((String) ref, AsmRendererContext.getSafe().getPageService());
         }
         if (!(ref instanceof RichRef)) {
             return null;
         }
-        return ((RichRef) ref).toHtml(attrs);
+        return ((RichRef) ref).toHtmlLink(attrs);
     }
 
     public static String siteFile(Object path) {
