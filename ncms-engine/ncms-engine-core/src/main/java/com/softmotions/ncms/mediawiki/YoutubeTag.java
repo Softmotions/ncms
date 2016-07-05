@@ -34,12 +34,14 @@ public class YoutubeTag extends HTMLTag implements INoBodyParsingTag {
         super("div");
     }
 
+    @Override
     public boolean isAllowedAttribute(String attName) {
         return "width".equalsIgnoreCase(attName) ||
                "height".equalsIgnoreCase(attName) ||
                "videoId".equalsIgnoreCase(attName);
     }
 
+    @Override
     public void renderHTML(ITextConverter converter, Appendable buf, IWikiModel model) throws IOException {
         Map<String, String> attrs = this.getAttributes();
         String videoId = attrs.get("videoid");

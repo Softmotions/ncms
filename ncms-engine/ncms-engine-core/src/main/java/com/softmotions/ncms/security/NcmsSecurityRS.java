@@ -12,7 +12,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.internal.constraintvalidators.EmailValidator;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,8 +182,7 @@ public class NcmsSecurityRS {
     public JsonNode createGroup(@PathParam("name") String name,
                                 @QueryParam("description") String description) {
         if (log.isDebugEnabled()) {
-            log.debug("createGroup: creategroup/{" + name + "}?description="
-                      + description);
+            log.debug("createGroup: creategroup/{{}}?description={}", name, description);
         }
         assertion(name != null, "Parameter 'name' of group can not be empty");
         WSGroup group = userDatabase.createGroup(name, description);
@@ -207,7 +206,7 @@ public class NcmsSecurityRS {
     public JsonNode createRole(@PathParam("name") String name,
                                @QueryParam("description") String description) {
         if (log.isDebugEnabled()) {
-            log.debug("createrole/{" + name + "}?description=" + description);
+            log.debug("createrole/{{}}?description={}", name, description);
         }
         assertion(name != null, "Parameter 'name' of role can not be empty");
         WSRole role = userDatabase.createRole(name, description);
@@ -236,7 +235,7 @@ public class NcmsSecurityRS {
                                @QueryParam("fullname") String fullName,
                                @QueryParam("email") String email) {
         if (log.isDebugEnabled()) {
-            log.debug("updateuser/{" + name + "}?password=" + password + "&fullName=" + fullName);
+            log.debug("updateuser/{{}}?password={}&fullName={}", name, password, fullName);
         }
         // if user already exists it will be returned
         WSUser user = userDatabase.createUser(name, password, fullName);
@@ -277,7 +276,7 @@ public class NcmsSecurityRS {
     @Path("group/{name}")
     public JsonNode findGroup(@PathParam("name") String name) {
         if (log.isDebugEnabled()) {
-            log.debug("findgroup/{" + name + "}");
+            log.debug("findgroup/{{}}", name);
         }
         WSGroup group = userDatabase.findGroup(name);
         ObjectNode res = null;
@@ -306,7 +305,7 @@ public class NcmsSecurityRS {
     @Path("role/{name}")
     public JsonNode findRole(@PathParam("name") String name) {
         if (log.isDebugEnabled()) {
-            log.debug("findrole/{" + name + "}");
+            log.debug("findrole/{{}}", name);
         }
         WSRole role = userDatabase.findRole(name);
         ObjectNode res = null;
@@ -369,7 +368,7 @@ public class NcmsSecurityRS {
     @Path("group/{name}")
     public void removeGroup(@PathParam("name") String name) {
         if (log.isDebugEnabled()) {
-            log.debug("removegroup/{" + name + "}");
+            log.debug("removegroup/{{}}", name);
         }
         assertion(name != null, "Parameter 'name' of group can not be empty");
         WSGroup group = userDatabase.findGroup(name);
@@ -385,7 +384,7 @@ public class NcmsSecurityRS {
     @Path("role/{name}")
     public void removeRole(@PathParam("name") String name) {
         if (log.isDebugEnabled()) {
-            log.debug("removerole/{" + name + "}");
+            log.debug("removerole/{{}}", name);
         }
         assertion(name != null, "Parameter 'name' of role can not be empty");
         WSRole role = userDatabase.findRole(name);
@@ -401,7 +400,7 @@ public class NcmsSecurityRS {
     @Path("user/{name}")
     public void removeUser(@PathParam("name") String name) {
         if (log.isDebugEnabled()) {
-            log.debug("removeuser/{" + name + "}");
+            log.debug("removeuser/{{}}", name);
         }
         assertion(name != null, "Parameter 'name' of role can not be empty");
         WSUser user = userDatabase.findUser(name);

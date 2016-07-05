@@ -29,26 +29,32 @@ public final class MediaRSLocalRequest extends HttpServletRequestAdapter {
         return file;
     }
 
+    @Override
     public String getMethod() {
         return "PUT";
     }
 
+    @Override
     public String getRemoteUser() {
         return "system";
     }
 
+    @Override
     public boolean isUserInRole(String role) {
         return true;
     }
 
+    @Override
     public Principal getUserPrincipal() {
         return this::getRemoteUser;
     }
 
+    @Override
     public ServletContext getServletContext() {
         return env.getServletContext();
     }
 
+    @Override
     public String getCharacterEncoding() {
         return "UTF-8";
     }

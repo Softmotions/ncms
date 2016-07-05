@@ -57,7 +57,7 @@ public class ImageMeta implements Serializable {
 
     public void setOptionsWidth(Integer optionsWidth) {
         this.optionsWidth = optionsWidth;
-        if (optionsWidth != null && optionsWidth.intValue() < 1) {
+        if (optionsWidth != null && optionsWidth < 1) {
             this.optionsWidth = null;
         }
     }
@@ -68,7 +68,7 @@ public class ImageMeta implements Serializable {
 
     public void setOptionsHeight(Integer optionsHeight) {
         this.optionsHeight = optionsHeight;
-        if (optionsHeight != null && optionsHeight.intValue() < 1) {
+        if (optionsHeight != null && optionsHeight < 1) {
             this.optionsHeight = null;
         }
     }

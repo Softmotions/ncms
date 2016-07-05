@@ -10,6 +10,7 @@ import com.google.inject.Singleton;
  */
 public class AdmModule extends AbstractModule {
 
+    @Override
     protected void configure() {
         bind(WorkspaceRS.class).in(Singleton.class);
         bind(AdmUIResourcesRS.class).in(Singleton.class);

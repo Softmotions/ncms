@@ -9,6 +9,7 @@ import com.google.inject.Singleton;
  */
 public class RefDataStoreModule extends AbstractModule {
 
+    @Override
     protected void configure() {
         bind(RefDataStore.class).in(Singleton.class);
     }

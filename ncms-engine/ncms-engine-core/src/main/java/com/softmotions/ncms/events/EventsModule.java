@@ -26,14 +26,15 @@ public class EventsModule extends AbstractModule {
 
     private static final NcmsSubscriberExceptionHandler EX_INSTANCE = new NcmsSubscriberExceptionHandler();
 
+    @Override
     protected void configure() {
         bind(NcmsEventBus.class).to(LocalEventBus.class).in(Singleton.class);
     }
 
     static class NcmsSubscriberExceptionHandler implements SubscriberExceptionHandler {
+        @Override
         public void handleException(Throwable ex, SubscriberExceptionContext ctx) {
-            log.error("Could not dispatch event: " + ctx.getSubscriber() +
-                      " to " + ctx.getSubscriberMethod(), ex);
+            log.error("Could not dispatch event: {} to {}", ctx.getSubscriber(), ctx.getSubscriberMethod(), ex);
         }
     }
 
@@ -41,6 +42,7 @@ public class EventsModule extends AbstractModule {
 
         final MBSqlSessionManager sessionManager;
 
+        @Override
         public void fire(Object event) {
             post(event);
         }
@@ -52,40 +54,48 @@ public class EventsModule extends AbstractModule {
             this.sessionManager = sessionManager;
         }
 
+        @Override
         public void fireOnSuccessCommit(final Object event) {
             sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
+                @Override
                 public void commit(boolean success) {
                     if (success) {
                         fire(event);
                     }
                 }
 
+                @Override
                 public void close(boolean success) {
                     if (success) {
                         fire(event);
                     }
                 }
 
+                @Override
                 public void rollback() {
                 }
 
             });
         }
 
+        @Override
         public void fireOnRollback(final Object event) {
             sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
+                @Override
                 public void commit(boolean success) {
                     if (!success) {
                         fire(event);
                     }
                 }
 
+                @Override
                 public void close(boolean success) {
                     if (!success) {
                         fire(event);
                     }
                 }
 
+                @Override
                 public void rollback() {
                     fire(event);
                 }

@@ -7,6 +7,7 @@ import com.softmotions.ncms.asm.Asm;
  */
 public class PageNotFoundQAPlugin implements PageQAPlugin {
 
+    @Override
     public void checkPage(Asm page, PageQAContext ctx) throws Exception {
 
 

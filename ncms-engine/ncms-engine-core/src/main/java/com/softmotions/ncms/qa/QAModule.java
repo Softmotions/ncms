@@ -16,6 +16,7 @@ public class QAModule extends AbstractModule {
         this.env = env;
     }
 
+    @Override
     protected void configure() {
         Multibinder<PageQAPlugin> qaBinder =
                 Multibinder.newSetBinder(binder(), PageQAPlugin.class);

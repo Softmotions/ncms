@@ -25,12 +25,14 @@ public class VimeoTag extends HTMLTag implements INoBodyParsingTag {
         super("div");
     }
 
+    @Override
     public boolean isAllowedAttribute(String attName) {
         return "code".equalsIgnoreCase(attName) ||
                "width".equalsIgnoreCase(attName) ||
                "height".equalsIgnoreCase(attName);
     }
 
+    @Override
     public void renderHTML(ITextConverter converter, Appendable buf, IWikiModel model) throws IOException {
         Map<String, String> attrs = this.getAttributes();
 

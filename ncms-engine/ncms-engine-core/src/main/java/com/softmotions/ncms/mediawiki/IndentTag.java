@@ -13,6 +13,7 @@ public class IndentTag extends HTMLTag implements INoBodyParsingTag {
         super("ind");
     }
 
+    @Override
     public void renderHTML(ITextConverter textConverter, Appendable buf, IWikiModel wikiModel) throws IOException {
         buf.append("<span style=\"margin-left: 1.5em\"></span>");
     }

@@ -73,30 +73,37 @@ class MediaResourceImpl implements MediaResource, Serializable {
 
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return path;
     }
 
+    @Override
     public String getContentType() {
         return contentType;
     }
 
+    @Override
     public long getLastModified() {
         return lastModified;
     }
 
+    @Override
     public String getEncoding() {
         return encoding;
     }
 
+    @Override
     public long getLength() {
         return length;
     }
 
+    @Override
     public String getSource() throws IOException {
         StringWriter sw = new StringWriter();
         try (Reader r = openReader()) {
@@ -105,6 +112,7 @@ class MediaResourceImpl implements MediaResource, Serializable {
         return sw.toString();
     }
 
+    @Override
     public Reader openReader() throws IOException {
         if (!CTypeUtils.isTextualContentType(getContentType())) {
             throw new IOException("Resource: " + getName() +
@@ -128,10 +136,12 @@ class MediaResourceImpl implements MediaResource, Serializable {
         return reader;
     }
 
+    @Override
     public Locale getLocale() {
         return locale;
     }
 
+    @Override
     public InputStream openStream() throws IOException {
         String spath = path;
         if (spath.charAt(0) == '/') {
@@ -149,26 +159,31 @@ class MediaResourceImpl implements MediaResource, Serializable {
     }
 
 
+    @Override
     public long writeTo(Writer out) throws IOException {
         try (final Reader r = openReader()) {
             return IOUtils.copyLarge(r, out);
         }
     }
 
+    @Override
     public long writeTo(OutputStream out) throws IOException {
         try (final InputStream is = openStream()) {
             return IOUtils.copyLarge(is, out);
         }
     }
 
+    @Override
     public int getImageWidth() {
         return (meta != null) ? meta.getInt("width", -1) : -1;
     }
 
+    @Override
     public int getImageHeight() {
         return (meta != null) ? meta.getInt("height", -1) : -1;
     }
 
+    @Override
     public String getDescription() {
         return description;
     }
@@ -182,6 +197,7 @@ class MediaResourceImpl implements MediaResource, Serializable {
             this.lock = lock;
         }
 
+        @Override
         public void close() throws IOException {
             try {
                 super.close();

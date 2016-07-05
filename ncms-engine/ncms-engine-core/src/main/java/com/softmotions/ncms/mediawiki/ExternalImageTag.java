@@ -24,6 +24,7 @@ public class ExternalImageTag extends HTMLTag implements INoBodyParsingTag {
         super("div");
     }
 
+    @Override
     public boolean isAllowedAttribute(String attName) {
         return "src".equalsIgnoreCase(attName) ||
                "href".equalsIgnoreCase(attName) ||
@@ -31,6 +32,7 @@ public class ExternalImageTag extends HTMLTag implements INoBodyParsingTag {
                "height".equalsIgnoreCase(attName);
     }
 
+    @Override
     public void renderHTML(ITextConverter textConverter, Appendable buffer, IWikiModel wikiModel) throws IOException {
         Map<String, String> attrs = getAttributes();
 

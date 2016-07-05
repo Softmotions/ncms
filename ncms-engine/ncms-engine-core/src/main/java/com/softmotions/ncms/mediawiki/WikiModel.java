@@ -27,11 +27,13 @@ public class WikiModel extends info.bliki.wiki.model.WikiModel {
     private ResourceBundle bundle;
 
 
+    @Override
     protected void setDefaultThumbWidth(ImageFormat imageFormat) {
         //noop
     }
 
 
+    @Override
     public ResourceBundle getResourceBundle() {
         if (bundle != null) {
             return bundle;

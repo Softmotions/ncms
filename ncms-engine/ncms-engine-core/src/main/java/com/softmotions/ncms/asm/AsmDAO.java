@@ -505,6 +505,7 @@ public class AsmDAO extends MBDAOSupport {
             super(dao, namespace);
         }
 
+        @Override
         public AsmCriteria onAsm() {
             prefixedBy(null);
             return this;
@@ -572,6 +573,7 @@ public class AsmDAO extends MBDAOSupport {
             return withParam("templates", templates);
         }
 
+        @Override
         public PageCriteria finish() {
             withParam("attrs", attrs);
             if (!containsKey("attrsExclude")) {
@@ -583,6 +585,7 @@ public class AsmDAO extends MBDAOSupport {
             return super.finish();
         }
 
+        @Override
         public PageCriteria onAsm() {
             return prefixedBy("asm.");
         }

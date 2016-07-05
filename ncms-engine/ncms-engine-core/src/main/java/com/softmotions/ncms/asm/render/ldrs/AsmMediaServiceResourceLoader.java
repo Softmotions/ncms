@@ -24,11 +24,13 @@ public class AsmMediaServiceResourceLoader implements AsmResourceLoader {
         this.reader = reader;
     }
 
+    @Override
     public boolean exists(String name, Locale locale) {
         MediaResource res = reader.findMediaResource(name, locale);
         return (res != null);
     }
 
+    @Override
     public MediaResource load(String name, Locale locale) throws IOException {
         return reader.findMediaResource(name, locale);
     }

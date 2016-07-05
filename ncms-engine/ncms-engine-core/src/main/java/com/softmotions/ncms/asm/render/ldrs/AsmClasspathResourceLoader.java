@@ -21,10 +21,12 @@ public class AsmClasspathResourceLoader implements AsmResourceLoader {
         this.loader = new ClasspathLoader();
     }
 
+    @Override
     public boolean exists(String name, Locale locale) {
         return loader.exists(name, locale);
     }
 
+    @Override
     public MediaResource load(String name, Locale locale) throws IOException {
         return new HttlMediaResourceAdapter(loader.load(name, locale, null));
     }

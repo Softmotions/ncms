@@ -48,6 +48,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         super("div");
     }
 
+    @Override
     public boolean isAllowedAttribute(String attrName) {
         return "open".equalsIgnoreCase(attrName) || "style".equalsIgnoreCase(attrName);
     }
@@ -110,7 +111,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
                             labelNode = (TextNode) parent.childs.get(parent.childs.size() - 1);
                             parent.childs.remove(parent.childs.size() - 1);
                         } else {
-                            log.warn("Invalid markup at: " + line);
+                            log.warn("Invalid markup at: {}", line);
                             continue;
                         }
 
@@ -122,7 +123,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
                         try {
                             nstack.pop();
                         } catch (EmptyStackException e) {
-                            log.warn("Got empty stack, on: " + body);
+                            log.warn("Got empty stack, on: {}", body);
                         }
                     }
                 }

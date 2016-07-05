@@ -36,6 +36,7 @@ public class BrowserFilter implements Filter {
     private String[] excludePrefixes;
     private String redirectUri;
 
+    @Override
     public void init(FilterConfig cfg) throws ServletException {
         minTrident = Float.valueOf(cfg.getInitParameter("min-trident"));
         redirectUri = cfg.getInitParameter("redirect-uri");
@@ -51,6 +52,7 @@ public class BrowserFilter implements Filter {
         log.info("Exclude prefixes: {}", Arrays.asList(excludePrefixes));
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
@@ -85,6 +87,7 @@ public class BrowserFilter implements Filter {
         chain.doFilter(request, response);
     }
 
+    @Override
     public void destroy() {
 
     }

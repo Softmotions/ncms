@@ -10,6 +10,7 @@ import com.google.inject.Singleton;
  */
 public class UserModule extends AbstractModule {
 
+    @Override
     protected void configure() {
         bind(UserEnvRS.class).in(Singleton.class);
     }

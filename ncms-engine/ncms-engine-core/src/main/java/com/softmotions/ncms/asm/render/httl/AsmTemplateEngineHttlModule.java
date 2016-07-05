@@ -9,6 +9,7 @@ import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
  */
 public class AsmTemplateEngineHttlModule extends AbstractModule {
 
+    @Override
     protected void configure() {
         Multibinder<AsmTemplateEngineAdapter> teBinder =
                 Multibinder.newSetBinder(binder(), AsmTemplateEngineAdapter.class);

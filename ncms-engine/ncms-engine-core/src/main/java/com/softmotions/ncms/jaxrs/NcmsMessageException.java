@@ -54,7 +54,7 @@ public class NcmsMessageException extends RuntimeException {
     public List<String> getErrorMessages() {
         List<String> msgs = new ArrayList<>(messages.size());
         for (Pair<String, Boolean> p : messages) {
-            if (p.getTwo().booleanValue()) {
+            if (p.getTwo()) {
                 msgs.add(p.getOne());
             }
         }
@@ -64,7 +64,7 @@ public class NcmsMessageException extends RuntimeException {
     public List<String> getRegularMessages() {
         List<String> msgs = new ArrayList<>(messages.size());
         for (Pair<String, Boolean> p : messages) {
-            if (!p.getTwo().booleanValue()) {
+            if (!p.getTwo()) {
                 msgs.add(p.getOne());
             }
         }

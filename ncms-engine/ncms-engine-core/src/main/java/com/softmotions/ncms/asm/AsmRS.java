@@ -23,8 +23,6 @@ import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.session.ResultContext;
-import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
@@ -367,7 +365,7 @@ public class AsmRS extends MBDAOSupport {
         delete("deleteAttribute",
                "name", name,
                "asm_id", asmId);
-        if (recursive != null && recursive.booleanValue()) {
+        if (recursive != null && recursive) {
             deleteAttributeFromChilds(asmId, name);
         }
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, asmId));
@@ -519,33 +517,31 @@ public class AsmRS extends MBDAOSupport {
         return Response.ok((StreamingOutput) output -> {
             final JsonGenerator gen = new JsonFactory().createGenerator(output);
             gen.writeStartArray();
-            selectByCriteria(createQ(req), new ResultHandler() {
-                public void handleResult(ResultContext context) {
-                    Map<String, Object> row = (Map<String, Object>) context.getResultObject();
-                    try {
-                        gen.writeStartObject();
-                        int template = NumberUtils.number2Int((Number) row.get("template"), 0);
-                        String type = (String) row.get("type");
-                        if (template == 1) {
-                            gen.writeStringField("icon", "ncms/icon/16/asm/template.png");
-                        } else if ("news.page".equals(type)) {
-                            gen.writeStringField("icon", "ncms/icon/16/asm/news.png");
-                        } else if (!StringUtils.isBlank(type)) {
-                            gen.writeStringField("icon", "ncms/icon/16/asm/page.png");
-                        } else {
-                            gen.writeStringField("icon", "ncms/icon/16/asm/other.png");
-                        }
-                        gen.writeNumberField("id", ((Number) row.get("id")).longValue());
-                        gen.writeStringField("name", (String) row.get("name"));
-                        gen.writeStringField("hname", (String) row.get("hname"));
-                        gen.writeStringField("description", (String) row.get("description"));
-                        gen.writeStringField("type", (String) row.get("type"));
-                        gen.writeNumberField("published", NumberUtils.number2Int((Number) row.get("published"), 0));
-                        gen.writeNumberField("template", template);
-                        gen.writeEndObject();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+            selectByCriteria(createQ(req), context -> {
+                Map<String, Object> row = (Map<String, Object>) context.getResultObject();
+                try {
+                    gen.writeStartObject();
+                    int template = NumberUtils.number2Int((Number) row.get("template"), 0);
+                    String type = (String) row.get("type");
+                    if (template == 1) {
+                        gen.writeStringField("icon", "ncms/icon/16/asm/template.png");
+                    } else if ("news.page".equals(type)) {
+                        gen.writeStringField("icon", "ncms/icon/16/asm/news.png");
+                    } else if (!StringUtils.isBlank(type)) {
+                        gen.writeStringField("icon", "ncms/icon/16/asm/page.png");
+                    } else {
+                        gen.writeStringField("icon", "ncms/icon/16/asm/other.png");
                     }
+                    gen.writeNumberField("id", ((Number) row.get("id")).longValue());
+                    gen.writeStringField("name", (String) row.get("name"));
+                    gen.writeStringField("hname", (String) row.get("hname"));
+                    gen.writeStringField("description", (String) row.get("description"));
+                    gen.writeStringField("type", (String) row.get("type"));
+                    gen.writeNumberField("published", NumberUtils.number2Int((Number) row.get("published"), 0));
+                    gen.writeNumberField("template", template);
+                    gen.writeEndObject();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }, "select");
             gen.writeEndArray();

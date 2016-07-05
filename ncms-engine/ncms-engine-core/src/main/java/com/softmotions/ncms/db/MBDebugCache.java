@@ -21,39 +21,46 @@ public class MBDebugCache implements Cache {
     private Map<Object, Object> cache = new HashMap<Object, Object>();
 
     public MBDebugCache(String id) {
-        log.info("NEW CACHE ID=" + id);
+        log.info("NEW CACHE ID={}", id);
         this.id = id;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public int getSize() {
         return cache.size();
     }
 
+    @Override
     public void putObject(Object key, Object value) {
-        log.info("PUT key=" + key + ", val=" + value);
+        log.info("PUT key={}, val={}", key, value);
         cache.put(key, value);
     }
 
+    @Override
     public Object getObject(Object key) {
         Object res = cache.get(key);
-        log.info("GET key=" + key + ", res=" + res);
+        log.info("GET key={}, res={}", key, res);
         return res;
     }
 
+    @Override
     public Object removeObject(Object key) {
-        log.info("REMOVE key=" + key);
+        log.info("REMOVE key={}", key);
         return cache.remove(key);
     }
 
+    @Override
     public void clear() {
         log.info("CACHE CLEAR");
         cache.clear();
     }
 
+    @Override
     public ReadWriteLock getReadWriteLock() {
         return null;
     }

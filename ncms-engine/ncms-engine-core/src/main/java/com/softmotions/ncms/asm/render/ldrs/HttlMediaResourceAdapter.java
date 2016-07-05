@@ -25,34 +25,42 @@ public final class HttlMediaResourceAdapter implements MediaResource {
         this.res = res;
     }
 
+    @Override
     public Long getId() {
         return null;
     }
 
+    @Override
     public String getName() {
         return res.getName();
     }
 
+    @Override
     public String getEncoding() {
         return res.getEncoding();
     }
 
+    @Override
     public Locale getLocale() {
         return res.getLocale();
     }
 
+    @Override
     public long getLastModified() {
         return res.getLastModified();
     }
 
+    @Override
     public long getLength() {
         return res.getLength();
     }
 
+    @Override
     public String getContentType() {
         return "text/plain";
     }
 
+    @Override
     public String getSource() throws IOException {
         try {
             return IOUtils.readToString(openReader());
@@ -65,34 +73,41 @@ public final class HttlMediaResourceAdapter implements MediaResource {
         }
     }
 
+    @Override
     public Reader openReader() throws IOException {
         return res.openReader();
     }
 
+    @Override
     public InputStream openStream() throws IOException {
         return res.openStream();
     }
 
+    @Override
     public long writeTo(Writer out) throws IOException {
         try (final Reader r = openReader()) {
             return org.apache.commons.io.IOUtils.copyLarge(r, out);
         }
     }
 
+    @Override
     public long writeTo(OutputStream out) throws IOException {
         try (final InputStream is = openStream()) {
             return org.apache.commons.io.IOUtils.copyLarge(is, out);
         }
     }
 
+    @Override
     public String getDescription() {
         return null;
     }
 
+    @Override
     public int getImageWidth() {
         return -1;
     }
 
+    @Override
     public int getImageHeight() {
         return -1;
     }

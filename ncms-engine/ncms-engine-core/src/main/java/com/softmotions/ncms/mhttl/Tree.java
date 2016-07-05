@@ -137,6 +137,7 @@ public class Tree implements Iterable<Tree>, Serializable {
         this.children = children;
     }
 
+    @Override
     @Nonnull
     public Iterator<Tree> iterator() {
         if (children == null) {

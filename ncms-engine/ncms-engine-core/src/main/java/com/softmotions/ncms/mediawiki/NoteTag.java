@@ -23,10 +23,12 @@ public class NoteTag extends HTMLTag implements INoBodyParsingTag {
         super("div");
     }
 
+    @Override
     public boolean isAllowedAttribute(String attName) {
         return "style".equalsIgnoreCase(attName);
     }
 
+    @Override
     public void renderHTML(ITextConverter converter, Appendable buf, IWikiModel model) throws IOException {
         Map<String, String> attrs = getAttributes();
         String body = this.getBodyString();

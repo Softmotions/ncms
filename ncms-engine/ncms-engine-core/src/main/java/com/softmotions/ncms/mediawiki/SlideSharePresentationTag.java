@@ -32,6 +32,7 @@ public class SlideSharePresentationTag extends HTMLTag implements INoBodyParsing
                "height".equalsIgnoreCase(attName);
     }
 
+    @Override
     public void renderHTML(ITextConverter textConverter, Appendable buffer, IWikiModel wikiModel) throws IOException {
         Map<String, String> tagAttributes = getAttributes();
 

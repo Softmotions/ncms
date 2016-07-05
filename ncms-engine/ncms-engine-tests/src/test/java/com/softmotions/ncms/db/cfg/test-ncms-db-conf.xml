@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <app-name>NCMSTEST</app-name>
+    <environment>test</environment>
+    <logging-ref>logging.xml</logging-ref>
+    <messages>
+        <bundle>com.softmotions.ncms.Messages</bundle>
+    </messages>
+
+    <liquibase>
+        <changelog>com/softmotions/ncms/db/changelog/db-changelog-master.xml</changelog>
+        <update>
+            <dropAll/>
+            <contexts>testing</contexts>
+        </update>
+    </liquibase>
+
+    <mybatis>
+        <bindDatasource>true</bindDatasource>
+        <config>com/softmotions/ncms/db/mybatis-config.xml</config>
+        <propsFile>{home}/.ncms-test.ds</propsFile>
+        <extra-properties>
+            JDBC.driver=com.ibm.db2.jcc.DB2Driver
+        </extra-properties>
+    </mybatis>
+
+</configuration>

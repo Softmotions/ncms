@@ -53,12 +53,13 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
         return "";
     }
 
+    @Override
     public Response toResponse(Exception ex) {
 
         Response.ResponseBuilder rb;
 
         if (ex instanceof NotFoundException) {
-            log.warn("HTTP 404: " + ex.getMessage());
+            log.warn("HTTP 404: {}", ex.getMessage());
             rb = Response.status(Response.Status.NOT_FOUND)
                          .type(MediaType.TEXT_PLAIN_TYPE)
                          .entity(ex.getMessage());

@@ -1815,6 +1815,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
         }
 
+        @Override
         public void close() throws IOException {
             try {
                 releaseChild();
@@ -2268,6 +2269,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         } else {
             try (DirectoryScanner ds = sf.createScanner()) {
                 ds.scan(new DirectoryScannerVisitor() {
+                    @Override
                     public void visit(Path path, BasicFileAttributes basicFileAttributes) throws IOException {
                         importFile(sf.getBasedir().resolve(path).toString(),
                                    Paths.get(importTarget).resolve(path).toString(),

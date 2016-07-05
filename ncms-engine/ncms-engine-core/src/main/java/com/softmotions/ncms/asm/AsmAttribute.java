@@ -224,6 +224,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         return attr;
     }
 
+    @Override
     public int compareTo(AsmAttribute o) {
         if (o == null) {
             return 1;
