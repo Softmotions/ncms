@@ -305,6 +305,7 @@ public class AsmDAO extends MBDAOSupport {
      * @return Number of updated rows
      */
     public int asmRemove(Long asmId) {
+        asmRemoveAllParents(asmId);
         return sess.delete("asmRemove", asmId);
     }
 

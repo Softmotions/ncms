@@ -7,10 +7,10 @@
 
     <select id="selectPageInfoIN" resultType="map" parameterType="map">
         SELECT
-        p.id AS "id",
-        p.name AS "guid",
-        p.hname AS "name"
-        FROM ASMS AS p
+        p.id        AS "id",
+        p.name      AS "guid",
+        p.hname     AS "name"
+        FROM ASMS   AS p
         WHERE p.id IN
         <foreach item="id" index="index" collection="ids"
                  open="(" separator="," close=")">
@@ -174,12 +174,6 @@
         SET hname = #{hname}, type = #{type}, muser = #{muser}, description = #{description}
         WHERE id = #{id}
     </update>
-
-    <delete id="dropPage" parameterType="map">
-        DELETE
-        FROM ASMS
-        WHERE id = #{id}
-    </delete>
 
     <update id="movePage" parameterType="map">
         UPDATE ASMS

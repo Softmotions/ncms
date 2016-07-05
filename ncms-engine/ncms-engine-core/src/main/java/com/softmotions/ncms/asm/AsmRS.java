@@ -179,7 +179,6 @@ public class AsmRS extends MBDAOSupport {
         }
         res.putPOJO("core", asm.getCore());
         res.putPOJO("effectiveCore", asm.getEffectiveCore());
-
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return res;
     }

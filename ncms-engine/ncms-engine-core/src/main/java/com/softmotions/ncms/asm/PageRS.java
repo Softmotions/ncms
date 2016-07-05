@@ -790,6 +790,9 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (!pageSecurity.checkAccessAll2(page, req, "d")) {
             throw new ForbiddenException("");
         }
+        if (adao.asmChildrenCount(id) > 0) {
+            throw new NcmsMessageException(messages.get("ncms.page.nodel.parent", req), true);
+        }
         if (count("selectNumberOfDirectChilds", id) > 0) {
             throw new NcmsMessageException(messages.get("ncms.page.nodel.children", req), true);
         }
@@ -797,7 +800,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             ret.put("error", "ncms.page.nodel.refs.found");
             return ret;
         }
-        delete("dropPage", "id", id);
+        adao.asmRemove(id);
         ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id));
         return ret;
     }
