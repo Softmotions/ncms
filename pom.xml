@@ -55,6 +55,12 @@
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <tomcat.version>8.5.0</tomcat.version>
         <httl.version>1.0.11-SNAPSHOT</httl.version>
+        <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
+        <imgscalr.version>4.2</imgscalr.version>
+        <google.inject.version>4.0</google.inject.version>
+        <samaxes.cachefilter.version>2.3.1</samaxes.cachefilter.version>
+        <pegdown.version>1.6.0</pegdown.version>
+        <bliki.version>3.1.01-SNAPSHOT</bliki.version>
         <jericho.version>3.4</jericho.version>
         <jetty.version>9.2.1.v20140609</jetty.version>
         <tika.version>1.12</tika.version>
@@ -303,32 +309,32 @@
             <dependency>
                 <groupId>info.bliki.wiki</groupId>
                 <artifactId>bliki-core</artifactId>
-                <version>3.1.01-SNAPSHOT</version>
+                <version>${bliki.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.pegdown</groupId>
                 <artifactId>pegdown</artifactId>
-                <version>1.6.0</version>
+                <version>${pegdown.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.imgscalr</groupId>
                 <artifactId>imgscalr-lib</artifactId>
-                <version>4.2</version>
+                <version>${imgscalr.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.2.4.Final</version>
+                <version>${hibernate.validator.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-assistedinject</artifactId>
-                <version>4.0</version>
+                <version>${google.inject.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.samaxes.filter</groupId>
                 <artifactId>cachefilter</artifactId>
-                <version>2.3.1</version>
+                <version>${samaxes.cachefilter.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.ibm</groupId>
