@@ -10,12 +10,26 @@ import com.google.inject.TypeLiteral;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.TinyParamMap;
+import com.softmotions.ncms.adm.AdmModule;
+import com.softmotions.ncms.asm.AsmModule;
 import com.softmotions.ncms.asm.render.AsmFilter;
+import com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule;
+import com.softmotions.ncms.events.EventsModule;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
 import com.softmotions.ncms.jaxrs.ResteasyUTF8CharsetFilter;
+import com.softmotions.ncms.media.MediaModule;
+import com.softmotions.ncms.mediawiki.MediaWikiModule;
+import com.softmotions.ncms.qa.QAModule;
+import com.softmotions.ncms.rds.RefDataStoreModule;
+import com.softmotions.ncms.security.NcmsSecurityModule;
+import com.softmotions.ncms.update.UpdateModule;
+import com.softmotions.ncms.user.UserModule;
 import com.softmotions.ncms.utils.BrowserFilter;
 import com.softmotions.weboot.WBServletModule;
 import com.softmotions.weboot.jaxrs.WBJaxrsModule;
+import com.softmotions.weboot.liquibase.WBLiquibaseModule;
+import com.softmotions.weboot.mb.WBMyBatisModule;
+import com.softmotions.weboot.scheduler.SchedulerModule;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -31,6 +45,20 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         initBrowserFilter(env);
         initJAXRS(env);
         initAsmFilter(env);
+        install(new WBMyBatisModule(env));
+        install(new WBLiquibaseModule(env));
+        install(new SchedulerModule(env));
+        install(new UpdateModule());
+        install(new EventsModule());
+        install(new NcmsSecurityModule());
+        install(new AsmModule());
+        install(new AsmTemplateEngineHttlModule());
+        install(new AdmModule());
+        install(new MediaModule());
+        install(new MediaWikiModule(env));
+        install(new UserModule());
+        install(new RefDataStoreModule());
+        install(new QAModule(env));
     }
 
     protected void initAsmFilter(NcmsEnvironment env) {

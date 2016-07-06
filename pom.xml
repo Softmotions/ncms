@@ -6,6 +6,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>ncms-engine</module>
+        <module>ncms-client-agent</module>
     </modules>
 
     <parent>
@@ -347,6 +348,11 @@
                 <artifactId>db2jcc_license_cu</artifactId>
                 <version>${db2.jdbc.version}</version>
                 <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.github.kevinsawicki</groupId>
+                <artifactId>http-request</artifactId>
+                <version>6.0</version>
             </dependency>
             <dependency>
                 <groupId>com.h2database</groupId>

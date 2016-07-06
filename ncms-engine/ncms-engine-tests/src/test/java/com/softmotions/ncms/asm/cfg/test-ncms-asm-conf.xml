@@ -26,4 +26,7 @@
         </extra-properties>
     </mybatis>
 
+    <modules>
+    </modules>
+
 </configuration>
