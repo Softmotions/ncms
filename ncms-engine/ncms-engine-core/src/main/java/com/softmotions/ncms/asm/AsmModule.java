@@ -72,8 +72,6 @@ public class AsmModule extends AbstractModule {
         bind(AsmDAO.class);
         bind(AsmRenderer.class).to(DefaultAsmRenderer.class);
 
-        //todo review registration
-        //bind(AsmTreeAM.class).in(Singleton.class);
         bind(AsmAttributeManagersRegistry.class).to(DefaultAsmAttributeManagersRegistry.class).in(Singleton.class);
         bind(PageSecurityService.class).in(Singleton.class);
         bind(PageService.class).to(PageRS.class);
