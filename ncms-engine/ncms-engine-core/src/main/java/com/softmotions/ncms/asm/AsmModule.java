@@ -64,6 +64,7 @@ public class AsmModule extends AbstractModule {
         attrBinder.addBinding().to(AsmAliasAM.class);
         attrBinder.addBinding().to(AsmCoreAM.class);
 
+
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);
         bind(AsmEventsListener.class).asEagerSingleton();
@@ -79,6 +80,9 @@ public class AsmModule extends AbstractModule {
 
         bind(AsmRS.class).in(Singleton.class);
         bind(PageRS.class).in(Singleton.class);
+
+        //Bind AsmTreeRS as standalone RS service
+        bind(AsmTreeAM.class).in(Singleton.class);
     }
 
 
