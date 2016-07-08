@@ -99,7 +99,6 @@ import com.softmotions.commons.io.watcher.FSWatcherModifyEvent;
 import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
 import com.softmotions.commons.lifecycle.Dispose;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
@@ -114,6 +113,7 @@ import com.softmotions.ncms.media.events.MediaUpdateEvent;
 import com.softmotions.web.ResponseUtils;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
@@ -149,7 +149,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     final ObjectMapper mapper;
 
-    final NcmsMessages message;
+    final I18n message;
 
     final NcmsEventBus ebus;
 
@@ -161,7 +161,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     public MediaRS(NcmsEnvironment env,
                    SqlSession sess,
                    ObjectMapper mapper,
-                   NcmsMessages message,
+                   I18n message,
                    NcmsEventBus ebus,
                    WSUserDatabase userdb) throws IOException {
         super(MediaRS.class, sess);

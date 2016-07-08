@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.inject.Inject;
-import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Handles Ncms REST API exceptions in friendly to qooxdoo GUI clients way.
@@ -33,10 +33,10 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
 
     public static final int MAX_MSG_LEN = 2048;
 
-    private final NcmsMessages messages;
+    private final I18n messages;
 
     @Inject
-    public NcmsRSExceptionHandler(NcmsMessages messages) {
+    public NcmsRSExceptionHandler(I18n messages) {
         this.messages = messages;
     }
 

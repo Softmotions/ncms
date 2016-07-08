@@ -19,8 +19,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.web.security.WSUser;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Accessible GUI resources configuration provider.
@@ -38,11 +38,11 @@ public class AdmUIResourcesRS {
 
     final ObjectMapper mapper;
 
-    final NcmsMessages msg;
+    final I18n msg;
 
 
     @Inject
-    public AdmUIResourcesRS(NcmsEnvironment env, ObjectMapper mapper, NcmsMessages msg) {
+    public AdmUIResourcesRS(NcmsEnvironment env, ObjectMapper mapper, I18n msg) {
         this.env = env;
         this.mapper = mapper;
         this.msg = msg;

@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageSecurityService;
@@ -32,6 +31,7 @@ import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.web.GenericResponseWrapper;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Asm handler.
@@ -51,7 +51,7 @@ public class AsmFilter implements Filter {
     private MediaRepository mediaRepository;
 
     @Inject
-    private NcmsMessages messages;
+    private I18n messages;
 
     @Inject
     private PageSecurityService pageSecurity;

@@ -40,7 +40,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.commons.num.NumberUtils;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
@@ -52,6 +51,7 @@ import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.web.security.WSUser;
+import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
@@ -71,7 +71,7 @@ public class AsmRS extends MBDAOSupport {
 
     final ObjectMapper mapper;
 
-    final NcmsMessages messages;
+    final I18n messages;
 
     final AsmAttributeManagersRegistry amRegistry;
 
@@ -84,7 +84,7 @@ public class AsmRS extends MBDAOSupport {
     public AsmRS(SqlSession sess,
                  AsmDAO adao, ObjectMapper mapper,
                  AsmAttributeManagersRegistry amRegistry,
-                 NcmsMessages messages,
+                 I18n messages,
                  NcmsEventBus ebus,
                  Provider<AsmAttributeManagerContext> amCtxProvider) {
         super(AsmRS.class, sess);

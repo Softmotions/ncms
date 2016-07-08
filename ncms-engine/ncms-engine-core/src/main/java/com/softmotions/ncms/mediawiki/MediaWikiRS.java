@@ -23,10 +23,10 @@ import info.bliki.wiki.filter.Encoder;
 import com.google.inject.Inject;
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.media.MediaResource;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Media-wiki services.
@@ -54,13 +54,13 @@ public class MediaWikiRS {
 
     private final MediaRepository repository;
 
-    private final NcmsMessages messages;
+    private final I18n messages;
 
     private final NcmsEnvironment env;
 
     @Inject
     public MediaWikiRS(MediaRepository repository,
-                       NcmsMessages messages,
+                       I18n messages,
                        NcmsEnvironment env) {
         this.repository = repository;
         this.messages = messages;

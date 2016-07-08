@@ -25,7 +25,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.json.JsonUtils;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
@@ -37,6 +36,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContextFactory;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.mhttl.Tree;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Tree strucrure attribute manager.
@@ -64,7 +64,7 @@ public class AsmTreeAM implements AsmAttributeManager {
 
     private final AsmDAO adao;
 
-    private final NcmsMessages messages;
+    private final I18n messages;
 
     private final AsmRendererContextFactory rendererContextFactory;
 
@@ -74,7 +74,7 @@ public class AsmTreeAM implements AsmAttributeManager {
                      AsmRichRefAM richRefAM,
                      PageService pageService,
                      AsmDAO adao,
-                     NcmsMessages messages,
+                     I18n messages,
                      AsmRendererContextFactory rendererContextFactory) {
         this.mapper = mapper;
         this.richRefAM = richRefAM;
