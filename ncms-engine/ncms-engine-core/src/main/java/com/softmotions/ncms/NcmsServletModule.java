@@ -17,6 +17,7 @@ import com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule;
 import com.softmotions.ncms.events.EventsModule;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
 import com.softmotions.ncms.jaxrs.ResteasyUTF8CharsetFilter;
+import com.softmotions.ncms.marketing.MarketingModule;
 import com.softmotions.ncms.media.MediaModule;
 import com.softmotions.ncms.mediawiki.MediaWikiModule;
 import com.softmotions.ncms.qa.QAModule;
@@ -61,6 +62,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         install(new UserModule());
         install(new RefDataStoreModule());
         install(new QAModule(env));
+        install(new MarketingModule());
     }
 
     protected void initAsmFilter(NcmsEnvironment env) {

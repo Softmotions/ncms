@@ -14,71 +14,71 @@ import javax.ws.rs.*
 
 @Path("adm/marketing/tools/rules")
 @Produces("application/json;charset=UTF-8")
-class RulesRS
+open class RulesRS
 @Inject
-constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport (RulesRS::class.java, sess) {
+constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(RulesRS::class.java, sess) {
 
     @GET
     @Path("/list")
-    fun rules(): ArrayNode = mapper.createArrayNode()
+    open fun rules(): ArrayNode = mapper.createArrayNode()
 
     @GET
     @Path("/rule/{rid}")
-    fun ruleGet(@PathParam("rid") rid: Long): ObjectNode = mapper.createObjectNode()
+    open fun ruleGet(@PathParam("rid") rid: Long): ObjectNode = mapper.createObjectNode()
 
     @PUT
     @Path("/rule")
-    fun ruleCreate(rule: ObjectNode): ObjectNode = mapper.createObjectNode()
+    open fun ruleCreate(rule: ObjectNode): ObjectNode = mapper.createObjectNode()
 
     @POST
     @Path("/rule/{rid}")
-    fun ruleUpdate(@PathParam("rid") rid: Long, rule: ObjectNode): ObjectNode = mapper.createObjectNode()
+    open fun ruleUpdate(@PathParam("rid") rid: Long, rule: ObjectNode): ObjectNode = mapper.createObjectNode()
 
     @DELETE
     @Path("/rule/{rid}")
-    fun ruleDelete(@PathParam("rid") rid: Long) = { }
+    open fun ruleDelete(@PathParam("rid") rid: Long) = { }
 
     @PUT
     @Path("/rule/{rid}/filter")
-    fun filterCreate(@PathParam("rid") rid: Long, filter: ObjectNode): ObjectNode = mapper.createObjectNode()
+    open fun filterCreate(@PathParam("rid") rid: Long, filter: ObjectNode): ObjectNode = mapper.createObjectNode()
 
     @GET
     @Path("/rule/{id}/filters")
-    fun filtersList(@PathParam("rid") rid: Long): ArrayNode = mapper.createArrayNode()
+    open fun filtersList(@PathParam("rid") rid: Long): ArrayNode = mapper.createArrayNode()
 
     @GET
     @Path("/filter/{fid}")
-    fun filterGet(@PathParam("fid") fid: Long): ObjectNode = mapper.createObjectNode()
+    open fun filterGet(@PathParam("fid") fid: Long): ObjectNode = mapper.createObjectNode()
 
     @POST
     @Path("/filter/{fid}")
-    fun filterUpdate(@PathParam("fid") fid: Long, filter: ObjectNode): ObjectNode = mapper.createObjectNode()
+    open fun filterUpdate(@PathParam("fid") fid: Long, filter: ObjectNode): ObjectNode = mapper.createObjectNode()
 
     @DELETE
     @Path("/filter/{fid}")
-    fun filterDelete(@PathParam("fid") fid: Long) = { }
+    open fun filterDelete(@PathParam("fid") fid: Long) = { }
 
     @GET
     @Path("/rule/{rid}/actions")
-    fun actionsList(@PathParam("rid") rid: Long): ArrayNode = mapper.createArrayNode()
+    open fun actionsList(@PathParam("rid") rid: Long): ArrayNode = mapper.createArrayNode()
 
     @PUT
     @Path("/rule/{rid}/action")
-    fun actionCreate(@PathParam("rid") rid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
+    open fun actionCreate(@PathParam("rid") rid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
 
     @GET
     @Path("/action/{aid}")
-    fun actionGet(@PathParam("aid") aid: Long): ObjectNode = mapper.createObjectNode()
+    open fun actionGet(@PathParam("aid") aid: Long): ObjectNode = mapper.createObjectNode()
 
     @POST
     @Path("/action/{aid}")
-    fun actionUpdate(@PathParam("aid") aid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
+    open fun actionUpdate(@PathParam("aid") aid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
 
     @DELETE
     @Path("/action/{aid}")
-    fun actionDelete(@PathParam("aid") aid: Long) = {}
+    open fun actionDelete(@PathParam("aid") aid: Long) = {}
 
     @POST
     @Path("/action/{aid}/move")
-    fun actionMove(@PathParam("aid") aid: Long, spec: ObjectNode): ArrayNode = mapper.createArrayNode()
+    open fun actionMove(@PathParam("aid") aid: Long, spec: ObjectNode): ArrayNode = mapper.createArrayNode()
 }
