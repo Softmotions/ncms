@@ -2,7 +2,7 @@ package com.softmotions.ncms.marketing
 
 import com.google.inject.AbstractModule
 import com.google.inject.Singleton
-import com.softmotions.ncms.marketing.rules.RulesRS
+import com.softmotions.ncms.marketing.mtt.MttRulesRS
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -10,6 +10,6 @@ import com.softmotions.ncms.marketing.rules.RulesRS
 class MarketingModule : AbstractModule() {
 
     override fun configure() {
-        bind(RulesRS::class.java).`in`(Singleton::class.java)
+        bind(MttRulesRS::class.java).`in`(Singleton::class.java)
     }
 }

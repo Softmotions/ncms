@@ -1,4 +1,4 @@
-package com.softmotions.ncms.marketing.rules
+package com.softmotions.ncms.marketing.mtt
 
 import org.slf4j.LoggerFactory
 import java.io.Serializable
@@ -7,7 +7,7 @@ import java.util.*
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  */
-class Rule : Serializable {
+class MttRule : Serializable {
 
     var id: Long = 0
     var name: String? = null
@@ -15,6 +15,6 @@ class Rule : Serializable {
     var mdate: Date? = null
 
     companion object {
-        private val log = LoggerFactory.getLogger(Rule::class.java)
+        private val log = LoggerFactory.getLogger(MttRule::class.java)
     }
 }

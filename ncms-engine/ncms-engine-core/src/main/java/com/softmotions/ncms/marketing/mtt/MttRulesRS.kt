@@ -1,4 +1,4 @@
-package com.softmotions.ncms.marketing.rules
+package com.softmotions.ncms.marketing.mtt
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ArrayNode
@@ -12,15 +12,18 @@ import javax.ws.rs.*
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  */
 
-@Path("adm/marketing/tools/rules")
+@Path("adm/mtt/rules")
 @Produces("application/json;charset=UTF-8")
-open class RulesRS
+open class MttRulesRS
 @Inject
-constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(RulesRS::class.java, sess) {
+constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(MttRulesRS::class.java, sess) {
 
+    //todo use as virtual list
     @GET
     @Path("/list")
     open fun rules(): ArrayNode = mapper.createArrayNode()
+
+
 
     @GET
     @Path("/rule/{rid}")
