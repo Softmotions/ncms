@@ -26,6 +26,7 @@ import com.softmotions.ncms.update.UpdateModule;
 import com.softmotions.ncms.user.UserModule;
 import com.softmotions.ncms.utils.BrowserFilter;
 import com.softmotions.weboot.WBServletModule;
+import com.softmotions.weboot.i18n.I18nModule;
 import com.softmotions.weboot.jaxrs.WBJaxrsModule;
 import com.softmotions.weboot.liquibase.WBLiquibaseModule;
 import com.softmotions.weboot.mb.WBMyBatisModule;
@@ -45,6 +46,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         initBrowserFilter(env);
         initJAXRS(env);
         initAsmFilter(env);
+        install(new I18nModule());
         install(new WBMyBatisModule(env));
         install(new WBLiquibaseModule(env));
         install(new SchedulerModule(env));

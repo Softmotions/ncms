@@ -168,6 +168,11 @@
                 <version>${softmotions.commons.version}</version>
             </dependency>
             <dependency>
+                <groupId>softmotions</groupId>
+                <artifactId>softmotions-weboot-i18n</artifactId>
+                <version>${softmotions.commons.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>${commons.collection.version}</version>

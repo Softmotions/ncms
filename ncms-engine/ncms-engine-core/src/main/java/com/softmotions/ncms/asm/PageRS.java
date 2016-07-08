@@ -68,7 +68,6 @@ import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
@@ -84,6 +83,7 @@ import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.user.UserEnvRS;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
@@ -110,7 +110,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final ObjectMapper mapper;
 
-    private final NcmsMessages messages;
+    private final I18n messages;
 
     private final WSUserDatabase userdb;
 
@@ -163,7 +163,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     public PageRS(SqlSession sess,
                   AsmDAO adao,
                   ObjectMapper mapper,
-                  NcmsMessages messages,
+                  I18n messages,
                   WSUserDatabase userdb,
                   PageSecurityService pageSecurity,
                   NcmsEventBus ebus,

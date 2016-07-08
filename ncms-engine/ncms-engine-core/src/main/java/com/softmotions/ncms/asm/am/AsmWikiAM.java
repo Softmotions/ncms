@@ -21,7 +21,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
@@ -31,6 +30,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.mediawiki.GMapTag;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Markdown/Mediawiki attribute manager.
@@ -62,7 +62,7 @@ public class AsmWikiAM implements AsmAttributeManager {
 
     private final PageService pageService;
 
-    private final NcmsMessages messages;
+    private final I18n messages;
 
     private final NcmsEnvironment env;
 
@@ -72,7 +72,7 @@ public class AsmWikiAM implements AsmAttributeManager {
                      MediaWikiRenderer mediaWikiRenderer,
                      NcmsEnvironment env,
                      PageService pageService,
-                     NcmsMessages messages) {
+                     I18n messages) {
         this.env = env;
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;

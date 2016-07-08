@@ -8,7 +8,7 @@ import info.bliki.wiki.model.Configuration;
 import info.bliki.wiki.model.ImageFormat;
 import net.jcip.annotations.NotThreadSafe;
 
-import com.softmotions.ncms.NcmsMessages;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -20,7 +20,7 @@ public class WikiModel extends info.bliki.wiki.model.WikiModel {
 
     private final Configuration cfg;
 
-    private final NcmsMessages messages;
+    private final I18n messages;
 
     private final Locale locale;
 
@@ -49,7 +49,7 @@ public class WikiModel extends info.bliki.wiki.model.WikiModel {
 
     public WikiModel(Configuration cfg,
                      String imageBaseURL, String linkBaseURL,
-                     NcmsMessages messages,
+                     I18n messages,
                      Locale locale) {
         super(cfg, imageBaseURL, linkBaseURL);
         this.cfg = cfg;

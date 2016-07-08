@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.inject.Injector;
 import com.softmotions.commons.cont.Stack;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.media.MediaRepository;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Rendering context for assembly rendereres.
@@ -143,7 +143,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     public abstract Locale getLocale();
 
-    public abstract NcmsMessages getMessages();
+    public abstract I18n getMessages();
 
     public abstract void render(@Nullable Writer writer) throws AsmRenderingException, IOException;
 

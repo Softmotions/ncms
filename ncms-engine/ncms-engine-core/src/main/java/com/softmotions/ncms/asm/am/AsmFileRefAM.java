@@ -17,7 +17,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.json.JsonUtils;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
@@ -26,6 +25,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.media.MediaResource;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * File reference attribute manager.
@@ -42,10 +42,10 @@ public class AsmFileRefAM implements AsmAttributeManager {
 
     private final MediaReader reader;
 
-    private final NcmsMessages messages;
+    private final I18n messages;
 
     @Inject
-    public AsmFileRefAM(MediaReader reader, NcmsMessages messages) {
+    public AsmFileRefAM(MediaReader reader, I18n messages) {
         this.reader = reader;
         this.messages = messages;
     }

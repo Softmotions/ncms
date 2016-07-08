@@ -22,10 +22,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBDAOSupport;
 import com.softmotions.weboot.mb.MBSqlSessionListenerSupport;
 import com.softmotions.weboot.mb.MBSqlSessionManager;
@@ -48,7 +48,7 @@ public class PageSecurityService extends MBDAOSupport {
     public static final String ALL_RIGHTS_STR = "" + OWNER + WRITE + NEWS + DELETE;
 
     private final WSUserDatabase userdb;
-    private final NcmsMessages messages;
+    private final I18n messages;
     private final LRUMap aclCache;
     private final MBSqlSessionManager sessionManager;
 
@@ -56,7 +56,7 @@ public class PageSecurityService extends MBDAOSupport {
     @Inject
     public PageSecurityService(SqlSession sess,
                                WSUserDatabase userdb,
-                               NcmsMessages messages,
+                               I18n messages,
                                NcmsEnvironment env,
                                MBSqlSessionManager sessionManager) {
         super(PageSecurityService.class, sess);

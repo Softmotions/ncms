@@ -13,12 +13,12 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.assistedinject.Assisted;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.web.GenericResponseWrapper;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -43,7 +43,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final NcmsEnvironment env;
 
-    final NcmsMessages messages;
+    final I18n messages;
 
     final PageService pageService;
 
@@ -63,7 +63,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                    ClassLoader classLoader,
                                    AsmRenderer renderer,
                                    AsmResourceLoader loader,
-                                   NcmsMessages messages,
+                                   I18n messages,
                                    PageService pageService,
                                    MediaRepository mediaRepository,
                                    HttpServletRequest req, HttpServletResponse resp,
@@ -88,7 +88,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                   Injector injector,
                                   AsmRenderer renderer,
                                   AsmResourceLoader loader,
-                                  NcmsMessages messages,
+                                  I18n messages,
                                   PageService pageService,
                                   MediaRepository mediaRepository,
                                   @Assisted HttpServletRequest req,
@@ -269,7 +269,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     }
 
     @Override
-    public NcmsMessages getMessages() {
+    public I18n getMessages() {
         return messages;
     }
 

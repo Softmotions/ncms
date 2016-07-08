@@ -12,9 +12,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.ebus.EBus;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -33,7 +33,7 @@ public class MediaWikiRenderer {
     private final String linkBaseUrl;
     private final EBus ebus;
 
-    private NcmsMessages messages;
+    private I18n messages;
 
 
     @Inject
@@ -41,7 +41,7 @@ public class MediaWikiRenderer {
                              MediaWikiConfiguration wikiCfg,
                              ITextConverter converter,
                              NcmsEventBus ebus,
-                             NcmsMessages messages) {
+                             I18n messages) {
         this.wikiCfg = wikiCfg;
         this.converter = converter;
         this.plaintextConverter = new PlainTextConverter(this.converter.noLinks());

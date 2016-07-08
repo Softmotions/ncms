@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.softmotions.ncms.NcmsMessages;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Page alias manager.
@@ -35,12 +35,12 @@ public class AsmAliasAM implements AsmAttributeManager {
 
     private static final Pattern ALIAS_PATTERN = Pattern.compile("^[0-9a-zA-Z\\._\\-/]+$");
 
-    private final NcmsMessages messages;
+    private final I18n messages;
 
     private final AsmDAO adao;
 
     @Inject
-    public AsmAliasAM(NcmsMessages messages, AsmDAO adao) {
+    public AsmAliasAM(I18n messages, AsmDAO adao) {
         this.messages = messages;
         this.adao = adao;
     }
