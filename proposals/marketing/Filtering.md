@@ -49,9 +49,8 @@
     )
         
     MRFilter2Rule (
-            ID,     BIGINT    
-            RULE_ID BIGINT,
-            ORDINAL BIGINT, /* Порядок фильтра в правиле */
+            ID      BIGINT,    
+            RULE_ID BIGINT,            
             SPEC    JSON    /* JSON спецификация фильтра */           
         )
     
