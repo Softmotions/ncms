@@ -9,6 +9,6 @@ class MttRuleAction {
     // todo: rule
     var name: String? = null
     var type: String? = null // may be enum?
-    var ordinal: Int = 0
+    var ordinal: Long = 0
     var spec: String? = null
 }
