@@ -32,24 +32,26 @@ constructor(val sess: SqlSession,
     @GET
     @Path("/select")
     @Transactional
-    open fun rules(@Context req: HttpServletRequest): Response = Response.ok(StreamingOutput({ output ->
-        with(mapper.factory.createGenerator(output)) {
-            writeStartArray()
-            selectByCriteria(createRulesQ(req), { context ->
-                @Suppress("UNCHECKED_CAST")
-                writeObject(context.resultObject as Map<String, Any>);
-            }, "select")
-            writeEndArray()
-            flush()
-        }
-    })).type("application/json;charset=UTF-8")
+    open fun rules(@Context req: HttpServletRequest): Response = Response
+            .ok(StreamingOutput { output ->
+                with(mapper.factory.createGenerator(output)) {
+                    writeStartArray()
+                    selectByCriteria(createRulesQ(req), { context ->
+                        @Suppress("UNCHECKED_CAST")
+                        writeObject(context.resultObject as Map<String, Any>);
+                    }, "selectRules")
+                    writeEndArray()
+                    flush()
+                }
+            })
+            .type("application/json;charset=UTF-8")
             .build()
 
     @GET
     @Path("/select/count")
     @Produces("text/plain")
     @Transactional
-    open fun rulesCount(@Context req: HttpServletRequest): Int = selectOneByCriteria(createRulesQ(req).withStatement("count"))
+    open fun rulesCount(@Context req: HttpServletRequest): Int = selectOneByCriteria(createRulesQ(req).withStatement("selectRulesCount"))
 
     private fun createRulesQ(req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
         val cq = createCriteria()
@@ -117,34 +119,75 @@ constructor(val sess: SqlSession,
     // TODO: events?
     open fun ruleDelete(@PathParam("rid") rid: Long) = delete("deleteRuleById", rid)
 
+    @GET
+    @Path("/rule/{rid}/filters/select")
+    @Transactional
+    open fun filters(@Context req: HttpServletRequest,
+                     @PathParam("rid") rid: Long): Response = Response
+            .ok(StreamingOutput { output ->
+                with(mapper.factory.createGenerator(output)) {
+                    writeStartArray()
+                    selectByCriteria(createFiltersQ(rid, req), { context ->
+                        @Suppress("UNCHECKED_CAST")
+                        writeObject(context.resultObject as Map<String, Any>)
+                    }, "selectFilters")
+                    writeEndArray()
+                    flush()
+                }
+            })
+            .type("application/json;charset=UTF-8")
+            .build()
+
+    @GET
+    @Path("/rule/{rid}/filters/select/count")
+    @Produces("text/plain")
+    @Transactional
+    open fun filtersCount(@Context req: HttpServletRequest,
+                          @PathParam("rid") rid: Long): Long = selectOneByCriteria(createFiltersQ(rid, req).withStatement("selectFiltersCount"))
+
+    private fun createFiltersQ(rid: Long, req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
+        val cq = createCriteria()
+        var pv: String? = req.getParameter("firstRow")
+        if (pv != null) {
+            val frow = Integer.valueOf(pv)
+            cq.offset(frow!!)
+            pv = req.getParameter("lastRow")
+            if (pv != null) {
+                val lrow = Integer.valueOf(pv)
+                cq.limit(Math.abs(frow - lrow!!) + 1)
+            }
+        }
+
+        cq.put("rid", rid)
+
+        return cq
+    }
+
+
 //    @PUT
 //    @Path("/rule/{rid}/filter")
-//    open fun filterCreate(@PathParam("rid") rid: Long, filter: ObjectNode): ObjectNode = mapper.createObjectNode()
-//
-//    @GET
-//    @Path("/rule/{id}/filters")
-//    open fun filtersList(@PathParam("rid") rid: Long): ArrayNode = mapper.createArrayNode()
-//
-//    @GET
-//    @Path("/filter/{fid}")
-//    open fun filterGet(@PathParam("fid") fid: Long): ObjectNode = mapper.createObjectNode()
-//
+//    open fun filterCreate(@PathParam("rid") rid: Long, filter: ObjectNode): MttRuleFilter = MttRuleFilter()
+
+    @GET
+    @Path("/filter/{fid}")
+    open fun filterGet(@PathParam("fid") fid: Long): MttRuleFilter = selectOne("selectFilterById", fid)
+
 //    @POST
 //    @Path("/filter/{fid}")
 //    open fun filterUpdate(@PathParam("fid") fid: Long, filter: ObjectNode): ObjectNode = mapper.createObjectNode()
-//
-//    @DELETE
-//    @Path("/filter/{fid}")
-//    open fun filterDelete(@PathParam("fid") fid: Long) = { }
-//
+
+    @DELETE
+    @Path("/filter/{fid}")
+    open fun filterDelete(@PathParam("fid") fid: Long) = delete("deleteFilterById", fid)
+
 //    @GET
 //    @Path("/rule/{rid}/actions")
 //    open fun actionsList(@PathParam("rid") rid: Long): ArrayNode = mapper.createArrayNode()
-//
+
 //    @PUT
 //    @Path("/rule/{rid}/action")
 //    open fun actionCreate(@PathParam("rid") rid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
-//
+
 //    @GET
 //    @Path("/action/{aid}")
 //    open fun actionGet(@PathParam("aid") aid: Long): ObjectNode = mapper.createObjectNode()

@@ -5,7 +5,9 @@
 
 <mapper namespace="com.softmotions.ncms.marketing.mtt.MttRulesRS">
 
-    <select id="select" resultType="map" parameterType="map">
+    <!-- RULES-->
+
+    <select id="selectRules" resultType="map" parameterType="map">
         SELECT
             rule.id       AS "id",
             rule.name     AS "name",
@@ -23,14 +25,14 @@
         </if>
     </select>
 
-    <select id="count" resultType="long" parameterType="map">
+    <select id="selectRulesCount" resultType="long" parameterType="map">
         SELECT COUNT(*) FROM MTT_RULES rule
     </select>
 
     <select id="selectRuleById" resultType="com.softmotions.ncms.marketing.mtt.MttRule" parameterType="long">
         SELECT
-            rule.id AS "id",
-            rule.name AS "name",
+            rule.id       AS "id",
+            rule.name     AS "name",
             rule.ordinal  AS "ordinal",
             rule.cdate    AS "cdate",
             rule.mdate    AS "mdate",
@@ -61,9 +63,53 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteRuleById" parameterType="string">
+    <delete id="deleteRuleById" parameterType="long">
         DELETE
         FROM MTT_RULES
+        WHERE id = #{id}
+    </delete>
+
+    <!-- FILTERS -->
+
+    <select id="selectFilters" resultType="map" parameterType="map">
+        SELECT
+            filter.id           AS "id",
+            filter.type         AS "type",
+            filter.description  AS "description",
+            filter.cdate        AS "cdate",
+            filter.mdate        AS "mdate"
+        FROM MTT_FILTERS filter
+        WHERE filter.rule_id = #{rid}
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            LIMIT ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                OFFSET ${CQ_OFFSET}
+            </if>
+        </if>
+    </select>
+
+    <select id="selectFiltersCount" resultType="long" parameterType="map">
+        SELECT COUNT(*)
+        FROM MTT_FILTERS filter
+        WHERE filter.rule_id = #{rid}
+    </select>
+
+    <select id="selectFilterById" resultType="com.softmotions.ncms.marketing.mtt.MttRuleFilter" parameterType="long">
+        SELECT
+          filter.id           AS "id",
+          filter.type         AS "type",
+          filter.description  AS "description",
+          filter.cdate        AS "cdate",
+          filter.mdate        AS "mdate",
+          filter.spec         AS "spec"
+        FROM MTT_FILTERS filter
+        WHERE filter.id = #{id}
+    </select>
+
+    <delete id="deleteFilterById" parameterType="long">
+        DELETE
+        FROM MTT_FILTERS
         WHERE id = #{id}
     </delete>
 

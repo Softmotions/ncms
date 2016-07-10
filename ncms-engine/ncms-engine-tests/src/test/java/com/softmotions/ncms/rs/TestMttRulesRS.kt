@@ -72,12 +72,35 @@ class TestMttRulesRS : WebBaseTest() {
     @Test(priority = 1)
     fun testRuleCreate() {
         val rname = RandomStringUtils.randomAlphanumeric(5);
-        with(auth(HttpRequest.put(R("/rule/" + rname)))) {
+        with(auth(HttpRequest.put(R("/rule/$rname")))) {
             assertEquals(200, code())
             val body = body()
             assertNotNull(body)
             with(mapper.readTree(body)) {
                 assertTrue(hasNonNull("id"))
+            }
+        }
+    }
+
+    @Test(priority = 2)
+    fun testFiltersSelect() {
+        // todo: create new rule & get rule id by name
+//        val rname = RandomStringUtils.randomAlphanumeric(6)
+//        assertEquals(200, auth(HttpRequest.put(R("/rule/$rname"))).code())
+
+        val rid = 0
+        with(auth(HttpRequest.get(R("/rule/$rid/filters/select/count")))) {
+            assertEquals(200, code())
+            assertEquals("0", body())
+        }
+
+        with(auth(HttpRequest.get(R("/rule/$rid/filters/select")))) {
+            assertEquals(200, code())
+            val body = body();
+            assertNotNull(body)
+            with(mapper.readTree(body)) {
+                assertTrue(isArray)
+                assertEquals(0, size())
             }
         }
     }
