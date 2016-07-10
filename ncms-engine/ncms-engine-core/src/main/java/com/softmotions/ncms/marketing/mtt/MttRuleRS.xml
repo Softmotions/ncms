@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.marketing.mtt.MttRulesRS">
+
+    <select id="select" resultType="map" parameterType="map">
+        SELECT
+            rule.id       AS "id",
+            rule.ordinal  AS "ordinal",
+            rule.name     AS "name",
+            rule.flags    AS "flags",
+            rule.cdate    AS "cdate",
+            rule.mdate    AS "mdate"
+        FROM MTT_RULES rule
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            LIMIT ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                OFFSET ${CQ_OFFSET}
+            </if>
+        </if>
+    </select>
+
+    <select id="count" resultType="long" parameterType="map">
+        SELECT COUNT(*) FROM MTT_RULES rule
+    </select>
+
+</mapper>
