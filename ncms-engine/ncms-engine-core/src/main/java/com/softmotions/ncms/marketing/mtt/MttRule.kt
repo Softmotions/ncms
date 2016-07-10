@@ -5,7 +5,7 @@ import java.io.Serializable
 import java.util.*
 
 /**
- * Правило фильтрации входяхих запросов
+ * Правило фильтрации входящих запросов
  * и контекстное выполнение действий
  *
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -16,7 +16,7 @@ class MttRule : Serializable {
     var name: String? = null
     var cdate: Date? = null
     var mdate: Date? = null
-    var ordinal: Long = 0   // Все-таки в правилах может быть важен порядок
+    var ordinal: Long = 0   // в правилах может быть важен порядок
     var flags: Long = 0     // флаги режима работы правила
 
     companion object {

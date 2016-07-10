@@ -70,5 +70,6 @@
         <mapper resource="com/softmotions/ncms/rds/RefDataStore.xml"/>
         <mapper resource="com/softmotions/ncms/qa/PageQARS.xml"/>
         <mapper resource="com/softmotions/ncms/update/UpdateInitializer.xml"/>
+        <mapper resource="com/softmotions/ncms/marketing/mtt/MttRuleRS.xml"/>
     </mappers>
 </configuration>
