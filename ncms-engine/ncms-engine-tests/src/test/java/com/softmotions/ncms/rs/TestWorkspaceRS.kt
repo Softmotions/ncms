@@ -2,6 +2,7 @@ package com.softmotions.ncms.rs
 
 import com.github.kevinsawicki.http.HttpRequest
 import com.softmotions.commons.JVMResources
+import com.softmotions.ncms.NcmsServletListener
 import com.softmotions.ncms.WebBaseTest
 import com.softmotions.web.security.XMLWSUserDatabase
 import com.softmotions.web.security.tomcat.WSUserDatabaseRealm
@@ -47,6 +48,9 @@ class TestWorkspaceRS : WebBaseTest() {
         assertEquals(req.code(), 200)
         //todo
         log.info("Body={}", req.body())
+
+        val env = runner!!.getContextEventListener(NcmsServletListener::class.java)
+        log.info("env=" + env)
     }
 
 }
