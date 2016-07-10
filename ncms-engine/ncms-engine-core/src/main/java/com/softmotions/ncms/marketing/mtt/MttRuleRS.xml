@@ -27,4 +27,16 @@
         SELECT COUNT(*) FROM MTT_RULES rule
     </select>
 
+    <select id="selectRuleById" resultType="com.softmotions.ncms.marketing.mtt.MttRule" parameterType="map">
+        SELECT rule.*
+        FROM MTT_RULES rule
+        WHERE rule.id = #{id}
+    </select>
+
+    <delete id="deleteRuleById" parameterType="map">
+        DELETE
+        FROM MTT_RULES
+        WHERE id = #{id}
+    </delete>
+
 </mapper>

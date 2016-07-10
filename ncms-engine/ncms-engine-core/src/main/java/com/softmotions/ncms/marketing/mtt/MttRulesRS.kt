@@ -7,10 +7,9 @@ import com.softmotions.weboot.mb.MBCriteriaQuery
 import com.softmotions.weboot.mb.MBDAOSupport
 import org.apache.ibatis.session.SqlSession
 import org.mybatis.guice.transactional.Transactional
+import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletRequest
-import javax.ws.rs.GET
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
+import javax.ws.rs.*
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.Response
 import javax.ws.rs.core.StreamingOutput
@@ -25,7 +24,8 @@ open class MttRulesRS
 @Inject
 constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(MttRulesRS::class.java, sess) {
 
-    //todo use as virtual list
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @GET
     @Path("/select")
     @Transactional
@@ -50,7 +50,6 @@ constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(MttRulesR
 //  /rs/adm/mtt/rules/select/count
     open fun rulesCount(@Context req: HttpServletRequest): Long = selectOneByCriteria(createRulesQ(req).withStatement("count"))
 
-
     private fun createRulesQ(req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
         val cq = createCriteria()
         var pv: String? = req.getParameter("firstRow")
@@ -68,10 +67,12 @@ constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(MttRulesR
     };
 
 
-//    @GET
-//    @Path("/rule/{rid}")
-//    open fun ruleGet(@PathParam("rid") rid: Long): ObjectNode = mapper.createObjectNode()
-//
+    @GET
+    @Path("/rule/{rid}")
+    @Transactional
+    // TODO: events?
+    open fun ruleGet(@PathParam("rid") rid: Long): MttRule = selectOne(toStatementId("ruleById"), "id", rid)
+
 //    @PUT
 //    @Path("/rule")
 //    open fun ruleCreate(rule: ObjectNode): ObjectNode = mapper.createObjectNode()
@@ -79,11 +80,13 @@ constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(MttRulesR
 //    @POST
 //    @Path("/rule/{rid}")
 //    open fun ruleUpdate(@PathParam("rid") rid: Long, rule: ObjectNode): ObjectNode = mapper.createObjectNode()
-//
-//    @DELETE
-//    @Path("/rule/{rid}")
-//    open fun ruleDelete(@PathParam("rid") rid: Long) = { }
-//
+
+    @DELETE
+    @Path("/rule/{rid}")
+    @Transactional
+    // TODO: events?
+    open fun ruleDelete(@PathParam("rid") rid: Long) = delete(toStatementId("deleteRuleById"), "id", rid)
+
 //    @PUT
 //    @Path("/rule/{rid}/filter")
 //    open fun filterCreate(@PathParam("rid") rid: Long, filter: ObjectNode): ObjectNode = mapper.createObjectNode()
