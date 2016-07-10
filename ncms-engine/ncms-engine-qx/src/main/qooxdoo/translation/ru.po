@@ -876,6 +876,10 @@ msgstr "Пожалуйста, укажите родительскую стран
 msgid "Caption"
 msgstr "Заголовок"
 
+#: ncms/pgs/LinkSelectorDlg.js:60
+msgid "http:// or hash anchor #"
+msgstr "http:// или #якорь"
+
 #: ncms/pgs/LinkSelectorDlg.js:61
 msgid "Or set external link"
 msgstr "Или укажите внешнюю ссылку"

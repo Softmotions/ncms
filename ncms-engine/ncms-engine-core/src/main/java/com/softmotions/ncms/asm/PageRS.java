@@ -1524,7 +1524,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (spec == null) {
             return null;
         }
-        if (spec.contains("://")) {
+        if (spec.charAt(0) == '#' || spec.contains("://")) {
             return spec;
         }
         Long fid = mediaReader.getFileIdByResourceSpec(spec);
