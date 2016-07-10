@@ -72,7 +72,7 @@ open class WebBaseTest {
             sb.append(up).append('@')
         }
         sb.append("localhost:")
-        sb.append(runner!!.usedBuilder().getPort())
+        sb.append(runner!!.usedBuilder().port)
         if (resource[0] != '/') {
             sb.append('/')
         }

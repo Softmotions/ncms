@@ -8,11 +8,11 @@
     <select id="select" resultType="map" parameterType="map">
         SELECT
             rule.id       AS "id",
-            rule.ordinal  AS "ordinal",
             rule.name     AS "name",
-            rule.flags    AS "flags",
+            rule.ordinal  AS "ordinal",
             rule.cdate    AS "cdate",
-            rule.mdate    AS "mdate"
+            rule.mdate    AS "mdate",
+            rule.flags    AS "flags"
         FROM MTT_RULES rule
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">
@@ -27,13 +27,41 @@
         SELECT COUNT(*) FROM MTT_RULES rule
     </select>
 
-    <select id="selectRuleById" resultType="com.softmotions.ncms.marketing.mtt.MttRule" parameterType="map">
-        SELECT rule.*
+    <select id="selectRuleById" resultType="com.softmotions.ncms.marketing.mtt.MttRule" parameterType="long">
+        SELECT
+            rule.id AS "id",
+            rule.name AS "name",
+            rule.ordinal  AS "ordinal",
+            rule.cdate    AS "cdate",
+            rule.mdate    AS "mdate",
+            rule.flags    AS "flags"
         FROM MTT_RULES rule
         WHERE rule.id = #{id}
     </select>
 
-    <delete id="deleteRuleById" parameterType="map">
+    <select id="selectRuleIdByName" resultType="long" parameterType="string">
+        SELECT rule.id
+        FROM MTT_RULES rule
+        WHERE rule.name = #{name}
+    </select>
+
+    <select id="selectMaxRuleId" resultType="long">
+        SELECT MAX(rule.id)
+        FROM MTT_RULES rule
+    </select>
+
+    <insert id="insertRule" parameterType="com.softmotions.ncms.marketing.mtt.MttRule">
+        INSERT INTO MTT_RULES (id, name, cdate, mdate, flags)
+        VALUES (SEQ_MTT_RULE_ID.NEXTVAL, #{name}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{flags})
+    </insert>
+
+    <update id="updateRuleName" parameterType="map">
+        UPDATE MTT_RULES
+        SET name = #{name}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteRuleById" parameterType="string">
         DELETE
         FROM MTT_RULES
         WHERE id = #{id}

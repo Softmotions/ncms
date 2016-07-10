@@ -1,8 +1,9 @@
 package com.softmotions.ncms.marketing.mtt
 
-import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Inject
+import com.softmotions.ncms.jaxrs.NcmsMessageException
+import com.softmotions.weboot.i18n.I18n
 import com.softmotions.weboot.mb.MBCriteriaQuery
 import com.softmotions.weboot.mb.MBDAOSupport
 import org.apache.ibatis.session.SqlSession
@@ -22,16 +23,17 @@ import javax.ws.rs.core.StreamingOutput
 @Produces("application/json;charset=UTF-8")
 open class MttRulesRS
 @Inject
-constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(MttRulesRS::class.java, sess) {
+constructor(val sess: SqlSession,
+            val mapper: ObjectMapper,
+            val messages: I18n) : MBDAOSupport(MttRulesRS::class.java, sess) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
     @Path("/select")
     @Transactional
-//  /rs/adm/mtt/rules/select
     open fun rules(@Context req: HttpServletRequest): Response = Response.ok(StreamingOutput({ output ->
-        with(JsonFactory().createGenerator(output)) {
+        with(mapper.factory.createGenerator(output)) {
             writeStartArray()
             selectByCriteria(createRulesQ(req), { context ->
                 @Suppress("UNCHECKED_CAST")
@@ -45,10 +47,9 @@ constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(MttRulesR
 
     @GET
     @Path("/select/count")
-    @Produces("plain/text")
+    @Produces("text/plain")
     @Transactional
-//  /rs/adm/mtt/rules/select/count
-    open fun rulesCount(@Context req: HttpServletRequest): Long = selectOneByCriteria(createRulesQ(req).withStatement("count"))
+    open fun rulesCount(@Context req: HttpServletRequest): Int = selectOneByCriteria(createRulesQ(req).withStatement("count"))
 
     private fun createRulesQ(req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
         val cq = createCriteria()
@@ -64,19 +65,48 @@ constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(MttRulesR
         }
 
         return cq;
-    };
-
+    }
 
     @GET
     @Path("/rule/{rid}")
     @Transactional
-    // TODO: events?
-    open fun ruleGet(@PathParam("rid") rid: Long): MttRule = selectOne(toStatementId("ruleById"), "id", rid)
+    open fun ruleGet(@PathParam("rid") rid: Long): MttRule = selectOne("selectRuleById", rid)
 
-//    @PUT
-//    @Path("/rule")
-//    open fun ruleCreate(rule: ObjectNode): ObjectNode = mapper.createObjectNode()
-//
+    @PUT
+    @Path("/rule/{name}")
+    @Transactional
+    // TODO: events?
+    open fun ruleCreate(@Context req: HttpServletRequest,
+                        @PathParam("name") name: String): MttRule {
+        synchronized(MttRule::class) {
+            val rname = name.trim()
+            if (selectOne<Long?>("selectRuleIdByName", rname) != null) {
+                throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.exists", req, rname), true)
+            }
+            val rule = MttRule(name = rname)
+
+            insert("insertRule", rule)
+            val rid = selectOne<Long?>("selectRuleIdByName", rname) ?: throw InternalServerErrorException()
+            return ruleGet(rid);
+        }
+    }
+
+    @PUT
+    @Path("/rule/rename/{rid}/{name}")
+    @Transactional
+    open fun ruleRename(@Context req: HttpServletRequest,
+                        @PathParam("rid") rid: Long,
+                        @PathParam("name") name: String): MttRule = synchronized(MttRule::class) {
+        val rname = name.trim();
+        if (selectOne<Long?>("selectRuleIdByName", rname) != null) {
+            throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.other", req, rname), true)
+        }
+
+        update("updateRuleName", "id", rid, "name", rname);
+
+        return ruleGet(rid);
+    }
+
 //    @POST
 //    @Path("/rule/{rid}")
 //    open fun ruleUpdate(@PathParam("rid") rid: Long, rule: ObjectNode): ObjectNode = mapper.createObjectNode()
@@ -85,7 +115,7 @@ constructor(sess: SqlSession, val mapper: ObjectMapper) : MBDAOSupport(MttRulesR
     @Path("/rule/{rid}")
     @Transactional
     // TODO: events?
-    open fun ruleDelete(@PathParam("rid") rid: Long) = delete(toStatementId("deleteRuleById"), "id", rid)
+    open fun ruleDelete(@PathParam("rid") rid: Long) = delete("deleteRuleById", rid)
 
 //    @PUT
 //    @Path("/rule/{rid}/filter")

@@ -10,14 +10,23 @@ import java.util.*
  *
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  */
-class MttRule : Serializable {
+class MttRule(var id: Long? = null,
+              var name: String,
+              var ordinal: Long? = null, // в правилах может быть важен порядок
+              var cdate: Date? = null,
+              var mdate: Date? = null,
+              var flags: Long = 0 // флаги режима работы правила
+) : Serializable {
 
-    var id: Long = 0
-    var name: String? = null
-    var cdate: Date? = null
-    var mdate: Date? = null
-    var ordinal: Long = 0   // в правилах может быть важен порядок
-    var flags: Long = 0     // флаги режима работы правила
+    @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+    constructor(id: java.lang.Long,
+                name: java.lang.String,
+                ordinal: java.lang.Long,
+                cdate: java.sql.Timestamp,
+                mdate: java.sql.Timestamp,
+                flags: java.lang.Long)
+    : this(id.toLong(), name.toString(), ordinal.toLong(), Date(cdate.time), Date(mdate.time), flags.toLong()) {
+    }
 
     companion object {
         private val log = LoggerFactory.getLogger(MttRule::class.java)
