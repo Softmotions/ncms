@@ -50,4 +50,43 @@
     </changeSet>
 
 
+    <changeSet id="7.2" author="adamansky@gmail.com">
+
+        <createTable tableName="MTT_FILTERS"
+                     remarks="Marketing tools filter attached to rule (MTT_RULES)">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(512)"/>
+            <column name="RULE_ID" type="BIGINT"
+                    remarks="Rule this filter attached to">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SPEC" type="VARCHAR(4096)"
+                    remarks="Filter specification, can be serialized JSON object">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CDATE" type="TIMESTAMP"
+                    remarks="Rule creation date"
+                    defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MDATE" type="TIMESTAMP"
+                    remarks="Rule modification date"
+                    defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="MTT_FILTERS"
+                                 baseColumnNames="RULE_ID"
+                                 constraintName="FK_MTT_FILTERS_RULES"
+                                 referencedTableName="MTT_RULES"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+
 </databaseChangeLog>
