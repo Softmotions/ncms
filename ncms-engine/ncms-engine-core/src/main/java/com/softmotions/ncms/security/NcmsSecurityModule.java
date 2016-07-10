@@ -17,6 +17,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import com.softmotions.commons.JVMResources;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.web.AccessControlHDRFilter;
 import com.softmotions.web.security.WSRole;
@@ -43,10 +44,16 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     public void initServlets(WBServletModule m) {
         NcmsEnvironment env = (NcmsEnvironment) m.getConfiguration();
         String dbJndiName = env.xcfg().getString("security.dbJndiName");
+        String dbJVMName = env.xcfg().getString("security.dbJVMName");
         String webAccessControlAllow = env.xcfg().getString("security.web-access-control-allow");
-
-        if (dbJndiName != null) {
-            WSUserDatabase udb = locateWSUserDatabase(dbJndiName);
+        WSUserDatabase udb = null;
+        if (!StringUtils.isBlank(dbJVMName)) {
+            udb = JVMResources.getOrFail(dbJVMName);
+        }
+        if (udb == null && !StringUtils.isBlank(dbJndiName)) {
+            udb = locateWSUserDatabase(dbJndiName);
+        }
+        if (udb != null) {
             List<String> roleNames = new ArrayList<>();
             Iterator<WSRole> roles = udb.getRoles();
             while (roles.hasNext()) {
@@ -56,7 +63,6 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
             log.info("Roles declared in the current servlet context: {}", roleNames);
             m.getWBServletContext().declareRoles(roleNames.toArray(new String[roleNames.size()]));
         }
-
         if (webAccessControlAllow != null) {
             log.info("Enabled Access-Control-Allow-{Origin|Headers|Methods}={}", webAccessControlAllow);
             Map<String, String> params = new Flat3Map();
@@ -74,8 +80,14 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
         @Override
         public WSUserDatabase get() {
             WSUserDatabase usersDb = null;
+            String dbJVMName = env.xcfg().getString("security.dbJVMName");
             String jndiName = env.xcfg().getString("security.dbJndiName");
-            if (!StringUtils.isBlank(jndiName)) {
+
+            if (!StringUtils.isBlank(dbJVMName)) {
+                log.info("Locating users database with JVM name: {}", dbJVMName);
+                usersDb = JVMResources.getOrFail(dbJVMName);
+            }
+            if (usersDb == null && !StringUtils.isBlank(jndiName)) {
                 log.info("Locating users database with JNDI name: {}", jndiName);
                 usersDb = locateWSUserDatabase(jndiName);
             }

@@ -1,6 +1,8 @@
 package com.softmotions.ncms
 
-import om.softmotions.weboot.testing.tomcat.TomcatRunner
+import com.github.kevinsawicki.http.HttpRequest
+import com.softmotions.weboot.testing.tomcat.TomcatRunner
+import org.slf4j.LoggerFactory
 import java.nio.file.Paths
 
 /**
@@ -9,12 +11,15 @@ import java.nio.file.Paths
  */
 open class WebBaseTest {
 
-    private var runner: TomcatRunner? = null
+    @JvmField
+    protected val log = LoggerFactory.getLogger(javaClass)
 
-    private var projectBasedir: String? = null
+    protected var runner: TomcatRunner? = null
+
+    protected var projectBasedir: String? = null
 
     @Throws(Exception::class)
-    fun setUp() {
+    open fun setUp() {
         projectBasedir = System.getProperty("project.basedir")
         if (projectBasedir == null) {
             throw Exception("Missing required system property: 'project.basedir'")
@@ -24,29 +29,43 @@ open class WebBaseTest {
     }
 
     @Throws(Exception::class)
-    fun setUpWeb() {
+    open fun setupWeb() {
         setUp()
         val b = TomcatRunner.createBuilder()
-        configureJettyRunner(b)
+        configureTomcatRunner(b)
         runner = b.build()
     }
 
-    protected fun configureJettyRunner(b: TomcatRunner.Builder) {
+    @Throws(Exception::class)
+    open fun shutdownWeb() {
+        runner?.shutdown()
+    }
+
+    open protected fun configureTomcatRunner(b: TomcatRunner.Builder) {
         b.withPort(8282)
-                .withContextPath("/")
+                .withContextPath("")
                 .withResourcesBase(getBaseWebappDir())
     }
 
-    protected fun getBaseWebappDir(): String {
+    open protected fun getBaseWebappDir(): String {
         return Paths.get(projectBasedir, "src/main/webapp").toString()
     }
 
 
-    protected fun R(resource: String): String {
+    open protected fun auth(r: HttpRequest): HttpRequest {
+        return auth("admin", "ncms1", r)
+    }
+
+    open protected fun auth(login: String, passwd: String, r: HttpRequest): HttpRequest {
+        r.basic(login, passwd)
+        return r
+    }
+
+    open protected fun R(resource: String): String {
         return R(null, resource)
     }
 
-    protected fun R(up: String?, resource: String): String {
+    open protected fun R(up: String?, resource: String): String {
         val sb = StringBuilder(64)
         sb.append("http://")
         if (up != null) {
@@ -60,5 +79,4 @@ open class WebBaseTest {
         sb.append(resource)
         return sb.toString()
     }
-
 }
