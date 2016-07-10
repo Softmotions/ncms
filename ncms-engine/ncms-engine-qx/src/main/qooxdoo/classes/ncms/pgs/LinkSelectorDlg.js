@@ -57,7 +57,7 @@ qx.Class.define("ncms.pgs.LinkSelectorDlg", {
 
             if (options["allowExternalLinks"] === true) {
                 var outLink = this.__outLinkTf = new qx.ui.form.TextField();
-                outLink.setPlaceholder("http://");
+                outLink.setPlaceholder(this.tr("http:// or hash anchor #"));
                 form.add(outLink, this.tr("Or set external link"), null, "externalLink");
                 outLink.addListener("input", this._syncState, this);
             }
@@ -83,7 +83,7 @@ qx.Class.define("ncms.pgs.LinkSelectorDlg", {
                     var link = externalLink.getValue();
                     if (!sm.lang.String.isEmpty(link)) {
                         link = link.trim();
-                        if (link.indexOf("://") === -1) {
+                        if (link[0] !== '#' && link.indexOf("://") === -1) {
                             externalLink.setValue("http://" + link);
                         }
                     } else {
