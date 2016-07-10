@@ -16,6 +16,18 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>softmotions-web-realms</artifactId>
+            <version>${softmotions.commons.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot-testing-tomcat</artifactId>
+            <version>${softmotions.commons.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
@@ -32,30 +44,8 @@
             <artifactId>http-request</artifactId>
             <version>6.0</version>
         </dependency>
-
-
-        <!-- tomcat runner -->
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>${tomcat.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-jasper</artifactId>
-            <version>${tomcat.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-logging-juli</artifactId>
-            <version>8.5.2</version>
-            <scope>test</scope>
-        </dependency>
-
-
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
