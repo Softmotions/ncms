@@ -44,7 +44,13 @@ qx.Class.define("ncms.Events", {
         /**
          * Basic assembly properties changed in the assembly editor GUI.
          */
-        "asmPropsChanged": "qx.event.type.Data"
+        "asmPropsChanged": "qx.event.type.Data",
+
+
+        /**
+         * Marketing transfer tool rule properties changed
+         */
+        "mttRulePropsChanged": "qx.event.type.Data"
     }
 
 });

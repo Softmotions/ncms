@@ -1,31 +1,29 @@
 /**
- * Selector of assemblies
- * with included search text box
- * and assembly table.
+ * Traffic rules selector.
  */
-qx.Class.define("ncms.asm.AsmSelector", {
+qx.Class.define("ncms.mtt.MttRulesSelector", {
     extend: qx.ui.core.Widget,
 
     events: {
 
         /**
-         * Event fired if assembly was selected/deselected
+         * Event fired if mtt rule was selected/deselected
          *
          * DATA: var item = {
-         *        "id" : {Number} Assembly id.
-         *        "name" : {String} Page name,
-         *        "type" : {String} Assembly type,
+         *        "id" : {Number} Rule id.
+         *        "name" : {String} Rule name,
+         *        "type" : {String} Rule type,
          *       };
          * or null if selection cleared
          */
-        "asmSelected": "qx.event.type.Data"
+        "ruleSelected": "qx.event.type.Data"
     },
 
     properties: {
 
         appearance: {
             refine: true,
-            init: "ncms-asm-selector"
+            init: "ncms-mtt-rules-selector"
         }
     },
 
@@ -42,8 +40,7 @@ qx.Class.define("ncms.asm.AsmSelector", {
         }, this);
         sf.addListener("keypress", this.__searchKeypress, this);
 
-
-        this.__table = new ncms.asm.AsmTable(useColumns).set({
+        this.__table = new ncms.mtt.MttRulesTable(useColumns).set({
             "statusBarVisible": true,
             "showCellFocusIndicator": false
         });
@@ -51,8 +48,8 @@ qx.Class.define("ncms.asm.AsmSelector", {
             this.__table.setSelectionModel(smodel);
         }
         this.__table.getSelectionModel().addListener("changeSelection", function () {
-            var asm = this.getSelectedAsm();
-            this.fireDataEvent("asmSelected", asm ? asm : null);
+            var rule = this.getSelectedRule();
+            this.fireDataEvent("ruleSelected", rule ? rule : null);
         }, this);
 
         this._add(this.__sf);
@@ -73,11 +70,10 @@ qx.Class.define("ncms.asm.AsmSelector", {
         __sf: null,
 
         /**
-         * Assemblies virtual table
-         * @type {ncms.asm.AsmTable}
+         * Rules virtual table
+         * @type {ncms.mtt.MttRulesTable}
          */
         __table: null,
-
 
         setSearchBoxValue: function (val) {
             this.__sf.setValue(val);
@@ -112,16 +108,16 @@ qx.Class.define("ncms.asm.AsmSelector", {
             return this.__table;
         },
 
-        getSelectedAsmInd: function () {
-            return this.__table.getSelectedAsmInd();
+        getSelectedRuleInd: function () {
+            return this.__table.getSelectedRuleInd();
         },
 
-        getSelectedAsm: function () {
-            return this.__table.getSelectedAsm();
+        getSelectedRule: function () {
+            return this.__table.getSelectedRule();
         },
 
-        getSelectedAsms: function () {
-            return this.__table.getSelectedAsms();
+        getSelectedRules: function () {
+            return this.__table.getSelectedRules();
         },
 
         cleanup: function () {
@@ -146,5 +142,6 @@ qx.Class.define("ncms.asm.AsmSelector", {
     destruct: function () {
         this.__sf = null;
         this.__table = null;
+        //this._disposeObjects("__form");
     }
 });

@@ -197,6 +197,13 @@ qx.Theme.define("ncms.theme.Appearance", {
             }
         },
 
+        /* Mtt rules selector */
+        "ncms-mtt-rules-selector": {
+            style: function (states) {
+                return {}
+            }
+        },
+
         //empty placeholder on workspace pane
         "ncms-wsa-placeholder": {
             style: function (states) {

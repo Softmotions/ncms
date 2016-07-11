@@ -271,6 +271,11 @@ qx.Class.define("ncms.Actions", {
          */
         this._action("am.tree.sync", "/rs/adm/am/tree/sync");
 
+        //================= Mtt rules
+
+        this._action("mtt.rules.select", "/rs/adm/mtt/rules/select");
+        this._action("mtt.rules.select.count", "/rs/adm/mtt/rules/select/count");
+        this._action("mtt.rules.new", "/rs/adm/mtt/rules/rule/{name}");
     },
 
     members: {

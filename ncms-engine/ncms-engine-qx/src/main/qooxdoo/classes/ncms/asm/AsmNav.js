@@ -110,7 +110,6 @@ qx.Class.define("ncms.asm.AsmNav", {
             dlg.setPosition("bottom-right");
             dlg.addListener("completed", function (ev) {
                 dlg.close();
-                qx.log.Logger.info("Rename completed");
                 this.__selector.reload();
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
