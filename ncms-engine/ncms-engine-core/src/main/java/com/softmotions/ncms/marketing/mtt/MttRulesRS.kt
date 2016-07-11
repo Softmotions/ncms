@@ -6,6 +6,7 @@ import com.softmotions.ncms.jaxrs.NcmsMessageException
 import com.softmotions.weboot.i18n.I18n
 import com.softmotions.weboot.mb.MBCriteriaQuery
 import com.softmotions.weboot.mb.MBDAOSupport
+import org.apache.commons.lang3.StringUtils
 import org.apache.ibatis.session.SqlSession
 import org.mybatis.guice.transactional.Transactional
 import org.slf4j.LoggerFactory
@@ -55,7 +56,14 @@ constructor(val sess: SqlSession,
 
     private fun createRulesQ(req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
         val cq = createCriteria()
-        var pv: String? = req.getParameter("firstRow")
+        var pv: String?
+
+        pv = req.getParameter("stext")
+        if (!StringUtils.isBlank(pv)) {
+            cq.put("name", "${pv.trim().toLowerCase()}%")
+        }
+
+        pv = req.getParameter("firstRow")
         if (pv != null) {
             val frow = Integer.valueOf(pv)
             cq.offset(frow!!)

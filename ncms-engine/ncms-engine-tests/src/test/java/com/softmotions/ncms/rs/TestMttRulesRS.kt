@@ -2,6 +2,7 @@ package com.softmotions.ncms.rs
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kevinsawicki.http.HttpRequest
+import com.github.kevinsawicki.http.HttpRequest.*
 import com.softmotions.commons.JVMResources
 import com.softmotions.ncms.WebBaseTest
 import com.softmotions.web.security.XMLWSUserDatabase
@@ -52,27 +53,25 @@ class TestMttRulesRS : WebBaseTest() {
 
     @Test(priority = 0)
     fun testRulesSelect() {
-        with(auth(HttpRequest.get(R("/select/count")))) {
+        with(auth(get(R("/select/count")))) {
             assertEquals(200, code())
-            val count = Integer.valueOf(body())
-
-            with(auth(HttpRequest.get(R("/select")))) {
-                assertEquals(200, code())
-                val body = body()
-                assertNotNull(body)
-                with(mapper.readTree(body)) {
-                    assertTrue(isArray)
-                    assertEquals(count, size())
-                }
-            }
+            assertEquals("0", body())
         }
 
+        with(auth(get(R("/select")))) {
+            assertEquals(200, code())
+            val body = body()
+            assertNotNull(body)
+            with(mapper.readTree(body)) {
+                assertTrue(isArray)
+                assertEquals(0, size())
+            }
+        }
     }
 
     @Test(priority = 1)
     fun testRuleCreate() {
-        val rname = RandomStringUtils.randomAlphanumeric(5);
-        with(auth(HttpRequest.put(R("/rule/$rname")))) {
+        with(auth(put(R("/rule/${RandomStringUtils.randomAlphanumeric(5)}")))) {
             assertEquals(200, code())
             val body = body()
             assertNotNull(body)
@@ -80,27 +79,65 @@ class TestMttRulesRS : WebBaseTest() {
                 assertTrue(hasNonNull("id"))
             }
         }
+        with(auth(get(R("/select/count")))) {
+            assertEquals(200, code())
+            assertEquals("1", body())
+        }
     }
 
-    @Test(priority = 2)
-    fun testFiltersSelect() {
-        // todo: create new rule & get rule id by name
-//        val rname = RandomStringUtils.randomAlphanumeric(6)
-//        assertEquals(200, auth(HttpRequest.put(R("/rule/$rname"))).code())
-
-        val rid = 0
-        with(auth(HttpRequest.get(R("/rule/$rid/filters/select/count")))) {
+    @Test(priority = 50)
+    fun testRuleDelete() {
+        with(auth(get(R("/select")))) {
             assertEquals(200, code())
-            assertEquals("0", body())
-        }
-
-        with(auth(HttpRequest.get(R("/rule/$rid/filters/select")))) {
-            assertEquals(200, code())
-            val body = body();
+            val body = body()
             assertNotNull(body)
             with(mapper.readTree(body)) {
                 assertTrue(isArray)
-                assertEquals(0, size())
+                forEach {
+                    log.warn(it.toString())
+                    assertTrue(it.hasNonNull("id"))
+                    with(auth(delete(R("/rule/${it.path("id").asLong()}")))) {
+                        assertEquals(200, code())
+                    }
+                }
+            }
+        }
+
+        with(auth(get(R("/select/count")))) {
+            assertEquals(200, code())
+            assertEquals("0", body())
+        }
+    }
+
+    @Test(priority = 1000)
+    fun testFiltersSelect() {
+        with(auth(put(R("/rule/${RandomStringUtils.randomAlphanumeric(6)}")))) {
+            assertEquals(200, code())
+            val cbody = body()
+            assertNotNull(cbody)
+            with(mapper.readTree(cbody)) {
+                assertTrue(isObject)
+                assertTrue(hasNonNull("id"))
+
+                val rid = path("id").asLong()
+                with(auth(HttpRequest.get(R("/rule/$rid/filters/select/count")))) {
+                    assertEquals(200, code())
+                    assertEquals("0", body())
+                }
+
+                with(auth(HttpRequest.get(R("/rule/$rid/filters/select")))) {
+                    assertEquals(200, code())
+                    val body = body();
+                    assertNotNull(body)
+                    with(mapper.readTree(body)) {
+                        assertTrue(isArray)
+                        assertEquals(0, size())
+                    }
+                }
+
+                with(auth(delete(R("/rule/$rid")))) {
+                    assertEquals(200, code())
+                }
             }
         }
     }

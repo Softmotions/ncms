@@ -16,6 +16,9 @@
             rule.mdate    AS "mdate",
             rule.flags    AS "flags"
         FROM MTT_RULES rule
+        <where>
+            <if test="name != null">LOWER(rule.name) LIKE #{name}</if>
+        </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">
             LIMIT ${CQ_LIMIT}
