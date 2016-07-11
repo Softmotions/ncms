@@ -2,9 +2,8 @@ package com.softmotions.ncms.rs
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.kevinsawicki.http.HttpRequest
-import com.github.kevinsawicki.http.HttpRequest.get
 import org.apache.commons.lang3.RandomStringUtils
+import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import kotlin.test.assertEquals
@@ -17,25 +16,29 @@ import kotlin.test.assertTrue
 @Test(groups = arrayOf("rs"))
 class TestMttRulesRS : BaseRSTest() {
 
-    private var mapper = ObjectMapper()
+    protected var mapper = ObjectMapper()
 
     @BeforeClass
     override fun setup() {
         super.setup()
-
         mapper = getEnv()?.injector?.getInstance(ObjectMapper::class.java) ?: ObjectMapper()
+    }
+
+    @AfterClass
+    override fun shutdown() {
+        super.shutdown()
     }
 
     override fun R(resource: String): String = super.R(resource = "/rs/adm/mtt/rules$resource")
 
     @Test(priority = 0)
     fun testRulesSelect() {
-        with(auth(get(R("/select/count")))) {
+        with(GET("/select/count")) {
             assertEquals(200, code())
             assertEquals("0", body())
         }
 
-        with(auth(get(R("/select")))) {
+        with(GET("/select")) {
             assertEquals(200, code())
             val body = body()
             assertNotNull(body)
@@ -187,22 +190,52 @@ class TestMttRulesRS : BaseRSTest() {
         }
     }
 
-    @Test(priority = 1000, dependsOnMethods = arrayOf("testRuleDelete"))
+    @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
     fun testFiltersSelect() {
         with(createRule()) {
             val rid = path("id").asLong()
-            with(auth(HttpRequest.get(R("/rule/$rid/filters/select/count")))) {
+            with(GET("/rule/$rid/filters/select/count")) {
                 assertEquals(200, code())
                 assertEquals("0", body())
             }
 
-            with(auth(HttpRequest.get(R("/rule/$rid/filters/select")))) {
+            with(GET("/rule/$rid/filters/select")) {
                 assertEquals(200, code())
                 val body = body();
                 assertNotNull(body)
                 with(mapper.readTree(body)) {
                     assertTrue(isArray)
                     assertEquals(0, size())
+                }
+            }
+
+            assertEquals(200, DELETE("/rule/$rid").code())
+        }
+    }
+
+    // todo: filter tests
+
+    @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
+    fun testFilterCreate() {
+        with(createRule()) {
+
+            val rid = path("id").asLong()
+            with(PUT("/rule/$rid/filter/abc")) {
+                assertEquals(200, code())
+
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isObject)
+                    assertTrue(hasNonNull("id"))
+
+                    val fid = path("id").asLong();
+                    val req = GET("/filter/$fid")
+                    assertEquals(200, req.code())
+                    @Suppress("LABEL_NAME_CLASH")
+                    assertEquals(this@with, mapper.readTree(req.body()))
+
+                    assertEquals(200, DELETE("/filter/$fid").code())
                 }
             }
 

@@ -10,12 +10,12 @@ import java.util.*
  *
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  */
-class MttRule(var id: Long? = null,
-              var name: String? = null,
-              var ordinal: Long? = null, // в правилах может быть важен порядок
-              var cdate: Date? = null,
-              var mdate: Date? = null,
-              var flags: Long = 0 // флаги режима работы правила
+data class MttRule(var id: Long? = null,
+                   var name: String? = null,
+                   var ordinal: Long? = null, // в правилах может быть важен порядок
+                   var cdate: Date? = null,
+                   var mdate: Date? = null,
+                   var flags: Long = 0 // флаги режима работы правила
 ) : Serializable {
 
     @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")

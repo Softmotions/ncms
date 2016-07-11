@@ -88,6 +88,10 @@
                                  onDelete="CASCADE"/>
     </changeSet>
 
+    <changeSet id="7.2.1" author="tve@softmotions.com">
+        <dropNotNullConstraint tableName="MTT_FILTERS" columnName="SPEC"/>
+    </changeSet>
+
     <changeSet id="7.3" author="adamansky@gmail.com">
 
         <createSequence sequenceName="SEQ_MTT_ACTION_ID"

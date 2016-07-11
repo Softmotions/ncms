@@ -1,6 +1,7 @@
 package com.softmotions.ncms.marketing.mtt
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.inject.Inject
 import com.softmotions.ncms.jaxrs.NcmsMessageException
 import com.softmotions.weboot.i18n.I18n
@@ -121,7 +122,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}/flags/{flags}")
-    open fun ruleUpdate(@PathParam("rid") rid: Long, @PathParam("flags") flags: Long): MttRule {
+    open fun ruleUpdateFlags(@PathParam("rid") rid: Long, @PathParam("flags") flags: Long): MttRule {
         update("updateRuleFlags", "id", rid, "flags", flags)
         return ruleGet(rid)
     }
@@ -189,20 +190,38 @@ constructor(val sess: SqlSession,
     }
 
 
-//    @PUT
-//    @Path("/rule/{rid}/filter")
-//    open fun filterCreate(@PathParam("rid") rid: Long, filter: ObjectNode): MttRuleFilter = MttRuleFilter()
-
     @GET
     @Path("/filter/{fid}")
+    @Transactional
     open fun filterGet(@PathParam("fid") fid: Long): MttRuleFilter = selectOne("selectFilterById", fid) ?: throw NotFoundException()
 
-//    @POST
-//    @Path("/filter/{fid}")
-//    open fun filterUpdate(@PathParam("fid") fid: Long, filter: ObjectNode): ObjectNode = mapper.createObjectNode()
+    @PUT
+    @Path("/rule/{rid}/filter/{type}")
+    @Transactional
+    open fun filterCreate(@PathParam("rid") rid: Long, @PathParam("type") type: String): MttRuleFilter {
+        val rule = ruleGet(rid)
+        val filter = MttRuleFilter(type = type.trim(), ruleId = rule.id)
+        insert("insertFilter", filter)
+        return filterGet(filter.id)
+    }
+
+    @POST
+    @Path("/filter/{fid}")
+    @Transactional
+    open fun filterUpdate(@PathParam("fid") fid: Long, filterNode: ObjectNode): MttRuleFilter {
+        val filter = filterGet(fid)
+
+        if (filterNode.hasNonNull("description")) filter.description = filterNode["description"].asText()
+        if (filterNode.hasNonNull("spec")) filter.spec = filterNode["spec"].asText()
+
+        update("updateFilter", filter)
+
+        return filterGet(filter.id)
+    }
 
     @DELETE
     @Path("/filter/{fid}")
+    @Transactional
     open fun filterDelete(@PathParam("fid") fid: Long) = delete("deleteFilterById", fid)
 
 //    @GET

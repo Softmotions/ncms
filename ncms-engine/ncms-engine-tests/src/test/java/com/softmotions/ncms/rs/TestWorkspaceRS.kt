@@ -1,6 +1,8 @@
 package com.softmotions.ncms.rs
 
 import org.testng.Assert.assertEquals
+import org.testng.annotations.AfterClass
+import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 
 /**
@@ -8,6 +10,16 @@ import org.testng.annotations.Test
  */
 @Test(groups = arrayOf("rs"))
 class TestWorkspaceRS : BaseRSTest() {
+
+    @BeforeClass
+    override fun setup() {
+        super.setup()
+    }
+
+    @AfterClass
+    override fun shutdown() {
+        super.shutdown()
+    }
 
     @Test
     fun testWorkspaceRS() {
