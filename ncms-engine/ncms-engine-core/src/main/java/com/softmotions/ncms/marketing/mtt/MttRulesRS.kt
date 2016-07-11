@@ -145,6 +145,10 @@ constructor(val sess: SqlSession,
     // TODO: events?
     open fun ruleDelete(@PathParam("rid") rid: Long) = delete("deleteRuleById", rid)
 
+    // TODO: rule enabling/disabling
+
+    // TODO: rule description edit
+
     @GET
     @Path("/rule/{rid}/filters/select")
     @Transactional
@@ -188,7 +192,6 @@ constructor(val sess: SqlSession,
 
         return cq
     }
-
 
     @GET
     @Path("/filter/{fid}")

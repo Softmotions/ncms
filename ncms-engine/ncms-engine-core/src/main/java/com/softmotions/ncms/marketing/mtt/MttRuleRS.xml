@@ -115,6 +115,7 @@
     <select id="selectFilters" resultType="map" parameterType="map">
         SELECT
         filter.id AS "id",
+        filter.rule_id AS "ruleId",
         filter.type AS "type",
         filter.description AS "description",
         filter.cdate AS "cdate",
@@ -139,6 +140,7 @@
     <select id="selectFilterById" resultType="com.softmotions.ncms.marketing.mtt.MttRuleFilter" parameterType="long">
         SELECT
           filter.id           AS "id",
+          filter.rule_id      AS "ruleId",
           filter.type         AS "type",
           filter.description  AS "description",
           filter.cdate        AS "cdate",
