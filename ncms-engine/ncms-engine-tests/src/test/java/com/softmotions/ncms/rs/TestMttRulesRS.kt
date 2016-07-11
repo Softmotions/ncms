@@ -4,13 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kevinsawicki.http.HttpRequest
 import com.github.kevinsawicki.http.HttpRequest.get
-import com.softmotions.commons.JVMResources
-import com.softmotions.ncms.WebBaseTest
-import com.softmotions.web.security.XMLWSUserDatabase
-import com.softmotions.web.security.tomcat.WSUserDatabaseRealm
-import com.softmotions.weboot.testing.tomcat.TomcatRunner
 import org.apache.commons.lang3.RandomStringUtils
-import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import kotlin.test.assertEquals
@@ -21,32 +15,18 @@ import kotlin.test.assertTrue
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  */
 @Test(groups = arrayOf("rs"))
-class TestMttRulesRS : WebBaseTest() {
+class TestMttRulesRS : BaseRSTest() {
+
+    private var mapper = ObjectMapper()
 
     @BeforeClass
-    fun setup() {
-        System.getProperty("liquibase.dropAll") ?: System.setProperty("liquibase.dropAll", "true")
-        System.getProperty("ncmstest.ds") ?: System.setProperty("ncmstest.ds", "${System.getProperty("user.home")}/.ncms-test.ds")
-        System.setProperty("WEBOOT_CFG_LOCATION", "com/softmotions/ncms/rs/cfg/test-ncms-rs-conf.xml")
-        setupWeb()
-        runner!!.start()
-    }
+    override fun setup() {
+        super.setup()
 
-    override fun configureTomcatRunner(b: TomcatRunner.Builder) {
-        super.configureTomcatRunner(b)
-        val wsdb = XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/rs/cfg/users.xml", false)
-        JVMResources.set(wsdb.databaseName, wsdb);
-        b.withRealm(WSUserDatabaseRealm(wsdb))
-    }
-
-    @AfterClass
-    fun shutdown() {
-        shutdownWeb()
+        mapper = getEnv()?.injector?.getInstance(ObjectMapper::class.java) ?: ObjectMapper()
     }
 
     override fun R(resource: String): String = super.R(resource = "/rs/adm/mtt/rules$resource")
-
-    private val mapper = ObjectMapper()
 
     @Test(priority = 0)
     fun testRulesSelect() {
@@ -76,6 +56,7 @@ class TestMttRulesRS : WebBaseTest() {
                 assertTrue(hasNonNull("id"))
             }
         }
+
         with(GET("/select/count")) {
             assertEquals(200, code())
             assertEquals("1", body())
@@ -103,6 +84,22 @@ class TestMttRulesRS : WebBaseTest() {
             assertEquals(200, code())
             assertEquals("0", body())
         }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
+    fun testRuleGet() {
+        assertEquals(404, GET("/rule/0").code())
+
+        val rule = createRule()
+        val rid = rule["id"].asLong()
+        with(GET("/rule/$rid")) {
+            assertEquals(200, code())
+            val body = body()
+            assertNotNull(body)
+            assertEquals(rule, mapper.readTree(body))
+        }
+
+        assertEquals(200, DELETE("/rule/$rid").code())
     }
 
     @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
@@ -140,7 +137,8 @@ class TestMttRulesRS : WebBaseTest() {
         var rules = arrayOf(
                 createRule(),
                 createRule(),
-                createRule())
+                createRule()
+        )
 
         assertTrue(rules[0]["ordinal"].asLong() < rules[1]["ordinal"].asLong())
         assertTrue(rules[1]["ordinal"].asLong() < rules[2]["ordinal"].asLong())
@@ -208,9 +206,7 @@ class TestMttRulesRS : WebBaseTest() {
                 }
             }
 
-            with(DELETE("/rule/$rid")) {
-                assertEquals(200, code())
-            }
+            assertEquals(200, DELETE("/rule/$rid").code())
         }
     }
 

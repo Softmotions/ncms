@@ -20,12 +20,8 @@ open class WebBaseTest {
 
     @Throws(Exception::class)
     open fun setUp() {
-        projectBasedir = System.getProperty("project.basedir")
-        if (projectBasedir == null) {
-            throw Exception("Missing required system property: 'project.basedir'")
-        }
-        System.getProperty("WEBOOT_CFG_LOCATION") ?:
-                throw Exception("Missing required system property: 'WEBOOT_CFG_LOCATION'")
+        projectBasedir = System.getProperty("project.basedir") ?: throw Exception("Missing required system property: 'project.basedir'")
+        System.getProperty("WEBOOT_CFG_LOCATION") ?: throw Exception("Missing required system property: 'WEBOOT_CFG_LOCATION'")
     }
 
     @Throws(Exception::class)
@@ -49,6 +45,10 @@ open class WebBaseTest {
 
     open protected fun getBaseWebappDir(): String {
         return Paths.get(projectBasedir, "src/main/webapp").toString()
+    }
+
+    open protected fun getEnv(): NcmsServletListener? {
+        return runner?.getContextEventListener(NcmsServletListener::class.java)
     }
 
 
