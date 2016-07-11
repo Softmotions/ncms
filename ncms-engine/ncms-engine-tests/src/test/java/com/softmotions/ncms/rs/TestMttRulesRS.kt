@@ -107,37 +107,33 @@ class TestMttRulesRS : WebBaseTest() {
 
     @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
     fun testRuleSearch() {
-        val rname = RandomStringUtils.randomAlphanumeric(8);
-        with(PUT("/rule/$rname")) {
-            assertEquals(200, code())
-            with(mapper.readTree(body())) {
-                assertTrue(hasNonNull("id"))
-                val rid = path("id").asLong()
+        with(createRule()) {
+            val rid = path("id").asLong()
+            val rname = path("id").asText();
 
-                assertEquals("1", GET("/select/count").body())
-                assertEquals("0", GET("/select/count?stext=A$rname").body())
-                assertEquals("1", GET("/select/count?stext=$rname").body())
-                with(GET("/select?stext=$rname")) {
-                    assertEquals(200, code())
-                    with(mapper.readTree(body())) {
-                        assertTrue(isArray)
-                        assertEquals(1, size())
-                        with(get(0)) {
-                            assertEquals(rid, path("id").asLong())
-                            assertEquals(rname, path("name").asText())
-                        }
+            assertEquals("1", GET("/select/count").body())
+            assertEquals("0", GET("/select/count?stext=A$rname").body())
+            assertEquals("1", GET("/select/count?stext=$rname").body())
+            with(GET("/select?stext=$rname")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(1, size())
+                    with(get(0)) {
+                        assertEquals(rid, path("id").asLong())
+                        assertEquals(rname, path("name").asText())
                     }
                 }
-                assertEquals(200, DELETE("/rule/$rid").code())
             }
+            assertEquals(200, DELETE("/rule/$rid").code())
         }
     }
 
     @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
-    fun testRuleUpdate() {
+    fun testRuleRename() {
     }
 
-    // todo: rule tests: rename, update flags, get
+// todo: rule tests: rename, update flags, get
 
     @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
     fun testRuleReorder() {
@@ -189,7 +185,32 @@ class TestMttRulesRS : WebBaseTest() {
         }
 
         rules.forEach {
-            assertEquals(200, DELETE("/rule/${it.path("id").asLong()}").code())
+            assertEquals(200, DELETE("/rule/${it["id"].asLong()}").code())
+        }
+    }
+
+    @Test(priority = 1000, dependsOnMethods = arrayOf("testRuleDelete"))
+    fun testFiltersSelect() {
+        with(createRule()) {
+            val rid = path("id").asLong()
+            with(auth(HttpRequest.get(R("/rule/$rid/filters/select/count")))) {
+                assertEquals(200, code())
+                assertEquals("0", body())
+            }
+
+            with(auth(HttpRequest.get(R("/rule/$rid/filters/select")))) {
+                assertEquals(200, code())
+                val body = body();
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    assertEquals(0, size())
+                }
+            }
+
+            with(DELETE("/rule/$rid")) {
+                assertEquals(200, code())
+            }
         }
     }
 
@@ -203,39 +224,6 @@ class TestMttRulesRS : WebBaseTest() {
 
                 @Suppress("LABEL_NAME_CLASH")
                 return this@with;
-            }
-        }
-    }
-
-    @Test(priority = 1000, dependsOnMethods = arrayOf("testRuleDelete"))
-    fun testFiltersSelect() {
-        with(PUT("/rule/${RandomStringUtils.randomAlphanumeric(6)}")) {
-            assertEquals(200, code())
-            val cbody = body()
-            assertNotNull(cbody)
-            with(mapper.readTree(cbody)) {
-                assertTrue(isObject)
-                assertTrue(hasNonNull("id"))
-
-                val rid = path("id").asLong()
-                with(auth(HttpRequest.get(R("/rule/$rid/filters/select/count")))) {
-                    assertEquals(200, code())
-                    assertEquals("0", body())
-                }
-
-                with(auth(HttpRequest.get(R("/rule/$rid/filters/select")))) {
-                    assertEquals(200, code())
-                    val body = body();
-                    assertNotNull(body)
-                    with(mapper.readTree(body)) {
-                        assertTrue(isArray)
-                        assertEquals(0, size())
-                    }
-                }
-
-                with(DELETE("/rule/$rid")) {
-                    assertEquals(200, code())
-                }
             }
         }
     }
