@@ -218,7 +218,6 @@ class TestMttRulesRS : BaseRSTest() {
     @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
     fun testFilterCreate() {
         with(createRule()) {
-
             val rid = path("id").asLong()
             with(PUT("/rule/$rid/filter/abc")) {
                 assertEquals(200, code())
@@ -238,6 +237,40 @@ class TestMttRulesRS : BaseRSTest() {
                     assertEquals(200, DELETE("/filter/$fid").code())
                 }
             }
+
+            assertEquals(200, DELETE("/rule/$rid").code())
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
+    fun testActionssSelect() {
+        with(createRule()) {
+            val rid = path("id").asLong()
+            with(GET("/rule/$rid/actions/select/count")) {
+                assertEquals(200, code())
+                assertEquals("0", body())
+            }
+
+            with(GET("/rule/$rid/actions/select")) {
+                assertEquals(200, code())
+                val body = body();
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    assertEquals(0, size())
+                }
+            }
+
+            assertEquals(200, DELETE("/rule/$rid").code())
+        }
+    }
+
+    // todo: action tests
+
+    @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
+    fun testActionCreate() {
+        with(createRule()) {
+            val rid = path("id").asLong()
 
             assertEquals(200, DELETE("/rule/$rid").code())
         }

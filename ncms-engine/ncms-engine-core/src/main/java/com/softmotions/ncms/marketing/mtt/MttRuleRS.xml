@@ -156,7 +156,10 @@
         WHERE id = #{id}
     </delete>
 
-    <insert id="insertFilter" parameterType="com.softmotions.ncms.marketing.mtt.MttRuleFilter" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertFilter"
+            parameterType="com.softmotions.ncms.marketing.mtt.MttRuleFilter"
+            useGeneratedKeys="true"
+            keyProperty="id">
         INSERT INTO MTT_FILTERS (type, rule_id, cdate, mdate)
         VALUES (#{type}, #{ruleId}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     </insert>
@@ -166,5 +169,35 @@
         SET description = #{description}, spec = #{spec}, mdate = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
+
+    <!--==================================================-->
+    <!--================== ACTIONS =======================-->
+    <!--==================================================-->
+
+    <select id="selectActions" resultType="map" parameterType="map">
+        SELECT
+        action.id AS "id",
+        action.rule_id AS "ruleId",
+        action.type AS "type",
+        action.ordinal AS "ordinal",
+        action.description AS "description",
+        action.cdate AS "cdate",
+        action.mdate AS "mdate"
+        FROM MTT_ACTIONS action
+        WHERE action.rule_id = #{rid}
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            LIMIT ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                OFFSET ${CQ_OFFSET}
+            </if>
+        </if>
+    </select>
+
+    <select id="selectActionsCount" resultType="long" parameterType="map">
+        SELECT COUNT(*)
+        FROM MTT_ACTIONS action
+        WHERE action.rule_id = #{rid}
+    </select>
 
 </mapper>

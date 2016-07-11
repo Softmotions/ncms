@@ -10,7 +10,7 @@ import java.util.*
  *
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  */
-data class MttRule(var id: Long? = null,
+data class MttRule(var id: Long = 0,
                    var name: String? = null,
                    var ordinal: Long? = null, // в правилах может быть важен порядок
                    var cdate: Date? = null,

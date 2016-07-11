@@ -53,31 +53,20 @@ constructor(val sess: SqlSession,
     @Path("/select/count")
     @Produces("text/plain")
     @Transactional
-    open fun rulesCount(@Context req: HttpServletRequest): Int =
-            selectOneByCriteria(createRulesQ(req).withStatement("selectRulesCount"))
+    open fun rulesCount(@Context req: HttpServletRequest): Long =
+            selectOneByCriteria(createRulesQ(req), "selectRulesCount")
 
     private fun createRulesQ(req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
         val cq = createCriteria()
-        var pv: String?
+        val pv: String?
 
         pv = req.getParameter("stext")
         if (!StringUtils.isBlank(pv)) {
             cq.put("name", "${pv.trim().toLowerCase()}%")
         }
 
-        pv = req.getParameter("firstRow")
-        if (pv != null) {
-            val frow = Integer.valueOf(pv)
-            cq.offset(frow!!)
-            pv = req.getParameter("lastRow")
-            if (pv != null) {
-                val lrow = Integer.valueOf(pv)
-                cq.limit(Math.abs(frow - lrow!!) + 1)
-            }
-        }
-
+        initCriteriaPaging(cq, req)
         cq.orderBy("ordinal")
-
         return cq;
     }
 
@@ -157,9 +146,8 @@ constructor(val sess: SqlSession,
     @GET
     @Path("/rule/{rid}/filters/select")
     @Transactional
-    open fun filters(@Context req: HttpServletRequest,
-                     @PathParam("rid") rid: Long): Response = Response
-            .ok(StreamingOutput { output ->
+    open fun filters(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Response =
+            Response.ok(StreamingOutput { output ->
                 with(mapper.factory.createGenerator(output)) {
                     writeStartArray()
                     selectByCriteria(createFiltersQ(rid, req), { context ->
@@ -170,31 +158,20 @@ constructor(val sess: SqlSession,
                     flush()
                 }
             })
-            .type("application/json;charset=UTF-8")
-            .build()
+                    .type("application/json;charset=UTF-8")
+                    .build()
 
     @GET
     @Path("/rule/{rid}/filters/select/count")
     @Produces("text/plain")
     @Transactional
     open fun filtersCount(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Long =
-            selectOneByCriteria(createFiltersQ(rid, req).withStatement("selectFiltersCount"))
+            selectOneByCriteria(createFiltersQ(rid, req), "selectFiltersCount")
 
     private fun createFiltersQ(rid: Long, req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
         val cq = createCriteria()
-        var pv: String? = req.getParameter("firstRow")
-        if (pv != null) {
-            val frow = Integer.valueOf(pv)
-            cq.offset(frow!!)
-            pv = req.getParameter("lastRow")
-            if (pv != null) {
-                val lrow = Integer.valueOf(pv)
-                cq.limit(Math.abs(frow - lrow!!) + 1)
-            }
-        }
-
+        initCriteriaPaging(cq, req)
         cq.put("rid", rid)
-
         return cq
     }
 
@@ -234,18 +211,49 @@ constructor(val sess: SqlSession,
     open fun filterDelete(@PathParam("fid") fid: Long) =
             delete("deleteFilterById", fid)
 
-//    @GET
-//    @Path("/rule/{rid}/actions")
-//    open fun actionsList(@PathParam("rid") rid: Long): ArrayNode = mapper.createArrayNode()
+    @GET
+    @Path("/rule/{rid}/actions/select")
+    @Transactional
+    open fun actions(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Response =
+            Response.ok(StreamingOutput { output ->
+                with(mapper.factory.createGenerator(output)) {
+                    writeStartArray()
+                    selectByCriteria(createActionsQ(rid, req), { context ->
+                        @Suppress("UNCHECKED_CAST")
+                        writeObject(context.resultObject as Map<String, Any>)
+                    }, "selectActions")
+                    writeEndArray()
+                    flush()
+                }
+            })
+                    .type("application/json;charset=UTF-8")
+                    .build()
+
+    @GET
+    @Path("/rule/{rid}/actions/select/count")
+    @Produces("text/plain")
+    @Transactional
+    open fun actionsCount(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Long =
+            selectOneByCriteria(createActionsQ(rid, req), "selectActionsCount")
+
+    private fun createActionsQ(rid: Long, req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
+        val cq = createCriteria()
+        initCriteriaPaging(cq, req)
+        cq.put("rid", rid)
+        cq.orderBy("ordinal")
+        return cq
+    }
 
 //    @PUT
 //    @Path("/rule/{rid}/action")
 //    open fun actionCreate(@PathParam("rid") rid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
 
-//    @GET
-//    @Path("/action/{aid}")
-//    open fun actionGet(@PathParam("aid") aid: Long): ObjectNode = mapper.createObjectNode()
-//
+    @GET
+    @Path("/action/{aid}")
+    @Transactional
+    open fun actionGet(@PathParam("aid") aid: Long): MttRuleAction =
+            selectOne("selectActionById", aid) ?: throw NotFoundException()
+
 //    @POST
 //    @Path("/action/{aid}")
 //    open fun actionUpdate(@PathParam("aid") aid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
@@ -257,4 +265,17 @@ constructor(val sess: SqlSession,
 //    @POST
 //    @Path("/action/{aid}/move")
 //    open fun actionMove(@PathParam("aid") aid: Long, spec: ObjectNode): ArrayNode = mapper.createArrayNode()
+
+    private fun initCriteriaPaging(cq: MBCriteriaQuery<MBCriteriaQuery<*>>, req: HttpServletRequest) {
+        var pv: String? = req.getParameter("firstRow")
+        if (pv != null) {
+            val frow = Integer.valueOf(pv)
+            cq.offset(frow!!)
+            pv = req.getParameter("lastRow")
+            if (pv != null) {
+                val lrow = Integer.valueOf(pv)
+                cq.limit(Math.abs(frow - lrow!!) + 1)
+            }
+        }
+    }
 }
