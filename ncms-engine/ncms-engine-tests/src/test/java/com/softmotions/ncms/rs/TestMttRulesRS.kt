@@ -109,7 +109,7 @@ class TestMttRulesRS : WebBaseTest() {
     fun testRuleSearch() {
         with(createRule()) {
             val rid = path("id").asLong()
-            val rname = path("id").asText();
+            val rname = path("name").asText();
 
             assertEquals("1", GET("/select/count").body())
             assertEquals("0", GET("/select/count?stext=A$rname").body())
