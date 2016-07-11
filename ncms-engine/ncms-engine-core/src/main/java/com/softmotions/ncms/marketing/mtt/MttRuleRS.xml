@@ -30,6 +30,9 @@
 
     <select id="selectRulesCount" resultType="long" parameterType="map">
         SELECT COUNT(*) FROM MTT_RULES rule
+        <where>
+            <if test="name != null">LOWER(rule.name) LIKE #{name}</if>
+        </where>
     </select>
 
     <select id="selectRuleById" resultType="com.softmotions.ncms.marketing.mtt.MttRule" parameterType="long">
