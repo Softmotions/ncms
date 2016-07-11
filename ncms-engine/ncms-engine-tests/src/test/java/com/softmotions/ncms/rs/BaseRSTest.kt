@@ -15,7 +15,7 @@ open class BaseRSTest : WebBaseTest() {
 
     @BeforeClass
     open fun setup() {
-        System.getProperty("liquibase.dropAll") ?: System.setProperty("liquibase.dropAll", "true")
+        System.getProperty("liquibase.dropAll") ?: System.setProperty("liquibase.dropAll", "false")
         System.getProperty("ncmstest.ds") ?: System.setProperty("ncmstest.ds", "${System.getProperty("user.home")}/.ncms-test.ds")
         System.setProperty("WEBOOT_CFG_LOCATION", "com/softmotions/ncms/rs/cfg/test-ncms-rs-conf.xml")
         setupWeb()
