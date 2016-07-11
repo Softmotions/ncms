@@ -11,7 +11,7 @@ import java.util.*
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  */
 class MttRule(var id: Long? = null,
-              var name: String,
+              var name: String? = null,
               var ordinal: Long? = null, // в правилах может быть важен порядок
               var cdate: Date? = null,
               var mdate: Date? = null,

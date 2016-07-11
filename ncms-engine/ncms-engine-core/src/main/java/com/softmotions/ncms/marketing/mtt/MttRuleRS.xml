@@ -5,16 +5,18 @@
 
 <mapper namespace="com.softmotions.ncms.marketing.mtt.MttRulesRS">
 
-    <!-- RULES-->
+    <!--==================================================-->
+    <!--==================== RULES =======================-->
+    <!--==================================================-->
 
     <select id="selectRules" resultType="map" parameterType="map">
         SELECT
-            rule.id       AS "id",
-            rule.name     AS "name",
-            rule.ordinal  AS "ordinal",
-            rule.cdate    AS "cdate",
-            rule.mdate    AS "mdate",
-            rule.flags    AS "flags"
+        rule.id AS "id",
+        rule.name AS "name",
+        rule.ordinal AS "ordinal",
+        rule.cdate AS "cdate",
+        rule.mdate AS "mdate",
+        rule.flags AS "flags"
         FROM MTT_RULES rule
         <where>
             <if test="name != null">LOWER(rule.name) LIKE #{name}</if>
@@ -65,7 +67,7 @@
 
     <update id="updateRuleName" parameterType="map">
         UPDATE MTT_RULES
-        SET name = #{name}
+        SET name = #{name}, mdate = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
 
@@ -75,15 +77,48 @@
         WHERE id = #{id}
     </delete>
 
-    <!-- FILTERS -->
+    <update id="updateRuleFlags" parameterType="map">
+        UPDATE MTT_RULES
+        SET flags = #{flags}, mdate = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectPreviousRule" resultType="long" parameterType="long">
+        SELECT rule.ordinal
+        FROM MTT_RULES rule
+        WHERE rule.ordinal &lt; #{ordinal}
+        ORDER BY ordinal DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectNextRule" resultType="long" parameterType="long">
+        SELECT rule.ordinal
+        FROM MTT_RULES rule
+        WHERE rule.ordinal &gt; #{ordinal}
+        ORDER BY ordinal ASC
+        LIMIT 1
+    </select>
+
+    <update id="updateRuleOrdinal" parameterType="map">
+        UPDATE MTT_RULES
+        SET ordinal = #{newOrdinal}, mdate = CURRENT_TIMESTAMP
+        <where>
+            <if test="ordinal != null">ordinal = #{ordinal}</if>
+            <if test="id != null">id= #{id}</if>
+        </where>
+    </update>
+
+    <!--==================================================-->
+    <!--================== FILTERS =======================-->
+    <!--==================================================-->
 
     <select id="selectFilters" resultType="map" parameterType="map">
         SELECT
-            filter.id           AS "id",
-            filter.type         AS "type",
-            filter.description  AS "description",
-            filter.cdate        AS "cdate",
-            filter.mdate        AS "mdate"
+        filter.id AS "id",
+        filter.type AS "type",
+        filter.description AS "description",
+        filter.cdate AS "cdate",
+        filter.mdate AS "mdate"
         FROM MTT_FILTERS filter
         WHERE filter.rule_id = #{rid}
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>

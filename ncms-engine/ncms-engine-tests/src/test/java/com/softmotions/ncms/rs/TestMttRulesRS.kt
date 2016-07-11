@@ -1,5 +1,6 @@
 package com.softmotions.ncms.rs
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kevinsawicki.http.HttpRequest
 import com.github.kevinsawicki.http.HttpRequest.get
@@ -128,6 +129,80 @@ class TestMttRulesRS : WebBaseTest() {
                     }
                 }
                 assertEquals(200, DELETE("/rule/$rid").code())
+            }
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
+    fun testRuleUpdate() {
+    }
+
+    // todo: rule tests: rename, update flags, get
+
+    @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
+    fun testRuleReorder() {
+        var rules = arrayOf(
+                createRule(),
+                createRule(),
+                createRule())
+
+        assertTrue(rules[0]["ordinal"].asLong() < rules[1]["ordinal"].asLong())
+        assertTrue(rules[1]["ordinal"].asLong() < rules[2]["ordinal"].asLong())
+
+        with(GET("/select")) {
+            assertEquals(200, code())
+            with(mapper.readTree(body())) {
+                assertTrue(isArray)
+                assertEquals(3, size())
+                forEachIndexed { index, rule ->
+                    assertEquals(rules[index]["id"].asLong(), rule["id"].asLong())
+                }
+            }
+        }
+
+        // actually, nothing changed
+        assertEquals(204, POST("/rule/${rules[2]["id"].asLong()}/move/1").code())
+        assertEquals(204, POST("/rule/${rules[0]["id"].asLong()}/move/-1").code())
+        with(GET("/select")) {
+            assertEquals(200, code())
+            with(mapper.readTree(body())) {
+                assertTrue(isArray)
+                assertEquals(3, size())
+                forEachIndexed { index, rule ->
+                    assertEquals(rules[index]["id"].asLong(), rule["id"].asLong())
+                }
+            }
+        }
+
+        // swap first and second rule
+        assertEquals(204, POST("/rule/${rules[0]["id"].asLong()}/move/1").code())
+        rules = arrayOf(rules[1], rules[0], rules[2])
+        with(GET("/select")) {
+            assertEquals(200, code())
+            with(mapper.readTree(body())) {
+                assertTrue(isArray)
+                assertEquals(3, size())
+                forEachIndexed { index, rule ->
+                    assertEquals(rules[index]["id"].asLong(), rule["id"].asLong())
+                }
+            }
+        }
+
+        rules.forEach {
+            assertEquals(200, DELETE("/rule/${it.path("id").asLong()}").code())
+        }
+    }
+
+    private fun createRule(): JsonNode {
+        with(PUT("/rule/${RandomStringUtils.randomAlphanumeric(12)}")) {
+            assertEquals(200, code())
+            with(mapper.readTree(body())) {
+                assertTrue(isObject)
+                assertTrue(hasNonNull("id"))
+                assertTrue(hasNonNull("ordinal"))
+
+                @Suppress("LABEL_NAME_CLASH")
+                return this@with;
             }
         }
     }

@@ -74,13 +74,15 @@ constructor(val sess: SqlSession,
             }
         }
 
+        cq.orderBy("ordinal")
+
         return cq;
     }
 
     @GET
     @Path("/rule/{rid}")
     @Transactional
-    open fun ruleGet(@PathParam("rid") rid: Long): MttRule = selectOne("selectRuleById", rid)
+    open fun ruleGet(@PathParam("rid") rid: Long): MttRule = selectOne("selectRuleById", rid) ?: throw NotFoundException()
 
     @PUT
     @Path("/rule/{name}")
@@ -117,9 +119,24 @@ constructor(val sess: SqlSession,
         return ruleGet(rid);
     }
 
-//    @POST
-//    @Path("/rule/{rid}")
-//    open fun ruleUpdate(@PathParam("rid") rid: Long, rule: ObjectNode): ObjectNode = mapper.createObjectNode()
+    @POST
+    @Path("/rule/{rid}/flags/{flags}")
+    open fun ruleUpdate(@PathParam("rid") rid: Long, @PathParam("flags") flags: Long): MttRule {
+        update("updateRuleFlags", "id", rid, "flags", flags)
+        return ruleGet(rid)
+    }
+
+    /**
+     * @param direction 1 - move down (increase ordinal), -1 - move up (decrease ordinal)
+     */
+    @POST
+    @Path("/rule/{rid}/move/{direction}")
+    open fun ruleMove(@PathParam("rid") rid: Long, @PathParam("direction") direction: Byte) {
+        val rule = ruleGet(rid)
+        val sordinal = selectOne<Long?>(if (direction < 0) "selectPreviousRule" else "selectNextRule", rule.ordinal) ?: return
+        update("updateRuleOrdinal", "ordinal", sordinal, "newOrdinal", rule.ordinal)
+        update("updateRuleOrdinal", "id", rule.id, "newOrdinal", sordinal)
+    }
 
     @DELETE
     @Path("/rule/{rid}")
@@ -178,7 +195,7 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/filter/{fid}")
-    open fun filterGet(@PathParam("fid") fid: Long): MttRuleFilter = selectOne("selectFilterById", fid)
+    open fun filterGet(@PathParam("fid") fid: Long): MttRuleFilter = selectOne("selectFilterById", fid) ?: throw NotFoundException()
 
 //    @POST
 //    @Path("/filter/{fid}")
