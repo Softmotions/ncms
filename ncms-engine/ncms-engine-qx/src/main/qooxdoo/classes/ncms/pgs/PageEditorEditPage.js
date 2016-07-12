@@ -175,31 +175,35 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
 
         __cleanupFormPane: function () {
-            if (this.__scroll) {
-                this.__scroll.destroy();
-                this.__scroll = null;
-            }
             if (this.__form != null) {
-                var items = this.__form.getItems();
-                for (var k in items) {
-                    var w = items[k];
-                    var am = w.getUserData("attributeManager");
-                    w.setUserData("attributeManager", null);
-                    if (am) {
+                try {
+                    var items = this.__form.getItems();
+                    for (var k in items) {
+                        var w = items[k];
+                        var am = w.getUserData("attributeManager");
+                        w.setUserData("attributeManager", null);
+                        if (am) {
+                            try {
+                                am.dispose();
+                            } catch (e) {
+                                qx.log.Logger.error(e);
+                            }
+                        }
                         try {
-                            am.dispose();
+                            w.destroy();
                         } catch (e) {
                             qx.log.Logger.error(e);
                         }
                     }
-                    try {
-                        w.destroy();
-                    } catch (e) {
-                        qx.log.Logger.error(e);
-                    }
+                } catch (ignored) {
+                } finally {
+                    this.__form.dispose();
+                    this.__form = null;
                 }
-                this.__form.dispose();
-                this.__form = null;
+            }
+            if (this.__scroll) {
+                this.__scroll.destroy();
+                this.__scroll = null;
             }
         },
 

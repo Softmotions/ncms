@@ -205,7 +205,7 @@ msgstr "Имя класса контроллера сборки (assembly)"
 msgid "Controller"
 msgstr "Контроллер"
 
-#: ncms/pgs/PageEditorEditPage.js:453 ncms/asm/AsmEditor.js:112
+#: ncms/pgs/PageEditorEditPage.js:457 ncms/asm/AsmEditor.js:112
 msgid "Published"
 msgstr "Опубликовано"
 
@@ -987,35 +987,35 @@ msgstr "Добавить пользователя в список прав"
 msgid "Remove user recursively"
 msgstr "Убрать пользователя (рекурсивно)"
 
-#: ncms/pgs/PageEditorEditPage.js:43 ncms/pgs/PageEditorEditPage.js:453
+#: ncms/pgs/PageEditorEditPage.js:43 ncms/pgs/PageEditorEditPage.js:457
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:85 ncms/pgs/PageEditorEditPage.js:293
+#: ncms/pgs/PageEditorEditPage.js:85 ncms/pgs/PageEditorEditPage.js:297
 msgid "Please select the template page"
 msgstr "Пожалуйста, выберите шаблон для страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:297
+#: ncms/pgs/PageEditorEditPage.js:301
 msgid "Templates"
 msgstr "Шаблоны"
 
-#: ncms/pgs/PageEditorEditPage.js:345
+#: ncms/pgs/PageEditorEditPage.js:349
 msgid "Page fields contain errors"
 msgstr "В полях страницы обнаружены ошибки"
 
-#: ncms/pgs/PageEditorEditPage.js:368
+#: ncms/pgs/PageEditorEditPage.js:372
 msgid "Failed to save page."
 msgstr "Ошибка при сохранении страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:386
+#: ncms/pgs/PageEditorEditPage.js:390
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:394
+#: ncms/pgs/PageEditorEditPage.js:398
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:436
+#: ncms/pgs/PageEditorEditPage.js:440
 msgid ""
 "Are you sure to unpublish this page? There are pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>"
@@ -1024,11 +1024,11 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" "
 "target='_blank'>списком ссылающихся страниц</a>"
 
-#: ncms/pgs/PageEditorEditPage.js:459
+#: ncms/pgs/PageEditorEditPage.js:463
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:471
+#: ncms/pgs/PageEditorEditPage.js:475
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 
