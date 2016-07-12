@@ -139,13 +139,13 @@
 
     <select id="selectFilterById" resultType="com.softmotions.ncms.marketing.mtt.MttRuleFilter" parameterType="long">
         SELECT
-          filter.id           AS "id",
-          filter.rule_id      AS "ruleId",
-          filter.type         AS "type",
-          filter.description  AS "description",
-          filter.cdate        AS "cdate",
-          filter.mdate        AS "mdate",
-          filter.spec         AS "spec"
+            filter.id           AS "id",
+            filter.rule_id      AS "ruleId",
+            filter.type         AS "type",
+            filter.description  AS "description",
+            filter.cdate        AS "cdate",
+            filter.mdate        AS "mdate",
+            filter.spec         AS "spec"
         FROM MTT_FILTERS filter
         WHERE filter.id = #{id}
     </select>
@@ -199,5 +199,33 @@
         FROM MTT_ACTIONS action
         WHERE action.rule_id = #{rid}
     </select>
+
+    <insert id="insertAction"
+            parameterType="com.softmotions.ncms.marketing.mtt.MttRuleAction"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO MTT_ACTIONS (id, type, rule_id, cdate, mdate)
+        VALUES (SEQ_MTT_ACTION_ID.NEXTVAL, #{type}, #{ruleId}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+
+    <select id="selectActionById" resultType="com.softmotions.ncms.marketing.mtt.MttRuleAction" parameterType="long">
+        SELECT
+            action.id           AS "id",
+            action.rule_id      AS "ruleId",
+            action.ordinal      AS "ordinal",
+            action.type         AS "type",
+            action.description  AS "description",
+            action.spec         AS "spec",
+            action.cdate        AS "cdate",
+            action.mdate        AS "mdate"
+        FROM MTT_ACTIONS action
+        WHERE action.id = #{id}
+    </select>
+
+    <delete id="deleteActionById" parameterType="long">
+        DELETE
+        FROM MTT_ACTIONS
+        WHERE id = #{id}
+    </delete>
 
 </mapper>

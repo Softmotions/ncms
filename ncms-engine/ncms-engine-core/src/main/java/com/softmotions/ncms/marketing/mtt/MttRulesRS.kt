@@ -186,6 +186,7 @@ constructor(val sess: SqlSession,
     @Transactional
     open fun filterCreate(@PathParam("rid") rid: Long, @PathParam("type") type: String): MttRuleFilter {
         val rule = ruleGet(rid)
+        if (StringUtils.isBlank(type)) throw BadRequestException()
         val filter = MttRuleFilter(type = type.trim(), ruleId = rule.id)
         insert("insertFilter", filter)
         return filterGet(filter.id)
@@ -244,24 +245,32 @@ constructor(val sess: SqlSession,
         return cq
     }
 
-//    @PUT
-//    @Path("/rule/{rid}/action")
-//    open fun actionCreate(@PathParam("rid") rid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
-
     @GET
     @Path("/action/{aid}")
     @Transactional
     open fun actionGet(@PathParam("aid") aid: Long): MttRuleAction =
             selectOne("selectActionById", aid) ?: throw NotFoundException()
 
+    @PUT
+    @Path("/rule/{rid}/action/{type}")
+    @Transactional
+    open fun actionCreate(@PathParam("rid") rid: Long, @PathParam("type") type: String): MttRuleAction {
+        val rule = ruleGet(rid)
+        if (StringUtils.isBlank(type)) throw BadRequestException()
+        val action = MttRuleAction(type = type.trim(), ruleId = rule.id)
+        insert("insertAction", action)
+        return actionGet(action.id)
+    }
+
 //    @POST
 //    @Path("/action/{aid}")
 //    open fun actionUpdate(@PathParam("aid") aid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
-//
-//    @DELETE
-//    @Path("/action/{aid}")
-//    open fun actionDelete(@PathParam("aid") aid: Long) = {}
-//
+
+    @DELETE
+    @Path("/action/{aid}")
+    open fun actionDelete(@PathParam("aid") aid: Long) =
+            delete("deleteActionById", aid)
+
 //    @POST
 //    @Path("/action/{aid}/move")
 //    open fun actionMove(@PathParam("aid") aid: Long, spec: ObjectNode): ArrayNode = mapper.createArrayNode()

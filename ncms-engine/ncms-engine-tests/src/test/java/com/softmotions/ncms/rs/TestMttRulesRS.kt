@@ -219,7 +219,8 @@ class TestMttRulesRS : BaseRSTest() {
     fun testFilterCreate() {
         with(createRule()) {
             val rid = path("id").asLong()
-            with(PUT("/rule/$rid/filter/abc")) {
+            val ftype = RandomStringUtils.randomAlphabetic(6).toLowerCase()
+            with(PUT("/rule/$rid/filter/$ftype")) {
                 assertEquals(200, code())
 
                 val body = body()
@@ -227,6 +228,7 @@ class TestMttRulesRS : BaseRSTest() {
                 with(mapper.readTree(body)) {
                     assertTrue(isObject)
                     assertTrue(hasNonNull("id"))
+                    assertEquals(ftype, path("type").asText(null))
 
                     val fid = path("id").asLong();
                     val req = GET("/filter/$fid")
@@ -243,7 +245,7 @@ class TestMttRulesRS : BaseRSTest() {
     }
 
     @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
-    fun testActionssSelect() {
+    fun testActionsSelect() {
         with(createRule()) {
             val rid = path("id").asLong()
             with(GET("/rule/$rid/actions/select/count")) {
@@ -271,6 +273,26 @@ class TestMttRulesRS : BaseRSTest() {
     fun testActionCreate() {
         with(createRule()) {
             val rid = path("id").asLong()
+            val atype = RandomStringUtils.randomAlphabetic(6).toLowerCase()
+            with(PUT("/rule/$rid/action/$atype")) {
+                assertEquals(200, code())
+
+                val body = body();
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isObject)
+                    assertTrue(hasNonNull("id"))
+                    assertEquals(atype, path("type").asText(null))
+
+                    val aid = path("id").asLong()
+                    val req = GET("/action/$aid")
+                    assertEquals(200, req.code())
+                    @Suppress("LABEL_NAME_CLASH")
+                    assertEquals(this@with, mapper.readTree(req.body()))
+
+                    assertEquals(200, DELETE("/action/$aid").code())
+                }
+            }
 
             assertEquals(200, DELETE("/rule/$rid").code())
         }
