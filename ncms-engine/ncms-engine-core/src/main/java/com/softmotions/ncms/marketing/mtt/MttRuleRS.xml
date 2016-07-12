@@ -228,4 +228,29 @@
         WHERE id = #{id}
     </delete>
 
+    <select id="selectPreviousRuleAction" resultType="long" parameterType="map">
+        SELECT action.ordinal
+        FROM MTT_ACTIONS action
+        WHERE action.rule_id = #{rid} AND action.ordinal &lt; #{ordinal}
+        ORDER BY ordinal DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectNextRuleAction" resultType="long" parameterType="map">
+        SELECT action.ordinal
+        FROM MTT_ACTIONS action
+        WHERE action.rule_id = #{rid} AND action.ordinal &gt; #{ordinal}
+        ORDER BY ordinal ASC
+        LIMIT 1
+    </select>
+
+    <update id="updateActionOrdinal" parameterType="map">
+        UPDATE MTT_ACTIONS
+        SET ordinal = #{newOrdinal}, mdate = CURRENT_TIMESTAMP
+        <where>
+            <if test="ordinal != null">ordinal = #{ordinal}</if>
+            <if test="id != null">id= #{id}</if>
+        </where>
+    </update>
+
 </mapper>

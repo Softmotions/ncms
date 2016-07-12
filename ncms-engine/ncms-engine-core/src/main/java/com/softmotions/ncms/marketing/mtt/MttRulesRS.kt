@@ -122,20 +122,22 @@ constructor(val sess: SqlSession,
     @POST
     @Path("/rule/{rid}/move/up")
     open fun ruleMoveUp(@PathParam("rid") rid: Long) =
-            ruleMove(rid, false)
+            ruleMove(ruleGet(rid), false)
 
     @POST
     @Path("/rule/{rid}/move/down")
     open fun ruleMoveDown(@PathParam("rid") rid: Long) =
-            ruleMove(rid, true)
+            ruleMove(ruleGet(rid), true)
 
     /**
      * @param direction true - move down (increase ordinal), false - move up (decrease ordinal)
      */
-    private fun ruleMove(rid: Long, direction: Boolean) {
-        val rule = ruleGet(rid)
-        val sordinal =
-                selectOne<Long?>(if (direction) "selectNextRule" else "selectPreviousRule", rule.ordinal) ?: return
+    private fun ruleMove(rule: MttRule, direction: Boolean) {
+        val sordinal = when {
+            direction -> selectOne<Long?>("selectNextRule", rule.ordinal)
+            else -> selectOne<Long?>("selectPreviousRule", rule.ordinal)
+        }
+        sordinal ?: return
         update("updateRuleOrdinal", "ordinal", sordinal, "newOrdinal", rule.ordinal)
         update("updateRuleOrdinal", "id", rule.id, "newOrdinal", sordinal)
     }
@@ -288,18 +290,23 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/action/{aid}/move/up")
-    open fun actionMoveUp(@PathParam("aid") aid: Long) {
-        actionMove(aid, false)
-    }
+    open fun actionMoveUp(@PathParam("aid") aid: Long) =
+            actionMove(actionGet(aid), false)
 
     @POST
     @Path("/action/{aid}/move/down")
-    open fun actionMoveDown(@PathParam("aid") aid: Long) {
-        actionMove(aid, true)
-    }
+    open fun actionMoveDown(@PathParam("aid") aid: Long) =
+            actionMove(actionGet(aid), true)
 
-    private fun actionMove(aid: Long, direction: Boolean) {
-// TODO:
+    private fun actionMove(action: MttRuleAction, direction: Boolean) {
+        val sordinal = when {
+            direction -> selectOne<Long?>("selectNextRuleAction", "rid", action.ruleId, "ordinal", action.ordinal)
+            else -> selectOne<Long?>("selectPreviousRuleAction", "rid", action.ruleId, "ordinal", action.ordinal)
+        }
+
+        sordinal ?: return
+        update("updateActionOrdinal", "ordinal", sordinal, "newOrdinal", action.ordinal)
+        update("updateActionOrdinal", "id", action.id, "newOrdinal", sordinal)
     }
 
     private fun initCriteriaPaging(cq: MBCriteriaQuery<MBCriteriaQuery<*>>, req: HttpServletRequest) {

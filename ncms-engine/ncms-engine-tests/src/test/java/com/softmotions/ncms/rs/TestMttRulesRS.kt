@@ -298,12 +298,88 @@ class TestMttRulesRS : BaseRSTest() {
         }
     }
 
+    @Test(dependsOnMethods = arrayOf("testActionCreate"))
+    fun testActionReorder() {
+        with(createRule()) {
+            val rid = path("id").asLong()
+            var actions = arrayOf(
+                    createRuleAction(rid),
+                    createRuleAction(rid),
+                    createRuleAction(rid)
+            )
+
+            assertTrue(actions[0]["ordinal"].asLong() < actions[1]["ordinal"].asLong())
+            assertTrue(actions[1]["ordinal"].asLong() < actions[2]["ordinal"].asLong())
+
+
+            with(GET("/rule/$rid/actions/select")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(3, size())
+                    forEachIndexed { index, rule ->
+                        assertEquals(actions[index]["id"].asLong(), rule["id"].asLong())
+                    }
+                }
+            }
+
+            // actually, nothing changed
+            assertEquals(204, POST("/action/${actions[2]["id"].asLong()}/move/down").code())
+            assertEquals(204, POST("/action/${actions[0]["id"].asLong()}/move/up").code())
+            with(GET("/rule/$rid/actions/select")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(3, size())
+                    forEachIndexed { index, rule ->
+                        assertEquals(actions[index]["id"].asLong(), rule["id"].asLong())
+                    }
+                }
+            }
+
+            // swap first and second action
+            assertEquals(204, POST("/action/${actions[0]["id"].asLong()}/move/down").code())
+            actions = arrayOf(actions[1], actions[0], actions[2])
+            with(GET("/rule/$rid/actions/select")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(3, size())
+                    forEachIndexed { index, rule ->
+                        assertEquals(actions[index]["id"].asLong(), rule["id"].asLong())
+                    }
+                }
+            }
+
+            actions.forEach {
+                assertEquals(200, DELETE("/action/${it["id"].asLong()}").code())
+            }
+
+            assertEquals(200, DELETE("/rule/$rid").code())
+        }
+    }
+
     private fun createRule(): JsonNode {
         with(PUT("/rule/${RandomStringUtils.randomAlphanumeric(12)}")) {
             assertEquals(200, code())
             with(mapper.readTree(body())) {
                 assertTrue(isObject)
                 assertTrue(hasNonNull("id"))
+                assertTrue(hasNonNull("ordinal"))
+
+                @Suppress("LABEL_NAME_CLASH")
+                return this@with;
+            }
+        }
+    }
+
+    private fun createRuleAction(rid: Long): JsonNode {
+        with(PUT("/rule/$rid/action/${RandomStringUtils.randomAlphabetic(8).toLowerCase()}")) {
+            assertEquals(200, code())
+            with(mapper.readTree(body())) {
+                assertTrue(isObject)
+                assertTrue(hasNonNull("id"))
+                assertTrue(hasNonNull("type"))
                 assertTrue(hasNonNull("ordinal"))
 
                 @Suppress("LABEL_NAME_CLASH")
