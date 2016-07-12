@@ -96,7 +96,7 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
         },
 
         reload: function (vspec) {
-            this.__table.getTableModel().reloadData();
+            this.__table.getTableModel().reloadData(vspec);
             this.__table.resetSelection();
         },
 
@@ -122,6 +122,10 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
 
         cleanup: function () {
             this.__table.cleanup();
+        },
+
+        getRowCount: function() {
+            return this.__table.getRowCount();
         },
 
         __search: function (val) {

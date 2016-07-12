@@ -1,7 +1,7 @@
 /**
  * Virtual table of mtt rules.
  *
- * @asset(ncms/icon/16/mtt/*)
+ * //asset(ncms/icon/16/mtt/*)
  */
 qx.Class.define("ncms.mtt.MttRulesTable", {
     extend: sm.table.Table,
@@ -43,6 +43,10 @@ qx.Class.define("ncms.mtt.MttRulesTable", {
     },
 
     members: {
+
+        getRowCount: function() {
+            return this.getTableModel().getRowCount();
+        },
 
         getSelectedRuleInd: function () {
             return this.getSelectionModel().getAnchorSelectionIndex();

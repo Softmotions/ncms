@@ -170,6 +170,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
 
     destruct: function () {
         this.__spec = null;
+        this.__delBt = null;
         //this._disposeObjects("__field_name");
     }
 });

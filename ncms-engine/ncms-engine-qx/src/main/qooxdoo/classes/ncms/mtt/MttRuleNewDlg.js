@@ -1,7 +1,7 @@
 /**
  * `New mtt rule` popup dialog.
  */
-qx.Class.define("ncms.mtt.RuleNewDlg", {
+qx.Class.define("ncms.mtt.MttRuleNewDlg", {
     extend: sm.ui.form.BaseSavePopupDlg,
 
     construct: function () {

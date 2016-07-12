@@ -79,10 +79,12 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
 
             this.__upBt = this._createButton(null, "ncms/icon/16/misc/arrow_up.png",
                 this.__onMoveUp, this);
+            this.__upBt.setToolTipText(this.tr("Move up"));
             part.add(this.__upBt);
 
             this.__downBt = this._createButton(null, "ncms/icon/16/misc/arrow_down.png",
                 this.__onMoveDown, this);
+            this.__downBt.setToolTipText(this.tr("Move down"));
             part.add(this.__downBt);
 
             return toolbar;

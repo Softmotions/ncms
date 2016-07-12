@@ -275,7 +275,22 @@ qx.Class.define("ncms.Actions", {
 
         this._action("mtt.rules.select", "/rs/adm/mtt/rules/select");
         this._action("mtt.rules.select.count", "/rs/adm/mtt/rules/select/count");
+
+        // PUT new mtt rule
         this._action("mtt.rules.new", "/rs/adm/mtt/rules/rule/{name}");
+
+        // DELETE existing mtt rule
+        this._action("mtt.rules.delete", "/rs/adm/mtt/rules/rule/{id}");
+
+        // PUT rename existing mtt rule
+        this._action("mtt.rules.rename", "/rs/adm/mtt/rules/rule/rename/{id}/{name}");
+
+        // POST move rule up
+        this._action("mtt.rules.up", "/rs/adm/mtt/rules/rule/{id}/move/up");
+
+        // POST move rule down
+        this._action("mtt.rules.down", "/rs/adm/mtt/rules/rule/{id}/move/down");
+
     },
 
     members: {

@@ -594,10 +594,12 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
     destruct: function () {
         if (this.getContentElement() != null) {
             var el = this.getContentElement().getDomElement();
-            el.ondrop = null;
-            el.ondragover = null;
-            el.ondragenter = null;
-            el.ondragleave = null;
+            if (el != null) {
+                el.ondrop = null;
+                el.ondragover = null;
+                el.ondragenter = null;
+                el.ondragleave = null;
+            }
         }
         this.__sf = null;
         this.__table = null;

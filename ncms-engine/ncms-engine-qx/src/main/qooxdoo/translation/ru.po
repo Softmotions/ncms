@@ -36,7 +36,7 @@ msgstr "Обязательное поле"
 #: ncms/asm/am/SelectAMTable.js:65 ncms/asm/AsmEditor.js:92
 #: ncms/asm/am/TreeAMNewFolderDlg.js:22 ncms/usr/UserEditForm.js:27
 #: ncms/mmgr/MediaFileEditor.js:273 ncms/pgs/PagesTable.js:21
-#: ncms/asm/AsmAttrsTable.js:112 ncms/asm/am/TreeAMValueWidget.js:481
+#: ncms/asm/AsmAttrsTable.js:114 ncms/asm/am/TreeAMValueWidget.js:481
 #: ncms/asm/AsmTable.js:17 ncms/usr/UserNewDlg.js:37
 #: ncms/asm/am/RichRefAM.js:44 ncms/mtt/MttRulesTable.js:13
 #: ncms/mmgr/MediaFilesTable.js:9 ncms/asm/AsmAttrEditorDlg.js:63
@@ -44,7 +44,8 @@ msgstr "Обязательное поле"
 msgid "Name"
 msgstr "Название"
 
-#: ncms/asm/AsmAttrsTable.js:124 ncms/asm/AsmTable.js:25
+#: ncms/mtt/MttFiltersTable.js:58 ncms/asm/AsmAttrsTable.js:126
+#: ncms/asm/AsmTable.js:25 ncms/mtt/MttActionsTable.js:70
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:163 ncms/mmgr/MediaFilesTable.js:10
 #: ncms/asm/AsmAttrEditorDlg.js:66 ncms/asm/AsmAttrEditorDlg.js:74
 #: ncms/usr/UserRolesTable.js:154
@@ -97,8 +98,9 @@ msgstr "Отмена"
 msgid "Select assembly attribute type"
 msgstr "Выбор типа атрибута"
 
-#: ncms/asm/AsmEditor.js:103 ncms/mmgr/MediaFileEditor.js:48
-#: ncms/asm/AsmTable.js:21 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
+#: ncms/asm/AsmEditor.js:103 ncms/mtt/MttFiltersTable.js:70
+#: ncms/mmgr/MediaFileEditor.js:48 ncms/asm/AsmTable.js:21
+#: ncms/mtt/MttActionsTable.js:82 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
 #: ncms/mmgr/MediaFilesTable.js:13 ncms/usr/UserRolesTable.js:159
 msgid "Description"
 msgstr "Описание"
@@ -115,68 +117,79 @@ msgstr "Добавить новый атрибут"
 msgid "Drop attribute"
 msgstr "Удалить атрибут"
 
-#: ncms/asm/AsmAttrsTable.js:118
+#: ncms/mtt/MttNav.js:81 ncms/asm/AsmAttrsTable.js:82
+#: ncms/mtt/MttActionsTable.js:117 ncms/mtt/MttActionsTable.js:159
+msgid "Move up"
+msgstr "Переместить наверх"
+
+#: ncms/mtt/MttNav.js:85 ncms/asm/AsmAttrsTable.js:87
+#: ncms/mtt/MttActionsTable.js:122 ncms/mtt/MttActionsTable.js:164
+msgid "Move down"
+msgstr "Переместить вниз"
+
+#: ncms/asm/AsmAttrsTable.js:120
 msgid "Label"
 msgstr "Подпись"
 
 #: ncms/asm/am/SelectAMTable.js:72 ncms/mmgr/MediaFileEditor.js:156
-#: ncms/asm/AsmAttrsTable.js:130 ncms/asm/am/StringAM.js:62
+#: ncms/asm/AsmAttrsTable.js:132 ncms/asm/am/StringAM.js:62
 msgid "Value"
 msgstr "Значение"
 
-#: ncms/asm/AsmAttrsTable.js:181
+#: ncms/asm/AsmAttrsTable.js:183
 msgid "Edit attribute"
 msgstr "Редактировать атрибут"
 
-#: ncms/asm/AsmAttrsTable.js:183
+#: ncms/asm/AsmAttrsTable.js:185
 msgid "Override attribute"
 msgstr "Перезаписать атрибут"
 
-#: ncms/news/NewsNav.js:115 ncms/asm/AsmAttrsTable.js:194
+#: ncms/news/NewsNav.js:115 ncms/asm/AsmAttrsTable.js:196
 #: ncms/pgs/PagesTreeSelector.js:137
 msgid "New"
 msgstr "Создать"
 
-#: ncms/pgs/PageEditorEditPage.js:30 ncms/asm/AsmAttrsTable.js:202
+#: ncms/pgs/PageEditorEditPage.js:30 ncms/asm/AsmAttrsTable.js:204
 #: ncms/asm/am/TreeAMValueWidget.js:453
 msgid "Edit"
 msgstr "Редактировать"
 
 #: ncms/asm/AsmNav.js:82 ncms/usr/UsersNav.js:103
-#: ncms/mmgr/MediaFilesSelector.js:535 ncms/mtt/MttNav.js:96
-#: ncms/asm/AsmAttrsTable.js:206 ncms/asm/am/TreeAMValueWidget.js:462
+#: ncms/mmgr/MediaFilesSelector.js:535 ncms/mtt/MttFiltersTable.js:133
+#: ncms/mtt/MttNav.js:93 ncms/asm/AsmAttrsTable.js:208
+#: ncms/asm/am/TreeAMValueWidget.js:462 ncms/mtt/MttActionsTable.js:168
 msgid "Remove"
 msgstr "Удалить"
 
-#: ncms/asm/AsmAttrsTable.js:212
+#: ncms/asm/AsmAttrsTable.js:214
 msgid "Override"
 msgstr "Перезаписать"
 
-#: ncms/asm/AsmAttrsTable.js:216
+#: ncms/asm/AsmAttrsTable.js:218
 msgid "Edit in parent"
 msgstr "Редактировать у родителя"
 
-#: ncms/asm/AsmAttrsTable.js:295
+#: ncms/asm/AsmAttrsTable.js:297
 msgid "New attribute for assembly: %1"
 msgstr "Новый атрибут для сборки (assembly): %1"
 
-#: ncms/asm/AsmAttrsTable.js:311
+#: ncms/asm/AsmAttrsTable.js:313
 msgid "A you sure to remove attribute?"
 msgstr "Вы действительно хотите удалить атрибут?"
 
-#: ncms/asm/AsmAttrsTable.js:312
+#: ncms/asm/AsmAttrsTable.js:314
 msgid "Recursive?"
 msgstr "Рекурсивно?"
 
-#: ncms/asm/AsmAttrsTable.js:338
+#: ncms/asm/AsmAttrsTable.js:340
 msgid "Override the parent assembly attribute: '%1'"
 msgstr "Перезаписать родительский атрибут"
 
-#: ncms/asm/AsmAttrsTable.js:340
+#: ncms/asm/AsmAttrsTable.js:342
 msgid "Edit the parent assembly attribute: '%1'"
 msgstr "Редактировать атрибут родителя"
 
-#: ncms/asm/AsmAttrsTable.js:342
+#: ncms/asm/AsmAttrsTable.js:344
 msgid "Edit attribute: '%1'"
 msgstr "Редактирование атрибута: '%1'"
 
@@ -662,11 +675,11 @@ msgstr "Синхронизовать поле с другой страницей
 
 #: ncms/asm/am/TreeAMValueWidget.js:198
 msgid "Move item up"
-msgstr "Переместить наверх"
+msgstr "Переместить выше"
 
 #: ncms/asm/am/TreeAMValueWidget.js:204
 msgid "Move item down"
-msgstr "Переместить вниз"
+msgstr "Переместить ниже"
 
 #: ncms/asm/am/TreeAMValueWidget.js:245
 msgid "Are you sure to reset synchronization?"
@@ -861,23 +874,43 @@ msgstr "Текст ссылки"
 msgid "Close"
 msgstr "Закрыть"
 
+#: ncms/mtt/MttActionsTable.js:64
+msgid "%"
+msgstr ""
+
+#: ncms/mtt/MttFiltersTable.js:64 ncms/mtt/MttActionsTable.js:76
+msgid "Specification"
+msgstr "Спецификация"
+
+#: ncms/mtt/MttActionsTable.js:101 ncms/mtt/MttActionsTable.js:154
+msgid "New action"
+msgstr "Новое действие"
+
+#: ncms/mtt/MttActionsTable.js:106
+msgid "Remove rule action"
+msgstr "Удалить действие"
+
+#: ncms/mtt/MttFiltersTable.js:89 ncms/mtt/MttFiltersTable.js:129
+msgid "New filter"
+msgstr "Новый фильтр"
+
+#: ncms/mtt/MttFiltersTable.js:94
+msgid "Remove rule filter"
+msgstr "Удалить фильтр"
+
 #: ncms/mtt/MttNav.js:66
 msgid "New rule"
 msgstr "Новое правило"
 
-#: ncms/mtt/MttNav.js:82
-msgid "Move up"
-msgstr "Переместить наверх"
-
-#: ncms/mtt/MttNav.js:87
-msgid "Move down"
-msgstr "Переместить вниз"
-
-#: ncms/mtt/MttNav.js:92
+#: ncms/mtt/MttNav.js:89
 msgid "Disable"
 msgstr "Отключить"
 
-#: ncms/mtt/RuleNewDlg.js:19
+#: ncms/mtt/MttNav.js:116
+msgid "Are you sure to remove rule: \"%1\"?"
+msgstr "Подтвердите удаление правила \"%1\""
+
+#: ncms/mtt/MttRuleNewDlg.js:19
 msgid "Rule"
 msgstr "Правило"
 
@@ -1495,6 +1528,9 @@ msgstr "Заметка"
 
 #~ msgid "Slideshare"
 #~ msgstr "Сервис презентаций"
+
+#~ msgid "Spec"
+#~ msgstr ""
 
 #~ msgid "Style"
 #~ msgstr "Стиль"

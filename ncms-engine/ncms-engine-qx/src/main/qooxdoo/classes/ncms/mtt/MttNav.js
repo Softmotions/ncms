@@ -78,17 +78,14 @@ qx.Class.define("ncms.mtt.MttNav", {
                 bt.addListenerOnce("execute", this.__onRenameRule, this);
                 menu.add(bt);
 
-                //todo
                 bt = new qx.ui.menu.Button(this.tr("Move up"));
                 bt.addListenerOnce("execute", this.__onMoveUp, this);
                 menu.add(bt);
 
-                //todo
                 bt = new qx.ui.menu.Button(this.tr("Move down"));
                 bt.addListenerOnce("execute", this.__onMoveDown, this);
                 menu.add(bt);
 
-                //todo disable/enable
                 bt = new qx.ui.menu.Button(this.tr("Disable"));
                 bt.addListenerOnce("execute", this.__onToggleDisabled, this);
                 menu.add(bt);
@@ -100,27 +97,50 @@ qx.Class.define("ncms.mtt.MttNav", {
         },
 
         __onNewRule: function (ev) {
-            var dlg = new ncms.mtt.RuleNewDlg();
+            var dlg = new ncms.mtt.MttRuleNewDlg();
             dlg.setPosition("bottom-right");
             dlg.addListener("completed", function (ev) {
                 dlg.close();
-                var spec = ev.getData();
-                this.__selector.setSearchBoxValue(spec["name"]);
+                this.__selector.reload();
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.show();
         },
 
         __onRemoveRule: function (ev) {
-
-        },
-
-        __onToggleDisabled: function (ev) {
-
+            var rule = this.__selector.getSelectedRule();
+            if (rule == null) {
+                return;
+            }
+            ncms.Application.confirm(
+                this.tr("Are you sure to remove rule: \"%1\"?", rule["name"]),
+                function (yes) {
+                    if (!yes) return;
+                    var req = new sm.io.Request(
+                        ncms.Application.ACT.getRestUrl("mtt.rules.delete", {id: rule["id"]}), "DELETE");
+                    req.send(function (resp) {
+                        this.__selector.reload();
+                    }, this);
+                }, this);
         },
 
         __onRenameRule: function (ev) {
+            var rule = this.__selector.getSelectedRule();
+            if (rule == null) {
+                return;
+            }
+            var dlg = new ncms.mtt.MttRuleRenameDlg(rule["id"], rule["name"]);
+            dlg.setPosition("bottom-right");
+            dlg.addListener("completed", function (ev) {
+                dlg.close();
+                this.__selector.reload();
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.show();
+        },
 
+        __onToggleDisabled: function (ev) {
+            //todo
         },
 
         __onRefresh: function () {
@@ -128,11 +148,29 @@ qx.Class.define("ncms.mtt.MttNav", {
         },
 
         __onMoveUp: function () {
-
+            return this.__onMove(1);
         },
 
         __onMoveDown: function () {
+            return this.__onMove(-1);
+        },
 
+        __onMove: function (dir) {
+            var ind = this.__selector.getSelectedRuleInd();
+            var rc = this.__selector.getRowCount();
+            var nind = (dir > 0) ? --ind : ++ind;
+            if (ind == -1 || nind < 0 || nind >= rc) {
+                return;
+            }
+            var rule = this.__selector.getSelectedRule();
+            var req = new sm.io.Request(
+                ncms.Application.ACT.getRestUrl(
+                    dir > 0 ? "mtt.rules.up" : "mtt.rules.down", {id: rule["id"]}), "POST");
+            req.send(function (resp) {
+                var table = this.__selector.getTable();
+                table.getTableModel().reloadData();
+                table.selectSingleRow(nind);
+            }, this);
         }
     },
 

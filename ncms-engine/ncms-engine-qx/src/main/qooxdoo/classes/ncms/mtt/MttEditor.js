@@ -15,46 +15,37 @@ qx.Class.define("ncms.mtt.MttEditor", {
             apply: "__applyRuleId",
             nullable: true,
             check: "Number"
-        },
-
-        /**
-         * Set a rule JSON representation
-         * of com.softmotions.ncms.mt.MttRule
-         */
-        "ruleSpec": {
-            apply: "__applyRuleSpec",
-            nullable: true,
-            check: "Object"
         }
     },
 
     construct: function () {
         this.base(arguments);
-        this._setLayout(new qx.ui.layout.VBox(5));
-        this.setBackgroundColor("red");
+        this._setLayout(new qx.ui.layout.Grow());
+
+        this.__filters = new ncms.mtt.MttFiltersTable();
+        this.__actions = new ncms.mtt.MttActionsTable();
+
+        var sp = new qx.ui.splitpane.Pane("vertical");
+        sp.add(this.__filters, 1);
+        sp.add(this.__actions, 3);
+        this._add(sp);
     },
 
     members: {
 
-        __applyRuleId: function (val, old) {
-            if (val == null) {
-                this.setRuleSpec(null);
-                return;
-            }
-            this.__reload();
-        },
+        __filters: null,
 
-        __applyRuleSpec: function (spec) {
+        __actions: null,
 
-        },
-
-        __reload: function () {
-
+        __applyRuleId: function (val) {
+            this.__filters.setRuleId(val);
+            this.__actions.setRuleId(val);
         }
-
     },
 
     destruct: function () {
+        this.__filters = null;
+        this.__actions = null;
         //this._disposeObjects("__form");
     }
 });
