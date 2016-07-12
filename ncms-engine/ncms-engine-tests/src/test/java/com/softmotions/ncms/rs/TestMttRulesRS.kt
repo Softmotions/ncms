@@ -57,6 +57,8 @@ class TestMttRulesRS : BaseRSTest() {
             assertNotNull(body)
             with(mapper.readTree(body)) {
                 assertTrue(hasNonNull("id"))
+                assertTrue(hasNonNull("ordinal"))
+                assertTrue(path("enabled").asBoolean())
             }
         }
 
@@ -70,15 +72,14 @@ class TestMttRulesRS : BaseRSTest() {
     fun testRuleDelete() {
         with(GET("/select")) {
             assertEquals(200, code())
+
             val body = body()
             assertNotNull(body)
             with(mapper.readTree(body)) {
                 assertTrue(isArray)
                 forEach {
                     assertTrue(it.hasNonNull("id"))
-                    with(DELETE("/rule/${it.path("id").asLong()}")) {
-                        assertEquals(200, code())
-                    }
+                    assertEquals(200, DELETE("/rule/${it.path("id").asLong()}").code())
                 }
             }
         }
@@ -366,6 +367,7 @@ class TestMttRulesRS : BaseRSTest() {
                 assertTrue(isObject)
                 assertTrue(hasNonNull("id"))
                 assertTrue(hasNonNull("ordinal"))
+                assertTrue(path("enabled").asBoolean())
 
                 @Suppress("LABEL_NAME_CLASH")
                 return this@with;

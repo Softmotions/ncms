@@ -39,12 +39,14 @@
 
     <select id="selectRuleById" resultType="com.softmotions.ncms.marketing.mtt.MttRule" parameterType="long">
         SELECT
-            rule.id       AS "id",
-            rule.name     AS "name",
-            rule.ordinal  AS "ordinal",
-            rule.cdate    AS "cdate",
-            rule.mdate    AS "mdate",
-            rule.flags    AS "flags"
+            rule.id           AS "id",
+            rule.name         AS "name",
+            rule.description  AS "description",
+            rule.ordinal      AS "ordinal",
+            rule.cdate        AS "cdate",
+            rule.mdate        AS "mdate",
+            rule.enabled      AS "enabled",
+            rule.flags        AS "flags"
         FROM MTT_RULES rule
         WHERE rule.id = #{id}
     </select>
@@ -61,8 +63,8 @@
     </select>
 
     <insert id="insertRule" parameterType="com.softmotions.ncms.marketing.mtt.MttRule">
-        INSERT INTO MTT_RULES (id, name, cdate, mdate, flags)
-        VALUES (SEQ_MTT_RULE_ID.NEXTVAL, #{name}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{flags})
+        INSERT INTO MTT_RULES (id, name, cdate, mdate, enabled, flags)
+        VALUES (SEQ_MTT_RULE_ID.NEXTVAL, #{name}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{enabled}, #{flags})
     </insert>
 
     <update id="updateRuleName" parameterType="map">
@@ -106,6 +108,12 @@
             <if test="ordinal != null">ordinal = #{ordinal}</if>
             <if test="id != null">id= #{id}</if>
         </where>
+    </update>
+
+    <update id="updateRuleEnabled" parameterType="map">
+        UPDATE MTT_RULES
+        SET enabled = #{enabled}, mdate = CURRENT_TIMESTAMP
+        WHERE id = #{id}
     </update>
 
     <!--==================================================-->

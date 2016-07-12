@@ -149,6 +149,17 @@ constructor(val sess: SqlSession,
     open fun ruleDelete(@PathParam("rid") rid: Long) =
             delete("deleteRuleById", rid)
 
+
+    @POST
+    @Path("/rule/{rid}/enable")
+    open fun ruleEnable(@PathParam("rid") rid: Long) =
+            update("updateRuleEnabled", "id", rid, "enabled", true)
+
+    @POST
+    @Path("/rule/{rid}/disable")
+    open fun ruleDisable(@PathParam("rid") rid: Long) =
+            update("updateRuleEnabled", "id", rid, "enabled", false)
+
     // TODO: rule enabling/disabling
 
     // TODO: rule description edit
