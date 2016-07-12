@@ -386,6 +386,13 @@ qx.Class.define("ncms.Application", {
         },
 
         /**
+         * Disposes WSA widget
+         */
+        disposeWSA: function (widgetId) {
+            return this.getComponent("right-stack").disposeWidget(widgetId);
+        },
+
+        /**
          * WSA abbrev means: workspace area (big right side zone)
          * @param widgetId {String}
          * @returns {Widget|null|*}

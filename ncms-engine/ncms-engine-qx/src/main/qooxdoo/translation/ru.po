@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:34 ncms/Application.js:453
+#: ncms/Application.js:34 ncms/Application.js:460
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:466
+#: ncms/Application.js:473
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -117,12 +117,12 @@ msgstr "Добавить новый атрибут"
 msgid "Drop attribute"
 msgstr "Удалить атрибут"
 
-#: ncms/mtt/MttNav.js:81 ncms/asm/AsmAttrsTable.js:82
+#: ncms/mtt/MttNav.js:83 ncms/asm/AsmAttrsTable.js:82
 #: ncms/mtt/MttActionsTable.js:117 ncms/mtt/MttActionsTable.js:159
 msgid "Move up"
 msgstr "Переместить наверх"
 
-#: ncms/mtt/MttNav.js:85 ncms/asm/AsmAttrsTable.js:87
+#: ncms/mtt/MttNav.js:87 ncms/asm/AsmAttrsTable.js:87
 #: ncms/mtt/MttActionsTable.js:122 ncms/mtt/MttActionsTable.js:164
 msgid "Move down"
 msgstr "Переместить вниз"
@@ -156,7 +156,7 @@ msgstr "Редактировать"
 
 #: ncms/asm/AsmNav.js:82 ncms/usr/UsersNav.js:103
 #: ncms/mmgr/MediaFilesSelector.js:535 ncms/mtt/MttFiltersTable.js:133
-#: ncms/mtt/MttNav.js:93 ncms/asm/AsmAttrsTable.js:208
+#: ncms/mtt/MttNav.js:95 ncms/asm/AsmAttrsTable.js:208
 #: ncms/asm/am/TreeAMValueWidget.js:462 ncms/mtt/MttActionsTable.js:168
 msgid "Remove"
 msgstr "Удалить"
@@ -255,13 +255,13 @@ msgid "New assembly"
 msgstr "Новая сборка (assembly)"
 
 #: ncms/asm/AsmNav.js:72 ncms/mmgr/MediaItemTreeSelector.js:87
-#: ncms/mtt/MttNav.js:70
+#: ncms/mtt/MttNav.js:72
 msgid "Refresh"
 msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:119 ncms/asm/AsmNav.js:78
 #: ncms/mmgr/MediaItemTreeSelector.js:72 ncms/mmgr/MediaFilesSelector.js:524
-#: ncms/mtt/MttNav.js:77 ncms/asm/am/TreeAMValueWidget.js:458
+#: ncms/mtt/MttNav.js:79 ncms/asm/am/TreeAMValueWidget.js:458
 msgid "Rename"
 msgstr "Переименовать"
 
@@ -898,15 +898,15 @@ msgstr "Новый фильтр"
 msgid "Remove rule filter"
 msgstr "Удалить фильтр"
 
-#: ncms/mtt/MttNav.js:66
+#: ncms/mtt/MttNav.js:68
 msgid "New rule"
 msgstr "Новое правило"
 
-#: ncms/mtt/MttNav.js:89
+#: ncms/mtt/MttNav.js:91
 msgid "Disable"
 msgstr "Отключить"
 
-#: ncms/mtt/MttNav.js:116
+#: ncms/mtt/MttNav.js:118
 msgid "Are you sure to remove rule: \"%1\"?"
 msgstr "Подтвердите удаление правила \"%1\""
 

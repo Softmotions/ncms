@@ -28,10 +28,11 @@ qx.Class.define("ncms.mtt.MttNav", {
         }, null, this);
 
         this.addListener("disappear", function () {
-            //Navigation side is inactive so hide ntt editor pane if it not done already
+            //Navigation side is inactive so hide mtt editor pane if it not done already
             if (app.getActiveWSAID() == eclazz) {
                 app.showDefaultWSA();
             }
+            //app.disposeWSA(eclazz);
         }, this);
         this.addListener("appear", function () {
             if (app.getActiveWSAID() != eclazz && this.__selector.getSelectedRule() != null) {
