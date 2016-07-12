@@ -7,6 +7,7 @@ import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -132,6 +133,24 @@ class TestMttRulesRS : BaseRSTest() {
 
     @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
     fun testRuleRename() {
+    }
+
+    @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
+    fun testRuleEnabling() {
+        with(createRule()) {
+            val rid = path("id").asLong()
+
+            assertEquals(200, POST("/rule/$rid/enable").code())
+            assertTrue(mapper.readTree(GET("/rule/$rid").body()).path("enabled").asBoolean())
+
+            assertEquals(200, POST("/rule/$rid/disable").code())
+            assertFalse(mapper.readTree(GET("/rule/$rid").body()).path("enabled").asBoolean())
+
+            assertEquals(200, POST("/rule/$rid/enable").code())
+            assertTrue(mapper.readTree(GET("/rule/$rid").body()).path("enabled").asBoolean())
+
+            assertEquals(200, DELETE("/rule/$rid").code())
+        }
     }
 
 // todo: rule tests: rename, update flags, get

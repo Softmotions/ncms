@@ -160,8 +160,6 @@ constructor(val sess: SqlSession,
     open fun ruleDisable(@PathParam("rid") rid: Long) =
             update("updateRuleEnabled", "id", rid, "enabled", false)
 
-    // TODO: rule enabling/disabling
-
     // TODO: rule description edit
 
     @GET
