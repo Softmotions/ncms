@@ -32,7 +32,7 @@ class TestMttRulesRS : BaseRSTest() {
 
     override fun R(resource: String): String = super.R(resource = "/rs/adm/mtt/rules$resource")
 
-    @Test(priority = 0)
+    @Test()
     fun testRulesSelect() {
         with(GET("/select/count")) {
             assertEquals(200, code())
@@ -133,6 +133,39 @@ class TestMttRulesRS : BaseRSTest() {
 
     @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
     fun testRuleRename() {
+    }
+
+    @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))
+    fun testRuleUpdate() {
+        with(createRule()) {
+            val rid = path("id").asLong()
+
+            assertFalse(hasNonNull("description"))
+            assertTrue(hasNonNull("flags"))
+
+            var rule = mapper.createObjectNode().put("flags", 8)
+
+            with(POST("/rule/$rid").contentType("application/json").send(mapper.writeValueAsString(rule))) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertEquals(8, path("flags").asLong())
+                    assertFalse(hasNonNull("description"))
+                }
+            }
+
+            rule = mapper.createObjectNode().put("description", RandomStringUtils.randomAlphabetic(64))
+
+            with(POST("/rule/$rid").contentType("application/json").send(mapper.writeValueAsString(rule))) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertEquals(8, path("flags").asLong())
+                    assertTrue(hasNonNull("description"))
+                    assertEquals(rule["description"].asText(), path("description").asText())
+                }
+            }
+
+            assertEquals(200, DELETE("/rule/$rid").code())
+        }
     }
 
     @Test(dependsOnMethods = arrayOf("testRuleCreate", "testRuleDelete"))

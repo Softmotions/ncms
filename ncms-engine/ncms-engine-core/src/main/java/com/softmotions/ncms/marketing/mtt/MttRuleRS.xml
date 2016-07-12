@@ -79,9 +79,9 @@
         WHERE id = #{id}
     </delete>
 
-    <update id="updateRuleFlags" parameterType="map">
+    <update id="updateRule" parameterType="com.softmotions.ncms.marketing.mtt.MttRule">
         UPDATE MTT_RULES
-        SET flags = #{flags}, mdate = CURRENT_TIMESTAMP
+        SET flags = #{flags}, description = #{description}, mdate = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
 

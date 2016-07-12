@@ -113,19 +113,29 @@ constructor(val sess: SqlSession,
             }
 
     @POST
-    @Path("/rule/{rid}/flags/{flags}")
-    open fun ruleUpdateFlags(@PathParam("rid") rid: Long, @PathParam("flags") flags: Long): MttRule {
-        update("updateRuleFlags", "id", rid, "flags", flags)
+    @Path("/rule/{rid}")
+    @Transactional
+    open fun ruleUpdate(@PathParam("rid") rid: Long, ruleNode : ObjectNode): MttRule {
+        val rule = ruleGet(rid)
+
+        with(ruleNode) {
+            if (hasNonNull("flags")) rule.flags = path("flags").asLong(0)
+            if (hasNonNull("description")) rule.description = path("description").asText()
+        }
+
+        update("updateRule", rule)
         return ruleGet(rid)
     }
 
     @POST
     @Path("/rule/{rid}/move/up")
+    @Transactional
     open fun ruleMoveUp(@PathParam("rid") rid: Long) =
             ruleMove(ruleGet(rid), false)
 
     @POST
     @Path("/rule/{rid}/move/down")
+    @Transactional
     open fun ruleMoveDown(@PathParam("rid") rid: Long) =
             ruleMove(ruleGet(rid), true)
 
@@ -152,11 +162,13 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}/enable")
+    @Transactional
     open fun ruleEnable(@PathParam("rid") rid: Long) =
             update("updateRuleEnabled", "id", rid, "enabled", true)
 
     @POST
     @Path("/rule/{rid}/disable")
+    @Transactional
     open fun ruleDisable(@PathParam("rid") rid: Long) =
             update("updateRuleEnabled", "id", rid, "enabled", false)
 
@@ -283,6 +295,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/action/{aid}")
+    @Transactional
     open fun actionUpdate(@PathParam("aid") aid: Long, actionNode: ObjectNode): MttRuleAction {
         val action = actionGet(aid)
 
@@ -294,16 +307,19 @@ constructor(val sess: SqlSession,
 
     @DELETE
     @Path("/action/{aid}")
+    @Transactional
     open fun actionDelete(@PathParam("aid") aid: Long) =
             delete("deleteActionById", aid)
 
     @POST
     @Path("/action/{aid}/move/up")
+    @Transactional
     open fun actionMoveUp(@PathParam("aid") aid: Long) =
             actionMove(actionGet(aid), false)
 
     @POST
     @Path("/action/{aid}/move/down")
+    @Transactional
     open fun actionMoveDown(@PathParam("aid") aid: Long) =
             actionMove(actionGet(aid), true)
 
