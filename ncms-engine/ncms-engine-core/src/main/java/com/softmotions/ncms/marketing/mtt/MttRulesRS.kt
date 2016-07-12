@@ -119,15 +119,23 @@ constructor(val sess: SqlSession,
         return ruleGet(rid)
     }
 
-    /**
-     * @param direction 1 - move down (increase ordinal), -1 - move up (decrease ordinal)
-     */
     @POST
-    @Path("/rule/{rid}/move/{direction}")
-    open fun ruleMove(@PathParam("rid") rid: Long, @PathParam("direction") direction: Byte) {
+    @Path("/rule/{rid}/move/up")
+    open fun ruleMoveUp(@PathParam("rid") rid: Long) =
+            ruleMove(rid, false)
+
+    @POST
+    @Path("/rule/{rid}/move/down")
+    open fun ruleMoveDown(@PathParam("rid") rid: Long) =
+            ruleMove(rid, true)
+
+    /**
+     * @param direction true - move down (increase ordinal), false - move up (decrease ordinal)
+     */
+    private fun ruleMove(rid: Long, direction: Boolean) {
         val rule = ruleGet(rid)
         val sordinal =
-                selectOne<Long?>(if (direction < 0) "selectPreviousRule" else "selectNextRule", rule.ordinal) ?: return
+                selectOne<Long?>(if (direction) "selectNextRule" else "selectPreviousRule", rule.ordinal) ?: return
         update("updateRuleOrdinal", "ordinal", sordinal, "newOrdinal", rule.ordinal)
         update("updateRuleOrdinal", "id", rule.id, "newOrdinal", sordinal)
     }
@@ -262,18 +270,37 @@ constructor(val sess: SqlSession,
         return actionGet(action.id)
     }
 
-//    @POST
-//    @Path("/action/{aid}")
-//    open fun actionUpdate(@PathParam("aid") aid: Long, action: ObjectNode): ObjectNode = mapper.createObjectNode()
+    @POST
+    @Path("/action/{aid}")
+    open fun actionUpdate(@PathParam("aid") aid: Long, actionNode: ObjectNode): MttRuleAction {
+        val action = actionGet(aid)
+
+        if (actionNode.hasNonNull("description")) action.description = actionNode.path("description").asText()
+        if (actionNode.hasNonNull("spec")) action.spec = actionNode.path("spec").asText()
+
+        return actionGet(action.id)
+    }
 
     @DELETE
     @Path("/action/{aid}")
     open fun actionDelete(@PathParam("aid") aid: Long) =
             delete("deleteActionById", aid)
 
-//    @POST
-//    @Path("/action/{aid}/move")
-//    open fun actionMove(@PathParam("aid") aid: Long, spec: ObjectNode): ArrayNode = mapper.createArrayNode()
+    @POST
+    @Path("/action/{aid}/move/up")
+    open fun actionMoveUp(@PathParam("aid") aid: Long) {
+        actionMove(aid, false)
+    }
+
+    @POST
+    @Path("/action/{aid}/move/down")
+    open fun actionMoveDown(@PathParam("aid") aid: Long) {
+        actionMove(aid, true)
+    }
+
+    private fun actionMove(aid: Long, direction: Boolean) {
+// TODO:
+    }
 
     private fun initCriteriaPaging(cq: MBCriteriaQuery<MBCriteriaQuery<*>>, req: HttpServletRequest) {
         var pv: String? = req.getParameter("firstRow")

@@ -158,8 +158,8 @@ class TestMttRulesRS : BaseRSTest() {
         }
 
         // actually, nothing changed
-        assertEquals(204, POST("/rule/${rules[2]["id"].asLong()}/move/1").code())
-        assertEquals(204, POST("/rule/${rules[0]["id"].asLong()}/move/-1").code())
+        assertEquals(204, POST("/rule/${rules[2]["id"].asLong()}/move/down").code())
+        assertEquals(204, POST("/rule/${rules[0]["id"].asLong()}/move/up").code())
         with(GET("/select")) {
             assertEquals(200, code())
             with(mapper.readTree(body())) {
@@ -172,7 +172,7 @@ class TestMttRulesRS : BaseRSTest() {
         }
 
         // swap first and second rule
-        assertEquals(204, POST("/rule/${rules[0]["id"].asLong()}/move/1").code())
+        assertEquals(204, POST("/rule/${rules[0]["id"].asLong()}/move/down").code())
         rules = arrayOf(rules[1], rules[0], rules[2])
         with(GET("/select")) {
             assertEquals(200, code())
