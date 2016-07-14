@@ -269,31 +269,45 @@ class TestMttRulesRS : BaseRSTest() {
     fun testFilterCreate() {
         with(createRule()) {
             val rid = path("id").asLong()
-            val filter = mapper.createObjectNode()
+            val fcq = mapper.createObjectNode()
                     .put("type", RandomStringUtils.randomAlphabetic(6).toLowerCase())
                     .put("spec", RandomStringUtils.randomAscii(1024))
                     .put("description", RandomStringUtils.randomAscii(32))
 
-            with(PUT("/rule/$rid/filter").contentType("application/json").send(mapper.writeValueAsString(filter))) {
+            with(PUT("/rule/$rid/filter").contentType("application/json").send(mapper.writeValueAsString(fcq))) {
                 assertEquals(200, code())
 
                 val body = body()
                 assertNotNull(body)
-                with(mapper.readTree(body)) {
-                    assertTrue(isObject)
-                    assertTrue(hasNonNull("id"))
-                    assertEquals(filter["type"].asText(), path("type").asText(null))
-                    assertEquals(filter["spec"].asText(), path("spec").asText(null))
-                    assertEquals(filter["description"].asText(), path("description").asText(null))
 
-                    val fid = path("id").asLong()
-                    val req = GET("/filter/$fid")
-                    assertEquals(200, req.code())
-                    @Suppress("LABEL_NAME_CLASH")
-                    assertEquals(this@with, mapper.readTree(req.body()))
+                val filter = mapper.readTree(body)
+                assertTrue(filter.isObject)
+                assertTrue(filter.hasNonNull("id"))
+                assertEquals(fcq["type"].asText(), filter["type"].asText(null))
+                assertEquals(fcq["spec"].asText(), filter["spec"].asText(null))
+                assertEquals(fcq["description"].asText(), filter["description"].asText(null))
 
-                    assertEquals(200, DELETE("/filter/$fid").code())
+                val fid = filter["id"].asLong()
+                with(GET("/filter/$fid")) {
+                    assertEquals(200, code())
+                    assertEquals(filter, mapper.readTree(body()))
                 }
+
+                with(GET("/rule/$rid/filters/select/count")) {
+                    assertEquals(200, code())
+                    assertEquals("1", body())
+                }
+
+                with(GET("/rule/$rid/filters/select")) {
+                    assertEquals(200, code())
+                    with(mapper.readTree(body())) {
+                        assertTrue(isArray)
+                        assertEquals(1, size())
+                        assertEquals(filter, get(0))
+                    }
+                }
+
+                assertEquals(200, DELETE("/filter/$fid").code())
             }
 
             assertEquals(200, DELETE("/rule/$rid").code())
