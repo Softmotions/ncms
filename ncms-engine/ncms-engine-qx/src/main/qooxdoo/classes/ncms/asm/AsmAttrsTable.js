@@ -297,7 +297,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                 this.tr("New attribute for assembly: %1", this.__spec["name"]),
                 this.__spec
             );
-            dlg.addListener("completed", function (ev) {
+            dlg.addListenerOnce("completed", function (ev) {
                 dlg.close();
                 this.fireEvent("attributesChanged");
             }, this);

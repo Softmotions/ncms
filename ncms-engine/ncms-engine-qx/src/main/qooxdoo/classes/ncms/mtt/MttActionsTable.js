@@ -18,7 +18,7 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
     ],
 
     events: {
-        "filterChanged": "qx.event.type.Event"
+        "actionsChanged": "qx.event.type.Event"
     },
 
     properties: {
@@ -33,13 +33,16 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
         }
     },
 
-    construct: function () {
+    construct: function (title) {
+        this.__title = title;
         this.base(arguments);
         this.set({allowGrowX: true, allowGrowY: true});
         this._reload([]);
     },
 
     members: {
+
+        __title: null,
 
         __delBt: null,
 
@@ -49,9 +52,7 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
 
         __applyRuleId: function (id) {
             var items = [];
-
             //todo load actions
-
             this._reload(items)
         },
 
@@ -76,14 +77,14 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
                         "title": this.tr("Specification").toString(),
                         "id": "spec",
                         "sortable": false,
-                        "width": "1*"
+                        "width": "2*"
                     },
                     {
                         "title": this.tr("Description").toString(),
                         "id": "description",
                         "sortable": false,
-                        "visible": false,
-                        "width": "2*"
+                        "visible": true,
+                        "width": "1*"
                     }
                 ],
                 "items": items
@@ -106,6 +107,11 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
             bt.setToolTipText(this.tr("Remove rule action"));
             bt.addListener("execute", this.__removeAction, this);
             part.add(bt);
+
+            if (this.__title) {
+                toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
+                toolbar.add(new qx.ui.basic.Label(this.__title).set({font: "bold", alignY: "middle"}));
+            }
 
             toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
 
@@ -210,6 +216,7 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
         this.__delBt = null;
         this.__upBt = null;
         this.__downBt = null;
+        this.__title = null;
     }
 });
 

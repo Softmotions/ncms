@@ -1,6 +1,5 @@
 package com.softmotions.ncms.marketing.mtt
 
-import org.slf4j.LoggerFactory
 import java.io.Serializable
 import java.util.*
 
@@ -29,10 +28,8 @@ data class MttRule(var id: Long = 0,
                 mdate: java.sql.Timestamp,
                 enabled: java.lang.Boolean,
                 flags: java.lang.Long)
-    : this(id.toLong(), name.toString(), description.toString(), ordinal.toLong(), Date(cdate.time), Date(mdate.time), enabled.booleanValue(), flags.toLong()) {
-    }
-
-    companion object {
-        private val log = LoggerFactory.getLogger(MttRule::class.java)
+    : this(id.toLong(), name.toString(), description.toString(), ordinal.toLong(),
+            Date(cdate.time), Date(mdate.time),
+            enabled.booleanValue(), flags.toLong()) {
     }
 }

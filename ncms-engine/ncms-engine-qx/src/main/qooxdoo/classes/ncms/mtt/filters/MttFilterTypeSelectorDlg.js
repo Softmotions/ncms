@@ -1,23 +1,19 @@
 /**
- * Assembly attribute type selector dialog.
+ * Filter type selector
  */
-qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
+qx.Class.define("ncms.mtt.filters.MttFilterTypeSelectorDlg", {
     extend: qx.ui.window.Window,
-
-    statics: {},
 
     events: {
         /**
          * Data:
-         * [type, attribute editor class instance]
-         *
+         * [type, filter_class]
          */
         "completed": "qx.event.type.Data"
     },
 
-
     construct: function (caption) {
-        this.base(arguments, caption || this.tr("Select assembly attribute type"));
+        this.base(arguments, caption || this.tr("Select a filter"));
         this.setLayout(new qx.ui.layout.VBox());
         this.set({
             modal: true,
@@ -108,7 +104,7 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
 
         __createItems: function () {
             var items = [];
-            ncms.asm.am.AsmAttrManagersRegistry.forEachAttributeManagerTypeClassPair(
+            ncms.mtt.filters.MttFiltersRegistry.forEachMttFilterTypeClassPair(
                 function (type, clazz) {
                     items.push([
                         [(clazz.getDescription() || ""), type, (clazz.classname || clazz.toString())],
@@ -127,11 +123,9 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
         __createTable: function () {
             var tm = new sm.model.JsonTableModel();
             this.__setTableData(tm, this.__items);
-
             var table = new sm.table.Table(tm, tm.getCustom());
             table.addListener("cellDbltap", this.__ok, this);
             table.getSelectionModel().addListener("changeSelection", this.__syncState, this);
-
             table.set({
                 showCellFocusIndicator: false,
                 statusBarVisible: true,
@@ -193,4 +187,5 @@ qx.Class.define("ncms.asm.AsmAttributeTypeSelectorDlg", {
     destruct: function () {
         this.__dispose();
     }
+
 });

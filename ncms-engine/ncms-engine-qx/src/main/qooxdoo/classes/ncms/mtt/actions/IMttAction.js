@@ -1,7 +1,7 @@
 /**
- * MttFilter interface
+ * Mtt action interface
  */
-qx.Interface.define("ncms.mtt.filters.IMttFilter", {
+qx.Interface.define("ncms.mtt.actions.IMttAction", {
 
 //   statics : {
 //
@@ -17,10 +17,10 @@ qx.Interface.define("ncms.mtt.filters.IMttFilter", {
 //         * @return {String}
 //         */
 //        getType : function() {
-//        },
+//        }
 //
 //        /**
-//         * Convert filter specification to human readable string.
+//         * Convert action specification to human readable string.
 //         * @param spec {Object}
 //         */
 //         specForHuman: function (spec) {
@@ -30,15 +30,15 @@ qx.Interface.define("ncms.mtt.filters.IMttFilter", {
     members: {
 
         /**
-         * Activate filter options widget
-         * @param spec {Object} Filter specification
+         * Activate action options widget
+         * @param spec {Object} Action specification
          */
         createWidget: function (spec) {
         },
 
         /**
-         * Return filter specification JSON object
-         * @param widget {qx.ui.core.Widget} Filter widget created by `createWidget`
+         * Return rule specification JSON object
+         * @param widget {qx.ui.core.Widget} Action widget created by `createWidget`
          */
         asSpec: function (widget) {
             this.assertNotNull(widget);

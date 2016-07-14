@@ -122,13 +122,14 @@
 
     <select id="selectFilters" resultType="map" parameterType="map">
         SELECT
-        filter.id AS "id",
-        filter.rule_id AS "ruleId",
-        filter.type AS "type",
-        filter.spec AS "spec",
-        filter.description AS "description",
-        filter.cdate AS "cdate",
-        filter.mdate AS "mdate"
+        filter.id           AS "id",
+        filter.rule_id      AS "ruleId",
+        filter.type         AS "type",
+        filter.spec         AS "spec",
+        filter.description  AS "description",
+        filter.cdate        AS "cdate",
+        filter.mdate        AS "mdate",
+        filter.enabled      AS "enabled"
         FROM MTT_FILTERS filter
         WHERE filter.rule_id = #{rid}
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
@@ -138,6 +139,7 @@
                 OFFSET ${CQ_OFFSET}
             </if>
         </if>
+        ORDER BY cdate DESC
     </select>
 
     <select id="selectFiltersCount" resultType="long" parameterType="map">
@@ -154,7 +156,8 @@
             filter.description  AS "description",
             filter.cdate        AS "cdate",
             filter.mdate        AS "mdate",
-            filter.spec         AS "spec"
+            filter.spec         AS "spec",
+            filter.enabled      AS "enabled"
         FROM MTT_FILTERS filter
         WHERE filter.id = #{id}
     </select>
@@ -169,8 +172,8 @@
             parameterType="com.softmotions.ncms.marketing.mtt.MttRuleFilter"
             useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO MTT_FILTERS (type, rule_id, spec, description, cdate, mdate)
-        VALUES (#{type}, #{ruleId}, #{spec}, #{description}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO MTT_FILTERS (type, rule_id, spec, description, enabled, cdate, mdate)
+        VALUES (#{type}, #{ruleId}, #{spec}, #{description}, #{enabled}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     </insert>
 
     <update id="updateFilter" parameterType="com.softmotions.ncms.marketing.mtt.MttRuleFilter">
@@ -179,6 +182,7 @@
             type = #{type},
             spec = #{spec},
             description = #{description},
+            enabled = #{enabled},
             mdate = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
@@ -189,14 +193,15 @@
 
     <select id="selectActions" resultType="map" parameterType="map">
         SELECT
-        action.id AS "id",
-        action.rule_id AS "ruleId",
-        action.type AS "type",
-        action.ordinal AS "ordinal",
-        action.spec AS "spec",
-        action.description AS "description",
-        action.cdate AS "cdate",
-        action.mdate AS "mdate"
+        action.id               AS "id",
+        action.rule_id          AS "ruleId",
+        action.type             AS "type",
+        action.ordinal          AS "ordinal",
+        action.spec             AS "spec",
+        action.description      AS "description",
+        action.cdate            AS "cdate",
+        action.mdate            AS "mdate",
+        action.enabled          AS "enabled"
         FROM MTT_ACTIONS action
         WHERE action.rule_id = #{rid}
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
@@ -234,14 +239,15 @@
 
     <select id="selectActionById" resultType="com.softmotions.ncms.marketing.mtt.MttRuleAction" parameterType="long">
         SELECT
-            action.id           AS "id",
-            action.rule_id      AS "ruleId",
-            action.ordinal      AS "ordinal",
-            action.type         AS "type",
-            action.description  AS "description",
-            action.spec         AS "spec",
-            action.cdate        AS "cdate",
-            action.mdate        AS "mdate"
+            action.id             AS "id",
+            action.rule_id        AS "ruleId",
+            action.ordinal        AS "ordinal",
+            action.type           AS "type",
+            action.description    AS "description",
+            action.spec           AS "spec",
+            action.cdate          AS "cdate",
+            action.mdate          AS "mdate",
+            action.enabled        AS "enabled"
         FROM MTT_ACTIONS action
         WHERE action.id = #{id}
     </select>

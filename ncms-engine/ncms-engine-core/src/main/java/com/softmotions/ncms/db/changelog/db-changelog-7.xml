@@ -144,4 +144,25 @@
         <dropNotNullConstraint tableName="MTT_ACTIONS" columnName="SPEC"/>
     </changeSet>
 
+    <changeSet id="7.4" author="adamansky@gmail.com">
+        <addColumn tableName="MTT_FILTERS">
+            <column name="ENABLED" type="${tinyint.type}" defaultValueNumeric="1"
+                    remarks="Filter is enabled"/>
+        </addColumn>
+        <addColumn tableName="MTT_ACTIONS">
+            <column name="ENABLED" type="${tinyint.type}" defaultValueNumeric="1"
+                    remarks="Action is enabled"/>
+        </addColumn>
+        <sql>
+            UPDATE MTT_FILTERS SET ENABLED = 1 WHERE ENABLED IS NULL;
+            UPDATE MTT_ACTIONS SET ENABLED = 1 WHERE ENABLED IS NULL;
+        </sql>
+        <addNotNullConstraint tableName="MTT_FILTERS" columnName="ENABLED"/>
+        <addNotNullConstraint tableName="MTT_ACTIONS" columnName="ENABLED"/>
+        <sql dbms="db2">
+            CALL SYSPROC.ADMIN_CMD ('REORG TABLE mtt_actions');
+            CALL SYSPROC.ADMIN_CMD ('REORG TABLE mtt_filters');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

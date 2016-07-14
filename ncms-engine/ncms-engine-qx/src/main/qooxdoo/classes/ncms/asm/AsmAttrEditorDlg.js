@@ -156,10 +156,10 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         __selectType: function () {
             var dlg = new ncms.asm.AsmAttributeTypeSelectorDlg();
-            dlg.addListener("completed", function (ev) {
+            dlg.addListenerOnce("completed", function (ev) {
                 var data = ev.getData();
                 dlg.destroy();
-                //Data: [type, editor clazz]
+                //Data: [type, editor_clazz]
                 this.__setType(data[0], data[1]);
             }, this);
             dlg.show();

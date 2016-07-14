@@ -213,15 +213,15 @@ constructor(val sess: SqlSession,
     @PUT
     @Path("/rule/{rid}/filter")
     @Transactional
-    open fun filterCreate(@PathParam("rid") rid: Long, filterNode: ObjectNode): MttRuleFilter {
+    open fun filterCreate(@PathParam("rid") rid: Long, fn: ObjectNode): MttRuleFilter {
         val rule = ruleGet(rid)
-        val type = filterNode.path("type").asText(null) ?: throw BadRequestException()
-        if (StringUtils.isBlank(type)) throw BadRequestException()
+        val type = fn.path("type").asText(null) ?: throw BadRequestException()
         val filter = MttRuleFilter(
                 type = type.trim(),
                 ruleId = rule.id,
-                spec = filterNode.path("spec").asText(null),
-                description = filterNode.path("description").asText(null)
+                spec = fn.path("spec").asText(null),
+                description = fn.path("description").asText(null),
+                enabled = fn.path("enabled").asBoolean(true)
         )
         insert("insertFilter", filter)
         return filterGet(filter.id)
@@ -230,15 +230,13 @@ constructor(val sess: SqlSession,
     @POST
     @Path("/filter/{fid}")
     @Transactional
-    open fun filterUpdate(@PathParam("fid") fid: Long, filterNode: ObjectNode): MttRuleFilter {
+    open fun filterUpdate(@PathParam("fid") fid: Long, fn: ObjectNode): MttRuleFilter {
         val filter = filterGet(fid)
-
-        if (filterNode.hasNonNull("type")) filter.type = filterNode["type"].asText()
-        if (filterNode.hasNonNull("description")) filter.description = filterNode["description"].asText()
-        if (filterNode.hasNonNull("spec")) filter.spec = filterNode["spec"].asText()
-
+        if (fn.hasNonNull("type")) filter.type = fn["type"].asText()
+        if (fn.hasNonNull("description")) filter.description = fn["description"].asText()
+        if (fn.hasNonNull("enabled")) filter.enabled = fn["enabled"].asBoolean()
+        if (fn.hasNonNull("spec")) filter.spec = fn["spec"].asText()
         update("updateFilter", filter)
-
         return filterGet(filter.id)
     }
 
@@ -291,34 +289,29 @@ constructor(val sess: SqlSession,
     @Path("/rule/{rid}/action")
     @Transactional
     open fun actionCreate(@PathParam("rid") rid: Long,
-                          actionNode: ObjectNode): MttRuleAction {
+                          an: ObjectNode): MttRuleAction {
         val rule = ruleGet(rid)
-        val type = actionNode.path("type").asText(null) ?: throw BadRequestException()
-        if (StringUtils.isBlank(type)) throw BadRequestException()
+        val type = an.path("type").asText(null) ?: throw BadRequestException()
         val action = MttRuleAction(
                 type = type.trim(),
                 ruleId = rule.id,
-                spec = actionNode.path("spec").asText(null),
-                description = actionNode.path("description").asText(null)
+                spec = an.path("spec").asText(null),
+                description = an.path("description").asText(null),
+                enabled = an.path("enabled").asBoolean(true)
         )
-
         insert("insertAction", action)
-
         return actionGet(action.id)
     }
 
     @POST
     @Path("/action/{aid}")
     @Transactional
-    open fun actionUpdate(@PathParam("aid") aid: Long, actionNode: ObjectNode): MttRuleAction {
+    open fun actionUpdate(@PathParam("aid") aid: Long, an: ObjectNode): MttRuleAction {
         val action = actionGet(aid)
-
-        if (actionNode.hasNonNull("type")) action.type = actionNode["type"].asText()
-        if (actionNode.hasNonNull("description")) action.description = actionNode["description"].asText()
-        if (actionNode.hasNonNull("spec")) action.spec = actionNode["spec"].asText()
-
+        if (an.hasNonNull("type")) action.type = an["type"].asText()
+        if (an.hasNonNull("description")) action.description = an["description"].asText()
+        if (an.hasNonNull("spec")) action.spec = an["spec"].asText()
         update("updateAction", action)
-
         return actionGet(action.id)
     }
 
@@ -345,7 +338,6 @@ constructor(val sess: SqlSession,
             direction -> selectOne<Long?>("selectNextRuleAction", "rid", action.ruleId, "ordinal", action.ordinal)
             else -> selectOne<Long?>("selectPreviousRuleAction", "rid", action.ruleId, "ordinal", action.ordinal)
         }
-
         sordinal ?: return
         update("updateActionOrdinal", "ordinal", sordinal, "newOrdinal", action.ordinal)
         update("updateActionOrdinal", "id", action.id, "newOrdinal", sordinal)

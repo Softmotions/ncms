@@ -291,6 +291,38 @@ qx.Class.define("ncms.Actions", {
         // POST move rule down
         this._action("mtt.rules.down", "/rs/adm/mtt/rules/rule/{id}/move/down");
 
+        //================ Mtt filters
+
+        // Select rule filters
+        // {id} Mtt rule ID
+        this._action("mtt.filters.select", "/rs/adm/mtt/rules/rule/{id}/filters/select");
+
+        // Select rule filters count
+        // {id} Mtt rule ID
+        this._action("mtt.filters.select.count", "/rs/adm/mtt/rules/rule/{id}/filters/select/count");
+
+        // PUT New mtt filter
+        // {id} Mtt rule ID
+        // Data: {
+        //   type: Filter type
+        //   description: Filter description
+        //   spec: Filter JSON specification
+        // }
+        this._action("mtt.filter.new", "/rs/adm/mtt/rules/rule/{id}/filter");
+
+        // POST Update mtt filter
+        // id:  Mtt filter ID
+        // Data: {
+        //   type: Filter type
+        //   description: Filter description
+        //   spec: Filter JSON specification
+        // }
+        this._action("mtt.filter.update", "/rs/adm/mtt/rules/filter/{id}");
+
+
+        // DELETE The filter specified by {id}
+        // id: Mtt filter ID
+        this._action("mtt.filter.delete", "/rs/adm/mtt/rules/filter/{id}");
     },
 
     members: {
