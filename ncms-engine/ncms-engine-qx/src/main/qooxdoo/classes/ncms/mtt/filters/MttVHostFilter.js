@@ -37,9 +37,9 @@ qx.Class.define("ncms.mtt.filters.MttVHostFilter", {
             if (spec["pattern"] != null) {
                 pf.setValue(spec["pattern"]);
             }
-            rbg.addListener("changeSelection", function () {
-                pf.resetValue();
-            });
+            //rbg.addListener("changeSelection", function () {
+            //    pf.resetValue();
+            //});
             form.add(pf, this.tr("Pattern"), function (value, formItem) {
                 if (sm.lang.String.isEmpty(value)) {
                     throw new qx.core.ValidationError("Validation Error",

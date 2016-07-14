@@ -82,7 +82,7 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
                         "title": this.tr("Type").toString(),
                         "id": "type",
                         "sortable": false,
-                        "width": 90
+                        "width": 80
                     },
                     {
                         "title": this.tr("Specification").toString(),
@@ -155,6 +155,7 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
                 }
             }, this));
             table.setDataRowRenderer(rr);
+            table.addListener("cellDbltap", this.__editFilter, this);
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             return table;

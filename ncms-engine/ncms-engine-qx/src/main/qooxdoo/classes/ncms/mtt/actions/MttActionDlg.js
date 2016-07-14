@@ -1,25 +1,25 @@
 /**
- * Filter editor dialog
- * @asset(ncms/icon/16/misc/funnel-plus.png)
+ * Rule action dialog
+ * @asset(ncms/icon/16/actions/auction-hammer.png)
  */
-qx.Class.define("ncms.mtt.filters.MttFilterDlg", {
+qx.Class.define("ncms.mtt.actions.MttActionDlg", {
 
     extend: qx.ui.window.Window,
 
     events: {
 
         /**
-         * Then filter dialog completed.
+         * Then action dialog completed.
          */
         completed: "qx.event.type.Data"
     },
 
     /**
      * @param caption  {String} Dialog caption
-     * @param data     {Object} Filter data
+     * @param data     {Object} Action data
      */
     construct: function (caption, data) {
-        this.base(arguments, caption != null ? caption : this.tr("Edit filter"));
+        this.base(arguments, caption != null ? caption : this.tr("Edit action"));
         this.setLayout(new qx.ui.layout.VBox(5, "top", "separator-vertical"));
         this.set({
             modal: true,
@@ -39,18 +39,18 @@ qx.Class.define("ncms.mtt.filters.MttFilterDlg", {
         var vmgr = form.getValidationManager();
         vmgr.setRequiredFieldMessage(this.tr("This field is required"));
 
-        // Filter type
-        var el = new sm.ui.form.ButtonField(this.tr("Filter"), "ncms/icon/16/misc/funnel-plus.png");
-        el.setPlaceholder(this.tr("Choose the filter type"));
+        // Action type
+        var el = new sm.ui.form.ButtonField(this.tr("Action"), "ncms/icon/16/actions/auction-hammer.png");
+        el.setPlaceholder(this.tr("Choose the action type"));
         el.setReadOnly(true);
         el.setRequired(true);
         el.addListener("execute", this.__selectType, this);
         form.add(el, this.tr("Type"), null, "type");
 
-        // Filter description
+        // Action description
         el = new qx.ui.form.TextField().set({maxLength: 512});
         el.setValue(data["description"] || "");
-        el.setPlaceholder(this.tr("Place a filter description here"));
+        el.setPlaceholder(this.tr("Place a action description here"));
         form.add(el, this.tr("Description"), null, "description");
 
         // GUI disabled checkbox
@@ -84,10 +84,10 @@ qx.Class.define("ncms.mtt.filters.MttFilterDlg", {
         cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);
 
-        var fclazz = (data["type"] != null) ?
-                     ncms.mtt.filters.MttFiltersRegistry.findMttFilterClassForType(data["type"]) : null;
-        if (fclazz != null) {
-            this.__setType(data["type"], fclazz);
+        var aclazz = (data["type"] != null) ?
+                     ncms.mtt.actions.MttActionsRegistry.findMttActionClassForType(data["type"]) : null;
+        if (aclazz != null) {
+            this.__setType(data["type"], aclazz);
         }
     },
 
@@ -102,7 +102,7 @@ qx.Class.define("ncms.mtt.filters.MttFilterDlg", {
         __typeEditorStack: null,
 
         __selectType: function () {
-            var dlg = new ncms.mtt.filters.MttFilterTypeSelectorDlg();
+            var dlg = new ncms.mtt.actions.MttActionTypeSelectorDlg();
             dlg.addListenerOnce("completed", function (ev) {
                 var data = ev.getData();
                 dlg.destroy();
@@ -144,11 +144,11 @@ qx.Class.define("ncms.mtt.filters.MttFilterDlg", {
             };
             if (this.__data["id"] == null) {
                 req = new sm.io.Request(
-                    ncms.Application.ACT.getRestUrl("mtt.filter.new", {id: this.__ruleId}),
+                    ncms.Application.ACT.getRestUrl("mtt.action.new", {id: this.__ruleId}),
                     "PUT", "application/json");
             } else {
                 req = new sm.io.Request(
-                    ncms.Application.ACT.getRestUrl("mtt.filter.update", {id: this.__data["id"]}),
+                    ncms.Application.ACT.getRestUrl("mtt.action.update", {id: this.__data["id"]}),
                     "POST", "application/json");
             }
             req.setRequestContentType("application/json");
@@ -164,7 +164,7 @@ qx.Class.define("ncms.mtt.filters.MttFilterDlg", {
             var me = this;
             ts.setOnDemandFactoryFunctionProvider(function () {
                 return function (id) {
-                    var editor = ncms.mtt.filters.MttFiltersRegistry.createMttFilterInstance(id);
+                    var editor = ncms.mtt.actions.MttActionsRegistry.createMttActionInstance(id);
                     var spec = me.__data["spec"];
                     var w = editor.createWidget(spec || {});
                     if (w == null) {

@@ -50,10 +50,39 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
 
         __downBt: null,
 
+        reload: function () {
+            var rid = this.getRuleId();
+            this.__applyRuleId(rid);
+        },
+
         __applyRuleId: function (id) {
             var items = [];
-            //todo load actions
-            this._reload(items)
+            if (id == null) {
+                this._reload(items);
+                return;
+            }
+            var req = new sm.io.Request(
+                ncms.Application.ACT.getRestUrl("mtt.actions.select", {id: id}),
+                "GET", "application/json");
+            req.send(function (resp) {
+                var data = resp.getContent();
+                var freg = ncms.mtt.actions.MttActionsRegistry;
+                data.forEach(function (it) {
+                    var aclazz = freg.findMttActionClassForType(it["type"]);
+                    if (aclazz) {
+                        if ((typeof it["spec"] === "string") && it["spec"].length) {
+                            it["spec"] = JSON.parse(it["spec"]);
+                        } else {
+                            it["spec"] = {};
+                        }
+                        items.push(
+                            //todo
+                            [["", it["type"], aclazz.specForHuman(it["spec"]), it["description"]], it]
+                        );
+                    }
+                });
+                this._reload(items)
+            }, this);
         },
 
         //overriden
@@ -71,7 +100,7 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
                         "title": this.tr("Type").toString(),
                         "id": "type",
                         "sortable": false,
-                        "width": 100
+                        "width": 80
                     },
                     {
                         "title": this.tr("Specification").toString(),
@@ -148,6 +177,18 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
                 statusBarVisible: false,
                 focusCellOnPointerMove: false
             });
+            var rr = new sm.table.renderer.CustomRowRenderer();
+            var colorm = qx.theme.manager.Color.getInstance();
+            rr.setBgColorInterceptor(qx.lang.Function.bind(function (rowInfo) {
+                var rdata = rowInfo.rowData.rowData;
+                if (!rdata["enabled"]) {
+                    return colorm.resolve("table-row-gray");
+                } else {
+                    return colorm.resolve("background");
+                }
+            }, this));
+            table.setDataRowRenderer(rr);
+            table.addListener("cellDbltap", this.__editAction, this);
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             return table;
@@ -171,6 +212,11 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
                     bt.addListenerOnce("execute", this.__onMoveDown, this);
                     menu.add(bt);
                 }
+
+                bt = new qx.ui.menu.Button(this.tr("Edit"));
+                bt.addListenerOnce("execute", this.__editAction, this);
+                menu.add(bt);
+
                 bt = new qx.ui.menu.Button(this.tr("Remove"));
                 bt.addListenerOnce("execute", this.__removeAction, this);
                 menu.add(bt);
@@ -191,11 +237,41 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
         },
 
         __newAction: function () {
-            console.log('New action!');
+            var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("New action"), {
+                ruleId: this.getRuleId(),
+                enabled: true
+            });
+            dlg.addListenerOnce("completed", function () {
+                dlg.close();
+                this.reload();
+            }, this);
+            dlg.open();
         },
 
         __removeAction: function () {
-            console.log('Remove action!');
+            var rd = this.getSelectedRowData();
+            qx.core.Assert.assertNotNull(rd);
+            ncms.Application.confirm(this.tr("Are you sure to remove action: %1", rd["type"]), function (yes) {
+                if (!yes) {
+                    return;
+                }
+                var req = new sm.io.Request(
+                    ncms.Application.ACT.getRestUrl("mtt.action.delete", {id: rd["id"]}), "DELETE");
+                req.send(function () {
+                    this.removeSelected();
+                }, this);
+            }, this);
+        },
+
+        __editAction: function () {
+            var rd = this.getSelectedRowData();
+            qx.core.Assert.assertNotNull(rd);
+            var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("Edit action: %1", rd["type"]), rd);
+            dlg.addListenerOnce("completed", function (ev) {
+                dlg.close();
+                this.reload();
+            }, this);
+            dlg.open();
         },
 
         __onMoveUp: function () {
@@ -207,16 +283,16 @@ qx.Class.define("ncms.mtt.MttActionsTable", {
         },
 
         __move: function (ind, dir) {
-
+            //todo
+            console.log('Move ind=' + ind + ' dir=' + dir);
         }
     },
 
     destruct: function () {
-        this.__spec = null;
+        this.__title = null;
         this.__delBt = null;
         this.__upBt = null;
         this.__downBt = null;
-        this.__title = null;
     }
 });
 

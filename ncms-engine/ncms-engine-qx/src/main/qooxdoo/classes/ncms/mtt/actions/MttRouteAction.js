@@ -25,7 +25,7 @@ qx.Class.define("ncms.mtt.actions.MttRouteAction", {
 
         createWidget: function (spec) {
             var w = new qx.ui.core.Widget();
-            w.setBackgroundColor("grey");
+            w.setBackgroundColor("gray");
             return w;
         },
 

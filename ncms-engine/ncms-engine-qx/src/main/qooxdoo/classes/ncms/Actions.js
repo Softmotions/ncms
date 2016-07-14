@@ -240,38 +240,32 @@ qx.Class.define("ncms.Actions", {
 
         //================== UserEnvRS
 
-        /**
-         * PUT Single user env value
-         * {type} Env type
-         * Data: env value
-         */
+        // PUT Single user env value
+        // {type} Env type
+        // Data: env value
         this._action("user.env.single", "/rs/adm/user/env/single/{type}");
 
-        /**
-         * GET|PUT|DELETE Add entry to the envset of {type}
-         * Data: env value used for PUT|DELETE
-         */
+
+        // GET|PUT|DELETE Add entry to the envset of {type}
+        // Data: env value used for PUT|DELETE
         this._action("user.env.set", "/rs/adm/user/env/set/{type}");
 
-        /**
-         * DELETE Delete all elements in envset of {type}
-         */
+
+        // DELETE Delete all elements in envset of {type}
         this._action("user.env.clear", "/rs/adm/user/env/clear/{type}");
 
 
         //================== Attribute managers
 
-        /**
-         * PUT Sync asm attribute.
-         * Data: {
-         *   src: {Number} Page ID
-         *   tgt: {Number} Target page ID
-         *   attr: {String} Attribute name
-         * }
-         */
+        // PUT Sync asm attribute.
+        // Data: {
+        //   src: {Number} Page ID
+        //   tgt: {Number} Target page ID
+        //   attr: {String} Attribute name
+        // }
         this._action("am.tree.sync", "/rs/adm/am/tree/sync");
 
-        //================= Mtt rules
+        //================= MTT rules
 
         this._action("mtt.rules.select", "/rs/adm/mtt/rules/select");
         this._action("mtt.rules.select.count", "/rs/adm/mtt/rules/select/count");
@@ -291,18 +285,18 @@ qx.Class.define("ncms.Actions", {
         // POST move rule down
         this._action("mtt.rules.down", "/rs/adm/mtt/rules/rule/{id}/move/down");
 
-        //================ Mtt filters
+        //================ MTT filters
 
-        // Select rule filters
-        // {id} Mtt rule ID
+        // GET rule filters
+        // {id} MTT rule ID
         this._action("mtt.filters.select", "/rs/adm/mtt/rules/rule/{id}/filters/select");
 
-        // Select rule filters count
-        // {id} Mtt rule ID
+        // GET rule filters count
+        // {id} MTT rule ID
         this._action("mtt.filters.select.count", "/rs/adm/mtt/rules/rule/{id}/filters/select/count");
 
-        // PUT New mtt filter
-        // {id} Mtt rule ID
+        // PUT New MTT filter
+        // {id} MTT rule ID
         // Data: {
         //   type: Filter type
         //   description: Filter description
@@ -310,8 +304,8 @@ qx.Class.define("ncms.Actions", {
         // }
         this._action("mtt.filter.new", "/rs/adm/mtt/rules/rule/{id}/filter");
 
-        // POST Update mtt filter
-        // id:  Mtt filter ID
+        // POST Update MTT filter
+        // id:  MTT filter ID
         // Data: {
         //   type: Filter type
         //   description: Filter description
@@ -319,10 +313,42 @@ qx.Class.define("ncms.Actions", {
         // }
         this._action("mtt.filter.update", "/rs/adm/mtt/rules/filter/{id}");
 
-
         // DELETE The filter specified by {id}
-        // id: Mtt filter ID
+        // id: MTT filter ID
         this._action("mtt.filter.delete", "/rs/adm/mtt/rules/filter/{id}");
+
+        //================ MTT actions
+
+        // GET rule actions
+        // {id} MTT rule ID
+        this._action("mtt.actions.select", "/rs/adm/mtt/rules/rule/{id}/actions/select");
+
+        // GET rule actions count
+        // {id} MTT rule ID
+        this._action("mtt.actions.select.count", "/rs/adm/mtt/rules/rule/{id}/actions/select/count");
+
+        // PUT New MTT action
+        // {id} MTT rule ID
+        // Data: {
+        //   type: Action type
+        //   description: Action description
+        //   spec: Action JSON specification
+        // }
+        this._action("mtt.action.new", "/rs/adm/mtt/rules/rule/{id}/action");
+
+        // POST Update MTT action
+        // id:  MTT action ID
+        // Data: {
+        //   type: Action type
+        //   description: Action description
+        //   spec: Action JSON specification
+        // }
+        this._action("mtt.action.update", "/rs/adm/mtt/rules/action/{id}");
+
+        // DELETE The action specified by {id}
+        // id: MTT action ID
+        this._action("mtt.action.delete", "/rs/adm/mtt/rules/action/{id}");
+
     },
 
     members: {
