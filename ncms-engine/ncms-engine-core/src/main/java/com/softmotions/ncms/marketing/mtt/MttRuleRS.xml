@@ -125,6 +125,7 @@
         filter.id AS "id",
         filter.rule_id AS "ruleId",
         filter.type AS "type",
+        filter.spec AS "spec",
         filter.description AS "description",
         filter.cdate AS "cdate",
         filter.mdate AS "mdate"
@@ -192,6 +193,7 @@
         action.rule_id AS "ruleId",
         action.type AS "type",
         action.ordinal AS "ordinal",
+        action.spec AS "spec",
         action.description AS "description",
         action.cdate AS "cdate",
         action.mdate AS "mdate"
