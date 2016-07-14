@@ -6,10 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -111,7 +108,7 @@ class TestMttRulesRS : BaseRSTest() {
     fun testRuleSearch() {
         with(createRule()) {
             val rid = path("id").asLong()
-            val rname = path("name").asText();
+            val rname = path("name").asText()
 
             assertEquals("1", GET("/select/count").body())
             assertEquals("0", GET("/select/count?stext=A$rname").body())
@@ -254,7 +251,7 @@ class TestMttRulesRS : BaseRSTest() {
 
             with(GET("/rule/$rid/filters/select")) {
                 assertEquals(200, code())
-                val body = body();
+                val body = body()
                 assertNotNull(body)
                 with(mapper.readTree(body)) {
                     assertTrue(isArray)
@@ -272,8 +269,12 @@ class TestMttRulesRS : BaseRSTest() {
     fun testFilterCreate() {
         with(createRule()) {
             val rid = path("id").asLong()
-            val ftype = RandomStringUtils.randomAlphabetic(6).toLowerCase()
-            with(PUT("/rule/$rid/filter/$ftype")) {
+            val filter = mapper.createObjectNode()
+                    .put("type", RandomStringUtils.randomAlphabetic(6).toLowerCase())
+                    .put("spec", RandomStringUtils.randomAscii(1024))
+                    .put("description", RandomStringUtils.randomAscii(32))
+
+            with(PUT("/rule/$rid/filter").contentType("application/json").send(mapper.writeValueAsString(filter))) {
                 assertEquals(200, code())
 
                 val body = body()
@@ -281,9 +282,11 @@ class TestMttRulesRS : BaseRSTest() {
                 with(mapper.readTree(body)) {
                     assertTrue(isObject)
                     assertTrue(hasNonNull("id"))
-                    assertEquals(ftype, path("type").asText(null))
+                    assertEquals(filter["type"].asText(), path("type").asText(null))
+                    assertEquals(filter["spec"].asText(), path("spec").asText(null))
+                    assertEquals(filter["description"].asText(), path("description").asText(null))
 
-                    val fid = path("id").asLong();
+                    val fid = path("id").asLong()
                     val req = GET("/filter/$fid")
                     assertEquals(200, req.code())
                     @Suppress("LABEL_NAME_CLASH")
@@ -291,6 +294,50 @@ class TestMttRulesRS : BaseRSTest() {
 
                     assertEquals(200, DELETE("/filter/$fid").code())
                 }
+            }
+
+            assertEquals(200, DELETE("/rule/$rid").code())
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testFilterCreate"))
+    fun testFilterUpdate() {
+        with(createRule()) {
+            val rid = path("id").asLong()
+
+            with(createRuleFilter(rid)) {
+                val fid = path("id").asLong()
+
+                val fields = arrayOf("type", "spec", "description");
+                fields.forEach {
+                    val fname = it
+                    with(GET("/filter/$fid")) {
+                        assertEquals(200, code())
+
+                        val filter = mapper.readTree(body())
+                        assertTrue(filter.hasNonNull(fname))
+                        val fu = mapper.createObjectNode()
+                                .put(fname, RandomStringUtils.randomAscii(filter[fname].asText().length / 2))
+
+                        with(POST("/filter/$fid").contentType("application/json").send(mapper.writeValueAsString(fu))) {
+                            assertEquals(200, code())
+
+                            val ufilter = mapper.readTree(body())
+
+                            fields.forEach {
+                                when {
+                                    it.equals(fname) -> {
+                                        assertNotEquals(filter[it].asText(), ufilter[it].asText())
+                                        assertEquals(fu[it].asText(), ufilter[it].asText())
+                                    }
+                                    else -> assertEquals(filter[it].asText(), ufilter[it].asText())
+                                }
+                            }
+                        }
+                    }
+                }
+
+                assertEquals(200, DELETE("/filter/$fid").code())
             }
 
             assertEquals(200, DELETE("/rule/$rid").code())
@@ -308,7 +355,7 @@ class TestMttRulesRS : BaseRSTest() {
 
             with(GET("/rule/$rid/actions/select")) {
                 assertEquals(200, code())
-                val body = body();
+                val body = body()
                 assertNotNull(body)
                 with(mapper.readTree(body)) {
                     assertTrue(isArray)
@@ -326,16 +373,21 @@ class TestMttRulesRS : BaseRSTest() {
     fun testActionCreate() {
         with(createRule()) {
             val rid = path("id").asLong()
-            val atype = RandomStringUtils.randomAlphabetic(6).toLowerCase()
-            with(PUT("/rule/$rid/action/$atype")) {
+            val action = mapper.createObjectNode()
+                    .put("type", RandomStringUtils.randomAlphabetic(6).toLowerCase())
+                    .put("spec", RandomStringUtils.randomAscii(1024))
+                    .put("description", RandomStringUtils.randomAscii(32))
+            with(PUT("/rule/$rid/action").contentType("application/json").send(mapper.writeValueAsString(action))) {
                 assertEquals(200, code())
 
-                val body = body();
+                val body = body()
                 assertNotNull(body)
                 with(mapper.readTree(body)) {
                     assertTrue(isObject)
                     assertTrue(hasNonNull("id"))
-                    assertEquals(atype, path("type").asText(null))
+                    assertEquals(action["type"].asText(), path("type").asText(null))
+                    assertEquals(action["spec"].asText(), path("spec").asText(null))
+                    assertEquals(action["description"].asText(), path("description").asText(null))
 
                     val aid = path("id").asLong()
                     val req = GET("/action/$aid")
@@ -345,6 +397,50 @@ class TestMttRulesRS : BaseRSTest() {
 
                     assertEquals(200, DELETE("/action/$aid").code())
                 }
+            }
+
+            assertEquals(200, DELETE("/rule/$rid").code())
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testActionCreate"))
+    fun testActionUpdate() {
+        with(createRule()) {
+            val rid = path("id").asLong()
+
+            with(createRuleAction(rid)) {
+                val aid = path("id").asLong()
+
+                val fields = arrayOf("type", "spec", "description");
+                fields.forEach {
+                    val fname = it
+                    with(GET("/action/$aid")) {
+                        assertEquals(200, code())
+
+                        val action = mapper.readTree(body())
+                        assertTrue(action.hasNonNull(fname))
+                        val au = mapper.createObjectNode()
+                                .put(fname, RandomStringUtils.randomAscii(action[fname].asText().length / 2))
+
+                        with(POST("/action/$aid").contentType("application/json").send(mapper.writeValueAsString(au))) {
+                            assertEquals(200, code())
+
+                            val uaction = mapper.readTree(body())
+
+                            fields.forEach {
+                                when {
+                                    it.equals(fname) -> {
+                                        assertNotEquals(action[it].asText(), uaction[it].asText())
+                                        assertEquals(au[it].asText(), uaction[it].asText())
+                                    }
+                                    else -> assertEquals(action[it].asText(), uaction[it].asText())
+                                }
+                            }
+                        }
+                    }
+                }
+
+                assertEquals(200, DELETE("/filter/$aid").code())
             }
 
             assertEquals(200, DELETE("/rule/$rid").code())
@@ -422,22 +518,50 @@ class TestMttRulesRS : BaseRSTest() {
                 assertTrue(path("enabled").asBoolean())
 
                 @Suppress("LABEL_NAME_CLASH")
-                return this@with;
+                return this@with
+            }
+        }
+    }
+
+    private fun createRuleFilter(rid: Long): JsonNode {
+        val filter = mapper.createObjectNode()
+                .put("type", RandomStringUtils.randomAlphabetic(8).toLowerCase())
+                .put("spec", RandomStringUtils.randomAscii(1024))
+                .put("description", RandomStringUtils.randomAscii(32))
+        with(PUT("/rule/$rid/filter").contentType("application/json").send(mapper.writeValueAsString(filter))) {
+            assertEquals(200, code())
+            with(mapper.readTree(body())) {
+                assertTrue(isObject)
+                assertTrue(hasNonNull("id"))
+                assertTrue(hasNonNull("type"))
+                assertEquals(filter["type"].asText(), path("type").asText(null))
+                assertEquals(filter["spec"].asText(), path("spec").asText(null))
+                assertEquals(filter["description"].asText(), path("description").asText(null))
+
+                @Suppress("LABEL_NAME_CLASH")
+                return this@with
             }
         }
     }
 
     private fun createRuleAction(rid: Long): JsonNode {
-        with(PUT("/rule/$rid/action/${RandomStringUtils.randomAlphabetic(8).toLowerCase()}")) {
+        val action = mapper.createObjectNode()
+                .put("type", RandomStringUtils.randomAlphabetic(8).toLowerCase())
+                .put("spec", RandomStringUtils.randomAscii(1024))
+                .put("description", RandomStringUtils.randomAscii(32))
+        with(PUT("/rule/$rid/action").contentType("application/json").send(mapper.writeValueAsString(action))) {
             assertEquals(200, code())
             with(mapper.readTree(body())) {
                 assertTrue(isObject)
                 assertTrue(hasNonNull("id"))
                 assertTrue(hasNonNull("type"))
                 assertTrue(hasNonNull("ordinal"))
+                assertEquals(action["type"].asText(), path("type").asText(null))
+                assertEquals(action["spec"].asText(), path("spec").asText(null))
+                assertEquals(action["description"].asText(), path("description").asText(null))
 
                 @Suppress("LABEL_NAME_CLASH")
-                return this@with;
+                return this@with
             }
         }
     }
