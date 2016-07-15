@@ -40,7 +40,13 @@ constructor(val sess: SqlSession,
                     writeStartArray()
                     selectByCriteria(createRulesQ(req), { context ->
                         @Suppress("UNCHECKED_CAST")
-                        writeObject(context.resultObject as Map<String, Any>)
+                        writeObject((context.resultObject as Map<String, Any>).mapValues {
+                            when {
+                                // convert enabled field to boolean
+                                it.key in arrayOf("enabled") -> it.value as Number != 0
+                                else -> it.value
+                            }
+                        })
                     }, "selectRules")
                     writeEndArray()
                     flush()
@@ -87,7 +93,7 @@ constructor(val sess: SqlSession,
             if (selectOne<Long?>("selectRuleIdByName", rname) != null) {
                 throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.exists", req, rname), true)
             }
-            val rule = MttRule(name = rname)
+            val rule = MttRule(rname)
 
             insert("insertRule", rule)
             val rid = selectOne<Long?>("selectRuleIdByName", rname) ?: throw InternalServerErrorException()
@@ -100,25 +106,26 @@ constructor(val sess: SqlSession,
     @Transactional
     open fun ruleRename(@Context req: HttpServletRequest,
                         @PathParam("rid") rid: Long,
-                        @PathParam("name") name: String): MttRule =
-            synchronized(MttRule::class) {
-                val rname = name.trim()
-                if (selectOne<Long?>("selectRuleIdByName", rname) != null) {
-                    throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.other", req, rname), true)
-                }
-
-                update("updateRuleName", "id", rid, "name", rname)
-
-                return ruleGet(rid)
+                        @PathParam("name") name: String): MttRule {
+        synchronized(MttRule::class) {
+            val rname = name.trim()
+            if (selectOne<Long?>("selectRuleIdByName", rname) != null) {
+                throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.other", req, rname), true)
             }
+
+            update("updateRuleName", "id", rid, "name", rname)
+
+            return ruleGet(rid)
+        }
+    }
 
     @POST
     @Path("/rule/{rid}")
     @Transactional
-    open fun ruleUpdate(@PathParam("rid") rid: Long, ruleNode: ObjectNode): MttRule {
+    open fun ruleUpdate(@PathParam("rid") rid: Long, rn: ObjectNode): MttRule {
         val rule = ruleGet(rid)
 
-        with(ruleNode) {
+        with(rn) {
             if (hasNonNull("flags")) rule.flags = path("flags").asLong(0)
             if (hasNonNull("description")) rule.description = path("description").asText()
         }
@@ -181,7 +188,13 @@ constructor(val sess: SqlSession,
                     writeStartArray()
                     selectByCriteria(createFiltersQ(rid, req), { context ->
                         @Suppress("UNCHECKED_CAST")
-                        writeObject(context.resultObject as Map<String, Any>)
+                        writeObject((context.resultObject as Map<String, Any>).mapValues {
+                            when {
+                                // convert enabled field to boolean
+                                it.key in arrayOf("enabled") -> it.value as Number != 0
+                                else -> it.value
+                            }
+                        })
                     }, "selectFilters")
                     writeEndArray()
                     flush()
@@ -216,15 +229,15 @@ constructor(val sess: SqlSession,
     open fun filterCreate(@PathParam("rid") rid: Long, fn: ObjectNode): MttRuleFilter {
         val rule = ruleGet(rid)
         val type = fn.path("type").asText(null) ?: throw BadRequestException()
-        val filter = MttRuleFilter(
-                type = type.trim(),
-                ruleId = rule.id,
-                spec = fn.path("spec").asText(null),
-                description = fn.path("description").asText(null),
-                enabled = fn.path("enabled").asBoolean(true)
-        )
-        insert("insertFilter", filter)
-        return filterGet(filter.id)
+        val filter = MttRuleFilter(rule.id, type.trim())
+        with(filter) {
+            spec = fn.path("spec").asText(null)
+            description = fn.path("description").asText(null)
+            enabled = fn.path("enabled").asBoolean(true)
+
+            insert("insertFilter", filter)
+            return filterGet(id)
+        }
     }
 
     @POST
@@ -255,7 +268,13 @@ constructor(val sess: SqlSession,
                     writeStartArray()
                     selectByCriteria(createActionsQ(rid, req), { context ->
                         @Suppress("UNCHECKED_CAST")
-                        writeObject(context.resultObject as Map<String, Any>)
+                        writeObject((context.resultObject as Map<String, Any>).mapValues {
+                            when {
+                                // convert enabled field to boolean
+                                it.key in arrayOf("enabled") -> it.value as Number != 0
+                                else -> it.value
+                            }
+                        })
                     }, "selectActions")
                     writeEndArray()
                     flush()
@@ -292,15 +311,14 @@ constructor(val sess: SqlSession,
                           an: ObjectNode): MttRuleAction {
         val rule = ruleGet(rid)
         val type = an.path("type").asText(null) ?: throw BadRequestException()
-        val action = MttRuleAction(
-                type = type.trim(),
-                ruleId = rule.id,
-                spec = an.path("spec").asText(null),
-                description = an.path("description").asText(null),
-                enabled = an.path("enabled").asBoolean(true)
-        )
-        insert("insertAction", action)
-        return actionGet(action.id)
+        val action = MttRuleAction(rule.id, type.trim())
+        with(action) {
+            spec = an.path("spec").asText(null)
+            description = an.path("description").asText(null)
+            enabled = an.path("enabled").asBoolean(true)
+            insert("insertAction", action)
+            return actionGet(id)
+        }
     }
 
     @POST
