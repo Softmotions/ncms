@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -108,4 +109,16 @@ public class MttRuleFilter implements Serializable {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MttRuleFilter that = (MttRuleFilter) o;
+        return Objects.equals(id, that.id);
+    }
+
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
+

@@ -195,6 +195,7 @@
         SELECT
         action.id               AS "id",
         action.rule_id          AS "ruleId",
+        action.group_id         AS "groupId",
         action.type             AS "type",
         action.ordinal          AS "ordinal",
         action.spec             AS "spec",
@@ -223,8 +224,8 @@
             parameterType="com.softmotions.ncms.marketing.mtt.MttRuleAction"
             useGeneratedKeys="true"
             keyProperty="id">
-        INSERT INTO MTT_ACTIONS (id, type, rule_id, spec, description, cdate, mdate)
-        VALUES (SEQ_MTT_ACTION_ID.NEXTVAL, #{type}, #{ruleId}, #{spec}, #{description}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        INSERT INTO MTT_ACTIONS (id, type, rule_id, group_id, spec, description, cdate, mdate)
+        VALUES (SEQ_MTT_ACTION_ID.NEXTVAL, #{type}, #{ruleId}, #{groupId}, #{spec}, #{description}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     </insert>
 
     <update id="updateAction" parameterType="com.softmotions.ncms.marketing.mtt.MttRuleAction">
@@ -241,6 +242,7 @@
         SELECT
             action.id             AS "id",
             action.rule_id        AS "ruleId",
+            action.group_id       AS "groupId",
             action.ordinal        AS "ordinal",
             action.type           AS "type",
             action.description    AS "description",

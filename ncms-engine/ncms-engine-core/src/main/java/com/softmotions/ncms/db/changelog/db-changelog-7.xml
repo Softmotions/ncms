@@ -165,4 +165,16 @@
         </sql>
     </changeSet>
 
+    <changeSet id="7.5" author="adamansky@gmail.com">
+        <addColumn tableName="MTT_ACTIONS">
+            <column name="GROUP_ID" type="BIGINT" remarks="Action group ID"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="MTT_ACTIONS"
+                                 baseColumnNames="GROUP_ID"
+                                 constraintName="FK_MTT_ACTIONS_GROUP"
+                                 referencedTableName="MTT_ACTIONS"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
 </databaseChangeLog>

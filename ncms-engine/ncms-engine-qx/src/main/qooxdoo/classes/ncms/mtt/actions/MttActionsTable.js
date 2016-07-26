@@ -1,10 +1,12 @@
 /**
- * Mtt filters attached to rules.
+ * Mtt actions attached to rules.
  *
  * @asset(ncms/icon/16/actions/add.png)
  * @asset(ncms/icon/16/actions/delete.png)
+ * @asset(ncms/icon/16/misc/arrow_up.png)
+ * @asset(ncms/icon/16/misc/arrow_down.png)
  */
-qx.Class.define("ncms.mtt.MttFiltersTable", {
+qx.Class.define("ncms.mtt.actions.MttActionsTable", {
     extend: sm.table.ToolbarLocalTable,
     implement: [
         qx.ui.form.IStringForm,
@@ -14,6 +16,10 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
         sm.ui.form.MStringForm,
         sm.table.MTableMutator
     ],
+
+    events: {
+        "actionsChanged": "qx.event.type.Event"
+    },
 
     properties: {
 
@@ -40,6 +46,10 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
 
         __delBt: null,
 
+        __upBt: null,
+
+        __downBt: null,
+
         reload: function () {
             var rid = this.getRuleId();
             this.__applyRuleId(rid);
@@ -52,21 +62,22 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
                 return;
             }
             var req = new sm.io.Request(
-                ncms.Application.ACT.getRestUrl("mtt.filters.select", {id: id}),
+                ncms.Application.ACT.getRestUrl("mtt.actions.select", {id: id}),
                 "GET", "application/json");
             req.send(function (resp) {
                 var data = resp.getContent();
-                var freg = ncms.mtt.filters.MttFiltersRegistry;
+                var freg = ncms.mtt.actions.MttActionsRegistry;
                 data.forEach(function (it) {
-                    var fclazz = freg.findMttFilterClassForType(it["type"]);
-                    if (fclazz) {
+                    var aclazz = freg.findMttActionClassForType(it["type"]);
+                    if (aclazz) {
                         if ((typeof it["spec"] === "string") && it["spec"].length) {
                             it["spec"] = JSON.parse(it["spec"]);
                         } else {
                             it["spec"] = {};
                         }
                         items.push(
-                            [[it["type"], fclazz.specForHuman(it["spec"]), it["description"]], it]
+                            //todo
+                            [["", it["type"], aclazz.specForHuman(it["spec"]), it["description"]], it]
                         );
                     }
                 });
@@ -78,6 +89,13 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
         _setJsonTableData: function (tm, items) {
             var data = {
                 "columns": [
+                    {
+                        // Action probability
+                        "title": this.tr("%").toString(),
+                        "id": "prob",
+                        "sortable": false,
+                        "width": 30
+                    },
                     {
                         "title": this.tr("Type").toString(),
                         "id": "type",
@@ -110,20 +128,35 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
             toolbar.add(part);
 
             var bt = this._createButton(null, "ncms/icon/16/actions/add.png");
-            bt.setToolTipText(this.tr("New filter"));
-            bt.addListener("execute", this.__newFilter, this);
+            bt.setToolTipText(this.tr("New action"));
+            bt.addListener("execute", this.__newAction, this);
             part.add(bt);
 
             bt = this.__delBt = this._createButton(null, "ncms/icon/16/actions/delete.png").set({enabled: false});
-            bt.setToolTipText(this.tr("Remove rule filter"));
-            bt.addListener("execute", this.__removeFilter, this);
+            bt.setToolTipText(this.tr("Remove rule action"));
+            bt.addListener("execute", this.__removeAction, this);
             part.add(bt);
 
             if (this.__title) {
                 toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
                 toolbar.add(new qx.ui.basic.Label(this.__title).set({font: "bold", alignY: "middle"}));
-                toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
             }
+
+            toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
+
+            part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
+            toolbar.add(part);
+
+            this.__upBt = this._createButton(null, "ncms/icon/16/misc/arrow_up.png",
+                this.__onMoveUp, this);
+            this.__upBt.setToolTipText(this.tr("Move up"));
+            part.add(this.__upBt);
+
+            this.__downBt = this._createButton(null, "ncms/icon/16/misc/arrow_down.png",
+                this.__onMoveDown, this);
+            this.__downBt.setToolTipText(this.tr("Move down"));
+            part.add(this.__downBt);
+
             return toolbar;
         },
 
@@ -155,7 +188,7 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
                 }
             }, this));
             table.setDataRowRenderer(rr);
-            table.addListener("cellDbltap", this.__editFilter, this);
+            table.addListener("cellDbltap", this.__editAction, this);
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             return table;
@@ -165,16 +198,27 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
             var rd = this.getSelectedRowData();
             var menu = ev.getData().getTarget();
             menu.removeAll();
-            var bt = new qx.ui.menu.Button(this.tr("New filter"));
-            bt.addListenerOnce("execute", this.__newFilter, this);
+            var bt = new qx.ui.menu.Button(this.tr("New action"));
+            bt.addListenerOnce("execute", this.__newAction, this);
             menu.add(bt);
             if (rd != null) {
+                if (this.__upBt.getEnabled()) {
+                    bt = new qx.ui.menu.Button(this.tr("Move up"));
+                    bt.addListenerOnce("execute", this.__onMoveUp, this);
+                    menu.add(bt);
+                }
+                if (this.__downBt.getEnabled()) {
+                    bt = new qx.ui.menu.Button(this.tr("Move down"));
+                    bt.addListenerOnce("execute", this.__onMoveDown, this);
+                    menu.add(bt);
+                }
+
                 bt = new qx.ui.menu.Button(this.tr("Edit"));
-                bt.addListenerOnce("execute", this.__editFilter, this);
+                bt.addListenerOnce("execute", this.__editAction, this);
                 menu.add(bt);
 
                 bt = new qx.ui.menu.Button(this.tr("Remove"));
-                bt.addListenerOnce("execute", this.__removeFilter, this);
+                bt.addListenerOnce("execute", this.__removeAction, this);
                 menu.add(bt);
             }
         },
@@ -182,10 +226,18 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
         __syncState: function () {
             var ri = this.getSelectedRowIndex();
             this.__delBt.setEnabled(ri != null && ri !== -1);
+            if (ri != null && ri !== -1) {
+                var rc = this.getRowCount();
+                this.__upBt.setEnabled(ri > 0);
+                this.__downBt.setEnabled(ri < rc - 1);
+            } else {
+                this.__upBt.setEnabled(false);
+                this.__downBt.setEnabled(false);
+            }
         },
 
-        __newFilter: function () {
-            var dlg = new ncms.mtt.filters.MttFilterDlg(this.tr("New filter"), {
+        __newAction: function () {
+            var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("New action"), {
                 ruleId: this.getRuleId(),
                 enabled: true
             });
@@ -196,36 +248,51 @@ qx.Class.define("ncms.mtt.MttFiltersTable", {
             dlg.open();
         },
 
-        __removeFilter: function () {
+        __removeAction: function () {
             var rd = this.getSelectedRowData();
             qx.core.Assert.assertNotNull(rd);
-            ncms.Application.confirm(this.tr("Are you sure to remove filter: %1", rd["type"]), function (yes) {
+            ncms.Application.confirm(this.tr("Are you sure to remove action: %1", rd["type"]), function (yes) {
                 if (!yes) {
                     return;
                 }
                 var req = new sm.io.Request(
-                    ncms.Application.ACT.getRestUrl("mtt.filter.delete", {id: rd["id"]}), "DELETE");
+                    ncms.Application.ACT.getRestUrl("mtt.action.delete", {id: rd["id"]}), "DELETE");
                 req.send(function () {
                     this.removeSelected();
                 }, this);
             }, this);
         },
 
-        __editFilter: function () {
+        __editAction: function () {
             var rd = this.getSelectedRowData();
             qx.core.Assert.assertNotNull(rd);
-            var dlg = new ncms.mtt.filters.MttFilterDlg(this.tr("Edit filter: %1", rd["type"]), rd);
+            var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("Edit action: %1", rd["type"]), rd);
             dlg.addListenerOnce("completed", function (ev) {
                 dlg.close();
                 this.reload();
             }, this);
             dlg.open();
+        },
+
+        __onMoveUp: function () {
+            this.__move(this.getSelectedRowIndex(), 1);
+        },
+
+        __onMoveDown: function () {
+            this.__move(this.getSelectedRowIndex(), -1);
+        },
+
+        __move: function (ind, dir) {
+            //todo
+            console.log('Move ind=' + ind + ' dir=' + dir);
         }
     },
 
     destruct: function () {
         this.__title = null;
         this.__delBt = null;
+        this.__upBt = null;
+        this.__downBt = null;
     }
 });
 

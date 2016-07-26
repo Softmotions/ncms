@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -38,6 +39,8 @@ public class MttRuleAction implements Serializable {
     private Date mdate;
     @JsonProperty
     private boolean enabled = true;
+    @JsonProperty
+    private Long groupId;
 
     public MttRuleAction() {
     }
@@ -117,5 +120,24 @@ public class MttRuleAction implements Serializable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MttRuleAction that = (MttRuleAction) o;
+        return Objects.equals(id, that.id);
+    }
+
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

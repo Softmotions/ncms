@@ -22,8 +22,8 @@ qx.Class.define("ncms.mtt.MttEditor", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
 
-        this.__filters = new ncms.mtt.MttFiltersTable(this.tr("Filters"));
-        this.__actions = new ncms.mtt.MttActionsTable(this.tr("Actions"));
+        this.__filters = new ncms.mtt.filters.MttFiltersTable(this.tr("Filters"));
+        this.__actions = new ncms.mtt.actions.MttActionsTree(this.tr("Actions"));
 
         var sp = new qx.ui.splitpane.Pane("vertical");
         sp.add(this.__filters, 1);

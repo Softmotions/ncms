@@ -188,7 +188,6 @@ qx.Class.define("ncms.asm.am.TreeAMValueWidget", {
             part.add(el);
 
             toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
-
             part = new qx.ui.toolbar.Part()
             .set({"appearance": "toolbar-table/part"});
             toolbar.add(part);

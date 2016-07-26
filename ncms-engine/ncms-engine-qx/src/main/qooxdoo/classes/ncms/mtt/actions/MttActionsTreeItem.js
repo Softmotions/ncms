@@ -1,7 +1,7 @@
 /**
  * Tree item for ncms.asm.am.TreeAMValueWidget
  */
-qx.Class.define("ncms.asm.am.TreeAMItem", {
+qx.Class.define("ncms.mtt.actions.MttActionsTreeItem", {
     extend: qx.ui.tree.VirtualTreeItem,
 
     properties: {

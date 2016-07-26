@@ -24,33 +24,34 @@ msgstr "Выход"
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:159 ncms/asm/am/AsmCoreAM.js:87
-#: ncms/asm/am/ImageAMValueWidget.js:104 ncms/asm/AsmEditor.js:88
+#: ncms/pgs/PageEditorEditPage.js:159 ncms/asm/AsmEditor.js:88
+#: ncms/asm/am/AsmCoreAM.js:87 ncms/asm/am/ImageAMValueWidget.js:104
 #: ncms/mtt/filters/MttFilterDlg.js:40 ncms/mtt/actions/MttActionDlg.js:40
 #: ncms/usr/UserEditForm.js:22 ncms/usr/UserNewDlg.js:32
-#: ncms/mtt/filters/MttVHostFilter.js:46 ncms/asm/am/PageRefAM.js:120
+#: ncms/mtt/filters/MttVHostFilter.js:44 ncms/asm/am/PageRefAM.js:120
 #: ncms/asm/am/FileRefAM.js:138 ncms/asm/AsmAttrEditorDlg.js:54
 msgid "This field is required"
 msgstr "Обязательное поле"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:44 ncms/asm/am/RichRefAM.js:44
-#: ncms/asm/AsmParentsTable.js:100 ncms/asm/am/SelectAMTable.js:65
-#: ncms/asm/AsmEditor.js:92 ncms/usr/UserEditForm.js:27
+#: ncms/asm/AsmEditor.js:92 ncms/asm/am/RichRefAMValueWidget.js:44
+#: ncms/asm/am/RichRefAM.js:44 ncms/asm/AsmParentsTable.js:100
+#: ncms/asm/am/SelectAMTable.js:65 ncms/usr/UserEditForm.js:27
 #: ncms/mmgr/MediaFileEditor.js:273 ncms/pgs/PagesTable.js:21
 #: ncms/asm/AsmAttrsTable.js:114 ncms/asm/am/TreeAMNewFolderDlg.js:22
-#: ncms/asm/am/TreeAMValueWidget.js:481 ncms/asm/AsmTable.js:17
+#: ncms/asm/am/TreeAMValueWidget.js:480 ncms/asm/AsmTable.js:17
 #: ncms/usr/UserNewDlg.js:37 ncms/mtt/MttRulesTable.js:13
 #: ncms/mmgr/MediaFilesTable.js:9 ncms/asm/AsmAttrEditorDlg.js:63
 #: ncms/usr/UsersTable.js:10
 msgid "Name"
 msgstr "Название"
 
-#: ncms/mtt/filters/MttFilterDlg.js:48 ncms/mtt/actions/MttActionDlg.js:48
-#: ncms/mtt/MttFiltersTable.js:82 ncms/cc/TypesSelectorDlg.js:161
+#: ncms/mtt/actions/MttActionsTable.js:100
+#: ncms/mtt/filters/MttFiltersTable.js:82 ncms/mtt/filters/MttFilterDlg.js:48
+#: ncms/mtt/actions/MttActionDlg.js:48 ncms/cc/TypesSelectorDlg.js:161
 #: ncms/asm/AsmAttrsTable.js:126 ncms/asm/AsmTable.js:25
-#: ncms/mtt/MttActionsTable.js:100 ncms/asm/AsmAttributeTypeSelectorDlg.js:163
-#: ncms/mmgr/MediaFilesTable.js:10 ncms/asm/AsmAttrEditorDlg.js:66
-#: ncms/asm/AsmAttrEditorDlg.js:74 ncms/usr/UserRolesTable.js:154
+#: ncms/asm/AsmAttributeTypeSelectorDlg.js:163 ncms/mmgr/MediaFilesTable.js:10
+#: ncms/asm/AsmAttrEditorDlg.js:66 ncms/asm/AsmAttrEditorDlg.js:74
+#: ncms/usr/UserRolesTable.js:154
 msgid "Type"
 msgstr "Тип"
 
@@ -103,10 +104,10 @@ msgstr "Отмена"
 msgid "Select assembly attribute type"
 msgstr "Выбор типа атрибута"
 
-#: ncms/asm/AsmEditor.js:103 ncms/mtt/filters/MttFilterDlg.js:54
-#: ncms/mtt/actions/MttActionDlg.js:54 ncms/mtt/MttFiltersTable.js:94
-#: ncms/mmgr/MediaFileEditor.js:48 ncms/cc/TypesSelectorDlg.js:155
-#: ncms/asm/AsmTable.js:21 ncms/mtt/MttActionsTable.js:112
+#: ncms/mtt/actions/MttActionsTable.js:112 ncms/asm/AsmEditor.js:103
+#: ncms/mtt/filters/MttFiltersTable.js:94 ncms/mtt/filters/MttFilterDlg.js:54
+#: ncms/mtt/actions/MttActionDlg.js:54 ncms/mmgr/MediaFileEditor.js:48
+#: ncms/cc/TypesSelectorDlg.js:155 ncms/asm/AsmTable.js:21
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:157 ncms/mmgr/MediaFilesTable.js:13
 #: ncms/usr/UserRolesTable.js:159
 msgid "Description"
@@ -124,13 +125,15 @@ msgstr "Добавить новый атрибут"
 msgid "Drop attribute"
 msgstr "Удалить атрибут"
 
-#: ncms/mtt/MttNav.js:82 ncms/asm/AsmAttrsTable.js:82
-#: ncms/mtt/MttActionsTable.js:152 ncms/mtt/MttActionsTable.js:206
+#: ncms/mtt/actions/MttActionsTable.js:152
+#: ncms/mtt/actions/MttActionsTable.js:206 ncms/mtt/MttNav.js:82
+#: ncms/asm/AsmAttrsTable.js:82
 msgid "Move up"
 msgstr "Переместить наверх"
 
-#: ncms/mtt/MttNav.js:86 ncms/asm/AsmAttrsTable.js:87
-#: ncms/mtt/MttActionsTable.js:157 ncms/mtt/MttActionsTable.js:211
+#: ncms/mtt/actions/MttActionsTable.js:157
+#: ncms/mtt/actions/MttActionsTable.js:211 ncms/mtt/MttNav.js:86
+#: ncms/asm/AsmAttrsTable.js:87
 msgid "Move down"
 msgstr "Переместить вниз"
 
@@ -156,16 +159,18 @@ msgstr "Перезаписать атрибут"
 msgid "New"
 msgstr "Создать"
 
-#: ncms/pgs/PageEditorEditPage.js:30 ncms/mtt/MttFiltersTable.js:172
-#: ncms/asm/AsmAttrsTable.js:204 ncms/asm/am/TreeAMValueWidget.js:453
-#: ncms/mtt/MttActionsTable.js:216
+#: ncms/pgs/PageEditorEditPage.js:30 ncms/mtt/actions/MttActionsTable.js:216
+#: ncms/mtt/filters/MttFiltersTable.js:172 ncms/asm/AsmAttrsTable.js:204
+#: ncms/asm/am/TreeAMValueWidget.js:452
 msgid "Edit"
 msgstr "Редактировать"
 
-#: ncms/asm/AsmNav.js:82 ncms/usr/UsersNav.js:103
-#: ncms/mmgr/MediaFilesSelector.js:535 ncms/mtt/MttFiltersTable.js:176
-#: ncms/mtt/MttNav.js:94 ncms/asm/AsmAttrsTable.js:208
-#: ncms/asm/am/TreeAMValueWidget.js:462 ncms/mtt/MttActionsTable.js:220
+#: ncms/mtt/actions/MttActionsTable.js:220
+#: ncms/mtt/filters/MttFiltersTable.js:176 ncms/asm/AsmNav.js:82
+#: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:535
+#: ncms/mtt/actions/MttActionsTree.js:122
+#: ncms/mtt/actions/MttActionsTree.js:215 ncms/mtt/MttNav.js:94
+#: ncms/asm/AsmAttrsTable.js:208 ncms/asm/am/TreeAMValueWidget.js:461
 msgid "Remove"
 msgstr "Удалить"
 
@@ -269,7 +274,7 @@ msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:119 ncms/asm/AsmNav.js:78
 #: ncms/mmgr/MediaItemTreeSelector.js:72 ncms/mmgr/MediaFilesSelector.js:524
-#: ncms/mtt/MttNav.js:78 ncms/asm/am/TreeAMValueWidget.js:458
+#: ncms/mtt/MttNav.js:78 ncms/asm/am/TreeAMValueWidget.js:457
 msgid "Rename"
 msgstr "Переименовать"
 
@@ -676,7 +681,7 @@ msgstr "Название папки"
 msgid "Drop element"
 msgstr "Удалить элемент"
 
-#: ncms/asm/am/TreeAMValueWidget.js:185 ncms/asm/am/TreeAMValueWidget.js:397
+#: ncms/asm/am/TreeAMValueWidget.js:185 ncms/asm/am/TreeAMValueWidget.js:396
 msgid "Sync with"
 msgstr "Синхронизовать"
 
@@ -684,52 +689,52 @@ msgstr "Синхронизовать"
 msgid "Synchronize attribute content with another page"
 msgstr "Синхронизовать поле с другой страницей"
 
-#: ncms/asm/am/TreeAMValueWidget.js:198
+#: ncms/mtt/actions/MttActionsTree.js:139 ncms/asm/am/TreeAMValueWidget.js:197
 msgid "Move item up"
 msgstr "Переместить выше"
 
-#: ncms/asm/am/TreeAMValueWidget.js:204
+#: ncms/mtt/actions/MttActionsTree.js:146 ncms/asm/am/TreeAMValueWidget.js:203
 msgid "Move item down"
 msgstr "Переместить ниже"
 
-#: ncms/asm/am/TreeAMValueWidget.js:245
+#: ncms/asm/am/TreeAMValueWidget.js:244
 msgid "Are you sure to reset synchronization?"
 msgstr "Вы действительно желаете прекратить синхронизацию?"
 
-#: ncms/asm/am/TreeAMValueWidget.js:256
+#: ncms/asm/am/TreeAMValueWidget.js:255
 msgid "Please select the page this attribute should be synchronized"
 msgstr "Выберите страницу, с которой будет синхронизирован этот атрибут"
 
-#: ncms/asm/am/TreeAMValueWidget.js:349 ncms/asm/am/TreeAMValueWidget.js:420
+#: ncms/asm/am/TreeAMValueWidget.js:348 ncms/asm/am/TreeAMValueWidget.js:419
 msgid "New folder"
 msgstr "Новая папка"
 
-#: ncms/asm/am/TreeAMValueWidget.js:359 ncms/asm/am/TreeAMValueWidget.js:426
+#: ncms/asm/am/TreeAMValueWidget.js:358 ncms/asm/am/TreeAMValueWidget.js:425
 msgid "Add page reference"
 msgstr "Добавить ссылку на страницу"
 
-#: ncms/asm/am/TreeAMValueWidget.js:364 ncms/asm/am/TreeAMValueWidget.js:431
+#: ncms/asm/am/TreeAMValueWidget.js:363 ncms/asm/am/TreeAMValueWidget.js:430
 msgid "Add file reference"
 msgstr "Добавить ссылку на файл"
 
-#: ncms/asm/am/TreeAMValueWidget.js:403
+#: ncms/asm/am/TreeAMValueWidget.js:402
 msgid "Synchronized with %1"
 msgstr "Синхронизовано с %1"
 
 #: ncms/mmgr/MediaItemTreeSelector.js:76 ncms/mmgr/MediaFilesSelector.js:530
-#: ncms/asm/am/TreeAMValueWidget.js:466
+#: ncms/asm/am/TreeAMValueWidget.js:465
 msgid "Move to another folder"
 msgstr "Переместить в другую папку"
 
-#: ncms/asm/am/TreeAMValueWidget.js:546
+#: ncms/asm/am/TreeAMValueWidget.js:545
 msgid "Select page"
 msgstr "Выбрать страницу"
 
-#: ncms/asm/am/TreeAMValueWidget.js:588
+#: ncms/asm/am/TreeAMValueWidget.js:587
 msgid "Select file for page: %1"
 msgstr "Выбрать файл для: %1"
 
-#: ncms/asm/am/TreeAMValueWidget.js:742
+#: ncms/asm/am/TreeAMValueWidget.js:741
 msgid "Please choose the target folder"
 msgstr "Пожалуйста, выберите целевую папку"
 
@@ -889,31 +894,6 @@ msgstr "Текст ссылки"
 msgid "Close"
 msgstr "Закрыть"
 
-#: ncms/mtt/MttActionsTable.js:94
-msgid "%"
-msgstr ""
-
-#: ncms/mtt/MttFiltersTable.js:88 ncms/mtt/MttActionsTable.js:106
-msgid "Specification"
-msgstr "Спецификация"
-
-#: ncms/mtt/MttActionsTable.js:131 ncms/mtt/MttActionsTable.js:201
-#: ncms/mtt/MttActionsTable.js:240
-msgid "New action"
-msgstr "Новое действие"
-
-#: ncms/mtt/MttActionsTable.js:136
-msgid "Remove rule action"
-msgstr "Удалить действие"
-
-#: ncms/mtt/MttActionsTable.js:254
-msgid "Are you sure to remove action: %1"
-msgstr "Подтвердите удаление действия: %1"
-
-#: ncms/mtt/MttActionsTable.js:269
-msgid "Edit action: %1"
-msgstr "Редактировать действие"
-
 #: ncms/mtt/MttEditor.js:25
 msgid "Filters"
 msgstr "Фильтры"
@@ -921,23 +901,6 @@ msgstr "Фильтры"
 #: ncms/mtt/MttEditor.js:26
 msgid "Actions"
 msgstr "Действия"
-
-#: ncms/mtt/MttFiltersTable.js:113 ncms/mtt/MttFiltersTable.js:168
-#: ncms/mtt/MttFiltersTable.js:188
-msgid "New filter"
-msgstr "Новый фильтр"
-
-#: ncms/mtt/MttFiltersTable.js:118
-msgid "Remove rule filter"
-msgstr "Удалить фильтр"
-
-#: ncms/mtt/MttFiltersTable.js:202
-msgid "Are you sure to remove filter: %1"
-msgstr "Подтвердите удаление фильтра: %1"
-
-#: ncms/mtt/MttFiltersTable.js:217
-msgid "Edit filter: %1"
-msgstr "Редактирование фильтра: %1"
 
 #: ncms/mtt/MttNav.js:67
 msgid "New rule"
@@ -975,9 +938,51 @@ msgstr "Укажите описание действия"
 msgid "Select an action"
 msgstr "Выберите действие"
 
-#: ncms/mtt/actions/MttRouteAction.js:12
+#: ncms/mtt/actions/MttActionsTable.js:94
+msgid "%"
+msgstr ""
+
+#: ncms/mtt/actions/MttActionsTable.js:106
+#: ncms/mtt/filters/MttFiltersTable.js:88
+msgid "Specification"
+msgstr "Спецификация"
+
+#: ncms/mtt/actions/MttActionsTable.js:131
+#: ncms/mtt/actions/MttActionsTable.js:201
+#: ncms/mtt/actions/MttActionsTable.js:240
+#: ncms/mtt/actions/MttActionsTree.js:102
+#: ncms/mtt/actions/MttActionsTree.js:205
+msgid "New action"
+msgstr "Создать действие"
+
+#: ncms/mtt/actions/MttActionsTable.js:136
+msgid "Remove rule action"
+msgstr "Удалить действие"
+
+#: ncms/mtt/actions/MttActionsTable.js:254
+msgid "Are you sure to remove action: %1"
+msgstr "Подтвердите удаление действия: %1"
+
+#: ncms/mtt/actions/MttActionsTable.js:269
+msgid "Edit action: %1"
+msgstr "Редактировать действие"
+
+#: ncms/mtt/actions/MttActionsTree.js:107
+#: ncms/mtt/actions/MttActionsTree.js:210
+msgid "New action group"
+msgstr "Создать группу"
+
+#: ncms/mtt/actions/MttRouteAction.js:14
 msgid "Route to another resource"
 msgstr "Перенаправление на другой ресурс"
+
+#: ncms/mtt/actions/MttRouteAction.js:32 ncms/mtt/actions/MttRouteAction.js:53
+msgid "Route"
+msgstr "Направить"
+
+#: ncms/mtt/actions/MttRouteAction.js:36 ncms/mtt/actions/MttRouteAction.js:44
+msgid "Please set the route destination"
+msgstr "Пожалуйста укажите целевой ресурс"
 
 #: ncms/mtt/filters/MttFilterDlg.js:22
 msgid "Edit filter"
@@ -998,6 +1003,24 @@ msgstr "Укажите краткое описание фильтра"
 #: ncms/mtt/filters/MttFilterTypeSelectorDlg.js:8
 msgid "Select a filter"
 msgstr "Выберите фильтр"
+
+#: ncms/mtt/filters/MttFiltersTable.js:113
+#: ncms/mtt/filters/MttFiltersTable.js:168
+#: ncms/mtt/filters/MttFiltersTable.js:188
+msgid "New filter"
+msgstr "Новый фильтр"
+
+#: ncms/mtt/filters/MttFiltersTable.js:118
+msgid "Remove rule filter"
+msgstr "Удалить фильтр"
+
+#: ncms/mtt/filters/MttFiltersTable.js:202
+msgid "Are you sure to remove filter: %1"
+msgstr "Подтвердите удаление фильтра: %1"
+
+#: ncms/mtt/filters/MttFiltersTable.js:217
+msgid "Edit filter: %1"
+msgstr "Редактирование фильтра: %1"
 
 #: ncms/mtt/filters/MttHeaderFilter.js:12
 msgid "HTTP header filter"
@@ -1023,11 +1046,11 @@ msgstr "Регулярное выражение"
 msgid "Mode"
 msgstr "Режим"
 
-#: ncms/mtt/filters/MttVHostFilter.js:43
+#: ncms/mtt/filters/MttVHostFilter.js:41
 msgid "Pattern"
 msgstr "Шаблон"
 
-#: ncms/mtt/filters/MttVHostFilter.js:54
+#: ncms/mtt/filters/MttVHostFilter.js:52
 msgid "Not valid regular expression"
 msgstr "Невалидное регулярное выражение"
 
@@ -1622,6 +1645,9 @@ msgstr "Заметка"
 #~ msgid "Disabled"
 #~ msgstr "Отключено"
 
+#~ msgid "Drop  element"
+#~ msgstr ""
+
 #~ msgid "Insert presentation"
 #~ msgstr "Вставить презентацию"
 
@@ -1645,6 +1671,9 @@ msgstr "Заметка"
 
 #~ msgid "Please set the page link"
 #~ msgstr "Пожалуйста, укажите ссылку на страницу"
+
+#~ msgid "Remove  element"
+#~ msgstr ""
 
 #~ msgid "Request timed out. Try again later"
 #~ msgstr "Сервер SlideShare не отвечает. Повторите попытку позже"

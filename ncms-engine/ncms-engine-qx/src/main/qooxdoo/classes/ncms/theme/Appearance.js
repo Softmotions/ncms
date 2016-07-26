@@ -56,6 +56,9 @@ qx.Theme.define("ncms.theme.Appearance", {
             }
         },
 
+        "tree-folder/extra": "tree-folder/label",
+
+        "tree-folder/extra2": "tree-folder/label",
 
         "tree-file": {
             include: "tree-folder",

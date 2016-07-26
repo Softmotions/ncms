@@ -312,6 +312,7 @@ constructor(val sess: SqlSession,
         val rule = ruleGet(rid)
         val type = an.path("type").asText(null) ?: throw BadRequestException()
         val action = MttRuleAction(rule.id, type.trim())
+        // todo goup ID
         with(action) {
             spec = an.path("spec").asText(null)
             description = an.path("description").asText(null)
