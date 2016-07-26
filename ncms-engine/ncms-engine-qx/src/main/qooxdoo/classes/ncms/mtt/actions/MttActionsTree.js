@@ -219,7 +219,40 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         },
 
         __onNewAction: function () {
-            console.log('__onNewAction');
+            var tree = this.__tree;
+            var parent = tree.getSelection().getItem(0);
+            if (parent && !tree.isNode(parent)) {
+                parent = null;
+            }
+            var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("New action"), {
+                ruleId: this.getRuleId(),
+                enabled: true
+            });
+            dlg.addListenerOnce("completed", function () {
+                this.reload();
+                dlg.close();
+            }, this);
+            dlg.open();
+        },
+
+        __onRemove: function () {
+            var tree = this.__tree;
+            var item = tree.getSelection().getItem(0);
+            if (item == null || item === this.__tree.getModel()) {
+                return;
+            }
+            ncms.Application.confirm(this.tr("Are you sure to remove action: %1", item.getLabel()), function (yes) {
+                if (!yes) {
+                    return;
+                }
+                var parent = this.__tree.getParent(item) || this.__tree.getModel();
+                var req = new sm.io.Request(
+                    ncms.Application.ACT.getRestUrl("mtt.action.delete", {id: item.getId()}), "DELETE");
+                req.send(function () {
+                    parent.getChildren().remove(item);
+                    tree.refresh();
+                }, this);
+            }, this);
         },
 
         __onEditAction: function () {
@@ -228,10 +261,6 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
 
         __onNewGroup: function () {
             console.log('__onNewGroup');
-        },
-
-        __onRemove: function () {
-            console.log('__onRemove');
         },
 
         __onSelected: function (item) {
@@ -301,7 +330,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
 
         __applyModel: function (value, old) {
             this.__tree.setModel(value);
-            this.__tree.getLookupTable().forEach(function(item) {
+            this.__tree.getLookupTable().forEach(function (item) {
                 if (this.__tree.isNode(item)) {
                     this.__tree.openNode(item);
                 }

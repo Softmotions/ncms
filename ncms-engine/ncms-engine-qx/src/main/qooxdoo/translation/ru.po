@@ -952,6 +952,7 @@ msgstr "Спецификация"
 #: ncms/mtt/actions/MttActionsTable.js:240
 #: ncms/mtt/actions/MttActionsTree.js:102
 #: ncms/mtt/actions/MttActionsTree.js:205
+#: ncms/mtt/actions/MttActionsTree.js:227
 msgid "New action"
 msgstr "Создать действие"
 
@@ -960,6 +961,7 @@ msgid "Remove rule action"
 msgstr "Удалить действие"
 
 #: ncms/mtt/actions/MttActionsTable.js:254
+#: ncms/mtt/actions/MttActionsTree.js:244
 msgid "Are you sure to remove action: %1"
 msgstr "Подтвердите удаление действия: %1"
 
@@ -972,17 +974,17 @@ msgstr "Редактировать действие"
 msgid "New action group"
 msgstr "Создать группу"
 
-#: ncms/mtt/actions/MttRouteAction.js:14
+#: ncms/mtt/actions/MttRouteAction.js:13
 msgid "Route to another resource"
 msgstr "Перенаправление на другой ресурс"
 
-#: ncms/mtt/actions/MttRouteAction.js:32 ncms/mtt/actions/MttRouteAction.js:53
-msgid "Route"
-msgstr "Направить"
-
-#: ncms/mtt/actions/MttRouteAction.js:36 ncms/mtt/actions/MttRouteAction.js:44
+#: ncms/mtt/actions/MttRouteAction.js:35 ncms/mtt/actions/MttRouteAction.js:43
 msgid "Please set the route destination"
 msgstr "Пожалуйста укажите целевой ресурс"
+
+#: ncms/mtt/actions/MttRouteAction.js:63
+msgid "Route"
+msgstr "Перенаправить"
 
 #: ncms/mtt/filters/MttFilterDlg.js:22
 msgid "Edit filter"

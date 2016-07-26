@@ -42,7 +42,7 @@ constructor(val sess: SqlSession,
                         @Suppress("UNCHECKED_CAST")
                         writeObject((context.resultObject as Map<String, Any>).mapValues {
                             when {
-                                // convert enabled field to boolean
+                            // convert enabled field to boolean
                                 it.key in arrayOf("enabled") -> it.value as Number != 0
                                 else -> it.value
                             }
@@ -190,7 +190,7 @@ constructor(val sess: SqlSession,
                         @Suppress("UNCHECKED_CAST")
                         writeObject((context.resultObject as Map<String, Any>).mapValues {
                             when {
-                                // convert enabled field to boolean
+                            // convert enabled field to boolean
                                 it.key in arrayOf("enabled") -> it.value as Number != 0
                                 else -> it.value
                             }
@@ -270,7 +270,7 @@ constructor(val sess: SqlSession,
                         @Suppress("UNCHECKED_CAST")
                         writeObject((context.resultObject as Map<String, Any>).mapValues {
                             when {
-                                // convert enabled field to boolean
+                            // convert enabled field to boolean
                                 it.key in arrayOf("enabled") -> it.value as Number != 0
                                 else -> it.value
                             }
@@ -337,20 +337,23 @@ constructor(val sess: SqlSession,
     @DELETE
     @Path("/action/{aid}")
     @Transactional
-    open fun actionDelete(@PathParam("aid") aid: Long) =
-            delete("deleteActionById", aid)
+    open fun actionDelete(@PathParam("aid") aid: Long) {
+        delete("deleteActionById", aid)
+    }
 
     @POST
     @Path("/action/{aid}/move/up")
     @Transactional
-    open fun actionMoveUp(@PathParam("aid") aid: Long) =
-            actionMove(actionGet(aid), false)
+    open fun actionMoveUp(@PathParam("aid") aid: Long) {
+        actionMove(actionGet(aid), false)
+    }
 
     @POST
     @Path("/action/{aid}/move/down")
     @Transactional
-    open fun actionMoveDown(@PathParam("aid") aid: Long) =
-            actionMove(actionGet(aid), true)
+    open fun actionMoveDown(@PathParam("aid") aid: Long) {
+        actionMove(actionGet(aid), true)
+    }
 
     private fun actionMove(action: MttRuleAction, direction: Boolean) {
         val sordinal = when {
