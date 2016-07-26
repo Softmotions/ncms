@@ -211,7 +211,6 @@
                 OFFSET ${CQ_OFFSET}
             </if>
         </if>
-        ORDER BY cdate DESC
     </select>
 
     <select id="selectActionsCount" resultType="long" parameterType="map">
