@@ -183,7 +183,11 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             tree.setContextMenu(new qx.ui.menu.Menu());
             tree.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             tree.getPane().addListener("cellDbltap", function (ev) {
-                this.__onEditAction();
+                var item = tree.getSelection().getItem(0);
+                qx.core.Assert.assertNotNull(item);
+                if (item.getType() !== "group") {
+                    this.__onEditAction(ev);
+                }
             }, this);
             return tree;
         },
@@ -221,15 +225,18 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         __onNewAction: function () {
             var tree = this.__tree;
             var parent = tree.getSelection().getItem(0);
-            if (parent && !tree.isNode(parent)) {
+            if (parent && parent.getType() != "group") {
                 parent = null;
             }
             var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("New action"), {
                 ruleId: this.getRuleId(),
-                enabled: true
+                enabled: true,
+                groupId: (parent != null) ? parent.getId() : null
             });
             dlg.addListenerOnce("completed", function () {
-                this.reload();
+                this.reload(function() {
+                    //todo
+                });
                 dlg.close();
                 tree.focus();
             }, this);
@@ -266,6 +273,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("Edit %1", item.getLabel()), {
                 ruleId: this.getRuleId(),
                 id: item.getId(),
+                groupId: item.getGroupId(),
                 type: item.getType(),
                 enabled: item.getEnabled(),
                 description: item.getExtra(),
@@ -289,12 +297,12 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             dlg.open();
         },
 
-        __onEditGroup: function(ev) {
+        __onEditGroup: function (ev) {
             var tree = this.__tree;
             var item = tree.getSelection().getItem(0);
             qx.core.Assert.assertNotNull(item);
             var dlg = new ncms.mtt.actions.MttActionGroupDlg(this.getRuleId(), item);
-            dlg.setPosition("bottom-right");
+            dlg.setPosition("bottom-center");
             dlg.addListenerOnce("completed", function (ev) {
                 var data = ev.getData();
                 item.setLabel(data["description"]);
@@ -308,7 +316,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         __onNewGroup: function (ev) {
             var tree = this.__tree;
             var dlg = new ncms.mtt.actions.MttActionGroupDlg(this.getRuleId());
-            dlg.setPosition("bottom-right");
+            dlg.setPosition("bottom-center");
             dlg.addListenerOnce("completed", function (ev) {
                 this.reload();
                 dlg.close();
@@ -396,6 +404,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         __applyModel: function (value, old) {
             this.__tree.setModel(value);
             if (old == null) {
+                // todo
                 this.__tree.getLookupTable().forEach(function (item) {
                     if (this.__tree.isNode(item)) {
                         this.__tree.openNode(item);
@@ -404,11 +413,14 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             }
         },
 
-        __applyRuleId: function (id) {
+        __applyRuleId: function (id, old, cb) {
             if (id == null) {
                 id = this.getRuleId();
             }
             if (id == null) {
+                if (typeof cb === "function") {
+                    cb();
+                }
                 return;
             }
             var req = new sm.io.Request(
@@ -418,6 +430,9 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 var data = resp.getContent();
                 qx.core.Assert.assertTrue(Array.isArray(data));
                 this.setModel(this.__toTreeModel(data));
+                if (typeof cb === "function") {
+                    cb();
+                }
             }, this);
         },
 
@@ -443,7 +458,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                     var group = {
                         id: it["id"],
                         groupId: it["groupId"] || null,
-                        groupWidth: it["groupWidth"] || 0,
+                        groupWidth: 0,
                         type: type,
                         label: it["description"] || "",
                         extra: "",
@@ -462,6 +477,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 var item = {
                     id: it["id"],
                     groupId: it["groupId"] || null,
+                    groupWidth: it["groupWidth"] || 0,
                     type: type,
                     label: ac.specForHuman(JSON.parse(spec)) || "",
                     extra: it["description"] || null,
@@ -478,8 +494,8 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             return qx.data.marshal.Json.createModel(root, true);
         },
 
-        reload: function () {
-            this.__applyRuleId(null);
+        reload: function (cb) {
+            this.__applyRuleId(null, null, cb);
         }
     },
 

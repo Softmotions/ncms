@@ -309,11 +309,11 @@ constructor(val sess: SqlSession,
         val rule = ruleGet(rid)
         val type = an.path("type").asText(null) ?: throw BadRequestException()
         val action = MttRuleAction(rule.id, type.trim())
-        // todo goup ID
         with(action) {
             spec = an.path("spec").asText(null)
             description = an.path("description").asText(null)
             enabled = an.path("enabled").asBoolean(true)
+            groupId = if (an.path("groupId").isNumber()) an.path("groupId").longValue() else null
             insert("insertAction", action)
             return actionGet(id)
         }
@@ -370,19 +370,19 @@ constructor(val sess: SqlSession,
     @Path("/action/{aid}")
     @Transactional
     open fun actionDelete(@PathParam("aid") aid: Long) =
-        delete("deleteActionById", aid)
+            delete("deleteActionById", aid)
 
     @POST
     @Path("/action/{aid}/move/up")
     @Transactional
     open fun actionMoveUp(@PathParam("aid") aid: Long) =
-        actionMove(actionGet(aid), false)
+            actionMove(actionGet(aid), false)
 
     @POST
     @Path("/action/{aid}/move/down")
     @Transactional
     open fun actionMoveDown(@PathParam("aid") aid: Long) =
-        actionMove(actionGet(aid), true)
+            actionMove(actionGet(aid), true)
 
     private fun actionMove(action: MttRuleAction, direction: Boolean) {
         val sordinal = when {

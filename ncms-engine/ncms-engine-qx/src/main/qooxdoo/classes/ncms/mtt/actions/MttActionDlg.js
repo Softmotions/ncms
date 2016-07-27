@@ -140,6 +140,7 @@ qx.Class.define("ncms.mtt.actions.MttActionDlg", {
                 type: editor.constructor.getType(),
                 description: items["description"].getValue(),
                 enabled: items["enabled"].getValue(),
+                groupId: this.__data["groupId"],
                 spec: (typeof spec === "string") ? spec : JSON.stringify(spec)
             };
             if (this.__data["id"] == null) {
