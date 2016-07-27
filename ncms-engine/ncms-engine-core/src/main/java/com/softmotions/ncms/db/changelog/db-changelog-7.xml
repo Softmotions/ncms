@@ -177,4 +177,16 @@
                                  onDelete="CASCADE"/>
     </changeSet>
 
+    <changeSet id="7.6" author="adamansky@gmail.com">
+        <addColumn tableName="MTT_ACTIONS">
+            <column name="GROUP_WIDTH" type="${tinyint.type}"
+                    defaultValueNumeric="0"
+                    remarks="Action width in the group"/>
+        </addColumn>
+        <sql>
+            UPDATE MTT_ACTIONS SET GROUP_WIDTH=0;
+        </sql>
+        <addNotNullConstraint tableName="MTT_ACTIONS" columnName="GROUP_WIDTH"/>
+    </changeSet>
+
 </databaseChangeLog>

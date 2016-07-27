@@ -12,7 +12,7 @@ import com.softmotions.weboot.testing.tomcat.TomcatRunner
 open class BaseRSTest : WebBaseTest() {
 
     open fun setup() {
-        System.getProperty("liquibase.dropAll") ?: System.setProperty("liquibase.dropAll", "false")
+        System.getProperty("liquibase.dropAll") ?: System.setProperty("liquibase.dropAll", "true")
         System.getProperty("ncmstest.ds") ?: System.setProperty("ncmstest.ds", "${System.getProperty("user.home")}/.ncms-test.ds")
         System.setProperty("WEBOOT_CFG_LOCATION", "com/softmotions/ncms/rs/cfg/test-ncms-rs-conf.xml")
         setupWeb()

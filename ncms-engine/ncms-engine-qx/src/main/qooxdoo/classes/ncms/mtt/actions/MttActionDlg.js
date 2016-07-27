@@ -19,6 +19,11 @@ qx.Class.define("ncms.mtt.actions.MttActionDlg", {
      * @param data     {Object} Action data
      */
     construct: function (caption, data) {
+        this.__data = data;
+        this.__ruleId = data["ruleId"];
+        qx.core.Assert.assertNotNull(this.__data);
+        qx.core.Assert.assertNotNull(this.__ruleId);
+
         this.base(arguments, caption != null ? caption : this.tr("Edit action"));
         this.setLayout(new qx.ui.layout.VBox(5, "top", "separator-vertical"));
         this.set({
@@ -29,11 +34,6 @@ qx.Class.define("ncms.mtt.actions.MttActionDlg", {
             width: 620,
             height: 400
         });
-
-        this.__data = data;
-        this.__ruleId = data["ruleId"];
-        qx.core.Assert.assertNotNull(this.__data);
-        qx.core.Assert.assertNotNull(this.__ruleId);
 
         var form = this.__form = new sm.ui.form.ExtendedForm();
         var vmgr = form.getValidationManager();

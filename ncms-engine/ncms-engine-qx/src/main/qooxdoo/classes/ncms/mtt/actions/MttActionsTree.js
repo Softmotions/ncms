@@ -149,7 +149,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         },
 
         __createTree: function () {
-            var tree = this.__tree = new qx.ui.tree.VirtualTree(null, "name", "children");
+            var tree = this.__tree = new sm.ui.tree.ExtendedVirtualTree(null, "name", "children");
             tree.setHideRoot(true);
             tree.setDelegate({
                 createItem: function () {
@@ -161,6 +161,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 bindItem: function (controller, item, index) {
                     controller.bindDefaultProperties(item, index);
                     controller.bindProperty("extra", "extra", null, item, index);
+                    controller.bindProperty("enabled", "active", null, item, index);
                 }
             });
             tree.setLabelPath("label");
@@ -212,6 +213,10 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             menu.add(bt);
 
             if (item != null) {
+                bt = new qx.ui.menu.Button(this.tr("Edit"));
+                bt.addListener("execute", this.__onEditAction, this);
+                menu.add(bt);
+
                 bt = new qx.ui.menu.Button(this.tr("Remove"));
                 bt.addListener("execute", this.__onRemove, this);
                 menu.add(bt);
@@ -256,7 +261,32 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         },
 
         __onEditAction: function () {
-            console.log('__onEditAction');
+            var tree = this.__tree;
+            var item = tree.getSelection().getItem(0);
+            qx.core.Assert.assertNotNull(item);
+            var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("Edit %1", item.getLabel()), {
+                ruleId: this.getRuleId(),
+                id: item.getId(),
+                type: item.getType(),
+                enabled: item.getEnabled(),
+                description: item.getExtra(),
+                spec: JSON.parse(item.getSpec())
+            });
+            dlg.addListenerOnce("completed", function (ev) {
+                var reg = ncms.mtt.actions.MttActionsRegistry;
+                var data = ev.getData();
+                item.setType(data["type"]);
+                item.setExtra(data["description"]);
+                item.setEnabled(!!data["enabled"]);
+                item.setSpec(data["spec"]);
+                var ac = reg.findMttActionClassForType(data["type"]);
+                if (ac) {
+                    item.setLabel(ac.specForHuman(JSON.parse(data["spec"])));
+                }
+                tree.refresh();
+                dlg.close();
+            }, this);
+            dlg.open();
         },
 
         __onNewGroup: function () {
@@ -301,15 +331,20 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             if (!this.__canMoveUp(item)) {
                 return;
             }
-            var parent = this.__tree.getParent(item) || this.__tree.getModel();
-            var clist = parent.getChildren();
-            var ind = clist.indexOf(item);
-            clist.removeAt(ind);
-            clist.insertAt(ind - 1, item);
-            this.__tree.getSelection().removeAll();
-            this.__tree.getSelection().push(item);
-            this.__tree.refresh();
-            this.__syncState();
+            var req = new sm.io.Request(
+                ncms.Application.ACT.getRestUrl("mtt.action.up", {id: item.getId()}),
+                "POST");
+            req.send(function (resp) {
+                var parent = this.__tree.getParent(item) || this.__tree.getModel();
+                var clist = parent.getChildren();
+                var ind = clist.indexOf(item);
+                clist.removeAt(ind);
+                clist.insertAt(ind - 1, item);
+                this.__tree.getSelection().removeAll();
+                this.__tree.getSelection().push(item);
+                this.__tree.refresh();
+                this.__syncState();
+            }, this);
         },
 
         __onMoveDown: function () {
@@ -317,15 +352,20 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             if (!this.__canMoveDown(item)) {
                 return;
             }
-            var parent = this.__tree.getParent(item) || this.__tree.getModel();
-            var clist = parent.getChildren();
-            var ind = clist.indexOf(item);
-            clist.removeAt(ind);
-            clist.insertAt(ind + 1, item);
-            this.__tree.getSelection().removeAll();
-            this.__tree.getSelection().push(item);
-            this.__tree.refresh();
-            this.__syncState();
+            var req = new sm.io.Request(
+                ncms.Application.ACT.getRestUrl("mtt.action.down", {id: item.getId()}),
+                "POST");
+            req.send(function (resp) {
+                var parent = this.__tree.getParent(item) || this.__tree.getModel();
+                var clist = parent.getChildren();
+                var ind = clist.indexOf(item);
+                clist.removeAt(ind);
+                clist.insertAt(ind + 1, item);
+                this.__tree.getSelection().removeAll();
+                this.__tree.getSelection().push(item);
+                this.__tree.refresh();
+                this.__syncState();
+            }, this);
         },
 
         __applyModel: function (value, old) {
@@ -360,21 +400,23 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             var root = {
                 id: 0,
                 groupId: null,
+                groupWidth: 0,
                 type: "root",
                 label: "root",
                 extra: "",
-                spec: {},
+                spec: "{}",
                 enabled: true,
                 children: []
             };
             data.forEach(function (it) {
                 var groupId = it["groupId"];
                 var type = it["type"];
-                var spec = sm.lang.String.isEmpty(it["spec"]) ? {} : JSON.parse(it["spec"]);
+                var spec = sm.lang.String.isEmpty(it["spec"]) ? "{}" : it["spec"];
                 if (type === "group") {
                     var group = {
                         id: it["id"],
                         groupId: it["groupId"] || null,
+                        groupWidth: it["groupWidth"] || 0,
                         type: type,
                         label: it["description"] || "",
                         extra: "",
@@ -394,7 +436,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                     id: it["id"],
                     groupId: it["groupId"] || null,
                     type: type,
-                    label: ac.specForHuman(spec) || "",
+                    label: ac.specForHuman(JSON.parse(spec)) || "",
                     extra: it["description"] || null,
                     spec: spec,
                     enabled: !!it["enabled"]

@@ -166,7 +166,7 @@ qx.Class.define("ncms.mtt.MttNav", {
             var rule = this.__selector.getSelectedRule();
             var req = new sm.io.Request(
                 ncms.Application.ACT.getRestUrl(
-                    dir > 0 ? "mtt.rules.up" : "mtt.rules.down", {id: rule["id"]}), "POST");
+                    dir > 0 ? "mtt.rule.up" : "mtt.rule.down", {id: rule["id"]}), "POST");
             req.send(function (resp) {
                 var table = this.__selector.getTable();
                 table.getTableModel().reloadData();

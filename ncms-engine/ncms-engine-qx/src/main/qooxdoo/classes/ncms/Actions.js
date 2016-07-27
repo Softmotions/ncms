@@ -280,10 +280,10 @@ qx.Class.define("ncms.Actions", {
         this._action("mtt.rules.rename", "/rs/adm/mtt/rules/rule/rename/{id}/{name}");
 
         // POST move rule up
-        this._action("mtt.rules.up", "/rs/adm/mtt/rules/rule/{id}/move/up");
+        this._action("mtt.rule.up", "/rs/adm/mtt/rules/rule/{id}/move/up");
 
         // POST move rule down
-        this._action("mtt.rules.down", "/rs/adm/mtt/rules/rule/{id}/move/down");
+        this._action("mtt.rule.down", "/rs/adm/mtt/rules/rule/{id}/move/down");
 
         //================ MTT filters
 
@@ -348,6 +348,14 @@ qx.Class.define("ncms.Actions", {
         // DELETE The action specified by {id}
         // id: MTT action ID
         this._action("mtt.action.delete", "/rs/adm/mtt/rules/action/{id}");
+
+        // POST move action up
+        // id:  MTT action ID
+        this._action("mtt.action.up", "/rs/adm/mtt/rules/action/{id}/move/up");
+
+        // POST move action down
+        // id:  MTT action ID
+        this._action("mtt.action.down", "/rs/adm/mtt/rules/action/{id}/move/down");
 
     },
 

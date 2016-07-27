@@ -10,6 +10,14 @@ qx.Class.define("ncms.mtt.actions.MttActionsTreeItem", {
             check: "String",
             event: "changeExtra",
             nullable: true
+        },
+
+        active: {
+            check: "Boolean",
+            event: "changeEnabled",
+            nullable: false,
+            init: true,
+            apply: "__applyActive"
         }
     },
 
@@ -18,6 +26,13 @@ qx.Class.define("ncms.mtt.actions.MttActionsTreeItem", {
     },
 
     members: {
+
+        __applyActive: function (val) {
+            var icon = this.getChildControl("icon", true);
+            if (icon) {
+                icon.setOpacity(val ? 1.0 : 0.2);
+            }
+        },
 
         _addWidgets: function () {
             this.addSpacer();

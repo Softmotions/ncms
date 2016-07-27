@@ -94,7 +94,6 @@ constructor(val sess: SqlSession,
                 throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.exists", req, rname), true)
             }
             val rule = MttRule(rname)
-
             insert("insertRule", rule)
             val rid = selectOne<Long?>("selectRuleIdByName", rname) ?: throw InternalServerErrorException()
             return ruleGet(rid)
@@ -112,9 +111,7 @@ constructor(val sess: SqlSession,
             if (selectOne<Long?>("selectRuleIdByName", rname) != null) {
                 throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.other", req, rname), true)
             }
-
             update("updateRuleName", "id", rid, "name", rname)
-
             return ruleGet(rid)
         }
     }
@@ -124,12 +121,10 @@ constructor(val sess: SqlSession,
     @Transactional
     open fun ruleUpdate(@PathParam("rid") rid: Long, rn: ObjectNode): MttRule {
         val rule = ruleGet(rid)
-
         with(rn) {
             if (hasNonNull("flags")) rule.flags = path("flags").asLong(0)
             if (hasNonNull("description")) rule.description = path("description").asText()
         }
-
         update("updateRule", rule)
         return ruleGet(rid)
     }
@@ -155,8 +150,10 @@ constructor(val sess: SqlSession,
             else -> selectOne<Long?>("selectPreviousRule", rule.ordinal)
         }
         sordinal ?: return
-        update("updateRuleOrdinal", "ordinal", sordinal, "newOrdinal", rule.ordinal)
-        update("updateRuleOrdinal", "id", rule.id, "newOrdinal", sordinal)
+
+        update("exchangeRuleOrdinal",
+                "ordinal1", sordinal,
+                "ordinal2", rule.ordinal)
     }
 
     @DELETE
@@ -337,32 +334,37 @@ constructor(val sess: SqlSession,
     @DELETE
     @Path("/action/{aid}")
     @Transactional
-    open fun actionDelete(@PathParam("aid") aid: Long) {
+    open fun actionDelete(@PathParam("aid") aid: Long) =
         delete("deleteActionById", aid)
-    }
 
     @POST
     @Path("/action/{aid}/move/up")
     @Transactional
-    open fun actionMoveUp(@PathParam("aid") aid: Long) {
+    open fun actionMoveUp(@PathParam("aid") aid: Long) =
         actionMove(actionGet(aid), false)
-    }
 
     @POST
     @Path("/action/{aid}/move/down")
     @Transactional
-    open fun actionMoveDown(@PathParam("aid") aid: Long) {
+    open fun actionMoveDown(@PathParam("aid") aid: Long) =
         actionMove(actionGet(aid), true)
-    }
 
     private fun actionMove(action: MttRuleAction, direction: Boolean) {
         val sordinal = when {
-            direction -> selectOne<Long?>("selectNextRuleAction", "rid", action.ruleId, "ordinal", action.ordinal)
-            else -> selectOne<Long?>("selectPreviousRuleAction", "rid", action.ruleId, "ordinal", action.ordinal)
+            direction -> selectOne<Long?>("selectNextRuleAction",
+                    "rid", action.ruleId,
+                    "ordinal", action.ordinal,
+                    "groupId", action.groupId)
+            else -> selectOne<Long?>("selectPreviousRuleAction",
+                    "rid", action.ruleId,
+                    "ordinal", action.ordinal,
+                    "groupId", action.groupId)
         }
         sordinal ?: return
-        update("updateActionOrdinal", "ordinal", sordinal, "newOrdinal", action.ordinal)
-        update("updateActionOrdinal", "id", action.id, "newOrdinal", sordinal)
+
+        update("exchangeActionOrdinal",
+                "ordinal1", sordinal,
+                "ordinal2", action.ordinal)
     }
 
     private fun initCriteriaPaging(cq: MBCriteriaQuery<MBCriteriaQuery<*>>, req: HttpServletRequest) {

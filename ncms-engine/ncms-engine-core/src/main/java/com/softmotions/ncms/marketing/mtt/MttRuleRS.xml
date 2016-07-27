@@ -101,13 +101,15 @@
         LIMIT 1
     </select>
 
-    <update id="updateRuleOrdinal" parameterType="map">
-        UPDATE MTT_RULES
-        SET ordinal = #{newOrdinal}, mdate = CURRENT_TIMESTAMP
-        <where>
-            <if test="ordinal != null">ordinal = #{ordinal}</if>
-            <if test="id != null">id= #{id}</if>
-        </where>
+    <update id="exchangeRuleOrdinal" parameterType="map">
+        UPDATE MTT_RULES a1
+        SET a1.ordinal = (SELECT
+                              a2.ordinal
+                          FROM MTT_RULES a2
+                          WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
+                                AND a1.ordinal != a2.ordinal),
+            a1.mdate = CURRENT_TIMESTAMP
+        WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
 
     <update id="updateRuleEnabled" parameterType="map">
@@ -196,6 +198,7 @@
         action.id               AS "id",
         action.rule_id          AS "ruleId",
         action.group_id         AS "groupId",
+        action.group_width      AS "groupWidth",
         action.type             AS "type",
         action.ordinal          AS "ordinal",
         action.spec             AS "spec",
@@ -243,6 +246,7 @@
             action.id             AS "id",
             action.rule_id        AS "ruleId",
             action.group_id       AS "groupId",
+            action.group_width    AS "groupWidth",
             action.ordinal        AS "ordinal",
             action.type           AS "type",
             action.description    AS "description",
@@ -264,6 +268,14 @@
         SELECT action.ordinal
         FROM MTT_ACTIONS action
         WHERE action.rule_id = #{rid} AND action.ordinal &lt; #{ordinal}
+        <choose>
+            <when test="groupId != null">
+                AND action.group_id = #{groupId}
+            </when>
+            <otherwise>
+                AND action.group_id IS NULL
+            </otherwise>
+        </choose>
         ORDER BY ordinal DESC
         LIMIT 1
     </select>
@@ -272,17 +284,27 @@
         SELECT action.ordinal
         FROM MTT_ACTIONS action
         WHERE action.rule_id = #{rid} AND action.ordinal &gt; #{ordinal}
+        <choose>
+            <when test="groupId != null">
+                AND action.group_id = #{groupId}
+            </when>
+            <otherwise>
+                AND action.group_id IS NULL
+            </otherwise>
+        </choose>
         ORDER BY ordinal ASC
         LIMIT 1
     </select>
 
-    <update id="updateActionOrdinal" parameterType="map">
-        UPDATE MTT_ACTIONS
-        SET ordinal = #{newOrdinal}, mdate = CURRENT_TIMESTAMP
-        <where>
-            <if test="ordinal != null">ordinal = #{ordinal}</if>
-            <if test="id != null">id= #{id}</if>
-        </where>
+    <update id="exchangeActionOrdinal" parameterType="map">
+        UPDATE MTT_ACTIONS a1
+        SET a1.ordinal = (SELECT
+                              a2.ordinal
+                          FROM MTT_ACTIONS a2
+                          WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
+                                AND a1.ordinal != a2.ordinal),
+            a1.mdate = CURRENT_TIMESTAMP
+        WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
 
 </mapper>
