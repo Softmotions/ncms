@@ -124,7 +124,7 @@ qx.Class.define("ncms.asm.AsmNav", {
         __onNewAssembly: function (ev) {
             var dlg = new ncms.asm.AsmNewDlg();
             dlg.setPosition("bottom-right");
-            dlg.addListener("completed", function (ev) {
+            dlg.addListenerOnce("completed", function (ev) {
                 dlg.close();
                 var spec = ev.getData();
                 this.__selector.setSearchBoxValue(spec["name"]);

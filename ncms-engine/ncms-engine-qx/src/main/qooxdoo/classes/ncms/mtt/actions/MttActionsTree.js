@@ -183,11 +183,6 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             tree.setContextMenu(new qx.ui.menu.Menu());
             tree.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             tree.getPane().addListener("cellDbltap", function (ev) {
-                var row = ev.getRow();
-                var item = tree.getLookupTable().getItem(row);
-                if (tree.isNode(item)) {
-                    return;
-                }
                 this.__onEditAction();
             }, this);
             return tree;
@@ -236,6 +231,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             dlg.addListenerOnce("completed", function () {
                 this.reload();
                 dlg.close();
+                tree.focus();
             }, this);
             dlg.open();
         },
@@ -260,10 +256,13 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             }, this);
         },
 
-        __onEditAction: function () {
+        __onEditAction: function (ev) {
             var tree = this.__tree;
             var item = tree.getSelection().getItem(0);
             qx.core.Assert.assertNotNull(item);
+            if (item.getType() === "group") {
+                return this.__onEditGroup(ev);
+            }
             var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("Edit %1", item.getLabel()), {
                 ruleId: this.getRuleId(),
                 id: item.getId(),
@@ -285,12 +284,38 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 }
                 tree.refresh();
                 dlg.close();
+                tree.focus();
             }, this);
             dlg.open();
         },
 
-        __onNewGroup: function () {
-            console.log('__onNewGroup');
+        __onEditGroup: function(ev) {
+            var tree = this.__tree;
+            var item = tree.getSelection().getItem(0);
+            qx.core.Assert.assertNotNull(item);
+            var dlg = new ncms.mtt.actions.MttActionGroupDlg(this.getRuleId(), item);
+            dlg.setPosition("bottom-right");
+            dlg.addListenerOnce("completed", function (ev) {
+                var data = ev.getData();
+                item.setLabel(data["description"]);
+                dlg.close();
+                tree.focus();
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.show();
+        },
+
+        __onNewGroup: function (ev) {
+            var tree = this.__tree;
+            var dlg = new ncms.mtt.actions.MttActionGroupDlg(this.getRuleId());
+            dlg.setPosition("bottom-right");
+            dlg.addListenerOnce("completed", function (ev) {
+                this.reload();
+                dlg.close();
+                tree.focus();
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.show();
         },
 
         __onSelected: function (item) {
@@ -370,11 +395,13 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
 
         __applyModel: function (value, old) {
             this.__tree.setModel(value);
-            this.__tree.getLookupTable().forEach(function (item) {
-                if (this.__tree.isNode(item)) {
-                    this.__tree.openNode(item);
-                }
-            }, this);
+            if (old == null) {
+                this.__tree.getLookupTable().forEach(function (item) {
+                    if (this.__tree.isNode(item)) {
+                        this.__tree.openNode(item);
+                    }
+                }, this);
+            }
         },
 
         __applyRuleId: function (id) {

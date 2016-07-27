@@ -154,7 +154,7 @@ msgid "New"
 msgstr "Создать"
 
 #: ncms/pgs/PageEditorEditPage.js:30 ncms/mtt/filters/MttFiltersTable.js:172
-#: ncms/mtt/actions/MttActionsTree.js:216 ncms/asm/AsmAttrsTable.js:204
+#: ncms/mtt/actions/MttActionsTree.js:211 ncms/asm/AsmAttrsTable.js:204
 #: ncms/asm/am/TreeAMValueWidget.js:452
 msgid "Edit"
 msgstr "Редактировать"
@@ -162,7 +162,7 @@ msgstr "Редактировать"
 #: ncms/mtt/filters/MttFiltersTable.js:176 ncms/asm/AsmNav.js:82
 #: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:535
 #: ncms/mtt/actions/MttActionsTree.js:122
-#: ncms/mtt/actions/MttActionsTree.js:220 ncms/mtt/MttNav.js:94
+#: ncms/mtt/actions/MttActionsTree.js:215 ncms/mtt/MttNav.js:94
 #: ncms/asm/AsmAttrsTable.js:208 ncms/asm/am/TreeAMValueWidget.js:461
 msgid "Remove"
 msgstr "Удалить"
@@ -927,26 +927,30 @@ msgstr "Выберите действие"
 msgid "Place a action description here"
 msgstr "Укажите описание действия"
 
+#: ncms/mtt/actions/MttActionGroupDlg.js:27
+msgid "Group"
+msgstr "Группа"
+
 #: ncms/mtt/actions/MttActionTypeSelectorDlg.js:8
 msgid "Select an action"
 msgstr "Выберите действие"
 
 #: ncms/mtt/actions/MttActionsTree.js:102
-#: ncms/mtt/actions/MttActionsTree.js:206
-#: ncms/mtt/actions/MttActionsTree.js:232
+#: ncms/mtt/actions/MttActionsTree.js:201
+#: ncms/mtt/actions/MttActionsTree.js:227
 msgid "New action"
 msgstr "Создать действие"
 
 #: ncms/mtt/actions/MttActionsTree.js:107
-#: ncms/mtt/actions/MttActionsTree.js:211
+#: ncms/mtt/actions/MttActionsTree.js:206
 msgid "New action group"
 msgstr "Создать группу"
 
-#: ncms/mtt/actions/MttActionsTree.js:249
+#: ncms/mtt/actions/MttActionsTree.js:245
 msgid "Are you sure to remove action: %1"
 msgstr "Подтвердите удаление действия: %1"
 
-#: ncms/mtt/actions/MttActionsTree.js:267
+#: ncms/mtt/actions/MttActionsTree.js:266
 msgid "Edit %1"
 msgstr "Редактировать %1"
 

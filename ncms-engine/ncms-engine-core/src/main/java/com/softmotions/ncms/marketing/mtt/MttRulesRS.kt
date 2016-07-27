@@ -319,6 +319,41 @@ constructor(val sess: SqlSession,
         }
     }
 
+    /**
+     * Create new action group
+     */
+    @PUT
+    @Path("/rule/{rid}/group/{name}")
+    @Transactional
+    open fun actionGroupCreate(@PathParam("rid") rid: Long,
+                               @PathParam("name") name: String): MttRuleAction {
+        val rule = ruleGet(rid)
+        val action = MttRuleAction(rule.id, "group")
+        with(action) {
+            description = name
+            insert("insertAction", action)
+            return actionGet(id)
+        }
+    }
+
+    /**
+     * Update action group
+     */
+    @POST
+    @Path("/group/{id}/{name}")
+    @Transactional
+    open fun actionGroupUpdate(@PathParam("id") id: Long,
+                               @PathParam("name") name: String): MttRuleAction {
+        val action = actionGet(id)
+        with(action) {
+            type = "group"
+            description = name
+            update("updateAction", action)
+            return actionGet(id)
+        }
+    }
+
+
     @POST
     @Path("/action/{aid}")
     @Transactional

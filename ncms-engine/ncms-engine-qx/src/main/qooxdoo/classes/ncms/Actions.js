@@ -336,8 +336,18 @@ qx.Class.define("ncms.Actions", {
         // }
         this._action("mtt.action.new", "/rs/adm/mtt/rules/rule/{id}/action");
 
+        // PUT New MTT action group
+        // {id}     MTT rule ID
+        // {name}   Action grop name
+        this._action("mtt.action.group.new", "/rs/adm/mtt/rules/rule/{id}/group/{name}");
+
+        // POST Update MTT action group
+        // {id}     MTT rule ID
+        // {name}   Action grop name
+        this._action("mtt.action.group.update", "/rs/adm/mtt/rules/group/{id}/{name}");
+
         // POST Update MTT action
-        // id:  MTT action ID
+        // {id}  MTT action ID
         // Data: {
         //   type: Action type
         //   description: Action description
@@ -346,15 +356,15 @@ qx.Class.define("ncms.Actions", {
         this._action("mtt.action.update", "/rs/adm/mtt/rules/action/{id}");
 
         // DELETE The action specified by {id}
-        // id: MTT action ID
+        // {id} MTT action ID
         this._action("mtt.action.delete", "/rs/adm/mtt/rules/action/{id}");
 
         // POST move action up
-        // id:  MTT action ID
+        // {id}  MTT action ID
         this._action("mtt.action.up", "/rs/adm/mtt/rules/action/{id}/move/up");
 
         // POST move action down
-        // id:  MTT action ID
+        // {id}  MTT action ID
         this._action("mtt.action.down", "/rs/adm/mtt/rules/action/{id}/move/down");
 
     },
