@@ -64,22 +64,8 @@ qx.Class.define("ncms.mtt.actions.MttActionsTreeItem", {
             this.addIcon();
 
             var w = this.getChildControl("weight");
-            w.set({
-                focusable: false,
-                allowGrowY: false,
-                alignY: "middle",
-                singleStep: 10,
-                marginRight: 4
-            });
-            w.getChildControl("textfield").set({
-                readOnly: true,
-                selectable: false
-            });
             this.bind("groupWeight", w, "value");
             w.bind("value", this, "groupWeight");
-            w.addListener("dbltap", function(ev) {
-                ev.stopPropagation();
-            });
             this.addWidget(w);
             w.exclude();
 
@@ -103,7 +89,23 @@ qx.Class.define("ncms.mtt.actions.MttActionsTreeItem", {
                     });
                     break;
                 case "weight":
-                    control = new qx.ui.form.Spinner(0, 0, 100);
+                    control = new qx.ui.form.Spinner(0, 0, 100).set({
+                        focusable: false,
+                        allowGrowY: false,
+                        alignY: "middle",
+                        singleStep: 10,
+                        marginRight: 4,
+                        numberFormat: new qx.util.format.NumberFormat().set({
+                            postfix: "%"
+                        })
+                    });
+                    control.getChildControl("textfield").set({
+                        readOnly: true,
+                        selectable: false
+                    });
+                    control.addListener("dbltap", function(ev) {
+                        ev.stopPropagation();
+                    });
                     break;
             }
             return control || this.base(arguments, id);

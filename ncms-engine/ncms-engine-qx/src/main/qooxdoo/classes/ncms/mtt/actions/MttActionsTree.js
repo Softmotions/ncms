@@ -347,6 +347,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             b.setSel(item != null);
             b.setUp(this.__canMoveUp(item));
             b.setDown(this.__canMoveDown(item));
+            this.__tree.focus();
         },
 
         __canMoveUp: function (item) {
