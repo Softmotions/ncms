@@ -155,6 +155,8 @@ qx.Class.define("ncms.mtt.actions.MttActionDlg", {
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
             req.send(function (resp) {
+                var data = resp.getContent();
+                qx.core.Assert.assertObject(data);
                 this.fireDataEvent("completed", data);
             }, this);
         },

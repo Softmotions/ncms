@@ -48,7 +48,6 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         this.setLayout(new qx.ui.layout.VBox());
         this.getChildControl("toolbar");
         this.getChildControl("tree");
-        // var model = qx.data.marshal.Json.createModel(spec["tree"], true);
     },
 
     members: {
@@ -233,10 +232,16 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 enabled: true,
                 groupId: (parent != null) ? parent.getId() : null
             });
-            dlg.addListenerOnce("completed", function () {
-                this.reload(function() {
-                    //todo
-                });
+            dlg.addListenerOnce("completed", function (ev) {
+                var data = ev.getData();
+                qx.core.Assert.assertObject(data);
+                var item = this.__toTreeNode(data, true);
+                if (parent == null) {
+                    parent = tree.getModel();
+                }
+                parent.getChildren().push(item);
+                tree.refresh();
+                tree.openNode(parent);
                 dlg.close();
                 tree.focus();
             }, this);
@@ -402,15 +407,13 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         },
 
         __applyModel: function (value, old) {
-            this.__tree.setModel(value);
-            if (old == null) {
-                // todo
-                this.__tree.getLookupTable().forEach(function (item) {
-                    if (this.__tree.isNode(item)) {
-                        this.__tree.openNode(item);
-                    }
-                }, this);
-            }
+            var tree = this.__tree;
+            tree.setModel(value);
+            tree.getLookupTable().forEach(function (item) {
+                if (tree.isNode(item)) {
+                    tree.openNode(item);
+                }
+            }, this);
         },
 
         __applyRuleId: function (id, old, cb) {
@@ -436,26 +439,28 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             }, this);
         },
 
-        __toTreeModel: function (data) {
-            var reg = ncms.mtt.actions.MttActionsRegistry;
-            var groups = {};
-            var root = {
-                id: 0,
-                groupId: null,
-                groupWidth: 0,
-                type: "root",
-                label: "root",
-                extra: "",
-                spec: "{}",
-                enabled: true,
-                children: []
-            };
-            data.forEach(function (it) {
+        __toTreeNode: function (it, asModel) {
+            var ret;
+            if (!it) {
+                ret = {
+                    id: 0,
+                    groupId: null,
+                    groupWidth: 0,
+                    type: "root",
+                    label: "root",
+                    extra: "",
+                    spec: "{}",
+                    enabled: true,
+                    children: []
+                };
+            }
+            if (!ret) {
+                var reg = ncms.mtt.actions.MttActionsRegistry;
                 var groupId = it["groupId"];
                 var type = it["type"];
                 var spec = sm.lang.String.isEmpty(it["spec"]) ? "{}" : it["spec"];
                 if (type === "group") {
-                    var group = {
+                    ret = {
                         id: it["id"],
                         groupId: it["groupId"] || null,
                         groupWidth: 0,
@@ -465,25 +470,42 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                         spec: spec,
                         enabled: !!it["enabled"],
                         children: []
-                    };
+                    }
+                } else {
+                    var ac = reg.findMttActionClassForType(type);
+                    if (ac == null) {
+                        return null;
+                    }
+                    ret = {
+                        id: it["id"],
+                        groupId: it["groupId"] || null,
+                        groupWidth: it["groupWidth"] || 0,
+                        type: type,
+                        label: ac.specForHuman(JSON.parse(spec)) || "",
+                        extra: it["description"] || null,
+                        spec: spec,
+                        enabled: !!it["enabled"]
+                    }
+                }
+            }
+            return asModel ? qx.data.marshal.Json.createModel(ret, true) : ret;
+        },
+
+        __toTreeModel: function (data) {
+            var groups = {};
+            var root = this.__toTreeNode();
+            data.forEach(function (it) {
+                var type = it["type"];
+                if (type === "group") {
+                    var group = this.__toTreeNode(it);
                     groups[group.id] = qx.lang.Object.mergeWith(groups[group.id] || {}, group, false);
                     root.children.push(group);
                     return;
                 }
-                var ac = reg.findMttActionClassForType(type);
-                if (ac == null) {
+                var item = this.__toTreeNode(it);
+                if (item == null) {
                     return;
                 }
-                var item = {
-                    id: it["id"],
-                    groupId: it["groupId"] || null,
-                    groupWidth: it["groupWidth"] || 0,
-                    type: type,
-                    label: ac.specForHuman(JSON.parse(spec)) || "",
-                    extra: it["description"] || null,
-                    spec: spec,
-                    enabled: !!it["enabled"]
-                };
                 if (item.groupId) {
                     groups[item.groupId] = groups[item.groupId] || {children: []};
                     groups[item.groupId].children.push(item);

@@ -946,11 +946,11 @@ msgstr "Создать действие"
 msgid "New action group"
 msgstr "Создать группу"
 
-#: ncms/mtt/actions/MttActionsTree.js:253
+#: ncms/mtt/actions/MttActionsTree.js:258
 msgid "Are you sure to remove action: %1"
 msgstr "Подтвердите удаление действия: %1"
 
-#: ncms/mtt/actions/MttActionsTree.js:274
+#: ncms/mtt/actions/MttActionsTree.js:279
 msgid "Edit %1"
 msgstr "Редактировать %1"
 
