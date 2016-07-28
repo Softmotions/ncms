@@ -56,28 +56,61 @@ qx.Class.define("ncms.Toolbar", {
                 ncms.Application.logout();
             }, this);
             this.__rightPart.add(logoff);
-
             this.setPaddingRight(10);
         },
 
         __guiInitialized: function () {
             var req = new sm.io.Request(ncms.Application.ACT.getUrl("nav.selectors"), "GET", "application/json");
             req.send(function (resp) {
+                var mb = null; //Menu button
                 var nitems = resp.getContent();
+                //Sample data: [...,{"qxClass":"ncms.mtt.MttNav","label":"MTT","extra":true,"args":[]}]
+
+                // Main menu
                 var rg = new qx.ui.form.RadioGroup();
-                nitems.forEach(function (ni) {
-                    var b = new qx.ui.form.ToggleButton(ni["label"], ni["qxIcon"]);
-                    b.setAppearance("toolbar-button");
-                    b.setUserData("wsSpec", ni);
-                    rg.add(b);
-                    this.__mainPart.add(b);
+                nitems.filter(function (el) {
+                    return !el.extra;
+                }).forEach(function (ni) {
+                    var tb = new qx.ui.form.ToggleButton(ni["label"], ni["qxIcon"]);
+                    tb.setAppearance("toolbar-button");
+                    tb.setUserData("wsSpec", ni);
+                    rg.add(tb);
+                    this.__mainPart.add(tb);
                 }, this);
                 rg.addListener("changeSelection", function (ev) {
                     var w = ev.getData()[0];
                     if (w) {
+                        if (mb) {
+                            mb.removeState("checked");
+                            mb.setLabel(this.tr("Tools"));
+                        }
                         this.__activateWorkspace(w.getUserData("wsSpec"));
                     }
                 }, this);
+
+                // Extra tools
+                var titems = nitems.filter(function (el) {
+                    return el.extra;
+                });
+                if (titems.length) {
+                    var menu = new qx.ui.menu.Menu();
+                    mb = new qx.ui.toolbar.MenuButton(this.tr("Tools"));
+                    rg.setAllowEmptySelection(true);
+                    mb.setMenu(menu);
+                    mb.setShowArrow(true);
+                    this.__mainPart.add(mb);
+                    titems.forEach(function (ni) {
+                        var bt = new qx.ui.menu.Button(ni["label"], ni["qxIcon"]);
+                        bt.setUserData("wsSpec", ni);
+                        bt.addListener("execute", function (ev) {
+                            rg.resetSelection();
+                            mb.addState("checked");
+                            mb.setLabel(ni["label"]);
+                            this.__activateWorkspace(ev.getTarget().getUserData("wsSpec"));
+                        }, this);
+                        menu.add(bt);
+                    }, this);
+                }
 
                 ncms.Application.registerWorkspaces(nitems);
                 if (nitems.length > 0) {

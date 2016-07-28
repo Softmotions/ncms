@@ -20,6 +20,10 @@ msgstr "Справка"
 msgid "Logout"
 msgstr "Выход"
 
+#: ncms/Toolbar.js:85 ncms/Toolbar.js:97
+msgid "Tools"
+msgstr "Инструменты"
+
 #: ncms/asm/AsmAttrEditorDlg.js:32
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
