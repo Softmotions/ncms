@@ -161,6 +161,9 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                     controller.bindDefaultProperties(item, index);
                     controller.bindProperty("extra", "extra", null, item, index);
                     controller.bindProperty("enabled", "active", null, item, index);
+                    controller.bindProperty("groupId", "groupId", null, item, index);
+                    controller.bindProperty("groupWeight", "groupWeight", null, item, index);
+                    controller.bindPropertyReverse("groupWeight", "groupWeight", null, item, index);
                 }
             });
             tree.setLabelPath("label");
@@ -445,7 +448,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 ret = {
                     id: 0,
                     groupId: null,
-                    groupWidth: 0,
+                    groupWeight: 0,
                     type: "root",
                     label: "root",
                     extra: "",
@@ -463,7 +466,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                     ret = {
                         id: it["id"],
                         groupId: it["groupId"] || null,
-                        groupWidth: 0,
+                        groupWeight: 0,
                         type: type,
                         label: it["description"] || "",
                         extra: "",
@@ -479,7 +482,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                     ret = {
                         id: it["id"],
                         groupId: it["groupId"] || null,
-                        groupWidth: it["groupWidth"] || 0,
+                        groupWeight: it["groupWeight"] || 0,
                         type: type,
                         label: ac.specForHuman(JSON.parse(spec)) || "",
                         extra: it["description"] || null,

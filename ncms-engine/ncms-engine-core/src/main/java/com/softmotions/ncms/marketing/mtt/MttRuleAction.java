@@ -42,7 +42,7 @@ public class MttRuleAction implements Serializable {
     @JsonProperty
     private Long groupId;
     @JsonProperty
-    private Integer groupWidth;
+    private Integer groupWeight;
 
     public MttRuleAction() {
     }
@@ -132,12 +132,12 @@ public class MttRuleAction implements Serializable {
         this.groupId = groupId;
     }
 
-    public Integer getGroupWidth() {
-        return groupWidth;
+    public Integer getGroupWeight() {
+        return groupWeight;
     }
 
-    public void setGroupWidth(Integer groupWidth) {
-        this.groupWidth = groupWidth;
+    public void setGroupWeight(Integer groupWeight) {
+        this.groupWeight = groupWeight;
     }
 
     public boolean equals(Object o) {

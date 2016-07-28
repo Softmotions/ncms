@@ -60,6 +60,8 @@ qx.Theme.define("ncms.theme.Appearance", {
 
         "tree-folder/extra2": "tree-folder/label",
 
+        "tree-folder/weight": "spinner",
+
         "tree-file": {
             include: "tree-folder",
             alias: "tree-folder",

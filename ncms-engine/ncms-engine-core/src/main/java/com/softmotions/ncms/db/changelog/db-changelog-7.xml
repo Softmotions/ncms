@@ -189,4 +189,10 @@
         <addNotNullConstraint tableName="MTT_ACTIONS" columnName="GROUP_WIDTH"/>
     </changeSet>
 
+    <changeSet id="7.7" author="adamansky@gmail.com">
+        <renameColumn tableName="MTT_ACTIONS"
+                      oldColumnName="GROUP_WIDTH"
+                      newColumnName="GROUP_WEIGHT"/>
+    </changeSet>
+
 </databaseChangeLog>
