@@ -39,7 +39,7 @@ msgstr "Обязательное поле"
 #: ncms/mmgr/MediaFileEditor.js:273 ncms/pgs/PagesTable.js:21
 #: ncms/asm/AsmAttrsTable.js:114 ncms/asm/am/TreeAMNewFolderDlg.js:22
 #: ncms/asm/am/TreeAMValueWidget.js:480 ncms/asm/AsmTable.js:17
-#: ncms/usr/UserNewDlg.js:37 ncms/mtt/MttRulesTable.js:13
+#: ncms/usr/UserNewDlg.js:37 ncms/mtt/MttRulesTable.js:20
 #: ncms/mmgr/MediaFilesTable.js:9 ncms/asm/AsmAttrEditorDlg.js:63
 #: ncms/usr/UsersTable.js:10
 msgid "Name"
@@ -123,11 +123,11 @@ msgstr "Добавить новый атрибут"
 msgid "Drop attribute"
 msgstr "Удалить атрибут"
 
-#: ncms/mtt/MttNav.js:82 ncms/asm/AsmAttrsTable.js:82
+#: ncms/mtt/MttNav.js:130 ncms/asm/AsmAttrsTable.js:82
 msgid "Move up"
 msgstr "Переместить наверх"
 
-#: ncms/mtt/MttNav.js:86 ncms/asm/AsmAttrsTable.js:87
+#: ncms/mtt/MttNav.js:134 ncms/asm/AsmAttrsTable.js:87
 msgid "Move down"
 msgstr "Переместить вниз"
 
@@ -162,8 +162,9 @@ msgstr "Редактировать"
 #: ncms/mtt/filters/MttFiltersTable.js:176 ncms/asm/AsmNav.js:82
 #: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:535
 #: ncms/mtt/actions/MttActionsTree.js:121
-#: ncms/mtt/actions/MttActionsTree.js:221 ncms/mtt/MttNav.js:94
-#: ncms/asm/AsmAttrsTable.js:208 ncms/asm/am/TreeAMValueWidget.js:461
+#: ncms/mtt/actions/MttActionsTree.js:221 ncms/mtt/MttNav.js:43
+#: ncms/mtt/MttNav.js:142 ncms/asm/AsmAttrsTable.js:208
+#: ncms/asm/am/TreeAMValueWidget.js:461
 msgid "Remove"
 msgstr "Удалить"
 
@@ -261,13 +262,13 @@ msgid "New assembly"
 msgstr "Новая сборка (assembly)"
 
 #: ncms/asm/AsmNav.js:72 ncms/mmgr/MediaItemTreeSelector.js:87
-#: ncms/mtt/MttNav.js:71
+#: ncms/mtt/MttNav.js:119
 msgid "Refresh"
 msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:119 ncms/asm/AsmNav.js:78
 #: ncms/mmgr/MediaItemTreeSelector.js:72 ncms/mmgr/MediaFilesSelector.js:524
-#: ncms/mtt/MttNav.js:78 ncms/asm/am/TreeAMValueWidget.js:457
+#: ncms/mtt/MttNav.js:126 ncms/asm/am/TreeAMValueWidget.js:457
 msgid "Rename"
 msgstr "Переименовать"
 
@@ -682,11 +683,13 @@ msgstr "Синхронизовать"
 msgid "Synchronize attribute content with another page"
 msgstr "Синхронизовать поле с другой страницей"
 
-#: ncms/mtt/actions/MttActionsTree.js:138 ncms/asm/am/TreeAMValueWidget.js:197
+#: ncms/mtt/actions/MttActionsTree.js:138 ncms/mtt/MttNav.js:56
+#: ncms/asm/am/TreeAMValueWidget.js:197
 msgid "Move item up"
 msgstr "Переместить выше"
 
-#: ncms/mtt/actions/MttActionsTree.js:145 ncms/asm/am/TreeAMValueWidget.js:203
+#: ncms/mtt/actions/MttActionsTree.js:145 ncms/mtt/MttNav.js:61
+#: ncms/asm/am/TreeAMValueWidget.js:203
 msgid "Move item down"
 msgstr "Переместить ниже"
 
@@ -895,15 +898,15 @@ msgstr "Фильтры"
 msgid "Actions"
 msgstr "Действия"
 
-#: ncms/mtt/MttNav.js:67
+#: ncms/mtt/MttNav.js:39 ncms/mtt/MttNav.js:115
 msgid "New rule"
 msgstr "Новое правило"
 
-#: ncms/mtt/MttNav.js:90
+#: ncms/mtt/MttNav.js:138
 msgid "Disable"
 msgstr "Отключить"
 
-#: ncms/mtt/MttNav.js:117
+#: ncms/mtt/MttNav.js:165
 msgid "Are you sure to remove rule: \"%1\"?"
 msgstr "Подтвердите удаление правила \"%1\""
 

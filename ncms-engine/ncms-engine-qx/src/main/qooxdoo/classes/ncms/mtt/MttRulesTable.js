@@ -4,48 +4,80 @@
  * //asset(ncms/icon/16/mtt/*)
  */
 qx.Class.define("ncms.mtt.MttRulesTable", {
-    extend: sm.table.Table,
+    extend: sm.table.ToolbarTable,
 
-    construct: function (useColumns) {
-        var cmeta = {
-
+    /**
+     * @param useColumns {Array?} Array of used columns
+     * @param smodel {qx.ui.table.selection.Model?} Optional selection model
+     * @param toolbarInitializerFn {function?} Toolbar initializer function
+     */
+    construct: function (useColumns, smodel, toolbarInitializerFn) {
+        this.__useColumns = useColumns || ["name"];
+        this.__smodel = smodel;
+        this.__toolbarInitializerFn = toolbarInitializerFn;
+        this.__cmeta = {
             name: {
                 title: this.tr("Name").toString(),
                 width: "1*"
             }
         };
-        useColumns = useColumns || ["name"];
-        var tm = new sm.model.RemoteVirtualTableModel(cmeta).set({
-            "useColumns": useColumns,
-            "rowdataUrl": ncms.Application.ACT.getUrl("mtt.rules.select"),
-            "rowcountUrl": ncms.Application.ACT.getUrl("mtt.rules.select.count")
-        });
-
-        var custom = {
-            tableColumnModel: function () {
-                return new sm.model.JsonTableColumnModel(
-                    useColumns.map(function (cname) {
-                        return cmeta[cname];
-                    }));
-            }
-        };
-
-        this.base(arguments, tm, custom);
-
-        var rr = new sm.table.renderer.CustomRowRenderer();
-        var colorm = qx.theme.manager.Color.getInstance();
-        rr.setBgColorInterceptor(qx.lang.Function.bind(function (rowInfo) {
-            return colorm.resolve("background");
-        }, this));
-        this.setDataRowRenderer(rr);
-
+        this.base(arguments);
+        this._reload();
         ncms.Events.getInstance().addListener("mttRulePropsChanged", this.__onMttRulePropsChanged, this);
     },
 
     members: {
 
-        getRowCount: function() {
-            return this.getTableModel().getRowCount();
+        __toolbarInitializerFn: null,
+
+        __smodel: null,
+
+        __cmeta: null,
+
+        __useColumns: null,
+
+        // override
+        _createTable: function (tableModel) {
+            var useColumns = this.__useColumns;
+            var cmeta = this.__cmeta;
+            var custom = {
+                tableColumnModel: function () {
+                    return new sm.model.JsonTableColumnModel(
+                        useColumns.map(function (cname) {
+                            return cmeta[cname];
+                        }));
+                }
+            };
+            var rr = new sm.table.renderer.CustomRowRenderer();
+            var colorm = qx.theme.manager.Color.getInstance();
+            rr.setBgColorInterceptor(qx.lang.Function.bind(function (rowInfo) {
+                return colorm.resolve("background");
+            }, this));
+            var table = new sm.table.Table(tableModel, custom).set({
+                statusBarVisible: true,
+                showCellFocusIndicator: false,
+                dataRowRenderer: rr
+            });
+            if (this.__smodel) {
+                table.setSelectionModel(this.__smodel);
+            }
+            return table;
+        },
+
+        // override
+        _createTableModel: function () {
+            var cmeta = this.__cmeta;
+            return new sm.model.RemoteVirtualTableModel(cmeta, this.__useColumns).set({
+                "rowdataUrl": ncms.Application.ACT.getUrl("mtt.rules.select"),
+                "rowcountUrl": ncms.Application.ACT.getUrl("mtt.rules.select.count")
+            });
+        },
+
+        _createToolbarItems: function (toolbar) {
+            if (typeof this.__toolbarInitializerFn === "function") {
+                return this.__toolbarInitializerFn(toolbar);
+            }
+            return toolbar;
         },
 
         getSelectedRuleInd: function () {
@@ -76,6 +108,10 @@ qx.Class.define("ncms.mtt.MttRulesTable", {
     },
 
     destruct: function () {
+        this.__cmeta = null;
+        this.__useColumns = null;
+        this.__smodel = null;
+        this.__toolbarInitializerFn = null;
         ncms.Events.getInstance().removeListener("mttRulePropsChanged", this.__onMttRulePropsChanged, this);
     }
 });

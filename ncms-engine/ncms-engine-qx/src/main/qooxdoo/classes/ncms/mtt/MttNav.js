@@ -1,5 +1,10 @@
 /**
  * Marketing traffic Rules navigation zone.
+ *
+ * @asset(ncms/icon/16/misc/arrow_up.png)
+ * @asset(ncms/icon/16/misc/arrow_down.png)
+ * @asset(ncms/icon/16/actions/add.png)
+ * @asset(ncms/icon/16/actions/delete.png)
  */
 
 qx.Class.define("ncms.mtt.MttNav", {
@@ -14,10 +19,50 @@ qx.Class.define("ncms.mtt.MttNav", {
     properties: {},
 
     construct: function () {
+        var me = this;
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
         this.setPaddingLeft(10);
-        this.__selector = new ncms.mtt.MttRulesSelector();
+
+        this.__selector = new ncms.mtt.MttRulesSelector(null, null, null, function (toolbar) {
+            function _createButton(label, icon, handler, self) {
+                var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance": "toolbar-table-button"});
+                if (handler != null) {
+                    bt.addListener("execute", handler, self);
+                }
+                return bt;
+            }
+            var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
+            toolbar.add(part);
+
+            el = _createButton(null, "ncms/icon/16/actions/add.png", me.__onNewRule, me);
+            el.setToolTipText(this.tr("New rule"));
+            part.add(el);
+
+            el = _createButton(null, "ncms/icon/16/actions/delete.png", me.__onRemoveRule, me);
+            el.setToolTipText(this.tr("Remove"));
+            el.setEnabled(false);
+            me.__removeBt = el;
+            part.add(el);
+
+
+            toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
+
+            part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
+            toolbar.add(part);
+
+            // Move up
+            var el = _createButton(null, "ncms/icon/16/misc/arrow_up.png", me.__onMoveUp, me);
+            el.setToolTipText(this.tr("Move item up"));
+            part.add(el);
+
+            // Move down
+            el = _createButton(null, "ncms/icon/16/misc/arrow_down.png", me.__onMoveDown, me);
+            el.setToolTipText(this.tr("Move item down"));
+            part.add(el);
+            return toolbar;
+        });
+
         this.__selector.addListener("ruleSelected", this.__ruleSelected, this);
         this._add(this.__selector);
 
@@ -46,12 +91,15 @@ qx.Class.define("ncms.mtt.MttNav", {
 
     members: {
 
+        __removeBt: null,
+
         __selector: null,
 
         __ruleSelected: function (ev) {
             var data = ev.getData();
             var app = ncms.Application.INSTANCE;
             var eclazz = ncms.mtt.MttNav.MTT_EDITOR_CLAZZ;
+            this.__removeBt.setEnabled(data != null);
             if (data == null) {
                 app.showDefaultWSA();
                 return;
@@ -164,18 +212,24 @@ qx.Class.define("ncms.mtt.MttNav", {
                 return;
             }
             var rule = this.__selector.getSelectedRule();
+            if (rule == null) {
+                return;
+            }
             var req = new sm.io.Request(
                 ncms.Application.ACT.getRestUrl(
                     dir > 0 ? "mtt.rule.up" : "mtt.rule.down", {id: rule["id"]}), "POST");
             req.send(function (resp) {
                 var table = this.__selector.getTable();
                 table.getTableModel().reloadData();
-                table.selectSingleRow(nind);
+                table.getTableModel().addListenerOnce("rowsDataLoaded", function () {
+                    table.selectSingleRow(ind);
+                });
             }, this);
         }
     },
 
     destruct: function () {
+        this.__removeBt = null;
         this.__selector = null;
     }
 });

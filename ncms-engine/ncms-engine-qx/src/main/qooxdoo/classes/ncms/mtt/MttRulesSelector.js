@@ -2,7 +2,7 @@
  * Traffic rules selector.
  */
 qx.Class.define("ncms.mtt.MttRulesSelector", {
-    extend: qx.ui.core.Widget,
+    extend : qx.ui.container.Composite,
 
     events: {
 
@@ -27,7 +27,7 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
         }
     },
 
-    construct: function (constViewSpec, smodel, useColumns) {
+    construct: function (constViewSpec, smodel, useColumns, toolbarFn) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
 
@@ -39,17 +39,13 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
             this.__search(ev.getData());
         }, this);
         sf.addListener("keypress", this.__searchKeypress, this);
-
-        this.__table = new ncms.mtt.MttRulesTable(useColumns).set({
-            "statusBarVisible": true,
-            "showCellFocusIndicator": false
-        });
-        if (smodel != null) {
-            this.__table.setSelectionModel(smodel);
-        }
+        this.__table = new ncms.mtt.MttRulesTable(useColumns, smodel, toolbarFn);
         this.__table.getSelectionModel().addListener("changeSelection", function () {
             var rule = this.getSelectedRule();
-            this.fireDataEvent("ruleSelected", rule ? rule : null);
+            if (this.__prevRule != rule) {
+                this.fireDataEvent("ruleSelected", rule ? rule : null);
+                this.__prevRule = rule;
+            }
         }, this);
 
         this._add(this.__sf);
@@ -62,6 +58,8 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
     },
 
     members: {
+
+        __prevRule: null,
 
         /**
          * Search field
@@ -81,31 +79,27 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
         },
 
         setViewSpec: function (vs) {
-            this.__table.resetSelection();
             this.__table.getTableModel().setViewSpec(vs);
+            this.__table.getSelectionModel().resetSelection();
         },
 
         updateViewSpec: function (vs) {
-            this.__table.resetSelection();
             this.__table.getTableModel().updateViewSpec(vs);
+            this.__table.getSelectionModel().resetSelection();
         },
 
         setConstViewSpec: function (vs, noupdate) {
-            this.__table.resetSelection();
             this.__table.getTableModel().setConstViewSpec(vs, noupdate);
+            this.__table.getSelectionModel().resetSelection();
         },
 
         reload: function (vspec) {
             this.__table.getTableModel().reloadData(vspec);
-            this.__table.resetSelection();
+            this.__table.getSelectionModel().resetSelection();
         },
 
         resetSelection: function () {
             this.__table.resetSelection();
-        },
-
-        getTable: function () {
-            return this.__table;
         },
 
         getSelectedRuleInd: function () {
@@ -124,6 +118,14 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
             this.__table.cleanup();
         },
 
+        getToolbarTable: function() {
+            return this.__table;
+        },
+
+        getTable: function() {
+            return this.getToolbarTable().getTable();
+        },
+
         getRowCount: function() {
             return this.__table.getRowCount();
         },
@@ -138,7 +140,7 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
 
         __searchKeypress: function (ev) {
             if ("Down" === ev.getKeyIdentifier()) {
-                this.__table.handleFocus();
+                this.__table.getTable().handleFocus();
             }
         }
     },
@@ -146,6 +148,7 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
     destruct: function () {
         this.__sf = null;
         this.__table = null;
+        this.__prevRule = null;
         //this._disposeObjects("__form");
     }
 });
