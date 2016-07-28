@@ -353,7 +353,9 @@ constructor(val sess: SqlSession,
         }
     }
 
-
+    /**
+     * Update rule action
+     */
     @POST
     @Path("/action/{aid}")
     @Transactional
@@ -364,6 +366,19 @@ constructor(val sess: SqlSession,
         if (an.hasNonNull("spec")) action.spec = an["spec"].asText()
         update("updateAction", action)
         return actionGet(action.id)
+    }
+
+    /**
+     * Update action group width
+     */
+    @POST
+    @Path("/weight/{id}/{weight}")
+    @Transactional
+    open fun actionWeghtUpdate(@PathParam("id") id: Long,
+                               @PathParam("weight") weight: Int): Unit {
+        update("updateActionWidth",
+                "id", id,
+                "weight", weight)
     }
 
     @DELETE

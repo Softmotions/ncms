@@ -237,6 +237,15 @@
             type = #{type},
             spec = #{spec},
             description = #{description},
+            group_weight = #{groupWeight},
+            mdate = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateActionWidth" parameterType="map">
+        UPDATE MTT_ACTIONS
+        SET
+            group_weight = #{weight},
             mdate = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>

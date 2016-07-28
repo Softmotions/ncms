@@ -412,12 +412,34 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
 
         __applyModel: function (value, old) {
             var tree = this.__tree;
+            if (old) {
+                old.removeListener("changeBubble", this.__onModelChanged, this);
+            }
+            if (value) {
+                value.addListener("changeBubble", this.__onModelChanged, this);
+            }
             tree.setModel(value);
             tree.getLookupTable().forEach(function (item) {
                 if (tree.isNode(item)) {
                     tree.openNode(item);
                 }
             }, this);
+        },
+
+        __onModelChanged: function (ev) {
+            var data = ev.getData();
+            if (qx.lang.String.endsWith(data.name, ".groupWeight")) {
+                var id = data.item.getId();
+                var weight = data.item.getGroupWeight();
+                var req = new sm.io.Request(
+                    ncms.Application.ACT.getRestUrl("mtt.action.group.weight.update", {
+                        id: id,
+                        weight: weight
+                    }), "POST").set({
+                    showMessages: true
+                });
+                req.send();
+            }
         },
 
         __applyRuleId: function (id, old, cb) {
