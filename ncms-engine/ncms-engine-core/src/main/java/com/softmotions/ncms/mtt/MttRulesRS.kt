@@ -383,6 +383,7 @@ constructor(val sess: SqlSession,
         if (an.hasNonNull("type")) action.type = an["type"].asText()
         if (an.hasNonNull("description")) action.description = an["description"].asText()
         if (an.hasNonNull("spec")) action.spec = an["spec"].asText()
+        if (an.hasNonNull("enabled")) action.enabled = an["enabled"].asBoolean()
         update("updateAction", action)
         ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(action.ruleId))
         return actionGet(action.id)

@@ -17,8 +17,5 @@ public class MttHttpModule extends AbstractModule {
         actionBinder.addBinding().to(MttRouteActionHandler.class);
         actionBinder.addBinding().to(MttLogActionHandler.class);
         actionBinder.addBinding().to(MttGroupActionHandler.class);
-
-        bind(MttFilterHandlers.class).asEagerSingleton();
-        bind(MttActionHandlers.class).asEagerSingleton();
     }
 }

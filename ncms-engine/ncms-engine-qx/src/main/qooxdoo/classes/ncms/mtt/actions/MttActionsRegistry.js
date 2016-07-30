@@ -9,6 +9,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsRegistry", {
         TYPE2CLASS: null,
 
         CLASSES: [
+            ncms.mtt.actions.MttLogAction,
             ncms.mtt.actions.MttRouteAction
         ],
 

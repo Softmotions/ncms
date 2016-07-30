@@ -961,15 +961,27 @@ msgstr "Подтвердите удаление действия: %1"
 msgid "Edit %1"
 msgstr "Редактировать %1"
 
+#: ncms/mtt/actions/MttLogAction.js:13
+msgid "Write a log message"
+msgstr "Лог сообщение"
+
+#: ncms/mtt/actions/MttLogAction.js:36
+msgid "Log level"
+msgstr "Уровень"
+
+#: ncms/mtt/actions/MttLogAction.js:42
+msgid "Log message"
+msgstr "Лог сообщение"
+
 #: ncms/mtt/actions/MttRouteAction.js:13
 msgid "Route to another resource"
 msgstr "Перенаправление на другой ресурс"
 
-#: ncms/mtt/actions/MttRouteAction.js:35 ncms/mtt/actions/MttRouteAction.js:43
+#: ncms/mtt/actions/MttRouteAction.js:34 ncms/mtt/actions/MttRouteAction.js:42
 msgid "Please set the route destination"
 msgstr "Пожалуйста укажите целевой ресурс"
 
-#: ncms/mtt/actions/MttRouteAction.js:63
+#: ncms/mtt/actions/MttRouteAction.js:62
 msgid "Route"
 msgstr "Перенаправить"
 

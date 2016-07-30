@@ -238,6 +238,7 @@
             spec         = #{spec},
             description  = #{description},
             group_weight = #{groupWeight},
+            enabled      = #{enabled},
             mdate        = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>

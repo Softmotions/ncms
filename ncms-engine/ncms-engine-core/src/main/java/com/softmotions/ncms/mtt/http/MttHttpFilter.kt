@@ -30,13 +30,14 @@ import kotlin.concurrent.write
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
+@JvmSuppressWildcards
 open class MttHttpFilter
 @Inject
 constructor(val ebus: NcmsEventBus,
             val mapper: ObjectMapper,
             val env: NcmsEnvironment,
-            filterHandlers: MttFilterHandlers,
-            actionHandlers: MttActionHandlers,
+            filters: Set<MttFilterHandler>,
+            actions: Set<MttActionHandler>,
             sess: SqlSession) : MBDAOSupport(MttHttpFilter::class.java, sess), Filter {
 
     companion object {
@@ -54,14 +55,14 @@ constructor(val ebus: NcmsEventBus,
     private val lock = ReentrantReadWriteLock()
 
     private val filterHandlers: Map<String, MttFilterHandler> = HashMap<String, MttFilterHandler>().apply {
-        filterHandlers.filters.forEach {
+        filters.forEach {
             log.info("Register MTT filter: '${it.type}' class: ${it.javaClass.name}")
             put(it.type, it)
         }
     }
 
     private val actionHandlers: Map<String, MttActionHandler> = HashMap<String, MttActionHandler>().apply {
-        actionHandlers.actions.forEach {
+        actions.forEach {
             log.info("Register MTT action: '${it.type}' class: ${it.javaClass.name}")
             put(it.type, it)
         }
@@ -110,7 +111,6 @@ constructor(val ebus: NcmsEventBus,
             // URI=/ URL=http://vk.smsfinance.ru:9191/ QS=test=foo
             // URI=/rs/media/fileid/286 URL=http://vk.smsfinance.ru:9191/rs/media/fileid/286 QS=w=300&h=300
             // URI=/rs/adm/ws/state URL=http://localhost:9191/rs/adm/ws/state QS=nocache=1469768085685
-            //log.info("URI=${req.requestURI} URL=${req.requestURL} QS=${req.queryString}")
             lock.read {
                 for (rs in id2slots.values) {
                     if (rs.runRule(req, resp)) {
@@ -136,14 +136,17 @@ constructor(val ebus: NcmsEventBus,
 
     @Subscribe
     fun onRuleUpdated(event: MttRuleUpdatedEvent) {
-        log.info("Rule deleted=${event}")
+        if (log.isDebugEnabled) {
+            log.debug("Rule updated=${event}")
+        }
         activateRule(event.ruleId)
-
     }
 
     @Subscribe
     fun onRuleDeleted(event: MttRuleDeletedEvent) {
-        log.info("Rule deleted=${event}")
+        if (log.isDebugEnabled) {
+            log.debug("Rule deleted=${event}")
+        }
         lock.write {
             id2slots.remove(event.ruleId)
         }
@@ -151,7 +154,9 @@ constructor(val ebus: NcmsEventBus,
 
     @Subscribe
     fun onRuleReordered(event: MttRuleReorderedEvent) {
-        log.info("Rule reordered=${event}")
+        if (log.isDebugEnabled) {
+            log.debug("Rule reordered=${event}")
+        }
         lock.write {
             val slots = id2slots.values.toTypedArray()
             val s1 = slots.find { it.rule.ordinal == event.ordinal1 }
@@ -241,8 +246,14 @@ constructor(val ebus: NcmsEventBus,
          */
         @GuardedBy("lock") //read
         fun runRule(req: HttpServletRequest, resp: HttpServletResponse): Boolean {
+            if (!rule.enabled) {
+                return false
+            }
+            if (log.isDebugEnabled) {
+                log.debug("Run rule=${rule.name} id=${rule.id}")
+            }
             // Run filters
-            filters.find {
+            val filter = filters.find {
                 try {
                     return@find it.handler.matched(it, req)
                 } catch(e: Throwable) {
@@ -250,10 +261,20 @@ constructor(val ebus: NcmsEventBus,
                     return@find false
                 }
             } ?: return false
+            if (log.isDebugEnabled) {
+                log.debug("Found filter: ${filter.javaClass.name} resource: ${req.requestURL}")
+            }
             // All filters matched, now run actions
             return actions.find {
-                if (it.action.groupId != null) {
+                if (!it.action.enabled || it.action.groupId != null) {
+                    // only enabled actions can me runned
                     // this action will be runned by the special MttGroupActionHandler
+                    if (log.isDebugEnabled) {
+                        log.debug(
+                                "Rule action skipped ${it.javaClass.name} " +
+                                        "enabled=${it.action.enabled} " +
+                                        "groupId=${it.action.groupId}")
+                    }
                     return false
                 }
                 it.execute(req, resp)
@@ -279,17 +300,21 @@ constructor(val ebus: NcmsEventBus,
 
         override fun findGroupActions(): List<MttActionHandlerContext> {
             return slot.actions.filter {
-                it.action.groupId == action.id
+                it.action.enabled && it.action.groupId == action.id
             }
         }
 
         override fun execute(req: HttpServletRequest, resp: HttpServletResponse): Boolean {
+            var ret = false;
             try {
-                return handler.execute(this, req, resp)
+                ret = handler.execute(this, req, resp)
             } catch(e: Throwable) {
                 log.error("Rule action error ${handler.javaClass}", e)
-                return false
             }
+            if (log.isDebugEnabled) {
+                log.debug("Rule action: ${handler.javaClass} executed, ret=${ret}")
+            }
+            return ret
         }
     }
 }

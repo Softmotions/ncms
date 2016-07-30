@@ -11,7 +11,7 @@ public class MttModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(MttModule.class).in(Singleton.class);
+        bind(MttRulesRS.class).in(Singleton.class);
         install(new MttHttpModule());
     }
 }
