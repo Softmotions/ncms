@@ -255,30 +255,44 @@ constructor(val ebus: NcmsEventBus,
             // Run filters
             val filter = filters.find {
                 try {
-                    return@find it.handler.matched(it, req)
+                    val ret = it.handler.matched(it, req)
+                    if (log.isDebugEnabled) {
+                        log.debug("Run filter=${it.spec} ret=${ret}")
+                    }
+                    return@find ret
                 } catch(e: Throwable) {
                     log.error("Rule filter error ${it.javaClass}", e)
                     return@find false
                 }
-            } ?: return false
+            } ?: return false.apply {
+                if (log.isDebugEnabled) {
+                    log.debug("Not passed rule=${rule.name} resource=${req.requestURL} qs=${req.queryString}")
+                }
+            }
             if (log.isDebugEnabled) {
-                log.debug("Found filter: ${filter.javaClass.name} resource: ${req.requestURL}")
+                log.debug("Found filter=${filter.spec} rule=${rule.name} resource=${req.requestURL}")
             }
             // All filters matched, now run actions
-            return actions.find {
-                if (!it.action.enabled || it.action.groupId != null) {
+            var ret = false
+            for (a in actions) {
+                if (!a.action.enabled || a.action.groupId != null) {
                     // only enabled actions can me runned
                     // this action will be runned by the special MttGroupActionHandler
                     if (log.isDebugEnabled) {
                         log.debug(
-                                "Rule action skipped ${it.javaClass.name} " +
-                                        "enabled=${it.action.enabled} " +
-                                        "groupId=${it.action.groupId}")
+                                "Rule action skipped ${a.javaClass.name} " +
+                                        "enabled=${a.action.enabled} " +
+                                        "groupId=${a.action.groupId}")
                     }
-                    return false
+                    continue
                 }
-                it.execute(req, resp)
-            } == null
+                ret = a.execute(req, resp)
+                if (ret) {
+                    break
+                }
+            }
+            return ret
+
         }
     }
 

@@ -1029,15 +1029,15 @@ msgstr "Редактирование фильтра: %1"
 
 #: ncms/mtt/filters/MttHeaderFilter.js:12
 msgid "HTTP header filter"
-msgstr "HTTP заголовки"
+msgstr "Заголовки запроса"
 
 #: ncms/mtt/filters/MttUtmFilter.js:12
 msgid "Utm marks filter"
-msgstr "Utm метки"
+msgstr "Utm маркеры"
 
 #: ncms/mtt/filters/MttVHostFilter.js:12
 msgid "Virtual hosts filter"
-msgstr "Шаблоны виртуальных хостов"
+msgstr "Виртуальный хост"
 
 #: ncms/mtt/filters/MttVHostFilter.js:30
 msgid "Glob"
@@ -1715,6 +1715,9 @@ msgstr "Заметка"
 
 #~ msgid "URL"
 #~ msgstr ""
+
+#~ msgid "UTM marks"
+#~ msgstr "UTM метки"
 
 #~ msgid "Unable to delete this page!"
 #~ msgstr "Невозможно удалить эту страницу"

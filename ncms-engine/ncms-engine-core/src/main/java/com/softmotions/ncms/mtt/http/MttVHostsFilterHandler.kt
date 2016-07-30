@@ -17,15 +17,21 @@ open class MttVHostsFilterHandler : MttFilterHandler {
     override fun matched(ctx: MttFilterHandlerContext, req: HttpServletRequest): Boolean {
         if (!ctx.contains("pattern")) {
             val spec = ctx.spec
-            if (spec.path("regexp").isTextual) {
-                ctx["pattern"] = Regex(spec.path("regexp").asText())
-            } else if (spec.path("glob").isTextual) {
-                ctx["pattern"] = Regex(RegexpHelper.convertGlobToRegEx(spec.path("glob").asText()))
+            val mode = spec.path("mode").asText()
+            val pattern = spec.path("pattern").asText()
+            if (mode == "regexp") {
+                ctx["pattern"] = Regex(pattern)
+            } else if (mode == "glob") {
+                ctx["pattern"] = Regex(RegexpHelper.convertGlobToRegEx(pattern))
             } else {
                 log.error("Invalid filter spec: ${spec}")
                 return false
             }
         }
-        return (ctx["pattern"] as Regex).matches(req.serverName)
+        val re = (ctx["pattern"] as Regex)
+        if (log.isDebugEnabled) {
+            log.debug("regexp='${re}' pattern='${req.serverName}' res=${re.matches(req.serverName)}")
+        }
+        return re.matches(req.serverName)
     }
 }
