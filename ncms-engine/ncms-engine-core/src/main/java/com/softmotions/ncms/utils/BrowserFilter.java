@@ -53,18 +53,18 @@ public class BrowserFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
+    public void doFilter(ServletRequest sreq, ServletResponse sresp, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) sreq;
+        HttpServletResponse resp = (HttpServletResponse) sresp;
 
         String pi = req.getRequestURI();
         if (StringUtils.isBlank(redirectUri) || redirectUri.equals(pi)) {
-            chain.doFilter(request, response);
+            chain.doFilter(sreq, sresp);
             return;
         }
         for (final String ep : excludePrefixes) {
             if (pi.startsWith(ep)) {
-                chain.doFilter(request, response);
+                chain.doFilter(sreq, sresp);
                 return;
             }
         }
@@ -73,7 +73,7 @@ public class BrowserFilter implements Filter {
         Pattern pattern = IE_PATTERN;
         Matcher matcher = (userAgent != null) ? pattern.matcher(userAgent) : null;
         if (matcher == null || !matcher.find()) {
-            chain.doFilter(request, response);
+            chain.doFilter(sreq, sresp);
             return;
         }
 
@@ -84,7 +84,7 @@ public class BrowserFilter implements Filter {
             }
         } catch (Exception ignored) {
         }
-        chain.doFilter(request, response);
+        chain.doFilter(sreq, sresp);
     }
 
     @Override

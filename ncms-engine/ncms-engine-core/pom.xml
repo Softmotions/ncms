@@ -51,6 +51,10 @@
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot-executor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
             <artifactId>softmotions-weboot-liquibase</artifactId>
         </dependency>
         <dependency>

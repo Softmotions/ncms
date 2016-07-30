@@ -1,4 +1,4 @@
-package com.softmotions.ncms.marketing.mtt;
+package com.softmotions.ncms.mtt;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -119,6 +120,16 @@ public class MttRuleFilter implements Serializable {
 
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("id", id)
+                          .add("ruleId", ruleId)
+                          .add("type", type)
+                          .add("enabled", enabled)
+                          .add("spec", spec)
+                          .toString();
     }
 }
 

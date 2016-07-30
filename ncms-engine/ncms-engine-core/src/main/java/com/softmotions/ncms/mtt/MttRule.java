@@ -1,13 +1,18 @@
-package com.softmotions.ncms.marketing.mtt;
+package com.softmotions.ncms.mtt;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Objects;
+import com.google.common.base.MoreObjects;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -38,7 +43,15 @@ public class MttRule implements Serializable {
     @JsonProperty
     private long flags;
 
+    private List<MttRuleFilter> filters;
+    private List<MttRuleAction> actions;
+
     public MttRule() {
+    }
+
+    public MttRule(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public MttRule(String name) {
@@ -109,6 +122,30 @@ public class MttRule implements Serializable {
         this.flags = flags;
     }
 
+    @NotNull
+    public List<MttRuleFilter> getFilters() {
+        if (filters == null) {
+            filters = new ArrayList<>();
+        }
+        return filters;
+    }
+
+    public void setFilters(List<MttRuleFilter> filters) {
+        this.filters = filters;
+    }
+
+    @Nonnull
+    public List<MttRuleAction> getActions() {
+        if (actions == null) {
+            actions = new ArrayList<>();
+        }
+        return actions;
+    }
+
+    public void setActions(List<MttRuleAction> actions) {
+        this.actions = actions;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -118,5 +155,15 @@ public class MttRule implements Serializable {
 
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("id", id)
+                          .add("ordinal", ordinal)
+                          .add("name", name)
+                          .add("filters", filters)
+                          .add("actions", actions)
+                          .toString();
     }
 }

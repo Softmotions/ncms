@@ -17,9 +17,10 @@ import com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule;
 import com.softmotions.ncms.events.EventsModule;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
 import com.softmotions.ncms.jaxrs.ResteasyUTF8CharsetFilter;
-import com.softmotions.ncms.marketing.MarketingModule;
 import com.softmotions.ncms.media.MediaModule;
 import com.softmotions.ncms.mediawiki.MediaWikiModule;
+import com.softmotions.ncms.mtt.MttModule;
+import com.softmotions.ncms.mtt.http.MttHttpFilter;
 import com.softmotions.ncms.qa.QAModule;
 import com.softmotions.ncms.rds.RefDataStoreModule;
 import com.softmotions.ncms.security.NcmsSecurityModule;
@@ -27,6 +28,7 @@ import com.softmotions.ncms.update.UpdateModule;
 import com.softmotions.ncms.user.UserModule;
 import com.softmotions.ncms.utils.BrowserFilter;
 import com.softmotions.weboot.WBServletModule;
+import com.softmotions.weboot.executor.TaskExecutorModule;
 import com.softmotions.weboot.i18n.I18nModule;
 import com.softmotions.weboot.jaxrs.WBJaxrsModule;
 import com.softmotions.weboot.liquibase.WBLiquibaseModule;
@@ -44,6 +46,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         bind(NcmsEnvironment.class).toInstance(env);
         bind(new TypeLiteral<HierarchicalConfiguration<ImmutableNode>>() {
         }).toInstance(env.xcfg());
+        initMarketingToolsFilter(env);
         initBrowserFilter(env);
         initJAXRS(env);
         initAsmFilter(env);
@@ -51,6 +54,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         install(new WBMyBatisModule(env));
         install(new WBLiquibaseModule(env));
         install(new SchedulerModule(env));
+        install(new TaskExecutorModule(env));
         install(new UpdateModule());
         install(new EventsModule());
         install(new NcmsSecurityModule());
@@ -62,7 +66,8 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         install(new UserModule());
         install(new RefDataStoreModule());
         install(new QAModule(env));
-        install(new MarketingModule());
+        install(new MttModule());
+
     }
 
     protected void initAsmFilter(NcmsEnvironment env) {
@@ -117,5 +122,10 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         }
         opts.put("exclude-prefixes", ArrayUtils.stringJoin(exclude, ","));
         filter(ncmsp + "/*", BrowserFilter.class, opts);
+    }
+
+    protected void initMarketingToolsFilter(NcmsEnvironment env) {
+        String ncmsp = env.getAppPrefix();
+        filter(ncmsp + "/*", MttHttpFilter.class);
     }
 }

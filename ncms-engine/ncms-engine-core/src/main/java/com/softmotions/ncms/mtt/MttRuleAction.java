@@ -1,13 +1,14 @@
-package com.softmotions.ncms.marketing.mtt;
+package com.softmotions.ncms.mtt;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -149,5 +150,18 @@ public class MttRuleAction implements Serializable {
 
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("id", id)
+                          .add("ruleId", ruleId)
+                          .add("ordinal", ordinal)
+                          .add("type", type)
+                          .add("spec", spec)
+                          .add("groupId", groupId)
+                          .add("groupWeight", groupWeight)
+                          .add("enabled", enabled)
+                          .toString();
     }
 }

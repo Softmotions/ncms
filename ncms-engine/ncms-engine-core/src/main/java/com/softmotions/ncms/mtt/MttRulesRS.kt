@@ -1,8 +1,9 @@
-package com.softmotions.ncms.marketing.mtt
+package com.softmotions.ncms.mtt
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.google.inject.Inject
+import com.softmotions.ncms.events.NcmsEventBus
 import com.softmotions.ncms.jaxrs.NcmsMessageException
 import com.softmotions.weboot.i18n.I18n
 import com.softmotions.weboot.mb.MBCriteriaQuery
@@ -27,7 +28,8 @@ open class MttRulesRS
 @Inject
 constructor(val sess: SqlSession,
             val mapper: ObjectMapper,
-            val messages: I18n) : MBDAOSupport(MttRulesRS::class.java, sess) {
+            val messages: I18n,
+            val ebus: NcmsEventBus) : MBDAOSupport(MttRulesRS::class.java, sess) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -96,6 +98,7 @@ constructor(val sess: SqlSession,
             val rule = MttRule(rname)
             insert("insertRule", rule)
             val rid = selectOne<Long?>("selectRuleIdByName", rname) ?: throw InternalServerErrorException()
+            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
             return ruleGet(rid)
         }
     }
@@ -112,6 +115,7 @@ constructor(val sess: SqlSession,
                 throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.other", req, rname), true)
             }
             update("updateRuleName", "id", rid, "name", rname)
+            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
             return ruleGet(rid)
         }
     }
@@ -126,6 +130,7 @@ constructor(val sess: SqlSession,
             if (hasNonNull("description")) rule.description = path("description").asText()
         }
         update("updateRule", rule)
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
         return ruleGet(rid)
     }
 
@@ -150,31 +155,37 @@ constructor(val sess: SqlSession,
             else -> selectOne<Long?>("selectPreviousRule", rule.ordinal)
         }
         sordinal ?: return
-
         update("exchangeRuleOrdinal",
                 "ordinal1", sordinal,
                 "ordinal2", rule.ordinal)
+
+        ebus.fireOnSuccessCommit(MttRuleReorderedEvent(sordinal, rule.ordinal))
     }
 
     @DELETE
     @Path("/rule/{rid}")
     @Transactional
-    // TODO: events?
-    open fun ruleDelete(@PathParam("rid") rid: Long) =
-            delete("deleteRuleById", rid)
-
+    open fun ruleDelete(@PathParam("rid") rid: Long): Int {
+        ebus.fireOnSuccessCommit(MttRuleDeletedEvent(rid))
+        return delete("deleteRuleById", rid)
+    }
 
     @POST
     @Path("/rule/{rid}/enable")
     @Transactional
-    open fun ruleEnable(@PathParam("rid") rid: Long) =
-            update("updateRuleEnabled", "id", rid, "enabled", true)
+    open fun ruleEnable(@PathParam("rid") rid: Long): Int {
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
+        return update("updateRuleEnabled", "id", rid, "enabled", true)
+    }
+
 
     @POST
     @Path("/rule/{rid}/disable")
     @Transactional
-    open fun ruleDisable(@PathParam("rid") rid: Long) =
-            update("updateRuleEnabled", "id", rid, "enabled", false)
+    open fun ruleDisable(@PathParam("rid") rid: Long): Int {
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
+        return update("updateRuleEnabled", "id", rid, "enabled", false)
+    }
 
     @GET
     @Path("/rule/{rid}/filters/select")
@@ -231,8 +242,8 @@ constructor(val sess: SqlSession,
             spec = fn.path("spec").asText(null)
             description = fn.path("description").asText(null)
             enabled = fn.path("enabled").asBoolean(true)
-
             insert("insertFilter", filter)
+            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
             return filterGet(id)
         }
     }
@@ -247,14 +258,19 @@ constructor(val sess: SqlSession,
         if (fn.hasNonNull("enabled")) filter.enabled = fn["enabled"].asBoolean()
         if (fn.hasNonNull("spec")) filter.spec = fn["spec"].asText()
         update("updateFilter", filter)
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(filter.ruleId))
         return filterGet(filter.id)
     }
 
     @DELETE
     @Path("/filter/{fid}")
     @Transactional
-    open fun filterDelete(@PathParam("fid") fid: Long) =
-            delete("deleteFilterById", fid)
+    open fun filterDelete(@PathParam("fid") fid: Long): Int {
+        val filter = filterGet(fid)
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(filter.ruleId))
+        return delete("deleteFilterById", fid)
+    }
+
 
     @GET
     @Path("/rule/{rid}/actions/select")
@@ -315,6 +331,7 @@ constructor(val sess: SqlSession,
             enabled = an.path("enabled").asBoolean(true)
             groupId = if (an.path("groupId").isNumber()) an.path("groupId").longValue() else null
             insert("insertAction", action)
+            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
             return actionGet(id)
         }
     }
@@ -332,6 +349,7 @@ constructor(val sess: SqlSession,
         with(action) {
             description = name
             insert("insertAction", action)
+            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(ruleId))
             return actionGet(id)
         }
     }
@@ -349,6 +367,7 @@ constructor(val sess: SqlSession,
             type = "group"
             description = name
             update("updateAction", action)
+            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(ruleId))
             return actionGet(id)
         }
     }
@@ -365,6 +384,7 @@ constructor(val sess: SqlSession,
         if (an.hasNonNull("description")) action.description = an["description"].asText()
         if (an.hasNonNull("spec")) action.spec = an["spec"].asText()
         update("updateAction", action)
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(action.ruleId))
         return actionGet(action.id)
     }
 
@@ -376,16 +396,21 @@ constructor(val sess: SqlSession,
     @Transactional
     open fun actionWeghtUpdate(@PathParam("id") id: Long,
                                @PathParam("weight") weight: Int): Unit {
+        val action = actionGet(id)
         update("updateActionWidth",
                 "id", id,
                 "weight", weight)
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(action.ruleId))
     }
 
     @DELETE
     @Path("/action/{aid}")
     @Transactional
-    open fun actionDelete(@PathParam("aid") aid: Long) =
-            delete("deleteActionById", aid)
+    open fun actionDelete(@PathParam("aid") aid: Long): Int {
+        val action = actionGet(aid)
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(action.ruleId))
+        return delete("deleteActionById", aid)
+    }
 
     @POST
     @Path("/action/{aid}/move/up")
@@ -411,10 +436,10 @@ constructor(val sess: SqlSession,
                     "groupId", action.groupId)
         }
         sordinal ?: return
-
         update("exchangeActionOrdinal",
                 "ordinal1", sordinal,
                 "ordinal2", action.ordinal)
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(action.ruleId))
     }
 
     private fun initCriteriaPaging(cq: MBCriteriaQuery<MBCriteriaQuery<*>>, req: HttpServletRequest) {

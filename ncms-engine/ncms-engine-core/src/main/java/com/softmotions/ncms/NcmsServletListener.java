@@ -2,14 +2,10 @@ package com.softmotions.ncms;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.logging.Logger;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
 import org.slf4j.LoggerFactory;
@@ -17,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.softmotions.web.CharsetFilter;
-import com.softmotions.web.security.SecurityFakeEnvFilter;
 import com.softmotions.weboot.WBServletListener;
 
 /**
@@ -65,7 +60,6 @@ public class NcmsServletListener extends WBServletListener {
         resteasyBootstrap.contextInitialized(event);
 
         initBeforeFilters(env, sctx);
-
         initCacheHeadersFilters(env, sctx);
         initJarResources(env, sctx);
 
