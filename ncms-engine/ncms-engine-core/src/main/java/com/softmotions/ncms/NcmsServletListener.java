@@ -2,7 +2,9 @@ package com.softmotions.ncms;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
@@ -69,7 +71,9 @@ public class NcmsServletListener extends WBServletListener {
         initSecurity(env, sctx);
 
         sctx.addFilter("guiceFilter", GuiceFilter.class)
-            .addMappingForUrlPatterns(null, false, "/*");
+            .addMappingForUrlPatterns(
+                    EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD),
+                    false, "/*");
 
         start();
     }

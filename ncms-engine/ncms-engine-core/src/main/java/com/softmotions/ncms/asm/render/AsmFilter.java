@@ -156,7 +156,7 @@ public class AsmFilter implements Filter {
         //Assumed all assemblies generated as utf8 encoded text data.
         //Content-Type can be overriden by assembly renderer.
         resp.setContentType("text/html;charset=UTF-8");
-        resp.setBufferSize(65536); //todo
+        resp.setBufferSize(65536);
 
         AsmRendererContext ctx;
         HttpServletResponse renderResp = resp;

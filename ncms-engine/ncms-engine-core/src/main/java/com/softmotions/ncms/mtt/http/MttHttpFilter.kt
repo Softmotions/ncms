@@ -91,9 +91,10 @@ constructor(val ebus: NcmsEventBus,
      */
     private fun processRules(req: HttpServletRequest, resp: HttpServletResponse): Boolean {
         var ret = false
-        if (req.getAttribute(MTT_RIDS_KEY) != null) {
+        if (req.method != "GET" || req.getAttribute(MTT_RIDS_KEY) != null) {
             return false
         }
+        req.setAttribute(MTT_RIDS_KEY, "")
         val uri = req.requestURI
         // If admin resource
         // OR non dynamic resource
