@@ -291,7 +291,7 @@ constructor(val ebus: NcmsEventBus,
             for (a in actions) {
                 if (!a.action.enabled || a.action.groupId != null) {
                     // only enabled actions can me runned
-                    // this action will be runned by the special MttGroupActionHandler
+                    // this action will be runned by the special MttGroupAction
                     if (log.isDebugEnabled) {
                         log.debug(
                                 "Rule action skipped ${a.javaClass.name} " +

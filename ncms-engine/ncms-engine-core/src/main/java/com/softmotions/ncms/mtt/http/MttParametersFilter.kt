@@ -1,0 +1,28 @@
+package com.softmotions.ncms.mtt.http
+
+import com.google.inject.Singleton
+import javax.annotation.concurrent.ThreadSafe
+import javax.servlet.http.HttpServletRequest
+
+/**
+ * Request parameters filter.
+ *
+ * @author Adamansky Anton (adamansky@gmail.com)
+ */
+@Singleton
+@ThreadSafe
+open class MttParametersFilter : AbstractMttParametersFilter() {
+
+    override val type: String = "params"
+
+    override fun createMSlot(name: String, required: Boolean): MSlot {
+        return ParamsMSlot(name, required)
+    }
+
+    class ParamsMSlot(name: String, required: Boolean) : MSlot(name, required) {
+
+        override fun getValues(req: HttpServletRequest): Array<String> {
+            return req.getParameterValues(name) ?: emptyArray()
+        }
+    }
+}

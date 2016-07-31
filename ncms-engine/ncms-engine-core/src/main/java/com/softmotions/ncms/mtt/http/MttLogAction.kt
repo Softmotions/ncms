@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse
  */
 @Singleton
 @ThreadSafe
-open class MttLogActionHandler : MttActionHandler {
+open class MttLogAction : MttActionHandler {
 
     companion object {
-        private val log = LoggerFactory.getLogger(MttLogActionHandler::class.java)
+        private val log = LoggerFactory.getLogger(MttLogAction::class.java)
     }
 
     override val type: String = "log"

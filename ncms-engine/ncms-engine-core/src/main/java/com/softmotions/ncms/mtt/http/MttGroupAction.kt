@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-open class MttGroupActionHandler : MttActionHandler {
+open class MttGroupAction : MttActionHandler {
 
     override val type: String = "group"
 

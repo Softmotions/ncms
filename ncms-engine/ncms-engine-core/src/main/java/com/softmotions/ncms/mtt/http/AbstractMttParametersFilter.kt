@@ -1,6 +1,5 @@
 package com.softmotions.ncms.mtt.http
 
-import com.google.inject.Singleton
 import com.softmotions.commons.re.RegexpHelper
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -9,19 +8,12 @@ import javax.annotation.concurrent.ThreadSafe
 import javax.servlet.http.HttpServletRequest
 
 /**
- * Request parameters filter.
- *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-@Singleton
 @ThreadSafe
-open class MttParametersFilterHandler : MttFilterHandler {
+abstract class AbstractMttParametersFilter : MttFilterHandler {
 
-    companion object {
-        val log = LoggerFactory.getLogger(MttParametersFilterHandler::class.java)
-    }
-
-    override val type: String = "params"
+    protected val log = LoggerFactory.getLogger(javaClass)
 
     override fun matched(ctx: MttFilterHandlerContext, req: HttpServletRequest): Boolean {
 
@@ -65,11 +57,9 @@ open class MttParametersFilterHandler : MttFilterHandler {
         return true
     }
 
-    open fun createMSlot(name: String, required: Boolean): MSlot {
-        return MSlot(name, required)
-    }
+    abstract fun createMSlot(name: String, required: Boolean): MSlot
 
-    open class MSlot(val name: String, val required: Boolean) {
+    abstract class MSlot(val name: String, val required: Boolean) {
 
         val patterns = ArrayList<Regex>()
 
@@ -88,9 +78,7 @@ open class MttParametersFilterHandler : MttFilterHandler {
             return false
         }
 
-        fun getValues(req: HttpServletRequest): Array<String> {
-            return req.getParameterValues(name) ?: emptyArray()
-        }
+        abstract fun getValues(req: HttpServletRequest): Array<String>
 
         override fun toString(): String {
             return "MSlot(name='$name', required=$required, patterns=$patterns)"
@@ -108,4 +96,6 @@ open class MttParametersFilterHandler : MttFilterHandler {
             return name.hashCode()
         }
     }
+
+
 }

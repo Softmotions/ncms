@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletRequest
 
 @Singleton
 @ThreadSafe
-open class MttVHostsFilterHandler : MttFilterHandler {
+open class MttVHostsFilter : MttFilterHandler {
 
     companion object {
-        val log = LoggerFactory.getLogger(MttVHostsFilterHandler::class.java)
+        val log = LoggerFactory.getLogger(MttVHostsFilter::class.java)
     }
 
     override val type: String = "vhosts"

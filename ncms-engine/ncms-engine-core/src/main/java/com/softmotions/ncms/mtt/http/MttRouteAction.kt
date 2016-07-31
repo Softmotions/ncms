@@ -14,12 +14,12 @@ import javax.servlet.http.HttpServletResponse
  */
 @Singleton
 @ThreadSafe
-open class MttRouteActionHandler
+open class MttRouteAction
 @Inject
 constructor(val env: NcmsEnvironment) : MttActionHandler {
 
     companion object {
-        private val log = LoggerFactory.getLogger(MttRouteActionHandler::class.java)
+        private val log = LoggerFactory.getLogger(MttRouteAction::class.java)
     }
 
     private val PAGEREF_REGEXP = Regex("page:\\s*([0-9a-f]{32})(\\s*\\|.*)?", RegexOption.IGNORE_CASE)
