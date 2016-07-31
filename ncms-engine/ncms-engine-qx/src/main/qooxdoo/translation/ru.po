@@ -1027,13 +1027,37 @@ msgstr "Подтвердите удаление фильтра: %1"
 msgid "Edit filter: %1"
 msgstr "Редактирование фильтра: %1"
 
-#: ncms/mtt/filters/MttHeaderFilter.js:12
-msgid "HTTP header filter"
+#: ncms/mtt/filters/MttHeadersFilter.js:12
+msgid "Request headers"
 msgstr "Заголовки запроса"
 
-#: ncms/mtt/filters/MttUtmFilter.js:12
-msgid "Utm marks filter"
-msgstr "Utm маркеры"
+#: ncms/mtt/filters/MttHeadersFilter.js:27
+msgid "Headers filtering rules"
+msgstr "Правила фильтрации заголовков запроса"
+
+#: ncms/mtt/filters/MttHeadersFilter.js:32
+msgid ""
+"Filter rules on each line:%1 <b>?</b> at end of param name means this header"
+" is not required"
+msgstr ""
+"Правила фильтрации на каждой строке:%1 <b>?</b> в конце названия заголовка "
+"обозначает его необязательность<br>"
+
+#: ncms/mtt/filters/MttParametersFilter.js:13
+msgid "Request parameters"
+msgstr "Параметры запроса"
+
+#: ncms/mtt/filters/MttParametersFilter.js:55
+msgid "Parameters filtering rules"
+msgstr "Правила фильтрации параметров запроса"
+
+#: ncms/mtt/filters/MttParametersFilter.js:60
+msgid ""
+"Filter rules on each line:%1 <b>?</b> at end of param name means this "
+"parameter is not required"
+msgstr ""
+"Правила фильтрации на каждой строке:%1 <b>?</b> в конце названия параметра "
+"обозначает его необязательность<br>"
 
 #: ncms/mtt/filters/MttVHostFilter.js:12
 msgid "Virtual hosts filter"
@@ -1662,6 +1686,46 @@ msgstr "Заметка"
 #~ msgid "Edit action: %1"
 #~ msgstr "Редактировать действие"
 
+#~ msgid ""
+#~ "Filter rules on each line:\n"
+#~ "\tparam_name=glob_mask\n"
+#~ "\tparam_name?=glob_mask\n"
+#~ "\n"
+#~ "? at end of param name means this parameter is not required"
+#~ msgstr ""
+#~ "Правила фильтрации параметров построчно:\tparam_name=glob_mask\n"
+#~ "\tparam_name?=glob_mask\n"
+#~ "\n"
+#~ "Необязательный параметр отмечается знаком ? в конце имени"
+
+#~ msgid ""
+#~ "Filter rules on each line:%1 <b>?</b> at end of param name means this "
+#~ "parameter is not required<br>"
+#~ msgstr ""
+#~ "Правила фильтрации на каждой строке:%1 <b>?</b> в конце названия параметра "
+#~ "обозначает его необязательность<br>"
+
+#~ msgid ""
+#~ "Filter rules on each "
+#~ "line:<br><pre>param_name=glob_mask<br>tparam_name?=glob_mask<br></pre><b>?</b>"
+#~ " at end of param name means this parameter is not required<br>"
+#~ msgstr ""
+#~ "Правила фильтрации параметров построчно:<br><pre>param_name=glob_mask\n"
+#~ "\tparam_name?=glob_mask\n"
+#~ "\n"
+#~ "Необязательный параметр отмечается знаком ? в конце имени"
+
+#~ msgid ""
+#~ "Fulter rules on each line:\n"
+#~ "\tparam_name=glob_mask\n"
+#~ "\tparam_name?=glob_mask\n"
+#~ "\n"
+#~ "? at end of param name means this parameter is not required"
+#~ msgstr ""
+
+#~ msgid "HTTP header filter"
+#~ msgstr "Заголовки запроса"
+
 #~ msgid "Insert presentation"
 #~ msgstr "Вставить презентацию"
 
@@ -1727,6 +1791,9 @@ msgstr "Заметка"
 
 #~ msgid "Url or code"
 #~ msgstr ""
+
+#~ msgid "Utm marks filter"
+#~ msgstr "Utm маркеры"
 
 #~ msgid "Youtube film"
 #~ msgstr "Youtube ролик"
