@@ -2,6 +2,7 @@ package com.softmotions.ncms.mtt.http
 
 import com.google.inject.Singleton
 import org.slf4j.LoggerFactory
+import javax.annotation.concurrent.ThreadSafe
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
+@ThreadSafe
 open class MttLogActionHandler : MttActionHandler {
 
     companion object {

@@ -12,6 +12,7 @@ public class MttHttpModule extends AbstractModule {
     protected void configure() {
         Multibinder<MttFilterHandler> filterBinder = Multibinder.newSetBinder(binder(), MttFilterHandler.class);
         filterBinder.addBinding().to(MttVHostsFilterHandler.class);
+        filterBinder.addBinding().to(MttParametersFilterHandler.class);
 
         Multibinder<MttActionHandler> actionBinder = Multibinder.newSetBinder(binder(), MttActionHandler.class);
         actionBinder.addBinding().to(MttRouteActionHandler.class);

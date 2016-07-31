@@ -5,6 +5,7 @@ import com.google.inject.Singleton
 import com.softmotions.ncms.NcmsEnvironment
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
+import javax.annotation.concurrent.ThreadSafe
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse
  * Route rule handler
  */
 @Singleton
+@ThreadSafe
 open class MttRouteActionHandler
 @Inject
 constructor(val env: NcmsEnvironment) : MttActionHandler {

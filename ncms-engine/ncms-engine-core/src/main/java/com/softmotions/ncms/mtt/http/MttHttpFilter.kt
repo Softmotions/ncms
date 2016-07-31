@@ -77,7 +77,9 @@ constructor(val ebus: NcmsEventBus,
     }
 
     override fun doFilter(req: ServletRequest?, resp: ServletResponse?, chain: FilterChain?) {
-        if (!processRules(req as HttpServletRequest, resp as HttpServletResponse)) {
+        req as HttpServletRequest
+        resp as HttpServletResponse
+        if (!processRules(req, resp)) {
             chain!!.doFilter(req, resp);
         }
     }
@@ -224,8 +226,17 @@ constructor(val ebus: NcmsEventBus,
         private fun initRule(rule: MttRule) {
             // Filters
             filters.clear()
+
             filters.addAll(rule.filters.filter {
                 filterHandlers[it.type] != null
+            }.sortedBy {
+                when (it.type) {
+                    "vhosts" -> 1
+                    "params" -> 10
+                    "headers" -> 11
+                    "cookies" -> 12
+                    else -> 100
+                }
             }.map {
                 val spec = if (!StringUtils.isBlank(it.spec)) mapper.readTree(it.spec) else mapper.createObjectNode()
                 MttFilterHandlerContextImpl(it, rule, spec as ObjectNode, filterHandlers[it.type]!!)
@@ -254,24 +265,26 @@ constructor(val ebus: NcmsEventBus,
                 log.debug("Run rule=${rule.name} id=${rule.id}")
             }
             // Run filters
-            val filter = filters.find {
+            val passed = filters.all {
                 try {
                     val ret = it.handler.matched(it, req)
                     if (log.isDebugEnabled) {
                         log.debug("Run filter=${it.spec} ret=${ret}")
                     }
-                    return@find ret
+                    return@all ret
                 } catch(e: Throwable) {
                     log.error("Rule filter error ${it.javaClass}", e)
-                    return@find false
-                }
-            } ?: return false.apply {
-                if (log.isDebugEnabled) {
-                    log.debug("Not passed rule=${rule.name} resource=${req.requestURL} qs=${req.queryString}")
+                    return@all false
                 }
             }
+            if (!passed) {
+                if (log.isDebugEnabled) {
+                    log.debug("Rule=${rule.name} NOT matched resource=${req.requestURL} qs=${req.queryString}")
+                }
+                return false
+            }
             if (log.isDebugEnabled) {
-                log.debug("Found filter=${filter.spec} rule=${rule.name} resource=${req.requestURL}")
+                log.debug("Rule=${rule.name} matched resource=${req.requestURL}")
             }
             // All filters matched, now run actions
             var ret = false
