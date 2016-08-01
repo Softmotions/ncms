@@ -9,9 +9,10 @@ qx.Class.define("ncms.mtt.filters.MttFiltersRegistry", {
         TYPE2CLASS: null,
 
         CLASSES: [
-            ncms.mtt.filters.MttHeadersFilter,
+            ncms.mtt.filters.MttVHostFilter,
             ncms.mtt.filters.MttParametersFilter,
-            ncms.mtt.filters.MttVHostFilter
+            ncms.mtt.filters.MttHeadersFilter,
+            ncms.mtt.filters.MttCookiesFilter
         ],
 
         createMttFilterInstance: function (clazz) {

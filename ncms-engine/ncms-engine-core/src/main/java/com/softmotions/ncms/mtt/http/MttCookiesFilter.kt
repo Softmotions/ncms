@@ -15,12 +15,12 @@ class MttCookiesFilter : AbstractMttParametersFilter() {
 
     override val type: String = "cookies"
 
-    override fun createMSlot(name: String, required: Boolean): MSlot {
-        return CookiesMSlot(name, required)
+    override fun createMSlot(name: String, required: Boolean, negate: Boolean): MSlot {
+        return CookiesMSlot(name, required, negate)
     }
 
-    class CookiesMSlot(name: String, required: Boolean) : MSlot(name.toLowerCase(), required) {
-
+    class CookiesMSlot(name: String, required: Boolean, negate: Boolean)
+    : MSlot(name.toLowerCase(), required, negate) {
         override fun getValues(req: HttpServletRequest): Array<String> {
             return req.cookies.filter {
                 it.name == name
@@ -29,5 +29,4 @@ class MttCookiesFilter : AbstractMttParametersFilter() {
             }.toTypedArray()
         }
     }
-
 }

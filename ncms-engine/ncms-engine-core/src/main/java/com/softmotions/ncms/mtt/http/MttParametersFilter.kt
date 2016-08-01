@@ -15,12 +15,12 @@ open class MttParametersFilter : AbstractMttParametersFilter() {
 
     override val type: String = "params"
 
-    override fun createMSlot(name: String, required: Boolean): MSlot {
-        return ParamsMSlot(name, required)
+    override fun createMSlot(name: String, required: Boolean, negate: Boolean): MSlot {
+        return ParamsMSlot(name, required, negate)
     }
 
-    class ParamsMSlot(name: String, required: Boolean) : MSlot(name, required) {
-
+    class ParamsMSlot(name: String, required: Boolean, negate: Boolean)
+    : MSlot(name, required, negate) {
         override fun getValues(req: HttpServletRequest): Array<String> {
             return req.getParameterValues(name) ?: emptyArray()
         }

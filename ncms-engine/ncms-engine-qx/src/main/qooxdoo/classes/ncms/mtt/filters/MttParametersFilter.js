@@ -27,7 +27,7 @@ qx.Class.define("ncms.mtt.filters.MttParametersFilter", {
 
         createWidget: function (spec) {
             var w = new qx.ui.container.Composite(new qx.ui.layout.VBox(4));
-            w.add(new qx.ui.basic.Label(this._getDescriptionLabel()).set({rich: true}));
+            w.add(new qx.ui.basic.Label(this._getDescriptionLabel()).set({rich: true, font: "monospace"}));
             var form = new qx.ui.form.Form();
             var data = new qx.ui.form.TextArea().set({maxLength: 1024, required: true});
             form.add(data, this._getRulesLabel(), null, "data", null, {flex: 1});
@@ -59,8 +59,8 @@ qx.Class.define("ncms.mtt.filters.MttParametersFilter", {
             return this.tr(
                 "Filter rules on each line:%1 <b>?</b> at end of param name means this parameter is not required",
                 "<pre>" +
-                "  param_name=glob_mask<br>" +
-                "  param_name?=glob_mask<br>" +
+                "  param_name   = glob_mask<br>" +
+                "  param_name? != glob_mask<br>" +
                 "</pre>");
         }
     },

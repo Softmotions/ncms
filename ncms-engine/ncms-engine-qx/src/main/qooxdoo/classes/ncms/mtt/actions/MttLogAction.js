@@ -39,11 +39,8 @@ qx.Class.define("ncms.mtt.actions.MttLogAction", {
             if (spec["msg"]) {
                 msg.setValue(spec["msg"]);
             }
-            form.add(msg, this.tr("Log message"), null, "msg");
-
-            var fr = new sm.ui.form.FlexFormRenderer(form);
-            fr.setLastRowFlexible();
-            return fr;
+            form.add(msg, this.tr("Log message"), null, "msg", null, {flex:1});
+            return new sm.ui.form.OneColumnFormRenderer(form);
         },
 
         asSpec: function (w) {

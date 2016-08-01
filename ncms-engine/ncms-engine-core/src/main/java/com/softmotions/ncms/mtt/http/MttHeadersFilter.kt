@@ -15,12 +15,12 @@ open class MttHeadersFilter : AbstractMttParametersFilter() {
 
     override val type: String = "headers"
 
-    override fun createMSlot(name: String, required: Boolean): MSlot {
-        return HeadersMSlot(name, required)
+    override fun createMSlot(name: String, required: Boolean, negate: Boolean): MSlot {
+        return HeadersMSlot(name, required, negate)
     }
 
-    class HeadersMSlot(name: String, required: Boolean) : MSlot(name.toLowerCase(), required) {
-
+    class HeadersMSlot(name: String, required: Boolean, negate: Boolean)
+    : MSlot(name.toLowerCase(), required, negate) {
         override fun getValues(req: HttpServletRequest): Array<String> {
             val henum = req.getHeaders(name) ?: return emptyArray()
             val first = if (henum.hasMoreElements()) henum.nextElement() else return emptyArray()

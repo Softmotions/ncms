@@ -1,7 +1,7 @@
 /**
- * Http header filter
+ * Http cookies filter
  */
-qx.Class.define("ncms.mtt.filters.MttHeadersFilter", {
+qx.Class.define("ncms.mtt.filters.MttCookiesFilter", {
     extend: ncms.mtt.filters.MttParametersFilter,
     implement: [ncms.mtt.filters.IMttFilter],
     include: [qx.locale.MTranslation],
@@ -9,11 +9,11 @@ qx.Class.define("ncms.mtt.filters.MttHeadersFilter", {
     statics: {
 
         getDescription: function () {
-            return qx.locale.Manager.tr("Request headers");
+            return qx.locale.Manager.tr("Request cookies");
         },
 
         getType: function () {
-            return "headers";
+            return "cookies";
         },
 
         specForHuman: function (spec) {
@@ -23,21 +23,21 @@ qx.Class.define("ncms.mtt.filters.MttHeadersFilter", {
 
     members: {
 
-        _getRulesLabel: function() {
-            return this.tr("Headers filtering rules")
+        _getRulesLabel: function () {
+            return this.tr("Cookies filtering rules")
         },
 
-        _getDescriptionLabel: function() {
+        _getDescriptionLabel: function () {
             return this.tr(
-                "Filter rules on each line:%1 <b>?</b> at end of param name means this header is not required",
+                "Filter rules on each line:%1 <b>?</b> at end of param name means this cookie is not required",
                 "<pre>" +
-                "  header_name   = glob_mask<br>" +
-                "  header_name? != glob_mask<br>" +
+                "  cookie_name   = glob_mask<br>" +
+                "  cookie_name? != glob_mask<br>" +
                 "</pre>");
         }
     },
 
     destruct: function () {
-
     }
+
 });

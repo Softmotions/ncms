@@ -28,13 +28,15 @@ abstract class AbstractMttParametersFilter : MttFilterHandler {
                 for (line in lines) {
                     val pairs = line.split("=", limit = 2).map {
                         it.trim()
-                    }
+                    }.toTypedArray()
                     if (pairs.size != 2) continue
+                    val negate = pairs[0].endsWith("!")
+                    pairs[0] = pairs[0].removeSuffix("!").trim()
                     val required = !pairs[0].endsWith("?")
-                    val key = pairs[0].removeSuffix("?")
+                    val key = pairs[0].removeSuffix("?").trim()
                     val value = pairs[1]
                     val mslot = mslots.getOrPut(key) {
-                        createMSlot(key, required)
+                        createMSlot(key, required, negate)
                     }
                     mslot.patterns += Regex(RegexpHelper.convertGlobToRegEx(value))
                 }
@@ -57,9 +59,9 @@ abstract class AbstractMttParametersFilter : MttFilterHandler {
         return true
     }
 
-    abstract fun createMSlot(name: String, required: Boolean): MSlot
+    abstract fun createMSlot(name: String, required: Boolean, negate: Boolean): MSlot
 
-    abstract class MSlot(val name: String, val required: Boolean) {
+    abstract class MSlot(val name: String, val required: Boolean, val negate: Boolean) {
 
         val patterns = ArrayList<Regex>()
 
@@ -70,7 +72,7 @@ abstract class AbstractMttParametersFilter : MttFilterHandler {
             }
             for (pv in pvals) {
                 for (p in patterns) {
-                    if (p.matches(pv)) {
+                    if (if (negate) !p.matches(pv) else p.matches(pv)) {
                         return true
                     }
                 }
@@ -81,7 +83,7 @@ abstract class AbstractMttParametersFilter : MttFilterHandler {
         abstract fun getValues(req: HttpServletRequest): Array<String>
 
         override fun toString(): String {
-            return "MSlot(name='$name', required=$required, patterns=$patterns)"
+            return "MSlot(name='$name', required=$required, negate=$negate, patterns=$patterns)"
         }
 
         override fun equals(other: Any?): Boolean {
@@ -96,6 +98,4 @@ abstract class AbstractMttParametersFilter : MttFilterHandler {
             return name.hashCode()
         }
     }
-
-
 }

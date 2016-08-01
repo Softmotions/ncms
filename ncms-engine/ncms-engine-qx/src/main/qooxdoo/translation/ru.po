@@ -42,6 +42,7 @@ msgstr "Обязательное поле"
 #: ncms/asm/am/SelectAMTable.js:65 ncms/usr/UserEditForm.js:27
 #: ncms/mmgr/MediaFileEditor.js:273 ncms/pgs/PagesTable.js:21
 #: ncms/asm/AsmAttrsTable.js:114 ncms/asm/am/TreeAMNewFolderDlg.js:22
+#: ncms/mtt/actions/MttSetCookieAction.js:47
 #: ncms/asm/am/TreeAMValueWidget.js:480 ncms/asm/AsmTable.js:17
 #: ncms/usr/UserNewDlg.js:37 ncms/mtt/MttRulesTable.js:20
 #: ncms/mmgr/MediaFilesTable.js:9 ncms/asm/AsmAttrEditorDlg.js:63
@@ -140,7 +141,8 @@ msgid "Label"
 msgstr "Подпись"
 
 #: ncms/asm/am/SelectAMTable.js:72 ncms/mmgr/MediaFileEditor.js:156
-#: ncms/asm/AsmAttrsTable.js:132 ncms/asm/am/StringAM.js:62
+#: ncms/asm/AsmAttrsTable.js:132 ncms/mtt/actions/MttSetCookieAction.js:53
+#: ncms/asm/am/StringAM.js:62
 msgid "Value"
 msgstr "Значение"
 
@@ -984,6 +986,38 @@ msgstr "Пожалуйста укажите целевой ресурс"
 #: ncms/mtt/actions/MttRouteAction.js:62
 msgid "Route"
 msgstr "Перенаправить"
+
+#: ncms/mtt/actions/MttSetCookieAction.js:12
+msgid "Set a cookie"
+msgstr "Установить cookie"
+
+#: ncms/mtt/actions/MttSetCookieAction.js:33
+msgid "Lifetime"
+msgstr "Время жизни"
+
+#: ncms/mtt/actions/MttSetCookieAction.js:36
+msgid "Days"
+msgstr "Дней"
+
+#: ncms/mtt/actions/MttSetCookieAction.js:37
+msgid "Minutes"
+msgstr "Минут"
+
+#: ncms/mtt/filters/MttCookiesFilter.js:12
+msgid "Request cookies"
+msgstr "Cookies запроса"
+
+#: ncms/mtt/filters/MttCookiesFilter.js:27
+msgid "Cookies filtering rules"
+msgstr "Правила фильтрации cookies запроса"
+
+#: ncms/mtt/filters/MttCookiesFilter.js:32
+msgid ""
+"Filter rules on each line:%1 <b>?</b> at end of param name means this cookie"
+" is not required"
+msgstr ""
+"Правила фильтрации на каждой строке:%1 <b>?</b> в конце названия cookie "
+"обозначает его необязательность<br>"
 
 #: ncms/mtt/filters/MttFilterDlg.js:22
 msgid "Edit filter"
