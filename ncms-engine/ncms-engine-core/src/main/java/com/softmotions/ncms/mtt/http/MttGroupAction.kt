@@ -1,7 +1,6 @@
 package com.softmotions.ncms.mtt.http
 
 import com.google.inject.Singleton
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
@@ -13,7 +12,7 @@ open class MttGroupAction : MttActionHandler {
     override val type: String = "group"
 
     override fun execute(ctx: MttActionHandlerContext,
-                         req: HttpServletRequest,
+                         rmc: MttRequestModificationContext,
                          resp: HttpServletResponse): Boolean {
         val glist = ctx.findGroupActions();
         var sum = 0.0
@@ -28,7 +27,7 @@ open class MttGroupAction : MttActionHandler {
         for (ac in glist) {
             cp += ac.action.groupWeight
             if (p <= cp) {
-                return ac.execute(req, resp)
+                return ac.execute(rmc, resp)
             }
         }
         return false

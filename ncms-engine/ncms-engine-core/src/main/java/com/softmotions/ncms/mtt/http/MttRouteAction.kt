@@ -3,10 +3,8 @@ package com.softmotions.ncms.mtt.http
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import com.softmotions.ncms.NcmsEnvironment
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import javax.annotation.concurrent.ThreadSafe
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
@@ -27,17 +25,15 @@ constructor(val env: NcmsEnvironment) : MttActionHandler {
     override val type: String = "route"
 
     override fun execute(ctx: MttActionHandlerContext,
-                         req: HttpServletRequest,
+                         rmc: MttRequestModificationContext,
                          resp: HttpServletResponse): Boolean {
-
+        val req = rmc.req
         fun attachQueryParams(url: String): String {
-            if (StringUtils.isBlank(req.queryString)) {
-                return url;
-            }
+            val qs = rmc.paramsAsQueryString() ?: return url
             if ("?" in url) {
-                return url + "&" + req.queryString
+                return url + "&" + qs
             } else {
-                return url + "?" + req.queryString
+                return url + "?" + qs
             }
         }
 
@@ -52,7 +48,7 @@ constructor(val env: NcmsEnvironment) : MttActionHandler {
             if (log.isDebugEnabled) {
                 log.debug("Forwarding to: ${target}")
             }
-            req.getRequestDispatcher(target).forward(req, resp)
+            req.getRequestDispatcher(target).forward(rmc.applyModifications(), resp)
         }
 
         val target = ctx.spec.path("target").asText()

@@ -3,7 +3,6 @@ package com.softmotions.ncms.mtt.http
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.softmotions.ncms.mtt.MttRule
 import com.softmotions.ncms.mtt.MttRuleAction
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
@@ -17,7 +16,8 @@ interface MttActionHandlerContext : MutableMap<String, Any?> {
 
     val action: MttRuleAction
 
-    fun execute(req: HttpServletRequest, resp: HttpServletResponse): Boolean
+    fun execute(rmc: MttRequestModificationContext,
+                resp: HttpServletResponse): Boolean
 
     fun findGroupActions(): List<MttActionHandlerContext>
 }

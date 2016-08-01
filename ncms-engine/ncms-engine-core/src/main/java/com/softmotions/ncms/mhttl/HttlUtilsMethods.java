@@ -85,6 +85,16 @@ public class HttlUtilsMethods {
         return Objects.equals(req.getParameter(param), value);
     }
 
+    public static String requestParameter(String param) {
+        if (param == null) {
+            return null;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        HttpServletRequest req = ctx.getServletRequest();
+        return req.getParameter(param);
+    }
+
+
     public static String requestLanguage() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         return ctx.getMessages().getLocale(ctx.getServletRequest()).getLanguage();

@@ -1003,6 +1003,23 @@ msgstr "Дней"
 msgid "Minutes"
 msgstr "Минут"
 
+#: ncms/mtt/actions/MttSetRequestParametersAction.js:12
+msgid "Set a request parameters"
+msgstr "Параметры запроса"
+
+#: ncms/mtt/actions/MttSetRequestParametersAction.js:29
+msgid "Overwrite"
+msgstr "Перезаписать"
+
+#: ncms/mtt/actions/MttSetRequestParametersAction.js:38
+msgid "param_name1=value1, param_name2=value"
+msgstr ""
+
+#: ncms/mtt/actions/MttSetRequestParametersAction.js:42
+#: ncms/mtt/filters/MttParametersFilter.js:13
+msgid "Request parameters"
+msgstr "Параметры запроса"
+
 #: ncms/mtt/filters/MttCookiesFilter.js:12
 msgid "Request cookies"
 msgstr "Cookies запроса"
@@ -1076,10 +1093,6 @@ msgid ""
 msgstr ""
 "Правила фильтрации на каждой строке:%1 <b>?</b> в конце названия заголовка "
 "обозначает его необязательность<br>"
-
-#: ncms/mtt/filters/MttParametersFilter.js:13
-msgid "Request parameters"
-msgstr "Параметры запроса"
 
 #: ncms/mtt/filters/MttParametersFilter.js:55
 msgid "Parameters filtering rules"
@@ -1780,6 +1793,9 @@ msgstr "Заметка"
 
 #~ msgid "News caption"
 #~ msgstr "Заголовок новости"
+
+#~ msgid "Ovewrite"
+#~ msgstr ""
 
 #~ msgid "Please set the page link"
 #~ msgstr "Пожалуйста, укажите ссылку на страницу"

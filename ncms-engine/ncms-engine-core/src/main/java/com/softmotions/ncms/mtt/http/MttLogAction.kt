@@ -3,7 +3,6 @@ package com.softmotions.ncms.mtt.http
 import com.google.inject.Singleton
 import org.slf4j.LoggerFactory
 import javax.annotation.concurrent.ThreadSafe
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
@@ -19,7 +18,9 @@ open class MttLogAction : MttActionHandler {
 
     override val type: String = "log"
 
-    override fun execute(ctx: MttActionHandlerContext, req: HttpServletRequest, resp: HttpServletResponse): Boolean {
+    override fun execute(ctx: MttActionHandlerContext,
+                         rmc: MttRequestModificationContext,
+                         resp: HttpServletResponse): Boolean {
         val spec = ctx.spec
         val msg = spec.path("msg").asText(null) ?: return false
         val lvl = spec.path("level").asText()

@@ -21,5 +21,6 @@ public class MttHttpModule extends AbstractModule {
         actionBinder.addBinding().to(MttLogAction.class);
         actionBinder.addBinding().to(MttGroupAction.class);
         actionBinder.addBinding().to(MttCookieAction.class);
+        actionBinder.addBinding().to(MttRequestParametersAction.class);
     }
 }

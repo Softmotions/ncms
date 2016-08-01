@@ -77,10 +77,10 @@ constructor(val ebus: NcmsEventBus,
     }
 
     override fun doFilter(req: ServletRequest?, resp: ServletResponse?, chain: FilterChain?) {
-        req as HttpServletRequest
         resp as HttpServletResponse
-        if (!processRules(req, resp)) {
-            chain!!.doFilter(req, resp);
+        val rmc = MttRequestModificationContext(req as HttpServletRequest)
+        if (!processRules(rmc, resp)) {
+            chain!!.doFilter(rmc.applyModifications(), resp);
         }
     }
 
@@ -91,12 +91,12 @@ constructor(val ebus: NcmsEventBus,
     /**
      * Returns `true` if request completely handled by some rule action
      */
-    private fun processRules(req: HttpServletRequest, resp: HttpServletResponse): Boolean {
+    private fun processRules(rmc: MttRequestModificationContext, resp: HttpServletResponse): Boolean {
         var ret = false
+        val req = rmc.req
         if (req.method != "GET" || req.getAttribute(MTT_RIDS_KEY) != null) {
             return false
         }
-        req.setAttribute(MTT_RIDS_KEY, "")
         val uri = req.requestURI
         // If admin resource
         // OR non dynamic resource
@@ -109,6 +109,7 @@ constructor(val ebus: NcmsEventBus,
             return false;
         }
 
+        req.setAttribute(MTT_RIDS_KEY, "")
         val ridlist = ArrayList<Long>(3)
         try {
             // URI=/ URL=http://vk.smsfinance.ru:9191/ QS=test=foo
@@ -116,7 +117,7 @@ constructor(val ebus: NcmsEventBus,
             // URI=/rs/adm/ws/state URL=http://localhost:9191/rs/adm/ws/state QS=nocache=1469768085685
             lock.read {
                 for (rs in id2slots.values) {
-                    if (rs.runRule(req, resp)) {
+                    if (rs.runRule(rmc, resp)) {
                         ret = true
                         break
                     }
@@ -226,7 +227,6 @@ constructor(val ebus: NcmsEventBus,
         private fun initRule(rule: MttRule) {
             // Filters
             filters.clear()
-
             filters.addAll(rule.filters.filter {
                 filterHandlers[it.type] != null
             }.sortedBy {
@@ -257,10 +257,11 @@ constructor(val ebus: NcmsEventBus,
          * @return `True` if the response handled by this rule
          */
         @GuardedBy("lock") //read
-        fun runRule(req: HttpServletRequest, resp: HttpServletResponse): Boolean {
+        fun runRule(rmc: MttRequestModificationContext, resp: HttpServletResponse): Boolean {
             if (!rule.enabled) {
                 return false
             }
+            val req = rmc.req
             if (log.isDebugEnabled) {
                 log.debug("Run rule=${rule.name} id=${rule.id}")
             }
@@ -300,7 +301,7 @@ constructor(val ebus: NcmsEventBus,
                     }
                     continue
                 }
-                ret = a.execute(req, resp)
+                ret = a.execute(rmc, resp)
                 if (ret) {
                     break
                 }
@@ -332,10 +333,11 @@ constructor(val ebus: NcmsEventBus,
             }
         }
 
-        override fun execute(req: HttpServletRequest, resp: HttpServletResponse): Boolean {
+        override fun execute(rmc: MttRequestModificationContext,
+                             resp: HttpServletResponse): Boolean {
             var ret = false;
             try {
-                ret = handler.execute(this, req, resp)
+                ret = handler.execute(this, rmc, resp)
             } catch(e: Throwable) {
                 log.error("Rule action error ${handler.javaClass}", e)
             }

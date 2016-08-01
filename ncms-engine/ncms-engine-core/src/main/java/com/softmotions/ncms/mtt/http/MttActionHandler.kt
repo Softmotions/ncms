@@ -1,6 +1,5 @@
 package com.softmotions.ncms.mtt.http
 
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 interface MttActionHandler {
@@ -10,5 +9,7 @@ interface MttActionHandler {
     /**
      * @return `True` if the response handled by this action
      */
-    fun execute(ctx: MttActionHandlerContext, req: HttpServletRequest, resp: HttpServletResponse): Boolean
+    fun execute(ctx: MttActionHandlerContext,
+                rmc: MttRequestModificationContext,
+                resp: HttpServletResponse): Boolean
 }

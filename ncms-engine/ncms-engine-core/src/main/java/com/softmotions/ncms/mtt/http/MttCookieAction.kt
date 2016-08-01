@@ -4,7 +4,6 @@ import com.google.inject.Singleton
 import org.slf4j.LoggerFactory
 import javax.annotation.concurrent.ThreadSafe
 import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 /**
@@ -24,11 +23,11 @@ class MttCookieAction : MttActionHandler {
     override val type = "cookie"
 
     override fun execute(ctx: MttActionHandlerContext,
-                         req: HttpServletRequest,
+                         rmc: MttRequestModificationContext,
                          resp: HttpServletResponse): Boolean {
         val spec = ctx.spec
         val name = spec.path("name").asText()
-        val prev = req.cookies.find {
+        val prev = rmc.req.cookies.find {
             it.name == name
         }
         if (prev != null) {
