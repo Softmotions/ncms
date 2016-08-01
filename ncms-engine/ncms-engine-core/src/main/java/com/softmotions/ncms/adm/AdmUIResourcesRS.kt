@@ -6,7 +6,9 @@ import com.google.inject.Inject
 import com.softmotions.ncms.NcmsEnvironment
 import com.softmotions.web.security.WSUser
 import com.softmotions.weboot.i18n.I18n
+import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.GET
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
@@ -24,7 +26,12 @@ import javax.ws.rs.core.SecurityContext
 @Produces("application/json;charset=UTF-8")
 open class AdmUIResourcesRS
 @Inject
-constructor(internal val env: NcmsEnvironment, internal val mapper: ObjectMapper, internal val msg: I18n) {
+constructor(
+        private val env: NcmsEnvironment,
+        private val mapper: ObjectMapper,
+        private val msg: I18n) {
+
+    private val log = LoggerFactory.getLogger(javaClass)
 
     /**
      * List of qooxdoo widgets available for user.
@@ -35,7 +42,17 @@ constructor(internal val env: NcmsEnvironment, internal val mapper: ObjectMapper
     @Path("widgets/{section}")
     open fun parts(@Context sctx: SecurityContext,
                    @Context req: HttpServletRequest,
+                   @Context resp: HttpServletResponse,
                    @PathParam("section") section: String): JsonNode {
+
+        // language fix todo review it
+        req.getParameter("qxLocale")?.let {
+            val cloc = msg.getLocale(req).toString()
+            if (it != cloc) {
+                msg.saveRequestLang(it, req, resp)
+            }
+        }
+
         val arr = mapper.createArrayNode()
         val user = sctx.userPrincipal as WSUser
         val xcfg = env.xcfg()

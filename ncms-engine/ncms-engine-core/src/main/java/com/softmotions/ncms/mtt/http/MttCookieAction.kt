@@ -27,7 +27,7 @@ class MttCookieAction : MttActionHandler {
                          resp: HttpServletResponse): Boolean {
         val spec = ctx.spec
         val name = spec.path("name").asText()
-        val prev = rmc.req.cookies.find {
+        val prev = rmc.req.cookies?.find {
             it.name == name
         }
         if (prev != null) {

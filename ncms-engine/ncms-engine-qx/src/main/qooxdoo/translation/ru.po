@@ -20,7 +20,7 @@ msgstr "Справка"
 msgid "Logout"
 msgstr "Выход"
 
-#: ncms/Toolbar.js:85 ncms/Toolbar.js:97
+#: ncms/Toolbar.js:88 ncms/Toolbar.js:100
 msgid "Tools"
 msgstr "Инструменты"
 
