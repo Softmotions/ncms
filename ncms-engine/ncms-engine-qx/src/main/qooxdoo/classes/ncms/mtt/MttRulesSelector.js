@@ -80,22 +80,22 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
 
         setViewSpec: function (vs) {
             this.__table.getTableModel().setViewSpec(vs);
-            this.__table.getSelectionModel().resetSelection();
+            this.resetSelection();
         },
 
         updateViewSpec: function (vs) {
             this.__table.getTableModel().updateViewSpec(vs);
-            this.__table.getSelectionModel().resetSelection();
+            this.resetSelection();
         },
 
         setConstViewSpec: function (vs, noupdate) {
             this.__table.getTableModel().setConstViewSpec(vs, noupdate);
-            this.__table.getSelectionModel().resetSelection();
+            this.resetSelection();
         },
 
         reload: function (vspec) {
             this.__table.getTableModel().reloadData(vspec);
-            this.__table.getSelectionModel().resetSelection();
+            this.resetSelection();
         },
 
         resetSelection: function () {

@@ -16,7 +16,8 @@
             rule.ordinal AS "ordinal",
             rule.cdate   AS "cdate",
             rule.mdate   AS "mdate",
-            rule.flags   AS "flags"
+            rule.flags   AS "flags",
+            rule.enabled AS "enabled"
         FROM mtt_rules rule
         <where>
             <if test="name != null">LOWER(rule.name) LIKE #{name}</if>

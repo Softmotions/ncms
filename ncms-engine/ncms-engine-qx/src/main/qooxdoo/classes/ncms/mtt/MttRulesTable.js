@@ -51,11 +51,17 @@ qx.Class.define("ncms.mtt.MttRulesTable", {
             var rr = new sm.table.renderer.CustomRowRenderer();
             var colorm = qx.theme.manager.Color.getInstance();
             rr.setBgColorInterceptor(qx.lang.Function.bind(function (rowInfo) {
-                return colorm.resolve("background");
+                var rdata = rowInfo.rowData;
+                if (rdata != null && !rdata["enabled"]) {
+                    return colorm.resolve("table-row-gray");
+                } else {
+                    return colorm.resolve("background");
+                }
             }, this));
             var table = new sm.table.Table(tableModel, custom).set({
                 statusBarVisible: true,
                 showCellFocusIndicator: false,
+                focusCellOnPointerMove: false,
                 dataRowRenderer: rr
             });
             if (this.__smodel) {
@@ -78,6 +84,10 @@ qx.Class.define("ncms.mtt.MttRulesTable", {
                 return this.__toolbarInitializerFn(toolbar);
             }
             return toolbar;
+        },
+
+        resetSelection: function() {
+            this._table.resetSelection();
         },
 
         getSelectedRuleInd: function () {

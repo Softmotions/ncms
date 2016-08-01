@@ -32,6 +32,7 @@ qx.Class.define("ncms.mtt.MttNav", {
                 }
                 return bt;
             }
+
             var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
 
@@ -120,9 +121,10 @@ qx.Class.define("ncms.mtt.MttNav", {
             bt.addListenerOnce("execute", this.__onRefresh, this);
             menu.add(bt);
 
-            var rind = this.__selector.getSelectedRuleInd();
-            if (rind !== -1) {
-
+            var rule = this.__selector.getSelectedRule();
+            if (rule != null) {
+                // {"cdate":1469886776824,"mdate":1469886776824,"name":"Тест1",
+                // "flags":0,"id":41,"enabled":true,"ordinal":41}
                 bt = new qx.ui.menu.Button(this.tr("Rename"));
                 bt.addListenerOnce("execute", this.__onRenameRule, this);
                 menu.add(bt);
@@ -135,10 +137,15 @@ qx.Class.define("ncms.mtt.MttNav", {
                 bt.addListenerOnce("execute", this.__onMoveDown, this);
                 menu.add(bt);
 
-                bt = new qx.ui.menu.Button(this.tr("Disable"));
-                bt.addListenerOnce("execute", this.__onToggleDisabled, this);
-                menu.add(bt);
-
+                if (rule.enabled) {
+                    bt = new qx.ui.menu.Button(this.tr("Disable"));
+                    bt.addListenerOnce("execute", this.__onDisable, this);
+                    menu.add(bt);
+                } else {
+                    bt = new qx.ui.menu.Button(this.tr("Enabled"));
+                    bt.addListenerOnce("execute", this.__onEnable, this);
+                    menu.add(bt);
+                }
                 bt = new qx.ui.menu.Button(this.tr("Remove"));
                 bt.addListenerOnce("execute", this.__onRemoveRule, this);
                 menu.add(bt);
@@ -188,8 +195,25 @@ qx.Class.define("ncms.mtt.MttNav", {
             dlg.show();
         },
 
-        __onToggleDisabled: function (ev) {
-            //todo
+        __onDisable: function () {
+            this.__disableEnable(false);
+        },
+
+        __onEnable: function () {
+            this.__disableEnable(true);
+        },
+
+        __disableEnable: function (enabled) {
+            var rule = this.__selector.getSelectedRule();
+            if (rule == null) {
+                return;
+            }
+            var req = new sm.io.Request(
+                ncms.Application.ACT.getRestUrl(
+                    enabled ? "mtt.rule.enable" : "mtt.rule.disable", {id: rule["id"]}), "POST");
+            req.send(function (resp) {
+                this.__selector.reload();
+            }, this);
         },
 
         __onRefresh: function () {
