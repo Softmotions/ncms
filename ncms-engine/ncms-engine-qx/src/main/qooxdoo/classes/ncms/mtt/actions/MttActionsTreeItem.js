@@ -23,13 +23,19 @@ qx.Class.define("ncms.mtt.actions.MttActionsTreeItem", {
         groupId: {
             check: "Number",
             event: "changeGroupId",
-            apply: "__applyGroupId",
             nullable: true
         },
 
         groupWeight: {
             check: "Number",
             event: "changeGroupWeight",
+            nullable: true
+        },
+
+        ptype: {
+            check: "String",
+            event: "changePtype",
+            apply: "__applyPtype",
             nullable: true
         }
     },
@@ -40,21 +46,19 @@ qx.Class.define("ncms.mtt.actions.MttActionsTreeItem", {
 
     members: {
 
+        __applyPtype: function (val) {
+            var w = this.getChildControl("weight", true);
+            if (val === "group") {
+                w.show();
+            } else {
+                w.exclude();
+            }
+        },
+
         __applyActive: function (val) {
             var icon = this.getChildControl("icon", true);
             if (icon) {
                 icon.setOpacity(val ? 1.0 : 0.2);
-            }
-        },
-
-        __applyGroupId: function (val) {
-            var w = this.getChildControl("weight", true);
-            if (w) {
-                if (val > 0) {
-                    w.show();
-                } else {
-                    w.exclude();
-                }
             }
         },
 
@@ -103,7 +107,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTreeItem", {
                         readOnly: true,
                         selectable: false
                     });
-                    control.addListener("dbltap", function(ev) {
+                    control.addListener("dbltap", function (ev) {
                         ev.stopPropagation();
                     });
                     break;

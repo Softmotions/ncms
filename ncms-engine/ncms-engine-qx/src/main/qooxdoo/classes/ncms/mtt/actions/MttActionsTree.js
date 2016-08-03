@@ -166,6 +166,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                     controller.bindProperty("groupId", "groupId", null, item, index);
                     controller.bindProperty("groupWeight", "groupWeight", null, item, index);
                     controller.bindPropertyReverse("groupWeight", "groupWeight", null, item, index);
+                    controller.bindProperty("ptype", "ptype", null, item, index);
                 }
             });
             tree.setLabelPath("label");
@@ -251,7 +252,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             dlg.addListenerOnce("completed", function (ev) {
                 var data = ev.getData();
                 qx.core.Assert.assertObject(data);
-                var item = this.__toTreeNode(data, true);
+                var item = this.__toTreeNode(data, true, parent);
                 if (parent == null) {
                     parent = tree.getModel();
                 }
@@ -369,9 +370,8 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             }
             req.send(function (resp) {
                 var data = resp.getContent();
-                console.log("data=" + JSON.stringify(data));
                 qx.core.Assert.assertObject(data);
-                var item = this.__toTreeNode(data, true);
+                var item = this.__toTreeNode(data, true, parent);
                 if (parent == null) {
                     parent = tree.getModel();
                 }
@@ -513,8 +513,9 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             }, this);
         },
 
-        __toTreeNode: function (it, asModel) {
+        __toTreeNode: function (it, asModel, parentItem) {
             var ret;
+            var ptype = parentItem != null ? parentItem.getType() : null;
             if (!it) {
                 ret = {
                     id: 0,
@@ -525,10 +526,12 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                     extra: "",
                     spec: "{}",
                     enabled: true,
+                    ptype: null,
                     children: []
                 };
             }
             if (!ret) {
+                var me = this;
                 var reg = ncms.mtt.actions.MttActionsRegistry;
                 var groupId = it["groupId"];
                 var type = it["type"];
@@ -539,10 +542,11 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                         groupId: it["groupId"] || null,
                         groupWeight: it["groupWeight"] || 0,
                         type: type,
-                        label: "",
-                        extra: null,
+                        label: me.tr("Composite group"),
+                        extra: "",
                         spec: {},
                         enabled: !!it["enabled"],
+                        ptype: ptype,
                         children: []
                     }
                 } else if (type === "group") {
@@ -555,6 +559,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                         extra: "",
                         spec: spec,
                         enabled: !!it["enabled"],
+                        ptype: ptype,
                         children: []
                     }
                 } else {
@@ -570,7 +575,8 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                         label: ac.specForHuman(JSON.parse(spec)) || "",
                         extra: it["description"] || null,
                         spec: spec,
-                        enabled: !!it["enabled"]
+                        enabled: !!it["enabled"],
+                        ptype: ptype
                     }
                 }
             }
@@ -599,6 +605,15 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                     root.children.push(item);
                 }
             }, this);
+            Object.keys(groups).forEach(function (k) {
+                var type = groups[k].type;
+                var children = groups[k].children;
+                if (Array.isArray(children)) {
+                    children.forEach(function (c) {
+                        c.ptype = type;
+                    });
+                }
+            });
             return qx.data.marshal.Json.createModel(root, true);
         },
 

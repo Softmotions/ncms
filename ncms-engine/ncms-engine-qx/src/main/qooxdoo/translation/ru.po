@@ -160,7 +160,7 @@ msgid "New"
 msgstr "Создать"
 
 #: ncms/pgs/PageEditorEditPage.js:30 ncms/mtt/filters/MttFiltersTable.js:172
-#: ncms/mtt/actions/MttActionsTree.js:232 ncms/asm/AsmAttrsTable.js:204
+#: ncms/mtt/actions/MttActionsTree.js:230 ncms/asm/AsmAttrsTable.js:204
 #: ncms/asm/am/TreeAMValueWidget.js:452
 msgid "Edit"
 msgstr "Редактировать"
@@ -168,7 +168,7 @@ msgstr "Редактировать"
 #: ncms/mtt/filters/MttFiltersTable.js:176 ncms/asm/AsmNav.js:82
 #: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:535
 #: ncms/mtt/actions/MttActionsTree.js:126
-#: ncms/mtt/actions/MttActionsTree.js:236 ncms/mtt/MttNav.js:44
+#: ncms/mtt/actions/MttActionsTree.js:234 ncms/mtt/MttNav.js:44
 #: ncms/mtt/MttNav.js:149 ncms/asm/AsmAttrsTable.js:208
 #: ncms/asm/am/TreeAMValueWidget.js:461
 msgid "Remove"
@@ -220,7 +220,7 @@ msgstr "Контроллер"
 
 #: ncms/pgs/PageEditorEditPage.js:457 ncms/asm/AsmEditor.js:112
 msgid "Published"
-msgstr "Опубликовано"
+msgstr "Опубл."
 
 #: ncms/asm/AsmEditor.js:115
 msgid "None"
@@ -945,28 +945,32 @@ msgid "Select an action"
 msgstr "Выберите действие"
 
 #: ncms/mtt/actions/MttActionsTree.js:101
-#: ncms/mtt/actions/MttActionsTree.js:217
-#: ncms/mtt/actions/MttActionsTree.js:249
+#: ncms/mtt/actions/MttActionsTree.js:215
+#: ncms/mtt/actions/MttActionsTree.js:247
 msgid "New action"
 msgstr "Создать действие"
 
 #: ncms/mtt/actions/MttActionsTree.js:106
-#: ncms/mtt/actions/MttActionsTree.js:222
+#: ncms/mtt/actions/MttActionsTree.js:220
 msgid "New action group"
 msgstr "Создать группу"
 
 #: ncms/mtt/actions/MttActionsTree.js:111
-#: ncms/mtt/actions/MttActionsTree.js:227
+#: ncms/mtt/actions/MttActionsTree.js:225
 msgid "New composite action"
 msgstr "Создать композитное действие"
 
-#: ncms/mtt/actions/MttActionsTree.js:276
+#: ncms/mtt/actions/MttActionsTree.js:274
 msgid "Are you sure to remove action: %1"
 msgstr "Подтвердите удаление действия: %1"
 
-#: ncms/mtt/actions/MttActionsTree.js:301
+#: ncms/mtt/actions/MttActionsTree.js:299
 msgid "Edit %1"
 msgstr "Редактировать %1"
+
+#: ncms/mtt/actions/MttActionsTree.js:546
+msgid "Composite group"
+msgstr "Композитная группа"
 
 #: ncms/mtt/actions/MttLogAction.js:13
 msgid "Write a log message"
