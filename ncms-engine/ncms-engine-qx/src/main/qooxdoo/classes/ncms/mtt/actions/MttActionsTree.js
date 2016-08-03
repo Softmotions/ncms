@@ -103,7 +103,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             menu.add(bt);
 
             // New action group
-            bt = new qx.ui.menu.Button(this.tr("New action group"));
+            bt = new qx.ui.menu.Button(this.tr("New probability group"));
             bt.addListener("execute", this.__onNewGroup, this);
             menu.add(bt);
 
@@ -217,7 +217,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             menu.add(bt);
 
             // New action group
-            bt = new qx.ui.menu.Button(this.tr("New action group"));
+            bt = new qx.ui.menu.Button(this.tr("New probability group"));
             bt.addListener("execute", this.__onNewGroup, this);
             menu.add(bt);
 

@@ -952,8 +952,8 @@ msgstr "Создать действие"
 
 #: ncms/mtt/actions/MttActionsTree.js:106
 #: ncms/mtt/actions/MttActionsTree.js:220
-msgid "New action group"
-msgstr "Создать группу"
+msgid "New probability group"
+msgstr "Создать вероятностную группу"
 
 #: ncms/mtt/actions/MttActionsTree.js:111
 #: ncms/mtt/actions/MttActionsTree.js:225
