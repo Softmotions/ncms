@@ -24,7 +24,7 @@ qx.Class.define("ncms.mtt.actions.MttSetCookieAction", {
 
     members: {
 
-        createWidget: function (spec) {
+        createWidget: function (spec, ruleId, actionId) {
             var form = new qx.ui.form.Form();
             var time = new qx.ui.form.Spinner(0, 1).set({required: true});
             if (spec["time"]) {

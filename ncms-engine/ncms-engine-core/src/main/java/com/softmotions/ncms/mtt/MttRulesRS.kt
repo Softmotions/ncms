@@ -2,7 +2,9 @@ package com.softmotions.ncms.mtt
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
+import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
+import com.softmotions.ncms.asm.events.AsmRemovedEvent
 import com.softmotions.ncms.events.NcmsEventBus
 import com.softmotions.ncms.jaxrs.NcmsMessageException
 import com.softmotions.weboot.i18n.I18n
@@ -317,6 +319,10 @@ constructor(val sess: SqlSession,
     open fun actionGet(@PathParam("aid") aid: Long): MttRuleAction =
             selectOne("selectActionById", aid) ?: throw NotFoundException()
 
+
+    /**
+     * Create new action
+     */
     @PUT
     @Path("/rule/{rid}/action")
     @Transactional
@@ -334,6 +340,27 @@ constructor(val sess: SqlSession,
             ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
             return actionGet(id)
         }
+    }
+
+    /**
+     * Create new composite action group
+     */
+    @PUT
+    @Path("/rule/{rid}/composite")
+    @Transactional
+    open fun compositeCreate(@PathParam("rid") rid: Long,
+                             @QueryParam("groupId")
+                             @DefaultValue("0") groupId: Long): MttRuleAction {
+
+        log.info("compositeCreate rid=${rid} groupId=${groupId}")
+        val rule = ruleGet(rid)
+        val action = MttRuleAction(rule.id, "composite")
+        if (groupId > 0) {
+            action.groupId = groupId
+        }
+        insert("insertAction", action)
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(action.ruleId))
+        return actionGet(action.id)
     }
 
     /**
@@ -454,5 +481,13 @@ constructor(val sess: SqlSession,
                 cq.limit(Math.abs(frow - lrow!!) + 1)
             }
         }
+    }
+
+    /**
+     * Handle page remove
+     */
+    @Subscribe
+    fun pageRemoved(evt: AsmRemovedEvent) {
+        log.info("Handle remove page")
     }
 }

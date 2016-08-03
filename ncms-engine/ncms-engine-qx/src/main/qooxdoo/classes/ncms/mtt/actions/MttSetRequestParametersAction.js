@@ -23,7 +23,7 @@ qx.Class.define("ncms.mtt.actions.MttSetRequestParametersAction", {
 
     members: {
 
-        createWidget: function (spec) {
+        createWidget: function (spec, ruleId, actionId) {
             var form = new qx.ui.form.Form();
 
             var overwrite = new qx.ui.form.CheckBox(this.tr("Overwrite"));

@@ -32,8 +32,10 @@ qx.Interface.define("ncms.mtt.actions.IMttAction", {
         /**
          * Activate action options widget
          * @param spec {Object} Action specification
+         * @param ruleId {Number} Action rule ID
+         * @param actionId {Number?null} Action ID. Null if new action edited.
          */
-        createWidget: function (spec) {
+        createWidget: function (spec, ruleId, actionId) {
         },
 
         /**

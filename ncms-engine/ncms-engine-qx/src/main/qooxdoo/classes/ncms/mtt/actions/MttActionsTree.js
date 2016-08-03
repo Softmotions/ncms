@@ -107,6 +107,11 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             bt.addListener("execute", this.__onNewGroup, this);
             menu.add(bt);
 
+            // New composite action
+            bt = new qx.ui.menu.Button(this.tr("New composite action"));
+            bt.addListener("execute", this.__onNewComposite, this);
+            menu.add(bt);
+
             el.setAppearance("toolbar-table-menubutton");
             el.setShowArrow(true);
             el.setMenu(menu);
@@ -154,9 +159,6 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 createItem: function () {
                     return new ncms.mtt.actions.MttActionsTreeItem();
                 },
-                configureItem: function (item) {
-                    item.setOpenSymbolMode("auto");
-                },
                 bindItem: function (controller, item, index) {
                     controller.bindDefaultProperties(item, index);
                     controller.bindProperty("extra", "extra", null, item, index);
@@ -173,7 +175,11 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 converter: function (value, model, source, target) {
                     if (model.getChildren != null) {
                         var fdSuffix = target.isOpen() ? "-open" : "";
-                        return "ncms/icon/22/places/folder" + fdSuffix + ".png";
+                        if (value === "composite") {
+                            return "ncms/icon/22/mtt/composite" + fdSuffix + ".png";
+                        } else {
+                            return "ncms/icon/22/places/folder" + fdSuffix + ".png";
+                        }
                     } else {
                         return "ncms/icon/22/mtt/" + value + ".png";
                     }
@@ -187,7 +193,8 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             tree.getPane().addListener("cellDbltap", function (ev) {
                 var item = tree.getSelection().getItem(0);
                 qx.core.Assert.assertNotNull(item);
-                if (item.getType() !== "group") {
+                var type = item.getType();
+                if (type != "group" && type != "composite") {
                     this.__onEditAction(ev);
                 }
             }, this);
@@ -213,6 +220,11 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             bt.addListener("execute", this.__onNewGroup, this);
             menu.add(bt);
 
+            // New composite
+            bt = new qx.ui.menu.Button(this.tr("New composite action"));
+            bt.addListener("execute", this.__onNewComposite, this);
+            menu.add(bt);
+
             if (item != null) {
                 bt = new qx.ui.menu.Button(this.tr("Edit"));
                 bt.addListener("execute", this.__onEditAction, this);
@@ -227,7 +239,8 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         __onNewAction: function () {
             var tree = this.__tree;
             var parent = tree.getSelection().getItem(0);
-            if (parent && parent.getType() != "group") {
+            var type = parent && parent.getType();
+            if (parent && type != "group" && type != "composite") {
                 parent = null;
             }
             var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("New action"), {
@@ -275,7 +288,11 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             var tree = this.__tree;
             var item = tree.getSelection().getItem(0);
             qx.core.Assert.assertNotNull(item);
-            if (item.getType() === "group") {
+            var type = item.getType();
+            if (type === "composite") {
+                return;
+            }
+            if (type === "group") {
                 return this.__onEditGroup(ev);
             }
             var dlg = new ncms.mtt.actions.MttActionDlg(this.tr("Edit %1", item.getLabel()), {
@@ -332,6 +349,37 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.show();
+        },
+
+        __onNewComposite: function () {
+            var tree = this.__tree;
+            var ruleId = this.getRuleId();
+            var parent = tree.getSelection().getItem(0);
+            var type = parent && parent.getType();
+            if (parent && type != "group" && type != "composite") {
+                parent = null;
+            }
+            var req = new sm.io.Request(
+                ncms.Application.ACT.getRestUrl("mtt.action.composite.new", {
+                    id: ruleId
+                }), "PUT", "application/json");
+
+            if (parent != null) {
+                req.setParameter("groupId", parent.getId());
+            }
+            req.send(function (resp) {
+                var data = resp.getContent();
+                console.log("data=" + JSON.stringify(data));
+                qx.core.Assert.assertObject(data);
+                var item = this.__toTreeNode(data, true);
+                if (parent == null) {
+                    parent = tree.getModel();
+                }
+                parent.getChildren().push(item);
+                tree.refresh();
+                tree.openNode(parent);
+                tree.focus();
+            }, this);
         },
 
         __onSelected: function (item) {
@@ -485,7 +533,19 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 var groupId = it["groupId"];
                 var type = it["type"];
                 var spec = sm.lang.String.isEmpty(it["spec"]) ? "{}" : it["spec"];
-                if (type === "group") {
+                if (type === "composite") {
+                    ret = {
+                        id: it["id"],
+                        groupId: it["groupId"] || null,
+                        groupWeight: it["groupWeight"] || 0,
+                        type: type,
+                        label: "",
+                        extra: null,
+                        spec: {},
+                        enabled: !!it["enabled"],
+                        children: []
+                    }
+                } else if (type === "group") {
                     ret = {
                         id: it["id"],
                         groupId: it["groupId"] || null,
@@ -522,7 +582,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             var root = this.__toTreeNode();
             data.forEach(function (it) {
                 var type = it["type"];
-                if (type === "group") {
+                if (type === "group" || type === "composite") {
                     var group = this.__toTreeNode(it);
                     groups[group.id] = qx.lang.Object.mergeWith(groups[group.id] || {}, group, false);
                     root.children.push(group);

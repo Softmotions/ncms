@@ -24,7 +24,7 @@ qx.Class.define("ncms.mtt.actions.MttRouteAction", {
 
     members: {
 
-        createWidget: function (spec) {
+        createWidget: function (spec, ruleId, actionId) {
             var form = new qx.ui.form.Form();
 
             var bf = new sm.ui.form.ButtonField(null, "ncms/icon/16/mtt/route.png");

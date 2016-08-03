@@ -335,6 +335,9 @@ constructor(val ebus: NcmsEventBus,
 
         override fun execute(rmc: MttRequestModificationContext,
                              resp: HttpServletResponse): Boolean {
+            if (!action.enabled) {
+                return false
+            }
             var ret = false;
             try {
                 ret = handler.execute(this, rmc, resp)

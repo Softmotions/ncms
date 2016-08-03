@@ -365,6 +365,9 @@ qx.Class.define("ncms.Actions", {
         // {weight}  MTT action width value
         this._action("mtt.action.group.weight.update", "/rs/adm/mtt/rules/weight/{id}/{weight}");
 
+        // PUT New MTT action composite
+        this._action("mtt.action.composite.new", "/rs/adm/mtt/rules/rule/{id}/composite");
+
         // POST Update MTT action
         // {id}  MTT action ID
         // Data: {

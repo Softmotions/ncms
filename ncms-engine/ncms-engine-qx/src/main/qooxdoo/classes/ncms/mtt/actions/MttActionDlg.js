@@ -19,7 +19,7 @@ qx.Class.define("ncms.mtt.actions.MttActionDlg", {
      * @param data     {Object} Action data
      */
     construct: function (caption, data) {
-        this.__data = data;
+        this.__data = data || {};
         this.__ruleId = data["ruleId"];
         qx.core.Assert.assertNotNull(this.__data);
         qx.core.Assert.assertNotNull(this.__ruleId);
@@ -169,7 +169,7 @@ qx.Class.define("ncms.mtt.actions.MttActionDlg", {
                 return function (id) {
                     var editor = ncms.mtt.actions.MttActionsRegistry.createMttActionInstance(id);
                     var spec = me.__data["spec"];
-                    var w = editor.createWidget(spec || {});
+                    var w = editor.createWidget(spec || {}, me.__ruleId, me.__data["id"]);
                     if (w == null) {
                         w = new qx.ui.core.Widget();
                     }

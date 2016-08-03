@@ -128,11 +128,11 @@ msgstr "Добавить новый атрибут"
 msgid "Drop attribute"
 msgstr "Удалить атрибут"
 
-#: ncms/mtt/MttNav.js:135 ncms/asm/AsmAttrsTable.js:82
+#: ncms/mtt/MttNav.js:132 ncms/asm/AsmAttrsTable.js:82
 msgid "Move up"
 msgstr "Переместить наверх"
 
-#: ncms/mtt/MttNav.js:139 ncms/asm/AsmAttrsTable.js:87
+#: ncms/mtt/MttNav.js:136 ncms/asm/AsmAttrsTable.js:87
 msgid "Move down"
 msgstr "Переместить вниз"
 
@@ -160,16 +160,16 @@ msgid "New"
 msgstr "Создать"
 
 #: ncms/pgs/PageEditorEditPage.js:30 ncms/mtt/filters/MttFiltersTable.js:172
-#: ncms/mtt/actions/MttActionsTree.js:217 ncms/asm/AsmAttrsTable.js:204
+#: ncms/mtt/actions/MttActionsTree.js:232 ncms/asm/AsmAttrsTable.js:204
 #: ncms/asm/am/TreeAMValueWidget.js:452
 msgid "Edit"
 msgstr "Редактировать"
 
 #: ncms/mtt/filters/MttFiltersTable.js:176 ncms/asm/AsmNav.js:82
 #: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:535
-#: ncms/mtt/actions/MttActionsTree.js:121
-#: ncms/mtt/actions/MttActionsTree.js:221 ncms/mtt/MttNav.js:44
-#: ncms/mtt/MttNav.js:152 ncms/asm/AsmAttrsTable.js:208
+#: ncms/mtt/actions/MttActionsTree.js:126
+#: ncms/mtt/actions/MttActionsTree.js:236 ncms/mtt/MttNav.js:44
+#: ncms/mtt/MttNav.js:149 ncms/asm/AsmAttrsTable.js:208
 #: ncms/asm/am/TreeAMValueWidget.js:461
 msgid "Remove"
 msgstr "Удалить"
@@ -274,7 +274,7 @@ msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:119 ncms/asm/AsmNav.js:78
 #: ncms/mmgr/MediaItemTreeSelector.js:72 ncms/mmgr/MediaFilesSelector.js:524
-#: ncms/mtt/MttNav.js:131 ncms/asm/am/TreeAMValueWidget.js:457
+#: ncms/mtt/MttNav.js:128 ncms/asm/am/TreeAMValueWidget.js:457
 msgid "Rename"
 msgstr "Переименовать"
 
@@ -480,7 +480,7 @@ msgid "Visrtual hosts"
 msgstr "Виртуальные хосты"
 
 #: ncms/mtt/filters/MttFilterDlg.js:59 ncms/mtt/actions/MttActionDlg.js:59
-#: ncms/mtt/MttNav.js:148 ncms/asm/am/MainPageAM.js:51
+#: ncms/mtt/MttNav.js:145 ncms/asm/am/MainPageAM.js:51
 msgid "Enabled"
 msgstr "Активно"
 
@@ -689,12 +689,12 @@ msgstr "Синхронизовать"
 msgid "Synchronize attribute content with another page"
 msgstr "Синхронизовать поле с другой страницей"
 
-#: ncms/mtt/actions/MttActionsTree.js:138 ncms/mtt/MttNav.js:57
+#: ncms/mtt/actions/MttActionsTree.js:143 ncms/mtt/MttNav.js:57
 #: ncms/asm/am/TreeAMValueWidget.js:197
 msgid "Move item up"
 msgstr "Переместить выше"
 
-#: ncms/mtt/actions/MttActionsTree.js:145 ncms/mtt/MttNav.js:62
+#: ncms/mtt/actions/MttActionsTree.js:150 ncms/mtt/MttNav.js:62
 #: ncms/asm/am/TreeAMValueWidget.js:203
 msgid "Move item down"
 msgstr "Переместить ниже"
@@ -908,11 +908,11 @@ msgstr "Действия"
 msgid "New rule"
 msgstr "Новое правило"
 
-#: ncms/mtt/MttNav.js:144
+#: ncms/mtt/MttNav.js:141
 msgid "Disable"
 msgstr "Отключить"
 
-#: ncms/mtt/MttNav.js:175
+#: ncms/mtt/MttNav.js:172
 msgid "Are you sure to remove rule: \"%1\"?"
 msgstr "Подтвердите удаление правила \"%1\""
 
@@ -945,21 +945,26 @@ msgid "Select an action"
 msgstr "Выберите действие"
 
 #: ncms/mtt/actions/MttActionsTree.js:101
-#: ncms/mtt/actions/MttActionsTree.js:207
-#: ncms/mtt/actions/MttActionsTree.js:233
+#: ncms/mtt/actions/MttActionsTree.js:217
+#: ncms/mtt/actions/MttActionsTree.js:249
 msgid "New action"
 msgstr "Создать действие"
 
 #: ncms/mtt/actions/MttActionsTree.js:106
-#: ncms/mtt/actions/MttActionsTree.js:212
+#: ncms/mtt/actions/MttActionsTree.js:222
 msgid "New action group"
 msgstr "Создать группу"
 
-#: ncms/mtt/actions/MttActionsTree.js:260
+#: ncms/mtt/actions/MttActionsTree.js:111
+#: ncms/mtt/actions/MttActionsTree.js:227
+msgid "New composite action"
+msgstr "Создать композитное действие"
+
+#: ncms/mtt/actions/MttActionsTree.js:276
 msgid "Are you sure to remove action: %1"
 msgstr "Подтвердите удаление действия: %1"
 
-#: ncms/mtt/actions/MttActionsTree.js:281
+#: ncms/mtt/actions/MttActionsTree.js:301
 msgid "Edit %1"
 msgstr "Редактировать %1"
 
@@ -1709,6 +1714,9 @@ msgstr "Заметка"
 #~ msgid "Aaction"
 #~ msgstr ""
 
+#~ msgid "Aggregates other actions"
+#~ msgstr "Композитное действие"
+
 #~ msgid "Bread crumbs"
 #~ msgstr "Вспомогательная навигация (Breadcrumbs)"
 
@@ -1772,6 +1780,9 @@ msgstr "Заметка"
 
 #~ msgid "HTTP header filter"
 #~ msgstr "Заголовки запроса"
+
+#~ msgid "Included actions"
+#~ msgstr "Вложенные действия"
 
 #~ msgid "Insert presentation"
 #~ msgstr "Вставить презентацию"

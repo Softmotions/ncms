@@ -24,7 +24,7 @@ qx.Class.define("ncms.mtt.actions.MttLogAction", {
 
     members: {
 
-        createWidget: function (spec) {
+        createWidget: function (spec, ruleId, actionId) {
             var form = new qx.ui.form.Form();
             var level = new qx.ui.form.SelectBox();
             ["INFO", "WARNING", "ERROR", "DEBUG"].forEach(function (l) {
