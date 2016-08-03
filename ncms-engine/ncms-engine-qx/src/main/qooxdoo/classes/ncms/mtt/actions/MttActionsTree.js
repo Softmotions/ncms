@@ -340,19 +340,14 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         },
 
         __onNewGroup: function (ev) {
-            var tree = this.__tree;
-            var dlg = new ncms.mtt.actions.MttActionGroupDlg(this.getRuleId());
-            dlg.setPosition("bottom-center");
-            dlg.addListenerOnce("completed", function (ev) {
-                this.reload();
-                dlg.close();
-                tree.focus();
-            }, this);
-            dlg.placeToWidget(ev.getTarget(), false);
-            dlg.show();
+            return this.__onNewTypedGroup("mtt.action.group.new");
         },
 
         __onNewComposite: function () {
+            return this.__onNewTypedGroup("mtt.action.composite.new");
+        },
+
+        __onNewTypedGroup: function (action) {
             var tree = this.__tree;
             var ruleId = this.getRuleId();
             var parent = tree.getSelection().getItem(0);
@@ -361,10 +356,9 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 parent = null;
             }
             var req = new sm.io.Request(
-                ncms.Application.ACT.getRestUrl("mtt.action.composite.new", {
+                ncms.Application.ACT.getRestUrl(action, {
                     id: ruleId
                 }), "PUT", "application/json");
-
             if (parent != null) {
                 req.setParameter("groupId", parent.getId());
             }
@@ -536,26 +530,15 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
                 var groupId = it["groupId"];
                 var type = it["type"];
                 var spec = sm.lang.String.isEmpty(it["spec"]) ? "{}" : it["spec"];
-                if (type === "composite") {
+                if (type === "group" || type === "composite") {
                     ret = {
                         id: it["id"],
                         groupId: it["groupId"] || null,
                         groupWeight: it["groupWeight"] || 0,
                         type: type,
-                        label: me.tr("Composite group"),
-                        extra: "",
-                        spec: {},
-                        enabled: !!it["enabled"],
-                        ptype: ptype,
-                        children: []
-                    }
-                } else if (type === "group") {
-                    ret = {
-                        id: it["id"],
-                        groupId: it["groupId"] || null,
-                        groupWeight: 0,
-                        type: type,
-                        label: it["description"] || "",
+                        label: (type === "composite")
+                            ? me.tr("Composite group")
+                            : me.tr("Action probability group"),
                         extra: "",
                         spec: spec,
                         enabled: !!it["enabled"],

@@ -351,52 +351,30 @@ constructor(val sess: SqlSession,
     open fun compositeCreate(@PathParam("rid") rid: Long,
                              @QueryParam("groupId")
                              @DefaultValue("0") groupId: Long): MttRuleAction {
-
-        log.info("compositeCreate rid=${rid} groupId=${groupId}")
-        val rule = ruleGet(rid)
-        val action = MttRuleAction(rule.id, "composite")
-        if (groupId > 0) {
-            action.groupId = groupId
-        }
-        insert("insertAction", action)
-        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(action.ruleId))
-        return actionGet(action.id)
+        return typedGroupCreate("composite", rid, groupId)
     }
 
     /**
      * Create new action group
      */
     @PUT
-    @Path("/rule/{rid}/group/{name}")
+    @Path("/rule/{rid}/group")
     @Transactional
     open fun actionGroupCreate(@PathParam("rid") rid: Long,
-                               @PathParam("name") name: String): MttRuleAction {
-        val rule = ruleGet(rid)
-        val action = MttRuleAction(rule.id, "group")
-        with(action) {
-            description = name
-            insert("insertAction", action)
-            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(ruleId))
-            return actionGet(id)
-        }
+                               @QueryParam("groupId")
+                               @DefaultValue("0") groupId: Long): MttRuleAction {
+        return typedGroupCreate("group", rid, groupId)
     }
 
-    /**
-     * Update action group
-     */
-    @POST
-    @Path("/group/{id}/{name}")
-    @Transactional
-    open fun actionGroupUpdate(@PathParam("id") id: Long,
-                               @PathParam("name") name: String): MttRuleAction {
-        val action = actionGet(id)
-        with(action) {
-            type = "group"
-            description = name
-            update("updateAction", action)
-            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(ruleId))
-            return actionGet(id)
+    fun typedGroupCreate(type: String, rid: Long, groupId: Long): MttRuleAction {
+        val rule = ruleGet(rid)
+        val action = MttRuleAction(rule.id, type)
+        if (groupId > 0) {
+            action.groupId = groupId
         }
+        insert("insertAction", action)
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(action.ruleId))
+        return actionGet(action.id)
     }
 
     /**

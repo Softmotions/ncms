@@ -968,9 +968,13 @@ msgstr "Подтвердите удаление действия: %1"
 msgid "Edit %1"
 msgstr "Редактировать %1"
 
-#: ncms/mtt/actions/MttActionsTree.js:546
+#: ncms/mtt/actions/MttActionsTree.js:540
 msgid "Composite group"
 msgstr "Композитная группа"
+
+#: ncms/mtt/actions/MttActionsTree.js:541
+msgid "Action probability group"
+msgstr "Вероятностная группа"
 
 #: ncms/mtt/actions/MttLogAction.js:13
 msgid "Write a log message"

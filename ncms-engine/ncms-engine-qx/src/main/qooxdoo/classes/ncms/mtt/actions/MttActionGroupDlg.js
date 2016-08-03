@@ -39,8 +39,7 @@ qx.Class.define("ncms.mtt.actions.MttActionGroupDlg", {
                     //rs/adm/mtt/rules/rule/{id}/group/{name}
                     ncms.Application.ACT.getRestUrl("mtt.action.group.new",
                         {
-                            id: this.__ruleId,
-                            name: items["name"].getValue()
+                            id: this.__ruleId
                         }), "PUT", "application/json");
             } else {
                 req = new sm.io.Request(

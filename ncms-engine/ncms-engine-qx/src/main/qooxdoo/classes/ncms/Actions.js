@@ -352,13 +352,8 @@ qx.Class.define("ncms.Actions", {
 
         // PUT New MTT action group
         // {id}     MTT rule ID
-        // {name}   Action grop name
-        this._action("mtt.action.group.new", "/rs/adm/mtt/rules/rule/{id}/group/{name}");
+        this._action("mtt.action.group.new", "/rs/adm/mtt/rules/rule/{id}/group");
 
-        // POST Update MTT action group
-        // {id}     MTT rule ID
-        // {name}   Action grop name
-        this._action("mtt.action.group.update", "/rs/adm/mtt/rules/group/{id}/{name}");
 
         // POST Update MTT action group weight
         // {id}     MTT action ID
@@ -366,6 +361,7 @@ qx.Class.define("ncms.Actions", {
         this._action("mtt.action.group.weight.update", "/rs/adm/mtt/rules/weight/{id}/{weight}");
 
         // PUT New MTT action composite
+        // {id}     MTT rule ID
         this._action("mtt.action.composite.new", "/rs/adm/mtt/rules/rule/{id}/composite");
 
         // POST Update MTT action

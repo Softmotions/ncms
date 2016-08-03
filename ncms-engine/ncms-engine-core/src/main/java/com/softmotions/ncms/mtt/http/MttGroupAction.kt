@@ -2,12 +2,15 @@ package com.softmotions.ncms.mtt.http
 
 import com.google.inject.Singleton
 import org.slf4j.LoggerFactory
+import javax.annotation.concurrent.ThreadSafe
 import javax.servlet.http.HttpServletResponse
 
 /**
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
+@ThreadSafe
 open class MttGroupAction : MttActionHandler {
 
     private val log = LoggerFactory.getLogger(javaClass)
