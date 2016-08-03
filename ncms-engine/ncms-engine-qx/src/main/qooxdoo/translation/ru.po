@@ -958,7 +958,7 @@ msgstr "Создать вероятностную группу"
 #: ncms/mtt/actions/MttActionsTree.js:111
 #: ncms/mtt/actions/MttActionsTree.js:225
 msgid "New composite action"
-msgstr "Создать композитное действие"
+msgstr "Создать композитную группу"
 
 #: ncms/mtt/actions/MttActionsTree.js:274
 msgid "Are you sure to remove action: %1"
