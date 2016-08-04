@@ -36,9 +36,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <classesDirectory>${project.basedir}/_build</classesDirectory>
+                    <classesDirectory>${project.build.directory}/_build</classesDirectory>
                     <includes>
-                        <include>usermanual_ru/**</include>
+                        <include>ncmsmanual_ru/**</include>
                     </includes>
                 </configuration>
             </plugin>

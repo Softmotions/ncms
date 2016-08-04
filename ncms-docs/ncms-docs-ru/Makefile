@@ -8,7 +8,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
-BUILDDIR      = _build
+BUILDDIR      = target/_build
 
 # User-friendly check for sphinx-build
 ifeq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 1)
@@ -62,7 +62,7 @@ init:
     $(SPHINXBUILD) --version | grep -E '1\.(3|4)\.' || (echo "Unsupported sphinx version. You need execute 'pip3 install sphinx'" && exit 1)
 
 html: init
-    $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/usermanual_ru
+    $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/ncmsmanual_ru
     @echo
     @echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
