@@ -64,7 +64,6 @@
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-web-realms</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
