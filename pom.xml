@@ -7,6 +7,7 @@
     <modules>
         <module>ncms-engine</module>
         <module>ncms-client-agent</module>
+        <module>ncms-docs</module>
     </modules>
 
     <parent>
