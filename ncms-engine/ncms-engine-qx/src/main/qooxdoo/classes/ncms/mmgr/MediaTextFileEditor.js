@@ -33,7 +33,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(5));
         this.__broadcaster = sm.event.Broadcaster.create({"enabled": false});
-        this.__area = new qx.ui.form.TextArea();
+        this.__area = new qx.ui.form.TextArea().set({font: "monospace", wrap: false});
         this._add(this.__area, {flex: 1});
         this.__area.addListener("input", function () {
             this.__broadcaster.setEnabled(true);
