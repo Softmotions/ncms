@@ -269,6 +269,10 @@
             <groupId>com.samaxes.filter</groupId>
             <artifactId>cachefilter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

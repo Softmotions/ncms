@@ -23,9 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.PageService;
+import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSUser;
 
 /**
@@ -44,10 +46,15 @@ public class WorkspaceRS {
 
     private Map<String, String> helpTopics = new HashMap<>();
 
+    private final Provider<NcmsSecurityContext> securityContextProvider;
+
     @Inject
-    public WorkspaceRS(NcmsEnvironment env, PageService pageService) {
+    public WorkspaceRS(NcmsEnvironment env,
+                       PageService pageService,
+                       Provider<NcmsSecurityContext> securityContextProvider) {
         this.env = env;
         this.pageService = pageService;
+        this.securityContextProvider = securityContextProvider;
     }
 
     @Start
@@ -72,12 +79,13 @@ public class WorkspaceRS {
     @Path("state")
     public WSUserState state(@Context HttpServletRequest req,
                              @Context HttpServletResponse resp) throws Exception {
-        WSUser user = (WSUser) req.getUserPrincipal();
+        NcmsSecurityContext sctx = securityContextProvider.get();
+        WSUser user = sctx.getWSUser(req.getUserPrincipal());
         if (user == null) {
             if (!req.authenticate(resp)) {
                 throw new ForbiddenException("");
             } else {
-                user = (WSUser) req.getUserPrincipal();
+                user = (WSUser) sctx.getWSUser(req.getUserPrincipal());
             }
             if (user == null) {
                 throw new ForbiddenException("");

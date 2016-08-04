@@ -18,7 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.weboot.i18n.I18n;
 
@@ -40,12 +42,14 @@ public class AdmUIResourcesRS {
 
     final I18n msg;
 
+    final Provider<NcmsSecurityContext> securityContextProvider;
 
     @Inject
-    public AdmUIResourcesRS(NcmsEnvironment env, ObjectMapper mapper, I18n msg) {
+    public AdmUIResourcesRS(NcmsEnvironment env, ObjectMapper mapper, I18n msg, Provider<NcmsSecurityContext> securityContextProvider) {
         this.env = env;
         this.mapper = mapper;
         this.msg = msg;
+        this.securityContextProvider = securityContextProvider;
     }
 
     /**
@@ -55,11 +59,11 @@ public class AdmUIResourcesRS {
      */
     @GET
     @Path("widgets/{section}")
-    public JsonNode parts(@Context SecurityContext sctx,
-                          @Context HttpServletRequest req,
+    public JsonNode parts(@Context HttpServletRequest req,
                           @PathParam("section") String section) {
         ArrayNode arr = mapper.createArrayNode();
-        WSUser user = (WSUser) sctx.getUserPrincipal();
+        NcmsSecurityContext sctx = securityContextProvider.get();
+        WSUser user = sctx.getWSUser(req.getUserPrincipal());
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         String cpath = "ui." + section + ".widget";
         for (HierarchicalConfiguration hc : xcfg.configurationsAt(cpath)) {

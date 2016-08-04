@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context useNaming="true">
 
+<!--
     <Resource name="WSUserDatabase"
               auth="Container"
               type="com.softmotions.web.security.WSUserDatabase"
               factory="com.softmotions.web.security.XMLWSUserDatabaseJNDIFactory"
               config="conf/ncms-test-users.xml"
               scope="Shareable"/>
+-->
 
+<!--
     <Realm className="com.softmotions.web.security.tomcat.WSUserDatabaseRealm"
            localDatabase="true"
            resourceName="WSUserDatabase"/>
+-->
 
 </Context>

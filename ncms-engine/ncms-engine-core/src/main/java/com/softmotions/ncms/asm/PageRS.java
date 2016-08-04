@@ -642,7 +642,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                "hname", name,
                "description", name,
                "type", type,
-               "muser", pageSecurity.getCurrentWSUserSafe(sctx).getName());
+               "muser", pageSecurity.getCurrentWSUserSafe(req).getName());
 
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }

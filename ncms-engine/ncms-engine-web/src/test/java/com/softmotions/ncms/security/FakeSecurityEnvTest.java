@@ -62,7 +62,7 @@ public class FakeSecurityEnvTest extends NcmsWebTest {
             out.println("isUserInRole.admin=" + req.isUserInRole("admin"));
             out.println("isUserInRole.user=" + req.isUserInRole("user"));
             out.println("isUserInRole.foo=" + req.isUserInRole("foo"));
-            WSUser user = (WSUser) req.getUserPrincipal();
+            WSUser user = (WSUser) req.getUserPrincipal(); //FIXME
             List<String> roleNames = new ArrayList<>();
             Iterator<WSRole> roles = user.getRoles();
             while (roles.hasNext()) {

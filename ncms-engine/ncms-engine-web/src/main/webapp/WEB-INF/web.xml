@@ -6,6 +6,11 @@
          version="3.0"
          metadata-complete="true">
 
+    <context-param>
+            <param-name>shiroEnvironmentClass</param-name>
+        <param-value>com.softmotions.ncms.shiro.NcmsShiroWebEnvironment</param-value>
+    </context-param>
+
     <listener>
         <listener-class>com.softmotions.ncms.NcmsServletListener</listener-class>
     </listener>

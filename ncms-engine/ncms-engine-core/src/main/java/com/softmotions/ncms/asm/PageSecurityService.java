@@ -21,7 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -51,6 +53,7 @@ public class PageSecurityService extends MBDAOSupport {
     private final I18n messages;
     private final LRUMap aclCache;
     private final MBSqlSessionManager sessionManager;
+    private final Provider<NcmsSecurityContext> securityContextProvider;
 
 
     @Inject
@@ -58,29 +61,19 @@ public class PageSecurityService extends MBDAOSupport {
                                WSUserDatabase userdb,
                                I18n messages,
                                NcmsEnvironment env,
-                               MBSqlSessionManager sessionManager) {
+                               MBSqlSessionManager sessionManager,
+                               Provider<NcmsSecurityContext> securityContextProvider) {
         super(PageSecurityService.class, sess);
         this.userdb = userdb;
         this.messages = messages;
         this.aclCache = new LRUMap(env.xcfg().getInt("security.acl-lru-cache-size", 1024));
         this.sessionManager = sessionManager;
+        this.securityContextProvider = securityContextProvider;
     }
 
     private WSUser toWSUser(HttpServletRequest req) {
-        Principal p = req.getUserPrincipal();
-        if (p instanceof WSUser) {
-            return (WSUser) p;
-        }
-        return null;
-    }
-
-    public WSUser getCurrentWSUserSafe(SecurityContext sctx) {
-        Principal p = sctx.getUserPrincipal();
-        if (p instanceof WSUser) {
-            return (WSUser) p;
-        } else {
-            throw new ForbiddenException(messages.get("ncms.access.notAuthenticated"));
-        }
+        NcmsSecurityContext sctx = securityContextProvider.get();
+        return sctx.getWSUser(req.getUserPrincipal());
     }
 
     public WSUser getCurrentWSUserSafe(HttpServletRequest req) {

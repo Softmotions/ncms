@@ -1,5 +1,6 @@
 package com.softmotions.ncms.security;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,7 +22,9 @@ import com.softmotions.commons.JVMResources;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.web.AccessControlHDRFilter;
 import com.softmotions.web.security.WSRole;
+import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.web.security.XMLWSUserDatabase;
 import com.softmotions.weboot.WBServletInitializerModule;
 import com.softmotions.weboot.WBServletModule;
 
@@ -38,6 +41,7 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     protected void configure() {
         bind(WSUserDatabase.class).toProvider(WSUserDatabaseProvider.class).asEagerSingleton();
         bind(NcmsSecurityRS.class).in(Singleton.class);
+        bind(NcmsSecurityContext.class).to(NcmsSecurityContextImpl.class).in(Singleton.class);
     }
 
     @Override
@@ -85,7 +89,11 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
 
             if (!StringUtils.isBlank(dbJVMName)) {
                 log.info("Locating users database with JVM name: {}", dbJVMName);
-                usersDb = JVMResources.getOrFail(dbJVMName);
+                // TODO: rewrite
+                usersDb = new XMLWSUserDatabase(dbJVMName,
+                                                          env.xcfg().getString("security.xml-user-database"),
+                                                          true);
+                JVMResources.set(dbJVMName, usersDb);
             }
             if (usersDb == null && !StringUtils.isBlank(jndiName)) {
                 log.info("Locating users database with JNDI name: {}", jndiName);
@@ -115,6 +123,21 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
                 }
             } catch (NamingException e) {
             }
+        }
+    }
+
+    public static class NcmsSecurityContextImpl implements NcmsSecurityContext {
+
+        final WSUserDatabase database;
+
+        @Inject
+        public NcmsSecurityContextImpl(WSUserDatabase database) {
+            this.database = database;
+        }
+
+        @Override
+        public WSUser getWSUser(Principal p) {
+            return database.findUser(p.getName());
         }
     }
 }

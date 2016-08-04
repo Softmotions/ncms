@@ -10,6 +10,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.web.env.EnvironmentLoaderListener;
+import org.apache.shiro.web.servlet.ShiroFilter;
 import org.jboss.resteasy.logging.Logger;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,7 @@ public class NcmsServletListener extends WBServletListener {
             " Max heap: {}\n";
 
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
+    private EnvironmentLoaderListener shiroEnvironmentLoaderListener;
 
     public NcmsServletListener() {
         log = LoggerFactory.getLogger(getClass());
@@ -74,10 +77,20 @@ public class NcmsServletListener extends WBServletListener {
 
         initSecurity(env, sctx);
 
+        FilterRegistration.Dynamic shiroFilter = sctx.addFilter("shiroFilter", ShiroFilter.class);
+        shiroFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST,
+                                                        DispatcherType.FORWARD,
+                                                        DispatcherType.INCLUDE,
+                                                        DispatcherType.ERROR),
+                                            false, "/*");
         sctx.addFilter("guiceFilter", GuiceFilter.class)
             .addMappingForUrlPatterns(null, false, "/*");
 
         start();
+
+        log.info("Intialize SHIRO environment");
+        shiroEnvironmentLoaderListener = new EnvironmentLoaderListener();
+        shiroEnvironmentLoaderListener.contextInitialized(event);
     }
 
 
@@ -93,6 +106,9 @@ public class NcmsServletListener extends WBServletListener {
         if (resteasyBootstrap != null) {
             resteasyBootstrap.contextDestroyed(servletContextEvent);
             resteasyBootstrap = null;
+        }
+        if (shiroEnvironmentLoaderListener != null) {
+            shiroEnvironmentLoaderListener.contextDestroyed(servletContextEvent);
         }
         super.contextDestroyed(servletContextEvent);
     }
