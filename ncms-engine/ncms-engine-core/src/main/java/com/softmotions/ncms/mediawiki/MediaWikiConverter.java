@@ -22,12 +22,13 @@ import com.google.inject.Singleton;
  * A converter which renders the internal tree node representation as HTML text
  */
 
+@SuppressWarnings("OverlyNestedMethod")
 @Singleton
 public class MediaWikiConverter implements ITextConverter {
-    private boolean fNoLinks;
+    private boolean renderLinks;
 
-    public MediaWikiConverter(boolean noLinks) {
-        this.fNoLinks = noLinks;
+    public MediaWikiConverter(boolean renderLinks) {
+        this.renderLinks = renderLinks;
     }
 
     public MediaWikiConverter() {
@@ -298,7 +299,7 @@ public class MediaWikiConverter implements ITextConverter {
     }
 
     @Override
-    public boolean noLinks() {
-        return fNoLinks;
+    public boolean renderLinks() {
+        return renderLinks;
     }
 }

@@ -197,7 +197,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
             }
         }
 
-        String toHtml() {
+        String toHtml() throws IOException {
             return "";
         }
     }
@@ -232,7 +232,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         }
 
         @Override
-        String toHtml() {
+        String toHtml() throws IOException {
             StringBuilder sb = new StringBuilder();
             final String offset = repeat(' ', lvl - 1);
             if (lvl == 0) { //Root
@@ -292,7 +292,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
             }
         }
 
-        String wikiToHtml() {
+        String wikiToHtml() throws IOException {
             String ri = model.render(converter, markup.toString().trim()).trim();
             if (ri.startsWith("<p>")) {
                 ri = ri.substring("<p>".length());
@@ -304,7 +304,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         }
 
         @Override
-        String toHtml() {
+        String toHtml() throws IOException {
             return "<li class='file'>" + wikiToHtml() + "</li>";
         }
 

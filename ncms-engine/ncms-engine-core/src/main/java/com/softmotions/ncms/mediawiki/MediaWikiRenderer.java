@@ -1,5 +1,6 @@
 package com.softmotions.ncms.mediawiki;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
@@ -44,7 +45,7 @@ public class MediaWikiRenderer {
                              I18n messages) {
         this.wikiCfg = wikiCfg;
         this.converter = converter;
-        this.plaintextConverter = new PlainTextConverter(this.converter.noLinks());
+        this.plaintextConverter = new PlainTextConverter(this.converter.renderLinks());
         this.ebus = ebus;
         this.messages = messages;
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
@@ -52,14 +53,14 @@ public class MediaWikiRenderer {
         this.linkBaseUrl = env.getAppPrefix() + xcfg.getString("mediawiki.link-base-url", "/rs/mw/link/" + "${title}");
     }
 
-    public String render(String markup, Locale locale) {
+    public String render(String markup, Locale locale) throws IOException {
         WikiModel wiki = new WikiModel(wikiCfg, imageBaseUrl, linkBaseUrl, messages, locale);
         String html = wiki.render(this.converter, markup);
         ebus.fire(new MediaWikiHTMLRenderEvent(markup, html));
         return html;
     }
 
-    public String toText(String markup) {
+    public String toText(String markup) throws IOException {
         WikiModel wiki = new WikiModel(wikiCfg, imageBaseUrl, linkBaseUrl, messages, null);
         return wiki.render(plaintextConverter, markup);
     }

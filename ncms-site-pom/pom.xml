@@ -34,15 +34,19 @@
             </snapshots>
         </repository>
         <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>jboss</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
             <id>jaxion_repository</id>
             <url>http://jaxion.org/mvn/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
-        <repository>
-            <id>jfrog</id>
-            <url>http://oss.jfrog.org/libs-snapshot/</url>
         </repository>
     </repositories>
 
