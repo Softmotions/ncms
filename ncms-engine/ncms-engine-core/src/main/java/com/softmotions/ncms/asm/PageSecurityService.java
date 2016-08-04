@@ -1,6 +1,5 @@
 package com.softmotions.ncms.asm;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,19 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.shiro.authz.UnauthenticatedException;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -51,6 +50,7 @@ public class PageSecurityService extends MBDAOSupport {
     private final I18n messages;
     private final LRUMap aclCache;
     private final MBSqlSessionManager sessionManager;
+    private final NcmsSecurityContext sctx;
 
 
     @Inject
@@ -58,35 +58,24 @@ public class PageSecurityService extends MBDAOSupport {
                                WSUserDatabase userdb,
                                I18n messages,
                                NcmsEnvironment env,
-                               MBSqlSessionManager sessionManager) {
+                               MBSqlSessionManager sessionManager,
+                               NcmsSecurityContext sctx) {
         super(PageSecurityService.class, sess);
         this.userdb = userdb;
         this.messages = messages;
         this.aclCache = new LRUMap(env.xcfg().getInt("security.acl-lru-cache-size", 1024));
         this.sessionManager = sessionManager;
+        this.sctx = sctx;
     }
 
     private WSUser toWSUser(HttpServletRequest req) {
-        Principal p = req.getUserPrincipal();
-        if (p instanceof WSUser) {
-            return (WSUser) p;
-        }
-        return null;
-    }
-
-    public WSUser getCurrentWSUserSafe(SecurityContext sctx) {
-        Principal p = sctx.getUserPrincipal();
-        if (p instanceof WSUser) {
-            return (WSUser) p;
-        } else {
-            throw new ForbiddenException(messages.get("ncms.access.notAuthenticated"));
-        }
+        return sctx.getWSUser(req);
     }
 
     public WSUser getCurrentWSUserSafe(HttpServletRequest req) {
         WSUser u = toWSUser(req);
         if (u == null) {
-            throw new ForbiddenException(messages.get("ncms.access.notAuthenticated"));
+            throw new UnauthenticatedException(messages.get("ncms.access.notAuthenticated"));
         }
         return u;
     }

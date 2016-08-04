@@ -41,6 +41,7 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -361,7 +362,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     private void updatePublishStatus(HttpServletRequest req, Long id, boolean published) {
         Asm page = adao.asmSelectById(id);
         if (page == null || !pageSecurity.canEdit2(page, req)) {
-            throw new ForbiddenException("Not authenticated");
+            throw new UnauthorizedException();
         }
         if (published && page.getEffectiveCore() == null) {
             throw new NcmsMessageException(messages.get("ncms.page.template.publish.error", req), true);
@@ -642,7 +643,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                "hname", name,
                "description", name,
                "type", type,
-               "muser", pageSecurity.getCurrentWSUserSafe(sctx).getName());
+               "muser", pageSecurity.getCurrentWSUserSafe(req).getName());
 
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }

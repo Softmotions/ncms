@@ -4,6 +4,7 @@ import com.google.inject.Inject
 import com.softmotions.commons.lifecycle.Start
 import com.softmotions.ncms.NcmsEnvironment
 import com.softmotions.ncms.asm.PageService
+import com.softmotions.ncms.security.NcmsSecurityContext
 import com.softmotions.web.security.WSUser
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
@@ -22,11 +23,11 @@ import javax.ws.rs.core.Context
 @Produces("application/json;charset=UTF-8")
 open class WorkspaceRS
 @Inject
-constructor(private val env: NcmsEnvironment, private val pageService: PageService) {
+constructor(private val env: NcmsEnvironment,
+            private val pageService: PageService,
+            private val sctx: NcmsSecurityContext) {
 
-    companion object {
-        private val log = LoggerFactory.getLogger(WorkspaceRS::class.java)
-    }
+    private val log = LoggerFactory.getLogger(WorkspaceRS::class.java)
 
     private val helpTopics = HashMap<String, String?>()
 
@@ -53,15 +54,7 @@ constructor(private val env: NcmsEnvironment, private val pageService: PageServi
     @Throws(Exception::class)
     open fun state(@Context req: HttpServletRequest,
                    @Context resp: HttpServletResponse): WSUserState {
-        var user: WSUser? = req.userPrincipal as WSUser
-        if (user == null) {
-            if (!req.authenticate(resp)) {
-                throw ForbiddenException("")
-            } else {
-                user = req.userPrincipal as WSUser
-            }
-        }
-        return WSUserState(user, req)
+        return WSUserState(sctx.getWSUser(req), req)
     }
 
     @PUT

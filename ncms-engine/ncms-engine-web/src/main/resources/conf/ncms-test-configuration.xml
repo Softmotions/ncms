@@ -65,7 +65,10 @@
         </resource-loaders>
     </asm>
 
-    <security dbJndiName="java:comp/env/WSUserDatabase">
+    <security>
+        <xml-user-database>conf/sml-users.xml</xml-user-database>
+        <shiro-config-locations>/WEB-INF/shiro.test.ini</shiro-config-locations>
+        <dbJVMName>WSUserDatabase</dbJVMName>
         <web-fakeuser>admin</web-fakeuser>
         <web-access-control-allow>*</web-access-control-allow>
         <acl-lru-cache-size>1024</acl-lru-cache-size>

@@ -6,9 +6,10 @@
     <role name="admin.users" description="Users admin"/>
     <role name="admin.structure" description="Site structure admin"/>
     <role name="dept" description="Department admin"/>
+    <role name="mtt" description="Transfer tools"/>
 
     <group name="admins" description="Superusers"
-           roles="admin,admin.asm,admin.users,user,admin.structure,dept">
+           roles="admin,admin.asm,admin.users,user,admin.structure,dept,mtt">
     </group>
 
     <group name="users" description="Users"

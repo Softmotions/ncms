@@ -12,6 +12,7 @@ import com.softmotions.weboot.mb.MBCriteriaQuery
 import com.softmotions.weboot.mb.MBDAOSupport
 import org.apache.commons.lang3.StringUtils
 import org.apache.ibatis.session.SqlSession
+import org.apache.shiro.authz.annotation.RequiresRoles
 import org.mybatis.guice.transactional.Transactional
 import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletRequest
@@ -37,6 +38,7 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/select")
+    @RequiresRoles("mtt")
     @Transactional
     open fun rules(@Context req: HttpServletRequest): Response =
             Response.ok(StreamingOutput { output ->
@@ -62,6 +64,7 @@ constructor(val sess: SqlSession,
     @GET
     @Path("/select/count")
     @Produces("text/plain")
+    @RequiresRoles("mtt")
     @Transactional
     open fun rulesCount(@Context req: HttpServletRequest): Long =
             selectOneByCriteria(createRulesQ(req), "selectRulesCount")
@@ -82,12 +85,14 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/rule/{rid}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun ruleGet(@PathParam("rid") rid: Long): MttRule =
             selectOne("selectRuleById", rid) ?: throw NotFoundException()
 
     @PUT
     @Path("/rule/{name}")
+    @RequiresRoles("mtt")
     @Transactional
     // TODO: events?
     open fun ruleCreate(@Context req: HttpServletRequest,
@@ -107,6 +112,7 @@ constructor(val sess: SqlSession,
 
     @PUT
     @Path("/rule/rename/{rid}/{name}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun ruleRename(@Context req: HttpServletRequest,
                         @PathParam("rid") rid: Long,
@@ -124,6 +130,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun ruleUpdate(@PathParam("rid") rid: Long, rn: ObjectNode): MttRule {
         val rule = ruleGet(rid)
@@ -138,12 +145,14 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}/move/up")
+    @RequiresRoles("mtt")
     @Transactional
     open fun ruleMoveUp(@PathParam("rid") rid: Long) =
             ruleMove(ruleGet(rid), false)
 
     @POST
     @Path("/rule/{rid}/move/down")
+    @RequiresRoles("mtt")
     @Transactional
     open fun ruleMoveDown(@PathParam("rid") rid: Long) =
             ruleMove(ruleGet(rid), true)
@@ -166,6 +175,7 @@ constructor(val sess: SqlSession,
 
     @DELETE
     @Path("/rule/{rid}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun ruleDelete(@PathParam("rid") rid: Long): Int {
         ebus.fireOnSuccessCommit(MttRuleDeletedEvent(rid))
@@ -174,6 +184,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}/enable")
+    @RequiresRoles("mtt")
     @Transactional
     open fun ruleEnable(@PathParam("rid") rid: Long): Int {
         ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
@@ -183,6 +194,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}/disable")
+    @RequiresRoles("mtt")
     @Transactional
     open fun ruleDisable(@PathParam("rid") rid: Long): Int {
         ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
@@ -191,6 +203,7 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/rule/{rid}/filters/select")
+    @RequiresRoles("mtt")
     @Transactional
     open fun filters(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Response =
             Response.ok(StreamingOutput { output ->
@@ -216,6 +229,7 @@ constructor(val sess: SqlSession,
     @GET
     @Path("/rule/{rid}/filters/select/count")
     @Produces("text/plain")
+    @RequiresRoles("mtt")
     @Transactional
     open fun filtersCount(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Long =
             selectOneByCriteria(createFiltersQ(rid, req), "selectFiltersCount")
@@ -229,12 +243,14 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/filter/{fid}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun filterGet(@PathParam("fid") fid: Long): MttRuleFilter =
             selectOne("selectFilterById", fid) ?: throw NotFoundException()
 
     @PUT
     @Path("/rule/{rid}/filter")
+    @RequiresRoles("mtt")
     @Transactional
     open fun filterCreate(@PathParam("rid") rid: Long, fn: ObjectNode): MttRuleFilter {
         val rule = ruleGet(rid)
@@ -252,6 +268,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/filter/{fid}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun filterUpdate(@PathParam("fid") fid: Long, fn: ObjectNode): MttRuleFilter {
         val filter = filterGet(fid)
@@ -266,6 +283,7 @@ constructor(val sess: SqlSession,
 
     @DELETE
     @Path("/filter/{fid}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun filterDelete(@PathParam("fid") fid: Long): Int {
         val filter = filterGet(fid)
@@ -276,6 +294,7 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/rule/{rid}/actions/select")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actions(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Response =
             Response.ok(StreamingOutput { output ->
@@ -301,6 +320,7 @@ constructor(val sess: SqlSession,
     @GET
     @Path("/rule/{rid}/actions/select/count")
     @Produces("text/plain")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actionsCount(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Long =
             selectOneByCriteria(createActionsQ(rid, req), "selectActionsCount")
@@ -315,6 +335,7 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/action/{aid}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actionGet(@PathParam("aid") aid: Long): MttRuleAction =
             selectOne("selectActionById", aid) ?: throw NotFoundException()
@@ -325,6 +346,7 @@ constructor(val sess: SqlSession,
      */
     @PUT
     @Path("/rule/{rid}/action")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actionCreate(@PathParam("rid") rid: Long,
                           an: ObjectNode): MttRuleAction {
@@ -347,6 +369,7 @@ constructor(val sess: SqlSession,
      */
     @PUT
     @Path("/rule/{rid}/composite")
+    @RequiresRoles("mtt")
     @Transactional
     open fun compositeCreate(@PathParam("rid") rid: Long,
                              @QueryParam("groupId")
@@ -359,6 +382,7 @@ constructor(val sess: SqlSession,
      */
     @PUT
     @Path("/rule/{rid}/group")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actionGroupCreate(@PathParam("rid") rid: Long,
                                @QueryParam("groupId")
@@ -382,6 +406,7 @@ constructor(val sess: SqlSession,
      */
     @POST
     @Path("/action/{aid}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actionUpdate(@PathParam("aid") aid: Long, an: ObjectNode): MttRuleAction {
         val action = actionGet(aid)
@@ -399,6 +424,7 @@ constructor(val sess: SqlSession,
      */
     @POST
     @Path("/weight/{id}/{weight}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actionWeghtUpdate(@PathParam("id") id: Long,
                                @PathParam("weight") weight: Int): Unit {
@@ -411,6 +437,7 @@ constructor(val sess: SqlSession,
 
     @DELETE
     @Path("/action/{aid}")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actionDelete(@PathParam("aid") aid: Long): Int {
         val action = actionGet(aid)
@@ -420,12 +447,14 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/action/{aid}/move/up")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actionMoveUp(@PathParam("aid") aid: Long) =
             actionMove(actionGet(aid), false)
 
     @POST
     @Path("/action/{aid}/move/down")
+    @RequiresRoles("mtt")
     @Transactional
     open fun actionMoveDown(@PathParam("aid") aid: Long) =
             actionMove(actionGet(aid), true)

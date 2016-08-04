@@ -2,6 +2,7 @@ package com.softmotions.ncms;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.shiro.guice.aop.ShiroAopModule;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
@@ -50,6 +51,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         initBrowserFilter(env);
         initJAXRS(env);
         initAsmFilter(env);
+        install(new ShiroAopModule());
         install(new I18nModule());
         install(new WBMyBatisModule(env));
         install(new WBLiquibaseModule(env));
@@ -67,7 +69,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         install(new RefDataStoreModule());
         install(new QAModule(env));
         install(new MttModule());
-
+        install(new NcmsLogoModule());
     }
 
     protected void initAsmFilter(NcmsEnvironment env) {

@@ -11,6 +11,9 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.ShiroException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.UnauthenticatedException;
 import org.jboss.resteasy.spi.ReaderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,8 +56,24 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
         return "";
     }
 
+
+    private String shiroExceptionMsg(ShiroException e) {
+        if (e instanceof UnauthenticatedException) {
+            return messages.get("ncms.access.notAuthenticated");
+        } else if (e instanceof UnknownAccountException) {
+            return messages.get("ncms.access.notFound");
+        } else {
+            return messages.get("ncms.jaxrs.forbidden");
+        }
+    }
+
+
     @Override
     public Response toResponse(Exception ex) {
+
+        if (log.isDebugEnabled()) {
+            log.debug("Mapping of exception:", ex);
+        }
 
         Response.ResponseBuilder rb;
 
@@ -81,6 +100,11 @@ public class NcmsRSExceptionHandler implements ExceptionMapper<Exception> {
             for (int i = 0, l = mlist.size(); i < l; ++i) {
                 rb.header("X-Softmotions-Msg" + i, toHeaderMsg(mlist.get(i)));
             }
+
+        } else if (ex instanceof ShiroException) {
+            rb = Response.status(Response.Status.FORBIDDEN)
+                         .header("X-Softmotions-Err0",
+                                 toHeaderMsg(shiroExceptionMsg((ShiroException) ex)));
 
         } else if (ex instanceof ForbiddenException) {
             rb = Response.status(Response.Status.FORBIDDEN)

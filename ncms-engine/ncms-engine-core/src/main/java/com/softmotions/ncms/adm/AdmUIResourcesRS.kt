@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Inject
 import com.softmotions.ncms.NcmsEnvironment
-import com.softmotions.web.security.WSUser
+import com.softmotions.ncms.security.NcmsSecurityContext
 import com.softmotions.weboot.i18n.I18n
 import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletRequest
@@ -14,7 +14,6 @@ import javax.ws.rs.Path
 import javax.ws.rs.PathParam
 import javax.ws.rs.Produces
 import javax.ws.rs.core.Context
-import javax.ws.rs.core.SecurityContext
 
 /**
  * Accessible GUI resources configuration provider.
@@ -29,7 +28,8 @@ open class AdmUIResourcesRS
 constructor(
         private val env: NcmsEnvironment,
         private val mapper: ObjectMapper,
-        private val msg: I18n) {
+        private val msg: I18n,
+        private val sctx: NcmsSecurityContext) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -40,8 +40,7 @@ constructor(
      */
     @GET
     @Path("widgets/{section}")
-    open fun parts(@Context sctx: SecurityContext,
-                   @Context req: HttpServletRequest,
+    open fun parts(@Context req: HttpServletRequest,
                    @Context resp: HttpServletResponse,
                    @PathParam("section") section: String): JsonNode {
 
@@ -54,7 +53,7 @@ constructor(
         }
 
         val arr = mapper.createArrayNode()
-        val user = sctx.userPrincipal as WSUser
+        val user = sctx.getWSUser(req)
         val xcfg = env.xcfg()
         val cpath = "ui.$section.widget"
         for (hc in xcfg.configurationsAt(cpath)) {

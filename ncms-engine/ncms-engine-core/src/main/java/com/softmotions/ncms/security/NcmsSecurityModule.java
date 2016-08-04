@@ -1,15 +1,21 @@
 package com.softmotions.ncms.security;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.map.Flat3Map;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.ShiroException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authz.UnauthenticatedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +27,12 @@ import com.softmotions.commons.JVMResources;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.web.AccessControlHDRFilter;
 import com.softmotions.web.security.WSRole;
+import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.web.security.XMLWSUserDatabase;
 import com.softmotions.weboot.WBServletInitializerModule;
 import com.softmotions.weboot.WBServletModule;
+import com.softmotions.weboot.i18n.I18n;
 
 
 /**
@@ -38,6 +47,7 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
     protected void configure() {
         bind(WSUserDatabase.class).toProvider(WSUserDatabaseProvider.class).asEagerSingleton();
         bind(NcmsSecurityRS.class).in(Singleton.class);
+        bind(NcmsSecurityContext.class).to(NcmsSecurityContextImpl.class).in(Singleton.class);
     }
 
     @Override
@@ -85,7 +95,13 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
 
             if (!StringUtils.isBlank(dbJVMName)) {
                 log.info("Locating users database with JVM name: {}", dbJVMName);
-                usersDb = JVMResources.getOrFail(dbJVMName);
+                String xmldb = env.xcfg().getString("security.xml-user-database");
+                if (xmldb != null) {
+                    usersDb = new XMLWSUserDatabase(dbJVMName, xmldb, true);
+                    JVMResources.set(dbJVMName, usersDb);
+                } else {
+                    usersDb = JVMResources.getOrFail(dbJVMName);
+                }
             }
             if (usersDb == null && !StringUtils.isBlank(jndiName)) {
                 log.info("Locating users database with JNDI name: {}", jndiName);
@@ -115,6 +131,41 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
                 }
             } catch (NamingException e) {
             }
+        }
+    }
+
+    public static class NcmsSecurityContextImpl implements NcmsSecurityContext {
+
+        final WSUserDatabase database;
+
+        final I18n i18n;
+
+        @Inject
+        public NcmsSecurityContextImpl(WSUserDatabase database, I18n i18n) {
+            this.database = database;
+            this.i18n = i18n;
+        }
+
+        @Override
+        public WSUser getWSUser(Principal p) throws ShiroException {
+            return getWSUser(p, null);
+        }
+
+        @Override
+        public WSUser getWSUser(Principal p, Locale locale) throws ShiroException {
+            if (p == null) {
+                throw new UnauthenticatedException(i18n.get("ncms.access.notAuthenticated", locale));
+            }
+            WSUser user = database.findUser(p.getName());
+            if (user == null) {
+                throw new UnknownAccountException(i18n.get("ncms.access.notFound", locale));
+            }
+            return user;
+        }
+
+        @Override
+        public WSUser getWSUser(HttpServletRequest req) throws ShiroException {
+            return getWSUser(req.getUserPrincipal(), i18n.getLocale(req));
         }
     }
 }

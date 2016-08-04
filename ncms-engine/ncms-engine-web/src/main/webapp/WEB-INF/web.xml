@@ -5,27 +5,11 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0"
          metadata-complete="true">
-
+    <context-param>
+        <param-name>shiroEnvironmentClass</param-name>
+        <param-value>com.softmotions.ncms.shiro.NcmsShiroWebEnvironment</param-value>
+    </context-param>
     <listener>
         <listener-class>com.softmotions.ncms.NcmsServletListener</listener-class>
     </listener>
-
-    <!--<security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Everything</web-resource-name>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>user</role-name>
-        </auth-constraint>
-    </security-constraint>
-
-    <login-config>
-        <auth-method>BASIC</auth-method>
-    </login-config>
-
-    <security-role>
-        <role-name>user</role-name>
-    </security-role>-->
-
 </web-app>

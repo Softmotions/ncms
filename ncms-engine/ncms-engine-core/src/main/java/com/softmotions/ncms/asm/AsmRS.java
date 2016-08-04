@@ -50,6 +50,7 @@ import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
@@ -79,6 +80,7 @@ public class AsmRS extends MBDAOSupport {
 
     final Provider<AsmAttributeManagerContext> amCtxProvider;
 
+    final NcmsSecurityContext sctx;
 
     @Inject
     public AsmRS(SqlSession sess,
@@ -86,7 +88,8 @@ public class AsmRS extends MBDAOSupport {
                  AsmAttributeManagersRegistry amRegistry,
                  I18n messages,
                  NcmsEventBus ebus,
-                 Provider<AsmAttributeManagerContext> amCtxProvider) {
+                 Provider<AsmAttributeManagerContext> amCtxProvider,
+                 NcmsSecurityContext sctx) {
         super(AsmRS.class, sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -94,6 +97,7 @@ public class AsmRS extends MBDAOSupport {
         this.amRegistry = amRegistry;
         this.ebus = ebus;
         this.amCtxProvider = amCtxProvider;
+        this.sctx = sctx;
     }
 
     /**
@@ -602,7 +606,7 @@ public class AsmRS extends MBDAOSupport {
                     cq.withParam("template_mode", "page");
                 }
             }
-            WSUser u = (WSUser) req.getUserPrincipal();
+            WSUser u = sctx.getWSUser(req);
             if (u != null && !u.isHasAnyRole("admin", "asmin.asm")) {
                 cq.withParam("roles", u.getRoleNames());
             }
