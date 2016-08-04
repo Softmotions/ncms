@@ -1,6 +1,6 @@
 .. The EJDB documentation root
 
-Добро подаловать в NCMS!
+Добро пожаловать в NCMS!
 ========================
 
 Ncms
