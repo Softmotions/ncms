@@ -60,15 +60,6 @@
             </releases>
         </pluginRepository>
         <pluginRepository>
-            <id>apache-snapshots</id>
-            <name>Apache Maven Snapshots</name>
-            <url>https://repository.apache.org/content/groups/snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
             <id>jaxion_repository</id>
             <url>http://jaxion.org/mvn/</url>
             <layout>default</layout>
