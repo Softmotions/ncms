@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>ncms-site-pom</artifactId>
+        <groupId>softmotions</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <name>${projectName}</name>
+    <description>${projectName}</description>
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <version>${version}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>qx</module>
+        <module>web</module>
+    </modules>
+
+    <inceptionYear/>
+    <organization/>
+    <licenses>
+        <license/>
+    </licenses>
+    <mailingLists>
+        <mailingList/>
+    </mailingLists>
+    <developers>
+        <developer/>
+    </developers>
+    <contributors>
+        <contributor/>
+    </contributors>
+    <issueManagement/>
+    <ciManagement/>
+    <distributionManagement>
+        <repository>
+            <id>-</id>
+            <url>-</url>
+        </repository>
+        <snapshotRepository>
+            <id>-</id>
+            <url>-</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>jboss</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>jaxion</id>
+            <url>http://jaxion.org/mvn/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>
