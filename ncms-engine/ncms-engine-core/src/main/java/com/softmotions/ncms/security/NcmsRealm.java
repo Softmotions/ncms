@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Реалм, осуществляющий аутентификацию пользователей.
+ * An implementation of the {@link AuthorizingRealm Realm} interface based on {@link WSUserDatabase}
  *
  * @author Motyrev Pavel (legioner.r@gmail.com)
  */
@@ -37,7 +37,7 @@ public class NcmsRealm extends AuthorizingRealm {
 
     private static final Logger log = LoggerFactory.getLogger(NcmsRealm.class);
 
-    private volatile WSUserDatabase database;
+    private WSUserDatabase database;
 
     public void setDatabase(WSUserDatabase database) {
         this.database = database;

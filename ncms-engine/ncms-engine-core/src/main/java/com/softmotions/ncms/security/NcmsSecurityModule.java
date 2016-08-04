@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.map.Flat3Map;
 import org.apache.commons.lang3.StringUtils;
@@ -138,6 +139,11 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
         @Override
         public WSUser getWSUser(Principal p) {
             return database.findUser(p.getName());
+        }
+
+        @Override
+        public WSUser getWSUser(HttpServletRequest req) {
+            return getWSUser(req.getUserPrincipal());
         }
     }
 }

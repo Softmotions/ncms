@@ -6,7 +6,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
@@ -18,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSUser;
@@ -42,14 +40,14 @@ public class AdmUIResourcesRS {
 
     final I18n msg;
 
-    final Provider<NcmsSecurityContext> securityContextProvider;
+    final NcmsSecurityContext sctx;
 
     @Inject
-    public AdmUIResourcesRS(NcmsEnvironment env, ObjectMapper mapper, I18n msg, Provider<NcmsSecurityContext> securityContextProvider) {
+    public AdmUIResourcesRS(NcmsEnvironment env, ObjectMapper mapper, I18n msg, NcmsSecurityContext sctx) {
         this.env = env;
         this.mapper = mapper;
         this.msg = msg;
-        this.securityContextProvider = securityContextProvider;
+        this.sctx = sctx;
     }
 
     /**
@@ -62,8 +60,7 @@ public class AdmUIResourcesRS {
     public JsonNode parts(@Context HttpServletRequest req,
                           @PathParam("section") String section) {
         ArrayNode arr = mapper.createArrayNode();
-        NcmsSecurityContext sctx = securityContextProvider.get();
-        WSUser user = sctx.getWSUser(req.getUserPrincipal());
+        WSUser user = sctx.getWSUser(req);
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         String cpath = "ui." + section + ".widget";
         for (HierarchicalConfiguration hc : xcfg.configurationsAt(cpath)) {

@@ -1,6 +1,5 @@
 package com.softmotions.ncms.asm;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang3.ArrayUtils;
@@ -21,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSRole;
@@ -53,7 +50,7 @@ public class PageSecurityService extends MBDAOSupport {
     private final I18n messages;
     private final LRUMap aclCache;
     private final MBSqlSessionManager sessionManager;
-    private final Provider<NcmsSecurityContext> securityContextProvider;
+    private final NcmsSecurityContext sctx;
 
 
     @Inject
@@ -62,18 +59,17 @@ public class PageSecurityService extends MBDAOSupport {
                                I18n messages,
                                NcmsEnvironment env,
                                MBSqlSessionManager sessionManager,
-                               Provider<NcmsSecurityContext> securityContextProvider) {
+                               NcmsSecurityContext sctx) {
         super(PageSecurityService.class, sess);
         this.userdb = userdb;
         this.messages = messages;
         this.aclCache = new LRUMap(env.xcfg().getInt("security.acl-lru-cache-size", 1024));
         this.sessionManager = sessionManager;
-        this.securityContextProvider = securityContextProvider;
+        this.sctx = sctx;
     }
 
     private WSUser toWSUser(HttpServletRequest req) {
-        NcmsSecurityContext sctx = securityContextProvider.get();
-        return sctx.getWSUser(req.getUserPrincipal());
+        return sctx.getWSUser(req);
     }
 
     public WSUser getCurrentWSUserSafe(HttpServletRequest req) {

@@ -80,7 +80,7 @@ public class AsmRS extends MBDAOSupport {
 
     final Provider<AsmAttributeManagerContext> amCtxProvider;
 
-    final Provider<NcmsSecurityContext> securityContextProvider;
+    final NcmsSecurityContext sctx;
 
     @Inject
     public AsmRS(SqlSession sess,
@@ -89,7 +89,7 @@ public class AsmRS extends MBDAOSupport {
                  I18n messages,
                  NcmsEventBus ebus,
                  Provider<AsmAttributeManagerContext> amCtxProvider,
-                 Provider<NcmsSecurityContext> securityContextProvider) {
+                 NcmsSecurityContext sctx) {
         super(AsmRS.class, sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -97,7 +97,7 @@ public class AsmRS extends MBDAOSupport {
         this.amRegistry = amRegistry;
         this.ebus = ebus;
         this.amCtxProvider = amCtxProvider;
-        this.securityContextProvider = securityContextProvider;
+        this.sctx = sctx;
     }
 
     /**
@@ -563,7 +563,6 @@ public class AsmRS extends MBDAOSupport {
     }
 
     private MBCriteriaQuery createQ(HttpServletRequest req) {
-        NcmsSecurityContext sctx = securityContextProvider.get();
         MBCriteriaQuery cq = createCriteria();
         String val = req.getParameter("firstRow");
         if (val != null) {
@@ -607,7 +606,7 @@ public class AsmRS extends MBDAOSupport {
                     cq.withParam("template_mode", "page");
                 }
             }
-            WSUser u = sctx.getWSUser(req.getUserPrincipal());
+            WSUser u = sctx.getWSUser(req);
             if (u != null && !u.isHasAnyRole("admin", "asmin.asm")) {
                 cq.withParam("roles", u.getRoleNames());
             }

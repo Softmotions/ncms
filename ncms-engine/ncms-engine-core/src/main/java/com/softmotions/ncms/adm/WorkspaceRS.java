@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.PageService;
@@ -46,15 +45,15 @@ public class WorkspaceRS {
 
     private Map<String, String> helpTopics = new HashMap<>();
 
-    private final Provider<NcmsSecurityContext> securityContextProvider;
+    private final NcmsSecurityContext sctx;
 
     @Inject
     public WorkspaceRS(NcmsEnvironment env,
                        PageService pageService,
-                       Provider<NcmsSecurityContext> securityContextProvider) {
+                       NcmsSecurityContext sctx) {
         this.env = env;
         this.pageService = pageService;
-        this.securityContextProvider = securityContextProvider;
+        this.sctx = sctx;
     }
 
     @Start
@@ -79,13 +78,12 @@ public class WorkspaceRS {
     @Path("state")
     public WSUserState state(@Context HttpServletRequest req,
                              @Context HttpServletResponse resp) throws Exception {
-        NcmsSecurityContext sctx = securityContextProvider.get();
-        WSUser user = sctx.getWSUser(req.getUserPrincipal());
+        WSUser user = sctx.getWSUser(req);
         if (user == null) {
             if (!req.authenticate(resp)) {
                 throw new ForbiddenException("");
             } else {
-                user = (WSUser) sctx.getWSUser(req.getUserPrincipal());
+                user = (WSUser) sctx.getWSUser(req);
             }
             if (user == null) {
                 throw new ForbiddenException("");
