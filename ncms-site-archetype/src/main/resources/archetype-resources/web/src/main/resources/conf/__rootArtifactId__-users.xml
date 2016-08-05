@@ -1,0 +1,23 @@
+#set($dollar = '$')
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <role name="admin" description="Superuser"/>
+    <role name="user" description="User"/>
+    <role name="admin.asm" description="Assemblies admin"/>
+    <role name="admin.users" description="Users admin"/>
+    <role name="admin.structure" description="Site structure admin"/>
+    <role name="dept" description="Department admin"/>
+    <role name="mtt" description="Transfer tools"/>
+    <group name="admins" description="Superusers"
+           roles="admin,admin.asm,admin.users,user,admin.structure,dept,mtt">
+    </group>
+    <group name="users" description="Users"
+           roles="user">
+    </group>
+    <user name="admin"
+          password="ncms1"
+          email="ncms@example.com"
+          fullName="John Doe"
+          groups="admins">
+    </user>
+</database>

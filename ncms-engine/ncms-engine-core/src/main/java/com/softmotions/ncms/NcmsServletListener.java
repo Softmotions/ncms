@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
+import com.softmotions.ncms.shiro.NcmsShiroWebEnvironment;
 import com.softmotions.web.CharsetFilter;
 import com.softmotions.weboot.WBServletListener;
 
@@ -44,6 +45,7 @@ public class NcmsServletListener extends WBServletListener {
 
         ServletContext sctx = event.getServletContext();
         sctx.setInitParameter("WEBOOT_CFG_CLASS", NcmsEnvironment.class.getName());
+        sctx.setInitParameter("shiroEnvironmentClass", NcmsShiroWebEnvironment.class.getName());
 
         Logger.setLoggerType(Logger.LoggerType.SLF4J);
         sctx.setInitParameter("resteasy.document.expand.entity.references", "false");

@@ -2,9 +2,9 @@
 
  ************************************************************************ */
 
-qx.Theme.define("app.theme.Color", {
-    extend : ncms.theme.Color,
+qx.Theme.define("${rootArtifactId}.theme.Decoration", {
+    extend : ncms.theme.Decoration,
 
-    colors : {
+    decorations : {
     }
 });

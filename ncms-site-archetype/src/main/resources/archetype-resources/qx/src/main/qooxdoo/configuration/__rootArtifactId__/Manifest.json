@@ -1,0 +1,21 @@
+#set($dollar = '$')
+{
+    "info" : {
+        "name" : "${dollar}{qooxdoo.application.name}",
+        "summary" : "${dollar}{qooxdoo.application.summary}",
+        "description" : "${dollar}{qooxdoo.application.description}",
+        "homepage" : " ${dollar}{project.url}",
+        "license" : "",
+        "version" : "${dollar}{project.version}",
+        "qooxdoo-versions" : ["${dollar}{qooxdoo.sdk.version}"]
+    },
+
+    "provides" : {
+        "namespace" : "${dollar}{qooxdoo.application.namespace}",
+        "encoding" : "${dollar}{qooxdoo.build.sourceEncoding}",
+        "class" : "${dollar}{qooxdoo.application.sourcesDirectory}",
+        "resource" : "${dollar}{qooxdoo.application.resourcesDirectory}",
+        "translation" : "${dollar}{qooxdoo.application.translationDirectory}",
+        "type" : "application"
+    }
+}

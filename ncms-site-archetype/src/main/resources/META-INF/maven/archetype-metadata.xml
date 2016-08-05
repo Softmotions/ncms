@@ -11,7 +11,7 @@
             <defaultValue>org.example</defaultValue>
         </requiredProperty>
         <requiredProperty key="artifactId">
-            <defaultValue>ncmsproject</defaultValue>
+            <defaultValue>ncmsapp</defaultValue>
         </requiredProperty>
         <requiredProperty key="version">
             <defaultValue>1.0-SNAPSHOT</defaultValue>
@@ -25,22 +25,86 @@
         <fileSet encoding="UTF-8">
             <directory/>
             <includes>
-                <include>README.md</include>
+                <include>*.md</include>
             </includes>
         </fileSet>
+
+        <!-- =========== QX ============ -->
         <fileSet filtered="true" encoding="UTF-8">
             <directory>qx</directory>
+            <excludes>
+                <exclude>**/*.py</exclude>
+            </excludes>
             <includes>
                 <include>pom.xml</include>
+                <include>src/main/qooxdoo/**/*</include>
             </includes>
         </fileSet>
+        <fileSet filtered="false" encoding="UTF-8">
+            <directory>qx</directory>
+            <includes>
+                <include>**/*.py</include>
+            </includes>
+        </fileSet>
+
+
+
+        <!-- =========== WEB ============ -->
         <fileSet filtered="true" encoding="UTF-8">
             <directory>web</directory>
             <includes>
                 <include>pom.xml</include>
+                <include>config.rb</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>web/src/main/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>web/src/main/resources/conf</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" encoding="UTF-8" packaged="true">
+            <directory>web/src/main/resources</directory>
+            <excludes>
+                <exclude>conf/**</exclude>
+            </excludes>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>web/src/main/webapp</directory>
+            <excludes>
+                <exclude>**/*.js</exclude>
+                <exclude>**/*.scss</exclude>
+                <exclude>**/*.css</exclude>
+                <exclude>**/*.httl</exclude>
+                <exclude>**/*.png</exclude>
+                <exclude>**/*.jpg</exclude>
+            </excludes>
+            <includes>
+                <include>**/*.ini</include>
+                <include>**/*.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet filtered="false" encoding="UTF-8">
+            <directory>web/src/main/webapp</directory>
+            <includes>
+                <include>**/*.js</include>
+                <include>**/*.scss</include>
+                <include>**/*.css</include>
+                <include>**/*.httl</include>
+                <include>**/*.png</include>
+                <include>**/*.jpg</include>
             </includes>
         </fileSet>
     </fileSets>
-
 
 </archetype-descriptor>

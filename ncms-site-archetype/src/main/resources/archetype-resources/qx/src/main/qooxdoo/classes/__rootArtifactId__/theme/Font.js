@@ -2,7 +2,7 @@
 
  ************************************************************************ */
 
-qx.Theme.define("app.theme.Font", {
+qx.Theme.define("${rootArtifactId}.theme.Font", {
     extend : ncms.theme.Font,
 
     fonts : {

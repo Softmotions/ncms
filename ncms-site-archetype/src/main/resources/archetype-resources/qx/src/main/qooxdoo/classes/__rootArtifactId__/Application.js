@@ -1,7 +1,7 @@
 /**
  * App site application.
  */
-qx.Class.define("app.Application", {
+qx.Class.define("${rootArtifactId}.Application", {
     extend: ncms.Application,
 
     members: {
@@ -11,7 +11,7 @@ qx.Class.define("app.Application", {
         },
 
         createActions: function () {
-            return new sml.Actions();
+            return new ${rootArtifactId}.Actions();
         }
     }
 });

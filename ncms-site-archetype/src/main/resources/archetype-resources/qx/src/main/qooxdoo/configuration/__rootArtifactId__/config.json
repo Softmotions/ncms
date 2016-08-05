@@ -1,23 +1,24 @@
+#set($dollar = '$')
 {
-    "name" : "${qooxdoo.application.name}",
+    "name" : "${dollar}{qooxdoo.application.name}",
 
     "include" : [
         {
-            "path" : "${QOOXDOO_PATH}/tool/data/config/application.json"
+            "path" : "${dollar}{QOOXDOO_PATH}/tool/data/config/application.json"
         }
     ],
 
     "let" : {
-        "APPLICATION" : "${qooxdoo.application.namespace}",
-        "MODULES_PATH" : "${qooxdoo.modules.cacheDirectory}",
-        "QOOXDOO_PATH" : "${MODULES_PATH}/qooxdoo-sdk",
-        "QXTHEME" : "${APPLICATION}.theme.Theme",
-        "API_EXCLUDE" : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*", "${APPLICATION}.simulation.*"],
-        "LOCALES" : [ "en" ],
-        "CACHE" : "${qooxdoo.application.cacheDirectory}",
-        "ROOT" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}",
-        "SOURCE_PATH" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}/siteroot",
-        "BUILD_PATH" : "${qooxdoo.application.outputDirectory}/${qooxdoo.application.namespace}/siteroot"
+        "APPLICATION" : "${dollar}{qooxdoo.application.namespace}",
+        "MODULES_PATH" : "${dollar}{qooxdoo.modules.cacheDirectory}",
+        "QOOXDOO_PATH" : "${dollar}{MODULES_PATH}/qooxdoo-sdk",
+        "QXTHEME" : "${dollar}{APPLICATION}.theme.Theme",
+        "API_EXCLUDE" : ["qx.test.*", "${dollar}{APPLICATION}.theme.*", "${dollar}{APPLICATION}.test.*", "${dollar}{APPLICATION}.simulation.*"],
+        "LOCALES" : [ ${dollar}{qooxdoo.application.translations} ],
+        "CACHE" : "${dollar}{qooxdoo.application.cacheDirectory}",
+        "ROOT" : "${dollar}{qooxdoo.application.outputDirectory}/${dollar}{qooxdoo.application.namespace}",
+        "SOURCE_PATH" : "${dollar}{qooxdoo.application.outputDirectory}/${dollar}{qooxdoo.application.namespace}/siteroot",
+        "BUILD_PATH" : "${dollar}{qooxdoo.application.outputDirectory}/${dollar}{qooxdoo.application.namespace}/siteroot"
     },
 
     "jobs" : {
@@ -35,16 +36,16 @@
                     "uri" : "./"
                 },
                 {
-                    "manifest" : "${QOOXDOO_PATH}/framework/Manifest.json",
-                    "uri" : "${QOOXDOO_PATH}/framework"
+                    "manifest" : "${dollar}{QOOXDOO_PATH}/framework/Manifest.json",
+                    "uri" : "${dollar}{QOOXDOO_PATH}/framework"
                 },
                 {
-                    "manifest" : "${MODULES_PATH}/qx-client/Manifest.json",
-                    "uri" : "${MODULES_PATH}/qx-client"
+                    "manifest" : "${dollar}{MODULES_PATH}/qx-client/Manifest.json",
+                    "uri" : "${dollar}{MODULES_PATH}/qx-client"
                 },
                 {
-                    "manifest" : "${MODULES_PATH}/ncms-engine-qx/Manifest.json",
-                    "uri" : "${MODULES_PATH}/ncms-engine-qx"
+                    "manifest" : "${dollar}{MODULES_PATH}/ncms-engine-qx/Manifest.json",
+                    "uri" : "${dollar}{MODULES_PATH}/ncms-engine-qx"
                 }
 
             ]
