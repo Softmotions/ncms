@@ -112,11 +112,10 @@
             <url>http://jaxion.org/mvn/</url>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
             </snapshots>
         </repository>
     </repositories>
-
-
 
 
     <dependencyManagement>

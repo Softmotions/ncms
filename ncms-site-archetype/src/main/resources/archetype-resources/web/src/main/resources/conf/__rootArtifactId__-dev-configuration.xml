@@ -5,7 +5,7 @@
     <environment>dev</environment>
     <logging-ref>${rootArtifactId}-logging.xml</logging-ref>
     <server-name>127.0.0.1</server-name>
-    <server-port>9191</server-port>
+    <server-port>${serverPort}</server-port>
     <site>
         <root>http://${dollar}{server-name}:${dollar}{server-port}</root>
         <preferRequestUrl>true</preferRequestUrl>
@@ -98,7 +98,7 @@
             <excludes>
                 <exclude>META-INF/**</exclude>
                 <exclude>WEB-INF/**</exclude>
-                <exclude>scss*/**</exclude>
+                <exclude>scss/**</exclude>
             </excludes>
         </import>
     </media>
@@ -106,13 +106,13 @@
     <httl extensions="*,httl,html">
         loggers=httl.spi.loggers.Slf4jLogger
         loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
-        import.methods+=com.softmotions.ncms.mhttl.HttlAsmMethods\,com.softmotions.ncms.mhttl.HttlUtilsMethods\,${package}.HttlMethods
+        import.methods+=com.softmotions.ncms.mhttl.HttlAsmMethods\,com.softmotions.ncms.mhttl.HttlUtilsMethods\,${package}.AppHttlMethods
         import.packages+=com.softmotions.ncms.mhttl\,com.softmotions.ncms.asm\,com.softmotions.commons.cont\,org.apache.commons.configuration2\,${package}
         reloadable=true
     </httl>
 
     <security>
-        <xml-user-database>conf/${rootArtifactId}-users.xml</xml-user-database>
+        <xml-user-database target="{home}/.${rootArtifactId}/${rootArtifactId}-users.xml">conf/${rootArtifactId}-users.xml</xml-user-database>
         <shiro-config-locations>/WEB-INF/shiro.dev.ini</shiro-config-locations>
         <dbJVMName>WSUserDatabase</dbJVMName>
         <web-access-control-allow>*</web-access-control-allow>

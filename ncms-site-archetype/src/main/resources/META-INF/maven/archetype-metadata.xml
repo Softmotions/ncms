@@ -19,6 +19,9 @@
         <requiredProperty key="projectName">
             <defaultValue>My NCMS Project</defaultValue>
         </requiredProperty>
+        <requiredProperty key="serverPort">
+            <defaultValue>8080</defaultValue>
+        </requiredProperty>
     </requiredProperties>
 
     <fileSets>
@@ -34,6 +37,8 @@
             <directory>qx</directory>
             <excludes>
                 <exclude>**/*.py</exclude>
+                <exclude>**/script/*.js</exclude>
+                <exclude>**/*.css</exclude>
             </excludes>
             <includes>
                 <include>pom.xml</include>
@@ -44,17 +49,22 @@
             <directory>qx</directory>
             <includes>
                 <include>**/*.py</include>
+                <include>**/script/*.js</include>
+                <include>**/*.css</include>
             </includes>
         </fileSet>
 
-
-
         <!-- =========== WEB ============ -->
+        <fileSet filtered="false" encoding="UTF-8">
+            <directory>tomcat</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
         <fileSet filtered="true" encoding="UTF-8">
             <directory>web</directory>
             <includes>
                 <include>pom.xml</include>
-                <include>config.rb</include>
             </includes>
         </fileSet>
         <fileSet filtered="true" packaged="true" encoding="UTF-8">
