@@ -75,7 +75,7 @@
         <mybatis-guice.version>3.7.1</mybatis-guice.version>
         <testng.version>6.9.10</testng.version>
         <junit.version>4.12</junit.version>
-        <kotlin.version>1.0.2</kotlin.version>
+        <kotlin.version>1.0.3</kotlin.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
         <web.run.port>8080</web.run.port>
         <web.context.reloadable>true</web.context.reloadable>
