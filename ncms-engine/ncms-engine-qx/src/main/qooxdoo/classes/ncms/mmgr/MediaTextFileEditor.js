@@ -87,12 +87,34 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             var path = (spec.folder + spec.name).split("/");
             var url = ncms.Application.ACT.getRestUrl("media.file", path);
             var req = new sm.io.Request(url, "GET", "text/plain");
+
             req.send(function (resp) {
+                var area = this.__area;
+                var fname = spec["name"] || "";
+                var ctype = spec["content_type"] || "";
                 var text = resp.getContent();
                 if (text == null) {
                     text = "";
                 }
-                this.__area.setValue(text);
+                /*var el = area.getContentElement();
+                var lclass = null;
+                if (ctype.indexOf("text/html") !== -1) {
+                    lclass = "html";
+                } else if (ctype.indexOf("application/javascript") !== -1) {
+                    lclass = "javascript";
+                } else if (ctype.indexOf("application/xml") !== -1) {
+                    lclass = "xml";
+                } else if (ctype.indexOf("text/css") !== -1) {
+                    lclass = "css";
+                } else if (ctype.indexOf("application/json") !== -1) {
+                    lclass = "json"
+                } else if (qx.lang.String.endsWith(fname, ".httl")) {
+                    lclass = "";
+                }*/
+                area.setValue(text);
+                /*if (lclass) {
+                    //todo
+                }*/
             }, this);
         },
 
