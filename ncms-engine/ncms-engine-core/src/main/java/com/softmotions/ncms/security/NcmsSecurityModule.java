@@ -1,5 +1,10 @@
 package com.softmotions.ncms.security;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,6 +17,9 @@ import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.map.Flat3Map;
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -22,8 +30,10 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
 import com.softmotions.commons.JVMResources;
+import com.softmotions.commons.io.Loader;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.web.AccessControlHDRFilter;
 import com.softmotions.web.security.WSRole;
@@ -90,13 +100,43 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
         @Override
         public WSUserDatabase get() {
             WSUserDatabase usersDb = null;
-            String dbJVMName = env.xcfg().getString("security.dbJVMName");
-            String jndiName = env.xcfg().getString("security.dbJndiName");
+            HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
+            String dbJVMName = xcfg.getString("security.dbJVMName");
+            String jndiName = xcfg.getString("security.dbJndiName");
 
             if (!StringUtils.isBlank(dbJVMName)) {
                 log.info("Locating users database with JVM name: {}", dbJVMName);
-                String xmldb = env.xcfg().getString("security.xml-user-database");
+                // XMLDB
+                String xmldb = xcfg.getString("security.xml-user-database");
                 if (xmldb != null) {
+                    String placeTo = xcfg.getString("security.xml-user-database[@placeTo]", null);
+                    if (placeTo != null) {
+                        File placeToFile = new File(placeTo);
+                        if (placeToFile.exists()) {
+                            xmldb = placeToFile.getAbsolutePath();
+                        } else {
+                            File placeToParent = placeToFile.getParentFile();
+                            if (placeToParent != null) {
+                                placeToParent.mkdirs();
+                            }
+                            URL url = Loader.getResourceAsUrl(xmldb, getClass());
+                            if (url == null) {
+                                throw new ProvisionException("Unable to find xml-user-database file/resource: " + xmldb);
+                            }
+                            try {
+                                FileUtils.copyInputStreamToFile(url.openStream(), placeToFile);
+                                try {
+                                    Files.setPosixFilePermissions(placeToFile.toPath(),
+                                                                  PosixFilePermissions.fromString("rw-------"));
+                                } catch (UnsupportedOperationException ignored) {
+                                }
+                            } catch (IOException e) {
+                                throw new ProvisionException("Failed to init xml-user-database file: " + placeToFile, e);
+                            }
+                            xmldb = placeToFile.getAbsolutePath();
+                        }
+                    }
+                    log.info("XML users database locations: {}", xmldb);
                     usersDb = new XMLWSUserDatabase(dbJVMName, xmldb, true);
                     JVMResources.set(dbJVMName, usersDb);
                 } else {
