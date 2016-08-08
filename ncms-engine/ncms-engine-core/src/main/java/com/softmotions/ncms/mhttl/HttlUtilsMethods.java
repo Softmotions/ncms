@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
@@ -98,6 +99,31 @@ public class HttlUtilsMethods {
         return req.getParameter(param);
     }
 
+    public static boolean ifRequestParameter(String name, String value) {
+        return Objects.equals(requestParameter(name), value);
+    }
+
+    public static String cookie(String name) {
+        if (name == null) {
+            return null;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        HttpServletRequest req = ctx.getServletRequest();
+        Cookie[] cookies = req.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        for (Cookie c : cookies) {
+            if (name.equals(c.getName())) {
+                return c.getValue();
+            }
+        }
+        return null;
+    }
+
+    public static boolean ifCookie(String name, String value) {
+        return Objects.equals(cookie(name), value);
+    }
 
     public static String requestLanguage() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
@@ -204,7 +230,6 @@ public class HttlUtilsMethods {
         }
         return out.toString();
     }
-
 
     public static String siteFile(Object path) {
         if (path == null) {
