@@ -1,0 +1,165 @@
+.. _conf_sample:
+
+Пример файла конфигурации с комментариями
+=========================================
+
+.. code-block:: xml
+
+    <configuration>
+        <logging-ref>ncmsapp-logging.xml</logging-ref>
+        <app-name>All about my parrots</app-name>
+        <environment>dev</environment>
+        <server-name>127.0.0.1</server-name>
+        <server-port>9292</server-port>
+        <site>
+            <root>http://${server-name}:${server-port}</root>
+            <preferRequestUrl>true</preferRequestUrl>
+        </site>
+
+        <app-prefix>/</app-prefix>
+        <hide-server-exceptions>false</hide-server-exceptions>
+
+        <messages>
+            <bundle>com.softmotions.ncms.Messages</bundle>
+            <bundle>org.myparrots.Messages</bundle>
+        </messages>
+
+        <asm>
+            <site-files-root resolveRelativePaths="true">/site</site-files-root>
+            <exclude>/rs,/rjs,/ncms/rs,/ncms/rjs</exclude>
+            <resource-loaders>
+                <loader>com.softmotions.ncms.asm.render.ldrs.AsmMediaServiceResourceLoader</loader>
+            </resource-loaders>
+        </asm>
+
+        <pages>
+            <default-page-language>en</default-page-language>
+            <lru-cache-size>4096</lru-cache-size>
+            <lru-aliases-cache-size>16384</lru-aliases-cache-size>
+        </pages>
+
+        <jar-web-resources>
+            <resource>
+                <path-prefix>/adm</path-prefix>
+                <options>/ncmsapp-qx/ncmsapp\,watch=true</options>
+            </resource>
+            <resource>
+                <path-prefix>/manual</path-prefix>
+                <options>/ncmsmanual_ru</options>
+            </resource>
+        </jar-web-resources>
+
+        <cache-headers-groups>
+            <cache-group>
+                <nocache>true</nocache>
+                <patterns>/adm/script/*</patterns>
+            </cache-group>
+            <cache-group>
+                <patterns>*.css,*.js</patterns>
+                <expiration>7200</expiration>
+            </cache-group>
+            <cache-group>
+                <patterns>/rs/media/fileid/*,/images/*,/adm/resource/*</patterns>
+                <expiration>7200</expiration>
+            </cache-group>
+        </cache-headers-groups>
+
+        <liquibase>
+            <changelog>com/softmotions/ncms/db/changelog/db-changelog-master.xml</changelog>
+            <update/>
+        </liquibase>
+
+        <mybatis>
+            <bindDatasource>true</bindDatasource>
+            <config>com/softmotions/ncms/db/mybatis-config.xml</config>
+            <propsFile>{home}/.ncmsapp.ds</propsFile>
+            <extra-properties>
+                JDBC.driver=com.ibm.db2.jcc.DB2Driver
+            </extra-properties>
+            <extra-mappers>
+                <mapper>
+                    <!--<resource>extra_mybatis_mapper.xml</resource>-->
+                </mapper>
+            </extra-mappers>
+        </mybatis>
+
+        <media>
+            <basedir>{home}/.ncmsapp/media</basedir>
+            <max-upload-size>31457280</max-upload-size>
+            <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
+            <locks-lrucache-size>128</locks-lrucache-size>
+            <meta-lrucache-size>1024</meta-lrucache-size>
+            <thumbnails-width>250</thumbnails-width>
+            <resize-default-format>jpeg</resize-default-format>
+            <max-edit-text-size>524288</max-edit-text-size>
+            <system-directories>
+                <directory>/site</directory>
+                <directory>/pages</directory>
+            </system-directories>
+            <import>
+                <directory>{webapp}</directory>
+                <target>site</target>
+                <watch>true</watch>
+                <overwrite>false</overwrite>
+                <system>true</system>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>META-INF/**</exclude>
+                    <exclude>WEB-INF/**</exclude>
+                    <exclude>scss/**</exclude>
+                </excludes>
+            </import>
+        </media>
+
+        <httl extensions="*,httl,html">
+            loggers=httl.spi.loggers.Slf4jLogger
+            loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
+            import.methods+=com.softmotions.ncms.mhttl.HttlAsmMethods\,com.softmotions.ncms.mhttl.HttlUtilsMethods\,org.myparrots.AppHttlMethods
+            import.packages+=com.softmotions.ncms.mhttl\,com.softmotions.ncms.asm\,com.softmotions.commons.cont\,org.apache.commons.configuration2\,org.myparrots
+            reloadable=true
+        </httl>
+
+        <security>
+            <xml-user-database placeTo="{home}/.ncmsapp/ncmsapp-users.xml">conf/ncmsapp-users.xml</xml-user-database>
+            <shiro-config-locations>/WEB-INF/shiro.dev.ini</shiro-config-locations>
+            <dbJVMName>WSUserDatabase</dbJVMName>
+            <web-access-control-allow>*</web-access-control-allow>
+            <acl-lru-cache-size>4096</acl-lru-cache-size>
+        </security>
+
+        <ui>
+            <navigation-selectors>
+                <widget qxClass="ncms.pgs.PagesNav" roles="user"/>
+                <widget qxClass="ncms.news.NewsNav" roles="user"/>
+                <widget qxClass="ncms.mmgr.MediaNav" roles="user"/>
+                <widget qxClass="ncms.asm.AsmNav" roles="admin.asm"/>
+                <widget qxClass="ncms.mtt.MttNav" roles="mtt" extra="true"/>
+                <widget qxClass="ncms.usr.UsersNav" roles="admin.users" extra="true"/>
+            </navigation-selectors>
+        </ui>
+
+        <mediawiki>
+            <image-base-url>/rs/mw/res/${image}</image-base-url>
+            <link-base-url>/rs/mw/link/${title}</link-base-url>
+            <max-inline-image-width-px>900</max-inline-image-width-px>
+            <tags>
+                <tag name="note" class="com.softmotions.ncms.mediawiki.NoteTag"/>
+                <tag name="gmap" class="com.softmotions.ncms.mediawiki.GMapTag"/>
+                <tag name="youtube" class="com.softmotions.ncms.mediawiki.YoutubeTag"/>
+                <tag name="tree" class="com.softmotions.ncms.mediawiki.TreeTag"/>
+                <tag name="slideshare" class="com.softmotions.ncms.mediawiki.SlideSharePresentationTag"/>
+                <tag name="extimg" class="com.softmotions.ncms.mediawiki.ExternalImageTag"/>
+                <tag name="vimeo" class="com.softmotions.ncms.mediawiki.VimeoTag"/>
+                <tag name="ind" class="com.softmotions.ncms.mediawiki.IndentTag"/>
+            </tags>
+            <interwiki-links>
+                <!--<link key="page" value="/asm/$1"/>-->
+            </interwiki-links>
+        </mediawiki>
+
+        <modules>
+            <module>org.myparrots.AppModule</module>
+        </modules>
+    </configuration>

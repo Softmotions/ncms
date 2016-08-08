@@ -23,6 +23,12 @@ sys.path.append(os.path.abspath('sphinxext'))
 
 import sphinx_material_theme
 
+rst_epilog = """
+.. _homepage: http://ncms.github.org
+.. |ncmsversion| replace:: nCMS 1.0
+"""
+
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.

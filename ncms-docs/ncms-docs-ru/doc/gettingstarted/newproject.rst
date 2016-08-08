@@ -12,7 +12,7 @@
 Использование Maven Archetype
 -----------------------------
 
-Лучший способ создать новый проект на базе Ncms это создать
+Лучший способ создать новый проект на базе `nCMS` это создать
 его из архетипа maven (maven archetype).
 
 .. code-block:: sh
@@ -23,6 +23,107 @@
         -DarchetypeVersion=1.0 \
         -DarchetypeRepository=http://jaxion.org/mvn
 
+Продемострируем создание и дальнейшее развитие `nCMS` проекта на примере
+создания информационного сайта о попугаях.
+Код сайта будет в пакете `org.myparrots`.
+
+.. code-block:: text
+
+    $:   mvn archetype:generate \
+    >         -DarchetypeGroupId=softmotions \
+    >         -DarchetypeArtifactId=ncms-site-archetype \
+    >         -DarchetypeVersion=1.0 \
+    >         -DarchetypeRepository=http://jaxion.org/mvn
+    [INFO] Scanning for projects...
+
+    ....
+
+    Define value for property 'groupId':  org.example: : org.myparrots
+    Define value for property 'artifactId':  ncmsapp: : ncmsapp
+    Define value for property 'version':  1.0-SNAPSHOT: :
+    Define value for property 'package':  org.example: : org.myparrots
+    Define value for property 'projectName':  My NCMS Project: : All about my parrots
+    Define value for property 'serverPort':  8080: : 9292
+    Confirm properties configuration:
+    groupId: org.myparrots
+    artifactId: ncmsapp
+    version: 1.0-SNAPSHOT
+    package: org.myparrots
+    projectName: All about my parrots
+    serverPort: 9292
+
+Структура проекта
+-----------------
+
+В результате выполнения `mvn archetype:generate` мы получили проект
+со следующей структурой:
+
+.. code-block:: text
+
+    ncmsapp
+    │
+    ├── qx/
+    │   ├── src/
+    │   └── pom.xml
+    ├── tomcat/
+    │   ├── context.xml
+    │   └── server.xml
+    ├── web/
+    │   ├── src/
+    │   └── pom.xml
+    ├── pom.xml
+    └── README.md
+
+
+Где:
+
+* `qx` Административный GUI интерфейс сайта построенный на основе `javascript библиотеки qooxdoo <http://qooxdoo.org>`_
+* `web` Бизнес логика сайтов на стороне сервера
+* `tomcat` Файлы конфигурации сервера Apache Tomcat для запуска сервера
+           в режиме тестирования
+
+Выбор и настройка соединения с БД
+---------------------------------
+
+Перед тем как запустить систему в конфигурации проекта необходимо настроить параметры
+соединения с базой данных.
+
+В версии |ncmsversion| поддерживаеся следующие базы данных:
+
+* :ref:`db2`
+
+Параметры соединения приложения с базой данных, как и другие параметры приложения
+определяются в :ref:`файлах конфигурации <conf>`. В данном проекте
+это файл: `conf/ncmsapp-dev-configuration.xml`
+
+
+.. code-block:: xml
+
+     <mybatis>
+        <bindDatasource>true</bindDatasource>
+        <config>com/softmotions/ncms/db/mybatis-config.xml</config>
+        <propsFile>{home}/.ncmsapp.ds</propsFile>
+        <extra-properties>
+            JDBC.driver=com.ibm.db2.jcc.DB2Driver
+        </extra-properties>
+        <extra-mappers>
+            <mapper>
+                <!--<resource>extra_mybatis_mapper.xml</resource>-->
+            </mapper>
+        </extra-mappers>
+    </mybatis>
+
+Дополнительные параметры соединения с БД определяются в файле `{home}/.ncmsapp.ds`
+где `{home}` - домашняя директория пользователя из под которого запущен сервер
+`nCMS`. Вам необходимо создать этот файл и заполнить параметрами аналогично
+примеру:
+
+.. code-block:: sh
+
+    cat ~/.ncmsapp.ds
+    JDBC.url=jdbc:db2://127.0.0.1:50000/NCMS
+    JDBC.username=ncms
+    JDBC.password=*******
 
 
 
