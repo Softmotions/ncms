@@ -1,5 +1,7 @@
 /**
  * Text media file widget.
+ *
+ * @ignore(ace.*, require)
  */
 qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
     extend: qx.ui.core.Widget,
@@ -33,11 +35,25 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(5));
         this.__broadcaster = sm.event.Broadcaster.create({"enabled": false});
-        this.__area = new qx.ui.form.TextArea().set({font: "monospace", wrap: false});
-        this._add(this.__area, {flex: 1});
-        this.__area.addListener("input", function () {
-            this.__broadcaster.setEnabled(true);
-        }, this);
+
+
+        var badIE = qx.core.Environment.get("engine.name") == "mshtml";
+        if (badIE) {
+            badIE = parseFloat(qx.core.Environment.get("browser.version")) <= 8 ||
+                qx.core.Environment.get("browser.documentmode") <= 8;
+        }
+        var canAce = !!(!document.createElement("div").getBoundingClientRect || badIE || !window.ace);
+
+        console.log("canAce=" + canAce);
+        if (true) {
+            this.__area = new qx.ui.form.TextArea().set({font: "monospace", wrap: false});
+            this._add(this.__area, {flex: 1});
+            this.__area.addListener("input", function () {
+                this.__broadcaster.setEnabled(true);
+            }, this);
+        } else { // setup ace editor
+
+        }
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
         hcont.setPadding([0, 5, 5, 0]);
@@ -55,10 +71,23 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
          */
         __area: null,
 
+        /**
+         * Ace editor containers
+         */
+        __aceContainer: null,
+
+        /**
+         * Activated ace editor
+         */
+        __ace: null,
+
         __broadcaster: null,
 
         setReadOnly: function (state) {
-            this.__area.setReadOnly(state);
+            if (this.__area) {
+                this.__area.setReadOnly(state);
+            }
+
             this.__broadcaster.setEnabled(false);
         },
 
@@ -67,7 +96,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             if (spec == null || !ncms.Utils.isTextualContentType(spec["content_type"])) {
                 return;
             }
-            var text = this.__area.getValue();
+            var text = this.__getCode();
             var path = (spec["folder"] + spec["name"]).split("/");
             var url = ncms.Application.ACT.getRestUrl("media.upload", path);
             var ctype = spec["content_type"] || "text/plain";
@@ -89,14 +118,12 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             var req = new sm.io.Request(url, "GET", "text/plain");
 
             req.send(function (resp) {
-                var area = this.__area;
                 var fname = spec["name"] || "";
                 var ctype = spec["content_type"] || "";
                 var text = resp.getContent();
                 if (text == null) {
                     text = "";
                 }
-                /*var el = area.getContentElement();
                 var lclass = null;
                 if (ctype.indexOf("text/html") !== -1) {
                     lclass = "html";
@@ -109,22 +136,29 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 } else if (ctype.indexOf("application/json") !== -1) {
                     lclass = "json"
                 } else if (qx.lang.String.endsWith(fname, ".httl")) {
-                    lclass = "";
-                }*/
-                area.setValue(text);
-                /*if (lclass) {
-                    //todo
-                }*/
+                    lclass = null; //todo
+                }
+                this.__setCode(text, lclass);
             }, this);
+        },
+
+
+        __getCode: function() {
+            return this.__area.getValue();
+        },
+
+        __setCode: function (code, lclass) {
+            this.__area.setValue(code);
         },
 
         __cleanup: function () {
             this.__area.resetValue();
         }
-
     },
 
     destruct: function () {
+        this.__aceContainer = null;
+        this.__ace = null;
         this.__area = null;
         this.__broadcaster.destruct();
         //this._disposeObjects("__field_name");
