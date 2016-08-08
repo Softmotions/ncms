@@ -17,6 +17,9 @@
  * @asset(ncms/icon/32/exclamation.png)
  * @asset(ncms/icon/32/error.png)
  * @asset(ncms/icon/32/exclamation.png)
+ *
+ * Ace editor
+ * @asset(ncms/script/ace_all.js)
  */
 qx.Class.define("ncms.Application", {
     extend: qx.application.Standalone,
@@ -33,6 +36,33 @@ qx.Class.define("ncms.Application", {
         EXTERNAL_TRANSLATIONS: [
             qx.locale.Manager.tr("Your user session expired! Please login again")
         ],
+
+        ///////////////////////////////////////////////////////////
+        //                      Extra scripts                    //
+        ///////////////////////////////////////////////////////////
+
+        loadExtraScripts: function (cb, ctx) {
+            var resource = [
+                "ncms/script/ace_all.js"
+            ];
+            var load = function (list) {
+                if (list.length == 0) {
+                    cb.call(ctx);
+                    return;
+                }
+                var res = list.shift();
+                console.log("Loading=" + res);
+                var uri = qx.util.ResourceManager.getInstance().toUri(res);
+                var loader = new qx.bom.request.Script();
+                loader.onload = function () {
+                    load(list);
+                };
+                loader.open("GET", uri);
+                loader.send();
+            };
+            load(resource);
+        },
+
 
         ///////////////////////////////////////////////////////////
         //                         Alerts
@@ -316,7 +346,11 @@ qx.Class.define("ncms.Application", {
             this.registerComponent("right-stack", rightStack);
 
             this.showDefaultWSA();
-            this.fireEvent("guiInitialized");
+
+
+            ncms.Application.loadExtraScripts(function () {
+                this.fireEvent("guiInitialized");
+            }, this);
         },
 
         getComponent: function (name) {

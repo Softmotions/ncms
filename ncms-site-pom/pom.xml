@@ -15,12 +15,9 @@
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
         <qooxdoo.sdk.version>5.0</qooxdoo.sdk.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
-        <tomcat.version>8.5.3</tomcat.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <slf4j.version>1.7.21</slf4j.version>
         <logback.version>1.1.7</logback.version>
-        <web.run.port>9191</web.run.port>
-        <web.context.reloadable>false</web.context.reloadable>
     </properties>
 
     <repositories>
@@ -160,7 +157,6 @@
         </dependencies>
     </dependencyManagement>
 
-
     <build>
         <defaultGoal>package</defaultGoal>
         <pluginManagement>
@@ -204,211 +200,27 @@
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>1.8</version>
                 </plugin>
+                <plugin>
+                    <groupId>com.github.warmuuh</groupId>
+                    <artifactId>libsass-maven-plugin</artifactId>
+                    <version>0.2.4-libsass_3.3.4</version>
+                </plugin>
             </plugins>
         </pluginManagement>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.10</version>
+            </extension>
+        </extensions>
     </build>
 
-    <profiles>
-        <profile>
-            <id>prerelease</id>
-            <properties>
-                <ncms.environment>prerelease</ncms.environment>
-                <ncms.debug>true</ncms.debug>
-                <web.context.reloadable>false</web.context.reloadable>
-                <sass.compile.options></sass.compile.options>
-                <js.closure.compilation.level>SIMPLE_OPTIMIZATIONS</js.closure.compilation.level>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>debug</id>
-            <properties>
-                <ncms.environment>dev</ncms.environment>
-                <ncms.debug>true</ncms.debug>
-                <web.context.reloadable>true</web.context.reloadable>
-                <sass.compile.options></sass.compile.options>
-                <js.closure.compilation.level>WHITESPACE_ONLY</js.closure.compilation.level>
-            </properties>
-        </profile>
-        <profile>
-            <id>production</id>
-            <properties>
-                <ncms.environment>production</ncms.environment>
-                <ncms.production>true</ncms.production>
-                <web.context.reloadable>false</web.context.reloadable>
-                <sass.compile.options>--force -s compressed</sass.compile.options>
-                <js.closure.compilation.level>SIMPLE_OPTIMIZATIONS</js.closure.compilation.level>
-            </properties>
-        </profile>
-        <profile>
-            <id>qxdev</id>
-            <properties>
-                <ncms.environment>prerelease</ncms.environment>
-                <ncms.debug>true</ncms.debug>
-                <web.context.reloadable>false</web.context.reloadable>
-                <sass.compile.options/>
-            </properties>
-        </profile>
+    <distributionManagement>
+        <repository>
+            <id>jaxion_repository</id>
+            <url>sftp://jaxion.org/mvn/</url>
+        </repository>
+    </distributionManagement>
 
-        <profile>
-            <id>cargo.run</id>
-            <properties>
-                <cargo.debug.address>8000</cargo.debug.address>
-                <cargo.debug.suspend>n</cargo.debug.suspend>
-                <cargo.tomcat.major.version>8</cargo.tomcat.major.version>
-                <cargo.tomcat.distribution.url.prefix>http://archive.apache.org/dist/tomcat/
-                </cargo.tomcat.distribution.url.prefix>
-                <cargo.tomcat.distribution.url.archive>
-                    tomcat-${cargo.tomcat.major.version}/v${tomcat.version}/bin/apache-tomcat-${tomcat.version}
-                </cargo.tomcat.distribution.url.archive>
-                <cargo.tomcat.distribution.url.postfix>.tar.gz</cargo.tomcat.distribution.url.postfix>
-                <cargo.tomcat.distribution.url>
-                    ${cargo.tomcat.distribution.url.prefix}${cargo.tomcat.distribution.url.archive}${cargo.tomcat.distribution.url.postfix}
-                </cargo.tomcat.distribution.url>
-                <cargo.jvm.args>-Xmx600m</cargo.jvm.args>
-                <cargo.started.message>Press Ctrl-C to stop the Cargo container...</cargo.started.message>
-                <javaagent/>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>jcl-over-slf4j</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>log4j-over-slf4j</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-core</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <defaultGoal>initialize</defaultGoal>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>cargo-run</id>
-                                <phase>validate</phase>
-                                <goals>
-                                    <goal>start</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <configuration>
-                                <home>${project.build.directory}/tomcat${cargo.tomcat.major.version}x</home>
-                                <properties>
-                                    <cargo.servlet.port>${web.run.port}</cargo.servlet.port>
-                                    <catalina.servlet.uriencoding>UTF-8</catalina.servlet.uriencoding>
-                                    <cargo.servlet.uriencoding>UTF-8</cargo.servlet.uriencoding>
-                                    <cargo.jvmargs>
-                                        <![CDATA[-agentlib:jdwp=transport=dt_socket,address=${cargo.debug.address},server=y,suspend=${cargo.debug.suspend} -noverify ${javaagent} ${cargo.jvm.args}]]>
-                                    </cargo.jvmargs>
-                                    <cargo.servlet.users>admin::manager-script,manager-gui</cargo.servlet.users>
-                                    <cargo.remote.username>admin</cargo.remote.username>
-                                    <cargo.remote.password>Wah1eith</cargo.remote.password>
-                                </properties>
-                                <configfiles>
-                                    <configfile>
-                                        <file>${project.basedir}/tomcat/context.xml</file>
-                                        <todir>conf/</todir>
-                                        <tofile>context.xml</tofile>
-                                    </configfile>
-                                    <configfile>
-                                        <file>${project.basedir}/tomcat/server.xml</file>
-                                        <todir>conf/</todir>
-                                        <tofile>server.xml</tofile>
-                                    </configfile>
-                                </configfiles>
-                            </configuration>
-                            <deployables>
-                                <deployable>
-                                    <location>${project.basedir}/sml-web/target/ROOT.war
-                                    </location>
-                                    <type>war</type>
-                                    <properties>
-                                        <context>/</context>
-                                    </properties>
-                                </deployable>
-                            </deployables>
-                            <container>
-                                <containerId>tomcat${cargo.tomcat.major.version}x</containerId>
-                                <zipUrlInstaller>
-                                    <downloadDir>
-                                        ${settings.localRepository}/org/codehaus/cargo/cargo-container-archives
-                                    </downloadDir>
-                                    <url>${cargo.tomcat.distribution.url}</url>
-                                </zipUrlInstaller>
-                                <timeout>600000</timeout>
-                                <dependencies>
-                                    <dependency>
-                                        <groupId>org.slf4j</groupId>
-                                        <artifactId>slf4j-api</artifactId>
-                                    </dependency>
-                                    <dependency>
-                                        <groupId>org.slf4j</groupId>
-                                        <artifactId>jcl-over-slf4j</artifactId>
-                                    </dependency>
-                                    <dependency>
-                                        <groupId>org.slf4j</groupId>
-                                        <artifactId>log4j-over-slf4j</artifactId>
-                                    </dependency>
-                                    <dependency>
-                                        <groupId>ch.qos.logback</groupId>
-                                        <artifactId>logback-classic</artifactId>
-                                    </dependency>
-                                    <dependency>
-                                        <groupId>ch.qos.logback</groupId>
-                                        <artifactId>logback-core</artifactId>
-                                    </dependency>
-                                </dependencies>
-                                <systemProperties>
-                                    <WEBOOT_CFG_LOCATION>conf/sml-dev-configuration.xml</WEBOOT_CFG_LOCATION>
-                                </systemProperties>
-                            </container>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.8</version>
-                        <executions>
-                            <execution>
-                                <id>cargo-started</id>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <target>
-                                        <echo>${cargo.started.message}</echo>
-                                        <sleep hours="2147483647"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

@@ -1,5 +1,5 @@
-#set( $dollar = '$' )
-        <?xml version="1.0" encoding="UTF-8"?>
+#set($dollar = '$')
+<?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -9,12 +9,49 @@
         <artifactId>${rootArtifactId}</artifactId>
         <version>${version}</version>
     </parent>
-    <artifactId>${artifactId}-qx</artifactId>
+    <artifactId>${rootArtifactId}-qx</artifactId>
     <packaging>qooxdoo-jar</packaging>
     <properties>
-        <qooxdoo.application.name>app</qooxdoo.application.name>
+        <qooxdoo.application.name>${rootArtifactId}</qooxdoo.application.name>
+        <qooxdoo.application.translations>"en","ru"</qooxdoo.application.translations>
         <qooxdoo.build.job>${dollar}{ncms.environment}</qooxdoo.build.job>
         <qooxdoo.application.summary>${dollar}{project.name}</qooxdoo.application.summary>
         <qooxdoo.application.description>${dollar}{project.description}</qooxdoo.application.description>
     </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>softmotions</groupId>
+                <artifactId>qooxdoo-maven-plugin</artifactId>
+                <version>1.2-SNAPSHOT</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <namespace>${dollar}{qooxdoo.application.name}</namespace>
+                    <buildJob>${dollar}{qooxdoo.build.job}</buildJob>
+                    <modulesCacheDirectory>${dollar}{project.basedir}/../.cache</modulesCacheDirectory>
+                    <cacheDirectory>${dollar}{project.basedir}/../.cache/.qx</cacheDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.qooxdoo</groupId>
+            <artifactId>qooxdoo-sdk</artifactId>
+            <version>${dollar}{qooxdoo.sdk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>qx-client</artifactId>
+            <classifier>sources</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>ncms-engine-qx</artifactId>
+            <classifier>sources</classifier>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

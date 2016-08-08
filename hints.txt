@@ -1,11 +1,10 @@
-- Flyaway prefix generation:
+date +%g%j%H%M%S
 
-    date +%g%j%H%M%S
-
-mvn liquibase:update tomcat7:run
-
-mvn liquibase:dropAll
-
+mvn archetype:generate \
+-DarchetypeGroupId=softmotions \
+-DarchetypeArtifactId=ncms-site-archetype \
+-DarchetypeVersion=1.0 \
+-DarchetypeRepository=http://jaxion.org/mvn
 
 DB2 INTEGRATION
 
@@ -18,10 +17,10 @@ DB=NCMS
 USER=NCMS
 
 db2 "CREATE DATABASE $DB AUTOMATIC STORAGE YES USING CODESET UTF-8 TERRITORY RU COLLATE USING SYSTEM PAGESIZE 16384"
-DB2 CONNECT TO $DB
+db2 CONNECT TO $DB
 db2 "CREATE BUFFERPOOL BIGPAGEBP IMMEDIATE  SIZE 4096 AUTOMATIC PAGESIZE 32 K"
 db2 "CREATE SYSTEM TEMPORARY TABLESPACE TEMPSPACE32 PAGESIZE 32 K MANAGED BY AUTOMATIC STORAGE BUFFERPOOL BIGPAGEBP"
 db2 "CREATE SCHEMA $DB AUTHORIZATION $USER"
 db2 "GRANT DBADM ON DATABASE TO USER $USER"
-DB2 CONNECT RESET
+db2 CONNECT RESET
 

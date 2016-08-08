@@ -1,0 +1,97 @@
+#set($dollar = '$')
+{
+    "name" : "${dollar}{qooxdoo.application.name}",
+
+    "include" : [
+        {
+            "path" : "${dollar}{QOOXDOO_PATH}/tool/data/config/application.json"
+        }
+    ],
+
+    "let" : {
+        "APPLICATION" : "${dollar}{qooxdoo.application.namespace}",
+        "MODULES_PATH" : "${dollar}{qooxdoo.modules.cacheDirectory}",
+        "QOOXDOO_PATH" : "${dollar}{MODULES_PATH}/qooxdoo-sdk",
+        "QXTHEME" : "${dollar}{APPLICATION}.theme.Theme",
+        "API_EXCLUDE" : ["qx.test.*", "${dollar}{APPLICATION}.theme.*", "${dollar}{APPLICATION}.test.*", "${dollar}{APPLICATION}.simulation.*"],
+        "LOCALES" : [ ${dollar}{qooxdoo.application.translations} ],
+        "CACHE" : "${dollar}{qooxdoo.application.cacheDirectory}",
+        "ROOT" : "${dollar}{qooxdoo.application.outputDirectory}/${dollar}{qooxdoo.application.namespace}",
+        "SOURCE_PATH" : "${dollar}{qooxdoo.application.outputDirectory}/${dollar}{qooxdoo.application.namespace}/siteroot",
+        "BUILD_PATH" : "${dollar}{qooxdoo.application.outputDirectory}/${dollar}{qooxdoo.application.namespace}/siteroot"
+    },
+
+    "jobs" : {
+
+        "build-files" : {
+            "=copy-files" : {
+                "files" : []
+            }
+        },
+
+        "ncms-common" : {
+            "library" : [
+                {
+                    "manifest" : "./Manifest.json",
+                    "uri" : "./"
+                },
+                {
+                    "manifest" : "${dollar}{QOOXDOO_PATH}/framework/Manifest.json",
+                    "uri" : "${dollar}{QOOXDOO_PATH}/framework"
+                },
+                {
+                    "manifest" : "${dollar}{MODULES_PATH}/qx-client/Manifest.json",
+                    "uri" : "${dollar}{MODULES_PATH}/qx-client"
+                },
+                {
+                    "manifest" : "${dollar}{MODULES_PATH}/ncms-engine-qx/Manifest.json",
+                    "uri" : "${dollar}{MODULES_PATH}/ncms-engine-qx"
+                }
+
+            ]
+        },
+        "debug" : {
+            "extend" : ["source-hybrid", "ncms-common", "translation"],
+            "environment" : {
+                "qx.debug" : true,
+                "ncms.debug" : true,
+                "ncms.testing.urls" : true
+            }
+        },
+
+        "prerelease" : {
+            "extend" : ["build", "ncms-common", "translation"],
+            "environment" : {
+                "qx.debug" : true,
+                "ncms.debug" : false,
+                "ncms.testing.urls" : false
+            },
+            "let" : {
+                "OPTIMIZE" : [
+                    "basecalls",
+                    "comments",
+                    "privates",
+                    "strings",
+                    "variables",
+                    "variants",
+                    "whitespace"
+                ]
+            }
+        },
+
+        "production" : {
+            "extend" : ["prerelease"],
+            "let" : {
+                "OPTIMIZE" : [
+                    "basecalls",
+                    "comments",
+                    "privates",
+                    "strings",
+                    "variables",
+                    "variants",
+                    "whitespace"
+                ]
+            }
+        }
+    }
+}
