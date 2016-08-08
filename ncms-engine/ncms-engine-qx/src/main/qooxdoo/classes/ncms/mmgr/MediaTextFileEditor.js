@@ -135,7 +135,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                     text = "";
                 }
                 var lclass = null;
-                if (ctype.indexOf("text/html") !== -1) {
+                if (ctype.indexOf("text/html") !== -1 || qx.lang.String.endsWith(fname, ".httl")) {
                     lclass = "html";
                 } else if (ctype.indexOf("application/javascript") !== -1) {
                     lclass = "javascript";
@@ -145,8 +145,8 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                     lclass = "css";
                 } else if (ctype.indexOf("application/json") !== -1) {
                     lclass = "json"
-                } else if (qx.lang.String.endsWith(fname, ".httl")) {
-                    lclass = null; //todo
+                } else {
+                    lclass = "text";
                 }
                 this.__setCode(text, lclass);
             }, this);
@@ -200,8 +200,8 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 var session = ace.getSession();
                 session.setUseSoftTabs(true);
                 session.setTabSize(2);
+                session.setUseWorker(false);
                 ace.renderer.setShowGutter(false);
-                //ace.renderer.setOption("showLineNumbers", false);
                 if (this.__pendigCode != null) {
                     this.__setCode(this.__pendigCode["code"], this.__pendigCode["lclass"]);
                     this.__pendigCode = null;
