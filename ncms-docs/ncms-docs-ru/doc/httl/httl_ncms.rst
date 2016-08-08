@@ -1,6 +1,6 @@
 .. httl_ncms:
 
-HTTL библиотека nCMS
+nCMS расширение HTTL
 ====================
 
 TODO
