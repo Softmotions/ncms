@@ -1,5 +1,7 @@
 package com.softmotions.ncms.mhttl;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -23,7 +25,9 @@ import org.slf4j.LoggerFactory;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 /**
  * Various template utils.
@@ -180,6 +184,27 @@ public class HttlUtilsMethods {
         }
         return ((RichRef) ref).toHtmlLink(attrs);
     }
+
+    public static String includeTemplate(Object path) {
+        if (path == null) {
+            return null;
+        }
+        String spath = path.toString();
+        if (StringUtils.isBlank(spath)) {
+            return spath;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        AsmRenderer renderer = ctx.getRenderer();
+        StringWriter out = new StringWriter(1024);
+        try {
+            renderer.renderTemplate(spath, ctx, out);
+        } catch (IOException e) {
+            throw new AsmRenderingException("Failed to render template: '" + spath + '\'' +
+                                            " asm: " + ctx.getAsm().getName() + " attribute: " + spath, e);
+        }
+        return out.toString();
+    }
+
 
     public static String siteFile(Object path) {
         if (path == null) {
