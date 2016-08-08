@@ -1,4 +1,4 @@
-.. The EJDB documentation root
+.. The Ncms documentation root
 
 Добро пожаловать в NCMS!
 ========================
@@ -10,4 +10,5 @@ Ncms
 .. toctree::
     :maxdepth: 2
 
+    doc/gettingstarted/index
     doc/features

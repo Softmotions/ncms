@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:34 ncms/Application.js:460
+#: ncms/Application.js:37 ncms/Application.js:494
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:473
+#: ncms/Application.js:507
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -878,7 +878,7 @@ msgstr "Новая папка верхнего уровня"
 msgid "Are you sure to remove folder: %1"
 msgstr "Вы действительно желаете безвозвратно удалить папку: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:47 ncms/mmgr/MediaTextFileEditor.js:44
+#: ncms/pgs/PageEditorEditPage.js:47 ncms/mmgr/MediaTextFileEditor.js:60
 #: ncms/usr/UserEditForm.js:51
 msgid "Save"
 msgstr "Сохранить"
