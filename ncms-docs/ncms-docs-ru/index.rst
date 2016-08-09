@@ -1,9 +1,7 @@
-.. The EJDB documentation root
+.. The Ncms documentation root
 
-Добро пожаловать в NCMS!
-========================
-
-Ncms
+Добро пожаловать в |ncmsversion|
+================================
 
 **Содержание**
 
@@ -11,3 +9,8 @@ Ncms
     :maxdepth: 2
 
     doc/features
+    doc/gettingstarted/index
+    doc/conf/index
+    doc/db/index
+    doc/httl/index
+

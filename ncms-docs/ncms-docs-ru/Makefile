@@ -56,6 +56,16 @@ help:
 clean:
     rm -rf $(BUILDDIR)/*
 
+.PHONY: watch
+watch: _CMD = $(MAKE) html
+watch:
+    @$(_CMD)
+    @while inotifywait -e modify \
+    -r doc files images; \
+    do \
+        $(_CMD) && echo "\n\n\t\t\t ==> OK <== \t\t\t\n" || (echo "\a" && echo "\n\n\t\t\t ==> FAIL <== \t\t\t\n\n"); \
+    done
+
 .PHONY: html
 init:
     git submodule update --init

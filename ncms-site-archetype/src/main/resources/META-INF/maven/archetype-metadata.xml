@@ -29,6 +29,7 @@
             <directory/>
             <includes>
                 <include>*.md</include>
+                <include>.gitignore</include>
             </includes>
         </fileSet>
 

@@ -1,5 +1,7 @@
 package com.softmotions.ncms.mhttl;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
@@ -23,7 +26,9 @@ import org.slf4j.LoggerFactory;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmRenderingException;
 
 /**
  * Various template utils.
@@ -94,6 +99,31 @@ public class HttlUtilsMethods {
         return req.getParameter(param);
     }
 
+    public static boolean ifRequestParameter(String name, String value) {
+        return Objects.equals(requestParameter(name), value);
+    }
+
+    public static String cookie(String name) {
+        if (name == null) {
+            return null;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        HttpServletRequest req = ctx.getServletRequest();
+        Cookie[] cookies = req.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        for (Cookie c : cookies) {
+            if (name.equals(c.getName())) {
+                return c.getValue();
+            }
+        }
+        return null;
+    }
+
+    public static boolean ifCookie(String name, String value) {
+        return Objects.equals(cookie(name), value);
+    }
 
     public static String requestLanguage() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
@@ -179,6 +209,26 @@ public class HttlUtilsMethods {
             return null;
         }
         return ((RichRef) ref).toHtmlLink(attrs);
+    }
+
+    public static String includeTemplate(Object path) {
+        if (path == null) {
+            return null;
+        }
+        String spath = path.toString();
+        if (StringUtils.isBlank(spath)) {
+            return spath;
+        }
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        AsmRenderer renderer = ctx.getRenderer();
+        StringWriter out = new StringWriter(1024);
+        try {
+            renderer.renderTemplate(spath, ctx, out);
+        } catch (IOException e) {
+            throw new AsmRenderingException("Failed to render template: '" + spath + '\'' +
+                                            " asm: " + ctx.getAsm().getName() + " attribute: " + spath, e);
+        }
+        return out.toString();
     }
 
     public static String siteFile(Object path) {
