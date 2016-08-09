@@ -1,11 +1,18 @@
 package com.softmotions.ncms.asm.am;
 
+import java.io.IOException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Inject;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
@@ -15,6 +22,8 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.mhttl.SocialLinks;
 
 /**
+ * Social links controller
+ *
  * @author Motyrev Pavel (legioner.r@gmail.com)
  */
 public class AsmSocialLinksAM implements AsmAttributeManager {
@@ -44,17 +53,26 @@ public class AsmSocialLinksAM implements AsmAttributeManager {
     @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
-        SocialLinks socialLinks = new SocialLinks();
-        if (options.get("facebook") != null) {
-            socialLinks.setFacebook(options.get("facebook"));
+        Asm asm = ctx.getAsm();
+        AsmAttribute attr = asm.getEffectiveAttribute(attrname);
+        AsmOptions opts = new AsmOptions();
+        if (attr.getOptions() != null) {
+            opts.loadOptions(attr.getOptions());
+        } else {
+            return null;
         }
-        if (options.get("twitter") != null) {
-            socialLinks.setTwitter(options.get("twitter"));
+
+        SocialLinks res = new SocialLinks();
+        if (opts.getString("facebook") != null) {
+            res.setFacebook(opts.getString("facebook"));
         }
-        if (options.get("vkontakte") != null) {
-            socialLinks.setVkontakte(options.get("vkontakte"));
+        if (opts.getString("twitter") != null) {
+            res.setTwitter(opts.getString("twitter"));
         }
-        return socialLinks;
+        if (opts.getString("vkontakte") != null) {
+            res.setVkontakte(opts.getString("vkontakte"));
+        }
+        return res;
     }
 
     @Override
