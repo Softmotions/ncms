@@ -65,6 +65,10 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             bt.addListenerOnce("execute", this.__onNewRootFolder, this);
             menu.add(bt);
 
+            bt = new qx.ui.menu.Button(this.tr("New file"));
+            bt.addListenerOnce("execute", this.__onNewFile, this);
+            menu.add(bt);
+
             if (sel != null) {
                 if (sel != root) {
                     menu.add(new qx.ui.menu.Separator());
@@ -171,9 +175,25 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             this.__newFolder(ev, this._tree.getModel());
         },
 
+        __onNewFile: function (ev) {
+            this.__newFile(ev, this._tree.getSelection().getItem(0) || this._tree.getModel());
+        },
+
         __newFolder: function (ev, parent) {
             var path = this._getItemPathSegments(parent);
             var dlg = new ncms.mmgr.MediaFolderNewDlg(path);
+            dlg.setPosition("bottom-right");
+            dlg.addListener("completed", function (ev) {
+                dlg.close();
+                this._refreshNode(parent);
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
+        },
+
+        __newFile: function (ev, parent) {
+            var path = this._getItemPathSegments(parent);
+            var dlg = new ncms.mmgr.MediaFileNewDlg(path);
             dlg.setPosition("bottom-right");
             dlg.addListener("completed", function (ev) {
                 dlg.close();

@@ -242,11 +242,23 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 .set({"appearance": "toolbar-table/part"});
                 toolbar.add(part);
 
-                var bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/add.png")
-                .set({"appearance": "toolbar-table-button"});
-                bt.setToolTipText(this.tr("Add files"));
+                var el = new qx.ui.toolbar.MenuButton(null, "ncms/icon/16/actions/add.png");
+                var menu = new qx.ui.menu.Menu();
+
+                var bt = new qx.ui.menu.Button(this.tr("Upload files"));
                 bt.addListener("execute", this.__addFiles, this);
-                part.add(bt);
+                menu.add(bt);
+
+                bt = new qx.ui.menu.Button(this.tr("New file"));
+                bt.addListener("execute", this.__onNewFile, this);
+                menu.add(bt);
+
+                el.setToolTipText(this.tr("Add files"));
+                el.setAppearance("toolbar-table-menubutton");
+                el.setShowArrow(true);
+                el.setMenu(menu);
+                part.add(el);
+
 
                 this.__rmBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/actions/delete.png")
                 .set({"appearance": "toolbar-table-button"});
@@ -314,6 +326,18 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             var input = document.getElementById("ncms-upload-file");
             input.onchange = this.__handleFormUploadFiles.bind(this);
             input.click();
+        },
+
+        __onNewFile: function (ev) {
+            var path = (this.getItem() != null) ? this.getItem()["path"] : [];
+            var dlg = new ncms.mmgr.MediaFileNewDlg(path);
+            dlg.setPosition("bottom-right");
+            dlg.addListener("completed", function () {
+                dlg.close();
+                this.reload();
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
         },
 
         __renameFile: function (ev) {
@@ -506,6 +530,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             bt.addListenerOnce("execute", this.__addFiles, this);
             menu.add(bt);
 
+            bt = new qx.ui.menu.Button(this.tr("New file"));
+            bt.addListenerOnce("execute", this.__onNewFile, this);
+            menu.add(bt);
+
             if (selected) {
                 if (selectedSingle) {
                     bt = new qx.ui.menu.Button(this.tr("Preview"));
@@ -539,7 +567,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
 
             this._setupContextMenuDelegate(menu);
-
             return true;
         },
 
@@ -562,7 +589,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     return false;
                 }
             }
-
             return true;
         },
 
