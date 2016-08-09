@@ -5,6 +5,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.ParseException;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
@@ -87,6 +89,15 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
         }
     }
 
+    @Override
+    public void renderTemplate(String location, Map<String, Object> ctx, Locale locale, Writer out) throws IOException {
+        try {
+            Template template = engine.getTemplate(location, locale);
+            template.render(ctx, out);
+        } catch (ParseException e) {
+            throw new AsmRenderingException("Failed to parse template: " + location, e);
+        }
+    }
 
     @Dispose
     public void close() {

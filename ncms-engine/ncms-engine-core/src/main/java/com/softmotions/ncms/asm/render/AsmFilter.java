@@ -51,7 +51,7 @@ public class AsmFilter implements Filter {
     private MediaRepository mediaRepository;
 
     @Inject
-    private I18n messages;
+    private I18n i18n;
 
     @Inject
     private PageSecurityService pageSecurity;
@@ -61,6 +61,9 @@ public class AsmFilter implements Filter {
 
     @Inject
     private AsmRendererContextFactory rendererContextFactory;
+
+    @Inject
+    private AsmRenderer asmRenderer;
 
     private boolean resolveRelativePaths;
 
@@ -145,13 +148,11 @@ public class AsmFilter implements Filter {
         if (processResources(pi, req, resp)) { //find resources
             return true;
         }
-        messages.initRequestI18N(req, resp);
-
+        i18n.initRequestI18N(req, resp);
         Object asmRef = fetchAsmRef(pi, req);
         if (asmRef == null) {
             return false;
         }
-
         //Set charset before calling javax.servlet.ServletResponse.getWriter()
         //Assumed all assemblies generated as utf8 encoded text data.
         //Content-Type can be overriden by assembly renderer.
@@ -235,28 +236,54 @@ public class AsmFilter implements Filter {
         return pi;
     }
 
-    protected void processLocale(HttpServletRequest req, HttpServletResponse resp) {
-        //todo String locale =
-    }
 
-    protected boolean processResources(String pi, HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if ("/index.html".equals(pi)) {
+    protected boolean processResources(String location,
+                                       HttpServletRequest req,
+                                       HttpServletResponse resp) throws IOException {
+        if ("/index.html".equals(location)) {
             return false;
         }
         if (!resolveRelativePaths) {
             return false;
         }
-        MediaResource mres = mediaRepository.findMediaResource(siteFilesRoot + pi, messages.getLocale(req));
+        location = siteFilesRoot + location;
+        MediaResource mres = mediaRepository.findMediaResource(location, i18n.getLocale(req));
         if (mres == null) {
             return false;
         }
         resp.setContentType(mres.getContentType());
+
+        // Location can be rendered as template?
+        if (asmRenderer.isHasSpecificTemplateEngineForLocation(location)) {
+            i18n.initRequestI18N(req, resp);
+            CachedPage cp = pageService.getIndexPage(req, false);
+            if (cp != null) {
+                AsmRendererContext ctx = rendererContextFactory.createStandalone(req, resp, cp.getAsm());
+                ClassLoader old = Thread.currentThread().getContextClassLoader();
+                //noinspection ObjectEquality
+                if (old != ctx.getClassLoader()) {
+                    Thread.currentThread().setContextClassLoader(ctx.getClassLoader());
+                }
+                try {
+                    ctx.push();
+                    ctx.getRenderer().renderTemplate(location, ctx, resp.getWriter());
+                    resp.flushBuffer();
+                } finally {
+                    ctx.pop();
+                    Thread.currentThread().setContextClassLoader(old);
+                }
+            }
+            return true;
+        }
+
+        // Response with raw resource
         if (mres.getLength() >= 0L) {
             resp.setContentLength((int) mres.getLength());
         }
         try (InputStream is = mres.openStream()) {
             IOUtils.copyLarge(is, resp.getOutputStream());
         }
+        resp.flushBuffer();
         return true;
     }
 }
