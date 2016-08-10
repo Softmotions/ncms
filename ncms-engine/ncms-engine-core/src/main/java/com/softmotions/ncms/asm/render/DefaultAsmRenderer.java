@@ -3,6 +3,7 @@ package com.softmotions.ncms.asm.render;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,6 +62,16 @@ public class DefaultAsmRenderer implements AsmRenderer {
                                             location + " assembly: " + ctx.getAsm().getName());
         }
         te.renderTemplate(location, ctx, out);
+    }
+
+    @Override
+    public boolean renderTemplate(String location, Map<String, Object> ctx, Locale locale, Writer out) throws IOException {
+        AsmTemplateEngineAdapter te = selectTemplateEngineForLocation(location);
+        if (te == null) {
+            return false;
+        }
+        te.renderTemplate(location, ctx, locale, out);
+        return true;
     }
 
     @Override
@@ -172,13 +183,24 @@ public class DefaultAsmRenderer implements AsmRenderer {
     }
 
 
+    @Override
+    public boolean isHasSpecificTemplateEngineForLocation(String location) {
+        for (final AsmTemplateEngineAdapter te : templateEgines) {
+            for (String ext : te.getSupportedExtensions()) {
+                if (!ext.isEmpty() && ext.charAt(0) != '.') {
+                    ext = '.' + ext;
+                }
+                if (location.endsWith(ext)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     protected AsmTemplateEngineAdapter selectTemplateEngineForLocation(String location) {
         AsmTemplateEngineAdapter defaultTe = null;
-        String type = FilenameUtils.getExtension(location);
-        if (StringUtils.isBlank(type)) {
-            type = "*";
-        }
-        String dotType = '.' + type;
         for (final AsmTemplateEngineAdapter te : templateEgines) {
             if (defaultTe == null) {
                 defaultTe = te;
@@ -187,7 +209,10 @@ public class DefaultAsmRenderer implements AsmRenderer {
                 if ("*".equals(ext) || ".*".equals(ext)) {
                     defaultTe = te;
                 }
-                if (ext.equals(type) || ext.equals(dotType)) {
+                if (!ext.isEmpty() && ext.charAt(0) != '.') {
+                    ext = '.' + ext;
+                }
+                if (location.endsWith(ext)) {
                     return te;
                 }
             }

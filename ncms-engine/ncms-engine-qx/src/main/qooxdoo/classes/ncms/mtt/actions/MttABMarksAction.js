@@ -1,24 +1,24 @@
 /**
- * Mtt set cookie action
+ * Mtt set A/B testing marks.
  */
-qx.Class.define("ncms.mtt.actions.MttSetCookieAction", {
+qx.Class.define("ncms.mtt.action.MttABMarksAction", {
     extend: qx.core.Object,
     implement: [ncms.mtt.actions.IMttAction],
     include: [qx.locale.MTranslation],
 
+
     statics: {
 
         getDescription: function () {
-            return qx.locale.Manager.tr("Set a cookie");
+            return qx.locale.Manager.tr("Set A/B marks");
         },
 
         getType: function () {
-            return "cookie";
+            return "abmarks";
         },
 
         specForHuman: function (spec) {
-            return spec["name"] + "=" + spec["value"] +
-                " | " + spec["units"] + "=" + spec["time"];
+            return spec["marks"] + " | " + spec["units"] + "=" + spec["time"];
         }
     },
 
@@ -41,16 +41,10 @@ qx.Class.define("ncms.mtt.actions.MttSetCookieAction", {
             form.add(units, "", null, "units");
 
             var name = new qx.ui.form.TextField().set({required: true});
-            if (spec["name"]) {
-                name.setValue(spec["name"]);
+            if (spec["marks"]) {
+                name.setValue(spec["marks"]);
             }
-            form.add(name, this.tr("Name"), null, "name");
-
-            var value = new qx.ui.form.TextField().set({required: true});
-            if (spec["value"]) {
-                value.setValue(spec["value"]);
-            }
-            form.add(value, this.tr("Value"), null, "value");
+            form.add(name, this.tr("A/B Marks"), null, "marks", null, {fullRow: true, flex: 1});
             return new sm.ui.form.ExtendedDoubleFormRenderer(form);
         },
 
@@ -61,8 +55,7 @@ qx.Class.define("ncms.mtt.actions.MttSetCookieAction", {
             }
             var items = form.getItems();
             return {
-                name: items["name"].getValue(),
-                value: items["value"].getValue(),
+                marks: items["marks"].getValue(),
                 time: items["time"].getValue(),
                 units: items["units"].getModelSelection().getItem(0)
             }
