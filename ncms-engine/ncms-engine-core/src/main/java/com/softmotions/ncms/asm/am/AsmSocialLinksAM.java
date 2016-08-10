@@ -11,12 +11,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
-import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
-import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.mhttl.SocialLinks;
@@ -29,6 +26,13 @@ import com.softmotions.ncms.mhttl.SocialLinks;
 public class AsmSocialLinksAM implements AsmAttributeManager {
 
     public static final String[] TYPES = new String[]{"soclinks"};
+
+    final ObjectMapper mapper;
+
+    @Inject
+    public AsmSocialLinksAM(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @Override
     public String[] getSupportedAttributeTypes() {
@@ -55,38 +59,64 @@ public class AsmSocialLinksAM implements AsmAttributeManager {
                                      Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
-        AsmOptions opts = new AsmOptions();
-        if (attr.getOptions() != null) {
-            opts.loadOptions(attr.getOptions());
-        } else {
+        String value = attr != null ? attr.getEffectiveValue() : null;
+        if (StringUtils.isBlank(value)) {
             return null;
         }
-
         SocialLinks res = new SocialLinks();
-        if (opts.getString("facebook") != null) {
-            res.setFacebook(opts.getString("facebook"));
-        }
-        if (opts.getString("twitter") != null) {
-            res.setTwitter(opts.getString("twitter"));
-        }
-        if (opts.getString("vkontakte") != null) {
-            res.setVkontakte(opts.getString("vkontakte"));
+        try (JsonParser parser = mapper.getFactory().createParser(value)) {
+            String key;
+            if (parser.nextToken() != JsonToken.START_OBJECT) {
+                return null;
+            }
+            while (parser.nextValue() != null && (key = parser.getCurrentName()) != null) {
+                switch (key) {
+                    case "facebook":
+                        res.setFacebook(parser.getValueAsString());
+                        break;
+                    case "twitter":
+                        res.setTwitter(parser.getValueAsString());
+                        break;
+                    case "vkontakte":
+                        res.setVkontakte(parser.getValueAsString());
+                        break;
+                    case "buttonFacebook":
+                        res.setButtonFacebook(parser.getValueAsBoolean());
+                        break;
+                    case "buttonTwitter":
+                        res.setButtonTwitter(parser.getValueAsBoolean());
+                        break;
+                    case "buttonVkontakte":
+                        res.setButtonVkontakte(parser.getValueAsBoolean());
+                        break;
+                    case "buttonOdnoklassniki":
+                        res.setButtonOdnoklassniki(parser.getValueAsBoolean());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return res;
     }
 
     @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        AsmOptions asmOpts = new AsmOptions();
-        JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
-                                        "facebook", "twitter", "vkontakte");
-        attr.setOptions(asmOpts.toString());
+        applyAttributeValue(ctx, attr, val);
         return attr;
     }
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        return null;
+        JsonNode value = val.get("value");
+        if (value != null) {
+            attr.setEffectiveValue(value.toString());
+        } else {
+            attr.setEffectiveValue(null);
+        }
+        return attr;
     }
 
     @Override
