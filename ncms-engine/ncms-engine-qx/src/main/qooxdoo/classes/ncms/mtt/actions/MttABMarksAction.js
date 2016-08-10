@@ -1,7 +1,7 @@
 /**
  * Mtt set A/B testing marks.
  */
-qx.Class.define("ncms.mtt.action.MttABMarksAction", {
+qx.Class.define("ncms.mtt.actions.MttABMarksAction", {
     extend: qx.core.Object,
     implement: [ncms.mtt.actions.IMttAction],
     include: [qx.locale.MTranslation],

@@ -165,9 +165,8 @@ msgstr "Создать"
 msgid "Edit"
 msgstr "Редактировать"
 
-#: ncms/mtt/filters/MttFiltersTable.js:176 ncms/asm/AsmNav.js:82
-#: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:563
-#: ncms/mtt/actions/MttActionsTree.js:126
+#: ncms/asm/AsmNav.js:82 ncms/usr/UsersNav.js:103
+#: ncms/mmgr/MediaFilesSelector.js:563 ncms/mtt/actions/MttActionsTree.js:126
 #: ncms/mtt/actions/MttActionsTree.js:234 ncms/mtt/MttNav.js:44
 #: ncms/mtt/MttNav.js:149 ncms/mtt/filters/MttFiltersTable.js:176
 #: ncms/asm/AsmAttrsTable.js:208 ncms/asm/am/TreeAMValueWidget.js:461
@@ -961,6 +960,29 @@ msgstr "Подтвердите удаление правила \"%1\""
 msgid "Rule"
 msgstr "Правило"
 
+#: ncms/mtt/actions/MttABMarksAction.js:13
+msgid "Set A/B marks"
+msgstr ""
+
+#: ncms/mtt/actions/MttSetCookieAction.js:33
+#: ncms/mtt/actions/MttABMarksAction.js:33
+msgid "Lifetime"
+msgstr "Время жизни"
+
+#: ncms/mtt/actions/MttSetCookieAction.js:36
+#: ncms/mtt/actions/MttABMarksAction.js:36
+msgid "Days"
+msgstr "Дней"
+
+#: ncms/mtt/actions/MttSetCookieAction.js:37
+#: ncms/mtt/actions/MttABMarksAction.js:37
+msgid "Minutes"
+msgstr "Минут"
+
+#: ncms/mtt/actions/MttABMarksAction.js:47
+msgid "A/B Marks"
+msgstr ""
+
 #: ncms/mtt/actions/MttActionDlg.js:27
 msgid "Edit action"
 msgstr "Редактировать действие"
@@ -1044,18 +1066,6 @@ msgstr "Перенаправить"
 #: ncms/mtt/actions/MttSetCookieAction.js:12
 msgid "Set a cookie"
 msgstr "Установить cookie"
-
-#: ncms/mtt/actions/MttSetCookieAction.js:33
-msgid "Lifetime"
-msgstr "Время жизни"
-
-#: ncms/mtt/actions/MttSetCookieAction.js:36
-msgid "Days"
-msgstr "Дней"
-
-#: ncms/mtt/actions/MttSetCookieAction.js:37
-msgid "Minutes"
-msgstr "Минут"
 
 #: ncms/mtt/actions/MttSetRequestParametersAction.js:12
 msgid "Set a request parameters"
