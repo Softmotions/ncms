@@ -35,7 +35,7 @@ class MttABMarksAction : MttActionHandler {
                         .toSet()
             }
         }
-        val marks = ctx["marks"] as Set<String>
+
         val req = rmc.req
         val rid = (req.getAttribute(MttHttpFilter.MTT_RIDS_KEY) as Collection<Long>).last()
         val cookieName = "_abm_${rid}"
@@ -45,14 +45,18 @@ class MttABMarksAction : MttActionHandler {
                 log.debug("Skipping AB coookie set due to existing req " +
                         "attribute: ${cookieName}=${req[cookieName]}")
             }
+            rmc.paramsForRedirect[cookieName] = (req[cookieName] as Set<String>).joinToString(",");
             return false
         }
+
+        val marks = ctx["marks"] as Set<String>
         var cookie = req.cookie(cookieName)
         if (cookie != null) {
             if (log.isDebugEnabled) {
                 log.debug("Skipping AB coookie set due to existing " +
                         "cookie: ${cookieName}=${cookie.decodeValue()}")
             }
+            rmc.paramsForRedirect[cookieName] = cookie.decodeValue();
             return false
         }
 
