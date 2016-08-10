@@ -570,16 +570,12 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
             var groups = {};
             var root = this.__toTreeNode();
             data.forEach(function (it) {
-                var type = it["type"];
-                if (type === "group" || type === "composite") {
-                    var group = this.__toTreeNode(it);
-                    groups[group.id] = qx.lang.Object.mergeWith(groups[group.id] || {}, group, false);
-                    root.children.push(group);
-                    return;
-                }
                 var item = this.__toTreeNode(it);
                 if (item == null) {
                     return;
+                }
+                if (it["type"] === "group" || it["type"] === "composite") {
+                    groups[item.id] = qx.lang.Object.mergeWith(groups[item.id] || {}, item, false);
                 }
                 if (item.groupId) {
                     groups[item.groupId] = groups[item.groupId] || {children: []};
