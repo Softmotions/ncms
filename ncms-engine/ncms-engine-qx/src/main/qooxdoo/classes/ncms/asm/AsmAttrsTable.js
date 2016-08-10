@@ -16,7 +16,8 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
     ],
     include: [
         sm.ui.form.MStringForm,
-        sm.table.MTableMutator
+        sm.table.MTableMutator,
+        ncms.cc.MCommands
     ],
 
     events: {
@@ -27,6 +28,10 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
         this.base(arguments);
         this.set({allowGrowX: true, allowGrowY: true});
         this._reload([]);
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__onRemove, this);
     },
 
     members: {
@@ -166,9 +171,9 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             table.getSelectionModel()
             .addListener("changeSelection", this._syncState, this);
 
-
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+            this._registerCommandFocusWidget(table);
 
             return table;
         },

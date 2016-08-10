@@ -5,6 +5,7 @@
  */
 qx.Class.define("ncms.news.NewsNav", {
     extend: qx.ui.core.Widget,
+    include: [ncms.cc.MCommands],
 
     statics: {
 
@@ -84,6 +85,13 @@ qx.Class.define("ncms.news.NewsNav", {
         this.__loadCurrentNewsRoot();
 
         ncms.Events.getInstance().addListener("pageChangePublished", this.__onPagePublished, this);
+
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__onDelete, this);
+        this._registerCommandFocusWidget(ps.getTable());
+
     },
 
     members: {

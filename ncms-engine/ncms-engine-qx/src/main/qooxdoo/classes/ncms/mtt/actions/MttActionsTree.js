@@ -10,6 +10,7 @@
 qx.Class.define("ncms.mtt.actions.MttActionsTree", {
     extend: qx.ui.container.Composite,
     implement: [qx.ui.form.IModel],
+    include: [ncms.cc.MCommands],
 
     properties: {
 
@@ -47,7 +48,12 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         this.base(arguments);
         this.setLayout(new qx.ui.layout.VBox());
         this.getChildControl("toolbar");
-        this.getChildControl("tree");
+        var tree = this.getChildControl("tree");
+
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__onRemove, this);
+        this._registerCommandFocusWidget(tree);
     },
 
     members: {

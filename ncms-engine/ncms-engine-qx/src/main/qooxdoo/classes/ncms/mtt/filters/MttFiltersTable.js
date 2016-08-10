@@ -12,7 +12,8 @@ qx.Class.define("ncms.mtt.filters.MttFiltersTable", {
     ],
     include: [
         sm.ui.form.MStringForm,
-        sm.table.MTableMutator
+        sm.table.MTableMutator,
+        ncms.cc.MCommands
     ],
 
     properties: {
@@ -32,6 +33,10 @@ qx.Class.define("ncms.mtt.filters.MttFiltersTable", {
         this.base(arguments);
         this.set({allowGrowX: true, allowGrowY: true});
         this._reload([]);
+
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__removeFilter, this);
     },
 
     members: {
@@ -158,6 +163,7 @@ qx.Class.define("ncms.mtt.filters.MttFiltersTable", {
             table.addListener("cellDbltap", this.__editFilter, this);
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+            this._registerCommandFocusWidget(table);
             return table;
         },
 

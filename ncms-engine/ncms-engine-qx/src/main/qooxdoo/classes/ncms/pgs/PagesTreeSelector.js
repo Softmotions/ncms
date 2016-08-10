@@ -8,7 +8,7 @@
  */
 qx.Class.define("ncms.pgs.PagesTreeSelector", {
     extend: qx.ui.core.Widget,
-    include: [ncms.cc.tree.MFolderTree],
+    include: [ncms.cc.tree.MFolderTree, ncms.cc.MCommands],
 
     /**
      * @param allowModify {Boolean?false} Allow CRUD operations on pages
@@ -49,6 +49,14 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
         }
         ncms.Events.getInstance().addListener("pageChangePublished", this.__onPagePublished, this);
+
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__onDeletePage, this);
+        this.addListenerOnce("treeLoaded", function() {
+            this._registerCommandFocusWidget(this._tree);
+        }, this);
     },
 
     members: {

@@ -10,6 +10,8 @@
  */
 qx.Class.define("ncms.mmgr.MediaFilesSelector", {
     extend: qx.ui.core.Widget,
+    include: [ncms.cc.MCommands],
+
 
     statics: {},
 
@@ -166,6 +168,12 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 }
             }, this);
         }
+
+        // Init shotcutsts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__rmFiles, this);
+        this._registerCommandFocusWidget(table);
     },
 
     members: {

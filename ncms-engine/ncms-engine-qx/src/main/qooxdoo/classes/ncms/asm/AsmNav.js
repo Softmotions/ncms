@@ -5,6 +5,7 @@
  */
 qx.Class.define("ncms.asm.AsmNav", {
     extend: qx.ui.core.Widget,
+    include: [ncms.cc.MCommands],
 
     statics: {
         ASM_EDITOR_CLAZZ: "ncms.asm.AsmEditor"
@@ -44,6 +45,12 @@ qx.Class.define("ncms.asm.AsmNav", {
 
         this.setContextMenu(new qx.ui.menu.Menu());
         this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__onRemoveAssembly, this);
+        this._registerCommandFocusWidget(this.__selector.getTable());
+
     },
 
     members: {

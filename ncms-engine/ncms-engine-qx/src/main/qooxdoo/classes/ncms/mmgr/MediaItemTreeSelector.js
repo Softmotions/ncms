@@ -10,7 +10,7 @@
  */
 qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
     extend: qx.ui.core.Widget,
-    include: [ncms.cc.tree.MFolderTree],
+    include: [ncms.cc.tree.MFolderTree, ncms.cc.MCommands],
 
     construct: function (allowModify) {
         this.base(arguments);
@@ -24,6 +24,14 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
         }
+
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__onDelete, this);
+        this.addListenerOnce("treeLoaded", function() {
+            this._registerCommandFocusWidget(this._tree);
+        }, this);
     },
 
     members: {

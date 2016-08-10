@@ -9,6 +9,7 @@
 
 qx.Class.define("ncms.mtt.MttNav", {
     extend: qx.ui.core.Widget,
+    include: [ncms.cc.MCommands],
 
     statics: {
         MTT_EDITOR_CLAZZ: "ncms.mtt.MttEditor"
@@ -88,6 +89,11 @@ qx.Class.define("ncms.mtt.MttNav", {
 
         this.setContextMenu(new qx.ui.menu.Menu());
         this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__onRemoveRule, this);
+        this._registerCommandFocusWidget(this.__selector.getTable());
     },
 
     members: {

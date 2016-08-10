@@ -140,21 +140,21 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private static final int PUT_SYSTEM = 1 << 1;
 
-    final NcmsEnvironment env;
+    private final NcmsEnvironment env;
 
-    final File basedir;
+    private final File basedir;
 
-    final RWLocksLRUCache locksCache;
+    private final RWLocksLRUCache locksCache;
 
-    final Map<Object, Map<String, Object>> metaCache;
+    private final Map<Object, Map<String, Object>> metaCache;
 
-    final ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
-    final I18n message;
+    private final I18n message;
 
-    final NcmsEventBus ebus;
+    private final NcmsEventBus ebus;
 
-    final WSUserDatabase userdb;
+    private final WSUserDatabase userdb;
 
     private final Executor resizer;
 
@@ -1583,6 +1583,15 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
 
+    private String getMimeType(String name, HttpServletRequest req) {
+        String ext = FilenameUtils.getExtension(name);
+        if ("httl".equalsIgnoreCase(ext)) {
+            return "text/html";
+        }
+        return req.getServletContext().getMimeType(name);
+    }
+
+
     private Long _put(String folder,
                       String name,
                       HttpServletRequest req,
@@ -1598,8 +1607,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         BufferedInputStream bis = new BufferedInputStream(in);
         FileUploadStream us = null;
         boolean localFilePut = ((req instanceof MediaRSLocalRequest) && ((MediaRSLocalRequest) req).getFile() != null);
-        String rctype = (req.getContentType() == null) ?
-                        req.getServletContext().getMimeType(name) :
+        String rctype = (req.getContentType() == null
+                         || "application/x-www-form-urlencoded".equals(req.getContentType())) ?
+                        getMimeType(name, req) :
                         req.getContentType();
 
         //We do not trust to the content-type provided by request
