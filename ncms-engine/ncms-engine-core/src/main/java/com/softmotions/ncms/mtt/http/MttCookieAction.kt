@@ -1,6 +1,7 @@
 package com.softmotions.ncms.mtt.http
 
 import com.google.inject.Singleton
+import com.softmotions.web.cookie
 import org.slf4j.LoggerFactory
 import javax.annotation.concurrent.ThreadSafe
 import javax.servlet.http.Cookie
@@ -27,9 +28,7 @@ class MttCookieAction : MttActionHandler {
                          resp: HttpServletResponse): Boolean {
         val spec = ctx.spec
         val name = spec.path("name").asText()
-        val prev = rmc.req.cookies?.find {
-            it.name == name
-        }
+        val prev = rmc.req.cookie(name)
         if (prev != null) {
             return false.apply {
                 if (log.isDebugEnabled) {
@@ -56,7 +55,7 @@ class MttCookieAction : MttActionHandler {
             }
         }
         if (log.isDebugEnabled) {
-            log.debug("Add cookie: name=${cookie.name} value=${cookie.value} maxAge=${cookie.maxAge}")
+            log.debug("Add cookie: ${cookie.name}=${cookie.value} maxAge=${cookie.maxAge}")
         }
         resp.addCookie(cookie)
         return false

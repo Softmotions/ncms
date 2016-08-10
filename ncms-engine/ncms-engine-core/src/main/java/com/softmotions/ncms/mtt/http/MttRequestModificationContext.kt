@@ -3,16 +3,24 @@ package com.softmotions.ncms.mtt.http
 import com.softmotions.commons.string.EscapeHelper
 import org.apache.commons.collections4.iterators.IteratorEnumeration
 import org.apache.commons.collections4.map.Flat3Map
+import org.slf4j.LoggerFactory
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletRequestWrapper
+import javax.servlet.http.HttpServletResponse
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 class MttRequestModificationContext(val req: HttpServletRequest) {
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     val params = Flat3Map<String, String>()
+
+    val paramsForRedirect by lazy {
+        Flat3Map<String, String>()
+    }
 
     fun paramsAsQueryString(): String? {
         var qs = req.queryString ?: ""
@@ -60,5 +68,31 @@ class MttRequestModificationContext(val req: HttpServletRequest) {
                 }
             }
         }
+    }
+
+    private fun attachQueryParams(url: String): String {
+        val qs = paramsAsQueryString() ?: return url
+        if ("?" in url) {
+            return url + "&" + qs
+        } else {
+            return url + "?" + qs
+        }
+    }
+
+    fun redirect(target: String, resp: HttpServletResponse) {
+        if (log.isDebugEnabled) {
+            log.debug("Send redirect: ${attachQueryParams(target)}")
+        }
+        if (paramsForRedirect.isNotEmpty()) {
+            params += paramsForRedirect
+        }
+        return resp.sendRedirect(attachQueryParams(target))
+    }
+
+    fun forward(target: String, resp: HttpServletResponse) {
+        if (log.isDebugEnabled) {
+            log.debug("Forwarding to: ${target}")
+        }
+        req.getRequestDispatcher(target).forward(applyModifications(), resp)
     }
 }

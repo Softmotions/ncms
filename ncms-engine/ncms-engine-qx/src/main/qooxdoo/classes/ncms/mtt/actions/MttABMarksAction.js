@@ -1,7 +1,7 @@
 /**
  * Mtt set A/B testing marks.
  */
-qx.Class.define("ncms.mtt.action.MttABMarksAction", {
+qx.Class.define("ncms.mtt.actions.MttABMarksAction", {
     extend: qx.core.Object,
     implement: [ncms.mtt.actions.IMttAction],
     include: [qx.locale.MTranslation],
@@ -41,6 +41,7 @@ qx.Class.define("ncms.mtt.action.MttABMarksAction", {
             form.add(units, "", null, "units");
 
             var name = new qx.ui.form.TextField().set({required: true});
+            name.setPlaceholder(this.tr("Comma separated A/B marks: A,B,C..."));
             if (spec["marks"]) {
                 name.setValue(spec["marks"]);
             }

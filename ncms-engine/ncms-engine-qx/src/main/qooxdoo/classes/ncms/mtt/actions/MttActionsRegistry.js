@@ -12,7 +12,8 @@ qx.Class.define("ncms.mtt.actions.MttActionsRegistry", {
             ncms.mtt.actions.MttLogAction,
             ncms.mtt.actions.MttRouteAction,
             ncms.mtt.actions.MttSetCookieAction,
-            ncms.mtt.actions.MttSetRequestParametersAction
+            ncms.mtt.actions.MttSetRequestParametersAction,
+            ncms.mtt.actions.MttABMarksAction
         ],
 
         createMttActionInstance: function (clazz) {

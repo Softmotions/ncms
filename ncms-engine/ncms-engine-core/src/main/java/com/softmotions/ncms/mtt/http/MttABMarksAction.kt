@@ -1,10 +1,12 @@
 package com.softmotions.ncms.mtt.http
 
 import com.google.inject.Singleton
-import com.softmotions.commons.cont.KVOptions
+import com.softmotions.web.*
 import org.slf4j.LoggerFactory
 import javax.annotation.concurrent.ThreadSafe
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
+
 
 /**
  * Set A/B marks action.
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletResponse
  */
 @Singleton
 @ThreadSafe
+@Suppress("UNCHECKED_CAST")
 class MttABMarksAction : MttActionHandler {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -27,29 +30,55 @@ class MttABMarksAction : MttActionHandler {
         if (!ctx.containsKey("marks")) {
             synchronized(this) {
                 if (ctx.containsKey("marks")) return@synchronized
-                ctx["marks"] = KVOptions(spec.path("marks").asText())
+                ctx["marks"] = spec.path("marks").asText().split(",")
+                        .filter { it.isNotBlank() }.map { it.trim().toLowerCase() }
+                        .toSet()
             }
         }
-        val marks = ctx["marks"] as KVOptions
+        val marks = ctx["marks"] as Set<String>
+        val req = rmc.req
+        val rid = (req.getAttribute(MttHttpFilter.MTT_RIDS_KEY) as Collection<Long>).last()
+        val cookieName = "_abm_${rid}"
+
+        if (req[cookieName] != null) {
+            if (log.isDebugEnabled) {
+                log.debug("Skipping AB coookie set due to existing req " +
+                        "attribute: ${cookieName}=${req[cookieName]}")
+            }
+            return false
+        }
+        var cookie = req.cookie(cookieName)
+        if (cookie != null) {
+            if (log.isDebugEnabled) {
+                log.debug("Skipping AB coookie set due to existing " +
+                        "cookie: ${cookieName}=${cookie.decodeValue()}")
+            }
+            return false
+        }
+
+        val time = spec.path("time").asInt()
         val units = spec.path("units").asText()
         if (units.isEmpty()) {
             log.error("Invalid action spec: ${spec}")
             return false
         }
-
-        fun toMaxAge(time: Int, units: String): Int {
-            return when (units) {
-                "days" -> time * 24 * 60 * 60
-                "minutes" -> time * 60
-                else -> {
-                    log.error("Invalid action units, spec=${spec}")
-                    time
-                }
+        cookie = Cookie(cookieName, null)
+        cookie.setEncodedValue(marks.joinToString(","));
+        cookie.maxAge = when (units) {
+            "days" -> time * 24 * 60 * 60
+            "minutes" -> time * 60
+            else -> {
+                log.error("Invalid action units, spec=${spec}")
+                time
             }
         }
-
-        //todo
-
+        resp.addCookie(cookie);
+        req[cookieName] = marks
+        rmc.paramsForRedirect[cookieName] = cookie.decodeValue();
+        if (log.isDebugEnabled) {
+            log.debug("Set AB cookie ${cookieName}=${cookie.decodeValue()} " +
+                    "maxAge=${cookie.maxAge}")
+        }
         return false
     }
 }

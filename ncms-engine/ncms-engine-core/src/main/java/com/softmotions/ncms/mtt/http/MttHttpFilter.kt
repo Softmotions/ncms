@@ -109,23 +109,19 @@ constructor(val ebus: NcmsEventBus,
             return false;
         }
 
-        req.setAttribute(MTT_RIDS_KEY, "")
-        val ridlist = ArrayList<Long>(3)
-        try {
-            // URI=/ URL=http://vk.smsfinance.ru:9191/ QS=test=foo
-            // URI=/rs/media/fileid/286 URL=http://vk.smsfinance.ru:9191/rs/media/fileid/286 QS=w=300&h=300
-            // URI=/rs/adm/ws/state URL=http://localhost:9191/rs/adm/ws/state QS=nocache=1469768085685
-            lock.read {
-                for (rs in id2slots.values) {
-                    if (rs.runRule(rmc, resp)) {
-                        ret = true
-                        break
-                    }
+        val rids = LinkedHashSet<Long>()
+        req.setAttribute(MTT_RIDS_KEY, rids)
+        // URI=/ URL=http://vk.smsfinance.ru:9191/ QS=test=foo
+        // URI=/rs/media/fileid/286 URL=http://vk.smsfinance.ru:9191/rs/media/fileid/286 QS=w=300&h=300
+        // URI=/rs/adm/ws/state URL=http://localhost:9191/rs/adm/ws/state QS=nocache=1469768085685
+        lock.read {
+            for (rs in id2slots.values) {
+                rids.add(rs.id)
+                if (rs.runRule(rmc, resp)) {
+                    ret = true
+                    break
                 }
             }
-        } finally {
-            val rids = ridlist.joinToString()
-            req.setAttribute(MTT_RIDS_KEY, rids)
         }
         return ret
     }

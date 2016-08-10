@@ -28,29 +28,6 @@ constructor(val env: NcmsEnvironment) : MttActionHandler {
                          rmc: MttRequestModificationContext,
                          resp: HttpServletResponse): Boolean {
         val req = rmc.req
-        fun attachQueryParams(url: String): String {
-            val qs = rmc.paramsAsQueryString() ?: return url
-            if ("?" in url) {
-                return url + "&" + qs
-            } else {
-                return url + "?" + qs
-            }
-        }
-
-        fun redirect(target: String) {
-            if (log.isDebugEnabled) {
-                log.debug("Send redirect: ${attachQueryParams(target)}")
-            }
-            return resp.sendRedirect(attachQueryParams(target))
-        }
-
-        fun forward(target: String) {
-            if (log.isDebugEnabled) {
-                log.debug("Forwarding to: ${target}")
-            }
-            req.getRequestDispatcher(target).forward(rmc.applyModifications(), resp)
-        }
-
         val target = ctx.spec.path("target").asText()
         if (target.isEmpty()) {
             if (log.isWarnEnabled) {
@@ -61,16 +38,16 @@ constructor(val env: NcmsEnvironment) : MttActionHandler {
         val mres = PAGEREF_REGEXP.matchEntire(target)
         if (mres != null) {  // Forward to internal page
             val guid = mres.groupValues[1]
-            forward("/${guid}")
+            rmc.forward("/${guid}", resp)
         } else {
             if ("://" in target) {
-                redirect(target)
+                rmc.redirect(target, resp)
             } else if (target.startsWith("//")) {
-                redirect(req.scheme + "://" + target)
+                rmc.redirect(req.scheme + "://" + target, resp)
             } else if (!target.isEmpty() && target[0] != '/') {
-                forward('/' + target)
+                rmc.forward('/' + target, resp)
             } else {
-                forward(target)
+                rmc.forward(target, resp)
             }
         }
         return true

@@ -65,6 +65,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
 import org.imgscalr.Scalr;
@@ -209,6 +210,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @PUT
     @Consumes("*/*")
     @javax.ws.rs.Path("/file/{folder:.*}/{name}")
+    @RequiresAuthentication
     @Transactional(executorType = ExecutorType.SIMPLE)
     public void put(@PathParam("folder") String folder,
                     @PathParam("name") String name,
@@ -221,6 +223,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @PUT
     @Consumes("*/*")
     @javax.ws.rs.Path("/file/{name}")
+    @RequiresAuthentication
     @Transactional(executorType = ExecutorType.SIMPLE)
     public void put(@PathParam("name") String name,
                     @Context HttpServletRequest req,
@@ -429,12 +432,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @PUT
     @javax.ws.rs.Path("/folder/{folder:.*}")
+    @RequiresAuthentication
     @Transactional
     public JsonNode newFolder(@PathParam("folder") String folder,
                               @Context HttpServletRequest req,
                               @Context HttpServletResponse resp) throws Exception {
-
-        ensureAuthenticated(req, resp);
 
         try (final ResourceLock l = new ResourceLock(folder, true)) {
             File f = new File(basedir, folder);
@@ -472,6 +474,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @PUT
     @javax.ws.rs.Path("/copy-batch/{target:.*}")
+    @RequiresAuthentication
     @Transactional
     public void copy(@Context HttpServletRequest req,
                      @Context HttpServletResponse resp,
@@ -482,6 +485,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @PUT
     @javax.ws.rs.Path("/copy-batch")
+    @RequiresAuthentication
     @Transactional
     public void copy(@Context HttpServletRequest req,
                      @Context HttpServletResponse resp,
@@ -491,8 +495,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private void _copy(HttpServletRequest req, HttpServletResponse resp,
                        String tfolder, ArrayNode files) throws Exception {
-
-        ensureAuthenticated(req, resp);
 
         checkFolder(tfolder);
         tfolder = normalizeFolder(tfolder);
@@ -549,13 +551,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @PUT
     @javax.ws.rs.Path("/move/{path:.*}")
+    @RequiresAuthentication
     @Transactional(executorType = ExecutorType.BATCH)
     public void move(@PathParam("path") String path,
                      @Context HttpServletRequest req,
                      @Context HttpServletResponse resp,
                      String npath) throws Exception {
-
-        ensureAuthenticated(req, resp);
 
         path = StringUtils.strip(path, "/");
         npath = StringUtils.strip(npath, "/");
@@ -674,12 +675,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @DELETE
     @javax.ws.rs.Path("/delete/{path:.*}")
+    @RequiresAuthentication
     @Transactional(executorType = ExecutorType.BATCH)
     public void deleteResource(@PathParam("path") String path,
                                @Context HttpServletRequest req,
                                @Context HttpServletResponse resp) throws Exception {
-
-        ensureAuthenticated(req, resp);
 
         path = StringUtils.strip(path, "/");
         checkFolder(path);
@@ -1583,22 +1583,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
 
-    private void ensureAuthenticated(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        if (req.getRemoteUser() == null) {
-            if (resp == null || !req.authenticate(resp)) {
-                throw new ForbiddenException("");
-            }
-        }
-    }
-
     private Long _put(String folder,
                       String name,
                       HttpServletRequest req,
                       HttpServletResponse resp,
                       InputStream in,
                       int flags) throws Exception {
-
-        ensureAuthenticated(req, resp);
 
         checkFolder(folder);
         Number id;

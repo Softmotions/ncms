@@ -933,6 +933,33 @@ msgstr "Подтвердите удаление правила \"%1\""
 msgid "Rule"
 msgstr "Правило"
 
+#: ncms/mtt/actions/MttABMarksAction.js:13
+msgid "Set A/B marks"
+msgstr "Установть A/B метки"
+
+#: ncms/mtt/actions/MttSetCookieAction.js:33
+#: ncms/mtt/actions/MttABMarksAction.js:33
+msgid "Lifetime"
+msgstr "Время жизни"
+
+#: ncms/mtt/actions/MttSetCookieAction.js:36
+#: ncms/mtt/actions/MttABMarksAction.js:36
+msgid "Days"
+msgstr "Дней"
+
+#: ncms/mtt/actions/MttSetCookieAction.js:37
+#: ncms/mtt/actions/MttABMarksAction.js:37
+msgid "Minutes"
+msgstr "Минут"
+
+#: ncms/mtt/actions/MttABMarksAction.js:44
+msgid "Comma separated A/B marks: A,B,C..."
+msgstr "A/B метки, разделенные запятыми: A,B,C..."
+
+#: ncms/mtt/actions/MttABMarksAction.js:48
+msgid "A/B Marks"
+msgstr "A/B метки"
+
 #: ncms/mtt/actions/MttActionDlg.js:27
 msgid "Edit action"
 msgstr "Редактировать действие"
@@ -1016,18 +1043,6 @@ msgstr "Перенаправить"
 #: ncms/mtt/actions/MttSetCookieAction.js:12
 msgid "Set a cookie"
 msgstr "Установить cookie"
-
-#: ncms/mtt/actions/MttSetCookieAction.js:33
-msgid "Lifetime"
-msgstr "Время жизни"
-
-#: ncms/mtt/actions/MttSetCookieAction.js:36
-msgid "Days"
-msgstr "Дней"
-
-#: ncms/mtt/actions/MttSetCookieAction.js:37
-msgid "Minutes"
-msgstr "Минут"
 
 #: ncms/mtt/actions/MttSetRequestParametersAction.js:12
 msgid "Set a request parameters"

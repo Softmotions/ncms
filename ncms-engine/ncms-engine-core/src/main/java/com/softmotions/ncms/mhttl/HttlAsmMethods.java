@@ -2,15 +2,25 @@ package com.softmotions.ncms.mhttl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
-import com.google.inject.Injector;
-import com.softmotions.commons.JVMResources;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.softmotions.commons.cont.KVOptions;
+import com.softmotions.commons.string.EscapeHelper;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
-import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.mtt.http.MttHttpFilter;
+import com.softmotions.web.HttpUtils;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -18,6 +28,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 @SuppressWarnings("unchecked")
 public class HttlAsmMethods {
 
+    private static final Logger log = LoggerFactory.getLogger(HttlAsmMethods.class);
 
     private HttlAsmMethods() {
     }
@@ -194,5 +205,107 @@ public class HttlAsmMethods {
             crit.limit(limit.intValue());
         }
         return crit.selectAsAsms();
+    }
+
+    ///////////////////////////////////////////////////////////
+    //                    A/B Testing                        //
+    ///////////////////////////////////////////////////////////
+
+    public static boolean abtA() {
+        return abt("a", false);
+    }
+
+    public static boolean abtB() {
+        return abt("b", false);
+    }
+
+    public static boolean abtC() {
+        return abt("c", false);
+    }
+
+    public static boolean abtD() {
+        return abt("d", false);
+    }
+
+    public static boolean abt(String name) {
+        return abt(name, false);
+    }
+
+    /**
+     * A/B testing check.
+     *
+     * @param name A/B mode to test
+     * @param def  Default value if A/B test is not passed
+     */
+    public static boolean abt(String name, boolean def) {
+        if (name == null) {
+            return def;
+        }
+        name = name.toLowerCase();
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        HttpServletRequest req = ctx.getServletRequest();
+        Collection<Long> rids =
+                (Collection<Long>)
+                        req.getAttribute(MttHttpFilter.Companion.getMTT_RIDS_KEY());
+
+        if (rids == null || rids.isEmpty()) {
+            Enumeration<String> pnames = req.getParameterNames();
+            while (pnames.hasMoreElements()) {
+                String pn = pnames.nextElement();
+                if (pn.startsWith("_abm_")) {
+                    String pv = req.getParameter(pn);
+                    if (pv != null) {
+                        StringTokenizer st = new StringTokenizer(",");
+                        while (st.hasMoreTokens()) {
+                            String m = st.nextToken().trim();
+                            if (m.equals(name)) {
+                                if (log.isDebugEnabled()) {
+                                    log.debug("Found _abm_ request parameter: {}={}", pn, pv);
+                                }
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("No mtt actions found, no _abm_ request parameters found");
+            }
+            return def;
+        }
+        Long mrid = null;
+        Cookie mcookie = null;
+        Set<String> marks = null;
+        for (Long rid : rids) {
+            Set<String> m = (Set<String>) req.getAttribute("_abm_" + rid);
+            if (m != null) {
+                mrid = rid;
+                marks = m;
+            }
+        }
+        if (marks == null) {
+            for (Long rid : rids) {
+                Cookie cookie = HttpUtils.findCookie(req, "_abm_" + rid);
+                if (cookie != null) {
+                    mrid = rid;
+                    mcookie = cookie;
+                }
+            }
+            if (mcookie != null) {
+                String[] split = StringUtils.split(EscapeHelper.decodeURIComponent(mcookie.getValue()), ",");
+                marks = new HashSet<>(split.length);
+                Collections.addAll(marks, split);
+                req.setAttribute("_abm_" + mrid, marks);
+            }
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("AB Marks: {} matches: {}={}", marks, name,
+                      (marks != null && marks.contains(name))
+            );
+        }
+        if (marks == null) {
+            return def;
+        }
+        return marks.contains(name) || def;
     }
 }
