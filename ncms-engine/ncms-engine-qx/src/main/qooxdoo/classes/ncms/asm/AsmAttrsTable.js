@@ -174,7 +174,6 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
             this._registerCommandFocusWidget(table);
-
             return table;
         },
 

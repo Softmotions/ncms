@@ -35,7 +35,7 @@ qx.Mixin.define("ncms.cc.MCommands", {
             fw.addListener("focusout", this._disableCmds, this);
             fw.addListener("disappear", this._disableCmds, this);
             if (fw.hasState("focused") || (!fw.isFocusable() && fw.isVisible())) {
-                this._enableCmds()
+                this._enableCmds();
             } else {
                 this._disableCmds();
             }

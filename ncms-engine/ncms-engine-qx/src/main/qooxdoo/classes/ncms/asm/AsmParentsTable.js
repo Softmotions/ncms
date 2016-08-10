@@ -12,7 +12,8 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
     ],
     include: [
         sm.ui.form.MStringForm,
-        sm.table.MTableMutator
+        sm.table.MTableMutator,
+        ncms.cc.MCommands
     ],
 
     events: {
@@ -23,6 +24,10 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
         this.base(arguments);
         this.set({allowGrowX: true, allowGrowY: false, height: 100});
         this._reload([]);
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__removeParent, this);
     },
 
     members: {
@@ -79,8 +84,9 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
                 focusCellOnPointerMove: false
             });
 
-            table.setContextMenu(new qx.ui.menu.Menu());
-            table.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+            this.setContextMenu(new qx.ui.menu.Menu());
+            this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+            this._registerCommandFocusWidget(table);
             return table;
         },
 
@@ -121,13 +127,18 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             if (rd == null) {
                 return;
             }
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.parents", {id: asmId}),
-                "DELETE", "application/json");
-            req.setData(JSON.stringify([rd]));
-            req.setRequestHeader("Content-Type", "application/json");
-            req.send(function (resp) {
-                this.fireEvent("parentsChanged");
-            }, this);
+            ncms.Application.confirm(
+                this.tr("Are you sure to remove parent: \"%1\"?", rd["name"]),
+                function (yes) {
+                    if (!yes) return;
+                    var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.parents", {id: asmId}),
+                        "DELETE", "application/json");
+                    req.setData(JSON.stringify([rd]));
+                    req.setRequestHeader("Content-Type", "application/json");
+                    req.send(function (resp) {
+                        this.fireEvent("parentsChanged");
+                    }, this);
+                }, this);
         },
 
         __addParents: function () {

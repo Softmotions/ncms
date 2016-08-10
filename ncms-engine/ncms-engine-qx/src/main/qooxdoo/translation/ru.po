@@ -38,7 +38,7 @@ msgid "This field is required"
 msgstr "Обязательное поле"
 
 #: ncms/asm/AsmEditor.js:92 ncms/asm/am/RichRefAMValueWidget.js:44
-#: ncms/asm/am/RichRefAM.js:44 ncms/asm/AsmParentsTable.js:100
+#: ncms/asm/am/RichRefAM.js:44 ncms/asm/AsmParentsTable.js:106
 #: ncms/asm/am/SelectAMTable.js:65 ncms/usr/UserEditForm.js:27
 #: ncms/mmgr/MediaFileEditor.js:273 ncms/pgs/PagesTable.js:21
 #: ncms/asm/AsmAttrsTable.js:119 ncms/asm/am/TreeAMNewFolderDlg.js:22
@@ -146,21 +146,21 @@ msgstr "Подпись"
 msgid "Value"
 msgstr "Значение"
 
-#: ncms/asm/AsmAttrsTable.js:188
+#: ncms/asm/AsmAttrsTable.js:187
 msgid "Edit attribute"
 msgstr "Редактировать атрибут"
 
-#: ncms/asm/AsmAttrsTable.js:190
+#: ncms/asm/AsmAttrsTable.js:189
 msgid "Override attribute"
 msgstr "Перезаписать атрибут"
 
-#: ncms/news/NewsNav.js:123 ncms/asm/AsmAttrsTable.js:201
+#: ncms/news/NewsNav.js:123 ncms/asm/AsmAttrsTable.js:200
 #: ncms/pgs/PagesTreeSelector.js:145
 msgid "New"
 msgstr "Создать"
 
 #: ncms/pgs/PageEditorEditPage.js:30 ncms/mtt/filters/MttFiltersTable.js:178
-#: ncms/mtt/actions/MttActionsTree.js:236 ncms/asm/AsmAttrsTable.js:209
+#: ncms/mtt/actions/MttActionsTree.js:236 ncms/asm/AsmAttrsTable.js:208
 #: ncms/asm/am/TreeAMValueWidget.js:452
 msgid "Edit"
 msgstr "Редактировать"
@@ -169,40 +169,40 @@ msgstr "Редактировать"
 #: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:571
 #: ncms/mtt/actions/MttActionsTree.js:132
 #: ncms/mtt/actions/MttActionsTree.js:240 ncms/mtt/MttNav.js:45
-#: ncms/mtt/MttNav.js:155 ncms/asm/AsmAttrsTable.js:213
+#: ncms/mtt/MttNav.js:155 ncms/asm/AsmAttrsTable.js:212
 #: ncms/asm/am/TreeAMValueWidget.js:461
 msgid "Remove"
 msgstr "Удалить"
 
-#: ncms/asm/AsmAttrsTable.js:219
+#: ncms/asm/AsmAttrsTable.js:218
 msgid "Override"
 msgstr "Перезаписать"
 
-#: ncms/asm/AsmAttrsTable.js:223
+#: ncms/asm/AsmAttrsTable.js:222
 msgid "Edit in parent"
 msgstr "Редактировать у родителя"
 
-#: ncms/asm/AsmAttrsTable.js:302
+#: ncms/asm/AsmAttrsTable.js:301
 msgid "New attribute for assembly: %1"
 msgstr "Новый атрибут для сборки (assembly): %1"
 
-#: ncms/asm/AsmAttrsTable.js:318
+#: ncms/asm/AsmAttrsTable.js:317
 msgid "A you sure to remove attribute?"
 msgstr "Вы действительно хотите удалить атрибут?"
 
-#: ncms/asm/AsmAttrsTable.js:319
+#: ncms/asm/AsmAttrsTable.js:318
 msgid "Recursive?"
 msgstr "Рекурсивно?"
 
-#: ncms/asm/AsmAttrsTable.js:345
+#: ncms/asm/AsmAttrsTable.js:344
 msgid "Override the parent assembly attribute: '%1'"
 msgstr "Перезаписать родительский атрибут"
 
-#: ncms/asm/AsmAttrsTable.js:347
+#: ncms/asm/AsmAttrsTable.js:346
 msgid "Edit the parent assembly attribute: '%1'"
 msgstr "Редактировать атрибут родителя"
 
-#: ncms/asm/AsmAttrsTable.js:349
+#: ncms/asm/AsmAttrsTable.js:348
 msgid "Edit attribute: '%1'"
 msgstr "Редактирование атрибута: '%1'"
 
@@ -286,19 +286,23 @@ msgstr "Вы действительно хотите удалить сборку
 msgid "Assembly"
 msgstr "Сборка (assembly)"
 
-#: ncms/asm/AsmParentsTable.js:60
+#: ncms/asm/AsmParentsTable.js:65
 msgid "Extend from parent"
 msgstr "Наследоваться от родителя"
 
-#: ncms/asm/AsmParentsTable.js:65 ncms/asm/AsmParentsTable.js:164
+#: ncms/asm/AsmParentsTable.js:70 ncms/asm/AsmParentsTable.js:175
 msgid "Remove parent"
 msgstr "Убрать наследование от родителя"
 
-#: ncms/asm/AsmParentsTable.js:138
+#: ncms/asm/AsmParentsTable.js:131
+msgid "Are you sure to remove parent: \"%1\"?"
+msgstr "Подтвердите удаление родителя: \"%1\""
+
+#: ncms/asm/AsmParentsTable.js:149
 msgid "Select parents for: %1"
 msgstr "Выберите родителей для %1"
 
-#: ncms/asm/AsmParentsTable.js:160
+#: ncms/asm/AsmParentsTable.js:171
 msgid "Add parent"
 msgstr "Добавить родителя"
 
