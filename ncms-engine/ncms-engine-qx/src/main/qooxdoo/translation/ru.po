@@ -1156,73 +1156,78 @@ msgid "User agent"
 msgstr "Агент пользователя (useragent)"
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:22
-#: ncms/mtt/filters/MttUserAgentFilter.js:49
+#: ncms/mtt/filters/MttUserAgentFilter.js:50
 msgid "Desktop"
 msgstr "Компьютер"
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:23
-#: ncms/mtt/filters/MttUserAgentFilter.js:53
+#: ncms/mtt/filters/MttUserAgentFilter.js:54
 msgid "Phone"
 msgstr "Телефон"
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:24
-#: ncms/mtt/filters/MttUserAgentFilter.js:57
+#: ncms/mtt/filters/MttUserAgentFilter.js:58
 msgid "Tablet"
 msgstr "Планшет"
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:25
-#: ncms/mtt/filters/MttUserAgentFilter.js:63
+#: ncms/mtt/filters/MttUserAgentFilter.js:64
 msgid "Android"
 msgstr ""
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:26
-#: ncms/mtt/filters/MttUserAgentFilter.js:67
+#: ncms/mtt/filters/MttUserAgentFilter.js:68
 msgid "iOS"
 msgstr ""
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:27
-#: ncms/mtt/filters/MttUserAgentFilter.js:71
-msgid "Windows"
+#: ncms/mtt/filters/MttUserAgentFilter.js:72
+msgid "OSX"
 msgstr ""
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:28
-#: ncms/mtt/filters/MttUserAgentFilter.js:75
-msgid "Linux/Unix"
+#: ncms/mtt/filters/MttUserAgentFilter.js:76
+msgid "Windows"
 msgstr ""
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:29
-#: ncms/mtt/filters/MttUserAgentFilter.js:81
-msgid "WebKit"
+#: ncms/mtt/filters/MttUserAgentFilter.js:80
+msgid "Linux/Unix"
 msgstr ""
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:30
-#: ncms/mtt/filters/MttUserAgentFilter.js:85
-msgid "Gecko"
+#: ncms/mtt/filters/MttUserAgentFilter.js:86
+msgid "WebKit"
 msgstr ""
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:31
-#: ncms/mtt/filters/MttUserAgentFilter.js:89
-msgid "Trident"
+#: ncms/mtt/filters/MttUserAgentFilter.js:90
+msgid "Gecko"
 msgstr ""
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:32
-#: ncms/mtt/filters/MttUserAgentFilter.js:93
+#: ncms/mtt/filters/MttUserAgentFilter.js:94
+msgid "Trident"
+msgstr ""
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:33
+#: ncms/mtt/filters/MttUserAgentFilter.js:98
 msgid "Edge"
 msgstr ""
 
-#: ncms/mtt/filters/MttUserAgentFilter.js:34
+#: ncms/mtt/filters/MttUserAgentFilter.js:35
 msgid "All user agents"
 msgstr "Все пользовательские агенты"
 
-#: ncms/mtt/filters/MttUserAgentFilter.js:46
+#: ncms/mtt/filters/MttUserAgentFilter.js:47
 msgid "Device type"
 msgstr "Тип устройства"
 
-#: ncms/mtt/filters/MttUserAgentFilter.js:60
+#: ncms/mtt/filters/MttUserAgentFilter.js:61
 msgid "OS type"
 msgstr "Тип ОС"
 
-#: ncms/mtt/filters/MttUserAgentFilter.js:78
+#: ncms/mtt/filters/MttUserAgentFilter.js:83
 msgid "Renderer engine type"
 msgstr "Браузерный движек"
 
