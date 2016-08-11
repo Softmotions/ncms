@@ -939,7 +939,7 @@ msgstr "Правило"
 
 #: ncms/mtt/actions/MttABMarksAction.js:13
 msgid "Set A/B marks"
-msgstr "Установть A/B метки"
+msgstr "Установить A/B метки"
 
 #: ncms/mtt/actions/MttSetCookieAction.js:33
 #: ncms/mtt/actions/MttABMarksAction.js:33

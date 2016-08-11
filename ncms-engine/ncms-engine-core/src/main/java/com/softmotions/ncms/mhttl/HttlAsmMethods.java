@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.string.EscapeHelper;
+import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
@@ -241,9 +242,16 @@ public class HttlAsmMethods {
         if (name == null) {
             return def;
         }
-        name = name.toLowerCase();
         AsmRendererContext ctx = AsmRendererContext.getSafe();
+        NcmsEnvironment env = ctx.getEnvironment();
         HttpServletRequest req = ctx.getServletRequest();
+
+        String pi = req.getRequestURI();
+        boolean isAdmRequest = pi.startsWith(env.getNcmsAdminRoot());
+        if (isAdmRequest) { // All A/B modes are ON in admin preview mode
+            return true;
+        }
+        name = name.toLowerCase();
         Collection<Long> rids =
                 (Collection<Long>)
                         req.getAttribute(MttHttpFilter.Companion.getMTT_RIDS_KEY());
