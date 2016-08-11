@@ -1151,6 +1151,81 @@ msgstr ""
 "Правила фильтрации на каждой строке:%1 <b>?</b> в конце названия параметра "
 "обозначает его необязательность<br>"
 
+#: ncms/mtt/filters/MttUserAgentFilter.js:13
+msgid "User agent"
+msgstr "Агент пользователя (useragent)"
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:22
+#: ncms/mtt/filters/MttUserAgentFilter.js:49
+msgid "Desktop"
+msgstr "Компьютер"
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:23
+#: ncms/mtt/filters/MttUserAgentFilter.js:53
+msgid "Phone"
+msgstr "Телефон"
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:24
+#: ncms/mtt/filters/MttUserAgentFilter.js:57
+msgid "Tablet"
+msgstr "Планшет"
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:25
+#: ncms/mtt/filters/MttUserAgentFilter.js:63
+msgid "Android"
+msgstr ""
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:26
+#: ncms/mtt/filters/MttUserAgentFilter.js:67
+msgid "iOS"
+msgstr ""
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:27
+#: ncms/mtt/filters/MttUserAgentFilter.js:71
+msgid "Windows"
+msgstr ""
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:28
+#: ncms/mtt/filters/MttUserAgentFilter.js:75
+msgid "Linux/Unix"
+msgstr ""
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:29
+#: ncms/mtt/filters/MttUserAgentFilter.js:81
+msgid "WebKit"
+msgstr ""
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:30
+#: ncms/mtt/filters/MttUserAgentFilter.js:85
+msgid "Gecko"
+msgstr ""
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:31
+#: ncms/mtt/filters/MttUserAgentFilter.js:89
+msgid "Trident"
+msgstr ""
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:32
+#: ncms/mtt/filters/MttUserAgentFilter.js:93
+msgid "Edge"
+msgstr ""
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:34
+msgid "All user agents"
+msgstr "Все пользовательские агенты"
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:46
+msgid "Device type"
+msgstr "Тип устройства"
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:60
+msgid "OS type"
+msgstr "Тип ОС"
+
+#: ncms/mtt/filters/MttUserAgentFilter.js:78
+msgid "Renderer engine type"
+msgstr "Браузерный движек"
+
 #: ncms/mtt/filters/MttVHostFilter.js:12
 msgid "Virtual hosts filter"
 msgstr "Виртуальный хост"
@@ -1841,6 +1916,9 @@ msgstr "Заметка"
 
 #~ msgid "List of referring pages"
 #~ msgstr "Список ссылающихся страниц"
+
+#~ msgid "Mobile phone"
+#~ msgstr ""
 
 #~ msgid "News caption"
 #~ msgstr "Заголовок новости"

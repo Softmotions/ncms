@@ -29,6 +29,7 @@ import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.web.HttpUtils;
 
 /**
  * Various template utils.
@@ -324,9 +325,33 @@ public class HttlUtilsMethods {
 
     public static String rootUrl() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        HttpServletRequest request = ctx.getServletRequest();
-        StringBuffer requestURL = request.getRequestURL();
-        String requestURI = request.getRequestURI();
+        HttpServletRequest req = ctx.getServletRequest();
+        StringBuffer requestURL = req.getRequestURL();
+        String requestURI = req.getRequestURI();
         return requestURL.substring(0, requestURL.length() - requestURI.length());
+    }
+
+    public static boolean isAndroidMobile() {
+        return HttpUtils.isAndroidMobile(AsmRendererContext.getSafe().getServletRequest());
+    }
+
+    public static boolean isAndroidTablet() {
+        return HttpUtils.isAndroidTablet(AsmRendererContext.getSafe().getServletRequest());
+    }
+
+    public static boolean isIpad() {
+        return HttpUtils.isIpad(AsmRendererContext.getSafe().getServletRequest());
+    }
+
+    public static boolean isIphone() {
+        return HttpUtils.isIphone(AsmRendererContext.getSafe().getServletRequest());
+    }
+
+    public static boolean isMobile() {
+        return HttpUtils.isMobile(AsmRendererContext.getSafe().getServletRequest());
+    }
+
+    public static boolean isTablet() {
+        return HttpUtils.isTablet(AsmRendererContext.getSafe().getServletRequest());
     }
 }

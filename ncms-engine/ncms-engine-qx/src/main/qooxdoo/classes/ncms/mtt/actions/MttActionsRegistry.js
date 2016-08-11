@@ -13,6 +13,7 @@ qx.Class.define("ncms.mtt.actions.MttActionsRegistry", {
             ncms.mtt.actions.MttRouteAction,
             ncms.mtt.actions.MttSetCookieAction,
             ncms.mtt.actions.MttSetRequestParametersAction,
+            ncms.mtt.filters.MttUserAgentFilter,
             ncms.mtt.actions.MttABMarksAction
         ],
 
