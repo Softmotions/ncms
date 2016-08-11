@@ -228,6 +228,7 @@ constructor(val ebus: NcmsEventBus,
             }.sortedBy {
                 when (it.type) {
                     "vhosts" -> 1
+                    "useragent" -> 2
                     "params" -> 10
                     "headers" -> 11
                     "cookies" -> 12

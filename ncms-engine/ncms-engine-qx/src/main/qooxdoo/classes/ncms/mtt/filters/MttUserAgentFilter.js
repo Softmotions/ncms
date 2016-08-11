@@ -24,6 +24,7 @@ qx.Class.define("ncms.mtt.filters.MttUserAgentFilter", {
             if (spec["tablet"]) ret.push(qx.locale.Manager.tr("Tablet"));
             if (spec["android"]) ret.push(qx.locale.Manager.tr("Android"));
             if (spec["ios"]) ret.push(qx.locale.Manager.tr("iOS"));
+            if (spec["osx"]) ret.push(qx.locale.Manager.tr("OSX"));
             if (spec["windows"]) ret.push(qx.locale.Manager.tr("Windows"));
             if (spec["unix"]) ret.push(qx.locale.Manager.tr("Linux/Unix"));
             if (spec["webkit"]) ret.push(qx.locale.Manager.tr("WebKit"));
@@ -65,6 +66,10 @@ qx.Class.define("ncms.mtt.filters.MttUserAgentFilter", {
             cb = new qx.ui.form.CheckBox();
             cb.setValue(!!spec["ios"]);
             form.add(cb, this.tr("iOS"), null, "ios");
+
+            cb = new qx.ui.form.CheckBox();
+            cb.setValue(!!spec["osx"]);
+            form.add(cb, this.tr("OSX"), null, "osx");
 
             cb = new qx.ui.form.CheckBox();
             cb.setValue(!!spec["windows"]);
