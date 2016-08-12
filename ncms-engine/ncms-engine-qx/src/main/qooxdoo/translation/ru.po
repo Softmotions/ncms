@@ -166,7 +166,7 @@ msgid "Edit"
 msgstr "Редактировать"
 
 #: ncms/mtt/filters/MttFiltersTable.js:182 ncms/asm/AsmNav.js:89
-#: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:580
+#: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:571
 #: ncms/mtt/actions/MttActionsTree.js:132
 #: ncms/mtt/actions/MttActionsTree.js:240 ncms/mtt/MttNav.js:45
 #: ncms/mtt/MttNav.js:155 ncms/asm/AsmAttrsTable.js:212
@@ -273,7 +273,7 @@ msgid "Refresh"
 msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:127 ncms/asm/AsmNav.js:85
-#: ncms/mmgr/MediaItemTreeSelector.js:84 ncms/mmgr/MediaFilesSelector.js:569
+#: ncms/mmgr/MediaItemTreeSelector.js:84 ncms/mmgr/MediaFilesSelector.js:560
 #: ncms/mtt/MttNav.js:134 ncms/asm/am/TreeAMValueWidget.js:457
 msgid "Rename"
 msgstr "Переименовать"
@@ -727,7 +727,7 @@ msgstr "Добавить ссылку на файл"
 msgid "Synchronized with %1"
 msgstr "Синхронизовано с %1"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:88 ncms/mmgr/MediaFilesSelector.js:575
+#: ncms/mmgr/MediaItemTreeSelector.js:88 ncms/mmgr/MediaFilesSelector.js:566
 #: ncms/asm/am/TreeAMValueWidget.js:465
 msgid "Move to another folder"
 msgstr "Переместить в другую папку"
@@ -821,12 +821,12 @@ msgstr "Папка"
 msgid "Image size"
 msgstr "Размер изображения"
 
-#: ncms/pgs/PageEditorEditPage.js:77 ncms/mmgr/MediaFilesSelector.js:556
+#: ncms/pgs/PageEditorEditPage.js:77 ncms/mmgr/MediaFilesSelector.js:547
 #: ncms/mmgr/MediaFileEditor.js:295 ncms/pgs/PageEditorInfoPage.js:32
 msgid "Preview"
 msgstr "Предпросмотр"
 
-#: ncms/mmgr/MediaFilesSelector.js:560 ncms/mmgr/MediaFileEditor.js:299
+#: ncms/mmgr/MediaFilesSelector.js:551 ncms/mmgr/MediaFileEditor.js:299
 msgid "Download"
 msgstr "Скачать"
 
@@ -838,44 +838,44 @@ msgstr "Выберите владельца файла"
 msgid "File name"
 msgstr "Имя файла"
 
-#: ncms/mmgr/MediaFilesSelector.js:265
+#: ncms/mmgr/MediaFilesSelector.js:256
 msgid "Upload files"
 msgstr "Загрузить файлы"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:76 ncms/mmgr/MediaFilesSelector.js:269
-#: ncms/mmgr/MediaFilesSelector.js:550
+#: ncms/mmgr/MediaItemTreeSelector.js:76 ncms/mmgr/MediaFilesSelector.js:260
+#: ncms/mmgr/MediaFilesSelector.js:541
 msgid "New file"
 msgstr "Новый файл"
 
-#: ncms/mmgr/MediaFilesSelector.js:273
+#: ncms/mmgr/MediaFilesSelector.js:264
 msgid "Add files"
 msgstr "Добавить файлы"
 
-#: ncms/mmgr/MediaFilesSelector.js:282
+#: ncms/mmgr/MediaFilesSelector.js:273
 msgid "Remove files"
 msgstr "Удалить файлы"
 
-#: ncms/mmgr/MediaFilesSelector.js:289
+#: ncms/mmgr/MediaFilesSelector.js:280
 msgid "Move files"
 msgstr "Переместить файлы"
 
-#: ncms/mmgr/MediaFilesSelector.js:307
+#: ncms/mmgr/MediaFilesSelector.js:298
 msgid "Show files in subfolders"
 msgstr "Показать файлы в подпапках"
 
-#: ncms/mmgr/MediaFilesSelector.js:389
+#: ncms/mmgr/MediaFilesSelector.js:380
 msgid "Are you sure to remove selected files?"
 msgstr "Вы действительно желаете безвозвратно удалить выбранные файлы?"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:157 ncms/mmgr/MediaFilesSelector.js:507
+#: ncms/mmgr/MediaItemTreeSelector.js:157 ncms/mmgr/MediaFilesSelector.js:498
 msgid "Move '%1' to another folder"
 msgstr "Переместить '%1' в другую папку"
 
-#: ncms/mmgr/MediaFilesSelector.js:508
+#: ncms/mmgr/MediaFilesSelector.js:499
 msgid "Move %1 files to another folder"
 msgstr "Переместить %1 файл(а) в другую папку"
 
-#: ncms/mmgr/MediaFilesSelector.js:546
+#: ncms/mmgr/MediaFilesSelector.js:537
 msgid "Upload"
 msgstr "Загрузить"
 
