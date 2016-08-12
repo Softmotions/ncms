@@ -14,4 +14,5 @@
     doc/db/index
     doc/httl/index
     doc/mtt/index
+    doc/cookbook/index
 
