@@ -169,7 +169,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }, this);
         }
 
-        // Init shotcutsts
+        // Init shortcuts
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__rmFiles, this);

@@ -5,6 +5,8 @@
  */
 qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
     extend: qx.ui.core.Widget,
+    include: [ncms.cc.MCommands],
+
 
     statics: {},
 
@@ -62,6 +64,12 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         bt.addListener("execute", this.__save, this);
         hcont.add(bt, {flex: 1});
         this._add(hcont);
+
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Control+S"),
+            this.__save, this);
+        this._registerCommandFocusWidget(this);
     },
 
     members: {

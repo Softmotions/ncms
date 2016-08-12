@@ -85,7 +85,6 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             var table = new sm.table.Table(tableModel, tableModel.getCustom());
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
-
             table.addListener("dataEdited", function (ev) {
                 var data = ev.getData();
                 if (data.col !== 0 || this.getCheckMode() === "multiply") {

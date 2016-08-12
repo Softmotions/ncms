@@ -30,7 +30,6 @@ qx.Class.define("ncms.usr.UserRolesTable", {
             return rowInfo.rowData.rowData["activeInGroup"] ? "#FFFF99" : "white";
         }, this));
         this.setDataRowRenderer(rr);
-
         this._reload(null, null);
     },
 
