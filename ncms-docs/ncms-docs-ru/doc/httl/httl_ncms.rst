@@ -1,4 +1,4 @@
-.. httl_ncms:
+.. _httl_ncms:
 
 nCMS расширение HTTL
 ====================
