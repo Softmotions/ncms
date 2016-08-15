@@ -431,7 +431,7 @@ HTTL: `import.methods`
     ${"Andy".hello("Great to see u!")}
 
 
-Пример использования метода `toCycle` из `httl.spi.methods.CollectionMethod`
+Пример использования метода :js:func:`toCycle` из `httl.spi.methods.CollectionMethod`
 Вывод списка продуктов с циклически меняющимся цветами строк из набора `colors`
 
 .. code-block:: html
