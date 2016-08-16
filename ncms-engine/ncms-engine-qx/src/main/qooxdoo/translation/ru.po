@@ -645,65 +645,6 @@ msgstr "Добавить запись"
 msgid "Drop record"
 msgstr "Удалить запись"
 
-#: ncms/asm/am/SocialLinksAM.js:12 ncms/asm/am/SocialLinksAM.js:39
-#: ncms/asm/am/SocialLinksAMValueWidget.js:32
-msgid "Social network links"
-msgstr "Ссылки на социальные сети"
-
-#: ncms/asm/am/SocialLinksAM.js:41 ncms/asm/am/SocialLinksAMValueWidget.js:34
-msgid "Facebook account"
-msgstr "Аккаунт Facebook"
-
-#: ncms/asm/am/SocialLinksAM.js:45 ncms/asm/am/SocialLinksAM.js:65
-#: ncms/asm/am/SocialLinksAMValueWidget.js:35
-#: ncms/asm/am/SocialLinksAMValueWidget.js:52
-msgid "Facebook"
-msgstr ""
-
-#: ncms/asm/am/SocialLinksAM.js:48 ncms/asm/am/SocialLinksAMValueWidget.js:39
-msgid "Twitter account"
-msgstr "Аккаунт Twitter"
-
-#: ncms/asm/am/SocialLinksAM.js:52 ncms/asm/am/SocialLinksAM.js:70
-#: ncms/asm/am/SocialLinksAMValueWidget.js:40
-#: ncms/asm/am/SocialLinksAMValueWidget.js:57
-msgid "Twitter"
-msgstr ""
-
-#: ncms/asm/am/SocialLinksAM.js:55 ncms/asm/am/SocialLinksAMValueWidget.js:44
-msgid "Vkontakte account"
-msgstr "Аккаунт Вконтатке"
-
-#: ncms/asm/am/SocialLinksAM.js:59 ncms/asm/am/SocialLinksAM.js:75
-#: ncms/asm/am/SocialLinksAMValueWidget.js:45
-#: ncms/asm/am/SocialLinksAMValueWidget.js:62
-msgid "Vkontakte"
-msgstr "ВКонтакте"
-
-#: ncms/asm/am/SocialLinksAM.js:61 ncms/asm/am/SocialLinksAMValueWidget.js:48
-msgid "Social network share buttons"
-msgstr "Кнопки \"Поделиться\" социальных сетей"
-
-#: ncms/asm/am/SocialLinksAM.js:64 ncms/asm/am/SocialLinksAMValueWidget.js:50
-msgid "Add facebook share button"
-msgstr "Добавить кнопку Facebook"
-
-#: ncms/asm/am/SocialLinksAM.js:69 ncms/asm/am/SocialLinksAMValueWidget.js:55
-msgid "Add twitter share button"
-msgstr "Добавить кнопку Twitter"
-
-#: ncms/asm/am/SocialLinksAM.js:74 ncms/asm/am/SocialLinksAMValueWidget.js:60
-msgid "Add vkontakte share button"
-msgstr "Добавить кнопку Вконтакте"
-
-#: ncms/asm/am/SocialLinksAM.js:79 ncms/asm/am/SocialLinksAMValueWidget.js:65
-msgid "Add odnoklassniki share button"
-msgstr "Добавить кнопку Однноклассники"
-
-#: ncms/asm/am/SocialLinksAM.js:80 ncms/asm/am/SocialLinksAMValueWidget.js:67
-msgid "Odnoklassniki"
-msgstr "Одноклассники"
-
 #: ncms/asm/am/StringAM.js:12
 msgid "String"
 msgstr "Строка"
@@ -1892,6 +1833,42 @@ msgstr "Заметка"
 
 #~ msgid "Aaction"
 #~ msgstr ""
+
+#~ msgid "Social network links"
+#~ msgstr "Ссылки на социальные сети"
+
+#~ msgid "Facebook account"
+#~ msgstr "Аккаунт Facebook"
+
+#~ msgid "Facebook"
+#~ msgstr ""
+
+#~ msgid "Twitter account"
+#~ msgstr "Аккаунт Twitter"
+
+#~ msgid "Twitter"
+#~ msgstr ""
+
+#~ msgid "Vkontakte account"
+#~ msgstr "Аккаунт Вконтатке"
+
+#~ msgid "Vkontakte"
+#~ msgstr "ВКонтакте"
+
+#~ msgid "Social network share buttons"
+#~ msgstr "Кнопки \"Поделиться\" социальных сетей"
+
+#~ msgid "Add facebook share button"
+#~ msgstr "Добавить кнопку Facebook"
+
+#~ msgid "Add odnoklassniki share button"
+#~ msgstr "Добавить кнопку Однноклассники"
+
+#~ msgid "Add twitter share button"
+#~ msgstr "Добавить кнопку Twitter"
+
+#~ msgid "Add vkontakte share button"
+#~ msgstr "Добавить кнопку Вконтакте"
 
 #~ msgid "Aggregates other actions"
 #~ msgstr "Композитное действие"

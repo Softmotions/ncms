@@ -63,7 +63,6 @@ public class AsmModule extends AbstractModule {
         attrBinder.addBinding().to(AsmMedialineAM.class);
         attrBinder.addBinding().to(AsmAliasAM.class);
         attrBinder.addBinding().to(AsmCoreAM.class);
-        attrBinder.addBinding().to(AsmSocialLinksAM.class);
 
 
         //Resource loader
