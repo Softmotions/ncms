@@ -516,7 +516,7 @@ public class AsmRS extends MBDAOSupport {
     }
 
     @GET
-    @Path("select")
+    @Path("/select")
     public Response select(@Context final HttpServletRequest req) {
         return Response.ok((StreamingOutput) output -> {
             final JsonGenerator gen = new JsonFactory().createGenerator(output);

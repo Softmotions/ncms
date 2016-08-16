@@ -1834,30 +1834,6 @@ msgstr "Заметка"
 #~ msgid "Aaction"
 #~ msgstr ""
 
-#~ msgid "Social network links"
-#~ msgstr "Ссылки на социальные сети"
-
-#~ msgid "Facebook account"
-#~ msgstr "Аккаунт Facebook"
-
-#~ msgid "Facebook"
-#~ msgstr ""
-
-#~ msgid "Twitter account"
-#~ msgstr "Аккаунт Twitter"
-
-#~ msgid "Twitter"
-#~ msgstr ""
-
-#~ msgid "Vkontakte account"
-#~ msgstr "Аккаунт Вконтатке"
-
-#~ msgid "Vkontakte"
-#~ msgstr "ВКонтакте"
-
-#~ msgid "Social network share buttons"
-#~ msgstr "Кнопки \"Поделиться\" социальных сетей"
-
 #~ msgid "Add facebook share button"
 #~ msgstr "Добавить кнопку Facebook"
 
@@ -1896,6 +1872,12 @@ msgstr "Заметка"
 
 #~ msgid "Edit action: %1"
 #~ msgstr "Редактировать действие"
+
+#~ msgid "Facebook"
+#~ msgstr ""
+
+#~ msgid "Facebook account"
+#~ msgstr "Аккаунт Facebook"
 
 #~ msgid ""
 #~ "Filter rules on each line:\n"
@@ -1988,6 +1970,12 @@ msgstr "Заметка"
 #~ msgid "Social media links"
 #~ msgstr "Ссылки на социальные сети"
 
+#~ msgid "Social network links"
+#~ msgstr "Ссылки на социальные сети"
+
+#~ msgid "Social network share buttons"
+#~ msgstr "Кнопки \"Поделиться\" социальных сетей"
+
 #~ msgid "Spec"
 #~ msgstr ""
 
@@ -2006,6 +1994,12 @@ msgstr "Заметка"
 #~ msgid "This page шы not published"
 #~ msgstr "Эта страница не опубликована"
 
+#~ msgid "Twitter"
+#~ msgstr ""
+
+#~ msgid "Twitter account"
+#~ msgstr "Аккаунт Twitter"
+
 #~ msgid "URL"
 #~ msgstr ""
 
@@ -2023,6 +2017,12 @@ msgstr "Заметка"
 
 #~ msgid "Utm marks filter"
 #~ msgstr "Utm маркеры"
+
+#~ msgid "Vkontakte"
+#~ msgstr "ВКонтакте"
+
+#~ msgid "Vkontakte account"
+#~ msgstr "Аккаунт Вконтатке"
 
 #~ msgid "Youtube film"
 #~ msgstr "Youtube ролик"
