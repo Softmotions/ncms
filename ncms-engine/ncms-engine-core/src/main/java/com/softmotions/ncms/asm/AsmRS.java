@@ -144,7 +144,7 @@ public class AsmRS extends MBDAOSupport {
     }
 
     @DELETE
-    @Path("/{id}")
+    @Path("/delete/{id}")
     @Transactional
     public void delete(@PathParam("id") Long id) {
         adao.asmRemove(id);
@@ -186,7 +186,7 @@ public class AsmRS extends MBDAOSupport {
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/get/{id}")
     @JsonView(Asm.ViewFull.class)
     @Transactional
     public Asm get(@PathParam("id") Long id) throws Exception {

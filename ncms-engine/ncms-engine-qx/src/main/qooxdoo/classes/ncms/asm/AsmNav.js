@@ -101,7 +101,7 @@ qx.Class.define("ncms.asm.AsmNav", {
                 this.tr("Are you sure to remove assembly: \"%1\"?", asm["name"]),
                 function (yes) {
                     if (!yes) return;
-                    var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms", {id: asm["id"]}), "DELETE");
+                    var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.delete", {id: asm["id"]}), "DELETE");
                     req.send(function (resp) {
                         this.__selector.reload();
                     }, this);
