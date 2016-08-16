@@ -26,7 +26,8 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
             ncms.asm.am.DateAM,
             ncms.asm.am.BumpOrdinalAM,
             ncms.asm.am.MedialineAM,
-            ncms.asm.am.AsmCoreAM
+            ncms.asm.am.AsmCoreAM,
+            ncms.asm.am.SocialLinksAM
         ],
 
 
