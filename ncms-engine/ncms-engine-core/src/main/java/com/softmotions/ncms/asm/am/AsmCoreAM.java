@@ -1,8 +1,6 @@
 package com.softmotions.ncms.asm.am;
 
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -46,28 +44,8 @@ public class AsmCoreAM extends AsmAttributeManagerSupport {
     }
 
     @Override
-    public Object[] fetchFTSData(AsmAttribute attr) {
-        return null;
-    }
-
-    @Override
-    public AsmAttribute prepareGUIAttribute(HttpServletRequest req, HttpServletResponse resp, Asm page, Asm template, AsmAttribute tmplAttr, AsmAttribute attr) throws Exception {
-        return attr;
-    }
-
-    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         return "";
-    }
-
-    @Override
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        return attr;
-    }
-
-    @Override
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        return null;
     }
 
     @Override

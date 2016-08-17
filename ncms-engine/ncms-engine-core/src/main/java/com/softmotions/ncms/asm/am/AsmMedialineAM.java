@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -44,8 +42,6 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 
 @Singleton
 public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager {
-
-    private static final Logger log = LoggerFactory.getLogger(AsmMedialineAM.class);
 
     public static final int DEFAULT_IMG_WIDTH = 800;
 
@@ -235,7 +231,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
 
     @Override
     public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx, AsmAttribute attr, Map<Long, Long> fmap) throws Exception {
-        return null;
+        return attr;
     }
 
     @Override

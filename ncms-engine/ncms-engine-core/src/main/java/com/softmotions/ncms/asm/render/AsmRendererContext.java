@@ -99,6 +99,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      * Assembly instance bound to this context.
      * You can freely change properties of this assembly instance.
      */
+    @Nonnull
     public abstract Asm getAsm();
 
 

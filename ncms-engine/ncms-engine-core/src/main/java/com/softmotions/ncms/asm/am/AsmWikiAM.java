@@ -261,16 +261,8 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
             return attr;
         }
 
-
         // todo replace filerefs to the local
 
-
-
         return attr;
-    }
-
-    @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-
     }
 }

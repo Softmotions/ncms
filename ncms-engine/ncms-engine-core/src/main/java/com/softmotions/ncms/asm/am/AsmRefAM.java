@@ -2,7 +2,6 @@ package com.softmotions.ncms.asm.am;
 
 import java.io.StringWriter;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -41,21 +40,6 @@ public class AsmRefAM extends AsmAttributeManagerSupport {
     }
 
     @Override
-    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
-                                            HttpServletResponse resp,
-                                            Asm page,
-                                            Asm template,
-                                            AsmAttribute tmplAttr,
-                                            AsmAttribute attr) throws Exception {
-        return attr;
-    }
-
-    @Override
-    public Object[] fetchFTSData(AsmAttribute attr) {
-        return null;
-    }
-
-    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx,
                                      String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
@@ -88,8 +72,7 @@ public class AsmRefAM extends AsmAttributeManagerSupport {
                      resp.getStatus(), asmName, asm.getName(), attr.getName());
             return null;
         }
-        //Schedule skip escaping on this attribute
-        //ctx.setNextEscapeSkipping(true);
+
         return out.toString();
     }
 
@@ -104,13 +87,8 @@ public class AsmRefAM extends AsmAttributeManagerSupport {
             attr.setEffectiveValue(null);
             return attr;
         }
-        String name = adao.asmSelectNameById(val.get("value").asLong());
+        String name = adao.asmSelectNameById(val.path("value").asLong());
         attr.setEffectiveValue(name);
         return attr;
-    }
-
-    @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-
     }
 }

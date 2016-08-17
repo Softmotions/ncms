@@ -75,11 +75,6 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport{
     }
 
     @Override
-    public Object[] fetchFTSData(AsmAttribute attr) {
-        return null;
-    }
-
-    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      @Nonnull Map<String, String> options) throws AsmRenderingException {
 
@@ -219,21 +214,15 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport{
         JsonUtils.populateMapByJsonNode((ObjectNode) val, opts,
                                         "asLocation");
         attr.setOptions(opts.toString());
-        attr.setEffectiveValue(val.has("value") ? val.get("value").asText() : null);
+        attr.setEffectiveValue(StringUtils.trimToNull(val.path("value").asText(null)));
         return attr;
     }
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText().trim() : null);
+        attr.setEffectiveValue(StringUtils.trimToNull(val.path("value").asText(null)));
         return attr;
     }
-
-    @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-
-    }
-
 
     @Start(order = 10, parallel = true)
     public void start() {
@@ -251,7 +240,6 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport{
             httpclient = null;
         }
     }
-
 
     @SuppressWarnings("unchecked")
     static final class InternalHttpRequest extends HttpServletRequestWrapper {

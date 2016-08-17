@@ -554,7 +554,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
 
         // Copy assembly structure
-        Asm asm = adao.asmClone(asmId,
+        Asm page = adao.asmClone(asmId,
                                 guid,
                                 spec.path("type").asText(),
                                 spec.path("name").asText(),
@@ -562,12 +562,30 @@ public class PageRS extends MBDAOSupport implements PageService {
                                 null);
 
         // Copy assembly media files
-        Map<Long, Long> fmap = mrepo.copyPageMedia(asmId, asm.getId(), req.getRemoteUser());
+        Map<Long, Long> fmap = mrepo.copyPageMedia(asmId, page.getId(), req.getRemoteUser());
 
+
+        // Postprocess assembly attributes
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
-        amCtx.setAsmId(asm.getId());
+        amCtx.setAsmId(page.getId());
+        for (AsmAttribute attr : page.getEffectiveAttributes()) {
+            if (attr.getAsmId() != page.getId()) { //parent attr
+                attr = attr.cloneDeep();
+                attr.asmId = page.getId();
+            }
+            AsmAttributeManagersRegistry amreg = amRegistry.get();
+            AsmAttributeManager am = amreg.getByType(attr.getType());
+            if (am == null) {
+                log.warn("Missing attribute manager for type: {}", attr.getType());
+                continue;
+            }
+            am.handleAssemblyCloned(amCtx, attr, fmap);
+            adao.asmUpsertAttribute(attr);
 
-        log.info("!!!! File ids mapping={}", fmap);
+            // todo attributePersisted???
+
+        }
+
 
         //todo perform clone postprocessing
 

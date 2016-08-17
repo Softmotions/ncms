@@ -3,8 +3,6 @@ package com.softmotions.ncms.asm.am;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -53,21 +51,6 @@ public class AsmFileRefAM extends AsmAttributeManagerSupport {
     @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
-    }
-
-    @Override
-    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
-                                            HttpServletResponse resp,
-                                            Asm page,
-                                            Asm template,
-                                            AsmAttribute tmplAttr,
-                                            AsmAttribute attr) throws Exception {
-        return attr;
-    }
-
-    @Override
-    public Object[] fetchFTSData(AsmAttribute attr) {
-        return null;
     }
 
     @Override
@@ -141,10 +124,5 @@ public class AsmFileRefAM extends AsmAttributeManagerSupport {
             }
         }
         return attr;
-    }
-
-    @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-
     }
 }

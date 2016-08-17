@@ -2,8 +2,6 @@ package com.softmotions.ncms.asm.am;
 
 import java.util.Map;
 import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +11,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.json.JsonUtils;
-import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.PageRS;
@@ -43,21 +40,6 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
     @Inject
     public AsmMainPageAM(PageRS pageRS) {
         this.pageRS = pageRS;
-    }
-
-    @Override
-    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
-                                            HttpServletResponse resp,
-                                            Asm page,
-                                            Asm template,
-                                            AsmAttribute tmplAttr,
-                                            AsmAttribute attr) throws Exception {
-        return attr;
-    }
-
-    @Override
-    public Object[] fetchFTSData(AsmAttribute attr) {
-        return null;
     }
 
     @Override

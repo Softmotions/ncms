@@ -39,7 +39,7 @@ import com.softmotions.ncms.mhttl.Tree;
 import com.softmotions.weboot.i18n.I18n;
 
 /**
- * Tree strucrure attribute manager.
+ * Tree structure attribute manager.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
@@ -194,11 +194,6 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
             //todo sync?
         }
         return attr;
-    }
-
-    @Override
-    public Object[] fetchFTSData(AsmAttribute attr) {
-        return null;
     }
 
     @Override
@@ -364,10 +359,5 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
                 }
             }
         }
-    }
-
-    @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-
     }
 }

@@ -2,8 +2,6 @@ package com.softmotions.ncms.asm.am;
 
 import java.io.IOException;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,16 +49,6 @@ public class AsmImageAM extends AsmAttributeManagerSupport {
     @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
-    }
-
-    @Override
-    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
-                                            HttpServletResponse resp,
-                                            Asm page,
-                                            Asm template,
-                                            AsmAttribute tmplAttr,
-                                            AsmAttribute attr) throws Exception {
-        return attr;
     }
 
     @Override
@@ -239,11 +227,4 @@ public class AsmImageAM extends AsmAttributeManagerSupport {
         }
         return val;
     }
-
-
-    @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-
-    }
-
 }

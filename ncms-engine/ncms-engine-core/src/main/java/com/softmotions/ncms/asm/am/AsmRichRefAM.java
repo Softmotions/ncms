@@ -2,12 +2,8 @@ package com.softmotions.ncms.asm.am;
 
 import java.io.IOException;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,8 +27,6 @@ import com.softmotions.ncms.mhttl.RichRef;
 
 @Singleton
 public class AsmRichRefAM extends AsmAttributeManagerSupport {
-
-    private static final Logger log = LoggerFactory.getLogger(AsmRichRefAM.class);
 
     private static final String[] TYPES = new String[]{"richref"};
 
@@ -58,21 +52,6 @@ public class AsmRichRefAM extends AsmAttributeManagerSupport {
     @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
-    }
-
-    @Override
-    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
-                                            HttpServletResponse resp,
-                                            Asm page,
-                                            Asm template,
-                                            AsmAttribute tmplAttr,
-                                            AsmAttribute attr) throws Exception {
-        return attr;
-    }
-
-    @Override
-    public Object[] fetchFTSData(AsmAttribute attr) {
-        return null;
     }
 
     public RichRef renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) throws AsmRenderingException {
@@ -184,10 +163,5 @@ public class AsmRichRefAM extends AsmAttributeManagerSupport {
             }
         }
         return val;
-    }
-
-    @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-
     }
 }

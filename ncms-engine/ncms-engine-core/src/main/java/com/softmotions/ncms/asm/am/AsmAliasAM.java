@@ -2,17 +2,12 @@ package com.softmotions.ncms.asm.am;
 
 import java.util.Map;
 import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
@@ -28,8 +23,6 @@ import com.softmotions.weboot.i18n.I18n;
  */
 @Singleton
 public class AsmAliasAM extends AsmAttributeManagerSupport {
-
-    private static final Logger log = LoggerFactory.getLogger(AsmAliasAM.class);
 
     public static final String[] TYPES = new String[]{"alias"};
 
@@ -51,34 +44,19 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
     }
 
     @Override
-    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
-                                            HttpServletResponse resp,
-                                            Asm page,
-                                            Asm template,
-                                            AsmAttribute tmplAttr,
-                                            AsmAttribute attr) throws Exception {
-        return attr;
-    }
-
-    @Override
-    public Object[] fetchFTSData(AsmAttribute attr) {
-        return null;
-    }
-
-    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         return ctx.getAsm().getNavAlias();
     }
 
     @Override
     public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        attr.setEffectiveValue(val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null);
+        attr.setEffectiveValue(StringUtils.trimToNull(val.path("value").asText(null)));
         return attr;
     }
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        String alias = val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null;
+        String alias = StringUtils.trimToNull(val.path("value").asText(null));
         while (alias != null && !alias.isEmpty() && alias.charAt(0) == '/') {
             alias = alias.substring(1);
         }
@@ -90,9 +68,9 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
         String alias;
         if (val != null) {
-            alias = val.hasNonNull("value") ? StringUtils.trimToNull(val.get("value").asText()) : null;
+            alias = StringUtils.trimToNull(val.path("value").asText(null));
         } else if (opts != null) {
-            alias = opts.hasNonNull("value") ? StringUtils.trimToNull(opts.get("value").asText()) : null;
+            alias = StringUtils.trimToNull(val.path("value").asText(null));
         } else {
             return;
         }

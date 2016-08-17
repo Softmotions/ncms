@@ -205,7 +205,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
     /**
      * String representation of attribute
-     * in the context of specified assembyly.
+     * in the context of specified assembly.
      */
     public String toString(Asm asm) {
         return asm.getName() + '#' + name;

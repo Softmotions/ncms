@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -43,8 +41,6 @@ import com.softmotions.ncms.mhttl.SelectNode;
 
 @Singleton
 public class AsmSelectAM extends AsmAttributeManagerSupport {
-
-    private static final Logger log = LoggerFactory.getLogger(AsmSelectAM.class);
 
     public static final String[] TYPES = new String[]{"select"};
 

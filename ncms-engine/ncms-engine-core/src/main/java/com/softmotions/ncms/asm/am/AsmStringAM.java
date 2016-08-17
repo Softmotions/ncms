@@ -1,8 +1,6 @@
 package com.softmotions.ncms.asm.am;
 
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,21 +27,6 @@ public class AsmStringAM extends AsmAttributeManagerSupport {
     }
 
     @Override
-    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
-                                            HttpServletResponse resp,
-                                            Asm page,
-                                            Asm template,
-                                            AsmAttribute tmplAttr,
-                                            AsmAttribute attr) throws Exception {
-        return attr;
-    }
-
-    @Override
-    public Object[] fetchFTSData(AsmAttribute attr) {
-        return new String[]{attr.getEffectiveValue()};
-    }
-
-    @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname,
                                      Map<String, String> options) throws AsmRenderingException {
         Asm asm = ctx.getAsm();
@@ -61,18 +44,13 @@ public class AsmStringAM extends AsmAttributeManagerSupport {
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts,
                                         "display", "placeholder", "maxLength");
         attr.setOptions(asmOpts.toString());
-        attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText() : null);
+        attr.setEffectiveValue(val.path("value").asText(null));
         return attr;
     }
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        attr.setEffectiveValue(val.hasNonNull("value") ? val.get("value").asText() : null);
+        attr.setEffectiveValue(val.path("value").asText(null));
         return attr;
-    }
-
-    @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-
     }
 }

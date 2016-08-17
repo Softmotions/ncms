@@ -75,8 +75,4 @@ public class AsmBooleanAM extends AsmAttributeManagerSupport {
         }
         return attr;
     }
-
-    @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-    }
 }
