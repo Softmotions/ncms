@@ -6,14 +6,6 @@
 <mapper namespace="com.softmotions.ncms.asm.AsmEventsListener">
 
     <update id="fixCoreFolderLocation"
-            databaseId="H2"
-            parameterType="map">
-        UPDATE ASM_CORES c
-        SET c.location = #{new_prefix} || SUBSTR(c.location, #{prefix_like_len})
-        WHERE c.location LIKE #{prefix_like}
-    </update>
-
-    <update id="fixCoreFolderLocation"
             databaseId="DB2"
             parameterType="map">
         UPDATE ASM_CORES c

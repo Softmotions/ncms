@@ -234,6 +234,11 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
     }
 
     @Override
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx, AsmAttribute attr, Map<Long, Long> fmap) throws Exception {
+        return null;
+    }
+
+    @Override
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
 
     }

@@ -22,7 +22,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
  */
 
 @Singleton
-public class AsmBooleanAM implements AsmAttributeManager {
+public class AsmBooleanAM extends AsmAttributeManagerSupport {
 
     public static final String[] TYPES = new String[]{"boolean"};
 

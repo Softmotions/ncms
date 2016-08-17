@@ -89,28 +89,6 @@
     </select>
 
     <update id="mergeNewPage"
-            databaseId="H2"
-            parameterType="map">
-        MERGE INTO asms (name, hname, TYPE,
-        nav_parent_id,
-        lang,
-        nav_cached_path,
-        OPTIONS,
-        mdate, muser, owner,
-        description,
-        recursive_acl_id)
-        KEY (NAME)
-        VALUES (#{guid}, #{name}, #{type},
-                #{nav_parent_id,jdbcType=BIGINT},
-                #{lang,jdbcType=CHAR},
-                #{nav_cached_path},
-                #{options,jdbcType=VARCHAR},
-                now(), #{user}, #{user},
-                #{description},
-                #{recursive_acl})
-    </update>
-
-    <update id="mergeNewPage"
             databaseId="DB2"
             parameterType="map">
         MERGE INTO ASMS a
@@ -232,20 +210,6 @@
         FROM ASMS AS p
         WHERE p.id = #{id}
     </select>
-
-
-    <update id="updateAttribute"
-            databaseId="H2"
-            parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        UPDATE ASM_ATTRS
-        SET
-            options     = #{options},
-            value       = #{value},
-            large_value = #{largeValue},
-            mdate       = now()
-        WHERE asm_id = #{asmId}
-              AND name = #{name}
-    </update>
 
     <update id="updateAttribute"
             databaseId="DB2"

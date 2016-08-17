@@ -19,7 +19,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
  */
 
 @Singleton
-public class AsmStringAM implements AsmAttributeManager {
+public class AsmStringAM extends AsmAttributeManagerSupport {
 
     public static final String[] TYPES = new String[]{"*", "string"};
 

@@ -38,12 +38,6 @@
           VALUES (o.ref, o.content_type, o.data)
     </update>
 
-    <update id="saveData" databaseId="H2" parameterType="map">
-        MERGE INTO REFDATA (ref, content_type, DATA )
-        KEY (REF)
-        VALUE (#{ref}, #{content_type}, #{data})
-    </update>
-
     <delete id="removeData" parameterType="map">
         DELETE
         FROM REFDATA

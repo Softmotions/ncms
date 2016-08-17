@@ -24,7 +24,7 @@ import com.softmotions.ncms.mhttl.RichRef;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmPageRefAM implements AsmAttributeManager {
+public class AsmPageRefAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmFileRefAM.class);
 

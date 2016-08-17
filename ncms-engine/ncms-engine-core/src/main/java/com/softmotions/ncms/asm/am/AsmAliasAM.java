@@ -27,7 +27,7 @@ import com.softmotions.weboot.i18n.I18n;
  * @version $Id$
  */
 @Singleton
-public class AsmAliasAM implements AsmAttributeManager {
+public class AsmAliasAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmAliasAM.class);
 

@@ -579,17 +579,6 @@
 
 
     <update id="upsertAttribute"
-            databaseId="H2"
-            parameterType="com.softmotions.ncms.asm.AsmAttribute">
-        MERGE INTO ASM_ATTRS (asm_id, NAME, LABEL, TYPE,
-        OPTIONS, required, VALUE, large_value, mdate)
-        KEY (asm_id, NAME)
-        VALUES (SEQ_ATTR_ID.NEXTVAL, #{asmId}, #{name}, #{label}, #{type},
-                #{options}, #{required}, #{value}, #{largeValue}, now())
-    </update>
-
-
-    <update id="upsertAttribute"
             databaseId="DB2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         MERGE INTO ASM_ATTRS a
@@ -632,6 +621,90 @@
         FROM ASM_REFDATA
         WHERE asm_id = #{id} AND type = #{type}
     </select>
+
+
+    <insert id="asmClone" parameterType="map"
+            useGeneratedKeys="true" keyProperty="id">
+
+        INSERT INTO asms (name, ordinal, asm_core_id, hname,
+                          cdate, mdate, muser, owner,
+                          published, template, template_mode, controller,
+                          type, options, description,
+                          nav_parent_id, nav_cached_path,
+                          lang, edate)
+            SELECT
+                #{name},
+                SEQ_ASMS_ORDINAL.nextval,
+                a.asm_core_id,
+                <if test="hname == null">a.hname,</if>
+                <if test="hname != null">#{hname},</if>
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP,
+                a.muser,
+                a.owner,
+                a.published,
+                a.template,
+                a.template_mode,
+                a.controller,
+                <if test="type == null">a.type,</if>
+                <if test="type != null">#{type},</if>
+                a.options,
+                <if test="description == null">a.description,</if>
+                <if test="description != null">#{description},</if>
+                a.nav_parent_id,
+                a.nav_cached_path,
+                a.lang,
+                a.edate
+            FROM asms AS a
+            WHERE a.id = #{asmId}
+    </insert>
+
+    <insert id="asmCloneParents" parameterType="map">
+        INSERT INTO asm_parents(asm_id, asm_parent_id)
+        SELECT #{newAsmId}, asm_parent_id
+        FROM asm_parents AS p
+        WHERE p.asm_id = #{asmId} AND p.asm_parent_id != #{newAsmId}
+    </insert>
+
+
+    <insert id="asmCloneSysProps" parameterType="map">
+        INSERT INTO asm_sysprops(asm_id, property, value)
+        SELECT #{newAsmId}, property, value
+        FROM asm_sysprops AS p
+        WHERE p.asm_id = #{asmId}
+    </insert>
+
+    <insert id="asmCloneRefData" parameterType="map">
+        INSERT INTO asm_refdata(asm_id, type, svalue, ivalue)
+        SELECT #{newAsmId}, type, svalue, ivalue
+        FROM asm_refdata AS p
+        WHERE p.asm_id = #{asmId}
+    </insert>
+
+    <insert id="asmCloneAttrs" parameterType="map">
+        INSERT INTO asm_attrs (id, asm_id, name, label, type, options,
+                               value, large_value, ordinal, required, mdate)
+            SELECT seq_attr_id.nextval, #{newAsmId}, name, label, type, options,
+                   value, large_value, seq_asms_ordinal.nextval, required, CURRENT_TIMESTAMP
+            FROM
+                (SELECT attr.name         AS name,
+                        attr.label        AS label,
+                        attr.type         AS type,
+                        attr.options      AS options,
+                        attr.value        AS value,
+                        attr.large_value  AS large_value,
+                        attr.required     AS required,
+                        attr.ordinal      AS o2
+                 FROM asm_attrs AS attr
+                 WHERE attr.asm_id = #{asmId}
+                 <if test="skipTypes != null and skipTypes.length > 0">
+                 AND  attr.type NOT IN
+                 <foreach collection="skipTypes" item="t" open="(" separator="," close=")">
+                     #{t}
+                 </foreach>
+                 </if>
+                 ORDER BY o2)
+    </insert>
 
     <!-- ======================== Result maps ============================= -->
 

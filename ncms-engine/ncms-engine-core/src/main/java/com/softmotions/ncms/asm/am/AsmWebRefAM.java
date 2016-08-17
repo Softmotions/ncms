@@ -51,7 +51,7 @@ import com.softmotions.web.GenericResponseWrapper;
 
 @SuppressWarnings("unchecked")
 @Singleton
-public class AsmWebRefAM implements AsmAttributeManager {
+public class AsmWebRefAM extends AsmAttributeManagerSupport{
 
     private static final Logger log = LoggerFactory.getLogger(AsmWebRefAM.class);
 

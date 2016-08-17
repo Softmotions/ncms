@@ -48,7 +48,7 @@ import com.softmotions.weboot.i18n.I18n;
 @Singleton
 @Path("adm/am/tree")
 @Produces("application/json;charset=UTF-8")
-public class AsmTreeAM implements AsmAttributeManager {
+public class AsmTreeAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmTreeAM.class);
 
@@ -312,7 +312,6 @@ public class AsmTreeAM implements AsmAttributeManager {
         }
         tree.remove("syncWith");
         tree.remove("syncWithId"); //legacy
-
         attr.setOptions(opts.toString());
         try {
             saveTree(ctx, attr, tree, inSync);
@@ -320,7 +319,7 @@ public class AsmTreeAM implements AsmAttributeManager {
             log.error("", e);
             throw new RuntimeException(e);
         }
-        attr.setEffectiveValue(tree.toString());
+        attr.setEffectiveValue(mapper.writeValueAsString(tree));
         return attr;
     }
 

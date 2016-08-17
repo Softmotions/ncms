@@ -23,7 +23,7 @@ import com.softmotions.ncms.mhttl.Tree;
  */
 
 @Singleton
-public class AsmBreadCrumbsAM implements AsmAttributeManager {
+public class AsmBreadCrumbsAM extends AsmAttributeManagerSupport {
 
     public static final String[] TYPES = new String[]{"breadcrumbs"};
 

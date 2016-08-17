@@ -30,7 +30,7 @@ import com.softmotions.ncms.mhttl.RichRef;
  */
 
 @Singleton
-public class AsmRichRefAM implements AsmAttributeManager {
+public class AsmRichRefAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmRichRefAM.class);
 

@@ -39,18 +39,22 @@ import com.softmotions.weboot.i18n.I18n;
  */
 
 @Singleton
-public class AsmWikiAM implements AsmAttributeManager {
+public class AsmWikiAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmWikiAM.class);
 
     public static final String[] TYPES = {"wiki"};
 
-    private static final Pattern MEDIAREF_REGEXP = Pattern.compile("\\[\\[(image|media):\\s*(/)?(\\d+)/.*\\]\\]",
+    // \[\[(image|media):(\s*)(/)?(\d+)/(.*)\]\]
+    private static final Pattern MEDIAREF_REGEXP = Pattern.compile("\\[\\[(image|media):(\\s*)(/)?(\\d+)/(.*)\\]\\]",
                                                                    Pattern.CASE_INSENSITIVE);
 
+    // \[\[page:\s*([0-9a-f]{32})(\s*\|.*)?\]\]
     private static final Pattern PAGEREF_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|.*)?\\]\\]",
                                                                   Pattern.CASE_INSENSITIVE);
 
+
+    // \[\[page:\s*([0-9a-f]{32})(\s*\|(.*))?\]\]
     private static final Pattern PAGENAME_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|(.*))?\\]\\]",
                                                                    Pattern.CASE_INSENSITIVE);
 
@@ -201,7 +205,7 @@ public class AsmWikiAM implements AsmAttributeManager {
         root.put("html", html);
         root.put("markup", markup);
         root.put("value", value);
-        attr.setEffectiveValue(root.toString());
+        attr.setEffectiveValue(mapper.writeValueAsString(root));
         return attr;
     }
 
@@ -225,9 +229,10 @@ public class AsmWikiAM implements AsmAttributeManager {
                 ctx.registerPageDependency(attr, guid);
             }
         }
+        // \[\[(image|media):(\s*)(/)?(\d+)/(.*)\]\]
         m = MEDIAREF_REGEXP.matcher(value);
         while (m.find()) {
-            String fileId = m.group(3);
+            String fileId = m.group(4);
             if (fileId == null) {
                 continue;
             }
@@ -239,6 +244,29 @@ public class AsmWikiAM implements AsmAttributeManager {
             }
         }
         return value;
+    }
+
+
+    @Override
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,
+                                             AsmAttribute attr, Map<Long, Long> fmap) throws Exception {
+
+        // \[\[(image|media):(\s*)(/)?(\d+)/(.*)\]\]
+        String svalue = attr.getEffectiveValue();
+        if (fmap.isEmpty() || StringUtils.isBlank(svalue)) {
+            return attr;
+        }
+        ObjectNode value = (ObjectNode) mapper.readTree(svalue);
+        if (!"mediawiki".equals(value.path("markup").asText())) {
+            return attr;
+        }
+
+
+        // todo replace filerefs to the local
+
+
+
+        return attr;
     }
 
     @Override

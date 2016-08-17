@@ -15,14 +15,6 @@
     </select>
 
     <update id="addSet"
-            databaseId="H2"
-            parameterType="map">
-        MERGE INTO USER_ENV (userid, TYPE, ${vcol})
-        KEY ("USERID", "TYPE", ${vcol})
-        VALUES (#{userid}, #{type}, #{value})
-    </update>
-
-    <update id="addSet"
             databaseId="DB2"
             parameterType="map">
         MERGE INTO USER_ENV e

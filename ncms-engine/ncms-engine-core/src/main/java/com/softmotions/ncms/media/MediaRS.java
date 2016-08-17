@@ -477,10 +477,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @RequiresAuthentication
     @Transactional
     public void copy(@Context HttpServletRequest req,
-                     @Context HttpServletResponse resp,
                      @PathParam("target") String target,
                      ArrayNode files) throws Exception {
-        _copy(req, resp, target, files);
+        _copy(req, target, files);
     }
 
     @PUT
@@ -488,17 +487,14 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @RequiresAuthentication
     @Transactional
     public void copy(@Context HttpServletRequest req,
-                     @Context HttpServletResponse resp,
                      ArrayNode files) throws Exception {
-        _copy(req, resp, "", files);
+        _copy(req, "", files);
     }
 
-    private void _copy(HttpServletRequest req, HttpServletResponse resp,
-                       String tfolder, ArrayNode files) throws Exception {
+    private void _copy(HttpServletRequest req, String tfolder, ArrayNode files) throws Exception {
 
         checkFolder(tfolder);
         tfolder = normalizeFolder(tfolder);
-        checkEditAccess(tfolder, req);
 
         for (int i = 0, l = files.size(); i < l; ++i) {
             String spath = normalizePath(files.get(i).asText());
@@ -514,7 +510,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 if (!sfile.exists()) {
                     continue;
                 }
-
                 try (final ResourceLock l2 = new ResourceLock(tpath, true)) {
                     File tfile = new File(basedir, tpath);
                     Map<String, Object> row = selectOne("selectResourceAttrsByPath",
@@ -536,11 +531,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                            "name", sname);
 
                     insert("insertEntity", row);
-
                     if (row.get("id") != null) {
                         updateFTSKeywords(((Number) row.get("id")).longValue(), req);
                     }
-
                 } catch (IOException e) {
                     log.error("Failed to copy {} => {}", spath, tpath, e);
                     throw e;
@@ -616,9 +609,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
                     FileUtils.moveDirectory(f1, f2);
 
-                    synchronized (metaCache) {
-                        metaCache.clear();
-                    }
+                    clearMetaCache();
 
                     ebus.fireOnSuccessCommit(new MediaMoveEvent(this, null, true, path, npath));
 
@@ -706,9 +697,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                        "folder", folder,
                        "name", name);
 
-                synchronized (metaCache) {
-                    metaCache.clear();
-                }
+                clearMetaCache();
 
             } else {
 
@@ -925,7 +914,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     private Map<String, Object> getCachedMeta(String path) {
         return getCachedMeta(getResourceParentFolder(path), getResourceName(path));
     }
-
 
     /**
      * Update media item search tokens
@@ -1379,6 +1367,49 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             return;
         }
         updateResizedImages(String.valueOf(row.get("folder")) + row.get("name"));
+    }
+
+
+    @Override
+    @Transactional
+    public Map<Long, Long> copyPageMedia(long sourcePageId, long targetPageId, String owner) throws IOException {
+        if (sourcePageId == targetPageId) {
+            return Collections.emptyMap();
+        }
+        Map<Long, Long> cmap = new HashMap<>();
+        String spath = getPageLocalFolderPath(sourcePageId);
+        String tpath = getPageLocalFolderPath(targetPageId);
+        try (final ResourceLock l1 = new ResourceLock(spath, false)) {
+            try (final ResourceLock l2 = new ResourceLock(tpath, true)) {
+                File sdir = new File(basedir, spath);
+                File tdir = new File(basedir, tpath);
+                spath = normalizeFolder(spath);
+                tpath = normalizeFolder(tpath);
+
+                // Copy files
+                FileUtils.copyDirectory(sdir, tdir);
+
+                // Insert base meta
+                insert("insertCopyMedia",
+                       "owner", owner,
+                       "source", spath,
+                       "target", tpath);
+
+                // Collect old => new files mapping
+                List<Map<String, Long>> rows = select("selectSameMediaFiles",
+                                                      "folder1", spath,
+                                                      "folder2", tpath);
+                for(Map<String, Long> entry : rows) {
+                    cmap.put(entry.get("id1"), entry.get("id2"));
+                }
+
+                // Copy keywords
+                insert("insertCopyMediaKeywords",
+                       "source", spath,
+                       "target", tpath);
+            }
+        }
+        return cmap;
     }
 
     @Override
@@ -1984,20 +2015,38 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         return path;
     }
 
+    private void clearMetaCache() {
+        synchronized (metaCache) {
+            metaCache.clear();
+        }
+        log.info("Meta cache cleared");
+    }
+
     @Subscribe
-    public void pageDropped(AsmRemovedEvent ev) {
+    @Transactional
+    public void pageRemoved(AsmRemovedEvent ev) {
         String path = getPageLocalFolderPath(ev.getId());
         try (final ResourceLock l = new ResourceLock(path, true)) {
+            int cnt = delete("deleteFolder", "prefix_like", normalizeFolder(path) + "%");
+            log.info("Unregistered {} files for asm {}", cnt, ev.getId());
             File pdir = new File(basedir, path);
             if (pdir.isDirectory()) {
                 File[] files = pdir.listFiles(f -> (!f.isDirectory()) || SIZE_CACHE_FOLDER.equals(f.getName()));
-                for (final File f : files) {
-                    log.info("Remove file/dir: {}", f);
-                    FileUtils.deleteQuietly(f);
+                if (files != null) {
+                    for (final File f : files) {
+                        log.info("Remove file/dir: {}", f);
+                        FileUtils.deleteQuietly(f);
+                    }
+                }
+                files = pdir.listFiles();
+                if (files != null && files.length == 0) {
+                    FileUtils.deleteQuietly(pdir);
                 }
             }
         } catch (IOException e) {
             log.error("Failed to drop page files dir: {}", path, e);
+        } finally {
+            clearMetaCache();
         }
     }
 
@@ -2244,7 +2293,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         final boolean overwrite = (flags & IMPORT_OVERWRITE) != 0;
         final boolean watch = (flags & IMPORT_WATCH) != 0;
         final boolean system = (flags & IMPORT_SYSTEM) != 0;
-
 
         if (target.startsWith("/")) {
             target = target.substring(1);

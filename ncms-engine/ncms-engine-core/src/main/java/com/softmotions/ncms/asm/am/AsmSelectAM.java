@@ -42,7 +42,7 @@ import com.softmotions.ncms.mhttl.SelectNode;
  */
 
 @Singleton
-public class AsmSelectAM implements AsmAttributeManager {
+public class AsmSelectAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmSelectAM.class);
 

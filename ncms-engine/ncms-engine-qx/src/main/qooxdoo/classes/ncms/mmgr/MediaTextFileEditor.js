@@ -205,6 +205,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             qx.event.Timer.once(function () {
                 var me = this;
                 var ace = this.__ace = window.ace.edit(this.__aceContainer.getContentElement().getDomElement());
+                ace.$blockScrolling = Infinity;
                 var session = ace.getSession();
                 session.setUseSoftTabs(true);
                 session.setTabSize(2);

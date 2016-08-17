@@ -22,20 +22,6 @@
         WHERE id = #{id}
     </select>
 
-
-    <insert id="insertEntity"
-            databaseId="H2"
-            parameterType="map" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO MEDIA_ENTITY (
-            folder, name, status, mdate,
-            content_type, put_content_type, content_length,
-            owner, description, tags, meta, system)
-        VALUES (
-            #{folder}, #{name}, #{status}, now(),
-            #{content_type}, #{put_content_type}, #{content_length},
-            #{owner}, #{description}, #{tags}, #{meta}, #{system})
-    </insert>
-
     <insert id="insertEntity"
             databaseId="DB2"
             parameterType="map" useGeneratedKeys="true" keyProperty="id">
@@ -48,21 +34,6 @@
             #{content_type}, #{put_content_type}, #{content_length},
             #{owner}, #{description}, #{tags}, #{meta}, #{system})
     </insert>
-
-    <update id="updateEntity"
-            databaseId="H2"
-            parameterType="map">
-        UPDATE MEDIA_ENTITY
-        SET content_type      = #{content_type},
-            content_length    = #{content_length},
-            owner             = #{owner},
-            icon              = NULL,
-            icon_content_type = NULL,
-            mdate             = now(),
-            meta              = #{meta},
-            system            = #{system}
-        WHERE id = #{id}
-    </update>
 
     <update id="updateEntity"
             databaseId="DB2"
@@ -80,17 +51,6 @@
     </update>
 
     <update id="fixResourceLocation"
-            databaseId="H2"
-            parameterType="map">
-        UPDATE MEDIA_ENTITY e
-        SET e.folder = #{nfolder},
-            e.name   = #{nname},
-            mdate    = now()
-        WHERE e.folder = #{folder}
-              AND e.name = #{name}
-    </update>
-
-    <update id="fixResourceLocation"
             databaseId="DB2"
             parameterType="map">
         UPDATE MEDIA_ENTITY e
@@ -100,16 +60,6 @@
         WHERE e.folder = #{folder}
               AND e.name = #{name}
     </update>
-
-    <update id="fixFolderName"
-            databaseId="H2"
-            parameterType="map">
-        UPDATE MEDIA_ENTITY e
-        SET e.folder = #{new_prefix} || substr(e.folder, #{prefix_like_len}),
-            e.mdate  = now()
-        WHERE e.folder LIKE #{prefix_like}
-    </update>
-
 
     <update id="fixFolderName"
             databaseId="DB2"
@@ -384,5 +334,71 @@
         ORDER BY asm.name ASC, attr.name ASC
         LIMIT 10
     </select>
+
+
+    <!-- Select files with same name from two different folders -->
+    <select id="selectSameMediaFiles" parameterType="map" resultType="map">
+        SELECT
+            s.id AS "id1",
+            t.id AS "id2"
+        FROM media_entity s, media_entity t
+        WHERE s.folder = #{folder1}
+              AND t.folder = #{folder2}
+              AND s.name = t.name
+    </select>
+
+
+    <insert id="insertCopyMedia" parameterType="map">
+        INSERT INTO media_entity (name,
+                                  status,
+                                  content_type,
+                                  put_content_type,
+                                  content_length,
+                                  description,
+                                  tags,
+                                  icon,
+                                  icon_content_type,
+                                  meta,
+                                  csum,
+                                  system,
+                                  flags,
+                                  folder,
+                                  owner,
+                                  mdate)
+            SELECT
+                m.name,
+                m.status,
+                m.content_type,
+                m.put_content_type,
+                m.content_length,
+                m.description,
+                m.tags,
+                m.icon,
+                m.icon_content_type,
+                m.meta,
+                m.csum,
+                m.system,
+                m.flags,
+                #{target},
+                <if test="owner != null">#{owner},</if>
+                <if test="owner == null">m.owner,</if>
+                CURRENT_TIMESTAMP
+            FROM (SELECT *
+                  FROM media_entity
+                  WHERE folder = #{source}) AS m
+    </insert>
+
+
+    <insert id="insertCopyMediaKeywords" parameterType="map">
+        INSERT INTO media_entity_kwords (entity_id, keyword)
+            SELECT
+                m2.id,
+                kw.keyword
+            FROM media_entity AS m1
+                INNER JOIN media_entity AS m2 ON m1.name = m2.name
+                INNER JOIN media_entity_kwords AS kw ON kw.entity_id = m1.id
+            WHERE m1.folder = #{source}
+                  AND m2.folder = #{target}
+    </insert>
 
 </mapper>

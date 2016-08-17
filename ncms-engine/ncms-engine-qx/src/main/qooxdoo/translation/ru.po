@@ -521,7 +521,7 @@ msgid "Add video"
 msgstr "Добавить видео"
 
 #: ncms/news/NewsNav.js:131 ncms/mmgr/MediaItemTreeSelector.js:92
-#: ncms/asm/am/MedialineAMValueWidget.js:106 ncms/pgs/PagesTreeSelector.js:167
+#: ncms/asm/am/MedialineAMValueWidget.js:106 ncms/pgs/PagesTreeSelector.js:176
 msgid "Delete"
 msgstr "Удалить"
 
@@ -1259,7 +1259,7 @@ msgstr "Невалидное регулярное выражение"
 msgid "Select the parent page for news"
 msgstr "Укажите родительскую страницу для ленты"
 
-#: ncms/news/NewsNav.js:156 ncms/pgs/PagesTreeSelector.js:268
+#: ncms/news/NewsNav.js:156 ncms/pgs/PagesTreeSelector.js:297
 msgid "Are you sure to remove page: %1"
 msgstr "Вы действительно желаете удалить страницу %1"
 
@@ -1437,31 +1437,35 @@ msgstr "Выбрать страницу"
 msgid "Path"
 msgstr "Путь"
 
-#: ncms/pgs/PagesTreeSelector.js:152
-msgid "List of referer pages"
-msgstr "Список ссылающихся страниц"
+#: ncms/pgs/PagesTreeSelector.js:160
+msgid "Duplicate it"
+msgstr "Сделать копию"
 
-#: ncms/pgs/PagesTreeSelector.js:159
+#: ncms/pgs/PagesTreeSelector.js:168
 msgid "Change/Rename"
 msgstr "Изменить/Переименовать"
 
-#: ncms/pgs/PagesTreeSelector.js:163
+#: ncms/pgs/PagesTreeSelector.js:172
 msgid "Move"
 msgstr "Переместить"
 
 #: ncms/pgs/PagesTreeSelector.js:181
+msgid "List of referer pages"
+msgstr "Список ссылающихся страниц"
+
+#: ncms/pgs/PagesTreeSelector.js:194
 msgid "List of pages referred %1"
 msgstr "Список страниц, ссылающихся на %1"
 
-#: ncms/pgs/PagesTreeSelector.js:194
+#: ncms/pgs/PagesTreeSelector.js:207
 msgid "Choose the target container page"
 msgstr "Укажите папку"
 
-#: ncms/pgs/PagesTreeSelector.js:275
+#: ncms/pgs/PagesTreeSelector.js:304
 msgid "Unable to delete this page"
 msgstr "Невозможно удалить эту страницу"
 
-#: ncms/pgs/PagesTreeSelector.js:278
+#: ncms/pgs/PagesTreeSelector.js:307
 msgid ""
 "This page cannot be removed because we found pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>"

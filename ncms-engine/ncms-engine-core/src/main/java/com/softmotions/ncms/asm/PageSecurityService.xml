@@ -13,12 +13,6 @@
     </select>
 
     <select id="newAclId"
-            databaseId="H2"
-            resultType="long">
-        CALL NEXT VALUE FOR SEQ_ACL_ID
-    </select>
-
-    <select id="newAclId"
             databaseId="DB2"
             resultType="long">
         SELECT
@@ -127,14 +121,6 @@
     </select>
 
     <update id="updateAclUserRights"
-            databaseId="H2"
-            parameterType="map">
-        MERGE INTO ASM_ACL_ENTITY (acl_id, user, rights)
-        KEY (acl_id, user)
-        VALUES (#{acl}, #{user}, #{rights})
-    </update>
-
-    <update id="updateAclUserRights"
             databaseId="DB2"
             parameterType="map">
         MERGE INTO ASM_ACL_ENTITY a
@@ -174,21 +160,6 @@
         recursive_acl_id IS NULL)
         AND
         (nav_cached_path LIKE #{nav_path}<if test="pid != null">OR id = #{pid}</if>)
-    </update>
-
-    <update id="updateChildRecursiveAcl2"
-            databaseId="H2"
-            parameterType="map">
-        MERGE INTO ASM_ACL_ENTITY (acl_id, user, rights)
-        KEY (acl_id, user)
-        SELECT
-            recursive_acl_id,
-            #{user},
-            #{rights}
-        FROM ASMS
-        WHERE
-            (recursive_acl_id IS NOT NULL AND recursive_acl_id != #{acl})
-            AND nav_cached_path LIKE #{nav_path}
     </update>
 
     <update id="updateChildRecursiveAcl2"

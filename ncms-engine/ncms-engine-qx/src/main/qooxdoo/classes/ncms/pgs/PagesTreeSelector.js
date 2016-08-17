@@ -140,7 +140,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             var bt;
 
             var parent = this.__calcFirstFolderParent(sel);
-            if (ncms.Application.userInRoles("admin.structure") || (parent != root && parent.getAccessMask()
+            if (ncms.Application.userInRoles("admin.structure") || (parent !== root && parent.getAccessMask()
                 .indexOf("w") != -1)) {
                 bt = new qx.ui.menu.Button(this.tr("New"));
                 bt.addListenerOnce("execute", this.__onNewPage, this);
@@ -149,9 +149,18 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
 
             if (sel != null && sel != root) {
 
-                bt = new qx.ui.menu.Button(this.tr("List of referer pages"));
-                bt.addListenerOnce("execute", this.__onRefList, this);
-                menu.add(bt);
+                var canDuplicate = true;
+                if (parent !== root) {
+                    var am = parent.getAccessMask();
+                    if (am.indexOf("w") == -1) {
+                        canDuplicate = false;
+                    }
+                }
+                if (canDuplicate) {
+                    bt = new qx.ui.menu.Button(this.tr("Duplicate it"));
+                    bt.addListenerOnce("execute", this.__onDuplicate, this);
+                    menu.add(bt);
+                }
 
                 if ((sel.getAccessMask().indexOf("d") != -1)) {
                     menu.add(new qx.ui.menu.Separator());
@@ -168,6 +177,10 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                     bt.addListenerOnce("execute", this.__onDeletePage, this);
                     menu.add(bt);
                 }
+
+                bt = new qx.ui.menu.Button(this.tr("List of referer pages"));
+                bt.addListenerOnce("execute", this.__onRefList, this);
+                menu.add(bt);
             }
         },
 
@@ -234,6 +247,22 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             }
             var parent = this._tree.getParent(item) || this._tree.getModel();
             var dlg = new ncms.pgs.PageChangeOrRenameDlg({
+                id: item.getId(),
+                label: item.getLabel(),
+                status: item.getStatus()
+            });
+            dlg.addListener("completed", function (ev) {
+                this._refreshNode(parent);
+                dlg.close();
+            }, this);
+            dlg.placeToWidget(ev.getTarget(), false);
+            dlg.open();
+        },
+
+        __onDuplicate: function(ev) {
+            var item = this._tree.getSelection().getItem(0);
+            var parent = this._tree.getParent(item) || this._tree.getModel();
+            var dlg = new ncms.pgs.PageDuplicateDlg({
                 id: item.getId(),
                 label: item.getLabel(),
                 status: item.getStatus()

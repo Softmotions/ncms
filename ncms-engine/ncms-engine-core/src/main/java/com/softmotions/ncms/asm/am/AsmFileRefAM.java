@@ -34,7 +34,7 @@ import com.softmotions.weboot.i18n.I18n;
  */
 
 @Singleton
-public class AsmFileRefAM implements AsmAttributeManager {
+public class AsmFileRefAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmFileRefAM.class);
 

@@ -24,7 +24,7 @@ import com.softmotions.ncms.media.MediaResource;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmCoreAM implements AsmAttributeManager {
+public class AsmCoreAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmAliasAM.class);
 

@@ -32,7 +32,7 @@ import com.softmotions.ncms.mhttl.ImageMeta;
  */
 
 @Singleton
-public class AsmImageAM implements AsmAttributeManager {
+public class AsmImageAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmImageAM.class);
 

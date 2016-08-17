@@ -22,7 +22,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
  */
 
 @Singleton
-public class AsmRefAM implements AsmAttributeManager {
+public class AsmRefAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmRefAM.class);
 

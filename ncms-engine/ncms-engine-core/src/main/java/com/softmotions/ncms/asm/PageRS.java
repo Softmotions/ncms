@@ -80,7 +80,7 @@ import com.softmotions.ncms.asm.render.AsmRendererHelper;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
-import com.softmotions.ncms.media.MediaReader;
+import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.user.UserEnvRS;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -123,7 +123,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final UserEnvRS userEnvRS;
 
-    private final MediaReader mediaReader;
+    private final MediaRepository mrepo;
 
     @GuardedBy("pagesCache")
     private final Map<Long, CachedPage> pagesCache;
@@ -170,7 +170,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                   NcmsEventBus ebus,
                   UserEnvRS userEnvRS,
                   NcmsEnvironment env,
-                  MediaReader mediaReader,
+                  MediaRepository mrepo,
                   Provider<AsmAttributeManagersRegistry> amRegistry,
                   Provider<AsmAttributeManagerContext> amCtxProvider,
                   AsmRendererHelper helper) {
@@ -190,7 +190,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.lvh2IndexPages = new HashMap<>();
         this.indexPage2FirstLang = new HashMap<>();
         this.indexPage2SecondLang = new HashMap<>();
-        this.mediaReader = mediaReader;
+        this.mrepo = mrepo;
         this.amCtxProvider = amCtxProvider;
         this.asmRoot = env.getAppRoot() + "/";
         this.helper = helper;
@@ -525,15 +525,59 @@ public class PageRS extends MBDAOSupport implements PageService {
         update("setPageOwner",
                "id", id,
                "owner", owner);
-
         ObjectNode res = mapper.createObjectNode();
         JsonUtils.populateObjectNode(user, res.putObject("owner"),
                                      "name", "fullName");
-
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         return res;
     }
 
+    /**
+     * Create a copy of the page
+     */
+    @PUT
+    @Path("/clone")
+    @Transactional
+    public void clonePage(@Context HttpServletRequest req,
+                          ObjectNode spec) throws Exception {
+        String guid;
+        Long id;
+        do {
+            guid = new RandomGUID().toString();
+            id = adao.asmSelectIdByName(guid);
+        } while (id != null); //very uncommon
+
+        long asmId = spec.path("id").asLong();
+        String asmName = adao.asmSelectNameById(asmId);
+        if (asmName == null) {
+            throw new BadRequestException();
+        }
+
+        // Copy assembly structure
+        Asm asm = adao.asmClone(asmId,
+                                guid,
+                                spec.path("type").asText(),
+                                spec.path("name").asText(),
+                                spec.path("name").asText(),
+                                null);
+
+        // Copy assembly media files
+        Map<Long, Long> fmap = mrepo.copyPageMedia(asmId, asm.getId(), req.getRemoteUser());
+
+        AsmAttributeManagerContext amCtx = amCtxProvider.get();
+        amCtx.setAsmId(asm.getId());
+
+        log.info("!!!! File ids mapping={}", fmap);
+
+        //todo perform clone postprocessing
+
+        amCtx.flush();
+        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
+    }
+
+    /**
+     * Create a new page
+     */
     @PUT
     @Path("/new")
     @Transactional
@@ -780,8 +824,8 @@ public class PageRS extends MBDAOSupport implements PageService {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public ObjectNode dropPage(@Context HttpServletRequest req,
-                               @PathParam("id") Long id) {
+    public ObjectNode removePage(@Context HttpServletRequest req,
+                                 @PathParam("id") Long id) {
 
         ObjectNode ret = mapper.createObjectNode();
         Asm page = adao.asmSelectById(id);
@@ -801,6 +845,9 @@ public class PageRS extends MBDAOSupport implements PageService {
             ret.put("error", "ncms.page.nodel.refs.found");
             return ret;
         }
+
+        //todo check dependent files
+
         adao.asmRemove(id);
         ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id));
         return ret;
@@ -1528,9 +1575,9 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (spec.charAt(0) == '#' || spec.contains("://")) {
             return spec;
         }
-        Long fid = mediaReader.getFileIdByResourceSpec(spec);
+        Long fid = mrepo.getFileIdByResourceSpec(spec);
         if (fid != null) {
-            return mediaReader.resolveFileLink(fid, true);
+            return mrepo.resolveFileLink(fid, true);
         }
         spec = spec.toLowerCase();
         if (spec.startsWith("page:")) { //Page reference

@@ -3,6 +3,7 @@ package com.softmotions.ncms.media;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -57,7 +58,7 @@ public interface MediaRepository extends MediaReader, Closeable {
                     boolean system) throws IOException;
 
     /**
-     * Ensure existensce of resized image file
+     * Ensure existence of resized image file
      * for specified image source file identified by path.
      *
      * @param path   The original file path
@@ -72,16 +73,27 @@ public interface MediaRepository extends MediaReader, Closeable {
     Pair<Integer, Integer> ensureResizedImage(long id, Integer width, Integer height, int flags) throws IOException;
 
     /**
-     * Update all reasized image files
+     * Update all resized image files
      * for specified image source file identified by path.
-     *
-     * @param path
      */
     void updateResizedImages(String path) throws IOException;
 
     void updateResizedImages(long id) throws IOException;
 
+    /**
+     * Returns dedicated page media folder path
+     * @param pageId Page id
+     */
     String getPageLocalFolderPath(Long pageId);
 
+    /**
+     * Copy media files from source page to the target page
+     * @param sourcePageId Source page id
+     * @param targetPageId Target page id
+     * @param owner Page files owner. If `null` source
+     *              owner will be preserved
+     * @return Copied files mapping: `source file id => target file id`
+     */
+    Map<Long, Long> copyPageMedia(long sourcePageId, long targetPageId, String owner) throws IOException;
 }
 

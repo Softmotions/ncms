@@ -158,6 +158,9 @@ qx.Class.define("ncms.Actions", {
         // }
         this._action("pages.new", "/rs/adm/pages/new");
 
+        //PUT Duplicate a page
+        this._action("pages.clone", "/rs/adm/pages/clone");
+
         //DELETE The specified page
         this._action("pages.delete", "/rs/adm/pages/{id}");
 

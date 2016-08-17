@@ -38,6 +38,22 @@ public interface AsmAttributeManager {
                                      AsmAttribute attr,
                                      JsonNode val) throws Exception;
 
+    /**
+     * Change assembly attribute
+     * If assembly cloned and page
+     * files are copied to another place
+     *
+     * @param ctx
+     * @param attr
+     * @param fmap `old file id => new file id` mapping
+     * @throws Exception
+     */
+    AsmAttribute handleAssemblyCloned(
+            AsmAttributeManagerContext ctx,
+            AsmAttribute attr,
+            Map<Long, Long> fmap) throws Exception;
+
+
     void attributePersisted(AsmAttributeManagerContext ctx,
                             AsmAttribute attr,
                             JsonNode val,

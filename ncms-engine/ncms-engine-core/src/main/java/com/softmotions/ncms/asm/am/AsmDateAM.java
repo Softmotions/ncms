@@ -25,7 +25,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
  */
 
 @Singleton
-public class AsmDateAM implements AsmAttributeManager {
+public class AsmDateAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmDateAM.class);
 

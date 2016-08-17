@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -123,6 +124,62 @@ public class AsmDAO extends MBDAOSupport {
     @Transactional
     public int asmUpdate(Asm asm) {
         return sess.update(toStatementId("asmUpdate"), asm);
+    }
+
+    /**
+     * Clone assembly under new name and its attributes.
+     * <p/>
+     * Note: No page/file dependencies are cloned.
+     *
+     * @param asmId       Source assembly id
+     * @param name        Name of the new assembly clone
+     * @param hname       Clone human name
+     * @param description Clone description
+     * @param skipTypes   List of attribute types what will not be cloned.
+     *                    If `null` is specified the `alias` and `mainpage`
+     *                    types will be skipped.
+     */
+    @Transactional
+    public Asm asmClone(long asmId,
+                        String name,
+                        String type,
+                        String hname,
+                        String description,
+                        String[] skipTypes) {
+
+        if (skipTypes == null) {
+            skipTypes = new String[]{"alias", "mainpage"};
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("asmId", asmId);
+        params.put("name", name);
+        params.put("hname", hname);
+        params.put("description", description);
+        params.put("type", type);
+        insert("asmClone", params);
+        Long newAsmId = (Long) params.get("id");
+        if (newAsmId == null) {
+            throw new RuntimeException("Cannot get generated key to ''asmClone' insert");
+        }
+        insert("asmCloneParents",
+               "asmId", asmId,
+               "newAsmId", newAsmId);
+        insert("asmCloneAttrs",
+               "asmId", asmId,
+               "newAsmId", newAsmId,
+               "skipTypes", skipTypes);
+        insert("asmCloneSysProps",
+               "asmId", asmId,
+               "newAsmId", newAsmId);
+        insert("asmCloneRefData",
+               "asmId", asmId,
+               "newAsmId", newAsmId);
+
+        Asm asm = asmSelectById(newAsmId);
+        if (asm == null) {
+            throw new RuntimeException("No asm cloned");
+        }
+        return asm;
     }
 
     @Transactional
