@@ -27,12 +27,17 @@ qx.Mixin.define("ncms.cc.MCommands", {
         _registerCommandFocusWidget: function (fw) {
             if (this.__fw) {
                 this.__fw.removeListener("focusin", this._enableCmds, this);
+                this.__fw.removeListener("appear", this._enableCmds, this);
                 this.__fw.removeListener("focusout", this._disableCmds, this);
                 this.__fw.removeListener("disappear", this._disableCmds, this);
             }
             this.__fw = fw;
-            fw.addListener("focusin", this._enableCmds, this);
-            fw.addListener("focusout", this._disableCmds, this);
+            if (!fw.isFocusable()) {
+                fw.addListener("appear", this._enableCmds, this);
+            } else {
+                fw.addListener("focusin", this._enableCmds, this);
+                fw.addListener("focusout", this._disableCmds, this);
+            }
             fw.addListener("disappear", this._disableCmds, this);
             if (fw.hasState("focused") || (!fw.isFocusable() && fw.isVisible())) {
                 this._enableCmds();

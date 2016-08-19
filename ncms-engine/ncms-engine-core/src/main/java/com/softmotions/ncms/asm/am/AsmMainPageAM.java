@@ -75,4 +75,14 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
             pageRS.reloadIndexPages();
         }
     }
+
+    @Override
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx, AsmAttribute attr, Map<Long, Long> fmap) throws Exception {
+        //noinspection MismatchedQueryAndUpdateOfCollection
+        AsmOptions opts = new AsmOptions(attr.getOptions());
+        opts.put("enabled", "false");
+        attr.setOptions(opts.toString());
+        attr.setEffectiveValue(null);
+        return attr;
+    }
 }

@@ -110,8 +110,8 @@ public class AsmSelectAM extends AsmAttributeManagerSupport {
                                             Asm template,
                                             AsmAttribute tmplAttr,
                                             AsmAttribute attr) throws Exception {
-        ArrayNode tArr = checkFetchFrom(page, attr);
-        if (tArr == null && (tmplAttr == null || StringUtils.isBlank(tmplAttr.getEffectiveValue()))) {
+        ArrayNode tarr = checkFetchFrom(page, attr);
+        if (tarr == null && (tmplAttr == null || StringUtils.isBlank(tmplAttr.getEffectiveValue()))) {
             if (StringUtils.isBlank(attr.getEffectiveValue())) {
                 attr.setEffectiveValue("[]");
             }
@@ -136,10 +136,10 @@ public class AsmSelectAM extends AsmAttributeManagerSupport {
                     }
                 }
             }
-            if (tArr == null) {
-                tArr = (ArrayNode) mapper.readTree(tmplAttr.getEffectiveValue());
+            if (tarr == null) {
+                tarr = (ArrayNode) mapper.readTree(tmplAttr.getEffectiveValue());
             }
-            for (JsonNode n : tArr) {
+            for (JsonNode n : tarr) {
                 if (!n.isArray()) {
                     continue;
                 }
@@ -149,7 +149,7 @@ public class AsmSelectAM extends AsmAttributeManagerSupport {
                     aNode.set(0, mapper.getNodeFactory().booleanNode(selectedKeys.contains(key.asText())));
                 }
             }
-            attr.setEffectiveValue(tArr.toString());
+            attr.setEffectiveValue(mapper.writeValueAsString(tarr));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -247,7 +247,7 @@ public class AsmSelectAM extends AsmAttributeManagerSupport {
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
         JsonNode value = val.get("value");
         if (value != null && value.isArray()) {
-            attr.setEffectiveValue(value.toString());
+            attr.setEffectiveValue(mapper.writeValueAsString(value));
         } else {
             attr.setEffectiveValue(null);
         }

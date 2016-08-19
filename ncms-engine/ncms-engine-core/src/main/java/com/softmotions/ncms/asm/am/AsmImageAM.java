@@ -22,6 +22,7 @@ import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.media.MediaRepository;
+import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.ncms.mhttl.Image;
 import com.softmotions.ncms.mhttl.ImageMeta;
 
@@ -30,19 +31,19 @@ import com.softmotions.ncms.mhttl.ImageMeta;
  */
 
 @Singleton
-public class AsmImageAM extends AsmAttributeManagerSupport {
+public class AsmImageAM extends AsmFileAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmImageAM.class);
 
     public static final String[] TYPES = new String[]{"image"};
 
-    final MediaRepository repository;
+    private final MediaRepository repo;
 
-    final ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     @Inject
-    public AsmImageAM(MediaRepository repository, ObjectMapper mapper) {
-        this.repository = repository;
+    public AsmImageAM(MediaRepository repo, ObjectMapper mapper) {
+        this.repo = repo;
         this.mapper = mapper;
     }
 
@@ -107,7 +108,6 @@ public class AsmImageAM extends AsmAttributeManagerSupport {
         if (!parseImageMeta(value, res)) {
             return null;
         }
-
         if (res.getId() == null || res.getId() == 0L) {
             return null;
         }
@@ -170,25 +170,29 @@ public class AsmImageAM extends AsmAttributeManagerSupport {
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        attr.setEffectiveValue(val != null ? applyJSONAttributeValue(ctx, attr, val).toString() : null);
+        if (val == null) {
+            attr.setEffectiveValue(null);
+        } else {
+            JsonNode node = applyJSONAttributeValue(ctx, attr, (ObjectNode) val);
+            attr.setEffectiveValue(mapper.writeValueAsString(node));
+        }
         return attr;
     }
 
-    public JsonNode applyJSONAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) {
+    public ObjectNode applyJSONAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, ObjectNode val) {
         ObjectNode opts = (ObjectNode) val.get("options");
         if (opts == null) {
             opts = mapper.createObjectNode();
-            ((ObjectNode) val).set("options", opts);
+            val.set("options", opts);
         }
-        Long id = val.hasNonNull("id") ? val.get("id").asLong() : null;
-        if (id == null) {
+        long id = val.path("id").asLong(0L);
+        if (id == 0L) {
             return val;
         }
 
-        ctx.registerMediaFileDependency(attr, id);
+        ctx.registerFileDependency(attr, id);
 
-        if (((opts.hasNonNull("resize") && opts.get("resize").asBoolean()) ||
-             (opts.hasNonNull("cover") && opts.get("cover").asBoolean()))
+        if ((opts.path("resize").asBoolean(false) || opts.path("cover").asBoolean(false))
             &&
             (opts.hasNonNull("width") || opts.hasNonNull("height"))) {
 
@@ -208,7 +212,7 @@ public class AsmImageAM extends AsmAttributeManagerSupport {
                 flags |= MediaRepository.RESIZE_SKIP_SMALL;
             }
             try {
-                Pair<Integer, Integer> dim = repository.ensureResizedImage(id, width, height, flags);
+                Pair<Integer, Integer> dim = repo.ensureResizedImage(id, width, height, flags);
                 if (dim == null) {
                     throw new RuntimeException("Unable to resize image file: " + id +
                                                " width=" + width +
@@ -225,6 +229,37 @@ public class AsmImageAM extends AsmAttributeManagerSupport {
                 throw new RuntimeException(msg, e);
             }
         }
+
         return val;
+    }
+
+    @Override
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,
+                                             AsmAttribute attr,
+                                             Map<Long, Long> fmap) throws Exception {
+
+        if (StringUtils.isBlank(attr.getEffectiveValue())) {
+            return attr;
+        }
+        ObjectNode node = (ObjectNode) mapper.readTree(attr.getEffectiveValue());
+        long fid = node.path("id").asLong(0L);
+        if (fid == 0L) {
+            return attr;
+        }
+        Long tid = translateClonedFile(fid, fmap);
+        if (tid == null) {
+            ctx.registerFileDependency(attr, fid);
+            return attr;
+        }
+        MediaResource res = repo.findMediaResource(tid, null);
+        if (res == null) {
+            ctx.registerFileDependency(attr, fid);
+            return attr;
+        }
+        node.put("id", tid);
+        node.put("path", res.getName());
+        node = applyJSONAttributeValue(ctx, attr, node);
+        attr.setEffectiveValue(mapper.writeValueAsString(node));
+        return attr;
     }
 }

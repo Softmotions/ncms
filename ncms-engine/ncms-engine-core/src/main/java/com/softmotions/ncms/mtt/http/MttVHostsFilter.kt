@@ -21,8 +21,8 @@ open class MttVHostsFilter : MttFilterHandler {
             synchronized(this) {
                 if (ctx.contains("pattern")) return@synchronized
                 val spec = ctx.spec
-                val mode = spec.path("mode").asText()
-                val pattern = spec.path("pattern").asText()
+                val mode = spec.path("mode").asText("")
+                val pattern = spec.path("pattern").asText("")
                 if (mode == "regexp") {
                     ctx["pattern"] = Regex(pattern)
                 } else if (mode == "glob") {

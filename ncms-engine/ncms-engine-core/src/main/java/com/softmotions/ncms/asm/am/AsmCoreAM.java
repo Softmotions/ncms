@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
@@ -22,7 +23,7 @@ import com.softmotions.ncms.media.MediaResource;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmCoreAM extends AsmAttributeManagerSupport {
+public class AsmCoreAM extends AsmFileAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmAliasAM.class);
 
@@ -52,10 +53,11 @@ public class AsmCoreAM extends AsmAttributeManagerSupport {
     public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
         String location = null;
         if (val != null) {
-            location = val.path("value").asText();
+            location = val.path("value").asText(null);
         } else if (opts != null) {
-            location = opts.path("value").asText();
+            location = opts.path("value").asText(null);
         }
+        location = getRawLocation(location);
         if (StringUtils.isBlank(location)) {
             return;
         }
@@ -75,5 +77,28 @@ public class AsmCoreAM extends AsmAttributeManagerSupport {
             return;
         }
         adao.asmSetCore(asm, location);
+    }
+
+    @Override
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,
+                                             AsmAttribute attr,
+                                             Map<Long, Long> fmap) throws Exception {
+
+        Asm asm = adao.asmSelectById(ctx.getAsmId());
+        if (asm == null) {
+            return attr;
+        }
+        AsmCore core = asm.getCore();
+        if (core == null) {
+            return attr;
+        }
+        String nlocation = translateClonedFile(reader, core.getLocation(), fmap);
+        if (nlocation == null) {
+            return attr;
+        }
+        ObjectNode node = ctx.getMapper().createObjectNode();
+        node.put("value", nlocation);
+        attributePersisted(ctx, attr, node, null);
+        return attr;
     }
 }

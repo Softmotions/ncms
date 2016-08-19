@@ -30,7 +30,6 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.mediawiki.GMapTag;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
-import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Markdown/Mediawiki attribute manager.
@@ -66,8 +65,6 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
 
     private final PageService pageService;
 
-    private final I18n messages;
-
     private final NcmsEnvironment env;
 
 
@@ -75,14 +72,12 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
     public AsmWikiAM(ObjectMapper mapper,
                      MediaWikiRenderer mediaWikiRenderer,
                      NcmsEnvironment env,
-                     PageService pageService,
-                     I18n messages) {
+                     PageService pageService) {
         this.env = env;
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
         this.pageRefsRE = Pattern.compile(Pattern.quote(env.getAppRoot()) + "/(asm/)?" + "([0-9a-f]{32})");
-        this.messages = messages;
     }
 
     @Override
@@ -181,15 +176,12 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        ctx.clearPageDeps(attr);
-        ctx.clearFileDeps(attr);
-
-        String value = val.hasNonNull("value") ? val.get("value").asText() : "";
+        String value = val.path("value").asText("");
         String markup = val.hasNonNull("markup") ? val.get("markup").asText() : "mediawiki";
         String html = null;
         if (!StringUtils.isBlank(value)) {
             if ("mediawiki".equals(markup)) {
-                html = mediaWikiRenderer.render(preSaveWiki(ctx, attr, value), messages.getLocale(ctx.getRequest()));
+                html = mediaWikiRenderer.render(preSaveWiki(ctx, attr, value), ctx.getLocale());
                 html = "<div class=\"wiki\">" +
                        html +
                        "\n</div>";
@@ -218,7 +210,7 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
 
         Matcher m = adminResourcePattern.matcher(value);
         if (m.find()) {
-            throw new NcmsMessageException(messages.get("ncms.page.nosav.adm.link"), true);
+            throw new NcmsMessageException(ctx.getI18n().get("ncms.page.nosav.adm.link"), true);
         }
 
         // \[\[page:\s*([0-9a-f]{32})(\s*\|.*)?\]\]
@@ -238,7 +230,7 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
             }
             try {
                 long fid = Long.parseLong(fileId);
-                ctx.registerMediaFileDependency(attr, fid);
+                ctx.registerFileDependency(attr, fid);
             } catch (NumberFormatException e) {
                 log.error("", e);
             }
@@ -246,23 +238,47 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
         return value;
     }
 
-
     @Override
     public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,
                                              AsmAttribute attr, Map<Long, Long> fmap) throws Exception {
 
-        // \[\[(image|media):(\s*)(/)?(\d+)/(.*)\]\]
-        String svalue = attr.getEffectiveValue();
-        if (fmap.isEmpty() || StringUtils.isBlank(svalue)) {
+        if (StringUtils.isBlank(attr.getEffectiveValue())) {
             return attr;
         }
-        ObjectNode value = (ObjectNode) mapper.readTree(svalue);
-        if (!"mediawiki".equals(value.path("markup").asText())) {
+        ObjectNode node = (ObjectNode) mapper.readTree(attr.getEffectiveValue());
+        if (!"mediawiki".equals(node.path("markup").asText(""))) {
             return attr;
         }
-
-        // todo replace filerefs to the local
-
-        return attr;
+        String markup = node.path("value").asText("");
+        StringBuffer nmarkup = new StringBuffer(markup.length());
+        Matcher m = MEDIAREF_REGEXP.matcher(markup);
+        while (m.find()) {
+            String sfid = m.group(4);
+            if (sfid == null) continue;
+            Long fid;
+            try {
+                fid = Long.parseLong(sfid);
+            } catch (NumberFormatException ignored) {
+                continue;
+            }
+            Long tfid = fmap.get(fid);
+            if (tfid == null) {
+                continue;
+            }
+            // \[\[(image|media):(\s*)(/)?(\d+)/(.*)\]\]
+            // 0:([[(Image)1:()2(/)3(421)4/(header.jpg|300px|center|frame|Тест)5]])0
+            m.appendReplacement(nmarkup, "[[" +
+                                         m.group(1) +
+                                         ':' +
+                                         StringUtils.defaultString(m.group(2)) +
+                                         StringUtils.defaultString(m.group(3)) +
+                                         tfid +
+                                         '/' +
+                                         StringUtils.defaultString(m.group(5)) +
+                                         "]]");
+        }
+        m.appendTail(nmarkup);
+        node.put("value", nmarkup.toString());
+        return applyAttributeValue(ctx, attr, node);
     }
 }

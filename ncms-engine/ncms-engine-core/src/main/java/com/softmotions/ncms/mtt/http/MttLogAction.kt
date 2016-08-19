@@ -23,7 +23,7 @@ open class MttLogAction : MttActionHandler {
                          resp: HttpServletResponse): Boolean {
         val spec = ctx.spec
         val msg = spec.path("msg").asText(null) ?: return false
-        val lvl = spec.path("level").asText()
+        val lvl = spec.path("level").asText("")
         when (lvl) {
             "ERROR" -> {
                 log.error(msg)

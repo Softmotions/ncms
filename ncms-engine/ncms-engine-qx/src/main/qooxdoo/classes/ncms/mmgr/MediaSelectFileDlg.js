@@ -40,7 +40,8 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
      * <code>
      *  {
      *      allowMove : {Boolean?false},
-     *      allowSubfoldersView : {Boolean?false}
+     *      allowSubfoldersView : {Boolean?false},
+     *      pageSpec: {id: page id, name: page name} Optional page spec to show files in page
      *  }
      * </code>
      * @param allowModify {Boolean?false}
@@ -61,18 +62,25 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
             height: 450
         });
 
+        opts = opts || {};
+
         var vsp = new qx.ui.splitpane.Pane("horizontal");
         var folders = new ncms.mmgr.MediaItemTreeSelector(allowModify);
 
         var leftSide = new qx.ui.container.Composite(new qx.ui.layout.VBox(5));
         leftSide.add(folders, {flex: 1});
 
-
         var rightSide = new qx.ui.container.Composite(new qx.ui.layout.VBox());
         var files = this.__files = new ncms.mmgr.MediaFilesSelector(allowModify, {status: 0}, opts);
         files.getTable().addListener("cellDbltap", this.__ok, this);
         folders.bind("itemSelected", files, "item");
+        files.bind("inpage", folders, "enabled", {
+            converter: function (v) {
+                return !v;
+            }
+        });
         rightSide.add(files, {flex: 1});
+
 
         //Bottom buttons
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5).set({"alignX": "right"}));
@@ -124,6 +132,12 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
                 this.setStatus("");
             }
         }, this);
+
+
+        if (opts["pageSpec"] && opts["pageSpec"].active == true) {
+            console.log("Active page spec!!!");
+            files.setInpage(true);
+        }
 
 
         var cmd = this.createCommand("Esc");

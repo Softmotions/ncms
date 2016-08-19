@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
 
+import static com.softmotions.ncms.asm.am.AsmFileAttributeManagerSupport.translateClonedFile;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -52,6 +54,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
     private final ObjectMapper mapper;
 
     private final NcmsEventBus ebus;
+
 
     @Inject
     public AsmMedialineAM(ObjectMapper mapper,
@@ -110,7 +113,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
                 value.add(vnode);
             }
         }
-        attr.setEffectiveValue(value.toString());
+        attr.setEffectiveValue(mapper.writeValueAsString(value));
         return attr;
     }
 
@@ -202,7 +205,7 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         int thumbWidth = opts.getInt("thumb_width", DEFAULT_IMG_THUMB_WIDTH);
         ArrayNode sval = mapper.createArrayNode();
         ArrayNode aval = (ArrayNode) val;
-        ctx.clearFileDeps(attr);
+
         for (int i = 0, l = aval.size(); i < l; ++i) {
             JsonNode node = aval.get(i);
             if (node == null || !node.isArray()) {
@@ -216,13 +219,13 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
             if (fileId < 1) {
                 continue;
             }
-            ctx.registerMediaFileDependency(attr, fileId);
+            ctx.registerFileDependency(attr, fileId);
             ebus.fireOnSuccessCommit(new EnsureResizedImageJobEvent(fileId, width, null, MediaRepository.RESIZE_SKIP_SMALL));
             ebus.fireOnSuccessCommit(new EnsureResizedImageJobEvent(fileId, thumbWidth, null, MediaRepository.RESIZE_SKIP_SMALL));
             sval.add(fileId);
         }
         if (sval.size() > 0) {
-            attr.setEffectiveValue(sval.toString());
+            attr.setEffectiveValue(mapper.writeValueAsString(sval));
         } else {
             attr.setEffectiveValue(null);
         }
@@ -230,12 +233,38 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
     }
 
     @Override
-    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx, AsmAttribute attr, Map<Long, Long> fmap) throws Exception {
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,
+                                             AsmAttribute attr,
+                                             Map<Long, Long> fmap) throws Exception {
+        if (StringUtils.isBlank(attr.getEffectiveValue())) {
+            return attr;
+        }
+        ArrayNode tval = mapper.createArrayNode();
+        ArrayNode aval = (ArrayNode) mapper.readTree(attr.getEffectiveValue());
+        for (int i = 0, l = aval.size(); i < l; ++i) {
+            long fid = aval.get(0).asLong(0);
+            if (fid == 0) {
+                continue;
+            }
+            Long tid = translateClonedFile(fid, fmap);
+            if (tid != null) {
+                tval.add(tid);
+                ctx.registerFileDependency(attr, tid);
+            } else {
+                tval.add(fid);
+                ctx.registerFileDependency(attr, fid);
+            }
+        }
+        if (tval.size() > 0) {
+            attr.setEffectiveValue(mapper.writeValueAsString(tval));
+        } else {
+            attr.setEffectiveValue(null);
+        }
         return attr;
     }
 
     @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
-
+    public void attributePersisted(AsmAttributeManagerContext ctx,
+                                   AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
     }
 }

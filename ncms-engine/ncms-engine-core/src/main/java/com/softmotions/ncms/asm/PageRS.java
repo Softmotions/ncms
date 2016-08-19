@@ -564,7 +564,6 @@ public class PageRS extends MBDAOSupport implements PageService {
         // Copy assembly media files
         Map<Long, Long> fmap = mrepo.copyPageMedia(asmId, page.getId(), req.getRemoteUser());
 
-
         // Postprocess assembly attributes
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
         amCtx.setAsmId(page.getId());
@@ -581,14 +580,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             am.handleAssemblyCloned(amCtx, attr, fmap);
             adao.asmUpsertAttribute(attr);
-
-            // todo attributePersisted???
-
         }
-
-
-        //todo perform clone postprocessing
-
         amCtx.flush();
         ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
     }
