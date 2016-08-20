@@ -213,6 +213,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
     public AsmAttribute cloneDeep() {
         AsmAttribute attr = new AsmAttribute();
+        attr.id = id;
         attr.asmId = asmId;
         attr.name = name;
         attr.type = type;

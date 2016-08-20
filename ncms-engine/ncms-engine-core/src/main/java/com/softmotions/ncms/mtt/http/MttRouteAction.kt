@@ -28,7 +28,7 @@ constructor(val env: NcmsEnvironment) : MttActionHandler {
                          rmc: MttRequestModificationContext,
                          resp: HttpServletResponse): Boolean {
         val req = rmc.req
-        val target = ctx.spec.path("target").asText()
+        val target = ctx.spec.path("target").asText("")
         if (target.isEmpty()) {
             if (log.isWarnEnabled) {
                 log.warn("No target in spec")

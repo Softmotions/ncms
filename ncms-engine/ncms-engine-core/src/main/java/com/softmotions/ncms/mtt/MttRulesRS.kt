@@ -136,7 +136,7 @@ constructor(val sess: SqlSession,
         val rule = ruleGet(rid)
         with(rn) {
             if (hasNonNull("flags")) rule.flags = path("flags").asLong(0)
-            if (hasNonNull("description")) rule.description = path("description").asText()
+            if (hasNonNull("description")) rule.description = path("description").asText("")
         }
         update("updateRule", rule)
         ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))

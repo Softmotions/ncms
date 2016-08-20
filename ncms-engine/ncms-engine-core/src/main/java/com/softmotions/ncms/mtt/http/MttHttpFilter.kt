@@ -42,6 +42,7 @@ constructor(val ebus: NcmsEventBus,
 
     companion object {
 
+        @JvmField
         val MTT_RIDS_KEY = "MTTR"
 
         private val log: Logger = LoggerFactory.getLogger(MttHttpFilter::class.java);

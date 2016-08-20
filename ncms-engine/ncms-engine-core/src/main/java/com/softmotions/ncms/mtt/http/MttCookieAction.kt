@@ -27,7 +27,7 @@ class MttCookieAction : MttActionHandler {
                          rmc: MttRequestModificationContext,
                          resp: HttpServletResponse): Boolean {
         val spec = ctx.spec
-        val name = spec.path("name").asText()
+        val name = spec.path("name").asText("")
         val prev = rmc.req.cookie(name)
         if (prev != null) {
             return false.apply {
@@ -36,7 +36,7 @@ class MttCookieAction : MttActionHandler {
                 }
             }
         }
-        val value = spec.path("value").asText()
+        val value = spec.path("value").asText("")
         val time = spec.path("time").asInt()
         val units = spec.path("units").asText()
         if (value.isEmpty() || units.isEmpty()) {

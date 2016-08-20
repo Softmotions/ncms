@@ -60,7 +60,6 @@ public class AsmPageRefAM extends AsmAttributeManagerSupport {
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx,
                                             AsmAttribute attr, JsonNode val) throws Exception {
-        ctx.clearPageDeps(attr);
         String location = val.hasNonNull("value") ? val.get("value").asText().trim() : null;
         String guid = pageService.resolvePageGuid(location);
         if (guid != null) {

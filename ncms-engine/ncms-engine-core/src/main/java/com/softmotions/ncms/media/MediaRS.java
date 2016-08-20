@@ -827,12 +827,18 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @Override
     public MediaResource findMediaResource(Long id, Locale locale) {
+        if (id == null) {
+            return null;
+        }
         return findMediaResource("entity:" + id, locale);
     }
 
     @Override
     @Transactional
     public MediaResource findMediaResource(String path, Locale locale) {
+        if (path == null) {
+            return null;
+        }
         Map<String, Object> meta;
         if (path.startsWith("entity:")) {
             Long id;
@@ -1044,7 +1050,13 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 cq.withParam("nfolder", "/pages/%");
             }
         }
-
+        val = req.getParameter("inpage");
+        if (!StringUtils.isBlank(val) && !"0".equals(val)) {
+            cq.withParam("folder", normalizeFolder(getPageLocalFolderPath(Long.parseLong(val))));
+            if (!BooleanUtils.toBoolean(req.getParameter("inpages"))) {
+                cq.remove("nfolder");
+            }
+        }
         val = req.getParameter("stext");
         if (!StringUtils.isBlank(val)) {
             val = val.toLowerCase();
@@ -1399,7 +1411,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 List<Map<String, Long>> rows = select("selectSameMediaFiles",
                                                       "folder1", spath,
                                                       "folder2", tpath);
-                for(Map<String, Long> entry : rows) {
+                for (Map<String, Long> entry : rows) {
                     cmap.put(entry.get("id1"), entry.get("id2"));
                 }
 

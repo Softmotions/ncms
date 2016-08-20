@@ -45,7 +45,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
             //Button field
-            var bf = this._initFileSelectorBf(attrSpec, true);
+            var bf = this._initFileSelectorBf(attrSpec, asmSpec, true);
             this._fetchAttributeValue(attrSpec, function (val) {
                 bf.setValue(val);
             });
@@ -84,7 +84,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
         },
 
         activateValueEditorWidget: function (attrSpec, asmSpec) {
-            var bf = this._initFileSelectorBf(attrSpec);
+            var bf = this._initFileSelectorBf(attrSpec, asmSpec);
             this._fetchAttributeValue(attrSpec, function (val) {
                 bf.setValue(val);
             });
@@ -93,7 +93,7 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             return bf;
         },
 
-        _initFileSelectorBf: function (attrSpec, inOpts) {
+        _initFileSelectorBf: function (attrSpec, asmSpec, inOpts) {
             var bf = new sm.ui.form.ButtonField(this.tr("File"),
                 "ncms/icon/16/misc/document-text.png");
             bf.setShowResetButton(true);
@@ -108,7 +108,9 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             bf.addListener("execute", function () {
                 var dlg = new ncms.mmgr.MediaSelectFileDlg(
                     true,
-                    this.tr("Please specify a file"));
+                    this.tr("Please specify a file for: '%1'", asmSpec["name"]), {
+                        pageSpec: {id: asmSpec["id"], name: asmSpec["name"], active: true}
+                    });
                 dlg.setCtypeAcceptor(ncms.Utils.isTextualContentType.bind(ncms.Utils));
                 dlg.addListener("completed", function (ev) {
                     var fspec = ev.getData()[0];

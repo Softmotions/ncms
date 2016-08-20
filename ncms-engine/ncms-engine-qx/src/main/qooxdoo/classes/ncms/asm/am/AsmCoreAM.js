@@ -29,7 +29,7 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
         },
 
         activateValueEditorWidget: function (attrSpec, asmSpec) {
-            var bf = this._initCoreSelectorBf(true);
+            var bf = this._initCoreSelectorBf(true, asmSpec);
             bf.setValue(this._fetchAsmCoreLocation(asmSpec));
             bf.setUserData("ncms.asm.validator", this.__validateFileSelector);
             this._valueWidget = bf;
@@ -44,7 +44,7 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
             return core["location"];
         },
 
-        _initCoreSelectorBf: function (label) {
+        _initCoreSelectorBf: function (label, asmSpec) {
             var bf = new sm.ui.form.ButtonField(label ? this.tr("File") : null,
                 "ncms/icon/16/actions/core_link.png");
             bf.setShowResetButton(true);
@@ -57,7 +57,9 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
             bf.addListener("execute", function () {
                 var dlg = new ncms.mmgr.MediaSelectFileDlg(
                     true,
-                    this.tr("Please specify a core location"));
+                    this.tr("Please specify a core location for: '%1'", asmSpec["name"]), {
+                        pageSpec: {id: asmSpec["id"], name: asmSpec["name"], active: true}
+                    });
                 dlg.setCtypeAcceptor(ncms.Utils.isTextualContentType.bind(ncms.Utils));
                 dlg.addListener("completed", function (ev) {
                     var fspec = ev.getData()[0];

@@ -28,7 +28,7 @@ class MttRequestParametersAction : MttActionHandler {
             synchronized(this) {
                 if (ctx.containsKey("pmap")) return@synchronized
                 // {"overwrite":true,"params":"foo=bar"}
-                ctx["pmap"] = KVOptions(ctx.spec.path("params").asText())
+                ctx["pmap"] = KVOptions(ctx.spec.path("params").asText(""))
             }
         }
         @Suppress("UNCHECKED_CAST")

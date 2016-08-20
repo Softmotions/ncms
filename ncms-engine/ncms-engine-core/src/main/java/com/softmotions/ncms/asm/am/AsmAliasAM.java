@@ -87,4 +87,10 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
         }
         adao.asmUpdateAlias(ctx.getAsmId(), alias);
     }
+
+    @Override
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx, AsmAttribute attr, Map<Long, Long> fmap) throws Exception {
+        attr.setEffectiveValue(null);
+        return attr;
+    }
 }

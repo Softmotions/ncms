@@ -135,9 +135,7 @@ public class AsmDAO extends MBDAOSupport {
      * @param name        Name of the new assembly clone
      * @param hname       Clone human name
      * @param description Clone description
-     * @param skipTypes   List of attribute types what will not be cloned.
-     *                    If `null` is specified the `alias` and `mainpage`
-     *                    types will be skipped.
+     * @param skipTypes   Optional list of attribute types what will not be cloned.
      */
     @Transactional
     public Asm asmClone(long asmId,
@@ -147,9 +145,6 @@ public class AsmDAO extends MBDAOSupport {
                         String description,
                         String[] skipTypes) {
 
-        if (skipTypes == null) {
-            skipTypes = new String[]{"alias", "mainpage"};
-        }
         Map<String, Object> params = new HashMap<>();
         params.put("asmId", asmId);
         params.put("name", name);

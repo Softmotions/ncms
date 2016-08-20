@@ -21,7 +21,7 @@ abstract class AbstractMttParametersFilter : MttFilterHandler {
             synchronized(this) {
                 if (ctx.containsKey("mslots")) return@synchronized
                 val mslots = HashMap<String, MSlot>()
-                val data = ctx.spec.path("data").asText()
+                val data = ctx.spec.path("data").asText("")
                 val lines = data.lines().filter {
                     !StringUtils.isBlank(it)
                 }

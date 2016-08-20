@@ -61,7 +61,7 @@ class MttABMarksAction : MttActionHandler {
         }
 
         val time = spec.path("time").asInt()
-        val units = spec.path("units").asText()
+        val units = spec.path("units").asText("")
         if (units.isEmpty()) {
             log.error("Invalid action spec: ${spec}")
             return false

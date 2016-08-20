@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.softmotions.ncms.asm.am.AsmFileAttributeManagerSupport.translateClonedFile;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -204,8 +206,8 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
         if (attr == null || StringUtils.isBlank(attr.getEffectiveValue())) {
             return tree;
         }
-        KVOptions opts = new KVOptions();
-        opts.loadOptions(attr.getOptions());
+        //noinspection MismatchedQueryAndUpdateOfCollection
+        KVOptions opts = new KVOptions(attr.getOptions());
         tree = getSyncTree(opts.getLongObject("syncWith", null), ctx, attr);
         try {
             if (tree == null) {
@@ -277,9 +279,6 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        ctx.clearPageDeps(attr);
-        ctx.clearFileDeps(attr);
-
         ObjectNode tree = (ObjectNode) val;
         if (tree == null) {
             attr.setEffectiveValue(null);
@@ -306,7 +305,6 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
             opts.remove("syncWith");
         }
         tree.remove("syncWith");
-        tree.remove("syncWithId"); //legacy
         attr.setOptions(opts.toString());
         try {
             saveTree(ctx, attr, tree, inSync);
@@ -318,8 +316,12 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
         return attr;
     }
 
-    private void saveTree(AsmAttributeManagerContext ctx, AsmAttribute attr, ObjectNode tree, boolean inSync) throws IOException {
-        String type = tree.hasNonNull("type") ? tree.get("type").asText() : null;
+    private void saveTree(AsmAttributeManagerContext ctx,
+                          AsmAttribute attr,
+                          ObjectNode tree,
+                          boolean inSync) throws IOException {
+
+        String type = tree.path("type").asText();
         JsonNode node = tree.get("id");
         JsonNode linkNode = tree.get("link");
         Long id = null;
@@ -333,7 +335,7 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
 
         if (!inSync) {
             if ("file".equals(type) && id != null) {
-                ctx.registerMediaFileDependency(attr, id);
+                ctx.registerFileDependency(attr, id);
             } else if ("page".equals(type) && linkNode.isTextual()) {
                 String guid = pageService.resolvePageGuid(linkNode.asText());
                 if (guid != null) {
@@ -344,13 +346,14 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
 
         JsonNode val = tree.get("nam");
         if (val != null && val.isTextual()) {
-            JsonNode naSpec = mapper.readTree(val.asText());
-            String naClass = naSpec.hasNonNull("naClass") ? naSpec.get("naClass").asText() : null;
-            if ("ncms.asm.am.RichRefAM".equals(naClass)) {
-                richRefAM.applyJSONAttributeValue(ctx, attr, naSpec, true);
-                tree.set("nam", tree.textNode(naSpec.toString()));
+            JsonNode nspec = mapper.readTree(val.asText());
+            String nclass = nspec.path("naClass").asText(null);
+            if ("ncms.asm.am.RichRefAM".equals(nclass)) {
+                richRefAM.applyJSONAttributeValue(ctx, attr, nspec, true);
+                tree.set("nam", tree.textNode(mapper.writeValueAsString(nspec)));
             }
         }
+
         val = tree.get("children");
         if (val instanceof ArrayNode) {
             for (JsonNode n : val) {
@@ -358,6 +361,55 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
                     saveTree(ctx, attr, (ObjectNode) n, inSync);
                 }
             }
+        }
+    }
+
+    @Override
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,
+                                             AsmAttribute attr,
+                                             Map<Long, Long> fmap) throws Exception {
+
+        if (StringUtils.isBlank(attr.getEffectiveValue())) {
+            return attr;
+        }
+        if (new KVOptions(attr.getOptions()).getLongObject("syncWith", null) != null) {
+            ObjectNode node = (ObjectNode) mapper.readTree(attr.getEffectiveValue());
+            saveTree(ctx, attr, node, true);
+            return attr;
+        }
+        Tree tree = mapper.readerFor(Tree.class).readValue(attr.getEffectiveValue());
+        applyAsmCloneFix(ctx, attr, tree, fmap);
+        ObjectNode node = mapper.valueToTree(tree);
+        saveTree(ctx, attr, node, false);
+        attr.setEffectiveValue(mapper.writeValueAsString(node));
+        return attr;
+    }
+
+    private void applyAsmCloneFix(AsmAttributeManagerContext ctx,
+                                  AsmAttribute attr,
+                                  Tree tree,
+                                  Map<Long, Long> fmap) throws Exception {
+
+        if ("file".equals(tree.getType())) {
+            if (tree.getId() != null && tree.getId() > 0) {
+                Long nfid = translateClonedFile(tree.getId(), fmap);
+                if (nfid != null) {
+                    tree.setId(nfid);
+                }
+            }
+        }
+        if (!StringUtils.isBlank(tree.getNam())) {
+            JsonNode nspec = mapper.readTree(tree.getNam());
+            String nclass = nspec.path("naClass").asText(null);
+            if ("ncms.asm.am.RichRefAM".equals(nclass)) {
+                AsmAttribute cattr = attr.cloneDeep();
+                cattr.setEffectiveValue(tree.getNam());
+                richRefAM.handleAssemblyCloned(ctx, cattr, fmap);
+                tree.setNam(cattr.getEffectiveValue());
+            }
+        }
+        for (Tree ctree : tree.getChildren()) {
+            applyAsmCloneFix(ctx, attr, ctree, fmap);
         }
     }
 }

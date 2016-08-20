@@ -58,7 +58,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             var root = qx.data.marshal.Json.createModel({
                 "id": null, //generic node ID
                 "label": (cfg["rootLabel"] || this.tr("Root")),   // node name
-                "status": 1,       // (statis & 1) != 0 - it is folder, == 0 - otherwise
+                "status": 1,       // (status & 1) != 0 - it is folder, == 0 - otherwise
                 "icon": "default", // icon alias
                 "loaded": true,    // is loaded
                 "children": []     // node children

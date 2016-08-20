@@ -23,7 +23,6 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.media.MediaResource;
-import com.softmotions.weboot.i18n.I18n;
 
 /**
  * File reference attribute manager.
@@ -32,7 +31,7 @@ import com.softmotions.weboot.i18n.I18n;
  */
 
 @Singleton
-public class AsmFileRefAM extends AsmAttributeManagerSupport {
+public class AsmFileRefAM extends AsmFileAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmFileRefAM.class);
 
@@ -40,12 +39,9 @@ public class AsmFileRefAM extends AsmAttributeManagerSupport {
 
     private final MediaReader reader;
 
-    private final I18n messages;
-
     @Inject
-    public AsmFileRefAM(MediaReader reader, I18n messages) {
+    public AsmFileRefAM(MediaReader reader) {
         this.reader = reader;
-        this.messages = messages;
     }
 
     @Override
@@ -65,7 +61,7 @@ public class AsmFileRefAM extends AsmAttributeManagerSupport {
         if (attr.getOptions() != null) {
             opts.loadOptions(attr.getOptions());
         }
-        String location = attr.getEffectiveValue();
+        String location = getRawLocation(attr.getEffectiveValue());
         if (BooleanUtils.toBoolean(opts.getString("asLocation"))) {
             return location;
         }
@@ -114,15 +110,36 @@ public class AsmFileRefAM extends AsmAttributeManagerSupport {
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        ctx.clearFileDeps(attr);
-        String location = val.hasNonNull("value") ? val.get("value").asText().trim() : null;
+        String location = StringUtils.trimToNull(val.path("value").asText(null));
+        String rawLocation = getRawLocation(location);
         attr.setEffectiveValue(location);
-        if (!StringUtils.isBlank(location)) {
-            MediaResource resource = reader.findMediaResource(location, messages.getLocale(ctx.getRequest()));
+        if (!StringUtils.isBlank(rawLocation)) {
+            MediaResource resource = reader.findMediaResource(rawLocation, ctx.getLocale());
             if (resource != null) {
-                ctx.registerMediaFileDependency(attr, resource.getId());
+                ctx.registerFileDependency(attr, resource.getId());
             }
         }
         return attr;
+    }
+
+    @Override
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,
+                                             AsmAttribute attr,
+                                             Map<Long, Long> fmap) throws Exception {
+
+        String nlocation = translateClonedFile(reader, attr.getEffectiveValue(), fmap);
+        if (nlocation == null) {
+            nlocation = getRawLocation(attr.getEffectiveValue());
+            if (nlocation != null) {
+                MediaResource res = reader.findMediaResource(nlocation, null);
+                if (res != null) {
+                    ctx.registerFileDependency(attr, res.getId());
+                }
+            }
+            return attr;
+        }
+        ObjectNode node = ctx.getMapper().createObjectNode();
+        node.put("value", nlocation);
+        return applyAttributeValue(ctx, attr, node);
     }
 }
