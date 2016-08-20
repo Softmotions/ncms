@@ -47,6 +47,6 @@ constructor(private val ps: PageService) : MttFilterHandler {
             }
             cp = ps.getIndexPage(req, true)
         }
-        return (cp != null) && (pageName.equals(cp.name))
+        return pageName.equals(cp?.name)
     }
 }
