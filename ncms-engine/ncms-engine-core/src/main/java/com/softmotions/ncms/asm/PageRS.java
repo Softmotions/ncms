@@ -1486,7 +1486,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @Override
     public CachedPage getCachedPage(String guidOrAlias, boolean create) {
-        if (!StringUtils.isBlank(guidOrAlias)) {
+        if (StringUtils.isBlank(guidOrAlias)) {
             return null;
         }
         CachedPage cp;

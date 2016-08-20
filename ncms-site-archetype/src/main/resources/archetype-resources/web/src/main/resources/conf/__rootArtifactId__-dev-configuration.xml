@@ -36,7 +36,7 @@
     <jar-web-resources>
         <resource>
             <path-prefix>/adm</path-prefix>
-            <options>/${rootArtifactId}-qx/${rootArtifactId}\,watch=true</options>
+            <options>/${rootArtifactId}-qx/${rootArtifactId},X-App-Prefix=/,watch=true</options>
         </resource>
         <resource>
             <path-prefix>/manual</path-prefix>
@@ -46,16 +46,16 @@
 
     <cache-headers-groups>
         <cache-group>
-            <nocache>true</nocache>
-            <patterns>/adm/script/*</patterns>
-        </cache-group>
-        <cache-group>
             <patterns>*.css,*.js</patterns>
             <expiration>7200</expiration>
         </cache-group>
         <cache-group>
             <patterns>/rs/media/fileid/*,/images/*,/adm/resource/*</patterns>
             <expiration>7200</expiration>
+        </cache-group>
+        <cache-group>
+            <nocache>true</nocache>
+            <patterns>/adm/script/*</patterns>
         </cache-group>
     </cache-headers-groups>
 
