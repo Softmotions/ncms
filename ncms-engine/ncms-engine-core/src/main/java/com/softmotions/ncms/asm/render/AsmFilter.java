@@ -108,7 +108,6 @@ public class AsmFilter implements Filter {
         } else {
             excludePrefixes = ArrayUtils.EMPTY_STRING_ARRAY;
         }
-
         log.info("Strip prefixes: {}", Arrays.asList(stripPrefixes));
         log.info("Exclude prefixes: {}", Arrays.asList(excludePrefixes));
     }

@@ -49,8 +49,8 @@ public class MediaWikiRenderer {
         this.ebus = ebus;
         this.messages = messages;
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
-        this.imageBaseUrl = env.getAppPrefix() + xcfg.getString("mediawiki.image-base-url", "/rs/mw/res/" + "${image}");
-        this.linkBaseUrl = env.getAppPrefix() + xcfg.getString("mediawiki.link-base-url", "/rs/mw/link/" + "${title}");
+        this.imageBaseUrl = xcfg.getString("mediawiki.image-base-url", "/rs/mw/res/${image}");
+        this.linkBaseUrl = xcfg.getString("mediawiki.link-base-url", "/rs/mw/link/${title}");
     }
 
     public String render(String markup, Locale locale) throws IOException {

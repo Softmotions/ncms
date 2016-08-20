@@ -26,7 +26,6 @@
 
         <asm>
             <site-files-root resolveRelativePaths="true">/site</site-files-root>
-            <exclude>/rs,/rjs,/ncms/rs,/ncms/rjs</exclude>
             <resource-loaders>
                 <loader>com.softmotions.ncms.asm.render.ldrs.AsmMediaServiceResourceLoader</loader>
             </resource-loaders>
@@ -141,8 +140,6 @@
         </ui>
 
         <mediawiki>
-            <image-base-url>/rs/mw/res/${image}</image-base-url>
-            <link-base-url>/rs/mw/link/${title}</link-base-url>
             <max-inline-image-width-px>900</max-inline-image-width-px>
             <tags>
                 <tag name="note" class="com.softmotions.ncms.mediawiki.NoteTag"/>

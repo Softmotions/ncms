@@ -87,20 +87,21 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
     }
 
     protected void initJAXRS(NcmsEnvironment env) {
-        String appPrefix = env.getAppPrefix();
+        String ncmsp = env.getAppPrefix();
+
         //Resteasy staff
         install(new WBJaxrsModule());
         bind(NcmsRSExceptionHandler.class).in(Singleton.class);
         bind(ResteasyUTF8CharsetFilter.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
-        log.info("Resteasy serving on {}", appPrefix + "/rs/*");
-        serve(appPrefix + "/rs/*")
+        log.info("Resteasy serving on {}", ncmsp + "/rs/*");
+        serve(ncmsp + "/rs/*")
                 .with(HttpServletDispatcher.class,
-                      new TinyParamMap().param("resteasy.servlet.mapping.prefix", appPrefix + "/rs"));
+                      new TinyParamMap().param("resteasy.servlet.mapping.prefix", ncmsp + "/rs"));
 
         //Resteasy JS API
         bind(JSAPIServlet.class).in(Singleton.class);
-        serve(appPrefix + "/rjs")
+        serve(ncmsp + "/rjs")
                 .with(JSAPIServlet.class);
     }
 
@@ -127,7 +128,6 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
     }
 
     protected void initMarketingToolsFilter(NcmsEnvironment env) {
-        String ncmsp = env.getAppPrefix();
-        filter(ncmsp + "/*", MttHttpFilter.class);
+        filter(env.getAppPrefix() + "/*", MttHttpFilter.class);
     }
 }

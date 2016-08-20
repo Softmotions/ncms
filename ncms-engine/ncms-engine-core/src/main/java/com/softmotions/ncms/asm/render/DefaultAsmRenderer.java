@@ -129,14 +129,14 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attributeName);
-        if (attr == null) {
-            CachedPage p = pageService.getIndexPage(ctx.getServletRequest(), false);
+        if (attr == null && asm.getNavParentId() != null) {
+            CachedPage p = pageService.getCachedPage(asm.getNavParentId(), true);
             if (p != null && !asm.equals(p.getAsm())) {
                 return ctx.renderAttribute(p.getAsm(), attributeName, options);
             }
         }
-        if (attr == null && asm.getNavParentId() != null) {
-            CachedPage p = pageService.getCachedPage(asm.getNavParentId(), true);
+        if (attr == null) {
+            CachedPage p = pageService.getIndexPage(ctx.getServletRequest(), false);
             if (p != null && !asm.equals(p.getAsm())) {
                 return ctx.renderAttribute(p.getAsm(), attributeName, options);
             }

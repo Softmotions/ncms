@@ -5,10 +5,29 @@ qx.Class.define("ncms.Actions", {
     extend: sm.conn.Actions,
 
     construct: function (prefix) {
-        this._prefix = (typeof prefix === "string") ? prefix : "";
+
+        function appRooRoot() {
+            var pn = window.location.pathname;
+            var ind = pn.indexOf("/adm/index.html");
+            if (ind == -1) {
+                ind = pn.indexOf("/adm/")
+            }
+            if (ind == -1) {
+                qx.log.Logger.error("Failed to find app root. window.location.pathname=" + window.location.pathname);
+                return null;
+            }
+            pn = pn.substring(0, ind);
+            return pn;
+        }
+
+        this._prefix = (typeof prefix === "string") ? prefix : appRooRoot();
+
         this.base(arguments);
+
+        qx.log.Logger.info("ACTIONS PREFIX: '" + this._prefix + "'");
         this._testPrefix = "http://localhost:8080";
         this._resourceManager = qx.util.ResourceManager.getInstance();
+
 
         //Starting GUI state
         this._action("app.state", "/rs/adm/ws/state");

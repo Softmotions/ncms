@@ -57,11 +57,14 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
     private static final Pattern PAGENAME_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|(.*))?\\]\\]",
                                                                    Pattern.CASE_INSENSITIVE);
 
+
+    private static final Pattern WIKIFIX_REGEXP = Pattern.compile("(/rs/mw/[^\"\'>]+)|((/asm)?/([0-9a-f]{32}))",
+                                                                  Pattern.CASE_INSENSITIVE);
+
+
     private final ObjectMapper mapper;
 
     private final MediaWikiRenderer mediaWikiRenderer;
-
-    private final Pattern pageRefsRE;
 
     private final PageService pageService;
 
@@ -77,7 +80,6 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
-        this.pageRefsRE = Pattern.compile(Pattern.quote(env.getAppRoot()) + "/(asm/)?" + "([0-9a-f]{32})");
     }
 
     @Override
@@ -145,13 +147,29 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
             return "";
         }
         StringBuffer res = new StringBuffer(html.length());
-        Matcher m = pageRefsRE.matcher(html);
+
+
+        // (/rs/mw/.*)|((/asm)?/([0-9a-f]{32}))
+        //
+        // 0:((/(12d5c7a0c3167d3d21d30f1c43368b32)4)2)0
+        // 0:((/rs/mw/link/Image:300px-/421/header.jpg)1)0
+        Matcher m = WIKIFIX_REGEXP.matcher(html);
+
         while (m.find()) {
-            String guid = m.group(2);
-            if (guid != null) {
+
+            final String guid = m.group(4);
+            final String fref = m.group(1);
+
+            if (!StringUtils.isBlank(guid)) {
                 String link = pageService.resolvePageLink(guid);
                 if (link != null) {
                     m.appendReplacement(res, link);
+                } else {
+                    m.appendReplacement(res, m.group());
+                }
+            } else if (!StringUtils.isBlank(fref)) {
+                if (!fref.startsWith(env.getAppRoot())) {
+                    m.appendReplacement(res, env.getAppRoot() + fref);
                 } else {
                     m.appendReplacement(res, m.group());
                 }
