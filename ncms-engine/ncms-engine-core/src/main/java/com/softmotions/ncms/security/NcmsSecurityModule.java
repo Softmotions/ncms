@@ -88,7 +88,7 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
             Map<String, String> params = new Flat3Map();
             params.put("enabled", "true");
             params.put("headerValue", webAccessControlAllow);
-            m.filterAndBind("/*", AccessControlHDRFilter.class, params);
+            m.filterAndBind(env.getAppPrefix() + "/*", AccessControlHDRFilter.class, params);
         }
     }
 

@@ -62,7 +62,8 @@ public class NcmsServletListener extends WBServletListener {
         initJarResources(env, sctx);
 
         sctx.addFilter("charsetFilter", CharsetFilter.class)
-            .addMappingForUrlPatterns(null, false, "/*");
+            .addMappingForUrlPatterns(null,
+                                      false, env.getAppPrefix() + "/*");
 
         FilterRegistration.Dynamic shiroFilter = sctx.addFilter("shiroFilter", ShiroFilter.class);
         shiroFilter.addMappingForUrlPatterns(
@@ -70,12 +71,12 @@ public class NcmsServletListener extends WBServletListener {
                            DispatcherType.FORWARD,
                            DispatcherType.INCLUDE,
                            DispatcherType.ERROR),
-                false, "/*");
+                false, env.getAppPrefix() + "/*");
 
         sctx.addFilter("guiceFilter", GuiceFilter.class)
             .addMappingForUrlPatterns(
                     EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD),
-                    false, "/*");
+                    false, env.getAppPrefix() + "/*");
 
         start();
 
