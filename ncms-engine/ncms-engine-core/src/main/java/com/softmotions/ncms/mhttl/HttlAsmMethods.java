@@ -254,7 +254,7 @@ public class HttlAsmMethods {
         name = name.toLowerCase();
         Collection<Long> rids =
                 (Collection<Long>)
-                        req.getAttribute(MttHttpFilter.Companion.getMTT_RIDS_KEY());
+                        req.getAttribute(MttHttpFilter.MTT_RIDS_KEY);
 
         if (rids == null || rids.isEmpty()) {
             Enumeration<String> pnames = req.getParameterNames();
