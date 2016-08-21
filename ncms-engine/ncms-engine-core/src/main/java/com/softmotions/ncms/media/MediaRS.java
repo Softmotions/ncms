@@ -150,7 +150,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private final ObjectMapper mapper;
 
-    private final I18n message;
+    private final I18n i18n;
 
     private final NcmsEventBus ebus;
 
@@ -162,7 +162,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     public MediaRS(NcmsEnvironment env,
                    SqlSession sess,
                    ObjectMapper mapper,
-                   I18n message,
+                   I18n i18n,
                    NcmsEventBus ebus,
                    WSUserDatabase userdb) throws IOException {
         super(MediaRS.class, sess);
@@ -177,7 +177,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         this.locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 128));
         this.metaCache = new LRUMap(xcfg.getInt("media.meta-lrucache-size", 1024));
         this.mapper = mapper;
-        this.message = message;
+        this.i18n = i18n;
         this.ebus = ebus;
         this.userdb = userdb;
         this.ebus.register(this);
@@ -463,7 +463,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 ebus.fireOnSuccessCommit(
                         new MediaUpdateEvent(this, true, id, dirname + name));
             } else {
-                throw new NcmsMessageException(message.get("ncms.mmgr.folder.exists", req, folder), true);
+                throw new NcmsMessageException(i18n.get("ncms.mmgr.folder.exists", req, folder), true);
             }
             return mapper.createObjectNode()
                          .put("label", name)
@@ -576,7 +576,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
                 File f2 = new File(basedir, npath);
                 if (f2.exists()) {
-                    throw new NcmsMessageException(message.get("ncms.mmgr.file.exists", req, npath), true);
+                    throw new NcmsMessageException(i18n.get("ncms.mmgr.file.exists", req, npath), true);
                 }
                 File pf = f2.getParentFile();
                 if (pf != null && !pf.exists() && !pf.mkdirs()) {
@@ -590,7 +590,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     String p1 = f1.getCanonicalPath();
                     String p2 = f2.getCanonicalPath();
                     if (p2.startsWith(p1 + '/')) {
-                        String msg = message.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req, path, npath);
+                        String msg = i18n.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req, path, npath);
                         throw new NcmsMessageException(msg, true);
                     }
                     String like = '/' + path + "/%";
@@ -713,7 +713,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                            "folder", folder,
                            "name", name);
                 } else {
-                    throw new NotFoundException(message.get("ncms.mmgr.file.cannot.delete", req, path));
+                    throw new NotFoundException(i18n.get("ncms.mmgr.file.cannot.delete", req, path));
                 }
 
                 synchronized (metaCache) {
@@ -787,7 +787,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         qm.put("id", id);
 
         if (form.containsKey("tags")) {
-            final Collator coll = Collator.getInstance(message.getLocale(req));
+            final Collator coll = Collator.getInstance(i18n.getLocale(req));
             String tagStr = form.getFirst("tags");
             Set<String> tagSet = new HashSet<>();
             if (tagStr != null) {
@@ -929,7 +929,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (row == null) {
             return;
         }
-        Locale locale = message.getLocale(req);
+        Locale locale = i18n.getLocale(req);
         Set<String> keywords = new HashSet<>();
         String name = (String) row.get("name");
         String ctype = (String) row.get("content_type");
@@ -1004,7 +1004,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
     private MBCriteriaQuery createSelectQ(HttpServletRequest req, boolean count) {
-        Locale locale = message.getLocale(req);
+        Locale locale = i18n.getLocale(req);
         MBCriteriaQuery cq = createCriteria();
         String val;
         if (req.isUserInRole("admin")) {
@@ -1130,7 +1130,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             if (!f.isDirectory()) {
                 return res;
             }
-            final Collator collator = Collator.getInstance(message.getLocale(req));
+            final Collator collator = Collator.getInstance(i18n.getLocale(req));
             File[] files = f.listFiles(filter);
             if (files == null) files = EMPTY_FILES_ARRAY;
             Arrays.sort(files, (f1, f2) -> {
@@ -1938,7 +1938,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         boolean isFile = (fmeta != null && 0 == ((Number) fmeta.get("status")).intValue());
         if (isFile) {
             if (!req.getRemoteUser().equals(fmeta.get("owner"))) {
-                String msg = message.get("ncms.mmgr.access.denied", req, path);
+                String msg = i18n.get("ncms.mmgr.access.denied", req, path);
                 throw new ForbiddenException(msg);
             }
         } else {
@@ -1951,7 +1951,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                      "folder", normalizeFolder(path),
                                      "owner", req.getRemoteUser());
             if (count != null && count.intValue() > 0) {
-                throw new ForbiddenException(message.get("ncms.mmgr.access.denied.notOwned", req));
+                throw new ForbiddenException(i18n.get("ncms.mmgr.access.denied.notOwned", req));
             }
         }
     }
@@ -1974,7 +1974,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
             sb.append(pname).append(": ").append(attrName);
         }
-        String msg = message.get("ncms.mmgr.access.file.used", sb.toString());
+        String msg = i18n.get("ncms.mmgr.access.file.used", req, sb.toString());
         throw new ForbiddenException(msg);
     }
 

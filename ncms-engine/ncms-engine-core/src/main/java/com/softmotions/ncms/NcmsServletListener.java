@@ -11,7 +11,6 @@ import javax.servlet.ServletContextEvent;
 
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
-import org.jboss.resteasy.logging.Logger;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +45,6 @@ public class NcmsServletListener extends WBServletListener {
         ServletContext sctx = event.getServletContext();
         sctx.setInitParameter("WEBOOT_CFG_CLASS", NcmsEnvironment.class.getName());
         sctx.setInitParameter("shiroEnvironmentClass", NcmsShiroWebEnvironment.class.getName());
-
-        Logger.setLoggerType(Logger.LoggerType.SLF4J);
         sctx.setInitParameter("resteasy.document.expand.entity.references", "false");
         sctx.setInitParameter("resteasy.role.based.security", "true");
 
