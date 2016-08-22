@@ -13,3 +13,4 @@
     :maxdepth: 2
 
     abt/sample1/index
+    abt/sample2/index
