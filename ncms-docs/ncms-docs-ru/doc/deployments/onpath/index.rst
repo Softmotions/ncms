@@ -42,8 +42,8 @@
         index index.html;
 
         location /ncms_prefix {
-            rewrite ^/ncms_prefix/?(.*)	/ncms_prefix/$1 break;
-            proxy_pass		http://localhost:9191;
+            rewrite             ^(/ncms_prefix)$ $1/ break;
+            proxy_pass		    http://localhost:9191;
             proxy_set_header	Host	$host;
             proxy_set_header	X-Real-IP	$remote_addr;
         }
@@ -75,7 +75,7 @@
 
     [main]
 
-    ...
+
 
     authc.successUrl = /ncms_prefix/adm/
 
