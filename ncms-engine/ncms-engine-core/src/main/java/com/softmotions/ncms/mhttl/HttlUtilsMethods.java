@@ -236,6 +236,7 @@ public class HttlUtilsMethods {
         if (path == null) {
             return null;
         }
+        NcmsEnvironment env = env();
         String spath = path.toString();
         if (StringUtils.isBlank(spath)) {
             return spath;
@@ -243,7 +244,7 @@ public class HttlUtilsMethods {
         if (sfRoot == null) {
             synchronized (HttlUtilsMethods.class) {
                 if (sfRoot == null) {
-                    String sfr = env().xcfg().getString("asm.site-files-root", "");
+                    String sfr = env.xcfg().getString("asm.site-files-root", "");
                     if (!sfr.endsWith("/")) {
                         sfr += "/";
                     }
@@ -252,10 +253,12 @@ public class HttlUtilsMethods {
             }
         }
         if (spath.startsWith(sfRoot)) {
-            return spath.substring(sfRoot.length() - 1);
-        } else {
-            return spath;
+            spath = spath.substring(sfRoot.length() - 1);
         }
+        if (!spath.startsWith(env.getAppRoot())) {
+            spath = env.getAppRoot() + spath;
+        }
+        return spath;
     }
 
     public static String format2(Date date, String format) {
