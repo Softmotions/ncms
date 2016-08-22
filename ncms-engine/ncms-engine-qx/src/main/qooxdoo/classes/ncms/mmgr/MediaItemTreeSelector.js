@@ -29,6 +29,9 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onDelete, this);
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("F2"),
+            this.__onRename, this);
         this.addListenerOnce("treeLoaded", function() {
             this._registerCommandFocusWidget(this._tree);
         }, this);
@@ -141,7 +144,11 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
                 item.setLabel(data[0]);
                 this._onSelected(item);
             }, this);
-            dlg.placeToWidget(ev.getTarget(), false);
+            if (ev.getTarget().getContentLocation) {
+                dlg.placeToWidget(ev.getTarget(), false);
+            } else {
+                dlg.placeToWidget(this._tree, false);
+            }
             dlg.open();
         },
 

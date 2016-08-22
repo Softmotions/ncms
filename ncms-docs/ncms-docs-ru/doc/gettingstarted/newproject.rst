@@ -126,4 +126,9 @@
     JDBC.password=*******
 
 
+Сборка и запуск проекта
+-----------------------
 
+.. code-block:: sh
+
+    mvn clean verify && mvn -Pcargo.run

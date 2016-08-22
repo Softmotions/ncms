@@ -155,7 +155,7 @@ msgid "Override attribute"
 msgstr "Перезаписать атрибут"
 
 #: ncms/news/NewsNav.js:123 ncms/asm/AsmAttrsTable.js:200
-#: ncms/pgs/PagesTreeSelector.js:145
+#: ncms/pgs/PagesTreeSelector.js:148
 msgid "New"
 msgstr "Создать"
 
@@ -226,7 +226,8 @@ msgstr "Опубл."
 msgid "None"
 msgstr "Нет"
 
-#: ncms/asm/AsmEditor.js:116 ncms/asm/am/PageRefAM.js:79
+#: ncms/asm/AsmEditor.js:116 ncms/mtt/filters/MttPageFilter.js:28
+#: ncms/mtt/filters/MttPageFilter.js:57 ncms/asm/am/PageRefAM.js:79
 msgid "Page"
 msgstr "Страница"
 
@@ -267,13 +268,13 @@ msgstr ""
 msgid "New assembly"
 msgstr "Новая сборка (assembly)"
 
-#: ncms/asm/AsmNav.js:79 ncms/mmgr/MediaItemTreeSelector.js:99
+#: ncms/asm/AsmNav.js:79 ncms/mmgr/MediaItemTreeSelector.js:102
 #: ncms/mtt/MttNav.js:126
 msgid "Refresh"
 msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:127 ncms/asm/AsmNav.js:85
-#: ncms/mmgr/MediaItemTreeSelector.js:84 ncms/mmgr/MediaFilesSelector.js:633
+#: ncms/mmgr/MediaItemTreeSelector.js:87 ncms/mmgr/MediaFilesSelector.js:633
 #: ncms/mtt/MttNav.js:134 ncms/asm/am/TreeAMValueWidget.js:457
 msgid "Rename"
 msgstr "Переименовать"
@@ -528,8 +529,8 @@ msgstr "Добавить изображения"
 msgid "Add video"
 msgstr "Добавить видео"
 
-#: ncms/news/NewsNav.js:131 ncms/mmgr/MediaItemTreeSelector.js:92
-#: ncms/asm/am/MedialineAMValueWidget.js:106 ncms/pgs/PagesTreeSelector.js:176
+#: ncms/news/NewsNav.js:131 ncms/mmgr/MediaItemTreeSelector.js:95
+#: ncms/asm/am/MedialineAMValueWidget.js:106 ncms/pgs/PagesTreeSelector.js:179
 msgid "Delete"
 msgstr "Удалить"
 
@@ -558,8 +559,9 @@ msgstr "Ссылка"
 msgid "Allow external links"
 msgstr "Внешние ссылки"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:146 ncms/asm/am/PageRefAM.js:85
-#: ncms/asm/am/PageRefAM.js:90
+#: ncms/asm/am/RichRefAMValueWidget.js:146
+#: ncms/mtt/filters/MttPageFilter.js:32 ncms/mtt/filters/MttPageFilter.js:40
+#: ncms/asm/am/PageRefAM.js:85 ncms/asm/am/PageRefAM.js:90
 msgid "Please set a page link"
 msgstr "Пожалуйста укажите ссылку"
 
@@ -735,7 +737,7 @@ msgstr "Добавить ссылку на файл"
 msgid "Synchronized with %1"
 msgstr "Синхронизовано с %1"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:88 ncms/mmgr/MediaFilesSelector.js:639
+#: ncms/mmgr/MediaItemTreeSelector.js:91 ncms/mmgr/MediaFilesSelector.js:639
 #: ncms/asm/am/TreeAMValueWidget.js:465
 msgid "Move to another folder"
 msgstr "Переместить в другую папку"
@@ -850,7 +852,7 @@ msgstr "Имя файла"
 msgid "Upload files"
 msgstr "Загрузить файлы"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:76 ncms/mmgr/MediaFilesSelector.js:276
+#: ncms/mmgr/MediaItemTreeSelector.js:79 ncms/mmgr/MediaFilesSelector.js:276
 #: ncms/mmgr/MediaFilesSelector.js:614
 msgid "New file"
 msgstr "Новый файл"
@@ -879,7 +881,7 @@ msgstr "Показать файлы в подпапках"
 msgid "Are you sure to remove selected files?"
 msgstr "Вы действительно желаете безвозвратно удалить выбранные файлы?"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:157 ncms/mmgr/MediaFilesSelector.js:571
+#: ncms/mmgr/MediaItemTreeSelector.js:164 ncms/mmgr/MediaFilesSelector.js:571
 msgid "Move '%1' to another folder"
 msgstr "Переместить '%1' в другую папку"
 
@@ -895,15 +897,15 @@ msgstr "Загрузить"
 msgid "Length"
 msgstr "Длина"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:66
+#: ncms/mmgr/MediaItemTreeSelector.js:69
 msgid "New subfolder"
 msgstr "Новая папка"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:72
+#: ncms/mmgr/MediaItemTreeSelector.js:75
 msgid "New top-level folder"
 msgstr "Новая папка верхнего уровня"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:119
+#: ncms/mmgr/MediaItemTreeSelector.js:122
 msgid "Are you sure to remove folder: %1"
 msgstr "Вы действительно желаете безвозвратно удалить папку: %1"
 
@@ -1151,6 +1153,10 @@ msgstr ""
 "Правила фильтрации на каждой строке:%1 <b>?</b> в конце названия заголовка "
 "обозначает его необязательность<br>"
 
+#: ncms/mtt/filters/MttPageFilter.js:12
+msgid "Page filter"
+msgstr ""
+
 #: ncms/mtt/filters/MttParametersFilter.js:55
 msgid "Parameters filtering rules"
 msgstr "Правила фильтрации параметров запроса"
@@ -1271,7 +1277,7 @@ msgstr "Невалидное регулярное выражение"
 msgid "Select the parent page for news"
 msgstr "Укажите родительскую страницу для ленты"
 
-#: ncms/news/NewsNav.js:156 ncms/pgs/PagesTreeSelector.js:297
+#: ncms/news/NewsNav.js:156 ncms/pgs/PagesTreeSelector.js:305
 msgid "Are you sure to remove page: %1"
 msgstr "Вы действительно желаете удалить страницу %1"
 
@@ -1449,35 +1455,35 @@ msgstr "Выбрать страницу"
 msgid "Path"
 msgstr "Путь"
 
-#: ncms/pgs/PagesTreeSelector.js:160
+#: ncms/pgs/PagesTreeSelector.js:163
 msgid "Duplicate it"
 msgstr "Сделать копию"
 
-#: ncms/pgs/PagesTreeSelector.js:168
+#: ncms/pgs/PagesTreeSelector.js:171
 msgid "Change/Rename"
 msgstr "Изменить/Переименовать"
 
-#: ncms/pgs/PagesTreeSelector.js:172
+#: ncms/pgs/PagesTreeSelector.js:175
 msgid "Move"
 msgstr "Переместить"
 
-#: ncms/pgs/PagesTreeSelector.js:181
+#: ncms/pgs/PagesTreeSelector.js:184
 msgid "List of referer pages"
 msgstr "Список ссылающихся страниц"
 
-#: ncms/pgs/PagesTreeSelector.js:194
+#: ncms/pgs/PagesTreeSelector.js:197
 msgid "List of pages referred %1"
 msgstr "Список страниц, ссылающихся на %1"
 
-#: ncms/pgs/PagesTreeSelector.js:207
+#: ncms/pgs/PagesTreeSelector.js:210
 msgid "Choose the target container page"
 msgstr "Укажите папку"
 
-#: ncms/pgs/PagesTreeSelector.js:304
+#: ncms/pgs/PagesTreeSelector.js:312
 msgid "Unable to delete this page"
 msgstr "Невозможно удалить эту страницу"
 
-#: ncms/pgs/PagesTreeSelector.js:307
+#: ncms/pgs/PagesTreeSelector.js:315
 msgid ""
 "This page cannot be removed because we found pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>"

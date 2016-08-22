@@ -54,6 +54,9 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onDeletePage, this);
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("F2"),
+            this.__onChangeOrRenamePage, this);
         this.addListenerOnce("treeLoaded", function() {
             this._registerCommandFocusWidget(this._tree);
         }, this);
@@ -241,11 +244,12 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         },
 
         __onChangeOrRenamePage: function (ev) {
-            var item = this._tree.getSelection().getItem(0);
+            var tree = this._tree;
+            var item = tree.getSelection().getItem(0);
             if (item == null) {
                 return;
             }
-            var parent = this._tree.getParent(item) || this._tree.getModel();
+            var parent = tree.getParent(item) || tree.getModel();
             var dlg = new ncms.pgs.PageChangeOrRenameDlg({
                 id: item.getId(),
                 label: item.getLabel(),
@@ -255,7 +259,11 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 this._refreshNode(parent);
                 dlg.close();
             }, this);
-            dlg.placeToWidget(ev.getTarget(), false);
+            if (ev.getTarget().getContentLocation) {
+                dlg.placeToWidget(ev.getTarget(), false);
+            } else {
+                dlg.placeToWidget(tree, false);
+            }
             dlg.open();
         },
 
