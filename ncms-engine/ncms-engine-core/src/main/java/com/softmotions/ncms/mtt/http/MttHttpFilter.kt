@@ -104,8 +104,8 @@ constructor(val ebus: NcmsEventBus,
         // OR /rs/media
         // OR /rs/adm
         if (uri.startsWith(env.ncmsAdminRoot)
-                || uri.startsWith("/rs/adm")
-                || uri.startsWith("/rs/media")
+                || uri.startsWith(env.appRoot + "/rs/adm")
+                || uri.startsWith(env.appRoot + "/rs/media")
                 || !DEFAULT_DYN_RE.matches(uri)) {
             return false;
         }
