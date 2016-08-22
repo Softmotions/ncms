@@ -25,11 +25,12 @@ constructor(private val ps: PageService) : MttFilterHandler {
 
     override val type: String = "page"
 
-    private val GUID_REGEXP: Regex = Regex("[0-9a-f]{32}")
+    private val PAGEREF_REGEXP = Regex("page:\\s*([0-9a-f]{32})(\\s*\\|.*)?", RegexOption.IGNORE_CASE)
 
     override fun matched(ctx: MttFilterHandlerContext, req: HttpServletRequest): Boolean {
         val spec = ctx.spec
-        var pageName = GUID_REGEXP.find(spec.path("pageref").asText(null))?.value ?: return false
+        val mres = PAGEREF_REGEXP.matchEntire(spec.path("pageref").asText(null)) ?: return false
+        val pageName = mres.groupValues[1]
 
         var uri = req.requestURI
         if (uri[0] == '/') {
