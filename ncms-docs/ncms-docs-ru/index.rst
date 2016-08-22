@@ -14,5 +14,6 @@
     doc/db/index
     doc/httl/index
     doc/mtt/index
+    doc/deployments/index
     doc/cookbook/index
 
