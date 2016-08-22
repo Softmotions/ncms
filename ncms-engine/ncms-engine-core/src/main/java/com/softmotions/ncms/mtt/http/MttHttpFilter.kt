@@ -233,6 +233,7 @@ constructor(val ebus: NcmsEventBus,
                     "params" -> 10
                     "headers" -> 11
                     "cookies" -> 12
+                    "page" -> 20
                     else -> 100
                 }
             }.map {

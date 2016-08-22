@@ -12,7 +12,8 @@ qx.Class.define("ncms.mtt.filters.MttFiltersRegistry", {
             ncms.mtt.filters.MttVHostFilter,
             ncms.mtt.filters.MttParametersFilter,
             ncms.mtt.filters.MttHeadersFilter,
-            ncms.mtt.filters.MttCookiesFilter
+            ncms.mtt.filters.MttCookiesFilter,
+            ncms.mtt.filters.MttPageFilter
         ],
 
         createMttFilterInstance: function (clazz) {
