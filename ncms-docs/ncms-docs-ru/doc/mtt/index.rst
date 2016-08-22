@@ -10,7 +10,7 @@
 
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     abt/sample1/index
     abt/sample2/index
