@@ -13,7 +13,7 @@
     nCMS в контексте основного сайта
 
 
-* Входящий трафик проксируется веб сервером `nginx` в зависимости от контекста перенаправляется
+* Входящий трафик проксируется веб сервером `nginx` и в зависимости от контекста перенаправляется
   либо на основной сайт, либо на nCMS ресурсы находящиеся под префиксом `/<ncms_prefix>`
 * Все ресурсы за путем `http://example.com/<ncms_prefix>/*` обрабатываются nCMS
 * Все другие ресурсы обрабытываются основным сайтом
@@ -75,17 +75,7 @@
 
     [main]
 
-    database = com.softmotions.ncms.shiro.ShiroWBJVMObjectFactory
-    database.requiredType = com.softmotions.web.security.WSUserDatabase
-    database.resourceName = WSUserDatabase
-
-    cacheManager = org.apache.shiro.cache.MemoryConstrainedCacheManager
-
-    ncmsRealm = com.softmotions.ncms.security.NcmsRealm
-    ncmsRealm.database = $database
-
-    securityManager.realm = $ncmsRealm
-    securityManager.cacheManager = $cacheManager
+    ...
 
     authc.successUrl = /ncms_prefix/adm/
 
