@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -335,32 +333,26 @@ public class HttlAsmMethods {
         }
 
         params.put("url", req.getRequestURL().toString());
-        Pattern p = Pattern.compile("https?://([^:/\\s]+)(:\\d+)?");
-        Matcher matcher = p.matcher(env.xcfg().getString("site.root"));
-        if (matcher.matches()) {
-            params.put("site_name", matcher.group(1));
-        }
+        params.put("site_name", req.getServerName());
 
         if (!params.containsKey("title")) {
             params.put("title", asm.getHname());
         }
+
         if (!params.containsKey("type")) {
             params.put("type", "article");
         }
+
         if (params.containsKey("image")) {
-            String imgLink = "";
-            if (asmHasAttribute(params.get("image"))) {
-                Object imgref = asm(params.get("image"));
-                if (imgref instanceof Image) {
-                    Image img = (Image) imgref;
+            String imgLink = params.get("image");
+            if (asmHasAttribute(imgLink)) {
+                Object imgRef = asm(imgLink);
+                if (imgRef instanceof Image) {
+                    Image img = (Image) imgRef;
                     imgLink = img.getLink();
                 }
-            } else {
-                imgLink = params.get("image");
             }
-            if (!imgLink.isEmpty()) {
-                params.put("image", env.getAbsoluteLink(req, imgLink));
-            }
+            params.put("image", env.getAbsoluteLink(req, imgLink));
         }
 
         StringBuilder ret = new StringBuilder();
