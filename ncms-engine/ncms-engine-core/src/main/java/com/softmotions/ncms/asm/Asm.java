@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -36,10 +37,10 @@ import com.softmotions.commons.cont.Pair;
 
 /**
  * Assembly.
- * This class is not thread safe for concurrent updating.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@NotThreadSafe
 @SuppressWarnings("unchecked")
 @JsonRootName("asm")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -146,6 +147,9 @@ public class Asm implements Serializable {
         this.options = options;
     }
 
+    /**
+     * Assembly primary key (PK)
+     */
     public Long getId() {
         return id;
     }
@@ -154,6 +158,11 @@ public class Asm implements Serializable {
         this.id = id;
     }
 
+    /**
+     * Assembly name.
+     * If assembly represents a page its name
+     * will be `UUID`.
+     */
     @Nonnull
     public String getName() {
         return name;
@@ -163,6 +172,10 @@ public class Asm implements Serializable {
         this.name = name;
     }
 
+    /**
+     * Assembly human name.
+     * It is page name.
+     */
     @Nullable
     public String getHname() {
         return hname;
@@ -172,6 +185,16 @@ public class Asm implements Serializable {
         this.hname = hname;
     }
 
+    /**
+     * An assembly type.
+     * <p/>
+     * Valid values:
+     * <p/>
+     * * `null` - generic assembly
+     * * `page` - page instance
+     * * `page.folder` - page instance with specific `folder` flavour.
+     * * `new.page` - Special `news` page instance.
+     */
     public String getType() {
         return type != null ? type : "";
     }
@@ -180,6 +203,9 @@ public class Asm implements Serializable {
         this.type = type;
     }
 
+    /**
+     * Assembly description
+     */
     @Nullable
     public String getDescription() {
         return description;
@@ -189,6 +215,11 @@ public class Asm implements Serializable {
         this.description = description;
     }
 
+    /**
+     * Internal assembly options serialized in string
+     * in the same format as the
+     * {@link KVOptions#toString()} does
+     */
     @Nullable
     public String getOptions() {
         return options;
@@ -199,6 +230,9 @@ public class Asm implements Serializable {
         this.parsedOptions = null;
     }
 
+    /**
+     * Internal assembly options as key value map.
+     */
     @Nonnull
     public KVOptions getParsedOptions() {
         String opts = this.options;
@@ -209,6 +243,10 @@ public class Asm implements Serializable {
         return parsedOptions;
     }
 
+    /**
+     * Returns `true` if this assembly acts as template
+     * for site pages.
+     */
     public boolean isTemplate() {
         return template;
     }
@@ -217,6 +255,14 @@ public class Asm implements Serializable {
         this.template = template;
     }
 
+    /**
+     * The type of template represented by this assembly.
+     * Valid values:
+     * <p/>
+     * * `null`/`none` - assembly is not a template
+     * * `page` - assembly is a page template
+     * * `news` - assembky is a template form news line
+     */
     @Nullable
     public String getTemplateMode() {
         return templateMode;
@@ -226,6 +272,9 @@ public class Asm implements Serializable {
         this.templateMode = templateMode;
     }
 
+    /**
+     * Modification date
+     */
     @Nullable
     public Date getMdate() {
         return mdate;
@@ -235,6 +284,9 @@ public class Asm implements Serializable {
         this.mdate = mdate;
     }
 
+    /**
+     * Assembly creation date.
+     */
     @Nullable
     public Date getCdate() {
         return cdate;
@@ -244,6 +296,9 @@ public class Asm implements Serializable {
         this.cdate = cdate;
     }
 
+    /**
+     * Assembly end date. TODO description.
+     */
     @Nullable
     public Date getEdate() {
         return edate;
@@ -253,6 +308,9 @@ public class Asm implements Serializable {
         this.edate = edate;
     }
 
+    /**
+     * `True` if assembly is published.
+     */
     public boolean isPublished() {
         return published;
     }
@@ -261,6 +319,10 @@ public class Asm implements Serializable {
         this.published = published;
     }
 
+    /**
+     * Class name of an optional assembly controller.
+     * *
+     */
     @Nullable
     public String getController() {
         return controller;
@@ -270,6 +332,10 @@ public class Asm implements Serializable {
         this.controller = controller;
     }
 
+    /**
+     * Class name of an optional assembly controller
+     * stored in this assembly or in any of its parents.
+     */
     @JsonProperty()
     public String getEffectiveController() {
         String c = getController();
@@ -285,6 +351,9 @@ public class Asm implements Serializable {
         return null;
     }
 
+    /**
+     * Assembly core instance.
+     */
     @Nullable
     public AsmCore getCore() {
         return core;
@@ -294,6 +363,10 @@ public class Asm implements Serializable {
         this.core = core;
     }
 
+    /**
+     * Assembly core instance
+     * stored in this assembly or in any of its parents.
+     */
     @Nullable
     @JsonProperty
     public AsmCore getEffectiveCore() {
@@ -310,11 +383,17 @@ public class Asm implements Serializable {
         return null;
     }
 
+    /**
+     * Roles which can use this assembly.
+     */
     @JsonView(Asm.ViewFull.class)
     public Collection<String> getAccessRoles() {
         return accessRoles;
     }
 
+    /**
+     * List of all direct assembly parents.
+     */
     public List<Asm> getParents() {
         return parents;
     }
@@ -323,6 +402,10 @@ public class Asm implements Serializable {
         this.parents = parents;
     }
 
+    /**
+     * ID of assembly which parent of
+     * this assembly in the site's navigation structure.
+     */
     @Nullable
     public Long getNavParentId() {
         return navParentId;
@@ -332,11 +415,17 @@ public class Asm implements Serializable {
         this.navParentId = navParentId;
     }
 
+    /**
+     * Assembly navigation alias.
+     */
     @Nullable
     public String getNavAlias() {
         return navAlias;
     }
 
+    /**
+     * Alternate assembly navigation alias.
+     */
     @Nullable
     public String getNavAlias2() {
         return navAlias2;
@@ -346,6 +435,11 @@ public class Asm implements Serializable {
         this.navAlias = navAlias;
     }
 
+    /**
+     * String represents the current navigation
+     * position of this assembly. It it cached value
+     * in order perform fast SQL navigation queries.
+     */
     @Nullable
     public String getNavCachedPath() {
         return navCachedPath;
@@ -355,6 +449,9 @@ public class Asm implements Serializable {
         this.navCachedPath = navCachedPath;
     }
 
+    /**
+     * Iterator for all assembly parents, direct or indirect.
+     */
     public Iterator<Asm> getAllParentsIterator() {
         List<Pair<Asm, Integer>> plist = new ArrayList<>();
         fetchParentsCumulative(plist, 0);
@@ -389,6 +486,9 @@ public class Asm implements Serializable {
         }
     }
 
+    /**
+     * Set contains all assembly parents direct or indirect.
+     */
     public Set<String> getAllParentNames() {
         List<Asm> plist = getParents();
         if (plist == null || plist.isEmpty()) {
@@ -403,6 +503,9 @@ public class Asm implements Serializable {
 
     }
 
+    /**
+     * Get page refs for all direct assembly parents.
+     */
     @JsonProperty()
     public String[] getParentRefs() {
         List<Asm> plist = getParents();
@@ -417,6 +520,14 @@ public class Asm implements Serializable {
         return prefs;
     }
 
+    /**
+     * Get attribute instance
+     *
+     * @param name Attribute name
+     * @return Attribute instance if attribute with specified `name`
+     * exists in this assembly or its parents. Or `null`
+     * if attribute with this name not found.
+     */
     @Nullable
     public AsmAttribute getEffectiveAttribute(String name) {
         AsmAttribute attr = getAttribute(name);
@@ -432,6 +543,10 @@ public class Asm implements Serializable {
         return null;
     }
 
+    /**
+     * Return `true` if assembly has attribute with specified `name`
+     * or in any of its parents.
+     */
     public boolean isHasAttribute(String name) {
         return (getEffectiveAttribute(name) != null);
     }
@@ -471,11 +586,20 @@ public class Asm implements Serializable {
         }
     }
 
+    /**
+     * Return instance of direct assembly attribute if found.
+     *
+     * @param name
+     * @return Found assembly attribute instance or `null`
+     */
     @Nullable
     public AsmAttribute getAttribute(String name) {
         return (getAttributes() != null) ? attributes.getIndex().get(name) : null;
     }
 
+    /**
+     * List of all direct assembly attributes
+     */
     public Collection<AsmAttribute> getAttributes() {
         return attributes;
     }
@@ -484,6 +608,9 @@ public class Asm implements Serializable {
         this.attributes = attributes;
     }
 
+    /**
+     * Register a new attribute in this assembly.
+     */
     public void addAttribute(AsmAttribute attr) {
         if (getAttributes() == null) {
             attributes = new AttrsList();

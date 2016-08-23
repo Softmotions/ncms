@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -12,10 +13,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * Assembly attribute.
- * This class is not thread safe for concurrent updating.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@NotThreadSafe
 @JsonRootName("attribute")
 @XmlAccessorType(XmlAccessType.NONE)
 public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {

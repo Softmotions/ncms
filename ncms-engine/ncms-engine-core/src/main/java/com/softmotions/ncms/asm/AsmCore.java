@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm;
 
 import java.io.Serializable;
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -9,10 +10,10 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 
 /**
  * Assembly core instance.
- * This class is not thread safe for concurrent updating.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@NotThreadSafe
 @JsonRootName("core")
 @XmlAccessorType(XmlAccessType.NONE)
 public class AsmCore implements Serializable {

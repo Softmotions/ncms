@@ -23,7 +23,6 @@ import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.mtt.http.MttHttpFilter;
 import com.softmotions.web.HttpUtils;
-import com.softmotions.weboot.i18n.I18n;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -208,6 +207,47 @@ public class HttlAsmMethods {
             crit.limit(limit.intValue());
         }
         return crit.selectAsAsms();
+    }
+
+
+    public static String link(Asm asm) {
+        return (asm != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(asm.getName()) : null;
+    }
+
+    public static String link(String alias) {
+        return (alias != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(alias) : null;
+    }
+
+    public static String resolve(String link) {
+        return (link != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(link) : null;
+    }
+
+    public static String link(RichRef ref) {
+        if (ref == null) {
+            return null;
+        }
+        return ref.getLink();
+    }
+
+    public static String linkHtml(Object ref) {
+        return linkHtml(ref, null);
+    }
+
+    public static String linkHtml(Object ref, Map<String, String> attrs) {
+        if (ref == null) {
+            return null;
+        }
+        //noinspection ChainOfInstanceofChecks
+        if (ref instanceof Tree) {
+            return ((Tree) ref).toHtmlLink(attrs);
+        }
+        if (ref instanceof String) {
+            ref = new RichRef((String) ref, AsmRendererContext.getSafe().getPageService());
+        }
+        if (!(ref instanceof RichRef)) {
+            return null;
+        }
+        return ((RichRef) ref).toHtmlLink(attrs);
     }
 
     ///////////////////////////////////////////////////////////
