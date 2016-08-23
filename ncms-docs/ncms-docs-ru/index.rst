@@ -6,7 +6,7 @@
 **Содержание**
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     doc/features
     doc/gettingstarted/index
@@ -17,4 +17,5 @@
     doc/soclinks/index
     doc/deployments/index
     doc/cookbook/index
+    doc/extending/index
 

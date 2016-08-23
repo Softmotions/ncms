@@ -8,7 +8,9 @@
 httl.spi.methods.FileMethod
 ---------------------------
 
-TODO
+.. todo::
+
+    TODO
 
 
 httl.spi.methods.CollectionMethod
