@@ -23,6 +23,7 @@ import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.mtt.http.MttHttpFilter;
 import com.softmotions.web.HttpUtils;
+import com.softmotions.weboot.i18n.I18n;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -334,6 +335,7 @@ public class HttlAsmMethods {
 
         params.put("url", req.getRequestURL().toString());
         params.put("site_name", req.getServerName());
+        params.put("locale", ctx.getLocale().toString());
 
         if (!params.containsKey("title")) {
             params.put("title", asm.getHname());
