@@ -1046,6 +1046,22 @@ msgstr "Уровень"
 msgid "Log message"
 msgstr "Лог сообщение"
 
+#: ncms/mtt/actions/MttRememberTSAction.js:13
+msgid "Remember traffic sources"
+msgstr "Запомнить источники трафика"
+
+#: ncms/mtt/actions/MttRememberTSAction.js:23
+msgid "Tracking pixels"
+msgstr "Трекинг пиксели"
+
+#: ncms/mtt/actions/MttRememberTSAction.js:37
+msgid "Enable tracking pixels"
+msgstr "Активировать трекинг пиксели"
+
+#: ncms/mtt/actions/MttRememberTSAction.js:42
+msgid "Manage tracking pixels"
+msgstr "Управление трекинг пикселями"
+
 #: ncms/mtt/actions/MttRouteAction.js:13
 msgid "Route to another resource"
 msgstr "Перенаправление на другой ресурс"
@@ -1968,6 +1984,12 @@ msgstr "Заметка"
 #~ msgid "News caption"
 #~ msgstr "Заголовок новости"
 
+#~ msgid "OFF"
+#~ msgstr "ВЫКЛЮЧЕНО"
+
+#~ msgid "ON"
+#~ msgstr "ВКЛЮЧЕНО"
+
 #~ msgid "Ovewrite"
 #~ msgstr ""
 
@@ -2015,6 +2037,12 @@ msgstr "Заметка"
 
 #~ msgid "This page шы not published"
 #~ msgstr "Эта страница не опубликована"
+
+#~ msgid "Tracking pixel"
+#~ msgstr ""
+
+#~ msgid "Tracking pixels: %1"
+#~ msgstr "Трекинг пиксели: %1"
 
 #~ msgid "Twitter"
 #~ msgstr ""
