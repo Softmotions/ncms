@@ -3,10 +3,13 @@ package com.softmotions.ncms.mhttl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -315,5 +318,49 @@ public class HttlAsmMethods {
             return def;
         }
         return marks.contains(name) || def;
+    }
+
+    public static String ogmeta() {
+        return ogmeta(null);
+    }
+
+    public static String ogmeta(Map<String, String> params) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        NcmsEnvironment env = ctx.getEnvironment();
+        HttpServletRequest req = ctx.getServletRequest();
+        Asm asm = ctx.getAsm();
+
+        Map<String, String> meta = new HashMap();
+        // properties that can be overwriten
+        meta.put("title", asm.getHname());
+        meta.put("type", "article");
+        if (params != null && !params.isEmpty()) {
+            for (Map.Entry<String, String> e : params.entrySet()) {
+                if ("image".equals(e.getKey())) {
+                    Object imgref = asm(e.getValue());
+                    if (imgref instanceof Image) {
+                        Image img = (Image) imgref;
+                        meta.put(e.getKey(), img.getLink());
+                    }
+                } else {
+                    meta.put(e.getKey(), e.getValue());
+                }
+            }
+        }
+        // properties that cannot be overwriten
+        meta.put("url", req.getRequestURL().toString());
+        Pattern p = Pattern.compile(req.getScheme() + "://([^:/\\s]+)(:\\d+)?");
+        Matcher matcher = p.matcher(env.xcfg().getString("site.root"));
+        if (matcher.matches()) {
+            meta.put("site_name", matcher.group(1));
+        }
+
+        StringBuilder ret = new StringBuilder();
+        for (Map.Entry<String, String> e : meta.entrySet()) {
+            ret.append("<meta property=\"og:").append(e.getKey())
+               .append("\" content=\"").append(e.getValue()).append("\"/>\n");
+        }
+
+        return ret.toString();
     }
 }
