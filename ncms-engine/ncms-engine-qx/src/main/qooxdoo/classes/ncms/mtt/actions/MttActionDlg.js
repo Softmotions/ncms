@@ -88,6 +88,10 @@ qx.Class.define("ncms.mtt.actions.MttActionDlg", {
                      ncms.mtt.actions.MttActionsRegistry.findMttActionClassForType(data["type"]) : null;
         if (aclazz != null) {
             this.__setType(data["type"], aclazz);
+        } else {
+            qx.event.Timer.once(function () {
+                this.__selectType();
+            }, this, 0);
         }
     },
 
