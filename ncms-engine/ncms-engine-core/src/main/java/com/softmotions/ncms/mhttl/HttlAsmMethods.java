@@ -330,35 +330,45 @@ public class HttlAsmMethods {
         HttpServletRequest req = ctx.getServletRequest();
         Asm asm = ctx.getAsm();
 
-        Map<String, String> meta = new HashMap();
-        // properties that can be overwriten
-        meta.put("title", asm.getHname());
-        meta.put("type", "article");
-        if (params != null && !params.isEmpty()) {
-            for (Map.Entry<String, String> e : params.entrySet()) {
-                if ("image".equals(e.getKey())) {
-                    Object imgref = asm(e.getValue());
-                    if (imgref instanceof Image) {
-                        Image img = (Image) imgref;
-                        meta.put(e.getKey(), img.getLink());
-                    }
-                } else {
-                    meta.put(e.getKey(), e.getValue());
-                }
-            }
+        if (params == null) {
+            params = new HashMap<>();
         }
-        // properties that cannot be overwriten
-        meta.put("url", req.getRequestURL().toString());
-        Pattern p = Pattern.compile(req.getScheme() + "://([^:/\\s]+)(:\\d+)?");
+
+        params.put("url", req.getRequestURL().toString());
+        Pattern p = Pattern.compile("https?://([^:/\\s]+)(:\\d+)?");
         Matcher matcher = p.matcher(env.xcfg().getString("site.root"));
         if (matcher.matches()) {
-            meta.put("site_name", matcher.group(1));
+            params.put("site_name", matcher.group(1));
+        }
+
+        if (!params.containsKey("title")) {
+            params.put("title", asm.getHname());
+        }
+        if (!params.containsKey("type")) {
+            params.put("type", "article");
+        }
+        if (params.containsKey("image")) {
+            String imgLink = "";
+            if (asmHasAttribute(params.get("image"))) {
+                Object imgref = asm(params.get("image"));
+                if (imgref instanceof Image) {
+                    Image img = (Image) imgref;
+                    imgLink = img.getLink();
+                }
+            } else {
+                imgLink = params.get("image");
+            }
+            if (!imgLink.isEmpty()) {
+                params.put("image", env.getAbsoluteLink(req, imgLink));
+            }
         }
 
         StringBuilder ret = new StringBuilder();
-        for (Map.Entry<String, String> e : meta.entrySet()) {
-            ret.append("<meta property=\"og:").append(e.getKey())
-               .append("\" content=\"").append(e.getValue()).append("\"/>\n");
+        for (Map.Entry<String, String> e : params.entrySet()) {
+            if (!e.getKey().isEmpty()) {
+                ret.append("<meta property=\"og:").append(e.getKey())
+                   .append("\" content=\"").append(e.getValue()).append("\"/>\n");
+            }
         }
 
         return ret.toString();
