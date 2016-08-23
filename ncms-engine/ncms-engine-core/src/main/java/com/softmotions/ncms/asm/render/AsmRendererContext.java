@@ -19,13 +19,35 @@ import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.weboot.i18n.I18n;
 
 /**
- * Rendering context for assembly rendereres.
+ * Rendering context for assembly renderer.
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = new ThreadLocal<>();
+
+
+    public boolean isRendered(Asm asm) {
+        return isRendered(asm.getId());
+    }
+
+    public boolean isRendered(Long asmId) {
+        Stack<AsmRendererContext> asmRendererContexts = ASM_CTX.get();
+        if (asmRendererContexts != null) {
+            for (AsmRendererContext ctx : asmRendererContexts) {
+                if (ctx.getAsm().getId().equals(asmId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isRendered() {
+        Stack<AsmRendererContext> asmRendererContexts = ASM_CTX.get();
+        return asmRendererContexts != null && asmRendererContexts.contains(this);
+    }
 
     /**
      * Push the current context in the ThreadLocal {@link #ASM_CTX}
