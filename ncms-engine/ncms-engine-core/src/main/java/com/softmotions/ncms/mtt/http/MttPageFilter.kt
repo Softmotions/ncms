@@ -41,7 +41,6 @@ constructor(private val ps: PageService,
             log.info("match='$pageName' req='${req.requestURI}'")
         }
 
-        log.info("match='$pageName' req='${req.requestURI}' req='$uri'")
         var cp = ps.getCachedPage(uri, true)
         if (cp == null) {
             if (uri.isNotBlank() && !"index.html".equals(uri)) {
