@@ -15,10 +15,6 @@ qx.Class.define("ncms.mtt.MttNav", {
         MTT_EDITOR_CLAZZ: "ncms.mtt.MttEditor"
     },
 
-    events: {},
-
-    properties: {},
-
     construct: function () {
         var me = this;
         this.base(arguments);

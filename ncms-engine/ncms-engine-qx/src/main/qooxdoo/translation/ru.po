@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:37 ncms/Application.js:494
+#: ncms/Application.js:38 ncms/Application.js:495
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:507
+#: ncms/Application.js:508
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -79,8 +79,8 @@ msgstr "Обязательное в GUI"
 #: ncms/asm/AsmSelectorDlg.js:44 ncms/pgs/PagesSelectorDlg.js:54
 #: ncms/wiki/InsertYoutubeDlg.js:58 ncms/mtt/filters/MttFilterDlg.js:74
 #: ncms/mtt/actions/MttActionDlg.js:74 ncms/wiki/TreeDlg.js:50
-#: ncms/usr/UserSelectorDlg.js:36 ncms/mmgr/MediaSelectFolderDlg.js:54
-#: ncms/wiki/InsertVimeoDlg.js:51 ncms/wiki/InsertGMapDlg.js:41
+#: ncms/mmgr/MediaSelectFolderDlg.js:54 ncms/wiki/InsertVimeoDlg.js:51
+#: ncms/usr/UserSelectorDlg.js:36 ncms/wiki/InsertGMapDlg.js:41
 #: ncms/mmgr/MediaSelectFileDlg.js:89 ncms/cc/TypesSelectorDlg.js:46
 #: ncms/asm/am/TreeAMFoldersDlg.js:51 ncms/usr/UserNewDlg.js:62
 #: ncms/mmgr/PageFilesSelectorDlg.js:116 ncms/asm/am/AMWrapperDlg.js:37
@@ -94,8 +94,8 @@ msgstr "Ок"
 #: ncms/asm/AsmSelectorDlg.js:48 ncms/pgs/PagesSelectorDlg.js:58
 #: ncms/wiki/InsertYoutubeDlg.js:62 ncms/mtt/filters/MttFilterDlg.js:78
 #: ncms/mtt/actions/MttActionDlg.js:78 ncms/wiki/TreeDlg.js:54
-#: ncms/usr/UserSelectorDlg.js:40 ncms/mmgr/MediaSelectFolderDlg.js:58
-#: ncms/wiki/InsertVimeoDlg.js:55 ncms/usr/UserEditForm.js:55
+#: ncms/mmgr/MediaSelectFolderDlg.js:58 ncms/wiki/InsertVimeoDlg.js:55
+#: ncms/usr/UserEditForm.js:55 ncms/usr/UserSelectorDlg.js:40
 #: ncms/wiki/InsertGMapDlg.js:45 ncms/mmgr/MediaSelectFileDlg.js:93
 #: ncms/cc/TypesSelectorDlg.js:51 ncms/asm/am/TreeAMFoldersDlg.js:56
 #: ncms/usr/UserNewDlg.js:66 ncms/mmgr/PageFilesSelectorDlg.js:120
@@ -128,11 +128,11 @@ msgstr "Добавить новый атрибут"
 msgid "Drop attribute"
 msgstr "Удалить атрибут"
 
-#: ncms/mtt/MttNav.js:138 ncms/asm/AsmAttrsTable.js:87
+#: ncms/mtt/MttNav.js:134 ncms/asm/AsmAttrsTable.js:87
 msgid "Move up"
 msgstr "Переместить наверх"
 
-#: ncms/mtt/MttNav.js:142 ncms/asm/AsmAttrsTable.js:92
+#: ncms/mtt/MttNav.js:138 ncms/asm/AsmAttrsTable.js:92
 msgid "Move down"
 msgstr "Переместить вниз"
 
@@ -168,8 +168,8 @@ msgstr "Редактировать"
 #: ncms/mtt/filters/MttFiltersTable.js:182 ncms/asm/AsmNav.js:89
 #: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:644
 #: ncms/mtt/actions/MttActionsTree.js:132
-#: ncms/mtt/actions/MttActionsTree.js:240 ncms/mtt/MttNav.js:45
-#: ncms/mtt/MttNav.js:155 ncms/asm/AsmAttrsTable.js:212
+#: ncms/mtt/actions/MttActionsTree.js:240 ncms/mtt/MttNav.js:41
+#: ncms/mtt/MttNav.js:151 ncms/asm/AsmAttrsTable.js:212
 #: ncms/asm/am/TreeAMValueWidget.js:461
 msgid "Remove"
 msgstr "Удалить"
@@ -269,13 +269,13 @@ msgid "New assembly"
 msgstr "Новая сборка (assembly)"
 
 #: ncms/asm/AsmNav.js:79 ncms/mmgr/MediaItemTreeSelector.js:102
-#: ncms/mtt/MttNav.js:126
+#: ncms/mtt/MttNav.js:122
 msgid "Refresh"
 msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:127 ncms/asm/AsmNav.js:85
 #: ncms/mmgr/MediaItemTreeSelector.js:87 ncms/mmgr/MediaFilesSelector.js:633
-#: ncms/mtt/MttNav.js:134 ncms/asm/am/TreeAMValueWidget.js:457
+#: ncms/mtt/MttNav.js:130 ncms/asm/am/TreeAMValueWidget.js:457
 msgid "Rename"
 msgstr "Переименовать"
 
@@ -493,7 +493,7 @@ msgid "Visrtual hosts"
 msgstr "Виртуальные хосты"
 
 #: ncms/mtt/filters/MttFilterDlg.js:59 ncms/mtt/actions/MttActionDlg.js:59
-#: ncms/mtt/MttNav.js:151 ncms/asm/am/MainPageAM.js:51
+#: ncms/mtt/MttNav.js:147 ncms/asm/am/MainPageAM.js:51
 msgid "Enabled"
 msgstr "Активно"
 
@@ -703,12 +703,12 @@ msgstr "Синхронизовать"
 msgid "Synchronize attribute content with another page"
 msgstr "Синхронизовать поле с другой страницей"
 
-#: ncms/mtt/actions/MttActionsTree.js:149 ncms/mtt/MttNav.js:58
+#: ncms/mtt/actions/MttActionsTree.js:149 ncms/mtt/MttNav.js:54
 #: ncms/asm/am/TreeAMValueWidget.js:197
 msgid "Move item up"
 msgstr "Переместить выше"
 
-#: ncms/mtt/actions/MttActionsTree.js:156 ncms/mtt/MttNav.js:63
+#: ncms/mtt/actions/MttActionsTree.js:156 ncms/mtt/MttNav.js:59
 #: ncms/asm/am/TreeAMValueWidget.js:203
 msgid "Move item down"
 msgstr "Переместить ниже"
@@ -927,23 +927,23 @@ msgstr "Текст ссылки"
 msgid "Close"
 msgstr "Закрыть"
 
-#: ncms/mtt/MttEditor.js:25
+#: ncms/mtt/MttEditor.js:23
 msgid "Filters"
 msgstr "Фильтры"
 
-#: ncms/mtt/MttEditor.js:26
+#: ncms/mtt/MttEditor.js:24
 msgid "Actions"
 msgstr "Действия"
 
-#: ncms/mtt/MttNav.js:41 ncms/mtt/MttNav.js:122
+#: ncms/mtt/MttNav.js:37 ncms/mtt/MttNav.js:118
 msgid "New rule"
 msgstr "Новое правило"
 
-#: ncms/mtt/MttNav.js:147
+#: ncms/mtt/MttNav.js:143
 msgid "Disable"
 msgstr "Отключить"
 
-#: ncms/mtt/MttNav.js:178
+#: ncms/mtt/MttNav.js:174
 msgid "Are you sure to remove rule: \"%1\"?"
 msgstr "Подтвердите удаление правила \"%1\""
 
@@ -1046,21 +1046,17 @@ msgstr "Уровень"
 msgid "Log message"
 msgstr "Лог сообщение"
 
-#: ncms/mtt/actions/MttRememberTSAction.js:13
+#: ncms/mtt/actions/MttRememberTSAction.js:14
 msgid "Remember traffic sources"
 msgstr "Запомнить источники трафика"
 
-#: ncms/mtt/actions/MttRememberTSAction.js:23
+#: ncms/mtt/actions/MttRememberTSAction.js:24
 msgid "Tracking pixels"
 msgstr "Трекинг пиксели"
 
-#: ncms/mtt/actions/MttRememberTSAction.js:37
+#: ncms/mtt/actions/MttRememberTSAction.js:38
 msgid "Enable tracking pixels"
 msgstr "Активировать трекинг пиксели"
-
-#: ncms/mtt/actions/MttRememberTSAction.js:42
-msgid "Manage tracking pixels"
-msgstr "Управление трекинг пикселями"
 
 #: ncms/mtt/actions/MttRouteAction.js:13
 msgid "Route to another resource"
@@ -1977,6 +1973,9 @@ msgstr "Заметка"
 
 #~ msgid "List of referring pages"
 #~ msgstr "Список ссылающихся страниц"
+
+#~ msgid "Manage tracking pixels"
+#~ msgstr "Управление трекинг пикселями"
 
 #~ msgid "Mobile phone"
 #~ msgstr ""

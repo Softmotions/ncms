@@ -4,8 +4,6 @@
 qx.Class.define("ncms.mtt.MttEditor", {
     extend: qx.ui.core.Widget,
 
-    events: {},
-
     properties: {
 
         /**

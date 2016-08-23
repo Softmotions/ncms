@@ -1,5 +1,6 @@
 /**
  * Remember traffic sources action
+ *
  */
 qx.Class.define("ncms.mtt.actions.MttRememberTSAction", {
     extend: qx.core.Object,
@@ -39,10 +40,14 @@ qx.Class.define("ncms.mtt.actions.MttRememberTSAction", {
             w.add(tpcb, {row: 0, column: 0});
             w._tpcb = tpcb;
 
-            var tpbt = new qx.ui.form.Button(this.tr("Manage tracking pixels"));
+            /*var tpbt = new qx.ui.form.Button(this.tr("Manage tracking pixels"),
+                "ncms/icon/16/misc/color-swatch.png");
+            tpbt.addListener("execute", function() {
+                // todo
+            });
             w.add(tpbt, {row: 0, column: 1});
 
-            tpcb.bind("value", tpbt, "enabled");
+            tpcb.bind("value", tpbt, "enabled"); */
             return w;
         },
 
