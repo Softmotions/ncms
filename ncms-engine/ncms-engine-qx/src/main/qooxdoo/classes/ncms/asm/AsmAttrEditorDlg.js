@@ -118,6 +118,10 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         if (amClazz != null) {
             this.__setType(attrSpec["type"], amClazz);
+        } else {
+            qx.event.Timer.once(function () {
+                this.__selectType();
+            }, this, 0);
         }
     },
 

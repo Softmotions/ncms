@@ -88,6 +88,10 @@ qx.Class.define("ncms.mtt.filters.MttFilterDlg", {
                      ncms.mtt.filters.MttFiltersRegistry.findMttFilterClassForType(data["type"]) : null;
         if (fclazz != null) {
             this.__setType(data["type"], fclazz);
+        } else {
+            qx.event.Timer.once(function () {
+                this.__selectType();
+            }, this, 0);
         }
     },
 
