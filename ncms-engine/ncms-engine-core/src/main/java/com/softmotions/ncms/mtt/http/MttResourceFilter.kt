@@ -14,26 +14,37 @@ import javax.servlet.http.HttpServletRequest
  */
 @Singleton
 @ThreadSafe
-open class MttPrefixFilter
+open class MttResourceFilter
 @Inject
 constructor(val env: NcmsEnvironment) : MttFilterHandler {
 
     companion object {
-        private val log = LoggerFactory.getLogger(MttPrefixFilter::class.java)
+        private val log = LoggerFactory.getLogger(MttResourceFilter::class.java)
     }
 
-    override val type: String = "prefix"
+    override val type: String = "resource"
+
+    fun removeURIPrefix(uri: String, prefix: String): String {
+        var uriWSlashes = uri
+        if (!uriWSlashes.startsWith("/")) {
+            uriWSlashes = "/" + uri
+        }
+        if (!uriWSlashes.endsWith("/")) {
+            uriWSlashes += "/"
+        }
+        return uriWSlashes.removePrefix(prefix)
+    }
 
     override fun matched(ctx: MttFilterHandlerContext, req: HttpServletRequest): Boolean {
         val spec = ctx.spec
-        val requestURI = req.requestURI
-        val appPrefix = env.appRoot + if ("/".equals(env.appRoot)) { "" } else { "/" }
+        val appPrefix = env.appRoot.removeSuffix("/")
         val prefixRaw = spec.path("prefix").asText(null) ?: return false
-        val prefix = if (prefixRaw.startsWith(appPrefix)) { prefixRaw.substring(appPrefix.length) } else { prefixRaw }
-        val uri = if (requestURI.startsWith(appPrefix)) { requestURI.substring(appPrefix.length) } else { requestURI }
+
+        val prefix = removeURIPrefix(prefixRaw, appPrefix)
+        val uri = removeURIPrefix(req.requestURI, appPrefix)
 
         if (log.isDebugEnabled) {
-            log.info("prefix='$prefixRaw' req='$requestURI'")
+            log.info("prefix='$prefixRaw' req='${req.requestURI}'")
         }
 
         return uri.startsWith(prefix)

@@ -29,9 +29,9 @@ msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
 #: ncms/pgs/PageEditorEditPage.js:159 ncms/asm/AsmEditor.js:88
-#: ncms/asm/am/AsmCoreAM.js:89 ncms/asm/am/ImageAMValueWidget.js:104
-#: ncms/mtt/filters/MttFilterDlg.js:40 ncms/mtt/actions/MttActionDlg.js:40
-#: ncms/usr/UserEditForm.js:22 ncms/mtt/filters/MttPrefixFilter.js:30
+#: ncms/asm/am/AsmCoreAM.js:89 ncms/mtt/filters/MttResourceFilter.js:30
+#: ncms/asm/am/ImageAMValueWidget.js:104 ncms/mtt/filters/MttFilterDlg.js:40
+#: ncms/mtt/actions/MttActionDlg.js:40 ncms/usr/UserEditForm.js:22
 #: ncms/usr/UserNewDlg.js:32 ncms/mtt/filters/MttVHostFilter.js:44
 #: ncms/asm/am/PageRefAM.js:120 ncms/asm/am/FileRefAM.js:140
 #: ncms/asm/AsmAttrEditorDlg.js:54
@@ -1169,13 +1169,13 @@ msgstr ""
 "Правила фильтрации на каждой строке:%1 <b>?</b> в конце названия параметра "
 "обозначает его необязательность<br>"
 
-#: ncms/mtt/filters/MttPrefixFilter.js:12
-msgid "Prefix filter"
-msgstr "Префикс адреса"
+#: ncms/mtt/filters/MttResourceFilter.js:12
+msgid "Resource prefix filter"
+msgstr "Префикс ресурса"
 
-#: ncms/mtt/filters/MttPrefixFilter.js:34
+#: ncms/mtt/filters/MttResourceFilter.js:34
 msgid "Prefix"
-msgstr "Префикс адреса"
+msgstr "Префикс ресурса"
 
 #: ncms/mtt/filters/MttUserAgentFilter.js:13
 msgid "User agent"

@@ -1,7 +1,7 @@
 /**
- * Prefix filter.
+ * Resource prefix filter.
  */
-qx.Class.define("ncms.mtt.filters.MttPrefixFilter", {
+qx.Class.define("ncms.mtt.filters.MttResourceFilter", {
     extend: qx.core.Object,
     implement: [ncms.mtt.filters.IMttFilter],
     include: [qx.locale.MTranslation],
@@ -9,11 +9,11 @@ qx.Class.define("ncms.mtt.filters.MttPrefixFilter", {
     statics: {
 
         getDescription: function () {
-            return qx.locale.Manager.tr("Prefix filter");
+            return qx.locale.Manager.tr("Resource prefix filter");
         },
 
         getType: function () {
-            return "prefix";
+            return "resource";
         },
 
         specForHuman: function (spec) {
