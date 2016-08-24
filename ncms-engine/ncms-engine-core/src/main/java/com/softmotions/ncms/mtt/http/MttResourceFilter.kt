@@ -37,7 +37,7 @@ constructor(val env: NcmsEnvironment) : MttFilterHandler {
 
     override fun matched(ctx: MttFilterHandlerContext, req: HttpServletRequest): Boolean {
         val spec = ctx.spec
-        val appPrefix = env.appRoot
+        val appPrefix = env.appRoot + "/"
         val prefixRaw = spec.path("prefix").asText(null) ?: return false
 
         val prefix = removeURIPrefix(prefixRaw, appPrefix)
