@@ -8,11 +8,13 @@
 httl.spi.methods.FileMethod
 ---------------------------
 
-TODO
+.. todo::
+
+    TODO
 
 
-httl.spi.methods.CollectionMethod
----------------------------------
+httl.spi.methods .CollectionMethod
+----------------------------------
 
 
 .. js:function:: toCycle(Collection<T> values)
@@ -72,8 +74,8 @@ httl.spi.methods.CollectionMethod
 
     TODO
 
-httl.spi.methods.EscapeMethod
------------------------------
+httl.spi.methods .EscapeMethod
+------------------------------
 
 .. js:function:: escapeString(String value)
 .. js:function:: unescapeString(String value)
@@ -104,8 +106,8 @@ httl.spi.methods.EscapeMethod
 
     Decode строки из `Base64`
 
-httl.spi.methods.StringMethod
------------------------------
+httl.spi.methods .StringMethod
+------------------------------
 
 .. js:function:: clip(String value, int max)
 
@@ -164,8 +166,8 @@ httl.spi.methods.StringMethod
     TODO
 
 
-httl.spi.methods.TypeMethod
----------------------------
+httl.spi.methods .TypeMethod
+----------------------------
 
 .. js:function:: format([int,byte,short,long,float,double,Number] value, String format)
 
@@ -183,7 +185,7 @@ httl.spi.methods.TypeMethod
 
 
     :param String format: Формат переданной строки.
-                              HTTL конфигурация: `date.format=yyyy-MM-dd HH:mm:ss`
+                          HTTL конфигурация: `date.format=yyyy-MM-dd HH:mm:ss`
 
     :rtype: java.util.Date
 
@@ -209,9 +211,9 @@ httl.spi.methods.TypeMethod
    Преобразует аргумент в `java.lang.Boolean`
 
 
-**Пример**::
+    **Пример**::
 
-   ${"true".toBoolean}
+       ${"true".toBoolean}
 
 
 .. note::
@@ -222,8 +224,8 @@ httl.spi.methods.TypeMethod
 
 
 
-httl.spi.methods.SystemMethod
------------------------------
+httl.spi.methods .SystemMethod
+------------------------------
 
 .. js:function:: now()
 

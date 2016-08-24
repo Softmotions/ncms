@@ -78,15 +78,15 @@ public class DefaultAsmRenderer implements AsmRenderer {
     public boolean isHasRenderableAsmAttribute(Asm asm, AsmRendererContext ctx, String name) {
         boolean ret = asm.isHasAttribute(name);
         if (!ret) {
-            CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest(), false);
-            if (indexPage != null && !asm.equals(indexPage.getAsm())) {
-                return indexPage.getAsm().isHasAttribute(name);
-            }
             if (asm.getNavParentId() != null) {
                 CachedPage p = pageService.getCachedPage(asm.getNavParentId(), true);
                 if (p != null) {
                     return p.getAsm().isHasAttribute(name);
                 }
+            }
+            CachedPage indexPage = pageService.getIndexPage(ctx.getServletRequest(), false);
+            if (indexPage != null && !asm.equals(indexPage.getAsm())) {
+                return indexPage.getAsm().isHasAttribute(name);
             }
         }
         return ret;

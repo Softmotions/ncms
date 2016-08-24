@@ -3,6 +3,7 @@ package com.softmotions.ncms.mhttl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -208,6 +209,47 @@ public class HttlAsmMethods {
         return crit.selectAsAsms();
     }
 
+
+    public static String link(Asm asm) {
+        return (asm != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(asm.getName()) : null;
+    }
+
+    public static String link(String alias) {
+        return (alias != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(alias) : null;
+    }
+
+    public static String resolve(String link) {
+        return (link != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(link) : null;
+    }
+
+    public static String link(RichRef ref) {
+        if (ref == null) {
+            return null;
+        }
+        return ref.getLink();
+    }
+
+    public static String linkHtml(Object ref) {
+        return linkHtml(ref, null);
+    }
+
+    public static String linkHtml(Object ref, Map<String, String> attrs) {
+        if (ref == null) {
+            return null;
+        }
+        //noinspection ChainOfInstanceofChecks
+        if (ref instanceof Tree) {
+            return ((Tree) ref).toHtmlLink(attrs);
+        }
+        if (ref instanceof String) {
+            ref = new RichRef((String) ref, AsmRendererContext.getSafe().getPageService());
+        }
+        if (!(ref instanceof RichRef)) {
+            return null;
+        }
+        return ((RichRef) ref).toHtmlLink(attrs);
+    }
+
     ///////////////////////////////////////////////////////////
     //                    A/B Testing                        //
     ///////////////////////////////////////////////////////////
@@ -315,5 +357,54 @@ public class HttlAsmMethods {
             return def;
         }
         return marks.contains(name) || def;
+    }
+
+    public static String ogmeta() {
+        return ogmeta(null);
+    }
+
+    public static String ogmeta(Map<String, String> params) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        NcmsEnvironment env = ctx.getEnvironment();
+        HttpServletRequest req = ctx.getServletRequest();
+        Asm asm = ctx.getAsm();
+
+        if (params == null) {
+            params = new HashMap<>();
+        }
+
+        params.put("url", req.getRequestURL().toString());
+        params.put("site_name", req.getServerName());
+        params.put("locale", ctx.getLocale().toString());
+
+        if (!params.containsKey("title")) {
+            params.put("title", asm.getHname());
+        }
+
+        if (!params.containsKey("type")) {
+            params.put("type", "article");
+        }
+
+        if (params.containsKey("image")) {
+            String imgLink = params.get("image");
+            if (asmHasAttribute(imgLink)) {
+                Object imgRef = asm(imgLink);
+                if (imgRef instanceof Image) {
+                    Image img = (Image) imgRef;
+                    imgLink = img.getLink();
+                }
+            }
+            params.put("image", env.getAbsoluteLink(req, imgLink));
+        }
+
+        StringBuilder ret = new StringBuilder();
+        for (Map.Entry<String, String> e : params.entrySet()) {
+            if (!e.getKey().isEmpty()) {
+                ret.append("<meta property=\"og:").append(e.getKey())
+                   .append("\" content=\"").append(e.getValue()).append("\"/>\n");
+            }
+        }
+
+        return ret.toString();
     }
 }

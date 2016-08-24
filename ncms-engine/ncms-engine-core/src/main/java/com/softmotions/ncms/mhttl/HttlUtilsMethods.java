@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import javax.servlet.http.Cookie;
@@ -25,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
@@ -170,46 +168,6 @@ public class HttlUtilsMethods {
             ret.add(box);
         }
         return ret;
-    }
-
-    public static String link(Asm asm) {
-        return (asm != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(asm.getName()) : null;
-    }
-
-    public static String link(String alias) {
-        return (alias != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(alias) : null;
-    }
-
-    public static String resolve(String link) {
-        return (link != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(link) : null;
-    }
-
-    public static String link(RichRef ref) {
-        if (ref == null) {
-            return null;
-        }
-        return ref.getLink();
-    }
-
-    public static String linkHtml(Object ref) {
-        return linkHtml(ref, null);
-    }
-
-    public static String linkHtml(Object ref, Map<String, String> attrs) {
-        if (ref == null) {
-            return null;
-        }
-        //noinspection ChainOfInstanceofChecks
-        if (ref instanceof Tree) {
-            return ((Tree) ref).toHtmlLink(attrs);
-        }
-        if (ref instanceof String) {
-            ref = new RichRef((String) ref, AsmRendererContext.getSafe().getPageService());
-        }
-        if (!(ref instanceof RichRef)) {
-            return null;
-        }
-        return ((RichRef) ref).toHtmlLink(attrs);
     }
 
     public static String includeTemplate(Object path) {
