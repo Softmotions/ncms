@@ -31,10 +31,9 @@ constructor(private val ps: PageService,
     override fun matched(ctx: MttFilterHandlerContext, req: HttpServletRequest): Boolean {
         val spec = ctx.spec
         val requestURI = req.requestURI
-        val appPrefix = env.appRoot + if ("/".equals(env.appRoot)) { "" } else { "/" }
         val mres = PAGEREF_REGEXP.matchEntire(spec.path("pageref").asText(null)) ?: return false
         val pageName = mres.groupValues[1]
-        val uri = if (requestURI.startsWith(appPrefix)) { requestURI.substring(appPrefix.length) } else { requestURI }
+        val uri = requestURI.removePrefix(env.appRoot + "/")
 
         if (log.isDebugEnabled) {
             log.info("match='$pageName' req='$requestURI'")
