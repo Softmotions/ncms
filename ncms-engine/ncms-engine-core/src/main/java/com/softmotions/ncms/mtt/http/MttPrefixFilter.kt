@@ -26,13 +26,14 @@ constructor(val env: NcmsEnvironment) : MttFilterHandler {
 
     override fun matched(ctx: MttFilterHandlerContext, req: HttpServletRequest): Boolean {
         val spec = ctx.spec
+        val requestURI = req.requestURI
         val appPrefix = env.appRoot + if ("/".equals(env.appRoot)) { "" } else { "/" }
         val prefixRaw = spec.path("prefix").asText(null) ?: return false
         val prefix = if (prefixRaw.startsWith(appPrefix)) { prefixRaw.substring(appPrefix.length) } else { prefixRaw }
-        val uri = if (req.requestURI.startsWith(appPrefix)) { req.requestURI.substring(appPrefix.length) } else { req.requestURI }
+        val uri = if (requestURI.startsWith(appPrefix)) { requestURI.substring(appPrefix.length) } else { requestURI }
 
         if (log.isDebugEnabled) {
-            log.info("prefix='$prefixRaw' req='${req.requestURI}'")
+            log.info("prefix='$prefixRaw' req='$requestURI'")
         }
 
         return uri.startsWith(prefix)
