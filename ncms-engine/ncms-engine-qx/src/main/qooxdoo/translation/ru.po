@@ -1155,7 +1155,7 @@ msgstr ""
 
 #: ncms/mtt/filters/MttPageFilter.js:12
 msgid "Page filter"
-msgstr ""
+msgstr "Фильтр страниц"
 
 #: ncms/mtt/filters/MttParametersFilter.js:55
 msgid "Parameters filtering rules"
