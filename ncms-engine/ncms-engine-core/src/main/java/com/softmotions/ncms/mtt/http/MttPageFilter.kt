@@ -40,17 +40,17 @@ constructor(private val ps: PageService,
             log.info("match='$pageName' req='$requestURI'")
         }
 
-        if (pageName.equals(uri)) {
+        if (pageName == uri) {
             return true // request page by guid
         }
 
         var cp = ps.getCachedPage(uri, true)
         if (cp == null) {
-            if (uri.isNotBlank() && !"index.html".equals(uri)) {
+            if (uri.isNotBlank() && "index.html" != uri) {
                 return false
             }
             cp = ps.getIndexPage(req, true)
         }
-        return pageName.equals(cp?.name)
+        return pageName == cp?.name
     }
 }
