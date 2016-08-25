@@ -15,8 +15,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
 /**
+ * MTT rule.
+ *
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  */
+
 @XmlAccessorType(XmlAccessType.NONE)
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.NONE,
@@ -26,20 +29,28 @@ import com.google.common.base.MoreObjects;
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
 public class MttRule implements Serializable {
+
     @JsonProperty
     private Long id;
+
     @JsonProperty
     private String name;
+
     @JsonProperty
     private String description;
+
     @JsonProperty
     private Long ordinal;
+
     @JsonProperty
     private Date cdate;
+
     @JsonProperty
     private Date mdate;
+
     @JsonProperty
     private boolean enabled = true;
+
     @JsonProperty
     private long flags;
 

@@ -72,5 +72,6 @@
         <mapper resource="com/softmotions/ncms/update/UpdateInitializer.xml"/>
         <mapper resource="com/softmotions/ncms/mtt/MttRuleRS.xml"/>
         <mapper resource="com/softmotions/ncms/mtt/http/MttHttpFilter.xml"/>
+        <mapper resource="com/softmotions/ncms/mtt/tp/MttTpRS.xml"/>
     </mappers>
 </configuration>

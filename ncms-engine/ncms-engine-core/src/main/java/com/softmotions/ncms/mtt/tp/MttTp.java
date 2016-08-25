@@ -1,4 +1,4 @@
-package com.softmotions.ncms.mtt;
+package com.softmotions.ncms.mtt.tp;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,8 +11,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 
 /**
- * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
+ * Mtt tracking pixel.
+ *
+ * @author Adamansky Anton (adamansky@gmail.com)
  */
+
 @XmlAccessorType(XmlAccessType.NONE)
 @JsonAutoDetect(
         creatorVisibility = JsonAutoDetect.Visibility.NONE,
@@ -21,22 +24,16 @@ import com.google.common.base.MoreObjects;
         isGetterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-public class MttRuleFilter implements Serializable {
+public class MttTp implements Serializable {
 
     @JsonProperty
     private Long id;
 
     @JsonProperty
-    private Long ruleId;
-
-    @JsonProperty
-    private String type;
+    private String name;
 
     @JsonProperty
     private String description;
-
-    @JsonProperty
-    private String spec;
 
     @JsonProperty
     private Date cdate;
@@ -47,12 +44,19 @@ public class MttRuleFilter implements Serializable {
     @JsonProperty
     private boolean enabled = true;
 
-    public MttRuleFilter() {
+    @JsonProperty
+    private String spec;
+
+    public MttTp() {
     }
 
-    public MttRuleFilter(Long ruleId, String type) {
-        this.ruleId = ruleId;
-        this.type = type;
+    public MttTp(String name) {
+        this.name = name;
+    }
+
+    public MttTp(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {
@@ -63,20 +67,12 @@ public class MttRuleFilter implements Serializable {
         this.id = id;
     }
 
-    public Long getRuleId() {
-        return ruleId;
+    public String getName() {
+        return name;
     }
 
-    public void setRuleId(Long ruleId) {
-        this.ruleId = ruleId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -85,14 +81,6 @@ public class MttRuleFilter implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getSpec() {
-        return spec;
-    }
-
-    public void setSpec(String spec) {
-        this.spec = spec;
     }
 
     public Date getCdate() {
@@ -111,7 +99,7 @@ public class MttRuleFilter implements Serializable {
         this.mdate = mdate;
     }
 
-    public boolean getEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
@@ -119,10 +107,21 @@ public class MttRuleFilter implements Serializable {
         this.enabled = enabled;
     }
 
+    public String getSpec() {
+        if (spec == null) {
+            spec = "{}";
+        }
+        return spec;
+    }
+
+    public void setSpec(String spec) {
+        this.spec = spec;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MttRuleFilter that = (MttRuleFilter) o;
+        MttTp that = (MttTp) o;
         return Objects.equals(id, that.id);
     }
 
@@ -133,11 +132,12 @@ public class MttRuleFilter implements Serializable {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                           .add("id", id)
-                          .add("ruleId", ruleId)
-                          .add("type", type)
+                          .add("name", name)
+                          .add("description", description)
+                          .add("cdate", cdate)
+                          .add("mdate", mdate)
                           .add("enabled", enabled)
                           .add("spec", spec)
                           .toString();
     }
 }
-

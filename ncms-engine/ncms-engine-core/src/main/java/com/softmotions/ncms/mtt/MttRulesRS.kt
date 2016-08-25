@@ -31,7 +31,7 @@ open class MttRulesRS
 @Inject
 constructor(val sess: SqlSession,
             val mapper: ObjectMapper,
-            val messages: I18n,
+            val i18n: I18n,
             val ebus: NcmsEventBus) : MBDAOSupport(MttRulesRS::class.java, sess) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -39,7 +39,6 @@ constructor(val sess: SqlSession,
     @GET
     @Path("/select")
     @RequiresRoles("mtt")
-    @Transactional
     open fun rules(@Context req: HttpServletRequest): Response =
             Response.ok(StreamingOutput { output ->
                 with(mapper.factory.createGenerator(output)) {
@@ -49,7 +48,7 @@ constructor(val sess: SqlSession,
                         writeObject((context.resultObject as Map<String, Any>).mapValues {
                             when {
                             // convert enabled field to boolean
-                                it.key in arrayOf("enabled") -> it.value as Number != 0
+                                it.key == "enabled" -> it.value as Number != 0
                                 else -> it.value
                             }
                         })
@@ -65,7 +64,6 @@ constructor(val sess: SqlSession,
     @Path("/select/count")
     @Produces("text/plain")
     @RequiresRoles("mtt")
-    @Transactional
     open fun rulesCount(@Context req: HttpServletRequest): Long =
             selectOneByCriteria(createRulesQ(req), "selectRulesCount")
 
@@ -94,13 +92,12 @@ constructor(val sess: SqlSession,
     @Path("/rule/{name}")
     @RequiresRoles("mtt")
     @Transactional
-    // TODO: events?
     open fun ruleCreate(@Context req: HttpServletRequest,
                         @PathParam("name") name: String): MttRule {
-        synchronized(MttRule::class) {
+        synchronized(MttRule::class.java) {
             val rname = name.trim()
             if (selectOne<Long?>("selectRuleIdByName", rname) != null) {
-                throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.exists", req, rname), true)
+                throw NcmsMessageException(i18n.get("ncms.mtt.rule.name.already.exists", req, rname), true)
             }
             val rule = MttRule(rname)
             insert("insertRule", rule)
@@ -117,10 +114,10 @@ constructor(val sess: SqlSession,
     open fun ruleRename(@Context req: HttpServletRequest,
                         @PathParam("rid") rid: Long,
                         @PathParam("name") name: String): MttRule {
-        synchronized(MttRule::class) {
+        synchronized(MttRule::class.java) {
             val rname = name.trim()
             if (selectOne<Long?>("selectRuleIdByName", rname) != null) {
-                throw NcmsMessageException(messages.get("ncms.mtt.rule.name.already.other", req, rname), true)
+                throw NcmsMessageException(i18n.get("ncms.mtt.rule.name.already.other", req, rname), true)
             }
             update("updateRuleName", "id", rid, "name", rname)
             ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
@@ -132,15 +129,15 @@ constructor(val sess: SqlSession,
     @Path("/rule/{rid}")
     @RequiresRoles("mtt")
     @Transactional
-    open fun ruleUpdate(@PathParam("rid") rid: Long, rn: ObjectNode): MttRule {
+    open fun ruleUpdate(@PathParam("rid") rid: Long, data: ObjectNode): MttRule {
         val rule = ruleGet(rid)
-        with(rn) {
+        with(data) {
             if (hasNonNull("flags")) rule.flags = path("flags").asLong(0)
             if (hasNonNull("description")) rule.description = path("description").asText("")
         }
         update("updateRule", rule)
         ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
-        return ruleGet(rid)
+        return rule
     }
 
     @POST
@@ -175,6 +172,7 @@ constructor(val sess: SqlSession,
 
     @DELETE
     @Path("/rule/{rid}")
+    @Produces("text/plain")
     @RequiresRoles("mtt")
     @Transactional
     open fun ruleDelete(@PathParam("rid") rid: Long): Int {
@@ -184,6 +182,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}/enable")
+    @Produces("text/plain")
     @RequiresRoles("mtt")
     @Transactional
     open fun ruleEnable(@PathParam("rid") rid: Long): Int {
@@ -194,6 +193,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}/disable")
+    @Produces("text/plain")
     @RequiresRoles("mtt")
     @Transactional
     open fun ruleDisable(@PathParam("rid") rid: Long): Int {
@@ -480,12 +480,12 @@ constructor(val sess: SqlSession,
     private fun initCriteriaPaging(cq: MBCriteriaQuery<MBCriteriaQuery<*>>, req: HttpServletRequest) {
         var pv: String? = req.getParameter("firstRow")
         if (pv != null) {
-            val frow = Integer.valueOf(pv)
-            cq.offset(frow!!)
+            val from = Integer.valueOf(pv)
+            cq.offset(from!!)
             pv = req.getParameter("lastRow")
             if (pv != null) {
                 val lrow = Integer.valueOf(pv)
-                cq.limit(Math.abs(frow - lrow!!) + 1)
+                cq.limit(Math.abs(from - lrow!!) + 1)
             }
         }
     }

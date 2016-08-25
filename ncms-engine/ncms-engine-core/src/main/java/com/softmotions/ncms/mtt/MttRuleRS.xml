@@ -32,7 +32,7 @@
     </select>
 
     <select id="selectRulesCount" resultType="long" parameterType="map">
-        SELECT COUNT(*) FROM MTT_RULES rule
+        SELECT COUNT(*) FROM mtt_rules rule
         <where>
             <if test="name != null">LOWER(rule.name) LIKE #{name}</if>
         </where>
@@ -52,7 +52,9 @@
         WHERE rule.id = #{id}
     </select>
 
-    <select id="selectRuleIdByName" resultType="long" parameterType="string">
+    <select id="selectRuleIdByName"
+            resultType="long"
+            parameterType="string">
         SELECT rule.id
         FROM mtt_rules rule
         WHERE rule.name = #{name}
@@ -63,14 +65,18 @@
         FROM mtt_rules rule
     </select>
 
-    <insert id="insertRule" parameterType="com.softmotions.ncms.mtt.MttRule">
+    <insert id="insertRule"
+            parameterType="com.softmotions.ncms.mtt.MttRule">
         INSERT INTO mtt_rules (id, name, cdate, mdate, enabled, flags)
-        VALUES (seq_mtt_rule_id.nextval, #{name}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, #{enabled}, #{flags})
+        VALUES (seq_mtt_rule_id.nextval, #{name},
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
+                #{enabled}, #{flags})
     </insert>
 
     <update id="updateRuleName" parameterType="map">
         UPDATE mtt_rules
-        SET name = #{name}, mdate = CURRENT_TIMESTAMP
+        SET name  = #{name},
+            mdate = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
 
@@ -82,7 +88,9 @@
 
     <update id="updateRule" parameterType="com.softmotions.ncms.mtt.MttRule">
         UPDATE mtt_rules
-        SET flags = #{flags}, description = #{description}, mdate = CURRENT_TIMESTAMP
+        SET flags       = #{flags},
+            description = #{description},
+            mdate       = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
 

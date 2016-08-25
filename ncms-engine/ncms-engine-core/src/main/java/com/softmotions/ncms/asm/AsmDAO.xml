@@ -7,21 +7,26 @@
 
     <!--<cache type="com.softmotions.ncms.db.MBDebugCache"/>-->
 
-    <select id="selectChildrenCount" parameterType="long" resultType="long">
+    <select id="selectChildrenCount"
+            parameterType="long"
+            resultType="long">
         SELECT
             COUNT(*)
         FROM ASM_PARENTS
         WHERE asm_parent_id = #{id}
     </select>
 
-    <insert id="coreInsert" parameterType="com.softmotions.ncms.asm.AsmCore"
-            keyProperty="id" useGeneratedKeys="true">
+    <insert id="coreInsert"
+            parameterType="com.softmotions.ncms.asm.AsmCore"
+            keyProperty="id"
+            useGeneratedKeys="true">
         INSERT INTO ASM_CORES
         (location, name, template_engine)
         VALUES (#{location}, #{name}, #{templateEngine})
     </insert>
 
-    <update id="coreUpdate" parameterType="com.softmotions.ncms.asm.AsmCore"
+    <update id="coreUpdate"
+            parameterType="com.softmotions.ncms.asm.AsmCore"
             keyProperty="id">
         UPDATE ASM_CORES
         <set>
@@ -54,8 +59,10 @@
         </where>
     </select>
 
-    <insert id="asmInsert" parameterType="com.softmotions.ncms.asm.Asm"
-            keyProperty="id" useGeneratedKeys="true">
+    <insert id="asmInsert"
+            parameterType="com.softmotions.ncms.asm.Asm"
+            keyProperty="id"
+            useGeneratedKeys="true">
         INSERT INTO ASMS
         (name, type, description, template, cdate, ordinal
         <if test="core != null">, asm_core_id</if>)
@@ -154,7 +161,9 @@
         WHERE id = #{id}
     </update>
 
-    <select id="asmPlainByIdWithTemplates" parameterType="map" resultType="com.softmotions.ncms.asm.Asm">
+    <select id="asmPlainByIdWithTemplates"
+            parameterType="map"
+            resultType="com.softmotions.ncms.asm.Asm">
         SELECT asm.*
         FROM ASMS AS asm
         INNER JOIN ASM_PARENTS AS parent ON parent.asm_id = asm.id
@@ -210,14 +219,18 @@
     </select>
 
 
-    <select id="asmIDByName" parameterType="string" resultType="long">
+    <select id="asmIDByName"
+            parameterType="string"
+            resultType="long">
         SELECT
             id
         FROM ASMS
         WHERE name = #{name}
     </select>
 
-    <select id="asmIDByAlias" parameterType="string" resultType="long">
+    <select id="asmIDByAlias"
+            parameterType="string"
+            resultType="long">
         SELECT
             id
         FROM ASMS
@@ -233,7 +246,9 @@
                              WHERE nav_alias = #{name})
     </select>
 
-    <select id="asmIsUniqueAlias" resultType="long" parameterType="map">
+    <select id="asmIsUniqueAlias"
+            resultType="long"
+            parameterType="map">
         SELECT
             COUNT(*)
         FROM ASMS
@@ -264,7 +279,9 @@
         WHERE nav_alias2 = #{alias}
     </update>
 
-    <select id="asmNameByID" parameterType="long" resultType="string">
+    <select id="asmNameByID"
+            parameterType="long"
+            resultType="string">
         SELECT
             name
         FROM ASMS
@@ -328,7 +345,9 @@
         WHERE asm_id = #{asmId}
     </delete>
 
-    <select id="asmSelectSysprop" resultType="string" parameterType="map">
+    <select id="asmSelectSysprop"
+            resultType="string"
+            parameterType="map">
         SELECT
             sp.value
         FROM ASM_SYSPROPS sp
@@ -559,7 +578,9 @@
     </select>
 
 
-    <select id="selectAsmEventRef" resultType="map" parameterType="map">
+    <select id="selectAsmEventRef"
+            resultType="map"
+            parameterType="map">
         SELECT
           a.id        AS "asm_id",
           ard.svalue  AS "svalue"
@@ -608,7 +629,9 @@
 
 
 
-    <select id="asmAttributeByName" parameterType="map" resultType="com.softmotions.ncms.asm.AsmAttribute">
+    <select id="asmAttributeByName"
+            parameterType="map"
+            resultType="com.softmotions.ncms.asm.AsmAttribute">
         SELECT
             attr.*
         FROM ASM_ATTRS AS attr
@@ -623,8 +646,10 @@
     </select>
 
 
-    <insert id="asmClone" parameterType="map"
-            useGeneratedKeys="true" keyProperty="id">
+    <insert id="asmClone"
+            parameterType="map"
+            useGeneratedKeys="true"
+            keyProperty="id">
 
         INSERT INTO asms (name, ordinal, asm_core_id, hname,
                           cdate, mdate, muser, owner,

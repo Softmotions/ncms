@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.mtt.tp.MttTpRS">
+
+    <select id="selectTp" resultType="map" parameterType="map">
+        SELECT
+            tp.id          AS "id",
+            tp.name        AS "name",
+            tp.description AS "description",
+            tp.cdate       AS "cdate",
+            tp.mdate       AS "mdate",
+            tp.enabled     AS "enabled"
+        FROM mtt_tp AS tp
+        <where>
+            <if test="name != null">LOWER(tp.name) LIKE #{name}</if>
+        </where>
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            LIMIT ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                OFFSET ${CQ_OFFSET}
+            </if>
+        </if>
+    </select>
+
+    <select id="selectTpCount" resultType="long" parameterType="map">
+        SELECT COUNT(*) FROM mtt_tp AS tp
+        <where>
+            <if test="name != null">LOWER(tp.name) LIKE #{name}</if>
+        </where>
+    </select>
+
+    <select id="selectTpById"
+            resultType="com.softmotions.ncms.mtt.tp.MttTp"
+            parameterType="long">
+        SELECT
+            tp.id          AS "id",
+            tp.name        AS "name",
+            tp.description AS "description",
+            tp.cdate       AS "cdate",
+            tp.mdate       AS "mdate",
+            tp.enabled     AS "enabled",
+            tp.spec        AS "spec"
+        FROM mtt_tp AS tp
+        WHERE tp.id = #{id}
+    </select>
+
+
+    <select id="selectTpIdByName"
+            resultType="long"
+            parameterType="string">
+        SELECT tp.id
+        FROM mtt_tp AS tp
+        WHERE tp.name = #{name}
+    </select>
+
+    <insert id="insertTp"
+            parameterType="com.softmotions.ncms.mtt.tp.MttTp"
+            keyProperty="id"
+            useGeneratedKeys="true">
+        INSERT INTO mtt_tp (name, description,
+                            cdate, mdate,
+                            enabled, spec)
+        VALUES (#{name}, #{description},
+                CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
+                #{enabled}, #{spec})
+    </insert>
+
+    <update id="updateTpName"
+            parameterType="map">
+        UPDATE mtt_tp
+        SET name  = #{name},
+            mdate = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateTp"
+            parameterType="com.softmotions.ncms.mtt.tp.MttTp">
+        UPDATE mtt_tp
+        SET name        = #{name},
+            description = #{description},
+            enabled     = #{enabled},
+            spec        = #{spec},
+            mdate       = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteTp"
+            parameterType="long">
+        DELETE
+        FROM mtt_tp
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
