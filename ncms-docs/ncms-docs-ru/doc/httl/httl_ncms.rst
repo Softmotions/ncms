@@ -185,7 +185,7 @@ com.softmotions.ncms.mhttl .HttlAsmMethods
     :rtype: Collection<Asm>
 
 
-.. js:function:: asmPageQuery(PageCriteria critObj, [Number skip,] [Number limit])
+.. js:function:: asmPageQuery(PageCriteria critObj, [Number skip], [Number limit])
 
     Выполняет свободный запрос страниц сайта. Спецификация запроса задается объектом
     класса `com.softmotions.ncms.asm.PageCriteria`
