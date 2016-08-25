@@ -409,6 +409,32 @@ qx.Class.define("ncms.Actions", {
         // POST move action down
         // {id}  MTT action ID
         this._action("mtt.action.down", "/rs/adm/mtt/rules/action/{id}/move/down");
+
+        //================== Mtt tracking pixels
+
+        this._action("mtt.tps.select", "/rs/adm/mtt/tp/select");
+        this._action("mtt.tps.select.count", "/rs/adm/mtt/tp/select/count");
+
+        // DELETE existing mtt tracking pixel
+        // {id} Tp id
+        this._action("mtt.tp.delete", "/rs/adm/mtt/tp/tp/{id}");
+
+        // PUT new mtt tracking pixel
+        // {name} Tp name
+        this._action("mtt.tp.new", "/rs/adm/mtt/tp/tp/{name}");
+
+        // POST Enable tracking pixel
+        // {id} Tp id
+        this._action("mtt.tp.enable", "/rs/adm/mtt/tp/tp/{id}/enable");
+
+        // POST Disable tracking pixel
+        // {id} Tp id
+        this._action("mtt.tp.disable", "/rs/adm/mtt/tp/tp/{id}/disable");
+
+        // PUT rename existing mtt tracking pixel
+        // {id} Tp id
+        // {name} New pixel name
+        this._action("mtt.tp.rename", "/rs/adm/mtt/tp/tp/rename/{id}/{name}");
     },
 
     members: {

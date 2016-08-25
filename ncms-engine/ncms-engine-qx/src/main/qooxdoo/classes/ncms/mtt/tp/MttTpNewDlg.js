@@ -1,7 +1,7 @@
 /**
- * `New mtt rule` popup dialog.
+ * `New mtt tracking pixel` popup dialog.
  */
-qx.Class.define("ncms.mtt.MttRuleNewDlg", {
+qx.Class.define("ncms.mtt.tp.MttTpNewDlg", {
     extend: sm.ui.form.BaseSavePopupDlg,
 
     construct: function () {
@@ -9,6 +9,7 @@ qx.Class.define("ncms.mtt.MttRuleNewDlg", {
     },
 
     members: {
+
         _configureForm: function () {
             var page = new qx.ui.form.TextField().set({allowGrowY: true, maxLength: 64, required: true});
             page.addListener("keypress", function (ev) {
@@ -16,14 +17,14 @@ qx.Class.define("ncms.mtt.MttRuleNewDlg", {
                     this.save();
                 }
             }, this);
-            this._form.add(page, this.tr("Rule"), null, "name");
+            this._form.add(page, this.tr("Name"), null, "name");
             page.focus();
         },
 
         _save: function () {
             var fitems = this._form.getItems();
             var req = new sm.io.Request(
-                ncms.Application.ACT.getRestUrl("mtt.rules.new", {name: fitems["name"].getValue()}),
+                ncms.Application.ACT.getRestUrl("mtt.tp.new", {name: fitems["name"].getValue()}),
                 "PUT", "application/json");
             req.send(function (resp) {
                 this.fireDataEvent("completed", resp.getContent());

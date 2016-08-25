@@ -122,7 +122,8 @@
 
     <update id="updateRuleEnabled" parameterType="map">
         UPDATE mtt_rules
-        SET enabled = #{enabled}, mdate = CURRENT_TIMESTAMP
+        SET enabled = #{enabled},
+            mdate   = CURRENT_TIMESTAMP
         WHERE id = #{id}
     </update>
 

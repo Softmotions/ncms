@@ -1,27 +1,27 @@
 /**
- * 'Rename assembly' popup dialog.
+ * Rename `mtt tracking pixel` popup dialog.
  */
-qx.Class.define("ncms.mtt.MttRuleRenameDlg", {
-    extend: ncms.mtt.MttRuleNewDlg,
+qx.Class.define("ncms.mtt.tp.MttTpRenameDlg", {
+    extend: ncms.mtt.tp.MttTpNewDlg,
 
-    construct: function (ruleId, ruleName) {
+    construct: function (tpId, tpName) {
         this.base(arguments);
-        this.__ruleId = ruleId;
+        this.__tpId = tpId;
         var f = this._form.getItems()["name"];
-        f.setValue(ruleName);
+        f.setValue(tpName);
         f.tabFocus();
     },
 
     members: {
 
-        __ruleId: null,
+        __tpId: null,
 
         _save: function () {
             var fitems = this._form.getItems();
             var req = new sm.io.Request(
-                ncms.Application.ACT.getRestUrl("mtt.rules.rename",
+                ncms.Application.ACT.getRestUrl("mtt.tp.rename",
                     {
-                        id: this.__ruleId,
+                        id: this.__tpId,
                         name: fitems["name"].getValue()
                     }
                 ),

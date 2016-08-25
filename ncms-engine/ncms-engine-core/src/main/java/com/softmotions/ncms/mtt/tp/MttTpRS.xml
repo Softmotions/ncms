@@ -5,7 +5,7 @@
 
 <mapper namespace="com.softmotions.ncms.mtt.tp.MttTpRS">
 
-    <select id="selectTp" resultType="map" parameterType="map">
+    <select id="select" resultType="map" parameterType="map">
         SELECT
             tp.id          AS "id",
             tp.name        AS "name",
@@ -26,7 +26,7 @@
         </if>
     </select>
 
-    <select id="selectTpCount" resultType="long" parameterType="map">
+    <select id="count" resultType="long" parameterType="map">
         SELECT COUNT(*) FROM mtt_tp AS tp
         <where>
             <if test="name != null">LOWER(tp.name) LIKE #{name}</if>
@@ -95,4 +95,10 @@
         WHERE id = #{id}
     </delete>
 
+    <update id="updateTpEnabled" parameterType="map">
+        UPDATE mtt_tp
+        SET enabled = #{enabled},
+            mdate   = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
 </mapper>

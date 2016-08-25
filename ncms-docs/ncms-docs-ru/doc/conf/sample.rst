@@ -135,7 +135,7 @@
                 <widget qxClass="ncms.mmgr.MediaNav" roles="user"/>
                 <widget qxClass="ncms.asm.AsmNav" roles="admin.asm"/>
                 <widget qxClass="ncms.mtt.MttNav" roles="mtt" extra="true"/>
-                <widget qxClass="ncms.mtt.tp.MttTPNav" roles="mtt" extra="true"/>
+                <widget qxClass="ncms.mtt.tp.MttTpNav" roles="mtt" extra="true"/>
                 <widget qxClass="ncms.usr.UsersNav" roles="admin.users" extra="true"/>
             </navigation-selectors>
         </ui>

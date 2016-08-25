@@ -10,7 +10,7 @@
  * @use(ncms.usr.UsersNav)
  * @use(ncms.news.NewsNav)
  * @use(ncms.mtt.MttNav)
- * @use(ncms.mtt.tp.MttTPNav)
+ * @use(ncms.mtt.tp.MttTpNav)
  *
  * @asset(ncms/icon/16/help/help.png)
  * @asset(ncms/icon/16/misc/door_in.png)

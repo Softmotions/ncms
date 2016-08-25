@@ -51,7 +51,7 @@ constructor(val sess: SqlSession,
                                 else -> it.value
                             }
                         })
-                    }, "selectTp")
+                    }, "select")
                     writeEndArray()
                     flush()
                 }
@@ -64,8 +64,7 @@ constructor(val sess: SqlSession,
     @Produces("text/plain")
     @RequiresRoles("mtt")
     open fun count(@Context req: HttpServletRequest): Long =
-            selectOneByCriteria(createTpQ(req), "selectTpCount")
-
+            selectOneByCriteria(createTpQ(req), "count")
 
     @GET
     @Path("/tp/{id}")
@@ -73,7 +72,6 @@ constructor(val sess: SqlSession,
     @Transactional
     open fun tpGet(@PathParam("id") id: Long): MttTp =
             selectOne("selectTpById", id) ?: throw NotFoundException()
-
 
     @PUT
     @Path("/tp/{name}")
@@ -84,7 +82,7 @@ constructor(val sess: SqlSession,
 
         synchronized(MttTp::class.java) {
             val rname = name.trim();
-            if (selectOne<Long?>("selectRuleIdByName", rname) != null) {
+            if (selectOne<Long?>("selectTpIdByName", rname) != null) {
                 throw NcmsMessageException(
                         i18n.get("ncms.mtt.tp.name.already.other", req, rname), true)
             }
@@ -109,7 +107,9 @@ constructor(val sess: SqlSession,
             if (selectOne<Long?>("selectTpIdByName", rname) != null) {
                 throw NcmsMessageException(i18n.get("ncms.mtt.tp.name.already.other", req, rname), true)
             }
-            update("updateTpName", "id", id, "name", name)
+            update("updateTpName",
+                    "id", id,
+                    "name", name)
             ebus.fireOnSuccessCommit(MttTpUpdatedEvent(id))
         }
     }
@@ -143,6 +143,30 @@ constructor(val sess: SqlSession,
     open fun tpDelete(@PathParam("id") id: Long): Int {
         ebus.fireOnSuccessCommit(MttTpDeleteEvent(id))
         return delete("deleteTp", id)
+    }
+
+    @POST
+    @Path("/tp/{id}/enable")
+    @Produces("text/plain")
+    @RequiresRoles("mtt")
+    @Transactional
+    open fun tpEnable(@PathParam("id") id: Long): Int {
+        ebus.fireOnSuccessCommit(MttTpUpdatedEvent(id))
+        return update("updateTpEnabled",
+                "id", id,
+                "enabled", true)
+    }
+
+    @POST
+    @Path("/tp/{id}/disable")
+    @Produces("text/plain")
+    @RequiresRoles("mtt")
+    @Transactional
+    open fun tpDisable(@PathParam("id") id: Long): Int {
+        ebus.fireOnSuccessCommit(MttTpUpdatedEvent(id))
+        return update("updateTpEnabled",
+                "id", id,
+                "enabled", false)
     }
 
     private fun createTpQ(req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {

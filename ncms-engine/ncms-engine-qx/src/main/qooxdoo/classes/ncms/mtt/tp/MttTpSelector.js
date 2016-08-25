@@ -1,29 +1,32 @@
 /**
- * Traffic rules selector.
+ * Tracking pixels selector.
  */
-qx.Class.define("ncms.mtt.MttRulesSelector", {
-    extend : qx.ui.container.Composite,
+qx.Class.define("ncms.mtt.tp.MttTpSelector", {
+    extend: qx.ui.container.Composite,
 
     events: {
 
         /**
-         * Event fired if mtt rule was selected/deselected
+         * Event fired if mtt tracking pixel was selected/deselected
+         *
          *
          * DATA: {
-         *        "id" : {Number} Rule id.
-         *        "name" : {String} Rule name,
-         *        "type" : {String} Rule type,
-         *       };
+         *      "id" : {Number} Tracking pixel id.
+         *      "name": {String} Tracking pixel name
+         * }
+         *
          * or `null` if noe selection
+         *
          */
-        "ruleSelected": "qx.event.type.Data"
+        "tpSelected": "qx.event.type.Data"
     },
+
 
     properties: {
 
         appearance: {
             refine: true,
-            init: "ncms-mtt-rules-selector"
+            init: "ncms-mtt-tp-selector"
         }
     },
 
@@ -40,12 +43,12 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
         }, this);
         sf.addListener("keypress", this.__searchKeypress, this);
 
-        this.__table = new ncms.mtt.MttRulesTable(useColumns, smodel, toolbarFn);
+        this.__table = new ncms.mtt.tp.MttTpTable(useColumns, smodel, toolbarFn);
         this.__table.getSelectionModel().addListener("changeSelection", function () {
-            var rule = this.getSelectedRule();
-            if (this.__prevRule != rule) {
-                this.fireDataEvent("ruleSelected", rule ? rule : null);
-                this.__prevRule = rule;
+            var tp = this.getSelectedTp();
+            if (this.__prevTp != tp) {
+                this.fireDataEvent("tpSelected", tp ? tp : null);
+                this.__prevTp = tp;
             }
         }, this);
 
@@ -60,7 +63,7 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
 
     members: {
 
-        __prevRule: null,
+        __prevTp: null,
 
         /**
          * Search field
@@ -69,8 +72,8 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
         __sf: null,
 
         /**
-         * Rules virtual table
-         * @type {ncms.mtt.MttRulesTable}
+         * Tp virtual table
+         * @type {ncms.mtt.tp.MttTpTable}
          */
         __table: null,
 
@@ -103,31 +106,31 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
             this.__table.resetSelection();
         },
 
-        getSelectedRuleInd: function () {
-            return this.__table.getSelectedRuleInd();
+        getSelectedTpInd: function () {
+            return this.__table.getSelectedTpInd();
         },
 
-        getSelectedRule: function () {
-            return this.__table.getSelectedRule();
+        getSelectedTp: function () {
+            return this.__table.getSelectedTp();
         },
 
-        getSelectedRules: function () {
-            return this.__table.getSelectedRules();
+        getSelectedTps: function () {
+            return this.__table.getSelectedTps();
         },
 
         cleanup: function () {
             this.__table.cleanup();
         },
 
-        getToolbarTable: function() {
+        getToolbarTable: function () {
             return this.__table;
         },
 
-        getTable: function() {
+        getTable: function () {
             return this.getToolbarTable().getTable();
         },
 
-        getRowCount: function() {
+        getRowCount: function () {
             return this.__table.getRowCount();
         },
 
@@ -149,7 +152,6 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
     destruct: function () {
         this.__sf = null;
         this.__table = null;
-        this.__prevRule = null;
-        //this._disposeObjects("__form");
+        this.__prevTp = null;
     }
 });

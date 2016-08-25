@@ -1,7 +1,7 @@
 /**
  * Tracking pixels editor side.
  */
-qx.Class.define("ncms.mtt.tp.MttTPEditor", {
+qx.Class.define("ncms.mtt.tp.MttTpEditor", {
     extend: qx.ui.core.Widget,
 
     construct: function () {

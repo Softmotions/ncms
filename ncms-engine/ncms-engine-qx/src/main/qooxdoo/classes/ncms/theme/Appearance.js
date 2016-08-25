@@ -209,6 +209,13 @@ qx.Theme.define("ncms.theme.Appearance", {
             }
         },
 
+        /* Mtt tracking pixels selector */
+        "ncms-mtt-tp-selector": {
+            style: function (states) {
+                return {}
+            }
+        },
+
         //empty placeholder on workspace pane
         "ncms-wsa-placeholder": {
             style: function (states) {

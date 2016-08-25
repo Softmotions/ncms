@@ -119,10 +119,6 @@ qx.Class.define("ncms.mtt.MttNav", {
             bt.addListenerOnce("execute", this.__onNewRule, this);
             menu.add(bt);
 
-            bt = new qx.ui.menu.Button(this.tr("Refresh"));
-            bt.addListenerOnce("execute", this.__onRefresh, this);
-            menu.add(bt);
-
             var rule = this.__selector.getSelectedRule();
             if (rule != null) {
                 // {"cdate":1469886776824,"mdate":1469886776824,"name":"Тест1",
@@ -148,10 +144,16 @@ qx.Class.define("ncms.mtt.MttNav", {
                     bt.addListenerOnce("execute", this.__onEnable, this);
                     menu.add(bt);
                 }
+
                 bt = new qx.ui.menu.Button(this.tr("Remove"));
                 bt.addListenerOnce("execute", this.__onRemoveRule, this);
                 menu.add(bt);
             }
+
+            menu.add(new qx.ui.menu.Separator());
+            bt = new qx.ui.menu.Button(this.tr("Refresh"));
+            bt.addListenerOnce("execute", this.__onRefresh, this);
+            menu.add(bt);
         },
 
         __onNewRule: function (ev) {
