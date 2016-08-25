@@ -30,12 +30,12 @@
 .. code-block:: html
 
     <head>
-      <meta property="og:site_name" content="smsfinance.ru"/>
-      <meta property="og:image" content="http://smsfinance.ru/login2/rs/media/fileid/323"/>
+      <meta property="og:site_name" content="site.ru"/>
+      <meta property="og:image" content="http://site.ru/rs/media/fileid/323"/>
       <meta property="og:title" content="Тестовая страница"/>
       <meta property="og:locale" content="en"/>
       <meta property="og:type" content="article"/>
-      <meta property="og:url" content="http://smsfinance.ru/login2/vk/reject"/>
+      <meta property="og:url" content="http://site.ru/news/123"/>
       ...
     </head>
 
