@@ -5,8 +5,14 @@ nCMS расширение HTTL
 
 .. contents::
 
-
 :ref:`Основы HTTL <httl_basics>`
+
+
+`nCMS` добавляет в контекст :term:`HTTL` разметки дополнительные методы,
+которые позволяют использовать сервисы и полезный функционал CMS на ваших
+страницах. Эти методы определены в двух классах: `com.softmotions.ncms.mhttl.HttlAsmMethods`
+и `com.softmotions.ncms.mhttl.HttlUtilsMethods` вы можете изучить их реализацию
+в случае необходимости.
 
 
 com.softmotions.ncms.mhttl .HttlAsmMethods
@@ -81,10 +87,121 @@ com.softmotions.ncms.mhttl .HttlAsmMethods
     С дополнительными опциями рендеринга значения атрибута.
 
 
+.. js:function:: link(Asm asm)
+
+    Возвращает URL ссылки на страницу идентифицируемую
+    объектом :term:`сборки <сборка>`
+
+    :rtype: java.lang.String
+
+
+.. js:function:: link(String guidOrAlias)
+
+    Возвращает URL ссылки на страницу идентифицируемую
+    :term:`строковым GUID <GUID страницы>` страницы
+    или :term:`псевдонимом страницы <псевдоним страницы>`
+
+    :rtype: java.lang.String
+
+
+.. js:function:: link(RichRef ref)
+
+    Возвращает URL для объекта `com.softmotions.ncms.mhttl.RichRef`
+
+    :rtype: java.lang.String
+
+
+.. js:function:: linkHtml(Object ref, [Map<String, String> attrs])
+
+    Возвращает `<a href="....">` HTML ссылку для переданных объектов,
+    которые могут иметь следующие типы:
+
+    * java.lang.String - В этом случае это может быть :term:`псевдоним страницы`
+      или :term:`GUID страницы`
+    * `com.softmotions.ncms.mhttl.Tree` Объект
+    * `com.softmotions.ncms.mhttl.RichRef` Объект
+
+
+    **Пример**
+    Ссылка на страницу с GUID: `12d5c7a0c3167d3d21d30f1c43368b32` и классом `active` ::
+
+        $!{linkHtml('12d5c7a0c3167d3d21d30f1c43368b32', ['class':'active'])}
+
+    В результате:
+
+    .. code-block:: html
+
+        <a href="/siteroot/12d5c7a0c3167d3d21d30f1c43368b32"
+           class='active'>
+            Название страницы
+        </a>
+
+    :param Map<String, String> attrs: Опциональный параметр позволяет задать
+        произвольные атрибуты для тега ссылки `<a>`.
+
+    :rtype: java.lang.String
+
+
+.. js:function:: ogmeta([Map<String, String> params])
+
+    `Open Graph <http://ogp.me>`_ метаинформация о текущей
+    странице. Более подробно в разделе: :ref:`ogmeta`
+
+
+Методы A/B тестирования
+***********************
+
+.. js:function:: abt(String name[, boolean def])
+
+    Возвращает `true` если в контексте
+    текущей страницы включен режим `A/B`
+    тестирования с именем `name`
+
+    :param boolean def: Возвращаемое значение в том случае если `A/B` режим
+                        не включен. По умолчанию `false`
+
+.. js:function:: abtA()
+.. js:function:: abtB()
+.. js:function:: abtC()
+.. js:function:: abtD()
+
+    Возвращает `true` если для текущей страницы включен режим `A/B` тестирования
+    с именем `A,B,C или D` в зависимости от имени метода.
+
+
+
+Дополнительные методы (Advanced)
+********************************
+
+.. js:function:: asmNavChilds([String type], [Number skip], [Number limit])
+
+    Возвращает коллекцию страниц которые являются прямыми потомками в
+    :term:`дереве навигации <дерево навигации>`
+    для текущей страницы.
+
+    :param String type: :term:`Тип страницы`
+    :param Number skip: Количество страниц которые будут пропущены при выборке
+    :param Number limit: Максимальное количество страниц в выборке
+    :rtype: Collection<Asm>
+
+
+.. js:function:: asmPageQuery(PageCriteria critObj, [Number skip,] [Number limit])
+
+    Выполняет свободный запрос страниц сайта. Спецификация запроса задается объектом
+    класса `com.softmotions.ncms.asm.PageCriteria`
+
+    :param Number skip: Количество страниц которые будут пропущены при выборке
+    :param Number limit: Максимальное количество страниц в выборке
+    :rtype: Collection<Asm>
+
 
 com.softmotions.ncms.mhttl .HttlUtilsMethods
 --------------------------------------------
 
 Разнообразные утилиты для использования в контексте
 :term:`HTTL` шаблонов.
+
+.. todo::
+
+    TODO
 

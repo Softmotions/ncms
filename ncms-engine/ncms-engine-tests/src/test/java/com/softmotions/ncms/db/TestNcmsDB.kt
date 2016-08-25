@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Module
 import com.softmotions.kotlin.InstancesModule
 import com.softmotions.ncms.GuiceBaseTest
-import com.softmotions.ncms.asm.Asm
-import com.softmotions.ncms.asm.AsmAttribute
-import com.softmotions.ncms.asm.AsmCore
-import com.softmotions.ncms.asm.AsmDAO
+import com.softmotions.ncms.asm.*
 import com.softmotions.weboot.liquibase.WBLiquibaseModule
 import com.softmotions.weboot.mb.WBMyBatisModule
 import kotlinx.support.jdk7.use
@@ -77,7 +74,7 @@ open class TestNcmsDB : GuiceBaseTest() {
         val attr2 = AsmAttribute("name2", "type2", "val2")
         assertEquals(1, adao.asmSetAttribute(asm, attr2))
 
-        var cq: AsmDAO.AsmCriteria = adao.newAsmCriteria()
+        var cq: AsmCriteria = adao.newAsmCriteria()
                 .orderBy("name").desc()
                 .onAsmAttribute()
                 .orderBy("type")
