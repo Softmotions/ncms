@@ -35,17 +35,18 @@ constructor(val env: NcmsEnvironment) : MttActionHandler {
             }
             return false
         }
+        val appPrefix = env.appRoot + if ("/".equals(env.appRoot)) { "" } else { "/" }
         val mres = PAGEREF_REGEXP.matchEntire(target)
         if (mres != null) {  // Forward to internal page
             val guid = mres.groupValues[1]
-            rmc.forward("/${guid}", resp)
+            rmc.forward(appPrefix + guid, resp)
         } else {
             if ("://" in target) {
                 rmc.redirect(target, resp)
             } else if (target.startsWith("//")) {
-                rmc.redirect(req.scheme + "://" + target, resp)
-            } else if (!target.isEmpty() && target[0] != '/') {
-                rmc.forward('/' + target, resp)
+                rmc.redirect(req.scheme + ":" + target, resp)
+            } else if (!target.startsWith(appPrefix)) {
+                rmc.forward(appPrefix + target, resp)
             } else {
                 rmc.forward(target, resp)
             }
