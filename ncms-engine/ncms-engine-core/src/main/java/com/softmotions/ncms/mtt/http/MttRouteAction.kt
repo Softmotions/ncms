@@ -35,7 +35,7 @@ constructor(val env: NcmsEnvironment) : MttActionHandler {
             }
             return false
         }
-        val appPrefix = env.appRoot + if ("/".equals(env.appRoot)) { "" } else { "/" }
+        val appPrefix = env.appRoot +  "/"
         val mres = PAGEREF_REGEXP.matchEntire(target)
         if (mres != null) {  // Forward to internal page
             val guid = mres.groupValues[1]
