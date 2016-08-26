@@ -20,6 +20,7 @@ import com.softmotions.commons.string.EscapeHelper;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.asm.PageCriteria;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.mtt.http.MttHttpFilter;
 import com.softmotions.web.HttpUtils;
@@ -174,7 +175,7 @@ public class HttlAsmMethods {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         Asm asm = ctx.getAsm();
         AsmDAO adao = ctx.getInjector().getInstance(AsmDAO.class);
-        AsmDAO.PageCriteria crit = adao.newPageCriteria();
+        PageCriteria crit = adao.newPageCriteria();
         crit.withPublished(true);
         crit.withNavParentId(asm.getId());
         if (type != null) {
@@ -195,11 +196,10 @@ public class HttlAsmMethods {
     }
 
     public static Collection<Asm> asmPageQuery(Object critObj, Number skip, Number limit) {
-        //todo check it
-        AsmDAO.PageCriteria crit = (AsmDAO.PageCriteria) critObj;
-        if (crit == null) {
+        if (!(critObj instanceof PageCriteria)) {
             return Collections.EMPTY_LIST;
         }
+        PageCriteria crit = (PageCriteria) critObj;
         if (skip != null) {
             crit.skip(skip.intValue());
         }
