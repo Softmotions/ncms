@@ -90,7 +90,8 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
         },
 
         __cancel: function () {
-            this.__broadcaster.setEnabled(false);
+            var val = qx.lang.Object.mergeWith({}, this.getTp() || {});
+            this.setTp(val);
         },
 
         __onModified: function () {
@@ -100,14 +101,31 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
         __applyTp: function (val, old) {
             console.log("Apply tp=" + JSON.stringify(val));
             var items = this.__form.getItems();
-            if (val) {
+            if (val && val.id) {
                 this.__header.setValue(val["name"]);
                 items["enabled"].setValue(!!val["enabled"]);
+                var req = ncms.Application.request("mtt.tp.get", {id: val.id});
+                req.send(function (resp) {
+                    // {
+                    //  "id":21,"name":"1facebook.com","description":null,
+                    //  "cdate":1472137787318,"mdate":1472211396484,"enabled":true,
+                    //  "spec":"{}"
+                    // }
+                    var data = resp.getContent();
+                    var spec = JSON.parse(data["spec"]);
+                    items["enabled"].setValue(!!data["enabled"]);
+                    this.__header.setValue(data["name"]);
+                    items["jscode"].setValue(spec["jscode"] || "");
+                    items["url"].setValue(spec["url"] || "");
+                    this.__broadcaster.setEnabled(false);
+                }, this);
             } else {
                 this.__header.resetValue();
                 items["enabled"].resetValue();
+                items["jscode"].resetValue();
+                items["url"].resetValue();
+                this.__broadcaster.setEnabled(false);
             }
-            this.__broadcaster.setEnabled(false);
         }
     },
 

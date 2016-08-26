@@ -204,9 +204,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
             sobj["old_type"] = attrSpec["type"];
             sobj["options"] = optsJson;
 
-            var req = new sm.io.Request(
-                ncms.Application.ACT.getRestUrl("asms.attributes", {id: sobj["asmId"]}),
-                "PUT", "application/json");
+            var req = ncms.Application.request("asms.attributes", {id: sobj["asmId"]}, "PUT");
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(sobj));
             req.send(function (resp) {

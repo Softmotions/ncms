@@ -66,6 +66,21 @@ qx.Class.define("ncms.Application", {
 
 
         ///////////////////////////////////////////////////////////
+        //                      Request helper                   //
+        ///////////////////////////////////////////////////////////
+
+        request: function (action, obj, method, rtype) {
+            if (typeof obj === "string") {
+                rtype = method;
+                method = obj;
+                obj = null;
+            }
+            return new sm.io.Request(ncms.Application.ACT
+            .getRestUrl(action, obj), method || "GET", rtype || "application/json");
+        },
+
+
+        ///////////////////////////////////////////////////////////
         //                         Alerts
         ///////////////////////////////////////////////////////////
 

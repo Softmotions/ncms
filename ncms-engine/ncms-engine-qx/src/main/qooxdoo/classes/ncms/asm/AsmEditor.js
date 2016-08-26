@@ -162,7 +162,7 @@ qx.Class.define("ncms.asm.AsmEditor", {
             var aspec = this.getAsmSpec();
             var data = {};
             this.__form.populateJSONObject(data, false, true);
-            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("asms.props", aspec), "PUT");
+            var req = ncms.Application.request("asms.props", aspec, "PUT");
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
             data["id"] = aspec["id"];

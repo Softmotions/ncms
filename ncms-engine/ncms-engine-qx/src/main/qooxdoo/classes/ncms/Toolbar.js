@@ -60,9 +60,7 @@ qx.Class.define("ncms.Toolbar", {
         },
 
         __guiInitialized: function () {
-            var req = new sm.io.Request(
-                ncms.Application.ACT.getUrl("nav.selectors"),
-                "GET", "application/json");
+            var req = ncms.Application.request("nav.selectors");
             req.setParameter("qxLocale", qx.bom.client.Locale.getLocale());
             req.send(function (resp) {
                 var mb = null; //Menu button

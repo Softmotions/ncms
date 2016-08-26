@@ -321,10 +321,10 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                     if (!yes) {
                         return;
                     }
-                    var req = new sm.io.Request(
-                        ncms.Application.ACT.getRestUrl("asms.attribute",
-                            {id: rd["asmId"], name: rd["name"]}),
-                        "DELETE", "application/json");
+                    var req = ncms.Application.request("asms.attribute",
+                        {id: rd["asmId"], name: rd["name"]},
+                        "DELETE"
+                    );
                     req.setParameter("recursive", !!recursive);
                     req.send(function () {
                         this.fireEvent("attributesChanged");

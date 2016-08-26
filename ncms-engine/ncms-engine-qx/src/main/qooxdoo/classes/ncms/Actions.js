@@ -435,6 +435,10 @@ qx.Class.define("ncms.Actions", {
         // {id} Tp id
         // {name} New pixel name
         this._action("mtt.tp.rename", "/rs/adm/mtt/tp/tp/rename/{id}/{name}");
+
+        // GET Tracking pixel info
+        // {id} Tp id
+        this._action("mtt.tp.get", "/rs/adm/mtt/tp/tp/{id}")
     },
 
     members: {
