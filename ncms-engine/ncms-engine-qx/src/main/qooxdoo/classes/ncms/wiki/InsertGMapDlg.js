@@ -24,7 +24,7 @@ qx.Class.define("ncms.wiki.InsertGMapDlg", {
         });
         var caption = new qx.ui.basic.Label(
             this.tr(
-                "In order to add google map place please follow <a href='%1' target='_blank'>this help tutorial</a>",
+                "In order to add google map place please follow <a href='%1' target='_blank' rel='noopener noreferrer'>this help tutorial</a>",
                 ncms.Application.APP_STATE.getHelpSiteTopicUrl("wiki.gmap")
             )
         ).set({rich: true});

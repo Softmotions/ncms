@@ -26,6 +26,7 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
             if (app.getActiveWSAID() == eclazz) {
                 app.showDefaultWSA();
             }
+            this.__selector.resetSelection();
             app.disposeWSA(eclazz);
         }, this);
 
@@ -54,8 +55,16 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
 
         __selector: null,
 
-        __tpSelected: function() {
-
+        __tpSelected: function(ev) {
+            var data = ev.getData();
+            var app = ncms.Application.INSTANCE;
+            if (data == null) {
+                app.showDefaultWSA();
+                return;
+            }
+            var eclazz = ncms.mtt.tp.MttTpNav.MTT_EDITOR_CLAZZ;
+            app.getWSA(eclazz).setTp(data);
+            app.showWSA(eclazz);
         },
 
         __beforeContextmenuOpen: function (ev) {
@@ -100,6 +109,7 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
             dlg.addListener("completed", function (ev) {
                 dlg.close();
                 this.__selector.reload();
+                this.__selector.getTable().handleFocus();
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.show();
@@ -119,6 +129,7 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
             dlg.addListener("completed", function (ev) {
                 dlg.close();
                 this.__selector.reload();
+                this.__selector.getTable().handleFocus();
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.show();
@@ -142,6 +153,7 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
                     enabled ? "mtt.tp.enable" : "mtt.tp.disable", {id: tp["id"]}), "POST");
             req.send(function (resp) {
                 this.__selector.reload();
+                this.__selector.getTable().handleFocus();
             }, this);
         },
 
@@ -158,12 +170,14 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
                         ncms.Application.ACT.getRestUrl("mtt.tp.delete", {id: tp["id"]}), "DELETE");
                     req.send(function (resp) {
                         this.__selector.reload();
+                        this.__selector.getTable().handleFocus();
                     }, this);
                 }, this);
         }
     },
 
     destruct: function () {
+        this.__removeBt = null;
         this.__selector = null;
     }
 

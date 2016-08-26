@@ -39,9 +39,12 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         header.add(this.__pageNameLabel);
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
-        var bt = this.__publishBt = new qx.ui.form.ToggleButton(this.tr(
-            "Not published"), "ncms/icon/16/misc/light-bulb-off.png");
+        var bt = this.__publishBt = new qx.ui.form.ToggleButton(null, "ncms/icon/16/misc/light-bulb-off.png");
         bt.addListener("execute", this.__publish, this);
+        hcont.add(bt);
+
+        bt = new qx.ui.form.Button(this.tr("Files"), "ncms/icon/16/misc/images.png").set({width: 90});
+        bt.addListener("execute", this.__files, this);
         hcont.add(bt);
 
         bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png");
@@ -57,10 +60,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt.addListener("execute", this.__cancel, this);
         hcont.add(bt);
 
-        bt = new qx.ui.form.Button(this.tr("Files"), "ncms/icon/16/misc/images.png");
-        bt.addListener("execute", this.__files, this);
-        hcont.add(bt);
-
         var epoins = ncms.Application.extensionPoints("ncms.pgs.PageEditorEditPage.HEADER_BUTTONS");
         if (epoins.length > 0) {
             var menu = new qx.ui.menu.Menu();
@@ -74,7 +73,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         header.add(hcont);
 
         var hcont2 = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
-        bt = this.__previewBt = new qx.ui.form.Button(this.tr("Preview"), "ncms/icon/16/misc/monitor.png");
+        bt = this.__previewBt = new qx.ui.form.Button(null, "ncms/icon/16/misc/monitor.png");
         bt.addListener("execute", this.__preview, this);
         hcont2.add(bt);
 
@@ -82,6 +81,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             new sm.ui.form.ButtonField(this.tr("Template"),
                 "ncms/icon/16/misc/document-template.png",
                 true).set({readOnly: true});
+        this.__templateBf.getMainButton().set({width: 90});
         this.__templateBf.setPlaceholder(this.tr("Please select the template page"));
         this.__templateBf.addListener("execute", this.__onChangeTemplate, this);
         hcont2.add(this.__templateBf, {flex: 1});
@@ -437,7 +437,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 if (rc > 0) {
                     ncms.Application.confirm(
                         this.tr(
-                            "Are you sure to unpublish this page? There are pages linked with this page. Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>",
+                            "Are you sure to unpublish this page? There are pages linked with this page. Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list of linked pages</a>",
                             ncms.Application.ACT.getRestUrl("pages.referers", {guid: this.getPageEditSpec()["guid"]})),
                         function (yes) {
                             if (!yes) {
@@ -454,7 +454,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __setPublishState: function (val) {
-            this.__publishBt.setLabel(val ? this.tr("Published") : this.tr("Not published"));
+            this.__publishBt.setToolTipText(val ? this.tr("Published") : this.tr("Not published"));
             this.__publishBt.setIcon(val ? "ncms/icon/16/misc/light-bulb.png" : "ncms/icon/16/misc/light-bulb-off.png");
             this.__publishBt.setValue(val);
         },

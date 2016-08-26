@@ -101,12 +101,12 @@ qx.Class.define("ncms.mtt.MttNav", {
         __ruleSelected: function (ev) {
             var data = ev.getData();
             var app = ncms.Application.INSTANCE;
-            var eclazz = ncms.mtt.MttNav.MTT_EDITOR_CLAZZ;
             this.__removeBt.setEnabled(data != null);
             if (data == null) {
                 app.showDefaultWSA();
                 return;
             }
+            var eclazz = ncms.mtt.MttNav.MTT_EDITOR_CLAZZ;
             app.getWSA(eclazz).setRuleId(data["id"]);
             app.showWSA(eclazz);
         },
@@ -162,6 +162,7 @@ qx.Class.define("ncms.mtt.MttNav", {
             dlg.addListener("completed", function (ev) {
                 dlg.close();
                 this.__selector.reload();
+                this.__selector.getTable().handleFocus();
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.show();
@@ -180,6 +181,7 @@ qx.Class.define("ncms.mtt.MttNav", {
                         ncms.Application.ACT.getRestUrl("mtt.rules.delete", {id: rule["id"]}), "DELETE");
                     req.send(function (resp) {
                         this.__selector.reload();
+                        this.__selector.getTable().handleFocus();
                     }, this);
                 }, this);
         },
@@ -194,6 +196,7 @@ qx.Class.define("ncms.mtt.MttNav", {
             dlg.addListener("completed", function (ev) {
                 dlg.close();
                 this.__selector.reload();
+                this.__selector.getTable().handleFocus();
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.show();
@@ -217,6 +220,7 @@ qx.Class.define("ncms.mtt.MttNav", {
                     enabled ? "mtt.rule.enable" : "mtt.rule.disable", {id: rule["id"]}), "POST");
             req.send(function (resp) {
                 this.__selector.reload();
+                this.__selector.getTable().handleFocus();
             }, this);
         },
 

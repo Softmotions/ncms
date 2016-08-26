@@ -312,7 +312,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                         var dlg = new sm.alert.AlertMessages(this.tr("Unable to delete this page"));
                         dlg.addMessages("",
                             this.tr(
-                                "This page cannot be removed because we found pages linked with this page. Please see the <a href=\"%1\" target='_blank'>list of linked pages</a>",
+                                "This page cannot be removed because we found pages linked with this page. Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list of linked pages</a>",
                                 ncms.Application.ACT.getRestUrl("pages.referers", {guid: item.getGuid()}))
                         );
                         dlg.open();
