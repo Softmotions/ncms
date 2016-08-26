@@ -18,4 +18,5 @@
     doc/deployments/index
     doc/cookbook/index
     doc/extending/index
+    doc/misc/index
 
