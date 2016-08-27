@@ -7,6 +7,11 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
 
+    <preConditions>
+        <dbms type="db2"/>
+    </preConditions>
+
+
     <changeSet id="8.1" author="adamansky@gmail.com">
         <createTable tableName="MTT_TP"
                      remarks="Tracking pixels configuration">

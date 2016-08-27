@@ -6,6 +6,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
+    <preConditions>
+        <dbms type="db2"/>
+    </preConditions>
+
     <changeSet id="42" author="tyutyunkov@gmail.com">
 
         <createTable tableName="ASM_REFDATA"
