@@ -1,0 +1,757 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+
+    <changeSet author="adam (generated)" id="1472296997555-1" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="SEQ_ACL_ID"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-2" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="SEQ_ASMS_ORDINAL"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-3" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="SEQ_ATTR_ID"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-4" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="SEQ_MTT_ACTION_ID"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-5" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createSequence sequenceName="SEQ_MTT_RULE_ID"/>
+    </changeSet>
+
+    <changeSet author="adam (generated)" id="1472296997555-6" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Assemblies" tableName="ASMS">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="PK_ASMS"/>
+            </column>
+            <column name="ASM_CORE_ID" type="BIGINT"/>
+            <column name="NAME" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="HNAME" remarks="Human name for page assemblies" type="VARCHAR(256)"/>
+            <column name="MDATE" remarks="Assembly modification date" type="timestamp(6)"/>
+            <column name="MUSER" remarks="Username which modified this assembly" type="VARCHAR(64)"/>
+            <column name="OWNER" remarks="Username of page assembly owner" type="VARCHAR(64)"/>
+            <column defaultValueNumeric="0" name="PUBLISHED" remarks="Published boolean flag for page assemblies"
+                    type="SMALLINT"/>
+            <column defaultValueNumeric="0" name="TEMPLATE" remarks="Use this page assembly as template for other pages"
+                    type="SMALLINT"/>
+            <column name="CONTROLLER" remarks="Classname of assembly controller" type="VARCHAR(127)"/>
+            <column defaultValue="" name="TYPE" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OPTIONS" type="VARCHAR(512)"/>
+            <column name="DESCRIPTION" type="VARCHAR(512)"/>
+            <column name="NAV_PARENT_ID" remarks="Navigation parent ref for assemblies of `page` type" type="BIGINT"/>
+            <column name="NAV_CACHED_PATH" remarks="Cached path of IDs joined with / eg.: /123/12/334/"
+                    type="VARCHAR(255)"/>
+            <column name="RECURSIVE_ACL_ID" remarks="ID of recursive Access list (ASM_ACL_ENTITY.ACL_ID)"
+                    type="BIGINT"/>
+            <column name="LOCAL_ACL_ID" remarks="ID of local Access list (ASM_ACL_ENTITY.ACL_ID)" type="BIGINT"/>
+            <column name="TEMPLATE_MODE" remarks="Comma separated list of page types this template applicable to"
+                    type="VARCHAR(32)"/>
+            <column name="NAV_ALIAS" type="VARCHAR(255)"/>
+            <column name="CDATE" type="timestamp(6)"/>
+            <column name="ORDINAL" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="EDATE" remarks="Date of user defined event associated with this assembly page"
+                    type="timestamp(6)"/>
+            <column name="NAV_ALIAS2" type="VARCHAR(255)"/>
+            <column name="QA_CHECK_DATE" type="timestamp(6)"/>
+            <column name="HNAME_LOWER" type="VARCHAR(256)"/>
+            <column name="LANG" type="CHAR(2)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-7" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="ASM_ACCESS_ROLES">
+            <column name="ASM_ID" type="BIGINT"/>
+            <column name="ROLE_NAME" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-8" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="ASM_ACL_ENTITY">
+            <column name="ACL_ID" remarks="ACL ID created by: CALL NEXT VALUE FOR SEQ_ACL_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RIGHTS" remarks="Access rights mask, eg: rw (read-write)" type="VARCHAR(4)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-9" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Assembly attributes" tableName="ASM_ATTRS">
+            <column name="ASM_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LABEL" remarks="Attribute label displayed in page GUI" type="VARCHAR(256)"/>
+            <column name="TYPE" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OPTIONS" type="VARCHAR(2048)"/>
+            <column name="VALUE" type="VARCHAR(2048)"/>
+            <column name="LARGE_VALUE" type="CLOB(10485760)"/>
+            <column autoIncrement="true" name="ORDINAL" remarks="Attributes sorting ordinal" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="REQUIRED" remarks="Required boolean flag for page assembly attributes"
+                    type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MDATE" remarks="Attribute modification date" type="timestamp(6)"/>
+            <column defaultValueNumeric="0" name="ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-10" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="ASM_ATTR_IDXVALS">
+            <column name="ATTR_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(1024)"/>
+            <column name="IVALUE" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-11" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="ASM_CORES">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="PK_ASM_CORES"/>
+            </column>
+            <column name="LOCATION" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(512)"/>
+            <column name="TEMPLATE_ENGINE" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-12" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="ASM_MEDIA_DEPS">
+            <column name="ATTR_ID" remarks="Assembly attribute reference" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FILE_ID" remarks="Media file reference" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-13" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="ASM_PAGE_DEPS">
+            <column name="ATTR_ID" remarks="Assembly attribute reference" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ASM_NAME" remarks="Referenced page name" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-14" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="ASM_PARENTS">
+            <column name="ASM_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ASM_PARENT_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-15" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Assembly additional data" tableName="ASM_REFDATA">
+            <column name="ASM_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SVALUE" type="VARCHAR(1024)"/>
+            <column name="IVALUE" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-16" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="System tags assigned to assembly" tableName="ASM_SYSPROPS">
+            <column name="ASM_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PROPERTY" type="VARCHAR(127)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALUE" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-17" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="MEDIA_ENTITY">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="PK_MEDIA_ENTITY"/>
+            </column>
+            <column name="NAME" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" remarks="If status: 1 - it is folder, 0 - otherwise" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FOLDER" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT_TYPE" type="VARCHAR(128)"/>
+            <column name="PUT_CONTENT_TYPE" type="VARCHAR(128)"/>
+            <column name="CONTENT_LENGTH" type="INTEGER"/>
+            <column name="DESCRIPTION" type="VARCHAR(512)"/>
+            <column name="MDATE" type="timestamp(6)"/>
+            <column name="TAGS" type="VARCHAR(1024)"/>
+            <column name="ICON" remarks="Image media file thumbnail" type="BLOB(1048576)"/>
+            <column name="ICON_CONTENT_TYPE" type="VARCHAR(64)"/>
+            <column name="META" remarks="Key-value options map with file metadata generated by Tika"
+                    type="VARCHAR(2048)"/>
+            <column name="OWNER" remarks="File cleator user id" type="VARCHAR(127)"/>
+            <column name="CSUM" remarks="File checksum" type="VARCHAR(48)"/>
+            <column defaultValueNumeric="0" name="SYSTEM" remarks="True if is a system file managed by admins"
+                    type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="FLAGS" remarks="Various flags bitmask" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-18" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Media entity keywords" tableName="MEDIA_ENTITY_KWORDS">
+            <column name="ENTITY_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="KEYWORD" type="VARCHAR(64)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-19" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Marketing tools action attached to the rule (MTT_RULES)" tableName="MTT_ACTIONS">
+            <column name="ID" remarks="Key values generated by SEQ_MTT_ACTION_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(512)"/>
+            <column name="RULE_ID" remarks="The rule this action attached" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="ORDINAL" remarks="Actions position ordinal" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SPEC" remarks="Actions specification, can be serialized JSON object" type="VARCHAR(4096)"/>
+            <column defaultValue="CURRENT TIMESTAMP" name="CDATE" remarks="Rule creation date" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="CURRENT TIMESTAMP" name="MDATE" remarks="Rule modification date" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="1" name="ENABLED" remarks="Action is enabled" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="GROUP_ID" remarks="Action group ID" type="BIGINT"/>
+            <column defaultValueNumeric="0" name="GROUP_WEIGHT" remarks="Action width in the group" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-20" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Marketing tools filter attached to rule (MTT_RULES)" tableName="MTT_FILTERS">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="PK_MTT_FILTERS"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(512)"/>
+            <column name="RULE_ID" remarks="Rule this filter attached to" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SPEC" remarks="Filter specification, can be serialized JSON object" type="VARCHAR(4096)"/>
+            <column defaultValue="CURRENT TIMESTAMP" name="CDATE" remarks="Rule creation date" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="CURRENT TIMESTAMP" name="MDATE" remarks="Rule modification date" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="1" name="ENABLED" remarks="Filter is enabled" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-21" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Marketing tools rules" tableName="MTT_RULES">
+            <column name="ID" remarks="Key values generated by SEQ_MTT_RULE_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="ORDINAL" remarks="Rules sort ordinal" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="1" name="ENABLED" remarks="Is current rule enabled" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(512)"/>
+            <column defaultValueNumeric="0" name="FLAGS" remarks="Various rules mode bitmask flags" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="CURRENT TIMESTAMP" name="CDATE" remarks="Rule creation date" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="CURRENT TIMESTAMP" name="MDATE" remarks="Rule modification date" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-22" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Tracking pixels configuration" tableName="MTT_TP">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="PK_MTT_TP"/>
+            </column>
+            <column name="NAME" type="VARCHAR(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="VARCHAR(512)"/>
+            <column defaultValueNumeric="1" name="ENABLED" remarks="Tracking pixel enableds" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="CURRENT TIMESTAMP" name="CDATE" remarks="Tracking pixel creation date"
+                    type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="CURRENT TIMESTAMP" name="MDATE" remarks="Tracking pixel modification date"
+                    type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SPEC" remarks="Tracking pixel specification" type="VARCHAR(8192)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-23" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="PAGE_QA_STATUS">
+            <column autoIncrement="true" name="ID" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="PK_PAGE_QA_STATUS"/>
+            </column>
+            <column name="ASM_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ERROR_TYPE" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ERROR_DATA" type="VARCHAR(1024)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-24" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable tableName="REFDATA">
+            <column name="REF" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CONTENT_TYPE" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATA" type="BLOB(33554432)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-25" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Applied updates list" tableName="UPDATE_STATE">
+            <column name="ID" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="CURRENT TIMESTAMP" name="APPLY_DATE" type="timestamp(6)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-26" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createTable remarks="Various user environment values" tableName="USER_ENV">
+            <column name="USERID" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TYPE" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SVALUE" type="VARCHAR(1024)"/>
+            <column name="IVALUE" type="BIGINT"/>
+            <column name="DESCRIPTION" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-27" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="ID" constraintName="PK_ASM_ATTRS" tableName="ASM_ATTRS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-28" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="ID" constraintName="PK_MTT_ACTIONS" tableName="MTT_ACTIONS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-29" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="ID" constraintName="PK_MTT_RULES" tableName="MTT_RULES"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-30" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addPrimaryKey columnNames="ID" constraintName="PK_UPDATE_STATE" tableName="UPDATE_STATE"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-31" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addUniqueConstraint columnNames="NAME" constraintName="SQL160630125125040" tableName="ASMS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-32" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addUniqueConstraint columnNames="REF" constraintName="SQL160630125126920" tableName="REFDATA"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-33" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addUniqueConstraint columnNames="NAME" constraintName="SQL160711215337330" tableName="MTT_RULES"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-34" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addUniqueConstraint columnNames="NAME" constraintName="SQL160824121131200" tableName="MTT_TP"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-35" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX1410210525410" tableName="ASM_ATTRS">
+            <column name="ASM_ID"/>
+            <column name="ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-36" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX1410210525430" tableName="ASM_PARENTS" unique="true">
+            <column name="ASM_PARENT_ID"/>
+            <column name="ASM_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-37" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX1410210525480" tableName="ASMS" unique="true">
+            <column name="NAME"/>
+            <column name="ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-38" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX1410210525510" tableName="ASMS" unique="true">
+            <column name="ID"/>
+            <column name="TYPE"/>
+            <column name="NAV_PARENT_ID"/>
+            <column name="PUBLISHED"/>
+            <column name="ORDINAL"/>
+            <column name="EDATE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-39" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX1410210526040" tableName="ASMS" unique="true">
+            <column name="ID"/>
+            <column name="ORDINAL"/>
+            <column name="EDATE"/>
+            <column name="MDATE"/>
+            <column name="CDATE"/>
+            <column name="TYPE"/>
+            <column name="HNAME"/>
+            <column name="NAME"/>
+            <column name="NAV_PARENT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-40" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX1410210526140" tableName="ASM_ATTRS">
+            <column name="ASM_ID"/>
+            <column name="ID"/>
+            <column name="VALUE"/>
+            <column name="TYPE"/>
+            <column name="NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-41" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX1410210526170" tableName="ASMS" unique="true">
+            <column name="ID"/>
+            <column name="NAME"/>
+            <column name="HNAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-42" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMACCESSROLES_ALL" tableName="ASM_ACCESS_ROLES" unique="true">
+            <column name="ROLE_NAME"/>
+            <column name="ASM_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-43" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMATTRIDXVALS_IVALS" tableName="ASM_ATTR_IDXVALS">
+            <column name="IVALUE"/>
+            <column name="ATTR_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-44" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMATTRIDXVALS_VALS" tableName="ASM_ATTR_IDXVALS">
+            <column name="VALUE"/>
+            <column name="ATTR_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-45" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMATTRS_ORDINAL" tableName="ASM_ATTRS">
+            <column name="ORDINAL"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-46" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMATTRS_TNV" tableName="ASM_ATTRS">
+            <column name="TYPE"/>
+            <column name="NAME"/>
+            <column name="VALUE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-47" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMATTRS_UNIQ" tableName="ASM_ATTRS" unique="true">
+            <column name="NAME"/>
+            <column name="ASM_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-48" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMCORES_LOCATION" tableName="ASM_CORES" unique="true">
+            <column name="LOCATION"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-49" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMPAGEDEPS" tableName="ASM_PAGE_DEPS" unique="true">
+            <column name="ATTR_ID"/>
+            <column name="ASM_NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-50" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMPARENTS_UNIQ" tableName="ASM_PARENTS" unique="true">
+            <column name="ASM_ID"/>
+            <column name="ASM_PARENT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-51" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMSYSPROPS_BWD" tableName="ASM_SYSPROPS" unique="true">
+            <column name="PROPERTY"/>
+            <column name="ASM_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-52" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMSYSPROPS_FWD" tableName="ASM_SYSPROPS" unique="true">
+            <column name="ASM_ID"/>
+            <column name="PROPERTY"/>
+            <column name="VALUE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-53" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_EDATE" tableName="ASMS">
+            <column name="EDATE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-54" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_NAMETYPE" tableName="ASMS" unique="true">
+            <column name="NAME"/>
+            <column name="TYPE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-55" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_NAVALIAS" tableName="ASMS">
+            <column name="NAV_ALIAS"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-56" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_NAVALIAS2" tableName="ASMS">
+            <column name="NAV_ALIAS2"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-57" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_NAVCACHEDPATH" tableName="ASMS">
+            <column name="NAV_CACHED_PATH"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-58" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_NAVPARENT" tableName="ASMS">
+            <column name="NAV_PARENT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-59" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_ORDINAL" tableName="ASMS" unique="true">
+            <column name="ORDINAL"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-60" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_QACHECKDATE" tableName="ASMS">
+            <column name="QA_CHECK_DATE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-61" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_SCOLS" tableName="ASMS">
+            <column name="HNAME_LOWER"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-62" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASMS_TYPENAME" tableName="ASMS">
+            <column name="TYPE"/>
+            <column name="NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-63" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASM_REFDATA_IVAL" tableName="ASM_REFDATA">
+            <column name="IVALUE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-64" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_ASM_REFDATA_SVAL" tableName="ASM_REFDATA">
+            <column name="TYPE"/>
+            <column name="SVALUE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-65" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_MEDIADEPS" tableName="ASM_MEDIA_DEPS" unique="true">
+            <column name="ATTR_ID"/>
+            <column name="FILE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-66" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_MEDIAENTITYKWORDS_BWD" tableName="MEDIA_ENTITY_KWORDS" unique="true">
+            <column name="ENTITY_ID"/>
+            <column name="KEYWORD"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-67" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_MEDIAENTITYKWORDS_FWD" tableName="MEDIA_ENTITY_KWORDS" unique="true">
+            <column name="KEYWORD"/>
+            <column name="ENTITY_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-68" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_MEDIAENTITY_CSUM" tableName="MEDIA_ENTITY">
+            <column name="CSUM"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-69" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_MEDIAENTITY_FOLDER" tableName="MEDIA_ENTITY">
+            <column name="FOLDER"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-70" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_MEDIAENTITY_NAME" tableName="MEDIA_ENTITY">
+            <column name="NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-71" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_MEDIAENTITY_PATH" tableName="MEDIA_ENTITY" unique="true">
+            <column name="FOLDER"/>
+            <column name="NAME"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-72" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_PAGEQASTATUS_ETYPE" tableName="PAGE_QA_STATUS">
+            <column name="ERROR_TYPE"/>
+            <column name="ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-73" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_USERENV_IVAL" tableName="USER_ENV">
+            <column name="USERID"/>
+            <column name="TYPE"/>
+            <column name="IVALUE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-74" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <createIndex indexName="IDX_USERENV_SVAL" tableName="USER_ENV">
+            <column name="USERID"/>
+            <column name="TYPE"/>
+            <column name="SVALUE"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-75" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_ACCESS_ROLES"
+                                 constraintName="FK_ASMACCESSROLES_ASMS" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="ASMS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-76" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_ATTRS" constraintName="FK_ASMATTRS_ASM"
+                                 deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="ID" referencedTableName="ASMS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-77" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ATTR_ID" baseTableName="ASM_MEDIA_DEPS"
+                                 constraintName="FK_ASMMEDIADEPS_ATTRS" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="ASM_ATTRS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-78" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="FILE_ID" baseTableName="ASM_MEDIA_DEPS"
+                                 constraintName="FK_ASMMEDIADEPS_FILES" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="MEDIA_ENTITY"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-79" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ASM_NAME" baseTableName="ASM_PAGE_DEPS"
+                                 constraintName="FK_ASMPAGEDEPS_ASMS" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="NAME"
+                                 referencedTableName="ASMS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-80" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ATTR_ID" baseTableName="ASM_PAGE_DEPS"
+                                 constraintName="FK_ASMPAGEDEPS_ATTRS" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="ASM_ATTRS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-81" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_PARENTS"
+                                 constraintName="FK_ASMPARENTS_ASMID" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="ASMS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-82" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ASM_PARENT_ID" baseTableName="ASM_PARENTS"
+                                 constraintName="FK_ASMPARENTS_ASMPARENTID" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="ASMS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-83" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_SYSPROPS"
+                                 constraintName="FK_ASMSYSPROPS_ASMS" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="ASMS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-84" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ASM_CORE_ID" baseTableName="ASMS" constraintName="FK_ASMS_ASMCORES"
+                                 deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="NO ACTION"
+                                 referencedColumnNames="ID" referencedTableName="ASM_CORES"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-85" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="NAV_PARENT_ID" baseTableName="ASMS" constraintName="FK_ASMS_NAVPARENT"
+                                 deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="ID" referencedTableName="ASMS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-86" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_REFDATA" constraintName="FK_ASM_REFDATA"
+                                 deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
+                                 referencedColumnNames="ID" referencedTableName="ASMS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-87" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ATTR_ID" baseTableName="ASM_ATTR_IDXVALS"
+                                 constraintName="FK_ATTRIDXVALS_ATTRS" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="ASM_ATTRS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-88" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ENTITY_ID" baseTableName="MEDIA_ENTITY_KWORDS"
+                                 constraintName="FK_MEDIAENTITYKWORDS" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="MEDIA_ENTITY"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-89" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="MTT_ACTIONS"
+                                 constraintName="FK_MTT_ACTIONS_GROUP" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="MTT_ACTIONS"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-90" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="RULE_ID" baseTableName="MTT_ACTIONS"
+                                 constraintName="FK_MTT_ACTIONS_RULES" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="MTT_RULES"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-91" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="RULE_ID" baseTableName="MTT_FILTERS"
+                                 constraintName="FK_MTT_FILTERS_RULES" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="MTT_RULES"/>
+    </changeSet>
+    <changeSet author="adam (generated)" id="1472296997555-92" objectQuotingStrategy="QUOTE_ALL_OBJECTS">
+        <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="PAGE_QA_STATUS"
+                                 constraintName="FK_PAGEQASTATUS_ASMS" deferrable="false" initiallyDeferred="false"
+                                 onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
+                                 referencedTableName="ASMS"/>
+    </changeSet>
+</databaseChangeLog>

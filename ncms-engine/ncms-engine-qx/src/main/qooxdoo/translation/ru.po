@@ -1318,10 +1318,6 @@ msgstr "Шаблон URL для трекинг пикселя"
 msgid "Tracking pixel JS code"
 msgstr "JS код трекинг пикселя"
 
-#: ncms/mtt/tp/MttTpEditor.js:43
-msgid "Incoming request parameters"
-msgstr "Входящие параметры запроса"
-
 #: ncms/mtt/tp/MttTpNav.js:74
 msgid "New tracking pixel"
 msgstr "Новый трекинг пиксель"

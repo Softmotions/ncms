@@ -15,6 +15,7 @@
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
         <qooxdoo.sdk.version>5.0</qooxdoo.sdk.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
+        <pgsql.jdbc.version>9.4.1209.jre7</pgsql.jdbc.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <slf4j.version>1.7.21</slf4j.version>
         <logback.version>1.1.7</logback.version>
@@ -118,6 +119,11 @@
                 <groupId>com.ibm</groupId>
                 <artifactId>db2jcc_license_cu</artifactId>
                 <version>${db2.jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${pgsql.jdbc.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.qooxdoo</groupId>
