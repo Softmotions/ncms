@@ -6,11 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <preConditions>
-        <dbms type="db2"/>
-    </preConditions>
-
-    <changeSet id="42" author="tyutyunkov@gmail.com">
+    <changeSet id="42" author="tyutyunkov@gmail.com" dbms="db2">
 
         <createTable tableName="ASM_REFDATA"
                      remarks="Assembly additional data">
@@ -48,7 +44,7 @@
 
     </changeSet>
 
-    <changeSet id="43" author="tyutyunkov@gmail.com">
+    <changeSet id="43" author="tyutyunkov@gmail.com" dbms="db2">
 
         <createTable tableName="GENERAL_REF_DATA"
                      remarks="">
@@ -72,18 +68,18 @@
 
     </changeSet>
 
-    <changeSet id="44" author="adamansky@gmail.com">
+    <changeSet id="44" author="adamansky@gmail.com" dbms="db2">
         <renameTable oldTableName="GENERAL_REF_DATA" newTableName="REF_DATA"/>
     </changeSet>
 
-    <changeSet id="45" author="adamansky@gmail.com">
+    <changeSet id="45" author="adamansky@gmail.com" dbms="db2">
         <renameTable oldTableName="REF_DATA" newTableName="REFDATA"/>
         <createIndex tableName="REFDATA" indexName="IDX_REFDATA_REF" unique="true">
             <column name="REF"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="46" author="adamansky@gmail.com">
+    <changeSet id="46" author="adamansky@gmail.com" dbms="db2">
         <addColumn tableName="ASMS">
             <column name="NAV_ALIAS2" type="VARCHAR(255)"/>
         </addColumn>
@@ -92,7 +88,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="47" author="adamansky@gmail.com">
+    <changeSet id="47" author="adamansky@gmail.com" dbms="db2">
         <modifyDataType tableName="MEDIA_ENTITY"
                         columnName="CONTENT_TYPE"
                         newDataType="VARCHAR(128)"/>
@@ -102,7 +98,7 @@
                         newDataType="VARCHAR(128)"/>
     </changeSet>
 
-    <changeSet id="48" author="adamansky@gmail.com">
+    <changeSet id="48" author="adamansky@gmail.com" dbms="db2">
         <addColumn tableName="ASMS">
             <column name="QA_CHECK_DATE" type="TIMESTAMP"/>
         </addColumn>
@@ -137,7 +133,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="49" author="adamansky@gmail.com">
+    <changeSet id="49" author="adamansky@gmail.com" dbms="db2">
         <sql dbms="db2">
             CREATE UNIQUE INDEX "IDX1410210525480"
             ON "ASMS" ("NAME" ASC) INCLUDE ("ID") ALLOW
@@ -177,7 +173,7 @@
     </changeSet>
 
 
-    <changeSet id="50" author="adamansky@gmail.com">
+    <changeSet id="50" author="adamansky@gmail.com" dbms="db2">
         <sql>
             CALL SYSPROC.ADMIN_CMD('REORG TABLE ASMS');
             SET INTEGRITY FOR ASMS OFF;
@@ -216,7 +212,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="55" author="tyutyunkov@gmail.com">
+    <changeSet id="55" author="tyutyunkov@gmail.com" dbms="db2">
         <createTable tableName="UPDATE_STATE"
                      remarks="Applied updates list">
             <column name="ID" type="VARCHAR(64)">
@@ -225,7 +221,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="56" author="tyutyunkov@gmail.com">
+    <changeSet id="56" author="tyutyunkov@gmail.com" dbms="db2">
         <sql>
             CALL SYSPROC.ADMIN_CMD('REORG TABLE UPDATE_STATE');
             SET INTEGRITY FOR UPDATE_STATE OFF;

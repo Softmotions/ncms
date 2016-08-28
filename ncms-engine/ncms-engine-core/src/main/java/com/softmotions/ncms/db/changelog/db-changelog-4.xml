@@ -6,24 +6,20 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <preConditions>
-        <dbms type="db2"/>
-    </preConditions>
-
-    <changeSet id="4" author="adamansky@gmail.com">
+    <changeSet id="4" author="adamansky@gmail.com" dbms="db2">
         <addColumn tableName="ASMS">
             <column name="TEMPLATE_PAGE_TYPES" type="VARCHAR(32)"
                     remarks="Comma separated list of page types this template applicable to"/>
         </addColumn>
     </changeSet>
 
-    <changeSet id="5" author="adamansky@gmail.com">
+    <changeSet id="5" author="adamansky@gmail.com" dbms="db2">
         <renameColumn tableName="ASMS"
                       oldColumnName="TEMPLATE_PAGE_TYPES"
                       newColumnName="TEMPLATE_MODE"/>
     </changeSet>
 
-    <changeSet id="6" author="adamansky@gmail.com">
+    <changeSet id="6" author="adamansky@gmail.com" dbms="db2">
 
         <modifyDataType tableName="ASM_ATTRS"
                         columnName="NAME"
@@ -70,7 +66,7 @@
 
     </changeSet>
 
-    <changeSet id="7" author="adamansky@gmail.com">
+    <changeSet id="7" author="adamansky@gmail.com" dbms="db2">
 
         <addColumn tableName="ASMS">
             <column name="NAV_ALIAS"
@@ -80,11 +76,11 @@
 
     </changeSet>
 
-    <changeSet id="8" author="adamansky@gmail.com">
+    <changeSet id="8" author="adamansky@gmail.com" dbms="db2">
         <createSequence sequenceName="SEQ_ATTR_ID" incrementBy="1" startValue="1"/>
     </changeSet>
 
-    <changeSet id="9" author="adamansky@gmail.com">
+    <changeSet id="9" author="adamansky@gmail.com" dbms="db2">
         <sql>ALTER TABLE asm_attrs ADD COLUMN id BIGINT NOT NULL WITH DEFAULT 0</sql>
         <sql dbms="db2">CALL SYSPROC.ADMIN_CMD ('REORG TABLE asm_attrs')</sql>
         <sql>UPDATE asm_attrs set id = SEQ_ATTR_ID.NEXTVAL</sql>
@@ -92,7 +88,7 @@
         <sql dbms="db2">CALL SYSPROC.ADMIN_CMD ('REORG TABLE asm_attrs')</sql>
     </changeSet>
 
-    <changeSet id="10" author="adamansky@gmail.com">
+    <changeSet id="10" author="adamansky@gmail.com" dbms="db2">
 
         <createTable tableName="ASM_ATTR_IDXVALS">
             <column name="ATTR_ID" type="BIGINT">
@@ -116,7 +112,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="11" author="adamansky@gmail.com">
+    <changeSet id="11" author="adamansky@gmail.com" dbms="db2">
         <createIndex tableName="ASM_ATTRS" indexName="IDX_ASMATTRS_TNV">
             <column name="TYPE"/>
             <column name="NAME"/>
@@ -124,7 +120,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="12" author="adamansky@gmail.com">
+    <changeSet id="12" author="adamansky@gmail.com" dbms="db2">
         <addColumn tableName="ASMS">
             <column name="CDATE" type="TIMESTAMP"/>
         </addColumn>
@@ -136,7 +132,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="13" author="adamansky@gmail.com">
+    <changeSet id="13" author="adamansky@gmail.com" dbms="db2">
         <createSequence sequenceName="SEQ_ASMS_ORDINAL"/>
         <addColumn tableName="ASMS">
             <column name="ORDINAL" type="BIGINT"/>
@@ -151,7 +147,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="14" author="adamansky@gmail.com">
+    <changeSet id="14" author="adamansky@gmail.com" dbms="db2">
         <createTable tableName="ASM_MEDIA_DEPS">
             <column name="ATTR_ID" type="BIGINT"
                     remarks="Assembly attribute reference">
@@ -185,7 +181,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="15" author="adamansky@gmail.com">
+    <changeSet id="15" author="adamansky@gmail.com" dbms="db2">
         <dropNotNullConstraint tableName="ASM_ATTR_IDXVALS" columnName="VALUE"/>
         <addColumn tableName="ASM_ATTR_IDXVALS">
             <column name="IVALUE" type="BIGINT"/>
@@ -196,18 +192,18 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="16" author="adamansky@gmail.com">
+    <changeSet id="16" author="adamansky@gmail.com" dbms="db2">
         <dropTable tableName="MEDIA_ENTITY_REFS"/>
     </changeSet>
 
-    <changeSet id="17" author="adamansky@gmail.com">
+    <changeSet id="17" author="adamansky@gmail.com" dbms="db2">
         <modifyDataType tableName="ASM_ATTRS"
                         columnName="LARGE_VALUE"
                         newDataType="CLOB(10485760)"/>
     </changeSet>
 
 
-    <changeSet id="18" author="adamansky@gmail.com">
+    <changeSet id="18" author="adamansky@gmail.com" dbms="db2">
 
         <createTable tableName="ASM_ACCESS_ROLES">
             <column name="ASM_ID" type="BIGINT"/>
@@ -230,7 +226,7 @@
 
     </changeSet>
 
-    <changeSet id="19" author="adamansky@gmail.com">
+    <changeSet id="19" author="adamansky@gmail.com" dbms="db2">
         <createIndex tableName="ASMS"
                      indexName="IDX_ASMS_NAVALIAS"
                      unique="false">
@@ -238,7 +234,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="20" author="adamansky@gmail.com">
+    <changeSet id="20" author="adamansky@gmail.com" dbms="db2">
         <addColumn tableName="ASMS">
             <column name="EDATE"
                     type="TIMESTAMP"
@@ -251,7 +247,7 @@
     </changeSet>
 
 
-    <changeSet id="21" author="adamansky@gmail.com">
+    <changeSet id="21" author="adamansky@gmail.com" dbms="db2">
 
         <createTable tableName="ASM_PAGE_DEPS">
             <column name="ATTR_ID" type="BIGINT"
@@ -291,7 +287,7 @@
 
     </changeSet>
 
-    <changeSet id="22" author="adamansky@gmail.com">
+    <changeSet id="22" author="adamansky@gmail.com" dbms="db2">
         <dropForeignKeyConstraint baseTableName="ASM_PAGE_DEPS" constraintName="FK_ASMPAGEDEPS_ASMS"/>
         <addForeignKeyConstraint baseTableName="ASM_PAGE_DEPS"
                                  baseColumnNames="ASM_NAME"

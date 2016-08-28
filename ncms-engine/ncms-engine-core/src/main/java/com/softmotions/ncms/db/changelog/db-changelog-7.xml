@@ -6,13 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-
-    <preConditions>
-        <dbms type="db2"/>
-    </preConditions>
-
-
-    <changeSet id="7.1" author="adamansky@gmail.com">
+    <changeSet id="7.1" author="adamansky@gmail.com" dbms="db2">
 
         <createSequence sequenceName="SEQ_MTT_RULE_ID"
                         incrementBy="1"
@@ -56,7 +50,7 @@
     </changeSet>
 
 
-    <changeSet id="7.2" author="adamansky@gmail.com">
+    <changeSet id="7.2" author="adamansky@gmail.com" dbms="db2">
 
         <createTable tableName="MTT_FILTERS"
                      remarks="Marketing tools filter attached to rule (MTT_RULES)">
@@ -94,11 +88,11 @@
                                  onDelete="CASCADE"/>
     </changeSet>
 
-    <changeSet id="7.2.1" author="tve@softmotions.com">
+    <changeSet id="7.2.1" author="tve@softmotions.com" dbms="db2">
         <dropNotNullConstraint tableName="MTT_FILTERS" columnName="SPEC"/>
     </changeSet>
 
-    <changeSet id="7.3" author="adamansky@gmail.com">
+    <changeSet id="7.3" author="adamansky@gmail.com" dbms="db2">
 
         <createSequence sequenceName="SEQ_MTT_ACTION_ID"
                         incrementBy="1"
@@ -146,11 +140,11 @@
                                  onDelete="CASCADE"/>
     </changeSet>
 
-    <changeSet id="7.3.1" author="tve@softmotions.com">
+    <changeSet id="7.3.1" author="tve@softmotions.com" dbms="db2">
         <dropNotNullConstraint tableName="MTT_ACTIONS" columnName="SPEC"/>
     </changeSet>
 
-    <changeSet id="7.4" author="adamansky@gmail.com">
+    <changeSet id="7.4" author="adamansky@gmail.com" dbms="db2">
         <addColumn tableName="MTT_FILTERS">
             <column name="ENABLED" type="${tinyint.type}" defaultValueNumeric="1"
                     remarks="Filter is enabled"/>
@@ -171,7 +165,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="7.5" author="adamansky@gmail.com">
+    <changeSet id="7.5" author="adamansky@gmail.com" dbms="db2">
         <addColumn tableName="MTT_ACTIONS">
             <column name="GROUP_ID" type="BIGINT" remarks="Action group ID"/>
         </addColumn>
@@ -183,7 +177,7 @@
                                  onDelete="CASCADE"/>
     </changeSet>
 
-    <changeSet id="7.6" author="adamansky@gmail.com">
+    <changeSet id="7.6" author="adamansky@gmail.com" dbms="db2">
         <addColumn tableName="MTT_ACTIONS">
             <column name="GROUP_WIDTH" type="${tinyint.type}"
                     defaultValueNumeric="0"
@@ -195,7 +189,7 @@
         <addNotNullConstraint tableName="MTT_ACTIONS" columnName="GROUP_WIDTH"/>
     </changeSet>
 
-    <changeSet id="7.7" author="adamansky@gmail.com">
+    <changeSet id="7.7" author="adamansky@gmail.com" dbms="db2">
         <renameColumn tableName="MTT_ACTIONS"
                       oldColumnName="GROUP_WIDTH"
                       newColumnName="GROUP_WEIGHT"/>

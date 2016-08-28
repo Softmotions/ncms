@@ -7,16 +7,12 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
 
-    <preConditions>
-        <dbms type="db2"/>
-    </preConditions>
-
 
     <!-- ==================================================================== -->
     <!-- ====================== ASSEMBLY TABLES ============================= -->
     <!-- ==================================================================== -->
 
-    <changeSet id="1" author="adamansky@gmail.com">
+    <changeSet id="1" author="adamansky@gmail.com" dbms="db2">
 
         <!-- ===================== ASM CORE ========================== -->
 
@@ -272,7 +268,7 @@
     <!-- ====================== MEDIA TABLES ================================ -->
     <!-- ==================================================================== -->
 
-    <changeSet id="2" author="adamansky@gmail.com">
+    <changeSet id="2" author="adamansky@gmail.com" dbms="db2">
 
         <!-- ================ MEDIA_ENTITY ==================== -->
 
