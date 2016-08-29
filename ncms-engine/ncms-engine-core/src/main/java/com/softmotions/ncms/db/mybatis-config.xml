@@ -24,6 +24,17 @@
     </typeHandlers>
 
     <environments default="development">
+
+        <environment id="pgtest">
+            <transactionManager type="JDBC">
+            </transactionManager>
+            <dataSource type="POOLED">
+                <property name="driver" value="${JDBC.driver}"/>
+                <property name="url" value="${JDBC.url}"/>
+                <property name="defaultAutoCommit" value="false"/>
+            </dataSource>
+        </environment>
+
         <environment id="development">
             <transactionManager type="JDBC">
             </transactionManager>
@@ -54,6 +65,8 @@
         <property name="DB2" value="DB2"/>
         <property name="Oracle" value="ORACLE"/>
         <property name="H2" value="H2"/>
+        <property name="PostgreSQL" value="POSTGRESQL"/>
+        <property name="MySQL" value="MYSQL"/>
     </databaseIdProvider>
 
 

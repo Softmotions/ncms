@@ -243,10 +243,10 @@
                 <constraints nullable="false"/>
             </column>
             <column name="SPEC" remarks="Actions specification, can be serialized JSON object" type="VARCHAR(4096)"/>
-            <column defaultValue="CURRENT TIMESTAMP" name="CDATE" remarks="Rule creation date" type="TIMESTAMP(6)">
+            <column defaultValue="now()" name="CDATE" remarks="Rule creation date" type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="CURRENT TIMESTAMP" name="MDATE" remarks="Rule modification date" type="TIMESTAMP(6)">
+            <column defaultValue="now()" name="MDATE" remarks="Rule modification date" type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
             <column defaultValueNumeric="1" name="ENABLED" remarks="Action is enabled" type="SMALLINT">
@@ -271,10 +271,10 @@
                 <constraints nullable="false"/>
             </column>
             <column name="SPEC" remarks="Filter specification, can be serialized JSON object" type="VARCHAR(4096)"/>
-            <column defaultValue="CURRENT TIMESTAMP" name="CDATE" remarks="Rule creation date" type="TIMESTAMP(6)">
+            <column defaultValue="now()" name="CDATE" remarks="Rule creation date" type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="CURRENT TIMESTAMP" name="MDATE" remarks="Rule modification date" type="TIMESTAMP(6)">
+            <column defaultValue="now()" name="MDATE" remarks="Rule modification date" type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
             <column defaultValueNumeric="1" name="ENABLED" remarks="Filter is enabled" type="SMALLINT">
@@ -300,10 +300,10 @@
             <column defaultValueNumeric="0" name="FLAGS" remarks="Various rules mode bitmask flags" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="CURRENT TIMESTAMP" name="CDATE" remarks="Rule creation date" type="TIMESTAMP(6)">
+            <column defaultValue="now()" name="CDATE" remarks="Rule creation date" type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="CURRENT TIMESTAMP" name="MDATE" remarks="Rule modification date" type="TIMESTAMP(6)">
+            <column defaultValue="now()" name="MDATE" remarks="Rule modification date" type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -320,11 +320,11 @@
             <column defaultValueNumeric="1" name="ENABLED" remarks="Tracking pixel enableds" type="SMALLINT">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="CURRENT TIMESTAMP" name="CDATE" remarks="Tracking pixel creation date"
+            <column defaultValue="now()" name="CDATE" remarks="Tracking pixel creation date"
                     type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="CURRENT TIMESTAMP" name="MDATE" remarks="Tracking pixel modification date"
+            <column defaultValue="now()" name="MDATE" remarks="Tracking pixel modification date"
                     type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
@@ -363,7 +363,7 @@
             <column name="ID" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValue="CURRENT TIMESTAMP" name="APPLY_DATE" type="TIMESTAMP(6)">
+            <column defaultValue="now()" name="APPLY_DATE" type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

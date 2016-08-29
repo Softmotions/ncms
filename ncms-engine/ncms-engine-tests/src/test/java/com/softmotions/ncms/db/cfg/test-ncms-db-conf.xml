@@ -18,11 +18,13 @@
     </liquibase>
 
     <mybatis>
+        <dbenv>{sys:JDBC.env}</dbenv>
         <bindDatasource>true</bindDatasource>
         <config>com/softmotions/ncms/db/mybatis-config.xml</config>
-        <propsFile>{home}/.ncms-test.ds</propsFile>
+        {sys:JDBC.propsFile}
         <extra-properties>
-            JDBC.driver=com.ibm.db2.jcc.DB2Driver
+            JDBC.url={sys:JDBC.url}
+            JDBC.driver={sys:JDBC.driver}
         </extra-properties>
     </mybatis>
 

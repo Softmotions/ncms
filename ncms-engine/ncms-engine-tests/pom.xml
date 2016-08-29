@@ -17,6 +17,12 @@
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
+            <artifactId>softmotions-runner</artifactId>
+            <version>${softmotions.commons.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
             <artifactId>softmotions-web-realms</artifactId>
             <version>${softmotions.commons.version}</version>
             <scope>test</scope>
@@ -38,6 +44,10 @@
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>db2jcc_license_cu</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.kevinsawicki</groupId>
@@ -68,6 +78,7 @@
                         </goals>
                     </execution>
                 </executions>
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
