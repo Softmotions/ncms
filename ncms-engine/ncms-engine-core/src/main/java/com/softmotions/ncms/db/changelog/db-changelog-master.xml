@@ -5,8 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <property name="tinyint.type" dbms="db2" value="SMALLINT"/>
+    <property name="boolean.type" dbms="db2" value="SMALLINT"/>
     <property name="tinyint.type" dbms="postgresql" value="SMALLINT"/>
-    <property name="tinyint.type" dbms="h2" value="TINYINT"/>
+    <property name="boolean.type" dbms="postgresql" value="BOOLEAN"/>
+
 
     <include relativeToChangelogFile="true" file="db-changelog-1.xml"/>
     <include relativeToChangelogFile="true" file="db-changelog-3.xml"/>

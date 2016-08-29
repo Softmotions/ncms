@@ -13,7 +13,8 @@ open class DbBaseTest(db: String) : GuiceBaseTest() {
             "db2" -> {
                 dbTestRunner = Db2TestRunner()
             }
-            "postgresql" -> {
+            "postgresql",
+            "postgres" -> {
                 dbTestRunner = PostgresTestRunner()
             }
             else -> throw RuntimeException("Invalid database id: ${db}")

@@ -34,10 +34,10 @@
             <column name="MDATE" remarks="Assembly modification date" type="TIMESTAMP(6)"/>
             <column name="MUSER" remarks="Username which modified this assembly" type="VARCHAR(64)"/>
             <column name="OWNER" remarks="Username of page assembly owner" type="VARCHAR(64)"/>
-            <column defaultValueNumeric="0" name="PUBLISHED" remarks="Published boolean flag for page assemblies"
-                    type="SMALLINT"/>
-            <column defaultValueNumeric="0" name="TEMPLATE" remarks="Use this page assembly as template for other pages"
-                    type="SMALLINT"/>
+            <column defaultValueBoolean="false" name="PUBLISHED" remarks="Published boolean flag for page assemblies"
+                    type="BOOLEAN"/>
+            <column defaultValueBoolean="false" name="TEMPLATE" remarks="Use this page assembly as template for other pages"
+                    type="BOOLEAN"/>
             <column name="CONTROLLER" remarks="Classname of assembly controller" type="VARCHAR(127)"/>
             <column defaultValue="" name="TYPE" type="VARCHAR(64)">
                 <constraints nullable="false"/>
@@ -98,12 +98,12 @@
             </column>
             <column name="OPTIONS" type="VARCHAR(2048)"/>
             <column name="VALUE" type="VARCHAR(2048)"/>
-            <column name="LARGE_VALUE" type="CLOB(10485760)"/>
+            <column name="LARGE_VALUE" type="TEXT"/>
             <column autoIncrement="true" name="ORDINAL" remarks="Attributes sorting ordinal" type="INTEGER">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValueNumeric="0" name="REQUIRED" remarks="Required boolean flag for page assembly attributes"
-                    type="SMALLINT">
+            <column defaultValueBoolean="false" name="REQUIRED" remarks="Required boolean flag for page assembly attributes"
+                    type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column name="MDATE" remarks="Attribute modification date" type="TIMESTAMP(6)"/>
@@ -212,8 +212,8 @@
                     type="VARCHAR(2048)"/>
             <column name="OWNER" remarks="File cleator user id" type="VARCHAR(127)"/>
             <column name="CSUM" remarks="File checksum" type="VARCHAR(48)"/>
-            <column defaultValueNumeric="0" name="SYSTEM" remarks="True if is a system file managed by admins"
-                    type="SMALLINT">
+            <column defaultValueBoolean="false" name="SYSTEM" remarks="True if is a system file managed by admins"
+                    type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column defaultValueNumeric="0" name="FLAGS" remarks="Various flags bitmask" type="INTEGER"/>
@@ -249,7 +249,7 @@
             <column defaultValue="now()" name="MDATE" remarks="Rule modification date" type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValueNumeric="1" name="ENABLED" remarks="Action is enabled" type="SMALLINT">
+            <column defaultValueBoolean="true" name="ENABLED" remarks="Action is enabled" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column name="GROUP_ID" remarks="Action group ID" type="BIGINT"/>
@@ -277,7 +277,7 @@
             <column defaultValue="now()" name="MDATE" remarks="Rule modification date" type="TIMESTAMP(6)">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValueNumeric="1" name="ENABLED" remarks="Filter is enabled" type="SMALLINT">
+            <column defaultValueBoolean="true" name="ENABLED" remarks="Filter is enabled" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -290,7 +290,7 @@
             <column autoIncrement="true" name="ORDINAL" remarks="Rules sort ordinal" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column defaultValueNumeric="1" name="ENABLED" remarks="Is current rule enabled" type="SMALLINT">
+            <column defaultValueBoolean="true" name="ENABLED" remarks="Is current rule enabled" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column name="NAME" type="VARCHAR(128)">
@@ -317,7 +317,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="DESCRIPTION" type="VARCHAR(512)"/>
-            <column defaultValueNumeric="1" name="ENABLED" remarks="Tracking pixel enableds" type="SMALLINT">
+            <column defaultValueBoolean="true" name="ENABLED" remarks="Tracking pixel enableds" type="BOOLEAN">
                 <constraints nullable="false"/>
             </column>
             <column defaultValue="now()" name="CDATE" remarks="Tracking pixel creation date"
@@ -355,7 +355,7 @@
             <column name="CONTENT_TYPE" type="VARCHAR(64)">
                 <constraints nullable="false"/>
             </column>
-            <column name="DATA" type="BLOB(33554432)"/>
+            <column name="DATA" type="BYTEA"/>
         </createTable>
     </changeSet>
     <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-25">

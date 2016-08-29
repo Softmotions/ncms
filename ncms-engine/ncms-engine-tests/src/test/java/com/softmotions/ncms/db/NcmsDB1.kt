@@ -72,6 +72,9 @@ constructor(db: String) : DbBaseTest(db) {
         val attr2 = AsmAttribute("name2", "type2", "val2")
         Assert.assertEquals(1, adao.asmSetAttribute(asm, attr2))
 
+
+        adao.asmUpsertAttribute(attr2);
+
         var cq: AsmCriteria = adao.newAsmCriteria()
                 .orderBy("name").desc()
                 .onAsmAttribute()
@@ -227,6 +230,9 @@ constructor(db: String) : DbBaseTest(db) {
         Assert.assertTrue(anames.containsAll(Arrays.asList("name1", "name2", "p[2]attr")))
         Assert.assertNotNull(asm.effectiveCore)
         Assert.assertEquals(core.id, asm.effectiveCore!!.id)
+
+
+
 
     }
 }

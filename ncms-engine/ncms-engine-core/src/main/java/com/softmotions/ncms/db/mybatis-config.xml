@@ -18,6 +18,9 @@
         <!--<setting name="defaultExecutorType" value="BATCH"/>-->
     </settings>
 
+    <typeAliases>
+    </typeAliases>
+
     <typeHandlers>
         <typeHandler handler="com.softmotions.weboot.mb.ArrayTypeHandler"/>
         <typeHandler handler="com.softmotions.weboot.mb.InputStreamTypeHandler"/>
@@ -65,7 +68,7 @@
         <property name="DB2" value="DB2"/>
         <property name="Oracle" value="ORACLE"/>
         <property name="H2" value="H2"/>
-        <property name="PostgreSQL" value="POSTGRESQL"/>
+        <property name="PostgreSQL" value="POSTGRES"/>
         <property name="MySQL" value="MYSQL"/>
     </databaseIdProvider>
 

@@ -1,16 +1,14 @@
 package com.softmotions.ncms.db;
 
-import org.testng.annotations.Factory;
+import com.softmotions.ncms.DbTestsFactory;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class TestNcmsDBs {
+public class TestNcmsDBs extends DbTestsFactory {
 
-    @Factory
-    public Object[] createInstances() {
-        return new Object[]{
-                new NcmsDB1("postgresql")
-        };
+    @Override
+    public Object createTest(String db) {
+        return new NcmsDB1(db);
     }
 }
