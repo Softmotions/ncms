@@ -9,15 +9,19 @@ import com.softmotions.weboot.testing.tomcat.TomcatRunner
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  */
-open class BaseRSTest : WebBaseTest() {
+open class BaseRSTest(db: String) : WebBaseTest(db) {
 
     open fun setup() {
-        System.getProperty("liquibase.dropAll") ?: System.setProperty("liquibase.dropAll", "true")
-        System.getProperty("ncmstest.ds") ?: System.setProperty("ncmstest.ds", "${System.getProperty("user.home")}/.ncms-test.ds")
         System.setProperty("WEBOOT_CFG_LOCATION", "com/softmotions/ncms/rs/cfg/test-ncms-rs-conf.xml")
-        setupWeb()
-        runner!!.start()
-        log.warn("{}", runner)
+        try {
+            setupWeb()
+            log.info("Starting runner")
+            runner!!.start()
+            log.warn("{}", runner)
+        } catch (tr: Throwable) {
+            shutdownDb()
+            throw tr
+        }
     }
 
     override fun configureTomcatRunner(b: TomcatRunner.Builder) {
@@ -26,9 +30,4 @@ open class BaseRSTest : WebBaseTest() {
         JVMResources.set(wsdb.databaseName, wsdb);
         b.withRealm(WSUserDatabaseRealm(wsdb))
     }
-
-    open fun shutdown() {
-        shutdownWeb()
-    }
-
 }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse
  */
 @Singleton
 @ThreadSafe
+@JvmSuppressWildcards
 open class MttRouteAction
 @Inject
 constructor(val env: NcmsEnvironment) : MttActionHandler {

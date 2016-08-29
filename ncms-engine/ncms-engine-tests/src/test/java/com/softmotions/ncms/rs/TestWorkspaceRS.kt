@@ -1,35 +1,47 @@
 package com.softmotions.ncms.rs
 
-import org.testng.Assert.assertEquals
+import com.softmotions.ncms.DbTestsFactory
+import org.testng.Assert.*
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 
+
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-@Test(groups = arrayOf("rs"))
-class TestWorkspaceRS : BaseRSTest() {
+class TestWorkspaceRS : DbTestsFactory() {
 
-    @BeforeClass
-    override fun setup() {
-        super.setup()
+    override fun createTest(db: String): Array<out Any> {
+        return arrayOf(_TestWorkspaceRS(db))
     }
 
-    @AfterClass
-    override fun shutdown() {
-        super.shutdown()
-    }
+    @Test(groups = arrayOf("rs"))
+    class _TestWorkspaceRS(db: String) : BaseRSTest(db) {
 
-    @Test
-    fun testWorkspaceRS() {
-        with(GET("/rs/adm/ws/state")) {
-            assertEquals(200, code())
-            //todo
-            log.info("Body={}", body())
+        constructor() : this(DEFAULT_DB) {
         }
 
-        val env = getEnv()
-        log.info("env={}", env)
+        @BeforeClass
+        override fun setup() {
+            super.setup()
+        }
+
+        @AfterClass
+        override fun shutdown() {
+            super.shutdown()
+        }
+
+        @Test
+        fun testWorkspaceRS() {
+            with(GET("/rs/adm/ws/state")) {
+                assertEquals(code(), 200)
+                //todo
+                log.info("Body={}", body())
+            }
+
+            val env = getEnv()
+            log.info("env={}", env)
+        }
     }
 }

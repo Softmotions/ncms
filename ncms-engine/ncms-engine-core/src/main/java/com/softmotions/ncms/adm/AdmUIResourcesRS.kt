@@ -23,6 +23,7 @@ import javax.ws.rs.core.Context
 
 @Path("adm/ui")
 @Produces("application/json;charset=UTF-8")
+@JvmSuppressWildcards
 open class AdmUIResourcesRS
 @Inject
 constructor(

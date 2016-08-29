@@ -1,8 +1,10 @@
 package com.softmotions.ncms;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.testng.annotations.Factory;
@@ -22,10 +24,10 @@ public abstract class DbTestsFactory {
         return tests;
     }
 
-    public abstract Object createTest(String db);
+    public abstract Object[] createTest(@Nonnull String db);
 
     @Factory
     public Object[] createInstances() {
-         return getDatabases().stream().map(this::createTest).toArray();
+        return getDatabases().stream().flatMap(db -> Arrays.stream(createTest(db))).toArray();
     }
 }

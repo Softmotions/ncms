@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest
  */
 @Singleton
 @ThreadSafe
+@JvmSuppressWildcards
 open class MttPageFilter
 @Inject
 constructor(private val ps: PageService,

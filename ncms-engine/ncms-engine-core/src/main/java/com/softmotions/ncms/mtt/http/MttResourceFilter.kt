@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest
  */
 @Singleton
 @ThreadSafe
+@JvmSuppressWildcards
 open class MttResourceFilter
 @Inject
 constructor(val env: NcmsEnvironment) : MttFilterHandler {

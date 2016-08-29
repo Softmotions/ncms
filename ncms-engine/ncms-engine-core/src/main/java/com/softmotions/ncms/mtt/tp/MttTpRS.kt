@@ -26,6 +26,7 @@ import javax.ws.rs.core.StreamingOutput
  */
 @Path("adm/mtt/tp")
 @Produces("application/json;charset=UTF-8")
+@JvmSuppressWildcards
 open class MttTpRS
 @Inject
 constructor(val sess: SqlSession,

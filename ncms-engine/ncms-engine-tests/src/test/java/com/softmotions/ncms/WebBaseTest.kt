@@ -1,40 +1,47 @@
 package com.softmotions.ncms
 
+import ch.qos.logback.classic.Level
 import com.github.kevinsawicki.http.HttpRequest
 import com.softmotions.weboot.testing.tomcat.TomcatRunner
-import org.slf4j.LoggerFactory
 import java.nio.file.Paths
 
 /**
  * Base class for web tests
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-open class WebBaseTest {
-
-    @JvmField
-    protected val log = LoggerFactory.getLogger(javaClass)
+open class WebBaseTest(db: String) : DbBaseTest(db) {
 
     protected var runner: TomcatRunner? = null
 
     protected var projectBasedir: String? = null
 
-    @Throws(Exception::class)
-    open fun setUp() {
+    open fun setupWeb() {
+        setupLogging(Level.INFO)
+        log.info("setupWeb")
+        setupDb()
         projectBasedir = System.getProperty("project.basedir") ?: throw Exception("Missing required system property: 'project.basedir'")
         System.getProperty("WEBOOT_CFG_LOCATION") ?: throw Exception("Missing required system property: 'WEBOOT_CFG_LOCATION'")
-    }
-
-    @Throws(Exception::class)
-    open fun setupWeb() {
-        setUp()
         val b = TomcatRunner.createBuilder()
         configureTomcatRunner(b)
         runner = b.build()
     }
 
-    @Throws(Exception::class)
     open fun shutdownWeb() {
-        runner?.shutdown()
+        log.info("shutdownWeb")
+        try {
+            runner?.shutdown()
+        } finally {
+            shutdownDb()
+        }
+    }
+
+
+    override fun shutdown() {
+        try {
+            shutdownWeb()
+        } finally {
+            super.shutdown()
+        }
     }
 
     open protected fun configureTomcatRunner(b: TomcatRunner.Builder) {

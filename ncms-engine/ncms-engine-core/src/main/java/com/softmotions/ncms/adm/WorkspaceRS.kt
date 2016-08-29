@@ -21,6 +21,7 @@ import javax.ws.rs.core.Context
 
 @Path("adm/ws")
 @Produces("application/json;charset=UTF-8")
+@JvmSuppressWildcards
 open class WorkspaceRS
 @Inject
 constructor(private val env: NcmsEnvironment,

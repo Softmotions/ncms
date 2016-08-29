@@ -27,6 +27,7 @@ import javax.ws.rs.core.StreamingOutput
 
 @Path("adm/mtt/rules")
 @Produces("application/json;charset=UTF-8")
+@JvmSuppressWildcards
 open class MttRulesRS
 @Inject
 constructor(val sess: SqlSession,

@@ -34,8 +34,8 @@ class PostgresTestRunner : DatabaseTestRunner {
         }
     }
 
-    override fun setupDB(props: Map<String, Any>) {
-        shutdownDB()
+    override fun setupDb(props: Map<String, Any>) {
+        shutdownDb()
 
         System.setProperty("JDBC.env", "pgtest")
         System.setProperty("JDBC.url", "jdbc:postgresql://localhost:${dbPort}/postgres")
@@ -56,7 +56,7 @@ class PostgresTestRunner : DatabaseTestRunner {
         }
     }
 
-    override fun shutdownDB() {
+    override fun shutdownDb() {
         dbRunner.reset(TimeSpec.HALF_MIN, UnixSignal.SIGINT)
         dbDir?.let {
             log.info("Remove database dir: $dbDir")

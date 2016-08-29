@@ -78,7 +78,14 @@
                         </goals>
                     </execution>
                 </executions>
-
+                <configuration>
+                    <properties>
+                         <property>
+                             <name>group-by-instances</name>
+                             <value>true</value>
+                         </property>
+                    </properties>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

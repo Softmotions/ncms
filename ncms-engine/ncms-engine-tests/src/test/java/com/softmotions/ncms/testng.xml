@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="nCMS Testing" group-by-instances="true" preserve-order="true">
+    <test name="RS" enabled="true">
+        <classes>
+            <class name="com.softmotions.ncms.rs.TestWorkspaceRS"/>
+            <class name="com.softmotions.ncms.rs.TestMttRulesRS"/>
+        </classes>
+    </test>
+</suite>

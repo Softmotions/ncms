@@ -5,7 +5,7 @@ package com.softmotions.ncms
  */
 interface DatabaseTestRunner {
 
-    fun setupDB(props: Map<String, Any> = emptyMap<String, Any>())
+    fun setupDb(props: Map<String, Any> = emptyMap<String, Any>())
 
-    fun shutdownDB()
+    fun shutdownDb()
 }

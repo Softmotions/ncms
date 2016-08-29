@@ -1,12 +1,7 @@
 package com.softmotions.ncms.db
 
-import ch.qos.logback.classic.Level
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.softmotions.kotlin.InstancesModule
 import com.softmotions.ncms.DbBaseTest
 import com.softmotions.ncms.asm.*
-import com.softmotions.weboot.liquibase.WBLiquibaseModule
-import com.softmotions.weboot.mb.WBMyBatisModule
 import kotlinx.support.jdk7.use
 import org.apache.ibatis.exceptions.PersistenceException
 import org.testng.Assert
@@ -15,29 +10,20 @@ import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import java.util.*
 
-class NcmsDB1
+class _TestDB1
 constructor(db: String) : DbBaseTest(db) {
+
+    constructor() : this(DEFAULT_DB) {
+    }
 
     @BeforeClass
     fun setup() {
-        setupLogging(level = Level.INFO)
-        setupDb()
-        try {
-            val cfg = loadServicesConfiguration("com/softmotions/ncms/db/cfg/test-ncms-db-conf.xml")
-            setupGuice(
-                    InstancesModule(cfg, ObjectMapper()),
-                    WBMyBatisModule(cfg),
-                    WBLiquibaseModule(cfg)
-            )
-        } catch (tr: Throwable) {
-            shutdownDB()
-        }
+        super.setup("com/softmotions/ncms/db/cfg/test-ncms-db-conf.xml")
     }
 
     @AfterClass
-    fun shutdown() {
-        shutdownGuice()
-        shutdownDB()
+    override fun shutdown() {
+        super.shutdown()
     }
 
     @Test
@@ -230,8 +216,6 @@ constructor(db: String) : DbBaseTest(db) {
         Assert.assertTrue(anames.containsAll(Arrays.asList("name1", "name2", "p[2]attr")))
         Assert.assertNotNull(asm.effectiveCore)
         Assert.assertEquals(core.id, asm.effectiveCore!!.id)
-
-
 
 
     }
