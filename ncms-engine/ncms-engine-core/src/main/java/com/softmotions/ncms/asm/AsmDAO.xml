@@ -658,33 +658,16 @@
     </update>
 
 
-    <!-- todo fix for postgres -->
     <update id="upsertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute"
             databaseId="POSTGRES">
-        MERGE INTO ASM_ATTRS a
-        USING (
-        VALUES (#{asmId}, #{name}, #{label}, #{type},
-        #{options}, #{required}, #{value}, #{largeValue}, CURRENT_TIMESTAMP)
-        ) AS s(
-        asm_id, name, label, type,
-        options, required, value, large_value, mdate
-        )
-        ON a.asm_id = s.asm_id AND a.name = s.name
-        WHEN MATCHED THEN
-        UPDATE SET
-        a.label       = s.label,
-        a.type        = s.type,
-        a.options     = s.options,
-        a.required    = s.required,
-        a.value       = s.value,
-        a.large_value = s.large_value,
-        a.mdate       = s.mdate
-        WHEN NOT MATCHED THEN
-        INSERT (id, asm_id, name, label, type,
-        options, required, value, large_value, mdate)
-        VALUES (NEXTVAL('SEQ_ATTR_ID'), s.asm_id, s.name, s.label, s.type,
-        s.options, s.required, s.value, s.large_value, s.mdate)
+        INSERT INTO ASM_ATTRS (id, asm_id, name, label, type,
+                               options, required, value, large_value, mdate)
+        VALUES (NEXTVAL('SEQ_ATTR_ID'), #{asmId}, #{name}, #{label}, #{type},
+                #{options}, #{required}, #{value}, #{largeValue}, CURRENT_TIMESTAMP)
+        ON CONFLICT (asm_id, name)
+            DO UPDATE SET (label, type, options, required, value, large_value, mdate) =
+            (#{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, CURRENT_TIMESTAMP)
     </update>
 
 
