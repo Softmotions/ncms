@@ -21,7 +21,7 @@
         -DarchetypeGroupId=softmotions \
         -DarchetypeArtifactId=ncms-site-archetype \
         -DarchetypeVersion=1.0 \
-        -DarchetypeRepository=http://jaxion.org/mvn
+        -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
 Продемострируем создание и дальнейшее развитие `nCMS` проекта на примере
 создания информационного сайта о попугаях.
@@ -33,7 +33,7 @@
     >         -DarchetypeGroupId=softmotions \
     >         -DarchetypeArtifactId=ncms-site-archetype \
     >         -DarchetypeVersion=1.0 \
-    >         -DarchetypeRepository=http://jaxion.org/mvn
+    >         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
     [INFO] Scanning for projects...
 
     ....

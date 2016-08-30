@@ -40,8 +40,8 @@
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
-            <id>jaxion_repository</id>
-            <url>http://jaxion.org/mvn/</url>
+            <id>softmotions_repository</id>
+            <url>https://repo.softmotions.com/repository/softmotions-public</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -62,8 +62,8 @@
             </releases>
         </pluginRepository>
         <pluginRepository>
-            <id>jaxion_repository</id>
-            <url>http://jaxion.org/mvn/</url>
+            <id>softmotions_repository</id>
+            <url>https://repo.softmotions.com/repository/softmotions-public</url>
             <layout>default</layout>
             <releases>
                 <enabled>true</enabled>
@@ -224,8 +224,8 @@
 
     <distributionManagement>
         <repository>
-            <id>jaxion_repository</id>
-            <url>sftp://jaxion.org/mvn/</url>
+            <id>softmotions_repository</id>
+            <url>https://repo.softmotions.com/repository/softmotions-public</url>
         </repository>
     </distributionManagement>
 
