@@ -81,8 +81,8 @@
                 <configuration>
                     <includes>
                         <include>**/TestDBs.java</include>
-                        <include>**/TestMttRulesRS.java</include>
-                        <include>**/TestWorkspaceRS.java</include>
+                        <!--<include>**/TestMttRulesRS.java</include>
+                        <include>**/TestWorkspaceRS.java</include>-->
                     </includes>
                 </configuration>
             </plugin>

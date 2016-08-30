@@ -36,8 +36,7 @@ class _TestAsmRSDB(db: String) : DbBaseTest(db) {
 
     @Test
     fun testSelect() {
-        //todo
-        //ds.select<Map<String,Any>>("select")
+        ds.select<Map<String,Any>>("select")
     }
 
 
