@@ -16,13 +16,11 @@ import kotlin.test.*
 class TestMttRulesRS : DbTestsFactory() {
 
     override fun createTest(db: String): Array<out Any> {
-        return arrayOf(
-                _TestMttRulesRS(db)
-        )
+        return arrayOf(_TestMttRulesRS(db))
     }
 
     @Test(groups = arrayOf("rs"))
-    class _TestMttRulesRS(db: String) : BaseRSTest(db) {
+    open class _TestMttRulesRS(db: String) : BaseRSTest(db) {
 
         constructor() : this(DEFAULT_DB) {
         }
