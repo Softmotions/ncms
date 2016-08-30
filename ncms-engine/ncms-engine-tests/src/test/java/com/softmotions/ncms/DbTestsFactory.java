@@ -9,15 +9,20 @@ import javax.annotation.Nonnull;
 import org.apache.commons.lang3.BooleanUtils;
 import org.testng.annotations.Factory;
 
+import com.softmotions.commons.cont.ArrayUtils;
+
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public abstract class DbTestsFactory {
 
     public Collection<String> getDatabases() {
-        boolean testDb2 = BooleanUtils.toBoolean(System.getProperty("TestDB2"));
+        boolean testDb2 = BooleanUtils.toBoolean(System.getProperty("testDB2"));
+        boolean testPostgres = BooleanUtils.toBoolean(System.getProperty("testPostgres"));
         List<String> tests = new ArrayList<>();
-        tests.add("postgres");
+        if (testPostgres) {
+            tests.add("postgres");
+        }
         if (testDb2) {
             tests.add("db2");
         }
@@ -28,6 +33,9 @@ public abstract class DbTestsFactory {
 
     @Factory
     public Object[] createInstances() {
-        return getDatabases().stream().flatMap(db -> Arrays.stream(createTest(db))).toArray();
+        Object[] instances = getDatabases().stream().flatMap(db -> Arrays.stream(createTest(db))).toArray();
+        System.err.println("Test instances: " +
+                           ArrayUtils.stringJoin(Arrays.stream(instances).map(o -> o.getClass().getName()).toArray(), ", "));
+        return instances;
     }
 }

@@ -10,7 +10,8 @@ import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import java.util.*
 
-class _TestDB1
+@Test
+class _TestAsmDAO
 constructor(db: String) : DbBaseTest(db) {
 
     constructor() : this(DEFAULT_DB) {
