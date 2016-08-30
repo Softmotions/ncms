@@ -264,8 +264,8 @@
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
-            <id>jaxion</id>
-            <url>http://jaxion.org/mvn/</url>
+            <id>softmotions_repository</id>
+            <url>https://repo.softmotions.com/repository/softmotions-public</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>daily</updatePolicy>
