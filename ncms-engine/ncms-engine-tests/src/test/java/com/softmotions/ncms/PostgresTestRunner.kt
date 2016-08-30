@@ -50,8 +50,11 @@ class PostgresTestRunner : DatabaseTestRunner {
             }.waitFor {
                 checkExitCode(it)
             }
-            cmd("$dbBin/postgres -D $dbDir -p $dbPort -o \"-c fsync=off -c synchronous_commit=off -c full_page_writes=off\"") {
+            cmd("$dbBin/postgres -D $dbDir -p $dbPort -o \"-c fsync=off -c synchronous_commit=off -c full_page_writes=off\"",
+                    failOnTimeout = false) {
                 outputLine(it)
+            }.waitFor(5.toSeconds()) {  // todo review it!!!!!
+                outputLine("Timeout")
             }
         }
     }
