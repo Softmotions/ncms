@@ -111,7 +111,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final ObjectMapper mapper;
 
-    private final I18n messages;
+    private final I18n i18n;
 
     private final WSUserDatabase userdb;
 
@@ -164,7 +164,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     public PageRS(SqlSession sess,
                   AsmDAO adao,
                   ObjectMapper mapper,
-                  I18n messages,
+                  I18n i18n,
                   WSUserDatabase userdb,
                   PageSecurityService pageSecurity,
                   NcmsEventBus ebus,
@@ -177,7 +177,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
-        this.messages = messages;
+        this.i18n = i18n;
         this.userdb = userdb;
         this.amRegistry = amRegistry;
         this.pageSecurity = pageSecurity;
@@ -365,7 +365,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new UnauthorizedException();
         }
         if (published && page.getEffectiveCore() == null) {
-            throw new NcmsMessageException(messages.get("ncms.page.template.publish.error", req), true);
+            throw new NcmsMessageException("ncms.page.template.publish.error", true, req);
         }
         update("updatePublishStatus",
                "id", id,
@@ -462,14 +462,14 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         if (id.equals(templateId)) {
             log.warn("The page {} cannot reference itself as template", id);
-            throw new ForbiddenException(messages.get("ncms.page.template.same", req));
+            throw new ForbiddenException(i18n.get("ncms.page.template.same", req));
         }
 
         if (ts > 0) {
             Collection<Long> aTemplates = pageSecurity.getAccessibleTemplates(req);
             if (!aTemplates.contains(templateId)) {
                 log.warn("Template: {} is not accesible for user", templateId);
-                throw new ForbiddenException(messages.get("ncms.page.template.access.denied", req));
+                throw new ForbiddenException(i18n.get("ncms.page.template.access.denied", req));
             }
         } else {
             // todo check permissions to assign arbitrary assembly as template?
@@ -657,7 +657,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
         }
         if (lang == null) {
-            lang = messages.getLocale(null).getLanguage();
+            lang = i18n.getLocale(null).getLanguage();
         }
         return lang;
     }
@@ -721,16 +721,16 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new BadRequestException("");
         }
         if (src == tgt) {
-            String msg = messages.get("ncms.mmgr.folder.cantMoveIntoSelf", req, srcPage.getHname());
-            throw new NcmsMessageException(msg, true);
+            String msg = i18n.get("ncms.mmgr.folder.cantMoveIntoSelf", req, srcPage.getHname());
+            throw new NcmsMessageException(msg, true, req);
         }
         if (tgtPage != null && "page.folder".equals(srcPage.getType())) {
             String srcPath = getPageIDsPath(src);
             String tgtPath = getPageIDsPath(tgt);
             if (tgtPath.startsWith(srcPath)) {
-                String msg = messages.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req,
-                                          srcPage.getHname(), tgtPage.getHname());
-                throw new NcmsMessageException(msg, true);
+                String msg = i18n.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req,
+                                      srcPage.getHname(), tgtPage.getHname());
+                throw new NcmsMessageException(msg, true, req);
             }
         }
 
@@ -771,7 +771,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (cp != null) {
                 pw.print("<h2>");
                 pw.print("<a href='" + (asmRoot + cp.getName()) + "'>");
-                pw.print(messages.get("ncms.page.nodel.refs.list", req, cp.getHname()));
+                pw.print(i18n.get("ncms.page.nodel.refs.list", req, cp.getHname()));
                 pw.print("</a></h2>");
             }
             pw.println("<ol>");
@@ -811,7 +811,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             pw.println("<html>");
             pw.println("<body>");
             pw.print("<h2>");
-            pw.print(messages.get("ncms.page.orphan.list"));
+            pw.print(i18n.get("ncms.page.orphan.list"));
             pw.print("</h2>");
 
             pw.println("<ol>");
@@ -846,10 +846,10 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new ForbiddenException("");
         }
         if (adao.asmChildrenCount(id) > 0) {
-            throw new NcmsMessageException(messages.get("ncms.page.nodel.parent", req), true);
+            throw new NcmsMessageException("ncms.page.nodel.parent", true, req);
         }
         if (count("selectNumberOfDirectChilds", id) > 0) {
-            throw new NcmsMessageException(messages.get("ncms.page.nodel.children", req), true);
+            throw new NcmsMessageException("ncms.page.nodel.children", true, req);
         }
         if (count("selectCountOfDependentAttrs", page.getName()) > 0) {
             ret.put("error", "ncms.page.nodel.refs.found");
@@ -1669,7 +1669,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             req.removeAttribute(INDEX_PAGE_REQUEST_ATTR_NAME);
             pid = null;
         }
-        Locale locale = messages.getLocale(req);
+        Locale locale = i18n.getLocale(req);
         String rlang = locale.getLanguage();
         String rhost = req.getServerName();
 
@@ -1720,7 +1720,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 lang = indexPage2SecondLang.get(p.getId());
             }
         }
-        return (lang == null) ? messages.getLocale(req).getLanguage() : lang;
+        return (lang == null) ? i18n.getLocale(req).getLanguage() : lang;
     }
 
     @Transactional

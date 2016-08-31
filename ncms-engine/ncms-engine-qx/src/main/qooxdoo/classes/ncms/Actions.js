@@ -419,6 +419,11 @@ qx.Class.define("ncms.Actions", {
         // {id} Tp id
         this._action("mtt.tp.delete", "/rs/adm/mtt/tp/tp/{id}");
 
+        // POST update existing mtt tracking pixel
+        // {id} Tp id
+        // Data: { tracking pixels JSON data }
+        this._action("mtt.tp.update", "/rs/adm/mtt/tp/tp/{id}");
+
         // PUT new mtt tracking pixel
         // {name} Tp name
         this._action("mtt.tp.new", "/rs/adm/mtt/tp/tp/{name}");

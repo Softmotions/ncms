@@ -13,7 +13,6 @@ import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
-import com.softmotions.weboot.i18n.I18n;
 
 /**
  * Page alias manager.
@@ -28,13 +27,10 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
 
     private static final Pattern ALIAS_PATTERN = Pattern.compile("^[0-9a-zA-Z\\._\\-/]+$");
 
-    private final I18n messages;
-
     private final AsmDAO adao;
 
     @Inject
-    public AsmAliasAM(I18n messages, AsmDAO adao) {
-        this.messages = messages;
+    public AsmAliasAM(AsmDAO adao) {
         this.adao = adao;
     }
 
@@ -76,13 +72,13 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
         }
         if (alias != null) {
             if (!ALIAS_PATTERN.matcher(alias).matches()) {
-                throw new NcmsMessageException(messages.get("ncms.asm.alias.non.allowed.symbols"), true);
+                throw new NcmsMessageException("ncms.asm.alias.non.allowed.symbols", true, ctx.getRequest());
             }
             while (!alias.isEmpty() && alias.charAt(0) == '/') {
                 alias = alias.substring(1);
             }
             if (!adao.asmIsUniqueAlias(alias, ctx.getAsmId())) {
-                throw new NcmsMessageException(messages.get("ncms.asm.alias.non.unique"), true);
+                throw new NcmsMessageException("ncms.asm.alias.non.unique", true, ctx.getRequest());
             }
         }
         adao.asmUpdateAlias(ctx.getAsmId(), alias);

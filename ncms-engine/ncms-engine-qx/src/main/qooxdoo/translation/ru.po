@@ -91,7 +91,7 @@ msgstr "Обязательное в GUI"
 msgid "Ok"
 msgstr "Ок"
 
-#: ncms/pgs/PageEditorEditPage.js:58 ncms/mtt/tp/MttTpEditor.js:65
+#: ncms/pgs/PageEditorEditPage.js:58 ncms/mtt/tp/MttTpEditor.js:72
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:57 ncms/wiki/TableDlg.js:59
 #: ncms/asm/AsmSelectorDlg.js:48 ncms/pgs/PagesSelectorDlg.js:58
 #: ncms/wiki/InsertYoutubeDlg.js:62 ncms/mtt/filters/MttFilterDlg.js:78
@@ -111,11 +111,12 @@ msgstr "Отмена"
 msgid "Select assembly attribute type"
 msgstr "Выбор типа атрибута"
 
-#: ncms/asm/AsmEditor.js:103 ncms/mtt/filters/MttFiltersTable.js:99
-#: ncms/mtt/filters/MttFilterDlg.js:54 ncms/mtt/actions/MttActionDlg.js:54
-#: ncms/mmgr/MediaFileEditor.js:48 ncms/cc/TypesSelectorDlg.js:155
-#: ncms/asm/AsmTable.js:21 ncms/asm/AsmAttributeTypeSelectorDlg.js:157
-#: ncms/mmgr/MediaFilesTable.js:13 ncms/usr/UserRolesTable.js:158
+#: ncms/mtt/tp/MttTpEditor.js:55 ncms/asm/AsmEditor.js:103
+#: ncms/mtt/filters/MttFiltersTable.js:99 ncms/mtt/filters/MttFilterDlg.js:54
+#: ncms/mtt/actions/MttActionDlg.js:54 ncms/mmgr/MediaFileEditor.js:48
+#: ncms/cc/TypesSelectorDlg.js:155 ncms/asm/AsmTable.js:21
+#: ncms/asm/AsmAttributeTypeSelectorDlg.js:157 ncms/mmgr/MediaFilesTable.js:13
+#: ncms/usr/UserRolesTable.js:158
 msgid "Description"
 msgstr "Описание"
 
@@ -496,7 +497,7 @@ msgstr "Список виртуальных хостов через запяту
 msgid "Visrtual hosts"
 msgstr "Виртуальные хосты"
 
-#: ncms/mtt/tp/MttTpEditor.js:35 ncms/mtt/filters/MttFilterDlg.js:59
+#: ncms/mtt/tp/MttTpEditor.js:38 ncms/mtt/filters/MttFilterDlg.js:59
 #: ncms/mtt/actions/MttActionDlg.js:59 ncms/mtt/MttNav.js:143
 #: ncms/asm/am/MainPageAM.js:51 ncms/mtt/tp/MttTpNav.js:89
 msgid "Enabled"
@@ -914,7 +915,7 @@ msgstr "Новая папка верхнего уровня"
 msgid "Are you sure to remove folder: %1"
 msgstr "Вы действительно желаете безвозвратно удалить папку: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:50 ncms/mtt/tp/MttTpEditor.js:60
+#: ncms/pgs/PageEditorEditPage.js:50 ncms/mtt/tp/MttTpEditor.js:67
 #: ncms/mmgr/MediaTextFileEditor.js:62 ncms/usr/UserEditForm.js:51
 msgid "Save"
 msgstr "Сохранить"
@@ -1298,29 +1299,29 @@ msgstr "Шаблон"
 msgid "Not valid regular expression"
 msgstr "Невалидное регулярное выражение"
 
-#: ncms/mtt/tp/MttTpEditor.js:41
+#: ncms/mtt/tp/MttTpEditor.js:44
 msgid "utm_source=glob_mask, other_parameter=glob_mask"
 msgstr ""
 
-#: ncms/mtt/tp/MttTpEditor.js:43
-msgid "Incoming request parameters"
-msgstr "Параметры входящего запроса"
-
 #: ncms/mtt/tp/MttTpEditor.js:46
+msgid "Incoming request parameters"
+msgstr "Входящие параметры запроса"
+
+#: ncms/mtt/tp/MttTpEditor.js:49
 msgid "http://....?client_id={client_id}"
 msgstr ""
 
-#: ncms/mtt/tp/MttTpEditor.js:48
+#: ncms/mtt/tp/MttTpEditor.js:51
 msgid "Tracking pixel URL template"
 msgstr "Шаблон URL для трекинг пикселя"
 
-#: ncms/mtt/tp/MttTpEditor.js:52
+#: ncms/mtt/tp/MttTpEditor.js:59
 msgid "Tracking pixel JS code"
 msgstr "JS код трекинг пикселя"
 
-#: ncms/mtt/tp/MttTpEditor.js:43
+#: ncms/mtt/tp/MttTpEditor.js:46
 msgid "Incoming request parameters"
-msgstr "Входящие параметры запроса"
+msgstr "Параметры входящего запроса"
 
 #: ncms/mtt/tp/MttTpNav.js:74
 msgid "New tracking pixel"

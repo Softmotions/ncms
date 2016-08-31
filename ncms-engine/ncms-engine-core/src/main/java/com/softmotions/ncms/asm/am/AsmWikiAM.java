@@ -228,7 +228,7 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
 
         Matcher m = adminResourcePattern.matcher(value);
         if (m.find()) {
-            throw new NcmsMessageException(ctx.getI18n().get("ncms.page.nosav.adm.link"), true);
+            throw new NcmsMessageException("ncms.page.nosav.adm.link", true, req);
         }
 
         // \[\[page:\s*([0-9a-f]{32})(\s*\|.*)?\]\]

@@ -114,7 +114,7 @@ public class AsmRS extends MBDAOSupport {
             Long id = adao.asmSelectIdByName(name);
             if (id != null) {
                 String msg = messages.get("ncms.asm.name.already.exists", req, name);
-                throw new NcmsMessageException(msg, true);
+                throw new NcmsMessageException(msg, true, req);
             }
             asm = new Asm(name);
             adao.asmInsert(asm);
@@ -134,7 +134,7 @@ public class AsmRS extends MBDAOSupport {
             Long oid = adao.asmSelectIdByName(name);
             if (oid != null && !oid.equals(id)) {
                 String msg = messages.get("ncms.asm.name.already.other", req, name);
-                throw new NcmsMessageException(msg, true);
+                throw new NcmsMessageException(msg, true, req);
             }
             if (oid == null) {
                 adao.asmRename(id, name);

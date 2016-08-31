@@ -119,7 +119,7 @@ constructor(val sess: SqlSession,
     @RequiresRoles("mtt")
     @Transactional
     open fun tpUpdate(@PathParam("id") id: Long,
-                      data: ObjectNode): MttTp {
+                      data: ObjectNode): Response {
         val tp = tpGet(id)
         if (data.hasNonNull("description")) {
             tp.description = data.path("description").asText("")
@@ -127,12 +127,14 @@ constructor(val sess: SqlSession,
         if (data.hasNonNull("enabled")) {
             tp.isEnabled = data.path("enabled").asBoolean(true)
         }
-        if (data.hasNonNull("spec")) {
-            tp.spec = data.path("spec").asText("{}")
-        }
+        data.remove(arrayListOf("description", "enabled"));
+        tp.spec = mapper.writeValueAsString(data)
         update("updateTp", tp)
         ebus.fireOnSuccessCommit(MttTpUpdatedEvent(tp.id))
-        return tp
+
+        val msg = NcmsMessageException()
+        msg.addMessage(i18n.get("ncms.successfully.saved"), false)
+        return msg.inject(Response.ok(mapper.writeValueAsString(tp)), i18n).build()
     }
 
     @DELETE
