@@ -1,5 +1,8 @@
 package com.softmotions.ncms.jaxrs;
 
+import javax.ws.rs.core.Response;
+
+import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.jaxrs.MessageException;
 
 /**
@@ -40,5 +43,15 @@ public class NcmsMessageException extends MessageException {
 
     public NcmsMessageException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public Response.ResponseBuilder inject(Response.ResponseBuilder rb, I18n i18n) {
+        return super.inject(rb, i18n);
+    }
+
+    public Response.ResponseBuilder injectNotification(Response.ResponseBuilder rb, I18n i18n) {
+        rb.header("X-Softmotions", "notification");
+        return super.inject(rb, i18n);
     }
 }

@@ -134,7 +134,7 @@ constructor(val sess: SqlSession,
 
         val msg = NcmsMessageException()
         msg.addMessage(i18n.get("ncms.successfully.saved"), false)
-        return msg.inject(Response.ok(mapper.writeValueAsString(tp)), i18n).build()
+        return msg.injectNotification(Response.ok(mapper.writeValueAsString(tp)), i18n).build()
     }
 
     @DELETE
