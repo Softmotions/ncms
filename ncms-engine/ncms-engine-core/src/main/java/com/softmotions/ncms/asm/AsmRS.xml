@@ -152,10 +152,19 @@
 
 
     <insert id="insertAttribute"
+            databaseId="DB2"
             parameterType="com.softmotions.ncms.asm.AsmAttribute">
         INSERT INTO ASM_ATTRS
         (id, asm_id, name, label, type, options, required, value, large_value, mdate)
         VALUES (SEQ_ATTR_ID.NEXTVAL, #{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
+    </insert>
+
+    <insert id="insertAttribute"
+            databaseId="POSTGRES"
+            parameterType="com.softmotions.ncms.asm.AsmAttribute">
+        INSERT INTO ASM_ATTRS
+        (id, asm_id, name, label, type, options, required, value, large_value, mdate)
+        VALUES (NEXTVAL('SEQ_ATTR_ID'), #{asmId}, #{name}, #{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, now())
     </insert>
 
 
@@ -181,6 +190,13 @@
         FROM SYSIBM.DUAL
     </select>
 
+    <select id="prevAttrID"
+            databaseId="POSTGRES"
+            resultType="long">
+        SELECT
+        CURRVAL('SEQ_ATTR_ID')
+    </select>
+
     <update id="updateAssemblyProps"
             parameterType="map">
         UPDATE ASMS
@@ -198,13 +214,13 @@
     <update id="exchangeAttributesOrdinal"
             parameterType="map">
         UPDATE ASM_ATTRS a1
-        SET a1.ordinal = (SELECT
+        SET ordinal = (SELECT
                               a2.ordinal
                           FROM ASM_ATTRS a2
                           WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
                                 AND a1.ordinal != a2.ordinal),
-            a1.mdate   = CURRENT_TIMESTAMP
-        WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
+            mdate   = CURRENT_TIMESTAMP
+        WHERE ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
 
     <select id="selectAsmIdByOrdinal"
@@ -214,7 +230,10 @@
     </select>
 
 
-    <select id="selectAsmTParents" resultType="map" parameterType="long">
+    <select id="selectAsmTParents"
+            databaseId="DB2"
+            resultType="map"
+            parameterType="long">
         SELECT
             a.type AS "type",
             p.id   AS "pid",
@@ -224,6 +243,22 @@
             LEFT JOIN ASMS np ON a.nav_parent_id = np.id
             LEFT JOIN ASM_PARENTS AS ap ON ap.asm_id = np.id
             LEFT JOIN ASMS p ON p.id = ap.asm_parent_id AND p.template = 1
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="selectAsmTParents"
+            databaseId="POSTGRES"
+            resultType="map"
+            parameterType="long">
+        SELECT
+        a.type AS "type",
+        p.id   AS "pid",
+        p.name AS "pname",
+        p.type AS "ptype"
+        FROM ASMS a
+        LEFT JOIN ASMS np ON a.nav_parent_id = np.id
+        LEFT JOIN ASM_PARENTS AS ap ON ap.asm_id = np.id
+        LEFT JOIN ASMS p ON p.id = ap.asm_parent_id AND p.template = true
         WHERE a.id = #{id}
     </select>
 </mapper>
