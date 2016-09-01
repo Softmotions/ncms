@@ -5,14 +5,12 @@
 
 <mapper namespace="com.softmotions.ncms.media.MediaRS">
 
-
     <select id="selectEntityIdByPath" parameterType="map" resultType="long">
         SELECT
             id
         FROM MEDIA_ENTITY
         WHERE folder = #{folder} AND name = #{name}
     </select>
-
 
     <select id="selectEntityPathById" parameterType="map" resultType="map">
         SELECT

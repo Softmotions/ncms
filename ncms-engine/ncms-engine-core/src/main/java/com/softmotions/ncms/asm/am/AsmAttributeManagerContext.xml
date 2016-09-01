@@ -56,9 +56,9 @@
     <update id="mergePageDependencies" databaseId="DB2" parameterType="list">
         MERGE INTO ASM_PAGE_DEPS md
         USING (VALUES
-        <foreach collection="list" item="r" separator=",">
-            (${r[0]}, '${r[1]}')
-        </foreach>
+            <foreach collection="list" item="r" separator=",">
+                (${r[0]}, '${r[1]}')
+            </foreach>
         ) AS r(attr_id, asm_name)
         ON md.attr_id = r.attr_id AND md.asm_name = r.asm_name
         WHEN NOT MATCHED AND EXISTS (SELECT 1 FROM ASMS a WHERE a.name = r.asm_name) THEN
@@ -74,10 +74,11 @@
                 (${r[0]}, '${r[1]}')
             </foreach>)
         INSERT INTO ASM_PAGE_DEPS (attr_id, asm_name)
-        SELECT attr_id, asm_name FROM new_deps
-        WHERE NOT EXISTS (SELECT 1 FROM ASM_PAGE_DEPS md
-                          WHERE md.attr_id = new_deps.attr_id AND md.asm_name = new_deps.asm_name)
-          AND EXISTS (SELECT 1 FROM ASMS a
-                      WHERE a.name = new_deps.asm_name)
+            SELECT attr_id, asm_name FROM new_deps
+            WHERE NOT EXISTS (SELECT 1 FROM ASM_PAGE_DEPS md
+                              WHERE md.attr_id = new_deps.attr_id
+                                AND md.asm_name = new_deps.asm_name)
+                  AND EXISTS (SELECT 1 FROM ASMS a
+                              WHERE a.name = new_deps.asm_name)
     </update>
 </mapper>

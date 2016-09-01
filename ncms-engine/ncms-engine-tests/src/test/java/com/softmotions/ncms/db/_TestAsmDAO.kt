@@ -120,7 +120,7 @@ constructor(db: String) : DbBaseTest(db) {
             }
             ret
         }
-        Assert.assertEquals(2, count.toInt())
+        Assert.assertEquals(2L, count!!.toLong())
 
         //Insert AsmCore
         var core = AsmCore("file:///some/file", "my first assembly core")
@@ -217,7 +217,5 @@ constructor(db: String) : DbBaseTest(db) {
         Assert.assertTrue(anames.containsAll(Arrays.asList("name1", "name2", "p[2]attr")))
         Assert.assertNotNull(asm.effectiveCore)
         Assert.assertEquals(core.id, asm.effectiveCore!!.id)
-
-
     }
 }

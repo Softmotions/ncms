@@ -31,8 +31,8 @@
     <update id="addSet"
             databaseId="POSTGRES"
             parameterType="map">
-        WITH new_set (userid, type, ${vcol}) AS
-        (VALUES (#{userid}, #{type}, #{value}))
+        WITH
+        new_set (userid, type, ${vcol}) AS (VALUES (#{userid}, #{type}, #{value}))
         INSERT INTO USER_ENV (userid, type, ${vcol})
           SELECT userid, type, ${vcol}
           FROM new_set

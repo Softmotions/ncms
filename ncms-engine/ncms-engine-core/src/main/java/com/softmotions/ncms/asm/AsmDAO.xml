@@ -645,7 +645,6 @@
           AND type = #{type}
     </delete>
 
-
     <update id="upsertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute"
             databaseId="DB2">
@@ -674,7 +673,6 @@
                 s.options, s.required, s.value, s.large_value, s.mdate)
     </update>
 
-
     <update id="upsertAttribute"
             parameterType="com.softmotions.ncms.asm.AsmAttribute"
             databaseId="POSTGRES">
@@ -686,7 +684,6 @@
             DO UPDATE SET (label, type, options, required, value, large_value, mdate) =
             (#{label}, #{type}, #{options}, #{required}, #{value}, #{largeValue}, CURRENT_TIMESTAMP)
     </update>
-
 
 
     <select id="asmAttributeByName"
@@ -704,7 +701,6 @@
         FROM ASM_REFDATA
         WHERE asm_id = #{id} AND type = #{type}
     </select>
-
 
     <insert id="asmClone"
             parameterType="map"

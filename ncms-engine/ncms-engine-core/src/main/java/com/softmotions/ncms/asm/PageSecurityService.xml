@@ -146,18 +146,19 @@
     <update id="updateAclUserRights"
             databaseId="POSTGRES"
             parameterType="map">
-        WITH new_acl (acl_id, "USER", rights) AS
-          (VALUES (#{acl}, #{user}, #{rights})),
+        WITH new_acl (acl_id, "USER", rights) AS (VALUES (#{acl}, #{user}, #{rights})),
         upsert AS (UPDATE ASM_ACL_ENTITY a
-            SET rights = new_acl.rights
-            FROM new_acl
-            WHERE a.acl_id = new_acl.acl_id AND a."USER" = new_acl."USER"
-            RETURNING a.*)
+                    SET rights = new_acl.rights
+                    FROM new_acl
+                    WHERE a.acl_id = new_acl.acl_id
+                          AND a."USER" = new_acl."USER"
+                          RETURNING a.*)
         INSERT INTO ASM_ACL_ENTITY (acl_id, "USER", rights)
-                SELECT acl_id, "USER", rights FROM new_acl
-            WHERE NOT EXISTS (SELECT 1 FROM upsert
-              WHERE upsert.acl_id = new_acl.acl_id
-                    AND upsert."USER" = new_acl."USER")
+                SELECT acl_id, "USER", rights
+                FROM new_acl
+                WHERE NOT EXISTS (SELECT 1 FROM upsert
+                                  WHERE upsert.acl_id = new_acl.acl_id
+                                        AND upsert."USER" = new_acl."USER")
     </update>
 
     <update id="deleteAclUser" parameterType="map">
@@ -212,7 +213,8 @@
     <update id="updateChildRecursiveAcl2"
             databaseId="POSTGRES"
             parameterType="map">
-        WITH new_acl (recursive_acl_id, "USER", rights) AS
+        WITH
+        new_acl (recursive_acl_id, "USER", rights) AS
             (SELECT recursive_acl_id,
                     #{user} AS "user",
                     #{rights} AS "rights"
@@ -228,10 +230,11 @@
                         AND a."USER" = new_acl."USER"
                     RETURNING a.*)
         INSERT INTO ASM_ACL_ENTITY (acl_id, "USER", rights)
-            SELECT recursive_acl_id, "USER", rights FROM new_acl
+            SELECT recursive_acl_id, "USER", rights
+            FROM new_acl
             WHERE NOT EXISTS (SELECT 1 FROM upsert
-                                WHERE upsert.acl_id = new_acl.recursive_acl_id
-                                      AND upsert."USER" = new_acl."USER")
+                              WHERE upsert.acl_id = new_acl.recursive_acl_id
+                                AND upsert."USER" = new_acl."USER")
     </update>
 
     <select id="childRecursiveAcls" resultType="long" parameterType="map">
