@@ -88,6 +88,14 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
             Map<String, String> params = new Flat3Map();
             params.put("enabled", "true");
             params.put("headerValue", webAccessControlAllow);
+            StringBuilder exposeHeaders = new StringBuilder();
+            exposeHeaders.append("X-Softmotions");
+            exposeHeaders.append(",X-Softmotions-Login");
+            for (int i = 0; i < 10; ++i) {
+                exposeHeaders.append(",X-Softmotions-Err").append(i);
+                exposeHeaders.append(",X-Softmotions-Msg").append(i);
+            }
+            params.put("exposeHeaders", exposeHeaders.toString());
             m.filterAndBind(env.getAppPrefix() + "/*", AccessControlHDRFilter.class, params);
         }
     }

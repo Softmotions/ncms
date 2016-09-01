@@ -193,7 +193,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             if (item == null) {
                 return;
             }
-            qx.bom.Window.open(ncms.Application.ACT.getRestUrl("pages.referers", {guid: item.getGuid()}),
+            qx.bom.Window.open(ncms.Application.ACT.getRestUrl("pages.referrers", {guid: item.getGuid()}),
                 this.tr("List of pages referred %1", item.getLabel()));
         },
 
@@ -309,11 +309,11 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 req.send(function (resp) {
                     var ret = resp.getContent() || {};
                     if (ret["error"] === "ncms.page.nodel.refs.found") {
-                        var dlg = new sm.alert.AlertMessages(this.tr("Unable to delete this page"));
+                        var dlg = new sm.alert.DefaultAlertMessages(this.tr("Unable to delete this page"));
                         dlg.addMessages("",
                             this.tr(
                                 "This page cannot be removed because we found pages linked with this page. Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list of linked pages</a>",
-                                ncms.Application.ACT.getRestUrl("pages.referers", {guid: item.getGuid()}))
+                                ncms.Application.ACT.getRestUrl("pages.referrers", {guid: item.getGuid()}))
                         );
                         dlg.open();
                         return;

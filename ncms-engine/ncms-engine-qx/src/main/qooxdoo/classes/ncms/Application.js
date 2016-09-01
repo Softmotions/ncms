@@ -179,7 +179,7 @@ qx.Class.define("ncms.Application", {
                 }
                 info.setZIndex(maxWindowZIndex + 1e8);
             }
-            options["icon"] = (options["icon"] !== undefined) ? options["icon"] : "ncms/icon/32/information.png";
+            options["icon"] = (options["icon"] != null) ? options["icon"] : "ncms/icon/32/information.png";
             var el = new qx.ui.basic.Atom(message, options["icon"]).set({
                 center: true,
                 rich: true,
@@ -209,6 +209,8 @@ qx.Class.define("ncms.Application", {
                     this.destroy();
                 }, this);
             }, el);
+
+            return el;
         },
 
         getComponent: function (name) {
@@ -530,5 +532,6 @@ qx.Class.define("ncms.Application", {
     },
 
     defer: function (statics) {
+        sm.io.Request.ALERT_WND_IMPL = ncms.AlertPopupMessages;
     }
 });

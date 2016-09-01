@@ -19,11 +19,14 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
     construct: function () {
         this.base(arguments);
 
+
         var bk = this.__broadcaster = sm.event.Broadcaster.create({
             "enabled": false
         });
 
-        var cont = new qx.ui.container.Composite(new qx.ui.layout.VBox(5, "top"));
+        var cont =
+            new qx.ui.container.Composite(new qx.ui.layout.VBox(5, "top"))
+            .set({padding: [0, 20, 0, 0]});
 
         // Header
         this.__header = new qx.ui.basic.Label().set({font: "headline"});
@@ -46,6 +49,10 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
         el.setPlaceholder(this.tr("http://....?client_id={client_id}"));
         el.addListener("input", this.__onModified, this);
         form.add(el, this.tr("Tracking pixel URL template"), null, "url");
+
+        el = new qx.ui.form.TextArea().set({maxLength: 256, minimalLineHeight: 2});
+        el.addListener("input", this.__onModified, this);
+        form.add(el, this.tr("Description"), null, "description");
 
         el = new qx.ui.form.TextArea().set({maxLength: 2048, autoSize: true, maxHeight: 400});
         el.addListener("input", this.__onModified, this);
@@ -86,7 +93,16 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
         __cancelBt: null,
 
         __ok: function () {
-
+            var tp  = this.getTp();
+            if (tp == null) {
+                return;
+            }
+            var data = this.__form.populateJSONObject();
+            var req = ncms.Application.request("mtt.tp.update", {id: tp["id"]}, "POST");
+            req.setData(JSON.stringify(data));
+            req.send(function (resp) {
+                this.__applyTpObj(resp.getContent());
+            }, this)
         },
 
         __cancel: function () {
@@ -99,33 +115,35 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
         },
 
         __applyTp: function (val, old) {
-            console.log("Apply tp=" + JSON.stringify(val));
             var items = this.__form.getItems();
             if (val && val.id) {
                 this.__header.setValue(val["name"]);
-                items["enabled"].setValue(!!val["enabled"]);
                 var req = ncms.Application.request("mtt.tp.get", {id: val.id});
                 req.send(function (resp) {
-                    // {
-                    //  "id":21,"name":"1facebook.com","description":null,
-                    //  "cdate":1472137787318,"mdate":1472211396484,"enabled":true,
-                    //  "spec":"{}"
-                    // }
-                    var data = resp.getContent();
-                    var spec = JSON.parse(data["spec"]);
-                    items["enabled"].setValue(!!data["enabled"]);
-                    this.__header.setValue(data["name"]);
-                    items["jscode"].setValue(spec["jscode"] || "");
-                    items["url"].setValue(spec["url"] || "");
-                    this.__broadcaster.setEnabled(false);
+                    this.__applyTpObj(resp.getContent());
                 }, this);
+            } else {
+                this.__applyTpObj();
+            }
+        },
+
+        __applyTpObj: function (data) {
+            var items = this.__form.getItems();
+            if (data) {
+                var spec = JSON.parse(data["spec"]);
+                this.__header.setValue(data["name"]);
+                items["description"].setValue(data["description"] || "");
+                items["enabled"].setValue(!!data["enabled"]);
+                items["jscode"].setValue(spec["jscode"] || "");
+                items["url"].setValue(spec["url"] || "");
             } else {
                 this.__header.resetValue();
                 items["enabled"].resetValue();
                 items["jscode"].resetValue();
+                items["description"].resetValue();
                 items["url"].resetValue();
-                this.__broadcaster.setEnabled(false);
             }
+            this.__broadcaster.setEnabled(false);
         }
     },
 

@@ -16,7 +16,7 @@ import com.softmotions.ncms.asm.AsmModule;
 import com.softmotions.ncms.asm.render.AsmFilter;
 import com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule;
 import com.softmotions.ncms.events.EventsModule;
-import com.softmotions.ncms.jaxrs.NcmsRSExceptionHandler;
+import com.softmotions.ncms.jaxrs.NcmsRSExceptionMapper;
 import com.softmotions.ncms.jaxrs.ResteasyUTF8CharsetFilter;
 import com.softmotions.ncms.media.MediaModule;
 import com.softmotions.ncms.mediawiki.MediaWikiModule;
@@ -91,7 +91,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
 
         //Resteasy staff
         install(new WBJaxrsModule());
-        bind(NcmsRSExceptionHandler.class).in(Singleton.class);
+        bind(NcmsRSExceptionMapper.class).in(Singleton.class);
         bind(ResteasyUTF8CharsetFilter.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
         log.info("Resteasy serving on {}", ncmsp + "/rs/*");

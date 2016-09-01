@@ -243,9 +243,9 @@ qx.Theme.define("ncms.theme.Appearance", {
         "ncms-info-popup": {
             style: function (states) {
                 return {
-                    padding: [5, 10, 5, 10],
+                    padding: [5, 10, 10, 10],
                     maxWidth: 350,
-                    backgroundColor: "background"
+                    backgroundColor: "#FFFFBF"
                 }
             }
         }

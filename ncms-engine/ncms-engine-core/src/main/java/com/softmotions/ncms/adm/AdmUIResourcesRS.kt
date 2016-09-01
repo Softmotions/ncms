@@ -6,7 +6,6 @@ import com.google.inject.Inject
 import com.softmotions.ncms.NcmsEnvironment
 import com.softmotions.ncms.security.NcmsSecurityContext
 import com.softmotions.weboot.i18n.I18n
-import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.GET
@@ -32,7 +31,6 @@ constructor(
         private val msg: I18n,
         private val sctx: NcmsSecurityContext) {
 
-    private val log = LoggerFactory.getLogger(javaClass)
 
     /**
      * List of qooxdoo widgets available for user.

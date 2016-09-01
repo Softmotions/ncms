@@ -431,14 +431,14 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __unpublishPrompt: function () {
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl(
-                "pages.referers.count", {"id": this.getPageSpec()["id"]}), "GET");
+                "pages.referrers.count", {"id": this.getPageSpec()["id"]}), "GET");
             req.send(function (resp) {
                 var rc = resp.getContent();
                 if (rc > 0) {
                     ncms.Application.confirm(
                         this.tr(
                             "Are you sure to unpublish this page? There are pages linked with this page. Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list of linked pages</a>",
-                            ncms.Application.ACT.getRestUrl("pages.referers", {guid: this.getPageEditSpec()["guid"]})),
+                            ncms.Application.ACT.getRestUrl("pages.referrers", {guid: this.getPageEditSpec()["guid"]})),
                         function (yes) {
                             if (!yes) {
                                 this.__publishBt.setValue(true);

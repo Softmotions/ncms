@@ -258,10 +258,10 @@ qx.Class.define("ncms.Actions", {
         this._action("pages.single.get", "/rs/adm/pages/single/{collection}");
 
         //GET The list page referers
-        this._action("pages.referers", "/rs/adm/pages/referers/{guid}");
+        this._action("pages.referrers", "/rs/adm/pages/referers/{guid}");
 
         //GET The number of page referers
-        this._action("pages.referers.count", "/rs/adm/pages/referers/count/{id}");
+        this._action("pages.referrers.count", "/rs/adm/pages/referers/count/{id}");
 
         //================== UserEnvRS
 
@@ -418,6 +418,11 @@ qx.Class.define("ncms.Actions", {
         // DELETE existing mtt tracking pixel
         // {id} Tp id
         this._action("mtt.tp.delete", "/rs/adm/mtt/tp/tp/{id}");
+
+        // POST update existing mtt tracking pixel
+        // {id} Tp id
+        // Data: { tracking pixels JSON data }
+        this._action("mtt.tp.update", "/rs/adm/mtt/tp/tp/{id}");
 
         // PUT new mtt tracking pixel
         // {name} Tp name

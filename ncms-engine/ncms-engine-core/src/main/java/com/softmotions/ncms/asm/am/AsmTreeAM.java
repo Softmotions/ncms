@@ -66,7 +66,7 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
 
     private final AsmDAO adao;
 
-    private final I18n messages;
+    private final I18n i18n;
 
     private final AsmRendererContextFactory rendererContextFactory;
 
@@ -76,13 +76,13 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
                      AsmRichRefAM richRefAM,
                      PageService pageService,
                      AsmDAO adao,
-                     I18n messages,
+                     I18n i18n,
                      AsmRendererContextFactory rendererContextFactory) {
         this.mapper = mapper;
         this.richRefAM = richRefAM;
         this.pageService = pageService;
         this.adao = adao;
-        this.messages = messages;
+        this.i18n = i18n;
         this.rendererContextFactory = rendererContextFactory;
     }
 
@@ -122,8 +122,8 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
         AsmAttribute srcAttr = srcAsm.getEffectiveAttribute(attrName);
         if (srcAttr == null) {
             throw new NcmsMessageException(
-                    messages.get("ncms.page.attr.notFound",
-                                 req, tgtAsm.getHname(), attrName),
+                    i18n.get("ncms.page.attr.notFound",
+                             req, tgtAsm.getHname(), attrName),
                     true);
         }
 
@@ -140,7 +140,7 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
 
             if (!syncAsmIds.add(syncId)) {
                 throw new NcmsMessageException(
-                        messages.get("ncms.page.sync.cycle", req),
+                        i18n.get("ncms.page.sync.cycle", req),
                         true);
             }
 
@@ -153,8 +153,8 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
             syncAttr = syncAsm.getEffectiveAttribute(attrName);
             if (syncAttr == null) {
                 throw new NcmsMessageException(
-                        messages.get("ncms.page.attr.notFound",
-                                     req, syncAsm.getHname(), attrName),
+                        i18n.get("ncms.page.attr.notFound",
+                                 req, syncAsm.getHname(), attrName),
                         true);
             }
             opts = syncAttr.getOptions();
