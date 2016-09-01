@@ -1305,7 +1305,7 @@ msgstr ""
 
 #: ncms/mtt/tp/MttTpEditor.js:46
 msgid "Incoming request parameters"
-msgstr "Параметры входящего запроса"
+msgstr "Входящие параметры запроса"
 
 #: ncms/mtt/tp/MttTpEditor.js:49
 msgid "http://....?client_id={client_id}"
