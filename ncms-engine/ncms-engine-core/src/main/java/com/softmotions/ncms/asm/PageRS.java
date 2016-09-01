@@ -79,7 +79,7 @@ import com.softmotions.ncms.asm.render.AsmAttributesHandler;
 import com.softmotions.ncms.asm.render.AsmRendererHelper;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.jaxrs.NcmsNotificationException;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.user.UserEnvRS;
 import com.softmotions.web.security.WSUser;
@@ -365,7 +365,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new UnauthorizedException();
         }
         if (published && page.getEffectiveCore() == null) {
-            throw new NcmsMessageException("ncms.page.template.publish.error", true, req);
+            throw new NcmsNotificationException("ncms.page.template.publish.error", true, req);
         }
         update("updatePublishStatus",
                "id", id,
@@ -722,7 +722,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         if (src == tgt) {
             String msg = i18n.get("ncms.mmgr.folder.cantMoveIntoSelf", req, srcPage.getHname());
-            throw new NcmsMessageException(msg, true, req);
+            throw new NcmsNotificationException(msg, true, req);
         }
         if (tgtPage != null && "page.folder".equals(srcPage.getType())) {
             String srcPath = getPageIDsPath(src);
@@ -730,7 +730,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (tgtPath.startsWith(srcPath)) {
                 String msg = i18n.get("ncms.mmgr.folder.cantMoveIntoSubfolder", req,
                                       srcPage.getHname(), tgtPage.getHname());
-                throw new NcmsMessageException(msg, true, req);
+                throw new NcmsNotificationException(msg, true, req);
             }
         }
 
@@ -846,10 +846,10 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new ForbiddenException("");
         }
         if (adao.asmChildrenCount(id) > 0) {
-            throw new NcmsMessageException("ncms.page.nodel.parent", true, req);
+            throw new NcmsNotificationException("ncms.page.nodel.parent", true, req);
         }
         if (count("selectNumberOfDirectChilds", id) > 0) {
-            throw new NcmsMessageException("ncms.page.nodel.children", true, req);
+            throw new NcmsNotificationException("ncms.page.nodel.children", true, req);
         }
         if (count("selectCountOfDependentAttrs", page.getName()) > 0) {
             ret.put("error", "ncms.page.nodel.refs.found");

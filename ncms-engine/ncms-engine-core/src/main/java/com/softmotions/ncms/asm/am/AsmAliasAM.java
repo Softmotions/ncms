@@ -12,7 +12,7 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
-import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.jaxrs.NcmsNotificationException;
 
 /**
  * Page alias manager.
@@ -72,13 +72,13 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
         }
         if (alias != null) {
             if (!ALIAS_PATTERN.matcher(alias).matches()) {
-                throw new NcmsMessageException("ncms.asm.alias.non.allowed.symbols", true, ctx.getRequest());
+                throw new NcmsNotificationException("ncms.asm.alias.non.allowed.symbols", true, ctx.getRequest());
             }
             while (!alias.isEmpty() && alias.charAt(0) == '/') {
                 alias = alias.substring(1);
             }
             if (!adao.asmIsUniqueAlias(alias, ctx.getAsmId())) {
-                throw new NcmsMessageException("ncms.asm.alias.non.unique", true, ctx.getRequest());
+                throw new NcmsNotificationException("ncms.asm.alias.non.unique", true, ctx.getRequest());
             }
         }
         adao.asmUpdateAlias(ctx.getAsmId(), alias);

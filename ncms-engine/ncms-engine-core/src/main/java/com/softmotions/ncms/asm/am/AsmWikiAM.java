@@ -27,7 +27,7 @@ import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
-import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.jaxrs.NcmsNotificationException;
 import com.softmotions.ncms.mediawiki.GMapTag;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
 
@@ -228,7 +228,7 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
 
         Matcher m = adminResourcePattern.matcher(value);
         if (m.find()) {
-            throw new NcmsMessageException("ncms.page.nosav.adm.link", true, req);
+            throw new NcmsNotificationException("ncms.page.nosav.adm.link", true, req);
         }
 
         // \[\[page:\s*([0-9a-f]{32})(\s*\|.*)?\]\]

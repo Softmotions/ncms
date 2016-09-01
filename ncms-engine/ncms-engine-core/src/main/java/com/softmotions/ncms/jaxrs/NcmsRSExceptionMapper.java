@@ -94,7 +94,6 @@ public class NcmsRSExceptionMapper implements ExceptionMapper<Exception> {
 
     @Override
     public Response toResponse(Exception ex) {
-
         if (log.isDebugEnabled()) {
             log.debug("Mapping of exception:", ex);
         }
@@ -121,6 +120,9 @@ public class NcmsRSExceptionMapper implements ExceptionMapper<Exception> {
                 rb = Response.serverError();
             } else {
                 rb = Response.ok();
+            }
+            if (ex instanceof NcmsNotificationException) {
+                rb.header("X-Softmotions", "notification");
             }
             List<String> mlist = mex.getErrorMessages();
             for (int i = 0, l = mlist.size(); i < l; ++i) {

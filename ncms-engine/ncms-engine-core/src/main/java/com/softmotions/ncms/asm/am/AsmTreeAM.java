@@ -36,7 +36,7 @@ import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRendererContextFactory;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
-import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.jaxrs.NcmsNotificationException;
 import com.softmotions.ncms.mhttl.Tree;
 import com.softmotions.weboot.i18n.I18n;
 
@@ -121,7 +121,7 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
         }
         AsmAttribute srcAttr = srcAsm.getEffectiveAttribute(attrName);
         if (srcAttr == null) {
-            throw new NcmsMessageException(
+            throw new NcmsNotificationException(
                     i18n.get("ncms.page.attr.notFound",
                              req, tgtAsm.getHname(), attrName),
                     true);
@@ -139,7 +139,7 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
             syncId = Long.decode(opts.substring(syncIndex + 9, opts.indexOf(',', syncIndex)));
 
             if (!syncAsmIds.add(syncId)) {
-                throw new NcmsMessageException(
+                throw new NcmsNotificationException(
                         i18n.get("ncms.page.sync.cycle", req),
                         true);
             }
@@ -152,7 +152,7 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
 
             syncAttr = syncAsm.getEffectiveAttribute(attrName);
             if (syncAttr == null) {
-                throw new NcmsMessageException(
+                throw new NcmsNotificationException(
                         i18n.get("ncms.page.attr.notFound",
                                  req, syncAsm.getHname(), attrName),
                         true);
