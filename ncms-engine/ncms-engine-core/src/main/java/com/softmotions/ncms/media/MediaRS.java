@@ -108,6 +108,7 @@ import com.softmotions.ncms.io.MetadataDetector;
 import com.softmotions.ncms.io.MimeTypeDetector;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.jaxrs.NcmsNotificationException;
 import com.softmotions.ncms.media.events.MediaDeleteEvent;
 import com.softmotions.ncms.media.events.MediaMoveEvent;
 import com.softmotions.ncms.media.events.MediaUpdateEvent;
@@ -203,7 +204,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     /**
      * Save uploaded file.
-     * <p/>
+     * <p>
      * Example:
      * curl --upload-file ./myfile.txt http://localhost:8080/ncms/rs/media/file/foo/bar/test.txt
      */
@@ -456,14 +457,14 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 params.put("name", name);
                 params.put("owner", req.getRemoteUser());
                 params.put("status", 1);
-                params.put("system", 0);
+                params.put("system", false);
                 insert("insertEntity", params);
 
                 id = (Number) params.get("id");
                 ebus.fireOnSuccessCommit(
                         new MediaUpdateEvent(this, true, id, dirname + name));
             } else {
-                throw new NcmsMessageException(i18n.get("ncms.mmgr.folder.exists", req, folder), true);
+                throw new NcmsNotificationException(i18n.get("ncms.mmgr.folder.exists", req, folder), true);
             }
             return mapper.createObjectNode()
                          .put("label", name)
@@ -1102,9 +1103,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     /**
      * GET list of files in the specified directory(folder).
-     * <p/>
+     * <p>
      * Produces the following JSON:
-     * <p/>
+     * <p>
      * <pre>
      *     [
      *       {

@@ -52,7 +52,7 @@ qx.Class.define("ncms.Application", {
                     return;
                 }
                 var res = list.shift();
-                console.log("Loading=" + res);
+                console.log("Loading extra script: " + res);
                 var uri = qx.util.ResourceManager.getInstance().toUri(res);
                 var loader = new qx.bom.request.Script();
                 loader.onload = function () {
@@ -135,7 +135,7 @@ qx.Class.define("ncms.Application", {
         },
 
         /**
-         * Show autohided popup message
+         * Show auto-hided popup message
          *
          * @param message {String} message to show
          * @param options {Object?} additional options:
@@ -150,9 +150,17 @@ qx.Class.define("ncms.Application", {
             var hideTime = options["hideTime"];
             var root = qx.core.Init.getApplication().getRoot();
             var info = ncms.Application.INFO_POPUP;
+
             if (!info) {
-                info = ncms.Application.INFO_POPUP = new qx.ui.container.Composite(new qx.ui.layout.VBox(0).set(
-                    {alignX: "center"}));
+
+                info = ncms.Application.INFO_POPUP =
+                    new qx.ui.container.Composite(new qx.ui.layout.VBox(4)
+                    .set({alignX: "center"}));
+
+                info.isEmpty = function () {
+                    return !info.hasChildren();
+                };
+
                 info.addListener("resize", function () {
                     var parent = this.getLayoutParent();
                     if (parent) {
@@ -168,6 +176,7 @@ qx.Class.define("ncms.Application", {
                     }
                 }, info);
                 root.add(info);
+
             } else {
                 var maxWindowZIndex = info.getZIndex();
                 var windows = root.getWindows();
@@ -179,6 +188,13 @@ qx.Class.define("ncms.Application", {
                 }
                 info.setZIndex(maxWindowZIndex + 1e8);
             }
+
+            if (info.getChildren().length >= 10) {
+                qx.log.Logger.warn("Too many popups opened");
+                qx.log.Logger.warn("Popup message: ", message);
+                return null;
+            }
+
             options["icon"] = (options["icon"] != null) ? options["icon"] : "ncms/icon/32/information.png";
             var el = new qx.ui.basic.Atom(message, options["icon"]).set({
                 center: true,
@@ -190,7 +206,7 @@ qx.Class.define("ncms.Application", {
 
             var fadeOut = {
                 duration: hideTime || 500,
-                delay: showTime || 1500,
+                delay: showTime != null ? showTime : 1500,
                 timing: "ease-out",
                 keep: 100,
                 keyFrames: {
@@ -198,14 +214,15 @@ qx.Class.define("ncms.Application", {
                     100: {opacity: 0, display: "none"}
                 }
             };
-
             el.addListenerOnce("appear", function () {
-                var ah = qx.bom.element.Animation.animate(this.getContentElement().getDomElement(), fadeOut);
-                ah.once("end", function () {
-                    this.destroy();
-                }, this);
+                if (fadeOut.delay > 0) {
+                    var ah = qx.bom.element.Animation.animate(this.getContentElement().getDomElement(), fadeOut);
+                    ah.once("end", function () {
+                        this.destroy();
+                    }, this);
+                }
                 this.addListener("click", function () {
-                    ah.stop();
+                    ah && ah.stop();
                     this.destroy();
                 }, this);
             }, el);
