@@ -143,14 +143,21 @@
         VALUES (s.acl_id, s.user, s.rights)
     </update>
 
-    <!-- todo: add unique constraints? -->
     <update id="updateAclUserRights"
             databaseId="POSTGRES"
             parameterType="map">
+        WITH new_acl (acl_id, "USER", rights) AS
+          (VALUES (#{acl}, #{user}, #{rights})),
+        upsert AS (UPDATE ASM_ACL_ENTITY a
+            SET rights = new_acl.rights
+            FROM new_acl
+            WHERE a.acl_id = new_acl.acl_id AND a."USER" = new_acl."USER"
+            RETURNING a.*)
         INSERT INTO ASM_ACL_ENTITY (acl_id, "USER", rights)
-        VALUES (#{acl}, #{user}, #{rights})
-        ON CONFLICT (acl_id, "USER")
-            DO UPDATE SET (rights) = (#{rights})
+                SELECT acl_id, "USER", rights FROM new_acl
+            WHERE NOT EXISTS (SELECT 1 FROM upsert
+              WHERE upsert.acl_id = new_acl.acl_id
+                    AND upsert."USER" = new_acl."USER")
     </update>
 
     <update id="deleteAclUser" parameterType="map">
@@ -192,7 +199,7 @@
                   WHERE
                       (recursive_acl_id IS NOT NULL AND recursive_acl_id != #{acl})
                       AND nav_cached_path LIKE #{nav_path}
-              ) AS s
+              ) AS s(recursive_acl_id, user, rights)
         ON a.acl_id = s.recursive_acl_id AND a.user = s.user
         WHEN MATCHED THEN
         UPDATE SET
@@ -202,21 +209,29 @@
         VALUES (s.recursive_acl_id, s.user, s.rights)
     </update>
 
-    <!-- todo: add unique constraints? -->
     <update id="updateChildRecursiveAcl2"
             databaseId="POSTGRES"
             parameterType="map">
-        INSERT INTO ASM_ACL_ENTITY (acl_id, "USER", rights)
-            SELECT
-                recursive_acl_id AS "acl_id",
-                #{user}          AS "user",
-                #{rights}        AS "rights"
-            FROM asms
-            WHERE
+        WITH new_acl (recursive_acl_id, "USER", rights) AS
+            (SELECT recursive_acl_id,
+                    #{user} AS "user",
+                    #{rights} AS "rights"
+            FROM asms WHERE
                 (recursive_acl_id IS NOT NULL AND recursive_acl_id != #{acl})
                 AND nav_cached_path LIKE #{nav_path}
-        ON CONFLICT (acl_id, "USER")
-            DO UPDATE SET (rights) = (#{rights})
+            ),
+        upsert AS (UPDATE ASM_ACL_ENTITY a
+                    SET rights = new_acl.rights
+                    FROM new_acl
+                    WHERE
+                        a.acl_id = new_acl.recursive_acl_id
+                        AND a."USER" = new_acl."USER"
+                    RETURNING a.*)
+        INSERT INTO ASM_ACL_ENTITY (acl_id, "USER", rights)
+            SELECT recursive_acl_id, "USER", rights FROM new_acl
+            WHERE NOT EXISTS (SELECT 1 FROM upsert
+                                WHERE upsert.acl_id = new_acl.recursive_acl_id
+                                      AND upsert."USER" = new_acl."USER")
     </update>
 
     <select id="childRecursiveAcls" resultType="long" parameterType="map">

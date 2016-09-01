@@ -589,17 +589,19 @@
         ELSE IGNORE
     </update>
 
-    <!-- todo: add unique constraints? -->
     <update id="setAsmRefData"
             databaseId="POSTGRES"
             parameterType="map">
+        WITH new_refs (asm_id, type, svalue, ivalue) AS
+          (VALUES (#{id}, #{type}, #{svalue}, #{ivalue}))
         INSERT INTO ASM_REFDATA (asm_id, type, svalue, ivalue)
-        VALUES (#{id}, #{type}, #{svalue}, #{ivalue})
-        ON CONFLICT (asm_id, type
-        <if test="svalue != null">, svalue</if>
-        <if test="ivalue != null">, ivalue</if>
-        )
-        DO NOTHING
+          SELECT asm_id, type, svalue, ivalue FROM new_refs
+          WHERE NOT EXISTS (SELECT 1 FROM ASM_REFDATA ard
+                            WHERE ard.asm_id = new_refs.asm_id
+                              AND ard.type = new_refs.type
+                              <if test="svalue != null"> AND ard.svalue = new_refs.svalue</if>
+                              <if test="ivalue != null"> AND ard.ivalue = new_refs.ivalue</if>
+          )
     </update>
 
     <select id="selectPageLayer" resultType="com.softmotions.ncms.asm.Asm" parameterType="map">
