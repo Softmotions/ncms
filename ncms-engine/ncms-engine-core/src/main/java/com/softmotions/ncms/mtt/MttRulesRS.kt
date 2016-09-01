@@ -27,6 +27,7 @@ import javax.ws.rs.core.StreamingOutput
 
 @Path("adm/mtt/rules")
 @Produces("application/json;charset=UTF-8")
+@JvmSuppressWildcards
 open class MttRulesRS
 @Inject
 constructor(val sess: SqlSession,
@@ -65,7 +66,7 @@ constructor(val sess: SqlSession,
     @Produces("text/plain")
     @RequiresRoles("mtt")
     open fun rulesCount(@Context req: HttpServletRequest): Long =
-            selectOneByCriteria(createRulesQ(req), "selectRulesCount")
+            selectOneByCriteria(createRulesQ(req), "selectRulesCount") ?: 0L
 
     private fun createRulesQ(req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
         val cq = createCriteria()
@@ -120,7 +121,7 @@ constructor(val sess: SqlSession,
                 throw NcmsMessageException(i18n.get("ncms.mtt.rule.name.already.other", req, rname), true)
             }
             update("updateRuleName", "id", rid, "name", rname)
-            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
+            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid, hint = "rename"))
             return ruleGet(rid)
         }
     }
@@ -186,7 +187,7 @@ constructor(val sess: SqlSession,
     @RequiresRoles("mtt")
     @Transactional
     open fun ruleEnable(@PathParam("rid") rid: Long): Int {
-        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid, hint = "enable"))
         return update("updateRuleEnabled", "id", rid, "enabled", true)
     }
 
@@ -197,7 +198,7 @@ constructor(val sess: SqlSession,
     @RequiresRoles("mtt")
     @Transactional
     open fun ruleDisable(@PathParam("rid") rid: Long): Int {
-        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
+        ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid, hint = "disable"))
         return update("updateRuleEnabled", "id", rid, "enabled", false)
     }
 
@@ -231,8 +232,9 @@ constructor(val sess: SqlSession,
     @Produces("text/plain")
     @RequiresRoles("mtt")
     @Transactional
-    open fun filtersCount(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Long =
-            selectOneByCriteria(createFiltersQ(rid, req), "selectFiltersCount")
+    open fun filtersCount(@Context req: HttpServletRequest,
+                          @PathParam("rid") rid: Long): Long =
+            selectOneByCriteria(createFiltersQ(rid, req), "selectFiltersCount") ?: 0L
 
     private fun createFiltersQ(rid: Long, req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
         val cq = createCriteria()
@@ -322,8 +324,9 @@ constructor(val sess: SqlSession,
     @Produces("text/plain")
     @RequiresRoles("mtt")
     @Transactional
-    open fun actionsCount(@Context req: HttpServletRequest, @PathParam("rid") rid: Long): Long =
-            selectOneByCriteria(createActionsQ(rid, req), "selectActionsCount")
+    open fun actionsCount(@Context req: HttpServletRequest,
+                          @PathParam("rid") rid: Long): Long =
+            selectOneByCriteria(createActionsQ(rid, req), "selectActionsCount") ?: 0L
 
     private fun createActionsQ(rid: Long, req: HttpServletRequest): MBCriteriaQuery<out MBCriteriaQuery<*>> {
         val cq = createCriteria()
@@ -495,6 +498,7 @@ constructor(val sess: SqlSession,
      */
     @Subscribe
     fun pageRemoved(evt: AsmRemovedEvent) {
+        //todo Handle remove page
         log.info("Handle remove page")
     }
 }

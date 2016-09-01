@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.softmotions.ncms.mtt.http.MttHttpModule;
 import com.softmotions.ncms.mtt.tp.MttTpRS;
+import com.softmotions.ncms.mtt.tp.MttTpService;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -14,6 +15,7 @@ public class MttModule extends AbstractModule {
     protected void configure() {
         bind(MttRulesRS.class).in(Singleton.class);
         bind(MttTpRS.class).in(Singleton.class);
+        bind(MttTpService.class).in(Singleton.class);
         install(new MttHttpModule());
     }
 }

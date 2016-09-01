@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.ibatis.session.SqlSession
 import org.apache.shiro.authz.annotation.RequiresRoles
 import org.mybatis.guice.transactional.Transactional
-import org.slf4j.LoggerFactory
 import javax.servlet.http.HttpServletRequest
 import javax.ws.rs.*
 import javax.ws.rs.core.Context
@@ -26,14 +25,13 @@ import javax.ws.rs.core.StreamingOutput
  */
 @Path("adm/mtt/tp")
 @Produces("application/json;charset=UTF-8")
+@JvmSuppressWildcards
 open class MttTpRS
 @Inject
 constructor(val sess: SqlSession,
             val mapper: ObjectMapper,
             val i18n: I18n,
             val ebus: NcmsEventBus) : MBDAOSupport(MttTpRS::class.java, sess) {
-
-    private val log = LoggerFactory.getLogger(javaClass)
 
     @GET
     @Path("/select")
@@ -64,7 +62,7 @@ constructor(val sess: SqlSession,
     @Produces("text/plain")
     @RequiresRoles("mtt")
     open fun count(@Context req: HttpServletRequest): Long =
-            selectOneByCriteria(createTpQ(req), "count")
+            selectOneByCriteria(createTpQ(req), "count") ?: 0L
 
     @GET
     @Path("/tp/{id}")

@@ -140,6 +140,12 @@ constructor(val ebus: NcmsEventBus,
         if (log.isDebugEnabled) {
             log.debug("Rule updated=${event}")
         }
+        if (event.hint == "rename") {
+            if (log.isDebugEnabled) {
+                log.debug("Rule renamed, activation will be skipped")
+            }
+            return
+        }
         activateRule(event.ruleId)
     }
 
