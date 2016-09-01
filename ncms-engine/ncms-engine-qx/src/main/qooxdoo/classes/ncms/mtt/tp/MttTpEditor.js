@@ -97,6 +97,9 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
             if (tp == null) {
                 return;
             }
+            if (!this.__form.validate()) {
+                return;
+            }
             var data = this.__form.populateJSONObject();
             var req = ncms.Application.request("mtt.tp.update", {id: tp["id"]}, "POST");
             req.setData(JSON.stringify(data));
