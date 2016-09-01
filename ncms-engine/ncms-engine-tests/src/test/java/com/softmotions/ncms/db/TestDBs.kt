@@ -11,7 +11,7 @@ class TestDBs : DbTestsFactory() {
         return arrayOf(
                 _TestAsmDAO(db),
                 _TestAsmRSDB(db),
-                _TestAsmMergeQueries(db)
+                _TestDBMergeQueries(db)
                 )
     }
 

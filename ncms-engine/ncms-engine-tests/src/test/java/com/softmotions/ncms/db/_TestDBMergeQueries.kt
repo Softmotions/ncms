@@ -17,7 +17,7 @@ import org.testng.annotations.Test
  *
  * @author Motyrev Pavel (legioner.r@gmail.com)
  */
-class _TestAsmMergeQueries(db: String) : DbBaseTest(db) {
+class _TestDBMergeQueries(db: String) : DbBaseTest(db) {
 
     constructor() : this(DEFAULT_DB) {
     }
