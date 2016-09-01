@@ -9,4 +9,10 @@
     </root>
     <logger name="com.softmotions.ncms.asm.AsmDAO" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.AsmRS" level="TRACE"/>
+    <logger name="com.softmotions.ncms.asm.PageRS" level="TRACE"/>
+    <logger name="com.softmotions.ncms.asm.am.AsmAttributeManagerContext" level="TRACE"/>
+    <logger name="com.softmotions.ncms.asm.PageSecurityService" level="TRACE"/>
+    <logger name="com.softmotions.ncms.media.MediaRS" level="TRACE"/>
+    <logger name="com.softmotions.ncms.rds.RefDataStore" level="TRACE"/>
+    <logger name="com.softmotions.ncms.user.UserEnvRS" level="TRACE"/>
 </configuration>

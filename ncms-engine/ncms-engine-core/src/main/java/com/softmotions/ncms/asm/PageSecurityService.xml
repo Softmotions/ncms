@@ -20,6 +20,13 @@
         FROM SYSIBM.DUAL
     </select>
 
+    <select id="newAclId"
+            databaseId="POSTGRES"
+            resultType="long">
+        SELECT
+        NEXTVAL('SEQ_ACL_ID')
+    </select>
+
     <select id="selectPageAclInfo" resultType="map" parameterType="map">
         SELECT
             owner            AS "owner",
@@ -136,6 +143,16 @@
         VALUES (s.acl_id, s.user, s.rights)
     </update>
 
+    <!-- todo: add unique constraints? -->
+    <update id="updateAclUserRights"
+            databaseId="POSTGRES"
+            parameterType="map">
+        INSERT INTO ASM_ACL_ENTITY (acl_id, "USER", rights)
+        VALUES (#{acl}, #{user}, #{rights})
+        ON CONFLICT (acl_id, "USER")
+            DO UPDATE SET (rights) = (#{rights})
+    </update>
+
     <update id="deleteAclUser" parameterType="map">
         DELETE FROM ASM_ACL_ENTITY
         WHERE "USER" = #{user} AND acl_id = #{acl}
@@ -183,6 +200,23 @@
         WHEN NOT MATCHED THEN
         INSERT (acl_id, user, rights)
         VALUES (s.recursive_acl_id, s.user, s.rights)
+    </update>
+
+    <!-- todo: add unique constraints? -->
+    <update id="updateChildRecursiveAcl2"
+            databaseId="POSTGRES"
+            parameterType="map">
+        INSERT INTO ASM_ACL_ENTITY (acl_id, "USER", rights)
+            SELECT
+                recursive_acl_id AS "acl_id",
+                #{user}          AS "user",
+                #{rights}        AS "rights"
+            FROM asms
+            WHERE
+                (recursive_acl_id IS NOT NULL AND recursive_acl_id != #{acl})
+                AND nav_cached_path LIKE #{nav_path}
+        ON CONFLICT (acl_id, "USER")
+            DO UPDATE SET (rights) = (#{rights})
     </update>
 
     <select id="childRecursiveAcls" resultType="long" parameterType="map">

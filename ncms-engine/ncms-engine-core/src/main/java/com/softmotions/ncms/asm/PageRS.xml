@@ -146,6 +146,48 @@
                 SEQ_ASMS_ORDINAL.NEXTVAL)
     </update>
 
+    <update id="mergeNewPage"
+            databaseId="POSTGRES"
+            parameterType="map">
+        INSERT INTO ASMS (name, hname, type,
+                          nav_parent_id,
+                          lang,
+                          nav_cached_path,
+                          options,
+                          mdate, muser, owner,
+                          description,
+                          recursive_acl_id,
+                          cdate,
+                          ordinal)
+        VALUES (#{guid}, #{name}, #{type},
+                         #{nav_parent_id,jdbcType=BIGINT},
+                         #{lang,jdbcType=CHAR},
+                         #{nav_cached_path},
+                         #{options,jdbcType=VARCHAR},
+                         CURRENT_TIMESTAMP, #{user}, #{user},
+                         #{description},
+                         #{recursive_acl_id},
+                         CURRENT_TIMESTAMP,
+                         NEXTVAL('SEQ_ASMS_ORDINAL'))
+        ON CONFLICT (name)
+            DO UPDATE SET (hname, type,
+                           nav_parent_id,
+                           lang,
+                           nav_cached_path,
+                           options,
+                           mdate, muser, owner,
+                           description,
+                           recursive_acl_id) =
+            (#{name}, #{type},
+                      #{nav_parent_id,jdbcType=BIGINT},
+                      #{lang,jdbcType=CHAR},
+                      #{nav_cached_path},
+                      #{options,jdbcType=VARCHAR},
+                      CURRENT_TIMESTAMP, #{user}, #{user},
+                      #{description},
+                      #{recursive_acl_id})
+    </update>
+
 
     <update id="updatePageBasic" parameterType="map">
         UPDATE ASMS
@@ -240,6 +282,13 @@
         SELECT
         PREVIOUS VALUE FOR SEQ_ATTR_ID
         FROM SYSIBM.DUAL
+    </select>
+
+    <select id="prevAttrID"
+            databaseId="POSTGRES"
+            resultType="long">
+        SELECT
+        CURRVAL('SEQ_ATTR_ID')
     </select>
 
 

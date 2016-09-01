@@ -23,7 +23,6 @@
     </select>
 
     <insert id="insertEntity"
-            databaseId="DB2"
             parameterType="map" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO MEDIA_ENTITY (
             folder, name, status, mdate,
@@ -36,7 +35,6 @@
     </insert>
 
     <update id="updateEntity"
-            databaseId="DB2"
             parameterType="map">
         UPDATE MEDIA_ENTITY
         SET content_type      = #{content_type},
@@ -51,7 +49,6 @@
     </update>
 
     <update id="fixResourceLocation"
-            databaseId="DB2"
             parameterType="map">
         UPDATE MEDIA_ENTITY e
         SET e.folder = #{nfolder},

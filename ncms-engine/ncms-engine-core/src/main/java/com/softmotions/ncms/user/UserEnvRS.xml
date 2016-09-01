@@ -28,6 +28,16 @@
         ELSE IGNORE
     </update>
 
+    <!-- todo: add unique constraints? -->
+    <update id="addSet"
+            databaseId="POSTGRES"
+            parameterType="map">
+        INSERT INTO USER_ENV (userid, type, ${vcol})
+        VALUES (#{userid}, #{type}, #{value})
+        ON CONFLICT (userid, type, ${vcol})
+        DO NOTHING
+    </update>
+
     <delete id="delSet"
             parameterType="map">
         DELETE FROM USER_ENV

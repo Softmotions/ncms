@@ -38,6 +38,13 @@
           VALUES (o.ref, o.content_type, o.data)
     </update>
 
+    <update id="saveData" databaseId="POSTGRES" parameterType="map">
+        INSERT INTO REFDATA (ref, content_type, data)
+        VALUES (#{ref}, #{content_type}, #{data})
+        ON CONFLICT (ref)
+        DO UPDATE SET (content_type, data) = (#{content_type}, #{data})
+    </update>
+
     <delete id="removeData" parameterType="map">
         DELETE
         FROM REFDATA

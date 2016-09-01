@@ -573,7 +573,9 @@
         WHERE name = #{guid}
     </select>
 
-    <update id="setAsmRefData" parameterType="map">
+    <update id="setAsmRefData"
+            databaseId="DB2"
+            parameterType="map">
         MERGE INTO ASM_REFDATA ard
         USING (
                   VALUES (#{id}, #{type}, #{svalue}, #{ivalue})
@@ -585,6 +587,19 @@
         INSERT (asm_id, type, svalue, ivalue)
         VALUES (s.asm_id, s.type, s.svalue, s.ivalue)
         ELSE IGNORE
+    </update>
+
+    <!-- todo: add unique constraints? -->
+    <update id="setAsmRefData"
+            databaseId="POSTGRES"
+            parameterType="map">
+        INSERT INTO ASM_REFDATA (asm_id, type, svalue, ivalue)
+        VALUES (#{id}, #{type}, #{svalue}, #{ivalue})
+        ON CONFLICT (asm_id, type
+        <if test="svalue != null">, svalue</if>
+        <if test="ivalue != null">, ivalue</if>
+        )
+        DO NOTHING
     </update>
 
     <select id="selectPageLayer" resultType="com.softmotions.ncms.asm.Asm" parameterType="map">
@@ -607,7 +622,7 @@
         ORDER BY p.hname ASC
     </select>
 
-
+    <!-- todo: fix for postgres -->
     <select id="selectAsmEventRef"
             resultType="map"
             parameterType="map">
