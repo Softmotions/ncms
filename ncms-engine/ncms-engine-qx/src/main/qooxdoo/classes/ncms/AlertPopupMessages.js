@@ -16,7 +16,7 @@ qx.Class.define("ncms.AlertPopupMessages", {
     construct: function (caption) {
         this.base(arguments);
         this.__caption = caption;
-        this.__msgs = {};
+        this.__msgs = null;
     },
 
     members: {
@@ -26,6 +26,7 @@ qx.Class.define("ncms.AlertPopupMessages", {
         __alert: null,
 
         addMessages: function (caption, messages, isError) {
+            this.__msgs = this.__msgs || {};
             this.__msgs[caption] = {
                 messages: messages,
                 isError: !!isError
@@ -37,9 +38,6 @@ qx.Class.define("ncms.AlertPopupMessages", {
                 return;
             }
             var captions = Object.keys(this.__msgs);
-            if (captions.length == 0) {
-                return;
-            }
             if (!isNotification) {
 
                 var alert = this.__alert || new sm.alert.DefaultAlertMessages(this.__caption);
@@ -47,6 +45,7 @@ qx.Class.define("ncms.AlertPopupMessages", {
                     var slot = this.__msgs[caption];
                     alert.addMessages(caption, slot["messages"], slot["isError"]);
                 }, this);
+                this.__msgs = null;
                 if (alert !== this.__alert) {
                     alert.addListenerOnce("close", function (ev) {
                         this.forwardEvent(ev);
@@ -69,19 +68,24 @@ qx.Class.define("ncms.AlertPopupMessages", {
                         hasErrors = true;
                     }
                 }, this);
+                this.__msgs = null;
                 var el = ncms.Application.infoPopup(buf.join("<br>"), {
-                    showTime: hasErrors ? 60000 : 5000, // todo review
+                    showTime: hasErrors ? 0 : 5000, // todo review?
                     icon: hasErrors ? "ncms/icon/32/exclamation.png" : null
                 });
-                el.addListenerOnce("disappear", function () {
-                    this.fireEvent("close");
-                    this.__destroy();
-                }, this);
+                if (el) { // No errors
+                    el.addListenerOnce("disappear", function () {
+                        if (ncms.Application.INFO_POPUP.isEmpty()) {
+                            this.fireEvent("close");
+                        }
+                        this.__destroy();
+                    }, this);
+                }
             }
         },
 
-        __destroy: function() {
-            this.__msgs = {};
+        __destroy: function () {
+            this.__msgs = null;
             this.__alert = null;
         }
     },

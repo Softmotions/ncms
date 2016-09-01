@@ -49,7 +49,7 @@ import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.ncms.jaxrs.NcmsMessageException;
+import com.softmotions.ncms.jaxrs.NcmsNotificationException;
 import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.weboot.i18n.I18n;
@@ -114,7 +114,7 @@ public class AsmRS extends MBDAOSupport {
             Long id = adao.asmSelectIdByName(name);
             if (id != null) {
                 String msg = messages.get("ncms.asm.name.already.exists", req, name);
-                throw new NcmsMessageException(msg, true, req);
+                throw new NcmsNotificationException(msg, true, req);
             }
             asm = new Asm(name);
             adao.asmInsert(asm);
@@ -134,7 +134,7 @@ public class AsmRS extends MBDAOSupport {
             Long oid = adao.asmSelectIdByName(name);
             if (oid != null && !oid.equals(id)) {
                 String msg = messages.get("ncms.asm.name.already.other", req, name);
-                throw new NcmsMessageException(msg, true, req);
+                throw new NcmsNotificationException(msg, true, req);
             }
             if (oid == null) {
                 adao.asmRename(id, name);

@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:38 ncms/Application.js:512
+#: ncms/Application.js:38 ncms/Application.js:529
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:525
+#: ncms/Application.js:542
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -1321,7 +1321,7 @@ msgstr "JS код трекинг пикселя"
 
 #: ncms/mtt/tp/MttTpEditor.js:46
 msgid "Incoming request parameters"
-msgstr "Параметры входящего запроса"
+msgstr "Входящие параметры запроса"
 
 #: ncms/mtt/tp/MttTpNav.js:74
 msgid "New tracking pixel"
