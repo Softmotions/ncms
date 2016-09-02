@@ -13,6 +13,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import static org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -29,6 +30,12 @@ public class Table implements Iterable<String[]>, Serializable {
 
     public Table(String[][] table) {
         this.table = table;
+    }
+
+    public Table(JsonParser parser) {
+        // todo
+        // use JsonParser see com.softmotions.ncms.asm.am.AsmImageAM.parseImageMeta()
+        this.table = null;
     }
 
     public Table(ArrayNode node) {
