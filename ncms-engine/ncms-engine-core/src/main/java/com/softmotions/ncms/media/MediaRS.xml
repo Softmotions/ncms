@@ -84,7 +84,10 @@
         ORDER BY e.status DESC, e.name ASC
     </select>
 
-    <select id="select" resultType="map" parameterType="map">
+    <select id="select"
+            databaseId="DB2"
+            resultType="map"
+            parameterType="map">
         SELECT
             e.id                AS "id",
             e.name              AS "name",
@@ -112,7 +115,42 @@
         </if>
     </select>
 
-    <select id="count" resultType="int" parameterType="map">
+    <select id="select"
+            databaseId="POSTGRES"
+            resultType="map"
+            parameterType="map">
+        SELECT
+        e.id                AS "id",
+        e.name              AS "name",
+        e.status            AS "status",
+        e.content_type      AS "content_type",
+        e.content_length    AS "content_length",
+        e.folder            AS "folder",
+        e.owner             AS "owner",
+        e.description       AS "description",
+        e.tags              AS "tags"
+        FROM MEDIA_ENTITY e
+        <where>
+            <if test="folder != null">AND e.folder LIKE #{folder}</if>
+            <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
+            <if test="name != null">AND LOWER(e.name) LIKE #{name}</if>
+            <if test="status != null">AND e.status = #{status}</if>
+            <if test="system == null">AND e.system = false</if>
+        </where>
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            LIMIT ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                OFFSET ${CQ_OFFSET}
+            </if>
+        </if>
+    </select>
+
+
+    <select id="count"
+            databaseId="DB2"
+            resultType="int"
+            parameterType="map">
         SELECT
         COUNT(*)
         FROM MEDIA_ENTITY e
@@ -122,6 +160,22 @@
             <if test="name != null">AND LOWER(e.name) LIKE #{name}</if>
             <if test="status != null">AND e.status = #{status}</if>
             <if test="system == null">AND e.system = 0</if>
+        </where>
+    </select>
+
+    <select id="count"
+            databaseId="POSTGRES"
+            resultType="int"
+            parameterType="map">
+        SELECT
+        COUNT(*)
+        FROM MEDIA_ENTITY e
+        <where>
+            <if test="folder != null">AND e.folder LIKE #{folder}</if>
+            <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
+            <if test="name != null">AND LOWER(e.name) LIKE #{name}</if>
+            <if test="status != null">AND e.status = #{status}</if>
+            <if test="system == null">AND e.system = false</if>
         </where>
     </select>
 
@@ -137,7 +191,10 @@
     </select>
 
 
-    <select id="selectByKeywords" resultType="map" parameterType="map">
+    <select id="selectByKeywords"
+            databaseId="DB2"
+            resultType="map"
+            parameterType="map">
         SELECT
             e.id                AS "id",
             e.name              AS "name",
@@ -171,8 +228,48 @@
         </if>
     </select>
 
+    <select id="selectByKeywords"
+            databaseId="POSTGRES"
+            resultType="map"
+            parameterType="map">
+        SELECT
+        e.id                AS "id",
+        e.name              AS "name",
+        e.status            AS "status",
+        e.content_type      AS "content_type",
+        e.content_length    AS "content_length",
+        e.folder            AS "folder",
+        e.owner             AS "owner",
+        e.description       AS "description",
+        e.tags              AS "tags"
+        FROM MEDIA_ENTITY e, MEDIA_ENTITY_KWORDS kw
+        WHERE
+        kw.entity_id = e.id
+        <if test="status != null">AND e.status = #{status}</if>
+        <if test="folder != null">AND e.folder LIKE #{folder}</if>
+        <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
+        <if test="system == null">AND e.system = false</if>
+        AND
+        <foreach item="k" index="index" collection="keywords"
+                 open="(" separator="OR" close=")">
+            kw.keyword LIKE #{k}
+        </foreach>
+        GROUP BY e.id, e.name, e.status, e.content_type, e.content_length, e.folder, e.owner, e.description, e.tags
+        HAVING COUNT(e.id) = #{keywordsSize}
+        <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
+        <if test="CQ_LIMIT">
+            LIMIT ${CQ_LIMIT}
+            <if test="CQ_OFFSET">
+                OFFSET ${CQ_OFFSET}
+            </if>
+        </if>
+    </select>
 
-    <select id="countByKeywords" resultType="int" parameterType="map">
+
+    <select id="countByKeywords"
+            databaseId="DB2"
+            resultType="int"
+            parameterType="map">
         SELECT COUNT(*)
         FROM (
             SELECT e.id
@@ -190,6 +287,30 @@
             </foreach>
             GROUP BY e.id
             HAVING COUNT(e.id) = #{keywordsSize}
+        )
+    </select>
+
+    <select id="countByKeywords"
+            databaseId="POSTGRES"
+            resultType="int"
+            parameterType="map">
+        SELECT COUNT(*)
+        FROM (
+        SELECT e.id
+        FROM MEDIA_ENTITY e, MEDIA_ENTITY_KWORDS kw
+        WHERE
+        kw.ENTITY_ID = e.id
+        <if test="status != null">AND e.status = #{status}</if>
+        <if test="folder != null">AND e.folder LIKE #{folder}</if>
+        <if test="nfolder != null">AND e.folder NOT LIKE #{nfolder}</if>
+        <if test="system == null">AND e.system = false</if>
+        AND
+        <foreach item="k" index="index" collection="keywords"
+                 open="(" separator="OR" close=")">
+            kw.keyword LIKE #{k}
+        </foreach>
+        GROUP BY e.id
+        HAVING COUNT(e.id) = #{keywordsSize}
         )
     </select>
 
@@ -211,7 +332,10 @@
     </select>
 
 
-    <select id="selectIcon" resultType="map" parameterType="map">
+    <select id="selectIcon"
+            databaseId="DB2"
+            resultType="map"
+            parameterType="map">
         SELECT
             e.id                AS "id",
             e.icon              AS "icon",
@@ -223,6 +347,23 @@
             AND e.name = #{name}
             AND e.status = 0
     </select>
+
+    <select id="selectIcon"
+            databaseId="POSTGRES"
+            resultType="map"
+            parameterType="map">
+        SELECT
+        e.id                AS "id",
+        e.icon              AS "icon",
+        e.content_type      AS "content_type",
+        e.icon_content_type AS "icon_content_type"
+        FROM MEDIA_ENTITY e
+        WHERE
+        e.folder = #{folder}
+        AND e.name = #{name}
+        AND e.status = false
+    </select>
+
 
     <select id="selectIcon2" resultType="map" parameterType="map">
         SELECT

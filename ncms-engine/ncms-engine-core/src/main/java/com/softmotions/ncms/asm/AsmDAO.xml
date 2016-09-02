@@ -624,8 +624,8 @@
         ORDER BY p.hname ASC
     </select>
 
-    <!-- todo: fix for postgres -->
     <select id="selectAsmEventRef"
+            databaseId="DB2"
             resultType="map"
             parameterType="map">
         SELECT
@@ -636,6 +636,21 @@
         WHERE ard.type = #{type}
           AND (YEAR(a.edate) &lt; #{edateLTYear} OR (YEAR(a.edate) = #{edateLTYear} AND DAYOFYEAR(a.edate) &lt;= #{edateLTDay}))
           AND (YEAR(a.edate) &gt; #{edateGTYear} OR (YEAR(a.edate) = #{edateGTYear} AND DAYOFYEAR(a.edate) &gt;= #{edateGTDay}))
+        ORDER BY a.id
+    </select>
+
+    <select id="selectAsmEventRef"
+            databaseId="POSTGRES"
+            resultType="map"
+            parameterType="map">
+        SELECT
+        a.id        AS "asm_id",
+        ard.svalue  AS "svalue"
+        FROM ASM_REFDATA AS ard
+        INNER JOIN ASMS AS a ON ard.asm_id = a.id
+        WHERE ard.type = #{type}
+        AND (EXTRACT(YEAR FROM a.edate) &lt; #{edateLTYear} OR (EXTRACT(YEAR FROM a.edate) = #{edateLTYear} AND EXTRACT(DOY FROM a.edate) &lt;= #{edateLTDay}))
+        AND (EXTRACT(YEAR FROM a.edate) &gt; #{edateGTYear} OR (EXTRACT(YEAR FROM a.edate) = #{edateGTYear} AND EXTRACT(DOY FROM a.edate) &gt;= #{edateGTDay}))
         ORDER BY a.id
     </select>
 

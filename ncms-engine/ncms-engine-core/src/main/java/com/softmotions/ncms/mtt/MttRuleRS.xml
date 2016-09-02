@@ -120,13 +120,27 @@
         LIMIT 1
     </select>
 
-    <update id="exchangeRuleOrdinal" parameterType="map">
+    <update id="exchangeRuleOrdinal"
+            databaseId="DB2"
+            parameterType="map">
         UPDATE mtt_rules a1
         SET a1.ordinal = (SELECT a2.ordinal
                           FROM mtt_rules a2
                           WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
                                 AND a1.ordinal != a2.ordinal),
             a1.mdate   = CURRENT_TIMESTAMP
+        WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
+    </update>
+
+    <update id="exchangeRuleOrdinal"
+            databaseId="POSTGRES"
+            parameterType="map">
+        UPDATE mtt_rules a1
+        SET ordinal = (SELECT a2.ordinal
+                            FROM mtt_rules a2
+                            WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
+                               AND a1.ordinal != a2.ordinal),
+          mdate   = CURRENT_TIMESTAMP
         WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
 
@@ -337,7 +351,9 @@
         LIMIT 1
     </select>
 
-    <update id="exchangeActionOrdinal" parameterType="map">
+    <update id="exchangeActionOrdinal"
+            databaseId="DB2"
+            parameterType="map">
         UPDATE mtt_actions a1
         SET a1.ordinal = (SELECT a2.ordinal
                           FROM mtt_actions a2
@@ -347,4 +363,15 @@
         WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
     </update>
 
+    <update id="exchangeActionOrdinal"
+            databaseId="POSTGRES"
+            parameterType="map">
+        UPDATE mtt_actions a1
+        SET ordinal = (SELECT a2.ordinal
+                            FROM mtt_actions a2
+                            WHERE a2.ordinal IN (#{ordinal1}, #{ordinal2})
+                                AND a1.ordinal != a2.ordinal),
+          mdate   = CURRENT_TIMESTAMP
+        WHERE a1.ordinal IN (#{ordinal1}, #{ordinal2})
+    </update>
 </mapper>

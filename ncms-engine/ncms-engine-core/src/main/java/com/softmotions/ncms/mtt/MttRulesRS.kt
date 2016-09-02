@@ -49,7 +49,7 @@ constructor(val sess: SqlSession,
                         writeObject((context.resultObject as Map<String, Any>).mapValues {
                             when {
                             // convert enabled field to boolean
-                                it.key == "enabled" -> it.value as Number != 0
+                                it.key == "enabled" && it.value is Number -> it.value as Number != 0
                                 else -> it.value
                             }
                         })
@@ -215,7 +215,7 @@ constructor(val sess: SqlSession,
                         writeObject((context.resultObject as Map<String, Any>).mapValues {
                             when {
                             // convert enabled field to boolean
-                                it.key in arrayOf("enabled") -> it.value as Number != 0
+                                it.key in arrayOf("enabled") && it.value is Number -> it.value as Number != 0
                                 else -> it.value
                             }
                         })
@@ -307,7 +307,7 @@ constructor(val sess: SqlSession,
                         writeObject((context.resultObject as Map<String, Any>).mapValues {
                             when {
                             // convert enabled field to boolean
-                                it.key in arrayOf("enabled") -> it.value as Number != 0
+                                it.key in arrayOf("enabled") && it.value is Number -> it.value as Number != 0
                                 else -> it.value
                             }
                         })
