@@ -75,7 +75,9 @@ class PostgresTestRunner : DatabaseTestRunner {
             }
         }
         synchronized(started) {
-            (started as Object).wait(30.toSeconds().toMillis())
+            if (!started.get()) {
+                (started as Object).wait(30.toSeconds().toMillis())
+            }
         }
         if (!started.get()) {
             throw RuntimeException("Timeout of waiting for postgres server")
