@@ -5,6 +5,16 @@
 
 <mapper namespace="com.softmotions.ncms.mtt.tp.MttTpRS">
 
+    <select id="selectAll"
+            resultType="com.softmotions.ncms.mtt.tp.MttTp"
+            parameterType="map">
+        SELECT * FROM mtt_tp
+        <where>
+            <if test="enabled != null">enabled = #{enabled}</if>
+        </where>
+    </select>
+
+
     <select id="select" resultType="map" parameterType="map">
         SELECT
             tp.id          AS "id",
@@ -15,7 +25,7 @@
             tp.enabled     AS "enabled"
         FROM mtt_tp AS tp
         <where>
-            <if test="name != null">LOWER(tp.name) LIKE #{name}</if>
+            <if test="name != null">AND LOWER(tp.name) LIKE #{name}</if>
         </where>
         <if test="CQ_ORDERBY">ORDER BY ${CQ_ORDERBY}</if>
         <if test="CQ_LIMIT">

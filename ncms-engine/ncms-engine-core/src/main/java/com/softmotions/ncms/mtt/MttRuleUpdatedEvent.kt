@@ -5,5 +5,5 @@ package com.softmotions.ncms.mtt
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-data class MttRuleUpdatedEvent(val ruleId: Long) {
+data class MttRuleUpdatedEvent(val ruleId: Long, val hint: String = "") {
 }
