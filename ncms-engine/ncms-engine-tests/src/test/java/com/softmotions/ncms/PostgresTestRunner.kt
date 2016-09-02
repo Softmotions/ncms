@@ -7,10 +7,13 @@ import com.softmotions.runner.ProcessRunner
 import com.softmotions.runner.ProcessRunners
 import com.softmotions.runner.UnixSignal
 import org.slf4j.LoggerFactory
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+
+@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
 class PostgresTestRunner : DatabaseTestRunner {
 
     private val log = LoggerFactory.getLogger(PostgresTestRunner::class.java)
@@ -37,25 +40,45 @@ class PostgresTestRunner : DatabaseTestRunner {
     override fun setupDb(props: Map<String, Any>) {
         shutdownDb()
 
+
         System.setProperty("JDBC.env", "pgtest")
         System.setProperty("JDBC.url", "jdbc:postgresql://localhost:${dbPort}/postgres")
         System.setProperty("JDBC.driver", "org.postgresql.Driver")
+
+        val started = AtomicBoolean(false)
+        val locale = "en_US.UTF-8"
+
 
         dbDir = "/dev/shm/ncmsdb" + System.currentTimeMillis()
         log.info("Setup database, dir: $dbDir")
         with(dbRunner) {
             cmd("mkdir -p $dbDir")
-            cmd("$dbBin/initdb -D $dbDir") {
+            cmd("$dbBin/initdb" +
+                    " --lc-messages=C" +
+                    " --lc-collate=$locale --lc-ctype=$locale" +
+                    " --lc-monetary=$locale --lc-numeric=$locale --lc-time=$locale" +
+                    " -D $dbDir",
+                    env = mapOf("LC_ALL".to("C"))) {
                 outputLine(it)
             }.waitFor {
                 checkExitCode(it)
             }
             cmd("$dbBin/postgres -D $dbDir -p $dbPort -o \"-c fsync=off -c synchronous_commit=off -c full_page_writes=off\"",
-                    failOnTimeout = false) {
+                    failOnTimeout = true) {
                 outputLine(it)
-            }.waitFor(5.toSeconds()) {  // todo review it!!!!!
-                outputLine("Timeout")
+                if (it.trim().contains("database system is ready to accept connections")) {
+                    synchronized(started) {
+                        started.set(true)
+                        (started as Object).notifyAll()
+                    }
+                }
             }
+        }
+        synchronized(started) {
+            (started as Object).wait(30.toSeconds().toMillis())
+        }
+        if (!started.get()) {
+            throw RuntimeException("Timeout of waiting for postgres server")
         }
     }
 
