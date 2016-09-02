@@ -64,7 +64,7 @@ class _TestAsmRSDB(db: String) : DbBaseTest(db) {
         Assert.assertEquals(1, adao.asmSetAttribute(asm, attr1))
 
         // test query "prevAttrID"
-        Assert.assertEquals(1L, ds.selectOne<Long>("prevAttrID"))
+        Assert.assertEquals(1L, ds.selectOne("prevAttrID")?:0L)
 
         var attr2 = ds.select<AsmAttribute>("selectAttrByName",
                 "asm_id", asm.id,
@@ -112,7 +112,7 @@ class _TestAsmRSDB(db: String) : DbBaseTest(db) {
         Assert.assertEquals("type3", attr2[0].type)
         Assert.assertEquals("val3", attr2[0].value)
         Assert.assertEquals(false, attr2[0].isRequired)
-        Assert.assertEquals(2L, ds.selectOne<Long>("prevAttrID"))
+        Assert.assertEquals(2L, ds.selectOne("prevAttrID")?:0L)
 
         // test query "updateArrtibute"
         Assert.assertEquals(1, ds.insert("updateAttribute",
