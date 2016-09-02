@@ -66,11 +66,21 @@
     </select>
 
     <insert id="insertRule"
+            databaseId="DB2"
             parameterType="com.softmotions.ncms.mtt.MttRule">
         INSERT INTO mtt_rules (id, name, cdate, mdate, enabled, flags)
         VALUES (seq_mtt_rule_id.nextval, #{name},
                 CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
                 #{enabled}, #{flags})
+    </insert>
+
+    <insert id="insertRule"
+            databaseId="POSTGRES"
+            parameterType="com.softmotions.ncms.mtt.MttRule">
+        INSERT INTO mtt_rules (id, name, cdate, mdate, enabled, flags)
+        VALUES (NEXTVAL('seq_mtt_rule_id'), #{name},
+        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
+        #{enabled}, #{flags})
     </insert>
 
     <update id="updateRuleName" parameterType="map">
@@ -233,12 +243,23 @@
     </select>
 
     <insert id="insertAction"
+            databaseId="DB2"
             parameterType="com.softmotions.ncms.mtt.MttRuleAction"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO mtt_actions (id, type, rule_id, group_id, spec, description, cdate, mdate)
         VALUES (seq_mtt_action_id.nextval, #{type}, #{ruleId}, #{groupId}, #{spec}, #{description}, CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP)
+    </insert>
+
+    <insert id="insertAction"
+            databaseId="POSTGRES"
+            parameterType="com.softmotions.ncms.mtt.MttRuleAction"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO mtt_actions (id, type, rule_id, group_id, spec, description, cdate, mdate)
+        VALUES (NEXTVAL('seq_mtt_action_id'), #{type}, #{ruleId}, #{groupId}, #{spec}, #{description}, CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP)
     </insert>
 
     <update id="updateAction" parameterType="com.softmotions.ncms.mtt.MttRuleAction">

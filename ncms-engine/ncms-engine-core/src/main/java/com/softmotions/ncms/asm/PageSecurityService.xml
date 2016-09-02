@@ -149,15 +149,16 @@
         WITH new_acl (acl_id, "USER", rights) AS
           (VALUES (#{acl}, #{user}, #{rights})),
         upsert AS (UPDATE ASM_ACL_ENTITY a
-            SET rights = new_acl.rights
-            FROM new_acl
-            WHERE a.acl_id = new_acl.acl_id AND a."USER" = new_acl."USER"
-            RETURNING a.*)
+                        SET rights = new_acl.rights
+                        FROM new_acl
+                        WHERE a.acl_id = new_acl.acl_id
+                              AND a."USER" = new_acl."USER"
+                        RETURNING a.*)
         INSERT INTO ASM_ACL_ENTITY (acl_id, "USER", rights)
                 SELECT acl_id, "USER", rights FROM new_acl
             WHERE NOT EXISTS (SELECT 1 FROM upsert
-              WHERE upsert.acl_id = new_acl.acl_id
-                    AND upsert."USER" = new_acl."USER")
+                                  WHERE upsert.acl_id = new_acl.acl_id
+                                        AND upsert."USER" = new_acl."USER")
     </update>
 
     <update id="deleteAclUser" parameterType="map">

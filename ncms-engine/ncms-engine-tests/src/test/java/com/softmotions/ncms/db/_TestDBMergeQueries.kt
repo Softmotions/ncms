@@ -150,28 +150,33 @@ class _TestDBMergeQueries(db: String) : DbBaseTest(db) {
         }
 
         // test query updateAclUserRights@PageSecurityService
-        //todo: fixme - different behavior on DB2 (1, 1) and PostgreSQL (1, 0)
-/*
         for (i in 0..1) {
-            val res = when (i) {
-                0 -> 1
-                1 -> 0
-                else -> 0
-            }
-            Assert.assertEquals(res, pageSec.update("updateAclUserRights",
+            pageSec.update("updateAclUserRights",
                     "acl", 1L,
                     "user", "test",
-                    "rights", "test"))
+                    "rights", "tes$i")
+            Assert.assertEquals("tes$i", pageSec.selectOne("selectUserRightsByAcl",
+                    "acl", 1L,
+                    "user", "test"))
         }
-*/
 
         // test query updateChildRecursiveAcl2@PageSecurityService
+        val asm2 = Asm()
+        asm2.name = "bar"
+        asm2.navCachedPath = "test"
+        adao.asmInsert(asm2)
+        pageSec.update("setRecursiveAcl",
+                "acl", 1L,
+                "pid", 2L)
         for (i in 0..1) {
-            Assert.assertEquals(0, pageSec.update("updateChildRecursiveAcl2",
-                    "acl", 1L,
+            pageSec.update("updateChildRecursiveAcl2",
+                    "acl", 2L,
                     "user", "test",
-                    "rights", "test",
-                    "nav_path", "test"))
+                    "rights", "Tes$i",
+                    "nav_path", "test")
+            Assert.assertEquals("Tes$i", pageSec.selectOne("selectUserRightsByAcl",
+                    "acl", 1L,
+                    "user", "test"))
         }
 
         // test query saveData@RefDataStore

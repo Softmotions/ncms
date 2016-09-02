@@ -120,7 +120,7 @@ constructor(db: String) : DbBaseTest(db) {
             }
             ret
         }
-        Assert.assertEquals(2, count.toInt())
+        Assert.assertEquals(2, count?.toInt())
 
         //Insert AsmCore
         var core = AsmCore("file:///some/file", "my first assembly core")
