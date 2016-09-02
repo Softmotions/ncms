@@ -7,4 +7,7 @@
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
+    <logger name="com.softmotions.ncms.asm.AsmRS" level="TRACE"/>
+    <logger name="com.softmotions.ncms.asm.PageRS" level="TRACE"/>
+    <logger name="com.softmotions.ncms.media.MediaRS" level="TRACE"/>
 </configuration>

@@ -8,7 +8,6 @@ import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import kotlin.test.*
 
-
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
@@ -18,7 +17,7 @@ class _TestMttRulesRS(db: String) : BaseRSTest(db) {
     constructor() : this(DEFAULT_DB) {
     }
 
-    protected var mapper = ObjectMapper()
+    private var mapper = ObjectMapper()
 
     @BeforeClass
     override fun setup() {
