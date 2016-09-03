@@ -1,8 +1,11 @@
 package com.softmotions.ncms.mhttl;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import javax.annotation.Nonnull;
@@ -10,10 +13,13 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.collections4.iterators.ArrayIterator;
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.apache.commons.lang3.ArrayUtils.EMPTY_STRING_ARRAY;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -21,6 +27,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public class Table implements Iterable<String[]>, Serializable {
+
+    private static final Logger log = LoggerFactory.getLogger(Table.class);
 
     private final String[][] table;
 
@@ -33,9 +41,38 @@ public class Table implements Iterable<String[]>, Serializable {
     }
 
     public Table(JsonParser parser) {
-        // todo
-        // use JsonParser see com.softmotions.ncms.asm.am.AsmImageAM.parseImageMeta()
-        this.table = null;
+        try {
+            if (parser.nextToken() != JsonToken.START_ARRAY) {
+                log.error("Invalid JSON for {}", getClass().getName());
+                //noinspection ZeroLengthArrayAllocation
+                table = new String[0][0];
+                return;
+            }
+            int maxCols = 0;
+            List<List<String>> rows = new ArrayList<>(32);
+            while (parser.nextToken() == JsonToken.START_ARRAY) {
+                List<String> cols = new ArrayList<>(8);
+                rows.add(cols);
+                while (parser.nextToken() != JsonToken.END_ARRAY) {
+                    String v = parser.nextTextValue();
+                    if (v != null) {
+                        cols.add(v);
+                    }
+                }
+                if (cols.size() > maxCols) {
+                    maxCols = cols.size();
+                }
+            }
+            table = new String[rows.size()][maxCols];
+            for (int i = 0; i < table.length; ++i) {
+                for (int j = 0; j < table[i].length; ++j) {
+                    List<String> cols = rows.get(i);
+                    table[i][j] = j < cols.size() ? cols.get(j) : null;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Table(ArrayNode node) {
