@@ -187,14 +187,15 @@ public class Asm implements Serializable {
 
     /**
      * An assembly type.
-     * <p/>
+     * <p>
      * Valid values:
-     * <p/>
+     * <p>
      * * `null` - generic assembly
      * * `page` - page instance
      * * `page.folder` - page instance with specific `folder` flavour.
      * * `new.page` - Special `news` page instance.
      */
+    @Nonnull
     public String getType() {
         return type != null ? type : "";
     }
@@ -258,7 +259,7 @@ public class Asm implements Serializable {
     /**
      * The type of template represented by this assembly.
      * Valid values:
-     * <p/>
+     * <p>
      * * `null`/`none` - assembly is not a template
      * * `page` - assembly is a page template
      * * `news` - assembky is a template form news line
@@ -317,6 +318,15 @@ public class Asm implements Serializable {
 
     public void setPublished(boolean published) {
         this.published = published;
+    }
+
+    @Nullable
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     /**
@@ -387,6 +397,7 @@ public class Asm implements Serializable {
      * Roles which can use this assembly.
      */
     @JsonView(Asm.ViewFull.class)
+    @Nullable
     public Collection<String> getAccessRoles() {
         return accessRoles;
     }
@@ -394,6 +405,7 @@ public class Asm implements Serializable {
     /**
      * List of all direct assembly parents.
      */
+    @Nullable
     public List<Asm> getParents() {
         return parents;
     }
@@ -452,6 +464,7 @@ public class Asm implements Serializable {
     /**
      * Iterator for all assembly parents, direct or indirect.
      */
+    @Nonnull
     public Iterator<Asm> getAllParentsIterator() {
         List<Pair<Asm, Integer>> plist = new ArrayList<>();
         fetchParentsCumulative(plist, 0);
@@ -489,6 +502,7 @@ public class Asm implements Serializable {
     /**
      * Set contains all assembly parents direct or indirect.
      */
+    @Nonnull
     public Set<String> getAllParentNames() {
         List<Asm> plist = getParents();
         if (plist == null || plist.isEmpty()) {
@@ -507,6 +521,7 @@ public class Asm implements Serializable {
      * Get page refs for all direct assembly parents.
      */
     @JsonProperty()
+    @Nonnull
     public String[] getParentRefs() {
         List<Asm> plist = getParents();
         if (plist == null || plist.isEmpty()) {
@@ -560,6 +575,7 @@ public class Asm implements Serializable {
         return attr.getEffectiveValue();
     }
 
+    @Nonnull
     public String[] getEffectiveAttributeAsStringArray(String name, ObjectMapper mapper) {
         AsmAttribute attr = getEffectiveAttribute(name);
         if (attr == null) {
@@ -600,6 +616,7 @@ public class Asm implements Serializable {
     /**
      * List of all direct assembly attributes
      */
+    @Nullable
     public Collection<AsmAttribute> getAttributes() {
         return attributes;
     }
@@ -628,6 +645,7 @@ public class Asm implements Serializable {
         }
     }
 
+    @Nonnull
     public Collection<String> getAttributeNames() {
         List<String> anames = new ArrayList<>(getAttributes().size());
         for (final AsmAttribute a : attributes) {
@@ -637,6 +655,7 @@ public class Asm implements Serializable {
     }
 
 
+    @Nonnull
     public Collection<String> getEffectiveAttributeNames() {
         final Set<String> anames = new HashSet<>(getAttributes().size() << 1);
         if (attributes != null) {
@@ -685,6 +704,7 @@ public class Asm implements Serializable {
         }
     }
 
+    @Nonnull
     private List<AsmAttribute> getSortedLocalAttributes() {
         if (getAttributes() == null) {
             return Collections.EMPTY_LIST;
@@ -693,14 +713,6 @@ public class Asm implements Serializable {
         local.addAll(getAttributes());
         Collections.sort(local);
         return local;
-    }
-
-    public String getLang() {
-        return lang;
-    }
-
-    public void setLang(String lang) {
-        this.lang = lang;
     }
 
     public static class AttrsList extends AbstractIndexedCollection<String, AsmAttribute> implements Serializable {

@@ -32,6 +32,10 @@ public class Table implements Iterable<String[]>, Serializable {
 
     private final String[][] table;
 
+    public Table() {
+        this(0, 0);
+    }
+
     public Table(int rows, int cols) {
         this.table = new String[rows][cols];
     }
