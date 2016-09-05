@@ -132,7 +132,7 @@ qx.Class.define("ncms.usr.UserRolesTable", {
 
         },
 
-        //overriden
+        //overridden
         _setJsonTableData: function (tm, items) {
             var data = {
                 "title": "",

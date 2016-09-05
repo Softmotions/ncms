@@ -486,7 +486,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         Collection<AsmAttribute> attrs = page.getEffectiveAttributes();
         for (AsmAttribute a : attrs) {
-            AsmAttribute oa = a.getOverridenParent();
+            AsmAttribute oa = a.getOverriddenParent();
             if (oa != null &&
                 a.getAsmId() == id &&
                 !Objects.equals(oa.getType(), a.getType())) { //types incompatible

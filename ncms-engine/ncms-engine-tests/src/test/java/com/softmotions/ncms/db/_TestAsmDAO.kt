@@ -77,7 +77,7 @@ constructor(db: String) : DbBaseTest(db) {
         Assert.assertEquals(asm.description, asm2.description)
         Assert.assertNotNull(asm.attributes)
 
-        Assert.assertEquals(2, asm.attributes.size)
+        Assert.assertEquals(2, asm.attributes!!.size)
 
 
         var attr = asm.getAttribute("name1")
@@ -188,7 +188,7 @@ constructor(db: String) : DbBaseTest(db) {
 
         //Toggle lazy loading of parents
         val parents = asm.parents
-        Assert.assertEquals(2, parents.size)
+        Assert.assertEquals(2, parents!!.size)
 
         var i = 0
         val l = parents.size
@@ -197,18 +197,18 @@ constructor(db: String) : DbBaseTest(db) {
             Assert.assertTrue("p[1]" == p.name || "p[2]" == p.name)
             if ("p[2]" == p.name) {
                 Assert.assertNotNull(p.attributes)
-                Assert.assertEquals(1, p.attributes.size)
-                val a = p.attributes.iterator().next()
+                Assert.assertEquals(1, p.attributes!!.size)
+                val a = p.attributes!!.iterator().next()
                 Assert.assertEquals("p[2]attr", a.name)
                 Assert.assertEquals("p[2]type", a.type)
                 Assert.assertEquals("p[2]value", a.value)
             } else if ("p[1]" == p.name) {
                 Assert.assertNotNull(p.attributes)
-                Assert.assertEquals(0, p.attributes.size)
+                Assert.assertEquals(0, p.attributes!!.size)
             }
 
             val pParents = p.parents
-            Assert.assertEquals(1, pParents.size)
+            Assert.assertEquals(1, pParents!!.size)
             Assert.assertEquals("p[0]", pParents[0].name)
             ++i
         }

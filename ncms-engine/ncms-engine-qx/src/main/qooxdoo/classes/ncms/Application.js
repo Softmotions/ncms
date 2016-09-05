@@ -533,7 +533,7 @@ qx.Class.define("ncms.Application", {
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
         },
 
-        // overriden
+        // overridden
         close: function (val) {
             if (this.__logoutPending) {
                 return;

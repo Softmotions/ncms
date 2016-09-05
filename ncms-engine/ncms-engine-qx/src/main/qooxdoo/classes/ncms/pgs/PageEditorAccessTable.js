@@ -89,7 +89,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             }, this);
         },
 
-        //overriden
+        //overridden
         _createTable: function (tm) {
             var table = new sm.table.Table(tm, tm.getCustom());
             table.set({statusBarVisible: false});
@@ -99,7 +99,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             return table;
         },
 
-        //overriden
+        //overridden
         _createToolbarItems: function (toolbar) {
             var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
@@ -130,7 +130,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
             return bt;
         },
 
-        //overriden
+        //overridden
         _createTableModel: function () {
             var tm = new sm.model.JsonTableModel();
             this._setJsonTableData(tm, null);
@@ -138,7 +138,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
         },
 
 
-        //overriden
+        //overridden
         _setJsonTableData: function (tm, data) {
             var items = [];
             data = data || [];

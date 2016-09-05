@@ -51,14 +51,14 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             }
             var attrs = spec["effectiveAttributes"];
             attrs.forEach(function (el) {
-                var icon = el["overriden"] ? "ncms/icon/16/misc/asterisk.png" : "";
+                var icon = el["overridden"] ? "ncms/icon/16/misc/asterisk.png" : "";
                 var row = [icon, el["name"], el["label"], el["type"], el["value"]];
                 items.push([row, el]);
             }, this);
             this._reload(items);
         },
 
-        //overriden
+        //overridden
         _createToolbarItems: function (toolbar) {
             var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
@@ -103,7 +103,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             return bt;
         },
 
-        //overriden
+        //overridden
         _setJsonTableData: function (tm, items) {
             var data = {
                 "title": "",
@@ -146,7 +146,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             this._syncState();
         },
 
-        //overriden
+        //overridden
         _createTable: function (tableModel) {
             var table = new sm.table.Table(tableModel, tableModel.getCustom());
 
@@ -271,7 +271,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                 return false;
             }
             var isValidBuddy = function (buddy) {
-                return !(buddy["asmId"] !== this.__spec["id"] || buddy["overriden"]);
+                return !(buddy["asmId"] !== this.__spec["id"] || buddy["overridden"]);
             }.bind(this);
 
             if (!isValidBuddy(rd)) {

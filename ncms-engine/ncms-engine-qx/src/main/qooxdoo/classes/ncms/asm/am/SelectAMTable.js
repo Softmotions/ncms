@@ -1,5 +1,10 @@
 /**
  * Select box options table.
+ *
+ * @asset(ncms/icon/16/actions/add.png)
+ * @asset(ncms/icon/16/actions/delete.png)
+ * @asset(ncms/icon/16/misc/arrow_up.png)
+ * @asset(ncms/icon/16/misc/arrow_down.png)
  */
 qx.Class.define("ncms.asm.am.SelectAMTable", {
     extend: sm.table.ToolbarLocalTable,
@@ -115,7 +120,7 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
 
             el = this._createButton(null, "ncms/icon/16/actions/delete.png",
                 this.__onRemove, this);
-            el.setToolTipText(this.tr("Drop record"));
+            el.setToolTipText(this.tr("Remove record"));
             this.__broadcaster.attach(el, "sel", "enabled");
             part.add(el);
 
@@ -139,7 +144,8 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
         },
 
         _createButton: function (label, icon, handler, self) {
-            var bt = new qx.ui.toolbar.Button(label, icon).set({"appearance": "toolbar-table-button"});
+            var bt = new qx.ui.toolbar.Button(label, icon)
+            .set({"appearance": "toolbar-table-button"});
             if (handler != null) {
                 bt.addListener("execute", handler, self);
             }

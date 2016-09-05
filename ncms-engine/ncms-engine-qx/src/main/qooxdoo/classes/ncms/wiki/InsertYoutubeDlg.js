@@ -8,7 +8,7 @@ qx.Class.define("ncms.wiki.InsertYoutubeDlg", {
         /**
          * Data:
          * {"code":"1m8lFg3e8AE",       //Youtube video code
-         * "custom":false,              //True if video size was overriden
+         * "custom":false,              //True if video size was overridden
          * "width":640,"height":360     //Custom video size
          * }
          */

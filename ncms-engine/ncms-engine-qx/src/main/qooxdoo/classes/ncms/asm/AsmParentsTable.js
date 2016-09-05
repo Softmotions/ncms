@@ -56,7 +56,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             this._reload(items);
         },
 
-        //overriden
+        //overridden
         _createToolbarItems: function (toolbar) {
             var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
@@ -74,7 +74,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             return toolbar;
         },
 
-        //overriden
+        //overridden
         _createTable: function (tm) {
             var table = new sm.table.Table(tm, tm.getCustom());
             table.getSelectionModel().addListener("changeSelection", this._syncState, this);
@@ -98,7 +98,7 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
             return bt;
         },
 
-        //overriden
+        //overridden
         _setJsonTableData: function (tm, items) {
             var data = {
                 "columns": [

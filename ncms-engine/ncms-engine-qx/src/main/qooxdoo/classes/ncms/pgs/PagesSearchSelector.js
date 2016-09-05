@@ -100,7 +100,7 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
             this.updateViewSpec({name: val || ""});
         },
 
-        //overriden
+        //overridden
         _applyEnabled: function (value, old) {
             this.base(arguments, value, old);
             this.__sf.setEnabled(value);
