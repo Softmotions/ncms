@@ -41,8 +41,8 @@
         DELETE
         FROM ASM_CORES
         <where>
-            <if test="id != null">#{id}</if>
-            <if test="location != null">#{location}</if>
+            <if test="id != null">id = #{id}</if>
+            <if test="location != null">AND location = #{location}</if>
         </where>
     </delete>
 

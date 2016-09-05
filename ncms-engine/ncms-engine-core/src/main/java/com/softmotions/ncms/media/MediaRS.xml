@@ -49,8 +49,8 @@
     <update id="fixResourceLocation"
             parameterType="map">
         UPDATE MEDIA_ENTITY e
-        SET e.folder = #{nfolder},
-            e.name   = #{nname},
+        SET folder = #{nfolder},
+            name   = #{nname},
             mdate    = CURRENT_TIMESTAMP
         WHERE e.folder = #{folder}
               AND e.name = #{name}
@@ -62,6 +62,15 @@
         UPDATE MEDIA_ENTITY e
         SET e.folder = #{new_prefix} || SUBSTRING(e.folder, #{prefix_like_len}, CODEUNITS32),
             e.mdate  = CURRENT_TIMESTAMP
+        WHERE e.folder LIKE #{prefix_like}
+    </update>
+
+    <update id="fixFolderName"
+            databaseId="POSTGRES"
+            parameterType="map">
+        UPDATE MEDIA_ENTITY e
+        SET folder = #{new_prefix} || SUBSTRING(e.folder FROM #{prefix_like_len}),
+        mdate  = CURRENT_TIMESTAMP
         WHERE e.folder LIKE #{prefix_like}
     </update>
 
