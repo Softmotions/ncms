@@ -46,12 +46,15 @@ public class AsmDateAM extends AsmAttributeManagerSupport {
     }
 
     @Override
-    public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
+    public Object renderAsmAttribute(AsmRendererContext ctx,
+                                     String attrname, Map<String, String> options) throws AsmRenderingException {
         return ctx.getAsm().getEdate();
     }
 
     @Override
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx,
+                                              AsmAttribute attr,
+                                              JsonNode val) throws Exception {
         AsmOptions asmOpts = new AsmOptions();
         JsonUtils.populateMapByJsonNode((ObjectNode) val, asmOpts, "format");
         attr.setOptions(asmOpts.toString());
@@ -59,13 +62,18 @@ public class AsmDateAM extends AsmAttributeManagerSupport {
     }
 
     @Override
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx,
+                                            AsmAttribute attr,
+                                            JsonNode val) throws Exception {
         attr.setEffectiveValue(val.path("value").asText(null));
         return attr;
     }
 
     @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
+    public void attributePersisted(AsmAttributeManagerContext ctx,
+                                   AsmAttribute attr,
+                                   JsonNode val,
+                                   JsonNode opts) throws Exception {
         if (val == null) {
             return;
         }

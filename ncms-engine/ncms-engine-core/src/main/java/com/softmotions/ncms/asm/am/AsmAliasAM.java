@@ -40,18 +40,24 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
     }
 
     @Override
-    public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
+    public Object renderAsmAttribute(AsmRendererContext ctx,
+                                     String attrname,
+                                     Map<String, String> options) throws AsmRenderingException {
         return ctx.getAsm().getNavAlias();
     }
 
     @Override
-    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public AsmAttribute applyAttributeOptions(AsmAttributeManagerContext ctx,
+                                              AsmAttribute attr,
+                                              JsonNode val) throws Exception {
         attr.setEffectiveValue(StringUtils.trimToNull(val.path("value").asText(null)));
         return attr;
     }
 
     @Override
-    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+    public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx,
+                                            AsmAttribute attr,
+                                            JsonNode val) throws Exception {
         String alias = StringUtils.trimToNull(val.path("value").asText(null));
         while (alias != null && !alias.isEmpty() && alias.charAt(0) == '/') {
             alias = alias.substring(1);
@@ -61,7 +67,10 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
     }
 
     @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
+    public void attributePersisted(AsmAttributeManagerContext ctx,
+                                   AsmAttribute attr,
+                                   JsonNode val,
+                                   JsonNode opts) throws Exception {
         String alias;
         if (val != null) {
             alias = StringUtils.trimToNull(val.path("value").asText(null));
@@ -85,7 +94,9 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
     }
 
     @Override
-    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx, AsmAttribute attr, Map<Long, Long> fmap) throws Exception {
+    public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,
+                                             AsmAttribute attr,
+                                             Map<Long, Long> fmap) throws Exception {
         attr.setEffectiveValue(null);
         return attr;
     }

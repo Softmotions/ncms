@@ -2,6 +2,8 @@ package com.softmotions.ncms.asm;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -94,6 +96,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.asmId = asmId;
     }
 
+    @Nonnull
     public String getName() {
         return name;
     }
@@ -102,6 +105,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.name = name;
     }
 
+    @Nonnull
     public String getType() {
         return type;
     }
@@ -110,6 +114,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.type = type;
     }
 
+    @Nullable
     public String getValue() {
         return value;
     }
@@ -118,6 +123,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.value = value;
     }
 
+    @Nullable
     public String getLargeValue() {
         return largeValue;
     }
@@ -126,6 +132,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.largeValue = largeValue;
     }
 
+    @Nullable
     public String getOptions() {
         return options;
     }
@@ -147,6 +154,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         return (this.overridenParent != null);
     }
 
+    @Nullable
     AsmAttribute getOverridenParent() {
         return overridenParent;
     }
@@ -163,6 +171,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.required = required;
     }
 
+    @Nonnull
     public Date getMdate() {
         return mdate;
     }
@@ -172,6 +181,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
     }
 
     @JsonIgnore
+    @Nullable
     public String getEffectiveValue() {
         return (largeValue != null) ? largeValue : value;
     }
@@ -191,6 +201,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         }
     }
 
+    @Nullable
     public String getLabel() {
         return label;
     }
@@ -212,6 +223,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         return asm.getName() + '#' + name;
     }
 
+    @Nonnull
     public AsmAttribute cloneDeep() {
         AsmAttribute attr = new AsmAttribute();
         attr.id = id;
