@@ -211,7 +211,7 @@
 
     <update id="finishMove" parameterType="map">
         UPDATE ASMS AS a
-        SET a.nav_cached_path = (SELECT p.nav_cached_path FROM ASMS AS p WHERE p.id = a.nav_parent_id) || a.nav_parent_id || '/'
+        SET nav_cached_path = (SELECT p.nav_cached_path FROM ASMS AS p WHERE p.id = a.nav_parent_id) || a.nav_parent_id || '/'
         WHERE id IN (SELECT a2.id FROM ASMS AS a2 INNER JOIN ASMS AS p2 ON a2.nav_parent_id = p2.id
                                   WHERE a2.nav_cached_path IS NULL AND p2.nav_cached_path IS NOT NULL)
     </update>

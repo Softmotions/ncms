@@ -13,9 +13,17 @@
         WHERE c.location LIKE #{prefix_like}
     </update>
 
+    <update id="fixCoreFolderLocation"
+            databaseId="POSTGRES"
+            parameterType="map">
+        UPDATE ASM_CORES c
+        SET location = #{new_prefix} || SUBSTRING(c.location FROM #{prefix_like_len})
+        WHERE c.location LIKE #{prefix_like}
+    </update>
+
     <update id="fixCoreLocation" parameterType="map">
         UPDATE ASM_CORES c
-        SET c.location = #{new_location}
+        SET location = #{new_location}
         WHERE c.location = #{old_location}
     </update>
 

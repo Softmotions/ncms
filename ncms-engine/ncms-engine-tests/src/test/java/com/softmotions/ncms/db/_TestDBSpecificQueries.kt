@@ -18,7 +18,7 @@ import org.testng.annotations.Test
  *
  * @author Motyrev Pavel (legioner.r@gmail.com)
  */
-class _TestDBMergeQueries(db: String) : DbBaseTest(db) {
+class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
 
     constructor() : this(DEFAULT_DB) {
     }
@@ -49,6 +49,10 @@ class _TestDBMergeQueries(db: String) : DbBaseTest(db) {
 
     val userER: MBDAOSupport by lazy {
         MBDAOSupport(UserEnvRS::class.java, getInstance(SqlSession::class))
+    }
+
+    val aEL: MBDAOSupport by lazy {
+        MBDAOSupport(AsmEventsListener::class.java, getInstance(SqlSession::class))
     }
 
     @BeforeClass
@@ -203,6 +207,67 @@ class _TestDBMergeQueries(db: String) : DbBaseTest(db) {
 
     }
 
+    @Test
+    fun testSubstringQueries() {
+        // test query fixFolderName@MediaRS
+        mediaRS.insert("insertEntity",
+                "folder", "/foo/bar/",
+                "name", "test",
+                "status", 0,
+                "content_type", "test",
+                "put_content_type", "test",
+                "content_length", 0,
+                "owner", "test",
+                "description", "test",
+                "tags", "test",
+                "meta", "test",
+                "system", false)
 
+        var id = mediaRS.selectOne<Long>("selectEntityIdByPath",
+                "folder", "/foo/bar/",
+                "name", "test")
 
+        var prefixLike = "/foo/%"
+        var newPrefix = "/Ѧü/"
+        Assert.assertEquals(1, mediaRS.update("fixFolderName",
+                "new_prefix", newPrefix,
+                "prefix_like", prefixLike,
+                "prefix_like_len", prefixLike.length))
+
+        val res = mediaRS.select<Map<String, Any>>("selectEntityPathById",
+                "id", id)
+        Assert.assertEquals(1, res.size)
+        Assert.assertEquals("${newPrefix}bar/", res[0]["folder"]?.toString())
+
+        Assert.assertEquals(1, mediaRS.delete("deleteFile",
+                "folder", res[0]["folder"]?.toString(),
+                "name", res[0]["name"]?.toString()))
+
+        // test query fixCoreFolderLocation@AsmEventsListener
+        val adao = getInstance(AsmDAO::class)
+        adao.insert("coreInsert",
+                "location", "/bar/foo/",
+                "name", "test",
+                "template_engine", "test")
+        var res1 = adao.select<AsmCore>("selectAsmCore",
+                "location", "/bar/foo/",
+                "name", "test")
+        Assert.assertEquals(1, res1.size)
+        id = res1[0].id
+
+        prefixLike = "/bar/%"
+        newPrefix = "/üѦ/"
+        Assert.assertEquals(1, aEL.update("fixCoreFolderLocation",
+                "new_prefix", newPrefix,
+                "prefix_like", prefixLike,
+                "prefix_like_len", prefixLike.length))
+
+        res1 = adao.select<AsmCore>("selectAsmCore",
+                "id", id)
+        Assert.assertEquals(1, res.size)
+        Assert.assertEquals("${newPrefix}foo/", res1[0].location)
+
+        Assert.assertEquals(1, adao.delete("coreDelete",
+                "id", id))
+    }
 }
