@@ -203,9 +203,9 @@
         <set>
             <if test="template != null">template = #{template},</if>
             <if test="template_mode != null">template_mode = #{template_mode},</if>
-            published = #{published},
-            description = #{description},
-            controller = #{controller},
+            <if test="published != null">published = #{published},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="controller != null">controller = #{controller},</if>
         </set>
         WHERE id = #{id}
     </update>

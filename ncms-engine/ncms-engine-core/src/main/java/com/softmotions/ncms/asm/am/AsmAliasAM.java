@@ -75,7 +75,7 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
         if (val != null) {
             alias = StringUtils.trimToNull(val.path("value").asText(null));
         } else if (opts != null) {
-            alias = StringUtils.trimToNull(val.path("value").asText(null));
+            alias = StringUtils.trimToNull(opts.path("value").asText(null));
         } else {
             return;
         }
