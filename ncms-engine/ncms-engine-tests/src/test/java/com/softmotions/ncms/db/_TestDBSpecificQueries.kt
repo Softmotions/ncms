@@ -12,6 +12,7 @@ import org.testng.Assert
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
+import java.util.Calendar
 
 /**
  * Testing of sql queries with merge
@@ -171,7 +172,7 @@ class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
         adao.asmInsert(asm2)
         pageSec.update("setRecursiveAcl",
                 "acl", 1L,
-                "pid", 2L)
+                "pid", asm2.id)
         for (i in 0..1) {
             pageSec.update("updateChildRecursiveAcl2",
                     "acl", 2L,
@@ -269,5 +270,34 @@ class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
 
         Assert.assertEquals(1, adao.delete("coreDelete",
                 "id", id))
+    }
+
+    @Test
+    fun testDateQueries() {
+        val adao = getInstance(AsmDAO::class)
+        val asm = Asm()
+        asm.name = "foobar"
+        adao.asmInsert(asm)
+
+        val calendar = Calendar.getInstance()
+        Assert.assertEquals(1, adao.update("asmSetEdate",
+                "id", asm.id,
+                "edate", calendar.time))
+
+        Assert.assertEquals(1, adao.update("setAsmRefData",
+                "id", asm.id,
+                "type", "bar",
+                "svalue", "svalue",
+                "ivalue", 1L))
+
+        val res = adao.select<Map<String, Any>>("selectAsmEventRef",
+                "type", "bar",
+                "edateLTYear", 3000,
+                "edateGTYear", 2000,
+                "edateLTDay", 365,
+                "edateGTDay", 1)
+        Assert.assertEquals(1, res.size)
+        Assert.assertEquals(asm.id, res[0]["asm_id"])
+        Assert.assertEquals("svalue", res[0]["svalue"])
     }
 }
