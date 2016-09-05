@@ -19,7 +19,8 @@ qx.Class.define("ncms.asm.am.TableAMValueWidget", {
     include: [
         qx.ui.form.MForm,
         ncms.asm.am.MValueWidget,
-        sm.table.MTableMutator
+        sm.table.MTableMutator,
+        ncms.cc.MCommands
     ],
 
     events: {
@@ -44,10 +45,21 @@ qx.Class.define("ncms.asm.am.TableAMValueWidget", {
             "sel": false
         });
         this.__historyCols = [];
+
         this.base(arguments);
+
+        this.setHeight(230);
         if (model != null) {
             this.setModel(model);
         }
+
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__onRemoveConfirm, this);
+
+        this.setContextMenu(new qx.ui.menu.Menu());
+        this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
     },
 
     members: {
@@ -118,6 +130,7 @@ qx.Class.define("ncms.asm.am.TableAMValueWidget", {
             var t = new sm.table.Table(tableModel, tableModel.getCustom())
             .set({"statusBarVisible": false});
             t.getSelectionModel().setSelectionMode(qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION);
+
             // Setup first row as bold header cell renderer
             var cm = t.getTableColumnModel();
             var cr = new ncms.cc.table.TableHeaderCRenderer();
@@ -125,9 +138,13 @@ qx.Class.define("ncms.asm.am.TableAMValueWidget", {
             for (var i = 0; i < nCols; ++i) {
                 t.getTableColumnModel().setDataCellRenderer(i, cr);
             }
+
             // Listeners
             t.getSelectionModel().addListener("changeSelection", this.__syncState, this);
             t.addListener("dataEdited", this.__dataEdited, this);
+
+            // Shortcuts
+            this._registerCommandFocusWidget(t);
             return t;
         },
 
@@ -222,6 +239,15 @@ qx.Class.define("ncms.asm.am.TableAMValueWidget", {
             this.fireEvent("modified");
         },
 
+
+        __onRemoveConfirm: function () {
+            console.log("!!!C");
+            ncms.Application.confirm(this.tr("Are you sure to remove the selected rows?"), function (yes) {
+                if (!yes) return;
+                this.__onRemove();
+            }, this);
+        },
+
         __onRemove: function () {
             this.removeSelected();
             this.fireEvent("modified");
@@ -295,6 +321,22 @@ qx.Class.define("ncms.asm.am.TableAMValueWidget", {
             } else {
                 b.setUp(false);
                 b.setDown(false);
+            }
+        },
+
+        __beforeContextmenuOpen : function(ev) {
+            var rd = this.getSelectedRowData();
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+
+            var bt = new qx.ui.menu.Button(this.tr("New row"));
+            bt.addListenerOnce("execute", this.__onAdd, this);
+            menu.add(bt);
+
+            if (rd != null) {
+                bt = new qx.ui.menu.Button(this.tr("Remove"));
+                bt.addListenerOnce("execute", this.__onRemove, this);
+                menu.add(bt);
             }
         }
     },

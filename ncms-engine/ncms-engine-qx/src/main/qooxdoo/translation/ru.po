@@ -171,6 +171,7 @@ msgstr "Редактировать"
 
 #: ncms/mtt/filters/MttFiltersTable.js:182 ncms/asm/AsmNav.js:89
 #: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:644
+#: ncms/asm/am/TableAMValueWidget.js:337
 #: ncms/mtt/actions/MttActionsTree.js:132
 #: ncms/mtt/actions/MttActionsTree.js:240 ncms/mtt/MttNav.js:41
 #: ncms/mtt/MttNav.js:148 ncms/asm/AsmAttrsTable.js:212
@@ -653,11 +654,11 @@ msgstr "Элементы"
 msgid "Selected"
 msgstr "Выбрано"
 
-#: ncms/asm/am/SelectAMTable.js:118 ncms/asm/am/TableAMValueWidget.js:73
+#: ncms/asm/am/SelectAMTable.js:118 ncms/asm/am/TableAMValueWidget.js:85
 msgid "Add record"
 msgstr "Добавить запись"
 
-#: ncms/asm/am/SelectAMTable.js:123 ncms/asm/am/TableAMValueWidget.js:78
+#: ncms/asm/am/SelectAMTable.js:123 ncms/asm/am/TableAMValueWidget.js:90
 msgid "Remove record"
 msgstr "Удалить запись"
 
@@ -685,9 +686,17 @@ msgstr "Placeholder"
 msgid "Table"
 msgstr "Таблица"
 
-#: ncms/asm/am/TableAMValueWidget.js:85
+#: ncms/asm/am/TableAMValueWidget.js:97
 msgid "Number of table columns"
-msgstr ""
+msgstr "Сколько колонок в таблице"
+
+#: ncms/asm/am/TableAMValueWidget.js:245
+msgid "Are you sure to remove the selected rows?"
+msgstr "Пожалуйста, подтвердите удаление выбранных строк"
+
+#: ncms/asm/am/TableAMValueWidget.js:332
+msgid "New row"
+msgstr "Новая строка"
 
 #: ncms/asm/am/TreeAM.js:14
 msgid "Tree/Menu"
@@ -1910,6 +1919,9 @@ msgstr "Потомок уровня вложенности 2"
 #: ncms/wiki/WikiEditor.js:893
 msgid "Note text"
 msgstr "Заметка"
+
+#~ msgid "Are you sure to remove selected rows"
+#~ msgstr ""
 
 #~ msgid "Optional pixel JS"
 #~ msgstr "Опциональный JS трекинг пикселя"
