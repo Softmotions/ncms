@@ -38,8 +38,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.softmotions.commons.Converters;
 import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
@@ -303,7 +303,7 @@ public class AsmRS extends MBDAOSupport {
         }
         if (props.hasNonNull("templateMode")) {
             String mode = props.get("templateMode").asText();
-            args.param("template", "none".equals(mode) ? 0 : 1);
+            args.param("template", !"none".equals(mode));
             args.param("template_mode", mode);
         }
         if (props.hasNonNull("controller")) {
@@ -525,7 +525,7 @@ public class AsmRS extends MBDAOSupport {
                 Map<String, Object> row = (Map<String, Object>) context.getResultObject();
                 try {
                     gen.writeStartObject();
-                    int template = NumberUtils.number2Int((Number) row.get("template"), 0);
+                    int template = BooleanUtils.toInteger(Converters.toBoolean(row.get("template")));
                     String type = (String) row.get("type");
                     if (template == 1) {
                         gen.writeStringField("icon", "ncms/icon/16/asm/template.png");
@@ -541,7 +541,7 @@ public class AsmRS extends MBDAOSupport {
                     gen.writeStringField("hname", (String) row.get("hname"));
                     gen.writeStringField("description", (String) row.get("description"));
                     gen.writeStringField("type", (String) row.get("type"));
-                    gen.writeNumberField("published", NumberUtils.number2Int((Number) row.get("published"), 0));
+                    gen.writeNumberField("published", BooleanUtils.toInteger(Converters.toBoolean(row.get("published"))));
                     gen.writeNumberField("template", template);
                     gen.writeEndObject();
                 } catch (IOException e) {
