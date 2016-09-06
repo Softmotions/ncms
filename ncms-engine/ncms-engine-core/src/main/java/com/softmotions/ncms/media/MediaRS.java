@@ -1399,8 +1399,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 spath = normalizeFolder(spath);
                 tpath = normalizeFolder(tpath);
 
-                // Copy files
-                FileUtils.copyDirectory(sdir, tdir);
+                if (sdir.isDirectory()) {
+                    // Copy files
+                    FileUtils.copyDirectory(sdir, tdir);
+                }
 
                 // Insert base meta
                 insert("insertCopyMedia",

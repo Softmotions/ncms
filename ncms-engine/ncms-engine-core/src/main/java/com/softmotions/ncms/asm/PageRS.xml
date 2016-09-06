@@ -149,7 +149,7 @@
     <update id="mergeNewPage"
             databaseId="POSTGRES"
             parameterType="map">
-        INSERT INTO ASMS (name, hname, hname_lower, type,
+        INSERT INTO ASMS (name, hname, type,
                           nav_parent_id,
                           lang,
                           nav_cached_path,
@@ -159,7 +159,7 @@
                           recursive_acl_id,
                           cdate,
                           ordinal)
-        VALUES (#{guid}, #{name}, LOWER(#{name}), #{type},
+        VALUES (#{guid}, #{name}, #{type},
                          #{nav_parent_id,jdbcType=BIGINT},
                          #{lang,jdbcType=CHAR},
                          #{nav_cached_path},
@@ -170,7 +170,7 @@
                          CURRENT_TIMESTAMP,
                          NEXTVAL('SEQ_ASMS_ORDINAL'))
         ON CONFLICT (name)
-            DO UPDATE SET (hname, hname_lower, type,
+            DO UPDATE SET (hname, type,
                            nav_parent_id,
                            lang,
                            nav_cached_path,
@@ -178,7 +178,7 @@
                            mdate, muser, owner,
                            description,
                            recursive_acl_id) =
-            (#{name}, LOWER(#{name}), #{type},
+            (#{name}, #{type},
                       #{nav_parent_id,jdbcType=BIGINT},
                       #{lang,jdbcType=CHAR},
                       #{nav_cached_path},
@@ -189,15 +189,9 @@
     </update>
 
 
-    <update id="updatePageBasic" databaseId="DB2" parameterType="map">
+    <update id="updatePageBasic" parameterType="map">
         UPDATE ASMS
         SET hname = #{hname}, type = #{type}, muser = #{muser}, description = #{description}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updatePageBasic" databaseId="POSTGRES" parameterType="map">
-        UPDATE ASMS
-        SET hname = #{hname}, hname_lower = LOWER(#{hname}), type = #{type}, muser = #{muser}, description = #{description}
         WHERE id = #{id}
     </update>
 
@@ -322,7 +316,7 @@
         <where>
             <if test="parentId != null">AND nav_parent_id = #{parentId}</if>
             <if test="name != null">AND hname LIKE #{name}</if>
-            <if test="name_lower != null">AND hname_lower LIKE #{name_lower}</if>
+            <if test="name_lower != null">AND LOWER(hname) LIKE #{name_lower}</if>
             <if test="type != null">AND type LIKE #{type}</if>
             <if test="collection != null and user != null">
                 AND id IN (
@@ -349,7 +343,7 @@
         <where>
             <if test="parentId != null">AND p.nav_parent_id = #{parentId}</if>
             <if test="name != null">AND p.hname LIKE #{name}</if>
-            <if test="name_lower != null">AND p.hname_lower LIKE #{name_lower}</if>
+            <if test="name_lower != null">AND LOWER(p.hname) LIKE #{name_lower}</if>
             <if test="type != null">AND p.type LIKE #{type}</if>
             <if test="collection != null and user != null">
                 AND p.id IN (

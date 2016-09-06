@@ -48,7 +48,7 @@
             acl.rights
         FROM ASM_ACL_ENTITY AS acl
             INNER JOIN ASMS AS a ON acl.acl_id = a.local_acl_id OR acl.acl_id = a.recursive_acl_id
-        WHERE acl.user = #{user} AND a.id = #{pid}
+        WHERE acl."USER" = #{user} AND a.id = #{pid}
     </select>
 
     <update id="setLocalAcl" parameterType="map">
@@ -101,22 +101,22 @@
 
     <select id="selectRecursiveUserRights" resultType="map" parameterType="map">
         SELECT
-        acl.user AS "user",
+        acl."USER" AS "user",
         acl.rights AS "rights"
         FROM ASM_ACL_ENTITY AS acl
         INNER JOIN ASMS AS a ON acl.acl_id = a.recursive_acl_id
         WHERE a.id = #{pid}
-        <if test="user != null">AND acl.user = #{user}</if>
+        <if test="user != null">AND acl."USER" = #{user}</if>
     </select>
 
     <select id="selectLocalUserRights" resultType="map" parameterType="map">
         SELECT
-        acl.user AS "user",
+        acl."USER" AS "user",
         acl.rights AS "rights"
         FROM ASM_ACL_ENTITY AS acl
         INNER JOIN ASMS AS a ON acl.acl_id = a.local_acl_id
         WHERE a.id = #{pid}
-        <if test="user != null">AND acl.user = #{user}</if>
+        <if test="user != null">AND acl."USER" = #{user}</if>
     </select>
 
     <select id="checkUserAccess" resultType="int" parameterType="map">
@@ -124,7 +124,7 @@
             COUNT(acl.acl_id)
         FROM ASM_ACL_ENTITY AS acl
             INNER JOIN ASMS AS a ON a.recursive_acl_id = acl.acl_id OR a.local_acl_id = acl.acl_id
-        WHERE a.id = #{pid} AND acl.user = #{user} AND acl.rights LIKE '%' || #{right} || '%'
+        WHERE a.id = #{pid} AND acl."USER" = #{user} AND acl.rights LIKE '%' || #{right} || '%'
     </select>
 
     <update id="updateAclUserRights"
@@ -167,7 +167,7 @@
     </update>
 
     <update id="copyAcl" parameterType="map">
-        INSERT INTO ASM_ACL_ENTITY (acl_id, user, rights)
+        INSERT INTO ASM_ACL_ENTITY (acl_id, "USER", rights)
             SELECT
                 #{new_acl},
                 "USER",
@@ -242,7 +242,7 @@
         a.nav_cached_path LIKE #{nav_path}
         <if test="exclude_acl != null">AND a.recursive_acl_id != #{exclude_acl}</if>
         <if test="with_user != null">
-            AND EXISTS (SELECT aae.rights FROM ASM_ACL_ENTITY AS aae WHERE aae.acl_id = a.recursive_acl_id AND aae.user
+            AND EXISTS (SELECT aae.rights FROM ASM_ACL_ENTITY AS aae WHERE aae.acl_id = a.recursive_acl_id AND aae."USER"
             = #{with_user})
         </if>
     </select>
@@ -252,7 +252,7 @@
             COUNT(a.id)
         FROM ASMS AS a INNER JOIN ASM_ACL_ENTITY AS acl ON a.recursive_acl_id = acl.acl_id
         WHERE
-            acl.user = #{user} AND #{nav_path} LIKE (a.nav_cached_path || a.id || '/%')
+            acl."USER" = #{user} AND #{nav_path} LIKE (a.nav_cached_path || a.id || '/%')
     </select>
 
     <update id="deleteLocalAclUserRecursive" parameterType="map">

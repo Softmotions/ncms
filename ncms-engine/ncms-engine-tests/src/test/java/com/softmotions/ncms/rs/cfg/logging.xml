@@ -10,5 +10,6 @@
     <logger name="com.softmotions.ncms.asm.AsmDAO" level="TRACE"/>
     <logger name="com.softmotions.ncms.asm.AsmRS" level="TRACE"/>
     <logger name="com.softmotions.ncms.asm.PageRS" level="TRACE"/>
+    <logger name="com.softmotions.ncms.asm.PageSecurityService" level="TRACE"/>
     <logger name="com.softmotions.ncms.media.MediaRS" level="TRACE"/>
 </configuration>

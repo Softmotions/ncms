@@ -762,7 +762,7 @@
             keyProperty="id"
             databaseId="POSTGRES">
 
-        INSERT INTO asms (name, ordinal, asm_core_id, hname, hname_lower,
+        INSERT INTO asms (name, ordinal, asm_core_id, hname,
                           cdate, mdate, muser, owner,
                           published, template, template_mode, controller,
                           type, options, description,
@@ -774,8 +774,6 @@
                 a.asm_core_id,
                 <if test="hname == null">a.hname,</if>
                 <if test="hname != null">#{hname},</if>
-                <if test="hname == null">LOWER(a.hname),</if>
-                <if test="hname != null">LOWER(#{hname}),</if>
                 CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 a.muser,
