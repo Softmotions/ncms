@@ -9,7 +9,6 @@
     <property name="tinyint.type" dbms="postgresql" value="SMALLINT"/>
     <property name="boolean.type" dbms="postgresql" value="BOOLEAN"/>
 
-
     <include relativeToChangelogFile="true" file="db-changelog-1.xml"/>
     <include relativeToChangelogFile="true" file="db-changelog-3.xml"/>
     <include relativeToChangelogFile="true" file="db-changelog-4.xml"/>

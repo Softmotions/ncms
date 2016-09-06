@@ -59,6 +59,10 @@
         <changelog>com/softmotions/ncms/db/changelog/db-changelog-master.xml</changelog>
         <update>
             <dropAll>
+                <sql-before failOnError="false">
+                    DROP INDEX IDX_L_ASMS_HNAME;
+                    DROP INDEX IDX_L_ASMS_NAMEDESC;
+                </sql-before>
                 <activate>{sys:liquibase.dropAll}</activate>
             </dropAll>
             <contexts>testing</contexts>
