@@ -140,6 +140,7 @@ class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
         }
 
         // test query mergeNewPage@PageRS
+        val aclId = pageSec.selectOne<Long>("newAclId")
         for (i in 0..1) {
             Assert.assertEquals(1, pageRs.update("mergeNewPage",
                     "guid", "test",
@@ -151,36 +152,41 @@ class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
                     "options", "",
                     "user", "test",
                     "description", "test",
-                    "recursive_acl_id", 1L))
+                    "recursive_acl_id", aclId))
         }
 
         // test query updateAclUserRights@PageSecurityService
         for (i in 0..1) {
             pageSec.update("updateAclUserRights",
-                    "acl", 1L,
+                    "acl", aclId,
                     "user", "test",
                     "rights", "tes$i")
             Assert.assertEquals("tes$i", pageSec.selectOne("selectUserRightsByAcl",
-                    "acl", 1L,
+                    "acl", aclId,
                     "user", "test"))
         }
 
         // test query updateChildRecursiveAcl2@PageSecurityService
         val asm2 = Asm()
-        asm2.name = "bar"
-        asm2.navCachedPath = "test"
+        asm2.name = "barbar"
         adao.asmInsert(asm2)
+        pageRs.update("movePage",
+                "id", asm2.id,
+                "nav_parent_id", asm.id,
+                "lang", "RU",
+                "nav_cached_path", "test")
         pageSec.update("setRecursiveAcl",
-                "acl", 1L,
+                "acl", aclId,
                 "pid", asm2.id)
+        val aclId2 = pageSec.selectOne<Long>("newAclId")
         for (i in 0..1) {
             pageSec.update("updateChildRecursiveAcl2",
-                    "acl", 2L,
+                    "acl", aclId2,
                     "user", "test",
                     "rights", "Tes$i",
                     "nav_path", "test")
             Assert.assertEquals("Tes$i", pageSec.selectOne("selectUserRightsByAcl",
-                    "acl", 1L,
+                    "acl", aclId,
                     "user", "test"))
         }
 
