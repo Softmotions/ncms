@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import javax.annotation.Nonnull;
@@ -58,7 +60,7 @@ public class Table implements Iterable<String[]>, Serializable {
                 List<String> cols = new ArrayList<>(8);
                 rows.add(cols);
                 while (parser.nextToken() != JsonToken.END_ARRAY) {
-                    String v = parser.nextTextValue();
+                    String v = parser.getText();
                     if (v != null) {
                         cols.add(v);
                     }
@@ -144,12 +146,30 @@ public class Table implements Iterable<String[]>, Serializable {
                                         Spliterator.SUBSIZED);
     }
 
+
+    ///////////////////////////////////////////////////////////
+    //                    Httl specific                      //
+    ///////////////////////////////////////////////////////////
+
+
+    public String toHtmlTable() {
+        return toHtmlTable(Collections.emptyMap());
+    }
+
+    public String toHtmlTable(Map<String, ?> amap) {
+
+        // TODO
+
+        return "";
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         String sep = System.getProperty("line.separator");
         sb.append("Table{");
-        for (String[] row : table) {
-            sb.append(sep).append(Arrays.toString(row));
+        for (int i = 0; i < table.length; ++i) {
+            if (i > 0) sb.append(',');
+            sb.append(sep).append(Arrays.toString(table[i]));
         }
         sb.append(sep).append('}');
         return sb.toString();
