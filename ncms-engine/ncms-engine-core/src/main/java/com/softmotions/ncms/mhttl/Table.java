@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.collections4.iterators.ArrayIterator;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,15 +154,54 @@ public class Table implements Iterable<String[]>, Serializable {
     ///////////////////////////////////////////////////////////
 
 
-    public String toHtmlTable() {
-        return toHtmlTable(Collections.emptyMap());
+    public String toHtml() {
+        return toHtml(Collections.emptyMap());
     }
 
-    public String toHtmlTable(Map<String, ?> amap) {
+    /**
+     * Map keys:
+     * <p/>
+     * - noEscape {Boolean|String} Does not HTML escaping of table cell values
+     * - noHeader {Boolean|String} Does not redender first row as table header
+     * - tableAttrs {String} Optional table attributes
+     *
+     * @param amap
+     * @return
+     */
+    public String toHtml(Map<String, ?> amap) {
+        if (amap == null) {
+            amap = Collections.emptyMap();
+        }
+        String sep = System.getProperty("line.separator");
+        int pos = 0;
+        boolean noescape = BooleanUtils.toBoolean(String.valueOf(amap.get("noEscape")));
+        boolean noheader = BooleanUtils.toBoolean(String.valueOf(amap.get("noHeader")));
+        String tattrs = (String) amap.get("tableAttrs");
 
-        // TODO
-
-        return "";
+        StringBuilder sb = new StringBuilder(512);
+        sb.append("<table");
+        if (tattrs != null) {
+            sb.append(' ').append(tattrs);
+        }
+        sb.append('>');
+        if (table.length > pos && !noheader) {
+            sb.append(sep).append("<thead>").append(sep).append("<tr>");
+            for (String v : table[pos++]) {
+                sb.append(sep).append("<th>").append(noescape ? v : StringEscapeUtils.escapeHtml4(v)).append("</th>");
+            }
+            sb.append(sep).append("</tr>").append(sep).append("</thead>");
+        }
+        sb.append(sep).append("<tbody>");
+        for (; pos < table.length; ++pos) {
+            sb.append(sep).append("<tr>");
+            for (String v : table[pos]) {
+                sb.append(sep).append("<td>").append(noescape ? v : StringEscapeUtils.escapeHtml4(v)).append("</td>");
+            }
+            sb.append(sep).append("</tr>");
+        }
+        sb.append(sep).append("</tbody>");
+        sb.append(sep).append("</table>");
+        return sb.toString();
     }
 
     public String toString() {
