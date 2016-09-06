@@ -1,10 +1,11 @@
 /**
- * Cell renderer for TableDlg.
+ * Cell renderer:
+ * Text of a first row with bold style.
  *
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
  */
-qx.Class.define("ncms.wiki.TableDlgCRenderer", {
+qx.Class.define("ncms.cc.table.TableHeaderCRenderer", {
     extend: qx.ui.table.cellrenderer.Conditional,
 
     members: {

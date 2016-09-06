@@ -683,7 +683,7 @@ public class Asm implements Serializable {
             AsmAttribute a = res.get(i);
             Integer pind = pmap.get(a.getName());
             if (pind != null) {
-                a.setOverridenParent(res.get(pind));
+                a.setOverriddenParent(res.get(pind));
                 res.set(pind, a);
                 res.remove(i);
                 --i;

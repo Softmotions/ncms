@@ -48,7 +48,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
 
     @JsonIgnore
     transient
-    AsmAttribute overridenParent;
+    AsmAttribute overriddenParent;
 
     @JsonView(Asm.ViewFull.class)
     long ordinal;
@@ -150,17 +150,17 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
     }
 
     @JsonView(Asm.ViewFull.class)
-    public boolean isOverriden() {
-        return (this.overridenParent != null);
+    public boolean isOverridden() {
+        return (this.overriddenParent != null);
     }
 
     @Nullable
-    AsmAttribute getOverridenParent() {
-        return overridenParent;
+    AsmAttribute getOverriddenParent() {
+        return overriddenParent;
     }
 
-    void setOverridenParent(AsmAttribute overridenParent) {
-        this.overridenParent = overridenParent;
+    void setOverriddenParent(AsmAttribute overriddenParent) {
+        this.overriddenParent = overriddenParent;
     }
 
     public boolean isRequired() {

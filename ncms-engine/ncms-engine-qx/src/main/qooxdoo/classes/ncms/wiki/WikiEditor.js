@@ -139,7 +139,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             return this.getChildControl("textarea");
         },
 
-        //overriden
+        //overridden
         _applyEnabled: function (value, old) {
             this.base(arguments, value, old);
             this.getTextArea().setEnabled(value);
@@ -149,7 +149,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             this.__updateControls();
         },
 
-        //overriden
+        //overridden
         _createChildControlImpl: function (id) {
             var control;
             switch (id) {

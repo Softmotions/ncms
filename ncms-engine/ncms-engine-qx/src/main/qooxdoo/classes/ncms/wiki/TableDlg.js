@@ -135,7 +135,7 @@ qx.Class.define("ncms.wiki.TableDlg", {
                 this.__table.setTableModel(tm);
             }
 
-            var hrend = new ncms.wiki.TableDlgCRenderer();
+            var hrend = new ncms.cc.table.TableHeaderCRenderer();
             for (var i = 0; i < nCols; ++i) {
                 tm.setColumnSortable(i, false);
                 this.__table.getTableColumnModel().setDataCellRenderer(i, hrend);

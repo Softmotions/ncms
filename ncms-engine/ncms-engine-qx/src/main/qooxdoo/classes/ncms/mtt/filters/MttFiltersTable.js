@@ -79,7 +79,7 @@ qx.Class.define("ncms.mtt.filters.MttFiltersTable", {
             }, this);
         },
 
-        //overriden
+        //overridden
         _setJsonTableData: function (tm, items) {
             var data = {
                 "columns": [
@@ -109,7 +109,7 @@ qx.Class.define("ncms.mtt.filters.MttFiltersTable", {
             this.__syncState();
         },
 
-        //overriden
+        //overridden
         _createToolbarItems: function (toolbar) {
             var part = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
             toolbar.add(part);
@@ -140,7 +140,7 @@ qx.Class.define("ncms.mtt.filters.MttFiltersTable", {
             return bt;
         },
 
-        //overriden
+        //overridden
         _createTable: function (tm) {
             var table = new sm.table.Table(tm, tm.getCustom());
             table.getSelectionModel().addListener("changeSelection", this.__syncState, this);
