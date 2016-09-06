@@ -30,7 +30,7 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
             this._form.add(el, this.tr("Container"), null, "container");
         },
 
-        _save: function () {
+        _save: function (cb) {
             var items = this._form.getItems();
             var data = {
                 name: items["name"].getValue(),
@@ -38,6 +38,7 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
                 type: items["container"].getValue() ? "page.folder" : "page"
             };
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.new"), "PUT");
+            req.addListenerOnce("finished", cb);
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
             req.send(function (resp) {

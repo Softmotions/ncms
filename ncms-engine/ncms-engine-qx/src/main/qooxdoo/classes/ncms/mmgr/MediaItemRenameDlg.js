@@ -35,10 +35,11 @@ qx.Class.define("ncms.mmgr.MediaItemRenameDlg", {
             page.focus();
         },
 
-        _save: function () {
+        _save: function (cb) {
             var fitems = this._form.getItems();
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.move", this._path),
                 "PUT", "application/json");
+            req.addListenerOnce("finished", cb);
             var nname = fitems["name"].getValue();
             var npath = this._path.slice(0, -1).concat(nname).join("/");
             req.setData(npath);

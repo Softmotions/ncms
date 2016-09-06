@@ -10,7 +10,7 @@ qx.Class.define("ncms.pgs.PageDuplicateDlg", {
 
     members: {
 
-        _save: function () {
+        _save: function (cb) {
             var items = this._form.getItems();
             var data = {
                 id: this._spec["id"],
@@ -18,6 +18,7 @@ qx.Class.define("ncms.pgs.PageDuplicateDlg", {
                 type: items["container"].getValue() ? "page.folder" : "page"
             };
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.clone"), "PUT");
+            req.addListenerOnce("finished", cb);
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
             req.send(function (resp) {

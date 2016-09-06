@@ -9,6 +9,7 @@ qx.Class.define("ncms.mtt.MttRuleNewDlg", {
     },
 
     members: {
+
         _configureForm: function () {
             var page = new qx.ui.form.TextField().set({allowGrowY: true, maxLength: 64, required: true});
             page.addListener("keypress", function (ev) {
@@ -20,11 +21,12 @@ qx.Class.define("ncms.mtt.MttRuleNewDlg", {
             page.focus();
         },
 
-        _save: function () {
+        _save: function (cb) {
             var fitems = this._form.getItems();
             var req = new sm.io.Request(
                 ncms.Application.ACT.getRestUrl("mtt.rules.new", {name: fitems["name"].getValue()}),
                 "PUT", "application/json");
+            req.addListenerOnce("finished", cb);
             req.send(function (resp) {
                 this.fireDataEvent("completed", resp.getContent());
             }, this);

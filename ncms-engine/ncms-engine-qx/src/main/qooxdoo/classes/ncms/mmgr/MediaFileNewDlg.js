@@ -28,7 +28,7 @@ qx.Class.define("ncms.mmgr.MediaFileNewDlg", {
             page.focus();
         },
 
-        _save: function () {
+        _save: function (cb) {
             var fitems = this._form.getItems();
             var name = fitems["name"].getValue();
             var url = ncms.Application.ACT.getRestUrl("media.upload");
@@ -39,6 +39,7 @@ qx.Class.define("ncms.mmgr.MediaFileNewDlg", {
                 })
                 .join("/");
             var req = new sm.io.Request(url, "PUT", "application/json");
+            req.addListenerOnce("finished", cb);
             req.setData("");
             req.send(function (resp) {
                 this.fireDataEvent("completed", resp.getContent());

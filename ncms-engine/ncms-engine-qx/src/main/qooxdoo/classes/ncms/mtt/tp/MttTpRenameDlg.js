@@ -16,7 +16,7 @@ qx.Class.define("ncms.mtt.tp.MttTpRenameDlg", {
 
         __tpId: null,
 
-        _save: function () {
+        _save: function (cb) {
             var fitems = this._form.getItems();
             var req = new sm.io.Request(
                 ncms.Application.ACT.getRestUrl("mtt.tp.rename",
@@ -26,6 +26,7 @@ qx.Class.define("ncms.mtt.tp.MttTpRenameDlg", {
                     }
                 ),
                 "PUT", "application/json");
+            req.addListenerOnce("finished", cb);
             req.send(function (resp) {
                 this.fireDataEvent("completed", resp.getContent());
             }, this);

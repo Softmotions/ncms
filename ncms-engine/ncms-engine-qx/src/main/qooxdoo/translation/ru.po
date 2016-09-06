@@ -971,7 +971,7 @@ msgstr "Отключить"
 msgid "Are you sure to remove rule: \"%1\"?"
 msgstr "Подтвердите удаление правила \"%1\""
 
-#: ncms/mtt/MttRuleNewDlg.js:19
+#: ncms/mtt/MttRuleNewDlg.js:20
 msgid "Rule"
 msgstr "Правило"
 
