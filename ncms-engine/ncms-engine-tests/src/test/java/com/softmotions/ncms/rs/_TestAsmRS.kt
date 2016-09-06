@@ -265,8 +265,10 @@ class _TestAsmRS(db: String) : BaseRSTest(db) {
                 with(DELETE("/$aid/parents").contentType("application/json").send(mapper.writeValueAsString(parents))) {
                     assertEquals(200, code())
                     val body = body()
-                    val res = mapper.readTree(body)
-                    assertEquals(0, res.count())
+                    with(mapper.readTree(body)) {
+                        assertTrue(isArray)
+                        assertEquals(0, size())
+                    }
                 }
                 deleteAsm(aid)
             }

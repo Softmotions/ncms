@@ -60,6 +60,7 @@ import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import com.softmotions.commons.Converters;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.KVOptions;
@@ -898,7 +899,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                         if ("page.folder".equals(type)) {
                             status |= PAGE_STATUS_FOLDER_FLAG;
                         }
-                        if (!NumberUtils.number2Boolean((Number) row.get("published"))) { //page not published
+                        if (!Converters.toBoolean(row.get("published"))) { //page not published
                             status |= PAGE_STATUS_NOT_PUBLISHED_FLAG;
                         }
                         gen.writeNumberField("status", status);
@@ -1028,7 +1029,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 select(cq.getStatement(), context -> {
                     Map<String, ?> row = (Map<String, ?>) context.getResultObject();
                     try {
-                        boolean published = NumberUtils.number2Boolean((Number) row.get("published"));
+                        boolean published = Converters.toBoolean(row.get("published"));
 
                         gen.writeStartObject();
                         gen.writeStringField("icon", published ? "" : "ncms/icon/16/misc/exclamation.png");

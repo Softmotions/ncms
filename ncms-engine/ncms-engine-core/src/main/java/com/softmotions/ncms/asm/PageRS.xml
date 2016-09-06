@@ -149,7 +149,7 @@
     <update id="mergeNewPage"
             databaseId="POSTGRES"
             parameterType="map">
-        INSERT INTO ASMS (name, hname, type,
+        INSERT INTO ASMS (name, hname, hname_lower, type,
                           nav_parent_id,
                           lang,
                           nav_cached_path,
@@ -159,7 +159,7 @@
                           recursive_acl_id,
                           cdate,
                           ordinal)
-        VALUES (#{guid}, #{name}, #{type},
+        VALUES (#{guid}, #{name}, LOWER(#{name}), #{type},
                          #{nav_parent_id,jdbcType=BIGINT},
                          #{lang,jdbcType=CHAR},
                          #{nav_cached_path},
@@ -170,7 +170,7 @@
                          CURRENT_TIMESTAMP,
                          NEXTVAL('SEQ_ASMS_ORDINAL'))
         ON CONFLICT (name)
-            DO UPDATE SET (hname, type,
+            DO UPDATE SET (hname, hname_lower, type,
                            nav_parent_id,
                            lang,
                            nav_cached_path,
@@ -178,7 +178,7 @@
                            mdate, muser, owner,
                            description,
                            recursive_acl_id) =
-            (#{name}, #{type},
+            (#{name}, LOWER(#{name}), #{type},
                       #{nav_parent_id,jdbcType=BIGINT},
                       #{lang,jdbcType=CHAR},
                       #{nav_cached_path},
@@ -189,9 +189,15 @@
     </update>
 
 
-    <update id="updatePageBasic" parameterType="map">
+    <update id="updatePageBasic" databaseId="DB2" parameterType="map">
         UPDATE ASMS
         SET hname = #{hname}, type = #{type}, muser = #{muser}, description = #{description}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePageBasic" databaseId="POSTGRES" parameterType="map">
+        UPDATE ASMS
+        SET hname = #{hname}, hname_lower = LOWER(#{hname}), type = #{type}, muser = #{muser}, description = #{description}
         WHERE id = #{id}
     </update>
 
@@ -338,8 +344,8 @@
             lacl.rights         AS "local_rights",
             racl.rights         AS "recursive_rights"
         FROM ASMS AS p
-        LEFT JOIN ASM_ACL_ENTITY AS lacl ON lacl.acl_id = p.local_acl_id AND lacl.user = #{user}
-        LEFT JOIN ASM_ACL_ENTITY AS racl ON racl.acl_id = p.recursive_acl_id AND racl.user = #{user}
+        LEFT JOIN ASM_ACL_ENTITY AS lacl ON lacl.acl_id = p.local_acl_id AND lacl."USER" = #{user}
+        LEFT JOIN ASM_ACL_ENTITY AS racl ON racl.acl_id = p.recursive_acl_id AND racl."USER" = #{user}
         <where>
             <if test="parentId != null">AND p.nav_parent_id = #{parentId}</if>
             <if test="name != null">AND p.hname LIKE #{name}</if>
