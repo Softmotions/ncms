@@ -39,8 +39,10 @@ qx.Class.define("ncms.AlertPopupMessages", {
             }
             var captions = Object.keys(this.__msgs);
             if (!isNotification) {
-
-                var alert = this.__alert || new sm.alert.DefaultAlertMessages(this.__caption);
+                var alert = this.__alert;
+                if (!alert) {
+                    alert = this.__alert = new sm.alert.DefaultAlertMessages(this.__caption);
+                }
                 captions.forEach(function (caption) {
                     var slot = this.__msgs[caption];
                     alert.addMessages(caption, slot["messages"], slot["isError"]);
