@@ -72,5 +72,24 @@
         </sql>
     </changeSet>
 
+    <changeSet id="16250185342" dbms="postgresql" author="adamansky@gmail.com">
+        <dropIndex tableName="ASMS" indexName="IDX_TPO_ASMS_NAMEDESC"/>
+        <sql endDelimiter=";">
+            CREATE INDEX IDX_LTPO_ASMS_NAMEDESC
+            ON ASMS (LOWER(name) VARCHAR_PATTERN_OPS, LOWER(description) VARCHAR_PATTERN_OPS);
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="16250185302" dbms="db2" author="adamansky@gmail.com">
+        <sql endDelimiter=";">
+            CREATE INDEX IDX_L_ASMS_HNAME
+            ON ASMS (LOWER(hname));
+
+            CREATE INDEX IDX_L_ASMS_NAMEDESC
+            ON ASMS (LOWER(name), LOWER(description));
+        </sql>
+    </changeSet>
+
 
 </databaseChangeLog>
