@@ -242,6 +242,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         ObjectNode res = mapper.createObjectNode();
         JsonUtils.populateObjectNode(row, res);
+        res.put("published", Converters.toBoolean(res.get("published")));
 
         String username = (String) row.get("owner");
         WSUser user = (username != null) ? userdb.findUser(username) : null;
@@ -1009,6 +1010,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @GET
     @Path("search/count")
+    @Produces("text/plain")
     public Number searchPageCount(@Context HttpServletRequest req) {
         MBCriteriaQuery cq = createSearchQ(req, true);
         return selectOne(cq.getStatement(), cq);

@@ -6,7 +6,10 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -102,6 +105,34 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
     }
 
     @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
+    fun testPageGet() {
+        assertEquals(404, GET("/get/0").code())
+
+        val page = createPage()
+        val pid = page["id"].asLong()
+        with(GET("/rights/$pid")) {
+            assertEquals(200, code())
+            val body = body()
+            assertNotNull(body)
+            assertEquals("ownd", body)
+        }
+        with(GET("/info/$pid")) {
+            assertEquals(200, code())
+            val body = body()
+            assertNotNull(body)
+            val res = mapper.readTree(body)
+            assertEquals(page.path("id"), res.path("id"))
+            assertEquals(page.path("label"), res.path("name"))
+            assertEquals(page.path("type"), res.path("type"))
+            assertEquals("ownd", res.path("accessMask").asText(null))
+            assertFalse(res.path("published").asBoolean())
+            assertEquals("admin", res.path("owner").path("name").asText(null))
+            assertEquals("admin", res.path("muser").path("name").asText(null))
+        }
+        deletePage(pid)
+    }
+
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
     fun testPageSearch() {
         with(createPage()) {
             val pid = path("id").asLong()
@@ -121,6 +152,76 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                     }
                 }
             }
+            deletePage(pid)
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
+    fun testPageAcl() {
+        with(createPage()) {
+            val pid = path("id").asLong()
+
+            with(GET("/acl/$pid")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(0, size())
+                }
+            }
+
+            with(PUT("/acl/$pid/admin?recursive=false")) {
+                assertEquals(204, code())
+            }
+            with(GET("/acl/$pid?recursive=false")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(1, size())
+                    with(get(0)) {
+                        assertEquals("admin", path("user").asText(null))
+                        assertEquals("ownd", path("rights").asText(null))
+                        assertFalse(path("recursive").asBoolean())
+                    }
+                }
+            }
+            with(GET("/acl/$pid?recursive=true")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(0, size())
+                }
+            }
+
+            with(PUT("/acl/$pid/admin?recursive=true")) {
+                assertEquals(204, code())
+            }
+            for (i in listOf(false, true)) {
+                with(GET("/acl/$pid?recursive=$i")) {
+                    assertEquals(200, code())
+                    with(mapper.readTree(body())) {
+                        assertTrue(isArray)
+                        assertEquals(1, size())
+                        with(get(0)) {
+                            assertEquals(i, path("recursive").asBoolean())
+                            assertEquals("admin", path("user").asText(null))
+
+                            if (i) {
+                                assertEquals("", path("rights").asText(null))
+                            } else {
+                                assertEquals("ownd", path("rights").asText(null))
+                            }
+                        }
+                    }
+                }
+            }
+
+            with(POST("/acl/$pid/admin?recursive=true&add=true&rigths=w")) {
+                assertEquals(204, code())
+            }
+            with(POST("/acl/$pid/admin?recursive=false&add=false&rigths=o")) {
+                assertEquals(204, code())
+            }
+            // todo: check edited rights
             deletePage(pid)
         }
     }
