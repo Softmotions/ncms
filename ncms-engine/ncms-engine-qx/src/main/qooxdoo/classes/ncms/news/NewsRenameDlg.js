@@ -12,7 +12,7 @@ qx.Class.define("ncms.news.NewsRenameDlg", {
 
         _name: null,
 
-        _save: function () {
+        _save: function (cb) {
             var items = this._form.getItems();
             var data = {
                 id: this._id,
@@ -20,6 +20,7 @@ qx.Class.define("ncms.news.NewsRenameDlg", {
                 type: "news.page"
             };
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.update.basic"), "PUT");
+            req.addListenerOnce("finished", cb);
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
             req.send(function (resp) {

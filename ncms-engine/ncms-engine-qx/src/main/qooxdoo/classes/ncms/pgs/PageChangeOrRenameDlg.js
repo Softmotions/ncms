@@ -21,7 +21,7 @@ qx.Class.define("ncms.pgs.PageChangeOrRenameDlg", {
             items["container"].setValue((this._spec["status"] & 1) != 0);
         },
 
-        _save: function () {
+        _save: function (cb) {
             var items = this._form.getItems();
             var data = {
                 id: this._spec["id"],
@@ -29,6 +29,7 @@ qx.Class.define("ncms.pgs.PageChangeOrRenameDlg", {
                 type: items["container"].getValue() ? "page.folder" : "page"
             };
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.update.basic"), "PUT");
+            req.addListenerOnce("finished", cb);
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
             req.send(function (resp) {

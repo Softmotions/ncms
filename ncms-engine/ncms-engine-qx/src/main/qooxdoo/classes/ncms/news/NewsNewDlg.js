@@ -23,7 +23,7 @@ qx.Class.define("ncms.news.NewsNewDlg", {
             el.focus();
         },
 
-        _save: function () {
+        _save: function (cb) {
             var items = this._form.getItems();
             var data = {
                 name: items["name"].getValue(),
@@ -31,6 +31,7 @@ qx.Class.define("ncms.news.NewsNewDlg", {
                 type: "news.page"
             };
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.new"), "PUT");
+            req.addListenerOnce("finished", cb);
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
             req.send(function (resp) {

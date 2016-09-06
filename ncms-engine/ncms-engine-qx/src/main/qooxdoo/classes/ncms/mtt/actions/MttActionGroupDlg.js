@@ -31,7 +31,7 @@ qx.Class.define("ncms.mtt.actions.MttActionGroupDlg", {
             name.focus();
         },
 
-        _save: function () {
+        _save: function (cb) {
             var items = this._form.getItems();
             var req;
             if (this.__item == null) {
@@ -50,6 +50,7 @@ qx.Class.define("ncms.mtt.actions.MttActionGroupDlg", {
                             name: items["name"].getValue()
                         }), "POST", "application/json");
             }
+            req.addListenerOnce("finished", cb);
             req.send(function (resp) {
                 this.fireDataEvent("completed", resp.getContent());
             }, this);

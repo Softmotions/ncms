@@ -159,7 +159,7 @@ msgid "Override attribute"
 msgstr "Перезаписать атрибут"
 
 #: ncms/news/NewsNav.js:123 ncms/asm/AsmAttrsTable.js:200
-#: ncms/pgs/PagesTreeSelector.js:148
+#: ncms/pgs/PagesTreeSelector.js:152
 msgid "New"
 msgstr "Создать"
 
@@ -274,7 +274,8 @@ msgid "New assembly"
 msgstr "Новая сборка (assembly)"
 
 #: ncms/asm/AsmNav.js:79 ncms/mmgr/MediaItemTreeSelector.js:102
-#: ncms/mtt/MttNav.js:154 ncms/mtt/tp/MttTpNav.js:101
+#: ncms/mtt/MttNav.js:154 ncms/pgs/PagesTreeSelector.js:145
+#: ncms/mtt/tp/MttTpNav.js:101
 msgid "Refresh"
 msgstr "Обновить"
 
@@ -537,7 +538,7 @@ msgid "Add video"
 msgstr "Добавить видео"
 
 #: ncms/news/NewsNav.js:131 ncms/mmgr/MediaItemTreeSelector.js:95
-#: ncms/asm/am/MedialineAMValueWidget.js:106 ncms/pgs/PagesTreeSelector.js:179
+#: ncms/asm/am/MedialineAMValueWidget.js:106 ncms/pgs/PagesTreeSelector.js:182
 msgid "Delete"
 msgstr "Удалить"
 
@@ -970,7 +971,7 @@ msgstr "Отключить"
 msgid "Are you sure to remove rule: \"%1\"?"
 msgstr "Подтвердите удаление правила \"%1\""
 
-#: ncms/mtt/MttRuleNewDlg.js:19
+#: ncms/mtt/MttRuleNewDlg.js:20
 msgid "Rule"
 msgstr "Правило"
 
@@ -1352,7 +1353,7 @@ msgstr "Подтвердите удаление трекинг пикселя: \
 msgid "Select the parent page for news"
 msgstr "Укажите родительскую страницу для ленты"
 
-#: ncms/news/NewsNav.js:156 ncms/pgs/PagesTreeSelector.js:305
+#: ncms/news/NewsNav.js:156 ncms/pgs/PagesTreeSelector.js:308
 msgid "Are you sure to remove page: %1"
 msgstr "Вы действительно желаете удалить страницу %1"
 
@@ -1531,35 +1532,35 @@ msgstr "Выбрать страницу"
 msgid "Path"
 msgstr "Путь"
 
-#: ncms/pgs/PagesTreeSelector.js:163
+#: ncms/pgs/PagesTreeSelector.js:166
 msgid "Duplicate it"
 msgstr "Сделать копию"
 
-#: ncms/pgs/PagesTreeSelector.js:171
+#: ncms/pgs/PagesTreeSelector.js:174
 msgid "Change/Rename"
 msgstr "Изменить/Переименовать"
 
-#: ncms/pgs/PagesTreeSelector.js:175
+#: ncms/pgs/PagesTreeSelector.js:178
 msgid "Move"
 msgstr "Переместить"
 
-#: ncms/pgs/PagesTreeSelector.js:184
+#: ncms/pgs/PagesTreeSelector.js:187
 msgid "List of referer pages"
 msgstr "Список ссылающихся страниц"
 
-#: ncms/pgs/PagesTreeSelector.js:197
+#: ncms/pgs/PagesTreeSelector.js:200
 msgid "List of pages referred %1"
 msgstr "Список страниц, ссылающихся на %1"
 
-#: ncms/pgs/PagesTreeSelector.js:210
+#: ncms/pgs/PagesTreeSelector.js:213
 msgid "Choose the target container page"
 msgstr "Укажите папку"
 
-#: ncms/pgs/PagesTreeSelector.js:312
+#: ncms/pgs/PagesTreeSelector.js:315
 msgid "Unable to delete this page"
 msgstr "Невозможно удалить эту страницу"
 
-#: ncms/pgs/PagesTreeSelector.js:315
+#: ncms/pgs/PagesTreeSelector.js:318
 msgid ""
 "This page cannot be removed because we found pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"

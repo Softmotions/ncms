@@ -20,11 +20,12 @@ qx.Class.define("ncms.asm.AsmNewDlg", {
             page.focus();
         },
 
-        _save: function () {
+        _save: function (cb) {
             var fitems = this._form.getItems();
             var req = new sm.io.Request(
                 ncms.Application.ACT.getRestUrl("asms.new", {name: fitems["name"].getValue()}),
                 "PUT", "application/json");
+            req.addListenerOnce("finished", cb);
             req.send(function (resp) {
                 this.fireDataEvent("completed", resp.getContent());
             }, this);

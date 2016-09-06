@@ -23,10 +23,11 @@ qx.Class.define("ncms.asm.am.TreeAMNewFolderDlg", {
             el.focus();
         },
 
-        _save: function () {
+        _save: function (cb) {
             var items = this._form.getItems();
             var data = items["name"].getValue();
             this.fireDataEvent("completed", data);
+            cb();
         }
     },
 

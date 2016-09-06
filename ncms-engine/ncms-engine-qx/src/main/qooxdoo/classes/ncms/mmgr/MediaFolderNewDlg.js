@@ -28,12 +28,13 @@ qx.Class.define("ncms.mmgr.MediaFolderNewDlg", {
             page.focus();
         },
 
-        _save: function () {
+        _save: function (cb) {
             var fitems = this._form.getItems();
             var name = fitems["name"].getValue();
             var path = this.__parentPaths.concat(name);
             var url = ncms.Application.ACT.getRestUrl("media.folder.put", path);
             var req = new sm.io.Request(url, "PUT", "application/json");
+            req.addListenerOnce("finished", cb);
             req.send(function (resp) {
                 this.fireDataEvent("completed", resp.getContent());
             }, this);
