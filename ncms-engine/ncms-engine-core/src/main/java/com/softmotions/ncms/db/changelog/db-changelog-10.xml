@@ -63,4 +63,14 @@
         </sql>
     </changeSet>
 
+    <changeSet id="16250182617" dbms="postgresql" author="adamansky@gmail.com">
+        <dropIndex tableName="ASMS" indexName="IDX_TPO_ASMS_HNAMETYPE"/>
+        <dropColumn tableName="ASMS" columnName="hname_lower"/>
+        <sql endDelimiter=";">
+            CREATE INDEX IDX_L_ASMS_HNAME
+            ON ASMS (LOWER(hname) VARCHAR_PATTERN_OPS);
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
