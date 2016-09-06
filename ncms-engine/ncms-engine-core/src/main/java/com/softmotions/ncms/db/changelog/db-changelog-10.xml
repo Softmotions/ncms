@@ -1,0 +1,66 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="16250102339" author="adamansky@gmail.com">
+        <dropIndex tableName="ASMS" indexName="IDX_ASMS_TYPENAME"/>
+        <createIndex tableName="ASMS"
+                     indexName="IDX_ASMS_TYPENAME"
+                     unique="true">
+            <column name="TYPE"/>
+            <column name="NAME"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="16250102340" dbms="postgresql" author="adamansky@gmail.com">
+
+        <dropIndex tableName="MEDIA_ENTITY" indexName="IDX_MEDIAENTITY_NAME"/>
+        <dropIndex tableName="MEDIA_ENTITY" indexName="IDX_MEDIAENTITY_FOLDER"/>
+        <dropIndex tableName="ASM_CORES" indexName="IDX_ASMCORES_LOCATION"/>
+        <dropIndex tableName="ASMS" indexName="IDX_ASMS_SCOLS"/>
+        <dropIndex tableName="ASMS" indexName="IDX_ASMS_NAVCACHEDPATH"/>
+        <dropIndex tableName="MEDIA_ENTITY_KWORDS" indexName="IDX_MEDIAENTITYKWORDS_BWD"/>
+        <dropIndex tableName="MEDIA_ENTITY_KWORDS" indexName="IDX_MEDIAENTITYKWORDS_FWD"/>
+        <dropIndex tableName="ASM_SYSPROPS" indexName="IDX_ASMSYSPROPS_BWD"/>
+        <dropIndex tableName="ASM_SYSPROPS" indexName="IDX_ASMSYSPROPS_FWD"/>
+        <dropIndex tableName="ASM_ATTR_IDXVALS" indexName="IDX_ASMATTRIDXVALS_VALS"/>
+
+        <sql endDelimiter=";">
+            CREATE INDEX IDX_TPO_ASMCORES_LOCATION
+            ON ASM_CORES (location VARCHAR_PATTERN_OPS);
+
+            CREATE INDEX IDX_TPO_ASMS_NAMEDESC
+            ON ASMS (name VARCHAR_PATTERN_OPS, description VARCHAR_PATTERN_OPS);
+
+            CREATE INDEX IDX_TPO_ASMS_HNAMETYPE
+            ON ASMS (hname_lower VARCHAR_PATTERN_OPS);
+
+            CREATE INDEX IDX_TPO_ASMS_NAVCACHED
+            ON ASMS (nav_cached_path VARCHAR_PATTERN_OPS);
+
+            CREATE INDEX IDX_TPO_MEDIAENTITY_FOLDER
+            ON MEDIA_ENTITY (folder VARCHAR_PATTERN_OPS);
+
+            CREATE INDEX IDX_L_MEDIAENTITY_NAME
+            ON MEDIA_ENTITY (LOWER(name));
+
+            CREATE UNIQUE INDEX IDX_MEDIAENTITYKWORDS_BWD
+            ON MEDIA_ENTITY_KWORDS (entity_id, keyword VARCHAR_PATTERN_OPS);
+
+            CREATE UNIQUE INDEX IDX_MEDIAENTITYKWORDS_FWD
+            ON MEDIA_ENTITY_KWORDS (keyword VARCHAR_PATTERN_OPS, entity_id);
+
+            CREATE UNIQUE INDEX IDX_ASMSYSPROPS_BWD
+            ON ASM_SYSPROPS (property VARCHAR_PATTERN_OPS, asm_id);
+
+            CREATE UNIQUE INDEX IDX_ASMSYSPROPS_FWD
+            ON ASM_SYSPROPS (asm_id, property VARCHAR_PATTERN_OPS, "value");
+
+            CREATE INDEX IDX_ASMATTRIDXVALS_VALS
+            ON ASM_ATTR_IDXVALS("value" VARCHAR_PATTERN_OPS, attr_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

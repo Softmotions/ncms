@@ -18,5 +18,6 @@
     <include relativeToChangelogFile="true" file="db-changelog-7.xml"/>
     <include relativeToChangelogFile="true" file="db-changelog-8.xml"/>
     <include relativeToChangelogFile="true" file="db-changelog-9-pgsql-1.xml"/>
+    <include relativeToChangelogFile="true" file="db-changelog-10.xml"/>
 
 </databaseChangeLog>
