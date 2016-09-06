@@ -204,7 +204,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     /**
      * Save uploaded file.
-     * <p>
+     * <p/>
      * Example:
      * curl --upload-file ./myfile.txt http://localhost:8080/ncms/rs/media/file/foo/bar/test.txt
      */
@@ -1103,9 +1103,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     /**
      * GET list of files in the specified directory(folder).
-     * <p>
+     * <p/>
      * Produces the following JSON:
-     * <p>
+     * <p/>
      * <pre>
      *     [
      *       {

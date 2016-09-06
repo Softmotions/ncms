@@ -254,19 +254,19 @@ public class HttlAsmMethods {
     //                       Casts                           //
     ///////////////////////////////////////////////////////////
 
-    public RichRef asRichRef(Object v) {
+    public static RichRef asRichRef(Object v) {
         return (v instanceof RichRef) ? (RichRef) v : null;
     }
 
-    public Tree asTree(Object v) {
+    public static Tree asTree(Object v) {
         return (v instanceof Tree) ? (Tree) v : null;
     }
 
-    public Table asTable(Object v) {
+    public static Table asTable(Object v) {
         return (v instanceof Table) ? (Table) v : null;
     }
 
-    public Image asImage(Object v) {
+    public static Image asImage(Object v) {
         return (v instanceof Image) ? (Image) v : null;
     }
 
