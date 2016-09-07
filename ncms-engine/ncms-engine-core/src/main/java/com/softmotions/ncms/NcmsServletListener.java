@@ -12,6 +12,7 @@ import javax.servlet.ServletContextEvent;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Module;
@@ -25,7 +26,7 @@ import com.softmotions.weboot.WBServletListener;
  */
 public class NcmsServletListener extends WBServletListener {
 
-    protected final org.slf4j.Logger log;
+    protected final Logger log;
 
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
     private EnvironmentLoaderListener shiroEnvironmentLoaderListener;
