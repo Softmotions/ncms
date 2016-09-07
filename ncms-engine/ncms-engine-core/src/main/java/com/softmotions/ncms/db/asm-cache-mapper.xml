@@ -5,10 +5,9 @@
 
 <mapper namespace="com.softmotions.ncms.db.cache.asm">
     <cache type="com.softmotions.ncms.db.MybatisEhcacheCache">
-        <property name="timeToIdleSeconds" value="3600"/> <!--1 hour-->
-        <property name="timeToLiveSeconds" value="3600"/> <!--1 hour-->
-        <property name="maxEntriesLocalHeap" value="10000"/>
-        <!--<property name="maxBytesLocalHeap" value="20971520"/>-->
+        <property name="timeToIdleSeconds" value="3600"/>
+        <property name="timeToLiveSeconds" value="3600"/>
+        <property name="maxEntriesLocalHeap" value="5000"/>
         <property name="peristenceStrategy" value="none"/>
         <property name="memoryStoreEvictionPolicy" value="LRU"/>
     </cache>
