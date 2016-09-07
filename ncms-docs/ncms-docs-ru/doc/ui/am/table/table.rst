@@ -26,7 +26,7 @@
     #set(Table parrots = asm('parrots'))
 
     <br>Вид Глаша: ${parrots.find('Глаша')}
-    <br>Возраст глаша ${parrots.find('Глаша', 2)}
+    <br>Возраст Глаша ${parrots.find('Глаша', 2)}
     </body>
     </html>
 
@@ -113,7 +113,7 @@ API com.softmotions.ncms.mhttl .Table
 
     **Пример** таблица без заголовков и с css классом `wide`::
 
-        ${asm('table').toHtml(['noHeader':true, 'tableAttrs': 'class="wide"'])}
+        ${asm('table').toHtml(['noHeader':true, 'tableAttrs':'class="wide"'])}
 
     В опциональных параметрах настройки генерации html таблицы `params`
     могут содержаться следующие пары:
