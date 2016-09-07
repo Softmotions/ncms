@@ -377,6 +377,39 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
     }
 
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageSearch", "testPageGet"))
+    fun testPageBasic() {
+        with(createPage()) {
+            val pid = path("id").asLong()
+            for (i in 0..1) {
+                val pageType = when (i) {
+                    0 -> "page"
+                    1 -> "page.folder"
+                    else -> "page"
+                }
+                val newName = RandomStringUtils.randomAlphanumeric(5)
+
+                val props = mapper.createObjectNode().put("name", newName).put("type", pageType).put("id", pid)
+
+                with(PUT("/update/basic").contentType("application/json").send(mapper.writeValueAsString(props))) {
+                    assertEquals(204, code())
+                }
+
+                with(GET("/info/$pid")) {
+                    assertEquals(200, code())
+                    val body = body()
+                    assertNotNull(body)
+                    with(mapper.readTree(body)) {
+                        assertEquals(pid, path("id").asLong())
+                        assertEquals(newName, path("name").asText(null))
+                        assertEquals(pageType, path("type").asText(null))
+                    }
+                }
+            }
+            deletePage(pid)
+        }
+    }
+
     private fun createPage(): JsonNode {
         val pageName = RandomStringUtils.randomAlphanumeric(5)
         val props = mapper.createObjectNode().put("name", pageName).put("type", "page")
