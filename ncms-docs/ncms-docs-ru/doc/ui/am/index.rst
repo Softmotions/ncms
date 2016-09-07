@@ -16,5 +16,6 @@
     :maxdepth: 1
 
     table/table
+    alias/alias
 
 

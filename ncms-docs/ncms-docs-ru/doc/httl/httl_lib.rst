@@ -210,10 +210,9 @@ httl.spi.methods .TypeMethod
 
    Преобразует аргумент в `java.lang.Boolean`
 
+   **Пример**::
 
-    **Пример**::
-
-       ${"true".toBoolean}
+    ${"true".toBoolean}
 
 
 .. note::
