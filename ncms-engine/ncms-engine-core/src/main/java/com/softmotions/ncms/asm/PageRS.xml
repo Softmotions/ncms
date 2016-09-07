@@ -5,6 +5,8 @@
 
 <mapper namespace="com.softmotions.ncms.asm.PageRS">
 
+    <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
+
     <select id="selectPageInfoIN" resultType="map" parameterType="map">
         SELECT
         p.id        AS "id",
@@ -278,7 +280,8 @@
 
     <select id="prevAttrID"
             databaseId="DB2"
-            resultType="long">
+            resultType="long"
+            useCache="false">
         SELECT
         PREVIOUS VALUE FOR SEQ_ATTR_ID
         FROM SYSIBM.DUAL
@@ -286,7 +289,8 @@
 
     <select id="prevAttrID"
             databaseId="POSTGRES"
-            resultType="long">
+            resultType="long"
+            useCache="false">
         SELECT
         CURRVAL('SEQ_ATTR_ID')
     </select>

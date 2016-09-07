@@ -5,16 +5,19 @@
 
 <mapper namespace="com.softmotions.ncms.asm.PageSecurityService">
 
+    <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
+
     <select id="selectNavPagePath" resultType="string" parameterType="map">
         SELECT
             NAV_CACHED_PATH
-        FROM asms
+        FROM ASMS
         WHERE id = #{pid}
     </select>
 
     <select id="newAclId"
             databaseId="DB2"
-            resultType="long">
+            resultType="long"
+            useCache="false">
         SELECT
             NEXT VALUE FOR SEQ_ACL_ID
         FROM SYSIBM.DUAL
@@ -22,7 +25,8 @@
 
     <select id="newAclId"
             databaseId="POSTGRES"
-            resultType="long">
+            resultType="long"
+            useCache="false">
         SELECT
         NEXTVAL('SEQ_ACL_ID')
     </select>
@@ -101,8 +105,8 @@
 
     <select id="selectRecursiveUserRights" resultType="map" parameterType="map">
         SELECT
-        acl.user AS "user",
-        acl.rights AS "rights"
+        acl.user    AS "user",
+        acl.rights  AS "rights"
         FROM ASM_ACL_ENTITY AS acl
         INNER JOIN ASMS AS a ON acl.acl_id = a.recursive_acl_id
         WHERE a.id = #{pid}
@@ -111,8 +115,8 @@
 
     <select id="selectLocalUserRights" resultType="map" parameterType="map">
         SELECT
-        acl.user AS "user",
-        acl.rights AS "rights"
+        acl.user    AS "user",
+        acl.rights  AS "rights"
         FROM ASM_ACL_ENTITY AS acl
         INNER JOIN ASMS AS a ON acl.acl_id = a.local_acl_id
         WHERE a.id = #{pid}
