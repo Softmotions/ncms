@@ -336,8 +336,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __syncState: function () {
             var espec = this.getPageEditSpec();
-            this.__previewBt.setEnabled(this.__form != null && espec != null && espec["core"] != null);
-            this.__publishBt.setEnabled(this.__form != null && espec != null && espec["core"] != null);
+            var hasCore = (this.__form != null && espec != null && espec["core"] != null);
+            this.__previewBt.setEnabled(hasCore);
+            this.__publishBt.setEnabled(hasCore);
         },
 
         __save: function (cb) {
@@ -368,7 +369,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     data[k] = am.valueAsJSON();
                 }
                 var spec = this.getPageSpec();
-                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec), "PUT");
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec),
+                    "PUT", "application/json");
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify(data));
                 req.setMessageHandler(function (isError, messages) {
@@ -389,11 +391,18 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     }
                 }, this);
                 req.send(function (resp) {
+                    var ecore = resp.getContent();
+                    var espec = this.getPageEditSpec();
+                    if (espec != null) {
+                        espec["core"] = ecore;
+                        this.__syncState();
+                    }
                     this.setModified(false);
                     ncms.Application.infoPopup(this.tr("Page saved successfully"));
                     if (typeof cb === "function") {
                         cb(false);
                     }
+                    //this.__syncState();
                     ncms.Events.getInstance().fireDataEvent("pageEdited", spec);
                 }, this);
             } catch (e) {
