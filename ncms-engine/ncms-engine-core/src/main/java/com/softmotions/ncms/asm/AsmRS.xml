@@ -19,7 +19,7 @@
         FROM ASMS asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
-            <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
+            <if test="name != null">AND (LOWER(asm.name) LIKE #{name} OR LOWER(asm.description) LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
             <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
             <if test="name_restriction != null">AND asm.name LIKE #{name_restriction}</if>
@@ -59,7 +59,7 @@
         SELECT COUNT(*) FROM ASMS AS asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
-            <if test="name != null">AND (asm.name LIKE #{name} OR asm.description LIKE #{name})</if>
+            <if test="name != null">AND (LOWER(asm.name) LIKE #{name} OR LOWER(asm.description) LIKE #{name})</if>
             <if test="template != null">AND asm.template = #{template}</if>
             <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
             <if test="name_restriction != null">AND asm.name LIKE #{name_restriction}</if>
@@ -255,10 +255,10 @@
             resultType="map"
             parameterType="long">
         SELECT
-        a.type AS "type",
-        p.id   AS "pid",
-        p.name AS "pname",
-        p.type AS "ptype"
+            a.type AS "type",
+            p.id   AS "pid",
+            p.name AS "pname",
+            p.type AS "ptype"
         FROM ASMS a
         LEFT JOIN ASMS np ON a.nav_parent_id = np.id
         LEFT JOIN ASM_PARENTS AS ap ON ap.asm_id = np.id
