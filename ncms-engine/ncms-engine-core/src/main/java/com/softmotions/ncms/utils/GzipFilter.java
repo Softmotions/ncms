@@ -123,7 +123,7 @@ public final class GzipFilter implements Filter {
         private final AtomicBoolean open = new AtomicBoolean(true);
 
         public ServletResponseGZIPOutputStream(OutputStream output) throws IOException {
-            gzipStream = new GZIPOutputStream(output);
+            gzipStream = new GZIPOutputStream(output, 8192);
         }
 
         @Override

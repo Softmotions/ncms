@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.softmotions.ncms.shiro.NcmsShiroWebEnvironment;
+import com.softmotions.ncms.utils.GzipFilter;
 import com.softmotions.web.CharsetFilter;
 import com.softmotions.weboot.WBServletListener;
 
@@ -69,6 +70,11 @@ public class NcmsServletListener extends WBServletListener {
                            DispatcherType.INCLUDE,
                            DispatcherType.ERROR),
                 false, env.getAppPrefix() + "/*");
+
+        // todo review it
+        FilterRegistration.Dynamic gzipFilter = sctx.addFilter("gzipFilter", GzipFilter.class);
+        gzipFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*.js");
+        gzipFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*.css");
 
         initJarResources(env, sctx);
 
