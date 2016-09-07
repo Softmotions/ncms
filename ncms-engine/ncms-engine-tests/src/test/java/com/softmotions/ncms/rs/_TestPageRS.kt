@@ -6,10 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -275,6 +272,107 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                 }
             }
 
+            deletePage(pid)
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
+    fun testPageEditGet() {
+        with(createPage()) {
+            val pid = path("id").asLong()
+            val pname = path("label").asText()
+
+            with(GET("/edit/$pid")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(hasNonNull("guid"))
+                    assertFalse(hasNonNull("core"))
+                    assertFalse(hasNonNull("template"))
+                    assertEquals(pname, path("name").asText())
+                    assertFalse(path("published").asBoolean())
+                    assertTrue(hasNonNull("attributes"))
+                    with(path("attributes")) {
+                        assertTrue(isArray)
+                        assertEquals(0, size())
+                    }
+                }
+            }
+
+            deletePage(pid)
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
+    fun testPageOwner() {
+        with(createPage()) {
+            val pid = path("id").asLong()
+
+            with(PUT("/owner/$pid/sadmin")) {
+                assertEquals(404, code())
+            }
+            with(PUT("/owner/$pid/admin")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(hasNonNull("owner"))
+                    with(path("owner")) {
+                        assertEquals("admin", path("name").asText(null))
+                    }
+                }
+            }
+
+            deletePage(pid)
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageSearch", "testPageGet"))
+    fun testPageClone() {
+        with(createPage()) {
+            val pid = path("id").asLong()
+            for (i in 0..1) {
+                val pageType = when (i) {
+                    0 -> "page"
+                    1 -> "page.folder"
+                    else -> "page"
+                }
+                val cloneName = RandomStringUtils.randomAlphanumeric(5)
+
+                val props = mapper.createObjectNode().put("name", cloneName).put("type", pageType).put("id", pid)
+
+                with(PUT("/clone").contentType("application/json").send(mapper.writeValueAsString(props))) {
+                    assertEquals(204, code())
+                }
+                assertEquals("2", GET("/search/count").body())
+
+                var cloneId = 0L
+                with(GET("/search?name=$cloneName")) {
+                    assertEquals(200, code())
+                    val body = body()
+                    assertNotNull(body)
+                    with(mapper.readTree(body)) {
+                        assertTrue(isArray)
+                        assertEquals(1, size())
+                        with(get(0)) {
+                            cloneId = path("id").asLong()
+                            assertEquals(cloneName, path("label").asText())
+                        }
+                    }
+                }
+                with(GET("/info/$cloneId")) {
+                    assertEquals(200, code())
+                    val body = body()
+                    assertNotNull(body)
+                    with(mapper.readTree(body)) {
+                        assertEquals(cloneId, path("id").asLong())
+                        assertEquals(cloneName, path("name").asText(null))
+                        assertEquals(pageType, path("type").asText(null))
+                    }
+                }
+                deletePage(cloneId)
+            }
             deletePage(pid)
         }
     }

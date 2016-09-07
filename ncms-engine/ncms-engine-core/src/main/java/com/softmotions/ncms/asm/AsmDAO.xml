@@ -866,7 +866,7 @@
                      #{t}
                  </foreach>
                  </if>
-                 ORDER BY o2)
+                 ORDER BY o2) AS aa
     </insert>
 
     <!-- ======================== Result maps ============================= -->
