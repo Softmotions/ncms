@@ -5,7 +5,7 @@
 
 <mapper namespace="com.softmotions.ncms.asm.AsmDAO">
 
-    <!--<cache type="com.softmotions.ncms.db.MBDebugCache"/>-->
+    <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
 
     <select id="selectChildrenCount"
             parameterType="long"
@@ -723,7 +723,7 @@
             keyProperty="id"
             databaseId="DB2">
 
-        INSERT INTO asms (name, ordinal, asm_core_id, hname,
+        INSERT INTO ASMS (name, ordinal, asm_core_id, hname,
                           cdate, mdate, muser, owner,
                           published, template, template_mode, controller,
                           type, options, description,
@@ -791,12 +791,12 @@
                 a.nav_cached_path,
                 a.lang,
                 a.edate
-            FROM asms AS a
+            FROM ASMS AS a
             WHERE a.id = #{asmId}
     </insert>
 
     <insert id="asmCloneParents" parameterType="map">
-        INSERT INTO asm_parents(asm_id, asm_parent_id)
+        INSERT INTO ASM_PARENTS(asm_id, asm_parent_id)
         SELECT #{newAsmId}, asm_parent_id
         FROM asm_parents AS p
         WHERE p.asm_id = #{asmId} AND p.asm_parent_id != #{newAsmId}
@@ -804,14 +804,14 @@
 
 
     <insert id="asmCloneSysProps" parameterType="map">
-        INSERT INTO asm_sysprops(asm_id, property, value)
+        INSERT INTO ASM_SYSPROPS(asm_id, property, value)
         SELECT #{newAsmId}, property, value
         FROM asm_sysprops AS p
         WHERE p.asm_id = #{asmId}
     </insert>
 
     <insert id="asmCloneRefData" parameterType="map">
-        INSERT INTO asm_refdata(asm_id, type, svalue, ivalue)
+        INSERT INTO ASM_REFDATA(asm_id, type, svalue, ivalue)
         SELECT #{newAsmId}, type, svalue, ivalue
         FROM asm_refdata AS p
         WHERE p.asm_id = #{asmId}
@@ -819,7 +819,7 @@
 
     <insert id="asmCloneAttrs" parameterType="map"
             databaseId="DB2">
-        INSERT INTO asm_attrs (id, asm_id, name, label, type, options,
+        INSERT INTO ASM_ATTRS (id, asm_id, name, label, type, options,
                                value, large_value, ordinal, required, mdate)
             SELECT SEQ_ATTR_ID.NEXTVAL, #{newAsmId}, name, label, type, options,
                    value, large_value, SEQ_ASMS_ORDINAL.NEXTVAL, required, CURRENT_TIMESTAMP
@@ -845,7 +845,7 @@
 
     <insert id="asmCloneAttrs" parameterType="map"
             databaseId="POSTGRES">
-        INSERT INTO asm_attrs (id, asm_id, name, label, type, options,
+        INSERT INTO ASM_ATTRS (id, asm_id, name, label, type, options,
                                value, large_value, ordinal, required, mdate)
             SELECT NEXTVAL('SEQ_ATTR_ID'), #{newAsmId}, name, label, type, options,
                    value, large_value, NEXTVAL('SEQ_ASMS_ORDINAL'), required, CURRENT_TIMESTAMP

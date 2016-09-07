@@ -43,21 +43,20 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt.addListener("execute", this.__publish, this);
         hcont.add(bt);
 
-        bt = new qx.ui.form.Button(this.tr("Files"), "ncms/icon/16/misc/images.png").set({width: 90});
-        bt.addListener("execute", this.__files, this);
-        hcont.add(bt);
-
-        bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png");
+        bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png").set({width: 110});
         bt.setEnabled(false);
         bt.addListener("execute", this.__save, this);
         hcont.add(bt);
-
         this.__saveSc = new sm.bom.ExtendedShortcut("Ctrl+S", false, this);
         this.__saveSc.addListener("execute", this.__save, this);
 
         bt = this.__cancelBt = new qx.ui.form.Button(this.tr("Cancel"), "ncms/icon/16/misc/cross-script.png");
         bt.setEnabled(false);
         bt.addListener("execute", this.__cancel, this);
+        hcont.add(bt);
+
+        bt = new qx.ui.form.Button(this.tr("Files"), "ncms/icon/16/misc/images.png");
+        bt.addListener("execute", this.__files, this);
         hcont.add(bt);
 
         var epoins = ncms.Application.extensionPoints("ncms.pgs.PageEditorEditPage.HEADER_BUTTONS");
@@ -81,7 +80,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             new sm.ui.form.ButtonField(this.tr("Template"),
                 "ncms/icon/16/misc/document-template.png",
                 true).set({readOnly: true});
-        this.__templateBf.getMainButton().set({width: 90});
+        this.__templateBf.getMainButton().set({width: 110});
         this.__templateBf.setPlaceholder(this.tr("Please select the template page"));
         this.__templateBf.addListener("execute", this.__onChangeTemplate, this);
         hcont2.add(this.__templateBf, {flex: 1});
@@ -136,7 +135,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __applyPageEditSpec: function (spec) {
             this.__setPublishState(!!spec["published"]);
+            var fp = spec["firstParent"];
             var t = spec["template"];
+            var attrs = spec["attributes"] || [];
             if (t == null) {
                 this.__templateBf.resetValue();
                 this.__cleanupFormPane();
@@ -147,17 +148,19 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             if (t["name"] != null) {
                 sb.push(t["name"]);
             }
-            if (spec["firstParent"]
-                && spec["firstParent"].id != t.id
-                && spec["firstParent"].name != null) {
-                sb.push(spec["firstParent"].name);
+            if (fp && fp.id != t.id) {
+                if (fp.name != null) {
+                    sb.push(fp.name);
+                }
+            }
+            if (sb.length < 2 && t.description != null) {
+                sb.push(t.description);
             }
             this.__templateBf.setValue(sb.join(" | "));
-            var attrs = spec["attributes"] || [];
+
             var form = new sm.ui.form.ExtendedForm();
             var vmgr = form.getValidationManager();
             vmgr.setRequiredFieldMessage(this.tr("This field is required"));
-
             attrs.forEach(function (attrSpec) {
                 this.__processAttribute(attrSpec, spec, form);
             }, this);
@@ -333,8 +336,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __syncState: function () {
             var espec = this.getPageEditSpec();
-            this.__previewBt.setEnabled(this.__form != null && espec != null && espec["core"] != null);
-            this.__publishBt.setEnabled(this.__form != null && espec != null && espec["core"] != null);
+            var hasCore = (this.__form != null && espec != null && espec["core"] != null);
+            this.__previewBt.setEnabled(hasCore);
+            this.__publishBt.setEnabled(hasCore);
         },
 
         __save: function (cb) {
@@ -365,7 +369,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     data[k] = am.valueAsJSON();
                 }
                 var spec = this.getPageSpec();
-                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec), "PUT");
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec),
+                    "PUT", "application/json");
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify(data));
                 req.setMessageHandler(function (isError, messages) {
@@ -386,11 +391,18 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     }
                 }, this);
                 req.send(function (resp) {
+                    var ecore = resp.getContent();
+                    var espec = this.getPageEditSpec();
+                    if (espec != null) {
+                        espec["core"] = ecore;
+                        this.__syncState();
+                    }
                     this.setModified(false);
                     ncms.Application.infoPopup(this.tr("Page saved successfully"));
                     if (typeof cb === "function") {
                         cb(false);
                     }
+                    //this.__syncState();
                     ncms.Events.getInstance().fireDataEvent("pageEdited", spec);
                 }, this);
             } catch (e) {

@@ -5,6 +5,8 @@
 
 <mapper namespace="com.softmotions.ncms.qa.PageQARS">
 
+    <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
+
     <select id="selectCPBatch" resultType="long">
         SELECT
             asm.id

@@ -135,11 +135,8 @@ qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
 
 
         if (opts["pageSpec"] && opts["pageSpec"].active == true) {
-            console.log("Active page spec!!!");
             files.setInpage(true);
         }
-
-
         var cmd = this.createCommand("Esc");
         cmd.addListener("execute", this.close, this);
         this.addListenerOnce("resize", this.center, this);

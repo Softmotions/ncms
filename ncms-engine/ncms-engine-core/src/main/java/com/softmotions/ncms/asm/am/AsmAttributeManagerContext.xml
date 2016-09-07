@@ -5,6 +5,8 @@
 
 <mapper namespace="com.softmotions.ncms.asm.am.AsmAttributeManagerContext">
 
+    <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
+
     <update id="updateMUser" parameterType="map">
         UPDATE ASMS
         SET muser = #{muser,jdbcType=VARCHAR}, mdate = #{mdate,jdbcType=TIMESTAMP}

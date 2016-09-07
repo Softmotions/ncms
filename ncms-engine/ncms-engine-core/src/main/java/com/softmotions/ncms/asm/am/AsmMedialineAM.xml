@@ -5,6 +5,8 @@
 
 <mapper namespace="com.softmotions.ncms.asm.am.AsmMedialineAM">
 
+    <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
+
     <select id="selectBasicMediaInfo" resultType="map" parameterType="list">
         SELECT
             e.id            AS "id",

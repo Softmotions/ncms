@@ -377,10 +377,10 @@ public class PageRS extends MBDAOSupport implements PageService {
     @PUT
     @Path("/edit/{id}")
     @Transactional
-    public void savePage(@Context HttpServletRequest req,
-                         @Context SecurityContext sctx,
-                         @PathParam("id") Long id,
-                         ObjectNode data) throws Exception {
+    public AsmCore savePage(@Context HttpServletRequest req,
+                        @Context SecurityContext sctx,
+                        @PathParam("id") Long id,
+                        ObjectNode data) throws Exception {
 
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
         amCtx.setAsmId(id);
@@ -427,7 +427,16 @@ public class PageRS extends MBDAOSupport implements PageService {
             am.attributePersisted(amCtx, attr, data.get(fname), null);
         }
         amCtx.flush();
+
+        // "core":{"id":141,"location":"/site/httl/my/empty_core.httl","name":null,"templateEngine":null},
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
+
+        // Refresh page
+        page = adao.asmSelectById(id);
+        if (page == null) {
+            throw new NotFoundException("");
+        }
+        return page.getEffectiveCore();
     }
 
     /**
@@ -556,11 +565,11 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         // Copy assembly structure
         Asm page = adao.asmClone(asmId,
-                                guid,
-                                spec.path("type").asText(),
-                                spec.path("name").asText(),
-                                spec.path("name").asText(),
-                                null);
+                                 guid,
+                                 spec.path("type").asText(),
+                                 spec.path("name").asText(),
+                                 spec.path("name").asText(),
+                                 null);
 
         // Copy assembly media files
         Map<Long, Long> fmap = mrepo.copyPageMedia(asmId, page.getId(), req.getRemoteUser());

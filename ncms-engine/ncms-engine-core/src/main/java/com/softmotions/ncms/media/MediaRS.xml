@@ -5,6 +5,8 @@
 
 <mapper namespace="com.softmotions.ncms.media.MediaRS">
 
+    <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
+
     <select id="selectEntityIdByPath" parameterType="map" resultType="long">
         SELECT
             id
@@ -486,7 +488,7 @@
         SELECT
             s.id AS "id1",
             t.id AS "id2"
-        FROM media_entity s, media_entity t
+        FROM MEDIA_ENTITY s, MEDIA_ENTITY t
         WHERE s.folder = #{folder1}
               AND t.folder = #{folder2}
               AND s.name = t.name
@@ -494,7 +496,7 @@
 
 
     <insert id="insertCopyMedia" parameterType="map">
-        INSERT INTO media_entity (name,
+        INSERT INTO MEDIA_ENTITY (name,
                                   status,
                                   content_type,
                                   put_content_type,
@@ -529,19 +531,19 @@
                 <if test="owner == null">m.owner,</if>
                 CURRENT_TIMESTAMP
             FROM (SELECT *
-                  FROM media_entity
+                  FROM MEDIA_ENTITY
                   WHERE folder = #{source}) AS m
     </insert>
 
 
     <insert id="insertCopyMediaKeywords" parameterType="map">
-        INSERT INTO media_entity_kwords (entity_id, keyword)
+        INSERT INTO MEDIA_ENTITY_KWORDS (entity_id, keyword)
             SELECT
                 m2.id,
                 kw.keyword
-            FROM media_entity AS m1
-                INNER JOIN media_entity AS m2 ON m1.name = m2.name
-                INNER JOIN media_entity_kwords AS kw ON kw.entity_id = m1.id
+            FROM MEDIA_ENTITY AS m1
+                INNER JOIN MEDIA_ENTITY AS m2 ON m1.name = m2.name
+                INNER JOIN MEDIA_ENTITY_KWORDS AS kw ON kw.entity_id = m1.id
             WHERE m1.folder = #{source}
                   AND m2.folder = #{target}
     </insert>

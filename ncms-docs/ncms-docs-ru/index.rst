@@ -13,6 +13,7 @@
     doc/conf/index
     doc/db/index
     doc/httl/index
+    doc/ui/index
     doc/mtt/index
     doc/soclinks/index
     doc/deployments/index

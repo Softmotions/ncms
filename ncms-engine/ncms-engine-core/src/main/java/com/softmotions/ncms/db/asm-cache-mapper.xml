@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.softmotions.ncms.db.cache.asm">
+    <cache type="com.softmotions.ncms.db.MybatisEhcacheCache">
+        <property name="timeToIdleSeconds" value="3600"/>
+        <property name="timeToLiveSeconds" value="3600"/>
+        <property name="maxEntriesLocalHeap" value="5000"/>
+        <property name="peristenceStrategy" value="none"/>
+        <property name="memoryStoreEvictionPolicy" value="LRU"/>
+    </cache>
+</mapper>

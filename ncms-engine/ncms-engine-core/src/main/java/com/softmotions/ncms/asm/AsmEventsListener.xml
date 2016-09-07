@@ -5,6 +5,8 @@
 
 <mapper namespace="com.softmotions.ncms.asm.AsmEventsListener">
 
+    <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
+
     <update id="fixCoreFolderLocation"
             databaseId="DB2"
             parameterType="map">
