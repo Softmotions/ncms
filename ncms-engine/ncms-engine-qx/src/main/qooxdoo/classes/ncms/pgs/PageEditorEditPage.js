@@ -136,7 +136,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __applyPageEditSpec: function (spec) {
             this.__setPublishState(!!spec["published"]);
+            var fp = spec["firstParent"];
             var t = spec["template"];
+            var attrs = spec["attributes"] || [];
             if (t == null) {
                 this.__templateBf.resetValue();
                 this.__cleanupFormPane();
@@ -147,17 +149,19 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             if (t["name"] != null) {
                 sb.push(t["name"]);
             }
-            if (spec["firstParent"]
-                && spec["firstParent"].id != t.id
-                && spec["firstParent"].name != null) {
-                sb.push(spec["firstParent"].name);
+            if (fp && fp.id != t.id) {
+                if (fp.name != null) {
+                    sb.push(fp.name);
+                }
+            }
+            if (sb.length < 2 && t.description != null) {
+                sb.push(t.description);
             }
             this.__templateBf.setValue(sb.join(" | "));
-            var attrs = spec["attributes"] || [];
+
             var form = new sm.ui.form.ExtendedForm();
             var vmgr = form.getValidationManager();
             vmgr.setRequiredFieldMessage(this.tr("This field is required"));
-
             attrs.forEach(function (attrSpec) {
                 this.__processAttribute(attrSpec, spec, form);
             }, this);
