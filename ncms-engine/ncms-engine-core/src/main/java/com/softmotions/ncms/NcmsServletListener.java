@@ -56,7 +56,6 @@ public class NcmsServletListener extends WBServletListener {
 
         initBeforeFilters(env, sctx);
         initCacheHeadersFilters(env, sctx);
-        initJarResources(env, sctx);
 
         sctx.addFilter("charsetFilter", CharsetFilter.class)
             .addMappingForUrlPatterns(null,
@@ -69,6 +68,8 @@ public class NcmsServletListener extends WBServletListener {
                            DispatcherType.INCLUDE,
                            DispatcherType.ERROR),
                 false, env.getAppPrefix() + "/*");
+
+        initJarResources(env, sctx);
 
         sctx.addFilter("guiceFilter", GuiceFilter.class)
             .addMappingForUrlPatterns(
