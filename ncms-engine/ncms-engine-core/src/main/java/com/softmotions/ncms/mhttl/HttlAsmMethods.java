@@ -29,7 +29,7 @@ import com.softmotions.web.HttpUtils;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class HttlAsmMethods {
+public final class HttlAsmMethods {
 
     private static final Logger log = LoggerFactory.getLogger(HttlAsmMethods.class);
 
@@ -233,7 +233,7 @@ public class HttlAsmMethods {
         return linkHtml(ref, null);
     }
 
-    public static String linkHtml(Object ref, Map<String, String> attrs) {
+    public static String linkHtml(Object ref, Map<String, ?> attrs) {
         if (ref == null) {
             return null;
         }
@@ -248,6 +248,26 @@ public class HttlAsmMethods {
             return null;
         }
         return ((RichRef) ref).toHtmlLink(attrs);
+    }
+
+    ///////////////////////////////////////////////////////////
+    //                       Casts                           //
+    ///////////////////////////////////////////////////////////
+
+    public static RichRef asRichRef(Object v) {
+        return (v instanceof RichRef) ? (RichRef) v : null;
+    }
+
+    public static Tree asTree(Object v) {
+        return (v instanceof Tree) ? (Tree) v : null;
+    }
+
+    public static Table asTable(Object v) {
+        return (v instanceof Table) ? (Table) v : null;
+    }
+
+    public static Image asImage(Object v) {
+        return (v instanceof Image) ? (Image) v : null;
     }
 
     ///////////////////////////////////////////////////////////
@@ -358,6 +378,10 @@ public class HttlAsmMethods {
         }
         return marks.contains(name) || def;
     }
+
+    ///////////////////////////////////////////////////////////
+    //                  Social systems support               //
+    ///////////////////////////////////////////////////////////
 
     public static String ogmeta() {
         return ogmeta(null);

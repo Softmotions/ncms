@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class Tree implements Iterable<Tree>, Serializable {
+public final class Tree implements Iterable<Tree>, Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(Tree.class);
 
@@ -175,7 +175,7 @@ public class Tree implements Iterable<Tree>, Serializable {
         return toHtmlLink(null);
     }
 
-    public String toHtmlLink(Map<String, String> amap) {
+    public String toHtmlLink(Map<String, ?> amap) {
         if (link == null) {
             return richRef != null ? richRef.toHtmlLink(amap) : null;
         }
@@ -185,7 +185,7 @@ public class Tree implements Iterable<Tree>, Serializable {
         StringBuilder attrs = null;
         if (amap != null && !amap.isEmpty()) {
             attrs = new StringBuilder();
-            for (Map.Entry<String, String> e : amap.entrySet()) {
+            for (Map.Entry<String, ?> e : amap.entrySet()) {
                 attrs.append(' ').append(e.getKey()).append('=').append(e.getValue());
             }
         }

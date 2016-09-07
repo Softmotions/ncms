@@ -938,6 +938,10 @@ msgstr "Вы действительно желаете безвозвратно 
 msgid "Save"
 msgstr "Сохранить"
 
+#: ncms/mmgr/MediaTextFileEditor.js:127
+msgid "File successfully saved"
+msgstr "Файл успешно сохранен"
+
 #: ncms/mmgr/PageFilesSelector.js:46 ncms/mmgr/PageFilesSelector.js:53
 #: ncms/mmgr/PageFilesSelector.js:59
 msgid "Import from media repository"

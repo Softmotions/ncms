@@ -35,7 +35,7 @@ import com.softmotions.web.HttpUtils;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class HttlUtilsMethods {
+public final class HttlUtilsMethods {
 
     private static final Logger log = LoggerFactory.getLogger(HttlUtilsMethods.class);
 

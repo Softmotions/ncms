@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import javax.annotation.Nonnull;
@@ -13,6 +16,8 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.collections4.iterators.ArrayIterator;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,11 +31,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class Table implements Iterable<String[]>, Serializable {
+public final class Table implements Iterable<String[]>, Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(Table.class);
 
     private final String[][] table;
+
+    // first column value => row mapping
+    private volatile Map<String, String[]> lookupTable;
 
     public Table() {
         this(0, 0);
@@ -58,7 +66,7 @@ public class Table implements Iterable<String[]>, Serializable {
                 List<String> cols = new ArrayList<>(8);
                 rows.add(cols);
                 while (parser.nextToken() != JsonToken.END_ARRAY) {
-                    String v = parser.nextTextValue();
+                    String v = parser.getText();
                     if (v != null) {
                         cols.add(v);
                     }
@@ -144,12 +152,131 @@ public class Table implements Iterable<String[]>, Serializable {
                                         Spliterator.SUBSIZED);
     }
 
+
+    ///////////////////////////////////////////////////////////
+    //                    Httl specific                      //
+    ///////////////////////////////////////////////////////////
+
+    /**
+     * Lookup a row by specified `firstColumn` value and return a row's
+     * second column value.
+     *
+     * @param firstCol First column value
+     * @param def      Default value if not matched row found.
+     */
+    public String find(String firstCol, String def) {
+        return find(firstCol, 1, def);
+    }
+
+    public String find(String firstCol) {
+        return find(firstCol, 1, null);
+    }
+
+    public String find0(String firstCol) {
+        return find(firstCol, 0, null);
+    }
+
+    public String find0(String firstCol, String def) {
+        return find(firstCol, 0, def);
+    }
+
+    public String find2(String secondCol, String def) {
+        return find(secondCol, 2, def);
+    }
+
+    public String find2(String secondCol) {
+        return find(secondCol, 2, null);
+    }
+
+    public String find3(String thirdCol, String def) {
+        return find(thirdCol, 3, def);
+    }
+
+    public String find3(String thirdCol) {
+        return find(thirdCol, 3, null);
+    }
+
+    public String find(String firstCol, Number colIndex, String def) {
+        if (firstCol == null || colIndex == null) {
+            return def;
+        }
+        if (lookupTable == null) {
+            //noinspection SynchronizeOnThis
+            synchronized (this) {
+                if (lookupTable == null) {
+                    lookupTable = new HashMap<>();
+                    for (String[] row : table) {
+                        if (row.length < 1) break;
+                        lookupTable.put(row[0], row);
+                    }
+                }
+            }
+        }
+        int idx = colIndex.intValue();
+        String[] row = lookupTable.get(firstCol);
+        if (row == null || idx < 0 || idx >= row.length) {
+            return def;
+        }
+        return row[idx] != null ? row[idx] : def;
+    }
+
+    public String toHtml() {
+        return toHtml(Collections.emptyMap());
+    }
+
+    /**
+     * Map keys:
+     * <p>
+     * - noEscape {Boolean|String} Does not HTML escaping of table cell values
+     * - noHeader {Boolean|String} Does not redender first row as table header
+     * - tableAttrs {String} Optional table attributes
+     *
+     * @param amap
+     * @return
+     */
+    public String toHtml(Map<String, ?> amap) {
+        if (amap == null) {
+            amap = Collections.emptyMap();
+        }
+        String sep = System.getProperty("line.separator");
+        int pos = 0;
+        boolean noescape = BooleanUtils.toBoolean(String.valueOf(amap.get("noEscape")));
+        boolean noheader = BooleanUtils.toBoolean(String.valueOf(amap.get("noHeader")));
+        String tattrs = (String) amap.get("tableAttrs");
+
+        StringBuilder sb = new StringBuilder(512);
+        sb.append("<table");
+        if (tattrs != null) {
+            sb.append(' ').append(tattrs);
+        }
+        sb.append('>');
+        if (table.length > pos && !noheader) {
+            sb.append(sep).append("<thead>").append(sep).append("<tr>");
+            for (String v : table[pos++]) {
+                sb.append(sep).append("<th>").append(noescape ? v : StringEscapeUtils.escapeHtml4(v)).append("</th>");
+            }
+            sb.append(sep).append("</tr>").append(sep).append("</thead>");
+        }
+        sb.append(sep).append("<tbody>");
+        for (; pos < table.length; ++pos) {
+            sb.append(sep).append("<tr>");
+            for (String v : table[pos]) {
+                sb.append(sep).append("<td>").append(noescape ? v : StringEscapeUtils.escapeHtml4(v)).append("</td>");
+            }
+            sb.append(sep).append("</tr>");
+        }
+        sb.append(sep).append("</tbody>");
+        sb.append(sep).append("</table>");
+        return sb.toString();
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         String sep = System.getProperty("line.separator");
         sb.append("Table{");
-        for (String[] row : table) {
-            sb.append(sep).append(Arrays.toString(row));
+        for (int i = 0; i < table.length; ++i) {
+            if (i > 0) sb.append(',');
+            sb.append(sep).append(Arrays.toString(table[i]));
         }
         sb.append(sep).append('}');
         return sb.toString();

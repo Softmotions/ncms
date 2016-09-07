@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,8 +21,6 @@ import com.softmotions.ncms.mhttl.Table;
  */
 @Singleton
 public class AsmTableAM extends AsmAttributeManagerSupport {
-
-    private static final Logger log = LoggerFactory.getLogger(AsmTableAM.class);
 
     public static final String[] TYPES = new String[]{"table"};
 

@@ -123,7 +123,9 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             req.setRequestContentType(ctype);
             req.setData(text);
             this.__broadcaster.setEnabled(false);
-            req.send();
+            req.send(function() {
+                ncms.Application.infoPopup(this.tr("File successfully saved"));
+            }, this);
         },
 
         __applyFileSpec: function (spec) {
