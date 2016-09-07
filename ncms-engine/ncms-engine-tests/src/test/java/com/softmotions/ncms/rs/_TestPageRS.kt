@@ -126,6 +126,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
             assertEquals(page.path("type"), res.path("type"))
             assertEquals("ownd", res.path("accessMask").asText(null))
             assertFalse(res.path("published").asBoolean())
+            assertFalse(res.path("template").asBoolean())
             assertEquals("admin", res.path("owner").path("name").asText(null))
             assertEquals("admin", res.path("muser").path("name").asText(null))
         }
@@ -215,13 +216,65 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                 }
             }
 
-            with(POST("/acl/$pid/admin?recursive=true&add=true&rigths=w")) {
+            with(POST("/acl/$pid/admin?recursive=true&add=true&rights=w")) {
                 assertEquals(204, code())
             }
-            with(POST("/acl/$pid/admin?recursive=false&add=false&rigths=o")) {
+            with(POST("/acl/$pid/admin?recursive=false&add=false&rights=o")) {
                 assertEquals(204, code())
             }
-            // todo: check edited rights
+            for (i in listOf(false, true)) {
+                with(GET("/acl/$pid?recursive=$i")) {
+                    assertEquals(200, code())
+                    with(mapper.readTree(body())) {
+                        assertTrue(isArray)
+                        assertEquals(1, size())
+                        with(get(0)) {
+                            assertEquals(i, path("recursive").asBoolean())
+                            assertEquals("admin", path("user").asText(null))
+
+                            if (i) {
+                                assertEquals("w", path("rights").asText(null))
+                            } else {
+                                assertEquals("wnd", path("rights").asText(null))
+                            }
+                        }
+                    }
+                }
+            }
+
+            with(DELETE("/acl/$pid/admin?recursive=true")) {
+                assertEquals(204, code())
+            }
+            with(GET("/acl/$pid?recursive=false")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(1, size())
+                    with(get(0)) {
+                        assertEquals("admin", path("user").asText(null))
+                        assertEquals("wnd", path("rights").asText(null))
+                        assertFalse(path("recursive").asBoolean())
+                    }
+                }
+            }
+            with(GET("/acl/$pid?recursive=true")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(0, size())
+                }
+            }
+            with(DELETE("/acl/$pid/admin?recursive=false")) {
+                assertEquals(204, code())
+            }
+            with(GET("/acl/$pid?recursive=false")) {
+                assertEquals(200, code())
+                with(mapper.readTree(body())) {
+                    assertTrue(isArray)
+                    assertEquals(0, size())
+                }
+            }
+
             deletePage(pid)
         }
     }
