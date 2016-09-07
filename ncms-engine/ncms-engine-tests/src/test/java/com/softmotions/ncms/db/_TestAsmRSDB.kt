@@ -63,16 +63,15 @@ class _TestAsmRSDB(db: String) : DbBaseTest(db) {
         val attr1 = AsmAttribute("name1", "type1", "val1")
         Assert.assertEquals(1, adao.asmSetAttribute(asm, attr1))
 
-        // test query "prevAttrID"
-        // todo БЛИН
-        //Assert.assertEquals(1L, ds.selectOne("prevAttrID")?:0L)
-
         var attr2 = ds.select<AsmAttribute>("selectAttrByName",
                 "asm_id", asm.id,
                 "name", "name1")
         Assert.assertEquals(1, attr2.size)
         Assert.assertEquals("type1", attr2[0].type)
         Assert.assertEquals("val1", attr2[0].value)
+
+        // test query "prevAttrID"
+        Assert.assertEquals(1L, ds.selectOne("prevAttrID")?:0L)
 
         // test query "renameAttribute"
         Assert.assertEquals(1, ds.update("renameAttribute",
