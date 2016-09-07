@@ -196,6 +196,14 @@ public final class Table implements Iterable<String[]>, Serializable {
         return find(thirdCol, 3, null);
     }
 
+    public String find(String firstCol, int colIndex) {
+        return find(firstCol, colIndex, null);
+    }
+
+    public String find(String firstCol, int colIndex, String def) {
+        return find(firstCol, Integer.valueOf(colIndex), def);
+    }
+
     public String find(String firstCol, Number colIndex, String def) {
         if (firstCol == null || colIndex == null) {
             return def;
