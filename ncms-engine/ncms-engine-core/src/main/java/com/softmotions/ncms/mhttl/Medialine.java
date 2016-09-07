@@ -1,9 +1,11 @@
 package com.softmotions.ncms.mhttl;
 
+import java.io.Serializable;
+
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class Medialine {
+public final class Medialine implements Serializable {
 
     private final Image image;
 

@@ -7,7 +7,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class Image extends ImageMeta {
+public final class Image extends ImageMeta {
 
     private final AsmRendererContext ctx;
 

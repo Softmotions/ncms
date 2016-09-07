@@ -29,7 +29,7 @@ import com.softmotions.web.HttpUtils;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class HttlAsmMethods {
+public final class HttlAsmMethods {
 
     private static final Logger log = LoggerFactory.getLogger(HttlAsmMethods.class);
 

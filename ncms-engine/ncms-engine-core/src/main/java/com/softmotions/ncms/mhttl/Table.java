@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class Table implements Iterable<String[]>, Serializable {
+public final class Table implements Iterable<String[]>, Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(Table.class);
 
     private final String[][] table;
+
+    // first column value => row mapping
+    private volatile Map<String, String[]> lookupTable;
 
     public Table() {
         this(0, 0);
@@ -153,6 +157,68 @@ public class Table implements Iterable<String[]>, Serializable {
     //                    Httl specific                      //
     ///////////////////////////////////////////////////////////
 
+    /**
+     * Lookup a row by specified `firstColumn` value and return a row's
+     * second column value.
+     *
+     * @param firstCol First column value
+     * @param def      Default value if not matched row found.
+     */
+    public String find(String firstCol, String def) {
+        return find(firstCol, 1, def);
+    }
+
+    public String find(String firstCol) {
+        return find(firstCol, 1, null);
+    }
+
+    public String find0(String firstCol) {
+        return find(firstCol, 0, null);
+    }
+
+    public String find0(String firstCol, String def) {
+        return find(firstCol, 0, def);
+    }
+
+    public String find2(String secondCol, String def) {
+        return find(secondCol, 2, def);
+    }
+
+    public String find2(String secondCol) {
+        return find(secondCol, 2, null);
+    }
+
+    public String find3(String thirdCol, String def) {
+        return find(thirdCol, 3, def);
+    }
+
+    public String find3(String thirdCol) {
+        return find(thirdCol, 3, null);
+    }
+
+    public String find(String firstCol, Number colIndex, String def) {
+        if (firstCol == null || colIndex == null) {
+            return def;
+        }
+        if (lookupTable == null) {
+            //noinspection SynchronizeOnThis
+            synchronized (this) {
+                if (lookupTable == null) {
+                    lookupTable = new HashMap<>();
+                    for (String[] row : table) {
+                        if (row.length < 1) break;
+                        lookupTable.put(row[0], row);
+                    }
+                }
+            }
+        }
+        int idx = colIndex.intValue();
+        String[] row = lookupTable.get(firstCol);
+        if (row == null || idx < 0 || idx >= row.length) {
+            return def;
+        }
+        return row[idx] != null ? row[idx] : def;
+    }
 
     public String toHtml() {
         return toHtml(Collections.emptyMap());
@@ -160,7 +226,7 @@ public class Table implements Iterable<String[]>, Serializable {
 
     /**
      * Map keys:
-     * <p/>
+     * <p>
      * - noEscape {Boolean|String} Does not HTML escaping of table cell values
      * - noHeader {Boolean|String} Does not redender first row as table header
      * - tableAttrs {String} Optional table attributes

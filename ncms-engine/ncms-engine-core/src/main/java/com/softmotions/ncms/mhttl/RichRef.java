@@ -1,5 +1,6 @@
 package com.softmotions.ncms.mhttl;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -9,7 +10,7 @@ import com.softmotions.ncms.asm.PageService;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class RichRef {
+public final class RichRef implements Serializable {
 
     private Image image;
 

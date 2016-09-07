@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class Tree implements Iterable<Tree>, Serializable {
+public final class Tree implements Iterable<Tree>, Serializable {
 
     private static final Logger log = LoggerFactory.getLogger(Tree.class);
 
