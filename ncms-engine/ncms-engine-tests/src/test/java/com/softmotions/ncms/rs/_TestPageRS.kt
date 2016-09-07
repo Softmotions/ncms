@@ -377,8 +377,8 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
     }
 
-    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageSearch", "testPageGet"))
-    fun testPageBasic() {
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageGet"))
+    fun testPageUpdateBasic() {
         with(createPage()) {
             val pid = path("id").asLong()
             for (i in 0..1) {
@@ -410,9 +410,116 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
     }
 
-    private fun createPage(): JsonNode {
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageGet"))
+    fun testPageLayer() {
+        with(GET("/layer")){
+            assertEquals(200, code())
+            val body = body()
+            assertNotNull(body)
+            with(mapper.readTree(body)) {
+                assertTrue(isArray)
+                assertEquals(0, size())
+            }
+        }
+        with(createPage(null, "page.folder")) {
+            val parentId = path("id").asLong()
+            val parentName = path("label").asText()
+            with(GET("/layer")){
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    assertEquals(1, size())
+                    with(get(0)) {
+                        assertEquals(parentId, path("id").asLong())
+                        assertEquals(parentName, path("label").asText(null))
+                    }
+                }
+            }
+            with(GET("/layer/$parentId")){
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    assertEquals(0, size())
+                }
+            }
+            with(createPage(parentId)) {
+                val childId = path("id").asLong()
+                val childName = path("label").asText()
+
+                with(GET("/layer/$parentId")){
+                    assertEquals(200, code())
+                    val body = body()
+                    assertNotNull(body)
+                    with(mapper.readTree(body)) {
+                        assertTrue(isArray)
+                        assertEquals(1, size())
+                        with(get(0)) {
+                            assertEquals(childId, path("id").asLong())
+                            assertEquals(childName, path("label").asText(null))
+                        }
+                    }
+                }
+                deletePage(childId)
+            }
+            deletePage(parentId)
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageGet", "testPageUpdateBasic", "testPageLayer"))
+    fun testPageMove() {
+        with(createPage()) {
+            val parentId = path("id").asLong()
+            val parentName = path("name").asText()
+            with(createPage()) {
+                val childId = path("id").asLong()
+                val childName = path("label").asText()
+
+                var props = mapper.createObjectNode().put("src", childId).put("tgt", childId)
+                with(PUT("/move").contentType("application/json").send(mapper.writeValueAsString(props))) {
+                    assertEquals(400, code())
+                }
+                props = mapper.createObjectNode().put("src", childId).put("tgt", parentId)
+                with(PUT("/move").contentType("application/json").send(mapper.writeValueAsString(props))) {
+                    assertEquals(400, code())
+                }
+
+                props = mapper.createObjectNode().put("name", parentName).put("type", "page.folder").put("id", parentId)
+                with(PUT("/update/basic").contentType("application/json").send(mapper.writeValueAsString(props))) {
+                    assertEquals(204, code())
+                }
+                props = mapper.createObjectNode().put("src", childId).put("tgt", parentId)
+                with(PUT("/move").contentType("application/json").send(mapper.writeValueAsString(props))) {
+                    assertEquals(204, code())
+                }
+                with(GET("/layer/$parentId")){
+                    assertEquals(200, code())
+                    val body = body()
+                    assertNotNull(body)
+                    with(mapper.readTree(body)) {
+                        assertTrue(isArray)
+                        assertEquals(1, size())
+                        with(get(0)) {
+                            assertEquals(childId, path("id").asLong())
+                            assertEquals(childName, path("label").asText(null))
+                        }
+                    }
+                }
+                deletePage(childId)
+            }
+            deletePage(parentId)
+        }
+    }
+
+    private fun createPage(parent: Long? = null, type: String? = "page"): JsonNode {
         val pageName = RandomStringUtils.randomAlphanumeric(5)
-        val props = mapper.createObjectNode().put("name", pageName).put("type", "page")
+        val props = mapper.createObjectNode().put("name", pageName).put("type", type)
+        if (parent != null) {
+            props.put("parent", parent)
+        }
 
         with(PUT("/new").contentType("application/json").send(mapper.writeValueAsString(props))) {
             assertEquals(204, code())
