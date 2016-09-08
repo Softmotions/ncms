@@ -19,7 +19,7 @@
         FROM ASMS asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
-            <if test="name != null">AND (LOWER(asm.name) LIKE #{name} OR LOWER(asm.description) LIKE #{name})</if>
+            <if test="name != null">AND (LOWER(asm.name) LIKE LOWER(#{name}) OR LOWER(asm.description) LIKE LOWER(#{name}))</if>
             <if test="template != null">AND asm.template = #{template}</if>
             <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
             <if test="name_restriction != null">AND asm.name LIKE #{name_restriction}</if>
@@ -59,7 +59,7 @@
         SELECT COUNT(*) FROM ASMS AS asm
         <where>
             <if test="type != null">AND asm.type = #{type}</if>
-            <if test="name != null">AND (LOWER(asm.name) LIKE #{name} OR LOWER(asm.description) LIKE #{name})</if>
+            <if test="name != null">AND (LOWER(asm.name) LIKE LOWER(#{name}) OR LOWER(asm.description) LIKE LOWER(#{name}))</if>
             <if test="template != null">AND asm.template = #{template}</if>
             <if test="template_mode != null">AND asm.template_mode = #{template_mode}</if>
             <if test="name_restriction != null">AND asm.name LIKE #{name_restriction}</if>

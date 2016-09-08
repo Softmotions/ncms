@@ -601,7 +601,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @PUT
     @Path("/new")
     @Transactional
-    public void newPage(@Context HttpServletRequest req,
+    public JsonNode newPage(@Context HttpServletRequest req,
                         ObjectNode spec) {
 
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
@@ -651,6 +651,13 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         }*/
         ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
+
+        ObjectNode res = mapper.createObjectNode();
+        res.put("id", id);
+        res.put("name", name);
+        res.put("type", type);
+        res.put("parent", parent);
+        return res;
     }
 
     @Nonnull

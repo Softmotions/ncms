@@ -56,25 +56,13 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         val props = mapper.createObjectNode().put("name", pageName).put("type", "page")
 
         with(PUT("/new").contentType("application/json").send(mapper.writeValueAsString(props))) {
-            assertEquals(204, code())
-        }
-
-        with(GET("/search/count")) {
-            assertEquals(200, code())
-            assertEquals("1", body())
-        }
-
-        with(GET("/search")) {
             assertEquals(200, code())
             val body = body()
             assertNotNull(body)
             with(mapper.readTree(body)) {
-                assertTrue(isArray)
-                with(get(0)) {
-                    assertTrue(hasNonNull("id"))
-                    assertEquals(pageName, path("label").asText())
-                    assertFalse(path("published").asBoolean())
-                }
+                assertTrue(hasNonNull("id"))
+                assertEquals(pageName, path("name").asText())
+                assertEquals("page", path("type").asText(null))
             }
         }
     }
@@ -119,7 +107,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
             assertNotNull(body)
             val res = mapper.readTree(body)
             assertEquals(page.path("id"), res.path("id"))
-            assertEquals(page.path("label"), res.path("name"))
+            assertEquals(page.path("name"), res.path("name"))
             assertEquals(page.path("type"), res.path("type"))
             assertEquals("ownd", res.path("accessMask").asText(null))
             assertFalse(res.path("published").asBoolean())
@@ -146,7 +134,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                     assertEquals(1, size())
                     with(get(0)) {
                         assertEquals(pid, path("id").asLong())
-                        assertEquals(pname, path("name").asText())
+                        assertEquals(pname, path("label").asText())
                     }
                 }
             }
@@ -280,7 +268,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
     fun testPageEditGet() {
         with(createPage()) {
             val pid = path("id").asLong()
-            val pname = path("label").asText()
+            val pname = path("name").asText()
 
             with(GET("/edit/$pid")) {
                 assertEquals(200, code())
@@ -410,7 +398,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
     }
 
-    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageGet"))
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
     fun testPageLayer() {
         with(GET("/layer")){
             assertEquals(200, code())
@@ -423,7 +411,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
         with(createPage(null, "page.folder")) {
             val parentId = path("id").asLong()
-            val parentName = path("label").asText()
+            val parentName = path("name").asText()
             with(GET("/layer")){
                 assertEquals(200, code())
                 val body = body()
@@ -448,7 +436,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
             }
             with(createPage(parentId)) {
                 val childId = path("id").asLong()
-                val childName = path("label").asText()
+                val childName = path("name").asText()
 
                 with(GET("/layer/$parentId")){
                     assertEquals(200, code())
@@ -476,7 +464,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
             val parentName = path("name").asText()
             with(createPage()) {
                 val childId = path("id").asLong()
-                val childName = path("label").asText()
+                val childName = path("name").asText()
 
                 var props = mapper.createObjectNode().put("src", childId).put("tgt", childId)
                 with(PUT("/move").contentType("application/json").send(mapper.writeValueAsString(props))) {
@@ -522,24 +510,19 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
 
         with(PUT("/new").contentType("application/json").send(mapper.writeValueAsString(props))) {
-            assertEquals(204, code())
-        }
-
-        with(GET("/search?name=$pageName")) {
             assertEquals(200, code())
             val body = body()
             assertNotNull(body)
             with(mapper.readTree(body)) {
-                assertTrue(isArray)
-                assertEquals(1, size())
-                with(get(0)) {
-                    assertTrue(hasNonNull("id"))
-                    assertEquals(pageName, path("label").asText())
-                    assertFalse(path("published").asBoolean())
-
-                    @Suppress("LABEL_NAME_CLASH")
-                    return this@with
+                assertTrue(hasNonNull("id"))
+                assertEquals(pageName, path("name").asText(null))
+                assertEquals(type, path("type").asText(null))
+                if (parent != null) {
+                    assertEquals(parent, path("parent").asLong())
                 }
+
+                @Suppress("LABEL_NAME_CLASH")
+                return this@with
             }
         }
     }
