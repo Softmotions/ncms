@@ -320,10 +320,12 @@ class _TestAsmRS(db: String) : BaseRSTest(db) {
         with(createAsm()) {
             val aid = path("id").asLong()
             val attrName = Array<String>(2, { i -> RandomStringUtils.randomAlphanumeric(12) })
-            val attribute = Array<ObjectNode>(2, { i -> mapper.createObjectNode().put("asmId", aid).
+            val attribute = Array<ObjectNode>(2, { i ->
+                mapper.createObjectNode().put("asmId", aid).
                         put("name", attrName[i]).
                         put("type", attrName[i]).
-                        put("required", false)})
+                        put("required", false)
+            })
 
             for (i in 0..1) {
                 with(PUT("/$aid/attributes").contentType("application/json").send(mapper.writeValueAsString(attribute[i]))) {

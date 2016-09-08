@@ -6,7 +6,10 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -56,25 +59,13 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         val props = mapper.createObjectNode().put("name", pageName).put("type", "page")
 
         with(PUT("/new").contentType("application/json").send(mapper.writeValueAsString(props))) {
-            assertEquals(204, code())
-        }
-
-        with(GET("/search/count")) {
-            assertEquals(200, code())
-            assertEquals("1", body())
-        }
-
-        with(GET("/search")) {
             assertEquals(200, code())
             val body = body()
             assertNotNull(body)
             with(mapper.readTree(body)) {
-                assertTrue(isArray)
-                with(get(0)) {
-                    assertTrue(hasNonNull("id"))
-                    assertEquals(pageName, path("label").asText())
-                    assertFalse(path("published").asBoolean())
-                }
+                assertTrue(hasNonNull("id"))
+                assertEquals(pageName, path("name").asText())
+                assertEquals("page", path("type").asText(null))
             }
         }
     }
@@ -119,7 +110,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
             assertNotNull(body)
             val res = mapper.readTree(body)
             assertEquals(page.path("id"), res.path("id"))
-            assertEquals(page.path("label"), res.path("name"))
+            assertEquals(page.path("name"), res.path("name"))
             assertEquals(page.path("type"), res.path("type"))
             assertEquals("ownd", res.path("accessMask").asText(null))
             assertFalse(res.path("published").asBoolean())
@@ -146,7 +137,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                     assertEquals(1, size())
                     with(get(0)) {
                         assertEquals(pid, path("id").asLong())
-                        assertEquals(pname, path("name").asText())
+                        assertEquals(pname, path("label").asText())
                     }
                 }
             }
@@ -280,7 +271,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
     fun testPageEditGet() {
         with(createPage()) {
             val pid = path("id").asLong()
-            val pname = path("label").asText()
+            val pname = path("name").asText()
 
             with(GET("/edit/$pid")) {
                 assertEquals(200, code())
@@ -410,9 +401,9 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
     }
 
-    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageGet"))
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
     fun testPageLayer() {
-        with(GET("/layer")){
+        with(GET("/layer")) {
             assertEquals(200, code())
             val body = body()
             assertNotNull(body)
@@ -423,8 +414,8 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
         with(createPage(null, "page.folder")) {
             val parentId = path("id").asLong()
-            val parentName = path("label").asText()
-            with(GET("/layer")){
+            val parentName = path("name").asText()
+            with(GET("/layer")) {
                 assertEquals(200, code())
                 val body = body()
                 assertNotNull(body)
@@ -437,7 +428,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                     }
                 }
             }
-            with(GET("/layer/$parentId")){
+            with(GET("/layer/$parentId")) {
                 assertEquals(200, code())
                 val body = body()
                 assertNotNull(body)
@@ -448,9 +439,9 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
             }
             with(createPage(parentId)) {
                 val childId = path("id").asLong()
-                val childName = path("label").asText()
+                val childName = path("name").asText()
 
-                with(GET("/layer/$parentId")){
+                with(GET("/layer/$parentId")) {
                     assertEquals(200, code())
                     val body = body()
                     assertNotNull(body)
@@ -476,7 +467,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
             val parentName = path("name").asText()
             with(createPage()) {
                 val childId = path("id").asLong()
-                val childName = path("label").asText()
+                val childName = path("name").asText()
 
                 var props = mapper.createObjectNode().put("src", childId).put("tgt", childId)
                 with(PUT("/move").contentType("application/json").send(mapper.writeValueAsString(props))) {
@@ -495,7 +486,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                 with(PUT("/move").contentType("application/json").send(mapper.writeValueAsString(props))) {
                     assertEquals(204, code())
                 }
-                with(GET("/layer/$parentId")){
+                with(GET("/layer/$parentId")) {
                     assertEquals(200, code())
                     val body = body()
                     assertNotNull(body)
@@ -514,6 +505,85 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
     }
 
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageEditGet"))
+    fun testPageReferers() {
+        // lazy test - check length, not values
+        with(GET("/referers/orphans")) {
+            assertEquals(200, code())
+            val orphansEmptyBodyLen = body().length
+            with(createPage()) {
+                val pid = path("id").asLong()
+
+                with(GET("/referers/count/$pid")) {
+                    assertEquals(200, code())
+                    assertEquals("0", body())
+                }
+
+                with(GET("/edit/$pid")) {
+                    assertEquals(200, code())
+                    val body = body()
+                    assertNotNull(body)
+                    with(mapper.readTree(body)) {
+                        val orphanItem = "<li>" +
+                                "<a href='/${path("guid").asText()}'>" +
+                                path("name").asText() +
+                                "</a> " +
+                                if (path("published").asBoolean()) {
+                                    ""
+                                } else {
+                                    "(not published)"
+                                } +
+                                "</li>\n"
+                        with(GET("/referers/orphans")) {
+                            assertEquals(200, code())
+                            val orphansBodyLen = body().length
+                            assertEquals(orphansBodyLen, orphansEmptyBodyLen + orphanItem.length)
+                        }
+                    }
+                }
+
+                deletePage(pid)
+            }
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
+    fun testPagePath() {
+        with(GET("/path/0")) {
+            assertEquals(404, code())
+        }
+        with(createPage()) {
+            val pid = path("id").asLong()
+            val pname = path("name").asText()
+
+            with(GET("/edit/$pid")) {
+                assertEquals(200, code())
+                var body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    val guid = path("guid").asText()
+                    with(GET("/path/$pid")) {
+                        assertEquals(200, code())
+                        body = body()
+                        assertNotNull(body)
+                        with(mapper.readTree(body)) {
+                            assertTrue(path("idPath").isArray)
+                            assertEquals(1, path("idPath").size())
+                            assertEquals(pid, path("idPath")[0].asLong())
+                            assertTrue(path("labelPath").isArray)
+                            assertEquals(1, path("labelPath").size())
+                            assertEquals(pname, path("labelPath")[0].asText(null))
+                            assertTrue(path("guidPath").isArray)
+                            assertEquals(1, path("guidPath").size())
+                            assertEquals(guid, path("guidPath")[0].asText(null))
+                        }
+                    }
+                }
+            }
+            deletePage(pid)
+        }
+    }
+
     private fun createPage(parent: Long? = null, type: String? = "page"): JsonNode {
         val pageName = RandomStringUtils.randomAlphanumeric(5)
         val props = mapper.createObjectNode().put("name", pageName).put("type", type)
@@ -522,24 +592,19 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
 
         with(PUT("/new").contentType("application/json").send(mapper.writeValueAsString(props))) {
-            assertEquals(204, code())
-        }
-
-        with(GET("/search?name=$pageName")) {
             assertEquals(200, code())
             val body = body()
             assertNotNull(body)
             with(mapper.readTree(body)) {
-                assertTrue(isArray)
-                assertEquals(1, size())
-                with(get(0)) {
-                    assertTrue(hasNonNull("id"))
-                    assertEquals(pageName, path("label").asText())
-                    assertFalse(path("published").asBoolean())
-
-                    @Suppress("LABEL_NAME_CLASH")
-                    return this@with
+                assertTrue(hasNonNull("id"))
+                assertEquals(pageName, path("name").asText(null))
+                assertEquals(type, path("type").asText(null))
+                if (parent != null) {
+                    assertEquals(parent, path("parent").asLong())
                 }
+
+                @Suppress("LABEL_NAME_CLASH")
+                return this@with
             }
         }
     }

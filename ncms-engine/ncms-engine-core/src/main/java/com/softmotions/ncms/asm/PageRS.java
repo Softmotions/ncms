@@ -601,7 +601,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @PUT
     @Path("/new")
     @Transactional
-    public void newPage(@Context HttpServletRequest req,
+    public JsonNode newPage(@Context HttpServletRequest req,
                         ObjectNode spec) {
 
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
@@ -651,6 +651,13 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         }*/
         ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
+
+        ObjectNode res = mapper.createObjectNode();
+        res.put("id", id);
+        res.put("name", name);
+        res.put("type", type);
+        res.put("parent", parent);
+        return res;
     }
 
     @Nonnull
@@ -789,9 +796,9 @@ public class PageRS extends MBDAOSupport implements PageService {
                 Map<String, Object> row = (Map<String, Object>) context.getResultObject();
                 String pguid = (String) row.get("guid");
                 String name = (String) row.get("name");
-                int published = NumberUtils.number2Int((Number) row.get("published"), 1);
+                boolean published = Converters.toBoolean(row.get("published"));
                 pw.println("<li><a href='" + (asmRoot + pguid) + "'>" + name + "</a> " +
-                           (published == 0 ? "(not published)</li>" : "</li>"));
+                           (!published ? "(not published)</li>" : "</li>"));
             }, guid);
             pw.println("</ol>");
             pw.println("</body>");
@@ -829,9 +836,9 @@ public class PageRS extends MBDAOSupport implements PageService {
                 Map<String, Object> row = (Map<String, Object>) context.getResultObject();
                 String pguid = (String) row.get("guid");
                 String name = (String) row.get("name");
-                int published = NumberUtils.number2Int((Number) row.get("published"), 1);
+                boolean published = Converters.toBoolean(row.get("published"));
                 pw.println("<li><a href='" + (asmRoot + pguid) + "'>" + name + "</a> " +
-                           (published == 0 ? "(not published)</li>" : "</li>"));
+                           (!published ? "(not published)</li>" : "</li>"));
             });
             pw.println("</ol>");
             pw.println("</body>");
