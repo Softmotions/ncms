@@ -547,6 +547,43 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         }
     }
 
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
+    fun testPagePath() {
+        with(GET("/path/0")) {
+            assertEquals(404, code())
+        }
+        with(createPage()) {
+            val pid = path("id").asLong()
+            val pname = path("name").asText()
+
+            with(GET("/edit/$pid")) {
+                assertEquals(200, code())
+                var body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    val guid = path("guid").asText()
+                    with(GET("/path/$pid")) {
+                        assertEquals(200, code())
+                        body = body()
+                        assertNotNull(body)
+                        with(mapper.readTree(body)) {
+                            assertTrue(path("idPath").isArray)
+                            assertEquals(1, path("idPath").size())
+                            assertEquals(pid, path("idPath")[0].asLong())
+                            assertTrue(path("labelPath").isArray)
+                            assertEquals(1, path("labelPath").size())
+                            assertEquals(pname, path("labelPath")[0].asText(null))
+                            assertTrue(path("guidPath").isArray)
+                            assertEquals(1, path("guidPath").size())
+                            assertEquals(guid, path("guidPath")[0].asText(null))
+                        }
+                    }
+                }
+            }
+            deletePage(pid)
+        }
+    }
+
     private fun createPage(parent: Long? = null, type: String? = "page"): JsonNode {
         val pageName = RandomStringUtils.randomAlphanumeric(5)
         val props = mapper.createObjectNode().put("name", pageName).put("type", type)
