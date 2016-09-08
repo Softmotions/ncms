@@ -64,6 +64,22 @@ public final class GzipFilter implements Filter {
             response.addHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
         }
 
+        @Override
+        public void setHeader(String name, String value) {
+            if (!HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(name)
+                && !HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
+                super.setHeader(name, value);
+            }
+        }
+
+        @Override
+        public void addHeader(String name, String value) {
+            if (!HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(name)
+                && !HttpHeaders.CONTENT_ENCODING.equalsIgnoreCase(name)) {
+                super.addHeader(name, value);
+            }
+        }
+
         public void finish() throws IOException {
             if (printWriter != null) {
                 printWriter.close();
@@ -106,7 +122,7 @@ public final class GzipFilter implements Filter {
             }
             if (printWriter == null) {
                 gzipStream = new ServletResponseGZIPOutputStream(getResponse().getOutputStream());
-                printWriter = new PrintWriter(new OutputStreamWriter(gzipStream, getResponse().getCharacterEncoding()));
+                printWriter = new PrintWriter(new OutputStreamWriter(gzipStream, "UTF-8"));
             }
             return printWriter;
         }
