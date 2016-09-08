@@ -100,13 +100,6 @@
     </media>
 
     <httl extensions="*,httl,html">
-        loggers=httl.spi.loggers.Slf4jLogger
-        loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
-        import.methods+=com.softmotions.ncms.mhttl.HttlAsmMethods\,com.softmotions.ncms.mhttl.HttlUtilsMethods
-        import.packages+=com.softmotions.ncms.mhttl\,com.softmotions.ncms.asm\,com.softmotions.commons.cont\,org.apache.commons.configuration2
-        date.format=MM.dd.yyyy HH:mm
-        time.zone=+6
-        reloadable=true
         ##code.directory=/tmp/httl-code
     </httl>
 

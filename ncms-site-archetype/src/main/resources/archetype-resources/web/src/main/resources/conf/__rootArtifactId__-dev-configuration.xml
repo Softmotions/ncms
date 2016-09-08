@@ -108,11 +108,8 @@
     </media>
 
     <httl extensions="*,httl,html">
-        loggers=httl.spi.loggers.Slf4jLogger
-        loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
-        import.methods+=com.softmotions.ncms.mhttl.HttlAsmMethods\,com.softmotions.ncms.mhttl.HttlUtilsMethods\,${package}.AppHttlMethods
-        import.packages+=com.softmotions.ncms.mhttl\,com.softmotions.ncms.asm\,com.softmotions.commons.cont\,org.apache.commons.configuration2\,${package}
-        reloadable=true
+        import.methods+=${package}.AppHttlMethods
+        import.packages+=${package}
     </httl>
 
     <security>

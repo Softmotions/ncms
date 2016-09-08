@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import httl.Engine;
 import httl.Template;
+import httl.spi.loggers.Slf4jLogger;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -23,6 +24,8 @@ import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
+import com.softmotions.ncms.mhttl.HttlAsmMethods;
+import com.softmotions.ncms.mhttl.HttlUtilsMethods;
 
 /**
  * Template engine adapter for HTTL template engine (http://httl.github.io)
@@ -44,7 +47,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
     @Inject
     public AsmTemplateEngineHttlAdapter(NcmsEnvironment cfg) {
         Properties httlProps = new Properties();
-        String extsStr = cfg.xcfg().getString("httl[@extensions]");
+        String extsStr = cfg.xcfg().getString("httl[@extensions]", "*,httl,html");
         if (!StringUtils.isBlank(extsStr)) {
             exts = extsStr.split(",");
             for (int i = 0; i < exts.length; ++i) {
@@ -63,6 +66,79 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
                 throw new RuntimeException(msg, e);
             }
         }
+
+//        loggers=httl.spi.loggers.Slf4jLogger
+//        loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
+//        import.methods+=com.softmotions.ncms.mhttl.HttlAsmMethods\,com.softmotions.ncms.mhttl.HttlUtilsMethods\,com.smsfinance.sml.HttlMethods
+//        import.packages+=com.softmotions.ncms.mhttl\,com.softmotions.ncms.asm\,com.softmotions.commons.cont\,org.apache.commons.configuration2
+//        date.format=MM.dd.yyyy HH:mm
+//                reloadable=true
+
+        String key = "loggers";
+        httlProps.remove(key + '+');
+        String value = httlProps.getProperty(key, "");
+        for (String c : new String[]{Slf4jLogger.class.getName()}) {
+            if (!value.contains(c)) {
+                if (!value.isEmpty()) {
+                    value += ",";
+                }
+                value += c;
+            }
+        }
+        httlProps.setProperty(key, value);
+
+        key = "loaders";
+        httlProps.remove(key + '+');
+        value = httlProps.getProperty(key, "");
+        for (String c : new String[]{HttlLoaderAdapter.class.getName()}) {
+            if (!value.contains(c)) {
+                if (!value.isEmpty()) {
+                    value += ',';
+                }
+                value += c;
+            }
+        }
+        httlProps.setProperty(key, value);
+
+        key = "import.methods";
+        value = httlProps.getProperty(key);
+        if (value == null) {
+            key += '+';
+        }
+        value = httlProps.getProperty(key, "");
+        for (String c : new String[]{HttlAsmMethods.class.getName(), HttlUtilsMethods.class.getName()}) {
+            if (!value.contains(c)) {
+                if (!value.isEmpty()) {
+                    value += ',';
+                }
+                value += c;
+            }
+        }
+        httlProps.setProperty(key, value);
+
+        key = "import.packages";
+        value = httlProps.getProperty(key);
+        if (value == null) {
+            key += '+';
+        }
+        value = httlProps.getProperty(key, "");
+        for (String c : new String[]{"com.softmotions.ncms.mhttl",
+                                     "com.softmotions.ncms.asm",
+                                     "com.softmotions.commons.cont",
+                                     "org.apache.commons.configuration2"}) {
+            if (!value.contains(c)) {
+                if (!value.isEmpty()) {
+                    value += ',';
+                }
+                value += c;
+            }
+        }
+        httlProps.setProperty(key, value);
+
+        if (!httlProps.containsKey("reloadable")) {
+            httlProps.setProperty("reloadable", "true");
+        }
+
         try {
             StringWriter eprops = new StringWriter();
             httlProps.store(eprops, "HTTL effective properties");
