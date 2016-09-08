@@ -6,7 +6,10 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -400,7 +403,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
 
     @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete"))
     fun testPageLayer() {
-        with(GET("/layer")){
+        with(GET("/layer")) {
             assertEquals(200, code())
             val body = body()
             assertNotNull(body)
@@ -412,7 +415,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
         with(createPage(null, "page.folder")) {
             val parentId = path("id").asLong()
             val parentName = path("name").asText()
-            with(GET("/layer")){
+            with(GET("/layer")) {
                 assertEquals(200, code())
                 val body = body()
                 assertNotNull(body)
@@ -425,7 +428,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                     }
                 }
             }
-            with(GET("/layer/$parentId")){
+            with(GET("/layer/$parentId")) {
                 assertEquals(200, code())
                 val body = body()
                 assertNotNull(body)
@@ -438,7 +441,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                 val childId = path("id").asLong()
                 val childName = path("name").asText()
 
-                with(GET("/layer/$parentId")){
+                with(GET("/layer/$parentId")) {
                     assertEquals(200, code())
                     val body = body()
                     assertNotNull(body)
@@ -483,7 +486,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                 with(PUT("/move").contentType("application/json").send(mapper.writeValueAsString(props))) {
                     assertEquals(204, code())
                 }
-                with(GET("/layer/$parentId")){
+                with(GET("/layer/$parentId")) {
                     assertEquals(200, code())
                     val body = body()
                     assertNotNull(body)
@@ -499,6 +502,48 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
                 deletePage(childId)
             }
             deletePage(parentId)
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testPageCreate", "testPageDelete", "testPageEditGet"))
+    fun testPageReferers() {
+        // lazy test - check length, not values
+        with(GET("/referers/orphans")) {
+            assertEquals(200, code())
+            val orphansEmptyBodyLen = body().length
+            with(createPage()) {
+                val pid = path("id").asLong()
+
+                with(GET("/referers/count/$pid")) {
+                    assertEquals(200, code())
+                    assertEquals("0", body())
+                }
+
+                with(GET("/edit/$pid")) {
+                    assertEquals(200, code())
+                    val body = body()
+                    assertNotNull(body)
+                    with(mapper.readTree(body)) {
+                        val orphanItem = "<li>" +
+                                "<a href='/${path("guid").asText()}'>" +
+                                path("name").asText() +
+                                "</a> " +
+                                if (path("published").asBoolean()) {
+                                    ""
+                                } else {
+                                    "(not published)"
+                                } +
+                                "</li>\n"
+                        with(GET("/referers/orphans")) {
+                            assertEquals(200, code())
+                            val orphansBodyLen = body().length
+                            assertEquals(orphansBodyLen, orphansEmptyBodyLen + orphanItem.length)
+                        }
+                    }
+                }
+
+                deletePage(pid)
+            }
         }
     }
 
