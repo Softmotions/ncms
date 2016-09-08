@@ -107,7 +107,7 @@
         </import>
     </media>
 
-    <httl extensions="*,httl,html">
+    <httl extensions="*,httl,html,httl.css">
         import.methods+=${package}.AppHttlMethods
         import.packages+=${package}
     </httl>

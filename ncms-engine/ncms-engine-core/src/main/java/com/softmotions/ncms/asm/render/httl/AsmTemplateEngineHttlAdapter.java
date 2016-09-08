@@ -38,7 +38,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(AsmTemplateEngineHttlAdapter.class);
 
-    public static final String[] DEFAULT_EXTS = new String[]{"httl"};
+    public static final String[] DEFAULT_EXTS = new String[]{"*", "httl", "html", "httl.css"};
 
     private final String[] exts;
 
@@ -47,7 +47,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
     @Inject
     public AsmTemplateEngineHttlAdapter(NcmsEnvironment cfg) {
         Properties httlProps = new Properties();
-        String extsStr = cfg.xcfg().getString("httl[@extensions]", "*,httl,html");
+        String extsStr = cfg.xcfg().getString("httl[@extensions]", "*,httl,html,httl.css");
         if (!StringUtils.isBlank(extsStr)) {
             exts = extsStr.split(",");
             for (int i = 0; i < exts.length; ++i) {
