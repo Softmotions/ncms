@@ -17,8 +17,9 @@ import com.softmotions.commons.cont.ArrayUtils;
 public abstract class DbTestsFactory {
 
     public Collection<String> getDatabases() {
-        boolean testDb2 = BooleanUtils.toBoolean(System.getProperty("testDB2"));
-        boolean testPostgres = BooleanUtils.toBoolean(System.getProperty("testPostgres"));
+        boolean all = BooleanUtils.toBoolean(System.getProperty("testAllDB"));
+        boolean testDb2 = all || BooleanUtils.toBoolean(System.getProperty("testDB2"));
+        boolean testPostgres = all || BooleanUtils.toBoolean(System.getProperty("testPostgres"));
         List<String> tests = new ArrayList<>();
         if (testPostgres) {
             tests.add("postgres");
