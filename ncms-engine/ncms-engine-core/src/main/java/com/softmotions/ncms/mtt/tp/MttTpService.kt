@@ -248,7 +248,7 @@ constructor(val sess: SqlSession,
                     sParams[pn.toLowerCase()] = pv
                 }
             }
-            spec.path("tparams").asText().splitToSequence(',').filter {
+            spec.path("tparams").asText().split(',').filter {
                 it.isNotBlank()
             }.forEach {
                 tParams += it.trim().toLowerCase()
