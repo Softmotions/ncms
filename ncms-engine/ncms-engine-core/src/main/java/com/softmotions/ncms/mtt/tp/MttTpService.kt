@@ -76,12 +76,28 @@ constructor(val sess: SqlSession,
                 k as String
                 v as String
                 if (k == "0,") {
-                    kvo[k] = StringUtils.split(v, ',').toMutableList()
+                    kvo[k] = StringUtils.split(v, ',').toMutableSet()
                 } else {
                     kvo[k] = mutableListOf(v)
                 }
             }
             tpmap = kvo as MutableMap<String, MutableCollection<String>>
+        }
+
+        internal fun syncTParams(tp: TpSlot, pmap: Map<String, Array<String>>) {
+            for (pn in tp.tParams) {
+                val pv = pmap[pn]
+                if (pv != null && pv.size > 0) { //todo review
+                    val parr = tpmap.getOrPut(pn, {
+                        modified = true
+                        mutableListOf(pv[0])
+                    }) as MutableList<String>
+                    if (parr.firstOrNull() != pv[0]) {
+                        modified = true
+                        parr[0] = pv[0]
+                    }
+                }
+            }
         }
 
         internal fun addTp(tp: TpSlot, pmap: Map<String, Array<String>>) {
@@ -97,13 +113,7 @@ constructor(val sess: SqlSession,
                 modified = true
                 sids += sid
             }
-            for (pn in tp.tParams) {
-                val pv = pmap[pn]
-                if (pv != null && pv.size > 0) { //todo review
-                    modified = true
-                    tpmap[pn] = mutableListOf(pv[0])
-                }
-            }
+            syncTParams(tp, pmap)
         }
 
         internal operator fun contains(tp: TpSlot): Boolean {
@@ -169,7 +179,11 @@ constructor(val sess: SqlSession,
                 for (pv in pvs) {
                     for (it in imap.values) {
                         val re = it.rParams[pnl]
-                        if (re == null || !it.enabled || it in tps) {
+                        if (re == null || !it.enabled) {
+                            continue
+                        }
+                        if (it in tps) {
+                            tps.syncTParams(it, rpMap)
                             continue
                         }
                         if (re.matches(pv)) {
@@ -284,7 +298,10 @@ constructor(val sess: SqlSession,
             spec.path("tparams").asText().split(',').filter {
                 it.isNotBlank()
             }.forEach {
-                tParams += it.trim().toLowerCase()
+                val pname = it.trim().toLowerCase()
+                if (!pname.startsWith("0,")) {
+                    tParams += pname
+                }
             }
         }
 
@@ -301,7 +318,7 @@ constructor(val sess: SqlSession,
         }
 
         override fun toString(): String {
-            return "TpSlot(tp=$tp, spec=$spec)"
+            return "TpSlot(tp=$tp)"
         }
     }
 }

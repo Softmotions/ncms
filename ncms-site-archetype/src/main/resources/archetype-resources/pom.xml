@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <tomcat.version>8.5.4</tomcat.version>
+        <tomcat.version>8.5.5</tomcat.version>
         <web.run.port>${serverPort}</web.run.port>
         <web.context.reloadable>false</web.context.reloadable>
     </properties>

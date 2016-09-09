@@ -11,7 +11,7 @@ qx.Class.define("ncms.mtt.actions.MttRememberOriginAction", {
     statics: {
 
         getDescription: function () {
-            return qx.locale.Manager.tr("Remember traffic sources");
+            return qx.locale.Manager.tr("Track traffic sources");
         },
 
         getType: function () {
@@ -21,10 +21,9 @@ qx.Class.define("ncms.mtt.actions.MttRememberOriginAction", {
         specForHuman: function (spec) {
             var ret = [];
             if (spec["tp"]) {
-                ret.push(qx.locale.Manager.tr("Tracking pixels"));
+                ret.push(qx.locale.Manager.tr("Track traffic sources"));
             }
             return ret.join(", ");
-
         }
     },
 
