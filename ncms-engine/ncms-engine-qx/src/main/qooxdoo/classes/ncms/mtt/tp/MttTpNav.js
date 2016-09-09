@@ -169,8 +169,8 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
                     var req = new sm.io.Request(
                         ncms.Application.ACT.getRestUrl("mtt.tp.delete", {id: tp["id"]}), "DELETE");
                     req.send(function (resp) {
+                        this.__selector.resetSelection();
                         this.__selector.reload();
-                        this.__selector.getTable().handleFocus();
                     }, this);
                 }, this);
         }

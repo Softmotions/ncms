@@ -44,7 +44,7 @@ class MttABMarksAction : MttActionHandler {
 
         if (req[cookieName] != null) {
             if (log.isDebugEnabled) {
-                log.debug("Skipping AB coookie set due to existing req " +
+                log.debug("Skipping AB cookie set due to existing req " +
                         "attribute: ${cookieName}=${req[cookieName]}")
             }
             rmc.paramsForRedirect[cookieName] = (req[cookieName] as Set<String>).joinToString(",");
@@ -55,7 +55,7 @@ class MttABMarksAction : MttActionHandler {
         var cookie = req.cookie(cookieName)
         if (cookie != null) {
             if (log.isDebugEnabled) {
-                log.debug("Skipping AB coookie set due to existing " +
+                log.debug("Skipping AB cookie set due to existing " +
                         "cookie: ${cookieName}=${cookie.decodeValue()}")
             }
             rmc.paramsForRedirect[cookieName] = cookie.decodeValue();

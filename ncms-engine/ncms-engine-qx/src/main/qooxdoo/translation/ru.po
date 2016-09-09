@@ -1074,15 +1074,15 @@ msgstr "Уровень"
 msgid "Log message"
 msgstr "Лог сообщение"
 
-#: ncms/mtt/actions/MttRememberTSAction.js:14
+#: ncms/mtt/actions/MttRememberOriginAction.js:14
 msgid "Remember traffic sources"
 msgstr "Запомнить источники трафика"
 
-#: ncms/mtt/actions/MttRememberTSAction.js:24
+#: ncms/mtt/actions/MttRememberOriginAction.js:24
 msgid "Tracking pixels"
 msgstr "Трекинг пиксели"
 
-#: ncms/mtt/actions/MttRememberTSAction.js:38
+#: ncms/mtt/actions/MttRememberOriginAction.js:38
 msgid "Enable tracking pixels"
 msgstr "Активировать трекинг пиксели"
 

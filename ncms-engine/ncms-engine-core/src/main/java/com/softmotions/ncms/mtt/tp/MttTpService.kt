@@ -40,15 +40,23 @@ constructor(val sess: SqlSession,
 
         private val log = LoggerFactory.getLogger(MttTpService::class.java)
 
-        private val MATCHED_TPS_KEY = "_tps";
+        private val MATCHED_TPS_COOKIE_KEY = "_tps";
+
+        private val MATCHED_TPS_REQ_KEY = MttTpRS::class.java.name + "_tps"
     }
 
+    // Parameter name => parameter value => TpSlot
     private val pmap: MutableMap<String, MutableMap<String, TpSlot>> = HashMap()
 
+    // TpSlot id => TpSlot
     private val imap: MutableMap<Long, TpSlot> = HashMap()
 
     private val lock = ReentrantReadWriteLock()
 
+
+    init {
+        ebus.register(this)
+    }
 
     //
     // 0,=43434,983,9289,32,44
@@ -67,7 +75,7 @@ constructor(val sess: SqlSession,
             for ((k, v) in kvo) {
                 k as String
                 v as String
-                if (k.startsWith("0,")) {
+                if (k == "0,") {
                     kvo[k] = StringUtils.split(v, ',').toMutableList()
                 } else {
                     kvo[k] = mutableListOf(v)
@@ -103,23 +111,36 @@ constructor(val sess: SqlSession,
             return tp.id.toString() in sids
         }
 
-        internal fun writeTo(resp: HttpServletResponse) {
+        internal fun writeTo(req: HttpServletRequest, resp: HttpServletResponse) {
             if (tpmap.isEmpty()) {
                 return
             }
+            req.setAttribute(MATCHED_TPS_REQ_KEY, this)
             val amap = KVOptions()
             for ((k, v) in tpmap) {
                 amap.put(k, v.joinToString(","))
             }
-            val cookie = Cookie(MATCHED_TPS_KEY, null)
+            val cookie = Cookie(MATCHED_TPS_COOKIE_KEY, null)
+            if (log.isDebugEnabled) {
+                log.debug("Set cookie {}={}", MATCHED_TPS_COOKIE_KEY, amap.toString())
+            }
             cookie.setEncodedValue(amap.toString())
             cookie.maxAge = 1.toDays().toSeconds().toInt()
             resp.addCookie(cookie)
         }
+
+        override fun toString(): String {
+            return "InjectedTps(modified=${modified}, tpmap=${tpmap})"
+        }
     }
 
-    internal fun loadTrackingPixels(req: HttpServletRequest): InjectedTps {
-        return InjectedTps(req.cookie(MATCHED_TPS_KEY)?.decodeValue() ?: "")
+    private fun loadTrackingPixels(req: HttpServletRequest): InjectedTps {
+        val tps = (req.getAttribute(MATCHED_TPS_REQ_KEY) as InjectedTps?)
+                ?: InjectedTps(req.cookie(MATCHED_TPS_COOKIE_KEY)?.decodeValue() ?: "")
+        if (log.isDebugEnabled) {
+            log.debug("loadTrackingPixels={}", tps)
+        }
+        return tps
     }
 
     fun injectTrackingPixels(req: HttpServletRequest, resp: HttpServletResponse) {
@@ -136,6 +157,9 @@ constructor(val sess: SqlSession,
                 pmap[pnl]?.let {
                     for (pv in pvs) {
                         it[pv]?.let {
+                            if (log.isDebugEnabled) {
+                                log.debug("Tps matched {}={}, tps={}", pnl, pv, it)
+                            }
                             tps.addTp(it, rpMap)
                         }
                     }
@@ -149,6 +173,9 @@ constructor(val sess: SqlSession,
                             continue
                         }
                         if (re.matches(pv)) {
+                            if (log.isDebugEnabled) {
+                                log.debug("Tps matched re={} {}={}, tps={}", re, pnl, pv, it)
+                            }
                             tps.addTp(it, rpMap)
                         }
                     }
@@ -157,12 +184,15 @@ constructor(val sess: SqlSession,
         }
 
         if (tps.modified) {
-            tps.writeTo(resp)
+            tps.writeTo(req, resp)
         }
     }
 
-    fun activateTp(tp: MttTp) {
+    private fun activateTp(tp: MttTp) {
         val ns = TpSlot(tp, mapper)
+        if (log.isDebugEnabled) {
+            log.debug("activateTp={}", tp)
+        }
         lock.write {
             imap[ns.id]?.let {
                 tpDeleted(it.id)
@@ -178,7 +208,7 @@ constructor(val sess: SqlSession,
         }
     }
 
-    fun activateTp(id: Long) {
+    private fun activateTp(id: Long) {
         val tp: MttTp? = selectOne("selectTpById", id)
         if (tp != null) {
             activateTp(tp)
@@ -197,6 +227,9 @@ constructor(val sess: SqlSession,
                     m.keys.toTypedArray().forEach {
                         val slot = m[it]
                         if (slot!!.id == id) {
+                            if (log.isDebugEnabled) {
+                                log.debug("tpDeleted={}", it)
+                            }
                             m.remove(it)
                         }
                     }
@@ -243,12 +276,12 @@ constructor(val sess: SqlSession,
                 pn as String
                 pv as String
                 if (StringUtils.containsAny("?*{}", pv)) {
-                    rParams[pn.toLowerCase()] = Regex(RegexpHelper.convertGlobToRegEx(pv))
+                    rParams[pn.toLowerCase()] = Regex("^" + RegexpHelper.convertGlobToRegEx(pv) + "$")
                 } else {
                     sParams[pn.toLowerCase()] = pv
                 }
             }
-            spec.path("tparams").asText().splitToSequence(',').filter {
+            spec.path("tparams").asText().split(',').filter {
                 it.isNotBlank()
             }.forEach {
                 tParams += it.trim().toLowerCase()
