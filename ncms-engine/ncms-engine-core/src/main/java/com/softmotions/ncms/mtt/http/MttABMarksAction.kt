@@ -30,7 +30,9 @@ class MttABMarksAction : MttActionHandler {
         if (!ctx.containsKey("marks")) {
             synchronized(this) {
                 if (ctx.containsKey("marks")) return@synchronized
-                ctx["marks"] = spec.path("marks").asText().split(",")
+                ctx["marks"] = spec.path("marks")
+                        .asText()
+                        .split(',')
                         .filter { it.isNotBlank() }.map { it.trim().toLowerCase() }
                         .toSet()
             }

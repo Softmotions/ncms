@@ -39,11 +39,19 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
         el.addListener("changeValue", this.__onModified, this);
         form.add(el, "", null, "enabled");
 
+        // Patterns for incoming request parameters
         el = new qx.ui.form.TextField().set({maxLength: 64});
         el.setRequired(true);
         el.setPlaceholder(this.tr("utm_source=glob_mask, other_parameter=glob_mask"));
         el.addListener("input", this.__onModified, this);
-        form.add(el, this.tr("Incoming request parameters"), null, "params");
+        form.add(el, this.tr("Incoming request parameters patterns"), null, "params");
+
+        // Transferred (saved) params
+        el = new qx.ui.form.TextField().set({maxLength: 128});
+        el.setRequired(true);
+        el.setPlaceholder(this.tr("Comma separated list of request params to save"));
+        el.addListener("input", this.__onModified, this);
+        form.add(el, this.tr("Saved request params"), null, "tparams");
 
         el = new qx.ui.form.TextField().set({maxLength: 128});
         el.setPlaceholder(this.tr("http://....?client_id={client_id}"));

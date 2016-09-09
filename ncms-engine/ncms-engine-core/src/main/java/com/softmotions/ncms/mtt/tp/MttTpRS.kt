@@ -141,7 +141,7 @@ constructor(val sess: SqlSession,
     @RequiresRoles("mtt")
     @Transactional
     open fun tpDelete(@PathParam("id") id: Long): Int {
-        ebus.fireOnSuccessCommit(MttTpDeleteEvent(id))
+        ebus.fireOnSuccessCommit(MttTpDeletedEvent(id))
         return delete("deleteTp", id)
     }
 
