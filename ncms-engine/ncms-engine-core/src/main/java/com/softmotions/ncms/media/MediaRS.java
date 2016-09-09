@@ -1703,7 +1703,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 dir.mkdirs();
             }
             if (log.isDebugEnabled()) {
-                log.debug("Writing {}/{} into: {} as {} size: {}",
+                log.debug("Writing {}{} into: {} as {} size: {}",
                           folder, name, target.getAbsolutePath(), mtype, actualLength);
             }
             try (final FileOutputStream fos = new FileOutputStream(target)) {

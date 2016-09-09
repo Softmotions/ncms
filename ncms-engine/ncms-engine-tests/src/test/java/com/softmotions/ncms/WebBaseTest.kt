@@ -88,6 +88,7 @@ open class WebBaseTest(db: String) : DbBaseTest(db) {
     }
 
     open protected fun GET(resource: String): HttpRequest = auth(HttpRequest.get(R(resource)))
+    open protected fun HEAD(resource: String): HttpRequest = auth(HttpRequest.head(R(resource)))
     open protected fun PUT(resource: String): HttpRequest = auth(HttpRequest.put(R(resource)))
     open protected fun POST(resource: String): HttpRequest = auth(HttpRequest.post(R(resource)))
     open protected fun DELETE(resource: String): HttpRequest = auth(HttpRequest.delete(R(resource)))
