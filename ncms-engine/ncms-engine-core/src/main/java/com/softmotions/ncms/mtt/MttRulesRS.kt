@@ -37,6 +37,10 @@ constructor(val sess: SqlSession,
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    init {
+        ebus.register(this)
+    }
+
     @GET
     @Path("/select")
     @RequiresRoles("mtt")

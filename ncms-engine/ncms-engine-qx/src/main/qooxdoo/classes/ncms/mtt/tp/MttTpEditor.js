@@ -48,7 +48,7 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
 
         // Transferred (saved) params
         el = new qx.ui.form.TextField().set({maxLength: 128});
-        el.setRequired(true);
+        el.setRequired(false);
         el.setPlaceholder(this.tr("Comma separated list of request params to save"));
         el.addListener("input", this.__onModified, this);
         form.add(el, this.tr("Saved request params"), null, "tparams");
@@ -147,12 +147,16 @@ qx.Class.define("ncms.mtt.tp.MttTpEditor", {
                 items["enabled"].setValue(!!data["enabled"]);
                 items["jscode"].setValue(spec["jscode"] || "");
                 items["url"].setValue(spec["url"] || "");
+                items["params"].setValue(spec["params"] || "");
+                items["tparams"].setValue(spec["tparams"] || "");
             } else {
                 this.__header.resetValue();
                 items["enabled"].resetValue();
                 items["jscode"].resetValue();
                 items["description"].resetValue();
                 items["url"].resetValue();
+                items["params"].resetValue();
+                items["tparams"].resetValue();
             }
             this.__broadcaster.setEnabled(false);
         }

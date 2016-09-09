@@ -2,7 +2,7 @@
  * Remember traffic sources action
  *
  */
-qx.Class.define("ncms.mtt.actions.MttRememberTSAction", {
+qx.Class.define("ncms.mtt.actions.MttRememberOriginAction", {
     extend: qx.core.Object,
     implement: [ncms.mtt.actions.IMttAction],
     include: [qx.locale.MTranslation],
