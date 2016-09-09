@@ -1075,14 +1075,11 @@ msgid "Log message"
 msgstr "Лог сообщение"
 
 #: ncms/mtt/actions/MttRememberOriginAction.js:14
-msgid "Remember traffic sources"
-msgstr "Запомнить источники трафика"
-
 #: ncms/mtt/actions/MttRememberOriginAction.js:24
-msgid "Tracking pixels"
-msgstr "Трекинг пиксели"
+msgid "Track traffic sources"
+msgstr "Отслеживать источники трафика"
 
-#: ncms/mtt/actions/MttRememberOriginAction.js:38
+#: ncms/mtt/actions/MttRememberOriginAction.js:37
 msgid "Enable tracking pixels"
 msgstr "Активировать трекинг пиксели"
 
@@ -1946,3 +1943,9 @@ msgstr "Заметка"
 
 #~ msgid "Optional pixel JavaScript"
 #~ msgstr ""
+
+#~ msgid "Remember traffic sources"
+#~ msgstr "Запомнить источники трафика"
+
+#~ msgid "Tracking pixels"
+#~ msgstr "Трекинг пиксели"
