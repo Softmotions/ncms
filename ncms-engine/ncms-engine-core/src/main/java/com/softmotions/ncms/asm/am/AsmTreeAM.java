@@ -295,7 +295,7 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
             if (stree == null) {
                 opts.remove("syncWith");
             } else {
-                opts.put("syncWith", n.asLong());
+                opts.put("syncWith", n.asText());
                 String guid = adao.asmSelectNameById(n.asLong());
                 if (guid != null) {
                     ctx.registerPageDependency(attr, guid);

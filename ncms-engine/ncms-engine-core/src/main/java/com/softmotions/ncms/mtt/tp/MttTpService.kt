@@ -177,7 +177,7 @@ constructor(val sess: SqlSession,
                 @Suppress("UNCHECKED_CAST")
                 return ids
                         .map { imap[it.toLong()] }
-                        .filter { it != null && it.name.matches(pattern) }
+                        .filter { it != null && it.enabled && it.name.matches(pattern) }
                         as Collection<TpSlot>
             }
         }
