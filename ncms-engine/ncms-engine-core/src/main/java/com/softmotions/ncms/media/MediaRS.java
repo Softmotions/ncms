@@ -51,7 +51,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.io.FileUtils;
@@ -124,7 +124,6 @@ import com.softmotions.weboot.mb.MBDAOSupport;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-@SuppressWarnings("unchecked")
 @javax.ws.rs.Path("/media")
 @Produces("application/json;charset=UTF-8")
 public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherEventHandler {
@@ -145,7 +144,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private final File basedir;
 
-    private final RWLocksLRUCache locksCache;
+    private final RWLocksLRUCache<String, ReentrantReadWriteLock> locksCache;
 
     private final Map<Object, Map<String, Object>> metaCache;
 
@@ -175,8 +174,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
         this.basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);
-        this.locksCache = new RWLocksLRUCache(xcfg.getInt("media.locks-lrucache-size", 128));
-        this.metaCache = new LRUMap(xcfg.getInt("media.meta-lrucache-size", 1024));
+        this.locksCache = new RWLocksLRUCache<>(xcfg.getInt("media.locks-lrucache-size", 128));
+        this.metaCache = new LRUMap<>(xcfg.getInt("media.meta-lrucache-size", 1024));
         this.mapper = mapper;
         this.i18n = i18n;
         this.ebus = ebus;
@@ -204,7 +203,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     /**
      * Save uploaded file.
-     * <p/>
+     * <p>
      * Example:
      * curl --upload-file ./myfile.txt http://localhost:8080/ncms/rs/media/file/foo/bar/test.txt
      */
@@ -392,6 +391,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 gen.writeStartArray();
                 //noinspection InnerClassTooDeeplyNested
                 select(cq.getStatement(), context -> {
+                    //noinspection unchecked
                     Map<String, ?> row = (Map<String, ?>) context.getResultObject();
                     try {
                         gen.writeStartObject();
@@ -439,6 +439,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                               @Context HttpServletRequest req,
                               @Context HttpServletResponse resp) throws Exception {
 
+        //noinspection unused
         try (final ResourceLock l = new ResourceLock(folder, true)) {
             File f = new File(basedir, folder);
             if (!f.exists()) {
@@ -452,7 +453,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                   "folder", dirname,
                                   "name", name);
             if (id == null) {
-                Map params = new HashMap();
+                Map<String, Object> params = new HashMap<>();
                 params.put("folder", dirname);
                 params.put("name", name);
                 params.put("owner", req.getRemoteUser());
@@ -500,6 +501,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         for (int i = 0, l = files.size(); i < l; ++i) {
             String spath = normalizePath(files.get(i).asText());
             checkFolder(spath);
+            //noinspection unused
             try (final ResourceLock l1 = new ResourceLock(spath, false)) {
                 String sfolder = getResourceParentFolder(spath);
                 String sname = getResourceName(spath);
@@ -511,6 +513,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 if (!sfile.exists()) {
                     continue;
                 }
+                //noinspection unused
                 try (final ResourceLock l2 = new ResourceLock(tpath, true)) {
                     File tfile = new File(basedir, tpath);
                     Map<String, Object> row = selectOne("selectResourceAttrsByPath",
@@ -566,7 +569,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
         Long id;
 
+        //noinspection unused
         try (final ResourceLock l1 = new ResourceLock(path, true)) {
+            //noinspection unused
             try (final ResourceLock l2 = new ResourceLock(npath, true)) {
                 File f1 = new File(basedir, path);
                 if (!f1.exists()) {
@@ -683,6 +688,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         String name = getResourceName(path);
         String folder = getResourceParentFolder(path);
 
+        //noinspection unused
         try (final ResourceLock l = new ResourceLock(path, true)) {
 
             File f = new File(basedir, path);
@@ -784,7 +790,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
         checkEditAccess(id, req);
 
-        Map<String, Object> qm = new TinyParamMap();
+        Map<String, Object> qm = new TinyParamMap<>();
         qm.put("id", id);
 
         if (form.containsKey("tags")) {
@@ -1103,9 +1109,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     /**
      * GET list of files in the specified directory(folder).
-     * <p/>
+     * <p>
      * Produces the following JSON:
-     * <p/>
+     * <p>
      * <pre>
      *     [
      *       {
@@ -1208,6 +1214,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         BufferedImage image;
+        //noinspection unused
         try (final ResourceLock l = new ResourceLock(path, false)) {
             File f = new File(basedir, path.substring(1));
             if (!f.exists()) {
@@ -1386,13 +1393,17 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Override
     @Transactional
     public Map<Long, Long> copyPageMedia(long sourcePageId, long targetPageId, String owner) throws IOException {
+
         if (sourcePageId == targetPageId) {
             return Collections.emptyMap();
         }
         Map<Long, Long> cmap = new HashMap<>();
         String spath = getPageLocalFolderPath(sourcePageId);
         String tpath = getPageLocalFolderPath(targetPageId);
+
+        //noinspection unused
         try (final ResourceLock l1 = new ResourceLock(spath, false)) {
+            //noinspection unused
             try (final ResourceLock l2 = new ResourceLock(tpath, true)) {
                 File sdir = new File(basedir, spath);
                 File tdir = new File(basedir, tpath);
@@ -1435,6 +1446,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
         //collect widths
         List<Pair<Integer, Integer>> hints = new ArrayList<>();
+
+        //noinspection unused
         try (final ResourceLock l = new ResourceLock(path, false)) {
             String folder = getResourceParentFolder(path);
             String name = getResourceName(path);
@@ -1569,6 +1582,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
             //Unlock read lock before acuiring exclusive write lock
             l.close();
+
+            //noinspection unused
             try (final ResourceLock wl = new ResourceLock(path, true)) {
                 if (source.exists()) {
                     tfile.getParentFile().mkdirs();
@@ -1675,6 +1690,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", env.getTmpdir());
         }
 
+        //noinspection unused
         try (final ResourceLock l = new ResourceLock(folder + name, true)) {
             id = selectOne("selectEntityIdByPath",
                            "folder", folder,
@@ -1884,7 +1900,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         ReentrantReadWriteLock rwlock;
         while (true) {
             synchronized (locksCache) {
-                rwlock = (ReentrantReadWriteLock) locksCache.get(path);
+                rwlock = locksCache.get(path);
                 if (rwlock == null) {
                     rwlock = new ReentrantReadWriteLock();
                     locksCache.put(path, rwlock);
@@ -2041,6 +2057,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Transactional
     public void pageRemoved(AsmRemovedEvent ev) {
         String path = getPageLocalFolderPath(ev.getId());
+        //noinspection unused
         try (final ResourceLock l = new ResourceLock(path, true)) {
             int cnt = delete("deleteFolder", "prefix_like", normalizeFolder(path) + "%");
             log.info("Unregistered {} files for asm {}", cnt, ev.getId());
@@ -2103,7 +2120,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         return sb.toString();
     }
 
-    private static final class RWLocksLRUCache extends LRUMap {
+    private static final class RWLocksLRUCache<K, V> extends LRUMap<K, V> {
 
         private RWLocksLRUCache(int maxSize) {
             super(maxSize, 0.75f, true);
@@ -2386,6 +2403,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 log.info("Removing missing resource: {}", path);
                 String name = getResourceName(path);
                 String folder = getResourceParentFolder(path);
+
+                //noinspection unused
                 try (final ResourceLock l = new ResourceLock(path, true)) {
                     File f = new File(basedir, path);
                     FileUtils.deleteQuietly(f);

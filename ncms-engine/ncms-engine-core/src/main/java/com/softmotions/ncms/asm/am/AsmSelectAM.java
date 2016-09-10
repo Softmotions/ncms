@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -166,8 +166,8 @@ public class AsmSelectAM extends AsmAttributeManagerSupport {
 
         Collection<String> items = new ArrayList<>();
         Object selectNodes = parseSelectNodes(value, false, false);
-        if (selectNodes instanceof Collection) {
-            CollectionUtils.collect((Collection) selectNodes,
+        if (selectNodes instanceof Iterable) {
+            CollectionUtils.collect((Iterable<?>) selectNodes,
                                     input -> (input instanceof SelectNode) ?
                                              ((SelectNode) input).getValue() : null,
                                     items);
@@ -236,7 +236,7 @@ public class AsmSelectAM extends AsmAttributeManagerSupport {
         }
         optsVal = val.get("multiselect");
         if (optsVal != null && optsVal.isBoolean()) {
-            opts.put("multiselect", optsVal.asBoolean());
+            opts.put("multiselect", optsVal.asText());
         }
         attr.setOptions(opts.toString());
         applyAttributeValue(ctx, attr, val);

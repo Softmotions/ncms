@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 
-import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -16,7 +16,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.map.Flat3Map;
+import org.apache.commons.collections4.map.Flat3Map;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.io.FileUtils;
@@ -85,7 +85,7 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
         }
         if (webAccessControlAllow != null) {
             log.info("Enabled Access-Control-Allow-{Origin|Headers|Methods}={}", webAccessControlAllow);
-            Map<String, String> params = new Flat3Map();
+            Map<String, String> params = new Flat3Map<>();
             params.put("enabled", "true");
             params.put("headerValue", webAccessControlAllow);
             StringBuilder exposeHeaders = new StringBuilder();

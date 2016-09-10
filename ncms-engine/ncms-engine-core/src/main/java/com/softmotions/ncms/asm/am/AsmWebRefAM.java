@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.collections.map.Flat3Map;
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.collections4.map.Flat3Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -180,7 +180,7 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport{
         List<NameValuePair> qparams = URLEncodedUtils.parse(location, cs);
         if (!qparams.isEmpty()) {
             if (options == null) {
-                options = new Flat3Map();
+                options = new Flat3Map<>();
             }
             for (NameValuePair pair : qparams) {
                 if (!options.containsKey(pair.getName())) {

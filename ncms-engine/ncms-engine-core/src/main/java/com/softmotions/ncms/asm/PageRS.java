@@ -37,7 +37,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -92,7 +92,6 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-@SuppressWarnings("unchecked")
 @Path("adm/pages")
 @Produces("application/json;charset=UTF-8")
 @Singleton
@@ -184,8 +183,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.pageSecurity = pageSecurity;
         this.ebus = ebus;
         this.userEnvRS = userEnvRS;
-        this.pagesCache = new PagesLRUMap(env.xcfg().getInt("pages.lru-cache-size", 1024));
-        this.guid2AliasCache = new LRUMap(env.xcfg().getInt("pages.lru-aliases-cache-size", 4096));
+        this.pagesCache = new PagesLRUMap<>(env.xcfg().getInt("pages.lru-cache-size", 1024));
+        this.guid2AliasCache = new LRUMap<>(env.xcfg().getInt("pages.lru-aliases-cache-size", 4096));
         this.pageGuid2Cache = new HashMap<>();
         this.pageAlias2Cache = new HashMap<>();
         this.lvh2IndexPages = new HashMap<>();
@@ -378,9 +377,9 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/edit/{id}")
     @Transactional
     public AsmCore savePage(@Context HttpServletRequest req,
-                        @Context SecurityContext sctx,
-                        @PathParam("id") Long id,
-                        ObjectNode data) throws Exception {
+                            @Context SecurityContext sctx,
+                            @PathParam("id") Long id,
+                            ObjectNode data) throws Exception {
 
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
         amCtx.setAsmId(id);
@@ -602,7 +601,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/new")
     @Transactional
     public JsonNode newPage(@Context HttpServletRequest req,
-                        ObjectNode spec) {
+                            ObjectNode spec) {
 
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
         Long parent = spec.hasNonNull("parent") ? spec.get("parent").asLong() : null;
@@ -793,7 +792,8 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             pw.println("<ol>");
             select("selectPagesDependentOn", context -> {
-                Map<String, Object> row = (Map<String, Object>) context.getResultObject();
+                //noinspection unchecked
+                Map<String, ?> row = (Map<String, ?>) context.getResultObject();
                 String pguid = (String) row.get("guid");
                 String name = (String) row.get("name");
                 boolean published = Converters.toBoolean(row.get("published"));
@@ -833,7 +833,8 @@ public class PageRS extends MBDAOSupport implements PageService {
 
             pw.println("<ol>");
             select("selectOrphanPages", context -> {
-                Map<String, Object> row = (Map<String, Object>) context.getResultObject();
+                //noinspection unchecked
+                Map<String, ?> row = (Map<String, ?>) context.getResultObject();
                 String pguid = (String) row.get("guid");
                 String name = (String) row.get("name");
                 boolean published = Converters.toBoolean(row.get("published"));
@@ -898,11 +899,12 @@ public class PageRS extends MBDAOSupport implements PageService {
             final boolean includePath = BooleanUtils.toBoolean(req.getParameter("includePath"));
             final JsonGenerator gen = new JsonFactory().createGenerator(output);
             gen.writeStartArray();
-            Map q = createSelectLayerQ(path, req);
+            Map<String, Object> q = createSelectLayerQ(path, req);
             q.put("user", req.getRemoteUser());
             String stmtName = q.containsKey("nav_parent_id") ? "selectChildLayer" : "selectRootLayer";
             try {
                 select(stmtName, context -> {
+                    //noinspection unchecked
                     Map<String, ?> row = (Map<String, ?>) context.getResultObject();
                     try {
                         gen.writeStartObject();
@@ -1044,6 +1046,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 gen.writeStartArray();
                 //noinspection InnerClassTooDeeplyNested
                 select(cq.getStatement(), context -> {
+                    //noinspection unchecked
                     Map<String, ?> row = (Map<String, ?>) context.getResultObject();
                     try {
                         boolean published = Converters.toBoolean(row.get("published"));
@@ -1295,9 +1298,9 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
 
-    private Map createSelectLayerQ(String path, HttpServletRequest req) {
+    private Map<String, Object> createSelectLayerQ(String path, HttpServletRequest req) {
         Long pId = getPathLastIdSegment(path);
-        Map<String, Object> ret = new TinyParamMap();
+        Map<String, Object> ret = new TinyParamMap<>();
         if (pId != null) {
             ret.put("nav_parent_id", pId);
         }
@@ -1313,7 +1316,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     //                     PageService implementation                        //
     ///////////////////////////////////////////////////////////////////////////
 
-    private final class PagesLRUMap extends LRUMap {
+    private final class PagesLRUMap<K, V> extends LRUMap<K, V> {
 
         private PagesLRUMap(int maxSize) {
             super(maxSize, true);
@@ -1380,6 +1383,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             return asm.getNavParentId();
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public Map<PATH_TYPE, Object> fetchNavPaths() {
             String cpath = asm.getNavCachedPath();
@@ -1773,11 +1777,11 @@ public class PageRS extends MBDAOSupport implements PageService {
                     continue;
                 }
                 String lp = ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/");
-                String ln = (String) options.get("lang");
+                String ln = options.get("lang");
                 if (StringUtils.isBlank(ln)) {
                     ln = "*";
                 }
-                String vh = (String) options.get("vhost");
+                String vh = options.get("vhost");
                 if (StringUtils.isBlank(vh)) {
                     vh = "*";
                 }

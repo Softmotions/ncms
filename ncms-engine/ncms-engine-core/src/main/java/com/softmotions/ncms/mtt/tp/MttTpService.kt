@@ -14,11 +14,14 @@ import com.softmotions.web.cookie
 import com.softmotions.web.decodeValue
 import com.softmotions.web.setEncodedValue
 import com.softmotions.weboot.mb.MBDAOSupport
+import kotlinx.support.jdk8.collections.putIfAbsent
+import org.apache.commons.collections4.map.Flat3Map
 import org.apache.commons.lang3.StringUtils
 import org.apache.ibatis.session.SqlSession
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.locks.ReentrantReadWriteLock
+import java.util.regex.Pattern
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -43,6 +46,8 @@ constructor(val sess: SqlSession,
         private val MATCHED_TPS_COOKIE_KEY = "_tps";
 
         private val MATCHED_TPS_REQ_KEY = MttTpRS::class.java.name + "_tps"
+
+        private val replaceUrlRP = Pattern.compile("\\{([A-Za-z_\\.]+)\\}")
     }
 
     // Parameter name => parameter value => TpSlot
@@ -58,30 +63,96 @@ constructor(val sess: SqlSession,
         ebus.register(this)
     }
 
+    fun applyTrackingPixels(req: HttpServletRequest,
+                            resp: HttpServletResponse,
+                            tpName: String = "*",
+                            ctx: Map<String, Any?> = emptyMap(),
+                            removeMatched: Boolean = true): Iterable<Pair<String, String>> {
+
+        val itps = loadTrackingPixels(req)
+        if (itps.isEmpty) {
+            return emptyList()
+        }
+        val tps = itps.findTps(if (StringUtils.containsAny("?*{}", tpName)) {
+            "^${RegexpHelper.convertGlobToRegEx(tpName)}$".toRegex()
+        } else {
+            "^${Pattern.quote(tpName)}$".toRegex()
+        })
+        if (tps.isEmpty()) {
+            return emptyList()
+        }
+        val nctx: MutableMap<String, Any?> =
+                if (itps.tpmap.size + ctx.size - 1 > 3)
+                    HashMap(ctx)
+                else Flat3Map(ctx)
+
+        for ((k, v) in itps.tpmap) {
+            if (k != "0,") {
+                nctx.putIfAbsent(k, v.firstOrNull())
+            }
+        }
+        if (log.isDebugEnabled) {
+            log.debug("activateTrackingPixels ctx {}", nctx)
+        }
+
+        fun replace(p: Pattern, data: String): String {
+            if (data.isBlank()) {
+                return data
+            }
+            val m = p.matcher(data)
+            val sb = StringBuffer(Math.floor(data.length * 1.5).toInt())
+            while (m.find()) {
+                val nv = nctx[m.group(1).toLowerCase()]
+                if (nv != null) {
+                    m.appendReplacement(sb, nv.toString())
+                } else {
+                    m.appendReplacement(sb, m.group())
+                }
+            }
+            m.appendTail(sb)
+            return sb.toString()
+        }
+
+        val ret = tps.map {
+            val url = replace(replaceUrlRP, it.url)
+            val jscode = replace(replaceUrlRP, it.jscode)
+            if (removeMatched) {
+                itps.removeTp(it)
+            }
+            if (log.isDebugEnabled) {
+                log.debug("Process tp name={} url={} jscode={}", it.name, url, jscode)
+            }
+            url.to(jscode)
+        }
+
+        itps.writeTo(req, resp)
+        return ret
+    }
+
     //
     // 0,=43434,983,9289,32,44
     // name1=pvalue1
     // name2=pvalue2
     //
-    internal class InjectedTps(cval: String = "") {
+    internal inner class InjectedTps(cval: String = "") {
 
         internal var modified = false
 
-        private val tpmap: MutableMap<String, MutableCollection<String>>
+        internal val isEmpty: Boolean
+            get() = tpmap.isEmpty()
+
+        internal val tpmap: MutableMap<String, MutableCollection<String>>
 
         init {
-
             val kvo = KVOptions(cval)
+            tpmap = HashMap(kvo.size)
             for ((k, v) in kvo) {
-                k as String
-                v as String
                 if (k == "0,") {
-                    kvo[k] = StringUtils.split(v, ',').toMutableSet()
+                    tpmap[k] = StringUtils.split(v, ',').toMutableSet()
                 } else {
-                    kvo[k] = mutableListOf(v)
+                    tpmap[k] = mutableListOf(v)
                 }
             }
-            tpmap = kvo as MutableMap<String, MutableCollection<String>>
         }
 
         internal fun syncTParams(tp: TpSlot, pmap: Map<String, Array<String>>) {
@@ -100,29 +171,46 @@ constructor(val sess: SqlSession,
             }
         }
 
+        internal fun findTps(pattern: Regex): Collection<TpSlot> {
+            val ids = tpmap["0,"] ?: return emptyList()
+            lock.read {
+                @Suppress("UNCHECKED_CAST")
+                return ids
+                        .map { imap[it.toLong()] }
+                        .filter { it != null && it.name.matches(pattern) }
+                        as Collection<TpSlot>
+            }
+        }
+
+        internal fun removeTp(tp: TpSlot) {
+            val sids = tpmap["0,"] ?: return
+            if (sids.remove(tp.sid)) {
+                modified = true
+            }
+        }
+
         internal fun addTp(tp: TpSlot, pmap: Map<String, Array<String>>) {
             if (!tp.enabled) {
                 return
             }
-            val sid = tp.id.toString()
             val sids = tpmap.getOrPut("0,", {
                 modified = true
                 ArrayList(8)
             })
-            if (!sids.contains(sid)) {
+            if (!sids.contains(tp.sid)) {
                 modified = true
-                sids += sid
+                sids += tp.sid
             }
             syncTParams(tp, pmap)
         }
 
         internal operator fun contains(tp: TpSlot): Boolean {
             val sids = tpmap["0,"] ?: return false
-            return tp.id.toString() in sids
+            return tp.sid in sids
         }
 
         internal fun writeTo(req: HttpServletRequest, resp: HttpServletResponse) {
-            if (tpmap.isEmpty()) {
+            if (!modified) {
                 return
             }
             req.setAttribute(MATCHED_TPS_REQ_KEY, this)
@@ -135,8 +223,10 @@ constructor(val sess: SqlSession,
                 log.debug("Set cookie {}={}", MATCHED_TPS_COOKIE_KEY, amap.toString())
             }
             cookie.setEncodedValue(amap.toString())
+            // todo 1 day hardcoded
             cookie.maxAge = 1.toDays().toSeconds().toInt()
             resp.addCookie(cookie)
+            modified = false
         }
 
         override fun toString(): String {
@@ -197,9 +287,7 @@ constructor(val sess: SqlSession,
             }
         }
 
-        if (tps.modified) {
-            tps.writeTo(req, resp)
-        }
+        tps.writeTo(req, resp)
     }
 
     private fun activateTp(tp: MttTp) {
@@ -267,8 +355,19 @@ constructor(val sess: SqlSession,
         internal val id: Long
             get() = tp.id
 
+        internal val name: String
+            get() = tp.name
+
+        internal val sid: String
+
         internal val enabled: Boolean
             get() = tp.isEnabled
+
+        internal val url: String
+            get() = spec.path("url").asText()
+
+        internal val jscode: String
+            get() = spec.path("jscode").asText()
 
         internal val spec: ObjectNode
 
@@ -284,11 +383,10 @@ constructor(val sess: SqlSession,
 
         init {
 
+            sid = tp.id.toString()
             spec = mapper.readTree(tp.spec) as ObjectNode
             // {"params":"utm_source=yandex","url":"http://sm.ru?","jscode":"eew\nwqwqwwq\n\n\n\n\n"}
             for ((pn, pv) in KVOptions(spec.path("params").asText())) {
-                pn as String
-                pv as String
                 if (StringUtils.containsAny("?*{}", pv)) {
                     rParams[pn.toLowerCase()] = Regex("^" + RegexpHelper.convertGlobToRegEx(pv) + "$")
                 } else {

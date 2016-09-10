@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -48,7 +48,7 @@ public class PageSecurityService extends MBDAOSupport {
 
     private final WSUserDatabase userdb;
     private final I18n messages;
-    private final LRUMap aclCache;
+    private final LRUMap<String,Object> aclCache;
     private final MBSqlSessionManager sessionManager;
     private final NcmsSecurityContext sctx;
 
@@ -63,7 +63,7 @@ public class PageSecurityService extends MBDAOSupport {
         super(PageSecurityService.class, sess);
         this.userdb = userdb;
         this.messages = messages;
-        this.aclCache = new LRUMap(env.xcfg().getInt("security.acl-lru-cache-size", 1024));
+        this.aclCache = new LRUMap<>(env.xcfg().getInt("security.acl-lru-cache-size", 1024));
         this.sessionManager = sessionManager;
         this.sctx = sctx;
     }
@@ -118,7 +118,7 @@ public class PageSecurityService extends MBDAOSupport {
         synchronized (aclCache) {
             String prefix = user + ':';
             Set<String> keyset = aclCache.keySet();
-            String[] keys = (String[]) aclCache.keySet().toArray(new String[keyset.size()]);
+            String[] keys = aclCache.keySet().toArray(new String[keyset.size()]);
             for (final String k : keys) {
                 if (k.startsWith(prefix)) {
                     aclCache.remove(k);
@@ -143,7 +143,7 @@ public class PageSecurityService extends MBDAOSupport {
         if (recursive == null) {
             Collections.sort(acl, (a1, a2) -> {
                 int res = (Integer) a1.get("recursive") - (Integer) a2.get("recursive");
-                return res != 0 ? res : ((String) a1.get("user")).compareTo((String) a2.get("user"));
+                return res != 0 ? res : ((Comparable<String>) a1.get("user")).compareTo((String) a2.get("user"));
             });
         }
 
