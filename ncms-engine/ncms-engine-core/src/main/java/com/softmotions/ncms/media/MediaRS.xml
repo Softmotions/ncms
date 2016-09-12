@@ -343,10 +343,7 @@
     </select>
 
 
-    <select id="selectIcon"
-            databaseId="DB2"
-            resultType="map"
-            parameterType="map">
+    <select id="selectIcon" resultType="map" parameterType="map">
         SELECT
             e.id                AS "id",
             e.icon              AS "icon",
@@ -358,23 +355,6 @@
             AND e.name = #{name}
             AND e.status = 0
     </select>
-
-    <select id="selectIcon"
-            databaseId="POSTGRES"
-            resultType="map"
-            parameterType="map">
-        SELECT
-        e.id                AS "id",
-        e.icon              AS "icon",
-        e.content_type      AS "content_type",
-        e.icon_content_type AS "icon_content_type"
-        FROM MEDIA_ENTITY e
-        WHERE
-        e.folder = #{folder}
-        AND e.name = #{name}
-        AND e.status = false
-    </select>
-
 
     <select id="selectIcon2" resultType="map" parameterType="map">
         SELECT
