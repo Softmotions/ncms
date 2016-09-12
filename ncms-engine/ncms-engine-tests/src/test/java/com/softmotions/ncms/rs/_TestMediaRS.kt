@@ -146,9 +146,162 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
                     }
                 }
 
-                deleteFile(folder, fileName)
+                delete(folder, fileName)
             }
         }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testMediaSelect"))
+    fun testMediaFolderSelect() {
+        with(GET("/folders")) {
+            assertEquals(200, code())
+            val body = body()
+            assertNotNull(body)
+            with(mapper.readTree(body)) {
+                assertTrue(isArray)
+                assertEquals(0, size())
+            }
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testMediaFolderSelect"))
+    fun testMediaFolderPut() {
+        val folderName = RandomStringUtils.randomAlphanumeric(11)
+        with(PUT("/folder/$folderName")) {
+            assertEquals(200, code())
+            val body = body()
+            assertNotNull(body)
+            with(mapper.readTree(body)) {
+                assertEquals(folderName, path("label").asText(null))
+                assertEquals(1, path("status").asInt())
+                assertTrue(hasNonNull("system"))
+            }
+        }
+        with(PUT("/folder/$folderName")) {
+            assertEquals(500, code())
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testMediaFolderPut"))
+    fun testMediaFolderDelete() {
+        with(GET("/folders")) {
+            assertEquals(200, code())
+
+            val body = body()
+            assertNotNull(body)
+            with(mapper.readTree(body)) {
+                assertTrue(isArray)
+                forEach {
+                    assertTrue(it.hasNonNull("label"))
+                    assertEquals(1, it.path("status").asInt())
+                    assertEquals(204, DELETE("/delete/${it.path("label").asText()}").code())
+                }
+            }
+        }
+
+        with(GET("/folders")) {
+            assertEquals(200, code())
+            val body = body()
+            assertNotNull(body)
+            with(mapper.readTree(body)) {
+                assertTrue(isArray)
+                assertEquals(0, size())
+            }
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testMediaFilePut", "testMediaFileDelete", "testMediaFolderPut", "testMediaFolderDelete"))
+    fun testMediaListing() {
+        /*
+        * /
+        * |-file1
+        * \-folder1
+        *   |---file2
+        *   \---folder2
+        *       \---file3
+        */
+        testMediaFolderSelect()
+        val file1   = putFile().path("name").asText()
+        val folder1 = putFolder().path("label").asText()
+        val file2   = putFile(folder1).path("name").asText()
+        val folder2 = putFolder(folder1).path("label").asText()
+        val file3   = putFile(folder1 + "/" + folder2).path("name").asText()
+
+        for (i in 0..2) {
+            val folder: String
+            val folderName: String
+            val fileName: String
+            if (i == 0) {
+                folder = ""
+                folderName = folder1
+                fileName = file1
+            } else if (i == 1) {
+                folder = "/$folder1"
+                folderName = folder2
+                fileName = file2
+            } else if (i == 2) {
+                folder = "/$folder1/$folder2"
+                folderName = "" // doesn't matter - folder not contain folders
+                fileName = file3
+            } else {
+                folder = ""
+                folderName = ""
+                fileName = ""
+            }
+
+            // test files listing
+            with(GET("/files$folder")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    forEach {
+                        assertEquals(fileName, it.path("label").asText(null))
+                        assertEquals(0, it.path("status").asInt())
+                    }
+                }
+            }
+
+            // test folder listing
+            with(GET("/folders$folder")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    forEach {
+                        assertEquals(folderName, it.path("label").asText(null))
+                        assertEquals(1, it.path("status").asInt())
+                    }
+                }
+            }
+
+            // test "all" listing
+            with(GET("/all$folder")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    forEach {
+                        val status = it.path("status").asInt()
+                        val fileLabel = if (status == 0) {
+                            fileName
+                        } else {
+                            folderName
+                        }
+                        assertEquals(fileLabel, it.path("label").asText(null))
+                    }
+                }
+            }
+        }
+
+        delete(folder2, file3)
+        delete(folder1, folder2)
+        delete(folder1, file2)
+        delete("", folder1)
+        delete("", file1)
     }
 
     private fun putFile(folder: String = "", type: String = "txt"): JsonNode {
@@ -183,7 +336,26 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
                 put("contentType", contentType)
     }
 
-    private fun deleteFile(folder: String = "", fileName: String) {
+    private fun putFolder(folder: String = ""): JsonNode {
+        val folderLabel = RandomStringUtils.randomAlphanumeric(11)
+        val folderName = prepareFolder(folder)
+
+        with(PUT("/folder/$folderName$folderLabel")) {
+            assertEquals(200, code())
+            val body = body()
+            assertNotNull(body)
+            with(mapper.readTree(body)) {
+                assertEquals(folderLabel, path("label").asText(null))
+                assertEquals(1, path("status").asInt())
+                assertTrue(hasNonNull("system"))
+
+                @Suppress("LABEL_NAME_CLASH")
+                return this@with
+            }
+        }
+    }
+
+    private fun delete(folder: String = "", fileName: String) {
         assertEquals(204, DELETE("/delete/${prepareFolder(folder)}$fileName").code())
     }
 
