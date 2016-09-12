@@ -90,64 +90,83 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
         }
     }
 
-    @Test(dependsOnMethods = arrayOf("testMediaFilePut", "testMediaFileDelete"))
+    @Test(dependsOnMethods = arrayOf("testMediaFilePut", "testMediaFileDelete", "testMediaFolderPut", "testMediaFolderDelete"))
     fun testMediaFileGet() {
         // todo: on png (or pdf) response body length less than file size!
         val testFolder = putFolder().path("label").asText()
-        for (fileType in listOf("txt", "svg")) {
-            for (folderName in listOf("", testFolder)) {
+        for (fileType in listOf("txt", "svg")) { // test: different file types
+            for (folderName in listOf("", testFolder)) { // test: / and subfolder
                 with(putFile(folderName, fileType)) {
                     val fileName = path("name").asText()
                     val folder = prepareFolder(path("folder").asText())
                     val fileSize = path("size").asInt()
                     val fileContentType = path("contentType").asText()
-                    for (i in 0..1) {
-                        val req: HttpRequest
-                        if (i == 0) {
-                            req = HEAD("/file/$folder$fileName")
+
+                    for (j in 0..1) { // get by: 0 - name, 1 - id
+                        var resource = ""
+                        if (j == 0) {
+                            resource = "/file/$folder$fileName"
                         } else {
-                            req = GET("/file/$folder$fileName")
-                        }
-                        with(req) {
-                            if (i == 0) {
-                                assertEquals(204, code())
-                            } else {
+                            with(GET("/select?folder=/$folder")) {
                                 assertEquals(200, code())
-                            }
-
-                            val headers = headers()
-
-                            val respFName = BCodec("UTF-8").decode(
-                                    headers["Content-Disposition"]?.get(0)?.
-                                            removePrefix("attachment; filename=\"")?.
-                                            removeSuffix("\""))
-                            assertEquals(fileName, respFName)
-
-                            val respCLeng = if (i == 0) {
-                                headers["X-Content-Length"]?.get(0)
-                            } else {
-                                headers["Content-Length"]?.get(0)
-                            }
-                            assertEquals(fileSize.toString(), respCLeng)
-
-                            val respEnc = headers["Content-Encoding"]?.get(0)
-                            val respCType = headers["Content-Type"]?.get(0)
-                            if (respEnc != null) {
-                                assertEquals(fileContentType + ";charset=" + respEnc, respCType)
-                            } else {
-                                assertEquals(fileContentType, respCType)
-                            }
-
-                            if (i == 1) {
                                 val body = body()
+                                assertNotNull(body)
+                                with(mapper.readTree(body)) {
+                                    assertTrue(isArray)
+                                    forEach {
+                                        assertTrue(it.hasNonNull("id"))
+                                        if (fileName.equals(it.path("name").asText(null))) {
+                                            resource = "/fileid/" + it.path("id").asLong()
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
-                                log.info("headers: {}", headers)
-                                log.info("body.len: {}", body.length)
-                                assertEquals(fileSize, body.length)
+                        for (i in 0..1) { // request: 0 - HEAD, 1 - GET
+                            val req: HttpRequest
+                            if (i == 0) {
+                                req = HEAD(resource)
+                            } else {
+                                req = GET(resource)
+                            }
+                            with(req) {
+                                if (i == 0) {
+                                    assertEquals(204, code())
+                                } else {
+                                    assertEquals(200, code())
+                                }
+
+                                val headers = headers()
+
+                                val respFName = BCodec("UTF-8").decode(
+                                        headers["Content-Disposition"]?.get(0)?.
+                                                removePrefix("attachment; filename=\"")?.
+                                                removeSuffix("\""))
+                                assertEquals(fileName, respFName)
+
+                                val respCLeng = if (i == 0) {
+                                    headers["X-Content-Length"]?.get(0)
+                                } else {
+                                    headers["Content-Length"]?.get(0)
+                                }
+                                assertEquals(fileSize.toString(), respCLeng)
+
+                                val respEnc = headers["Content-Encoding"]?.get(0)
+                                val respCType = headers["Content-Type"]?.get(0)
+                                if (respEnc != null) {
+                                    assertEquals(fileContentType + ";charset=" + respEnc, respCType)
+                                } else {
+                                    assertEquals(fileContentType, respCType)
+                                }
+
+                                if (i == 1) {
+                                    val body = body()
+                                    assertEquals(fileSize, body.length)
+                                }
                             }
                         }
                     }
-
                     delete(folder, fileName)
                 }
             }
@@ -225,11 +244,11 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
         *       \---file3
         */
         testMediaSelect()
-        val file1   = putFile().path("name").asText()
+        val file1 = putFile().path("name").asText()
         val folder1 = putFolder().path("label").asText()
-        val file2   = putFile(folder1).path("name").asText()
+        val file2 = putFile(folder1).path("name").asText()
         val folder2 = putFolder(folder1).path("label").asText()
-        val file3   = putFile(folder1 + "/" + folder2).path("name").asText()
+        val file3 = putFile(folder1 + "/" + folder2).path("name").asText()
 
         for (i in 0..2) {
             val folder: String
