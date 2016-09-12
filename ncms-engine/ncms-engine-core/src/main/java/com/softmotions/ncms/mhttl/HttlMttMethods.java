@@ -176,10 +176,12 @@ public class HttlMttMethods {
         StringBuilder sb = new StringBuilder(255);
         String sep = System.getProperty("line.separator");
         for (final MttActivatedTp atp : activatedTps) {
-            sb.append(sep)
-              .append("<img style=\"display:none;\" width=\"0\" height=\"0\" src=\"")
-              .append(atp.getUrl())
-              .append("\"/>");
+            if (!StringUtils.isBlank(atp.getUrl())) {
+                sb.append(sep)
+                  .append("<img style=\"display:none;\" width=\"0\" height=\"0\" src=\"")
+                  .append(atp.getUrl())
+                  .append("\"/>");
+            }
             if (!StringUtils.isBlank(atp.getScript())) {
                 sb.append(sep)
                   .append("<script type=\"text/javascript\">")
