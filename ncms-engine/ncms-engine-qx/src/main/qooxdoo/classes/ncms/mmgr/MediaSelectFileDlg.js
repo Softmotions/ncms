@@ -1,5 +1,6 @@
 /**
  * Select file dialog.
+ *
  */
 qx.Class.define("ncms.mmgr.MediaSelectFileDlg", {
     extend: qx.ui.window.Window,

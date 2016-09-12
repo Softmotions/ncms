@@ -1,6 +1,7 @@
 /**
  * Text media file widget.
  *
+ * @asset(ncms/icon/16/misc/disk.png)
  * @ignore(ace.*, require)
  */
 qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
@@ -33,7 +34,10 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         }
     },
 
-    construct: function () {
+    /**
+     * @param fileSpec {Object?} Optional file specification.
+     */
+    construct: function (fileSpec) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(5));
         this.__broadcaster = sm.event.Broadcaster.create({"enabled": false});
@@ -59,7 +63,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
         hcont.setPadding([0, 5, 5, 0]);
-        var bt = new qx.ui.form.Button(this.tr("Save"));
+        var bt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/disk.png");
         this.__broadcaster.attach(bt, "enabled");
         bt.addListener("execute", this.__save, this);
         hcont.add(bt, {flex: 1});
@@ -70,6 +74,10 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             new sm.ui.core.ExtendedCommand("Control+S"),
             this.__save, this);
         this._registerCommandFocusWidget(this);
+
+        if (fileSpec != null) {
+            this.setFileSpec(fileSpec)
+        }
     },
 
     members: {
