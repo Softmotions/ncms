@@ -9,6 +9,7 @@ import com.softmotions.commons.cont.KVOptions
 import com.softmotions.commons.lifecycle.Start
 import com.softmotions.commons.re.RegexpHelper
 import com.softmotions.kotlin.toDays
+import com.softmotions.kotlin.toURLComponent
 import com.softmotions.ncms.events.NcmsEventBus
 import com.softmotions.web.cookie
 import com.softmotions.web.decodeValue
@@ -63,49 +64,40 @@ constructor(val sess: SqlSession,
         ebus.register(this)
     }
 
-    fun applyTrackingPixels(req: HttpServletRequest,
-                            resp: HttpServletResponse,
-                            tpName: String = "*",
-                            ctx: Map<String, Any?> = emptyMap(),
-                            removeMatched: Boolean = true): Iterable<Pair<String, String>> {
+    fun activateTrackingPixels(req: HttpServletRequest,
+                               resp: HttpServletResponse,
+                               tpNameGlob: String = "*",
+                               ctx: Map<String, Any?> = emptyMap(),
+                               removeMatched: Boolean = true): Iterable<MttActivatedTp> {
 
         val itps = loadTrackingPixels(req)
         if (itps.isEmpty) {
             return emptyList()
         }
-        val tps = itps.findTps(if (StringUtils.containsAny("?*{}", tpName)) {
-            "^${RegexpHelper.convertGlobToRegEx(tpName)}$".toRegex()
+        val tps = itps.findTps(if (StringUtils.containsAny("?*{}", tpNameGlob)) {
+            "^${RegexpHelper.convertGlobToRegEx(tpNameGlob)}$".toRegex()
         } else {
-            "^${Pattern.quote(tpName)}$".toRegex()
+            "^${Pattern.quote(tpNameGlob)}$".toRegex()
         })
         if (tps.isEmpty()) {
             return emptyList()
         }
-        val nctx: MutableMap<String, Any?> =
-                if (itps.tpmap.size + ctx.size - 1 > 3)
-                    HashMap(ctx)
-                else Flat3Map(ctx)
 
-        for ((k, v) in itps.tpmap) {
-            if (k != "0,") {
-                nctx.putIfAbsent(k, v.firstOrNull())
-            }
-        }
-        if (log.isDebugEnabled) {
-            log.debug("activateTrackingPixels ctx {}", nctx)
-        }
 
-        fun replace(p: Pattern, data: String): String {
+        fun replace(rctx: Map<String, *>, p: Pattern, data: String, encodeUrl: Boolean): String {
             if (data.isBlank()) {
                 return data
             }
             val m = p.matcher(data)
             val sb = StringBuffer(Math.floor(data.length * 1.5).toInt())
             while (m.find()) {
-                val nv = nctx[m.group(1).toLowerCase()]
+                val nv = rctx[m.group(1)]
                 if (nv != null) {
-                    m.appendReplacement(sb, nv.toString())
+                    m.appendReplacement(sb,
+                            if (encodeUrl) nv.toString().toURLComponent()
+                            else nv.toString())
                 } else {
+                    log.error("Parameter: '${m.group(1)}' not found in tracking pixel context: ${data}")
                     m.appendReplacement(sb, m.group())
                 }
             }
@@ -114,15 +106,29 @@ constructor(val sess: SqlSession,
         }
 
         val ret = tps.map {
-            val url = replace(replaceUrlRP, it.url)
-            val jscode = replace(replaceUrlRP, it.jscode)
+
+            val nctx: MutableMap<String, Any?> =
+                    if (it.tParams.size + ctx.size > 3)
+                        HashMap(ctx)
+                    else Flat3Map(ctx)
+
+            for ((k, v) in itps.tpmap) {
+                if (k.startsWith(it.pkeyPrefix)) {
+                    nctx.putIfAbsent(k.substring(it.pkeyPrefix.length), v.firstOrNull())
+                }
+            }
+            if (log.isDebugEnabled) {
+                log.debug("activateTrackingPixels ctx {}", nctx)
+            }
+            val url = replace(nctx, replaceUrlRP, it.url, true)
+            val jscode = replace(nctx, replaceUrlRP, it.jscode, false)
             if (removeMatched) {
                 itps.removeTp(it)
             }
             if (log.isDebugEnabled) {
                 log.debug("Process tp name={} url={} jscode={}", it.name, url, jscode)
             }
-            url.to(jscode)
+            MttActivatedTp(url, jscode)
         }
 
         itps.writeTo(req, resp)
@@ -159,7 +165,7 @@ constructor(val sess: SqlSession,
             for (pn in tp.tParams) {
                 val pv = pmap[pn]
                 if (pv != null && pv.size > 0) { //todo review
-                    val parr = tpmap.getOrPut(pn, {
+                    val parr = tpmap.getOrPut("${tp.pkeyPrefix}${pn}", {
                         modified = true
                         mutableListOf(pv[0])
                     }) as MutableList<String>
@@ -184,8 +190,14 @@ constructor(val sess: SqlSession,
 
         internal fun removeTp(tp: TpSlot) {
             val sids = tpmap["0,"] ?: return
+            val prefix = "${tp.id},"
             if (sids.remove(tp.sid)) {
                 modified = true
+            }
+            for (k in tpmap.keys.toTypedArray()) {
+                if (k.startsWith(prefix)) {
+                    tpmap.remove(k)
+                }
             }
         }
 
@@ -251,14 +263,13 @@ constructor(val sess: SqlSession,
         lock.read {
 
             for ((pn, pvs) in rpMap) {
-                val pnl = pn.toLowerCase()
 
                 // Matching against a raw string parameters
-                pmap[pnl]?.let {
+                pmap[pn]?.let {
                     for (pv in pvs) {
                         it[pv]?.let {
                             if (log.isDebugEnabled) {
-                                log.debug("Tps matched {}={}, tps={}", pnl, pv, it)
+                                log.debug("Tps matched {}={}, tps={}", pn, pv, it)
                             }
                             tps.addTp(it, rpMap)
                         }
@@ -268,7 +279,7 @@ constructor(val sess: SqlSession,
                 // Matching against a regexps
                 for (pv in pvs) {
                     for (it in imap.values) {
-                        val re = it.rParams[pnl]
+                        val re = it.rParams[pn]
                         if (re == null || !it.enabled) {
                             continue
                         }
@@ -278,7 +289,7 @@ constructor(val sess: SqlSession,
                         }
                         if (re.matches(pv)) {
                             if (log.isDebugEnabled) {
-                                log.debug("Tps matched re={} {}={}, tps={}", re, pnl, pv, it)
+                                log.debug("Tps matched re={} {}={}, tps={}", re, pn, pv, it)
                             }
                             tps.addTp(it, rpMap)
                         }
@@ -371,6 +382,8 @@ constructor(val sess: SqlSession,
 
         internal val spec: ObjectNode
 
+        internal val pkeyPrefix: String
+
         // Parameter name => raw parameter string value
         internal val sParams = HashMap<String, String>()
 
@@ -384,19 +397,20 @@ constructor(val sess: SqlSession,
         init {
 
             sid = tp.id.toString()
+            pkeyPrefix = "${sid},"
             spec = mapper.readTree(tp.spec) as ObjectNode
             // {"params":"utm_source=yandex","url":"http://sm.ru?","jscode":"eew\nwqwqwwq\n\n\n\n\n"}
             for ((pn, pv) in KVOptions(spec.path("params").asText())) {
                 if (StringUtils.containsAny("?*{}", pv)) {
-                    rParams[pn.toLowerCase()] = Regex("^" + RegexpHelper.convertGlobToRegEx(pv) + "$")
+                    rParams[pn] = Regex("^" + RegexpHelper.convertGlobToRegEx(pv) + "$")
                 } else {
-                    sParams[pn.toLowerCase()] = pv
+                    sParams[pn] = pv
                 }
             }
             spec.path("tparams").asText().split(',').filter {
                 it.isNotBlank()
             }.forEach {
-                val pname = it.trim().toLowerCase()
+                val pname = it.trim()
                 if (!pname.startsWith("0,")) {
                     tParams += pname
                 }

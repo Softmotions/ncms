@@ -2,28 +2,20 @@ package com.softmotions.ncms.mhttl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import javax.servlet.http.Cookie;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.softmotions.commons.cont.KVOptions;
-import com.softmotions.commons.string.EscapeHelper;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.PageCriteria;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
-import com.softmotions.ncms.mtt.http.MttHttpFilter;
-import com.softmotions.web.HttpUtils;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -171,10 +163,15 @@ public final class HttlAsmMethods {
         return asmNavChilds(type, Integer.valueOf(skip), Integer.valueOf(limit));
     }
 
+    private static final AtomicReference<AsmDAO> ASM_DAO_REF = new AtomicReference<>();
+
     public static Collection<Asm> asmNavChilds(String type, Number skip, Number limit) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         Asm asm = ctx.getAsm();
-        AsmDAO adao = ctx.getInjector().getInstance(AsmDAO.class);
+        AsmDAO adao = ASM_DAO_REF.updateAndGet(
+                asmDAO ->
+                        asmDAO != null ? asmDAO : ctx.getInjector().getInstance(AsmDAO.class));
+
         PageCriteria crit = adao.newPageCriteria();
         crit.withPublished(true);
         crit.withNavParentId(asm.getId());
@@ -268,115 +265,6 @@ public final class HttlAsmMethods {
 
     public static Image asImage(Object v) {
         return (v instanceof Image) ? (Image) v : null;
-    }
-
-    ///////////////////////////////////////////////////////////
-    //                    A/B Testing                        //
-    ///////////////////////////////////////////////////////////
-
-    public static boolean abtA() {
-        return abt("a", false);
-    }
-
-    public static boolean abtB() {
-        return abt("b", false);
-    }
-
-    public static boolean abtC() {
-        return abt("c", false);
-    }
-
-    public static boolean abtD() {
-        return abt("d", false);
-    }
-
-    public static boolean abt(String name) {
-        return abt(name, false);
-    }
-
-    /**
-     * A/B testing check.
-     *
-     * @param name A/B mode to test
-     * @param def  Default value if A/B test is not passed
-     */
-    public static boolean abt(String name, boolean def) {
-        if (name == null) {
-            return def;
-        }
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        NcmsEnvironment env = ctx.getEnvironment();
-        HttpServletRequest req = ctx.getServletRequest();
-
-        String pi = req.getRequestURI();
-        boolean isAdmRequest = pi.startsWith(env.getNcmsAdminRoot());
-        if (isAdmRequest) { // All A/B modes are ON in admin preview mode
-            return true;
-        }
-        name = name.toLowerCase();
-        Collection<Long> rids =
-                (Collection<Long>)
-                        req.getAttribute(MttHttpFilter.MTT_RIDS_KEY);
-
-        if (rids == null || rids.isEmpty()) {
-            Enumeration<String> pnames = req.getParameterNames();
-            while (pnames.hasMoreElements()) {
-                String pn = pnames.nextElement();
-                if (pn.startsWith("_abm_")) {
-                    String pv = req.getParameter(pn);
-                    if (pv != null) {
-                        StringTokenizer st = new StringTokenizer(",");
-                        while (st.hasMoreTokens()) {
-                            String m = st.nextToken().trim();
-                            if (m.equals(name)) {
-                                if (log.isDebugEnabled()) {
-                                    log.debug("Found _abm_ request parameter: {}={}", pn, pv);
-                                }
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("No mtt actions found, no _abm_ request parameters found");
-            }
-            return def;
-        }
-        Long mrid = null;
-        Cookie mcookie = null;
-        Set<String> marks = null;
-        for (Long rid : rids) {
-            Set<String> m = (Set<String>) req.getAttribute("_abm_" + rid);
-            if (m != null) {
-                mrid = rid;
-                marks = m;
-            }
-        }
-        if (marks == null) {
-            for (Long rid : rids) {
-                Cookie cookie = HttpUtils.findCookie(req, "_abm_" + rid);
-                if (cookie != null) {
-                    mrid = rid;
-                    mcookie = cookie;
-                }
-            }
-            if (mcookie != null) {
-                String[] split = StringUtils.split(EscapeHelper.decodeURIComponent(mcookie.getValue()), ",");
-                marks = new HashSet<>(split.length);
-                Collections.addAll(marks, split);
-                req.setAttribute("_abm_" + mrid, marks);
-            }
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("AB Marks: {} matches: {}={}", marks, name,
-                      (marks != null && marks.contains(name))
-            );
-        }
-        if (marks == null) {
-            return def;
-        }
-        return marks.contains(name) || def;
     }
 
     ///////////////////////////////////////////////////////////

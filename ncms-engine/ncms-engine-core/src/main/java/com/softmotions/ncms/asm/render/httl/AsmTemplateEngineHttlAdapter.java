@@ -25,6 +25,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
 import com.softmotions.ncms.mhttl.HttlAsmMethods;
+import com.softmotions.ncms.mhttl.HttlMttMethods;
 import com.softmotions.ncms.mhttl.HttlUtilsMethods;
 
 /**
@@ -106,7 +107,9 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
             key += '+';
         }
         value = httlProps.getProperty(key, "");
-        for (String c : new String[]{HttlAsmMethods.class.getName(), HttlUtilsMethods.class.getName()}) {
+        for (String c : new String[]{HttlAsmMethods.class.getName(),
+                                     HttlUtilsMethods.class.getName(),
+                                     HttlMttMethods.class.getName()}) {
             if (!value.contains(c)) {
                 if (!value.isEmpty()) {
                     value += ',';
