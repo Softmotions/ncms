@@ -137,10 +137,11 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         },
 
         __applyFileSpec: function (spec) {
+            this.__cleanup();
             if (spec == null || !ncms.Utils.isTextualContentType(spec["content_type"])) {
-                this.__cleanup();
                 return;
             }
+
             var path = (spec.folder + spec.name).split("/");
             var url = ncms.Application.ACT.getRestUrl("media.file", path);
             var req = new sm.io.Request(url, "GET", "text/plain");
@@ -194,6 +195,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 ace.renderer.scrollToX(0);
                 ace.renderer.scrollToY(0);
                 ace.selection.moveCursorFileStart();
+                ace.focus();
             } else {
                 this.__pendigCode = {code: code, lclass: lclass};
             }
