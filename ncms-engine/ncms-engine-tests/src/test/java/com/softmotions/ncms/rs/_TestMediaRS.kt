@@ -174,6 +174,54 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
         delete("", testFolder)
     }
 
+/*
+    // todo: fix error on PostgreSQL "java.lang.ClassCastException: [B cannot be cast to java.sql.Blob
+    //      at com.softmotions.ncms.media.MediaRS._thumbnail(MediaRS.java:1208)
+    @Test(dependsOnMethods = arrayOf("testMediaFileGet"))
+    fun testMediaFileThumb() {
+        val testFolder = putFolder().path("label").asText()
+        for (folderName in listOf("", testFolder)) { // test: / and subfolder
+            with(putFile(folderName, "png")) {
+                val fileName = path("name").asText()
+                val folder = prepareFolder(path("folder").asText())
+                val fileContentType = path("contentType").asText()
+
+                for (j in 0..1) { // get by: 0 - name, 1 - id
+                    var resource = ""
+                    if (j == 0) {
+                        resource = "/thumbnail/$folder$fileName"
+                    } else {
+                        with(GET("/select?folder=/$folder")) {
+                            assertEquals(200, code())
+                            val body = body()
+                            assertNotNull(body)
+                            with(mapper.readTree(body)) {
+                                assertTrue(isArray)
+                                forEach {
+                                    assertTrue(it.hasNonNull("id"))
+                                    if (fileName.equals(it.path("name").asText(null))) {
+                                        resource = "/thumbnail2/" + it.path("id").asLong()
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    log.info("req: $resource")
+                    with(GET(resource)) {
+                        assertEquals(200, code())
+                        val headers = headers()
+                        val respCType = headers["Content-Type"]?.get(0)
+                        assertEquals(fileContentType, respCType)
+                    }
+                }
+                delete(folder, fileName)
+            }
+        }
+        delete("", testFolder)
+    }
+*/
+
     @Test(dependsOnMethods = arrayOf("testMediaSelect"))
     fun testMediaFolderSelect() {
         with(GET("/folders")) {
@@ -325,6 +373,139 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
         delete(folder1, file2)
         delete("", folder1)
         delete("", file1)
+    }
+
+    @Test(dependsOnMethods = arrayOf("testMediaFilePut", "testMediaFileDelete", "testMediaFolderPut", "testMediaFolderDelete"))
+    fun testMediaMove() {
+        val testFolder1 = putFolder().path("label").asText()
+        val testFolder2 = putFolder().path("label").asText()
+        with(putFile()) {
+            val fileName = path("name").asText()
+            with(PUT("/move/$fileName").contentType("application/json").send("$testFolder1/$fileName")) {
+                assertEquals(204, code())
+            }
+
+            with(GET("/select?folder=/$testFolder1")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    assertEquals(1, size())
+                    forEach {
+                        assertTrue(it.hasNonNull("id"))
+                        assertEquals(fileName, it.path("name").asText(null))
+                    }
+                }
+            }
+
+            with(PUT("/move/$testFolder1").contentType("application/json").send("$testFolder2/$testFolder1")) {
+                assertEquals(204, code())
+            }
+            with(GET("/select?folder=/$testFolder2/$testFolder1")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    assertEquals(1, size())
+                    forEach {
+                        assertTrue(it.hasNonNull("id"))
+                        assertEquals(fileName, it.path("name").asText(null))
+                    }
+                }
+            }
+
+            delete(testFolder2 + "/" + testFolder1, fileName)
+        }
+        delete(testFolder2, testFolder1)
+        delete("", testFolder2)
+    }
+
+    @Test(dependsOnMethods = arrayOf("testMediaFilePut", "testMediaFileDelete", "testMediaFolderPut", "testMediaFolderDelete"))
+    fun testMediaCopyDeleteBatch() {
+        val testFolder = putFolder().path("label").asText()
+        with(putFile()) {
+            val fileName = path("name").asText()
+            var props = mapper.createArrayNode().add(fileName)
+
+            with(PUT("/copy-batch/$testFolder").contentType("application/json").send(mapper.writeValueAsString(props))) {
+                assertEquals(204, code())
+            }
+
+            with(GET("/select?folder=/$testFolder")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    assertEquals(1, size())
+                    forEach {
+                        assertTrue(it.hasNonNull("id"))
+                        assertEquals(fileName, it.path("name").asText(null))
+                    }
+                }
+            }
+
+            props = mapper.createArrayNode().
+                    add("$testFolder/$fileName").
+                    add(fileName).
+                    add(testFolder)
+            with(DELETE("/delete-batch").contentType("application/json").send(mapper.writeValueAsString(props))) {
+                assertEquals(204, code())
+            }
+            with(GET("/select/count")) {
+                assertEquals(200, code())
+                assertEquals("0", body())
+            }
+        }
+    }
+
+    @Test(dependsOnMethods = arrayOf("testMediaFilePut", "testMediaFileDelete", "testMediaFolderPut", "testMediaFolderDelete"))
+    fun testMediaMeta() {
+        val testFolder = putFolder().path("label").asText()
+        with(putFile(testFolder)) {
+            val fileName = path("name").asText()
+
+            var fileId = 0L
+            with(GET("/select?folder=/$testFolder")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertTrue(isArray)
+                    assertEquals(1, size())
+                    forEach {
+                        assertTrue(it.hasNonNull("id"))
+                        assertEquals(fileName, it.path("name").asText(null))
+                        fileId = it.path("id").asLong()
+                    }
+                }
+            }
+
+            with(GET("/path/$fileId")) {
+                assertEquals(200, code())
+                assertEquals("/$testFolder/$fileName", body())
+            }
+
+            with(GET("/meta/$fileId")) {
+                assertEquals(200, code())
+                val body = body()
+                assertNotNull(body)
+                with(mapper.readTree(body)) {
+                    assertEquals(fileId, path("id").asLong())
+                    assertEquals("/$testFolder/", path("folder").asText(null))
+                    assertEquals(fileName, path("name").asText(null))
+                }
+            }
+
+            with(POST("/meta/$fileId").contentType("application/x-www-form-urlencoded").form("description", "test")) {
+                assertEquals(204, code())
+            }
+
+            delete(testFolder, fileName)
+        }
+        delete("", testFolder)
     }
 
     private fun putFile(folder: String = "", type: String = "txt"): JsonNode {
