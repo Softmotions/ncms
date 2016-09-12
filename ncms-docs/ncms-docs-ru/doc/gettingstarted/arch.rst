@@ -243,3 +243,11 @@
         и значением `mypage` то данная страница будет доступна по адресу: `http://hostname/mypage`
         Допускается использовать `/` в названии псевдонима, например для псевдонима `/foo/bar`  страница может быть
         доступна по адресу `http://hostname/foo/bar`
+
+    glob шаблон
+    glob
+        TODO
+
+    mediawiki
+        TODO
+        `Спецификация разметки <https://www.mediawiki.org/wiki/Help:Formatting/ru>`_

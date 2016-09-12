@@ -63,7 +63,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
         hcont.setPadding([0, 5, 5, 0]);
-        var bt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/disk.png");
+        var bt = new qx.ui.form.Button(this.tr("Save (Ctrl+S)"), "ncms/icon/16/misc/disk.png");
         this.__broadcaster.attach(bt, "enabled");
         bt.addListener("execute", this.__save, this);
         hcont.add(bt, {flex: 1});
