@@ -1,5 +1,6 @@
 package com.softmotions.ncms;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -9,6 +10,9 @@ import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
+import org.apache.commons.configuration2.HierarchicalConfiguration;
+import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.web.env.EnvironmentLoaderListener;
 import org.apache.shiro.web.servlet.ShiroFilter;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
@@ -20,6 +24,8 @@ import com.google.inject.servlet.GuiceFilter;
 import com.softmotions.ncms.shiro.NcmsShiroWebEnvironment;
 import com.softmotions.ncms.utils.GzipFilter;
 import com.softmotions.web.CharsetFilter;
+import com.softmotions.web.DirResourcesFilter;
+import com.softmotions.weboot.WBConfiguration;
 import com.softmotions.weboot.WBServletListener;
 
 /**
@@ -77,6 +83,7 @@ public class NcmsServletListener extends WBServletListener {
         gzipFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*.css");
 
         initJarResources(env, sctx);
+        initDirResources(env, sctx);
 
         sctx.addFilter("guiceFilter", GuiceFilter.class)
             .addMappingForUrlPatterns(
@@ -88,6 +95,36 @@ public class NcmsServletListener extends WBServletListener {
         log.info("Intialize SHIRO environment");
         shiroEnvironmentLoaderListener = new EnvironmentLoaderListener();
         shiroEnvironmentLoaderListener.contextInitialized(event);
+    }
+
+
+    protected void initDirResources(WBConfiguration env, ServletContext sctx) {
+        List<HierarchicalConfiguration<ImmutableNode>> rlist = env.xcfg().configurationsAt("dir-web-resources.resource");
+        int c = 0;
+        for (HierarchicalConfiguration rcfg : rlist) {
+            String dir = StringUtils.trimToNull(rcfg.getString("dir"));
+            String mount = StringUtils.trimToNull(rcfg.getString("mount"));
+            if (StringUtils.isBlank(dir) || StringUtils.isBlank(mount)) {
+                continue;
+            }
+            File rootFile = new File(dir);
+            if (!rootFile.isDirectory()) {
+                log.error("Content of directory: '{}' is not accessible", rootFile.getAbsolutePath());
+                continue;
+            }
+            if (!mount.endsWith("/")) {
+                mount += '/';
+            }
+            if (mount.length() > 1 && mount.charAt(0) != '/') {
+                mount = '/' + mount;
+            }
+            mount += '*';
+
+            log.info("Serving directory: '{}' as {}", rootFile.getAbsolutePath(), mount);
+            FilterRegistration.Dynamic fr = sctx.addFilter("dirResourcesFilter" + (c++), DirResourcesFilter.class);
+            fr.addMappingForUrlPatterns(null, false, mount);
+            fr.setInitParameter("rootDir", rootFile.getAbsolutePath());
+        }
     }
 
 

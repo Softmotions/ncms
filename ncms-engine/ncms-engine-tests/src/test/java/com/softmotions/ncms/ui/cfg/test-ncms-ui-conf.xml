@@ -32,17 +32,17 @@
     </asm>
 
     <pages>
-        <default-page-language>ru</default-page-language>
+        <default-page-language>en</default-page-language>
         <lru-cache-size>1024</lru-cache-size>
         <lru-aliases-cache-size>1024</lru-aliases-cache-size>
     </pages>
 
-    <jar-web-resources>
+    <dir-web-resources>
         <resource>
-            <path-prefix>/adm</path-prefix>
-            <options>/ncms-engine-tests-qx/tqx,watch=true</options>
+            <dir>{sys:qx.root.dir}</dir>
+            <mount>/adm</mount>
         </resource>
-    </jar-web-resources>
+    </dir-web-resources>
 
     <cache-headers-groups>
         <cache-group>
