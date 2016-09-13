@@ -457,14 +457,14 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
 
 
-        Integer ts = selectOne("selectPageTemplateStatus", templateId);
+        Boolean ts = selectOne("selectPageTemplateStatus", templateId);
         if (ts == null) {
             log.warn("Assembly template: {} not found", templateId);
             throw new NotFoundException("");
         }
 
 // todo review this check
-//        if (ts == 0) {
+//        if (ts == false) {
 //            log.warn("Assembly: {} is not a page template", templateId);
 //            throw new BadRequestException("");
 //        }
@@ -474,7 +474,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new ForbiddenException(i18n.get("ncms.page.template.same", req));
         }
 
-        if (ts > 0) {
+        if (ts == true) {
             Collection<Long> aTemplates = pageSecurity.getAccessibleTemplates(req);
             if (!aTemplates.contains(templateId)) {
                 log.warn("Template: {} is not accesible for user", templateId);

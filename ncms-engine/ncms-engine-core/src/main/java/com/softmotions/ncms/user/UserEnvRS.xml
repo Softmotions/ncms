@@ -5,13 +5,28 @@
 
 <mapper namespace="com.softmotions.ncms.user.UserEnvRS">
 
-    <select id="getSet" resultType="map" parameterType="map">
+    <select id="getSet"
+            databaseId="DB2"
+            resultType="map"
+            parameterType="map">
         SELECT
             svalue,
             ivalue
         FROM USER_ENV
         WHERE "USERID" = #{userid}
               AND "TYPE" = #{type}
+    </select>
+
+    <select id="getSet"
+            databaseId="POSTGRES"
+            resultType="map"
+            parameterType="map">
+        SELECT
+            svalue,
+            ivalue
+        FROM USER_ENV
+        WHERE userid = #{userid}
+              AND type = #{type}
     </select>
 
     <update id="addSet"
@@ -42,6 +57,7 @@
     </update>
 
     <delete id="delSet"
+            databaseId="DB2"
             parameterType="map">
         DELETE FROM USER_ENV
         WHERE "USERID" = #{userid}
@@ -49,13 +65,30 @@
               AND ${vcol} = #{value}
     </delete>
 
+    <delete id="delSet"
+            databaseId="POSTGRES"
+            parameterType="map">
+        DELETE FROM USER_ENV
+        WHERE userid = #{userid}
+              AND type = #{type}
+              AND ${vcol} = #{value}
+    </delete>
+
     <delete id="delAllSet"
+            databaseId="DB2"
             parameterType="map">
         DELETE FROM USER_ENV
         WHERE "USERID" = #{userid}
         AND "TYPE" = #{type}
     </delete>
 
+    <delete id="delAllSet"
+            databaseId="POSTGRES"
+            parameterType="map">
+        DELETE FROM USER_ENV
+        WHERE userid = #{userid}
+              AND type = #{type}
+    </delete>
 </mapper>
 
 
