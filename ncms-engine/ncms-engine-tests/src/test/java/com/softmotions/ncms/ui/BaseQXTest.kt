@@ -14,7 +14,7 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
     open fun setup() {
         try {
             setupUITest(
-                    "com/softmotions/ncms/rs/cfg/test-ncms-rs-conf.xml",
+                    "com/softmotions/ncms/ui/cfg/test-ncms-ui-conf.xml",
                     driverType = "qx")
         } catch (tr: Throwable) {
             shutdown()
@@ -24,7 +24,7 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
 
     override fun configureTomcatRunner(b: TomcatRunner.Builder) {
         super.configureTomcatRunner(b)
-        val wsdb = XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/rs/cfg/users.xml", false)
+        val wsdb = XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/ui/cfg/users.xml", false)
         JVMResources.set(wsdb.databaseName, wsdb)
         b.withRealm(WSUserDatabaseRealm(wsdb))
     }

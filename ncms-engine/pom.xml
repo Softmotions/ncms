@@ -16,6 +16,7 @@
         <module>ncms-engine-core</module>
         <module>ncms-engine-solr</module>
         <module>ncms-engine-tests</module>
+        <module>ncms-engine-tests-qx</module>
     </modules>
     <build>
         <resources>
