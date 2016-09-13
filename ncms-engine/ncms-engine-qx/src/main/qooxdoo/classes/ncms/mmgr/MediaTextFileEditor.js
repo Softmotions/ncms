@@ -31,6 +31,12 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             check: "Object",
             nullable: true,
             apply: "__applyFileSpec"
+        },
+
+        // overridden
+        focusable: {
+            refine: true,
+            init: true
         }
     },
 
@@ -63,7 +69,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
         hcont.setPadding([0, 5, 5, 0]);
-        var bt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/disk.png");
+        var bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save (Ctrl+S)"), "ncms/icon/16/misc/disk.png");
         this.__broadcaster.attach(bt, "enabled");
         bt.addListener("execute", this.__save, this);
         hcont.add(bt, {flex: 1});
@@ -81,6 +87,8 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
     },
 
     members: {
+
+        __saveBt: null,
 
         /**
          * File text data editor area.
@@ -105,6 +113,11 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
         __broadcaster: null,
 
+
+        _forwardStates: {
+            focused: true
+        },
+
         setReadOnly: function (state) {
             this.__readOnly = !!state;
             if (this.__area) {
@@ -118,6 +131,9 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         },
 
         __save: function () {
+            if (this.__saveBt.getEnabled() == false)  { // Save bt not enabled
+                return;
+            }
             var spec = this.getFileSpec();
             if (spec == null || !ncms.Utils.isTextualContentType(spec["content_type"])) {
                 return;
@@ -131,16 +147,17 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             req.setRequestContentType(ctype);
             req.setData(text);
             this.__broadcaster.setEnabled(false);
-            req.send(function() {
+            req.send(function () {
                 ncms.Application.infoPopup(this.tr("File successfully saved"));
             }, this);
         },
 
         __applyFileSpec: function (spec) {
+            this.__cleanup();
             if (spec == null || !ncms.Utils.isTextualContentType(spec["content_type"])) {
-                this.__cleanup();
                 return;
             }
+
             var path = (spec.folder + spec.name).split("/");
             var url = ncms.Application.ACT.getRestUrl("media.file", path);
             var req = new sm.io.Request(url, "GET", "text/plain");
@@ -194,6 +211,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 ace.renderer.scrollToX(0);
                 ace.renderer.scrollToY(0);
                 ace.selection.moveCursorFileStart();
+                ace.focus();
             } else {
                 this.__pendigCode = {code: code, lclass: lclass};
             }
@@ -248,6 +266,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.__area = null;
         this.__pendigCode = null;
         this.__pendigRo = null;
+        this.__saveBt = null;
         this.__broadcaster.destruct();
         //this._disposeObjects("__field_name");
     }

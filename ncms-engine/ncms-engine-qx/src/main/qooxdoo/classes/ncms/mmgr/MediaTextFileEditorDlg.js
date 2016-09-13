@@ -5,6 +5,12 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditorDlg", {
 
     extend: qx.ui.window.Window,
 
+
+    statics: {
+
+        __EDITOR: null
+    },
+
     /**
      * @param fileSpec {Object} File specification. See `ncms.mmgr.MediaTextFileEditor#fileSpec`
      * @param opts {Object?}
@@ -36,7 +42,11 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditorDlg", {
             height: opts["height"] || 450
         });
 
-        this.__editor = new ncms.mmgr.MediaTextFileEditor(fileSpec);
+        this.__editor = ncms.mmgr.MediaTextFileEditorDlg.__EDITOR;
+        if (this.__editor == null) {
+            this.__editor = ncms.mmgr.MediaTextFileEditorDlg.__EDITOR = new ncms.mmgr.MediaTextFileEditor();
+        }
+        this.__editor.setFileSpec(fileSpec);
         this.add(this.__editor);
 
         var cmd = this.createCommand("Esc");
@@ -50,7 +60,9 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditorDlg", {
 
         close: function () {
             this.base(arguments);
-            this.destroy();
+            if (this.__editor) {
+                this.__editor.setFileSpec(null);
+            }
         },
 
         __dispose: function () {

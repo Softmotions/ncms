@@ -937,16 +937,15 @@ msgstr "Новая папка верхнего уровня"
 msgid "Are you sure to remove folder: %1"
 msgstr "Вы действительно желаете безвозвратно удалить папку: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:46 ncms/mtt/tp/MttTpEditor.js:75
-#: ncms/mmgr/MediaTextFileEditor.js:66 ncms/usr/UserEditForm.js:51
-msgid "Save"
-msgstr "Сохранить"
+#: ncms/mmgr/MediaTextFileEditor.js:72
+msgid "Save (Ctrl+S)"
+msgstr "Сохранить (Ctrl+S)"
 
-#: ncms/mmgr/MediaTextFileEditor.js:135
+#: ncms/mmgr/MediaTextFileEditor.js:151
 msgid "File successfully saved"
 msgstr "Файл успешно сохранен"
 
-#: ncms/mmgr/MediaTextFileEditorDlg.js:18
+#: ncms/mmgr/MediaTextFileEditorDlg.js:24
 msgid "Edit file %1"
 msgstr "Редактировать файл %1"
 
@@ -1356,6 +1355,11 @@ msgstr "Шаблон URL для трекинг пикселя"
 #: ncms/mtt/tp/MttTpEditor.js:67
 msgid "Tracking pixel JS code"
 msgstr "JS код трекинг пикселя"
+
+#: ncms/pgs/PageEditorEditPage.js:46 ncms/mtt/tp/MttTpEditor.js:75
+#: ncms/usr/UserEditForm.js:51
+msgid "Save"
+msgstr "Сохранить"
 
 #: ncms/mtt/tp/MttTpNav.js:74
 msgid "New tracking pixel"
