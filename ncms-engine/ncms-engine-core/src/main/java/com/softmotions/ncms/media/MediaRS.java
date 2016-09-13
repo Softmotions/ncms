@@ -34,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialBlob;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.ForbiddenException;
@@ -1203,7 +1204,22 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             throw new BadRequestException(path);
         }
         String thumbFormat = getImageFileResizeFormat(ctype);
-        final Blob icon = (Blob) rec.get("icon");
+
+        // WARNING! WARNING!
+        // DB2 store Blob in table as Blob.
+        // PostgreSQL: Binary data can be stored in a table using the data type bytea or by using the Large Object
+        //      feature which stores the binary data in a separate table in a special format
+        //      and refers to that table by storing a value of type oid in your table.
+        // We are not using Large Object here to preserve general approach, without changing program logic.
+        Object iconObj = rec.get("icon");
+        Blob icon = null;
+        if (iconObj != null) {
+            if (iconObj instanceof Blob) {
+                icon = (Blob) iconObj;
+            } else if (iconObj instanceof byte[]) {
+                icon = new SerialBlob((byte[]) iconObj);
+            }
+        }
 
 
         if (icon != null) {

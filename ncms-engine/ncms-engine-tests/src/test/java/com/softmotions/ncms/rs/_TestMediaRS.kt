@@ -174,9 +174,6 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
         delete("", testFolder)
     }
 
-/*
-    // todo: fix error on PostgreSQL "java.lang.ClassCastException: [B cannot be cast to java.sql.Blob
-    //      at com.softmotions.ncms.media.MediaRS._thumbnail(MediaRS.java:1208)
     @Test(dependsOnMethods = arrayOf("testMediaFileGet"))
     fun testMediaFileThumb() {
         val testFolder = putFolder().path("label").asText()
@@ -207,7 +204,6 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
                         }
                     }
 
-                    log.info("req: $resource")
                     with(GET(resource)) {
                         assertEquals(200, code())
                         val headers = headers()
@@ -220,7 +216,6 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
         }
         delete("", testFolder)
     }
-*/
 
     @Test(dependsOnMethods = arrayOf("testMediaSelect"))
     fun testMediaFolderSelect() {
