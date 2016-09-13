@@ -14,3 +14,4 @@
 
     abt/sample1/index
     abt/sample2/index
+    tp/index

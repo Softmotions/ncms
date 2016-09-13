@@ -116,7 +116,8 @@ constructor(val sess: SqlSession,
     @Path("/tp/{id}")
     @RequiresRoles("mtt")
     @Transactional
-    open fun tpUpdate(@PathParam("id") id: Long,
+    open fun tpUpdate(@Context req: HttpServletRequest,
+                      @PathParam("id") id: Long,
                       data: ObjectNode): Response {
         val tp = tpGet(id)
         if (data.hasNonNull("description")) {
@@ -131,7 +132,7 @@ constructor(val sess: SqlSession,
         ebus.fireOnSuccessCommit(MttTpUpdatedEvent(tp.id))
 
         val msg = NcmsMessageException()
-        msg.addMessage(i18n.get("ncms.successfully.saved"), false)
+        msg.addMessage(i18n.get("ncms.successfully.saved", req), false)
         return msg.injectNotification(Response.ok(mapper.writeValueAsString(tp)), i18n).build()
     }
 

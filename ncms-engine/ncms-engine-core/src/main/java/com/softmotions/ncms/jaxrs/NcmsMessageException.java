@@ -46,6 +46,14 @@ public class NcmsMessageException extends MessageException {
     }
 
     @Override
+    public synchronized Throwable fillInStackTrace() {
+        if (hasErrorMessages()) {
+            return super.fillInStackTrace();
+        }
+        return this;
+    }
+
+    @Override
     public Response.ResponseBuilder inject(Response.ResponseBuilder rb, I18n i18n) {
         return super.inject(rb, i18n);
     }
