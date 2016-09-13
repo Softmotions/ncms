@@ -30,18 +30,15 @@ open class WebBaseTest(db: String) : DbBaseTest(db) {
         log.info("shutdownWeb")
         try {
             runner?.shutdown()
-        } finally {
-            shutdownDb()
+        } catch(e: Throwable) {
+            log.error("", e)
         }
     }
 
 
     override fun shutdown() {
-        try {
-            shutdownWeb()
-        } finally {
-            super.shutdown()
-        }
+        shutdownWeb()
+        shutdownDb()
     }
 
     open protected fun configureTomcatRunner(b: TomcatRunner.Builder) {
