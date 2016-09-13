@@ -47,7 +47,10 @@
             databaseId="POSTGRES"
             parameterType="map">
         WITH
-        new_set (userid, type, ${vcol}) AS (VALUES (#{userid}, #{type}, #{value}))
+        new_set (userid, type, ${vcol}) AS (VALUES (#{userid}, #{type},
+            <if test="vcol == 'ivalue'">#{value}::int</if>
+            <if test="vcol == 'svalue'">#{value}</if>
+        ))
         INSERT INTO USER_ENV (userid, type, ${vcol})
           SELECT userid, type, ${vcol}
           FROM new_set
@@ -71,7 +74,8 @@
         DELETE FROM USER_ENV
         WHERE userid = #{userid}
               AND type = #{type}
-              AND ${vcol} = #{value}
+              <if test="vcol == 'ivalue'">AND ${vcol} = #{value}::int</if>
+              <if test="vcol == 'svalue'">AND ${vcol} = #{value}</if>
     </delete>
 
     <delete id="delAllSet"
