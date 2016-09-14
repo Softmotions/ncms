@@ -41,6 +41,10 @@
             <groupId>com.ibm</groupId>
             <artifactId>db2jcc_license_cu</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <finalName>ROOT</finalName>

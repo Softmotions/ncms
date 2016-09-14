@@ -91,6 +91,7 @@
 В версии |ncmsversion| поддерживаеся следующие базы данных:
 
 * :ref:`db2`
+* :ref:`postgresql`
 
 Параметры соединения приложения с базой данных, как и другие параметры приложения
 определяются в :ref:`файлах конфигурации <conf>`. В данном проекте
@@ -103,9 +104,16 @@
         <bindDatasource>true</bindDatasource>
         <config>com/softmotions/ncms/db/mybatis-config.xml</config>
         <propsFile>{home}/.ncmsapp.ds</propsFile>
+        <!-- DB2 -->
         <extra-properties>
             JDBC.driver=com.ibm.db2.jcc.DB2Driver
         </extra-properties>
+        <!-- Postgresql -->
+        <!--
+        <extra-properties>
+            JDBC.driver=org.postgresql.Driver
+        </extra-properties>
+        -->
         <extra-mappers>
             <mapper>
                 <!--<resource>extra_mybatis_mapper.xml</resource>-->
@@ -121,10 +129,22 @@
 .. code-block:: sh
 
     cat ~/.ncmsapp.ds
+
+Для DB2:
+
+.. code-block:: sh
+
     JDBC.url=jdbc:db2://127.0.0.1:50000/NCMS
     JDBC.username=ncms
     JDBC.password=*******
 
+Для PostgreSQL:
+
+.. code-block:: sh
+
+    JDBC.url=jdbc:postgresql://127.0.0.1:5432/ncms
+    JDBC.username=ncms
+    JDBC.password=*******
 
 Сборка и запуск проекта
 -----------------------

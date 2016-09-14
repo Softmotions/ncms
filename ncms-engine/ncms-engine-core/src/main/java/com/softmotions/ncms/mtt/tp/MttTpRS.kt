@@ -45,7 +45,7 @@ constructor(val sess: SqlSession,
                         writeObject((ctx.resultObject as Map<String, Any>).mapValues {
                             when {
                             // convert enabled field to boolean
-                                it.key == "enabled" -> it.value as Number != 0
+                                it.key == "enabled" && it.value is Number -> it.value as Number != 0
                                 else -> it.value
                             }
                         })
