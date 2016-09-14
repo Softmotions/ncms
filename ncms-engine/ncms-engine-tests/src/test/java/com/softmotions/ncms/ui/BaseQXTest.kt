@@ -35,4 +35,8 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
         JVMResources.set(wsdb.databaseName, wsdb)
         b.withRealm(WSUserDatabaseRealm(wsdb))
     }
+
+    override fun R(resource: String): String {
+        return super.R("admin:ncms1", resource)
+    }
 }

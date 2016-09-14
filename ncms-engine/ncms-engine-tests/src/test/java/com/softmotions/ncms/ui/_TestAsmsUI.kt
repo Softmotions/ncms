@@ -22,6 +22,10 @@ class _TestAsmsUI(db: String) : BaseQXTest(db) {
     @Test
     fun testUI1() {
         log.info("!!!!!!!!!!!!!!!!!!! TEST UI !!!!!!!!!!!!!!!!!!!!")
+        driver.navigate().to(R("/adm/index.html"))
+
+
+
         pauseDriver(600)
     }
 }
