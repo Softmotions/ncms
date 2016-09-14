@@ -22,6 +22,6 @@ class _TestAsmsUI(db: String) : BaseQXTest(db) {
     @Test
     fun testUI1() {
         log.info("!!!!!!!!!!!!!!!!!!! TEST UI !!!!!!!!!!!!!!!!!!!!")
-        //pauseDriver(600)
+        pauseDriver(600)
     }
 }
