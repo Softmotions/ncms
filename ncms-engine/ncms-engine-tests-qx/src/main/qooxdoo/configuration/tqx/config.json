@@ -54,6 +54,7 @@
             "environment" : {
                 "qx.debug" : true,
                 "ncms.debug" : true,
+                "ncms.testing": true,
                 "ncms.testing.urls" : true
             }
         },
@@ -63,6 +64,7 @@
             "environment" : {
                 "qx.debug" : true,
                 "ncms.debug" : false,
+                "ncms.testing": true,
                 "ncms.testing.urls" : false
             },
             "let" : {
@@ -80,6 +82,12 @@
 
         "production" : {
             "extend" : ["prerelease"],
+            "environment" : {
+                "qx.debug" : false,
+                "ncms.debug" : false,
+                "ncms.testing": false,
+                "ncms.testing.urls" : false
+            },
             "let" : {
                 "OPTIMIZE" : [
                     "basecalls",

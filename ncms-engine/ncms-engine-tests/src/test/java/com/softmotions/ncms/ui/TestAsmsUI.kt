@@ -10,6 +10,6 @@ class TestAsmsUI : DbTestsFactory() {
 
     @Test
     override fun createTest(db: String): Array<out Any> {
-        return arrayOf(_TestAsmsUI(db))
+        return arrayOf(_TestSimpleSiteUI(db))
     }
 }
