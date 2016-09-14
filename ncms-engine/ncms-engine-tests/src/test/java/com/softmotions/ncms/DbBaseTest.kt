@@ -14,7 +14,7 @@ open class DbBaseTest(db: String) : GuiceBaseTest() {
     val dbTestRunner: DatabaseTestRunner
 
     companion object {
-        val DEFAULT_DB = "db2"
+        val DEFAULT_DB = ""
     }
 
     init {
@@ -23,6 +23,7 @@ open class DbBaseTest(db: String) : GuiceBaseTest() {
             "db2" -> {
                 dbTestRunner = Db2TestRunner()
             }
+            "",
             "postgresql",
             "postgres" -> {
                 dbTestRunner = PostgresTestRunner()
