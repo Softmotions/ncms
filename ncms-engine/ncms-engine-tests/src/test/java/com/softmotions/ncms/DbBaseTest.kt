@@ -48,9 +48,13 @@ open class DbBaseTest(db: String) : GuiceBaseTest() {
     }
 
     open fun shutdownDb() {
-        dbTestRunner.shutdownDb()
+        log.info("shutdownDb")
+        try {
+            dbTestRunner.shutdownDb()
+        } catch (e: Throwable) {
+            log.error("", e)
+        }
     }
-
 
     open fun setup(cfgLocation: String) {
         setupLogging(Level.INFO)
@@ -68,11 +72,8 @@ open class DbBaseTest(db: String) : GuiceBaseTest() {
         }
     }
 
-    open fun shutdown() {
-        try {
-            shutdownGuice()
-        } finally {
-            shutdownDb()
-        }
+    protected open fun shutdown() {
+        shutdownGuice()
+        shutdownDb()
     }
 }

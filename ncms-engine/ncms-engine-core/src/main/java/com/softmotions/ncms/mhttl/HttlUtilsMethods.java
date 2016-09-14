@@ -257,7 +257,7 @@ public final class HttlUtilsMethods {
         }
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         try {
-            return ctx.getMessages().get(key, ctx.getLocale(), args);
+            return ctx.getMessages().get(key, ctx.getLocale(), (Object[]) args);
         } catch (MissingResourceException e) {
             log.error("", e);
             return null;

@@ -13,3 +13,6 @@ target/
 
 # Logs
 logs/
+
+
+.bin/

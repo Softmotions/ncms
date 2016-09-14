@@ -91,17 +91,17 @@ class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
 
         // test query mergeFileDependencies@AsmAttributeManagerContext
         mediaRS.insert("insertEntity",
-                "folder" , "test",
-                "name" , "test",
-                "status" , 0,
-                "content_type" , "test",
-                "put_content_type" , "test",
-                "content_length" , 0,
-                "owner" , "test",
-                "description" , "test",
-                "tags" , "test",
-                "meta" , "test",
-                "system" , false)
+                "folder", "test",
+                "name", "test",
+                "status", 0,
+                "content_type", "test",
+                "put_content_type", "test",
+                "content_length", 0,
+                "owner", "test",
+                "description", "test",
+                "tags", "test",
+                "meta", "test",
+                "system", false)
         for (i in 0..1) {
             val res = when (i) {
                 0 -> 1
@@ -193,11 +193,14 @@ class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
         // test query saveData@RefDataStore
         for (i in 0..1) {
             Assert.assertEquals(1, refDS.update("saveData",
-                "ref", "test",
-                "data", null,
-                "content_type", "test"))
+                    "ref", "test",
+                    "data", null,
+                    "content_type", "test"))
         }
+    }
 
+    @Test
+    fun testVaringQueries() {
         // test query addSet@UserEnvRS
         for (i in 0..1) {
             val res = when (i) {
@@ -207,10 +210,27 @@ class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
             }
             Assert.assertEquals(res, userER.update("addSet",
                     "userid", "test",
-                    "type", "test",
+                    "type", "test1",
                     "vcol", "svalue",
                     "value", "test"))
+            Assert.assertEquals(res, userER.update("addSet",
+                    "userid", "test",
+                    "type", "test2",
+                    "vcol", "ivalue",
+                    "value", 1L))
         }
+
+        // test query delSet@UserEnvRS
+        Assert.assertEquals(1, userER.update("delSet",
+                "userid", "test",
+                "type", "test1",
+                "vcol", "svalue",
+                "value", "test"))
+        Assert.assertEquals(1, userER.update("delSet",
+                "userid", "test",
+                "type", "test2",
+                "vcol", "ivalue",
+                "value", 1L))
 
     }
 

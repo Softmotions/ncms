@@ -13,12 +13,13 @@
     <app-prefix>/</app-prefix>
     <hide-server-exceptions>false</hide-server-exceptions>
 
+    <force-default-locale-for-requests>true</force-default-locale-for-requests>
     <messages>
         <bundle>com.softmotions.ncms.Messages</bundle>
     </messages>
 
     <security>
-        <shiro-config-locations>classpath:com/softmotions/ncms/rs/cfg/shiro.test.ini</shiro-config-locations>
+        <shiro-config-locations>classpath:com/softmotions/ncms/ui/cfg/shiro.test.ini</shiro-config-locations>
         <dbJVMName>WSUserDatabase</dbJVMName>
         <web-access-control-allow>*</web-access-control-allow>
         <acl-lru-cache-size>1024</acl-lru-cache-size>
@@ -32,10 +33,17 @@
     </asm>
 
     <pages>
-        <default-page-language>ru</default-page-language>
+        <default-page-language>en</default-page-language>
         <lru-cache-size>1024</lru-cache-size>
         <lru-aliases-cache-size>1024</lru-aliases-cache-size>
     </pages>
+
+    <dir-web-resources>
+        <resource>
+            <dir>{sys:qx.root.dir}</dir>
+            <mount>/adm</mount>
+        </resource>
+    </dir-web-resources>
 
     <cache-headers-groups>
         <cache-group>
@@ -100,7 +108,6 @@
     </media>
 
     <httl extensions="*,httl,html">
-        ##code.directory=/tmp/httl-code
     </httl>
 
     <ui>

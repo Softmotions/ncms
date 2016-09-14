@@ -248,7 +248,7 @@
         WHERE p.id = #{id}
     </select>
 
-    <select id="selectPageTemplateStatus" resultType="int" parameterType="long">
+    <select id="selectPageTemplateStatus" resultType="boolean" parameterType="long">
         SELECT
             p.template
         FROM ASMS AS p

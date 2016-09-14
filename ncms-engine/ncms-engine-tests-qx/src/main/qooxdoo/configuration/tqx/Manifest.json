@@ -1,0 +1,20 @@
+{
+    "info" : {
+        "name" : "${qooxdoo.application.name}",
+        "summary" : "${qooxdoo.application.summary}",
+        "description" : "${qooxdoo.application.description}",
+        "homepage" : " ${project.url}",
+        "license" : "",
+        "version" : "${project.version}",
+        "qooxdoo-versions" : ["${qooxdoo.sdk.version}"]
+    },
+
+    "provides" : {
+        "namespace" : "${qooxdoo.application.namespace}",
+        "encoding" : "${qooxdoo.build.sourceEncoding}",
+        "class" : "${qooxdoo.application.sourcesDirectory}",
+        "resource" : "${qooxdoo.application.resourcesDirectory}",
+        "translation" : "${qooxdoo.application.translationDirectory}",
+        "type" : "application"
+    }
+}

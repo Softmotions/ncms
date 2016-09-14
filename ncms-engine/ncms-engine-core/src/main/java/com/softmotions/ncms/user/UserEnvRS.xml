@@ -5,13 +5,28 @@
 
 <mapper namespace="com.softmotions.ncms.user.UserEnvRS">
 
-    <select id="getSet" resultType="map" parameterType="map">
+    <select id="getSet"
+            databaseId="DB2"
+            resultType="map"
+            parameterType="map">
         SELECT
             svalue,
             ivalue
         FROM USER_ENV
         WHERE "USERID" = #{userid}
               AND "TYPE" = #{type}
+    </select>
+
+    <select id="getSet"
+            databaseId="POSTGRES"
+            resultType="map"
+            parameterType="map">
+        SELECT
+            svalue,
+            ivalue
+        FROM USER_ENV
+        WHERE userid = #{userid}
+              AND type = #{type}
     </select>
 
     <update id="addSet"
@@ -32,7 +47,10 @@
             databaseId="POSTGRES"
             parameterType="map">
         WITH
-        new_set (userid, type, ${vcol}) AS (VALUES (#{userid}, #{type}, #{value}))
+        new_set (userid, type, ${vcol}) AS (VALUES (#{userid}, #{type},
+            <if test="vcol == 'ivalue'">#{value}::int</if>
+            <if test="vcol == 'svalue'">#{value}</if>
+        ))
         INSERT INTO USER_ENV (userid, type, ${vcol})
           SELECT userid, type, ${vcol}
           FROM new_set
@@ -42,6 +60,7 @@
     </update>
 
     <delete id="delSet"
+            databaseId="DB2"
             parameterType="map">
         DELETE FROM USER_ENV
         WHERE "USERID" = #{userid}
@@ -49,13 +68,31 @@
               AND ${vcol} = #{value}
     </delete>
 
+    <delete id="delSet"
+            databaseId="POSTGRES"
+            parameterType="map">
+        DELETE FROM USER_ENV
+        WHERE userid = #{userid}
+              AND type = #{type}
+              <if test="vcol == 'ivalue'">AND ${vcol} = #{value}::int</if>
+              <if test="vcol == 'svalue'">AND ${vcol} = #{value}</if>
+    </delete>
+
     <delete id="delAllSet"
+            databaseId="DB2"
             parameterType="map">
         DELETE FROM USER_ENV
         WHERE "USERID" = #{userid}
         AND "TYPE" = #{type}
     </delete>
 
+    <delete id="delAllSet"
+            databaseId="POSTGRES"
+            parameterType="map">
+        DELETE FROM USER_ENV
+        WHERE userid = #{userid}
+              AND type = #{type}
+    </delete>
 </mapper>
 
 

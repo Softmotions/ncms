@@ -3,12 +3,15 @@ package com.softmotions.ncms.rs
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.kevinsawicki.http.HttpRequest
+import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.codec.net.BCodec
+import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.RandomStringUtils
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -92,15 +95,16 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
 
     @Test(dependsOnMethods = arrayOf("testMediaFilePut", "testMediaFileDelete", "testMediaFolderPut", "testMediaFolderDelete"))
     fun testMediaFileGet() {
-        // todo: on png (or pdf) response body length less than file size!
         val testFolder = putFolder().path("label").asText()
-        for (fileType in listOf("txt", "svg")) { // test: different file types
+        for (fileType in listOf("txt", "svg", "png")) { // test: different file types
             for (folderName in listOf("", testFolder)) { // test: / and subfolder
                 with(putFile(folderName, fileType)) {
                     val fileName = path("name").asText()
                     val folder = prepareFolder(path("folder").asText())
-                    val fileSize = path("size").asInt()
+                    val fileSize = path("size").asLong()
                     val fileContentType = path("contentType").asText()
+                    val reqIs = Files.newInputStream(getTestFile(fileType).toPath())
+                    val reqMd5 = DigestUtils.md5Hex(IOUtils.toByteArray(reqIs))
 
                     for (j in 0..1) { // get by: 0 - name, 1 - id
                         var resource = ""
@@ -161,8 +165,13 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
                                 }
 
                                 if (i == 1) {
-                                    val body = body()
-                                    assertEquals(fileSize, body.length)
+                                    val tempFile = File("/tmp/$fileName")
+                                    receive(tempFile)
+                                    assertEquals(fileSize, tempFile.length())
+                                    val resIs = Files.newInputStream(tempFile.toPath())
+                                    val resMd5 = DigestUtils.md5Hex(IOUtils.toByteArray(resIs))
+                                    assertEquals(resMd5, reqMd5)
+                                    tempFile.delete()
                                 }
                             }
                         }
@@ -174,9 +183,6 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
         delete("", testFolder)
     }
 
-/*
-    // todo: fix error on PostgreSQL "java.lang.ClassCastException: [B cannot be cast to java.sql.Blob
-    //      at com.softmotions.ncms.media.MediaRS._thumbnail(MediaRS.java:1208)
     @Test(dependsOnMethods = arrayOf("testMediaFileGet"))
     fun testMediaFileThumb() {
         val testFolder = putFolder().path("label").asText()
@@ -207,7 +213,6 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
                         }
                     }
 
-                    log.info("req: $resource")
                     with(GET(resource)) {
                         assertEquals(200, code())
                         val headers = headers()
@@ -220,7 +225,6 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
         }
         delete("", testFolder)
     }
-*/
 
     @Test(dependsOnMethods = arrayOf("testMediaSelect"))
     fun testMediaFolderSelect() {

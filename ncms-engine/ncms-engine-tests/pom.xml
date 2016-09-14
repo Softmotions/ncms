@@ -9,17 +9,30 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>ncms-engine-tests</artifactId>
+    <!--<packaging>war</packaging>-->
+
+    <properties>
+        <webdriver.dir>${project.basedir}/../../.bin</webdriver.dir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>ncms-engine-core</artifactId>
-            <version>${project.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-runner</artifactId>
             <version>${softmotions.commons.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>ncms-engine-tests-qx</artifactId>
+            <version>${project.parent.version}</version>
+            <classifier>prerelease</classifier>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
@@ -54,6 +67,18 @@
             <artifactId>http-request</artifactId>
             <version>6.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>2.53.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>qxwebdriver-java</artifactId>
+            <version>0.0.5-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -78,6 +103,12 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <systemPropertyVariables>
+                        <project.basedir>${project.basedir}</project.basedir>
+                        <webdriver.chrome.driver>${webdriver.dir}/chromedriver</webdriver.chrome.driver>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -90,6 +121,47 @@
                     <execution>
                         <goals>
                             <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Chrome webdriver staff -->
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.3.0</version>
+                <executions>
+                    <execution>
+                        <id>download-chromedriver</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://chromedriver.storage.googleapis.com/2.24/chromedriver_linux64.zip</url>
+                            <outputDirectory>${webdriver.dir}/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>unpack-chromedriver</id>
+                        <phase>test-compile</phase>
+                        <configuration>
+                            <tasks>
+                                <unzip src="${webdriver.dir}/chromedriver_linux64.zip" dest="${webdriver.dir}/" />
+                                <chmod file="${webdriver.dir}/chromedriver" perm="+x" />
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>

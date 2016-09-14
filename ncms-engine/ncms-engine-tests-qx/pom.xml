@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>softmotions</groupId>
+        <artifactId>ncms-engine</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>ncms-engine-tests-qx</artifactId>
+    <packaging>qooxdoo-jar</packaging>
+
+    <properties>
+        <qooxdoo.build.job>prerelease</qooxdoo.build.job>
+        <qooxdoo.application.name>tqx</qooxdoo.application.name>
+        <qooxdoo.application.summary>${project.name}</qooxdoo.application.summary>
+        <qooxdoo.application.description>${project.description}</qooxdoo.application.description>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>softmotions</groupId>
+                <artifactId>qooxdoo-maven-plugin</artifactId>
+                <version>1.2-SNAPSHOT</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <namespace>${qooxdoo.application.name}</namespace>
+                    <buildJob>${qooxdoo.build.job}</buildJob>
+                    <modulesCacheDirectory>${project.basedir}/../../.cache</modulesCacheDirectory>
+                    <cacheDirectory>${project.basedir}/../../.cache/.qx</cacheDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.qooxdoo</groupId>
+            <artifactId>qooxdoo-sdk</artifactId>
+            <version>${qooxdoo.sdk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>qx-client</artifactId>
+            <classifier>sources</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>ncms-engine-qx</artifactId>
+            <classifier>sources</classifier>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

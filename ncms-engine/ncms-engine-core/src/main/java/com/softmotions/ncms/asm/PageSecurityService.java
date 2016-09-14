@@ -548,7 +548,7 @@ public class PageSecurityService extends MBDAOSupport {
     public Collection<Long> getAccessibleTemplates(WSUser user) {
         if (user.isHasAnyRole("admin", "admin.asm")) {
             return select("accessibleAsmsForRoles",
-                          "template", 1);
+                          "template", true);
         } else {
             Iterator<WSRole> roles = user.getRoles();
             List<String> lRoles = new ArrayList<>(32);
@@ -556,7 +556,7 @@ public class PageSecurityService extends MBDAOSupport {
                 lRoles.add(roles.next().getName());
             }
             return select("accessibleAsmsForRoles",
-                          "template", 1,
+                          "template", true,
                           "roles", lRoles);
         }
     }

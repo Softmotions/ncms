@@ -589,7 +589,7 @@ public class AsmRS extends MBDAOSupport {
         }
         val = req.getParameter("template");
         if (BooleanUtils.toBoolean(val)) {
-            cq.withParam("template", 1);
+            cq.withParam("template", true);
             val = req.getParameter("pageId");
             if (!StringUtils.isBlank(val)) {
                 List<Map<String, Object>> rows = select("selectAsmTParents", new RowBounds(0, 1), Long.parseLong(val));
