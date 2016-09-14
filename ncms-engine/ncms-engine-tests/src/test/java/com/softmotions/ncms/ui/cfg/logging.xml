@@ -28,6 +28,7 @@
     <logger name="com.softmotions.ncms.mtt.http.MttRememberOriginAction" level="INFO"/>
     <logger name="com.softmotions.ncms.mtt.tp.MttTpService" level="INFO"/>
     <logger name="com.softmotions.ncms.mtt.tp.MttTpRS" level="INFO"/>
+    <logger name="com.softmotions.web.DirResourcesFilter" level="DEBUG"/>
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>

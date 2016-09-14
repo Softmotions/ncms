@@ -3,11 +3,13 @@ package com.softmotions.ncms
 import org.oneandone.qxwebdriver.QxWebDriver
 import org.oneandone.qxwebdriver.interactions.Actions
 import org.openqa.selenium.*
+import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.testng.Assert
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -36,6 +38,7 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
     }
 
     protected open fun setupUITest(cfg: String, driverType: String = "chrome") {
+        Locale.setDefault(Locale.ENGLISH)
         System.setProperty("WEBOOT_CFG_LOCATION", cfg)
         try {
             setupWeb()

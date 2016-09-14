@@ -77,6 +77,7 @@ public class NcmsServletListener extends WBServletListener {
         gzipFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "*.css");
 
         initJarResources(env, sctx);
+        initDirResources(env, sctx);
 
         sctx.addFilter("guiceFilter", GuiceFilter.class)
             .addMappingForUrlPatterns(
@@ -89,7 +90,6 @@ public class NcmsServletListener extends WBServletListener {
         shiroEnvironmentLoaderListener = new EnvironmentLoaderListener();
         shiroEnvironmentLoaderListener.contextInitialized(event);
     }
-
 
     protected void initBeforeFilters(NcmsEnvironment env, ServletContext sctx) {
     }
