@@ -9,17 +9,30 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>ncms-engine-tests</artifactId>
+    <!--<packaging>war</packaging>-->
+
+    <properties>
+        <webdriver.dir>${project.basedir}/../../.bin</webdriver.dir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>ncms-engine-core</artifactId>
-            <version>${project.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-runner</artifactId>
             <version>${softmotions.commons.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>ncms-engine-tests-qx</artifactId>
+            <version>${project.parent.version}</version>
+            <classifier>prerelease</classifier>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
@@ -93,7 +106,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <project.basedir>${project.basedir}</project.basedir>
-                        <webdriver.chrome.driver>${project.basedir}/.bin/chromedriver</webdriver.chrome.driver>
+                        <webdriver.chrome.driver>${webdriver.dir}/chromedriver</webdriver.chrome.driver>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
@@ -127,7 +140,7 @@
                         </goals>
                         <configuration>
                             <url>http://chromedriver.storage.googleapis.com/2.24/chromedriver_linux64.zip</url>
-                            <outputDirectory>${project.basedir}/.bin/</outputDirectory>
+                            <outputDirectory>${webdriver.dir}/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -143,8 +156,8 @@
                         <phase>test-compile</phase>
                         <configuration>
                             <tasks>
-                                <unzip src="${project.basedir}/.bin/chromedriver_linux64.zip" dest="${project.basedir}/.bin/" />
-                                <chmod file="${project.basedir}/.bin/chromedriver" perm="+x" />
+                                <unzip src="${webdriver.dir}/chromedriver_linux64.zip" dest="${webdriver.dir}/" />
+                                <chmod file="${webdriver.dir}/chromedriver" perm="+x" />
                             </tasks>
                         </configuration>
                         <goals>
