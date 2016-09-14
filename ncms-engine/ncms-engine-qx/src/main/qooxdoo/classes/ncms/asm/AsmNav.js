@@ -136,7 +136,9 @@ qx.Class.define("ncms.asm.AsmNav", {
                 var spec = ev.getData();
                 this.__selector.setSearchBoxValue(spec["name"]);
             }, this);
-            dlg.placeToWidget(ev.getTarget(), false);
+            if (ev) {
+                dlg.placeToWidget(ev.getTarget(), false);
+            }
             dlg.show();
         }
     },

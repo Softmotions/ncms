@@ -539,7 +539,9 @@ qx.Class.define("ncms.Application", {
                 return;
             }
             var appName = ncms.Application.APP_STATE.getAppName() || "Application";
-            return this.tr("You leave %1", appName);
+            if (!qx.core.Environment.get("ncms.testing")) {
+                return this.tr("You leave %1", appName);
+            }
         },
 
 

@@ -5,14 +5,33 @@ import com.softmotions.ncms.UIWebBaseTest
 import com.softmotions.web.security.XMLWSUserDatabase
 import com.softmotions.web.security.tomcat.WSUserDatabaseRealm
 import com.softmotions.weboot.testing.tomcat.TomcatRunner
+import org.oneandone.qxwebdriver.By
+import org.oneandone.qxwebdriver.QxWebDriver
+import org.oneandone.qxwebdriver.ui.Widget
 import java.nio.file.Paths
+
+
+fun Widget.findWidget(qxh: String): Widget = this.findWidget(By.qxh(qxh))
+
+fun Widget.executeInWidget(fspec: String): Any? =
+        this.executeJavascript("""
+          return (function(){
+                ${fspec}
+          }).call(qx.ui.core.Widget.getWidgetByElement(arguments[0]))
+        """)
+
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 open class BaseQXTest(db: String) : UIWebBaseTest(db) {
 
+    val qxd: QxWebDriver
+        get() = this.driver as QxWebDriver
+
     open fun setup() {
+        chromeDriverOptions.clear()
+
         val projectBasedir = System.getProperty("project.basedir") ?: throw Exception("Missing required system property: 'project.basedir'")
         val qxRoot = Paths.get(projectBasedir, "..", "ncms-engine-tests-qx/target/qooxdoo/tqx/siteroot").toFile()
         if (!qxRoot.isDirectory) {
@@ -38,5 +57,13 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
 
     override fun R(resource: String): String {
         return super.R("admin:ncms1", resource)
+    }
+
+    protected fun findWidget(h: String): Widget {
+        return qxd.findWidget(By.qxh(h))
+    }
+
+    protected fun waitForWidget(h: String, timeout: Long = 5): Widget {
+        return qxd.waitForWidget(By.qxh(h), timeout)
     }
 }

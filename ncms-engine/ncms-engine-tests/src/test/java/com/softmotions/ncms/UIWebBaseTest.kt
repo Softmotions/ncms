@@ -17,11 +17,13 @@ import java.util.concurrent.TimeUnit
  */
 open class UIWebBaseTest(db: String) : WebBaseTest(db) {
 
-    protected lateinit var driver: WebDriver
+    protected open lateinit var driver: WebDriver
 
     protected lateinit var driverWait: WebDriverWait
 
     protected lateinit var actions: Actions
+
+    protected val chromeDriverOptions = mutableListOf("--start-maximized")
 
     protected val xpathVersion: Int by lazy {
         try {
@@ -37,7 +39,8 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
         }
     }
 
-    protected open fun setupUITest(cfg: String, driverType: String = "chrome") {
+    protected open fun setupUITest(cfg: String,
+                                   driverType: String = "chrome") {
         Locale.setDefault(Locale.ENGLISH)
         System.setProperty("WEBOOT_CFG_LOCATION", cfg)
         try {
@@ -61,13 +64,16 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
         log.info("WebDriver initializing...")
         try {
             val options = ChromeOptions()
-            options.addArguments("--start-maximized")
+            chromeDriverOptions.forEach {
+                options.addArguments(it)
+            }
             val chromeDriver = ChromeDriver(options)
             if (driverType == "qx") {
                 driver = QxWebDriver(chromeDriver)
             } else {
                 driver = chromeDriver
             }
+            log.info("Using driver: {}", driver)
             driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS)
             driverWait = WebDriverWait(driver, 10)
             actions = Actions(chromeDriver)
@@ -175,5 +181,10 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
         } catch (e: Exception) {
             Assert.fail("element is not visible: " + by)
         }
+    }
+
+    protected fun waitForever() {
+        log.info("Wait forever")
+        pauseDriver(Int.MAX_VALUE)
     }
 }
