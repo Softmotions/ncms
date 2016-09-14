@@ -74,7 +74,10 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
                 driver = chromeDriver
             }
             log.info("Using driver: {}", driver)
-            driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS)
+            val timeouts = driver.manage().timeouts()
+            timeouts.implicitlyWait(5, TimeUnit.SECONDS)
+            timeouts.pageLoadTimeout(20, TimeUnit.SECONDS)
+            timeouts.setScriptTimeout(30, TimeUnit.SECONDS)
             driverWait = WebDriverWait(driver, 10)
             actions = Actions(chromeDriver)
             log.info("WebDriver initialized")
