@@ -30,8 +30,6 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
         get() = this.driver as QxWebDriver
 
     open fun setup() {
-        chromeDriverOptions.clear()
-
         val projectBasedir = System.getProperty("project.basedir") ?: throw Exception("Missing required system property: 'project.basedir'")
         val qxRoot = Paths.get(projectBasedir, "..", "ncms-engine-tests-qx/target/qooxdoo/tqx/siteroot").toFile()
         if (!qxRoot.isDirectory) {

@@ -5,6 +5,7 @@ import org.oneandone.qxwebdriver.interactions.Actions
 import org.openqa.selenium.*
 import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeDriverService
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
@@ -19,11 +20,13 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
 
     protected open lateinit var driver: WebDriver
 
-    protected lateinit var driverWait: WebDriverWait
+    protected lateinit var driverWait5: WebDriverWait
+
+    protected lateinit var driverWait10: WebDriverWait
+
+    protected lateinit var driverWait30: WebDriverWait
 
     protected lateinit var actions: Actions
-
-    protected val chromeDriverOptions = mutableListOf("--start-maximized")
 
     protected val xpathVersion: Int by lazy {
         try {
@@ -60,14 +63,16 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
         }
     }
 
-    protected open fun initDriver(driverType: String) {
+    protected open fun initDriver(driverType: String,
+                                  options:ChromeOptions = ChromeOptions()) {
         log.info("WebDriver initializing...")
         try {
-            val options = ChromeOptions()
-            chromeDriverOptions.forEach {
-                options.addArguments(it)
-            }
-            val chromeDriver = ChromeDriver(options)
+            val chromeDriver = ChromeDriver(
+                    ChromeDriverService.Builder()
+                            .usingAnyFreePort()
+                            .withVerbose(false)
+                            .build(),
+                    options)
             if (driverType == "qx") {
                 driver = QxWebDriver(chromeDriver)
             } else {
@@ -75,10 +80,12 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
             }
             log.info("Using driver: {}", driver)
             val timeouts = driver.manage().timeouts()
-            timeouts.implicitlyWait(5, TimeUnit.SECONDS)
+            timeouts.implicitlyWait(10, TimeUnit.SECONDS)
             timeouts.pageLoadTimeout(20, TimeUnit.SECONDS)
             timeouts.setScriptTimeout(30, TimeUnit.SECONDS)
-            driverWait = WebDriverWait(driver, 10)
+            driverWait5 = WebDriverWait(driver, 5)
+            driverWait10 = WebDriverWait(driver, 10)
+            driverWait30 = WebDriverWait(driver, 30)
             actions = Actions(chromeDriver)
             log.info("WebDriver initialized")
         } catch (tr: Throwable) {
@@ -104,7 +111,7 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
 
     protected fun pauseDriver(seconds: Int) {
         try {
-            driverWait.withTimeout(seconds.toLong(), TimeUnit.SECONDS)
+            driverWait10.withTimeout(seconds.toLong(), TimeUnit.SECONDS)
                     .until({ false })
         } catch (ignored: TimeoutException) {
         }
@@ -141,7 +148,7 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
     protected fun waitForPresence(by: By, timeout: Long = 0L) {
         try {
             if (timeout == 0L) {
-                driverWait.until(ExpectedConditions.presenceOfElementLocated(by))
+                driverWait10.until(ExpectedConditions.presenceOfElementLocated(by))
             } else {
                 WebDriverWait(driver, timeout).until(ExpectedConditions.presenceOfElementLocated(by))
             }
@@ -153,7 +160,7 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
     protected fun waitForAbsence(by: By, timeout: Long = 0L) {
         try {
             if (timeout == 0L) {
-                driverWait.until(ExpectedConditions.invisibilityOfElementLocated(by))
+                driverWait10.until(ExpectedConditions.invisibilityOfElementLocated(by))
             } else {
                 WebDriverWait(driver, timeout).until(ExpectedConditions.invisibilityOfElementLocated(by))
             }
@@ -165,7 +172,7 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
     protected fun waitForClickable(element: WebElement, timeout: Long = 0L) {
         try {
             if (timeout == 0L) {
-                driverWait.until(ExpectedConditions.elementToBeClickable(element))
+                driverWait10.until(ExpectedConditions.elementToBeClickable(element))
             } else {
                 WebDriverWait(driver, timeout).until(ExpectedConditions.elementToBeClickable(element))
             }
@@ -177,7 +184,7 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
     protected fun waitForVisible(by: By, timeout: Long = 0L) {
         try {
             if (timeout == 0L) {
-                driverWait.until(ExpectedConditions.visibilityOfElementLocated(by))
+                driverWait10.until(ExpectedConditions.visibilityOfElementLocated(by))
             } else {
                 WebDriverWait(driver, timeout).until(ExpectedConditions.visibilityOfElementLocated(by))
             }

@@ -1,6 +1,7 @@
 package com.softmotions.ncms.ui
 
 import org.oneandone.qxwebdriver.By.qxh
+import org.openqa.selenium.chrome.ChromeOptions
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
@@ -23,6 +24,13 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
     @AfterClass
     override fun shutdown() = super.shutdown()
 
+
+    override fun initDriver(driverType: String, options: ChromeOptions) {
+        //options.addArguments("start-maximized")
+        options.addArguments("log-level=0", "enable-logging=stderr")
+        super.initDriver(driverType, options)
+    }
+
     @Test
     fun testToolbarLabels() {
         waitForPresence(qxh("*/ncms.Toolbar/*/[@label=Pages]"))
@@ -33,25 +41,53 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
     }
 
     @Test
-    fun testCreateBaseAssembly() {
-        goToAssemblies()
-        inAssembliesCreateAssembly("basic")
-        inAssembliesSelectAssembly("basic", "Basic assembly");
+    fun testCreateBasicAssemblies() {
 
-        inAssembliesCreateStringAttr(
+        val a = assemblies
+
+        a.goTo()
+        a.createAssembly("basic")
+        a.selectAssembly("basic");
+        a.setBasicAssemblyParams(description = "Basic assembly")
+
+        a.createStringAttr(
                 name = "title",
                 label = "Title",
                 required = true,
                 maxLength = 64,
                 value = "4ca24da751ac4899a56a13a4091a0f6f"
         );
-
-        inAssembliesCreateStringAttr(
+        a.createStringAttr(
                 name = "extra",
                 value = "3d70f55efd8e4e5b9cff1479103be115"
         );
+        a.createStringAttr(
+                name = "extra2"
+        );
+        a.createAliasAttr()
 
 
-        waitForever()
+        a.createAssembly("basic_content")
+        a.selectAssembly("basic_content")
+        a.setBasicAssemblyParams(
+                description = "Simple page with content",
+                templateMode = "page"
+        )
+        a.addAssemblyParent("basic")
+        a.checkAttributeExists(
+                name = "extra2",
+                type = "string"
+        )
+        a.checkAttributeExists(
+                name = "extra",
+                type = "string",
+                value = "3d70f55efd8e4e5b9cff1479103be115",
+                select = true
+        )
+
+        // Test removal of attribute
+        a.selectAssembly("basic");
+        a.removeAttribute("extra2")
+
     }
 }
