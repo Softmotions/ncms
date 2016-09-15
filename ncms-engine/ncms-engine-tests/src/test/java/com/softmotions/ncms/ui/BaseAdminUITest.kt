@@ -4,6 +4,7 @@ import org.oneandone.qxwebdriver.ui.Widget
 import org.oneandone.qxwebdriver.ui.table.Table
 import org.openqa.selenium.Keys
 import org.testng.Assert
+import kotlin.test.assertEquals
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -106,7 +107,6 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
             }
         }
 
-
         fun findAttribute(name: String,
                           select: Boolean = false,
                           invert: Boolean = false): Pair<Table, Long> {
@@ -125,15 +125,22 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
         }
 
         fun checkAttributeExists(name: String,
-                                 type: String,
+                                 type: String? = null,
                                  label: String? = null,
                                  value: String? = null,
-                                 select: Boolean = false) {
+                                 select: Boolean = false,
+                                 invert: Boolean = false) {
 
-            val ret = findAttribute(name, select)
+            val ret = findAttribute(name, select, invert = invert)
+            if (invert) {
+                assertEquals(-1L, ret.second)
+                return
+            }
             val table = ret.first
             val ind = ret.second
-            Assert.assertEquals(table.getCellText(ind, 3), type)
+            if (type != null) {
+                Assert.assertEquals(table.getCellText(ind, 3), type)
+            }
             if (label != null) {
                 Assert.assertEquals(table.getCellText(ind, 2), label)
             }

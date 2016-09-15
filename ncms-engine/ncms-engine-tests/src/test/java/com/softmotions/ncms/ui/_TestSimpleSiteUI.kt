@@ -86,8 +86,8 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
         )
 
         // Test removal of attribute
-        a.selectAssembly("basic");
+        a.selectAssembly("basic")
         a.removeAttribute("extra2")
-
+        a.checkAttributeExists(name = "extra2", invert = true)
     }
 }
