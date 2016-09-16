@@ -86,6 +86,9 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
                 value = "3d70f55efd8e4e5b9cff1479103be115",
                 select = true
         )
+        // Add optional mediawiki attribute
+        a.createWikiAttr("content", "Content", required = true)
+
 
         // Test removal of attribute
         a.selectAssembly("basic")
@@ -93,7 +96,7 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
         a.checkAttributeExists(name = "extra2", invert = true)
 
 
-        // In basic_content
+        // In basic_content set core
         a.selectAssembly("basic_content")
         a.openSelectCoreDlg()
 
@@ -109,10 +112,16 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
                </head>
                <h1>Simple page</h1>
                <p>Extra=${D}{'extra'.asm}</p>
+
+               ${D}{'content'.asm}
+
             </html>
         """)
         f.ok()
+
         assertEquals(a.getAsmCoreValue(), "/basic_content_core.httl")
         //waitForever()
     }
+
+
 }

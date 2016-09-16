@@ -279,6 +279,26 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
             )
         }
 
+        fun createWikiAttr(name: String,
+                           label: String,
+                           required: Boolean = false,
+                           type: String = "wiki",
+                           value: String? = null) {
+
+            createBasicAttribute("wiki", name, label, required)
+            val w = findWidget("*/ncms.asm.AsmAttrEditorDlg/*/sm.ui.cont.LazyStack/sm.ui.form.FlexFormRenderer")
+            /*w.executeInWidget("""
+            var items = this._form.getItems();
+            items['alias'].setValue('${value ?: ""}');
+        """)*/
+            attrDlgClickSave()
+            checkAttributeExists(
+                    name = name,
+                    type = "wiki",
+                    label = label,
+                    value = value)
+        }
+
         fun createAliasAttr(name: String = "alias",
                             required: Boolean = false,
                             label: String? = "Alias",
