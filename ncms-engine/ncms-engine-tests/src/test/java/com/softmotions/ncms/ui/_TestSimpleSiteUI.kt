@@ -2,9 +2,11 @@ package com.softmotions.ncms.ui
 
 import org.oneandone.qxwebdriver.By.qxh
 import org.openqa.selenium.chrome.ChromeOptions
+import org.testng.Assert.*
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
+
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -89,5 +91,26 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
         a.selectAssembly("basic")
         a.removeAttribute("extra2")
         a.checkAttributeExists(name = "extra2", invert = true)
+
+        // In basic_content
+        a.openSelectCoreDlg()
+
+        val f = selectFileDlg
+        f.newFile("basic_content_core.httl")
+        f.newFile("to_be_deleted.txt")
+        f.deleteFile("to_be_deleted.txt")
+
+        f.setFileTextualContent("basic_content_core.httl", """
+            <html>
+               <head>
+                 <title>${D}{asm('title')}</title>
+               </head>
+               <h1>Simple page</h1>
+               <p>Extra=${D}{'extra'.asm}</p>
+            </html>
+        """)
+        f.ok()
+        assertEquals(a.getAsmCoreValue(), "/basic_content_core.httl")
+        waitForever()
     }
 }

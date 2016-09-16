@@ -1,9 +1,13 @@
 package com.softmotions.ncms.ui
 
+import org.apache.commons.lang3.StringEscapeUtils
+import org.oneandone.qxwebdriver.By
 import org.oneandone.qxwebdriver.ui.Widget
+import org.oneandone.qxwebdriver.ui.form.MenuButton
 import org.oneandone.qxwebdriver.ui.table.Table
 import org.openqa.selenium.Keys
-import org.testng.Assert
+import org.openqa.selenium.support.ui.ExpectedConditions
+import org.testng.Assert.*
 import kotlin.test.assertEquals
 
 /**
@@ -13,9 +17,86 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
 
     protected val assemblies = Assemblies()
 
+    protected val selectFileDlg = SelectFileDlg()
+
+
+    fun checkPopupNotificationShown(msg: String? = null) {
+        //ncms-app-popup//
+        val w = qxd.findWidget(By.xpath("//div[contains(@class, 'ncms-app-popup')]"))
+        driverWait5.until(ExpectedConditions.visibilityOf(w))
+        if (msg != null) {
+            w.findWidget("*/[@label=${msg}]")
+        }
+    }
+
+    inner class SelectFileDlg {
+
+        ///////////////////////////////////////////////////////////
+        //               Select file dlg operations              //
+        ///////////////////////////////////////////////////////////
+
+        fun waitForDialogVisible(): Widget {
+            val w = findWidget("*/ncms.mmgr.MediaSelectFileDlg")
+            driverWait5.until(ExpectedConditions.visibilityOf(w))
+            return w
+        }
+
+        fun newFile(fileName: String) {
+            var w = waitForDialogVisible()
+            w = w.findWidget("*/[@icon=.*add.png]")
+            w.click()
+            w as MenuButton
+            w.getSelectableItem("New file").click()
+            actions.sendKeys(fileName).perform()
+            findWidget("*/ncms.mmgr.MediaFileNewDlg/*/[@label=Save]").click()
+            selectFile(fileName)
+        }
+
+        fun selectFile(fileName: String, invert: Boolean = false) {
+            val w = findWidget("*/ncms.mmgr.MediaSelectFileDlg/*/ncms.mmgr.MediaFilesTable")
+            w as Table
+            var ind = -1L;
+            driverWait5.until {
+                ind = w.getRowIndexForCellText(0, fileName)
+                if (invert) ind < 0 else ind > -1
+            }
+            if (!invert) {
+                w.selectRow(ind)
+            }
+        }
+
+        fun deleteFile(fileName: String) {
+            var w = waitForDialogVisible()
+            selectFile(fileName)
+            w = w.findWidget("*/[@icon=.*delete.png]")
+            w.click()
+            w = findWidget("*/sm.dialog.Confirm/*/[@label=Yes]")
+            w.click()
+            selectFile(fileName, invert = true)
+        }
+
+        fun setFileTextualContent(fileName: String, content: String) {
+            var w = waitForDialogVisible()
+            selectFile(fileName)
+            w = w.findWidget("*/[@icon=.*edit-document.png]")
+            assertEquals("true", w.getPropertyValue("enabled")?.toString());
+            w.click()
+            w = findWidget("*/ncms.mmgr.MediaTextFileEditorDlg/*/ncms.mmgr.MediaTextFileEditor")
+            w.findWidget(By.xpath("//textarea[contains(@class, 'ace_text-input')]"))
+            w.executeInWidget("""this.setCode("${StringEscapeUtils.escapeEcmaScript(content.trimIndent())}");""")
+            actions.sendKeys(Keys.chord(Keys.CONTROL, "s")).perform()
+            checkPopupNotificationShown("File successfully saved")
+            findWidget("*/ncms.mmgr.MediaTextFileEditorDlg/*/[@icon=.*close.gif]").click()
+        }
+
+        fun ok() {
+            val w = findWidget("*/ncms.mmgr.MediaSelectFileDlg/*/[@label=Ok]")
+            assertEquals("true", w.getPropertyValue("enabled")?.toString());
+            w.click()
+        }
+    }
 
     inner class Assemblies {
-
 
         ///////////////////////////////////////////////////////////
         //                      Assemblies                       //
@@ -24,6 +105,11 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
 
         fun goTo() {
             findWidget("*/ncms.Toolbar/*/[@label=Assemblies]").click()
+        }
+
+        fun openSelectCoreDlg(): Widget {
+            findWidget("*/ncms.asm.AsmEditor/*/[@icon=.*core_link.png]").click();
+            return selectFileDlg.waitForDialogVisible()
         }
 
         fun createAssembly(name: String) {
@@ -83,8 +169,8 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
             var w: Widget = findWidget("*/ncms.asm.AsmAttributeTypeSelectorDlg")
             actions.sendKeys(type).sendKeys(Keys.DOWN).perform()
             val table = w.findWidget("*/sm.table.Table") as Table
-            Assert.assertNotNull(table.selectedRanges)
-            Assert.assertEquals(table.selectedRanges.size, 1)
+            assertNotNull(table.selectedRanges)
+            assertEquals(table.selectedRanges.size, 1)
             w.findWidget("*/[@label=Ok]").click()
 
             // Fill the assembly attributes
@@ -112,11 +198,17 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
                           invert: Boolean = false): Pair<Table, Long> {
             // Check attribute is saved
             val table = findWidget("*/ncms.asm.AsmAttrsTable/sm.table.Table") as Table
-            val ind = table.getRowIndexForCellText(1, name)
+            var ind = -1L
             if (invert) {
-                Assert.assertEquals(ind, -1L)
+                driverWait5.until {
+                    ind = table.getRowIndexForCellText(1, name)
+                    ind == -1L
+                }
             } else {
-                Assert.assertTrue(ind > -1L)
+                driverWait5.until {
+                    ind = table.getRowIndexForCellText(1, name)
+                    ind > -1L
+                }
                 if (select) {
                     table.selectRow(ind)
                 }
@@ -139,20 +231,28 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
             val table = ret.first
             val ind = ret.second
             if (type != null) {
-                Assert.assertEquals(table.getCellText(ind, 3), type)
+                assertEquals(table.getCellText(ind, 3), type)
             }
             if (label != null) {
-                Assert.assertEquals(table.getCellText(ind, 2), label)
+                assertEquals(table.getCellText(ind, 2), label)
             }
             if (value != null) {
-                Assert.assertEquals(table.getCellText(ind, 4), value)
+                assertEquals(table.getCellText(ind, 4), value)
             }
+        }
+
+        fun getAsmCoreValue(): String? {
+            val w = findWidget("*/ncms.asm.AsmEditor/qx.ui.core.scroll.ScrollPane/sm.ui.form.FlexFormRenderer")
+            return w.executeInWidget("""
+                var items = this._form.getItems();
+                return items['core'].getValue();
+            """)?.toString()
         }
 
         fun attrDlgClickSave() {
             // Press the OK and save the assembly attribute
             val w = findWidget("*/ncms.asm.AsmAttrEditorDlg/*/[@label=Ok]")
-            Assert.assertEquals(w.classname, "qx.ui.form.Button")
+            assertEquals(w.classname, "qx.ui.form.Button")
             w.click()
         }
 
@@ -206,17 +306,14 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
             var table = findWidget("*/ncms.asm.AsmSelectorDlg/*/ncms.asm.AsmTable") as Table
             actions.sendKeys(parentName).sendKeys(Keys.DOWN).perform()
             var ind = table.getRowIndexForCellText(1, parentName)
-            Assert.assertTrue(ind > -1)
+            assertTrue(ind > -1)
             table.selectRow(ind)
             findWidget("*/ncms.asm.AsmSelectorDlg/*/[@label=Ok]").click()
 
             table = findWidget("*/ncms.asm.AsmParentsTable/*/sm.table.Table") as Table
             ind = table.getRowIndexForCellText(0, parentName)
-            Assert.assertTrue(ind > -1)
+            assertTrue(ind > -1)
             table.selectRow(ind)
         }
-
     }
-
-
 }

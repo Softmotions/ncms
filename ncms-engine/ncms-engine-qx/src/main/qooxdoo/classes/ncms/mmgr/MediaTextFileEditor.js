@@ -196,6 +196,11 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             }
         },
 
+        setCode: function(code) {
+            this.__setCode(code, null);
+            this.__broadcaster.setEnabled(true);
+        },
+
         __setCode: function (code, lclass) {
             if (this.__area) {
                 this.__area.setValue(code);

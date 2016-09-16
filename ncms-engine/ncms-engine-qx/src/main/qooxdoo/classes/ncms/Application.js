@@ -156,6 +156,7 @@ qx.Class.define("ncms.Application", {
                 info = ncms.Application.INFO_POPUP =
                     new qx.ui.container.Composite(new qx.ui.layout.VBox(4)
                     .set({alignX: "center"}));
+                info.getContentElement().addClass("ncms-app-popup");
 
                 info.isEmpty = function () {
                     return !info.hasChildren();

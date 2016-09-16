@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:38 ncms/Application.js:529
+#: ncms/Application.js:38 ncms/Application.js:530
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:543
+#: ncms/Application.js:544
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -909,7 +909,7 @@ msgstr "Показать файлы в подпапках"
 msgid "Are you sure to remove selected files?"
 msgstr "Вы действительно желаете безвозвратно удалить выбранные файлы?"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:165 ncms/mmgr/MediaFilesSelector.js:587
+#: ncms/mmgr/MediaItemTreeSelector.js:164 ncms/mmgr/MediaFilesSelector.js:587
 msgid "Move '%1' to another folder"
 msgstr "Переместить '%1' в другую папку"
 

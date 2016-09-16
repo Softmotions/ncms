@@ -26,6 +26,8 @@ fun Widget.executeInWidget(fspec: String): Any? =
  */
 open class BaseQXTest(db: String) : UIWebBaseTest(db) {
 
+    val D = "$"
+
     val qxd: QxWebDriver
         get() = this.driver as QxWebDriver
 
