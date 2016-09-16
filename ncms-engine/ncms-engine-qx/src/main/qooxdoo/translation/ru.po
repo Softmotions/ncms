@@ -909,7 +909,7 @@ msgstr "Показать файлы в подпапках"
 msgid "Are you sure to remove selected files?"
 msgstr "Вы действительно желаете безвозвратно удалить выбранные файлы?"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:164 ncms/mmgr/MediaFilesSelector.js:587
+#: ncms/mmgr/MediaItemTreeSelector.js:165 ncms/mmgr/MediaFilesSelector.js:587
 msgid "Move '%1' to another folder"
 msgstr "Переместить '%1' в другую папку"
 

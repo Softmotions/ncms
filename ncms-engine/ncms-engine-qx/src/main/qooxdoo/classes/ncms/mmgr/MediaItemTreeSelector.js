@@ -32,7 +32,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("F2"),
             this.__onRename, this);
-        this.addListenerOnce("treeLoaded", function() {
+        this.addListenerOnce("treeLoaded", function () {
             this._registerCommandFocusWidget(this._tree);
         }, this);
     },
@@ -109,7 +109,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             if (item == null) {
                 return;
             }
-            this._refreshNode(item);
+            this._refreshNode2(item);
         },
 
         __onDelete: function (ev) {
@@ -200,7 +200,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             dlg.setPosition("bottom-right");
             dlg.addListener("completed", function (ev) {
                 dlg.close();
-                this._refreshNode(parent);
+                this._refreshNode2(parent);
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.open();
@@ -212,10 +212,20 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             dlg.setPosition("bottom-right");
             dlg.addListener("completed", function (ev) {
                 dlg.close();
-                this._refreshNode(parent);
+                this._refreshNode2(parent);
             }, this);
             dlg.placeToWidget(ev.getTarget(), false);
             dlg.open();
+        },
+
+        _refreshNode2: function (refreshItem) {
+            var root = this._tree.getModel();
+            var selectedItem = this._tree.getSelection().getItem(0);
+            this._refreshNode(refreshItem, function () {
+                if (selectedItem === refreshItem) {
+                    this._onSelected(refreshItem)
+                }
+            }, this);
         }
     },
 
