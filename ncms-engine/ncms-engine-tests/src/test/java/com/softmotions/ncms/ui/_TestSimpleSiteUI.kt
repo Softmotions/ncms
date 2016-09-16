@@ -92,7 +92,9 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
         a.removeAttribute("extra2")
         a.checkAttributeExists(name = "extra2", invert = true)
 
+
         // In basic_content
+        a.selectAssembly("basic_content")
         a.openSelectCoreDlg()
 
         val f = selectFileDlg
@@ -111,6 +113,6 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
         """)
         f.ok()
         assertEquals(a.getAsmCoreValue(), "/basic_content_core.httl")
-        waitForever()
+        //waitForever()
     }
 }
