@@ -47,7 +47,7 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
 
         val a = assemblies
 
-        a.goTo()
+        a.activate()
         a.createAssembly("basic")
         a.selectAssembly("basic");
         a.setBasicAssemblyParams(description = "Basic assembly")
@@ -121,6 +121,16 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
 
         assertEquals(a.getAsmCoreValue(), "/basic_content_core.httl")
         //waitForever()
+    }
+
+
+    @Test(dependsOnMethods = arrayOf("testCreateBasicAssemblies"))
+    fun  testCreatePageOnBasicContentAssembly() {
+
+        val p = pages
+        p.activate()
+
+        waitForever()
     }
 
 

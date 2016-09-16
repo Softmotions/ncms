@@ -19,6 +19,8 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
 
     protected val selectFileDlg = SelectFileDlg()
 
+    protected val pages = Pages()
+
 
     fun checkPopupNotificationShown(msg: String? = null) {
         //ncms-app-popup//
@@ -29,10 +31,25 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
         }
     }
 
+    inner class Pages {
+
+        ///////////////////////////////////////////////////////////
+        //                     In `Pages`                        //
+        ///////////////////////////////////////////////////////////
+
+        fun activate() {
+            findWidget("*/ncms.Toolbar/*/[@label=Pages]").click()
+        }
+
+
+
+    }
+
+
     inner class SelectFileDlg {
 
         ///////////////////////////////////////////////////////////
-        //               Select file dlg operations              //
+        //                  Select file dialog                   //
         ///////////////////////////////////////////////////////////
 
         fun waitForDialogVisible(): Widget {
@@ -99,11 +116,11 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
     inner class Assemblies {
 
         ///////////////////////////////////////////////////////////
-        //                      Assemblies                       //
+        //                    In `Assemblies`                    //
         ///////////////////////////////////////////////////////////
 
 
-        fun goTo() {
+        fun activate() {
             findWidget("*/ncms.Toolbar/*/[@label=Assemblies]").click()
         }
 
