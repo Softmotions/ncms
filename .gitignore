@@ -16,3 +16,4 @@ logs/
 
 
 .bin/
+*.log

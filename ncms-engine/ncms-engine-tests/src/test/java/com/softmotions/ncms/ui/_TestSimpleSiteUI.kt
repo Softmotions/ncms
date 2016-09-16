@@ -1,19 +1,18 @@
 package com.softmotions.ncms.ui
 
 import org.oneandone.qxwebdriver.By.qxh
-import org.oneandone.qxwebdriver.ui.Widget
-import org.oneandone.qxwebdriver.ui.table.Table
-import org.openqa.selenium.Keys
+import org.openqa.selenium.chrome.ChromeOptions
 import org.testng.Assert.*
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
 
+
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Test(groups = arrayOf("ui"))
-class _TestSimpleSiteUI(db: String) : BaseQXTest(db) {
+class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
 
     constructor() : this(DEFAULT_DB) {
     }
@@ -27,6 +26,13 @@ class _TestSimpleSiteUI(db: String) : BaseQXTest(db) {
     @AfterClass
     override fun shutdown() = super.shutdown()
 
+
+    override fun initDriver(driverType: String, options: ChromeOptions) {
+        //options.addArguments("start-maximized")
+        options.addArguments("log-level=0", "enable-logging=stderr")
+        super.initDriver(driverType, options)
+    }
+
     @Test
     fun testToolbarLabels() {
         waitForPresence(qxh("*/ncms.Toolbar/*/[@label=Pages]"))
@@ -37,70 +43,76 @@ class _TestSimpleSiteUI(db: String) : BaseQXTest(db) {
     }
 
     @Test
-    fun testCreateBaseAssembly() {
-        findWidget("*/ncms.Toolbar/*/[@label=Assemblies]").click()
+    fun testCreateBasicAssemblies() {
 
-        val asmNav = waitForWidget("*/ncms.asm.AsmNav");
-        actions.moveToElement(asmNav.findWidget("*/qx.ui.table.pane.Scroller").contentElement)
-        actions.contextClick()
-        actions.perform()
+        val a = assemblies
 
-        // Create new assembly
-        findWidget("*/qx.ui.menu.Menu/*/[@label=New assembly]").click()
-        actions.sendKeys("base").perform()
-        findWidget("*/ncms.asm.AsmNewDlg/*/[@label=Save]").click()
+        a.goTo()
+        a.createAssembly("basic")
+        a.selectAssembly("basic");
+        a.setBasicAssemblyParams(description = "Basic assembly")
 
-        var table: Table = findWidget("*/ncms.asm.AsmTable") as Table
-        var ind: Long = table.getRowIndexForCellText(1, "base")
-        assertTrue(ind > -1)
-        table.selectRow(ind)
+        a.createStringAttr(
+                name = "title",
+                label = "Title",
+                required = true,
+                maxLength = 64,
+                value = "4ca24da751ac4899a56a13a4091a0f6f"
+        );
+        a.createStringAttr(
+                name = "extra",
+                value = "3d70f55efd8e4e5b9cff1479103be115"
+        );
+        a.createStringAttr(
+                name = "extra2"
+        );
+        a.createAliasAttr()
 
-        // Add new assembly attribute
-        findWidget("*/ncms.asm.AsmAttrsTable/*/[@icon=.*add.png]").click()
-        var w: Widget = findWidget("*/ncms.asm.AsmAttributeTypeSelectorDlg")
-        actions.sendKeys("stri").sendKeys(Keys.DOWN).perform()
-        table = w.findWidget("*/sm.table.Table") as Table
-        assertNotNull(table.selectedRanges)
-        assertEquals(table.selectedRanges.size, 1)
-        w.findWidget("*/[@label=Ok]").click()
 
-        // Fill the assembly attributes
-        w = findWidget("*/ncms.asm.AsmAttrEditorDlg/*/sm.ui.form.FlexFormRenderer")
-        w.executeInWidget("""
-            var items = this._form.getItems();
-            items['name'].setValue('title');
-            items['label'].setValue('Title');
-            items['required'].setValue(true);
+        a.createAssembly("basic_content")
+        a.selectAssembly("basic_content")
+        a.setBasicAssemblyParams(
+                description = "Simple page with content",
+                templateMode = "page"
+        )
+        a.addAssemblyParent("basic")
+        a.checkAttributeExists(
+                name = "extra2",
+                type = "string"
+        )
+        a.checkAttributeExists(
+                name = "extra",
+                type = "string",
+                value = "3d70f55efd8e4e5b9cff1479103be115",
+                select = true
+        )
+
+        // Test removal of attribute
+        a.selectAssembly("basic")
+        a.removeAttribute("extra2")
+        a.checkAttributeExists(name = "extra2", invert = true)
+
+
+        // In basic_content
+        a.selectAssembly("basic_content")
+        a.openSelectCoreDlg()
+
+        val f = selectFileDlg
+        f.newFile("basic_content_core.httl")
+        f.newFile("to_be_deleted.txt")
+        f.deleteFile("to_be_deleted.txt")
+
+        f.setFileTextualContent("basic_content_core.httl", """
+            <html>
+               <head>
+                 <title>${D}{asm('title')}</title>
+               </head>
+               <h1>Simple page</h1>
+               <p>Extra=${D}{'extra'.asm}</p>
+            </html>
         """)
-        w = findWidget("*/ncms.asm.AsmAttrEditorDlg/*/sm.ui.cont.LazyStack/sm.ui.form.FlexFormRenderer")
-        w.executeInWidget("""
-            var items = this._form.getItems();
-            items['maxLength'].setValue(64)
-            items['value'].setValue('The default title')
-        """)
-
-        // Press the OK and save the assembly attribute
-        w = findWidget("*/ncms.asm.AsmAttrEditorDlg/*/[@label=Ok]")
-        assertEquals(w.classname, "qx.ui.form.Button")
-        w.click()
-
-
-        // Check attribute is saved
-        table = findWidget("*/ncms.asm.AsmAttrsTable/sm.table.Table") as Table
-        ind = table.getRowIndexForCellText(1, "title")
-        assertTrue(ind > -1)
-        assertEquals(table.getCellText(ind, 2), "Title")
-        assertEquals(table.getCellText(ind, 3), "string")
-        assertEquals(table.getCellText(ind, 4), "The default title")
-
-        // Set assembly description
-        w = findWidget("*/ncms.asm.AsmEditor/qx.ui.core.scroll.ScrollPane/sm.ui.form.FlexFormRenderer")
-        w.executeInWidget("""
-           var items = this._form.getItems();
-           var d = items['description'];
-           d.focus();
-           d.setValue('Base assembly');
-           d.blur();
-        """)
+        f.ok()
+        assertEquals(a.getAsmCoreValue(), "/basic_content_core.httl")
+        //waitForever()
     }
 }
