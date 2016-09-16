@@ -26,7 +26,7 @@ open class BaseRSTest(db: String) : WebBaseTest(db) {
 
     override fun configureTomcatRunner(b: TomcatRunner.Builder) {
         super.configureTomcatRunner(b)
-        val wsdb = XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/rs/cfg/users.xml", false)
+        val wsdb = XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/rs/cfg/users.xml", false, "sha256")
         JVMResources.set(wsdb.databaseName, wsdb)
         b.withRealm(WSUserDatabaseRealm(wsdb))
     }
