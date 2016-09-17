@@ -2,7 +2,6 @@ package com.softmotions.ncms.ui
 
 import org.oneandone.qxwebdriver.By.qxh
 import org.openqa.selenium.chrome.ChromeOptions
-import org.testng.Assert.*
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
@@ -45,9 +44,8 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
     @Test
     fun testCreateBasicAssemblies() {
 
-        val a = assemblies
+        val a = assemblies.activate()
 
-        a.activate()
         a.createAssembly("basic")
         a.selectAssembly("basic");
         a.setBasicAssemblyParams(description = "Basic assembly")
@@ -119,19 +117,29 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
         """)
         f.ok()
 
-        assertEquals(a.getAsmCoreValue(), "/basic_content_core.httl")
-        //waitForever()
+        driverWait5.until {
+            a.getAsmCoreValue() == "/basic_content_core.httl"
+        }
     }
 
 
     @Test(dependsOnMethods = arrayOf("testCreateBasicAssemblies"))
-    fun  testCreatePageOnBasicContentAssembly() {
+    fun testCreatePageOnBasicContentAssembly() {
 
-        val p = pages
-        p.activate()
+        val p = pages.activate()
+        val sitedir = p.newPage(
+                context = p.selectPageNode(label = "Pages"),
+                name = "TestSimpleSiteUI",
+                isDirectory = true)
 
-        waitForever()
+        val site1 = p.newPage(
+                context = sitedir,
+                name = "Site1",
+                isDirectory = false)
+
+        val editPane = p.activatePageEdit()
+
+        // todo
     }
-
 
 }

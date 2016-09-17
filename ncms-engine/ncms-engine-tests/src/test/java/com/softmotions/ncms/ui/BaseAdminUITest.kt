@@ -21,6 +21,10 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
 
     protected val pages = Pages()
 
+    fun qxpn(qxclass: String, text: String? = null): String {
+        return "div[@qxclass='${qxclass}' ${if (text != null) " and text()='${text}'" else ""}]"
+
+    }
 
     fun checkPopupNotificationShown(msg: String? = null) {
         //ncms-app-popup//
@@ -37,12 +41,55 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
         //                     In `Pages`                        //
         ///////////////////////////////////////////////////////////
 
-        fun activate() {
+        fun activate(): Pages {
             findWidget("*/ncms.Toolbar/*/[@label=Pages]").click()
+            return this
         }
 
+        fun selectPageNode(label: String): Widget {
+            var w = findWidget("*/ncms.pgs.PagesTreeSelector/*/sm.ui.tree.ExtendedVirtualTree/*/[@label=${label}]")
+            if (w.classname != "sm.ui.tree.ExtendedVirtualTreeItem") {
+                w = w.findWidget(By.xpath("./ancestor-or-self::node()[@qxclass='sm.ui.tree.ExtendedVirtualTreeItem']"))
+            }
+            w.click()
+            return w
+        }
+
+        /**
+         * Create a new page over selected node in page tree
+         */
+        fun newPage(context: Widget,
+                    name: String,
+                    isDirectory: Boolean = false): Widget {
+            actions.moveToElement(context.contentElement)
+            actions.contextClick()
+            actions.perform()
+            findWidget("*/qx.ui.menu.Menu/*/[@label=New]").click()
+
+            val dlg = findWidget("*/ncms.pgs.PageNewDlg")
+            driverWait5.until {
+                dlg.isDisplayed
+            }
+            actions.sendKeys(name).perform()
+            dlg.findWidget("*/qx.ui.form.renderer.Single").executeInWidget("""
+                    var items = this._form.getItems();
+                    items['container'].setValue(${isDirectory});
+                """)
+            dlg.findWidget("*/[@label=Save]").click()
+            return selectPageNode(name)
+        }
+
+        fun activatePageEdit(): PagesEdit {
+            findWidget(By.xpath(
+                    "(//${qxpn("ncms.pgs.PageEditor")}//${qxpn("qx.ui.tabview.TabButton")}//${qxpn("qx.ui.basic.Label", "Edit")})[1]"))
+                    .click()
+            return PagesEdit()
+        }
+    }
 
 
+    inner class PagesEdit {
+        // todo
     }
 
 
@@ -120,8 +167,9 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
         ///////////////////////////////////////////////////////////
 
 
-        fun activate() {
+        fun activate(): Assemblies {
             findWidget("*/ncms.Toolbar/*/[@label=Assemblies]").click()
+            return this
         }
 
         fun openSelectCoreDlg(): Widget {

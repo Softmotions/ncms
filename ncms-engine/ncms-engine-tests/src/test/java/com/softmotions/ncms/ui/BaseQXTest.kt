@@ -63,6 +63,10 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
         return qxd.findWidget(By.qxh(h))
     }
 
+    protected fun findWidget(by: org.openqa.selenium.By): Widget {
+        return qxd.findWidget(by)
+    }
+
     protected fun waitForWidget(h: String, timeout: Long = 5): Widget {
         return qxd.waitForWidget(By.qxh(h), timeout)
     }
