@@ -48,6 +48,11 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
         }
     }
 
+    fun qxpn(qxclass: String, text: String? = null): String {
+        return "div[@qxclass='${qxclass}' ${if (text != null) " and text()='${text}'" else ""}]"
+
+    }
+
     override fun configureTomcatRunner(b: TomcatRunner.Builder) {
         super.configureTomcatRunner(b)
         val wsdb = XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/ui/cfg/users.xml", false)

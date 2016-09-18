@@ -6,6 +6,7 @@ import org.oneandone.qxwebdriver.ui.Widget
 import org.oneandone.qxwebdriver.ui.form.MenuButton
 import org.oneandone.qxwebdriver.ui.table.Table
 import org.openqa.selenium.Keys
+import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.testng.Assert.*
 import kotlin.test.assertEquals
@@ -21,10 +22,6 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
 
     protected val pages = Pages()
 
-    fun qxpn(qxclass: String, text: String? = null): String {
-        return "div[@qxclass='${qxclass}' ${if (text != null) " and text()='${text}'" else ""}]"
-
-    }
 
     fun checkPopupNotificationShown(msg: String? = null) {
         //ncms-app-popup//
@@ -52,6 +49,10 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
                 w = w.findWidget(By.xpath("./ancestor-or-self::node()[@qxclass='sm.ui.tree.ExtendedVirtualTreeItem']"))
             }
             w.click()
+            try {
+                w.contentElement.findElement(By.qxh("*/[@source=.*plus.gif]"))?.click()
+            } catch (ignored: NoSuchElementException) {
+            }
             return w
         }
 
@@ -87,11 +88,30 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
         }
     }
 
-
     inner class PagesEdit {
-        // todo
-    }
 
+        fun setPageTemplate(template: String) {
+            try {
+                val el = qxd.findElement(By.qxh("*/ncms.pgs.PagesSelectorDlg"))
+                if (el != null && el.isDisplayed) {
+                    findWidget("*/ncms.pgs.PagesSelectorDlg/*/[@label=Cancel]").click()
+                }
+            } catch (ignored: NoSuchElementException) {
+            }
+            findWidget("*/ncms.pgs.PageEditorEditPage/*/sm.ui.form.ButtonField/*/[@label=Template]").click()
+            actions.sendKeys(template).perform()
+
+            // ncms.asm.AsmTable
+            val table = findWidget("*/ncms.pgs.PagesSelectorDlg/*/ncms.asm.AsmTable") as Table
+            var ind = -1L;
+            driverWait5.until {
+                ind = table.getRowIndexForCellText(1, template)
+                ind >= 0
+            }
+            table.selectRow(ind)
+            findWidget("*/ncms.pgs.PagesSelectorDlg/*/[@label=Ok]").click()
+        }
+    }
 
     inner class SelectFileDlg {
 

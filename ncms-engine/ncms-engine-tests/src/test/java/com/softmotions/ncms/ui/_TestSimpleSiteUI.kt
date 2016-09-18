@@ -138,8 +138,10 @@ class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {
                 isDirectory = false)
 
         val editPane = p.activatePageEdit()
+        editPane.setPageTemplate("basic_content")
 
-        // todo
+
+        //waitForever()
     }
 
 }
