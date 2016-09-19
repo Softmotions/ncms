@@ -315,17 +315,17 @@
     </select>
 
     <select id="searchPageCount" resultType="int" parameterType="map">
-        SELECT COUNT(*)
-        FROM ASMS
+        SELECT COUNT(p.id)
+        FROM ASMS AS p
         <where>
-            <if test="parentId != null">AND nav_parent_id = #{parentId}</if>
-            <if test="name != null">AND hname LIKE #{name}</if>
-            <if test="name_lower != null">AND LOWER(hname) LIKE #{name_lower}</if>
-            <if test="type != null">AND type LIKE #{type}</if>
+            <if test="parentId != null">AND p.nav_parent_id = #{parentId}</if>
+            <if test="name != null">AND p.hname LIKE #{name}</if>
+            <if test="name_lower != null">AND LOWER(p.hname) LIKE #{name_lower}</if>
+            <if test="type != null">AND p.type LIKE #{type}</if>
             <if test="collection != null and user != null">
-                AND id IN (
-                    SELECT e.ivalue FROM USER_ENV e
-                    WHERE e.userid = #{user} AND e.type = #{collection}
+                AND p.id IN (
+                SELECT e.ivalue FROM USER_ENV e
+                WHERE e.userid = #{user} AND e.type = #{collection}
                 )
             </if>
         </where>
