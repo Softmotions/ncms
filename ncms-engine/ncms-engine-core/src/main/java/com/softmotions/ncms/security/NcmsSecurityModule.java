@@ -145,7 +145,7 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
                         }
                     }
                     log.info("XML users database locations: {}", xmldb);
-                    String hashAlg = xcfg.getString("security.password-save-hash-algorithm", "");
+                    String hashAlg = xcfg.getString("security.password-hash-algorithm", "");
                     log.info("Password save hash algorithm: {}", hashAlg.isEmpty() ? "plain text" : hashAlg);
                     usersDb = new XMLWSUserDatabase(dbJVMName, xmldb, true, hashAlg);
                     JVMResources.set(dbJVMName, usersDb);
