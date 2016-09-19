@@ -9,3 +9,6 @@
     amgr/index
     pmgr/index
     am/index
+    news/index
+
+
