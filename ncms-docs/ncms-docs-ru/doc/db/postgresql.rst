@@ -8,10 +8,9 @@ nCMS поддерживает PostgreSQL версии не ниже `9.5`
 Установка PostgreSQL на Ubuntu
 ------------------------------
 
-#. Становимся рутом `sudo su -`::
+.. code-block:: sh
 
-     apt-get install postgresql
-#. Добавьте себя в группу: `postgres` - это необходимо для проведения тестов БД
+    sudo apt-get install postgresql
 
 Создание новой базы данных
 --------------------------
