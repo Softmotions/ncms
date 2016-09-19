@@ -31,3 +31,28 @@ nCMS поддерживает PostgreSQL версии не ниже `9.5`
 
     GRANT ALL PRIVILEGES ON DATABASE ncms TO ncms;
 
+Конфигурация  nCMS
+------------------
+
+Для работы с новой базой необходимо настроить использование
+правильного JDBC драйвера. Пример конфигурации:
+
+.. code-block:: xml
+
+    <mybatis>
+        <bindDatasource>true</bindDatasource>
+        <config>com/softmotions/ncms/db/mybatis-config.xml</config>
+        <propsFile>{home}/.ncms.ds</propsFile>
+        <extra-properties>
+            JDBC.driver=org.postgresql.Driver
+        </extra-properties>
+        ...
+    </mybatis>
+
+Где в файле `${HOME}/.ncms.ds` хранятся JDBC URL, имя пользователя и пароль к БД::
+
+    JDBC.url=jdbc:postgresql://127.0.0.1:5432/ncms
+    JDBC.username=ncms
+    JDBC.password=xxxxxx
+
+
