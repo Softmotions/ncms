@@ -48,6 +48,11 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
         }
     }
 
+    fun qxpn(qxclass: String, text: String? = null): String {
+        return "div[@qxclass='${qxclass}' ${if (text != null) " and text()='${text}'" else ""}]"
+
+    }
+
     override fun configureTomcatRunner(b: TomcatRunner.Builder) {
         super.configureTomcatRunner(b)
         val wsdb = XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/ui/cfg/users.xml", false, "sha256")
@@ -61,6 +66,10 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
 
     protected fun findWidget(h: String): Widget {
         return qxd.findWidget(By.qxh(h))
+    }
+
+    protected fun findWidget(by: org.openqa.selenium.By): Widget {
+        return qxd.findWidget(by)
     }
 
     protected fun waitForWidget(h: String, timeout: Long = 5): Widget {

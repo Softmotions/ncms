@@ -6,6 +6,7 @@ import org.oneandone.qxwebdriver.ui.Widget
 import org.oneandone.qxwebdriver.ui.form.MenuButton
 import org.oneandone.qxwebdriver.ui.table.Table
 import org.openqa.selenium.Keys
+import org.openqa.selenium.NoSuchElementException
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.testng.Assert.*
 import kotlin.test.assertEquals
@@ -19,6 +20,8 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
 
     protected val selectFileDlg = SelectFileDlg()
 
+    protected val pages = Pages()
+
 
     fun checkPopupNotificationShown(msg: String? = null) {
         //ncms-app-popup//
@@ -29,10 +32,91 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
         }
     }
 
+    inner class Pages {
+
+        ///////////////////////////////////////////////////////////
+        //                     In `Pages`                        //
+        ///////////////////////////////////////////////////////////
+
+        fun activate(): Pages {
+            findWidget("*/ncms.Toolbar/*/[@label=Pages]").click()
+            return this
+        }
+
+        fun selectPageNode(label: String): Widget {
+            var w = findWidget("*/ncms.pgs.PagesTreeSelector/*/sm.ui.tree.ExtendedVirtualTree/*/[@label=${label}]")
+            if (w.classname != "sm.ui.tree.ExtendedVirtualTreeItem") {
+                w = w.findWidget(By.xpath("./ancestor-or-self::node()[@qxclass='sm.ui.tree.ExtendedVirtualTreeItem']"))
+            }
+            w.click()
+            try {
+                w.contentElement.findElement(By.qxh("*/[@source=.*plus.gif]"))?.click()
+            } catch (ignored: NoSuchElementException) {
+            }
+            return w
+        }
+
+        /**
+         * Create a new page over selected node in page tree
+         */
+        fun newPage(context: Widget,
+                    name: String,
+                    isDirectory: Boolean = false): Widget {
+            actions.moveToElement(context.contentElement)
+            actions.contextClick()
+            actions.perform()
+            findWidget("*/qx.ui.menu.Menu/*/[@label=New]").click()
+
+            val dlg = findWidget("*/ncms.pgs.PageNewDlg")
+            driverWait5.until {
+                dlg.isDisplayed
+            }
+            actions.sendKeys(name).perform()
+            dlg.findWidget("*/qx.ui.form.renderer.Single").executeInWidget("""
+                    var items = this._form.getItems();
+                    items['container'].setValue(${isDirectory});
+                """)
+            dlg.findWidget("*/[@label=Save]").click()
+            return selectPageNode(name)
+        }
+
+        fun activatePageEdit(): PagesEdit {
+            findWidget(By.xpath(
+                    "(//${qxpn("ncms.pgs.PageEditor")}//${qxpn("qx.ui.tabview.TabButton")}//${qxpn("qx.ui.basic.Label", "Edit")})[1]"))
+                    .click()
+            return PagesEdit()
+        }
+    }
+
+    inner class PagesEdit {
+
+        fun setPageTemplate(template: String) {
+            try {
+                val el = qxd.findElement(By.qxh("*/ncms.pgs.PagesSelectorDlg"))
+                if (el != null && el.isDisplayed) {
+                    findWidget("*/ncms.pgs.PagesSelectorDlg/*/[@label=Cancel]").click()
+                }
+            } catch (ignored: NoSuchElementException) {
+            }
+            findWidget("*/ncms.pgs.PageEditorEditPage/*/sm.ui.form.ButtonField/*/[@label=Template]").click()
+            actions.sendKeys(template).perform()
+
+            // ncms.asm.AsmTable
+            val table = findWidget("*/ncms.pgs.PagesSelectorDlg/*/ncms.asm.AsmTable") as Table
+            var ind = -1L;
+            driverWait5.until {
+                ind = table.getRowIndexForCellText(1, template)
+                ind >= 0
+            }
+            table.selectRow(ind)
+            findWidget("*/ncms.pgs.PagesSelectorDlg/*/[@label=Ok]").click()
+        }
+    }
+
     inner class SelectFileDlg {
 
         ///////////////////////////////////////////////////////////
-        //               Select file dlg operations              //
+        //                  Select file dialog                   //
         ///////////////////////////////////////////////////////////
 
         fun waitForDialogVisible(): Widget {
@@ -99,12 +183,13 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
     inner class Assemblies {
 
         ///////////////////////////////////////////////////////////
-        //                      Assemblies                       //
+        //                    In `Assemblies`                    //
         ///////////////////////////////////////////////////////////
 
 
-        fun goTo() {
+        fun activate(): Assemblies {
             findWidget("*/ncms.Toolbar/*/[@label=Assemblies]").click()
+            return this
         }
 
         fun openSelectCoreDlg(): Widget {
@@ -277,6 +362,26 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
                     label = label,
                     value = value
             )
+        }
+
+        fun createWikiAttr(name: String,
+                           label: String,
+                           required: Boolean = false,
+                           type: String = "wiki",
+                           value: String? = null) {
+
+            createBasicAttribute("wiki", name, label, required)
+            val w = findWidget("*/ncms.asm.AsmAttrEditorDlg/*/sm.ui.cont.LazyStack/sm.ui.form.FlexFormRenderer")
+            /*w.executeInWidget("""
+            var items = this._form.getItems();
+            items['alias'].setValue('${value ?: ""}');
+        """)*/
+            attrDlgClickSave()
+            checkAttributeExists(
+                    name = name,
+                    type = "wiki",
+                    label = label,
+                    value = value)
         }
 
         fun createAliasAttr(name: String = "alias",
