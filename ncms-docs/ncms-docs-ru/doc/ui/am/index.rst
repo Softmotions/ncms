@@ -16,6 +16,7 @@
     :maxdepth: 1
 
     string/string
+    boolean/boolean
     table/table
     alias/alias
 
