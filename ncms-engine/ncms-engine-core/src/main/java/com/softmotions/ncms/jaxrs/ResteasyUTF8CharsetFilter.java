@@ -8,7 +8,7 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 
 /**
- * Set defaultcharset for request content type to UTF-8
+ * Set default charset for request content type to UTF-8
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */

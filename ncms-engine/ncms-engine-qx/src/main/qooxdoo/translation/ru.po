@@ -31,7 +31,7 @@ msgstr "Редактирование атрибута страницы"
 #: ncms/pgs/PageEditorEditPage.js:163 ncms/asm/AsmEditor.js:88
 #: ncms/asm/am/AsmCoreAM.js:89 ncms/mtt/filters/MttResourceFilter.js:30
 #: ncms/asm/am/ImageAMValueWidget.js:104 ncms/mtt/filters/MttFilterDlg.js:40
-#: ncms/mtt/actions/MttActionDlg.js:40 ncms/usr/UserEditForm.js:22
+#: ncms/mtt/actions/MttActionDlg.js:40 ncms/usr/UserEditForm.js:27
 #: ncms/asm/AsmAttrEditorDlg.js:54 ncms/usr/UserNewDlg.js:32
 #: ncms/mtt/filters/MttVHostFilter.js:44 ncms/asm/am/PageRefAM.js:120
 #: ncms/asm/am/FileRefAM.js:140
@@ -41,7 +41,7 @@ msgstr "Обязательное поле"
 #: ncms/asm/AsmEditor.js:92 ncms/asm/am/RichRefAMValueWidget.js:44
 #: ncms/mtt/tp/MttTpNewDlg.js:20 ncms/asm/am/RichRefAM.js:44
 #: ncms/asm/AsmParentsTable.js:106 ncms/asm/am/SelectAMTable.js:70
-#: ncms/usr/UserEditForm.js:27 ncms/mmgr/MediaFileEditor.js:273
+#: ncms/usr/UserEditForm.js:33 ncms/mmgr/MediaFileEditor.js:273
 #: ncms/pgs/PagesTable.js:21 ncms/asm/AsmAttrsTable.js:119
 #: ncms/asm/am/TreeAMNewFolderDlg.js:22
 #: ncms/mtt/actions/MttSetCookieAction.js:47
@@ -97,7 +97,7 @@ msgstr "Ок"
 #: ncms/mtt/filters/MttFilterDlg.js:78 ncms/mtt/actions/MttActionDlg.js:78
 #: ncms/wiki/TreeDlg.js:54 ncms/usr/UserSelectorDlg.js:40
 #: ncms/mmgr/MediaSelectFolderDlg.js:58 ncms/wiki/InsertVimeoDlg.js:55
-#: ncms/usr/UserEditForm.js:55 ncms/wiki/InsertGMapDlg.js:45
+#: ncms/usr/UserEditForm.js:66 ncms/wiki/InsertGMapDlg.js:45
 #: ncms/mmgr/MediaSelectFileDlg.js:94 ncms/cc/TypesSelectorDlg.js:51
 #: ncms/asm/AsmAttrEditorDlg.js:110 ncms/asm/am/TreeAMFoldersDlg.js:56
 #: ncms/usr/UserNewDlg.js:66 ncms/mmgr/PageFilesSelectorDlg.js:120
@@ -1357,7 +1357,7 @@ msgid "Tracking pixel JS code"
 msgstr "JS код трекинг пикселя"
 
 #: ncms/pgs/PageEditorEditPage.js:46 ncms/mtt/tp/MttTpEditor.js:75
-#: ncms/usr/UserEditForm.js:51
+#: ncms/usr/UserEditForm.js:61
 msgid "Save"
 msgstr "Сохранить"
 
@@ -1488,7 +1488,7 @@ msgstr "Вы действительно желаете отменить несо
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 
-#: ncms/pgs/PageEditorInfoPage.js:12 ncms/usr/UserEditor.js:38
+#: ncms/pgs/PageEditorInfoPage.js:12
 msgid "General"
 msgstr "Общее"
 
@@ -1590,29 +1590,37 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомьтесь со <a href=\"%1\" target='_blank' "
 "rel='noopener noreferrer'>списком ссылающихся страниц</a>"
 
-#: ncms/usr/UserEditForm.js:31 ncms/usr/UserNewDlg.js:41
+#: ncms/usr/UserEditForm.js:38 ncms/usr/UserNewDlg.js:41
 msgid "Full name"
 msgstr "Полное имя"
 
-#: ncms/usr/UserEditForm.js:35 ncms/usr/UserNewDlg.js:45
+#: ncms/usr/UserEditForm.js:43 ncms/usr/UserNewDlg.js:45
 msgid "E-Mail"
 msgstr "Электропочта"
 
-#: ncms/usr/UserEditForm.js:38 ncms/usr/UserNewDlg.js:49
+#: ncms/usr/UserEditForm.js:47 ncms/usr/UserNewDlg.js:49
 msgid "Password"
 msgstr "Пароль"
 
-#: ncms/usr/UserEditForm.js:41 ncms/usr/UserNewDlg.js:53
+#: ncms/usr/UserEditForm.js:51 ncms/usr/UserNewDlg.js:53
 msgid "Password confirm"
 msgstr "Подтверждение пароля"
 
-#: ncms/usr/UserEditForm.js:139 ncms/usr/UserNewDlg.js:106
+#: ncms/usr/UserEditForm.js:142
+msgid "User '%1' has been updated successfully"
+msgstr "Пользователь '%1' был успешно обновлен"
+
+#: ncms/usr/UserEditForm.js:158 ncms/usr/UserNewDlg.js:106
 msgid "Not matching with password."
 msgstr "Пароли не соответствуют"
 
 #: ncms/usr/UserEditor.js:31
 msgid "Roles/Groups"
 msgstr "Роли/Группы"
+
+#: ncms/usr/UserEditor.js:38
+msgid "Edit user"
+msgstr "Редактировать"
 
 #: ncms/usr/UsersNav.js:97 ncms/usr/UserNewDlg.js:19
 msgid "New user"

@@ -35,7 +35,7 @@ qx.Class.define("ncms.usr.UserEditor", {
 
         this.add(epage);
 
-        epage = new qx.ui.tabview.Page(this.tr("General"));
+        epage = new qx.ui.tabview.Page(this.tr("Edit user"));
         epage.setLayout(new qx.ui.layout.VBox());
         var uiForm = this.__userInfoForm = new ncms.usr.UserEditForm(userEditable);
         uiForm.addListener("userUpdated", this.__userUpdated, this);
