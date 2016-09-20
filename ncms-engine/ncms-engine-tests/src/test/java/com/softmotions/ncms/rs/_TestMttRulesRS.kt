@@ -197,8 +197,6 @@ class _TestMttRulesRS(db: String) : BaseRSTest(db) {
         )
 
         rules.reverse()
-        //assertTrue(rules[0]["ordinal"].asLong() < rules[1]["ordinal"].asLong())
-        //assertTrue(rules[1]["ordinal"].asLong() < rules[2]["ordinal"].asLong())
 
         with(GET("/select")) {
             assertEquals(200, code())
