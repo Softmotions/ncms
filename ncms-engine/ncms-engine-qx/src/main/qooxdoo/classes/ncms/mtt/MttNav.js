@@ -274,6 +274,8 @@ qx.Class.define("ncms.mtt.MttNav", {
     destruct: function () {
         this.__removeBt = null;
         this.__selector = null;
+        this.__moveDownBt = null;
+        this.__moveUpBt = null;
     }
 });
 
