@@ -5,6 +5,8 @@
 
 <mapper namespace="com.softmotions.ncms.user.UserEnvRS">
 
+    <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
+
     <select id="getSet"
             databaseId="DB2"
             resultType="map"

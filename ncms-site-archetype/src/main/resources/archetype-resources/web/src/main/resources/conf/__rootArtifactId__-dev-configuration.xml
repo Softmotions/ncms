@@ -115,9 +115,10 @@
     <security>
         <xml-user-database placeTo="{home}/.${rootArtifactId}/${rootArtifactId}-users.xml">conf/${rootArtifactId}-users.xml</xml-user-database>
         <shiro-config-locations>/WEB-INF/shiro.dev.ini</shiro-config-locations>
+        <password-hash-algorithm>sha256</password-hash-algorithm>
         <dbJVMName>WSUserDatabase</dbJVMName>
-        <web-access-control-allow>*</web-access-control-allow>
         <acl-lru-cache-size>4096</acl-lru-cache-size>
+        <!--<web-access-control-allow>*</web-access-control-allow>-->
     </security>
 
     <ui>

@@ -159,18 +159,30 @@ public final class HttlAsmMethods {
         return ctx.renderAttribute(attrName, opts);
     }
 
+    public static Collection<Asm> asmNavChilds(String type) {
+        return asmNavChilds(type, 0, 1000); //todo it is hardcoded limit
+    }
+
     public static Collection<Asm> asmNavChilds(String type, int skip, int limit) {
         return asmNavChilds(type, Integer.valueOf(skip), Integer.valueOf(limit));
     }
 
     private static final AtomicReference<AsmDAO> ASM_DAO_REF = new AtomicReference<>();
 
+    private static AsmDAO getAsmDAO(AsmRendererContext ctx) {
+        AsmDAO adao = ASM_DAO_REF.get();
+        if (adao != null) {
+            return adao;
+        }
+        return ASM_DAO_REF.updateAndGet(
+                asmDAO ->
+                        asmDAO != null ? asmDAO : ctx.getInjector().getInstance(AsmDAO.class));
+    }
+
     public static Collection<Asm> asmNavChilds(String type, Number skip, Number limit) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         Asm asm = ctx.getAsm();
-        AsmDAO adao = ASM_DAO_REF.updateAndGet(
-                asmDAO ->
-                        asmDAO != null ? asmDAO : ctx.getInjector().getInstance(AsmDAO.class));
+        AsmDAO adao = getAsmDAO(ctx);
 
         PageCriteria crit = adao.newPageCriteria();
         crit.withPublished(true);
