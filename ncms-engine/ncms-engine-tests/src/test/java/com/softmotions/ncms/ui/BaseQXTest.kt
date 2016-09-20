@@ -55,7 +55,7 @@ open class BaseQXTest(db: String) : UIWebBaseTest(db) {
 
     override fun configureTomcatRunner(b: TomcatRunner.Builder) {
         super.configureTomcatRunner(b)
-        val wsdb = XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/ui/cfg/users.xml", false)
+        val wsdb = XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/ui/cfg/users.xml", false, "sha256")
         JVMResources.set(wsdb.databaseName, wsdb)
         b.withRealm(WSUserDatabaseRealm(wsdb))
     }

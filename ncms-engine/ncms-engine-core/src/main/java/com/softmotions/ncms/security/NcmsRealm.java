@@ -10,10 +10,14 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUser;
@@ -26,6 +30,7 @@ import com.softmotions.web.security.WSUserDatabase;
  */
 public class NcmsRealm extends AuthorizingRealm {
 
+    private static final Logger log = LoggerFactory.getLogger(NcmsRealm.class);
 
     private WSUserDatabase database;
 
@@ -37,7 +42,16 @@ public class NcmsRealm extends AuthorizingRealm {
     }
 
     public NcmsRealm(WSUserDatabase database) {
+        this(database, null);
+    }
+
+    public NcmsRealm(WSUserDatabase database, @Nullable CredentialsMatcher matcher) {
         this.database = database;
+        if (matcher != null) {
+            setCredentialsMatcher(matcher);
+        } else {
+            log.warn("No CredentialsMatcher was set! Fallback to PasswordMatcher.");
+        }
     }
 
     @Override
@@ -48,13 +62,18 @@ public class NcmsRealm extends AuthorizingRealm {
         if (user == null) {
             throw new UnknownAccountException();
         }
-        String password = user.getPassword();
-        return new SimpleAuthenticationInfo(username, password, getName());
+
+        if (getCredentialsMatcher() instanceof NcmsPasswordMatcher) {
+            return new SimpleAuthenticationInfo(username, user, getName());
+        }
+
+        // fallback to PasswordMatcher
+        return new SimpleAuthenticationInfo(username, user.getPassword(), getName());
     }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        Set<String> roleNames = new LinkedHashSet<String>();
+        Set<String> roleNames = new LinkedHashSet<>();
         String username = getAvailablePrincipal(principals).toString();
         WSUser user = database.findUser(username);
         if (user != null) {
