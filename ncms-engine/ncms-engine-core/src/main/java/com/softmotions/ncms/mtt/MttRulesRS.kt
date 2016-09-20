@@ -107,6 +107,7 @@ constructor(val sess: SqlSession,
             val rule = MttRule(rname)
             insert("insertRule", rule)
             val rid = selectOne<Long?>("selectRuleIdByName", rname) ?: throw InternalServerErrorException()
+            ruleSetFirst(rid)
             ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
             return ruleGet(rid)
         }
@@ -173,6 +174,12 @@ constructor(val sess: SqlSession,
                 "ordinal2", rule.ordinal)
 
         ebus.fireOnSuccessCommit(MttRuleReorderedEvent(sordinal, rule.ordinal))
+    }
+
+    /***********/
+    private fun ruleSetFirst(@PathParam("rid") rid:Long) {
+        update("setRuleFirst",
+                "id", rid)
     }
 
     @DELETE

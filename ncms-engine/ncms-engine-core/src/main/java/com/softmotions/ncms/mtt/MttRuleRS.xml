@@ -151,6 +151,11 @@
         WHERE id = #{id}
     </update>
 
+    <update id="setRuleFirst" parameterType="map">
+        UPDATE mtt_rules a1
+        SET ordinal = (CASE id WHEN #{id} THEN 1 ELSE ordinal+1 END)
+    </update>
+
     <!--==================================================-->
     <!--================== FILTERS =======================-->
     <!--==================================================-->
