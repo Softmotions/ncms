@@ -677,7 +677,7 @@ msgstr "зона ввода"
 
 #: ncms/asm/am/StringAM.js:56
 msgid "Max length"
-msgstr "Max length"
+msgstr "Макс. длина"
 
 #: ncms/asm/am/StringAM.js:68
 msgid "Placeholder"

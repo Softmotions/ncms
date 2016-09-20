@@ -15,6 +15,7 @@
 .. toctree::
     :maxdepth: 1
 
+    string/string
     table/table
     alias/alias
 
