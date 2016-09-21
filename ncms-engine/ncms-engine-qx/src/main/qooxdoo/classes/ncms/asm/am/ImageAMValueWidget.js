@@ -175,7 +175,10 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
         __setImageInfo: function (info) {
             qx.core.Assert.assertTrue(info != null);
 
-            this.__bf.setValue(info["folder"] + info["name"] + "  |  " + info["description"]);
+            var descr = info["description"];
+            this.__bf.setValue(info["folder"] + info["name"] +
+                               (descr && descr.length > 0) ? "  |  " + descr : ""
+            );
             var meta = this.__meta = ncms.Utils.parseOptions(info["meta"]);
             var infoLabel = this.__labels[0];
             var msgLabel = this.__labels[1];

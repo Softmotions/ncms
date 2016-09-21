@@ -833,9 +833,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             updateFTSKeywords(id, req);
         }
         synchronized (metaCache) {
-            if (id != null) {
-                metaCache.remove(id);
-            }
+            metaCache.remove(id);
         }
     }
 
