@@ -17,6 +17,7 @@
 
     string/string
     boolean/boolean
+    date/date
     table/table
     alias/alias
 
