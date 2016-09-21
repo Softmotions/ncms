@@ -552,6 +552,21 @@ qx.Class.define("ncms.Application", {
     },
 
     defer: function (statics) {
+
+        // Location of UI based on `navigator.languages[0]` instead of `navigator.language`
+        // todo review it for IE/EDGE
+        var browser = qx.core.Environment.get("browser.name");
+        if (browser !== "ie" && browser !== "edge") { // Fix locale
+            navigator.userLanguage = navigator.languages[0] || navigator.language || "";
+            var locale = navigator.userLanguage;
+            var ind = locale.indexOf("-");
+            if (ind !== -1) {
+                locale = locale.substr(0, ind);
+            }
+            qx.locale.Manager.getInstance().setLocale(locale);
+        }
+
+        // Set alert windows implementation to `sm.io.Request.`
         sm.io.Request.ALERT_WND_IMPL = ncms.AlertPopupMessages;
     }
 });
