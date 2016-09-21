@@ -783,7 +783,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
      * Update some meta fields of files.
      */
     @POST
-    @javax.ws.rs.Path("/meta/{id}")n
+    @javax.ws.rs.Path("/meta/{id}")
     @Consumes("application/x-www-form-urlencoded")
     @Transactional(executorType = ExecutorType.BATCH)
     public void updateMeta(@PathParam("id") Long id,
@@ -831,6 +831,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (qm.size() > 1) {
             update("updateMeta", qm);
             updateFTSKeywords(id, req);
+        }
+        synchronized (metaCache) {
+            if (id != null) {
+                metaCache.remove(id);
+            }
         }
     }
 
