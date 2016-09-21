@@ -775,6 +775,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         res.put("folder", (String) meta.get("folder"));
         res.put("name", (String) meta.get("name"));
         res.put("meta", (String) meta.get("meta"));
+        res.put("description", (String) meta.get("description"));
         return res;
     }
 
@@ -782,7 +783,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
      * Update some meta fields of files.
      */
     @POST
-    @javax.ws.rs.Path("/meta/{id}")
+    @javax.ws.rs.Path("/meta/{id}")n
     @Consumes("application/x-www-form-urlencoded")
     @Transactional(executorType = ExecutorType.BATCH)
     public void updateMeta(@PathParam("id") Long id,
