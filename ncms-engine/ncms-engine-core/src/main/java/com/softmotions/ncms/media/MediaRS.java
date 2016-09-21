@@ -775,6 +775,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         res.put("folder", (String) meta.get("folder"));
         res.put("name", (String) meta.get("name"));
         res.put("meta", (String) meta.get("meta"));
+        res.put("description", (String) meta.get("description"));
         return res;
     }
 
@@ -830,6 +831,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (qm.size() > 1) {
             update("updateMeta", qm);
             updateFTSKeywords(id, req);
+        }
+        synchronized (metaCache) {
+            metaCache.remove(id);
         }
     }
 
