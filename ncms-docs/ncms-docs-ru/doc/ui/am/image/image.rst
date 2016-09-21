@@ -50,10 +50,27 @@
     Выбор файла изображения
 
 
+.. figure:: img/img4.png
+
+    Атрибут после выбора изображения
 
 
+Использование в разметке
+------------------------
+
+**Тип значения атрибута:** `com.softmotions.ncms.mhttl.Image`
 
 
+Пример вставки отмаштабируемой картинки в качестве элемента `<img>`:
 
+.. code-block:: html
 
+    #set(Image img = asm('image'))
+    <img src="$!{img.link}"></img>
+
+или:
+
+.. code-block:: html
+
+    <img src="$!{((Image) asm('image')).link}"></img>
 

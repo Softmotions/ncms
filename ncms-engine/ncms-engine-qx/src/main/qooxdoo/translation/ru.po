@@ -463,19 +463,19 @@ msgstr "Размер изображения не совпадает с указ�
 msgid "Select image file"
 msgstr "Выберите файл с изображением"
 
-#: ncms/asm/am/ImageAMValueWidget.js:185
+#: ncms/asm/am/ImageAMValueWidget.js:189
 msgid "Original size"
 msgstr "Оригинальный размер"
 
-#: ncms/asm/am/ImageAMValueWidget.js:193
+#: ncms/asm/am/ImageAMValueWidget.js:197
 msgid "Cover the given area"
 msgstr "Заполнить заданную область"
 
-#: ncms/asm/am/ImageAMValueWidget.js:200
+#: ncms/asm/am/ImageAMValueWidget.js:204
 msgid "Automatic resize"
 msgstr "Автоматическое масштабирование"
 
-#: ncms/asm/am/ImageAMValueWidget.js:207
+#: ncms/asm/am/ImageAMValueWidget.js:211
 msgid "Image size required"
 msgstr "Изображение должно быть следующего размера"
 
