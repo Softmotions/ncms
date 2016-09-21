@@ -109,6 +109,8 @@ constructor(val sess: SqlSession,
             val rid = selectOne<Long?>("selectRuleIdByName", rname) ?: throw InternalServerErrorException()
             update("setRuleFirst",
                     "id", rid)
+
+            ebus.fireOnSuccessCommit(MttRuleCreatedEvent(rid))
             ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
             return ruleGet(rid)
         }

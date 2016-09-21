@@ -159,6 +159,40 @@ constructor(val ebus: NcmsEventBus,
         }
     }
 
+    //todo @Subscribe MttRuleCreateEvent
+    //
+    // lock.write {
+    // }
+    //
+    // activateRule(event.ruleId)
+    //
+
+    @Subscribe
+    fun onRuleCreated(event: MttRuleCreatedEvent) {
+        if (log.isDebugEnabled){
+            log.debug("Rule created=${event}")
+        }
+        activateRule(event.ruleId)
+        lock.write {
+            val slots = id2slots.values.toTypedArray()
+            val snew = slots.find { it.rule.id == event.ruleId }
+            if(snew == null)
+            {
+                return
+            }
+            slots.forEach {
+                it.rule.ordinal++
+            }
+            snew.rule.ordinal=1
+            slots.sort()
+            id2slots.clear()
+            slots.forEach {
+                id2slots[it.id] = it
+            }
+        }
+    }
+
+
     @Subscribe
     fun onRuleReordered(event: MttRuleReorderedEvent) {
         if (log.isDebugEnabled) {
