@@ -1,15 +1,14 @@
 package com.softmotions.ncms.asm.am;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.json.JsonUtils;
+import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
-import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
@@ -22,13 +21,6 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 public class AsmDateAM extends AsmAttributeManagerSupport {
 
     public static final String[] TYPES = new String[]{"date"};
-
-    private final AsmDAO adao;
-
-    @Inject
-    public AsmDateAM(AsmDAO adao) {
-        this.adao = adao;
-    }
 
     @Override
     public String[] getSupportedAttributeTypes() {
@@ -48,7 +40,12 @@ public class AsmDateAM extends AsmAttributeManagerSupport {
     @Override
     public Object renderAsmAttribute(AsmRendererContext ctx,
                                      String attrname, Map<String, String> options) throws AsmRenderingException {
-        return ctx.getAsm().getEdate();
+        Asm asm = ctx.getAsm();
+        AsmAttribute attr = asm.getEffectiveAttribute(attrname);
+        if (attr == null || attr.getEffectiveValue() == null) {
+            return null;
+        }
+        return LocalDateTime.parse(attr.getEffectiveValue());
     }
 
     @Override
@@ -74,12 +71,7 @@ public class AsmDateAM extends AsmAttributeManagerSupport {
                                    AsmAttribute attr,
                                    JsonNode val,
                                    JsonNode opts) throws Exception {
-        if (val == null) {
-            return;
-        }
-        val = val.get("value");
-        adao.asmSetEdate(ctx.getAsmId(),
-                         (val == null || val.asLong(0) == 0L) ? null :
-                         new Date(val.asLong()));
+
+        // todo adao.asmSetEdate(ctx.getAsmId(),
     }
 }

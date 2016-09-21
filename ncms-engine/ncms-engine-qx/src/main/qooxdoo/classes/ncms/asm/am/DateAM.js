@@ -47,14 +47,23 @@ qx.Class.define("ncms.asm.am.DateAM", {
         },
 
         activateValueEditorWidget: function (attrSpec, asmSpec) {
+            var isoDateFormat = new qx.util.format.DateFormat("isoDateTime");
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var w = new qx.ui.form.DateField();
             if (!sm.lang.String.isEmpty(opts["format"])) {
                 w.setDateFormat(new qx.util.format.DateFormat(opts["format"]));
+                w.setPlaceholder(opts["format"]);
             }
             this._fetchAttributeValue(attrSpec, function (val) {
-                val = (val != null) ? Number(val) : NaN;
-                w.setValue(isNaN(val) ? new Date() : new Date(val));
+                if (!sm.lang.String.isEmpty(val)) {
+                    try {
+                        w.setValue(isoDateFormat.parse(val));
+                    } catch (e) {
+                        console.log("Error parsing iso date: " + val);
+                    }
+                } else {
+                    w.setValue(new Date());
+                }
             });
             w.setRequired(!!attrSpec["required"]);
             w.setWidth(150);
@@ -67,9 +76,12 @@ qx.Class.define("ncms.asm.am.DateAM", {
             if (this._valueWidget == null) {
                 return;
             }
-            var date = this._valueWidget.getValue();
+            var date = this._valueWidget.getValue() || new Date();
+            // Local ISO date-time format
+            // 2007-12-03T10:15:30
+            var isoDateFormat = new qx.util.format.DateFormat("isoDateTime");
             return {
-                value: (date != null) ? +date : null
+                value: isoDateFormat.format(date)
             }
         }
     },
