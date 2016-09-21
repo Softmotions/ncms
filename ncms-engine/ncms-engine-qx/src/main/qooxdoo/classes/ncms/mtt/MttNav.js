@@ -52,12 +52,16 @@ qx.Class.define("ncms.mtt.MttNav", {
             // Move up
             var el = _createButton(null, "ncms/icon/16/misc/arrow_up.png", me.__onMoveUp, me);
             el.setToolTipText(this.tr("Move item up"));
+            el.setEnabled(false);
+            me.__moveUpBt = el;
             part.add(el);
 
             // Move down
             el = _createButton(null, "ncms/icon/16/misc/arrow_down.png", me.__onMoveDown, me);
             el.setToolTipText(this.tr("Move item down"));
             part.add(el);
+            el.setEnabled(false);
+            me.__moveDownBt = el;
             return toolbar;
         });
 
@@ -95,6 +99,8 @@ qx.Class.define("ncms.mtt.MttNav", {
     members: {
 
         __removeBt: null,
+        __moveUpBt: null,
+        __moveDownBt: null,
 
         __selector: null,
 
@@ -106,6 +112,11 @@ qx.Class.define("ncms.mtt.MttNav", {
                 app.showDefaultWSA();
                 return;
             }
+            var ind = this.__selector.getSelectedRuleInd();
+            var rc = this.__selector.getRowCount();
+            this.__moveUpBt.setEnabled(ind > 0);
+            this.__moveDownBt.setEnabled(ind + 1 < rc);
+
             var eclazz = ncms.mtt.MttNav.MTT_EDITOR_CLAZZ;
             app.getWSA(eclazz).setRuleId(data["id"]);
             app.showWSA(eclazz);
@@ -263,6 +274,8 @@ qx.Class.define("ncms.mtt.MttNav", {
     destruct: function () {
         this.__removeBt = null;
         this.__selector = null;
+        this.__moveDownBt = null;
+        this.__moveUpBt = null;
     }
 });
 

@@ -160,6 +160,32 @@ constructor(val ebus: NcmsEventBus,
     }
 
     @Subscribe
+    fun onRuleCreated(event: MttRuleCreatedEvent) {
+        if (log.isDebugEnabled){
+            log.debug("Rule created=${event}")
+        }
+        lock.write {
+            activateRule(event.ruleId)
+            val slots = id2slots.values.toTypedArray()
+            val snew = slots.find { it.rule.id == event.ruleId }
+            if(snew == null)
+            {
+                return
+            }
+            slots.forEach {
+                it.rule.ordinal++
+            }
+            snew.rule.ordinal = 1
+            slots.sort()
+            id2slots.clear()
+            slots.forEach {
+                id2slots[it.id] = it
+            }
+        }
+    }
+
+
+    @Subscribe
     fun onRuleReordered(event: MttRuleReorderedEvent) {
         if (log.isDebugEnabled) {
             log.debug("Rule reordered=${event}")
