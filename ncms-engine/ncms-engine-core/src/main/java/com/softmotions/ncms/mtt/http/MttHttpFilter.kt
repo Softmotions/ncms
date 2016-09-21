@@ -159,14 +159,6 @@ constructor(val ebus: NcmsEventBus,
         }
     }
 
-    //todo @Subscribe MttRuleCreateEvent
-    //
-    // lock.write {
-    // }
-    //
-    // activateRule(event.ruleId)
-    //
-
     @Subscribe
     fun onRuleCreated(event: MttRuleCreatedEvent) {
         if (log.isDebugEnabled){

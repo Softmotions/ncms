@@ -111,7 +111,6 @@ constructor(val sess: SqlSession,
                     "id", rid)
 
             ebus.fireOnSuccessCommit(MttRuleCreatedEvent(rid))
-            ebus.fireOnSuccessCommit(MttRuleUpdatedEvent(rid))
             return ruleGet(rid)
         }
     }
