@@ -115,7 +115,7 @@ qx.Class.define("ncms.mtt.MttNav", {
             var ind = this.__selector.getSelectedRuleInd();
             var rc = this.__selector.getRowCount();
             this.__moveUpBt.setEnabled(ind > 0);
-            this.__moveDownBt.setEnabled(ind+1 < rc);
+            this.__moveDownBt.setEnabled(ind + 1 < rc);
 
             var eclazz = ncms.mtt.MttNav.MTT_EDITOR_CLAZZ;
             app.getWSA(eclazz).setRuleId(data["id"]);

@@ -164,8 +164,8 @@ constructor(val ebus: NcmsEventBus,
         if (log.isDebugEnabled){
             log.debug("Rule created=${event}")
         }
-        activateRule(event.ruleId)
         lock.write {
+            activateRule(event.ruleId)
             val slots = id2slots.values.toTypedArray()
             val snew = slots.find { it.rule.id == event.ruleId }
             if(snew == null)
@@ -175,7 +175,7 @@ constructor(val ebus: NcmsEventBus,
             slots.forEach {
                 it.rule.ordinal++
             }
-            snew.rule.ordinal=1
+            snew.rule.ordinal = 1
             slots.sort()
             id2slots.clear()
             slots.forEach {
