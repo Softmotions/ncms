@@ -19,6 +19,7 @@
     boolean/boolean
     date/date
     image/image
+    pageref/pageref
     table/table
     alias/alias
 
