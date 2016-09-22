@@ -12,9 +12,19 @@ qx.Theme.define("ncms.theme.Color", {
         "button-box-dark": "#e1e1e1",
 
         /*"button-box-bright-pressed" : "#e1e1e1",
-        "button-box-dark-pressed" : "#ededed"*/
+         "button-box-dark-pressed" : "#ededed"*/
 
         "button-box-bright-pressed": "#ffd974",
-        "button-box-dark-pressed": "#ffd974"
+        "button-box-dark-pressed": "#ffd974",
+
+        // invalid form widgets
+        "invalid": "#990000",
+        "border-focused-invalid": "#FF9999",
+        "checkbox-hovered-inner-invalid": "#FAF2F2",
+        "checkbox-hovered-invalid": "#F7E9E9",
+        "radiobutton-hovered-invalid": "#F7EAEA",
+        "border-invalid": "#930000",
+        "input-focused-inner-invalid": "#FF6B78",
+        "tooltip-error": "#C82C2C"
     }
 });

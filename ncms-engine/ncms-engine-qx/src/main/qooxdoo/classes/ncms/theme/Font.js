@@ -5,5 +5,9 @@
 qx.Theme.define("ncms.theme.Font", {
     extend: qx.theme.simple.Font,
 
-    fonts: {}
+    fonts: {
+        "tooltip-error": {
+            size: 13
+        }
+    }
 });
