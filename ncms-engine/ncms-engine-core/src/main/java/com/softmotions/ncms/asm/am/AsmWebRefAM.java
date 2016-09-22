@@ -1,11 +1,13 @@
 package com.softmotions.ncms.asm.am;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -22,19 +24,27 @@ import org.apache.commons.collections4.map.Flat3Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.cache.BasicHttpCacheStorage;
+import org.apache.http.impl.client.cache.CacheConfig;
+import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
+import org.apache.http.impl.client.cache.HeapResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.net.MediaType;
 import com.google.inject.Singleton;
+import com.softmotions.commons.io.LimitedInputStream;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.commons.lifecycle.Dispose;
 import com.softmotions.commons.lifecycle.Start;
@@ -51,13 +61,18 @@ import com.softmotions.web.GenericResponseWrapper;
 
 @SuppressWarnings("unchecked")
 @Singleton
-public class AsmWebRefAM extends AsmAttributeManagerSupport{
+public class AsmWebRefAM extends AsmAttributeManagerSupport {
 
     private static final Logger log = LoggerFactory.getLogger(AsmWebRefAM.class);
 
     public static final String[] TYPES = new String[]{"webref"};
 
-    CloseableHttpClient httpclient;
+    private static final int MAX_RESOURCE_LENGTH = 1048576; // 1Mb
+
+    private CloseableHttpClient httpClient;
+
+    private RequestConfig requestConfig;
+
 
     @Override
     public String[] getSupportedAttributeTypes() {
@@ -113,12 +128,9 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport{
 
     private String externalInclude(AsmRendererContext ctx, String attrname,
                                    URI location, Map<String, String> options) {
-        StringWriter out = new StringWriter(1024);
-        String cs = ctx.getServletRequest().getCharacterEncoding();
-        if (cs == null) {
-            cs = "UTF-8";
-        }
+
         try {
+
             if (location.getScheme().startsWith("http")) {
                 //HTTP GET
                 if (options != null && !options.isEmpty()) {
@@ -129,18 +141,43 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport{
                     location = ub.build();
                 }
                 HttpGet httpGet = new HttpGet(location);
+                httpGet.setConfig(requestConfig);
+
                 CloseableHttpResponse hresp = null;
                 InputStream is = null;
                 try {
-                    httpclient = HttpClients.createSystem();
-                    hresp = httpclient.execute(httpGet);
-                    if (hresp.getStatusLine().getStatusCode() != HttpServletResponse.SC_OK) {
-                        log.warn("Invalid resource response status code: {} location: {} asm: {} attribute: {} response: {}",
-                                 hresp.getStatusLine().getStatusCode(), location, ctx.getAsm(), attrname, out.toString());
+                    hresp = httpClient.execute(httpGet);
+                    HttpEntity entity = hresp.getEntity();
+
+                    if (entity.getContentLength() > MAX_RESOURCE_LENGTH) {
+                        log.warn("Resource response is too big: {} location: {} asm: {} attribute: {}",
+                                 entity.getContentLength(), location, ctx.getAsm(), attrname);
                         return null;
                     }
-                    is = hresp.getEntity().getContent();
-                    IOUtils.copy(is, out, cs);
+                    if (hresp.getStatusLine().getStatusCode() != HttpServletResponse.SC_OK) {
+                        log.warn("Invalid resource response status code: {} location: {} asm: {} attribute: {}",
+                                 hresp.getStatusLine().getStatusCode(), location, ctx.getAsm(), attrname);
+                        return null;
+                    }
+
+                    String charset = "UTF-8";
+                    Header cth = entity.getContentType();
+                    if (cth != null && cth.getValue() != null) {
+                        try {
+                            Charset cset = MediaType.parse(cth.getValue()).charset().orNull();
+                            if (cset != null) {
+                                charset = cset.name();
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    }
+
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream(
+                            entity.getContentLength() > 0 ? (int) entity.getContentLength() : 1024);
+                    is = entity.getContent();
+                    IOUtils.copy(is, bos);
+                    return new String(bos.toByteArray(), 0, bos.size(), charset);
+
                 } finally {
                     if (is != null) {
                         try {
@@ -161,14 +198,17 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport{
             } else {
                 URL url = location.toURL();
                 try (InputStream is = url.openStream()) {
-                    IOUtils.copy(is, out, cs);
+                    return IOUtils.toString(
+                            new LimitedInputStream(MAX_RESOURCE_LENGTH,
+                                                   String.format("Resource response is too big. Location: %s asm: %s attribute: %s",
+                                                                 url.toString(), ctx.getAsm(), attrname),
+                                                   is), "UTF-8");
                 }
             }
         } catch (Exception e) {
             log.warn("Unable to load resource: {} asm: {} attribute: {}", location, ctx.getAsm(), attrname, e);
             return null;
         }
-        return out.toString();
     }
 
     private String internalInclude(AsmRendererContext ctx, String attrname,
@@ -226,18 +266,49 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport{
 
     @Start(order = 10, parallel = true)
     public void start() {
-        httpclient = HttpClients.createSystem();
+        if (httpClient != null) {
+            stop();
+        }
+
+        BasicHttpCacheStorage cacheStorage = new BasicHttpCacheStorage(
+                CacheConfig
+                        .custom()
+                        // Estimated max mem usage: 16Mb
+                        .setMaxObjectSize(32768)    // 32Kb
+                        .setMaxCacheEntries(512)
+                        .build());
+
+        httpClient =
+                CachingHttpClientBuilder
+                        .create()
+                        .setResourceFactory(new HeapResourceFactory())
+                        .setHttpCacheStorage(cacheStorage)
+                        .useSystemProperties()
+                        .setMaxConnPerRoute(10)
+                        .setMaxConnTotal(100)
+                        .build();
+
+        requestConfig =
+                RequestConfig.custom()
+                             .setConnectTimeout(1000)
+                             .setConnectionRequestTimeout(1000)
+                             .setSocketTimeout(10000)
+                             .setCircularRedirectsAllowed(false)
+                             .setRedirectsEnabled(true)
+                             .setMaxRedirects(5)
+                             .setAuthenticationEnabled(true)
+                             .build();
     }
 
     @Dispose(order = 10)
     public void stop() {
-        if (httpclient != null) {
+        if (httpClient != null) {
             try {
-                httpclient.close();
+                httpClient.close();
             } catch (IOException e) {
                 log.error("", e);
             }
-            httpclient = null;
+            httpClient = null;
         }
     }
 
@@ -251,7 +322,6 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport{
         InternalHttpRequest(HttpServletRequest request, Map<String, String> params) {
             super(request);
             this.params = (params != null ? params : Collections.EMPTY_MAP);
-
         }
 
         @Override
