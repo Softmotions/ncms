@@ -7,7 +7,9 @@ qx.Theme.define("ncms.theme.Font", {
 
     fonts: {
         "tooltip-error": {
-            size: 13
+            size: 11,
+            family : ["arial", "sans-serif"],
+            bold : true
         }
     }
 });
