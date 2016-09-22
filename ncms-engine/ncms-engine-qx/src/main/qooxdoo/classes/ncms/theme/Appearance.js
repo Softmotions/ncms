@@ -5,6 +5,8 @@
  * @asset(ncms/icon/22/places/folder.png)
  * @asset(ncms/icon/22/places/folder-open.png)
  * @asset(ncms/icon/16/misc/cross.png)
+ * @asset(qx/decoration/Modern/form/tooltip-error-arrow-right.png)
+ * @asset(qx/decoration/Modern/form/tooltip-error-arrow.png)
  */
 
 qx.Theme.define("ncms.theme.Appearance", {
@@ -247,6 +249,57 @@ qx.Theme.define("ncms.theme.Appearance", {
                     maxWidth: 350,
                     backgroundColor: "#FFFFBF"
                 }
+            }
+        },
+        /*
+         ---------------------------------------------------------------------------
+         TOOL TIP
+         ---------------------------------------------------------------------------
+         */
+
+        "tooltip/atom": "atom",
+
+        "tooltip-error": {
+            style: function (states) {
+                return {
+                    placeMethod: "widget",
+                    offset: [-3, 1, 0, 0],
+                    arrowPosition: states.placementLeft ? "left" : "right",
+                    position: "right-top",
+                    showTimeout: 100,
+                    hideTimeout: 10000,
+                    padding: [0, 4, 4, 0]
+                };
+            }
+        },
+
+        "tooltip-error/arrow": {
+            include: "image",
+
+            style: function (states) {
+                var source = states.placementLeft ?
+                    "qx/decoration/Modern/form/tooltip-error-arrow-right.png" : "qx/decoration/Modern/form/tooltip-error-arrow.png";
+                return {
+                    source: source,
+                    padding: [6, 0, 0, 0],
+                    zIndex: 10000001
+                };
+            }
+        },
+
+        "tooltip-error/atom": {
+            include: "popup",
+
+            style: function (states) {
+                return {
+                    textColor: "text-selected",
+                    backgroundColor: undefined,
+                    decorator: "tooltip-error",
+                    font: "tooltip-error",
+                    padding: [3, 4, 4, 4],
+                    margin: [1, 0, 0, 0],
+                    maxWidth: 333
+                };
             }
         }
     }
