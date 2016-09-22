@@ -273,8 +273,8 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
         BasicHttpCacheStorage cacheStorage = new BasicHttpCacheStorage(
                 CacheConfig
                         .custom()
-                        // Estimated max mem usage: 16Mb
-                        .setMaxObjectSize(32768)    // 32Kb
+                        // Estimated max mem usage: 67Mb (128Kb * 512)
+                        .setMaxObjectSize(131072) // 128Kb
                         .setMaxCacheEntries(512)
                         .build());
 
