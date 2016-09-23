@@ -81,23 +81,27 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         },
 
         setViewSpec: function (vspec) {
-            this.__table.resetSelection();
             this.__table.setViewSpec(vspec);
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         updateViewSpec: function (vspec) {
-            this.__table.resetSelection();
             this.__table.updateViewSpec(vspec);
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         refresh: function (force) {
             var val = this.__sf.getValue();
             if (!force && !this.getSearchIfEmpty() && sm.lang.String.isEmpty(val)) {
-                this.__table.resetSelection();
+                this.resetSelection();
                 this.__table.cleanup();
                 return;
             }
             this.updateViewSpec({name: val || ""});
+        },
+
+        resetSelection: function() {
+            this.__table.resetSelection();
         },
 
         //overridden

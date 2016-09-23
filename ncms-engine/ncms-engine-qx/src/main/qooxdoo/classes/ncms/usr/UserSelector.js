@@ -83,22 +83,22 @@ qx.Class.define("ncms.usr.UserSelector", {
 
 
         setViewSpec: function (vspec) {
-            this.__table.resetSelection();
             this.__table.getTableModel().setViewSpec(this.__createViewSpec(vspec));
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         updateViewSpec: function (vspec) {
-            this.__table.resetSelection();
             this.__table.getTableModel().updateViewSpec(this.__createViewSpec(vspec));
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         reloadData: function (vspec) {
-            this.__table.getTableModel().reloadData();
+           this.reload(vspec);
         },
 
         reload: function (vspec) {
             this.__table.getTableModel().reloadData();
-            this.__table.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         resetSelection: function () {

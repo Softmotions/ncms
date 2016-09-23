@@ -85,23 +85,23 @@ qx.Class.define("ncms.asm.AsmSelector", {
         },
 
         setViewSpec: function (vs) {
-            this.__table.resetSelection();
             this.__table.getTableModel().setViewSpec(vs);
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         updateViewSpec: function (vs) {
-            this.__table.resetSelection();
             this.__table.getTableModel().updateViewSpec(vs);
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         setConstViewSpec: function (vs, noupdate) {
-            this.__table.resetSelection();
             this.__table.getTableModel().setConstViewSpec(vs, noupdate);
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         reload: function (vspec) {
             this.__table.getTableModel().reloadData();
-            this.__table.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         resetSelection: function () {

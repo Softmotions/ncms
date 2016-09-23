@@ -84,22 +84,22 @@ qx.Class.define("ncms.mtt.tp.MttTpSelector", {
 
         setViewSpec: function (vs) {
             this.__table.getTableModel().setViewSpec(vs);
-            this.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         updateViewSpec: function (vs) {
             this.__table.getTableModel().updateViewSpec(vs);
-            this.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         setConstViewSpec: function (vs, noupdate) {
             this.__table.getTableModel().setConstViewSpec(vs, noupdate);
-            this.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         reload: function (vspec) {
             this.__table.getTableModel().reloadData(vspec);
-            this.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         resetSelection: function () {
