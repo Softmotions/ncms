@@ -2,7 +2,7 @@
  * Traffic rules selector.
  */
 qx.Class.define("ncms.mtt.MttRulesSelector", {
-    extend : qx.ui.container.Composite,
+    extend: qx.ui.container.Composite,
 
     events: {
 
@@ -81,22 +81,22 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
 
         setViewSpec: function (vs) {
             this.__table.getTableModel().setViewSpec(vs);
-            this.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         updateViewSpec: function (vs) {
             this.__table.getTableModel().updateViewSpec(vs);
-            this.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         setConstViewSpec: function (vs, noupdate) {
             this.__table.getTableModel().setConstViewSpec(vs, noupdate);
-            this.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         reload: function (vspec) {
             this.__table.getTableModel().reloadData(vspec);
-            this.resetSelection();
+            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         resetSelection: function () {
@@ -119,15 +119,15 @@ qx.Class.define("ncms.mtt.MttRulesSelector", {
             this.__table.cleanup();
         },
 
-        getToolbarTable: function() {
+        getToolbarTable: function () {
             return this.__table;
         },
 
-        getTable: function() {
+        getTable: function () {
             return this.getToolbarTable().getTable();
         },
 
-        getRowCount: function() {
+        getRowCount: function () {
             return this.__table.getRowCount();
         },
 
