@@ -20,6 +20,7 @@
     date/date
     image/image
     pageref/pageref
+    webref/webref
     table/table
     alias/alias
 
