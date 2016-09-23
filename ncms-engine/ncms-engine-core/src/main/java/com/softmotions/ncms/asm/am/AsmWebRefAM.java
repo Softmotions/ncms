@@ -196,13 +196,7 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
                     }
                     httpGet.reset();
                 }
-            } else if (scheme.contains("file:")
-                       || scheme.contains("jar:")
-                       || scheme.contains("zip:")
-                       || scheme.contains("classpath:")) {
-                log.warn("Due to security restrictions rendering of: {} is prohibited", location);
-                return null;
-            } else {
+            } else if (scheme.contains("ftp:")) {
                 URL url = location.toURL();
                 try (InputStream is = url.openStream()) {
                     return IOUtils.toString(
@@ -211,6 +205,9 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
                                                                  url.toString(), ctx.getAsm(), attrname),
                                                    is), "UTF-8");
                 }
+            } else {
+                log.warn("Due to security restrictions rendering of: {} is prohibited", location);
+                return null;
             }
         } catch (Exception e) {
             log.warn("Unable to load resource: {} asm: {} attribute: {}", location, ctx.getAsm(), attrname, e);

@@ -21,6 +21,7 @@
     image/image
     pageref/pageref
     webref/webref
+    fileref/fileref
     table/table
     alias/alias
 
