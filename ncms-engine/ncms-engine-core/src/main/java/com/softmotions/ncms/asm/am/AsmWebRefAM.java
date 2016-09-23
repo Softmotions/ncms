@@ -131,7 +131,8 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
 
         try {
 
-            if (location.getScheme().startsWith("http")) {
+            String scheme = location.getScheme().toLowerCase().trim();
+            if (scheme.startsWith("http")) {
                 //HTTP GET
                 if (options != null && !options.isEmpty()) {
                     URIBuilder ub = new URIBuilder(location);
@@ -195,6 +196,12 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
                     }
                     httpGet.reset();
                 }
+            } else if (scheme.contains("file:")
+                       || scheme.contains("jar:")
+                       || scheme.contains("zip:")
+                       || scheme.contains("classpath:")) {
+                log.warn("Due to security restrictions rendering of: {} is prohibited", location);
+                return null;
             } else {
                 URL url = location.toURL();
                 try (InputStream is = url.openStream()) {
