@@ -18,6 +18,10 @@ qx.Class.define("ncms.asm.am.BooleanAM", {
 
         isHidden: function () {
             return false;
+        },
+
+        isRequiredSupport: function() {
+            return false;
         }
     },
 

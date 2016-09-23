@@ -15,6 +15,8 @@ qx.Class.define("ncms.asm.AsmSelector", {
          *        "id" : {Number} Assembly id.
          *        "name" : {String} Page name,
          *        "type" : {String} Assembly type,
+         *        "template": {Boolean?} Assembly is a template?
+         *        "exclude": {Number?} Exclude the assembly with specified id
          *       };
          * or null if selection cleared
          */

@@ -14,6 +14,10 @@ qx.Class.define("ncms.asm.am.BreadCrumbsAM", {
 
         isHidden: function () {
             return true;
+        },
+
+        isRequiredSupport: function() {
+            return false;
         }
     },
 

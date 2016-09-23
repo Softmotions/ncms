@@ -19,6 +19,10 @@ qx.Class.define("ncms.asm.am.TableAM", {
 
         isHidden: function () {
             return false;
+        },
+
+        isRequiredSupport: function() {
+            return true;
         }
     },
 

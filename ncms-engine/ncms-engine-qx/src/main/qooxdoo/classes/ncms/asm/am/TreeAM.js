@@ -22,6 +22,10 @@ qx.Class.define("ncms.asm.am.TreeAM", {
             return false;
         },
 
+        isRequiredSupport: function() {
+            return true;
+        },
+
         NESTED_AMS: [
             ncms.asm.am.RichRefAM
         ]

@@ -15,6 +15,10 @@ qx.Class.define("ncms.asm.am.BumpOrdinalAM", {
 
         isHidden: function () {
             return false;
+        },
+
+        isRequiredSupport: function() {
+            return false;
         }
     },
 

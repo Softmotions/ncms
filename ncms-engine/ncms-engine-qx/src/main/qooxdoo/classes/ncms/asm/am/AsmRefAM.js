@@ -22,6 +22,10 @@ qx.Class.define("ncms.asm.am.AsmRefAM", {
 
         isHidden: function () {
             return false;
+        },
+
+        isRequiredSupport: function() {
+            return false;
         }
     },
 
@@ -76,7 +80,7 @@ qx.Class.define("ncms.asm.am.AsmRefAM", {
         __onSelectAssembly: function (attrSpec, asmSpec) {
             var dlg = new ncms.asm.AsmSelectorDlg(
                 this.tr("Please select assembly to include"), null,
-                {type: "", exclude: asmSpec["id"]},
+                {type: "", exclude: asmSpec["id"], template: false},
                 ["name", "description"]);
             dlg.open();
             dlg.addListener("completed", function (ev) {

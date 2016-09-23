@@ -22,6 +22,7 @@
     pageref/pageref
     webref/webref
     fileref/fileref
+    asmref/asmref
     table/table
     alias/alias
 

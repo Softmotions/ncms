@@ -18,6 +18,10 @@ qx.Class.define("ncms.asm.am.WikiAM", {
 
         isHidden: function () {
             return false;
+        },
+
+        isRequiredSupport: function() {
+            return true;
         }
     },
 

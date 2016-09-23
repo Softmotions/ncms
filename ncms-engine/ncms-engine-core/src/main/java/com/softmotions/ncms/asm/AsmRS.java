@@ -587,30 +587,36 @@ public class AsmRS extends MBDAOSupport {
         if (val != null) {
             cq.withParam("exclude", Long.parseLong(val));
         }
+
         val = req.getParameter("template");
-        if (BooleanUtils.toBoolean(val)) {
-            cq.withParam("template", true);
-            val = req.getParameter("pageId");
-            if (!StringUtils.isBlank(val)) {
-                List<Map<String, Object>> rows = select("selectAsmTParents", new RowBounds(0, 1), Long.parseLong(val));
-                Map<String, Object> prow = rows.isEmpty() ? null : rows.iterator().next();
-                String type = (prow != null) ? (String) prow.get("type") : null;
-                if ("news.page".equals(type)) {
-                    cq.withParam("template_mode", "news");
-                    String pname = (String) prow.get("pname");
-                    if (pname != null) {
-                        pname = pname.indexOf('_') > 0 ? pname.substring(0, pname.indexOf('_')) : pname;
-                        cq.withParam("name_restriction", pname + "_%");
+        if (val != null) {
+            if (BooleanUtils.toBoolean(val)) {
+                cq.withParam("template", true);
+                val = req.getParameter("pageId");
+                if (!StringUtils.isBlank(val)) {
+                    List<Map<String, Object>> rows = select("selectAsmTParents", new RowBounds(0, 1), Long.parseLong(val));
+                    Map<String, Object> prow = rows.isEmpty() ? null : rows.iterator().next();
+                    String type = (prow != null) ? (String) prow.get("type") : null;
+                    if ("news.page".equals(type)) {
+                        cq.withParam("template_mode", "news");
+                        String pname = (String) prow.get("pname");
+                        if (pname != null) {
+                            pname = pname.indexOf('_') > 0 ? pname.substring(0, pname.indexOf('_')) : pname;
+                            cq.withParam("name_restriction", pname + "_%");
+                        }
+                    } else {
+                        cq.withParam("template_mode", "page");
                     }
-                } else {
-                    cq.withParam("template_mode", "page");
                 }
-            }
-            WSUser u = sctx.getWSUser(req);
-            if (u != null && !u.isHasAnyRole("admin", "asmin.asm")) {
-                cq.withParam("roles", u.getRoleNames());
+                WSUser u = sctx.getWSUser(req);
+                if (u != null && !u.isHasAnyRole("admin", "asmin.asm")) {
+                    cq.withParam("roles", u.getRoleNames());
+                }
+            } else {
+                cq.withParam("template", false);
             }
         }
+
         boolean orderUsed = false;
         val = req.getParameter("sortAsc");
         if (!StringUtils.isBlank(val)) {

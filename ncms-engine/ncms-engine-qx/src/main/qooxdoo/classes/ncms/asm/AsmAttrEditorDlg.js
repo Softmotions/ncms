@@ -88,6 +88,7 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
         }
         form.add(el, this.tr("GUI Required"), null, "required");
 
+
         var fr = new sm.ui.form.FlexFormRenderer(form);
         fr.setPaddingBottom(10);
         this.add(fr);
@@ -171,10 +172,21 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         __setType: function (type, editorClazz) {
             var items = this.__form.getItems();
-            items["type"].setValue(type);
             var hidden = (editorClazz.isHidden && editorClazz.isHidden());
+            var isRequiredSupport = (editorClazz.isRequiredSupport && editorClazz.isRequiredSupport());
+            items["type"].setValue(type);
             items["label"].setEnabled(!hidden);
-            items["required"].setEnabled(!hidden);
+            items["required"].setEnabled(!hidden && isRequiredSupport);
+            if (!hidden) {
+                items["label"].show();
+            } else {
+                items["label"].exclude();
+            }
+            if (isRequiredSupport && !hidden) {
+                items["required"].show();
+            } else {
+                items["required"].exclude();
+            }
             if (sm.lang.String.isEmpty(items["name"].getValue())) {
                 items["name"].setValue(type);
             }

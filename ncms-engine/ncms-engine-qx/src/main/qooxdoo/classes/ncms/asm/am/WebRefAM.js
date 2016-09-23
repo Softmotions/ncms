@@ -18,6 +18,10 @@ qx.Class.define("ncms.asm.am.WebRefAM", {
 
         isHidden: function () {
             return false;
+        },
+
+        isRequiredSupport: function() {
+            return true;
         }
     },
 

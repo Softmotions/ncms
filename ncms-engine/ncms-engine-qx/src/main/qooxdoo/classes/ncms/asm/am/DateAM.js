@@ -15,6 +15,10 @@ qx.Class.define("ncms.asm.am.DateAM", {
 
         isHidden: function () {
             return false;
+        },
+
+        isRequiredSupport: function() {
+            return true;
         }
     },
 

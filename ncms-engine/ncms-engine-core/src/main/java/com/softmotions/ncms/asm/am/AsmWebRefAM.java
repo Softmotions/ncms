@@ -37,6 +37,7 @@ import org.apache.http.impl.client.cache.BasicHttpCacheStorage;
 import org.apache.http.impl.client.cache.CacheConfig;
 import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
 import org.apache.http.impl.client.cache.HeapResourceFactory;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -350,7 +351,7 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
         }
 
         @Override
-        public String[] getParameterValues(String name) {
+        public @Nullable String[] getParameterValues(String name) {
             String pv = params.get(name);
             return pv != null ? new String[]{pv} : null;
         }

@@ -18,6 +18,10 @@ qx.Class.define("ncms.asm.am.MainPageAM", {
 
         isHidden: function () {
             return true;
+        },
+
+        isRequiredSupport: function() {
+            return false;
         }
     },
 
