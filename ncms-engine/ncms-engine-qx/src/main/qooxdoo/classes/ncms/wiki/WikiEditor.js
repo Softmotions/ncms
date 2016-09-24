@@ -32,7 +32,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
     properties: {
 
         "markup": {
-            check: ["mediawiki", "markdown"],
+            check: ["mediawiki"/*, "markdown"*/],
             init: "mediawiki",
             apply: "_applyMarkup"
         },

@@ -35,7 +35,7 @@ qx.Class.define("ncms.asm.am.WikiAM", {
 
             var el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(4));
             el.add(new qx.ui.form.RadioButton(this.tr("mediawiki")).set({"model": "mediawiki"}));
-            el.add(new qx.ui.form.RadioButton(this.tr("markdown")).set({"model": "markdown"}));
+            //el.add(new qx.ui.form.RadioButton(this.tr("markdown")).set({"model": "markdown"}));
             el.setModelSelection(opts["markup"] ? [opts["markup"]] : ["mediawiki"]);
             form.add(el, this.tr("Markup language"), null, "markup");
 

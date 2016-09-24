@@ -795,10 +795,6 @@ msgstr "Wiki редактор"
 msgid "mediawiki"
 msgstr "mediawiki"
 
-#: ncms/asm/am/WikiAM.js:38
-msgid "markdown"
-msgstr "markdown"
-
 #: ncms/asm/am/WikiAM.js:40
 msgid "Markup language"
 msgstr "Язык разметки"
@@ -1973,3 +1969,6 @@ msgstr "Заметка"
 
 #~ msgid "Track traffic pixels"
 #~ msgstr "От"
+
+#~ msgid "markdown"
+#~ msgstr "markdown"
