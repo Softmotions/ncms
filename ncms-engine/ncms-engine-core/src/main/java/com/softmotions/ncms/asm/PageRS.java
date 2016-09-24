@@ -1521,10 +1521,14 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (cp == null) {
             if (create) {
                 Long id;
-                if (GUID_REGEXP.matcher(guidOrAlias).matches()) {
+                boolean isGuid = GUID_REGEXP.matcher(guidOrAlias).matches();
+                if (isGuid) {
                     id = adao.asmSelectIdByName(guidOrAlias);
-                } else {
+                } else {  // try to find assembly by alias
                     id = adao.asmSelectIdByAlias(guidOrAlias);
+                }
+                if (id == null && !isGuid) { // try to find assembly by bare name
+                    id = adao.asmSelectIdByName(guidOrAlias);
                 }
                 if (id != null) {
                     cp = getCachedPage(id, true);

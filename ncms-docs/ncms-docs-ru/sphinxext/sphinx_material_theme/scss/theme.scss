@@ -361,6 +361,12 @@ div.footer-copyright {
   }
 }
 
+
+div.warning a {
+  color: #80d8ff !important;
+}
+
+
 /*----------------- Media mods -----------------------*/
 
 @media #{$small-and-down} {
