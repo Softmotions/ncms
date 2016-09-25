@@ -16,6 +16,7 @@
     :maxdepth: 1
 
     string/string
+    wiki/wiki
     boolean/boolean
     date/date
     image/image
