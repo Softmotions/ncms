@@ -73,6 +73,14 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             init: false,
             event: "changeInpage",
             apply: "__applyInpage"
+        },
+
+        /**
+         * If 'true' allow import from media repository.
+         */
+        "import":{
+            check: "Boolean",
+            nullable: true
         }
     },
 
@@ -83,7 +91,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
      *      allowMove : true|false,
      *      allowSubfoldersView : true|false
      *      pageSpec: {id: page id, name: page name} Optional page spec to show files in page
-     *      allowImageImport: true|false
      *  }
      * </code>
      *
@@ -103,9 +110,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         }
         if (opts["allowSubfoldersView"] === undefined) {
             opts["allowSubfoldersView"] = true;
-        }
-        if (opts["allowImageImport"] === undefined) {
-            opts["allowImageImport"] = true;
         }
 
         var sf = this.__sf = new sm.ui.form.SearchField();
@@ -147,13 +151,17 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         this.__dropFun = this.__handleDropFiles.bind(this);
 
+        if (constViewSpec != null) {
+            if (constViewSpec["inpages"] == true) {
+                this.setImport(true);
+            }
+            this.setConstViewSpec(constViewSpec);
+        }
+
         this._add(this.__sf);
         this._setupToolbar();
         this._add(table, {flex: 1});
 
-        if (constViewSpec != null) {
-            this.setConstViewSpec(constViewSpec);
-        }
 
         this.addListener("appear", function () {
             this.__ensureUploadControls();
@@ -304,7 +312,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 bt.addListener("execute", this.__onEdit, this);
                 part.add(bt);
 
-                if (this.__opts["allowImageImport"]) {
+                if (this.__opts["pageSpec"] || this.getImport()) {
                     this.__importBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/document-import.png")
                         .set({"appearance": "toolbar-table-button"});
                     bt.setToolTipText(this.tr("Import from media repository"));
@@ -473,6 +481,14 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     bt.removeState("checked");
                     this.setInpage(false);
                     bt.setIcon("ncms/icon/16/misc/briefcase-bw.png");
+                }
+            }
+            bt = this.__importBt;
+            if (bt && !this.getImport()) {
+                if (vs["inpage"]) {
+                    bt.set({enabled: true});
+                } else {
+                    bt.set({enabled: false})
                 }
             }
         },
@@ -752,25 +768,15 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         },
 
         __importFile: function () {
-            this.__opts["allowImageImport"] = false;
-            if (!this.__opts["path"]) {
-                if (!this.__opts["pageSpec"]) {
-                    return;
-                }
-                this.__opts["path"] = this.__getParentPath(this.__opts["pageSpec"]["id"]);
-            }
-            this.__opts["pageSpec"] = false;
-            var dlg = new ncms.mmgr.MediaSelectFileDlg(true, this.tr("Import from media repository"), this.__opts);
+            var dlg = new ncms.mmgr.MediaSelectFileDlg(true, this.tr("Import from media repository"));
             dlg.addListener("completed", function (ev) {
                 var files = ev.getData();
                 var paths = [];
                 files.forEach(function (f) {
                     paths.push(f["folder"] + f["name"]);
                 });
-                if (!this.__opts["path"]) {
-                    return;
-                }
-                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.copy-batch", this.__opts["path"]), "PUT");
+                var path=this.__getParentPath();
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.copy-batch", path), "PUT");
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify(paths));
                 req.send(function (resp) {
