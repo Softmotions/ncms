@@ -161,15 +161,14 @@ constructor(val ebus: NcmsEventBus,
 
     @Subscribe
     fun onRuleCreated(event: MttRuleCreatedEvent) {
-        if (log.isDebugEnabled){
+        if (log.isDebugEnabled) {
             log.debug("Rule created=${event}")
         }
         lock.write {
             activateRule(event.ruleId)
             val slots = id2slots.values.toTypedArray()
             val snew = slots.find { it.rule.id == event.ruleId }
-            if(snew == null)
-            {
+            if (snew == null) {
                 return
             }
             slots.forEach {
