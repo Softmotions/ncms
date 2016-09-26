@@ -93,11 +93,16 @@ div.code-block-caption:hover > a.headerlink {
   margin-top: 0 !important;
 }
 
+.section {
 
-img {
-  max-width:100%;
+  img {
+    max-width: 100%;
+  }
+
+  img.img-full {
+    max-width: 2147483647px !important;
+  }
 }
-
 
 img.align-left, .figure.align-left, object.align-left {
   clear: left;
