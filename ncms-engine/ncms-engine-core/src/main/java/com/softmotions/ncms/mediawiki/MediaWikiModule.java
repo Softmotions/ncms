@@ -69,9 +69,10 @@ public class MediaWikiModule extends AbstractModule {
             }
         }
 
+        MediaWikiConverter converter = new MediaWikiConverter(true);
         bind(MediaWikiServices.class).asEagerSingleton();
         bind(MediaWikiRenderer.class).in(Singleton.class);
-        bind(ITextConverter.class).to(MediaWikiConverter.class).in(Singleton.class);
+        bind(ITextConverter.class).toInstance(converter);
         bind(MediaWikiRS.class).in(Singleton.class);
     }
 }
