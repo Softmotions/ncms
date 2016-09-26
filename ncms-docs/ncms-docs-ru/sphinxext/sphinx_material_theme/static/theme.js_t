@@ -277,7 +277,12 @@ jQuery(function () {
 
     function initImgFull() {
         $(".section img").on("click", function () {
+            var w = $(this).width();
             $(this).toggleClass("img-full");
+            var w2 = $(this).width();
+            if (w === w2) {
+                $(this).removeClass("img-full");
+            }
         });
     }
 
