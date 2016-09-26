@@ -694,7 +694,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 }
             }
 
-            if (this.__opts["pageSpec"] || this.__allowImport) {
+            if (this.getInpage() || this.__allowImport) {
                 menu.add(new qx.ui.menu.Separator);
                 bt = new qx.ui.menu.Button(this.tr("Import from media repository"));
                 bt.addListenerOnce("execute", this.__importFile, this);
