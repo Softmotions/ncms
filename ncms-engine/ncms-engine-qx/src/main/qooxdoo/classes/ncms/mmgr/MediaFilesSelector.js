@@ -73,14 +73,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             init: false,
             event: "changeInpage",
             apply: "__applyInpage"
-        },
-
-        /**
-         * If 'true' allow import from media repository.
-         */
-        "import":{
-            check: "Boolean",
-            nullable: true
         }
     },
 
@@ -153,7 +145,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         if (constViewSpec != null) {
             if (constViewSpec["inpages"] == true) {
-                this.setImport(true);
+                this.__allowImport = true;
             }
             this.setConstViewSpec(constViewSpec);
         }
@@ -206,6 +198,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
     members: {
 
         __allowModify: false,
+
+        __allowImport: false,
 
         __dropFun: null,
 
@@ -312,7 +306,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 bt.addListener("execute", this.__onEdit, this);
                 part.add(bt);
 
-                if (this.__opts["pageSpec"] || this.getImport()) {
+                if (this.__opts["pageSpec"] || this.__allowImport) {
                     this.__importBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/document-import.png")
                         .set({"appearance": "toolbar-table-button"});
                     bt.setToolTipText(this.tr("Import from media repository"));
@@ -484,7 +478,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 }
             }
             bt = this.__importBt;
-            if (bt && !this.getImport()) {
+            if (bt && !this.__allowImport) {
                 if (vs["inpage"]) {
                     bt.set({enabled: true});
                 } else {
@@ -700,10 +694,12 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 }
             }
 
-            menu.add(new qx.ui.menu.Separator);
-            bt = new qx.ui.menu.Button(this.tr("Import from media repository"));
-            bt.addListenerOnce("execute", this.__importFile, this);
-            menu.add(bt);
+            if (this.__opts["pageSpec"] || this.__allowImport) {
+                menu.add(new qx.ui.menu.Separator);
+                bt = new qx.ui.menu.Button(this.tr("Import from media repository"));
+                bt.addListenerOnce("execute", this.__importFile, this);
+                menu.add(bt);
+            }
 
             this._setupContextMenuDelegate(menu);
             return true;
@@ -804,6 +800,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__rmBt = null;
         this.__mvBt = null;
         this.__importBt = null;
+        this.__allowImport = null;
         this.__editBt = null;
         this.__subfoldersBt = null;
         this.__opts = null;
