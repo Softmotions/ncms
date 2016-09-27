@@ -126,7 +126,9 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
                     // "description":null,
                     // "tags":null}
                     var path = fspec["folder"] + fspec["name"];
-                    bf.setValue(path);
+                    var desc = fspec["description"];
+                    bf.setValue(path +
+                        ((desc && desc.length > 0) ? "  |  " + desc : ""));
                     dlg.close();
                     if (this._form != null) {
                         this._form.validate();
