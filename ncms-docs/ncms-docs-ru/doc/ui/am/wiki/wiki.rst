@@ -441,6 +441,23 @@ Wiki разметка для вставки youtube ролика:
 
 **Видеоролик vimeo**
 
+.. figure:: img/img33.png
+
+    Опции вставки ролика Vimeo
+
+
+Wiki разметка для вставки vimeo ролика:
+
+.. code-block:: html
+
+    <vimeo code="105286558"/>
+
+В результате, в контексте страницы сайта мы получаем vimeo ролик:
+
+.. image:: img/img34.png
+    :target: https://vimeo.com/105286558
+
+
 
 
 
