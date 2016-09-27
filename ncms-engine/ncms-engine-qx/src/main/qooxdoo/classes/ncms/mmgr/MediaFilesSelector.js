@@ -143,13 +143,14 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         this.__dropFun = this.__handleDropFiles.bind(this);
 
+        if (constViewSpec != null) {
+            this.setConstViewSpec(constViewSpec);
+        }
+
         this._add(this.__sf);
         this._setupToolbar();
         this._add(table, {flex: 1});
 
-        if (constViewSpec != null) {
-            this.setConstViewSpec(constViewSpec);
-        }
 
         this.addListener("appear", function () {
             this.__ensureUploadControls();
@@ -204,6 +205,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         __rmBt: null,
 
         __mvBt: null,
+
+        __importBt: null,
 
         __editBt: null,
 
@@ -296,6 +299,14 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 .set({"appearance": "toolbar-table-button"});
                 bt.setToolTipText(this.tr("Edit file content"));
                 bt.addListener("execute", this.__onEdit, this);
+                part.add(bt);
+
+                this.__importBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/document-import.png")
+                        .set({"appearance": "toolbar-table-button"});
+                bt.setToolTipText(this.tr("Import from media repository"));
+                bt.addListener("execute", this.__importFile, this);
+                this.__importBt.exclude();
+                this.__importBt.set({enabled: false});
                 part.add(bt);
 
                 if (this.__opts["allowMove"]) {
@@ -459,6 +470,20 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     bt.removeState("checked");
                     this.setInpage(false);
                     bt.setIcon("ncms/icon/16/misc/briefcase-bw.png");
+                }
+            }
+            bt = this.__importBt;
+            if (vs["inpages"]) {
+                bt.show();
+                bt.setEnabled(true);
+            }
+            if (vs["inpage"] != null) {
+                bt.show();
+                if (vs["inpage"] == 1) {
+                    bt.setEnabled(true);
+                }
+                else {
+                    bt.setEnabled(false);
                 }
             }
         },
@@ -670,6 +695,14 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 }
             }
 
+            if (this.__importBt && !this.__importBt.isExcluded()) {
+                menu.add(new qx.ui.menu.Separator);
+                bt = new qx.ui.menu.Button(this.tr("Import from media repository"));
+                menu.add(bt);
+                bt.addListenerOnce("execute", this.__importFile, this);
+                bt.setEnabled(this.__importBt.isEnabled());
+            }
+
             this._setupContextMenuDelegate(menu);
             return true;
         },
@@ -730,6 +763,26 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     this.fireDataEvent("fileMetaEdited", {id: attr, value: value});
                 }
             }, this);
+        },
+
+        __importFile: function () {
+            var dlg = new ncms.mmgr.MediaSelectFileDlg(true, this.tr("Import from media repository"));
+            dlg.addListener("completed", function (ev) {
+                var files = ev.getData();
+                var paths = [];
+                files.forEach(function (f) {
+                    paths.push(f["folder"] + f["name"]);
+                });
+                var path=this.__getParentPath();
+                var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.copy-batch", path), "PUT");
+                req.setRequestContentType("application/json");
+                req.setData(JSON.stringify(paths));
+                req.send(function (resp) {
+                    dlg.close();
+                    this.reload();
+                }, this);
+            }, this);
+            dlg.open();
         }
     },
 
@@ -748,6 +801,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__dropFun = null;
         this.__rmBt = null;
         this.__mvBt = null;
+        this.__importBt = null;
         this.__editBt = null;
         this.__subfoldersBt = null;
         this.__opts = null;
