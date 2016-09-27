@@ -475,15 +475,15 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             bt = this.__importBt;
             if (vs["inpages"]) {
                 bt.show();
-                bt.set({enabled: true});
+                bt.setEnabled(true);
             }
-            if (vs["inpage"] != undefined) {
+            if (vs["inpage"] != null) {
                 bt.show();
                 if (vs["inpage"] == 1) {
-                    bt.set({enabled: true});
+                    bt.setEnabled(true);
                 }
                 else {
-                    bt.set({enabled: false});
+                    bt.setEnabled(false);
                 }
             }
         },
@@ -700,7 +700,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 bt = new qx.ui.menu.Button(this.tr("Import from media repository"));
                 menu.add(bt);
                 bt.addListenerOnce("execute", this.__importFile, this);
-                this.__importBt.isEnabled() ? bt.set({enabled: true}) : bt.set({enabled: false});
+                bt.setEnabled(this.__importBt.isEnabled());
             }
 
             this._setupContextMenuDelegate(menu);
