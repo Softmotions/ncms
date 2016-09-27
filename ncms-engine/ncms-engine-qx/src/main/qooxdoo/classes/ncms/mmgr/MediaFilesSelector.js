@@ -480,7 +480,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
             if (vs["inpage"] != null) {
                 bt.show();
-                bt.setEnabled(vs["inpage"] == 1);
+                bt.setEnabled(vs["inpage"] > 0);
             }
         },
 
