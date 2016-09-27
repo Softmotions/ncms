@@ -40,13 +40,18 @@ constructor(private val env: NcmsEnvironment,
             if (StringUtils.isBlank(key)) {
                 continue
             }
-
             val alias = topic.getString("[@alias]")
             if (!StringUtils.isBlank(alias)) {
                 helpTopics.put(key, pageService.resolvePageLink(alias))
             } else {
                 helpTopics.put(key, topic.getString("")) //get config tag content
             }
+        }
+        if ("wiki.gmap" !in helpTopics) {
+            helpTopics["wiki.gmap"] = "https://support.google.com/maps/answer/3544418"
+        }
+        if ("wiki" !in helpTopics) {
+            helpTopics["wiki"] = "${env.appRoot}/manual/doc/ui/am/wiki/wiki.html"
         }
     }
 
@@ -103,15 +108,14 @@ constructor(private val env: NcmsEnvironment,
         }
     }
 
-    private val helpSite: String?
-        get() {
-            val alias = env.xcfg().getString("help.site[@alias]")
-            if (!StringUtils.isBlank(alias)) {
-                return pageService.resolvePageLink(alias)
-            } else {
-                return env.xcfg().getString("help.site")
-            }
+    private val helpSite: String? by lazy {
+        val alias = env.xcfg().getString("help.site[@alias]")
+        if (!StringUtils.isBlank(alias)) {
+            return@lazy pageService.resolvePageLink(alias)
+        } else {
+            return@lazy env.xcfg().getString("help.site", "${env.appRoot}/manual/index.html")
         }
+    }
 
     private fun getHelpTopics(): Map<String, String?> {
         return helpTopics
