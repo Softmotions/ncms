@@ -356,6 +356,7 @@ HTML разметка предупреждения, которая может б
 ----
 
 .. image:: img/img24.png
+    :align: left
 
 **Вставка ролика Youtube**
 
@@ -380,8 +381,69 @@ Wiki разметка для вставки youtube ролика:
 ----
 
 .. image:: img/img28.png
+    :align: left
 
 **Вставка карты Google Maps**
+
+
+.. figure:: img/img29.png
+
+    Диалог подключения участка google карты.
+
+Например, вставив в него скопированный из google maps `iframe`:
+
+.. code-block:: html
+
+    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2296.7406541371915!2d83.05385026852065!3d54.85480466667143!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sru!2sru!4v1474967528616"
+             width="600"
+             height="450"
+             frameborder="0"
+             style="border:0"
+             allowfullscreen>
+    </iframe>
+
+Мы получим карту на странице:
+
+.. image:: img/img30.png
+
+
+|
+
+----
+
+.. image:: img/img16.png
+    :align: left
+
+**Презентация SlideShare**
+
+.. figure:: img/img31.png
+
+    Диалог подключения участка презентации SlideShare.
+
+В данном примере введем в диалог интернет адрес презентации: http://www.slideshare.net/leoyuriev/dc2015-lmdb
+в результате при сохранении получим следующую wiki разметку:
+
+.. code-block:: html
+
+    <slideshare code="49593515"/>
+
+
+А при отображении страницы получим встроенную презентацию:
+
+.. image:: img/img32.png
+
+|
+
+----
+
+.. image:: img/img17.png
+    :align: left
+
+**Видеоролик vimeo**
+
+
+
+
 
 
 
