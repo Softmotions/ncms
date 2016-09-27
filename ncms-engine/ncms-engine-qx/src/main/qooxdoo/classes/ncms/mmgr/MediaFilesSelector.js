@@ -472,6 +472,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     bt.setIcon("ncms/icon/16/misc/briefcase-bw.png");
                 }
             }
+
             bt = this.__importBt;
             if (vs["inpages"]) {
                 bt.show();
@@ -479,12 +480,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
             if (vs["inpage"] != null) {
                 bt.show();
-                if (vs["inpage"] == 1) {
-                    bt.setEnabled(true);
-                }
-                else {
-                    bt.setEnabled(false);
-                }
+                bt.setEnabled(vs["inpage"] == 1);
             }
         },
 
