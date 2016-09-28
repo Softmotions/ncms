@@ -19,6 +19,7 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
 //    statics : {
 //
 //        /**
+//         * @deprecated use getMetaInfo()
 //         * Returns short human readable editor description.
 //         * @returns {String}
 //         */
@@ -26,6 +27,8 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
 //        },
 //
 //        /**
+//         * @deprecated use getMetaInfo()
+//         *
 //         * Return list of supported asm types by this editor
 //         * @returns {Array}
 //         */
@@ -33,11 +36,17 @@ qx.Interface.define("ncms.asm.IAsmAttributeManager", {
 //        }
 //
 //        /**
+//         * @deprecated use getMetaInfo()
 //         * True if this control is not itended to be use as value editor widget.
 //         */
 //        isHidden : function() {
 //          return false;
 //        }
+//
+//        // todo
+//        getMetaInfo : function() {
+//        }
+//
 //    },
 
     members: {
