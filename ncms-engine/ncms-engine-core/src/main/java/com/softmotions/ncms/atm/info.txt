@@ -1,0 +1,1 @@
+Atmosphere (https://github.com/Atmosphere/atmosphere) framework integration.

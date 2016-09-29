@@ -3,6 +3,7 @@ package com.softmotions.ncms;
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.shiro.guice.aop.ShiroAopModule;
+import org.atmosphere.cpr.AtmosphereServlet;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
@@ -94,16 +95,19 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         bind(NcmsRSExceptionMapper.class).in(Singleton.class);
         bind(ResteasyUTF8CharsetFilter.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
-        log.info("Resteasy serving on {}", ncmsp + "/rs/*");
-        serve(ncmsp + "/rs/*")
+        String mount = ncmsp + "/rs/*";
+        log.info("Resteasy serving on {}", mount);
+        serve(mount)
                 .with(HttpServletDispatcher.class,
-                      new TinyParamMap().param("resteasy.servlet.mapping.prefix", ncmsp + "/rs"));
+                      new TinyParamMap<>()
+                              .param("resteasy.servlet.mapping.prefix", ncmsp + "/rs"));
 
         //Resteasy JS API
         bind(JSAPIServlet.class).in(Singleton.class);
         serve(ncmsp + "/rjs")
                 .with(JSAPIServlet.class);
     }
+
 
     protected Class<? extends AsmFilter> getAsmFilterClass() {
         return AsmFilter.class;
