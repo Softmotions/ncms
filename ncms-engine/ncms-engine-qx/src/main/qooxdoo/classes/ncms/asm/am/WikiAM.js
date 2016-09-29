@@ -8,20 +8,18 @@ qx.Class.define("ncms.asm.am.WikiAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "wiki",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Wiki editor");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["wiki"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.WikiAM.__META;
         }
     },
 

@@ -64,11 +64,15 @@ qx.Class.define("ncms.asm.am.AsmAttrManagersRegistry", {
         forEachAttributeManagerTypeClassPair: function (cb) {
             sm.lang.Object.forEachClass(function (clazz) {
                 if (!qx.Class.hasInterface(clazz, ncms.asm.IAsmAttributeManager) ||
-                    typeof clazz.getSupportedAttributeTypes !== "function" ||
+                    typeof clazz.getMetaInfo !== "function" ||
                     typeof clazz.getDescription !== "function") {
                     return;
                 }
-                var types = clazz.getSupportedAttributeTypes() || [];
+                var meta = clazz.getMetaInfo() || {};
+                var types = meta["attributeTypes"] || [];
+                if (typeof types === "string") {
+                    types = [types];
+                }
                 for (var i = 0; i < types.length; ++i) {
                     var type = types[i];
                     if (cb(type, clazz) === false) {

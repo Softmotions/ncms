@@ -8,20 +8,18 @@ qx.Class.define("ncms.asm.am.RichRefAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "richref",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Rich reference");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["richref"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.RichRefAM.__META;
         }
     },
 

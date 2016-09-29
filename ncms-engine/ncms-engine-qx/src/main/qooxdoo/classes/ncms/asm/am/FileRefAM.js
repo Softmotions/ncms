@@ -10,20 +10,18 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "fileref",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Include file resource");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["fileref"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.FileRefAM.__META;
         }
     },
 

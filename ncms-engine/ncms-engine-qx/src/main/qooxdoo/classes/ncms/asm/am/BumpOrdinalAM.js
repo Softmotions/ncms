@@ -5,20 +5,18 @@ qx.Class.define("ncms.asm.am.BumpOrdinalAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "bump",
+            hidden: false,
+            requiredSupported: false
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Bump page ordinal");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["bump"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return false;
+        getMetaInfo: function () {
+            return ncms.asm.am.BumpOrdinalAM.__META;
         }
     },
 

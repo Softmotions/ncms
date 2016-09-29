@@ -5,20 +5,18 @@ qx.Class.define("ncms.asm.am.DateAM", {
 
     statics: {
 
+        __META:  {
+            attributeTypes: "date",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Date selector");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["date"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.DateAM.__META;
         }
     },
 

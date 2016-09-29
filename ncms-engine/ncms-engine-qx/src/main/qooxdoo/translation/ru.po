@@ -29,17 +29,17 @@ msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
 #: ncms/pgs/PageEditorEditPage.js:163 ncms/asm/AsmEditor.js:88
-#: ncms/asm/am/AsmCoreAM.js:93 ncms/mtt/filters/MttResourceFilter.js:30
+#: ncms/asm/am/AsmCoreAM.js:91 ncms/mtt/filters/MttResourceFilter.js:30
 #: ncms/asm/am/ImageAMValueWidget.js:104 ncms/mtt/filters/MttFilterDlg.js:40
 #: ncms/mtt/actions/MttActionDlg.js:40 ncms/usr/UserEditForm.js:27
 #: ncms/asm/AsmAttrEditorDlg.js:54 ncms/usr/UserNewDlg.js:32
-#: ncms/mtt/filters/MttVHostFilter.js:44 ncms/asm/am/PageRefAM.js:124
-#: ncms/asm/am/FileRefAM.js:146
+#: ncms/mtt/filters/MttVHostFilter.js:44 ncms/asm/am/PageRefAM.js:122
+#: ncms/asm/am/FileRefAM.js:144
 msgid "This field is required"
 msgstr "Обязательное поле"
 
 #: ncms/asm/AsmEditor.js:92 ncms/asm/am/RichRefAMValueWidget.js:44
-#: ncms/mtt/tp/MttTpNewDlg.js:20 ncms/asm/am/RichRefAM.js:48
+#: ncms/mtt/tp/MttTpNewDlg.js:20 ncms/asm/am/RichRefAM.js:46
 #: ncms/asm/AsmParentsTable.js:106 ncms/asm/am/SelectAMTable.js:70
 #: ncms/usr/UserEditForm.js:33 ncms/mmgr/MediaFileEditor.js:273
 #: ncms/pgs/PagesTable.js:21 ncms/asm/AsmAttrsTable.js:119
@@ -146,7 +146,7 @@ msgstr "Подпись"
 
 #: ncms/asm/am/SelectAMTable.js:77 ncms/mmgr/MediaFileEditor.js:156
 #: ncms/asm/AsmAttrsTable.js:137 ncms/mtt/actions/MttSetCookieAction.js:53
-#: ncms/asm/am/StringAM.js:66
+#: ncms/asm/am/StringAM.js:64
 msgid "Value"
 msgstr "Значение"
 
@@ -232,7 +232,7 @@ msgid "None"
 msgstr "Нет"
 
 #: ncms/asm/AsmEditor.js:116 ncms/mtt/filters/MttPageFilter.js:28
-#: ncms/mtt/filters/MttPageFilter.js:57 ncms/asm/am/PageRefAM.js:83
+#: ncms/mtt/filters/MttPageFilter.js:57 ncms/asm/am/PageRefAM.js:81
 msgid "Page"
 msgstr "Страница"
 
@@ -290,7 +290,7 @@ msgstr "Переименовать"
 msgid "Are you sure to remove assembly: \"%1\"?"
 msgstr "Вы действительно хотите удалить сборку(assembly): '%1'?"
 
-#: ncms/asm/am/AsmRefAM.js:41 ncms/asm/AsmNewDlg.js:19
+#: ncms/asm/am/AsmRefAM.js:39 ncms/asm/AsmNewDlg.js:19
 msgid "Assembly"
 msgstr "Сборка (assembly)"
 
@@ -314,113 +314,113 @@ msgstr "Выберите родителей для %1"
 msgid "Add parent"
 msgstr "Добавить родителя"
 
-#: ncms/asm/am/AsmRefAM.js:48 ncms/asm/AsmSelectorDlg.js:20
+#: ncms/asm/am/AsmRefAM.js:46 ncms/asm/AsmSelectorDlg.js:20
 msgid "Select assembly"
 msgstr "Выбор сборки (assembly)"
 
-#: ncms/asm/am/AliasAM.js:13 ncms/asm/am/AliasAM.js:37
+#: ncms/asm/am/AliasAM.js:19 ncms/asm/am/AliasAM.js:35
 msgid "Alias"
 msgstr "Псевдоним"
 
-#: ncms/asm/am/AsmCoreAM.js:9
+#: ncms/asm/am/AsmCoreAM.js:15
 msgid "Assembly core selector"
 msgstr "Разметка страницы"
 
-#: ncms/asm/am/AsmCoreAM.js:52 ncms/asm/am/FileRefAM.js:101
+#: ncms/asm/am/AsmCoreAM.js:50 ncms/asm/am/FileRefAM.js:99
 msgid "File"
 msgstr "Файл"
 
-#: ncms/asm/am/AsmCoreAM.js:57
+#: ncms/asm/am/AsmCoreAM.js:55
 msgid "Please specify a core location"
 msgstr "Пожалуйста укажите httl файл разметки"
 
-#: ncms/asm/am/AsmCoreAM.js:64
+#: ncms/asm/am/AsmCoreAM.js:62
 msgid "Please specify a core location for: '%1'"
 msgstr "Пожалуйста укажите httl файл разметки для: '%1'"
 
-#: ncms/asm/am/AsmRefAM.js:16
+#: ncms/asm/am/AsmRefAM.js:22
 msgid "Include assembly"
 msgstr "Вставка сборки (assembly)"
 
-#: ncms/asm/am/AsmRefAM.js:50 ncms/asm/am/AsmRefAM.js:82
+#: ncms/asm/am/AsmRefAM.js:48 ncms/asm/am/AsmRefAM.js:80
 msgid "Please select assembly to include"
 msgstr "Пожалуйста, выберите сборку (assembly)"
 
-#: ncms/asm/am/BooleanAM.js:12
+#: ncms/asm/am/BooleanAM.js:18
 msgid "Checkbox"
 msgstr "Да/Нет переключатель"
 
-#: ncms/asm/am/BooleanAM.js:35
+#: ncms/asm/am/BooleanAM.js:33
 msgid "Boolean value"
 msgstr "Значение"
 
-#: ncms/asm/am/BreadCrumbsAM.js:8
+#: ncms/asm/am/BreadCrumbsAM.js:14
 msgid "Breadcrumbs"
 msgstr "Breadcrumbs"
 
-#: ncms/asm/am/BumpOrdinalAM.js:9
+#: ncms/asm/am/BumpOrdinalAM.js:15
 msgid "Bump page ordinal"
 msgstr "Поднять страницу наверх"
 
-#: ncms/asm/am/DateAM.js:9
+#: ncms/asm/am/DateAM.js:15
 msgid "Date selector"
 msgstr "Выбор даты"
 
-#: ncms/asm/am/DateAM.js:36
+#: ncms/asm/am/DateAM.js:34
 msgid "Date format"
 msgstr "Формат даты"
 
-#: ncms/asm/am/FileRefAM.js:14
+#: ncms/asm/am/FileRefAM.js:20
 msgid "Include file resource"
 msgstr "Вставить файл"
 
-#: ncms/asm/am/WebRefAM.js:55 ncms/asm/am/FileRefAM.js:56
+#: ncms/asm/am/WebRefAM.js:53 ncms/asm/am/FileRefAM.js:54
 msgid "Location"
 msgstr "Местоположение"
 
-#: ncms/asm/am/FileRefAM.js:60
+#: ncms/asm/am/FileRefAM.js:58
 msgid "Render as template"
 msgstr "Отображать как шаблон"
 
-#: ncms/asm/am/WebRefAM.js:70 ncms/asm/am/FileRefAM.js:68
+#: ncms/asm/am/WebRefAM.js:68 ncms/asm/am/FileRefAM.js:66
 msgid "Render only location"
 msgstr "Отображать как местоположение"
 
-#: ncms/asm/am/FileRefAM.js:108
+#: ncms/asm/am/FileRefAM.js:106
 msgid "Please specify a file"
 msgstr "Пожалуйста, выберите файл"
 
-#: ncms/asm/am/FileRefAM.js:115
+#: ncms/asm/am/FileRefAM.js:113
 msgid "Please specify a file for: '%1'"
 msgstr "Пожалуйста, выберите файл для '%1'"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:78 ncms/asm/am/RichRefAM.js:60
-#: ncms/asm/am/RichRefAM.js:68 ncms/asm/am/ImageAM.js:14
+#: ncms/asm/am/RichRefAMValueWidget.js:78 ncms/asm/am/RichRefAM.js:58
+#: ncms/asm/am/RichRefAM.js:66 ncms/asm/am/ImageAM.js:20
 msgid "Image"
 msgstr "Изображение"
 
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:37
-#: ncms/wiki/InsertVimeoDlg.js:36 ncms/asm/am/ImageAM.js:42
+#: ncms/wiki/InsertVimeoDlg.js:36 ncms/asm/am/ImageAM.js:40
 #: ncms/wiki/InsertYoutubeDlg.js:42
 msgid "Width"
 msgstr "Ширина"
 
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:40
-#: ncms/wiki/InsertVimeoDlg.js:39 ncms/asm/am/ImageAM.js:48
+#: ncms/wiki/InsertVimeoDlg.js:39 ncms/asm/am/ImageAM.js:46
 #: ncms/wiki/InsertYoutubeDlg.js:45
 msgid "Height"
 msgstr "Высота"
 
-#: ncms/asm/am/ImageAM.js:61
+#: ncms/asm/am/ImageAM.js:59
 msgid "Automatic image resizing to given height and width values"
 msgstr ""
 "Автоматическое изменение размера изображения под указанные ограничения"
 
-#: ncms/asm/am/ImageAM.js:62
+#: ncms/asm/am/ImageAM.js:60
 msgid "Auto resize"
 msgstr "Автомасштабирование"
 
-#: ncms/asm/am/ImageAM.js:74
+#: ncms/asm/am/ImageAM.js:72
 msgid ""
 "Automatic image resizing to cover given area. Image's original aspect ratio "
 "is preserved."
@@ -428,26 +428,26 @@ msgstr ""
 "Автоматическое масштабирование размера изображения под указанные размеры с "
 "сохранением пропорций"
 
-#: ncms/asm/am/ImageAM.js:85
+#: ncms/asm/am/ImageAM.js:83
 msgid "Cover area"
 msgstr "Заполнить область"
 
-#: ncms/asm/am/ImageAM.js:90
+#: ncms/asm/am/ImageAM.js:88
 msgid "Restrict image size to given height and width values"
 msgstr ""
 "Принимать только изображения, удовлетворяющие критериям (ширина и высота)"
 
-#: ncms/asm/am/ImageAM.js:91
+#: ncms/asm/am/ImageAM.js:89
 msgid "Restrict size"
 msgstr "Проверять размер"
 
-#: ncms/asm/am/ImageAM.js:108
+#: ncms/asm/am/ImageAM.js:106
 msgid ""
 "Skip resizing/checking image with dimensions smaller or equal to given "
 "height and width values"
 msgstr "Не масштабировать изображения меньшего или равного размера"
 
-#: ncms/asm/am/ImageAM.js:115
+#: ncms/asm/am/ImageAM.js:113
 msgid "Skip small"
 msgstr "Не масштабировать маленькие"
 
@@ -479,41 +479,41 @@ msgstr "Автоматическое масштабирование"
 msgid "Image size required"
 msgstr "Изображение должно быть следующего размера"
 
-#: ncms/asm/am/MainPageAM.js:12
+#: ncms/asm/am/MainPageAM.js:18
 msgid "Main page marker"
 msgstr "Маркер главной страницы"
 
-#: ncms/asm/am/MainPageAM.js:40
+#: ncms/asm/am/MainPageAM.js:38
 msgid "Two letter language codes separated by comma"
 msgstr "Двухбуквенные коды языков через запятую"
 
-#: ncms/asm/am/MainPageAM.js:41
+#: ncms/asm/am/MainPageAM.js:39
 msgid "Language codes"
 msgstr "Коды языка"
 
-#: ncms/asm/am/MainPageAM.js:48
+#: ncms/asm/am/MainPageAM.js:46
 msgid "Comma separated virtual hosts"
 msgstr "Список виртуальных хостов через запятую"
 
-#: ncms/asm/am/MainPageAM.js:49
+#: ncms/asm/am/MainPageAM.js:47
 msgid "Visrtual hosts"
 msgstr "Виртуальные хосты"
 
 #: ncms/mtt/tp/MttTpEditor.js:38 ncms/mtt/filters/MttFilterDlg.js:59
 #: ncms/mtt/actions/MttActionDlg.js:59 ncms/mtt/MttNav.js:154
-#: ncms/asm/am/MainPageAM.js:55 ncms/mtt/tp/MttTpNav.js:89
+#: ncms/asm/am/MainPageAM.js:53 ncms/mtt/tp/MttTpNav.js:89
 msgid "Enabled"
 msgstr "Активно"
 
-#: ncms/asm/am/MedialineAM.js:9
+#: ncms/asm/am/MedialineAM.js:15
 msgid "Medialine"
 msgstr "Фотолента"
 
-#: ncms/asm/am/MedialineAM.js:39
+#: ncms/asm/am/MedialineAM.js:37
 msgid "Max image width"
 msgstr "Максимальная ширина изображения"
 
-#: ncms/asm/am/MedialineAM.js:48
+#: ncms/asm/am/MedialineAM.js:46
 msgid "Max thumbnail width"
 msgstr "Максимальная ширина миниатюры"
 
@@ -554,54 +554,54 @@ msgstr "Заголовок"
 msgid "Add images into the media gallery"
 msgstr "Добавить изображения в галерею"
 
-#: ncms/asm/am/PageRefAM.js:13
+#: ncms/asm/am/PageRefAM.js:19
 msgid "Page reference"
 msgstr "Ссылка на страницу"
 
 #: ncms/wiki/InsertImageDlg.js:61 ncms/asm/am/RichRefAMValueWidget.js:60
-#: ncms/asm/am/PageRefAM.js:40
+#: ncms/asm/am/PageRefAM.js:38
 msgid "Link"
 msgstr "Ссылка"
 
-#: ncms/asm/am/PageRefAM.js:44
+#: ncms/asm/am/PageRefAM.js:42
 msgid "Allow external links"
 msgstr "Внешние ссылки"
 
 #: ncms/asm/am/RichRefAMValueWidget.js:146
 #: ncms/mtt/filters/MttPageFilter.js:32 ncms/mtt/filters/MttPageFilter.js:40
-#: ncms/asm/am/PageRefAM.js:89 ncms/asm/am/PageRefAM.js:94
+#: ncms/asm/am/PageRefAM.js:87 ncms/asm/am/PageRefAM.js:92
 msgid "Please set a page link"
 msgstr "Пожалуйста укажите ссылку"
 
-#: ncms/asm/am/RichRefAM.js:12
+#: ncms/asm/am/RichRefAM.js:18
 msgid "Rich reference"
 msgstr "Агрегат"
 
-#: ncms/asm/am/RichRefAM.js:40 ncms/asm/am/TreeAM.js:46
+#: ncms/asm/am/RichRefAM.js:38 ncms/asm/am/TreeAM.js:44
 #: ncms/pgs/PagesTreeSelector.js:32
 msgid "Pages"
 msgstr "Страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:58 ncms/asm/am/RichRefAM.js:44
-#: ncms/mmgr/MediaItemTreeSelector.js:20 ncms/asm/am/TreeAM.js:53
+#: ncms/pgs/PageEditorEditPage.js:58 ncms/asm/am/RichRefAM.js:42
+#: ncms/mmgr/MediaItemTreeSelector.js:20 ncms/asm/am/TreeAM.js:51
 msgid "Files"
 msgstr "Файлы"
 
-#: ncms/asm/am/RichRefAMValueWidget.js:114 ncms/asm/am/RichRefAM.js:52
+#: ncms/asm/am/RichRefAMValueWidget.js:114 ncms/asm/am/RichRefAM.js:50
 msgid "Extra"
 msgstr "Дополнительно"
 
-#: ncms/asm/am/RichRefAM.js:56
+#: ncms/asm/am/RichRefAM.js:54
 msgid "Optional links"
 msgstr "Ссылки опционально"
 
-#: ncms/asm/am/RichRefAM.js:75 ncms/asm/am/RichRefAM.js:82
-#: ncms/asm/am/RichRefAM.js:89
+#: ncms/asm/am/RichRefAM.js:73 ncms/asm/am/RichRefAM.js:80
+#: ncms/asm/am/RichRefAM.js:87
 msgid "option=value,option2=value2,..."
 msgstr ""
 
-#: ncms/asm/am/RichRefAM.js:76 ncms/asm/am/RichRefAM.js:83
-#: ncms/asm/am/RichRefAM.js:90
+#: ncms/asm/am/RichRefAM.js:74 ncms/asm/am/RichRefAM.js:81
+#: ncms/asm/am/RichRefAM.js:88
 msgid "Options"
 msgstr "Опции"
 
@@ -623,31 +623,31 @@ msgstr "Опция"
 msgid "Please set the file link"
 msgstr "Пожалуйста, укажите ссылку на файл"
 
-#: ncms/asm/am/SelectAM.js:12
+#: ncms/asm/am/SelectAM.js:18
 msgid "Selectbox"
 msgstr "Селектбокс"
 
-#: ncms/asm/am/SelectAM.js:39
+#: ncms/asm/am/SelectAM.js:37
 msgid "list"
 msgstr "list"
 
-#: ncms/asm/am/SelectAM.js:40
+#: ncms/asm/am/SelectAM.js:38
 msgid "selectbox"
 msgstr "selectbox"
 
-#: ncms/asm/am/SelectAM.js:43 ncms/asm/am/StringAM.js:53
+#: ncms/asm/am/SelectAM.js:41 ncms/asm/am/StringAM.js:51
 msgid "Display as"
 msgstr "Отображать как"
 
-#: ncms/asm/am/SelectAM.js:52
+#: ncms/asm/am/SelectAM.js:50
 msgid "Multi select"
 msgstr "Выбор множества значений"
 
-#: ncms/asm/am/SelectAM.js:59
+#: ncms/asm/am/SelectAM.js:57
 msgid "Fetch from"
 msgstr "Получить из"
 
-#: ncms/asm/am/SelectAM.js:69
+#: ncms/asm/am/SelectAM.js:67
 msgid "Items"
 msgstr "Элементы"
 
@@ -663,27 +663,27 @@ msgstr "Добавить запись"
 msgid "Remove record"
 msgstr "Удалить запись"
 
-#: ncms/asm/am/StringAM.js:12
+#: ncms/asm/am/StringAM.js:18
 msgid "String"
 msgstr "Строка"
 
-#: ncms/asm/am/StringAM.js:50
+#: ncms/asm/am/StringAM.js:48
 msgid "field"
 msgstr "поле"
 
-#: ncms/asm/am/StringAM.js:51
+#: ncms/asm/am/StringAM.js:49
 msgid "area"
 msgstr "зона ввода"
 
-#: ncms/asm/am/StringAM.js:60
+#: ncms/asm/am/StringAM.js:58
 msgid "Max length"
 msgstr "Max length"
 
-#: ncms/asm/am/StringAM.js:72
+#: ncms/asm/am/StringAM.js:70
 msgid "Placeholder"
 msgstr "Placeholder"
 
-#: ncms/asm/am/TableAM.js:13 ncms/wiki/WikiEditor.js:533
+#: ncms/asm/am/TableAM.js:19 ncms/wiki/WikiEditor.js:533
 msgid "Table"
 msgstr "Таблица"
 
@@ -699,15 +699,15 @@ msgstr "Пожалуйста, подтвердите удаление выбра
 msgid "New row"
 msgstr "Новая строка"
 
-#: ncms/asm/am/TreeAM.js:14
+#: ncms/asm/am/TreeAM.js:20
 msgid "Tree/Menu"
 msgstr "Дерево/Меню"
 
-#: ncms/asm/am/TreeAM.js:57
+#: ncms/asm/am/TreeAM.js:55
 msgid "External links"
 msgstr "Внешние ссылки"
 
-#: ncms/asm/am/TreeAM.js:68
+#: ncms/asm/am/TreeAM.js:66
 msgid "Nesting level"
 msgstr "Уровень вложенности"
 
@@ -778,23 +778,23 @@ msgstr "Выбрать файл для: %1"
 msgid "Please choose the target folder"
 msgstr "Пожалуйста, выберите целевую папку"
 
-#: ncms/asm/am/WebRefAM.js:12
+#: ncms/asm/am/WebRefAM.js:18
 msgid "Include web resource"
 msgstr "Веб ресурс"
 
-#: ncms/asm/am/WebRefAM.js:51 ncms/asm/am/WebRefAM.js:92
+#: ncms/asm/am/WebRefAM.js:49 ncms/asm/am/WebRefAM.js:90
 msgid "Please specify web resource url"
 msgstr "Пожалуйста укажите адрес веб ресурса"
 
-#: ncms/asm/am/WikiAM.js:12
+#: ncms/asm/am/WikiAM.js:18
 msgid "Wiki editor"
 msgstr "Wiki редактор"
 
-#: ncms/asm/am/WikiAM.js:37
+#: ncms/asm/am/WikiAM.js:35
 msgid "mediawiki"
 msgstr "mediawiki"
 
-#: ncms/asm/am/WikiAM.js:40
+#: ncms/asm/am/WikiAM.js:38
 msgid "Markup language"
 msgstr "Язык разметки"
 

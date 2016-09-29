@@ -172,17 +172,16 @@ qx.Class.define("ncms.asm.AsmAttrEditorDlg", {
 
         __setType: function (type, editorClazz) {
             var items = this.__form.getItems();
-            var hidden = (editorClazz.isHidden && editorClazz.isHidden());
-            var isRequiredSupport = (editorClazz.isRequiredSupport && editorClazz.isRequiredSupport());
+            var meta = editorClazz.getMetaInfo() || {};
             items["type"].setValue(type);
-            items["label"].setEnabled(!hidden);
-            items["required"].setEnabled(!hidden && isRequiredSupport);
-            if (!hidden) {
+            items["label"].setEnabled(!meta.hidden);
+            items["required"].setEnabled(!meta.hidden && meta.requiredSupported);
+            if (!meta.hidden) {
                 items["label"].show();
             } else {
                 items["label"].exclude();
             }
-            if (isRequiredSupport && !hidden) {
+            if (meta.requiredSupported && !meta.hidden) {
                 items["required"].show();
             } else {
                 items["required"].exclude();

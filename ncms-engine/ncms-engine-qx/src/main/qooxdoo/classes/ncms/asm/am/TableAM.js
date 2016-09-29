@@ -9,20 +9,18 @@ qx.Class.define("ncms.asm.am.TableAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "table",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Table");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["table"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.TableAM.__META;
         }
     },
 

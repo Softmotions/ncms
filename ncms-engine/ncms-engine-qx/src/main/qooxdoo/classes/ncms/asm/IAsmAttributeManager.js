@@ -5,8 +5,12 @@
  * Implementors must define the following static methods:
  *
  *  statics : {
- *      getDescription
- *      getSupportedAttributeTypes
+ *
+ *      getDescription() {
+ *      }
+ *
+ *      getMetaInfo : function() {
+ *      }
  *  }
  *
  *  //todo describe 'widgetNotReady' state
@@ -16,38 +20,27 @@
  */
 qx.Interface.define("ncms.asm.IAsmAttributeManager", {
 
-//    statics : {
-//
-//        /**
-//         * @deprecated use getMetaInfo()
-//         * Returns short human readable editor description.
-//         * @returns {String}
-//         */
-//        getDescription : function() {
-//        },
-//
-//        /**
-//         * @deprecated use getMetaInfo()
-//         *
-//         * Return list of supported asm types by this editor
-//         * @returns {Array}
-//         */
-//        getSupportedAttributeTypes : function() {
-//        }
-//
-//        /**
-//         * @deprecated use getMetaInfo()
-//         * True if this control is not itended to be use as value editor widget.
-//         */
-//        isHidden : function() {
-//          return false;
-//        }
-//
-//        // todo
-//        getMetaInfo : function() {
-//        }
-//
-//    },
+
+    //statics: {
+    //
+    //    // {String} Assembly description
+    //    getDescription() {
+    //    }
+    //
+    //    /**
+    //     * Return attribute descriptor object:
+    //     *
+    //     * {
+    //     *   attributeTypes: {Array|String} String array of attribute types supported by this attribute manager
+    //     *   hidden: {Boolean?false} If this attribute is hidden from UI
+    //     *   requiredSupported: {Boolean?false} If this attribute supports a `required` mode. (Required field)
+    //     *   unique: {Boolean?false} If this attribute must be unique for assembly.
+    //     * }
+    //     */
+    //
+    //    getMetaInfo : function() {
+    //    }
+    //},
 
     members: {
 

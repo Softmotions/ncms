@@ -5,20 +5,18 @@ qx.Class.define("ncms.asm.am.MedialineAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "medialine",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Medialine");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["medialine"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.MedialineAM.__META;
         }
     },
 

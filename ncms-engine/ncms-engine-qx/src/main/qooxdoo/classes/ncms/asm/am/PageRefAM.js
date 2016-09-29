@@ -9,20 +9,18 @@ qx.Class.define("ncms.asm.am.PageRefAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: ["pageref"],
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Page reference");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["pageref"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.PageRefAM.__META;
         }
     },
 

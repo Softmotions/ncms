@@ -4,23 +4,20 @@ qx.Class.define("ncms.asm.am.BreadCrumbsAM", {
 
     statics: {
 
+        __META:  {
+            attributeTypes: "breadcrumbs",
+            hidden: true,
+            requiredSupported: false
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Breadcrumbs");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["breadcrumbs"];
-        },
-
-        isHidden: function () {
-            return true;
-        },
-
-        isRequiredSupport: function() {
-            return false;
+        getMetaInfo: function () {
+            return ncms.asm.am.BreadCrumbsAM.__META;
         }
     },
-
 
     members: {
 

@@ -8,20 +8,18 @@ qx.Class.define("ncms.asm.am.WebRefAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "webref",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Include web resource");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["webref"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.WebRefAM.__META;
         }
     },
 

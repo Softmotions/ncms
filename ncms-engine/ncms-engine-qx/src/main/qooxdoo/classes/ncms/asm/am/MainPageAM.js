@@ -8,20 +8,18 @@ qx.Class.define("ncms.asm.am.MainPageAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "mainpage",
+            hidden: true,
+            requiredSupported: false
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Main page marker");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["mainpage"];
-        },
-
-        isHidden: function () {
-            return true;
-        },
-
-        isRequiredSupport: function() {
-            return false;
+        getMetaInfo: function () {
+            return ncms.asm.am.MainPageAM.__META;
         }
     },
 

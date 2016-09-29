@@ -8,20 +8,18 @@ qx.Class.define("ncms.asm.am.BooleanAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "boolean",
+            hidden: false,
+            requiredSupported: false
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Checkbox");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["boolean"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return false;
+        getMetaInfo: function () {
+            return ncms.asm.am.BooleanAM.__META;
         }
     },
 

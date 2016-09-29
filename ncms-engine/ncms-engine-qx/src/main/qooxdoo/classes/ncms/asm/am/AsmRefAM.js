@@ -12,20 +12,18 @@ qx.Class.define("ncms.asm.am.AsmRefAM", {
 
     statics: {
 
+        __META:  {
+            attributeTypes: "asmref",
+            hidden: false,
+            requiredSupported: false
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Include assembly");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["asmref"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return false;
+        getMetaInfo: function () {
+            return ncms.asm.am.AsmRefAM.__META;
         }
     },
 

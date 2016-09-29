@@ -8,20 +8,18 @@ qx.Class.define("ncms.asm.am.SelectAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "select",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Selectbox");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["select"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.SelectAM.__META;
         }
     },
 

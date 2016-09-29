@@ -9,20 +9,18 @@ qx.Class.define("ncms.asm.am.AliasAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "alias",
+            hidden: false,
+            requiredSupported: false
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Alias");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["alias"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return false;
+        getMetaInfo: function () {
+            return ncms.asm.am.AliasAM.__META;
         }
     },
 

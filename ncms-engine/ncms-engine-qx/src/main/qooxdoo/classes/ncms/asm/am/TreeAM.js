@@ -10,20 +10,18 @@ qx.Class.define("ncms.asm.am.TreeAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "tree",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Tree/Menu");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["tree"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.TreeAM.__META;
         },
 
         NESTED_AMS: [

@@ -5,20 +5,18 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "core",
+            hidden: false,
+            requiredSupported: false
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Assembly core selector");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["core"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return false;
+        getMetaInfo: function () {
+            return ncms.asm.am.AsmCoreAM.__META;
         }
     },
 

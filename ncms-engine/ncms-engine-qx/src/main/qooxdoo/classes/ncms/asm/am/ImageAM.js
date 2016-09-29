@@ -10,20 +10,18 @@ qx.Class.define("ncms.asm.am.ImageAM", {
 
     statics: {
 
+        __META:  {
+            attributeTypes: "image",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("Image");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["image"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.ImageAM.__META;
         }
     },
 

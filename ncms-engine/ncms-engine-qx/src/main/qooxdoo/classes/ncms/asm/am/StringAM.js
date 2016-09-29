@@ -8,20 +8,18 @@ qx.Class.define("ncms.asm.am.StringAM", {
 
     statics: {
 
+        __META: {
+            attributeTypes: "string",
+            hidden: false,
+            requiredSupported: true
+        },
+
         getDescription: function () {
             return qx.locale.Manager.tr("String");
         },
 
-        getSupportedAttributeTypes: function () {
-            return ["string"];
-        },
-
-        isHidden: function () {
-            return false;
-        },
-
-        isRequiredSupport: function() {
-            return true;
+        getMetaInfo: function () {
+            return ncms.asm.am.StringAM.__META;
         }
     },
 
