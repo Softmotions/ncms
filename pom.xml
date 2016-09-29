@@ -80,6 +80,8 @@
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
         <postgres.jdbc.version>9.4.1209.jre7</postgres.jdbc.version>
         <h2.version>1.4.192</h2.version>
+        <atmosphere.version>2.4.7</atmosphere.version>
+        <pdfbox.version>2.0.3</pdfbox.version>
 
 
         <web.run.port>8080</web.run.port>
@@ -280,6 +282,16 @@
                 <version>${tika.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox-tools</artifactId>
+                <version>${pdfbox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.pdfbox</groupId>
+                <artifactId>pdfbox</artifactId>
+                <version>${pdfbox.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-catalina</artifactId>
                 <version>${tomcat.version}</version>
@@ -290,6 +302,16 @@
                 <artifactId>ehcache-core</artifactId>
                 <version>2.6.11</version>
                 <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.atmosphere</groupId>
+                <artifactId>atmosphere-annotations</artifactId>
+                <version>${atmosphere.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.atmosphere</groupId>
+                <artifactId>atmosphere-runtime</artifactId>
+                <version>${atmosphere.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mybatis</groupId>
