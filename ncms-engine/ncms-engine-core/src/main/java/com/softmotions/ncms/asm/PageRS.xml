@@ -44,7 +44,8 @@
             p.owner           AS "owner",
             p.nav_cached_path AS "nav_cached_path",
             lacl.rights       AS "local_rights",
-            racl.rights       AS "recursive_rights"
+            racl.rights       AS "recursive_rights",
+            (SELECT COUNT(asm_id) FROM ASM_PARENTS WHERE asm_id = p.id) AS "num_parents"
         FROM ASMS AS p
             LEFT JOIN ASM_ACL_ENTITY AS lacl ON lacl.acl_id = p.local_acl_id AND lacl."USER" = #{user}
             LEFT JOIN ASM_ACL_ENTITY AS racl ON racl.acl_id = p.recursive_acl_id AND racl."USER" = #{user}
@@ -66,7 +67,8 @@
             p.owner           AS "owner",
             p.nav_cached_path AS "nav_cached_path",
             lacl.rights       AS "local_rights",
-            racl.rights       AS "recursive_rights"
+            racl.rights       AS "recursive_rights",
+            (SELECT COUNT(asm_id) FROM ASM_PARENTS WHERE asm_id = p.id) AS "num_parents"
         FROM ASMS AS p
             LEFT JOIN ASM_ACL_ENTITY AS lacl ON lacl.acl_id = p.local_acl_id AND lacl."USER" = #{user}
             LEFT JOIN ASM_ACL_ENTITY AS racl ON racl.acl_id = p.recursive_acl_id AND racl."USER" = #{user}

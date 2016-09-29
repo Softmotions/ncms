@@ -99,9 +99,23 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     public static final String INDEX_PAGE_REQUEST_ATTR_NAME = "_PAGERS_INDEX_PAGE";
 
+    /**
+     * Page is folder
+     * @warning this constant hardcoded in qooxdoo admin UI
+     */
     public static final int PAGE_STATUS_FOLDER_FLAG = 1;
 
+    /**
+     * Page is published
+     * @warning this constant hardcoded in qooxdoo admin UI
+     */
     public static final int PAGE_STATUS_NOT_PUBLISHED_FLAG = 1 << 1;
+
+    /**
+     * Page has parents (inheritance).
+     * @warning this constant hardcoded in qooxdoo admin UI
+     */
+    public static final int PAGE_STATUS_HAS_PARENTS = 1 << 2;
 
     private static final Logger log = LoggerFactory.getLogger(PageRS.class);
 
@@ -919,6 +933,9 @@ public class PageRS extends MBDAOSupport implements PageService {
                         }
                         if (!Converters.toBoolean(row.get("published"))) { //page not published
                             status |= PAGE_STATUS_NOT_PUBLISHED_FLAG;
+                        }
+                        if (((Number) row.get("num_parents")).intValue() > 0) {
+                            status |= PAGE_STATUS_HAS_PARENTS;
                         }
                         gen.writeNumberField("status", status);
                         gen.writeStringField("type", type);

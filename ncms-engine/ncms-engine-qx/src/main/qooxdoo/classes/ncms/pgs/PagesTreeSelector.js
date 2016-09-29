@@ -57,7 +57,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("F2"),
             this.__onChangeOrRenamePage, this);
-        this.addListenerOnce("treeLoaded", function() {
+        this.addListenerOnce("treeLoaded", function () {
             this._registerCommandFocusWidget(this._tree);
         }, this);
     },
@@ -109,7 +109,15 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
 
         __treeIconConverter: function (value, model, source, target) {
             var statusPrefix = "";
-            if (model.getStatus && (model.getStatus() & (1 << 1)) != 0) {
+            var status = (model.getStatus != null) ? model.getStatus() : 0;
+
+            if (
+                (status & (1 << 1)) != 0 /* not published*/ &&
+
+                ((status & 1) == 0 /* not a folder */ ||
+                 (status & (1 << 2)) != 0 /* folder has parents */)
+
+            ) {
                 statusPrefix = "-exclamation";
             }
             switch (value) {
@@ -270,7 +278,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             dlg.open();
         },
 
-        __onDuplicate: function(ev) {
+        __onDuplicate: function (ev) {
             var item = this._tree.getSelection().getItem(0);
             var parent = this._tree.getParent(item) || this._tree.getModel();
             var dlg = new ncms.pgs.PageDuplicateDlg({
@@ -326,7 +334,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             }, this);
         },
 
-        __onRefresh: function() {
+        __onRefresh: function () {
             var item = this._tree.getSelection().getItem(0) || this._tree.getModel();
             this._refreshNode(item);
         },
