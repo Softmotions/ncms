@@ -131,6 +131,7 @@ public class NcmsServletListener extends WBServletListener {
         sreg.setInitParameter(ApplicationConfig.DEFAULT_CONTENT_TYPE, "application/json");
         sreg.setInitParameter(ApplicationConfig.WEBSOCKET_CONTENT_TYPE, "application/json");
         sreg.setInitParameter(ApplicationConfig.BROADCASTER_ASYNC_WRITE_THREADPOOL_MAXSIZE, "50");
+        sreg.setInitParameter(ApplicationConfig.ANALYTICS, "false");
         sreg.setAsyncSupported(true);
         String mount = env.getAppPrefix() + "/ws/*";
         sreg.addMapping(mount);
