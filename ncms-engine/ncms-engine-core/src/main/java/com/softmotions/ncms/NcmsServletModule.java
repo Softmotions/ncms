@@ -1,15 +1,19 @@
 package com.softmotions.ncms;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.shiro.guice.aop.ShiroAopModule;
-import org.atmosphere.cpr.AtmosphereServlet;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.softmotions.commons.cont.ArrayUtils;
+import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.ncms.adm.AdmModule;
@@ -79,11 +83,16 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         String ncmsp = env.getAppPrefix();
         KVOptions opts = new KVOptions();
         opts.put("strip-prefixes", (ncmsp + "/asm,") + (ncmsp + "/adm/asm,") + (ncmsp.isEmpty() ? "/" : ncmsp));
-        String[] exclude = env.xcfg().getStringArray("asm.exclude");
-        if (exclude.length == 0) {
-            exclude = new String[]{ncmsp + "/rs", ncmsp + "/rjs"};
+        List<String> exclude = new ArrayList<>(Arrays.asList(env.xcfg().getStringArray("asm.exclude")));
+        for (String e : new String[]{
+                ncmsp + "/rs",
+                ncmsp + "/rjs",
+                ncmsp + "/ws"}) {
+            if (!exclude.contains(e)) {
+                exclude.add(e);
+            }
         }
-        opts.put("exclude-prefixes", ArrayUtils.stringJoin(exclude, ","));
+        opts.put("exclude-prefixes", CollectionUtils.join(",", exclude));
         filter(ncmsp + "/*", clazz, opts);
     }
 

@@ -21,6 +21,10 @@
  *
  * Ace editor
  * @asset(ncms/script/ace_all.js)
+ *
+ * Atmosphere
+ * @asset(ncms/script/atmosphere.js)
+ * @asset(ncms/script/atmosphere.min.js)
  */
 qx.Class.define("ncms.Application", {
     extend: qx.application.Standalone,
@@ -44,7 +48,8 @@ qx.Class.define("ncms.Application", {
 
         loadExtraScripts: function (cb, ctx) {
             var resource = [
-                "ncms/script/ace_all.js"
+                "ncms/script/ace_all.js",
+                "ncms/script/atmosphere.js"
             ];
             var load = function (list) {
                 if (list.length == 0) {
@@ -324,6 +329,8 @@ qx.Class.define("ncms.Application", {
 
         __extensionPoints: null,
 
+        __atmosphere: null,
+
         _createRootWidget: function () {
             var root = new qx.ui.root.Application(document);
             root.setWindowManager(new sm.ui.window.ExtendedWindowManager());
@@ -383,10 +390,20 @@ qx.Class.define("ncms.Application", {
 
             this.showDefaultWSA();
 
-
             ncms.Application.loadExtraScripts(function () {
+                this.__initAtmosphere();
                 this.fireEvent("guiInitialized");
             }, this);
+        },
+
+        __initAtmosphere: function () {
+            if (this.__atmosphere) {
+                this._disposeObjects("__atmosphere");
+            }
+            this.__atmosphere = new ncms.Atmosphere({
+                url: ncms.Application.ACT.toUri("/ws/adm")
+            });
+            this.__atmosphere.activate();
         },
 
         getComponent: function (name) {
@@ -549,6 +566,10 @@ qx.Class.define("ncms.Application", {
         createActions: function () {
             return new ncms.Actions();
         }
+    },
+
+    destruct: function () {
+        this._disposeObjects("__atmosphere");
     },
 
     defer: function (statics) {

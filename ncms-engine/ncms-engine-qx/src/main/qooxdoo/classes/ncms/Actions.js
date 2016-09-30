@@ -454,13 +454,18 @@ qx.Class.define("ncms.Actions", {
 
         _resourceManager: null,
 
-        _action: function (id, path) {
+
+        toUri: function(path) {
             path = this._prefix + path;
             if (qx.core.Environment.get("ncms.testing.urls")) {
-                this._addAction(id, this._resourceManager.toUri(this._testPrefix + path));
+                return this._resourceManager.toUri(this._testPrefix + path);
             } else {
-                this._addAction(id, this._resourceManager.toUri(path));
+                return this._resourceManager.toUri(path);
             }
+        },
+
+        _action: function (id, path) {
+            this._addAction(id, this.toUri(path));
         }
     }
 });
