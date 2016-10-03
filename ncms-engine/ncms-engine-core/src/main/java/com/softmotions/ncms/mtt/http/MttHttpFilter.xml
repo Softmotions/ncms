@@ -6,7 +6,6 @@
 <mapper namespace="com.softmotions.ncms.mtt.http.MttHttpFilter">
 
     <select id="selectMttRules"
-            databaseId="DB2"
             resultType="com.softmotions.ncms.mtt.MttRule"
             resultMap="mttRuleRM">
         SELECT
@@ -26,8 +25,8 @@
             a.cdate        AS a_cdate,
             a.mdate        AS a_mdate
         FROM mtt_rules AS r
-            LEFT OUTER JOIN mtt_actions AS a ON a.rule_id = r.id AND a.enabled = 1
-            LEFT OUTER JOIN mtt_filters AS f ON f.rule_id = r.id AND f.enabled = 1
+            LEFT OUTER JOIN mtt_actions AS a ON a.rule_id = r.id AND a.enabled = ${SQL.TRUE.LITERAL}
+            LEFT OUTER JOIN mtt_filters AS f ON f.rule_id = r.id AND f.enabled = ${SQL.TRUE.LITERAL}
         <where>
             <if test="id != null">r.id = #{id}</if>
         </where>
@@ -35,38 +34,6 @@
             r.ordinal ASC,
             a.ordinal ASC
     </select>
-
-    <select id="selectMttRules"
-            databaseId="POSTGRES"
-            resultType="com.softmotions.ncms.mtt.MttRule"
-            resultMap="mttRuleRM">
-        SELECT
-        r.*,
-        f.id           AS f_id,
-        f.type         AS f_type,
-        f.spec         AS f_spec,
-        f.cdate        AS f_cdate,
-        f.mdate        AS f_mdate,
-        a.rule_id      AS a_rule_id,
-        a.group_id     AS a_group_id,
-        a.group_weight AS a_group_weight,
-        a.id           AS a_id,
-        a.type         AS a_type,
-        a.ordinal      AS a_ordinal,
-        a.spec         AS a_spec,
-        a.cdate        AS a_cdate,
-        a.mdate        AS a_mdate
-        FROM mtt_rules AS r
-        LEFT OUTER JOIN mtt_actions AS a ON a.rule_id = r.id AND a.enabled = true
-        LEFT OUTER JOIN mtt_filters AS f ON f.rule_id = r.id AND f.enabled = true
-        <where>
-            <if test="id != null">r.id = #{id}</if>
-        </where>
-        ORDER BY
-        r.ordinal ASC,
-        a.ordinal ASC
-    </select>
-
 
     <resultMap id="mttRuleFilterRM"
                type="com.softmotions.ncms.mtt.MttRuleFilter">

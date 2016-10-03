@@ -82,6 +82,7 @@ import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsNotificationException;
 import com.softmotions.ncms.media.MediaRepository;
+import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.ncms.user.UserEnvRS;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -101,18 +102,21 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     /**
      * Page is folder
+     *
      * @warning this constant hardcoded in qooxdoo admin UI
      */
     public static final int PAGE_STATUS_FOLDER_FLAG = 1;
 
     /**
      * Page is published
+     *
      * @warning this constant hardcoded in qooxdoo admin UI
      */
     public static final int PAGE_STATUS_NOT_PUBLISHED_FLAG = 1 << 1;
 
     /**
      * Page has parents (inheritance).
+     *
      * @warning this constant hardcoded in qooxdoo admin UI
      */
     public static final int PAGE_STATUS_HAS_PARENTS = 1 << 2;
@@ -174,6 +178,8 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final AsmRendererHelper helper;
 
+    private final NcmsSecurityContext securityContext;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao,
@@ -187,7 +193,8 @@ public class PageRS extends MBDAOSupport implements PageService {
                   MediaRepository mrepo,
                   Provider<AsmAttributeManagersRegistry> amRegistry,
                   Provider<AsmAttributeManagerContext> amCtxProvider,
-                  AsmRendererHelper helper) {
+                  AsmRendererHelper helper,
+                  NcmsSecurityContext securityContext) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -208,6 +215,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.amCtxProvider = amCtxProvider;
         this.asmRoot = env.getAppRoot() + "/";
         this.helper = helper;
+        this.securityContext = securityContext;
         this.ebus.register(this);
     }
 
@@ -387,11 +395,30 @@ public class PageRS extends MBDAOSupport implements PageService {
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
     }
 
+
+    /**
+     * Acquire edit lock on specified page.
+     */
+    @PUT
+    @Path("/lock/{id}")
+    @Transactional
+    public ObjectNode lockPage(@Context HttpServletRequest req,
+                            @PathParam("id") Long id) throws Exception {
+
+        WSUser wsUser = securityContext.getWSUser(req);
+
+
+
+        ObjectNode res = mapper.createObjectNode();
+        return res;
+    }
+
+
+
     @PUT
     @Path("/edit/{id}")
     @Transactional
     public AsmCore savePage(@Context HttpServletRequest req,
-                            @Context SecurityContext sctx,
                             @PathParam("id") Long id,
                             ObjectNode data) throws Exception {
 

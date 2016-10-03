@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:42 ncms/Application.js:554
+#: ncms/Application.js:42 ncms/Application.js:547
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:568
+#: ncms/Application.js:561
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -223,7 +223,7 @@ msgstr "Имя класса контроллера сборки (assembly)"
 msgid "Controller"
 msgstr "Контроллер"
 
-#: ncms/pgs/PageEditorEditPage.js:469 ncms/asm/AsmEditor.js:112
+#: ncms/pgs/PageEditorEditPage.js:498 ncms/asm/AsmEditor.js:112
 msgid "Published"
 msgstr "Опубликовано"
 
@@ -1438,31 +1438,31 @@ msgstr "Добавить пользователя в список прав"
 msgid "Remove user recursively"
 msgstr "Убрать пользователя (рекурсивно)"
 
-#: ncms/pgs/PageEditorEditPage.js:84 ncms/pgs/PageEditorEditPage.js:300
+#: ncms/pgs/PageEditorEditPage.js:84 ncms/pgs/PageEditorEditPage.js:329
 msgid "Please select the template page"
 msgstr "Пожалуйста, выберите шаблон для страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:304
+#: ncms/pgs/PageEditorEditPage.js:333
 msgid "Templates"
 msgstr "Шаблоны"
 
-#: ncms/pgs/PageEditorEditPage.js:353
+#: ncms/pgs/PageEditorEditPage.js:382
 msgid "Page fields contain errors"
 msgstr "В полях страницы обнаружены ошибки"
 
-#: ncms/pgs/PageEditorEditPage.js:377
+#: ncms/pgs/PageEditorEditPage.js:406
 msgid "Failed to save page."
 msgstr "Ошибка при сохранении страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:401
+#: ncms/pgs/PageEditorEditPage.js:430
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:410
+#: ncms/pgs/PageEditorEditPage.js:439
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:452
+#: ncms/pgs/PageEditorEditPage.js:481
 msgid ""
 "Are you sure to unpublish this page? There are pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"
@@ -1472,15 +1472,15 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" target='_blank' "
 "rel='noopener noreferrer'>списком ссылающихся страниц</a>"
 
-#: ncms/pgs/PageEditorEditPage.js:469
+#: ncms/pgs/PageEditorEditPage.js:498
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:475
+#: ncms/pgs/PageEditorEditPage.js:504
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:487
+#: ncms/pgs/PageEditorEditPage.js:516
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 

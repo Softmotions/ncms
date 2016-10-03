@@ -288,10 +288,39 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.__save();
         },
 
-        _applyModified: function (val) {
+        _applyModified: function (val, old) {
+
+            if (val != old) {
+
+
+
+
+            }
+
+
             this.__saveBt.setEnabled(val);
             this.__cancelBt.setEnabled(val);
         },
+
+
+        /**
+         * Acquire page lock.
+         * @private
+         */
+        __lockPage: function() {
+
+
+        },
+
+        /**
+         * Unlock page/
+         * @private
+         */
+        __unlockPage: function() {
+
+
+        },
+
 
         __onChangeTemplate: function () {
             var me = this;

@@ -1,0 +1,53 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<!--
+   Page history/locking
+-->
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <!--
+       Shadowed assembly name:
+
+       $s_<original assembly guid>_<version num>
+    -->
+
+    <changeSet id="16277111122"
+               author="adamansky@gmail.com"
+               dbms="db2">
+        <addColumn tableName="ASMS">
+            <column name="SHADOWED"
+                    type="SMALLINT"
+                    defaultValueNumeric="0"
+                    remarks="This assembly is a shadow of another assembly"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet id="16277111122"
+               author="adamansky@gmail.com"
+               dbms="postgresql">
+        <addColumn tableName="ASMS">
+            <column name="SHADOWED"
+                    type="BOOLEAN"
+                    defaultValueBoolean="false"
+                    remarks="This assembly is a shadow of another assembly"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="16277121634"
+               author="adamansky@gmail.com">
+        <addColumn tableName="ASMS">
+            <column name="LOCK_USER"
+                    type="VARCHAR(64)"
+                    remarks="User which acquired lock on this assembly"/>
+            <column name="LOCK_DATE"
+                    type="TIMESTAMP"
+                    remarks="Assembly locking date">
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

@@ -93,6 +93,9 @@ public class Asm implements Serializable {
     boolean published;
 
     @JsonProperty
+    boolean shadowed;
+
+    @JsonProperty
     String templateMode;
 
     Date cdate;
@@ -121,6 +124,10 @@ public class Asm implements Serializable {
     String lang;
 
     Collection<String> accessRoles;
+
+    String lockUser;
+
+    Date lockDate;
 
 
     public Asm() {
@@ -257,6 +264,17 @@ public class Asm implements Serializable {
     }
 
     /**
+     * Return `true` if this assembly is a shadow of another assembly
+     */
+    public boolean isShadowed() {
+        return shadowed;
+    }
+
+    public void setShadowed(boolean shadowed) {
+        this.shadowed = shadowed;
+    }
+
+    /**
      * The type of template represented by this assembly.
      * Valid values:
      * <p>
@@ -307,6 +325,28 @@ public class Asm implements Serializable {
 
     public void setEdate(Date edate) {
         this.edate = edate;
+    }
+
+    /**
+     * User which acquired lock on this assembly.
+     */
+    public String getLockUser() {
+        return lockUser;
+    }
+
+    public void setLockUser(String lockUser) {
+        this.lockUser = lockUser;
+    }
+
+    /**
+     * Assembly locking date.
+     */
+    public Date getLockDate() {
+        return lockDate;
+    }
+
+    public void setLockDate(Date lockDate) {
+        this.lockDate = lockDate;
     }
 
     /**
@@ -766,6 +806,7 @@ public class Asm implements Serializable {
         asm.navAlias2 = navAlias2;
         asm.navCachedPath = navCachedPath;
         asm.lang = lang;
+        asm.shadowed = shadowed;
         if (getParents() != null) {
             asm.parents = new ArrayList<>(getParents().size());
             for (Asm parent : getParents()) {

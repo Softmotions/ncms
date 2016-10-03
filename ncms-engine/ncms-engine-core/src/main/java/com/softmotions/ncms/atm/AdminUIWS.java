@@ -11,8 +11,6 @@ import org.atmosphere.cpr.AtmosphereResourceFactory;
 import org.atmosphere.cpr.AtmosphereResponse;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
 import org.atmosphere.interceptor.BroadcastOnPostAtmosphereInterceptor;
-import org.atmosphere.interceptor.HeartbeatInterceptor;
-import org.atmosphere.interceptor.OnDisconnectInterceptor;
 import org.atmosphere.interceptor.SuspendTrackerInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +27,11 @@ import com.google.inject.Singleton;
  */
 
 @Singleton
-@AtmosphereHandlerService(path = "/ws/adm",
+@AtmosphereHandlerService(path = "/ws/adm/ui",
                           interceptors = {AtmosphereResourceLifecycleInterceptor.class,
-                                          HeartbeatInterceptor.class,
                                           TrackMessageSizeInterceptor.class,
                                           SuspendTrackerInterceptor.class,
-                                          BroadcastOnPostAtmosphereInterceptor.class,
-                                          OnDisconnectInterceptor.class},
+                                          BroadcastOnPostAtmosphereInterceptor.class},
                           broadcasterCache = UUIDBroadcasterCache.class)
 
 public class AdminUIWS extends OnMessageAtmosphereHandler<String> {

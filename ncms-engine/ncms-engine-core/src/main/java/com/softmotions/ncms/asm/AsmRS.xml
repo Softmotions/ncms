@@ -235,7 +235,6 @@
 
 
     <select id="selectAsmTParents"
-            databaseId="DB2"
             resultType="map"
             parameterType="long">
         SELECT
@@ -246,23 +245,7 @@
         FROM ASMS a
             LEFT JOIN ASMS np ON a.nav_parent_id = np.id
             LEFT JOIN ASM_PARENTS AS ap ON ap.asm_id = np.id
-            LEFT JOIN ASMS p ON p.id = ap.asm_parent_id AND p.template = 1
-        WHERE a.id = #{id}
-    </select>
-
-    <select id="selectAsmTParents"
-            databaseId="POSTGRES"
-            resultType="map"
-            parameterType="long">
-        SELECT
-            a.type AS "type",
-            p.id   AS "pid",
-            p.name AS "pname",
-            p.type AS "ptype"
-        FROM ASMS a
-        LEFT JOIN ASMS np ON a.nav_parent_id = np.id
-        LEFT JOIN ASM_PARENTS AS ap ON ap.asm_id = np.id
-        LEFT JOIN ASMS p ON p.id = ap.asm_parent_id AND p.template = true
+            LEFT JOIN ASMS p ON p.id = ap.asm_parent_id AND p.template = ${SQL.TRUE.LITERAL}
         WHERE a.id = #{id}
     </select>
 </mapper>

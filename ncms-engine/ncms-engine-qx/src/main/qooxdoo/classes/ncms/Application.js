@@ -401,7 +401,7 @@ qx.Class.define("ncms.Application", {
                 this._disposeObjects("__atmosphere");
             }
             this.__atmosphere = new ncms.Atmosphere({
-                url: ncms.Application.ACT.toUri("/ws/adm")
+                url: ncms.Application.ACT.toUri("/ws/adm/ui")
             });
             this.__atmosphere.activate();
         },
