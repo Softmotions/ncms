@@ -198,6 +198,32 @@
     </select>
 
 
+    <update id="asmLock"
+            parameterType="map">
+        UPDATE ASMS
+        SET lock_user = #{user},
+            lock_date = CURRENT_TIMESTAMP
+        WHERE id = #{id} AND lock_user IS NULL
+    </update>
+
+    <update id="asmUnlock"
+            parameterType="long">
+        UPDATE ASMS
+        SET lock_user = NULL, lock_date = NULL
+        WHERE id = #{id} AND lock_user IS NULL
+    </update>
+
+    <select id="asmSelectLock"
+            parameterType="long"
+            resultType="map">
+        SELECT
+            lock_user AS "lock_user",
+            lock_date AS "lock_date"
+        FROM ASMS
+        WHERE id = #{id}
+    </select>
+
+
     <!-- ======================= Nested selects =========================== -->
 
     <select id="selectAsmParents"

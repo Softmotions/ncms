@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
@@ -21,8 +22,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.AbstractIterator;
+import com.google.common.util.concurrent.Striped;
 import com.softmotions.commons.cont.AbstractIndexedCollection;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.Pair;
@@ -53,7 +53,8 @@ import com.softmotions.commons.cont.Pair;
 )
 public class Asm implements Serializable {
 
-    private static final Logger log = LoggerFactory.getLogger(Asm.class);
+    // 255 different locks to access all asms
+    public static final Striped<Lock> STRIPED_LOCKS = Striped.lazyWeakLock(255);
 
     interface ViewFull {
     }
@@ -781,6 +782,7 @@ public class Asm implements Serializable {
     /**
      * Perform deep clone of this assembly.
      * Cloned parents are cached in <c>cloneContext</c>.
+     *
      */
     public Asm cloneDeep(Map<String, Asm> cloneContext) {
         Asm asm = cloneContext.get(name);
@@ -807,6 +809,8 @@ public class Asm implements Serializable {
         asm.navCachedPath = navCachedPath;
         asm.lang = lang;
         asm.shadowed = shadowed;
+        asm.lockUser = lockUser;
+        asm.lockDate = lockDate;
         if (getParents() != null) {
             asm.parents = new ArrayList<>(getParents().size());
             for (Asm parent : getParents()) {

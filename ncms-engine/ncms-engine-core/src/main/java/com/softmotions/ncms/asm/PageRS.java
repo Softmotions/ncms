@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
+import java.util.concurrent.locks.Lock;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,6 +58,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
+import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -143,6 +145,8 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final MediaRepository mrepo;
 
+    private final Striped<Lock> pageLocks;
+
     @GuardedBy("pagesCache")
     private final Map<Long, CachedPage> pagesCache;
 
@@ -212,6 +216,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.indexPage2FirstLang = new HashMap<>();
         this.indexPage2SecondLang = new HashMap<>();
         this.mrepo = mrepo;
+        this.pageLocks = Asm.STRIPED_LOCKS;
         this.amCtxProvider = amCtxProvider;
         this.asmRoot = env.getAppRoot() + "/";
         this.helper = helper;
@@ -403,16 +408,14 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/lock/{id}")
     @Transactional
     public ObjectNode lockPage(@Context HttpServletRequest req,
-                            @PathParam("id") Long id) throws Exception {
+                               @PathParam("id") Long id) throws Exception {
 
         WSUser wsUser = securityContext.getWSUser(req);
-
-
-
         ObjectNode res = mapper.createObjectNode();
+        Lock lock = pageLocks.get(id);
+        // todo
         return res;
     }
-
 
 
     @PUT

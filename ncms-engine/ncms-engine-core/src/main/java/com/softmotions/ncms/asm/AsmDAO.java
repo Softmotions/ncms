@@ -9,9 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.guice.transactional.Transactional;
@@ -113,6 +116,65 @@ public class AsmDAO extends MBDAOSupport {
         return ret;
     }
 
+    /**
+     * Locks the specified assembly.
+     * If assembly is locked by another user
+     * it does nothing and returns name of current lock holder
+     * otherwise returns `null`.
+     *
+     * @param asmId Assembly id
+     * @param user  Assembly lock holder
+     * @return Current locker user name or `null`
+     * if lock was updated successfully
+     * or specified assembly is not found.
+     */
+    @Nullable
+    @Transactional
+    public String asmLock(Long asmId, String user) {
+        Lock lock = Asm.STRIPED_LOCKS.get(asmId);
+        try {
+            if (update("asmLock", "id", asmId, "user", user) < 1) {
+                return (String) selectOne("asmSelectLockUser", asmId);
+            }
+        } finally {
+            lock.unlock();
+        }
+        return null;
+    }
+
+    /**
+     * Unlock an assembly lock.
+     * Returns `true` if existing lock
+     * was cleared.
+     *
+     * @param asmId Assembly id
+     * @return Returns `true` if existing lock
+     * was cleared.
+     */
+    @Transactional
+    public boolean asmUnlock(Long asmId) {
+        Lock lock = Asm.STRIPED_LOCKS.get(asmId);
+        try {
+            return (update("asmUnlock", asmId) > 0);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Select current assembly lock: `(username, lock date)`
+     * or `null` if assembly is not locked.
+     */
+    @Nullable
+    public Pair<String, Date> asmSelectLock(Long asmId) {
+        Map<String, Object> ret = selectOne("asmSelectLock", asmId);
+        if (ret == null) {
+            return null;
+        }
+        return new ImmutablePair(ret.get("lock_user"), ret.get("lock_date"));
+    }
+
+
     @Transactional
     public int asmUpdate(Asm asm) {
         return sess.update(toStatementId("asmUpdate"), asm);
@@ -120,7 +182,7 @@ public class AsmDAO extends MBDAOSupport {
 
     /**
      * Clone assembly under new name and its attributes.
-     * <p/>
+     * <p>
      * Note: No page/file dependencies are cloned.
      *
      * @param asmId       Source assembly id
