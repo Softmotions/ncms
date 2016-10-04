@@ -44,26 +44,19 @@ public class AsmFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(AsmFilter.class);
 
-    @Inject
-    private NcmsEnvironment env;
+    private final NcmsEnvironment env;
 
-    @Inject
-    private MediaRepository mediaRepository;
+    private final MediaRepository mediaRepository;
 
-    @Inject
-    private I18n i18n;
+    private final I18n i18n;
 
-    @Inject
-    private PageSecurityService pageSecurity;
+    private final PageSecurityService pageSecurity;
 
-    @Inject
-    private PageService pageService;
+    private final PageService pageService;
 
-    @Inject
-    private AsmRendererContextFactory rendererContextFactory;
+    private final AsmRendererContextFactory rendererContextFactory;
 
-    @Inject
-    private AsmRenderer asmRenderer;
+    private final AsmRenderer asmRenderer;
 
     private boolean resolveRelativePaths;
 
@@ -73,6 +66,23 @@ public class AsmFilter implements Filter {
 
     private String[] excludePrefixes;
 
+
+    @Inject
+    public AsmFilter(NcmsEnvironment env,
+                     MediaRepository mediaRepository,
+                     I18n i18n,
+                     PageSecurityService pageSecurity,
+                     PageService pageService,
+                     AsmRendererContextFactory rendererContextFactory,
+                     AsmRenderer asmRenderer) {
+        this.env = env;
+        this.mediaRepository = mediaRepository;
+        this.i18n = i18n;
+        this.pageSecurity = pageSecurity;
+        this.pageService = pageService;
+        this.rendererContextFactory = rendererContextFactory;
+        this.asmRenderer = asmRenderer;
+    }
 
     @Override
     public void init(FilterConfig cfg) throws ServletException {
