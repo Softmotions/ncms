@@ -9,6 +9,8 @@
  * @asset(ncms/icon/16/misc/light-bulb-off.png)
  * @asset(ncms/icon/16/misc/images.png)
  * @asset(ncms/icon/16/misc/puzzle.png)
+ * @asset(ncms/icon/16/misc/tick-button.png)
+ * @asset(ncms/icon/16/misc/disk.png)
  */
 qx.Class.define("ncms.pgs.PageEditorEditPage", {
     extend: qx.ui.tabview.Page,
@@ -38,12 +40,19 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__pageNameLabel.setFont("headline");
         header.add(this.__pageNameLabel);
 
+        // First row
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
-        var bt = this.__publishBt = new qx.ui.form.ToggleButton(null, "ncms/icon/16/misc/light-bulb-off.png");
-        bt.addListener("execute", this.__publish, this);
+        var bt = this.__publishPageBt = new qx.ui.form.ToggleButton(null, "ncms/icon/16/misc/light-bulb-off.png");
+        bt.addListener("execute", this.__publishPage, this);
         hcont.add(bt);
 
-        bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/tick.png").set({width: 110});
+        bt = this.__publishChangesBt = new qx.ui.form.Button(null, "ncms/icon/16/misc/tick-button.png");
+        bt.setEnabled(false);
+        bt.setToolTipText(this.tr("Publish page changes"));
+        bt.addListener("execute", this.__publishChanges, this);
+        hcont.add(bt);
+
+        bt = this.__saveBt = new qx.ui.form.Button(this.tr("Save"), "ncms/icon/16/misc/disk.png").set({width: 110});
         bt.setEnabled(false);
         bt.addListener("execute", this.__save, this);
         hcont.add(bt);
@@ -55,10 +64,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt.addListener("execute", this.__cancel, this);
         hcont.add(bt);
 
-        bt = new qx.ui.form.Button(this.tr("Files"), "ncms/icon/16/misc/images.png");
-        bt.addListener("execute", this.__files, this);
-        hcont.add(bt);
-
         var epoins = ncms.Application.extensionPoints("ncms.pgs.PageEditorEditPage.HEADER_BUTTONS");
         if (epoins.length > 0) {
             var menu = new qx.ui.menu.Menu();
@@ -68,12 +73,18 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 ep(this, menu);
             }, this);
         }
-
         header.add(hcont);
 
+        // Second row
         var hcont2 = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
         bt = this.__previewBt = new qx.ui.form.Button(null, "ncms/icon/16/misc/monitor.png");
+        bt.setToolTipText(this.tr("Preview"));
         bt.addListener("execute", this.__preview, this);
+        hcont2.add(bt);
+
+        bt = new qx.ui.form.Button(null, "ncms/icon/16/misc/images.png");
+        bt.setToolTipText(this.tr("Page files"));
+        bt.addListener("execute", this.__files, this);
         hcont2.add(bt);
 
         this.__templateBf =
@@ -82,6 +93,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 true).set({readOnly: true});
         this.__templateBf.getMainButton().set({width: 110});
         this.__templateBf.setPlaceholder(this.tr("Please select the template page"));
+        this.__templateBf.setToolTipText(this.tr("Please select the template page"));
         this.__templateBf.addListener("execute", this.__onChangeTemplate, this);
         hcont2.add(this.__templateBf, {flex: 1});
         header.add(hcont2);
@@ -111,7 +123,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __cancelBt: null,
 
-        __publishBt: null,
+        __publishPageBt: null,
+
+        __publishChangesBt: null,
 
         __previewBt: null,
 
@@ -367,7 +381,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             var espec = this.getPageEditSpec();
             var hasCore = (this.__form != null && espec != null && espec["core"] != null);
             this.__previewBt.setEnabled(hasCore);
-            this.__publishBt.setEnabled(hasCore);
+            this.__publishPageBt.setEnabled(hasCore);
         },
 
         __save: function (cb) {
@@ -444,15 +458,18 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             }
         },
 
-        __publish: function (ev) {
+        __publishPage: function (ev) {
             var val = ev.getTarget().getValue();
-
             if (!val) { //unpublish
                 this.__unpublishPrompt();
                 return;
             }
 
             this.__doPublish(val); //publish
+        },
+
+        __publishChanges: function(ev) {
+
         },
 
         __doPublish: function (publish) {
@@ -482,7 +499,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                             ncms.Application.ACT.getRestUrl("pages.referrers", {guid: this.getPageEditSpec()["guid"]})),
                         function (yes) {
                             if (!yes) {
-                                this.__publishBt.setValue(true);
+                                this.__publishPageBt.setValue(true);
                                 return;
                             }
 
@@ -495,9 +512,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __setPublishState: function (val) {
-            this.__publishBt.setToolTipText(val ? this.tr("Published") : this.tr("Not published"));
-            this.__publishBt.setIcon(val ? "ncms/icon/16/misc/light-bulb.png" : "ncms/icon/16/misc/light-bulb-off.png");
-            this.__publishBt.setValue(val);
+            this.__publishPageBt.setToolTipText(val ? this.tr("Published") : this.tr("Not published"));
+            this.__publishPageBt.setIcon(val ? "ncms/icon/16/misc/light-bulb.png" : "ncms/icon/16/misc/light-bulb-off.png");
+            this.__publishPageBt.setValue(val);
         },
 
         __cancel: function () {
@@ -542,7 +559,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__previewBt = null;
         this.__saveBt = null;
         this.__cancelBt = null;
-        this.__publishBt = null;
+        this.__publishPageBt = null;
+        this.__publishChangesBt = null;
         this.__saveSc = null;
     }
 });

@@ -414,6 +414,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         ObjectNode res = mapper.createObjectNode();
         Lock lock = pageLocks.get(id);
         // todo
+        //adao.asmLock()
+
         return res;
     }
 

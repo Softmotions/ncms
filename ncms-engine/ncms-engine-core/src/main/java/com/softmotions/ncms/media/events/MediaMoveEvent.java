@@ -24,7 +24,7 @@ public class MediaMoveEvent extends BasicEvent {
     public MediaMoveEvent(Object source,
                           Number id, boolean isFolder,
                           String oldPath, String newPath) {
-        super(source);
+        super(source, MediaMoveEvent.class.getSimpleName());
         this.id = id != null ? id.longValue() : null;
         this.oldPath = isFolder ? normalizeFolder(oldPath) : normalizePath(oldPath);
         this.newPath = isFolder ? normalizeFolder(newPath) : normalizePath(newPath);

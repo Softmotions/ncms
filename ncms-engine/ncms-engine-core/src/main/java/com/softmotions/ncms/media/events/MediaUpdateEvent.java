@@ -14,7 +14,7 @@ public class MediaUpdateEvent extends BasicEvent {
     final boolean isFolder;
 
     public MediaUpdateEvent(Object source, boolean isFolder, Number id, String path) {
-        super(source);
+        super(source, MediaUpdateEvent.class.getSimpleName());
         this.id = id != null ? id.longValue() : null;
         this.path = path;
         this.isFolder = isFolder;

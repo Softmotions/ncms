@@ -6,27 +6,28 @@ import com.softmotions.ncms.events.BasicEvent;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class AsmModifiedEvent extends BasicEvent {
+public class AsmLockedEvent extends BasicEvent {
 
-    final Long id;
+    private Long id;
 
-    /**
-     * Assembly ID.
-     * Cannot be {@code null}
-     */
+    private String user;
+
     public Long getId() {
         return id;
     }
 
+    public String getUser() {
+        return user;
+    }
 
-    public AsmModifiedEvent(Object source, Long id) {
-        super(source, AsmModifiedEvent.class.getSimpleName());
-        this.id = id;
+    public AsmLockedEvent(Object source, Long id, String user) {
+        super(source, AsmLockedEvent.class.getSimpleName());
     }
 
     public String toString() {
         return MoreObjects.toStringHelper(this)
                           .add("id", id)
+                          .add("user", user)
                           .toString();
     }
 }

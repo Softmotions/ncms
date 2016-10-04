@@ -8,8 +8,8 @@
  * @asset(ncms/icon/16/misc/folder-tree.png)
  * @asset(ncms/icon/16/misc/folder-tree-bw.png)
  * @asset(ncms/icon/16/misc/file-move.png)
- * @asset(ncms/icon/16/misc/briefcase.png)
- * @asset(ncms/icon/16/misc/briefcase-bw.png)
+ * @asset(ncms/icon/16/misc/home.png)
+ * @asset(ncms/icon/16/misc/home-bw.png)
  */
 qx.Class.define("ncms.mmgr.MediaFilesSelector", {
     extend: qx.ui.core.Widget,
@@ -328,7 +328,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
             if (this.__opts["pageSpec"]) {
                 var pname = this.__opts["pageSpec"]["name"] || "";
-                this.__inpageBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/briefcase-bw.png")
+                this.__inpageBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/home-bw.png")
                 .set({"appearance": "toolbar-table-button"});
                 bt.addListener("execute", function (ev) {
                     var bt = ev.getTarget();
@@ -465,11 +465,13 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 if (vs["inpage"]) {
                     bt.addState("checked");
                     this.setInpage(true);
-                    bt.setIcon("ncms/icon/16/misc/briefcase.png");
+                    bt.setIcon("ncms/icon/16/misc/home.png");
+                    this.__subfoldersBt.setEnabled(false);
                 } else {
                     bt.removeState("checked");
                     this.setInpage(false);
-                    bt.setIcon("ncms/icon/16/misc/briefcase-bw.png");
+                    bt.setIcon("ncms/icon/16/misc/home-bw.png");
+                    this.__subfoldersBt.setEnabled(true);
                 }
             }
 

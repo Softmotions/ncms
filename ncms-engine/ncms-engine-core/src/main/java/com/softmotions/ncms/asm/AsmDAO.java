@@ -24,6 +24,9 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.cont.TinyParamMap;
+import com.softmotions.commons.ebus.EBus;
+import com.softmotions.ncms.asm.events.AsmLockedEvent;
+import com.softmotions.ncms.asm.events.AsmUnlockedEvent;
 import com.softmotions.weboot.mb.MBAction;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
@@ -40,10 +43,16 @@ public class AsmDAO extends MBDAOSupport {
 
     private final SqlSessionFactory sessionFactory;
 
+    private final EBus ebus;
+
+
     @Inject
-    public AsmDAO(SqlSession sess, SqlSessionFactory sessionFactory) {
+    public AsmDAO(SqlSession sess,
+                  SqlSessionFactory sessionFactory,
+                  EBus ebus) {
         super(AsmDAO.class, sess);
         this.sessionFactory = sessionFactory;
+        this.ebus = ebus;
     }
 
     public Criteria newCriteria() {
@@ -134,7 +143,9 @@ public class AsmDAO extends MBDAOSupport {
         Lock lock = Asm.STRIPED_LOCKS.get(asmId);
         try {
             if (update("asmLock", "id", asmId, "user", user) < 1) {
-                return (String) selectOne("asmSelectLockUser", asmId);
+                return selectOne("asmSelectLockUser", asmId);
+            } else {
+                ebus.fire(new AsmLockedEvent(this, asmId, user));
             }
         } finally {
             lock.unlock();
@@ -155,10 +166,14 @@ public class AsmDAO extends MBDAOSupport {
     public boolean asmUnlock(Long asmId) {
         Lock lock = Asm.STRIPED_LOCKS.get(asmId);
         try {
-            return (update("asmUnlock", asmId) > 0);
+            if (update("asmUnlock", asmId) > 0) {
+                ebus.fire(new AsmUnlockedEvent(this, asmId));
+                return true;
+            }
         } finally {
             lock.unlock();
         }
+        return false;
     }
 
     /**

@@ -28,7 +28,7 @@ msgstr "Инструменты"
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:163 ncms/asm/AsmEditor.js:88
+#: ncms/pgs/PageEditorEditPage.js:177 ncms/asm/AsmEditor.js:88
 #: ncms/asm/am/AsmCoreAM.js:91 ncms/mtt/filters/MttResourceFilter.js:30
 #: ncms/asm/am/ImageAMValueWidget.js:104 ncms/mtt/filters/MttFilterDlg.js:40
 #: ncms/mtt/actions/MttActionDlg.js:40 ncms/usr/UserEditForm.js:27
@@ -91,7 +91,7 @@ msgstr "Обязательное в GUI"
 msgid "Ok"
 msgstr "Ок"
 
-#: ncms/pgs/PageEditorEditPage.js:53 ncms/mtt/tp/MttTpEditor.js:80
+#: ncms/pgs/PageEditorEditPage.js:62 ncms/mtt/tp/MttTpEditor.js:80
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:57 ncms/wiki/TableDlg.js:59
 #: ncms/asm/AsmSelectorDlg.js:48 ncms/pgs/PagesSelectorDlg.js:58
 #: ncms/mtt/filters/MttFilterDlg.js:78 ncms/mtt/actions/MttActionDlg.js:78
@@ -163,14 +163,14 @@ msgstr "Перезаписать атрибут"
 msgid "New"
 msgstr "Создать"
 
-#: ncms/pgs/PageEditorEditPage.js:30 ncms/mtt/filters/MttFiltersTable.js:178
-#: ncms/mmgr/MediaFilesSelector.js:671 ncms/mtt/actions/MttActionsTree.js:236
+#: ncms/pgs/PageEditorEditPage.js:32 ncms/mtt/filters/MttFiltersTable.js:178
+#: ncms/mmgr/MediaFilesSelector.js:673 ncms/mtt/actions/MttActionsTree.js:236
 #: ncms/asm/AsmAttrsTable.js:208 ncms/asm/am/TreeAMValueWidget.js:452
 msgid "Edit"
 msgstr "Редактировать"
 
 #: ncms/mtt/filters/MttFiltersTable.js:182 ncms/asm/AsmNav.js:89
-#: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:688
+#: ncms/usr/UsersNav.js:103 ncms/mmgr/MediaFilesSelector.js:690
 #: ncms/asm/am/TableAMValueWidget.js:337
 #: ncms/mtt/actions/MttActionsTree.js:132
 #: ncms/mtt/actions/MttActionsTree.js:240 ncms/mtt/MttNav.js:41
@@ -223,7 +223,7 @@ msgstr "Имя класса контроллера сборки (assembly)"
 msgid "Controller"
 msgstr "Контроллер"
 
-#: ncms/pgs/PageEditorEditPage.js:498 ncms/asm/AsmEditor.js:112
+#: ncms/pgs/PageEditorEditPage.js:515 ncms/asm/AsmEditor.js:112
 msgid "Published"
 msgstr "Опубликовано"
 
@@ -240,7 +240,7 @@ msgstr "Страница"
 msgid "News page"
 msgstr "Новость"
 
-#: ncms/pgs/PageEditorEditPage.js:80 ncms/asm/AsmEditor.js:119
+#: ncms/pgs/PageEditorEditPage.js:91 ncms/asm/AsmEditor.js:119
 msgid "Template"
 msgstr "Шаблон"
 
@@ -280,7 +280,7 @@ msgid "Refresh"
 msgstr "Обновить"
 
 #: ncms/news/NewsNav.js:127 ncms/asm/AsmNav.js:85
-#: ncms/mmgr/MediaItemTreeSelector.js:87 ncms/mmgr/MediaFilesSelector.js:677
+#: ncms/mmgr/MediaItemTreeSelector.js:87 ncms/mmgr/MediaFilesSelector.js:679
 #: ncms/mtt/MttNav.js:137 ncms/asm/am/TreeAMValueWidget.js:457
 #: ncms/mtt/tp/MttTpNav.js:80
 msgid "Rename"
@@ -582,8 +582,8 @@ msgstr "Агрегат"
 msgid "Pages"
 msgstr "Страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:58 ncms/asm/am/RichRefAM.js:42
-#: ncms/mmgr/MediaItemTreeSelector.js:20 ncms/asm/am/TreeAM.js:51
+#: ncms/asm/am/RichRefAM.js:42 ncms/mmgr/MediaItemTreeSelector.js:20
+#: ncms/asm/am/TreeAM.js:51
 msgid "Files"
 msgstr "Файлы"
 
@@ -761,7 +761,7 @@ msgstr "Добавить ссылку на файл"
 msgid "Synchronized with %1"
 msgstr "Синхронизовано с %1"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:91 ncms/mmgr/MediaFilesSelector.js:683
+#: ncms/mmgr/MediaItemTreeSelector.js:91 ncms/mmgr/MediaFilesSelector.js:685
 #: ncms/asm/am/TreeAMValueWidget.js:465
 msgid "Move to another folder"
 msgstr "Переместить в другую папку"
@@ -851,12 +851,12 @@ msgstr "Папка"
 msgid "Image size"
 msgstr "Размер изображения"
 
-#: ncms/mmgr/MediaFilesSelector.js:658 ncms/mmgr/MediaFileEditor.js:295
-#: ncms/pgs/PageEditorInfoPage.js:32
+#: ncms/pgs/PageEditorEditPage.js:81 ncms/mmgr/MediaFilesSelector.js:660
+#: ncms/mmgr/MediaFileEditor.js:295 ncms/pgs/PageEditorInfoPage.js:32
 msgid "Preview"
 msgstr "Предпросмотр"
 
-#: ncms/mmgr/MediaFilesSelector.js:662 ncms/mmgr/MediaFileEditor.js:299
+#: ncms/mmgr/MediaFilesSelector.js:664 ncms/mmgr/MediaFileEditor.js:299
 msgid "Download"
 msgstr "Скачать"
 
@@ -873,7 +873,7 @@ msgid "Upload files"
 msgstr "Загрузить файлы"
 
 #: ncms/mmgr/MediaItemTreeSelector.js:79 ncms/mmgr/MediaFilesSelector.js:282
-#: ncms/mmgr/MediaFilesSelector.js:652
+#: ncms/mmgr/MediaFilesSelector.js:654
 msgid "New file"
 msgstr "Новый файл"
 
@@ -889,8 +889,8 @@ msgstr "Удалить файлы"
 msgid "Edit file content"
 msgstr "Редактировать содержимое файла"
 
-#: ncms/mmgr/MediaFilesSelector.js:306 ncms/mmgr/MediaFilesSelector.js:696
-#: ncms/mmgr/MediaFilesSelector.js:765
+#: ncms/mmgr/MediaFilesSelector.js:306 ncms/mmgr/MediaFilesSelector.js:698
+#: ncms/mmgr/MediaFilesSelector.js:767
 msgid "Import from media repository"
 msgstr "Импортировать из медиа-репозитория"
 
@@ -910,15 +910,15 @@ msgstr "Показать файлы в подпапках"
 msgid "Are you sure to remove selected files?"
 msgstr "Вы действительно желаете безвозвратно удалить выбранные файлы?"
 
-#: ncms/mmgr/MediaItemTreeSelector.js:164 ncms/mmgr/MediaFilesSelector.js:608
+#: ncms/mmgr/MediaItemTreeSelector.js:164 ncms/mmgr/MediaFilesSelector.js:610
 msgid "Move '%1' to another folder"
 msgstr "Переместить '%1' в другую папку"
 
-#: ncms/mmgr/MediaFilesSelector.js:609
+#: ncms/mmgr/MediaFilesSelector.js:611
 msgid "Move %1 files to another folder"
 msgstr "Переместить %1 файл(а) в другую папку"
 
-#: ncms/mmgr/MediaFilesSelector.js:648
+#: ncms/mmgr/MediaFilesSelector.js:650
 msgid "Upload"
 msgstr "Загрузить"
 
@@ -1352,7 +1352,7 @@ msgstr "Шаблон URL для трекинг пикселя"
 msgid "Tracking pixel JS code"
 msgstr "JS код трекинг пикселя"
 
-#: ncms/pgs/PageEditorEditPage.js:46 ncms/mtt/tp/MttTpEditor.js:75
+#: ncms/pgs/PageEditorEditPage.js:55 ncms/mtt/tp/MttTpEditor.js:75
 #: ncms/usr/UserEditForm.js:61
 msgid "Save"
 msgstr "Сохранить"
@@ -1438,31 +1438,40 @@ msgstr "Добавить пользователя в список прав"
 msgid "Remove user recursively"
 msgstr "Убрать пользователя (рекурсивно)"
 
-#: ncms/pgs/PageEditorEditPage.js:84 ncms/pgs/PageEditorEditPage.js:329
+#: ncms/pgs/PageEditorEditPage.js:51
+msgid "Publish page changes"
+msgstr "Опубликовать внесенные изменения"
+
+#: ncms/pgs/PageEditorEditPage.js:86
+msgid "Page files"
+msgstr "Файлы страницы"
+
+#: ncms/pgs/PageEditorEditPage.js:95 ncms/pgs/PageEditorEditPage.js:96
+#: ncms/pgs/PageEditorEditPage.js:343
 msgid "Please select the template page"
 msgstr "Пожалуйста, выберите шаблон для страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:333
+#: ncms/pgs/PageEditorEditPage.js:347
 msgid "Templates"
 msgstr "Шаблоны"
 
-#: ncms/pgs/PageEditorEditPage.js:382
+#: ncms/pgs/PageEditorEditPage.js:396
 msgid "Page fields contain errors"
 msgstr "В полях страницы обнаружены ошибки"
 
-#: ncms/pgs/PageEditorEditPage.js:406
+#: ncms/pgs/PageEditorEditPage.js:420
 msgid "Failed to save page."
 msgstr "Ошибка при сохранении страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:430
+#: ncms/pgs/PageEditorEditPage.js:444
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:439
+#: ncms/pgs/PageEditorEditPage.js:453
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:481
+#: ncms/pgs/PageEditorEditPage.js:498
 msgid ""
 "Are you sure to unpublish this page? There are pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"
@@ -1472,15 +1481,15 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" target='_blank' "
 "rel='noopener noreferrer'>списком ссылающихся страниц</a>"
 
-#: ncms/pgs/PageEditorEditPage.js:498
+#: ncms/pgs/PageEditorEditPage.js:515
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:504
+#: ncms/pgs/PageEditorEditPage.js:521
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:516
+#: ncms/pgs/PageEditorEditPage.js:533
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 
@@ -1616,7 +1625,7 @@ msgstr "Роли/Группы"
 
 #: ncms/usr/UserEditor.js:38
 msgid "Edit user"
-msgstr ""
+msgstr "Редактировать пользователя"
 
 #: ncms/usr/UsersNav.js:97 ncms/usr/UserNewDlg.js:19
 msgid "New user"

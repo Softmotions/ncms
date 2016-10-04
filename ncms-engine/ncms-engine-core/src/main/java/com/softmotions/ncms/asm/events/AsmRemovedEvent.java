@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm.events;
 
+import com.google.common.base.MoreObjects;
 import com.softmotions.ncms.events.BasicEvent;
 
 /**
@@ -14,7 +15,13 @@ public class AsmRemovedEvent extends BasicEvent {
     }
 
     public AsmRemovedEvent(Object source, Long id) {
-        super(source);
+        super(source, AsmRemovedEvent.class.getSimpleName());
         this.id = id;
+    }
+
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                          .add("id", id)
+                          .toString();
     }
 }

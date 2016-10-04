@@ -17,7 +17,7 @@ public class MediaDeleteEvent extends BasicEvent {
     final String path;
 
     public MediaDeleteEvent(Object source, boolean isFolder, String path) {
-        super(source);
+        super(source, MediaDeleteEvent.class.getSimpleName());
         this.path = isFolder ? normalizeFolder(path) : normalizePath(path);
         this.isFolder = isFolder;
     }

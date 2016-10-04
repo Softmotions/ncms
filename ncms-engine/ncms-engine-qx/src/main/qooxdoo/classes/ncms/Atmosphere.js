@@ -17,7 +17,7 @@ qx.Class.define("ncms.Atmosphere", {
         opts = qx.lang.Object.mergeWith(opts, {
             transport: "streaming",
             fallbackTransport: "long-polling",
-            logLevel: "debug",
+            /*logLevel: "debug",*/
             trackMessageLength: true,
             reconnectInterval: 5000,
             maxReconnectOnClose: 360
