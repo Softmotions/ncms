@@ -24,9 +24,9 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.commons.ebus.EBus;
 import com.softmotions.ncms.asm.events.AsmLockedEvent;
 import com.softmotions.ncms.asm.events.AsmUnlockedEvent;
+import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.weboot.mb.MBAction;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
@@ -43,13 +43,13 @@ public class AsmDAO extends MBDAOSupport {
 
     private final SqlSessionFactory sessionFactory;
 
-    private final EBus ebus;
+    private final NcmsEventBus ebus;
 
 
     @Inject
     public AsmDAO(SqlSession sess,
                   SqlSessionFactory sessionFactory,
-                  EBus ebus) {
+                  NcmsEventBus ebus) {
         super(AsmDAO.class, sess);
         this.sessionFactory = sessionFactory;
         this.ebus = ebus;
@@ -197,7 +197,7 @@ public class AsmDAO extends MBDAOSupport {
 
     /**
      * Clone assembly under new name and its attributes.
-     * <p>
+     * <p/>
      * Note: No page/file dependencies are cloned.
      *
      * @param asmId       Source assembly id

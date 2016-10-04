@@ -50,6 +50,10 @@
             <artifactId>httl</artifactId>
         </dependency>
         <dependency>
+            <groupId>net.htmlparser.jericho</groupId>
+            <artifactId>jericho-html</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.atmosphere</groupId>
             <artifactId>atmosphere-annotations</artifactId>
         </dependency>
