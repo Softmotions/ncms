@@ -38,33 +38,26 @@ public class HttlVisualEditorMethods {
         return "<script src=\"" + ref + "\"/>";
     }
 
-    /**
-     * Return `true` if content of visual block identified by `blockName` exists
-     *
-     * @param blockName Visual block name.
-     */
-    public static boolean ncmsVEBlockExists(String blockName) {
-        AsmRendererContext ctx = AsmRendererContext.getSafe();
-        AsmAttribute attr = ctx.getAsm().getUniqueEffectiveAttributeByType(AsmVisualEditorAM.TYPE);
-        if (attr == null) {
-            return false;
-        }
-        AsmVisualEditorAM amreg = (AsmVisualEditorAM) ctx.getPageService()
-                                                         .getAsmAttributeManagersRegistry()
-                                                         .getByType(AsmVisualEditorAM.TYPE);
-        if (amreg == null) {
-            return false;
-        }
-        // todo
-        return false;
-    }
-
     @Nullable
-    public static String ncmsVEBlock(String blockName) {
+    public static String ncmsVEBlock(String sectionName) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         AsmAttribute attr = ctx.getAsm()
                                .getUniqueEffectiveAttributeByType(AsmVisualEditorAM.TYPE);
+        AsmVisualEditorAM am = ctx.getPageService()
+                                  .getAsmAttributeManagersRegistry()
+                                  .getByType(AsmVisualEditorAM.TYPE);
+        if (attr == null || am == null) {
+            return null;
+        }
+        return am.getSection(ctx, attr, sectionName);
+    }
 
-        return null;
+    /**
+     * Return `true` if content of visual block identified by `sectionName` exists
+     *
+     * @param sectionName Visual block name.
+     */
+    public static boolean ncmsVEBlockExists(String sectionName) {
+        return ncmsVEBlock(sectionName) != null;
     }
 }

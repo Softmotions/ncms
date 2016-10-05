@@ -7,7 +7,7 @@ import java.util.Collection;
  */
 public interface AsmAttributeManagersRegistry {
 
-    AsmAttributeManager getByType(String type);
+     <T extends AsmAttributeManager> T getByType(String type);
 
     Collection<AsmAttributeManager> getAll();
 

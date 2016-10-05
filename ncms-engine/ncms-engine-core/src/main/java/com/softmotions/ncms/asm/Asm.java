@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -157,6 +158,20 @@ public class Asm implements Serializable {
         this.options = options;
     }
 
+    public static Lock acquireLock(Long asmId) {
+        Lock lock = STRIPED_LOCKS.get(asmId);
+        boolean acquired;
+        try {
+            acquired = lock.tryLock(1, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to acquire assembly lock. Assembly id: " + asmId, e);
+        }
+        if (!acquired) {
+            throw new RuntimeException("Failed to acquire assembly lock. Assembly id: " + asmId);
+        }
+        return lock;
+    }
+
     /**
      * Assembly primary key (PK)
      */
@@ -197,9 +212,9 @@ public class Asm implements Serializable {
 
     /**
      * An assembly type.
-     * <p>
+     * <p/>
      * Valid values:
-     * <p>
+     * <p/>
      * * `null` - generic assembly
      * * `page` - page instance
      * * `page.folder` - page instance with specific `folder` flavour.
@@ -280,7 +295,7 @@ public class Asm implements Serializable {
     /**
      * The type of template represented by this assembly.
      * Valid values:
-     * <p>
+     * <p/>
      * * `null`/`none` - assembly is not a template
      * * `page` - assembly is a page template
      * * `news` - assembky is a template form news line
@@ -823,7 +838,6 @@ public class Asm implements Serializable {
     /**
      * Perform deep clone of this assembly.
      * Cloned parents are cached in <c>cloneContext</c>.
-     *
      */
     public Asm cloneDeep(Map<String, Asm> cloneContext) {
         Asm asm = cloneContext.get(name);

@@ -733,7 +733,8 @@
         SELECT
             attr.*
         FROM ASM_ATTRS AS attr
-        WHERE attr.asm_id = #{asmId} AND attr.name = #{name}
+        WHERE attr.asm_id = #{asmId}
+              AND attr.name = #{name}
     </select>
 
 

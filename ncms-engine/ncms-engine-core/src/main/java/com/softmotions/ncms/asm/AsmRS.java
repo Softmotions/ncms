@@ -109,15 +109,14 @@ public class AsmRS extends MBDAOSupport {
                       @PathParam("name") String name) {
         name = name.trim();
         Asm asm;
-        synchronized (Asm.class) {
-            Long id = adao.asmSelectIdByName(name);
-            if (id != null) {
-                String msg = messages.get("ncms.asm.name.already.exists", req, name);
-                throw new NcmsNotificationException(msg, true, req);
-            }
-            asm = new Asm(name);
-            adao.asmInsert(asm);
+        ebus.unlockOnTxFinish(Asm.acquireLock(0L));
+        Long id = adao.asmSelectIdByName(name);
+        if (id != null) {
+            String msg = messages.get("ncms.asm.name.already.exists", req, name);
+            throw new NcmsNotificationException(msg, true, req);
         }
+        asm = new Asm(name);
+        adao.asmInsert(asm);
         ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, asm.getId()));
         return asm;
     }
@@ -129,15 +128,14 @@ public class AsmRS extends MBDAOSupport {
                        @PathParam("id") Long id,
                        @PathParam("name") String name) {
         name = name.trim();
-        synchronized (Asm.class) {
-            Long oid = adao.asmSelectIdByName(name);
-            if (oid != null && !oid.equals(id)) {
-                String msg = messages.get("ncms.asm.name.already.other", req, name);
-                throw new NcmsNotificationException(msg, true, req);
-            }
-            if (oid == null) {
-                adao.asmRename(id, name);
-            }
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
+        Long oid = adao.asmSelectIdByName(name);
+        if (oid != null && !oid.equals(id)) {
+            String msg = messages.get("ncms.asm.name.already.other", req, name);
+            throw new NcmsNotificationException(msg, true, req);
+        }
+        if (oid == null) {
+            adao.asmRename(id, name);
         }
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
     }
@@ -146,6 +144,7 @@ public class AsmRS extends MBDAOSupport {
     @Path("/delete/{id}")
     @Transactional
     public void delete(@PathParam("id") Long id) {
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         adao.asmRemove(id);
         ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id));
     }
@@ -154,6 +153,7 @@ public class AsmRS extends MBDAOSupport {
     @Path("/{id}/core")
     @Transactional
     public ObjectNode corePut(@PathParam("id") Long id, ObjectNode coreSpec) {
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
             throw new NotFoundException("");
@@ -170,6 +170,7 @@ public class AsmRS extends MBDAOSupport {
     @Path("/{id}/core")
     @Transactional
     public ObjectNode coreDelete(@PathParam("id") Long id) {
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         ObjectNode res = mapper.createObjectNode();
         adao.update("asmUpdateCore",
                     "id", id,
@@ -217,6 +218,7 @@ public class AsmRS extends MBDAOSupport {
     @Path("/{id}/parents")
     @Transactional
     public String[] removeParent(@PathParam("id") Long id, JsonNode jsdata) throws IOException {
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
             throw new NotFoundException("");
@@ -245,6 +247,7 @@ public class AsmRS extends MBDAOSupport {
     @Path("/{id}/parents")
     @Transactional
     public String[] saveParent(@PathParam("id") Long id, JsonNode jsdata) throws IOException {
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
             throw new NotFoundException("");
@@ -252,7 +255,6 @@ public class AsmRS extends MBDAOSupport {
         if (!jsdata.isArray()) {
             throw new BadRequestException("");
         }
-
         ArrayNode an = (ArrayNode) jsdata;
         Set<String> currParents = asm.getAllParentNames();
         Set<Asm> newParents = new HashSet<>();
@@ -292,6 +294,8 @@ public class AsmRS extends MBDAOSupport {
     @Transactional
     public void updateAssemblyProps(@PathParam("id") Long id,
                                     ObjectNode props) {
+
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         TinyParamMap args = new TinyParamMap();
         args.param("id", id);
         if (props.hasNonNull("description")) {
@@ -348,7 +352,6 @@ public class AsmRS extends MBDAOSupport {
     @JsonView(Asm.ViewLarge.class)
     public AsmAttribute getAsmAttribute(@PathParam("id") Long asmId,
                                         @PathParam("name") String name) {
-
         AsmAttribute attr = adao.selectOne("attrByAsmAndName",
                                            "asm_id", asmId,
                                            "name", name);
@@ -365,6 +368,7 @@ public class AsmRS extends MBDAOSupport {
     public void rmAsmAttribute(@PathParam("id") Long asmId,
                                @PathParam("name") String name,
                                @QueryParam("recursive") Boolean recursive) {
+        ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
         delete("deleteAttribute",
                "name", name,
                "asm_id", asmId);
@@ -386,7 +390,6 @@ public class AsmRS extends MBDAOSupport {
         }
     }
 
-
     /**
      * Reorder assembly attributes.
      *
@@ -398,16 +401,17 @@ public class AsmRS extends MBDAOSupport {
     @Transactional
     public void exchangeAttributesOrdinal(@PathParam("ordinal1") Long ordinal1,
                                           @PathParam("ordinal2") Long ordinal2) {
+        Long id = selectOne("selectAsmIdByOrdinal", ordinal1);
+        if (id != null) {
+            ebus.unlockOnTxFinish(Asm.acquireLock(id));
+        }
         update("exchangeAttributesOrdinal",
                "ordinal1", ordinal1,
                "ordinal2", ordinal2);
-
-        Long id = selectOne("selectAsmIdByOrdinal", ordinal1);
         if (id != null) {
             ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
         }
     }
-
 
     /**
      * PUT asm attributes values/options
@@ -435,6 +439,7 @@ public class AsmRS extends MBDAOSupport {
                                  @Context SecurityContext sctx,
                                  ObjectNode spec) throws Exception {
 
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
         amCtx.setAsmId(id);
 
@@ -492,22 +497,18 @@ public class AsmRS extends MBDAOSupport {
     }
 
     private void renameAttribute(long asmId, String name, String newName) {
-
         update("renameAttribute",
                "asm_id", asmId,
                "new_name", newName,
                "old_name", name);
-
         renameAttributeChilds(asmId, name, newName);
     }
 
     private void renameAttributeChilds(long parentAsmId, String name, String newName) {
-
         update("renameAttributeChilds",
                "parent_id", parentAsmId,
                "new_name", newName,
                "old_name", name);
-
         List<Number> childIds = select("selectNotEmptyChilds",
                                        "parent_id", parentAsmId);
         for (Number cId : childIds) {

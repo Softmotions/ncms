@@ -39,11 +39,12 @@ public class DefaultAsmAttributeManagersRegistry implements AsmAttributeManagers
     }
 
     @Override
-    public AsmAttributeManager getByType(String type) {
+    public <T extends AsmAttributeManager> T getByType(String type) {
         if (type == null) {
             return null;
         }
-        return typeAttributeManagersMap.get(type);
+        //noinspection unchecked
+        return (T) typeAttributeManagersMap.get(type);
     }
 
     @Override

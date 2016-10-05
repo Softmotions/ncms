@@ -140,15 +140,11 @@ public class AsmDAO extends MBDAOSupport {
     @Nullable
     @Transactional
     public String asmLock(Long asmId, String user) {
-        Lock lock = Asm.STRIPED_LOCKS.get(asmId);
-        try {
-            if (update("asmLock", "id", asmId, "user", user) < 1) {
-                return selectOne("asmSelectLockUser", asmId);
-            } else {
-                ebus.fire(new AsmLockedEvent(this, asmId, user));
-            }
-        } finally {
-            lock.unlock();
+        ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
+        if (update("asmLock", "id", asmId, "user", user) < 1) {
+            return selectOne("asmSelectLockUser", asmId);
+        } else {
+            ebus.fireOnSuccessCommit(new AsmLockedEvent(this, asmId, user));
         }
         return null;
     }
@@ -164,14 +160,10 @@ public class AsmDAO extends MBDAOSupport {
      */
     @Transactional
     public boolean asmUnlock(Long asmId) {
-        Lock lock = Asm.STRIPED_LOCKS.get(asmId);
-        try {
-            if (update("asmUnlock", asmId) > 0) {
-                ebus.fire(new AsmUnlockedEvent(this, asmId));
-                return true;
-            }
-        } finally {
-            lock.unlock();
+        ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
+        if (update("asmUnlock", asmId) > 0) {
+            ebus.fire(new AsmUnlockedEvent(this, asmId));
+            return true;
         }
         return false;
     }
@@ -401,20 +393,22 @@ public class AsmDAO extends MBDAOSupport {
         }
         Asm asm = new Asm();
         String name;
-        synchronized (Asm.class) { //full exclusive identity synchronization
-            try (SqlSession s = sessionFactory.openSession()) {
-                Number existId;
-                int i = 1;
-                do {
-                    name = namePrefix + i++;
-                    existId = s.selectOne(toStatementId("asmIDByName"), name);
-                    if (existId == null) {
-                        asm.setName(name);
-                        asmInsert(asm);
-                    }
-                } while (existId != null);
-                s.commit(true);
-            }
+        //full exclusive identity synchronization
+        Lock lock = Asm.acquireLock(0L);
+        try (SqlSession s = sessionFactory.openSession()) {
+            Number existId;
+            int i = 1;
+            do {
+                name = namePrefix + i++;
+                existId = s.selectOne(toStatementId("asmIDByName"), name);
+                if (existId == null) {
+                    asm.setName(name);
+                    asmInsert(asm);
+                }
+            } while (existId != null);
+            s.commit(true);
+        } finally {
+            lock.unlock();
         }
         return asm;
     }
@@ -425,6 +419,7 @@ public class AsmDAO extends MBDAOSupport {
      * @param asmId Assembly identifier
      * @return Number of updated rows
      */
+    @Transactional
     public int asmRemove(Long asmId) {
         asmRemoveAllParents(asmId);
         return sess.delete("asmRemove", asmId);
@@ -437,6 +432,7 @@ public class AsmDAO extends MBDAOSupport {
      * @param asmId Assembly identifier
      * @return Number of updated rows
      */
+    @Transactional
     public int asmRemoveParentFromAll(Long asmId) {
         return sess.delete("asmRemoveParentFromAll", asmId);
     }
@@ -472,7 +468,6 @@ public class AsmDAO extends MBDAOSupport {
         return core;
     }
 
-
     @Transactional
     public void asmSetSysprop(Long asmId, String property, String value) {
         delete("asmDropSysprop",
@@ -504,7 +499,6 @@ public class AsmDAO extends MBDAOSupport {
                          "asmId", asmId,
                          "property", property);
     }
-
 
     @Transactional
     public void updateAttrsIdxStringValues(AsmAttribute attr, Collection<String> values) {
@@ -596,5 +590,4 @@ public class AsmDAO extends MBDAOSupport {
             super(dao, namespace);
         }
     }
-
 }

@@ -1,6 +1,7 @@
 package com.softmotions.ncms.events;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.weboot.mb.MBSqlSessionListener;
+import com.softmotions.weboot.mb.MBSqlSessionListenerSupport;
 import com.softmotions.weboot.mb.MBSqlSessionManager;
 
 /**
@@ -38,6 +40,7 @@ public class EventsModule extends AbstractModule {
         }
     }
 
+    @SuppressWarnings("InnerClassTooDeeplyNested")
     static class LocalEventBus extends AsyncEventBus implements NcmsEventBus {
 
         final MBSqlSessionManager sessionManager;
@@ -98,6 +101,28 @@ public class EventsModule extends AbstractModule {
                 @Override
                 public void rollback() {
                     fire(event);
+                }
+            });
+        }
+
+
+        @Override
+        public void unlockOnTxFinish(Lock lock) {
+            sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
+
+                @Override
+                public void commit(boolean success) {
+                    lock.unlock();
+                }
+
+                @Override
+                public void rollback() {
+                   lock.unlock();
+                }
+
+                @Override
+                public void close(boolean success) {
+                   lock.unlock();
                 }
             });
         }

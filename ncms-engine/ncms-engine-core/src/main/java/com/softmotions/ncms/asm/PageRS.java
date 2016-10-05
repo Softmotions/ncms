@@ -394,6 +394,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     private void updatePublishStatus(HttpServletRequest req, Long id, boolean published) {
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm page = adao.asmSelectById(id);
         if (page == null || !pageSecurity.canEdit2(page, req)) {
             throw new UnauthorizedException();
@@ -419,10 +420,9 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         WSUser wsUser = pageSecurity.getCurrentWSUserSafe(req);
         ObjectNode res = mapper.createObjectNode();
-        Lock lock = pageLocks.get(id);
+        //Lock lock = pageLocks.get(id);
         // todo
         //adao.asmLock()
-
         return res;
     }
 
@@ -434,6 +434,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                             @PathParam("id") Long id,
                             ObjectNode data) throws Exception {
 
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
         amCtx.setAsmId(id);
 
@@ -506,12 +507,12 @@ public class PageRS extends MBDAOSupport implements PageService {
                                   @Context HttpServletResponse resp,
                                   @PathParam("id") Long id,
                                   @PathParam("templateId") Long templateId) throws Exception {
+
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm page = adao.asmSelectById(id);
         if (!pageSecurity.canEdit2(page, req)) {
             throw new ForbiddenException("");
         }
-
-
         Boolean ts = selectOne("selectPageTemplateStatus", templateId);
         if (ts == null) {
             log.warn("Assembly template: {} not found", templateId);
@@ -579,6 +580,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                                  @PathParam("id") Long id,
                                  @PathParam("owner") String owner) {
 
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         if (!pageSecurity.isOwner(id, req)) {
             throw new ForbiddenException("");
         }
@@ -604,6 +606,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public void clonePage(@Context HttpServletRequest req,
                           ObjectNode spec) throws Exception {
+
         String guid;
         Long id;
         do {
@@ -612,6 +615,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         } while (id != null); //very uncommon
 
         long asmId = spec.path("id").asLong();
+        ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
         String asmName = adao.asmSelectNameById(asmId);
         if (asmName == null) {
             throw new BadRequestException();
@@ -740,9 +744,12 @@ public class PageRS extends MBDAOSupport implements PageService {
     public void updatePageBasic(@Context HttpServletRequest req,
                                 @Context SecurityContext sctx,
                                 ObjectNode spec) {
+
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
         Long id = spec.hasNonNull("id") ? spec.get("id").asLong() : null;
         String type = spec.hasNonNull("type") ? spec.get("type").asText().trim() : null;
+
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         final CachedPage page = getCachedPage(id, true);
         if (page == null) {
             throw new NotFoundException("");
@@ -779,11 +786,18 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public void movePage(@Context HttpServletRequest req,
                          ObjectNode spec) {
+
+
         long src = spec.hasNonNull("src") ? spec.get("src").longValue() : 0;
         long tgt = spec.hasNonNull("tgt") ? spec.get("tgt").longValue() : 0;
         if (src == 0) {
             throw new BadRequestException("");
         }
+
+        //todo review dealocks
+        ebus.unlockOnTxFinish(Asm.acquireLock(src));
+        ebus.unlockOnTxFinish(Asm.acquireLock(tgt));
+
         Asm srcPage = adao.asmSelectById(src);
         Asm tgtPage = (tgt != 0) ? adao.asmSelectById(tgt) : null; //zero tgt => Root target
         if (srcPage == null) {
@@ -911,6 +925,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     public ObjectNode removePage(@Context HttpServletRequest req,
                                  @PathParam("id") Long id) {
 
+        ebus.unlockOnTxFinish(Asm.acquireLock(id));
         ObjectNode ret = mapper.createObjectNode();
         Asm page = adao.asmSelectById(id);
         if (page == null) {
@@ -1030,7 +1045,6 @@ public class PageRS extends MBDAOSupport implements PageService {
                          @PathParam("pid") Long pid,
                          @PathParam("user") String user,
                          @QueryParam("recursive") boolean recursive) {
-
         if (!pageSecurity.isOwner(pid, req)) {
             throw new ForbiddenException("");
         }
@@ -1038,7 +1052,6 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (wsUser == null) {
             throw new BadRequestException("User not found");
         }
-
         pageSecurity.addUserRights(pid, user, recursive);
     }
 
@@ -1877,7 +1890,6 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
         }
     }
-
 
     @Start(order = 90, parallel = true)
     public void start() {

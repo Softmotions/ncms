@@ -1,5 +1,7 @@
 package com.softmotions.ncms.events;
 
+import java.util.concurrent.locks.Lock;
+
 import com.softmotions.commons.ebus.EBus;
 
 /**
@@ -10,4 +12,6 @@ public interface NcmsEventBus extends EBus {
     void fireOnSuccessCommit(Object event);
 
     void fireOnRollback(Object event);
+
+    void unlockOnTxFinish(Lock lock);
 }
