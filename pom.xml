@@ -14,7 +14,7 @@
     <parent>
         <groupId>softmotions</groupId>
         <artifactId>softmotions-base-pom</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.0</version>
     </parent>
 
     <artifactId>ncms-base</artifactId>
@@ -23,7 +23,15 @@
     <name>ncms</name>
     <url>https://github.com/Softmotions/ncms</url>
     <inceptionYear>2014</inceptionYear>
-
+    <description>Next generation Java based CMS engine</description>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
     <developers>
         <developer>
             <name>Anton Adamansky</name>
@@ -36,6 +44,15 @@
             <organization>Sofmotions Ltd.</organization>
         </developer>
     </developers>
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/Softmotions/ncms/issues</url>
+    </issueManagement>
+    <scm>
+        <connection>scm:git:https://github.com/Softmotions/ncms.git</connection>
+        <developerConnection>scm:git:git@github.com:Softmotions/ncms.git</developerConnection>
+        <url>https://github.com/Softmotions/ncms</url>
+    </scm>
 
     <properties>
         <!--<maven.test.skip>true</maven.test.skip>-->
@@ -576,5 +593,27 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.3,)</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>
