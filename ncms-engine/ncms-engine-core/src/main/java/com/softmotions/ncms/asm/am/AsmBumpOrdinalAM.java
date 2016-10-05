@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.AsmDAO;
 
 
@@ -21,6 +22,11 @@ public class AsmBumpOrdinalAM extends AsmBooleanAM {
     @Inject
     public AsmBumpOrdinalAM(AsmDAO adao) {
         this.adao = adao;
+    }
+
+    @Override
+    public boolean isUniqueAttribute() {
+        return true;
     }
 
     @Override

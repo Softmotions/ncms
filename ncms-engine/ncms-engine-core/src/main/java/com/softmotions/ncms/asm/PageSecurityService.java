@@ -7,13 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.shiro.authz.UnauthenticatedException;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,6 @@ import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
-import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBDAOSupport;
 import com.softmotions.weboot.mb.MBSqlSessionListenerSupport;
 import com.softmotions.weboot.mb.MBSqlSessionManager;
@@ -47,7 +46,6 @@ public class PageSecurityService extends MBDAOSupport {
     public static final String ALL_RIGHTS_STR = "" + OWNER + WRITE + NEWS + DELETE;
 
     private final WSUserDatabase userdb;
-    private final I18n messages;
     private final LRUMap<String,Object> aclCache;
     private final MBSqlSessionManager sessionManager;
     private final NcmsSecurityContext sctx;
@@ -56,28 +54,29 @@ public class PageSecurityService extends MBDAOSupport {
     @Inject
     public PageSecurityService(SqlSession sess,
                                WSUserDatabase userdb,
-                               I18n messages,
                                NcmsEnvironment env,
                                MBSqlSessionManager sessionManager,
                                NcmsSecurityContext sctx) {
         super(PageSecurityService.class, sess);
         this.userdb = userdb;
-        this.messages = messages;
         this.aclCache = new LRUMap<>(env.xcfg().getInt("security.acl-lru-cache-size", 1024));
         this.sessionManager = sessionManager;
         this.sctx = sctx;
     }
 
+    @Nonnull
     private WSUser toWSUser(HttpServletRequest req) {
         return sctx.getWSUser(req);
     }
 
+    @Nonnull
     public WSUser getCurrentWSUserSafe(HttpServletRequest req) {
-        WSUser u = toWSUser(req);
-        if (u == null) {
-            throw new UnauthenticatedException(messages.get("ncms.access.notAuthenticated"));
-        }
-        return u;
+        return toWSUser(req);
+    }
+
+    public boolean isPreviewPageRequest(HttpServletRequest req) {
+        return req.getUserPrincipal() != null
+               && "1".equals(req.getParameter("preview"));
     }
 
     /**

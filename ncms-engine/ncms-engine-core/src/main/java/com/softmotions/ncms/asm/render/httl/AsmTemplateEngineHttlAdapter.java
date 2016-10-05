@@ -27,6 +27,8 @@ import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
 import com.softmotions.ncms.mhttl.HttlAsmMethods;
 import com.softmotions.ncms.mhttl.HttlMttMethods;
 import com.softmotions.ncms.mhttl.HttlUtilsMethods;
+import com.softmotions.ncms.vedit.HttlVisualEditorFilter;
+import com.softmotions.ncms.vedit.HttlVisualEditorMethods;
 
 /**
  * Template engine adapter for HTTL template engine (http://httl.github.io)
@@ -109,7 +111,8 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
         value = httlProps.getProperty(key, "");
         for (String c : new String[]{HttlAsmMethods.class.getName(),
                                      HttlUtilsMethods.class.getName(),
-                                     HttlMttMethods.class.getName()}) {
+                                     HttlMttMethods.class.getName(),
+                                     HttlVisualEditorMethods.class.getName()}) {
             if (!value.contains(c)) {
                 if (!value.isEmpty()) {
                     value += ',';
@@ -137,6 +140,24 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
             }
         }
         httlProps.setProperty(key, value);
+
+
+        key = "template.filters";
+        value = httlProps.getProperty(key);
+        if (value == null) {
+            key += '+';
+        }
+        value = httlProps.getProperty(key, "");
+        for (String c : new String[]{HttlVisualEditorFilter.class.getName()}) {
+            if (!value.contains(c)) {
+                if (!value.isEmpty()) {
+                    value += ',';
+                }
+                value += c;
+            }
+        }
+        httlProps.setProperty(key, value);
+
 
         if (!httlProps.containsKey("reloadable")) {
             httlProps.setProperty("reloadable", "true");

@@ -11,7 +11,7 @@
     <logger name="com.softmotions.ncms.asm.AsmRS" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.PageRS" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.AsmEventsListener" level="INFO"/>
-    <logger name="com.softmotions.ncms.asm.am.AsmAttributeManagerContext" level="INFO"/>
+    <logger name="com.softmotions.ncms.asm.AsmAttributeManagerContext" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.PageSecurityService" level="INFO"/>
     <logger name="com.softmotions.ncms.media.MediaRS" level="INFO"/>
     <logger name="com.softmotions.ncms.rds.RefDataStore" level="INFO"/>

@@ -1,7 +1,8 @@
-package com.softmotions.ncms.asm.am;
+package com.softmotions.ncms.asm;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,7 +10,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,8 +26,6 @@ import net.jcip.annotations.NotThreadSafe;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
-import com.softmotions.ncms.asm.AsmAttribute;
-import com.softmotions.ncms.asm.PageSecurityService;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBDAOSupport;
@@ -55,6 +56,8 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
 
     private final I18n i18n;
 
+    private final List<AsmAttribute> attributes = new ArrayList<>();
+
     private Long asmId;
 
     private Map<AsmAttribute, Set<Long>> fileDeps;
@@ -62,6 +65,8 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
     private Map<AsmAttribute, Set<String>> pageDeps;
 
     private Map<String, Object> userData;
+
+    private List<Consumer<AsmAttributeManagerContext>> flushListeners;
 
 
     public HttpServletRequest getRequest() {
@@ -132,9 +137,37 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         pset.add(guid);
     }
 
+    public void setUserData(String key, Object value) {
+        if (userData == null) {
+            userData = new HashMap<>();
+        }
+        userData.put(key, value);
+    }
+
+    @Nullable
+    public Object getUserData(String key) {
+        return (userData == null) ? null : userData.get(key);
+    }
+
+    public List<AsmAttribute> getAttributes() {
+        return Collections.unmodifiableList(attributes);
+    }
+
+    public void notifyOnFlush(Consumer<AsmAttributeManagerContext> lsnr) {
+        if (flushListeners == null) {
+            flushListeners = new ArrayList<>();
+        }
+        flushListeners.add(lsnr);
+    }
 
     @Transactional
-    public void flush() {
+    void flush() {
+        if (flushListeners != null) {
+            for (Consumer<AsmAttributeManagerContext> l : flushListeners) {
+                l.accept(this);
+            }
+            flushListeners.clear();
+        }
         WSUser user = pageSecurity.getCurrentWSUserSafe(request);
         update("updateMUser",
                "mdate", new Date(),
@@ -142,9 +175,10 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
                "id", asmId);
         flushFileDeps();
         flushPageDeps();
+        attributes.clear();
     }
 
-    public void flushPageDeps() {
+    private void flushPageDeps() {
         if (pageDeps == null) {
             return;
         }
@@ -166,7 +200,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         }
     }
 
-    public void flushFileDeps() {
+    private void flushFileDeps() {
         if (fileDeps == null) {
             return;
         }
@@ -194,14 +228,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         }
     }
 
-    public void setUserData(String key, Object value) {
-        if (userData == null) {
-            userData = new HashMap<>();
-        }
-        userData.put(key, value);
-    }
-
-    public Object getUserData(String key) {
-        return (userData == null) ? null : userData.get(key);
+    void registerAttribute(AsmAttribute attr) {
+        attributes.add(attr);
     }
 }

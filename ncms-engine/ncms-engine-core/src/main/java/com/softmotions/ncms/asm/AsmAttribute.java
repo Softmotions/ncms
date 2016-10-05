@@ -47,8 +47,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
     String largeValue;
 
     @JsonIgnore
-    transient
-    AsmAttribute overriddenParent;
+    transient AsmAttribute overriddenParent;
 
     @JsonView(Asm.ViewFull.class)
     long ordinal;

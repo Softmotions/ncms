@@ -25,6 +25,11 @@
  * Atmosphere
  * @asset(ncms/script/atmosphere.js)
  * @asset(ncms/script/atmosphere.min.js)
+ *
+ * Medium editor
+ * @asset(ncms/script/medium-editor.js)
+ * @asset(ncms/script/medium-editor.min.js)
+ * @asset(ncms/css/medium-editor.css)
  */
 qx.Class.define("ncms.Application", {
     extend: qx.application.Standalone,

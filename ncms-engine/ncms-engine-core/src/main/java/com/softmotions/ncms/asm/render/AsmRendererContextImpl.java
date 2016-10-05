@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,6 +24,7 @@ import com.softmotions.weboot.i18n.I18n;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@NotThreadSafe
 public class AsmRendererContextImpl extends AsmRendererContext {
 
     final Injector injector;

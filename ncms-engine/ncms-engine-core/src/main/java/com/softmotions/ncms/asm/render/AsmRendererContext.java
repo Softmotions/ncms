@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.NotThreadSafe;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,10 +24,12 @@ import com.softmotions.weboot.i18n.I18n;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
+@NotThreadSafe
 public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = new ThreadLocal<>();
 
+    private Map<String, Object> userData;
 
     public boolean isRendered(Asm asm) {
         return isRendered(asm.getId());
@@ -90,6 +93,22 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
             return null;
         }
         return sctx.peek();
+    }
+
+    public void setUserData(String key, Object value) {
+        if (userData == null) {
+            userData = new HashMap<>();
+        }
+        userData.put(key, value);
+    }
+
+    @Nullable
+    public <T> T getUserData(String key) {
+        if (userData == null) {
+            return null;
+        }
+        //noinspection unchecked
+        return (T) userData.get(key);
     }
 
     public abstract AsmRenderer getRenderer();

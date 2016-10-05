@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
@@ -37,6 +38,11 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
     @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
+    }
+
+    @Override
+    public boolean isUniqueAttribute() {
+        return true;
     }
 
     @Override

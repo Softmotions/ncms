@@ -292,6 +292,18 @@ public final class HttlUtilsMethods {
         return requestURL.substring(0, requestURL.length() - requestURI.length());
     }
 
+    /**
+     * Return true if we are in preview mode
+     * @return
+     */
+    public static boolean isPreview() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getPageService()
+                  .getPageSecurityService()
+                  .isPreviewPageRequest(ctx.getServletRequest());
+    }
+
+
     public static boolean isAndroidMobile() {
         return HttpUtils.isAndroidMobile(AsmRendererContext.getSafe().getServletRequest());
     }

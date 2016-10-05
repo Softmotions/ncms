@@ -182,7 +182,7 @@ public class AsmFilter implements Filter {
             return false;
         }
 
-        boolean preview = "1".equals(req.getParameter("preview"));
+        boolean preview = pageSecurity.isPreviewPageRequest(req);
         Asm asm = ctx.getAsm();
         if (!asm.isPublished()) {
             if (!(isAdmRequest && pageSecurity.checkAccessAny(asm.getId(), req, "wnd"))) {

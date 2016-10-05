@@ -51,6 +51,7 @@ import com.softmotions.commons.lifecycle.Dispose;
 import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;

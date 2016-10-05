@@ -111,6 +111,8 @@ public class Asm implements Serializable {
 
     AttrsList attributes;
 
+    Map<String, AsmAttribute> type2uniqueAttrCache;
+
     Long navParentId;
 
     String navAlias;
@@ -599,6 +601,42 @@ public class Asm implements Serializable {
         return null;
     }
 
+    @Nullable
+    public AsmAttribute getUniqueEffectiveAttributeByType(String attrType) {
+        AsmAttribute attr = getUniqueAttributeByType(attrType);
+        if (attr != null || getParents() == null) {
+            return attr;
+        }
+        for (final Asm p : getParents()) {
+            attr = p.getUniqueEffectiveAttributeByType(name);
+            if (attr != null) {
+                return attr;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public AsmAttribute getUniqueAttributeByType(String attrType) {
+        AsmAttribute ret = (type2uniqueAttrCache != null) ? type2uniqueAttrCache.get(attrType) : null;
+        if (ret != null) {
+            return ret;
+        }
+        if (getAttributes() == null) {
+            return null;
+        }
+        for (AsmAttribute attr : getAttributes()) {
+            if (attrType.equals(attr.getType())) {
+                if (type2uniqueAttrCache == null) {
+                    type2uniqueAttrCache = new HashMap<>(4);
+                }
+                type2uniqueAttrCache.put(attrType, attr);
+                return attr;
+            }
+        }
+        return null;
+    }
+
     /**
      * Return `true` if assembly has attribute with specified `name`
      * or in any of its parents.
@@ -664,6 +702,9 @@ public class Asm implements Serializable {
 
     public void setAttributes(AttrsList attributes) {
         this.attributes = attributes;
+        if (type2uniqueAttrCache != null) {
+            type2uniqueAttrCache.clear();
+        }
     }
 
     /**

@@ -28,6 +28,7 @@ import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
@@ -63,6 +64,11 @@ public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager 
         super(AsmMedialineAM.class, sqlSession);
         this.mapper = mapper;
         this.ebus = ebus;
+    }
+
+    @Override
+    public boolean isUniqueAttribute() {
+        return false;
     }
 
     @Override

@@ -18,7 +18,7 @@
     <logger name="com.softmotions.ncms.asm.PageRS" level="INFO"/>
     <logger name="com.softmotions.ncms.asm.PageSecurityService" level="INFO"/>
     <logger name="com.softmotions.ncms.user.UserEnvRS" level="INFO"/>
-    <logger name="com.softmotions.ncms.asm.am.AsmAttributeManagerContext" level="INFO"/>
+    <logger name="com.softmotions.ncms.asm.AsmAttributeManagerContext" level="INFO"/>
     <logger name="com.softmotions.ncms.mtt.http" level="INFO"/>
     <logger name="com.softmotions.ncms.mtt.http.MttABMarksAction" level="INFO"/>
     <logger name="com.softmotions.ncms.mhttl.HttlAsmMethods" level="INFO"/>

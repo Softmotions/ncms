@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm.render;
 
 import java.io.IOException;
 import java.util.Locale;
+import javax.annotation.Nullable;
 
 import com.softmotions.ncms.media.MediaResource;
 
@@ -26,5 +27,6 @@ public interface AsmResourceLoader {
      * @param locale - resource locale
      * @return resource
      */
+    @Nullable
     MediaResource load(String name, Locale locale) throws IOException;
 }

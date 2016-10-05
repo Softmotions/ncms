@@ -1,8 +1,11 @@
 package com.softmotions.ncms.asm;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.servlet.http.HttpServletRequest;
+
+import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 
 /**
  * Page info service.
@@ -38,4 +41,10 @@ public interface PageService {
 
     @Nullable
     String resolvePageGuid(String wikiResource);
+
+    @Nonnull
+    PageSecurityService getPageSecurityService();
+
+    @Nonnull
+    AsmAttributeManagersRegistry getAsmAttributeManagersRegistry();
 }

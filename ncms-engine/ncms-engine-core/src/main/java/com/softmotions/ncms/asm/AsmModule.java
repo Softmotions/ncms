@@ -40,7 +40,8 @@ public class AsmModule extends AbstractModule {
     protected void configure() {
 
         install(new FactoryModuleBuilder()
-                        .implement(AsmRendererContext.class, AsmRendererContextImpl.class)
+                        .implement(AsmRendererContext.class,
+                                   AsmRendererContextImpl.class)
                         .build(AsmRendererContextFactory.class));
 
         Multibinder<AsmAttributeManager> attrBinder =
@@ -64,6 +65,7 @@ public class AsmModule extends AbstractModule {
         attrBinder.addBinding().to(AsmAliasAM.class);
         attrBinder.addBinding().to(AsmCoreAM.class);
         attrBinder.addBinding().to(AsmTableAM.class);
+        attrBinder.addBinding().to(AsmVisualEditorAM.class);
 
         //Resource loader
         bind(AsmResourceLoader.class).to(AsmResourceLoaderImpl.class).in(Singleton.class);
@@ -79,8 +81,9 @@ public class AsmModule extends AbstractModule {
         bind(AsmRS.class).in(Singleton.class);
         bind(PageRS.class).in(Singleton.class);
 
-        //Bind AsmTreeRS as standalone RS service
+        // Standalone RS services
         bind(AsmTreeAM.class).in(Singleton.class);
+        bind(AsmVisualEditorAM.class).in(Singleton.class);
     }
 
 

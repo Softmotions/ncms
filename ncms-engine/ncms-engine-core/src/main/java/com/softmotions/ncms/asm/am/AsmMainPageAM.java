@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.PageRS;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
@@ -40,6 +41,11 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
     @Inject
     public AsmMainPageAM(PageRS pageRS) {
         this.pageRS = pageRS;
+    }
+
+    @Override
+    public boolean isUniqueAttribute() {
+        return true;
     }
 
     @Override

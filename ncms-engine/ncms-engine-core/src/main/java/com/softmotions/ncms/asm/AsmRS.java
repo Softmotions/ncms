@@ -41,7 +41,6 @@ import com.google.inject.Provider;
 import com.softmotions.commons.Converters;
 import com.softmotions.commons.cont.TinyParamMap;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
-import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.events.AsmCreatedEvent;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
@@ -465,6 +464,7 @@ public class AsmRS extends MBDAOSupport {
         if (spec.hasNonNull("required")) {
             attr.setRequired(spec.get("required").asBoolean());
         }
+        amCtx.registerAttribute(attr);
         AsmAttributeManager am = amRegistry.getByType(attr.getType());
         if (am != null) {
             if (spec.hasNonNull("options")) {

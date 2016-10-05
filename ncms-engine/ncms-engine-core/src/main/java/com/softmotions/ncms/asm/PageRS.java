@@ -73,7 +73,6 @@ import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.am.AsmAttributeManager;
-import com.softmotions.ncms.asm.am.AsmAttributeManagerContext;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.events.AsmCreatedEvent;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
@@ -84,7 +83,6 @@ import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsNotificationException;
 import com.softmotions.ncms.media.MediaRepository;
-import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.ncms.user.UserEnvRS;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
@@ -182,8 +180,6 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final AsmRendererHelper helper;
 
-    private final NcmsSecurityContext securityContext;
-
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao,
@@ -197,8 +193,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                   MediaRepository mrepo,
                   Provider<AsmAttributeManagersRegistry> amRegistry,
                   Provider<AsmAttributeManagerContext> amCtxProvider,
-                  AsmRendererHelper helper,
-                  NcmsSecurityContext securityContext) {
+                  AsmRendererHelper helper) {
         super(PageRS.class.getName(), sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -220,8 +215,20 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.amCtxProvider = amCtxProvider;
         this.asmRoot = env.getAppRoot() + "/";
         this.helper = helper;
-        this.securityContext = securityContext;
         this.ebus.register(this);
+    }
+
+
+    @Override
+    @Nonnull
+    public PageSecurityService getPageSecurityService() {
+        return pageSecurity;
+    }
+
+    @Override
+    @Nonnull
+    public AsmAttributeManagersRegistry getAsmAttributeManagersRegistry() {
+        return amRegistry.get();
     }
 
     @GET
@@ -410,7 +417,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     public ObjectNode lockPage(@Context HttpServletRequest req,
                                @PathParam("id") Long id) throws Exception {
 
-        WSUser wsUser = securityContext.getWSUser(req);
+        WSUser wsUser = pageSecurity.getCurrentWSUserSafe(req);
         ObjectNode res = mapper.createObjectNode();
         Lock lock = pageLocks.get(id);
         // todo
@@ -452,6 +459,8 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (attr == null) {
                 continue;
             }
+            amCtx.registerAttribute(attr);
+
             AsmAttributeManager am = amreg.getByType(attr.getType());
             if (am == null) {
                 log.warn("Missing attribute manager for type: {}", attr.getType());
@@ -627,6 +636,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 attr = attr.cloneDeep();
                 attr.asmId = page.getId();
             }
+            amCtx.registerAttribute(attr);
             AsmAttributeManagersRegistry amreg = amRegistry.get();
             AsmAttributeManager am = amreg.getByType(attr.getType());
             if (am == null) {

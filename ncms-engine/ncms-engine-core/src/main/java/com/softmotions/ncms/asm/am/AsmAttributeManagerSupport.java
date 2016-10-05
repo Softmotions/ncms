@@ -7,11 +7,17 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmAttributeManagerContext;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public abstract class AsmAttributeManagerSupport implements AsmAttributeManager {
+
+    @Override
+    public boolean isUniqueAttribute() {
+        return false;
+    }
 
     @Override
     public AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,

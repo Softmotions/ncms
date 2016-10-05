@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.softmotions.ncms.asm.am.AsmAttributeManagerContext">
+<mapper namespace="com.softmotions.ncms.asm.AsmAttributeManagerContext">
 
     <cache-ref namespace="com.softmotions.ncms.db.cache.asm"/>
 

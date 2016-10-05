@@ -2,7 +2,6 @@ package com.softmotions.ncms.db
 
 import com.softmotions.ncms.DbBaseTest
 import com.softmotions.ncms.asm.*
-import com.softmotions.ncms.asm.am.AsmAttributeManagerContext
 import com.softmotions.ncms.media.MediaRS
 import com.softmotions.ncms.rds.RefDataStore
 import com.softmotions.ncms.user.UserEnvRS
@@ -12,7 +11,7 @@ import org.testng.Assert
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
-import java.util.Calendar
+import java.util.*
 
 /**
  * Testing of sql queries with merge

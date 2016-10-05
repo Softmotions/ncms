@@ -926,10 +926,12 @@
     <resultMap id="asmFullRM"
                type="com.softmotions.ncms.asm.Asm"
                extends="asmPlainRM">
+
         <association property="core"
                      columnPrefix="CORE_"
                      resultMap="coreRM"
                 />
+
         <collection property="attributes"
                     javaType="com.softmotions.ncms.asm.Asm$AttrsList"
                     ofType="com.softmotions.ncms.asm.AsmAttribute"
