@@ -218,7 +218,7 @@
 
 .medium-editor-element {
   word-wrap: break-word;
-  min-height: 30px; }
+  min-height: 1rem; }
   .medium-editor-element img {
     max-width: 100%; }
   .medium-editor-element sub {
@@ -294,3 +294,13 @@
 
 .medium-editor-placeholder:after {
   color: #b3b3b1; }
+
+/* ==================== Ncms staff ====================== */
+
+.ncms-block {
+}
+
+.ncms-block:hover:not(:focus) {
+  border: 1px #ff8c00 dashed !important;
+  margin: -1px;
+}

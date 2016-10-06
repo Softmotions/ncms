@@ -33,14 +33,20 @@ class HttlVisualEditorFilter : AbstractFilter() {
         } ?: return
 
         for (el in allElements) {
-            if (el.name == "html") {
-                document.insert(el.endTag.begin, "\n$!{ncmsVEStyles()}")
-                document.insert(el.endTag.begin, "\n$!{ncmsVEScripts()}\n")
+            if (el.name == "body") {
+                document.insert(el.endTag.begin, "\n$!{ncmsVEStyles()}\n$!{ncmsVEScripts()}")
                 continue
             }
-            val attr = el.attributes.get("ncms-block") ?: continue
-            document.remove(attr.begin - 1, attr.end)
-            document.insert(el.begin, "#if(ncmsVEBlockExists('${attr.value}')) $!{ncmsVEBlock('${attr.value}')} #else ")
+            val blockAttr = el.attributes.get("ncms-block") ?: continue
+            val attr2 = el.attributes.get("class")
+            if (attr2 == null) {
+                document.insert(el.startTag.end - 1, " class=\"ncms-block\"")
+            } else {
+                document.remove(attr2.valueSegment)
+                document.insert(attr2.valueSegment.begin, attr2.value + " ncms-block")
+            }
+            document.replace(blockAttr, "data-ncms-block=\"${blockAttr.value}\"")
+            document.insert(el.begin, "#if(ncmsVEBlockExists('${blockAttr.value}')) $!{ncmsVEBlock('${blockAttr.value}')} #else ")
             document.insert(el.end, " #end")
         }
     }

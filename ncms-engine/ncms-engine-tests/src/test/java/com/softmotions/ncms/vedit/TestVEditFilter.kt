@@ -21,15 +21,17 @@ class TestVEditFilter : BaseTest() {
         val vf = HttlVisualEditorFilter()
         val html = """
            <html>
+              <body>
               <div ncms-block="one">
                 HelloOne
               </div>
 
               <b>test</b>
 
-              <div ncms-block='two'>
+              <div ncms-block='two' class="foo bar">
                 HelloTwo
               </div>
+              </body>
            </html>
         """
 
@@ -41,5 +43,7 @@ class TestVEditFilter : BaseTest() {
         assertTrue(res.contains("HelloTwo"))
         assertTrue(res.contains("$!{ncmsVEStyles()}"))
         assertTrue(res.contains("$!{ncmsVEScripts()}"))
+        assertTrue(res.contains("class=\"foo bar ncms-block\""))
+        assertTrue(res.contains("class=\"ncms-block\""))
     }
 }

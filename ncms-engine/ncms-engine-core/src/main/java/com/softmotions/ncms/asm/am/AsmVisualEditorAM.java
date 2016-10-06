@@ -34,7 +34,6 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
-import com.softmotions.weboot.i18n.I18n;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -60,19 +59,16 @@ public class AsmVisualEditorAM extends AsmAttributeManagerSupport {
 
     private final NcmsEventBus ebus;
 
-    private final I18n i18n;
 
     @Inject
     public AsmVisualEditorAM(ObjectMapper mapper,
                              PageService pageService,
                              AsmDAO adao,
-                             NcmsEventBus ebus,
-                             I18n i18n) {
+                             NcmsEventBus ebus) {
         this.mapper = mapper;
         this.pageService = pageService;
         this.adao = adao;
         this.ebus = ebus;
-        this.i18n = i18n;
     }
 
     @Override

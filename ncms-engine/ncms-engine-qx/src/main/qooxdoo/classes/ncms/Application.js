@@ -29,6 +29,7 @@
  * Medium editor
  * @asset(ncms/script/medium-editor.js)
  * @asset(ncms/script/medium-editor.min.js)
+ * @asset(ncms/script/ncms-preview.js)
  * @asset(ncms/css/medium-editor.css)
  */
 qx.Class.define("ncms.Application", {

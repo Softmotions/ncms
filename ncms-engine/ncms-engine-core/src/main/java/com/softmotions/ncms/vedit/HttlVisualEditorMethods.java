@@ -34,8 +34,11 @@ public class HttlVisualEditorMethods {
         if (!ctx.getPageService().getPageSecurityService().isPreviewPageRequest(ctx.getServletRequest())) {
             return "";
         }
-        String ref = ctx.getEnvironment().getNcmsAdminRoot() + "/resource/ncms/script/medium-editor.min.js";
-        return "<script src=\"" + ref + "\"/>";
+        String ref = ctx.getEnvironment().getNcmsAdminRoot() + "/resource/ncms/script/medium-editor.js";
+        String ref2 = ctx.getEnvironment().getNcmsAdminRoot() + "/resource/ncms/script/ncms-preview.js";
+        String ret = "<script type=\"text/javascript\" src=\"" + ref + "\"></script>\n";
+        ret += "<script type=\"text/javascript\" src=\"" + ref2 + "\"></script>\n";
+        return ret;
     }
 
     @Nullable
