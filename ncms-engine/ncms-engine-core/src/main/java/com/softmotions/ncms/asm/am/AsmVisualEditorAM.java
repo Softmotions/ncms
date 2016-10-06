@@ -129,14 +129,19 @@ public class AsmVisualEditorAM extends AsmAttributeManagerSupport {
     public void saveSection(@Context HttpServletRequest req,
                             ObjectNode spec) throws Exception {
 
-        long asmId = spec.path("asmId").asLong(0);
-        ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
-
         String sectionName = spec.path("section").asText(null);
-        String html = spec.path("html").asText();
-        if (asmId == 0 || sectionName == null) {
+        if (sectionName == null) {
             throw new BadRequestException();
         }
+        int ind = sectionName.indexOf(':');
+        if (ind == -1) {
+            throw new BadRequestException();
+        }
+        long asmId = Long.parseLong(sectionName.substring(0, ind));
+        ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
+        sectionName = sectionName.substring(ind + 1);
+        String html = spec.path("html").asText().trim();
+
         Asm asm = adao.asmSelectById(asmId);
         if (asm == null) {
             throw new NotFoundException();
@@ -148,14 +153,14 @@ public class AsmVisualEditorAM extends AsmAttributeManagerSupport {
         if (attr == null) {
             AsmAttribute eattr = asm.getUniqueEffectiveAttributeByType(TYPE);
             if (eattr == null) {
-                // No 've' attribute found hence no support for visual editing
-                // Skip save silently
-                log.warn("Attempting to save section in assembly with missing 've' attribute. " +
-                         "Asm: {}, Section: {} Data: {}", asmId, sectionName, html);
-                return;
+                log.info("Saving visual section on assembly with missing 've' attribute. " +
+                         "Asm: {}, Section: {}", asmId, sectionName);
+                attr = new AsmAttribute("ve", "ve", null);
+            } else {
+                attr = eattr.cloneDeep();
+                attr.setValue(null);
+                attr.setId(null);
             }
-            attr = eattr.cloneDeep();
-            attr.setId(null);
         }
         attr.setAsmId(asmId);
         if (StringUtils.isBlank(attr.getEffectiveValue())

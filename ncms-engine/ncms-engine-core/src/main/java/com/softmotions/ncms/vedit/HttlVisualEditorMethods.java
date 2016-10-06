@@ -1,5 +1,6 @@
 package com.softmotions.ncms.vedit;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.softmotions.ncms.asm.AsmAttribute;
@@ -12,6 +13,13 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 public class HttlVisualEditorMethods {
 
     private HttlVisualEditorMethods() {
+    }
+
+    /**
+     * Visual editor meta attributes on `<html>` element.
+     */
+    public static String ncmsDocumentVEMeta() {
+        return  " data-ncms-root=\"" + AsmRendererContext.getSafe().getEnvironment().getAppRoot() + "\"";
     }
 
     /**
@@ -53,6 +61,12 @@ public class HttlVisualEditorMethods {
             return null;
         }
         return am.getSection(ctx, attr, sectionName);
+    }
+
+    @Nonnull
+    public static String ncmsVEBlockId(String sectionName) {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        return ctx.getAsm().getId() + ":" + sectionName;
     }
 
     /**

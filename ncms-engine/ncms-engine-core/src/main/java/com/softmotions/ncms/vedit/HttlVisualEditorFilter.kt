@@ -33,6 +33,10 @@ class HttlVisualEditorFilter : AbstractFilter() {
         } ?: return
 
         for (el in allElements) {
+            if (el.name == "html") {
+                document.insert(el.startTag.end - 1, " $!{ncmsDocumentVEMeta()}")
+                continue
+            }
             if (el.name == "body") {
                 document.insert(el.endTag.begin, "\n$!{ncmsVEStyles()}\n$!{ncmsVEScripts()}")
                 continue
@@ -45,9 +49,19 @@ class HttlVisualEditorFilter : AbstractFilter() {
                 document.remove(attr2.valueSegment)
                 document.insert(attr2.valueSegment.begin, attr2.value + " ncms-block")
             }
-            document.replace(blockAttr, "data-ncms-block=\"${blockAttr.value}\"")
-            document.insert(el.begin, "#if(ncmsVEBlockExists('${blockAttr.value}')) $!{ncmsVEBlock('${blockAttr.value}')} #else ")
-            document.insert(el.end, " #end")
+            document.replace(blockAttr, "data-ncms-block=\"$!{ncmsVEBlockId('${blockAttr.value}')}\"")
+
+            if (el.endTag == null) {
+//                val st = el.startTag.toString()
+//                if (st.length > 2) {
+//                    document.replace(el.startTag.end - 2, el.startTag.end,
+//                            ">#if(ncmsVEBlockExists('${blockAttr.value}'))$!{ncmsVEBlock('${blockAttr.value}')}#end</${el.name}>"
+//                    )
+//                }
+            } else {
+                document.insert(el.content.begin, "#if(ncmsVEBlockExists('${blockAttr.value}'))$!{ncmsVEBlock('${blockAttr.value}')}#else ")
+                document.insert(el.content.end, " #end")
+            }
         }
     }
 }
