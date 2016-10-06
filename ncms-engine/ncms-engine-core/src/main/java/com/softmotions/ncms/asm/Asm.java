@@ -623,7 +623,7 @@ public class Asm implements Serializable {
             return attr;
         }
         for (final Asm p : getParents()) {
-            attr = p.getUniqueEffectiveAttributeByType(name);
+            attr = p.getUniqueEffectiveAttributeByType(attrType);
             if (attr != null) {
                 return attr;
             }

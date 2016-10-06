@@ -163,16 +163,13 @@ qx.Class.define("ncms.Application", {
             var info = ncms.Application.INFO_POPUP;
 
             if (!info) {
-
                 info = ncms.Application.INFO_POPUP =
                     new qx.ui.container.Composite(new qx.ui.layout.VBox(4)
                     .set({alignX: "center"}));
                 info.getContentElement().addClass("ncms-app-popup");
-
                 info.isEmpty = function () {
                     return !info.hasChildren();
                 };
-
                 info.addListener("resize", function () {
                     var parent = this.getLayoutParent();
                     if (parent) {
@@ -188,8 +185,9 @@ qx.Class.define("ncms.Application", {
                     }
                 }, info);
                 root.add(info);
+            }
 
-            } else {
+            (function() {
                 var maxWindowZIndex = info.getZIndex();
                 var windows = root.getWindows();
                 for (var i = 0; i < windows.length; i++) {
@@ -199,7 +197,7 @@ qx.Class.define("ncms.Application", {
                     }
                 }
                 info.setZIndex(maxWindowZIndex + 1e8);
-            }
+            })();
 
             if (info.getChildren().length >= 10) {
                 qx.log.Logger.warn("Too many popups opened");

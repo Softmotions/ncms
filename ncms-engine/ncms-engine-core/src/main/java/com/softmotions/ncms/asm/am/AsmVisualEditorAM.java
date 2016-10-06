@@ -3,6 +3,7 @@ package com.softmotions.ncms.asm.am;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -155,7 +156,7 @@ public class AsmVisualEditorAM extends AsmAttributeManagerSupport {
             if (eattr == null) {
                 log.info("Saving visual section on assembly with missing 've' attribute. " +
                          "Asm: {}, Section: {}", asmId, sectionName);
-                attr = new AsmAttribute("ve", "ve", null);
+                attr = new AsmAttribute(UUID.randomUUID().toString(), "ve", null);
             } else {
                 attr = eattr.cloneDeep();
                 attr.setValue(null);

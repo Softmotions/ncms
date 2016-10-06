@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -71,7 +72,7 @@ public class AsmRS extends MBDAOSupport {
 
     final ObjectMapper mapper;
 
-    final I18n messages;
+    final I18n i18n;
 
     final AsmAttributeManagersRegistry amRegistry;
 
@@ -85,14 +86,14 @@ public class AsmRS extends MBDAOSupport {
     public AsmRS(SqlSession sess,
                  AsmDAO adao, ObjectMapper mapper,
                  AsmAttributeManagersRegistry amRegistry,
-                 I18n messages,
+                 I18n i18n,
                  NcmsEventBus ebus,
                  Provider<AsmAttributeManagerContext> amCtxProvider,
                  NcmsSecurityContext sctx) {
         super(AsmRS.class, sess);
         this.adao = adao;
         this.mapper = mapper;
-        this.messages = messages;
+        this.i18n = i18n;
         this.amRegistry = amRegistry;
         this.ebus = ebus;
         this.amCtxProvider = amCtxProvider;
@@ -112,7 +113,7 @@ public class AsmRS extends MBDAOSupport {
         ebus.unlockOnTxFinish(Asm.acquireLock(0L));
         Long id = adao.asmSelectIdByName(name);
         if (id != null) {
-            String msg = messages.get("ncms.asm.name.already.exists", req, name);
+            String msg = i18n.get("ncms.asm.name.already.exists", req, name);
             throw new NcmsNotificationException(msg, true, req);
         }
         asm = new Asm(name);
@@ -131,7 +132,7 @@ public class AsmRS extends MBDAOSupport {
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Long oid = adao.asmSelectIdByName(name);
         if (oid != null && !oid.equals(id)) {
-            String msg = messages.get("ncms.asm.name.already.other", req, name);
+            String msg = i18n.get("ncms.asm.name.already.other", req, name);
             throw new NcmsNotificationException(msg, true, req);
         }
         if (oid == null) {
@@ -472,6 +473,17 @@ public class AsmRS extends MBDAOSupport {
         amCtx.registerAttribute(attr);
         AsmAttributeManager am = amRegistry.getByType(attr.getType());
         if (am != null) {
+            if (am.isUniqueAttribute()) {
+                Asm asm = adao.asmSelectById(id);
+                if (asm == null) {
+                    throw new NotFoundException();
+                }
+                AsmAttribute attr2 = asm.getUniqueEffectiveAttributeByType(attr.getType());
+                if (attr2 != null && !Objects.equals(attr.getName(), attr2.getName())) {
+                    String msg = i18n.get("ncms.asm.type.exists", req, attr.getType());
+                    throw new NcmsNotificationException(msg, true);
+                }
+            }
             if (spec.hasNonNull("options")) {
                 attr = am.applyAttributeOptions(amCtx, attr, spec.get("options"));
             }
