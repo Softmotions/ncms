@@ -301,6 +301,5 @@
 }
 
 .ncms-block:hover:not(:focus) {
-  border: 1px #ff8c00 dashed !important;
-  margin: -1px;
+  outline: 1px #ff8c00 dashed !important;
 }
