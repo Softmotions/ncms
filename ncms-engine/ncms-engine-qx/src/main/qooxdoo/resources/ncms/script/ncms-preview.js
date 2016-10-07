@@ -5,6 +5,12 @@
     var editor = new MediumEditor(".ncms-block", {
         spellcheck: false,
         toolbar: {
+            buttons: [
+                'bold', 'italic', 'anchor',
+                'h2', 'h3',
+                'orderedlist',
+                'unorderedlist',
+                'pre', 'removeFormat']
             //"static": true,
             //align: 'center',
             //sticky: true
