@@ -45,7 +45,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final NcmsEnvironment env;
 
-    final I18n messages;
+    final I18n i18n;
 
     final PageService pageService;
 
@@ -60,29 +60,25 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     Asm rootAsm;
 
 
-    private AsmRendererContextImpl(NcmsEnvironment env,
-                                   Injector injector,
-                                   ClassLoader classLoader,
-                                   AsmRenderer renderer,
-                                   AsmResourceLoader loader,
-                                   I18n messages,
-                                   PageService pageService,
-                                   MediaRepository mediaRepository,
-                                   HttpServletRequest req, HttpServletResponse resp,
+    private AsmRendererContextImpl(AsmRendererContextImpl parent,
+                                   HttpServletResponse resp,
                                    Asm asm) {
-        this.env = env;
-        this.injector = injector;
-        this.renderer = renderer;
-        this.loader = loader;
-        this.req = req;
+        super(parent.userData);
+        this.req = parent.req;
         this.resp = resp;
-        this.asm = asm;
-        this.rootAsm = asm;
-        this.classLoader = classLoader;
-        this.pageService = pageService;
-        this.mediaRepository = mediaRepository;
-        this.messages = messages;
+        this.env = parent.env;
+        this.injector = parent.injector;
+        this.renderer = parent.renderer;
+        this.loader = parent.loader;
+        this.classLoader = parent.classLoader;
+        this.pageService = parent.pageService;
+        this.mediaRepository = parent.mediaRepository;
+        this.i18n = parent.i18n;
         this.subcontext = true;
+        this.asm = asm;
+        this.rootAsm = parent.asm;
+        this.asmCloneContext = parent.asmCloneContext;
+        this.putAll(parent);
     }
 
     @Inject
@@ -90,7 +86,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                   Injector injector,
                                   AsmRenderer renderer,
                                   AsmResourceLoader loader,
-                                  I18n messages,
+                                  I18n i18n,
                                   PageService pageService,
                                   MediaRepository mediaRepository,
                                   @Assisted HttpServletRequest req,
@@ -100,7 +96,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.injector = injector;
         this.renderer = renderer;
         this.loader = loader;
-        this.messages = messages;
+        this.i18n = i18n;
         this.pageService = pageService;
         this.mediaRepository = mediaRepository;
         this.req = req;
@@ -216,35 +212,22 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         if (nasm == null) {
             throw new AsmResourceNotFoundException("asm: '" + asmName + "'");
         }
-        AsmRendererContextImpl nctx =
-                new AsmRendererContextImpl(env, injector, classLoader, renderer, loader,
-                                           messages, pageService, mediaRepository,
-                                           req, new GenericResponseWrapper(resp, out, false),
-                                           nasm.cloneDeep(asmCloneContext));
-        nctx.asmCloneContext = asmCloneContext;
-        nctx.rootAsm = asm;
-        nctx.putAll(this);
-        return nctx;
+        return new AsmRendererContextImpl(this,
+                                          new GenericResponseWrapper(resp, out, false),
+                                          nasm.cloneDeep(asmCloneContext));
     }
 
     public AsmRendererContext createSubcontext(Asm nasm) throws AsmResourceNotFoundException {
         if (nasm == null) {
-            throw new IllegalArgumentException("asm cannot be null");
+            throw new IllegalArgumentException("nasm cannot be null");
         }
         if (asm.equals(nasm)) {
             return this;
         }
-        AsmRendererContextImpl nctx =
-                new AsmRendererContextImpl(env, injector, classLoader, renderer, loader,
-                                           messages, pageService, mediaRepository,
-                                           req, resp,
-                                           nasm.cloneDeep(asmCloneContext));
-        nctx.asmCloneContext = asmCloneContext;
-        nctx.rootAsm = asm;
-        nctx.putAll(this);
-        return nctx;
+        return new AsmRendererContextImpl(this,
+                                          resp,
+                                          nasm.cloneDeep(asmCloneContext));
     }
-
 
     @Override
     public ClassLoader getClassLoader() {
@@ -266,13 +249,12 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         if (cachedLocale != null) {
             return cachedLocale;
         }
-        cachedLocale = messages.getLocale(getServletRequest());
+        cachedLocale = i18n.getLocale(getServletRequest());
         return cachedLocale;
     }
 
-    @Override
-    public I18n getMessages() {
-        return messages;
+    public I18n getI18n() {
+        return i18n;
     }
 
     @Override

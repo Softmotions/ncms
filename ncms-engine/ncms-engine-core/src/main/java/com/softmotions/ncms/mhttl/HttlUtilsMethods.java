@@ -126,7 +126,7 @@ public final class HttlUtilsMethods {
 
     public static String requestLanguage() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return ctx.getMessages().getLocale(ctx.getServletRequest()).getLanguage();
+        return ctx.getI18n().getLocale(ctx.getServletRequest()).getLanguage();
     }
 
     public static String encodeUriComponent(String s) {
@@ -224,7 +224,7 @@ public final class HttlUtilsMethods {
             return null;
         }
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return ctx.getMessages().format(date, format, ctx.getLocale());
+        return ctx.getI18n().format(date, format, ctx.getLocale());
     }
 
     public static String formatEng(Date date, String format) {
@@ -232,7 +232,7 @@ public final class HttlUtilsMethods {
             return null;
         }
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return ctx.getMessages().format(date, format, Locale.ENGLISH);
+        return ctx.getI18n().format(date, format, Locale.ENGLISH);
     }
 
     public static String translate(String key) {
@@ -257,7 +257,7 @@ public final class HttlUtilsMethods {
         }
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         try {
-            return ctx.getMessages().get(key, ctx.getLocale(), (Object[]) args);
+            return ctx.getI18n().get(key, ctx.getLocale(), (Object[]) args);
         } catch (MissingResourceException e) {
             log.error("", e);
             return null;

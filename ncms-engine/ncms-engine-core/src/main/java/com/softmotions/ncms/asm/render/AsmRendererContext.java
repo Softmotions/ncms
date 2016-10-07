@@ -29,7 +29,14 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = new ThreadLocal<>();
 
-    private Map<String, Object> userData;
+    protected Map<String, Object> userData;
+
+    protected AsmRendererContext() {
+    }
+
+    protected AsmRendererContext(Map<String, Object> userData) {
+        this.userData = userData;
+    }
 
     public boolean isRendered(Asm asm) {
         return isRendered(asm.getId());
@@ -185,7 +192,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     public abstract Locale getLocale();
 
-    public abstract I18n getMessages();
+    public abstract I18n getI18n();
 
     public abstract void render(@Nullable Writer writer) throws AsmRenderingException, IOException;
 
