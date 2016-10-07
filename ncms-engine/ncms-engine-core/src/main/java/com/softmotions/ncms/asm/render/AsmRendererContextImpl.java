@@ -253,6 +253,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return cachedLocale;
     }
 
+    @Override
     public I18n getI18n() {
         return i18n;
     }
