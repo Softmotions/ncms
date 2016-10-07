@@ -679,6 +679,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                @Context HttpServletRequest req,
                                @Context HttpServletResponse resp) throws Exception {
 
+        ensureAuthenticated(req, resp);
+
         path = StringUtils.strip(path, "/");
         checkFolder(path);
         if (log.isDebugEnabled()) {
@@ -1672,6 +1674,13 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         return req.getServletContext().getMimeType(name);
     }
 
+    private void ensureAuthenticated(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        if (req.getRemoteUser() == null) {
+            if (resp == null || !req.authenticate(resp)) {
+                throw new ForbiddenException("");
+            }
+        }
+    }
 
     private Long _put(String folder,
                       String name,
@@ -2241,7 +2250,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 deleteResource(target.toString(), new MediaRSLocalRequest(env, target.toFile()), null);
             } catch (NotFoundException ignored) {
             } catch (Exception e) {
-                log.error("File deletion failed. Path: {} target: {} error: {}", path, target, e.getMessage());
+                log.error("File deletion failed. Path: {} target: {} error: {}", path, target, e.getMessage(), e);
             }
         }
 
@@ -2253,7 +2262,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                            data.overwrite,
                            data.system);
             } catch (IOException e) {
-                log.error("File import failed. Path: {} target: {} error: {}", path, target, e.getMessage());
+                log.error("File import failed. Path: {} target: {} error: {}", path, target, e.getMessage(), e);
             }
 
         }
