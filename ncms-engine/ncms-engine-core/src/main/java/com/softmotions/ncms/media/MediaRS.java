@@ -673,7 +673,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @DELETE
     @javax.ws.rs.Path("/delete/{path:.*}")
-    @RequiresAuthentication
     @Transactional(executorType = ExecutorType.BATCH)
     public void deleteResource(@PathParam("path") String path,
                                @Context HttpServletRequest req,
