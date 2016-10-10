@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.asm.CachedPage;
 import com.softmotions.ncms.asm.PageCriteria;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
@@ -159,7 +161,26 @@ public final class HttlAsmMethods {
         return ctx.renderAttribute(attrName, opts);
     }
 
-    public static Collection<Asm> asmNavChilds(String type) {
+    public static Collection<Asm> asmParentNavChilds() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        Asm asm = ctx.getAsm();
+        Long parentId = asm.getNavParentId();
+        if (parentId == null) {
+            return Collections.emptyList();
+        }
+        CachedPage cp = ctx.getPageService().getCachedPage(parentId, true);
+        if (cp == null) {
+            return Collections.emptyList();
+        }
+        return asmNavChilds(ctx, cp.getAsm(), null, null, null);
+    }
+
+
+    public static Collection<Asm> asmNavChilds() {
+        return asmNavChilds(null);
+    }
+
+    public static Collection<Asm> asmNavChilds(@Nullable String type) {
         return asmNavChilds(type, 0, 1000); //todo it is hardcoded limit
     }
 
@@ -179,13 +200,24 @@ public final class HttlAsmMethods {
                         asmDAO != null ? asmDAO : ctx.getInjector().getInstance(AsmDAO.class));
     }
 
-    public static Collection<Asm> asmNavChilds(String type, Number skip, Number limit) {
+    public static Collection<Asm> asmNavChilds(@Nullable String type,
+                                               @Nullable Number skip,
+                                               @Nullable Number limit) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        Asm asm = ctx.getAsm();
-        AsmDAO adao = getAsmDAO(ctx);
+        return asmNavChilds(ctx, ctx.getAsm(), type, skip, limit);
+    }
 
+
+    public static Collection<Asm> asmNavChilds(AsmRendererContext ctx, Asm asm,
+                                               @Nullable String type,
+                                               @Nullable Number skip,
+                                               @Nullable Number limit) {
+        AsmDAO adao = getAsmDAO(ctx);
         PageCriteria crit = adao.newPageCriteria();
-        crit.withPublished(true);
+        boolean preview = ctx.getPageService().getPageSecurityService().isPreviewPageRequest(ctx.getServletRequest());
+        if (!preview) {
+            crit.withPublished(true);
+        }
         crit.withNavParentId(asm.getId());
         if (type != null) {
             crit.withTypeLike(type);
