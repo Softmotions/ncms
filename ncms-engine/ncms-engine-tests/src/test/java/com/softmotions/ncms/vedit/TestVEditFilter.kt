@@ -48,7 +48,7 @@ class TestVEditFilter : BaseTest() {
         assertTrue(res.contains("$!{ncmsVEScripts()}"))
         assertTrue(res.contains("class=\"foo bar ncms-block\""))
         assertTrue(res.contains("class=\"ncms-block\""))
-        assertTrue(res.contains("<html $!{ncmsDocumentVEMeta()}>"))
+        assertTrue(res.contains("<div data-ncms-block=\"$!{ncmsVEBlockId('one')}\" $!{ncmsDocumentVEMeta()} class=\"ncms-block\">"))
         assertTrue(res.contains("data-ncms-block=\"$!{ncmsVEBlockId('one')}\""))
         assertTrue(res.contains("data-ncms-block=\"$!{ncmsVEBlockId('two')}\""))
     }

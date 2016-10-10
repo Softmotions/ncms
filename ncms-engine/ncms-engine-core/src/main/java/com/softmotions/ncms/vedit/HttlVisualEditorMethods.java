@@ -19,17 +19,26 @@ public class HttlVisualEditorMethods {
      * Visual editor meta attributes on `<html>` element.
      */
     public static String ncmsDocumentVEMeta() {
-        return  " data-ncms-root=\"" + AsmRendererContext.getSafe().getEnvironment().getAppRoot() + "\"";
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        if (ctx.getUserData("ncmsDocumentVEMeta.applied") != null
+            || !ctx.getPageService().getPageSecurityService().isPreviewPageRequest(ctx.getServletRequest())) {
+            return null;
+        }
+        ctx.setUserData("ncmsDocumentVEMeta.applied", Boolean.TRUE);
+        return " data-ncms-root=\"" + AsmRendererContext.getSafe().getEnvironment().getAppRoot() + "\"";
     }
 
     /**
      * Visual editor css styles.
      */
+    @Nullable
     public static String ncmsVEStyles() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        if (!ctx.getPageService().getPageSecurityService().isPreviewPageRequest(ctx.getServletRequest())) {
-            return "";
+        if (ctx.getUserData("ncmsVEStyles.applied") != null
+            || !ctx.getPageService().getPageSecurityService().isPreviewPageRequest(ctx.getServletRequest())) {
+            return null;
         }
+        ctx.setUserData("ncmsVEStyles.applied", Boolean.TRUE);
         String ref = ctx.getEnvironment().getNcmsAdminRoot() + "/resource/ncms/css/medium-editor.css";
         return "<link rel=\"stylesheet\" type=\"text/css\" href=\"" + ref + "\"/>";
     }
@@ -37,11 +46,14 @@ public class HttlVisualEditorMethods {
     /**
      * Visual editor `<script>` elements.
      */
+    @Nullable
     public static String ncmsVEScripts() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        if (!ctx.getPageService().getPageSecurityService().isPreviewPageRequest(ctx.getServletRequest())) {
-            return "";
+        if (ctx.getUserData("ncmsVEScripts.applied") != null
+            || !ctx.getPageService().getPageSecurityService().isPreviewPageRequest(ctx.getServletRequest())) {
+            return null;
         }
+        ctx.setUserData("ncmsVEScripts.applied", Boolean.TRUE);
         String ref = ctx.getEnvironment().getNcmsAdminRoot() + "/resource/ncms/script/medium-editor.js";
         String ref2 = ctx.getEnvironment().getNcmsAdminRoot() + "/resource/ncms/script/ncms-preview.js";
         String ret = "<script type=\"text/javascript\" src=\"" + ref + "\"></script>\n";

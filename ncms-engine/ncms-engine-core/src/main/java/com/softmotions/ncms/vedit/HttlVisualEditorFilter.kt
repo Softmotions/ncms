@@ -27,21 +27,19 @@ class HttlVisualEditorFilter : AbstractFilter() {
     }
 
     private fun process(source: Source, document: OutputDocument) {
+        var metaInjected = false;
         val allElements = source.allElements
         allElements.find {
             it.getAttributeValue("ncms-block") != null
         } ?: return
 
         for (el in allElements) {
-            if (el.name == "html") {
-                document.insert(el.startTag.end - 1, " $!{ncmsDocumentVEMeta()}")
-                continue
+            val blockAttr = el.attributes?.get("ncms-block") ?: continue
+            if (!metaInjected) {
+                metaInjected = true
+                document.insert(el.begin, "\n$!{ncmsVEStyles()}\n$!{ncmsVEScripts()}\n")
+                document.insert(el.attributes.end, " $!{ncmsDocumentVEMeta()}");
             }
-            if (el.name == "body") {
-                document.insert(el.endTag.begin, "\n$!{ncmsVEStyles()}\n$!{ncmsVEScripts()}")
-                continue
-            }
-            val blockAttr = el.attributes.get("ncms-block") ?: continue
             val attr2 = el.attributes.get("class")
             if (attr2 == null) {
                 document.insert(el.startTag.end - 1, " class=\"ncms-block\"")
