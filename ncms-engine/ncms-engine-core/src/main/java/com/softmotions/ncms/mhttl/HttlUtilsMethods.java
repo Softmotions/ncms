@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.IsoChronology;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Objects;
+import javax.annotation.Nullable;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -294,6 +301,7 @@ public final class HttlUtilsMethods {
 
     /**
      * Return true if we are in preview mode
+     *
      * @return
      */
     public static boolean isPreview() {
@@ -303,6 +311,9 @@ public final class HttlUtilsMethods {
                   .isPreviewPageRequest(ctx.getServletRequest());
     }
 
+    ///////////////////////////////////////////////////////////
+    //                     User agent detection              //
+    ///////////////////////////////////////////////////////////
 
     public static boolean isAndroidMobile() {
         return HttpUtils.isAndroidMobile(AsmRendererContext.getSafe().getServletRequest());
@@ -326,5 +337,49 @@ public final class HttlUtilsMethods {
 
     public static boolean isTablet() {
         return HttpUtils.isTablet(AsmRendererContext.getSafe().getServletRequest());
+    }
+
+    ///////////////////////////////////////////////////////////
+    //                Local date/time formatters             //
+    ///////////////////////////////////////////////////////////
+
+    public static String format(LocalDate date) {
+        return format(date, null);
+    }
+
+    public static String format(LocalDate date, @Nullable String pattern) {
+        if (date == null) {
+            return null;
+        }
+        if (pattern == null) {
+            AsmRendererContext ctx = AsmRendererContext.getSafe();
+            pattern =
+                    DateTimeFormatterBuilder
+                            .getLocalizedDateTimePattern(FormatStyle.SHORT, null,
+                                                         IsoChronology.INSTANCE,
+                                                         ctx.getLocale());
+        }
+        return date.format(DateTimeFormatter.ofPattern(pattern));
+    }
+
+    @Nullable
+    public static String format(LocalDateTime dateTime) {
+        return format(dateTime, null);
+    }
+
+    @Nullable
+    public static String format(LocalDateTime dateTime, @Nullable String pattern) {
+        if (dateTime == null) {
+            return null;
+        }
+        if (pattern == null) {
+            AsmRendererContext ctx = AsmRendererContext.getSafe();
+            pattern =
+                    DateTimeFormatterBuilder
+                            .getLocalizedDateTimePattern(FormatStyle.SHORT, FormatStyle.SHORT,
+                                                         IsoChronology.INSTANCE,
+                                                         ctx.getLocale());
+        }
+        return dateTime.format(DateTimeFormatter.ofPattern(pattern));
     }
 }

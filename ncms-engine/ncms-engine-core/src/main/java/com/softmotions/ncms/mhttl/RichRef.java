@@ -2,6 +2,7 @@ package com.softmotions.ncms.mhttl;
 
 import java.io.Serializable;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -93,10 +94,12 @@ public final class RichRef implements Serializable {
         this.style3 = style3;
     }
 
+    @Nullable
     public String toHtmlLink() {
         return toHtmlLink(null);
     }
 
+    @Nullable
     public String toHtmlLink(Map<String, ?> amap) {
         if (link == null) {
             return null;
@@ -174,16 +177,6 @@ public final class RichRef implements Serializable {
     }
 
     public String toString() {
-        final StringBuilder sb = new StringBuilder("RichRef{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", style='").append(style).append('\'');
-        sb.append(", style2='").append(style2).append('\'');
-        sb.append(", style3='").append(style3).append('\'');
-        sb.append(", link='").append(link).append('\'');
-        sb.append(", rawLink='").append(rawLink).append('\'');
-        sb.append(", description='").append(description).append('\'');
-        sb.append(", image=").append(image);
-        sb.append('}');
-        return sb.toString();
+       return link;
     }
 }

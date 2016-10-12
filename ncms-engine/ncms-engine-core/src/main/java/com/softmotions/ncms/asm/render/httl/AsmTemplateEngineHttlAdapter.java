@@ -128,7 +128,8 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
             key += '+';
         }
         value = httlProps.getProperty(key, "");
-        for (String c : new String[]{"com.softmotions.ncms.mhttl",
+        for (String c : new String[]{"java.time",
+                                     "com.softmotions.ncms.mhttl",
                                      "com.softmotions.ncms.asm",
                                      "com.softmotions.commons.cont",
                                      "org.apache.commons.configuration2"}) {

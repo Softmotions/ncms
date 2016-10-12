@@ -39,17 +39,19 @@ public final class HttlAsmMethods {
         return rctx.getRenderer().isHasRenderableAsmAttribute(rctx.getAsm(), rctx, name);
     }
 
+    @Nullable
     public static Object asmAny(String name) {
         AsmRendererContext rctx = AsmRendererContext.getSafe();
         return rctx.getRenderer().isHasRenderableAsmAttribute(rctx.getAsm(), rctx, name) ? asm(name) : null;
     }
 
+    @Nullable
     public static Object asmAny(Asm asm, String name) {
         if (asm == null) {
             return null;
         }
         AsmRendererContext rctx = AsmRendererContext.getSafe();
-        return rctx.getRenderer().isHasRenderableAsmAttribute(rctx.getAsm(), rctx, name) ? asm(name) : null;
+        return rctx.getRenderer().isHasRenderableAsmAttribute(asm, rctx, name) ? asm(asm, name) : null;
     }
 
     public static Object asm(String val) {
@@ -161,6 +163,12 @@ public final class HttlAsmMethods {
         return ctx.renderAttribute(attrName, opts);
     }
 
+    ///////////////////////////////////////////////////////////
+    //                      Queries                          //
+    ///////////////////////////////////////////////////////////
+
+    private static final AtomicReference<AsmDAO> ASM_DAO_REF = new AtomicReference<>();
+
     public static Collection<Asm> asmParentNavChilds() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         Asm asm = ctx.getAsm();
@@ -172,23 +180,8 @@ public final class HttlAsmMethods {
         if (cp == null) {
             return Collections.emptyList();
         }
-        return asmNavChilds(ctx, cp.getAsm(), null, null, null);
+        return asmNavChilds(ctx, cp.getAsm(), null, true, null, null);
     }
-
-
-    public static Collection<Asm> asmNavChilds() {
-        return asmNavChilds(null);
-    }
-
-    public static Collection<Asm> asmNavChilds(@Nullable String type) {
-        return asmNavChilds(type, 0, 1000); //todo it is hardcoded limit
-    }
-
-    public static Collection<Asm> asmNavChilds(String type, int skip, int limit) {
-        return asmNavChilds(type, Integer.valueOf(skip), Integer.valueOf(limit));
-    }
-
-    private static final AtomicReference<AsmDAO> ASM_DAO_REF = new AtomicReference<>();
 
     private static AsmDAO getAsmDAO(AsmRendererContext ctx) {
         AsmDAO adao = ASM_DAO_REF.get();
@@ -200,22 +193,58 @@ public final class HttlAsmMethods {
                         asmDAO != null ? asmDAO : ctx.getInjector().getInstance(AsmDAO.class));
     }
 
+    public static Collection<Asm> asmNavChilds() {
+        return asmNavChilds(null, true);
+    }
+
+    public static Collection<Asm> asmNavChildsAll() {
+        return asmNavChilds(null, false);
+    }
+
+    public static Collection<Asm> asmNavChilds(@Nullable String type) {
+        return asmNavChilds(type, true);
+    }
+
+    public static Collection<Asm> asmNavChildsAll(@Nullable String type) {
+        return asmNavChilds(type, false);
+    }
+
+    public static Collection<Asm> asmNavChilds(@Nullable String type, boolean allPublished) {
+        return asmNavChilds(type, allPublished, 0, 1000); //todo it is hardcoded limit
+    }
+
+    public static Collection<Asm> asmNavChilds(@Nullable String type, int skip, int limit) {
+        return asmNavChilds(type, true, skip, limit);
+    }
+
+    public static Collection<Asm> asmNavChildsAll(@Nullable String type, int skip, int limit) {
+        return asmNavChilds(type, false, skip, limit);
+    }
+
     public static Collection<Asm> asmNavChilds(@Nullable String type,
+                                               boolean allPublished,
+                                               int skip,
+                                               int limit) {
+        return asmNavChilds(type, allPublished, Integer.valueOf(skip), Integer.valueOf(limit));
+    }
+
+    public static Collection<Asm> asmNavChilds(@Nullable String type,
+                                               boolean allPublished,
                                                @Nullable Number skip,
                                                @Nullable Number limit) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return asmNavChilds(ctx, ctx.getAsm(), type, skip, limit);
+        return asmNavChilds(ctx, ctx.getAsm(), type, allPublished, skip, limit);
     }
-
 
     public static Collection<Asm> asmNavChilds(AsmRendererContext ctx, Asm asm,
                                                @Nullable String type,
+                                               boolean allPublished,
                                                @Nullable Number skip,
                                                @Nullable Number limit) {
         AsmDAO adao = getAsmDAO(ctx);
         PageCriteria crit = adao.newPageCriteria();
         boolean preview = ctx.getPageService().getPageSecurityService().isPreviewPageRequest(ctx.getServletRequest());
-        if (!preview) {
+        if (!preview && allPublished) {
             crit.withPublished(true);
         }
         crit.withNavParentId(asm.getId());
@@ -232,11 +261,27 @@ public final class HttlAsmMethods {
         return crit.selectAsAsms();
     }
 
+    public static PageCriteria asmNavChildsPageCriteria() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        AsmDAO adao = getAsmDAO(ctx);
+        PageCriteria crit = adao.newPageCriteria();
+        crit.withPublished(true);
+        crit.withNavParentId(ctx.getAsm().getId());
+        crit.onAsm().orderBy("ordinal").desc();
+        return crit;
+    }
+
+    public static Collection<Asm> asmPageQuery(Object critObj) {
+        return asmPageQuery(critObj, null, null);
+    }
+
     public static Collection<Asm> asmPageQuery(Object critObj, int skip, int limit) {
         return asmPageQuery(critObj, Integer.valueOf(skip), Integer.valueOf(limit));
     }
 
-    public static Collection<Asm> asmPageQuery(Object critObj, Number skip, Number limit) {
+    public static Collection<Asm> asmPageQuery(Object critObj,
+                                               @Nullable Number skip,
+                                               @Nullable Number limit) {
         if (!(critObj instanceof PageCriteria)) {
             return Collections.EMPTY_LIST;
         }
@@ -250,15 +295,21 @@ public final class HttlAsmMethods {
         return crit.selectAsAsms();
     }
 
+    ///////////////////////////////////////////////////////////
+    //                      Links                            //
+    ///////////////////////////////////////////////////////////
 
+    @Nullable
     public static String link(Asm asm) {
         return (asm != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(asm.getName()) : null;
     }
 
+    @Nullable
     public static String link(String alias) {
         return (alias != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(alias) : null;
     }
 
+    @Nullable
     public static String resolve(String link) {
         return (link != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(link) : null;
     }
@@ -295,18 +346,22 @@ public final class HttlAsmMethods {
     //                       Casts                           //
     ///////////////////////////////////////////////////////////
 
+    @Nullable
     public static RichRef asRichRef(Object v) {
         return (v instanceof RichRef) ? (RichRef) v : null;
     }
 
+    @Nullable
     public static Tree asTree(Object v) {
         return (v instanceof Tree) ? (Tree) v : null;
     }
 
+    @Nullable
     public static Table asTable(Object v) {
         return (v instanceof Table) ? (Table) v : null;
     }
 
+    @Nullable
     public static Image asImage(Object v) {
         return (v instanceof Image) ? (Image) v : null;
     }
@@ -319,7 +374,7 @@ public final class HttlAsmMethods {
         return ogmeta(null);
     }
 
-    public static String ogmeta(Map<String, String> params) {
+    public static String ogmeta(@Nullable Map<String, String> params) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         NcmsEnvironment env = ctx.getEnvironment();
         HttpServletRequest req = ctx.getServletRequest();
