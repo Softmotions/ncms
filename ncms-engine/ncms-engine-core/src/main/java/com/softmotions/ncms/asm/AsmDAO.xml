@@ -213,6 +213,19 @@
         WHERE id = #{id} AND lock_user IS NULL
     </update>
 
+    <update id="asmUnlock2"
+            parameterType="map">
+        UPDATE ASMS
+        SET lock_user = NULL, lock_date = NULL
+        WHERE id = #{id} AND lock_user = #{user}
+    </update>
+
+    <select id="asmSelectLockUser"
+            parameterType="long"
+            resultType="string">
+        SELECT lock_user FROM asms WHERE id = #{id}
+    </select>
+
     <select id="asmSelectLock"
             parameterType="long"
             resultType="map">

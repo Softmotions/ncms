@@ -14,4 +14,10 @@ public interface NcmsEventBus extends EBus {
     void fireOnRollback(Object event);
 
     void unlockOnTxFinish(Lock lock);
+
+    void doOnSuccessCommit(Runnable action);
+
+    void doOnRollback(Runnable action);
+
+    void doOnTxFinish(Runnable action);
 }

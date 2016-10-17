@@ -14,7 +14,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.weboot.mb.MBSqlSessionListener;
-import com.softmotions.weboot.mb.MBSqlSessionListenerSupport;
 import com.softmotions.weboot.mb.MBSqlSessionManager;
 
 /**
@@ -47,7 +46,9 @@ public class EventsModule extends AbstractModule {
 
         @Override
         public void fire(Object event) {
-            post(event);
+            if (event != null) {
+                post(event);
+            }
         }
 
         @Inject
@@ -58,7 +59,7 @@ public class EventsModule extends AbstractModule {
         }
 
         @Override
-        public void fireOnSuccessCommit(final Object event) {
+        public void fireOnSuccessCommit(Object event) {
             sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
                 @Override
                 public void commit(boolean success) {
@@ -77,12 +78,11 @@ public class EventsModule extends AbstractModule {
                 @Override
                 public void rollback() {
                 }
-
             });
         }
 
         @Override
-        public void fireOnRollback(final Object event) {
+        public void fireOnRollback(Object event) {
             sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
                 @Override
                 public void commit(boolean success) {
@@ -105,24 +105,115 @@ public class EventsModule extends AbstractModule {
             });
         }
 
-
         @Override
         public void unlockOnTxFinish(Lock lock) {
             sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
-
                 @Override
                 public void commit(boolean success) {
-                    lock.unlock();
+                    unlock(lock);
                 }
 
                 @Override
                 public void rollback() {
-                   lock.unlock();
+                    unlock(lock);
                 }
 
                 @Override
                 public void close(boolean success) {
-                   lock.unlock();
+                    unlock(lock);
+                }
+
+                private void unlock(Lock lock) {
+                    if (lock != null) {
+                        lock.unlock();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void doOnSuccessCommit(Runnable action) {
+            sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
+                @Override
+                public void commit(boolean success) {
+                    if (success) {
+                        run(action);
+                    }
+                }
+
+                @Override
+                public void rollback() {
+                }
+
+                @Override
+                public void close(boolean success) {
+                    if (success) {
+                        run(action);
+                    }
+                }
+
+                private void run(Runnable action) {
+                    if (action != null) {
+                        action.run();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void doOnRollback(Runnable action) {
+            sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
+
+                @Override
+                public void commit(boolean success) {
+                    if (!success) {
+                        run(action);
+                    }
+                }
+
+                @Override
+                public void rollback() {
+                    run(action);
+                }
+
+                @Override
+                public void close(boolean success) {
+                    if (!success) {
+                        run(action);
+                    }
+                }
+
+                private void run(Runnable action) {
+                    if (action != null) {
+                        action.run();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void doOnTxFinish(Runnable action) {
+            sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
+
+                @Override
+                public void commit(boolean success) {
+                    run(action);
+                }
+
+                @Override
+                public void rollback() {
+                    run(action);
+                }
+
+                @Override
+                public void close(boolean success) {
+                    run(action);
+                }
+
+                private void run(Runnable action) {
+                    if (action != null) {
+                        action.run();
+                    }
                 }
             });
         }

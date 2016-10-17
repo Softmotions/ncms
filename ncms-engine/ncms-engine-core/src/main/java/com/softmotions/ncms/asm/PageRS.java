@@ -417,15 +417,39 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public ObjectNode lockPage(@Context HttpServletRequest req,
                                @PathParam("id") Long id) throws Exception {
-
+        if (!pageSecurity.canEdit(id, req)) {
+            throw new ForbiddenException();
+        }
         WSUser wsUser = pageSecurity.getCurrentWSUserSafe(req);
         ObjectNode res = mapper.createObjectNode();
-        //Lock lock = pageLocks.get(id);
-        // todo
-        //adao.asmLock()
+        String locker = adao.asmLock(id, wsUser.getName());
+        if (locker != null) { // Page was locked by another user
+            res.put("success", locker.equals(wsUser.getName()));
+            res.put("locker", locker);
+        } else {
+            res.put("success", true);
+            res.put("locker", wsUser.getName());
+        }
         return res;
     }
 
+    @PUT
+    @Path("/unlock/{id}")
+    @Transactional
+    public ObjectNode unlockPage(@Context HttpServletRequest req,
+                                 @PathParam("id") Long id) throws Exception {
+        if (!pageSecurity.canEdit(id, req)) {
+            throw new ForbiddenException();
+        }
+        WSUser wsUser = pageSecurity.getCurrentWSUserSafe(req);
+        ObjectNode res = mapper.createObjectNode();
+        if (pageSecurity.isOwner(id, req)) {
+            res.put("success", adao.asmUnlock(id));
+        } else {
+            res.put("success", adao.asmUnlock(id, wsUser.getName()));
+        }
+        return res;
+    }
 
     @PUT
     @Path("/edit/{id}")
@@ -439,11 +463,12 @@ public class PageRS extends MBDAOSupport implements PageService {
         amCtx.setAsmId(id);
 
         Asm page = adao.asmSelectById(id);
-        if (page == null) {
-            throw new NotFoundException("");
-        }
-        if (!pageSecurity.canEdit2(page, req)) {
-            throw new ForbiddenException("");
+        WSUser wsUser = pageSecurity.getCurrentWSUserSafe(req);
+        if (page == null
+            || !pageSecurity.canEdit2(page, req)
+            || (page.getLockUser() != null
+                && !page.getLockUser().equals(wsUser.getName()))) {
+            throw new ForbiddenException();
         }
         Map<String, AsmAttribute> attrIdx = new HashMap<>();
         for (AsmAttribute attr : page.getEffectiveAttributes()) {
@@ -484,12 +509,13 @@ public class PageRS extends MBDAOSupport implements PageService {
         amCtx.flush();
 
         // "core":{"id":141,"location":"/site/httl/my/empty_core.httl","name":null,"templateEngine":null},
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
+        adao.asmUnlock(id, wsUser.getName());
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
 
         // Refresh page
         page = adao.asmSelectById(id);
         if (page == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         return page.getEffectiveCore();
     }
@@ -511,7 +537,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm page = adao.asmSelectById(id);
         if (!pageSecurity.canEdit2(page, req)) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
         Boolean ts = selectOne("selectPageTemplateStatus", templateId);
         if (ts == null) {
@@ -582,7 +608,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         if (!pageSecurity.isOwner(id, req)) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
         WSUser user = userdb.findUser(owner);
         if (user == null) {
@@ -672,13 +698,13 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new BadRequestException("");
         }
         if (parent == null && !req.isUserInRole("admin.structure")) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
         if (parent != null &&
             ("news.page".equals(type) ?
              !pageSecurity.canNewsEdit(parent, req) :
              !pageSecurity.canEdit(parent, req))) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
 
         String guid;
@@ -763,7 +789,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         if ("news.page".equals(type) ?
             !(parent != null && pageSecurity.canNewsEdit(parent, req)) :
             !pageSecurity.canDelete(id, req)) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
 
         if ("page".equals(type)) {
@@ -825,7 +851,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 (tgt == 0 && !req.isUserInRole("admin.structure")) ||
                 !pageSecurity.checkAccess(tgt, req, 'w') ||
                 !pageSecurity.checkAccess(src, req, 'd')) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
 
         update("prepareMove", "nav_cached_path", getPageIDsPath(src));
@@ -932,7 +958,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             throw new NotFoundException("");
         }
         if (!pageSecurity.checkAccessAll2(page, req, "d")) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
         if (adao.asmChildrenCount(id) > 0) {
             throw new NcmsNotificationException("ncms.page.nodel.parent", true, req);
@@ -1046,7 +1072,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                          @PathParam("user") String user,
                          @QueryParam("recursive") boolean recursive) {
         if (!pageSecurity.isOwner(pid, req)) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
@@ -1065,7 +1091,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                           @QueryParam("add") boolean isAdd) {
 
         if (!pageSecurity.isOwner(pid, req)) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {
@@ -1084,7 +1110,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                               @QueryParam("forceRecursive") boolean force) {
 
         if (!pageSecurity.isOwner(pid, req)) {
-            throw new ForbiddenException("");
+            throw new ForbiddenException();
         }
         WSUser wsUser = userdb.findUser(user);
         if (wsUser == null) {

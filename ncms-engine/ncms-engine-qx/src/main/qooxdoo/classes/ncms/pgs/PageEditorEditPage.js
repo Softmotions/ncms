@@ -190,7 +190,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.setModified(false);
         },
 
-
         __cleanupFormPane: function () {
             if (this.__form != null) {
                 try {
@@ -303,52 +302,38 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         _applyModified: function (val, old) {
-
-            if (val != old) {
-
-
-
-
+            if (val) {
+                var ps = this.getPageSpec();
+                ncms.pgs.PageLocker.getInstance().lock({
+                    id: ps["id"],
+                    reportErrors: true
+                }, function (ret) {
+                    var success = !!(ret && ret.success);
+                    if (!success) {
+                        this.setModified(false);
+                    }
+                    this.__saveBt.setEnabled(success);
+                    this.__cancelBt.setEnabled(success);
+                }, this);
+            } else {
+                this.__saveBt.setEnabled(val);
+                this.__cancelBt.setEnabled(val);
             }
-
-
-            this.__saveBt.setEnabled(val);
-            this.__cancelBt.setEnabled(val);
         },
-
-
-        /**
-         * Acquire page lock.
-         * @private
-         */
-        __lockPage: function() {
-
-
-        },
-
-        /**
-         * Unlock page/
-         * @private
-         */
-        __unlockPage: function() {
-
-
-        },
-
 
         __onChangeTemplate: function () {
             var me = this;
-            var pspec = this.getPageSpec();
+            var ps = this.getPageSpec();
             var dlg = new ncms.pgs.PagesSelectorDlg(
                 this.tr("Please select the template page"),
                 false, {
-                    pageId: pspec.id,
+                    pageId: ps.id,
                     asmOpts: {
                         title: me.tr("Templates"),
                         useColumns: ["description", "name"],
                         constViewSpec: {
                             template: true,
-                            pageId: pspec.id
+                            pageId: ps.id
                         }
                     }
                 }
@@ -360,7 +345,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 //            "idPath":[1,101],"labelPath":["Лендинги","Вконтакте"],
                 //            "guidPath":["d76200ca883563e4d971e38951b332c0","12d5c7a0c3167d3d21d30f1c43368b32"]}
                 var url = ncms.Application.ACT.getRestUrl("pages.set.template", {
-                    id: pspec["id"],
+                    id: ps["id"],
                     templateId: data["id"]
                 });
                 var req = new sm.io.Request(url, "PUT", "application/json");
@@ -368,7 +353,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     this.setPageEditSpec(resp.getContent());
                     dlg.close();
                     ncms.Events.getInstance().fireDataEvent("pageChangeTemplate", {
-                        id: pspec["id"],
+                        id: ps["id"],
                         templateId: data["id"]
                     });
                 }, this);
@@ -378,8 +363,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __syncState: function () {
-            var espec = this.getPageEditSpec();
-            var hasCore = (this.__form != null && espec != null && espec["core"] != null);
+            var es = this.getPageEditSpec();
+            var hasCore = (this.__form != null && es != null && es["core"] != null);
             this.__previewBt.setEnabled(hasCore);
             this.__publishPageBt.setEnabled(hasCore);
         },
@@ -468,7 +453,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.__doPublish(val); //publish
         },
 
-        __publishChanges: function(ev) {
+        __publishChanges: function (ev) {
 
         },
 
@@ -477,11 +462,11 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 publish ? "pages.publish" : "pages.unpublish",
                 {"id": this.getPageSpec()["id"]}), "PUT");
             req.send(function () {
-                var spec = this.getPageEditSpec();
-                spec["published"] = true;
+                var ps = this.getPageEditSpec();
+                ps["published"] = true;
                 this.__setPublishState(publish);
                 ncms.Events.getInstance().fireDataEvent("pageChangePublished", {
-                    id: spec["id"],
+                    id: ps["id"],
                     published: publish
                 });
             }, this);
@@ -513,23 +498,30 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __setPublishState: function (val) {
             this.__publishPageBt.setToolTipText(val ? this.tr("Published") : this.tr("Not published"));
-            this.__publishPageBt.setIcon(val ? "ncms/icon/16/misc/light-bulb.png" : "ncms/icon/16/misc/light-bulb-off.png");
+            this.__publishPageBt.setIcon(
+                val ? "ncms/icon/16/misc/light-bulb.png" : "ncms/icon/16/misc/light-bulb-off.png");
             this.__publishPageBt.setValue(val);
         },
 
         __cancel: function () {
             ncms.Application.confirm(this.tr("Dow you really want to dispose pending changes?"), function (yes) {
                 if (yes) {
-                    this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()));
+                    var ps = this.getPageSpec();
+                    ncms.pgs.PageLocker.getInstance().unlock({
+                        id: ps["id"],
+                        reportErrors: true
+                    }, function () {
+                        this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()));
+                    }, this);
                 }
             }, this);
         },
 
         __files: function () {
             qx.log.Logger.info("Files");
-            var pspec = this.getPageSpec();
+            var ps = this.getPageSpec();
             var dlg = new ncms.mmgr.PageFilesSelectorDlg(
-                pspec["id"],
+                ps["id"],
                 this.tr("Organize the page files"), {
                     allowModify: true,
                     linkText: false,

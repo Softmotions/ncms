@@ -263,6 +263,14 @@ qx.Class.define("ncms.Actions", {
         //GET The number of page referers
         this._action("pages.referrers.count", "/rs/adm/pages/referers/count/{id}");
 
+        //PUT Acquire lock on the specified page
+        // {id}: Page ID
+        this._action("pages.lock", "/rs/adm/pages/lock/{id}");
+
+        //PUT Release lock on the specified page
+        // {id}: Page ID
+        this._action("pages.unlock", "/rs/adm/pages/unlock/{id}");
+
         //================== UserEnvRS
 
         // PUT Single user env value

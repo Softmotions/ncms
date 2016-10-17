@@ -169,6 +169,25 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     /**
+     * Unlock an assembly lock.
+     * Returns `true` if an existing lock was owned by [user]
+     * and successfully cleared.
+     *
+     * @param asmId Assembly id
+     * @return Returns `true` if existing lock
+     * was cleared.
+     */
+    @Transactional
+    public boolean asmUnlock(Long asmId, String user) {
+        ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
+        if (update("asmUnlock2", "id", asmId, "user", user) > 0) {
+            ebus.fire(new AsmUnlockedEvent(this, asmId));
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Select current assembly lock: `(username, lock date)`
      * or `null` if assembly is not locked.
      */
