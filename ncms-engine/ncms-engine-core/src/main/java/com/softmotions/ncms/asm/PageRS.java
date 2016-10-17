@@ -1912,8 +1912,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
-    @Scheduled("* * * * *")
     @Transactional
+    @Scheduled("* * * * *")
     public void cleanupLocked() {
         //todo
         log.info("cleanup locked!!!");
