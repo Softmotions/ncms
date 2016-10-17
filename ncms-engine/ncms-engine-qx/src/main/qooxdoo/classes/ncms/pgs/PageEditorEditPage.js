@@ -314,10 +314,12 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     }
                     this.__saveBt.setEnabled(success);
                     this.__cancelBt.setEnabled(success);
+                    this.__syncState();
                 }, this);
             } else {
                 this.__saveBt.setEnabled(val);
                 this.__cancelBt.setEnabled(val);
+                this.__syncState();
             }
         },
 
@@ -365,8 +367,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         __syncState: function () {
             var es = this.getPageEditSpec();
             var hasCore = (this.__form != null && es != null && es["core"] != null);
-            this.__previewBt.setEnabled(hasCore);
-            this.__publishPageBt.setEnabled(hasCore);
+            this.__previewBt.setEnabled(hasCore && this.getEnabled());
+            this.__publishPageBt.setEnabled(hasCore && this.getEnabled());
         },
 
         __save: function (cb) {

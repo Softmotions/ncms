@@ -89,6 +89,7 @@ import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
+import com.softmotions.weboot.scheduler.Scheduled;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -544,12 +545,6 @@ public class PageRS extends MBDAOSupport implements PageService {
             log.warn("Assembly template: {} not found", templateId);
             throw new NotFoundException("");
         }
-
-// todo review this check
-//        if (ts == false) {
-//            log.warn("Assembly: {} is not a page template", templateId);
-//            throw new BadRequestException("");
-//        }
 
         if (id.equals(templateId)) {
             log.warn("The page {} cannot reference itself as template", id);
@@ -1917,9 +1912,15 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
+    @Scheduled("* * * * *")
+    @Transactional
+    public void cleanupLocked() {
+        //todo
+        log.info("cleanup locked!!!");
+    }
+
     @Start(order = 90, parallel = true)
     public void start() {
         reloadIndexPages();
     }
-
 }
