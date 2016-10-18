@@ -409,4 +409,32 @@
         ORDER BY asm.hname
     </select>
 
+    <select id="selectOldLockedPages"
+            databaseId="DB2"
+            resultType="long"
+            parameterType="long">
+        SELECT
+            asm.id
+        FROM ASMS AS asm
+        WHERE
+              asm.lock_date IS NOT NULL
+              AND MAX(ABS(CAST((CURRENT_TIMESTAMP - asm.mdate) AS BIGINT)),
+                      ABS(CAST((CURRENT_TIMESTAMP - asm.lock_date) AS BIGINT))) >= #{maxsec}
+    </select>
+
+
+    <select id="selectOldLockedPages"
+            databaseId="POSTGRES"
+            resultType="long"
+            parameterType="long">
+        SELECT
+            asm.id
+        FROM ASMS AS asm
+        WHERE
+            asm.lock_date IS NOT NULL
+            AND GREATEST(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - asm.mdate))::BIGINT,
+                         EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - asm.lock_date))::BIGINT) >=  #{maxsec}
+    </select>
+
+
 </mapper>

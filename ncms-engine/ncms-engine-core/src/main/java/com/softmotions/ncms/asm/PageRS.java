@@ -16,7 +16,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
-import java.util.concurrent.locks.Lock;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,7 +57,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
-import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -144,8 +142,6 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final MediaRepository mrepo;
 
-    private final Striped<Lock> pageLocks;
-
     @GuardedBy("pagesCache")
     private final Map<Long, CachedPage> pagesCache;
 
@@ -181,6 +177,8 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final AsmRendererHelper helper;
 
+    private final NcmsEnvironment env;
+
     @Inject
     public PageRS(SqlSession sess,
                   AsmDAO adao,
@@ -212,8 +210,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.indexPage2FirstLang = new HashMap<>();
         this.indexPage2SecondLang = new HashMap<>();
         this.mrepo = mrepo;
-        this.pageLocks = Asm.STRIPED_LOCKS;
         this.amCtxProvider = amCtxProvider;
+        this.env = env;
         this.asmRoot = env.getAppRoot() + "/";
         this.helper = helper;
         this.ebus.register(this);
@@ -1914,9 +1912,18 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @Transactional
     @Scheduled("* * * * *")
-    public void cleanupLocked() {
-        //todo
-        log.info("cleanup locked!!!");
+    public void cleanupOldLockedPages() {
+        long maxIdleMins = env.xcfg().getInt("pages.userlock-max-idle-sec", 60 * 60 * 1); // 1 hour
+        List<Long> ids = select("selectOldLockedPages", maxIdleMins);
+        if (ids.isEmpty()) {
+            return;
+        }
+        log.warn("Found page locks inactive more than {} seconds. " +
+                 "Pages will be unlocked", maxIdleMins);
+        for (Long id : ids) {
+            log.warn("Unlocking page: {}", id);
+            adao.asmUnlock(id);
+        }
     }
 
     @Start(order = 90, parallel = true)
