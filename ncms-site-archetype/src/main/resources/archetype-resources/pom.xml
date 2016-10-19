@@ -171,6 +171,11 @@
                                         <todir>conf/</todir>
                                         <tofile>server.xml</tofile>
                                     </configfile>
+                                    <configfile>
+                                        <file>${project.basedir}/tomcat/logging.properties</file>
+                                        <todir>conf/</todir>
+                                        <tofile>logging.properties</tofile>
+                                    </configfile>
                                 </configfiles>
                             </configuration>
                             <deployables>
