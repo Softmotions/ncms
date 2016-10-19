@@ -33,16 +33,16 @@ public abstract class OnMessageAtmosphereHandler<T> extends AbstractReflectorAtm
             log.trace("{} with event {}", event.getResource().uuid(), event);
         }
         if (event.isCancelled() || event.isClosedByApplication() || event.isClosedByClient()) {
-            onDisconnect(response);
+            onDisconnect(response, event);
         } else if (event.getMessage() != null && List.class.isAssignableFrom(event.getMessage().getClass())) {
             List<T> messages = List.class.cast(event.getMessage());
             for (T t : messages) {
                 onMessage(response, t, event);
             }
         } else if (event.isResuming()) {
-            onResume(response);
+            onResume(response, event);
         } else if (event.isResumedOnTimeout()) {
-            onTimeout(response);
+            onTimeout(response, event);
         } else if (event.isSuspended()) {
             onMessage(response, (T) event.getMessage(), event);
         }
@@ -78,7 +78,7 @@ public abstract class OnMessageAtmosphereHandler<T> extends AbstractReflectorAtm
      * @param response an {@link AtmosphereResponse}.
      * @throws IOException
      */
-    public void onResume(AtmosphereResponse response) throws IOException {
+    public void onResume(AtmosphereResponse response, AtmosphereResourceEvent event) throws IOException {
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class OnMessageAtmosphereHandler<T> extends AbstractReflectorAtm
      * @param response an {@link AtmosphereResponse}.
      * @throws IOException
      */
-    public void onTimeout(AtmosphereResponse response) throws IOException {
+    public void onTimeout(AtmosphereResponse response, AtmosphereResourceEvent event) throws IOException {
     }
 
     /**
@@ -98,6 +98,6 @@ public abstract class OnMessageAtmosphereHandler<T> extends AbstractReflectorAtm
      * @param response an {@link AtmosphereResponse}.
      * @throws IOException
      */
-    public void onDisconnect(AtmosphereResponse response) throws IOException {
+    public void onDisconnect(AtmosphereResponse response, AtmosphereResourceEvent event) throws IOException {
     }
 }
