@@ -1,10 +1,13 @@
 package com.softmotions.ncms.atm
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
 import com.google.inject.Singleton
+import com.softmotions.ncms.asm.events.AsmCreatedEvent
+import com.softmotions.ncms.asm.events.AsmModifiedEvent
+import com.softmotions.ncms.asm.events.AsmRemovedEvent
 import com.softmotions.ncms.events.NcmsEventBus
-import com.softmotions.ncms.events.UserDisconnectedEvent
 import org.atmosphere.cache.UUIDBroadcasterCache
 import org.atmosphere.client.TrackMessageSizeInterceptor
 import org.atmosphere.config.service.AtmosphereHandlerService
@@ -14,7 +17,6 @@ import org.atmosphere.interceptor.BroadcastOnPostAtmosphereInterceptor
 import org.atmosphere.interceptor.HeartbeatInterceptor
 import org.atmosphere.interceptor.SuspendTrackerInterceptor
 import org.slf4j.LoggerFactory
-import java.io.IOException
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -40,11 +42,14 @@ open class AdminUIWS
 @Inject
 constructor(private val mapper: ObjectMapper,
             private val resourceFactory: AtmosphereResourceFactory,
+            private val metaBroadcaster: MetaBroadcaster,
             private val ebus: NcmsEventBus) : OnMessageAtmosphereHandler<String>() {
 
-
     companion object {
+
         private val log = LoggerFactory.getLogger(AdminUIWS::class.java)
+
+        private val BROADCAST_ALL = "/*"
     }
 
     private val ruuid2User = HashMap<String, String>()
@@ -95,17 +100,7 @@ constructor(private val mapper: ObjectMapper,
             }
         } ?: return
         log.info("User: {} disconnected", user)
-        ebus.fire(UserDisconnectedEvent(user, this))
-    }
-
-    @Throws(IOException::class)
-    override fun onMessage(response: AtmosphereResponse,
-                           data: String,
-                           event: AtmosphereResourceEvent) {
-        val msg = WSMessage(mapper, data)
-        val resp = mapper.createObjectNode()
-        resp.put("message", "Response for " + msg.uuid)
-        response.writer.write(WSMessage(mapper, resp).toString())
+        ebus.fire(UIUserDisconnectedEvent(user, this))
     }
 
     @Singleton
@@ -126,4 +121,57 @@ constructor(private val mapper: ObjectMapper,
             aws.terminate(event.resource)
         }
     }
+
+    private fun createMessage(type: String): WSMessage {
+        return WSMessage(mapper).put("type", type)
+    }
+
+    override fun onMessage(response: AtmosphereResponse,
+                           data: String,
+                           event: AtmosphereResourceEvent) {
+
+        val msg = WSMessage(mapper, data)
+        log.info("onMessage={}", msg) // todo
+        ebus.fire(UIUserMessageEvent(
+                this,
+                msg,
+                event.resource.uuid(),
+                BROADCAST_ALL,
+                metaBroadcaster,
+                resourceFactory)
+        )
+    }
+
+    ///////////////////////////////////////////////////////////
+    //                   Ncms ebus listeners                 //
+    ///////////////////////////////////////////////////////////
+
+    @Subscribe
+    fun onDisconnected(evt: UIUserDisconnectedEvent) {
+        metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                createMessage(evt.type)
+                        .put("user", evt.user))
+    }
+
+    @Subscribe
+    fun onAsmModified(evt: AsmModifiedEvent) {
+        metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                createMessage(evt.type)
+                        .put("id", evt.id))
+    }
+
+    @Subscribe
+    fun onAsmCreatedEvent(evt: AsmCreatedEvent) {
+        metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                createMessage(evt.type)
+                        .put("id", evt.id))
+    }
+
+    @Subscribe
+    fun onAsmRemovedEvent(evt: AsmRemovedEvent) {
+        metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                createMessage(evt.type)
+                        .put("id", evt.id))
+    }
+
 }

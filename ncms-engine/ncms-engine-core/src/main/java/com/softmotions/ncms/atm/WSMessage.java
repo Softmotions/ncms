@@ -62,6 +62,20 @@ public class WSMessage {
         return mapper;
     }
 
+    public String getType() {
+        return data.path("type").asText();
+    }
+
+    public WSMessage put(String key, String value) {
+        data.put(key, value);
+        return this;
+    }
+
+    public WSMessage put(String key, long value) {
+        data.put(key, value);
+        return this;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
