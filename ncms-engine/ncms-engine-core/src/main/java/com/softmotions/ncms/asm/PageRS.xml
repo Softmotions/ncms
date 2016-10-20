@@ -418,8 +418,8 @@
         FROM ASMS AS asm
         WHERE
               asm.lock_date IS NOT NULL
-              AND MAX(ABS(CAST((CURRENT_TIMESTAMP - asm.mdate) AS BIGINT)),
-                      ABS(CAST((CURRENT_TIMESTAMP - asm.lock_date) AS BIGINT))) >= #{maxsec}
+              AND MIN(ABS(CAST((CURRENT_TIMESTAMP - asm.mdate) AS BIGINT)),
+                      ABS(CAST((CURRENT_TIMESTAMP - asm.lock_date) AS BIGINT))) >= #{maxsec,jdbcType=VARCHAR}
     </select>
 
 
@@ -432,8 +432,8 @@
         FROM ASMS AS asm
         WHERE
             asm.lock_date IS NOT NULL
-            AND GREATEST(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - asm.mdate))::BIGINT,
-                         EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - asm.lock_date))::BIGINT) >=  #{maxsec}
+            AND LEAST(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - asm.mdate))::BIGINT,
+                      EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - asm.lock_date))::BIGINT) >=  #{maxsec,jdbcType=BIGINT}
     </select>
 
 

@@ -118,7 +118,7 @@ public class AsmRS extends MBDAOSupport {
         }
         asm = new Asm(name);
         adao.asmInsert(asm);
-        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, asm.getId()));
+        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, asm.getId(), req));
         return asm;
     }
 
@@ -138,22 +138,25 @@ public class AsmRS extends MBDAOSupport {
         if (oid == null) {
             adao.asmRename(id, name);
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
     }
 
     @DELETE
     @Path("/delete/{id}")
     @Transactional
-    public void delete(@PathParam("id") Long id) {
+    public void delete(@PathParam("id") Long id,
+                       @Context HttpServletRequest req) {
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         adao.asmRemove(id);
-        ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id, req));
     }
 
     @PUT
     @Path("/{id}/core")
     @Transactional
-    public ObjectNode corePut(@PathParam("id") Long id, ObjectNode coreSpec) {
+    public ObjectNode corePut(@PathParam("id") Long id,
+                              @Context HttpServletRequest req,
+                              ObjectNode coreSpec) {
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
@@ -163,14 +166,15 @@ public class AsmRS extends MBDAOSupport {
         AsmCore core = adao.asmSetCore(asm, coreSpec.get("location").asText());
         res.putPOJO("core", core);
         res.putPOJO("effectiveCore", core);
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
         return res;
     }
 
     @DELETE
     @Path("/{id}/core")
     @Transactional
-    public ObjectNode coreDelete(@PathParam("id") Long id) {
+    public ObjectNode coreDelete(@PathParam("id") Long id,
+                                 @Context HttpServletRequest req) {
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         ObjectNode res = mapper.createObjectNode();
         adao.update("asmUpdateCore",
@@ -182,7 +186,7 @@ public class AsmRS extends MBDAOSupport {
         }
         res.putPOJO("core", asm.getCore());
         res.putPOJO("effectiveCore", asm.getEffectiveCore());
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
         return res;
     }
 
@@ -218,7 +222,9 @@ public class AsmRS extends MBDAOSupport {
     @DELETE
     @Path("/{id}/parents")
     @Transactional
-    public String[] removeParent(@PathParam("id") Long id, JsonNode jsdata) throws IOException {
+    public String[] removeParent(@PathParam("id") Long id,
+                                 @Context HttpServletRequest req,
+                                 JsonNode jsdata) throws IOException {
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
@@ -239,7 +245,7 @@ public class AsmRS extends MBDAOSupport {
         if (asm == null) {
             throw new NotFoundException("");
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
         return asm.getParentRefs();
     }
 
@@ -247,7 +253,9 @@ public class AsmRS extends MBDAOSupport {
     @PUT
     @Path("/{id}/parents")
     @Transactional
-    public String[] saveParent(@PathParam("id") Long id, JsonNode jsdata) throws IOException {
+    public String[] saveParent(@PathParam("id") Long id,
+                               @Context HttpServletRequest req,
+                               JsonNode jsdata) throws IOException {
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm asm = adao.asmSelectById(id);
         if (asm == null) {
@@ -286,7 +294,7 @@ public class AsmRS extends MBDAOSupport {
         if (asm == null) {
             throw new NotFoundException("");
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
         return asm.getParentRefs();
     }
 
@@ -294,6 +302,7 @@ public class AsmRS extends MBDAOSupport {
     @Path("/{id}/props")
     @Transactional
     public void updateAssemblyProps(@PathParam("id") Long id,
+                                    @Context HttpServletRequest req,
                                     ObjectNode props) {
 
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
@@ -341,7 +350,7 @@ public class AsmRS extends MBDAOSupport {
             adao.setAsmAccessRoles(id, roles);
         }
         update("updateAssemblyProps", args);
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
     }
 
 
@@ -368,7 +377,8 @@ public class AsmRS extends MBDAOSupport {
     @Transactional
     public void rmAsmAttribute(@PathParam("id") Long asmId,
                                @PathParam("name") String name,
-                               @QueryParam("recursive") Boolean recursive) {
+                               @QueryParam("recursive") Boolean recursive,
+                               @Context HttpServletRequest req) {
         ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
         delete("deleteAttribute",
                "name", name,
@@ -376,7 +386,7 @@ public class AsmRS extends MBDAOSupport {
         if (recursive != null && recursive) {
             deleteAttributeFromChilds(asmId, name);
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, asmId));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, asmId, req));
     }
 
 
@@ -401,7 +411,8 @@ public class AsmRS extends MBDAOSupport {
     @Path("/attributes/reorder/{ordinal1}/{ordinal2}")
     @Transactional
     public void exchangeAttributesOrdinal(@PathParam("ordinal1") Long ordinal1,
-                                          @PathParam("ordinal2") Long ordinal2) {
+                                          @PathParam("ordinal2") Long ordinal2,
+                                          @Context HttpServletRequest req) {
         Long id = selectOne("selectAsmIdByOrdinal", ordinal1);
         if (id != null) {
             ebus.unlockOnTxFinish(Asm.acquireLock(id));
@@ -410,7 +421,7 @@ public class AsmRS extends MBDAOSupport {
                "ordinal1", ordinal1,
                "ordinal2", ordinal2);
         if (id != null) {
-            ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+            ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
         }
     }
 
@@ -436,8 +447,8 @@ public class AsmRS extends MBDAOSupport {
     @Consumes("application/json")
     @Transactional
     public void putAsmAttributes(@PathParam("id") Long id,
-                                 @Context HttpServletRequest req,
                                  @Context SecurityContext sctx,
+                                 @Context HttpServletRequest req,
                                  ObjectNode spec) throws Exception {
 
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
@@ -505,7 +516,7 @@ public class AsmRS extends MBDAOSupport {
             am.attributePersisted(amCtx, attr, spec.get("value"), spec.get("options"));
         }
         amCtx.flush();
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
     }
 
     private void renameAttribute(long asmId, String name, String newName) {

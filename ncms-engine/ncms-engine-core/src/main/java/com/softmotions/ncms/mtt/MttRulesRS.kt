@@ -504,7 +504,7 @@ constructor(val sess: SqlSession,
      * Handle page remove
      */
     @Subscribe
-    fun pageRemoved(evt: AsmRemovedEvent) {
+    fun onPageRemoved(evt: AsmRemovedEvent) {
         //todo Handle remove page
         log.info("Handle remove page")
     }

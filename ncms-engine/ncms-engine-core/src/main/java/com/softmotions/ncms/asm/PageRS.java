@@ -404,7 +404,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         update("updatePublishStatus",
                "id", id,
                "published", published);
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId()));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId(), req));
     }
 
 
@@ -509,7 +509,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         // "core":{"id":141,"location":"/site/httl/my/empty_core.httl","name":null,"templateEngine":null},
         adao.asmUnlock(id, wsUser.getName());
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
 
         // Refresh page
         page = adao.asmSelectById(id);
@@ -582,7 +582,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                    "asmId", id,
                    "names", attrsToRemove);
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
         return selectPageEdit(req, resp, id);
     }
 
@@ -613,7 +613,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         ObjectNode res = mapper.createObjectNode();
         JsonUtils.populateObjectNode(user, res.putObject("owner"),
                                      "name", "fullName");
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
         return res;
     }
 
@@ -670,7 +670,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             adao.asmUpsertAttribute(attr);
         }
         amCtx.flush();
-        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id, req));
     }
 
     /**
@@ -728,7 +728,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             String alias = generateNewsAlias(name);
 
         }*/
-        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id, req));
 
         ObjectNode res = mapper.createObjectNode();
         res.put("id", id);
@@ -797,7 +797,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                "type", type,
                "muser", pageSecurity.getCurrentWSUserSafe(req).getName());
 
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
     }
 
     @PUT
@@ -805,7 +805,6 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public void movePage(@Context HttpServletRequest req,
                          ObjectNode spec) {
-
 
         long src = spec.hasNonNull("src") ? spec.get("src").longValue() : 0;
         long tgt = spec.hasNonNull("tgt") ? spec.get("tgt").longValue() : 0;
@@ -857,7 +856,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         while (update("finishMove") > 0) ;
 
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, srcPage.getId()));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, srcPage.getId(), req));
     }
 
 
@@ -941,8 +940,8 @@ public class PageRS extends MBDAOSupport implements PageService {
     @DELETE
     @Path("/{id}")
     @Transactional
-    public ObjectNode removePage(@Context HttpServletRequest req,
-                                 @PathParam("id") Long id) {
+    public ObjectNode removePage(@PathParam("id") Long id,
+                                 @Context HttpServletRequest req) {
 
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         ObjectNode ret = mapper.createObjectNode();
@@ -967,7 +966,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         //todo check dependent files
 
         adao.asmRemove(id);
-        ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id));
+        ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id, req));
         return ret;
     }
 

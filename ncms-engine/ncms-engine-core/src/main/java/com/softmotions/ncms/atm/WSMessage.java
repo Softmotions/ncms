@@ -71,6 +71,11 @@ public class WSMessage {
         return this;
     }
 
+    public WSMessage put(String key, boolean value) {
+        data.put(key, value);
+        return this;
+    }
+
     public WSMessage put(String key, long value) {
         data.put(key, value);
         return this;

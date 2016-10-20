@@ -1,5 +1,7 @@
 package com.softmotions.ncms.asm.events;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.common.base.MoreObjects;
 import com.softmotions.ncms.events.BasicEvent;
 
@@ -14,8 +16,8 @@ public class AsmRemovedEvent extends BasicEvent {
         return id;
     }
 
-    public AsmRemovedEvent(Object source, Long id) {
-        super(source, AsmRemovedEvent.class.getSimpleName());
+    public AsmRemovedEvent(Object source, Long id, HttpServletRequest req) {
+        super(source, AsmRemovedEvent.class.getSimpleName(), req);
         this.id = id;
     }
 

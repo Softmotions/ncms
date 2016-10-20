@@ -44,7 +44,7 @@ public class AsmEventsListener extends MBDAOSupport {
 
     @Subscribe
     @Transactional
-    public void mediaDelete(MediaDeleteEvent e) {
+    public void onMediaDelete(MediaDeleteEvent e) {
         //todo??
     }
 }

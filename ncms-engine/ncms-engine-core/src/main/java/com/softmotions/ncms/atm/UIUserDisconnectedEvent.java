@@ -9,14 +9,7 @@ import com.softmotions.ncms.events.BasicEvent;
  */
 public class UIUserDisconnectedEvent extends BasicEvent {
 
-    private String user;
-
     public UIUserDisconnectedEvent(String user, Object source) {
-        super(source, UIUserDisconnectedEvent.class.getSimpleName());
-        this.user = user;
-    }
-
-    public String getUser() {
-        return user;
+        super(source, UIUserDisconnectedEvent.class.getSimpleName(), user);
     }
 }

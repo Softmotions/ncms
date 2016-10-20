@@ -1,5 +1,7 @@
 package com.softmotions.ncms.asm.events;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.common.base.MoreObjects;
 import com.softmotions.ncms.events.BasicEvent;
 
@@ -19,8 +21,8 @@ public class AsmModifiedEvent extends BasicEvent {
     }
 
 
-    public AsmModifiedEvent(Object source, Long id) {
-        super(source, AsmModifiedEvent.class.getSimpleName());
+    public AsmModifiedEvent(Object source, Long id, HttpServletRequest req) {
+        super(source, AsmModifiedEvent.class.getSimpleName(), req);
         this.id = id;
     }
 

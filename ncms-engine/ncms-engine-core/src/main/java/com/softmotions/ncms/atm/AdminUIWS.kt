@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.eventbus.Subscribe
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import com.softmotions.ncms.asm.events.AsmCreatedEvent
-import com.softmotions.ncms.asm.events.AsmModifiedEvent
-import com.softmotions.ncms.asm.events.AsmRemovedEvent
+import com.softmotions.ncms.asm.events.*
+import com.softmotions.ncms.events.BasicEvent
 import com.softmotions.ncms.events.NcmsEventBus
+import com.softmotions.ncms.media.events.MediaDeleteEvent
+import com.softmotions.ncms.media.events.MediaMoveEvent
+import com.softmotions.ncms.media.events.MediaUpdateEvent
 import org.atmosphere.cache.UUIDBroadcasterCache
 import org.atmosphere.client.TrackMessageSizeInterceptor
 import org.atmosphere.config.service.AtmosphereHandlerService
@@ -22,8 +24,8 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 /**
- * Ncms admin UI websocket events handler.
-
+ * Ncms admin UI atmosphere intergation layer.
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 
@@ -43,13 +45,13 @@ open class AdminUIWS
 constructor(private val mapper: ObjectMapper,
             private val resourceFactory: AtmosphereResourceFactory,
             private val metaBroadcaster: MetaBroadcaster,
-            private val ebus: NcmsEventBus) : OnMessageAtmosphereHandler<String>() {
+            private val ebus: NcmsEventBus) : OnMessageAtmosphereHandler<Any?>() {
 
     companion object {
 
         private val log = LoggerFactory.getLogger(AdminUIWS::class.java)
 
-        private val BROADCAST_ALL = "/*"
+        private val BROADCAST_ALL = "/ws/adm/ui"
     }
 
     private val ruuid2User = HashMap<String, String>()
@@ -118,28 +120,36 @@ constructor(private val mapper: ObjectMapper,
         }
 
         override fun onThrowable(event: AtmosphereResourceEvent) {
+            log.error("", event.throwable())
             aws.terminate(event.resource)
         }
     }
 
-    private fun createMessage(type: String): WSMessage {
-        return WSMessage(mapper).put("type", type)
+    private fun createMessage(evt: BasicEvent): WSMessage {
+        return WSMessage(mapper)
+                .put("type", evt.type)
+                .put("user", evt.user)
     }
 
     override fun onMessage(response: AtmosphereResponse,
-                           data: String,
+                           data: Any?,
                            event: AtmosphereResourceEvent) {
-
-        val msg = WSMessage(mapper, data)
-        log.info("onMessage={}", msg) // todo
+        data ?: return
+        if (data is WSMessage) {
+            if (log.isDebugEnabled) {
+                log.debug("On server message: {}", data)
+            }
+            response.writer.write(data.toString())
+            return
+        }
         ebus.fire(UIUserMessageEvent(
                 this,
-                msg,
+                WSMessage(mapper, data.toString()),
                 event.resource.uuid(),
                 BROADCAST_ALL,
                 metaBroadcaster,
-                resourceFactory)
-        )
+                resourceFactory,
+                event.resource.request))
     }
 
     ///////////////////////////////////////////////////////////
@@ -149,29 +159,72 @@ constructor(private val mapper: ObjectMapper,
     @Subscribe
     fun onDisconnected(evt: UIUserDisconnectedEvent) {
         metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt.type)
-                        .put("user", evt.user))
+                createMessage(evt))
     }
 
     @Subscribe
     fun onAsmModified(evt: AsmModifiedEvent) {
         metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt.type)
+                createMessage(evt)
                         .put("id", evt.id))
     }
 
     @Subscribe
     fun onAsmCreatedEvent(evt: AsmCreatedEvent) {
         metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt.type)
-                        .put("id", evt.id))
+                createMessage(evt)
+                        .put("id", evt.id)
+        )
     }
 
     @Subscribe
     fun onAsmRemovedEvent(evt: AsmRemovedEvent) {
         metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt.type)
+                createMessage(evt)
                         .put("id", evt.id))
+    }
+
+    @Subscribe
+    fun onAsmLockedEvent(evt: AsmLockedEvent) {
+        metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                createMessage(evt)
+                        .put("id", evt.id))
+    }
+
+    @Subscribe
+    fun onAsmUnlockedEvent(evt: AsmUnlockedEvent) {
+        metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                createMessage(evt)
+                        .put("id", evt.id))
+    }
+
+    @Subscribe
+    fun onMediaUpdateEvent(evt: MediaUpdateEvent) {
+        metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                createMessage(evt)
+                        .put("id", evt.id)
+                        .put("isFolder", evt.isFolder)
+                        .put("path", evt.path))
+
+    }
+
+    @Subscribe
+    fun onMediaDeleteEvent(evt: MediaDeleteEvent) {
+        metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                createMessage(evt)
+                        .put("id", evt.id)
+                        .put("isFolder", evt.isFolder)
+                        .put("path", evt.path))
+    }
+
+    @Subscribe
+    fun onMediaMoveEvent(evt: MediaMoveEvent) {
+        metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                createMessage(evt)
+                        .put("id", evt.id)
+                        .put("isFolder", evt.isFolder)
+                        .put("newPath", evt.newPath)
+                        .put("oldPath", evt.oldPath))
     }
 
 }

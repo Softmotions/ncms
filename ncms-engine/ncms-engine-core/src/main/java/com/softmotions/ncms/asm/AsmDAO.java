@@ -162,7 +162,7 @@ public class AsmDAO extends MBDAOSupport {
     public boolean asmUnlock(Long asmId) {
         ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
         if (update("asmUnlock", asmId) > 0) {
-            ebus.fire(new AsmUnlockedEvent(this, asmId));
+            ebus.fire(new AsmUnlockedEvent(this, asmId, null));
             return true;
         }
         return false;
@@ -181,7 +181,7 @@ public class AsmDAO extends MBDAOSupport {
     public boolean asmUnlock(Long asmId, String user) {
         ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
         if (update("asmUnlock2", "id", asmId, "user", user) > 0) {
-            ebus.fire(new AsmUnlockedEvent(this, asmId));
+            ebus.fire(new AsmUnlockedEvent(this, asmId, user));
             return true;
         }
         return false;

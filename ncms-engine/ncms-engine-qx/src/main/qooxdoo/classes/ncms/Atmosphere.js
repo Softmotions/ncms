@@ -19,6 +19,7 @@ qx.Class.define("ncms.Atmosphere", {
             fallbackTransport: "long-polling",
             /*logLevel: "debug",*/
             trackMessageLength: true,
+            trackMessageSize: true,
             reconnectInterval: 5000,
             maxReconnectOnClose: 360
         }, false);
@@ -80,7 +81,7 @@ qx.Class.define("ncms.Atmosphere", {
             console.log("onTransportFailure: " + err);
         },
 
-        __checkState: function(){
+        __checkState: function () {
 
         },
 

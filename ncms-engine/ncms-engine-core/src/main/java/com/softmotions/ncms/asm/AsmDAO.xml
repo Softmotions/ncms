@@ -210,7 +210,7 @@
             parameterType="long">
         UPDATE ASMS
         SET lock_user = NULL, lock_date = NULL
-        WHERE id = #{id} AND lock_user IS NULL
+        WHERE id = #{id}
     </update>
 
     <update id="asmUnlock2"

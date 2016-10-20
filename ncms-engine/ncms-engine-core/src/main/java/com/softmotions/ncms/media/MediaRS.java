@@ -204,7 +204,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     /**
      * Save uploaded file.
-     * <p>
+     * <p/>
      * Example:
      * curl --upload-file ./myfile.txt http://localhost:8080/ncms/rs/media/file/foo/bar/test.txt
      */
@@ -464,7 +464,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
                 id = (Number) params.get("id");
                 ebus.fireOnSuccessCommit(
-                        new MediaUpdateEvent(this, true, id, dirname + name));
+                        new MediaUpdateEvent(this, true, id, dirname + name, req));
             } else {
                 throw new NcmsNotificationException(i18n.get("ncms.mmgr.folder.exists", req, folder), true);
             }
@@ -618,7 +618,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
                     clearMetaCache();
 
-                    ebus.fireOnSuccessCommit(new MediaMoveEvent(this, null, true, path, npath));
+                    ebus.fireOnSuccessCommit(new MediaMoveEvent(this, null, true, path, npath, req));
 
                 } else if (f1.isFile()) {
 
@@ -661,7 +661,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                             }
                         }
 
-                        ebus.fireOnSuccessCommit(new MediaMoveEvent(this, id, false, path, npath));
+                        ebus.fireOnSuccessCommit(new MediaMoveEvent(this, id, false, path, npath, req));
                         updateFTSKeywords(id, req);
                     }
                 } else {
@@ -687,6 +687,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         boolean isdir;
+        Long id = null;
         String name = getResourceName(path);
         String folder = getResourceParentFolder(path);
 
@@ -710,9 +711,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
             } else {
 
-                Long id = selectOne("selectEntityIdByPath",
-                                    "folder", folder,
-                                    "name", name);
+                id = selectOne("selectEntityIdByPath",
+                               "folder", folder,
+                               "name", name);
 
                 checkFileDeletion(id, req);
 
@@ -745,8 +746,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
         }
 
+        String user = req.getUserPrincipal() != null
+                      ? req.getUserPrincipal().getName() : null;
         ebus.fireOnSuccessCommit(
-                new MediaDeleteEvent(this, isdir, path)
+                new MediaDeleteEvent(this, id, isdir, path, user)
         );
     }
 
@@ -1115,9 +1118,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     /**
      * GET list of files in the specified directory(folder).
-     * <p>
+     * <p/>
      * Produces the following JSON:
-     * <p>
+     * <p/>
      * <pre>
      *     [
      *       {
@@ -1812,7 +1815,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
 
             if (id != null) {
-                ebus.fireOnSuccessCommit(new MediaUpdateEvent(this, false, id, folder + name));
+                ebus.fireOnSuccessCommit(new MediaUpdateEvent(this, false, id, folder + name, req));
                 if ((PUT_NO_KEYS & flags) == 0) {
                     updateFTSKeywords(id.longValue(), req);
                 }
@@ -2083,7 +2086,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @Subscribe
     @Transactional
-    public void pageRemoved(AsmRemovedEvent ev) {
+    public void onPageRemoved(AsmRemovedEvent ev) {
         String path = getPageLocalFolderPath(ev.getId());
         //noinspection unused
         try (final ResourceLock l = new ResourceLock(path, true)) {

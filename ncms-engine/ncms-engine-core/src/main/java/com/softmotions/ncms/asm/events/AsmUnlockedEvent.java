@@ -13,8 +13,8 @@ public class AsmUnlockedEvent extends BasicEvent {
         return id;
     }
 
-    public AsmUnlockedEvent(Object source, Long id) {
-        super(source, AsmUnlockedEvent.class.getSimpleName());
+    public AsmUnlockedEvent(Object source, Long id, String user) {
+        super(source, AsmUnlockedEvent.class.getSimpleName(), user);
         this.id = id;
     }
 }

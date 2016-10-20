@@ -2,6 +2,7 @@ package com.softmotions.ncms.atm;
 
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import javax.servlet.http.HttpServletRequest;
 
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.cpr.AtmosphereResourceFactory;
@@ -32,8 +33,9 @@ public class UIUserMessageEvent extends BasicEvent {
                               String resourceUUID,
                               String broadcastAllPattern,
                               MetaBroadcaster metaBroadcaster,
-                              AtmosphereResourceFactory resourceFactory) {
-        super(source, message.getType());
+                              AtmosphereResourceFactory resourceFactory,
+                              HttpServletRequest req) {
+        super(source, message.getType(), req);
         this.message = message;
         this.resourceUUID = resourceUUID;
         this.broadcastAllPattern = broadcastAllPattern;
