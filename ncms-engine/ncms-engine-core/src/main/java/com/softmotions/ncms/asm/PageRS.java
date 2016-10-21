@@ -584,7 +584,9 @@ public class PageRS extends MBDAOSupport implements PageService {
                    "asmId", id,
                    "names", attrsToRemove);
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, id, req)
+                        .hint("template", templateId));
         return selectPageEdit(req, resp, id);
     }
 

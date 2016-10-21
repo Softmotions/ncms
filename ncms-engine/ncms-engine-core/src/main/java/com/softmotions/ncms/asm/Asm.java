@@ -100,6 +100,9 @@ public class Asm implements Serializable {
     @JsonProperty
     String templateMode;
 
+    @JsonProperty
+    String lockUser;
+
     Date cdate;
 
     Date mdate;
@@ -128,8 +131,6 @@ public class Asm implements Serializable {
     String lang;
 
     Collection<String> accessRoles;
-
-    String lockUser;
 
     Date lockDate;
 

@@ -16,7 +16,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
     extend: qx.ui.tabview.Page,
     include: [ncms.pgs.MPageEditorPane],
 
-
     properties: {
 
         /**
@@ -25,6 +24,16 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         "pageEditSpec": {
             "check": "Object",
             "apply": "__applyPageEditSpec"
+        },
+
+        /**
+         * True if page editor interface is blocked
+         * due to another user page lock.
+         */
+        "pageBlocked": {
+            "check": "Boolean",
+            "init": false,
+            "apply": "__applyPageBlocked"
         }
     },
 
@@ -34,6 +43,11 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         var header = new qx.ui.container.Composite(new qx.ui.layout.VBox(5))
         .set({padding: [0, 5, 0, 0]});
+
+        //Blocker
+        this.__blocker = new qx.ui.core.Blocker(this);
+        this.__blocker.setColor("#EFEFEF");
+        this.__blocker.setOpacity(0.7);
 
         //Page name
         this.__pageNameLabel = new qx.ui.basic.Label();
@@ -100,6 +114,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.add(header);
 
         this.addListener("loadPane", this.__onLoadPane, this);
+        ncms.Events.getInstance().addListener("pageLocked", this.__onPageLocked, this);
+        ncms.Events.getInstance().addListener("pageUnlocked", this.__onPageUnlocked, this);
     },
 
     members: {
@@ -131,9 +147,42 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __saveSc: null,
 
+        __blocker: null,
+
 
         getForm: function () {
             return this.__form;
+        },
+
+        __onPageLocked: function (ev) {
+            var data = ev.getData(),
+                ps = this.getPageEditSpec();
+            if (ps.id == data.id) {
+                var user = ncms.Application.getUserId();
+                ps.lockUser = data.user;
+                this.setPageBlocked(data.user != user);
+            }
+        },
+
+        __onPageUnlocked: function (ev) {
+            var data = ev.getData(),
+                ps = this.getPageEditSpec();
+            if (ps.id == data.id) {
+                ps.lockUser = null;
+                this.setPageBlocked(false);
+            }
+        },
+
+        __applyPageBlocked: function (val, old) {
+            if (val === old) {
+                return;
+            }
+            if (val) {
+                this.__blocker.block();
+                this.__cancel2();
+            } else {
+                this.__blocker.unblock();
+            }
         },
 
         __onLoadPane: function (ev) {
@@ -354,12 +403,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 req.send(function (resp) {
                     this.setPageEditSpec(resp.getContent());
                     dlg.close();
-                    ncms.Events.getInstance().fireDataEvent("pageChangeTemplate", {
-                        id: ps["id"],
-                        templateId: data["id"]
-                    });
                 }, this);
-
             }, this);
             dlg.open();
         },
@@ -506,11 +550,13 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     ncms.pgs.PageLocker.getInstance().unlock({
                         id: ps["id"],
                         reportErrors: true
-                    }, function () {
-                        this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()));
-                    }, this);
+                    }, this.__cancel2, this);
                 }
             }, this);
+        },
+
+        __cancel2: function () {
+            this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()));
         },
 
         __files: function () {
@@ -540,6 +586,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
     },
 
     destruct: function () {
+        ncms.Events.getInstance().removeListener("pageLocked", this.__onPageLocked, this);
+        ncms.Events.getInstance().removeListener("pageUnlocked", this.__onPageUnlocked, this);
         this.__cleanupFormPane();
         this.__templateBf = null;
         this.__form = null;
@@ -550,5 +598,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__publishPageBt = null;
         this.__publishChangesBt = null;
         this.__saveSc = null;
+        this.__blocker = null;
     }
 });
