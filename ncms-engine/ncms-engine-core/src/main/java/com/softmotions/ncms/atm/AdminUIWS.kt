@@ -129,6 +129,7 @@ constructor(private val mapper: ObjectMapper,
         return WSMessage(mapper)
                 .put("type", evt.type)
                 .put("user", evt.user)
+                .putPOJO("hints", evt.hints())
     }
 
     override fun onMessage(response: AtmosphereResponse,
@@ -164,9 +165,9 @@ constructor(private val mapper: ObjectMapper,
 
     @Subscribe
     fun onAsmModified(evt: AsmModifiedEvent) {
-        metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt)
-                        .put("id", evt.id))
+        val msg = createMessage(evt)
+                .put("id", evt.id);
+        metaBroadcaster.broadcastTo(BROADCAST_ALL, msg)
     }
 
     @Subscribe

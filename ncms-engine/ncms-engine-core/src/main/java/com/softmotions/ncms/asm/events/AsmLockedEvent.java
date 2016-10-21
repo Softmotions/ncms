@@ -18,10 +18,12 @@ public class AsmLockedEvent extends BasicEvent {
 
     public AsmLockedEvent(Object source, long id, String user) {
         super(source, AsmLockedEvent.class.getSimpleName(), user);
+        this.id = id;
     }
 
     public AsmLockedEvent(Object source, long id, HttpServletRequest req) {
         super(source, AsmLockedEvent.class.getSimpleName(), req);
+        this.id = id;
     }
 
     public String toString() {

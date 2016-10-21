@@ -81,6 +81,11 @@ public class WSMessage {
         return this;
     }
 
+    public WSMessage putPOJO(String key, Object value) {
+        data.putPOJO(key, value);
+        return this;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

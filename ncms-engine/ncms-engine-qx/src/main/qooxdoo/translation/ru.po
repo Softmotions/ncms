@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:48 ncms/Application.js:551
+#: ncms/Application.js:48 ncms/Application.js:434
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:565
+#: ncms/Application.js:448
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -224,7 +224,7 @@ msgstr "Имя класса контроллера сборки (assembly)"
 msgid "Controller"
 msgstr "Контроллер"
 
-#: ncms/pgs/PageEditorEditPage.js:502 ncms/asm/AsmEditor.js:112
+#: ncms/pgs/PageEditorEditPage.js:496 ncms/asm/AsmEditor.js:112
 msgid "Published"
 msgstr "Опубликовано"
 
@@ -1468,11 +1468,11 @@ msgstr "Ошибка при сохранении страницы"
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:440
+#: ncms/pgs/PageEditorEditPage.js:438
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:485
+#: ncms/pgs/PageEditorEditPage.js:479
 msgid ""
 "Are you sure to unpublish this page? There are pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"
@@ -1482,15 +1482,15 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" target='_blank' "
 "rel='noopener noreferrer'>списком ссылающихся страниц</a>"
 
-#: ncms/pgs/PageEditorEditPage.js:502
+#: ncms/pgs/PageEditorEditPage.js:496
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:509
+#: ncms/pgs/PageEditorEditPage.js:503
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:527
+#: ncms/pgs/PageEditorEditPage.js:521
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 

@@ -4,6 +4,11 @@
 qx.Class.define("ncms.Atmosphere", {
     extend: qx.core.Object,
 
+
+    events: {
+        "message": "qx.event.type.Data"
+    },
+
     construct: function (opts) {
         this.base(arguments);
         if (!window.atmosphere) {
@@ -44,45 +49,40 @@ qx.Class.define("ncms.Atmosphere", {
         __opts: null,
 
         __onOpen: function (resp) {
-            console.log("onOpen");
+            qx.log.Logger.info("onOpen");
         },
 
         __onClose: function (resp) {
+            qx.log.Logger.info("onClose");
         },
 
         __onMessage: function (resp) {
             var message = resp.responseBody;
-            console.log("onMessage: " + message);
             try {
-                var json = JSON.parse(message);
+                this.fireDataEvent("message", JSON.parse(message));
             } catch (e) {
                 console.log('Error: ', message.data);
-                return;
             }
         },
 
         __onReconnect: function (req, resp) {
-            console.log("onReconnect");
+            qx.log.Logger.info("onReconnect");
         },
 
         __onMessagePublished: function (req, resp) {
-            console.log("onMessagePublished");
+            qx.log.Logger.info("onMessagePublished");
         },
 
         __onClientTimeout: function (req) {
-            console.log("onClientTimeout");
+            qx.log.Logger.info("onClientTimeout");
         },
 
         __onError: function (resp) {
-            console.log("onError");
+            qx.log.Logger.info("onError");
         },
 
         __onTransportFailure: function (err, r) {
-            console.log("onTransportFailure: " + err);
-        },
-
-        __checkState: function () {
-
+            qx.log.Logger.info("onTransportFailure: " + err);
         },
 
         push: function (data) {

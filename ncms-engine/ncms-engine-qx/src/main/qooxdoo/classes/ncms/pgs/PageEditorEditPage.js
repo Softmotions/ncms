@@ -432,8 +432,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     if (typeof cb === "function") {
                         cb(false);
                     }
-                    //this.__syncState();
-                    ncms.Events.getInstance().fireDataEvent("pageEdited", spec);
                 }, this);
             } catch (e) {
                 this.__saveBt.setEnabled(true);
@@ -467,10 +465,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 var ps = this.getPageEditSpec();
                 ps["published"] = true;
                 this.__setPublishState(publish);
-                ncms.Events.getInstance().fireDataEvent("pageChangePublished", {
-                    id: ps["id"],
-                    published: publish
-                });
             }, this);
         },
 

@@ -404,7 +404,9 @@ public class PageRS extends MBDAOSupport implements PageService {
         update("updatePublishStatus",
                "id", id,
                "published", published);
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, page.getId(), req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, page.getId(), req)
+                        .hint("published", published));
     }
 
 

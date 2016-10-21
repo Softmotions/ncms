@@ -10,7 +10,7 @@ import com.softmotions.ncms.events.BasicEvent;
  */
 public class AsmModifiedEvent extends BasicEvent {
 
-    final Long id;
+    private final Long id;
 
     /**
      * Assembly ID.
@@ -19,7 +19,6 @@ public class AsmModifiedEvent extends BasicEvent {
     public Long getId() {
         return id;
     }
-
 
     public AsmModifiedEvent(Object source, Long id, HttpServletRequest req) {
         super(source, AsmModifiedEvent.class.getSimpleName(), req);
