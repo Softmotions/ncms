@@ -75,7 +75,6 @@ qx.Class.define("ncms.Application", {
             load(resource);
         },
 
-
         ///////////////////////////////////////////////////////////
         //                      Request helper                   //
         ///////////////////////////////////////////////////////////
@@ -107,7 +106,7 @@ qx.Class.define("ncms.Application", {
         infoPopup: ncms.Alerts.infoPopup,
 
         ///////////////////////////////////////////////////////////
-        //                  Components/Workspaces                //
+        //              Components/Workspaces/Helpers            //
         ///////////////////////////////////////////////////////////
 
         getAtmosphere: function () {
@@ -147,17 +146,32 @@ qx.Class.define("ncms.Application", {
         },
 
         formatDate: function (date, formatName) {
-            if (typeof date === "number") {
-                date = new Date(date);
-            } else if (typeof date === "string") {
-                date = new Date(date);
-            }
-            var format = qx.locale.Date.getDateFormat(formatName || "medium").toString();
-            if (format == null) {
-                format = qx.locale.Date.getDateFormat("medium").toString();
-            }
-            var df = new qx.util.format.DateFormat(format);
+            date = ncms.Application.toLocalDate(date);
+            var df = new qx.util.format.DateFormat(qx.locale.Date.getDateFormat(formatName || "medium").toString());
             return df.format(date);
+        },
+
+        formatDateTime: function (date, dateFormatName, timeFormatName) {
+            date = ncms.Application.toLocalDate(date);
+            var df = new qx.util.format.DateFormat(qx.locale.Date.getDateFormat(dateFormatName || "medium").toString());
+            var tf = new qx.util.format.DateFormat(qx.locale.Date.getTimeFormat(timeFormatName || "short").toString());
+            return df.format(date) + " " + tf.format(date);
+        },
+
+        toLocalDate: function (date) {
+            if (date == null || date.$$local_date) {
+                return date;
+            }
+            if (typeof date === "string") {
+                date = +new Date(date);
+            } else if (typeof date === "object") {
+                date = +date;
+            }
+            var stzo = ncms.Application.APP_STATE.getServerTZOffset();
+            var ltzo = (new Date()).getTimezoneOffset() * 60 * 1000;
+            var ret = new Date(date - ltzo - stzo);
+            ret.$$local_date = true;
+            return ret;
         },
 
         logout: function () {
@@ -173,14 +187,12 @@ qx.Class.define("ncms.Application", {
         }
     },
 
-
     events: {
 
         /**
          * Fired when main gui widget created and attached
          */
         "guiInitialized": "qx.event.type.Event",
-
 
         /**
          * Fired if specifig admin GUI workspace activated
@@ -342,7 +354,6 @@ qx.Class.define("ncms.Application", {
             return this.getComponent("nav-stack").getActiveWidget();
         },
 
-
         /**
          * Display default workspace area placeholder
          * widget (ncms.wsa.WSAPlaceholder)
@@ -390,7 +401,6 @@ qx.Class.define("ncms.Application", {
         registerWSA: function (widgetId, factory, opts, self) {
             this.getComponent("right-stack").registerWidget(widgetId, factory, opts, self);
         },
-
 
         /**
          * Register extension point function.
@@ -449,7 +459,6 @@ qx.Class.define("ncms.Application", {
             }
         },
 
-
         createActions: function () {
             return new ncms.Actions();
         }
@@ -460,7 +469,6 @@ qx.Class.define("ncms.Application", {
     },
 
     defer: function (statics) {
-
         // Location of UI based on `navigator.languages[0]` instead of `navigator.language`
         // todo review it for IE/EDGE
         var browser = qx.core.Environment.get("browser.name");
@@ -473,7 +481,6 @@ qx.Class.define("ncms.Application", {
             }
             qx.locale.Manager.getInstance().setLocale(locale);
         }
-
         // Set alert windows implementation to `sm.io.Request.`
         sm.io.Request.ALERT_WND_IMPL = ncms.AlertPopupMessages;
     }

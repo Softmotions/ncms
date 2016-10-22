@@ -2,11 +2,11 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:48 ncms/Application.js:434
+#: ncms/Application.js:48 ncms/Application.js:444
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:448
+#: ncms/Application.js:458
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -28,7 +28,7 @@ msgstr "Инструменты"
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:279 ncms/asm/AsmEditor.js:88
+#: ncms/pgs/PageEditorEditPage.js:280 ncms/asm/AsmEditor.js:88
 #: ncms/asm/am/AsmCoreAM.js:91 ncms/mtt/filters/MttResourceFilter.js:30
 #: ncms/asm/am/ImageAMValueWidget.js:104 ncms/mtt/filters/MttFilterDlg.js:40
 #: ncms/mtt/actions/MttActionDlg.js:40 ncms/usr/UserEditForm.js:27
@@ -224,7 +224,7 @@ msgstr "Имя класса контроллера сборки (assembly)"
 msgid "Controller"
 msgstr "Контроллер"
 
-#: ncms/pgs/PageEditorEditPage.js:597 ncms/asm/AsmEditor.js:112
+#: ncms/pgs/PageEditorEditPage.js:596 ncms/asm/AsmEditor.js:112
 msgid "Published"
 msgstr "Опубликовано"
 
@@ -1448,35 +1448,35 @@ msgid "Page files"
 msgstr "Файлы страницы"
 
 #: ncms/pgs/PageEditorEditPage.js:110 ncms/pgs/PageEditorEditPage.js:111
-#: ncms/pgs/PageEditorEditPage.js:432
+#: ncms/pgs/PageEditorEditPage.js:431
 msgid "Please select the template page"
 msgstr "Пожалуйста, выберите шаблон для страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:225
+#: ncms/pgs/PageEditorEditPage.js:226
 msgid "The page is blocked!!!"
 msgstr ""
 
-#: ncms/pgs/PageEditorEditPage.js:436
+#: ncms/pgs/PageEditorEditPage.js:435
 msgid "Templates"
 msgstr "Шаблоны"
 
-#: ncms/pgs/PageEditorEditPage.js:484
+#: ncms/pgs/PageEditorEditPage.js:483
 msgid "Page fields contain errors"
 msgstr "В полях страницы обнаружены ошибки"
 
-#: ncms/pgs/PageEditorEditPage.js:508
+#: ncms/pgs/PageEditorEditPage.js:507
 msgid "Failed to save page."
 msgstr "Ошибка при сохранении страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:532
+#: ncms/pgs/PageEditorEditPage.js:531
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:539
+#: ncms/pgs/PageEditorEditPage.js:538
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:580
+#: ncms/pgs/PageEditorEditPage.js:579
 msgid ""
 "Are you sure to unpublish this page? There are pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"
@@ -1486,15 +1486,15 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" target='_blank' "
 "rel='noopener noreferrer'>списком ссылающихся страниц</a>"
 
-#: ncms/pgs/PageEditorEditPage.js:597
+#: ncms/pgs/PageEditorEditPage.js:596
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:604
+#: ncms/pgs/PageEditorEditPage.js:603
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:629
+#: ncms/pgs/PageEditorEditPage.js:628
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 
@@ -1502,19 +1502,19 @@ msgstr "Управление файлами страницы"
 msgid "General"
 msgstr "Общее"
 
-#: ncms/pgs/PageEditorInfoPage.js:117
+#: ncms/pgs/PageEditorInfoPage.js:115
 msgid "Last modification: %1, %2"
 msgstr "Последнее редактирование: %1, %2"
 
-#: ncms/pgs/PageEditorInfoPage.js:126
+#: ncms/pgs/PageEditorInfoPage.js:124
 msgid "This page is not pulished yet"
 msgstr "Эта страница не опубликована"
 
-#: ncms/pgs/PageEditorInfoPage.js:175
+#: ncms/pgs/PageEditorInfoPage.js:172
 msgid "Choose the owner of %1"
 msgstr "Выберите владельца: %1"
 
-#: ncms/pgs/PageEditorInfoPage.js:176
+#: ncms/pgs/PageEditorInfoPage.js:173
 msgid "Choose the owner"
 msgstr "Выберите владельца"
 

@@ -88,7 +88,6 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
          */
         __info: null,
 
-
         __onPageEdited: function (ev) {
             var myspec = this.getPageSpec();
             var evspec = ev.getData();
@@ -96,7 +95,6 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
                 this.__reload();
             }
         },
-
 
         __reload: function () {
             var spec = this.getPageSpec();
@@ -115,7 +113,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
                 this.__info = info;
                 if (info["mdate"] != null) {
                     this.__mdateLabel.setValue(this.tr("Last modification: %1, %2",
-                        ncms.Application.formatDate(info["mdate"]),
+                        ncms.Application.formatDateTime(info["mdate"]),
                         info["muser"] ? info["muser"]["fullName"] : "-")
                     );
                 } else {
@@ -163,7 +161,6 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
             }
             this.__ownerSelector.setValue(label.join(" "));
         },
-
 
         __chooseOwner: function () {
             var info = this.__info;

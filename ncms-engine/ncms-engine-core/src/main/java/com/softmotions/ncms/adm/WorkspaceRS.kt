@@ -105,6 +105,8 @@ constructor(private val env: NcmsEnvironment,
             put("helpSite", helpSite)
             put("properties", properties)
             put("helpTopics", getHelpTopics())
+            put("serverTZOffset", TimeZone.getDefault().rawOffset)
+
         }
     }
 

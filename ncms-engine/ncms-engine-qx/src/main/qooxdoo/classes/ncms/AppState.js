@@ -141,6 +141,10 @@ qx.Class.define("ncms.AppState", {
             return this._getStateConstant("email");
         },
 
+        getServerTZOffset: function() {
+            return this._getStateConstant("serverTZOffset");
+        },
+
         userHasRole: function (role) {
             var aroles = this._getStateConstant("roles");
             if (qx.lang.Type.isArray(aroles)) {

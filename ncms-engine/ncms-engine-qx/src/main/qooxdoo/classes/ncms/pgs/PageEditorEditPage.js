@@ -554,7 +554,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __publishChanges: function (ev) {
-
+            // todo implement it!
         },
 
         __doPublish: function (publish) {
