@@ -11,6 +11,7 @@
  * @asset(ncms/icon/16/misc/puzzle.png)
  * @asset(ncms/icon/16/misc/tick-button.png)
  * @asset(ncms/icon/16/misc/disk.png)
+ * @asset(ncms/icon/32/exclamation.png)
  */
 qx.Class.define("ncms.pgs.PageEditorEditPage", {
     extend: qx.ui.tabview.Page,
@@ -114,6 +115,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.add(header);
 
         this.addListener("loadPane", this.__onLoadPane, this);
+        this.addListener("clearPane", this.__onClearPane, this);
         ncms.Events.getInstance().addListener("pageLocked", this.__onPageLocked, this);
         ncms.Events.getInstance().addListener("pageUnlocked", this.__onPageUnlocked, this);
     },
@@ -149,6 +151,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __blocker: null,
 
+        __blockerAtom: null,
+
 
         getForm: function () {
             return this.__form;
@@ -179,13 +183,59 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             }
             if (val) {
                 this.__blocker.block();
+                var root = qx.core.Init.getApplication().getRoot();
+                var ba = this.__blockerAtom;
+                if (ba == null) {
+                    ba = this.__blockerAtom =
+                        new qx.ui.basic.Atom(null, "ncms/icon/32/exclamation.png").set({
+                            center: true,
+                            rich: true,
+                            selectable: true,
+                            appearance: "ncms-info-popup"
+                        });
+                    function centerBa() {
+                        var me = this;
+                        window.setTimeout(function () {
+                            if (me.__blockerAtom) {
+                                var hint = me.__blockerAtom.getSizeHint();
+                                var cl = me.getContentLocation("box");
+                                me.__blockerAtom.setLayoutProperties({
+                                    left: Math.round(cl.left + (cl.right - cl.left - hint.width) / 2),
+                                    top: Math.round(cl.top + (cl.bottom - cl.top - hint.height) / 2)
+                                });
+                            }
+                        });
+                    }
+
+                    this.addListener("resize", centerBa, this);
+                    this.addListener("move", centerBa, this);
+                    this.addListener("disappear", function () {
+                        this.__blockerAtom && this.__blockerAtom.exclude();
+                        this.addListenerOnce("appear", function () {
+                            if (this.__blocker.isBlocked()) {
+                                centerBa.call(this);
+                                this.__blockerAtom && this.__blockerAtom.show();
+                            }
+                        }, this);
+                    }, this);
+                    centerBa.call(this);
+                    root.add(ba);
+                    ba.exclude();
+                }
+                ba.setLabel(this.tr("The page is blocked!!!"));
+                ba.setZIndex(1e3);
+                ba.show();
                 this.__cancel2();
             } else {
+                if (this.__blockerAtom) {
+                    this.__blockerAtom.exclude();
+                }
                 this.__blocker.unblock();
             }
         },
 
         __onLoadPane: function (ev) {
+            this.setPageBlocked(false);
             var spec = ev.getData();
             this.__pageNameLabel.setValue(spec["name"]);
             //{"id":4,"name":"test"}
@@ -194,6 +244,10 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             req.send(function (resp) {
                 this.setPageEditSpec(resp.getContent());
             }, this);
+        },
+
+        __onClearPane: function (ev) {
+            this.setPageBlocked(false);
         },
 
         __applyPageEditSpec: function (spec) {
@@ -550,13 +604,18 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     ncms.pgs.PageLocker.getInstance().unlock({
                         id: ps["id"],
                         reportErrors: true
-                    }, this.__cancel2, this);
+                    }, function () {
+                        this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()))
+                    }, this);
                 }
             }, this);
         },
 
         __cancel2: function () {
-            this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()));
+            if (this.getModified()) {
+                this.setPageEditSpec(sm.lang.Object.shallowClone(this.getPageEditSpec()));
+                this.setModified(false);
+            }
         },
 
         __files: function () {
@@ -599,5 +658,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__publishChangesBt = null;
         this.__saveSc = null;
         this.__blocker = null;
+        this.__blockerAtom = null;
     }
 });

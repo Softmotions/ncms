@@ -137,7 +137,9 @@ qx.Class.define("ncms.Alerts", {
             };
             el.addListenerOnce("appear", function () {
                 if (fadeOut.delay > 0) {
-                    var ah = qx.bom.element.Animation.animate(this.getContentElement().getDomElement(), fadeOut);
+                    var ah =
+                        qx.bom.element.Animation
+                        .animate(this.getContentElement().getDomElement(), fadeOut);
                     ah.once("end", function () {
                         this.destroy();
                     }, this);
