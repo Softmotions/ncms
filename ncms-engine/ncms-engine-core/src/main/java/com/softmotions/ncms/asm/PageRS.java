@@ -3,10 +3,12 @@ package com.softmotions.ncms.asm;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -324,6 +326,13 @@ public class PageRS extends MBDAOSupport implements PageService {
         res.put("guid", page.getName());
         res.put("name", page.getHname());
         res.put("published", page.isPublished());
+        res.put("lockUser", page.getLockUser());
+        if (page.getLockDate() != null) {
+            Date ld = page.getLockDate();
+            res.put("lockDate",
+                    ld.toInstant().atZone(ZoneId.systemDefault())
+                      .toLocalDateTime().toString()); // todo use request location
+        }
         res.putPOJO("core", page.getEffectiveCore());
         if (template == null) {
             res.putNull("template");

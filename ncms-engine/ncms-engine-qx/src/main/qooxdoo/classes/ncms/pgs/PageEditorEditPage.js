@@ -222,6 +222,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     root.add(ba);
                     ba.exclude();
                 }
+                // todo change label
                 ba.setLabel(this.tr("The page is blocked!!!"));
                 ba.setZIndex(1e3);
                 ba.show();
@@ -274,7 +275,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 sb.push(t.description);
             }
             this.__templateBf.setValue(sb.join(" | "));
-
             var form = new sm.ui.form.ExtendedForm();
             var vmgr = form.getValidationManager();
             vmgr.setRequiredFieldMessage(this.tr("This field is required"));
@@ -344,9 +344,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     "Attribute manager used for type: " + attrSpec["type"] + " produced invalid widget: " + w);
                 return;
             }
-
             var oou = qx.util.OOUtil;
-
             var awclass = wclass;
             var aw = w;
             if (w.getUserData("ncms.asm.activeWidget") != null) {
@@ -464,6 +462,10 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __syncState: function () {
             var es = this.getPageEditSpec();
+            if (es["lockUser"] != null
+                && es["lockUser"] != ncms.Application.getUserId()) {
+                this.setPageBlocked(true);
+            }
             var hasCore = (this.__form != null && es != null && es["core"] != null);
             this.__previewBt.setEnabled(hasCore && this.getEnabled());
             this.__publishPageBt.setEnabled(hasCore && this.getEnabled());
