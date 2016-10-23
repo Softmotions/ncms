@@ -2,11 +2,21 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:48 ncms/Application.js:444
+#: ncms/Application.js:48 ncms/Application.js:467
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:458
+#: ncms/Application.js:308
+msgid "<b>Connection to server lost.</b><br>Please wait..."
+msgstr ""
+"<b>Соединение с сервером потеряно.</b><br>Пожалуйста, подождите "
+"восстановления связи..."
+
+#: ncms/Application.js:317
+msgid "Connection to server restored."
+msgstr "Соединение с сервером восстановлено."
+
+#: ncms/Application.js:481
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -1455,6 +1465,7 @@ msgstr "Пожалуйста, выберите шаблон для страни�
 #: ncms/pgs/PageEditorEditPage.js:230
 msgid "This page is locked<br>since the user <b>%1</b> is editing it"
 msgstr ""
+"В настоящий момент другой пользователь: <b>%1</b> редактирует эту страницу"
 
 #: ncms/pgs/PageEditorEditPage.js:442
 msgid "Templates"
@@ -1967,7 +1978,13 @@ msgstr "Потомок уровня вложенности 2"
 msgid "Note text"
 msgstr "Заметка"
 
+#~ msgid "<b>Connection to the server lost.</b><br>Please wait..."
+#~ msgstr ""
+
 #~ msgid "Are you sure to remove selected rows"
+#~ msgstr ""
+
+#~ msgid "Connection to the server lost.<br>Please wait."
 #~ msgstr ""
 
 #~ msgid "Incoming request parameters"

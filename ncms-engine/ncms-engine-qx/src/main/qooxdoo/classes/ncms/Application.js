@@ -293,8 +293,31 @@ qx.Class.define("ncms.Application", {
             this.__atmosphere = new ncms.Atmosphere({
                 url: ncms.Application.ACT.toUri("/ws/adm/ui")
             });
+            this.__atmosphere.addListener("serverDisconnected", this.__onServerDisconnected, this);
             this.__atmosphere.activate();
             ncms.Events.getInstance().attachAtmosphere(this.__atmosphere);
+        },
+
+        __onServerDisconnected: function () {
+            qx.log.Logger.warn("Server disconnected");
+            var blocker = this.getRoot().getBlocker();
+            blocker.block();
+            var restored = null;
+            ncms.Alerts.closeAllPopups();
+            ncms.Alerts.infoPopup(
+                this.tr("<b>Connection to server lost.</b><br>Please wait..."), {
+                    forever: true,
+                    overZ: 1e6,
+                    icon: false
+                });
+            this.__atmosphere.addListenerOnce("serverReconnected", function () {
+                qx.log.Logger.warn("Server reconnected");
+                blocker.unblock();
+                ncms.Alerts.closeAllPopups();
+                ncms.Alerts.infoPopup(this.tr("Connection to server restored."), {
+                    showTime: Number.MAX_VALUE
+                });
+            }, this);
         },
 
         getAtmosphere: function () {

@@ -14,10 +14,7 @@ import org.atmosphere.cache.UUIDBroadcasterCache
 import org.atmosphere.client.TrackMessageSizeInterceptor
 import org.atmosphere.config.service.AtmosphereHandlerService
 import org.atmosphere.cpr.*
-import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor
-import org.atmosphere.interceptor.BroadcastOnPostAtmosphereInterceptor
-import org.atmosphere.interceptor.HeartbeatInterceptor
-import org.atmosphere.interceptor.SuspendTrackerInterceptor
+import org.atmosphere.interceptor.*
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
@@ -36,7 +33,8 @@ import kotlin.concurrent.withLock
                 TrackMessageSizeInterceptor::class,
                 SuspendTrackerInterceptor::class,
                 BroadcastOnPostAtmosphereInterceptor::class,
-                HeartbeatInterceptor::class),
+                HeartbeatInterceptor::class,
+                JavaScriptProtocol::class),
         broadcasterCache = UUIDBroadcasterCache::class,
         listeners = arrayOf(AdminUIWS.RSEvents::class))
 @JvmSuppressWildcards

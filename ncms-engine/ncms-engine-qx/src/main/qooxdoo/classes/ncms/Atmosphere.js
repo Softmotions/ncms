@@ -4,9 +4,35 @@
 qx.Class.define("ncms.Atmosphere", {
     extend: qx.core.Object,
 
-
     events: {
-        "message": "qx.event.type.Data"
+
+        /**
+         * Data: server message JSON object
+         */
+        "message": "qx.event.type.Data",
+
+        /**
+         * Fired if a connection to the server was lost.
+         *
+         * Data:
+         *
+         * {
+         *   status: {Number} response status.
+         *   state: {String} response state, eg: re-connecting
+         *   reason: {String} Human readable error reason
+         * }
+         */
+        "serverDisconnected": "qx.event.type.Data",
+
+        /**
+         * Fired if a connection to the server restored after `serverDisconnected`
+         */
+        "serverReconnected": "qx.event.type.Event",
+
+        /**
+         * Fired if reconnect attempt occurred
+         */
+        "reconnectAttempt": "qx.event.type.Event"
     },
 
     construct: function (opts) {
@@ -26,7 +52,7 @@ qx.Class.define("ncms.Atmosphere", {
             trackMessageLength: true,
             trackMessageSize: true,
             reconnectInterval: 5000,
-            maxReconnectOnClose: 360
+            maxReconnectOnClose: 17280 // 1 day
         }, false);
 
         opts.onOpen = this.__onOpen.bind(this);
@@ -34,9 +60,12 @@ qx.Class.define("ncms.Atmosphere", {
         opts.onMessage = this.__onMessage.bind(this);
         opts.onError = this.__onError.bind(this);
         opts.onReconnect = this.__onReconnect.bind(this);
+        opts.onReopen = this.__onReopen.bind(this);
         opts.onMessagePublished = this.__onMessagePublished.bind(this);
         opts.onClientTimeout = this.__onClientTimeout.bind(this);
         opts.onTransportFailure = this.__onTransportFailure.bind(this);
+        opts.onOpenAfterResume = this.__onOpenAfterResume.bind(this);
+        opts.onLocalMessage = this.__onLocalMessage.bind(this);
 
     },
 
@@ -48,12 +77,26 @@ qx.Class.define("ncms.Atmosphere", {
 
         __opts: null,
 
+        __disconnected: false,
+
         __onOpen: function (resp) {
             qx.log.Logger.info("onOpen");
+            if (this.__disconnected) {
+                this.fireEvent("serverReconnected");
+            }
+            this.__disconnected = false;
         },
 
         __onClose: function (resp) {
             qx.log.Logger.info("onClose");
+            if (!this.__disconnected) {
+                this.fireDataEvent("serverDisconnected", {
+                    status: resp.status,
+                    state: resp.state,
+                    reason: resp.reason
+                });
+            }
+            this.__disconnected = true;
         },
 
         __onMessage: function (resp) {
@@ -65,8 +108,30 @@ qx.Class.define("ncms.Atmosphere", {
             }
         },
 
+        __onReopen: function (resp) {
+            qx.log.Logger.info("onReopen");
+            if (this.__disconnected) {
+                this.fireEvent("serverReconnected");
+            }
+            this.__disconnected = false;
+        },
+
         __onReconnect: function (req, resp) {
-            qx.log.Logger.info("onReconnect");
+            qx.log.Logger.info(
+                "onReconnect" +
+                " status=" + resp.status +
+                " error=" + resp.error +
+                " state=" + resp.state +
+                " reason=" + resp.reason);
+            if (!this.__disconnected) {
+                this.fireDataEvent("serverDisconnected", {
+                    status: resp.status,
+                    state: resp.state,
+                    reason: resp.reason
+                });
+            }
+            this.__disconnected = true;
+            this.fireEvent("reconnectAttempt");
         },
 
         __onMessagePublished: function (req, resp) {
@@ -83,6 +148,15 @@ qx.Class.define("ncms.Atmosphere", {
 
         __onTransportFailure: function (err, r) {
             qx.log.Logger.info("onTransportFailure: " + err);
+        },
+
+        __onOpenAfterResume: function (req) {
+            qx.log.Logger.info("onOpenAfterResume");
+            this.__disconnected = false;
+        },
+
+        __onLocalMessage: function (resp) {
+            qx.log.Logger.info("onLocalMessage");
         },
 
         push: function (data) {
@@ -104,9 +178,9 @@ qx.Class.define("ncms.Atmosphere", {
             qx.log.Logger.info("Deactivate atmosphere");
             this.__atm.unsubscribe();
             this.__channel = null;
+            this.__disconnected = false;
         }
     },
-
 
     destruct: function () {
         this.deactivate();

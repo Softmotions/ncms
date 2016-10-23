@@ -55,6 +55,19 @@ qx.Class.define("ncms.Alerts", {
         },
 
         /**
+         * Close all active popups
+         */
+        closeAllPopups: function () {
+            var info = ncms.Application.INFO_POPUP;
+            info && info.getChildren().forEach(function (c) {
+                try {
+                    c.destroy();
+                } catch (e) {
+                }
+            });
+        },
+
+        /**
          * Show auto-hided popup message
          *
          * @param message {String} message to show
@@ -85,9 +98,10 @@ qx.Class.define("ncms.Alerts", {
                         if (bounds) {
                             var hint = this.getSizeHint();
                             var left = Math.round((bounds.width - hint.width) / 2);
+                            var top = 10;
                             this.setLayoutProperties({
                                 left: left,
-                                top: 10
+                                top: top
                             });
                         }
                     }
@@ -98,6 +112,10 @@ qx.Class.define("ncms.Alerts", {
                 var windows = root.getWindows();
                 var maxWindowZIndex = info.getZIndex();
                 var maxWindow = info;
+                if (typeof options["overZ"] === "number") {
+                    maxWindowZIndex = Math.max(maxWindowZIndex, options["overZ"]);
+                    maxWindow = null;
+                }
                 for (var i = 0; i < windows.length; i++) {
                     var zIndex = windows[i].getZIndex();
                     maxWindowZIndex = Math.max(maxWindowZIndex, zIndex);
@@ -115,40 +133,46 @@ qx.Class.define("ncms.Alerts", {
                 qx.log.Logger.warn("Popup message: ", message);
                 return null;
             }
-
-            options["icon"] = (options["icon"] != null) ? options["icon"] : "ncms/icon/32/information.png";
+            if (options["icon"] === false) {
+                options["icon"] = null;
+            } else {
+                options["icon"] = (options["icon"] != null) ? options["icon"] : "ncms/icon/32/information.png";
+            }
             var el = new qx.ui.basic.Atom(message, options["icon"]).set({
                 center: true,
                 rich: true,
                 selectable: true,
-                appearance: "ncms-info-popup"
+                appearance: "ncms-info-popup",
+                maxWidth: 400
             });
             info.add(el);
 
-            var fadeOut = {
-                duration: hideTime || 500,
-                delay: showTime != null ? showTime : 1500,
-                timing: "ease-out",
-                keep: 100,
-                keyFrames: {
-                    0: {opacity: 1},
-                    100: {opacity: 0, display: "none"}
-                }
-            };
-            el.addListenerOnce("appear", function () {
-                if (fadeOut.delay > 0) {
-                    var ah =
-                        qx.bom.element.Animation
-                        .animate(this.getContentElement().getDomElement(), fadeOut);
-                    ah.once("end", function () {
+            if (!options["forever"]) {
+                var fadeOut = {
+                    duration: hideTime || 500,
+                    delay: showTime != null ? showTime : 1500,
+                    timing: "ease-out",
+                    keep: 100,
+                    keyFrames: {
+                        0: {opacity: 1},
+                        100: {opacity: 0, display: "none"}
+                    }
+                };
+                el.addListenerOnce("appear", function () {
+                    if (fadeOut.delay > 0) {
+                        var ah =
+                            qx.bom.element.Animation
+                            .animate(this.getContentElement().getDomElement(), fadeOut);
+                        ah.once("end", function () {
+                            this.destroy();
+                        }, this);
+                    }
+                    this.addListenerOnce("click", function () {
+                        ah && ah.stop();
                         this.destroy();
                     }, this);
-                }
-                this.addListener("click", function () {
-                    ah && ah.stop();
-                    this.destroy();
-                }, this);
-            }, el);
+                }, el);
+            }
             return el;
         }
     }
