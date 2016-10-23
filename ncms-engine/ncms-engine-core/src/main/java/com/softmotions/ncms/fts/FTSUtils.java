@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.StringTokenizer;
+import javax.annotation.Nullable;
 
 import org.apache.tika.language.LanguageIdentifier;
 import org.slf4j.Logger;
@@ -86,6 +87,7 @@ public class FTSUtils {
         return rl.toArray(new String[rl.size()]);
     }
 
+    @Nullable
     private static SnowballProgram selectStemmer(Locale locale, Locale fallback) {
         SnowballProgram stemmer = selectStemmer(locale);
         //noinspection ObjectEquality
@@ -95,6 +97,7 @@ public class FTSUtils {
         return stemmer;
     }
 
+    @Nullable
     private static SnowballProgram selectStemmer(Locale locale) {
         if (locale == null) {
             return null;

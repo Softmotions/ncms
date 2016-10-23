@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -63,6 +64,7 @@ public class AsmSelectAM extends AsmAttributeManagerSupport {
         return TYPES;
     }
 
+    @Nullable
     private ArrayNode checkFetchFrom(Asm page, AsmAttribute attr) {
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         KVOptions opts = new KVOptions(attr.getOptions());
@@ -168,6 +170,7 @@ public class AsmSelectAM extends AsmAttributeManagerSupport {
         Collection<String> items = new ArrayList<>();
         Object selectNodes = parseSelectNodes(value, false, false);
         if (selectNodes instanceof Iterable) {
+            //noinspection ConstantConditions
             CollectionUtils.collect((Iterable<?>) selectNodes,
                                     input -> (input instanceof SelectNode) ?
                                              ((SelectNode) input).getValue() : null,
@@ -195,6 +198,7 @@ public class AsmSelectAM extends AsmAttributeManagerSupport {
         return parseSelectNodes(value, first, all);
     }
 
+    @Nullable
     private Object parseSelectNodes(String value, boolean first, boolean all) {
         List<SelectNode> nodes = first ? null : new ArrayList<>();
         try (JsonParser parser = mapper.getFactory().createParser(value)) {

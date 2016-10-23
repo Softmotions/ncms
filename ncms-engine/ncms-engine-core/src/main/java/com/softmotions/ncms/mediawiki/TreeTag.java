@@ -6,6 +6,7 @@ import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -178,7 +179,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
             return sb.toString();
         }
 
-        Node(int lvl, TreeNode parent, IWikiModel model, ITextConverter converter) {
+        Node(int lvl, @Nullable TreeNode parent, IWikiModel model, ITextConverter converter) {
             this.lvl = lvl;
             this.parent = parent;
             this.model = model;
@@ -209,7 +210,7 @@ public class TreeTag extends HTMLTag implements INoBodyParsingTag {
         boolean closed;
         String style;
 
-        TreeNode(int lvl, TreeNode parent, IWikiModel model, ITextConverter converter) {
+        TreeNode(int lvl, @Nullable TreeNode parent, IWikiModel model, ITextConverter converter) {
             super(lvl, parent, model, converter);
         }
 

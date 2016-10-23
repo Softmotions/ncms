@@ -164,47 +164,58 @@ public final class Table implements Iterable<String[]>, Serializable {
      * @param firstCol First column value
      * @param def      Default value if not matched row found.
      */
-    public String find(String firstCol, String def) {
+    @Nullable
+    public String find(String firstCol, @Nullable String def) {
         return find(firstCol, 1, def);
     }
 
+    @Nullable
     public String find(String firstCol) {
         return find(firstCol, 1, null);
     }
 
+    @Nullable
     public String find0(String firstCol) {
         return find(firstCol, 0, null);
     }
 
-    public String find0(String firstCol, String def) {
+    @Nullable
+    public String find0(String firstCol, @Nullable String def) {
         return find(firstCol, 0, def);
     }
 
-    public String find2(String secondCol, String def) {
+    @Nullable
+    public String find2(String secondCol, @Nullable String def) {
         return find(secondCol, 2, def);
     }
 
+    @Nullable
     public String find2(String secondCol) {
         return find(secondCol, 2, null);
     }
 
-    public String find3(String thirdCol, String def) {
+    @Nullable
+    public String find3(String thirdCol, @Nullable String def) {
         return find(thirdCol, 3, def);
     }
 
+    @Nullable
     public String find3(String thirdCol) {
         return find(thirdCol, 3, null);
     }
 
+    @Nullable
     public String find(String firstCol, int colIndex) {
         return find(firstCol, colIndex, null);
     }
 
-    public String find(String firstCol, int colIndex, String def) {
+    @Nullable
+    public String find(String firstCol, int colIndex, @Nullable String def) {
         return find(firstCol, Integer.valueOf(colIndex), def);
     }
 
-    public String find(String firstCol, Number colIndex, String def) {
+    @Nullable
+    public String find(String firstCol, Number colIndex, @Nullable String def) {
         if (firstCol == null || colIndex == null) {
             return def;
         }
@@ -234,7 +245,7 @@ public final class Table implements Iterable<String[]>, Serializable {
 
     /**
      * Map keys:
-     * <p>
+     * <p/>
      * - noEscape {Boolean|String} Does not HTML escaping of table cell values
      * - noHeader {Boolean|String} Does not redender first row as table header
      * - tableAttrs {String} Optional table attributes

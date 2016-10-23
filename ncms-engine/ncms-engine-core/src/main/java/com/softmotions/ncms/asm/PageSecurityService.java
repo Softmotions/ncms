@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections4.map.LRUMap;
@@ -46,7 +47,7 @@ public class PageSecurityService extends MBDAOSupport {
     public static final String ALL_RIGHTS_STR = "" + OWNER + WRITE + NEWS + DELETE;
 
     private final WSUserDatabase userdb;
-    private final LRUMap<String,Object> aclCache;
+    private final LRUMap<String, Object> aclCache;
     private final MBSqlSessionManager sessionManager;
     private final NcmsSecurityContext sctx;
 
@@ -135,7 +136,7 @@ public class PageSecurityService extends MBDAOSupport {
      * @param pid       page id
      * @param recursive recursive flag
      */
-    public Collection<AclEntity> getAcl(long pid, Boolean recursive) {
+    public Collection<AclEntity> getAcl(long pid, @Nullable Boolean recursive) {
         String qname = recursive == null ? "selectAllUserRights" :
                        recursive == true ? "selectRecursiveUserRights" : "selectLocalUserRights";
         List<Map<String, ?>> acl = select(qname, "pid", pid);
@@ -173,8 +174,12 @@ public class PageSecurityService extends MBDAOSupport {
      */
     public void addUserRights(long pid, String user, boolean recursive) {
         Map<String, ?> aclInfo = selectOne("selectPageAclInfo", "pid", pid);
+        if (aclInfo == null) {
+            return;
+        }
         Number acl = (Number) aclInfo.get(recursive ? "recursive_acl" : "local_acl");
-        String rights = acl == null ? "" : (String) selectOne("selectUserRightsByAcl", "user", user, "acl", acl);
+        String rights = (acl == null) ? "" : (String) selectOne("selectUserRightsByAcl",
+                                                                "user", user, "acl", acl);
         if (!recursive && StringUtils.equals(user, (CharSequence) aclInfo.get("owner"))) {
             rights = getAllRights();
         }
@@ -227,7 +232,10 @@ public class PageSecurityService extends MBDAOSupport {
      * @param recursive recursive flag
      */
     @Transactional
-    public void updateUserRights(long pid, String user, String rights, UpdateMode mode, boolean recursive) {
+    public void updateUserRights(long pid,
+                                 @Nonnull String user,
+                                 @Nullable String rights,
+                                 @Nonnull UpdateMode mode, boolean recursive) {
         if (!recursive) {
             updateLocalAclUser(pid, user, rights, mode);
         } else {
@@ -251,12 +259,10 @@ public class PageSecurityService extends MBDAOSupport {
             delete("deleteAclUser", "user", user, "acl", locAcl);
         } else if (recursive && recAcl != null) {
             String navPath = selectOne("selectNavPagePath", "pid", pid);
-
-            int check = selectOne("checkUserInParentRecursiveAcl", "nav_path", navPath, "user", user);
-            if (check > 0) {
+            Number check = selectOne("checkUserInParentRecursiveAcl", "nav_path", navPath, "user", user);
+            if (check != null && check.intValue() > 0) {
                 return;
             }
-
             Number newRecAcl = selectOne("newAclId");
             update("copyAcl", "prev_acl", recAcl, "new_acl", newRecAcl);
 
@@ -380,15 +386,15 @@ public class PageSecurityService extends MBDAOSupport {
     /**
      * Checks user access to edit page
      */
-    public boolean canEdit2(Asm page, HttpServletRequest req) {
+    public boolean canEdit2(@Nullable Asm page, HttpServletRequest req) {
         return checkAccessAny2(page, req, "ow");
     }
 
-    public boolean isOwner2(Asm page, HttpServletRequest req) {
+    public boolean isOwner2(@Nullable Asm page, HttpServletRequest req) {
         return checkAccessAll2(page, req, "o");
     }
 
-    public boolean checkAccessAll2(Asm page, HttpServletRequest req, String mask) {
+    public boolean checkAccessAll2(@Nullable Asm page, HttpServletRequest req, String mask) {
         if (page == null || page.getId() == null) {
             return false;
         } else if ("news.page".equals(page.getType())) {
@@ -399,7 +405,7 @@ public class PageSecurityService extends MBDAOSupport {
         }
     }
 
-    public boolean checkAccessAny2(Asm page, HttpServletRequest req, String mask) {
+    public boolean checkAccessAny2(@Nullable Asm page, HttpServletRequest req, String mask) {
         if (page == null || page.getId() == null) {
             return false;
         } else if ("news.page".equals(page.getType())) {
@@ -410,7 +416,7 @@ public class PageSecurityService extends MBDAOSupport {
         }
     }
 
-    public String getAccessRights2(Asm page, HttpServletRequest req) {
+    public String getAccessRights2(@Nullable Asm page, HttpServletRequest req) {
         if (page == null || page.getId() == null) {
             return "";
         } else if ("news.page".equals(page.getType())) {
@@ -449,7 +455,7 @@ public class PageSecurityService extends MBDAOSupport {
     /**
      * Merge rights. Returns new rights string that contains all rights from r1 and r2.
      */
-    public String mergeRights(String r1, String r2) {
+    public String mergeRights(@Nullable String r1, @Nullable String r2) {
         String res = r1 != null ? r1 : "";
         for (char r : (r2 != null ? r2 : "").toCharArray()) {
             if (!StringUtils.contains(res, r)) {
@@ -459,12 +465,16 @@ public class PageSecurityService extends MBDAOSupport {
         return res;
     }
 
-    private String unsetRights(String from, String r) {
+    private String unsetRights(@Nullable String from,
+                               @Nullable String r) {
         from = (from != null) ? from : "";
         return StringUtils.isBlank(r) ? from : from.replaceAll("[" + r + "]", "");
     }
 
-    private void updateLocalAclUser(final long pid, final String user, final String rights, UpdateMode mode) {
+    private void updateLocalAclUser(final long pid,
+                                    final String user,
+                                    @Nullable final String rights,
+                                    UpdateMode mode) {
         String nrights = "";
         Number locAcl = selectOne("getLocalAcl", "pid", pid);
 
@@ -487,7 +497,10 @@ public class PageSecurityService extends MBDAOSupport {
         });
     }
 
-    private void updateRecursiveAclUser(final long pid, final String user, final String rights, UpdateMode mode) {
+    private void updateRecursiveAclUser(final long pid,
+                                        final String user,
+                                        @Nullable final String rights,
+                                        UpdateMode mode) {
         String navPath = selectOne("selectNavPagePath", "pid", pid);
         Number recAcl = selectOne("getRecursiveAcl", "pid", pid);
 
@@ -526,7 +539,10 @@ public class PageSecurityService extends MBDAOSupport {
         });
     }
 
-    private String calcRights(UpdateMode mode, String cr, String nr) {
+    @Nullable
+    private String calcRights(UpdateMode mode,
+                              @Nullable String cr,
+                              @Nullable String nr) {
         switch (mode) {
             case REPLACE:
                 return nr;

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -128,6 +129,7 @@ public class PageCriteria extends CriteriaBase<PageCriteria> {
         return withParam("largeAttrValues", true);
     }
 
+    @Nullable
     public Asm selectOneAsm() {
         Collection<Asm> asms = selectAsAsms();
         if (asms.isEmpty()) {
@@ -170,10 +172,12 @@ public class PageCriteria extends CriteriaBase<PageCriteria> {
                     } catch (IOException | SQLException e) {
                         throw new RuntimeException(e);
                     } finally {
-                        try {
-                            lvr.close();
-                        } catch (IOException e) {
-                            log.error("", e);
+                        if (lvr != null) {
+                            try {
+                                lvr.close();
+                            } catch (IOException e) {
+                                log.error("", e);
+                            }
                         }
                     }
                 }

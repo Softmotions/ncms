@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.BadRequestException;
@@ -136,7 +137,7 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
         Set<Long> syncAsmIds = new HashSet<>();
         syncAsmIds.add(tgtId);
 
-        while ((syncIndex = opts.indexOf("syncWith")) >= 0) {
+        while (opts != null && (syncIndex = opts.indexOf("syncWith")) >= 0) {
             syncId = Long.decode(opts.substring(syncIndex + 9, opts.indexOf(',', syncIndex)));
 
             if (!syncAsmIds.add(syncId)) {
@@ -223,7 +224,10 @@ public class AsmTreeAM extends AsmAttributeManagerSupport {
         return tree;
     }
 
-    private Tree getSyncTree(Long syncPageId, AsmRendererContext ctx, AsmAttribute attr) throws AsmRenderingException {
+    @Nullable
+    private Tree getSyncTree(Long syncPageId,
+                             AsmRendererContext ctx,
+                             AsmAttribute attr) throws AsmRenderingException {
         if (syncPageId == null) {
             return null;
         }

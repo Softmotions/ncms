@@ -48,16 +48,12 @@ public class AsmRefAM extends AsmAttributeManagerSupport {
         StringWriter out;
         Asm asm = ctx.getAsm();
         AsmAttribute attr = asm.getEffectiveAttribute(attrname);
-        if (attr == null) {
+        if (attr == null || attr.getEffectiveValue() == null) {
             return null;
         }
         String asmName = attr.getEffectiveValue();
         AsmRendererContext subcontext;
         HttpServletResponse resp;
-        if (attr.getEffectiveValue() == null) {
-            return null;
-        }
-
         out = new StringWriter(4096);
         try {
             subcontext = ctx.createSubcontext(asmName, out);

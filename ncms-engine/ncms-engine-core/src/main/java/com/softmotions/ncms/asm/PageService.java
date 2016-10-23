@@ -31,16 +31,16 @@ public interface PageService {
     String resolvePageAlias(String guid);
 
     @Nullable
-    String resolvePageLink(Long id);
+    String resolvePageLink(@Nullable Long id);
 
     @Nullable
-    String resolvePageLink(String guidOrAlias);
+    String resolvePageLink(@Nullable String guidOrAlias);
 
     @Nullable
-    String resolveResourceLink(String wikiResource);
+    String resolveResourceLink(@Nullable String wikiResource);
 
     @Nullable
-    String resolvePageGuid(String wikiResource);
+    String resolvePageGuid(@Nullable String wikiResource);
 
     @Nonnull
     PageSecurityService getPageSecurityService();

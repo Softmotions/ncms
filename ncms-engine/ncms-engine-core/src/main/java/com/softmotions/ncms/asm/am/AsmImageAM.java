@@ -2,6 +2,7 @@ package com.softmotions.ncms.asm.am;
 
 import java.io.IOException;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -66,6 +67,7 @@ public class AsmImageAM extends AsmFileAttributeManagerSupport {
         return meta.getId() != null ? new Object[]{meta} : null;
     }
 
+    @Nullable
     public Image renderAsmAttribute(AsmRendererContext ctx, ObjectNode node) {
         Long id = node.hasNonNull("id") ? node.get("id").asLong() : null;
         if (id == null || id == 0L) {

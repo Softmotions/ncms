@@ -31,6 +31,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -218,7 +219,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     @Context HttpServletRequest req,
                     @Context HttpServletResponse resp,
                     InputStream in) throws Exception {
-        _put(folder, name, req, resp, in, 0);
+        _put(folder, name, req, in, 0);
     }
 
     @PUT
@@ -230,7 +231,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     @Context HttpServletRequest req,
                     @Context HttpServletResponse resp,
                     InputStream in) throws Exception {
-        _put("", name, req, resp, in, 0);
+        _put("", name, req, in, 0);
     }
 
 
@@ -313,6 +314,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Transactional
     public Response thumbnail(@PathParam("id") Long id,
                               @Context HttpServletRequest req) throws Exception {
+        //noinspection ConstantConditions
         return _thumbnail(id, null, null, req);
     }
 
@@ -429,6 +431,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Transactional
     public Integer selectCount(@Context HttpServletRequest req) {
         MBCriteriaQuery cq = createSelectQ(req, true);
+        //noinspection ConstantConditions
         return selectOne(cq.getStatement(), cq);
     }
 
@@ -559,7 +562,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         path = StringUtils.strip(path, "/");
         npath = StringUtils.strip(npath, "/");
         if (StringUtils.isBlank(npath)) {
-            throw new BadRequestException("");
+            throw new BadRequestException();
         }
         if (npath.equals(path)) {
             return;
@@ -676,7 +679,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Transactional(executorType = ExecutorType.BATCH)
     public void deleteResource(@PathParam("path") String path,
                                @Context HttpServletRequest req,
-                               @Context HttpServletResponse resp) throws Exception {
+                               @Nullable @Context HttpServletResponse resp) throws Exception {
 
         ensureAuthenticated(req, resp);
 
@@ -714,7 +717,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 id = selectOne("selectEntityIdByPath",
                                "folder", folder,
                                "name", name);
-
                 checkFileDeletion(id, req);
 
                 boolean exists = f.exists();
@@ -827,7 +829,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (form.containsKey("owner")) {
             String owner = form.getFirst("owner");
             if (StringUtils.isBlank(owner)) {
-                throw new BadRequestException("");
+                throw new BadRequestException();
             }
             qm.put("owner", owner);
         }
@@ -894,6 +896,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
 
+    @Nullable
     private Map<String, Object> getCachedMeta(Long id) {
         Map<String, Object> res;
         synchronized (metaCache) {
@@ -912,7 +915,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         return res;
     }
 
-    private Map<String, Object> getCachedMeta(String folder, String name) {
+    @Nullable
+    private Map<String, Object> getCachedMeta(String folder, @Nonnull String name) {
         Map<String, Object> res;
         folder = normalizeFolder(folder);
         String key = folder + name;
@@ -933,8 +937,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         return res;
     }
 
+    @Nullable
     private Map<String, Object> getCachedMeta(String path) {
-        return getCachedMeta(getResourceParentFolder(path), getResourceName(path));
+        String resourceName = getResourceName(path);
+        return (resourceName != null) ? getCachedMeta(getResourceParentFolder(path), resourceName) : null;
     }
 
     /**
@@ -1178,8 +1184,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         return res;
     }
 
-    private Response _thumbnail(Long id,
-                                String folder,
+    private Response _thumbnail(@Nullable Long id,
+                                @Nullable String folder,
                                 String name,
                                 HttpServletRequest req) throws Exception {
 
@@ -1193,7 +1199,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             name = (String) rec.get("name");
 
         } else {
-
             checkFolder(folder);
             folder = normalizeFolder(folder);
             rec = selectOne("selectIcon", "folder", folder, "name", name);
@@ -1514,7 +1519,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @Override
     @Transactional
-    public Pair<Integer, Integer> ensureResizedImage(long id, Integer width, Integer height,
+    public Pair<Integer, Integer> ensureResizedImage(long id,
+                                                     @Nullable Integer width,
+                                                     @Nullable Integer height,
                                                      int flags) throws IOException {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
@@ -1527,7 +1534,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Override
     @Transactional
     public Pair<Integer, Integer> ensureResizedImage(String path,
-                                                     Integer width, Integer height,
+                                                     @Nullable Integer width,
+                                                     @Nullable Integer height,
                                                      int flags) throws IOException {
         if (path == null) {
             throw new IllegalArgumentException("path");
@@ -1544,7 +1552,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         try (final ResourceLock l = new ResourceLock(path, false)) {
             String folder = getResourceParentFolder(path);
             String name = getResourceName(path);
-            Map<String, Object> info = getCachedMeta(folder, name);
+            Map<String, Object> info = (name != null) ? getCachedMeta(folder, name) : null;
             if (info == null) {
                 return null;
             }
@@ -1635,9 +1643,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
     private File getResizedImageFile(MediaType mtype,
-                                     String folder, long entryId,
-                                     Integer width,
-                                     Integer height) {
+                                     String folder,
+                                     long entryId,
+                                     @Nullable Integer width,
+                                     @Nullable Integer height) {
         if (!folder.endsWith("/")) {
             folder += "/";
         }
@@ -1658,7 +1667,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                         '/' + hint + '.' + mtype.getSubtype());
     }
 
-    private void checkFolder(String folder) {
+    private void checkFolder(@Nullable String folder) {
         if (folder == null) {
             throw new IllegalArgumentException();
         }
@@ -1676,7 +1685,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         return req.getServletContext().getMimeType(name);
     }
 
-    private void ensureAuthenticated(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void ensureAuthenticated(HttpServletRequest req,
+                                     @Nullable HttpServletResponse resp) throws Exception {
         if (req.getRemoteUser() == null) {
             if (resp == null || !req.authenticate(resp)) {
                 throw new ForbiddenException("");
@@ -1684,10 +1694,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
+    @Nullable
     private Long _put(String folder,
                       String name,
                       HttpServletRequest req,
-                      HttpServletResponse resp,
                       InputStream in,
                       int flags) throws Exception {
 
@@ -1828,7 +1838,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             bis.close();
         }
 
-        return id != null ? id.longValue() : null;
+        return (id != null) ? id.longValue() : null;
     }
 
     public Closeable acquireReadResourceLock(String path) {
@@ -1981,7 +1991,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         _checkEditAccess(getCachedMeta(path), path, req);
     }
 
-    private void _checkEditAccess(Map<String, ?> fmeta, String path, HttpServletRequest req) {
+    private void _checkEditAccess(@Nullable Map<String, ?> fmeta,
+                                  String path,
+                                  HttpServletRequest req) {
 
         //todo check page access
 
@@ -2006,7 +2018,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
-    private void checkFileDeletion(Long id, HttpServletRequest req) throws Exception {
+    private void checkFileDeletion(@Nullable Long id, HttpServletRequest req) throws Exception {
         if (id == null) {
             return;
         }
@@ -2050,6 +2062,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         return dirname;
     }
 
+    @Nullable
     public static String getResourceName(String path) {
         if (path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
@@ -2131,7 +2144,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private void _ensureResizedImage(EnsureResizedImageJobEvent ev) {
         try {
-            ensureResizedImage(ev.getId(), ev.getWidth(), ev.getHeight(), ev.getFlags());
+            ensureResizedImage(ev.getId(),
+                               ev.getWidth(),
+                               ev.getHeight(),
+                               ev.getFlags());
         } catch (Exception e) {
             log.error("", e);
         }
@@ -2249,7 +2265,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         for (final Path path : deleted) {
             Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
             try {
-                deleteResource(target.toString(), new MediaRSLocalRequest(env, target.toFile()), null);
+                deleteResource(target.toString(),
+                               new MediaRSLocalRequest(env, target.toFile()),
+                               null);
             } catch (NotFoundException ignored) {
             } catch (Exception e) {
                 log.error("File deletion failed. Path: {} target: {} error: {}", path, target, e.getMessage(), e);
@@ -2448,8 +2466,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
     @Override
+    @Nullable
     @Transactional(executorType = ExecutorType.SIMPLE)
-    public Long importFile(String source, String target, boolean overwrite, boolean system) throws IOException {
+    public Long importFile(String source,
+                           String target,
+                           boolean overwrite,
+                           boolean system) throws IOException {
         File srcFile = new File(source);
         if (!srcFile.isFile()) {
             throw new IOException(srcFile.getAbsolutePath() + " is not a file");
@@ -2459,6 +2481,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             throw new IOException("Cannot overwrite existing directory: " + target);
         }
         String name = getResourceName(target);
+        if (name == null) {
+            throw new BadRequestException();
+        }
         String folder = getResourceParentFolder(target);
         if (!overwrite &&
             tgt.exists() &&
@@ -2478,23 +2503,29 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 if (system) {
                     flags |= PUT_SYSTEM;
                 }
-                return _put(folder, name, new MediaRSLocalRequest(env, srcFile), null, fis, flags);
+                return _put(folder, name, new MediaRSLocalRequest(env, srcFile), fis, flags);
             } catch (Exception e) {
                 throw new IOException(e);
             }
         }
     }
 
+    @Nullable
     @Override
-    public Long importFile(InputStream source, String target, boolean system) throws IOException {
+    public Long importFile(InputStream source,
+                           String target,
+                           boolean system) throws IOException {
         String name = getResourceName(target);
+        if (name == null) {
+            throw new IllegalArgumentException("target");
+        }
         String folder = getResourceParentFolder(target);
         try {
             int flags = 0;
             if (system) {
                 flags |= PUT_SYSTEM;
             }
-            return _put(folder, name, new MediaRSLocalRequest(env), null, source, flags);
+            return _put(folder, name, new MediaRSLocalRequest(env), source, flags);
         } catch (Exception e) {
             throw new IOException(e);
         }

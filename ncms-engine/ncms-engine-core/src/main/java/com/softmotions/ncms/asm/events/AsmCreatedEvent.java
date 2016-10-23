@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm.events;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.MoreObjects;
@@ -16,7 +17,7 @@ public class AsmCreatedEvent extends BasicEvent {
         return id;
     }
 
-    public AsmCreatedEvent(Object source, Long id, HttpServletRequest req) {
+    public AsmCreatedEvent(Object source, @Nullable  Long id, HttpServletRequest req) {
         super(source, AsmCreatedEvent.class.getSimpleName(), req);
         this.id = id;
     }

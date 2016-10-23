@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -69,7 +70,7 @@ public final class Tree implements Iterable<Tree>, Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@Nullable String name) {
         this.name = name;
     }
 
@@ -97,6 +98,7 @@ public final class Tree implements Iterable<Tree>, Serializable {
         this.icon = icon;
     }
 
+    @Nullable
     public String getLink() {
         if (link == null && "file".equals(type) && id != null) {
             return "media:/" + id;
@@ -105,15 +107,16 @@ public final class Tree implements Iterable<Tree>, Serializable {
         }
     }
 
-    public void setLink(String link) {
+    public void setLink(@Nullable String link) {
         this.link = link;
     }
 
+    @Nullable
     public String getNam() {
         return nam;
     }
 
-    public void setNam(String nam) {
+    public void setNam(@Nullable String nam) {
         this.nam = nam;
     }
 
@@ -159,6 +162,7 @@ public final class Tree implements Iterable<Tree>, Serializable {
         return attributes != null ? attributes : Collections.emptyMap();
     }
 
+    @Nullable
     public <T> T getAttribute(String name) {
         return (attributes != null ? (T) attributes.get(name) : null);
     }
@@ -171,11 +175,13 @@ public final class Tree implements Iterable<Tree>, Serializable {
     }
 
 
+    @Nullable
     public String toHtmlLink() {
         return toHtmlLink(null);
     }
 
-    public String toHtmlLink(Map<String, ?> amap) {
+    @Nullable
+    public String toHtmlLink(@Nullable Map<String, ?> amap) {
         if (link == null) {
             return richRef != null ? richRef.toHtmlLink(amap) : null;
         }

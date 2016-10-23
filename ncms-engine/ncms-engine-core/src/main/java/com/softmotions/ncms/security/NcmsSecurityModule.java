@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import javax.annotation.Nullable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -202,7 +203,8 @@ public class NcmsSecurityModule extends AbstractModule implements WBServletIniti
         }
 
         @Override
-        public WSUser getWSUser(Principal p, Locale locale) throws ShiroException {
+        public WSUser getWSUser(Principal p,
+                                @Nullable Locale locale) throws ShiroException {
             if (p == null) {
                 throw new UnauthenticatedException(i18n.get("ncms.access.notAuthenticated", locale));
             }

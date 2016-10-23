@@ -405,6 +405,7 @@ public class Asm implements Serializable {
      * Class name of an optional assembly controller
      * stored in this assembly or in any of its parents.
      */
+    @Nullable
     @JsonProperty()
     public String getEffectiveController() {
         String c = getController();
@@ -428,7 +429,7 @@ public class Asm implements Serializable {
         return core;
     }
 
-    public void setCore(AsmCore core) {
+    public void setCore(@Nullable AsmCore core) {
         this.core = core;
     }
 
@@ -745,6 +746,9 @@ public class Asm implements Serializable {
 
     @Nonnull
     public Collection<String> getAttributeNames() {
+        if (getAttributes() == null) {
+            return Collections.EMPTY_LIST;
+        }
         List<String> anames = new ArrayList<>(getAttributes().size());
         for (final AsmAttribute a : attributes) {
             anames.add(a.getName());
@@ -755,6 +759,9 @@ public class Asm implements Serializable {
 
     @Nonnull
     public Collection<String> getEffectiveAttributeNames() {
+        if (getAttributes() == null) {
+            return Collections.EMPTY_LIST;
+        }
         final Set<String> anames = new HashSet<>(getAttributes().size() << 1);
         if (attributes != null) {
             for (final AsmAttribute a : attributes) {
@@ -795,7 +802,7 @@ public class Asm implements Serializable {
     private void addSortedChainAttributes(ArrayList<AsmAttribute> res, Asm asm) {
         List<AsmAttribute> slist = asm.getSortedLocalAttributes();
         res.addAll(0, slist);
-        if (getParents() != null) {
+        if (asm.getParents() != null) {
             for (final Asm p : asm.getParents()) {
                 addSortedChainAttributes(res, p);
             }

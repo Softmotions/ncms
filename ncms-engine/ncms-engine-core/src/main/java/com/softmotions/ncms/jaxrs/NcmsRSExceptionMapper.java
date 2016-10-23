@@ -2,6 +2,7 @@ package com.softmotions.ncms.jaxrs;
 
 import java.util.List;
 import java.util.MissingResourceException;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotFoundException;
@@ -57,9 +58,10 @@ public class NcmsRSExceptionMapper implements ExceptionMapper<Exception> {
         }
     }
 
+    @Nullable
     private String toLocaleMsg(String msg) {
         if (msg == null) {
-            return msg;
+            return null;
         }
         try {
             return i18n.get(msg);
@@ -68,9 +70,10 @@ public class NcmsRSExceptionMapper implements ExceptionMapper<Exception> {
         }
     }
 
+    @Nullable
     private String toLocaleMsg(String msg, HttpServletRequest req) {
         if (msg == null) {
-            return msg;
+            return null;
         }
         try {
             return i18n.get(msg, req);

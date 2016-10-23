@@ -2,6 +2,7 @@ package com.softmotions.ncms.media;
 
 import java.io.File;
 import java.security.Principal;
+import javax.annotation.Nullable;
 import javax.servlet.ServletContext;
 
 import com.softmotions.ncms.NcmsEnvironment;
@@ -20,7 +21,8 @@ public final class MediaRSLocalRequest extends HttpServletRequestAdapter {
         this(env, null);
     }
 
-    MediaRSLocalRequest(NcmsEnvironment env, File file) {
+    MediaRSLocalRequest(NcmsEnvironment env,
+                        @Nullable File file) {
         this.file = file;
         this.env = env;
     }

@@ -100,7 +100,7 @@ public final class RichRef implements Serializable {
     }
 
     @Nullable
-    public String toHtmlLink(Map<String, ?> amap) {
+    public String toHtmlLink(@Nullable Map<String, ?> amap) {
         if (link == null) {
             return null;
         }

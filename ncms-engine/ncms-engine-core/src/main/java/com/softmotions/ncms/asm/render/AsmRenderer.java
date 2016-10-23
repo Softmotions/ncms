@@ -30,15 +30,23 @@ public interface AsmRenderer {
      * @throws AsmRenderingException
      * @throws IOException
      */
-    boolean renderTemplate(String location, Map<String, Object> ctx, @Nullable Locale locale, Writer out) throws IOException;
+    boolean renderTemplate(String location,
+                           Map<String, Object> ctx,
+                           @Nullable Locale locale,
+                           Writer out) throws IOException;
 
 
     boolean isHasSpecificTemplateEngineForLocation(String location);
 
-    boolean isHasRenderableAsmAttribute(Asm asm, AsmRendererContext ctx, String name);
+    boolean isHasRenderableAsmAttribute(Asm asm,
+                                        AsmRendererContext ctx,
+                                        String name);
 
-    void renderAsm(AsmRendererContext ctx, @Nullable Writer writer) throws AsmRenderingException, IOException;
+    void renderAsm(AsmRendererContext ctx,
+                   @Nullable Writer writer) throws AsmRenderingException, IOException;
 
+    @Nullable
     Object renderAsmAttribute(AsmRendererContext ctx,
-                              String attributeName, Map<String, String> opts) throws AsmRenderingException;
+                              String attributeName,
+                              @Nullable Map<String, String> opts) throws AsmRenderingException;
 }

@@ -28,7 +28,7 @@ msgstr "Инструменты"
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:280 ncms/asm/AsmEditor.js:88
+#: ncms/pgs/PageEditorEditPage.js:287 ncms/asm/AsmEditor.js:88
 #: ncms/asm/am/AsmCoreAM.js:91 ncms/mtt/filters/MttResourceFilter.js:30
 #: ncms/asm/am/ImageAMValueWidget.js:104 ncms/mtt/filters/MttFilterDlg.js:40
 #: ncms/mtt/actions/MttActionDlg.js:40 ncms/usr/UserEditForm.js:27
@@ -224,7 +224,7 @@ msgstr "Имя класса контроллера сборки (assembly)"
 msgid "Controller"
 msgstr "Контроллер"
 
-#: ncms/pgs/PageEditorEditPage.js:596 ncms/asm/AsmEditor.js:112
+#: ncms/pgs/PageEditorEditPage.js:603 ncms/asm/AsmEditor.js:112
 msgid "Published"
 msgstr "Опубликовано"
 
@@ -1448,35 +1448,35 @@ msgid "Page files"
 msgstr "Файлы страницы"
 
 #: ncms/pgs/PageEditorEditPage.js:110 ncms/pgs/PageEditorEditPage.js:111
-#: ncms/pgs/PageEditorEditPage.js:431
+#: ncms/pgs/PageEditorEditPage.js:438
 msgid "Please select the template page"
 msgstr "Пожалуйста, выберите шаблон для страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:226
-msgid "The page is blocked!!!"
+#: ncms/pgs/PageEditorEditPage.js:230
+msgid "This page is locked<br>since the user <b>%1</b> is editing it"
 msgstr ""
 
-#: ncms/pgs/PageEditorEditPage.js:435
+#: ncms/pgs/PageEditorEditPage.js:442
 msgid "Templates"
 msgstr "Шаблоны"
 
-#: ncms/pgs/PageEditorEditPage.js:483
+#: ncms/pgs/PageEditorEditPage.js:490
 msgid "Page fields contain errors"
 msgstr "В полях страницы обнаружены ошибки"
 
-#: ncms/pgs/PageEditorEditPage.js:507
+#: ncms/pgs/PageEditorEditPage.js:514
 msgid "Failed to save page."
 msgstr "Ошибка при сохранении страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:531
+#: ncms/pgs/PageEditorEditPage.js:538
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:538
+#: ncms/pgs/PageEditorEditPage.js:545
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:579
+#: ncms/pgs/PageEditorEditPage.js:586
 msgid ""
 "Are you sure to unpublish this page? There are pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"
@@ -1486,15 +1486,15 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" target='_blank' "
 "rel='noopener noreferrer'>списком ссылающихся страниц</a>"
 
-#: ncms/pgs/PageEditorEditPage.js:596
+#: ncms/pgs/PageEditorEditPage.js:603
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:603
+#: ncms/pgs/PageEditorEditPage.js:610
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:628
+#: ncms/pgs/PageEditorEditPage.js:635
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 
@@ -1987,6 +1987,12 @@ msgstr "Заметка"
 
 #~ msgid "Remember traffic sources"
 #~ msgstr "Запомнить источники трафика"
+
+#~ msgid "The page is blocked!!!"
+#~ msgstr ""
+
+#~ msgid "This page is locked<br>since the user %1 is editing it"
+#~ msgstr ""
 
 #~ msgid "Track traffic pixels"
 #~ msgstr "От"

@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Locale;
+import javax.annotation.Nullable;
 
 import httl.Resource;
 import httl.util.IOUtils;
@@ -25,6 +26,7 @@ public final class HttlMediaResourceAdapter implements MediaResource {
         this.res = res;
     }
 
+    @Nullable
     @Override
     public Long getId() {
         return null;
@@ -97,6 +99,7 @@ public final class HttlMediaResourceAdapter implements MediaResource {
         }
     }
 
+    @Nullable
     @Override
     public String getDescription() {
         return null;

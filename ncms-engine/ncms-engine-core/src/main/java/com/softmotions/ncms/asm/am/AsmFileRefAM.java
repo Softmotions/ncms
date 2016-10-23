@@ -63,7 +63,7 @@ public class AsmFileRefAM extends AsmFileAttributeManagerSupport {
             opts.loadOptions(attr.getOptions());
         }
         String location = getRawLocation(attr.getEffectiveValue());
-        if (BooleanUtils.toBoolean(opts.getString("asLocation"))) {
+        if (location == null || BooleanUtils.toBoolean(opts.getString("asLocation"))) {
             return location;
         }
         boolean asTemplate = BooleanUtils.toBoolean(opts.getString("asTemplate"));
@@ -116,7 +116,7 @@ public class AsmFileRefAM extends AsmFileAttributeManagerSupport {
         attr.setEffectiveValue(location);
         if (!StringUtils.isBlank(rawLocation)) {
             MediaResource resource = reader.findMediaResource(rawLocation, ctx.getLocale());
-            if (resource != null) {
+            if (resource != null && resource.getId() != null) {
                 ctx.registerFileDependency(attr, resource.getId());
             }
         }
@@ -133,7 +133,7 @@ public class AsmFileRefAM extends AsmFileAttributeManagerSupport {
             nlocation = getRawLocation(attr.getEffectiveValue());
             if (nlocation != null) {
                 MediaResource res = reader.findMediaResource(nlocation, null);
-                if (res != null) {
+                if (res != null && res.getId() != null) {
                     ctx.registerFileDependency(attr, res.getId());
                 }
             }

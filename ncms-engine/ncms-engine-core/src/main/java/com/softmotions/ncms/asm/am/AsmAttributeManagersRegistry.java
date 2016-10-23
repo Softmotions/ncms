@@ -1,14 +1,18 @@
 package com.softmotions.ncms.asm.am;
 
 import java.util.Collection;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public interface AsmAttributeManagersRegistry {
 
-     <T extends AsmAttributeManager> T getByType(String type);
+    @Nullable
+    <T extends AsmAttributeManager> T getByType(String type);
 
+    @Nonnull
     Collection<AsmAttributeManager> getAll();
 
 }

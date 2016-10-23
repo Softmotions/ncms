@@ -1,5 +1,6 @@
 package com.softmotions.ncms.media.events;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
 import static com.softmotions.ncms.media.MediaRS.normalizeFolder;
@@ -20,18 +21,26 @@ public class MediaDeleteEvent extends BasicEvent {
 
     final long id;
 
-    public MediaDeleteEvent(Object source, Long id, boolean isFolder, String path, HttpServletRequest req) {
+    public MediaDeleteEvent(Object source,
+                            @Nullable  Long id,
+                            boolean isFolder,
+                            String path,
+                            @Nullable HttpServletRequest req) {
         super(source, MediaDeleteEvent.class.getSimpleName(), req);
         this.path = isFolder ? normalizeFolder(path) : normalizePath(path);
         this.isFolder = isFolder;
         this.id = id != null ? id : 0L;
     }
 
-    public MediaDeleteEvent(Object source, Long id, boolean isFolder, String path, String user) {
+    public MediaDeleteEvent(Object source,
+                            @Nullable Long id,
+                            boolean isFolder,
+                            String path, @Nullable
+                            String user) {
         super(source, MediaDeleteEvent.class.getSimpleName(), user);
         this.path = isFolder ? normalizeFolder(path) : normalizePath(path);
         this.isFolder = isFolder;
-        this.id = id != null ? id : 0L;
+        this.id = (id != null) ? id : 0L;
     }
 
     public long getId() {

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Locale;
+import javax.annotation.Nullable;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -13,6 +14,7 @@ import java.util.Locale;
 public interface MediaResource {
 
 
+    @Nullable
     Long getId();
 
     /**
@@ -23,12 +25,14 @@ public interface MediaResource {
     /**
      * Get the the resource encoding.
      */
+    @Nullable
     String getEncoding();
 
     /**
      * Get resource content type.
      * Return <code>null</code> if content type is not known
      */
+    @Nullable
     String getContentType();
 
     /**
@@ -99,6 +103,7 @@ public interface MediaResource {
      *
      * @return locale
      */
+    @Nullable
     Locale getLocale();
 
     /**
@@ -115,7 +120,7 @@ public interface MediaResource {
      */
     int getImageHeight();
 
-
+    @Nullable
     String getDescription();
 
 }

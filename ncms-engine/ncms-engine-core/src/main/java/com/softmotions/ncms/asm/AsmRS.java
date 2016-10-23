@@ -583,6 +583,7 @@ public class AsmRS extends MBDAOSupport {
     @Produces("text/plain")
     @Transactional
     public Integer count(@Context HttpServletRequest req) {
+        //noinspection ConstantConditions
         return selectOneByCriteria(createQ(req).withStatement("count"));
     }
 

@@ -2,6 +2,7 @@ package com.softmotions.ncms.mediawiki;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.annotation.Nullable;
 
 import info.bliki.wiki.filter.Encoder;
 import info.bliki.wiki.model.Configuration;
@@ -48,9 +49,10 @@ public class WikiModel extends info.bliki.wiki.model.WikiModel {
     }
 
     public WikiModel(Configuration cfg,
-                     String imageBaseURL, String linkBaseURL,
+                     String imageBaseURL,
+                     String linkBaseURL,
                      I18n messages,
-                     Locale locale) {
+                     @Nullable Locale locale) {
         super(cfg, imageBaseURL, linkBaseURL);
         this.cfg = cfg;
         this.messages = messages;

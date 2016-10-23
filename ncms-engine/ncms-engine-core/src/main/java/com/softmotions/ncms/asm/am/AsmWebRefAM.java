@@ -13,6 +13,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +38,6 @@ import org.apache.http.impl.client.cache.BasicHttpCacheStorage;
 import org.apache.http.impl.client.cache.CacheConfig;
 import org.apache.http.impl.client.cache.CachingHttpClientBuilder;
 import org.apache.http.impl.client.cache.HeapResourceFactory;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,8 +128,11 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
         return res;
     }
 
-    private String externalInclude(AsmRendererContext ctx, String attrname,
-                                   URI location, Map<String, String> options) {
+    @Nullable
+    private String externalInclude(AsmRendererContext ctx,
+                                   String attrname,
+                                   URI location,
+                                   Map<String, String> options) {
 
         try {
 
@@ -217,8 +220,11 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
         }
     }
 
-    private String internalInclude(AsmRendererContext ctx, String attrname,
-                                   URI location, Map<String, String> options) {
+    @Nullable
+    private String internalInclude(AsmRendererContext ctx,
+                                   String attrname,
+                                   URI location,
+                                   Map<String, String> options) {
         String cs = ctx.getServletRequest().getCharacterEncoding();
         if (cs == null) {
             cs = "UTF-8";
@@ -351,8 +357,9 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
             return IteratorUtils.asEnumeration(params.keySet().iterator());
         }
 
+        @Nullable
         @Override
-        public @Nullable String[] getParameterValues(String name) {
+        public String[] getParameterValues(String name) {
             String pv = params.get(name);
             return pv != null ? new String[]{pv} : null;
         }

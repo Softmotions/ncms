@@ -36,7 +36,7 @@ public class MediaWikiConverter implements ITextConverter {
     }
 
     @Override
-    public void nodesToText(List<? extends Object> nodes, Appendable resultBuffer, IWikiModel model) throws IOException {
+    public void nodesToText(List<?> nodes, Appendable resultBuffer, IWikiModel model) throws IOException {
         if (nodes != null && !nodes.isEmpty()) {
             try {
                 int level = model.incrementRecursionLevel();
@@ -46,7 +46,7 @@ public class MediaWikiConverter implements ITextConverter {
                             .append("<span class=\"error\">Error - recursion limit exceeded rendering tags in HTMLConverter#nodesToText().</span>");
                     return;
                 }
-                Iterator<? extends Object> childrenIt = nodes.iterator();
+                Iterator<?> childrenIt = nodes.iterator();
                 while (childrenIt.hasNext()) {
                     Object item = childrenIt.next();
                     if (item != null) {
@@ -76,7 +76,7 @@ public class MediaWikiConverter implements ITextConverter {
                         } else if (item instanceof TagNode) {
                             TagNode node = (TagNode) item;
                             Map<String, Object> map = node.getObjectAttributes();
-                            if (map != null && map.size() > 0) {
+                            if (map != null && !map.isEmpty()) {
                                 Object attValue = map.get("wikiobject");
                                 if (attValue instanceof ImageFormat) {
                                     imageNodeToText(node, (ImageFormat) attValue, resultBuffer, model);
@@ -101,8 +101,8 @@ public class MediaWikiConverter implements ITextConverter {
     protected void nodeToHTML(TagNode node, Appendable resultBuffer, IWikiModel model) throws IOException {
         String name = node.getName();
         if (HTMLTag.NEW_LINES) {
-            if (name.equals("div") || name.equals("p") || name.equals("table") || name.equals("ul") || name.equals("ol")
-                || name.equals("li") || name.equals("th") || name.equals("tr") || name.equals("td") || name.equals("pre")) {
+            if ("div".equals(name) || "p".equals(name) || "table".equals(name) || "ul".equals(name) || "ol".equals(name)
+                || "li".equals(name) || "th".equals(name) || "tr".equals(name) || "td".equals(name) || "pre".equals(name)) {
                 resultBuffer.append('\n');
             }
         }
@@ -125,11 +125,11 @@ public class MediaWikiConverter implements ITextConverter {
         }
 
         List<Object> children = node.getChildren();
-        if (children.size() == 0 && !name.equals("a")) {
+        if (children.isEmpty() && !"a".equals(name)) {
             resultBuffer.append(" />");
         } else {
             resultBuffer.append('>');
-            if (children.size() != 0) {
+            if (!children.isEmpty()) {
                 nodesToText(children, resultBuffer, model);
             }
             resultBuffer.append("</");
@@ -144,7 +144,7 @@ public class MediaWikiConverter implements ITextConverter {
         Map<String, String> map = imageTagNode.getAttributes();
         String caption = imageFormat.getCaption();
         String alt = null;
-        if (caption != null && caption.length() > 0) {
+        if (caption != null && !caption.isEmpty()) {
             alt = imageFormat.getAlt();
             caption = Utils.escapeXml(caption, true, false, true);
         }
@@ -156,14 +156,27 @@ public class MediaWikiConverter implements ITextConverter {
         int pxWidth = imageFormat.getWidth();
         int pxHeight = imageFormat.getHeight();
         if ("thumb".equals(type) || "frame".equals(type)) {
-            imageThumbToHTML(imageTagNode, resultBuffer, model, map, caption, alt, location, type, pxWidth, pxHeight);
+            //noinspection ConstantConditions
+            imageThumbToHTML(imageTagNode, resultBuffer, model, map,
+                             caption, alt, location, type, pxWidth, pxHeight);
         } else {
-            imageSimpleToHTML(imageTagNode, resultBuffer, model, map, caption, alt, location, type, pxWidth, pxHeight);
+            //noinspection ConstantConditions
+            imageSimpleToHTML(imageTagNode, resultBuffer, model, map,
+                              caption, alt, location, type, pxWidth, pxHeight);
         }
     }
 
-    private void imageThumbToHTML(TagNode imageTagNode, Appendable resultBuffer, IWikiModel model, Map<String, String> map,
-                                  String caption, String alt, String location, String type, int pxWidth, int pxHeight) throws IOException {
+    @SuppressWarnings("MethodWithTooManyParameters")
+    private void imageThumbToHTML(TagNode imageTagNode,
+                                  Appendable resultBuffer,
+                                  IWikiModel model,
+                                  Map<String, String> map,
+                                  String caption,
+                                  String alt,
+                                  String location,
+                                  String type,
+                                  int pxWidth,
+                                  int pxHeight) throws IOException {
 
 
         resultBuffer.append("\n<div class=\"thumb");
@@ -191,7 +204,7 @@ public class MediaWikiConverter implements ITextConverter {
         String href = map.get("href");
         if (href != null) {
             resultBuffer.append("<a class=\"image\" href=\"").append(href).append("\" ");
-            if (caption != null && caption.length() > 0) {
+            if (caption != null && !caption.isEmpty()) {
                 resultBuffer.append("title=\"").append((alt.isEmpty()) ? caption : alt).append('"');
             }
             resultBuffer.append('>');
@@ -199,7 +212,7 @@ public class MediaWikiConverter implements ITextConverter {
 
         resultBuffer.append("<img src=\"").append(map.get("src")).append('"');
         resultBuffer.append(" class=\"thumbimage\"");
-        if (caption != null && caption.length() > 0) {
+        if (caption != null && !caption.isEmpty()) {
             if (alt.isEmpty()) {
                 resultBuffer.append(" alt=\"").append(caption).append('"').append(" title=\"").append(caption).append('"');
             } else {
@@ -232,7 +245,7 @@ public class MediaWikiConverter implements ITextConverter {
             resultBuffer.append("</a>");
         }
         List<Object> children = imageTagNode.getChildren();
-        if (children.size() != 0) {
+        if (!children.isEmpty()) {
             nodesToText(children, resultBuffer, model);
         }
 
@@ -240,13 +253,22 @@ public class MediaWikiConverter implements ITextConverter {
         resultBuffer.append("</div>\n");
     }
 
-    private void imageSimpleToHTML(TagNode imageTagNode, Appendable resultBuffer, IWikiModel model, Map<String, String> map,
-                                   String caption, String alt, String location, String type, int pxWidth, int pxHeight) throws IOException {
+    @SuppressWarnings("MethodWithTooManyParameters")
+    private void imageSimpleToHTML(TagNode imageTagNode,
+                                   Appendable resultBuffer,
+                                   IWikiModel model,
+                                   Map<String, String> map,
+                                   String caption,
+                                   String alt,
+                                   String location,
+                                   String type,
+                                   int pxWidth,
+                                   int pxHeight) throws IOException {
         String href = map.get("href");
         if (href != null) {
             resultBuffer.append("<a class=\"image\" href=\"").append(href).append("\" ");
 
-            if (caption != null && caption.length() > 0) {
+            if (caption != null && !caption.isEmpty()) {
                 resultBuffer.append("title=\"").append((alt.isEmpty()) ? caption : alt).append('"');
             }
             resultBuffer.append('>');
@@ -254,7 +276,7 @@ public class MediaWikiConverter implements ITextConverter {
 
         resultBuffer.append("<img src=\"").append(map.get("src")).append('"');
 
-        if (caption != null && caption.length() > 0) {
+        if (caption != null && !caption.isEmpty()) {
             if (alt.isEmpty()) {
                 resultBuffer.append(" alt=\"").append(caption).append('"');
             } else {
@@ -263,7 +285,7 @@ public class MediaWikiConverter implements ITextConverter {
         }
 
         StringBuilder clazz = null;
-        if (location != null && !(location.equalsIgnoreCase("none"))) {
+        if (location != null && !("none".equalsIgnoreCase(location))) {
             clazz = new StringBuilder(64);
             clazz.append(" class=\"location-");
             clazz.append(location);
@@ -293,7 +315,7 @@ public class MediaWikiConverter implements ITextConverter {
             resultBuffer.append("</a>");
         }
         List<Object> children = imageTagNode.getChildren();
-        if (children.size() != 0) {
+        if (!children.isEmpty()) {
             nodesToText(children, resultBuffer, model);
         }
     }

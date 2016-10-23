@@ -41,7 +41,7 @@ import com.softmotions.web.HttpUtils;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked"})
 public final class HttlUtilsMethods {
 
     private static final Logger log = LoggerFactory.getLogger(HttlUtilsMethods.class);
@@ -75,6 +75,7 @@ public final class HttlUtilsMethods {
         return StringUtils.isBlank(str);
     }
 
+    @Nullable
     public static String ifTrue(boolean res, String data) {
         return res ? data : null;
     }
@@ -96,6 +97,7 @@ public final class HttlUtilsMethods {
         return Objects.equals(req.getParameter(param), value);
     }
 
+    @Nullable
     public static String requestParameter(String param) {
         if (param == null) {
             return null;
@@ -109,6 +111,7 @@ public final class HttlUtilsMethods {
         return Objects.equals(requestParameter(name), value);
     }
 
+    @Nullable
     public static String cookie(String name) {
         if (name == null) {
             return null;
@@ -136,6 +139,7 @@ public final class HttlUtilsMethods {
         return ctx.getI18n().getLocale(ctx.getServletRequest()).getLanguage();
     }
 
+    @Nullable
     public static String encodeUriComponent(String s) {
         if (s == null) {
             return null;
@@ -177,6 +181,7 @@ public final class HttlUtilsMethods {
         return ret;
     }
 
+    @Nullable
     public static String includeTemplate(Object path) {
         if (path == null) {
             return null;
@@ -197,6 +202,7 @@ public final class HttlUtilsMethods {
         return out.toString();
     }
 
+    @Nullable
     public static String siteFile(Object path) {
         if (path == null) {
             return null;
@@ -226,6 +232,7 @@ public final class HttlUtilsMethods {
         return spath;
     }
 
+    @Nullable
     public static String format2(Date date, String format) {
         if (date == null) {
             return null;
@@ -234,6 +241,7 @@ public final class HttlUtilsMethods {
         return ctx.getI18n().format(date, format, ctx.getLocale());
     }
 
+    @Nullable
     public static String formatEng(Date date, String format) {
         if (date == null) {
             return null;
@@ -242,22 +250,27 @@ public final class HttlUtilsMethods {
         return ctx.getI18n().format(date, format, Locale.ENGLISH);
     }
 
+    @Nullable
     public static String translate(String key) {
         return translateImpl(key);
     }
 
+    @Nullable
     public static String translate(String key, String v1) {
         return translateImpl(key, v1);
     }
 
+    @Nullable
     public static String translate(String key, String v1, String v2) {
         return translateImpl(key, v1, v2);
     }
 
+    @Nullable
     public static String translate(String key, String v1, String v2, String v3) {
         return translateImpl(key, v1, v2, v3);
     }
 
+    @Nullable
     private static String translateImpl(String key, String... args) {
         if (key == null) {
             return null;
@@ -343,10 +356,12 @@ public final class HttlUtilsMethods {
     //                Local date/time formatters             //
     ///////////////////////////////////////////////////////////
 
+    @Nullable
     public static String format(LocalDate date) {
         return format(date, null);
     }
 
+    @Nullable
     public static String format(LocalDate date, @Nullable String pattern) {
         if (date == null) {
             return null;

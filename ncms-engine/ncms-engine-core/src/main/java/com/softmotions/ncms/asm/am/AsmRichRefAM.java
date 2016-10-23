@@ -93,6 +93,7 @@ public class AsmRichRefAM extends AsmAttributeManagerSupport {
         if (node.hasNonNull("style3")) {
             style3 = node.get("style3").asText();
         }
+        //noinspection ConstantConditions
         return new RichRef(name, link, rawLink,
                            description, image, style,
                            style2, style3);
@@ -136,7 +137,7 @@ public class AsmRichRefAM extends AsmAttributeManagerSupport {
                                             AsmAttribute attr, JsonNode val) throws Exception {
         if (val == null) {
             attr.setEffectiveValue(null);
-            return null;
+            return attr;
         }
         attr.setEffectiveValue(mapper.writeValueAsString(applyJSONAttributeValue(ctx, attr, val)));
         return attr;

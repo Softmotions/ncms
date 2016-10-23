@@ -2,6 +2,7 @@ package com.softmotions.ncms.events;
 
 import java.util.Collections;
 import java.util.Map;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,13 +28,13 @@ public class BasicEvent {
 
     private Map<String, Object> hints;
 
-    public BasicEvent(Object source, String type, String user) {
+    public BasicEvent(Object source, String type, @Nullable String user) {
         this.source = source;
         this.type = type;
         this.user = user;
     }
 
-    public BasicEvent(Object source, String type, HttpServletRequest req) {
+    public BasicEvent(Object source, String type, @Nullable HttpServletRequest req) {
         this.source = source;
         this.type = type;
         if (req != null && req.getUserPrincipal() != null) {

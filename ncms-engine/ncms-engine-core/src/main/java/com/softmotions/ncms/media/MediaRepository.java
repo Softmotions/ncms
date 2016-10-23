@@ -67,10 +67,16 @@ public interface MediaRepository extends MediaReader, Closeable {
      * @param flags  {@link #RESIZE_SKIP_SMALL}, {@link #RESIZE_COVER_AREA}
      */
     @Nullable
-    Pair<Integer, Integer> ensureResizedImage(String path, Integer width, Integer height, int flags) throws IOException;
+    Pair<Integer, Integer> ensureResizedImage(String path,
+                                              @Nullable Integer width,
+                                              @Nullable Integer height,
+                                              int flags) throws IOException;
 
     @Nullable
-    Pair<Integer, Integer> ensureResizedImage(long id, Integer width, Integer height, int flags) throws IOException;
+    Pair<Integer, Integer> ensureResizedImage(long id,
+                                              @Nullable Integer width,
+                                              @Nullable Integer height,
+                                              int flags) throws IOException;
 
     /**
      * Update all resized image files
@@ -82,16 +88,18 @@ public interface MediaRepository extends MediaReader, Closeable {
 
     /**
      * Returns dedicated page media folder path
+     *
      * @param pageId Page id
      */
     String getPageLocalFolderPath(Long pageId);
 
     /**
      * Copy media files from source page to the target page
+     *
      * @param sourcePageId Source page id
      * @param targetPageId Target page id
-     * @param owner Page files owner. If `null` source
-     *              owner will be preserved
+     * @param owner        Page files owner. If `null` source
+     *                     owner will be preserved
      * @return Copied files mapping: `source file id => target file id`
      */
     Map<Long, Long> copyPageMedia(long sourcePageId, long targetPageId, String owner) throws IOException;

@@ -54,6 +54,7 @@ public final class HttlAsmMethods {
         return rctx.getRenderer().isHasRenderableAsmAttribute(asm, rctx, name) ? asm(asm, name) : null;
     }
 
+    @Nullable
     public static Object asm(String val) {
         String attrName;
         Map<String, String> opts;
@@ -69,10 +70,12 @@ public final class HttlAsmMethods {
         return ctx.renderAttribute(attrName, opts);
     }
 
+    @Nullable
     public static Object asm(String attrName, String ok, String ov) {
         return asmIntern(attrName, ok, ov);
     }
 
+    @Nullable
     public static Object asm(String attrName,
                              String ok, String ov,
                              String ok1, String ov1) {
@@ -81,6 +84,7 @@ public final class HttlAsmMethods {
                          ok1, ov1);
     }
 
+    @Nullable
     @SuppressWarnings("MethodWithTooManyParameters")
     public static Object asm(String attrName,
                              String ok, String ov,
@@ -92,6 +96,7 @@ public final class HttlAsmMethods {
                          ok2, ov2);
     }
 
+    @Nullable
     @SuppressWarnings("MethodWithTooManyParameters")
     public static Object asm(String attrName,
                              String ok, String ov,
@@ -105,22 +110,26 @@ public final class HttlAsmMethods {
                          ok3, ov3);
     }
 
+    @Nullable
     public static Object asm(Asm asm, String attr) {
         return AsmRendererContext.getSafe().renderAttribute(asm, attr, null);
     }
 
+    @Nullable
     public static Object asm(Asm asm, String attr, String opts) {
         KVOptions kvopts = new KVOptions();
         kvopts.loadOptions(opts);
         return AsmRendererContext.getSafe().renderAttribute(asm, attr, kvopts);
     }
 
+    @Nullable
     public static Object asm(Asm asm, String attr, String ok, String ov) {
         KVOptions opts = new KVOptions();
         opts.put(ok, ov);
         return AsmRendererContext.getSafe().renderAttribute(asm, attr, opts);
     }
 
+    @Nullable
     public static Object asm(Asm asm, String attr,
                              String ok, String ov,
                              String ok1, String ov1) {
@@ -130,6 +139,7 @@ public final class HttlAsmMethods {
         return AsmRendererContext.getSafe().renderAttribute(asm, attr, opts);
     }
 
+    @Nullable
     public static Object asm(Asm asm, String attr,
                              String ok, String ov,
                              String ok1, String ov1,
@@ -141,6 +151,7 @@ public final class HttlAsmMethods {
         return AsmRendererContext.getSafe().renderAttribute(asm, attr, opts);
     }
 
+    @Nullable
     private static Object asmIntern(String attrName, String... extraOpts) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         KVOptions opts = null;
@@ -314,6 +325,7 @@ public final class HttlAsmMethods {
         return (link != null) ? AsmRendererContext.getSafe().getPageService().resolvePageLink(link) : null;
     }
 
+    @Nullable
     public static String link(RichRef ref) {
         if (ref == null) {
             return null;
@@ -321,11 +333,14 @@ public final class HttlAsmMethods {
         return ref.getLink();
     }
 
+    @Nullable
     public static String linkHtml(Object ref) {
         return linkHtml(ref, null);
     }
 
-    public static String linkHtml(Object ref, Map<String, ?> attrs) {
+    @Nullable
+    public static String linkHtml(Object ref,
+                                  @Nullable Map<String, ?> attrs) {
         if (ref == null) {
             return null;
         }

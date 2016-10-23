@@ -160,6 +160,7 @@ public class AsmVisualEditorAM extends AsmAttributeManagerSupport {
             } else {
                 attr = eattr.cloneDeep();
                 attr.setValue(null);
+                //noinspection ConstantConditions
                 attr.setId(null);
             }
         }

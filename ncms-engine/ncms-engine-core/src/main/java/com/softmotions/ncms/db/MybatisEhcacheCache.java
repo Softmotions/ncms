@@ -1,6 +1,7 @@
 package com.softmotions.ncms.db;
 
 import java.util.concurrent.locks.ReadWriteLock;
+import javax.annotation.Nullable;
 
 import org.apache.ibatis.cache.Cache;
 import org.slf4j.Logger;
@@ -65,6 +66,7 @@ public class MybatisEhcacheCache implements Cache {
     /**
      * {@inheritDoc}
      */
+    @Nullable
     @Override
     public Object getObject(Object key) {
         Element cachedElement = cache.get(key);
@@ -77,6 +79,7 @@ public class MybatisEhcacheCache implements Cache {
     /**
      * {@inheritDoc}
      */
+    @Nullable
     @Override
     public ReadWriteLock getReadWriteLock() {
         return null;
@@ -101,6 +104,7 @@ public class MybatisEhcacheCache implements Cache {
     /**
      * {@inheritDoc}
      */
+    @Nullable
     @Override
     public Object removeObject(Object key) {
         Object obj = getObject(key);

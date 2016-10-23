@@ -1,20 +1,15 @@
 package com.softmotions.ncms.solr;
 
-import com.softmotions.ncms.asm.Asm;
-import com.softmotions.ncms.asm.AsmAttribute;
-import com.softmotions.ncms.asm.AsmDAO;
-import com.softmotions.ncms.asm.am.AsmAttributeManager;
-import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
-import com.softmotions.ncms.asm.events.AsmCreatedEvent;
-import com.softmotions.ncms.asm.events.AsmModifiedEvent;
-import com.softmotions.ncms.asm.events.AsmRemovedEvent;
-import com.softmotions.ncms.events.NcmsEventBus;
-import com.softmotions.ncms.mhttl.ImageMeta;
-import com.softmotions.weboot.solr.SolrDataHandler;
-
-import com.google.common.collect.AbstractIterator;
-import com.google.common.eventbus.Subscribe;
-import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.lang3.ArrayUtils;
@@ -26,15 +21,20 @@ import org.apache.solr.common.SolrInputDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.common.collect.AbstractIterator;
+import com.google.common.eventbus.Subscribe;
+import com.google.inject.Singleton;
+import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmAttribute;
+import com.softmotions.ncms.asm.AsmDAO;
+import com.softmotions.ncms.asm.am.AsmAttributeManager;
+import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
+import com.softmotions.ncms.asm.events.AsmCreatedEvent;
+import com.softmotions.ncms.asm.events.AsmModifiedEvent;
+import com.softmotions.ncms.asm.events.AsmRemovedEvent;
+import com.softmotions.ncms.events.NcmsEventBus;
+import com.softmotions.ncms.mhttl.ImageMeta;
+import com.softmotions.weboot.solr.SolrDataHandler;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -126,7 +126,8 @@ public class PageSolrDataHandler implements SolrDataHandler {
         };
     }
 
-    protected SolrInputDocument asmToSolrDocument(Asm asm) {
+    @Nullable
+    protected SolrInputDocument asmToSolrDocument(@Nullable Asm asm) {
         if (asm == null || StringUtils.isBlank(asm.getType())) {
             return null;
         }
@@ -231,7 +232,7 @@ public class PageSolrDataHandler implements SolrDataHandler {
         updateAsmInSolr(id, adao.asmSelectById(id));
     }
 
-    protected void updateAsmInSolr(Long id, Asm asm) {
+    protected void updateAsmInSolr(Long id, @Nullable Asm asm) {
         SolrInputDocument solrDocument = asmToSolrDocument(asm);
         try {
             if (solrDocument == null) {

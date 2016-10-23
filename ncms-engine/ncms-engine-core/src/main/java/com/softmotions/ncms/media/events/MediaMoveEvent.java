@@ -1,5 +1,6 @@
 package com.softmotions.ncms.media.events;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
 import static com.softmotions.ncms.media.MediaRS.normalizeFolder;
@@ -24,13 +25,13 @@ public class MediaMoveEvent extends BasicEvent {
     final String newPath;
 
     public MediaMoveEvent(Object source,
-                          Number id,
+                          @Nullable Number id,
                           boolean isFolder,
                           String oldPath,
                           String newPath,
                           HttpServletRequest req) {
         super(source, MediaMoveEvent.class.getSimpleName(), req);
-        this.id = id != null ? id.longValue() : null;
+        this.id = (id != null) ? id.longValue() : null;
         this.oldPath = isFolder ? normalizeFolder(oldPath) : normalizePath(oldPath);
         this.newPath = isFolder ? normalizeFolder(newPath) : normalizePath(newPath);
         this.isFolder = isFolder;

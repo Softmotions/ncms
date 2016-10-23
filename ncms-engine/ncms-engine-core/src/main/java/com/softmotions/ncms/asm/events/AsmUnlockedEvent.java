@@ -1,5 +1,7 @@
 package com.softmotions.ncms.asm.events;
 
+import javax.annotation.Nullable;
+
 import com.softmotions.ncms.events.BasicEvent;
 
 /**
@@ -13,7 +15,7 @@ public class AsmUnlockedEvent extends BasicEvent {
         return id;
     }
 
-    public AsmUnlockedEvent(Object source, Long id, String user) {
+    public AsmUnlockedEvent(Object source, Long id, @Nullable String user) {
         super(source, AsmUnlockedEvent.class.getSimpleName(), user);
         this.id = id;
     }

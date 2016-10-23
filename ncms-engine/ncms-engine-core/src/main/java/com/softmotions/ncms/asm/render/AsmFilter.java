@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
+import javax.annotation.Nullable;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -221,6 +222,7 @@ public class AsmFilter implements Filter {
         return true;
     }
 
+    @Nullable
     protected Object fetchAsmRef(String pi, HttpServletRequest req) {
         if (pi.length() < 2 || "/index.html".equals(pi)) {
             CachedPage cp = pageService.getIndexPage(req, true);

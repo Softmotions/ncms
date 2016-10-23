@@ -18,6 +18,7 @@ public class HttlVisualEditorMethods {
     /**
      * Visual editor meta attributes on `<html>` element.
      */
+    @Nullable
     public static String ncmsDocumentVEMeta() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         if (ctx.getUserData("ncmsDocumentVEMeta.applied") != null

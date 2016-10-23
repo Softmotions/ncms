@@ -66,7 +66,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         setEffectiveValue(value);
     }
 
-    public AsmAttribute(String name, String type, String value) {
+    public AsmAttribute(String name, String type, @Nullable String value) {
         this.name = name;
         this.type = type;
         setEffectiveValue(value);
@@ -118,7 +118,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(@Nullable String value) {
         this.value = value;
     }
 
@@ -127,7 +127,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         return largeValue;
     }
 
-    public void setLargeValue(String largeValue) {
+    public void setLargeValue(@Nullable String largeValue) {
         this.largeValue = largeValue;
     }
 
@@ -185,7 +185,7 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         return (largeValue != null) ? largeValue : value;
     }
 
-    public void setEffectiveValue(String val) {
+    public void setEffectiveValue(@Nullable String val) {
         if (val == null) {
             setValue(null);
             setLargeValue(null);

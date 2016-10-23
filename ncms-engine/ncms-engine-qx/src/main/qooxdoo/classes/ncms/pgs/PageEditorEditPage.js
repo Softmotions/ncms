@@ -191,7 +191,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                             center: true,
                             rich: true,
                             selectable: true,
-                            appearance: "ncms-info-popup"
+                            appearance: "ncms-info-popup",
+                            padding: 20,
+                            maxWidth: 300
                         });
                     function centerBa() {
                         var me = this;
@@ -222,8 +224,13 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     root.add(ba);
                     ba.exclude();
                 }
-                // todo change label
-                ba.setLabel(this.tr("The page is blocked!!!"));
+
+                var ps = this.getPageEditSpec();
+                ba.setLabel(this.tr(
+                    "This page is locked<br>since the user <b>%1</b> is editing it",
+                    ps.lockUser
+                ));
+
                 ba.setZIndex(1e3);
                 ba.show();
                 this.__cancel2();

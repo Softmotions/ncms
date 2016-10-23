@@ -97,7 +97,7 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public int coreDelete(Long id, String location) {
+    public int coreDelete(@Nullable Long id, @Nullable String location) {
         AsmCore core = new AsmCore();
         if (id != null) {
             core.id = id;
@@ -223,7 +223,7 @@ public class AsmDAO extends MBDAOSupport {
                         String type,
                         String hname,
                         String description,
-                        String[] skipTypes) {
+                        @Nullable String[] skipTypes) {
 
         Map<String, Object> params = new HashMap<>();
         params.put("asmId", asmId);
@@ -258,8 +258,12 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public int asmSetParent(Asm asm, Asm parent) {
-        return asmSetParent(asm.id, parent.id);
+    public int asmSetParent(Asm asm, @Nullable Asm parent) {
+        if (parent != null) {
+            return asmSetParent(asm.id, parent.id);
+        } else {
+            return 0;
+        }
     }
 
     @Transactional
@@ -322,7 +326,7 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public void asmUpdateAlias(Long id, String alias) {
+    public void asmUpdateAlias(Long id, @Nullable String alias) {
         update("asmResetAlias", alias);
         update("asmUpdateAlias",
                "id", id,
@@ -342,7 +346,7 @@ public class AsmDAO extends MBDAOSupport {
         Number count = selectOne("asmIsUniqueAlias",
                                  "alias", alias,
                                  "id", asmId);
-        return (count.intValue() < 1);
+        return (count == null || count.intValue() < 1);
     }
 
     @Transactional
@@ -388,6 +392,7 @@ public class AsmDAO extends MBDAOSupport {
         }
     }
 
+    @Nullable
     @Transactional
     public AsmAttribute asmAttributeByName(long asmId, String name) {
         return selectOne("asmAttributeByName",
@@ -474,7 +479,7 @@ public class AsmDAO extends MBDAOSupport {
                        "id", asm.getId(),
                        "coreId", null);
             }
-            return core;
+            return null;
         }
         core = selectOne("selectAsmCore", "location", location);
         if (core == null) {
@@ -554,7 +559,8 @@ public class AsmDAO extends MBDAOSupport {
 
     @Transactional
     public long asmChildrenCount(long asmId) {
-        return ((Number) selectOne("selectChildrenCount", asmId)).longValue();
+        Number res = selectOne("selectChildrenCount", asmId);
+        return res != null ? res.longValue() : 0L;
     }
 
     @Transactional
@@ -564,6 +570,7 @@ public class AsmDAO extends MBDAOSupport {
                "edate", date);
     }
 
+    @Nullable
     @Transactional
     public String asmSelectAliasByGuid(String guid) {
         Map<String, String> row = selectOne("asmSelectAliasByGuid", guid);
@@ -596,7 +603,8 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public void setAsmRefData(Long asmId, String type, String svalue, Number ivalue) {
+    public void setAsmRefData(Long asmId, String type,
+                              @Nullable String svalue, @Nullable Number ivalue) {
         if (svalue == null && ivalue == null) {
             throw new IllegalArgumentException("At least one of values must be not null");
         }

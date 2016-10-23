@@ -141,6 +141,7 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      *
      * @param pname Parameter name stripped from assembly parameter prefix.
      */
+    @Nullable
     public abstract String getDedicatedParam(String pname);
 
     /**
@@ -197,10 +198,13 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
     public abstract void render(@Nullable Writer writer) throws AsmRenderingException, IOException;
 
     @Nullable
-    public abstract Object renderAttribute(String attributeName, Map<String, String> opts);
+    public abstract Object renderAttribute(String attributeName,
+                                           @Nullable Map<String, String> opts);
 
     @Nullable
-    public abstract Object renderAttribute(Asm asm, String attributeName, Map<String, String> opts);
+    public abstract Object renderAttribute(Asm asm,
+                                           String attributeName,
+                                           @Nullable Map<String, String> opts);
 
     public abstract AsmResourceLoader getLoader();
 

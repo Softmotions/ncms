@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nullable;
 
 import httl.Engine;
 import httl.Resource;
@@ -41,6 +42,7 @@ public class HttlLoaderAdapter implements Loader {
         return ctx != null && ctx.getLoader().exists(name, locale);
     }
 
+    @Nullable
     @Override
     public Resource load(String name, Locale locale, String encoding) throws IOException {
         AsmRendererContext ctx = AsmRendererContext.get();
@@ -67,11 +69,13 @@ public class HttlLoaderAdapter implements Loader {
             return res.getName();
         }
 
+        @Nullable
         @Override
         public String getEncoding() {
             return res.getEncoding();
         }
 
+        @Nullable
         @Override
         public Locale getLocale() {
             return res.getLocale();

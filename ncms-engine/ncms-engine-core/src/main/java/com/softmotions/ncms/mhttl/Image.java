@@ -1,5 +1,7 @@
 package com.softmotions.ncms.mhttl;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.softmotions.ncms.asm.render.AsmRendererContext;
@@ -38,6 +40,7 @@ public final class Image extends ImageMeta {
         return link;
     }
 
+    @Nullable
     public static Image createImage(AsmRendererContext ctx, ImageMeta meta) {
         Image image = new Image(ctx);
 

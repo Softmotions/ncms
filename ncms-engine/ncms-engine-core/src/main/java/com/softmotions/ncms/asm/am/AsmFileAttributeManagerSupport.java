@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm.am;
 
 import java.util.Map;
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,7 +13,8 @@ import com.softmotions.ncms.media.MediaResource;
  */
 public abstract class AsmFileAttributeManagerSupport extends AsmAttributeManagerSupport {
 
-    public static String getFileDescription(String location) {
+    @Nullable
+    public static String getFileDescription(@Nullable String location) {
         if (location == null) {
             return null;
         }
@@ -23,7 +25,8 @@ public abstract class AsmFileAttributeManagerSupport extends AsmAttributeManager
         return location.substring(ind + 1).trim();
     }
 
-    public static String getRawLocation(String location) {
+    @Nullable
+    public static String getRawLocation(@Nullable String location) {
         if (location == null) {
             return null;
         }
@@ -38,13 +41,15 @@ public abstract class AsmFileAttributeManagerSupport extends AsmAttributeManager
     /**
      * Returns location of new cloned file or `null`.
      */
+    @Nullable
     public static String translateClonedFile(MediaReader reader,
-                                             String location,
+                                             @Nullable String location,
                                              Map<Long, Long> fmap) {
         if (StringUtils.isBlank(location)) {
             return null;
         }
         location = getRawLocation(location);
+        //noinspection ConstantConditions
         MediaResource res = reader.findMediaResource(location, null);
         if (res == null) {
             return null;
@@ -68,6 +73,7 @@ public abstract class AsmFileAttributeManagerSupport extends AsmAttributeManager
     /**
      * Returns id of a new cloned file of `null`.
      */
+    @Nullable
     public static Long translateClonedFile(Long fid,
                                            Map<Long, Long> fmap) {
         if (fid == null) {

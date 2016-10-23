@@ -32,10 +32,10 @@ public interface AsmAttributeManager {
                                      HttpServletResponse resp,
                                      Asm page,
                                      Asm template,
-                                     AsmAttribute tmplAttr,
+                                     @Nullable AsmAttribute tmplAttr,
                                      AsmAttribute attr) throws Exception;
 
-    @Nonnull
+    @Nullable
     Object[] fetchFTSData(AsmAttribute attr);
 
     @Nullable
@@ -65,14 +65,13 @@ public interface AsmAttributeManager {
      * @throws Exception
      */
     @Nonnull
-    AsmAttribute handleAssemblyCloned(
-            AsmAttributeManagerContext ctx,
-            AsmAttribute attr,
-            Map<Long, Long> fmap) throws Exception;
+    AsmAttribute handleAssemblyCloned(AsmAttributeManagerContext ctx,
+                                      AsmAttribute attr,
+                                      Map<Long, Long> fmap) throws Exception;
 
 
     void attributePersisted(AsmAttributeManagerContext ctx,
                             AsmAttribute attr,
-                            JsonNode val,
-                            JsonNode opts) throws Exception;
+                            @Nullable JsonNode val,
+                            @Nullable JsonNode opts) throws Exception;
 }

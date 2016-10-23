@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm;
 
 import java.util.Map;
+import javax.annotation.Nullable;
 
 import com.softmotions.commons.cont.KVOptions;
 
@@ -18,7 +19,7 @@ public class AsmOptions extends KVOptions {
         super(map);
     }
 
-    public AsmOptions(String spec) {
+    public AsmOptions(@Nullable String spec) {
         loadOptions(spec);
     }
 }

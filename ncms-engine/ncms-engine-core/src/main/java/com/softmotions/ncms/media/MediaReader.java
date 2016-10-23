@@ -35,10 +35,10 @@ public interface MediaReader {
      * @return
      */
     @Nullable
-    MediaResource findMediaResource(String path, Locale locale);
+    MediaResource findMediaResource(String path, @Nullable Locale locale);
 
     @Nullable
-    MediaResource findMediaResource(Long id, Locale locale);
+    MediaResource findMediaResource(Long id, @Nullable Locale locale);
 
     /**
      * Retrieve the specified media resource.
@@ -54,7 +54,7 @@ public interface MediaReader {
     @Nonnull
     Response get(Long id,
                  HttpServletRequest req,
-                 Integer width,
-                 Integer height,
+                 @Nullable Integer width,
+                 @Nullable Integer height,
                  boolean inline) throws Exception;
 }

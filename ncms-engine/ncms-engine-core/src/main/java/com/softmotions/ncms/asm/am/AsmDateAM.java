@@ -30,11 +30,13 @@ public class AsmDateAM extends AsmAttributeManagerSupport {
 
     @Override
     public Object[] fetchFTSData(AsmAttribute attr) {
-        try {
-            return new Long[]{Long.parseLong(attr.getEffectiveValue())};
-        } catch (NumberFormatException ignored) {
+        String val = attr.getEffectiveValue();
+        if (val != null) {
+            try {
+                return new Long[]{Long.parseLong(val)};
+            } catch (NumberFormatException ignored) {
+            }
         }
-
         return null;
     }
 

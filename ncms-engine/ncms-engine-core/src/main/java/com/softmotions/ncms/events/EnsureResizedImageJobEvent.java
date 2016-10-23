@@ -1,5 +1,7 @@
 package com.softmotions.ncms.events;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
@@ -13,10 +15,12 @@ public class EnsureResizedImageJobEvent {
         return id;
     }
 
+    @Nullable
     public Integer getWidth() {
         return width;
     }
 
+    @Nullable
     public Integer getHeight() {
         return height;
     }
@@ -25,7 +29,10 @@ public class EnsureResizedImageJobEvent {
         return flags;
     }
 
-    public EnsureResizedImageJobEvent(long id, Integer width, Integer height, int flags) {
+    public EnsureResizedImageJobEvent(long id,
+                                      @Nullable Integer width,
+                                      @Nullable Integer height,
+                                      int flags) {
         this.id = id;
         this.width = width;
         this.height = height;

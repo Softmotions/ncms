@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nullable;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -157,7 +158,8 @@ public class HttlMttMethods {
         return trackingPixels(tpNameGlob, null);
     }
 
-    public static String trackingPixels(String tpNameGlob, Map<String, Object> params) {
+    public static String trackingPixels(String tpNameGlob,
+                                        @Nullable Map<String, Object> params) {
         if (params == null) {
             params = new Flat3Map<>();
         }

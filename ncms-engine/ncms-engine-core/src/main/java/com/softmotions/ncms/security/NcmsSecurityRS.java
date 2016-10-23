@@ -285,6 +285,7 @@ public class NcmsSecurityRS {
             res.put("name", group.getName())
                .put("description", group.getDescription());
         }
+        //noinspection ConstantConditions
         return res;
     }
 
@@ -314,6 +315,7 @@ public class NcmsSecurityRS {
             res.put("name", role.getName()).put("description",
                                                 role.getDescription());
         }
+        //noinspection ConstantConditions
         return res;
     }
 

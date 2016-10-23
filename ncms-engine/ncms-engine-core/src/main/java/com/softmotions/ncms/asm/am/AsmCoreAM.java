@@ -1,6 +1,7 @@
 package com.softmotions.ncms.asm.am;
 
 import java.util.Map;
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public class AsmCoreAM extends AsmFileAttributeManagerSupport {
     }
 
     @Override
-    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, JsonNode opts) throws Exception {
+    public void attributePersisted(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val, @Nullable JsonNode opts) throws Exception {
         String location = null;
         if (val != null) {
             location = val.path("value").asText(null);

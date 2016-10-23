@@ -171,7 +171,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         WSUser user = pageSecurity.getCurrentWSUserSafe(request);
         update("updateMUser",
                "mdate", new Date(),
-               "muser", (user != null) ? user.getName() : null,
+               "muser", user.getName(),
                "id", asmId);
         flushFileDeps();
         flushPageDeps();

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -148,9 +149,6 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
 
         String type = attr.getType();
-        if (type == null) {
-            type = "*";
-        }
         AsmAttributeManager arend = amRegistry.getByType(type);
         if (arend == null) {
             arend = amRegistry.getByType("*");
@@ -199,6 +197,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
     }
 
 
+    @Nullable
     protected AsmTemplateEngineAdapter selectTemplateEngineForLocation(String location) {
         AsmTemplateEngineAdapter defaultTe = null;
         for (final AsmTemplateEngineAdapter te : templateEgines) {
@@ -220,6 +219,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         return defaultTe;
     }
 
+    @Nullable
     protected AsmTemplateEngineAdapter selectTemplateEngineForCore(AsmCore core) {
         AsmTemplateEngineAdapter defaultTe = null;
         String type = core.getTemplateEngine();
