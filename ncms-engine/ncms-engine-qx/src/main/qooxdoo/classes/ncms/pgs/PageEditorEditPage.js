@@ -211,9 +211,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
             if (val) {
                 var root = qx.core.Init.getApplication().getRoot();
-                var ba = this.__blockerAtom;
-                if (ba == null) {
-                    ba = this.__blockerAtom =
+                if (this.__blockerAtom == null) {
+                    this.__blockerAtom =
                         new qx.ui.basic.Atom(null, "ncms/icon/32/exclamation.png").set({
                             center: true,
                             rich: true,
@@ -230,22 +229,23 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                             if (this.getPageBlocked()) {
                                 centerBa.call(this);
                                 if (this.__blockerAtom) {
+
                                     this.__blockerAtom.show();
                                 }
                             }
                         }, this);
                     }, this);
-                    root.add(ba);
-                    ba.exclude();
+                    root.add(this.__blockerAtom);
+                    this.__blockerAtom.exclude();
                 }
 
                 var ps = this.getPageEditSpec();
-                ba.setLabel(this.tr(
+                this.__blockerAtom.setLabel(this.tr(
                     "This page is locked<br>since the user <b>%1</b> is editing it",
                     ps.lockUser
                 ));
-                ba.setZIndex(1e3);
-                if (this.isVisible()) {
+                this.__blockerAtom.setZIndex(1e3);
+                if (this._appeared) {
                     this.__blocker.block();
                     this.__blockerAtom.show();
                     centerBa.call(this);

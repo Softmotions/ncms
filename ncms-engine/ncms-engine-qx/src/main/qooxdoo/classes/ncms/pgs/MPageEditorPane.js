@@ -52,19 +52,27 @@ qx.Mixin.define("ncms.pgs.MPageEditorPane", {
     },
 
     construct: function () {
+
         this.addListener("appear", function () {
+            this._appeared = true;
             if (this.__stateDeffered) {
                 this.__applyPageSpec(this.getPageSpec());
             }
+        }, this);
+
+        this.addListener("disappear", function () {
+            this._appeared = false;
         }, this);
     },
 
     members: {
 
+        _appeared: false,
+
         __stateDeffered: false,
 
         __applyPageSpec: function (spec) {
-            if (!this.isVisible()) {
+            if (!this._appeared) {
                 this.__stateDeffered = true;
                 return;
             }
