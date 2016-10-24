@@ -103,7 +103,7 @@ qx.Class.define("ncms.Events", {
 
             switch (msg.type) {
                 case "AsmModifiedEvent":
-                    if (hints["published"]) {
+                    if (hints["published"] != null) {
                         this.__fireDataEvent("pageChangePublished",
                             mergeWith({published: !!hints["published"]}, msg))
                     } else if (hints["template"] != null) {
