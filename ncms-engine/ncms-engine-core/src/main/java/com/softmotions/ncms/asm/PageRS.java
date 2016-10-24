@@ -238,7 +238,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         ObjectNode res = mapper.createObjectNode();
         CachedPage cp = getCachedPage(id, true);
         if (cp == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
 
         ArrayNode idPath = res.putArray("idPath");
@@ -271,7 +271,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                                      @PathParam("id") Long id) {
         Map<String, Object> row = selectOne("selectPageInfo", "id", id);
         if (row == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         ObjectNode res = mapper.createObjectNode();
         JsonUtils.populateObjectNode(row, res);
@@ -306,7 +306,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         ObjectNode res = mapper.createObjectNode();
         Asm page = adao.asmSelectById(id);
         if (page == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         Asm firstParent = null;
         Asm template = null;
@@ -415,7 +415,6 @@ public class PageRS extends MBDAOSupport implements PageService {
                         .hint("published", published));
     }
 
-
     /**
      * Acquire edit lock on specified page.
      */
@@ -458,18 +457,28 @@ public class PageRS extends MBDAOSupport implements PageService {
         return res;
     }
 
-    private boolean lockPageOrFail(@Context HttpServletRequest req, Long id) {
+    private boolean unlockPage(HttpServletRequest req,
+                               Long id,
+                               boolean silent) {
+        WSUser wsUser = pageSecurity.getCurrentWSUserSafe(req);
+        if (pageSecurity.isOwner(id, req)) {
+            return adao.asmUnlock(id);
+        } else {
+            return adao.asmUnlock(id, wsUser.getName());
+        }
+    }
+
+    private boolean lockPageOrFail(@Context HttpServletRequest req, Long id, boolean silent) {
         if (!pageSecurity.canEdit(id, req)) {
             throw new ForbiddenException();
         }
         String user = pageSecurity.getCurrentWSUserSafe(req).getName();
-        String locker = adao.asmLock(id, user);
+        String locker = adao.asmLock(id, user, silent);
         if (locker != null && !locker.equals(user)) {
             throw new NcmsMessageException(i18n.get("ncms.page.locked", req, locker), true);
         }
         return (locker != null);
     }
-
 
     @PUT
     @Path("/edit/{id}")
@@ -479,8 +488,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                             @PathParam("id") Long id,
                             ObjectNode data) throws Exception {
 
-        lockPageOrFail(req, id);
-
+        lockPageOrFail(req, id, true);
         AsmAttributeManagerContext amCtx = amCtxProvider.get();
         amCtx.setAsmId(id);
 
@@ -531,7 +539,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         amCtx.flush();
 
         // "core":{"id":141,"location":"/site/httl/my/empty_core.httl","name":null,"templateEngine":null},
-        adao.asmUnlock(id, wsUser.getName());
+        adao.asmUnlock(id, wsUser.getName(), false);
         ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
 
         // Refresh page
@@ -556,7 +564,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                                   @PathParam("id") Long id,
                                   @PathParam("templateId") Long templateId) throws Exception {
 
-        boolean alreadyLocked = lockPageOrFail(req, id);
+        boolean alreadyLocked = lockPageOrFail(req, id, true);
         try {
 
             Asm page = adao.asmSelectById(id);
@@ -566,7 +574,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             Boolean ts = selectOne("selectPageTemplateStatus", templateId);
             if (ts == null) {
                 log.warn("Assembly template: {} not found", templateId);
-                throw new NotFoundException("");
+                throw new NotFoundException();
             }
 
             if (id.equals(templateId)) {
@@ -591,7 +599,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             List<String> attrsToRemove = new ArrayList<>();
             page = adao.asmSelectById(id);
             if (page == null) {
-                throw new NotFoundException("");
+                throw new NotFoundException();
             }
             Collection<AsmAttribute> attrs = page.getEffectiveAttributes();
             for (AsmAttribute a : attrs) {
@@ -615,7 +623,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         } finally {
             if (!alreadyLocked) {
-                unlockPage(req, id);
+                unlockPage(req, id, true);
             }
         }
     }
@@ -634,7 +642,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                                  @PathParam("owner") String owner) {
 
         ObjectNode res = mapper.createObjectNode();
-        boolean alreadyLocked = lockPageOrFail(req, id);
+        boolean alreadyLocked = lockPageOrFail(req, id, true);
         try {
 
             if (!pageSecurity.isOwner(id, req)) {
@@ -642,7 +650,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             WSUser user = userdb.findUser(owner);
             if (user == null) {
-                throw new NotFoundException("");
+                throw new NotFoundException();
             }
             update("setPageOwner",
                    "id", id,
@@ -654,7 +662,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         } finally {
             if (!alreadyLocked) {
-                unlockPage(req, id);
+                unlockPage(req, id, true);
             }
         }
         return res;
@@ -713,7 +721,10 @@ public class PageRS extends MBDAOSupport implements PageService {
             adao.asmUpsertAttribute(attr);
         }
         amCtx.flush();
-        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, page.getId(), req));
+        ebus.fireOnSuccessCommit(
+                new AsmCreatedEvent(this,
+                                    page,
+                                    req));
     }
 
     /**
@@ -731,7 +742,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         if (name == null ||
             !ArrayUtils.isAnyOf(type, "page.folder", "page", "news.page")) {
-            throw new BadRequestException("");
+            throw new BadRequestException();
         }
         if (parent == null && !req.isUserInRole("admin.structure")) {
             throw new ForbiddenException();
@@ -765,14 +776,16 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         id = adao.asmSelectIdByName(guid);
         if (id == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         /*if ("news.page".equals(type)) {
             String alias = generateNewsAlias(name);
 
         }*/
-        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, id, req));
-
+        ebus.fireOnSuccessCommit(
+                new AsmCreatedEvent(this, id, parent, name, name, req)
+                        .hint("page", true)
+        );
         ObjectNode res = mapper.createObjectNode();
         res.put("id", id);
         res.put("name", name);
@@ -812,14 +825,14 @@ public class PageRS extends MBDAOSupport implements PageService {
         Long id = spec.hasNonNull("id") ? spec.get("id").asLong() : null;
         if (id == null || name == null || type == null
             || (!"page.folder".equals(type) && !"page".equals(type) && !"news.page".equals(type))) {
-            throw new BadRequestException("");
+            throw new BadRequestException();
         }
-        boolean alreadyLocked = lockPageOrFail(req, id);
+        boolean alreadyLocked = lockPageOrFail(req, id, true);
         try {
 
             final CachedPage page = getCachedPage(id, true);
             if (page == null) {
-                throw new NotFoundException("");
+                throw new NotFoundException();
             }
             Long parent = page.getNavParentId();
             if ("news.page".equals(type) ?
@@ -844,7 +857,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         } finally {
             if (!alreadyLocked) {
-                unlockPage(req, id);
+                unlockPage(req, id, true);
             }
         }
     }
@@ -858,19 +871,19 @@ public class PageRS extends MBDAOSupport implements PageService {
         long src = spec.hasNonNull("src") ? spec.get("src").longValue() : 0;
         long tgt = spec.hasNonNull("tgt") ? spec.get("tgt").longValue() : 0;
         if (src == 0) {
-            throw new BadRequestException("");
+            throw new BadRequestException();
         }
         ebus.unlockOnTxFinish(Asm.acquireLock(tgt));
-        boolean alreadyLocked = lockPageOrFail(req, src);
+        boolean alreadyLocked = lockPageOrFail(req, src, true);
         try {
 
             Asm srcPage = adao.asmSelectById(src);
             Asm tgtPage = (tgt != 0) ? adao.asmSelectById(tgt) : null; //zero tgt => Root target
             if (srcPage == null) {
-                throw new NotFoundException("");
+                throw new NotFoundException();
             }
             if (tgtPage != null && !"page.folder".equals(tgtPage.getType())) {
-                throw new BadRequestException("");
+                throw new BadRequestException();
             }
             if (src == tgt) {
                 String msg = i18n.get("ncms.mmgr.folder.cantMoveIntoSelf", req, srcPage.getHname());
@@ -907,11 +920,10 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         } finally {
             if (!alreadyLocked) {
-                unlockPage(req, src);
+                unlockPage(req, src, true);
             }
         }
     }
-
 
     @GET
     @Path("/referers/{guid}")
@@ -954,7 +966,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     public Number getPageReferersCount(@PathParam("id") Long id) {
         Asm page = adao.asmSelectById(id);
         if (page == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
 
         return count("selectCountOfDependentAttrs", page.getName());
@@ -997,11 +1009,11 @@ public class PageRS extends MBDAOSupport implements PageService {
                                  @Context HttpServletRequest req) {
 
         ObjectNode ret = mapper.createObjectNode();
-        boolean alreadyLocked = lockPageOrFail(req, id);
+        boolean alreadyLocked = lockPageOrFail(req, id, true);
         try {
             Asm page = adao.asmSelectById(id);
             if (page == null) {
-                throw new NotFoundException("");
+                throw new NotFoundException();
             }
             if (!pageSecurity.checkAccessAll2(page, req, "d")) {
                 throw new ForbiddenException();
@@ -1020,10 +1032,11 @@ public class PageRS extends MBDAOSupport implements PageService {
             //todo check dependent files
 
             adao.asmRemove(id);
-            ebus.fireOnSuccessCommit(new AsmRemovedEvent(this, id, req));
+            ebus.fireOnSuccessCommit(
+                    new AsmRemovedEvent(this, id, req));
         } finally {
             if (!alreadyLocked) {
-                unlockPage(req, id);
+                unlockPage(req, id, true);
             }
         }
         return ret;
@@ -1251,7 +1264,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                                @PathParam("rights") String rights) {
         Asm page = adao.asmSelectById(pid);
         if (page == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         return pageSecurity.checkAccessAll2(page, req, rights);
     }
@@ -1264,7 +1277,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                                   @PathParam("pid") Long pid) {
         Asm page = adao.asmSelectById(pid);
         if (page == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         return pageSecurity.getAccessRights2(page, req);
     }
@@ -1448,7 +1461,6 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         return Long.valueOf(path.substring(idx + 1));
     }
-
 
     private Map<String, Object> createSelectLayerQ(@Nullable String path, HttpServletRequest req) {
         Long pId = getPathLastIdSegment(path);

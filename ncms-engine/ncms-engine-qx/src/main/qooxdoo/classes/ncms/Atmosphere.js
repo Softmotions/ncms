@@ -104,7 +104,7 @@ qx.Class.define("ncms.Atmosphere", {
             try {
                 this.fireDataEvent("message", JSON.parse(message));
             } catch (e) {
-                console.log('Error: ', message.data);
+                console.error('Error: ', e);
             }
         },
 

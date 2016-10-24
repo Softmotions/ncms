@@ -155,75 +155,91 @@ constructor(private val mapper: ObjectMapper,
     //                   Ncms ebus listeners                 //
     ///////////////////////////////////////////////////////////
 
+    private fun isBroadcastAllowed(evt: BasicEvent): Boolean {
+        return true != evt.hints()["silent"]
+    }
+
     @Subscribe
     fun onDisconnected(evt: UIUserDisconnectedEvent) {
-        metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt))
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt))
     }
 
     @Subscribe
     fun onAsmModified(evt: AsmModifiedEvent) {
-        val msg = createMessage(evt)
-                .put("id", evt.id);
-        metaBroadcaster.broadcastTo(BROADCAST_ALL, msg)
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt)
+                            .put("id", evt.id))
     }
 
     @Subscribe
     fun onAsmCreatedEvent(evt: AsmCreatedEvent) {
-        metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt)
-                        .put("id", evt.id)
-        )
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt)
+                            .put("id", evt.id)
+                            .put("name", evt.name)
+                            .put("hname", evt.hname)
+                            .put("navParentId", evt.navParentId)
+            )
     }
 
     @Subscribe
     fun onAsmRemovedEvent(evt: AsmRemovedEvent) {
-        metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt)
-                        .put("id", evt.id))
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt)
+                            .put("id", evt.id))
     }
 
     @Subscribe
     fun onAsmLockedEvent(evt: AsmLockedEvent) {
-        metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt)
-                        .put("id", evt.id))
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt)
+                            .put("id", evt.id))
     }
 
     @Subscribe
     fun onAsmUnlockedEvent(evt: AsmUnlockedEvent) {
-        metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt)
-                        .put("id", evt.id))
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt)
+                            .put("id", evt.id))
     }
 
     @Subscribe
     fun onMediaUpdateEvent(evt: MediaUpdateEvent) {
-        metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt)
-                        .put("id", evt.id)
-                        .put("isFolder", evt.isFolder)
-                        .put("path", evt.path))
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt)
+                            .put("id", evt.id)
+                            .put("isFolder", evt.isFolder)
+                            .put("path", evt.path))
 
     }
 
     @Subscribe
     fun onMediaDeleteEvent(evt: MediaDeleteEvent) {
-        metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt)
-                        .put("id", evt.id)
-                        .put("isFolder", evt.isFolder)
-                        .put("path", evt.path))
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt)
+                            .put("id", evt.id)
+                            .put("isFolder", evt.isFolder)
+                            .put("path", evt.path))
     }
 
     @Subscribe
     fun onMediaMoveEvent(evt: MediaMoveEvent) {
-        metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                createMessage(evt)
-                        .put("id", evt.id)
-                        .put("isFolder", evt.isFolder)
-                        .put("newPath", evt.newPath)
-                        .put("oldPath", evt.oldPath))
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt)
+                            .put("id", evt.id)
+                            .put("isFolder", evt.isFolder)
+                            .put("newPath", evt.newPath)
+                            .put("oldPath", evt.oldPath))
     }
 
 }

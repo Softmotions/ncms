@@ -139,14 +139,23 @@ public class AsmDAO extends MBDAOSupport {
      */
     @Nullable
     @Transactional
-    public String asmLock(Long asmId, String user) {
+    public String asmLock(Long asmId, String user, boolean silent) {
         ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
         if (update("asmLock", "id", asmId, "user", user) < 1) {
             return selectOne("asmSelectLockUser", asmId);
         } else {
-            ebus.fireOnSuccessCommit(new AsmLockedEvent(this, asmId, user));
+            AsmLockedEvent evt = new AsmLockedEvent(this, asmId, user);
+            if (silent) {
+                evt.hint("silent", true);
+            }
+            ebus.fireOnSuccessCommit(evt);
         }
         return null;
+    }
+
+    @Nullable
+    public String asmLock(Long asmId, String user) {
+        return asmLock(asmId, user, false);
     }
 
     /**
@@ -159,10 +168,14 @@ public class AsmDAO extends MBDAOSupport {
      * was cleared.
      */
     @Transactional
-    public boolean asmUnlock(Long asmId) {
+    public boolean asmUnlock(Long asmId, boolean silent) {
         ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
         if (update("asmUnlock", asmId) > 0) {
-            ebus.fire(new AsmUnlockedEvent(this, asmId, null));
+            AsmUnlockedEvent evt = new AsmUnlockedEvent(this, asmId, null);
+            if (silent) {
+                evt.hint("silent", true);
+            }
+            ebus.fire(evt);
             return true;
         }
         return false;
@@ -178,13 +191,25 @@ public class AsmDAO extends MBDAOSupport {
      * was cleared.
      */
     @Transactional
-    public boolean asmUnlock(Long asmId, String user) {
+    public boolean asmUnlock(Long asmId, String user, boolean silent) {
         ebus.unlockOnTxFinish(Asm.acquireLock(asmId));
         if (update("asmUnlock2", "id", asmId, "user", user) > 0) {
-            ebus.fire(new AsmUnlockedEvent(this, asmId, user));
+            AsmUnlockedEvent evt = new AsmUnlockedEvent(this, asmId, user);
+            if (silent) {
+                evt.hint("silent", true);
+            }
+            ebus.fire(evt);
             return true;
         }
         return false;
+    }
+
+    public boolean asmUnlock(Long asmId) {
+        return asmUnlock(asmId, false);
+    }
+
+    public boolean asmUnlock(Long asmId, String user) {
+        return asmUnlock(asmId, user, false);
     }
 
     /**
@@ -208,7 +233,7 @@ public class AsmDAO extends MBDAOSupport {
 
     /**
      * Clone assembly under new name and its attributes.
-     * <p/>
+     * <p>
      * Note: No page/file dependencies are cloned.
      *
      * @param asmId       Source assembly id

@@ -116,8 +116,12 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         this.addListener("loadPane", this.__onLoadPane, this);
         this.addListener("clearPane", this.__onClearPane, this);
-        ncms.Events.getInstance().addListener("pageLocked", this.__onPageLocked, this);
-        ncms.Events.getInstance().addListener("pageUnlocked", this.__onPageUnlocked, this);
+        var events = ncms.Events.getInstance();
+        events.addListener("pageLocked", this.__onPageLocked, this);
+        events.addListener("pageUnlocked", this.__onPageUnlocked, this);
+        events.addListener("pageEdited", this.__onPageEdited, this);
+        events.addListener("pageChangePublished", this.__onPageEdited, this);
+        events.addListener("pageChangeTemplate", this.__onPageEdited, this);
     },
 
     members: {
@@ -158,6 +162,17 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             return this.__form;
         },
 
+        __onPageEdited: function (ev) {
+            var myspec = this.getPageSpec(),
+                evspec = ev.getData();
+            if (myspec != null
+                && evspec != null
+                && myspec["id"] === evspec["id"]
+                && this.getPageBlocked()) {
+                this.__cancel();
+            }
+        },
+
         __onPageLocked: function (ev) {
             var data = ev.getData(),
                 ps = this.getPageEditSpec();
@@ -181,8 +196,21 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             if (val === old) {
                 return;
             }
+            function centerBa() {
+                var me = this;
+                window.setTimeout(function () {
+                    if (me.__blockerAtom) {
+                        var hint = me.__blockerAtom.getSizeHint();
+                        var cl = me.getContentLocation("box");
+                        me.__blockerAtom.setLayoutProperties({
+                            left: Math.round(cl.left + (cl.right - cl.left - hint.width) / 2),
+                            top: Math.round(cl.top + (cl.bottom - cl.top - hint.height) / 2)
+                        });
+                    }
+                });
+            }
+
             if (val) {
-                this.__blocker.block();
                 var root = qx.core.Init.getApplication().getRoot();
                 var ba = this.__blockerAtom;
                 if (ba == null) {
@@ -195,32 +223,19 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                             padding: 20,
                             maxWidth: 300
                         });
-                    function centerBa() {
-                        var me = this;
-                        window.setTimeout(function () {
-                            if (me.__blockerAtom) {
-                                var hint = me.__blockerAtom.getSizeHint();
-                                var cl = me.getContentLocation("box");
-                                me.__blockerAtom.setLayoutProperties({
-                                    left: Math.round(cl.left + (cl.right - cl.left - hint.width) / 2),
-                                    top: Math.round(cl.top + (cl.bottom - cl.top - hint.height) / 2)
-                                });
-                            }
-                        });
-                    }
-
                     this.addListener("resize", centerBa, this);
                     this.addListener("move", centerBa, this);
                     this.addListener("disappear", function () {
                         this.__blockerAtom && this.__blockerAtom.exclude();
                         this.addListenerOnce("appear", function () {
-                            if (this.__blocker.isBlocked()) {
+                            if (this.getPageBlocked()) {
                                 centerBa.call(this);
-                                this.__blockerAtom && this.__blockerAtom.show();
+                                if (this.__blockerAtom) {
+                                    this.__blockerAtom.show();
+                                }
                             }
                         }, this);
                     }, this);
-                    centerBa.call(this);
                     root.add(ba);
                     ba.exclude();
                 }
@@ -230,10 +245,20 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                     "This page is locked<br>since the user <b>%1</b> is editing it",
                     ps.lockUser
                 ));
-
                 ba.setZIndex(1e3);
-                ba.show();
-                this.__cancel2();
+                if (this.isVisible()) {
+                    this.__blocker.block();
+                    this.__blockerAtom.show();
+                    centerBa.call(this);
+                } else {
+                    this.addListenerOnce("appear", function () {
+                        if (this.getPageBlocked()) {
+                            this.__blocker.block();
+                            this.__blockerAtom.show();
+                            centerBa.call(this);
+                        }
+                    }, this);
+                }
             } else {
                 if (this.__blockerAtom) {
                     this.__blockerAtom.exclude();
@@ -654,8 +679,13 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
     },
 
     destruct: function () {
-        ncms.Events.getInstance().removeListener("pageLocked", this.__onPageLocked, this);
-        ncms.Events.getInstance().removeListener("pageUnlocked", this.__onPageUnlocked, this);
+        var events = ncms.Events.getInstance();
+        events.removeListener("pageLocked", this.__onPageLocked, this);
+        events.removeListener("pageUnlocked", this.__onPageUnlocked, this);
+        events.removeListener("pageEdited", this.__onPageEdited, this);
+        events.removeListener("pageChangePublished", this.__onPageEdited, this);
+        events.removeListener("pageChangeTemplate", this.__onPageEdited, this);
+        events.removeListener("pageChangeTemplate", this.__onPageEdited, this);
         this.__cleanupFormPane();
         this.__templateBf = null;
         this.__form = null;

@@ -5,11 +5,25 @@ qx.Class.define("ncms.Events", {
     events: {
 
         /**
+         * New page created
+         *
+         * Data:
+         * {
+         *   id:            {Number} Page ID
+         *   navParentId:   {Number} Navigation parent ID
+         *   name:          {String} Page assembly name (guid)
+         *   hname:         {String} Page human name
+         * }
+         *
+         */
+        "pageCreated": "qx.event.type.Data",
+
+        /**
          * Page content edited.
          *
          * Data:
          * {
-         *  id : {Number} Page ID,
+         *  id: {Number} Page ID,
          * }
          */
         "pageEdited": "qx.event.type.Data",
@@ -20,61 +34,54 @@ qx.Class.define("ncms.Events", {
          *
          * Data:
          * {
-         *  id : {Number} Page ID,
-         *  published : {Boolean} Is page published
+         *  id:        {Number} Page ID,
+         *  published: {Boolean} Is page published
          * }
          */
         "pageChangePublished": "qx.event.type.Data",
-
 
         /**
          * Page template changed.
          *
          * Data:
          * {
-         *  id : {Number} Page ID,
-         *  templateId : {Number} Page template ID
+         *  id:         {Number} Page ID,
+         *  templateId: {Number} Page template ID
          * }
          *
          */
         "pageChangeTemplate": "qx.event.type.Data",
 
-
         /**
          * Page locked by user.
          *
          * {
-         *   id : {Number} Page ID,
+         *   id:   {Number} Page ID,
          *   user: {String} Lock owner
          * }
          */
         "pageLocked": "qx.event.type.Data",
 
-
         /**
          * User released lock on page.
          *
          * {
-         *   id : {Number} Page ID,
-         *   user: {String} Lock owner
+         *   id:    {Number} Page ID,
+         *   user:  {String} Lock owner
          * }
          */
         "pageUnlocked": "qx.event.type.Data",
-
 
         /**
          * Basic assembly properties changed in the assembly editor GUI.
          */
         "asmPropsChanged": "qx.event.type.Data",
 
-
         /**
          * Marketing transfer tools rule properties changed
          */
         "mttRulePropsChanged": "qx.event.type.Data"
-
     },
-
 
     members: {
 
@@ -109,6 +116,15 @@ qx.Class.define("ncms.Events", {
                 case "AsmUnlockedEvent":
                     this.__fireDataEvent("pageUnlocked", msg);
                     break;
+                case "AsmCreatedEvent":
+                    if (hints["page"]) {
+                        this.__fireDataEvent("pageCreated", {
+                            id: msg.id,
+                            navParentId: msg.navParentId,
+                            name: msg.name,
+                            hname: msg.hname
+                        })
+                    }
             }
         },
 

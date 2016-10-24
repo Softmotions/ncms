@@ -118,7 +118,10 @@ public class AsmRS extends MBDAOSupport {
         }
         asm = new Asm(name);
         adao.asmInsert(asm);
-        ebus.fireOnSuccessCommit(new AsmCreatedEvent(this, asm.getId(), req));
+        ebus.fireOnSuccessCommit(
+                new AsmCreatedEvent(this,
+                                    asm,
+                                    req));
         return asm;
     }
 
@@ -427,7 +430,7 @@ public class AsmRS extends MBDAOSupport {
 
     /**
      * PUT asm attributes values/options
-     * <p/>
+     * <p>
      * Attributes JSON data spec:
      * <pre>
      *     {

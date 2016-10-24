@@ -176,6 +176,7 @@ public class Asm implements Serializable {
     /**
      * Assembly primary key (PK)
      */
+    @Nonnull
     public Long getId() {
         return id;
     }
