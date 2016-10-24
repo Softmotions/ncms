@@ -13,6 +13,7 @@ qx.Class.define("ncms.Events", {
          *   navParentId:   {Number} Navigation parent ID
          *   name:          {String} Page assembly name (guid)
          *   hname:         {String} Page human name
+         *   user:          {String} User initiates this event
          * }
          *
          */
@@ -23,7 +24,8 @@ qx.Class.define("ncms.Events", {
          *
          * Data:
          * {
-         *  id: {Number} Page ID,
+         *  id:     {Number} Page ID,
+         *  user:   {String} User initiates this event
          * }
          */
         "pageEdited": "qx.event.type.Data",
@@ -36,6 +38,7 @@ qx.Class.define("ncms.Events", {
          * {
          *  id:        {Number} Page ID,
          *  published: {Boolean} Is page published
+         *  user:       {String} User initiates this event
          * }
          */
         "pageChangePublished": "qx.event.type.Data",
@@ -47,6 +50,7 @@ qx.Class.define("ncms.Events", {
          * {
          *  id:         {Number} Page ID,
          *  templateId: {Number} Page template ID
+         *  user:       {String} User initiates this event
          * }
          *
          */
@@ -97,10 +101,9 @@ qx.Class.define("ncms.Events", {
                 hints = msg.hints || {},
                 mergeWith = qx.lang.Object.mergeWith;
 
-            console.log("msg: " + JSON.stringify(msg));
             switch (msg.type) {
                 case "AsmModifiedEvent":
-                    if (hints["published"] != null) {
+                    if (hints["published"]) {
                         this.__fireDataEvent("pageChangePublished",
                             mergeWith({published: !!hints["published"]}, msg))
                     } else if (hints["template"] != null) {
@@ -118,12 +121,7 @@ qx.Class.define("ncms.Events", {
                     break;
                 case "AsmCreatedEvent":
                     if (hints["page"]) {
-                        this.__fireDataEvent("pageCreated", {
-                            id: msg.id,
-                            navParentId: msg.navParentId,
-                            name: msg.name,
-                            hname: msg.hname
-                        })
+                        this.__fireDataEvent("pageCreated", msg);
                     }
             }
         },

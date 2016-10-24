@@ -101,6 +101,7 @@ qx.Class.define("ncms.Atmosphere", {
 
         __onMessage: function (resp) {
             var message = resp.responseBody;
+            console.log("Atmosphere message: " + message);
             try {
                 this.fireDataEvent("message", JSON.parse(message));
             } catch (e) {

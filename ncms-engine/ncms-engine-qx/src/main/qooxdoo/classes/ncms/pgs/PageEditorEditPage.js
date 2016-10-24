@@ -165,11 +165,10 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         __onPageEdited: function (ev) {
             var myspec = this.getPageSpec(),
                 evspec = ev.getData();
-            if (myspec != null
-                && evspec != null
+            if (myspec != null && evspec != null
                 && myspec["id"] === evspec["id"]
-                && this.getPageBlocked()) {
-                this.__cancel();
+                && evspec["user"] !== ncms.Application.getUserId()) {
+                this.__refresh();
             }
         },
 
@@ -555,10 +554,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 req.send(function (resp) {
                     var ecore = resp.getContent();
                     var espec = this.getPageEditSpec();
-                    if (espec != null) {
-                        espec["core"] = ecore;
-                        this.__syncState();
-                    }
+                    espec["core"] = ecore;
+                    this.__syncState();
                     this.setModified(false);
                     ncms.Application.infoPopup(this.tr("Page saved successfully"));
                     if (typeof cb === "function") {
@@ -645,11 +642,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             }, this);
         },
 
-        __cancel2: function () {
-            if (this.getModified()) {
-                this.setPageEditSpec(sm.lang.Object.shallowClone(this.getPageEditSpec()));
-                this.setModified(false);
-            }
+        __refresh: function () {
+            this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()))
         },
 
         __files: function () {

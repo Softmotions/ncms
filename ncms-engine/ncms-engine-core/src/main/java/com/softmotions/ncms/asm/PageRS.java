@@ -462,9 +462,9 @@ public class PageRS extends MBDAOSupport implements PageService {
                                boolean silent) {
         WSUser wsUser = pageSecurity.getCurrentWSUserSafe(req);
         if (pageSecurity.isOwner(id, req)) {
-            return adao.asmUnlock(id);
+            return adao.asmUnlock(id, silent);
         } else {
-            return adao.asmUnlock(id, wsUser.getName());
+            return adao.asmUnlock(id, wsUser.getName(), silent);
         }
     }
 
