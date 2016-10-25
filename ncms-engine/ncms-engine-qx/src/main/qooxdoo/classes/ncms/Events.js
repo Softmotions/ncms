@@ -14,6 +14,7 @@ qx.Class.define("ncms.Events", {
          *   name:          {String} Page assembly name (guid)
          *   hname:         {String} Page human name
          *   user:          {String} User initiates this event
+         *   hints:         {Map} optional event hints
          * }
          *
          */
@@ -26,6 +27,7 @@ qx.Class.define("ncms.Events", {
          * {
          *  id:     {Number} Page ID,
          *  user:   {String} User initiates this event
+         *  hints:  {Map} optional event hints
          * }
          */
         "pageEdited": "qx.event.type.Data",
@@ -38,7 +40,8 @@ qx.Class.define("ncms.Events", {
          * {
          *  id:        {Number} Page ID,
          *  published: {Boolean} Is page published
-         *  user:       {String} User initiates this event
+         *  user:      {String} User initiates this event
+         *  hints:     {Map} optional event hints
          * }
          */
         "pageChangePublished": "qx.event.type.Data",
@@ -51,6 +54,7 @@ qx.Class.define("ncms.Events", {
          *  id:         {Number} Page ID,
          *  templateId: {Number} Page template ID
          *  user:       {String} User initiates this event
+         *  hints:      {Map} optional event hints
          * }
          *
          */
@@ -60,8 +64,9 @@ qx.Class.define("ncms.Events", {
          * Page locked by user.
          *
          * {
-         *   id:   {Number} Page ID,
-         *   user: {String} Lock owner
+         *   id:    {Number} Page ID,
+         *   user:  {String} Lock owner
+         *   hints: {Map} optional event hints
          * }
          */
         "pageLocked": "qx.event.type.Data",
@@ -72,6 +77,7 @@ qx.Class.define("ncms.Events", {
          * {
          *   id:    {Number} Page ID,
          *   user:  {String} Lock owner
+         *   hints: {Map} optional event hints
          * }
          */
         "pageUnlocked": "qx.event.type.Data",
@@ -128,6 +134,9 @@ qx.Class.define("ncms.Events", {
 
         __fireDataEvent: function (type, data) {
             console.log("event=" + type + " data=" + JSON.stringify(data));
+            if (data.hints == null) {
+                data.hints = {};
+            }
             this.fireDataEvent(type, data);
         }
     }

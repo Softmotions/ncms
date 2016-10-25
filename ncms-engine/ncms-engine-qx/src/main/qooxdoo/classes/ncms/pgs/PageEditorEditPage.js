@@ -167,7 +167,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 evspec = ev.getData();
             if (myspec != null && evspec != null
                 && myspec["id"] === evspec["id"]
-                && evspec["user"] !== ncms.Application.getUserId()) {
+                && (evspec["user"] !== ncms.Application.getUserId() || evspec.hints["asmui"] == true)) {
                 this.__refresh();
             }
         },
@@ -274,7 +274,11 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.edit", spec),
                 "GET", "application/json");
             req.send(function (resp) {
-                this.setPageEditSpec(resp.getContent());
+                var nspec = resp.getContent();
+                if (spec.$keepModified) {
+                    nspec.$keepModified = spec.$keepModified;
+                }
+                this.setPageEditSpec(nspec);
             }, this);
         },
 
@@ -321,7 +325,12 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.add(this.__scroll, {flex: 1});
 
             this.__syncState();
-            this.setModified(false);
+            console.log("spec.$keepModified=" + spec.$keepModified);
+            if (!spec.$keepModified) {
+                this.setModified(false);
+            } else {
+                delete spec.$keepModified;
+            }
         },
 
         __cleanupFormPane: function () {
@@ -643,7 +652,9 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __refresh: function () {
-            this.setPageSpec(sm.lang.Object.shallowClone(this.getPageSpec()))
+            var nspec = sm.lang.Object.shallowClone(this.getPageSpec());
+            nspec.$keepModified = true;
+            this.setPageSpec(nspec);
         },
 
         __files: function () {

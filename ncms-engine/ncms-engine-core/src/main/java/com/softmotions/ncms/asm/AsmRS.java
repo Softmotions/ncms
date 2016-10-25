@@ -141,7 +141,10 @@ public class AsmRS extends MBDAOSupport {
         if (oid == null) {
             adao.asmRename(id, name);
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, id, req)
+                        .hint("asmui", true)
+        );
     }
 
     @DELETE
@@ -169,7 +172,10 @@ public class AsmRS extends MBDAOSupport {
         AsmCore core = adao.asmSetCore(asm, coreSpec.get("location").asText());
         res.putPOJO("core", core);
         res.putPOJO("effectiveCore", core);
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, id, req)
+                        .hint("asmui", true)
+        );
         return res;
     }
 
@@ -189,7 +195,10 @@ public class AsmRS extends MBDAOSupport {
         }
         res.putPOJO("core", asm.getCore());
         res.putPOJO("effectiveCore", asm.getEffectiveCore());
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, id, req)
+                        .hint("asmui", true)
+        );
         return res;
     }
 
@@ -248,7 +257,10 @@ public class AsmRS extends MBDAOSupport {
         if (asm == null) {
             throw new NotFoundException("");
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, id, req)
+                        .hint("asmui", true)
+        );
         return asm.getParentRefs();
     }
 
@@ -297,7 +309,10 @@ public class AsmRS extends MBDAOSupport {
         if (asm == null) {
             throw new NotFoundException("");
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, id, req)
+                        .hint("asmui", true)
+        );
         return asm.getParentRefs();
     }
 
@@ -353,7 +368,10 @@ public class AsmRS extends MBDAOSupport {
             adao.setAsmAccessRoles(id, roles);
         }
         update("updateAssemblyProps", args);
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, id, req)
+                        .hint("asmui", true)
+        );
     }
 
 
@@ -389,7 +407,10 @@ public class AsmRS extends MBDAOSupport {
         if (recursive != null && recursive) {
             deleteAttributeFromChilds(asmId, name);
         }
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, asmId, req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, asmId, req)
+                        .hint("asmui", true)
+        );
     }
 
 
@@ -424,7 +445,10 @@ public class AsmRS extends MBDAOSupport {
                "ordinal1", ordinal1,
                "ordinal2", ordinal2);
         if (id != null) {
-            ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
+            ebus.fireOnSuccessCommit(
+                    new AsmModifiedEvent(this, id, req)
+                            .hint("asmui", true)
+            );
         }
     }
 
@@ -519,7 +543,10 @@ public class AsmRS extends MBDAOSupport {
             am.attributePersisted(amCtx, attr, spec.get("value"), spec.get("options"));
         }
         amCtx.flush();
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, id, req));
+        ebus.fireOnSuccessCommit(
+                new AsmModifiedEvent(this, id, req)
+                        .hint("asmui", true)
+        );
     }
 
     private void renameAttribute(long asmId, String name, String newName) {
