@@ -2,21 +2,21 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:48 ncms/Application.js:467
+#: ncms/Application.js:49 ncms/Application.js:468
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:308
+#: ncms/Application.js:309
 msgid "<b>Connection to server lost.</b><br>Please wait..."
 msgstr ""
 "<b>Соединение с сервером потеряно.</b><br>Пожалуйста, подождите "
 "восстановления связи..."
 
-#: ncms/Application.js:317
+#: ncms/Application.js:318
 msgid "Connection to server restored."
 msgstr "Соединение с сервером восстановлено."
 
-#: ncms/Application.js:481
+#: ncms/Application.js:484
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
@@ -169,7 +169,7 @@ msgid "Override attribute"
 msgstr "Перезаписать атрибут"
 
 #: ncms/news/NewsNav.js:123 ncms/asm/AsmAttrsTable.js:200
-#: ncms/pgs/PagesTreeSelector.js:160
+#: ncms/pgs/PagesTreeSelector.js:158
 msgid "New"
 msgstr "Создать"
 
@@ -284,7 +284,7 @@ msgid "New assembly"
 msgstr "Новая сборка (assembly)"
 
 #: ncms/asm/AsmNav.js:79 ncms/mmgr/MediaItemTreeSelector.js:102
-#: ncms/mtt/MttNav.js:165 ncms/pgs/PagesTreeSelector.js:153
+#: ncms/mtt/MttNav.js:165 ncms/pgs/PagesTreeSelector.js:151
 #: ncms/mtt/tp/MttTpNav.js:101
 msgid "Refresh"
 msgstr "Обновить"
@@ -548,7 +548,7 @@ msgid "Add video"
 msgstr "Добавить видео"
 
 #: ncms/news/NewsNav.js:131 ncms/mmgr/MediaItemTreeSelector.js:95
-#: ncms/asm/am/MedialineAMValueWidget.js:106 ncms/pgs/PagesTreeSelector.js:190
+#: ncms/asm/am/MedialineAMValueWidget.js:106 ncms/pgs/PagesTreeSelector.js:188
 msgid "Delete"
 msgstr "Удалить"
 
@@ -1379,7 +1379,7 @@ msgstr "Подтвердите удаление трекинг пикселя: \
 msgid "Select the parent page for news"
 msgstr "Укажите родительскую страницу для ленты"
 
-#: ncms/news/NewsNav.js:156 ncms/pgs/PagesTreeSelector.js:316
+#: ncms/news/NewsNav.js:156 ncms/pgs/PagesTreeSelector.js:313
 msgid "Are you sure to remove page: %1"
 msgstr "Вы действительно желаете удалить страницу %1"
 
@@ -1579,35 +1579,35 @@ msgstr "Выбрать страницу"
 msgid "Path"
 msgstr "Путь"
 
-#: ncms/pgs/PagesTreeSelector.js:174
+#: ncms/pgs/PagesTreeSelector.js:172
 msgid "Duplicate it"
 msgstr "Сделать копию"
 
-#: ncms/pgs/PagesTreeSelector.js:182
+#: ncms/pgs/PagesTreeSelector.js:180
 msgid "Change/Rename"
 msgstr "Изменить/Переименовать"
 
-#: ncms/pgs/PagesTreeSelector.js:186
+#: ncms/pgs/PagesTreeSelector.js:184
 msgid "Move"
 msgstr "Переместить"
 
-#: ncms/pgs/PagesTreeSelector.js:195
+#: ncms/pgs/PagesTreeSelector.js:193
 msgid "List of referer pages"
 msgstr "Список ссылающихся страниц"
 
-#: ncms/pgs/PagesTreeSelector.js:208
+#: ncms/pgs/PagesTreeSelector.js:205
 msgid "List of pages referred %1"
 msgstr "Список страниц, ссылающихся на %1"
 
-#: ncms/pgs/PagesTreeSelector.js:221
+#: ncms/pgs/PagesTreeSelector.js:218
 msgid "Choose the target container page"
 msgstr "Укажите папку"
 
-#: ncms/pgs/PagesTreeSelector.js:323
+#: ncms/pgs/PagesTreeSelector.js:320
 msgid "Unable to delete this page"
 msgstr "Невозможно удалить эту страницу"
 
-#: ncms/pgs/PagesTreeSelector.js:326
+#: ncms/pgs/PagesTreeSelector.js:323
 msgid ""
 "This page cannot be removed because we found pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"

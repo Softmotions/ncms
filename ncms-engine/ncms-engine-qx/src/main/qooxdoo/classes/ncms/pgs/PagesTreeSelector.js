@@ -108,14 +108,12 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         },
 
         __treeIconConverter: function (value, model, source, target) {
-            var statusPrefix = "";
-            var status = (model.getStatus != null) ? model.getStatus() : 0;
-
+            var statusPrefix = "",
+                status = (model.getStatus != null) ? model.getStatus() : 0;
             if (
-                (status & (1 << 1)) != 0 /* not published*/ &&
-
-                ((status & 1) == 0 /* not a folder */ ||
-                 (status & (1 << 2)) != 0 /* folder has parents */)
+                (status & (1 << 1)) != 0 /* not published*/
+                && ((status & 1) == 0 /* not a folder */
+                || (status & (1 << 2)) != 0 /* folder has parents */)
 
             ) {
                 statusPrefix = "-exclamation";
@@ -197,7 +195,6 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 menu.add(bt);
             }
         },
-
 
         __onRefList: function (ev) {
             var item = this._tree.getSelection().getItem(0);

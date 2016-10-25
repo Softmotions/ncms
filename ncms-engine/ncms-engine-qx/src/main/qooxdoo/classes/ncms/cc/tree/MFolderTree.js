@@ -22,8 +22,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          */
         itemSelected: "qx.event.type.Data",
 
-
-        "treeLoaded": "qx.event.type.Event"
+        treeLoaded: "qx.event.type.Event"
     },
 
     members: {

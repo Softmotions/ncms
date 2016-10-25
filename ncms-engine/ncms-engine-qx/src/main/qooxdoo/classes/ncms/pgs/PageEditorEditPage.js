@@ -325,7 +325,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             this.add(this.__scroll, {flex: 1});
 
             this.__syncState();
-            console.log("spec.$keepModified=" + spec.$keepModified);
             if (!spec.$keepModified) {
                 this.setModified(false);
             } else {

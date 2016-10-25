@@ -40,6 +40,7 @@ qx.Class.define("ncms.Application", {
 
         INSTANCE: null,
         APP_STATE: null,
+        UUID: null,
         ACT: null,
         INFO_POPUP: null,
 
@@ -468,7 +469,9 @@ qx.Class.define("ncms.Application", {
                 window.location.reload(true);
             }.bind(this);
             ncms.Application.INSTANCE = this;
+            ncms.Application.UUID = sm.util.UUID.generate();
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
+            qx.log.Logger.info("Application UUID: " + ncms.Application.UUID);
         },
 
         // overridden
