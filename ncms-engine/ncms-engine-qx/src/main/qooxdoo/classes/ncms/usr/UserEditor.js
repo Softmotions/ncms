@@ -25,6 +25,8 @@ qx.Class.define("ncms.usr.UserEditor", {
     },
 
     construct: function (userEditable, accessEditable) {
+        var prevFocus = qx.ui.core.FocusHandler.getInstance().getFocusedWidget();
+
         this.base(arguments, "top");
         this.setPadding(5);
 
@@ -42,6 +44,16 @@ qx.Class.define("ncms.usr.UserEditor", {
         epage.add(uiForm);
 
         this.add(epage);
+
+        // qx.ui.tabview.TabView automatically sets focus on the first tab after initialization
+        window.setTimeout(function () {
+            var curFocus = qx.ui.core.FocusHandler.getInstance().getFocusedWidget();
+            if (prevFocus != null && prevFocus !== curFocus) {
+                prevFocus.focus();
+            }
+            prevFocus = null;
+            curFocus = null;
+        }, 0);
     },
 
     members: {

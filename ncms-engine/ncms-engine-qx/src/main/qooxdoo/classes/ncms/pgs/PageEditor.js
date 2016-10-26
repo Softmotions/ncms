@@ -44,9 +44,10 @@ qx.Class.define("ncms.pgs.PageEditor", {
             this.add(page);
         }
 
+        // qx.ui.tabview.TabView automatically sets focus on the first tab after initialization
         window.setTimeout(function () {
             var curFocus = qx.ui.core.FocusHandler.getInstance().getFocusedWidget();
-            if (prevFocus !== curFocus) {
+            if (prevFocus != null && prevFocus !== curFocus) {
                 prevFocus.focus();
             }
             prevFocus = null;
