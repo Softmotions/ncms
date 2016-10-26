@@ -32,17 +32,6 @@ public class MediaDeleteEvent extends BasicEvent {
         this.id = id != null ? id : 0L;
     }
 
-    public MediaDeleteEvent(Object source,
-                            @Nullable Long id,
-                            boolean isFolder,
-                            String path, @Nullable
-                            String user) {
-        super(source, MediaDeleteEvent.class.getSimpleName(), user);
-        this.path = isFolder ? normalizeFolder(path) : normalizePath(path);
-        this.isFolder = isFolder;
-        this.id = (id != null) ? id : 0L;
-    }
-
     public long getId() {
         return id;
     }

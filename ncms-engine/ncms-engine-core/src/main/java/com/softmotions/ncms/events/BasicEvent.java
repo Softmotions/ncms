@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import org.apache.commons.collections4.map.Flat3Map;
+import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -26,7 +27,7 @@ public class BasicEvent {
 
     final String user;
 
-    private Map<String, Object> hints;
+    private final Map<String, Object> hints = new Flat3Map<>();
 
     public BasicEvent(Object source, String type, @Nullable String user) {
         this.source = source;
@@ -39,15 +40,16 @@ public class BasicEvent {
         this.type = type;
         if (req != null && req.getUserPrincipal() != null) {
             this.user = req.getUserPrincipal().getName();
+            String app = req.getParameter("__app");
+            if (!StringUtils.isBlank(app)) {
+                this.hint("app", app);
+            }
         } else {
             this.user = null;
         }
     }
 
     public BasicEvent hint(String key, Object val) {
-        if (hints == null) {
-            hints = new Flat3Map<>();
-        }
         hints.put(key, val);
         return this;
     }
@@ -75,6 +77,7 @@ public class BasicEvent {
     public String toString() {
         return MoreObjects.toStringHelper(this)
                           .add("type", type)
+                          .add("hints", hints)
                           .add("source", source)
                           .toString();
     }

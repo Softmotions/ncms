@@ -472,6 +472,19 @@ qx.Class.define("ncms.Application", {
             ncms.Application.UUID = sm.util.UUID.generate();
             ncms.Application.APP_STATE = new ncms.AppState("app.state");
             qx.log.Logger.info("Application UUID: " + ncms.Application.UUID);
+            // Intercapt all xhr request
+            sm.io.Request.registerSendInterceptor(this.__requestPreSend, this);
+        },
+
+        __requestPreSend: function (req) {
+            var url = req.getUrl();
+            var part = encodeURIComponent("__app") + "=" + encodeURIComponent(ncms.Application.UUID);
+            if (url.indexOf("?") !== -1) {
+                url += "&" + part;
+            } else {
+                url += "?" + part;
+            }
+            req.setUrl(url);
         },
 
         // overridden

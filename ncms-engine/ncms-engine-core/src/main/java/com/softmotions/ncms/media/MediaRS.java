@@ -751,7 +751,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         String user = req.getUserPrincipal() != null
                       ? req.getUserPrincipal().getName() : null;
         ebus.fireOnSuccessCommit(
-                new MediaDeleteEvent(this, id, isdir, path, user)
+                new MediaDeleteEvent(this, id, isdir, path, req)
         );
     }
 
