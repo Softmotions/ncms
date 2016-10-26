@@ -167,7 +167,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
                 evspec = ev.getData();
             if (myspec != null && evspec != null
                 && myspec["id"] === evspec["id"]
-                && (evspec["user"] !== ncms.Application.getUserId() || evspec.hints["asmui"] == true)) {
+                && (evspec.hints["app"] !== ncms.Application.UUID || evspec.hints["asmui"] === true)) {
                 this.__refresh();
             }
         },

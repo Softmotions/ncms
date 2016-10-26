@@ -44,11 +44,15 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                     }
                 }
             });
+
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
         }
-        ncms.Events.getInstance().addListener("pageChangePublished", this.__onPagePublished, this);
+
+        var events = ncms.Events.getInstance();
+        events.addListener("pageChangePublished", this.__onPagePublished, this);
+        events.addListener("pageCreated", this.__onPageCreated, this);
 
         // Init shortcuts
         this._registerCommand(
@@ -91,6 +95,40 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             } else {
                 item.addState("locked");
             }
+        },
+
+        //event=pageCreated
+        //data={"uuid":"d7144d93-c928-4953-a575-2bc849bfffbb",
+        //     "type":"AsmCreatedEvent",
+        //     "user":"admin",
+        //     "hints":{"app":"612c60ac-d04f-46f8-b3af-58008789f1be","page":true},
+        //     "id":1058,"name":"ee","hname":"ee","navParentId":282}
+        __onPageCreated: function (ev) {
+            var data = ev.getData();
+            if (data.hints["app"] === ncms.Application.UUID) {
+                return;
+            }
+            var parent = null;
+            console.log("Handle external page created");
+            if (data.navParentId == null) { // Page added to the root
+                parent = this._tree.getModel();
+            }
+            if (parent == null) {
+                this._tree.iterateOverCachedNodes(function (item) {
+                    if (item.getId() === data.navParentId) {
+                        parent = item;
+                        return true;
+                    }
+                }, this);
+            }
+            if (parent == null) {
+                console.log("Nav parent is not found");
+                return;
+            }
+            this._refreshNode(parent, {
+                // opts
+                openNode: false
+            });
         },
 
         __onPagePublished: function (ev) {

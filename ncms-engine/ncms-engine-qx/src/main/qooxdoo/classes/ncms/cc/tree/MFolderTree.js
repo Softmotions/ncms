@@ -190,7 +190,9 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             }
             if (this._tree.isNode(node)) {
                 this._loadChildren(node, function () {
-                    this._tree.openNodeAndParents(node);
+                    if (opts.openNode !== false) {
+                        this._tree.openNodeAndParents(node);
+                    }
                     if (cb != null) {
                         cb.call(self);
                     }
@@ -198,7 +200,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                         this._tree.getSelection().splice(0, 1, node);
                         this._tree.focus();
                     }
-                }, this);
+                }, this, opts);
             } else {
                 if (cb) {
                     cb.call(self);
@@ -225,7 +227,8 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             }
         },
 
-        _loadChildren: function (parent, cb, self) {
+        _loadChildren: function (parent, cb, self, opts) {
+            opts = opts || {};
             var cfg = this._treeConfig;
             var url = ncms.Application.ACT.getRestUrl(cfg["action"],
                 this._getItemPathSegments(parent));
@@ -236,6 +239,37 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             req.send(function (resp) {
                 var data = resp.getContent();
                 var children = parent.getChildren();
+
+                // now merge the children
+                // todo
+
+                //
+                // Examples of data:
+                //
+                //{
+                //    "id": 1063,
+                //    "guid": "041362273df89d9bc206e510cf7f8310",
+                //    "label": "layer",
+                //    "description": "layer",
+                //    "status": 2,
+                //    "type": "page",
+                //    "options": null,
+                //    "accessMask": "ownd"
+                //}
+
+                //{
+                //    "label": "landings",
+                //    "status": 1,
+                //    "system": 0
+                //},
+
+                //(function () {
+                //    var fc = children.getItem(0);
+                //    if (fc == null) {
+                //        return;
+                //    }
+                //})();
+
                 children.removeAll();
                 for (var i = 0, l = data.length; i < l; ++i) {
                     var node = data[i];
@@ -243,7 +277,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                         node["id"] = null;
                     }
                     node["icon"] = "default";
-                    if ((node["status"] & 1) !== 0) {
+                    if ((node["status"] & 1) !== 0) { // is folder?
                         node["loaded"] = false;
                         node["children"] = [
                             {
@@ -256,6 +290,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                     }
                     children.push(qx.data.marshal.Json.createModel(node, true));
                 }
+
                 if (cb != null) {
                     cb.call(self);
                 }
