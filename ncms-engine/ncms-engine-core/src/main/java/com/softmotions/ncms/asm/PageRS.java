@@ -23,7 +23,6 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
@@ -387,24 +386,21 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/publish/{id}")
     @Transactional
     public void publishPage(@Context HttpServletRequest req,
-                            @PathParam("id") Long id,
-                            @DefaultValue("") @QueryParam("hook") String hook) {
-        updatePublishStatus(req, id, true, hook);
+                            @PathParam("id") Long id) {
+        updatePublishStatus(req, id, true);
     }
 
     @PUT
     @Path("/unpublish/{id}")
     @Transactional
     public void unpublishPage(@Context HttpServletRequest req,
-                              @PathParam("id") Long id,
-                              @DefaultValue("") @QueryParam("hook") String hook) {
-        updatePublishStatus(req, id, false, hook);
+                              @PathParam("id") Long id) {
+        updatePublishStatus(req, id, false);
     }
 
     private void updatePublishStatus(HttpServletRequest req,
                                      Long id,
-                                     boolean published,
-                                     String hook) {
+                                     boolean published) {
         ebus.unlockOnTxFinish(Asm.acquireLock(id));
         Asm page = adao.asmSelectById(id);
         if (page == null || !pageSecurity.canEdit2(page, req)) {
@@ -418,8 +414,8 @@ public class PageRS extends MBDAOSupport implements PageService {
                "published", published);
         ebus.fireOnSuccessCommit(
                 new AsmModifiedEvent(this, page.getId(), req)
-                        .hint("published", published)
-                        .hint("hook", hook));
+                        .hint("published", published));
+
     }
 
     /**
@@ -493,7 +489,6 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Nullable
     public AsmCore savePage(@Context HttpServletRequest req,
                             @PathParam("id") Long id,
-                            @DefaultValue("") @QueryParam("hook") String hook,
                             ObjectNode data) throws Exception {
 
         lockPageOrFail(req, id, true);
@@ -549,8 +544,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         // "core":{"id":141,"location":"/site/httl/my/empty_core.httl","name":null,"templateEngine":null},
         adao.asmUnlock(id, wsUser.getName(), false);
         ebus.fireOnSuccessCommit(
-                new AsmModifiedEvent(this, id, req)
-                        .hint("hook", hook));
+                new AsmModifiedEvent(this, id, req));
+
 
         // Refresh page
         page = adao.asmSelectById(id);
@@ -572,8 +567,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     public ObjectNode setTemplate(@Context HttpServletRequest req,
                                   @Context HttpServletResponse resp,
                                   @PathParam("id") Long id,
-                                  @PathParam("templateId") Long templateId,
-                                  @DefaultValue("") @QueryParam("hook") String hook) throws Exception {
+                                  @PathParam("templateId") Long templateId) throws Exception {
 
         boolean alreadyLocked = lockPageOrFail(req, id, true);
         try {
@@ -628,8 +622,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             ebus.fireOnSuccessCommit(
                     new AsmModifiedEvent(this, id, req)
-                            .hint("template", templateId)
-                            .hint("hook", hook));
+                            .hint("template", templateId));
 
             return selectPageEdit(req, resp, id);
 
@@ -651,8 +644,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public JsonNode setPageOwner(@Context HttpServletRequest req,
                                  @PathParam("id") Long id,
-                                 @PathParam("owner") String owner,
-                                 @DefaultValue("") @QueryParam("hook") String hook) {
+                                 @PathParam("owner") String owner) {
 
         ObjectNode res = mapper.createObjectNode();
         boolean alreadyLocked = lockPageOrFail(req, id, true);
@@ -671,8 +663,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             JsonUtils.populateObjectNode(user, res.putObject("owner"),
                                          "name", "fullName");
             ebus.fireOnSuccessCommit(
-                    new AsmModifiedEvent(this, id, req)
-                            .hint("hook", hook));
+                    new AsmModifiedEvent(this, id, req));
         } finally {
             if (!alreadyLocked) {
                 unlockPage(req, id, true);
@@ -688,7 +679,6 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/clone")
     @Transactional
     public void clonePage(@Context HttpServletRequest req,
-                          @DefaultValue("") @QueryParam("hook") String hook,
                           ObjectNode spec) throws Exception {
 
         String guid;
@@ -737,8 +727,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         amCtx.flush();
         ebus.fireOnSuccessCommit(
                 new AsmCreatedEvent(this, page, req)
-                        .hint("page", true)
-                        .hint("hook", hook));
+                        .hint("page", true));
     }
 
     /**
@@ -748,7 +737,6 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/new")
     @Transactional
     public JsonNode newPage(@Context HttpServletRequest req,
-                            @DefaultValue("") @QueryParam("hook") String hook,
                             ObjectNode spec) {
 
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
@@ -799,8 +787,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }*/
         ebus.fireOnSuccessCommit(
                 new AsmCreatedEvent(this, id, parent, name, name, req)
-                        .hint("page", true)
-                        .hint("hook", hook));
+                        .hint("page", true));
 
         ObjectNode res = mapper.createObjectNode();
         res.put("id", id);
@@ -834,7 +821,6 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     public void updatePageBasic(@Context HttpServletRequest req,
                                 @Context SecurityContext sctx,
-                                @DefaultValue("") @QueryParam("hook") String hook,
                                 ObjectNode spec) {
 
         String name = spec.hasNonNull("name") ? spec.get("name").asText().trim() : null;
@@ -871,8 +857,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                    "muser", pageSecurity.getCurrentWSUserSafe(req).getName());
 
             ebus.fireOnSuccessCommit(
-                    new AsmModifiedEvent(this, id, req)
-                            .hint("hook", hook));
+                    new AsmModifiedEvent(this, id, req));
 
         } finally {
             if (!alreadyLocked) {
@@ -885,7 +870,6 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/move")
     @Transactional
     public void movePage(@Context HttpServletRequest req,
-                         @DefaultValue("") @QueryParam("hook") String hook,
                          ObjectNode spec) {
 
         long src = spec.hasNonNull("src") ? spec.get("src").longValue() : 0;
@@ -938,10 +922,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             while (update("finishMove") > 0) ;
             ebus.fireOnSuccessCommit(
                     new AsmModifiedEvent(this, srcPage.getId(), req)
-                            .hint("page", true)
-                            .hint("hook", hook)
-            );
-
+                            .hint("page", true));
         } finally {
             if (!alreadyLocked) {
                 unlockPage(req, src, true);
@@ -1030,7 +1011,6 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/{id}")
     @Transactional
     public ObjectNode removePage(@PathParam("id") Long id,
-                                 @DefaultValue("") @QueryParam("hook") String hook,
                                  @Context HttpServletRequest req) {
 
         ObjectNode ret = mapper.createObjectNode();
@@ -1059,8 +1039,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             adao.asmRemove(id);
             ebus.fireOnSuccessCommit(
                     new AsmRemovedEvent(this, id, req)
-                            .hint("page", true)
-                            .hint("hook", hook));
+                            .hint("page", true));
         } finally {
             if (!alreadyLocked) {
                 unlockPage(req, id, true);

@@ -37,9 +37,7 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
                 parent: this._id,
                 type: items["container"].getValue() ? "page.folder" : "page"
             };
-            var req = new sm.io.Request(ncms.Application.ACT.getUrl(
-                "pages.new",
-                "hook", ncms.Application.UUID), "PUT");
+            var req = new sm.io.Request(ncms.Application.ACT.getUrl("pages.new"));
             req.addListenerOnce("finished", cb);
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
