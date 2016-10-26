@@ -31,7 +31,6 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
         _tree: null,
 
-
         /**
          *
          * cfg:
@@ -47,6 +46,8 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          *   selectRootAsNull : {Boolean} If true, root selection will be fired as `null`
          *
          *   setupChildrenRequestFn : {Function?} Optional init HTTP request object on children loading,
+         *
+         *   keyProperty: {String?} Optional name of tree item unique key property (eg. `id` for id primary identifier)
          *
          *   iconConverter : {Function?}
          * }
@@ -181,7 +182,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
         },
 
         _refreshNode: function (node, cb, self, opts) {
-            if (typeof cb === "object") {
+            if (cb != null && typeof cb === "object") {
                 opts = cb;
                 cb = null;
                 self = null;
@@ -229,66 +230,88 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
         _loadChildren: function (parent, cb, self, opts) {
             opts = opts || {};
-            var cfg = this._treeConfig;
-            var url = ncms.Application.ACT.getRestUrl(cfg["action"],
-                this._getItemPathSegments(parent));
-            var req = new sm.io.Request(url, "GET", "application/json");
+            var cfg = this._treeConfig,
+                url = ncms.Application.ACT.getRestUrl(cfg["action"], this._getItemPathSegments(parent)),
+                req = new sm.io.Request(url, "GET", "application/json");
+
             if (typeof cfg["setupChildrenRequestFn"] === "function") {
                 cfg["setupChildrenRequestFn"].call(this, req);
             }
+
             req.send(function (resp) {
-                var data = resp.getContent();
-                var children = parent.getChildren();
+                var data = resp.getContent(),
+                    children = parent.getChildren();
 
-                // now merge the children
-                // todo
+                while (true) {
 
-                //
-                // Examples of data:
-                //
-                //{
-                //    "id": 1063,
-                //    "guid": "041362273df89d9bc206e510cf7f8310",
-                //    "label": "layer",
-                //    "description": "layer",
-                //    "status": 2,
-                //    "type": "page",
-                //    "options": null,
-                //    "accessMask": "ownd"
-                //}
+                    if (cfg["keyProperty"] == null || opts.updateOnly == null) { // children full refresh
 
-                //{
-                //    "label": "landings",
-                //    "status": 1,
-                //    "system": 0
-                //},
-
-                //(function () {
-                //    var fc = children.getItem(0);
-                //    if (fc == null) {
-                //        return;
-                //    }
-                //})();
-
-                children.removeAll();
-                for (var i = 0, l = data.length; i < l; ++i) {
-                    var node = data[i];
-                    if (node["id"] === undefined) {
-                        node["id"] = null;
-                    }
-                    node["icon"] = "default";
-                    if ((node["status"] & 1) !== 0) { // is folder?
-                        node["loaded"] = false;
-                        node["children"] = [
-                            {
-                                label: "Loading",
-                                icon: "loading"
+                        children.removeAll();
+                        for (var i = 0, l = data.length; i < l; ++i) {
+                            var node = data[i];
+                            if (node["id"] === undefined) {
+                                node["id"] = null;
                             }
-                        ]
-                    } else {
-                        node["loaded"] = true;
+                            node["icon"] = "default";
+                            if ((node["status"] & 1) !== 0) { // is folder?
+                                node["loaded"] = false;
+                                node["children"] = [
+                                    {
+                                        label: "Loading",
+                                        icon: "loading"
+                                    }
+                                ]
+                            } else {
+                                node["loaded"] = true;
+                            }
+                            children.push(qx.data.marshal.Json.createModel(node, true));
+                        }
+
+                    } else { // ADD / REMOVE / UPDATE OF ONE ITEM
+
+                        (function () {
+
+                            var keyProperty = cfg["keyProperty"],
+                                keyAccessor = "get" + qx.lang.String.firstUp(keyProperty),
+                                onlyDataItem = null,
+                                onlyChildItem = null,
+                                ind = -1,
+                                isVirgin = true;
+
+                            children.forEach(function (c) {
+                                if ((typeof c["keyAccessor"] === "function")
+                                    && c["keyAccessor"]() === opts.updateOnly) {
+                                    onlyChildItem = c;
+                                    isVirgin = false;
+                                }
+                            });
+                            if (isVirgin) {  // children node is semi-empty                             // FULL REFRESH
+                                opts.updateOnly = null;
+                                continue;
+                            }
+
+                            data.forEach(function (c) {
+                                if ((c["keyProperty"] != null)
+                                    && c[keyProperty] === opts.updateOnly) {
+                                    onlyDataItem = c;
+                                }
+                                return ret;
+                            });
+
+                            if (onlyChildItem != null && onlyDataItem == null) {                         // REMOVE
+                                children.remove(onlyChildItem);
+                            } else if (onlyDataItem != null && onlyChildItem == null) {                  // ADD
+                                ind = data.indexOf(onlyDataItem);
+                                if (ind > 0) ind--; else ind = 0;
+                                children.splice(ind, 0, qx.data.marshal.Json.createModel(node, true));
+                            } else {                                                                     // UPDATE
+                                ind = children.indexOf(onlyChildItem);
+                                children.splice(ind, 1, qx.data.marshal.Json.createModel(node, true));
+                            }
+                        })();
                     }
-                    children.push(qx.data.marshal.Json.createModel(node, true));
+
+                    break;
                 }
 
                 if (cb != null) {

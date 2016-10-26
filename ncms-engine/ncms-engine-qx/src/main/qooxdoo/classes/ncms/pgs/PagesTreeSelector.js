@@ -126,8 +126,9 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 return;
             }
             this._refreshNode(parent, {
-                // opts
-                openNode: false
+                /* todo temp disabled
+                openNode: false,
+                updateOnly: data.id*/
             });
         },
 
