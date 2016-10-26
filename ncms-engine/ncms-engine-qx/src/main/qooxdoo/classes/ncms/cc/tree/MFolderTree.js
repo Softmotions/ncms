@@ -180,20 +180,33 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
             return pp != null ? pp.getId() : null;
         },
 
-        _refreshNode: function (node, cb, self) {
+        _refreshNode: function (node, cb, self, opts) {
+            if (typeof cb === "object") {
+                opts = cb;
+                cb = null;
+                self = null;
+            } else {
+                opts = opts || {};
+            }
             if (this._tree.isNode(node)) {
                 this._loadChildren(node, function () {
                     this._tree.openNodeAndParents(node);
                     if (cb != null) {
                         cb.call(self);
                     }
-                    this._tree.focus();
+                    if (opts.focus) {
+                        this._tree.getSelection().splice(0, 1, node);
+                        this._tree.focus();
+                    }
                 }, this);
             } else {
                 if (cb) {
                     cb.call(self);
                 }
-                this._tree.focus();
+                if (opts.focus) {
+                    this._tree.getSelection().splice(0, 1, node);
+                    this._tree.focus();
+                }
             }
         },
 

@@ -57,6 +57,12 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("F2"),
             this.__onChangeOrRenamePage, this);
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("F6"),
+            this.__onMovePage, this);
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__onNewPage, this);
         this.addListenerOnce("treeLoaded", function () {
             this._registerCommandFocusWidget(this._tree);
         }, this);
@@ -299,7 +305,11 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 this._refreshNode(parent);
                 dlg.close();
             }, this);
-            dlg.placeToWidget(ev.getTarget(), false);
+            if (ev.getTarget().getContentLocation) {
+                dlg.placeToWidget(ev.getTarget(), false);
+            } else {
+                dlg.placeToWidget(this._tree, false);
+            }
             dlg.open();
         },
 
@@ -326,7 +336,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                         dlg.open();
                         return;
                     }
-                    this._refreshNode(parent);
+                    this._refreshNode(parent, {focus: true});
                 }, this);
             }, this);
         },

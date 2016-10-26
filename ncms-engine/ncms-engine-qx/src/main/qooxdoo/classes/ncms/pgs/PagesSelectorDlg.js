@@ -78,6 +78,7 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
                 }
                 this._ok();
             }, this);
+            tree.focus();
         }, this);
     },
 

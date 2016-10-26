@@ -26,6 +26,8 @@ qx.Class.define("ncms.pgs.PageEditor", {
     },
 
     construct: function () {
+        var prevFocus = qx.ui.core.FocusHandler.getInstance().getFocusedWidget();
+
         this.base(arguments, "top");
         this.set({padding: 5, paddingLeft: 0});
 
@@ -41,6 +43,15 @@ qx.Class.define("ncms.pgs.PageEditor", {
         if (page != null) {
             this.add(page);
         }
+
+        window.setTimeout(function () {
+            var curFocus = qx.ui.core.FocusHandler.getInstance().getFocusedWidget();
+            if (prevFocus !== curFocus) {
+                prevFocus.focus();
+            }
+            prevFocus = null;
+            curFocus = null;
+        }, 0);
     },
 
     members: {
