@@ -276,16 +276,16 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                                 onlyDataItem = null,
                                 onlyChildItem = null,
                                 ind = -1,
-                                isVirgin = true;
+                                isEmpty = true;
 
                             children.forEach(function (c) {
                                 if ((typeof c["keyAccessor"] === "function")
                                     && c["keyAccessor"]() === opts.updateOnly) {
                                     onlyChildItem = c;
-                                    isVirgin = false;
+                                    isEmpty = false;
                                 }
                             });
-                            if (isVirgin) {  // children node is semi-empty                             // FULL REFRESH
+                            if (isEmpty) {  // children node is semi-empty                             // FULL REFRESH
                                 opts.updateOnly = null;
                                 continue;
                             }
@@ -306,6 +306,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                                 children.splice(ind, 0, qx.data.marshal.Json.createModel(node, true));
                             } else {                                                                     // UPDATE
                                 ind = children.indexOf(onlyChildItem);
+                                //todo do not create new node and update existing
                                 children.splice(ind, 1, qx.data.marshal.Json.createModel(node, true));
                             }
                         })();
