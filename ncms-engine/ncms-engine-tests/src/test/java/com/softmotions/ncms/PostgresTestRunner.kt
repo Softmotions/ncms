@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  */
 
 @Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
-class PostgresTestRunner : DatabaseTestRunner {
+open class PostgresTestRunner : DatabaseTestRunner {
 
     private val log = LoggerFactory.getLogger(PostgresTestRunner::class.java)
 
