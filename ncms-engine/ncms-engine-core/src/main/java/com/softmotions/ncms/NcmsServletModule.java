@@ -22,7 +22,6 @@ import com.softmotions.ncms.asm.render.AsmFilter;
 import com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule;
 import com.softmotions.ncms.events.EventsModule;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionMapper;
-import com.softmotions.ncms.jaxrs.ResteasyUTF8CharsetFilter;
 import com.softmotions.ncms.media.MediaModule;
 import com.softmotions.ncms.mediawiki.MediaWikiModule;
 import com.softmotions.ncms.mtt.MttModule;
@@ -102,7 +101,6 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         //Resteasy staff
         install(new WBJaxrsModule());
         bind(NcmsRSExceptionMapper.class).in(Singleton.class);
-        bind(ResteasyUTF8CharsetFilter.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
         String mount = ncmsp + "/rs/*";
         log.info("Resteasy serving on {}", mount);
