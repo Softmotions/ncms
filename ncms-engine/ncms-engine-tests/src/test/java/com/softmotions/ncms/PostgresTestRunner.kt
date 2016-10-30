@@ -20,7 +20,7 @@ class PostgresTestRunner : DatabaseTestRunner {
 
     private val dbRunner: ProcessRunner = ProcessRunners.serial(verbose = true)
 
-    private val dbBin: String = "/usr/lib/postgresql/9.5/bin"
+    private val dbBin: String = "/usr/lib/postgresql/9.6/bin"
 
     private val dbPort: Int = 9231
 

@@ -3,6 +3,7 @@ package com.softmotions.ncms
 import ch.qos.logback.classic.Level
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.softmotions.kotlin.InstancesModule
+import com.softmotions.ncms.events.EventsModule
 import com.softmotions.weboot.liquibase.WBLiquibaseModule
 import com.softmotions.weboot.mb.WBMyBatisModule
 
@@ -65,7 +66,8 @@ open class DbBaseTest(db: String) : GuiceBaseTest() {
             setupGuice(
                     InstancesModule(cfg, ObjectMapper()),
                     WBMyBatisModule(cfg),
-                    WBLiquibaseModule(cfg)
+                    WBLiquibaseModule(cfg),
+                    EventsModule()
             )
         } catch (tr: Throwable) {
             shutdownDb()
