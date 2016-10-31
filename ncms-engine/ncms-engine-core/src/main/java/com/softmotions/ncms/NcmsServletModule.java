@@ -106,7 +106,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         log.info("Resteasy serving on {}", mount);
         serve(mount)
                 .with(HttpServletDispatcher.class,
-                      new TinyParamMap<>()
+                      new TinyParamMap()
                               .param("resteasy.servlet.mapping.prefix", ncmsp + "/rs"));
 
         //Resteasy JS API
