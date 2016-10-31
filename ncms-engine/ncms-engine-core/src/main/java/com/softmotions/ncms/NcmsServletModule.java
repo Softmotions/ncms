@@ -99,7 +99,7 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         String ncmsp = env.getAppPrefix();
 
         //Resteasy staff
-        install(new WBJaxrsModule());
+        install(new WBJaxrsModule(env));
         bind(NcmsRSExceptionMapper.class).in(Singleton.class);
         bind(HttpServletDispatcher.class).in(Singleton.class);
         String mount = ncmsp + "/rs/*";

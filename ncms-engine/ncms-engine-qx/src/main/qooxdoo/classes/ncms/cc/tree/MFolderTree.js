@@ -295,7 +295,6 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                                     && c[keyProperty] === opts.updateOnly) {
                                     onlyDataItem = c;
                                 }
-                                return ret;
                             });
 
                             if (onlyChildItem != null && onlyDataItem == null) {                         // REMOVE
