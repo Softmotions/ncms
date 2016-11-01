@@ -19,6 +19,7 @@ open class BaseRSTest(db: String) : WebBaseTest(db) {
             runner!!.start()
             log.warn("{}", runner)
         } catch (tr: Throwable) {
+            log.error("", tr)
             shutdownDb()
             throw tr
         }
