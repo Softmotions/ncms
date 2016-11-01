@@ -28,7 +28,6 @@ import com.softmotions.ncms.mtt.MttModule;
 import com.softmotions.ncms.mtt.http.MttHttpFilter;
 import com.softmotions.ncms.qa.QAModule;
 import com.softmotions.ncms.rds.RefDataStoreModule;
-import com.softmotions.ncms.security.NcmsSecurityModule;
 import com.softmotions.ncms.update.UpdateModule;
 import com.softmotions.ncms.user.UserModule;
 import com.softmotions.ncms.utils.BrowserFilter;
@@ -39,6 +38,7 @@ import com.softmotions.weboot.jaxrs.WBJaxrsModule;
 import com.softmotions.weboot.liquibase.WBLiquibaseModule;
 import com.softmotions.weboot.mb.WBMyBatisModule;
 import com.softmotions.weboot.scheduler.SchedulerModule;
+import com.softmotions.weboot.security.WBSecurityModule;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
@@ -59,11 +59,11 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
         install(new I18nModule());
         install(new WBMyBatisModule(env));
         install(new WBLiquibaseModule(env));
+        install(new WBSecurityModule(env, "Softmotions"));
         install(new SchedulerModule(env));
         install(new TaskExecutorModule(env));
         install(new UpdateModule());
         install(new EventsModule());
-        install(new NcmsSecurityModule());
         install(new AsmModule());
         install(new AsmTemplateEngineHttlModule());
         install(new AdmModule());

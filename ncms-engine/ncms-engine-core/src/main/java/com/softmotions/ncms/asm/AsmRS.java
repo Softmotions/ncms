@@ -50,11 +50,11 @@ import com.softmotions.ncms.asm.render.AsmController;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 import com.softmotions.ncms.jaxrs.NcmsNotificationException;
-import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
+import com.softmotions.weboot.security.WBSecurityContext;
 
 /**
  * Редактирование выбранного экземпляра ассембли.
@@ -80,7 +80,7 @@ public class AsmRS extends MBDAOSupport {
 
     final Provider<AsmAttributeManagerContext> amCtxProvider;
 
-    final NcmsSecurityContext sctx;
+    final WBSecurityContext sctx;
 
     @Inject
     public AsmRS(SqlSession sess,
@@ -89,7 +89,7 @@ public class AsmRS extends MBDAOSupport {
                  I18n i18n,
                  NcmsEventBus ebus,
                  Provider<AsmAttributeManagerContext> amCtxProvider,
-                 NcmsSecurityContext sctx) {
+                 WBSecurityContext sctx) {
         super(AsmRS.class, sess);
         this.adao = adao;
         this.mapper = mapper;
@@ -454,7 +454,7 @@ public class AsmRS extends MBDAOSupport {
 
     /**
      * PUT asm attributes values/options
-     * <p>
+     * <p/>
      * Attributes JSON data spec:
      * <pre>
      *     {

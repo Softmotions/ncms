@@ -35,6 +35,10 @@
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
+            <artifactId>softmotions-weboot-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
             <artifactId>softmotions-weboot-jaxrs</artifactId>
         </dependency>
         <dependency>

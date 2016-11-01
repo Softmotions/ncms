@@ -4,8 +4,8 @@ import com.google.inject.Inject
 import com.softmotions.commons.lifecycle.Start
 import com.softmotions.ncms.NcmsEnvironment
 import com.softmotions.ncms.asm.PageService
-import com.softmotions.ncms.security.NcmsSecurityContext
 import com.softmotions.web.security.WSUser
+import com.softmotions.weboot.security.WBSecurityContext
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import java.io.IOException
@@ -26,7 +26,7 @@ open class WorkspaceRS
 @Inject
 constructor(private val env: NcmsEnvironment,
             private val pageService: PageService,
-            private val sctx: NcmsSecurityContext) {
+            private val sctx: WBSecurityContext) {
 
     private val log = LoggerFactory.getLogger(WorkspaceRS::class.java)
 

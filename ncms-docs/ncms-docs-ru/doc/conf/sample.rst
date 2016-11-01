@@ -122,7 +122,7 @@
 
         <security>
             <xml-user-database placeTo="{home}/.ncmsapp/ncmsapp-users.xml">conf/ncmsapp-users.xml</xml-user-database>
-            <shiro-config-locations>/WEB-INF/shiro.dev.ini</shiro-config-locations>
+            <shiro-config-locations>/WEB-INF/shiro.ini</shiro-config-locations>
             <dbJVMName>WSUserDatabase</dbJVMName>
             <web-access-control-allow>*</web-access-control-allow>
             <acl-lru-cache-size>4096</acl-lru-cache-size>

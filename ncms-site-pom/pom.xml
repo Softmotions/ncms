@@ -15,7 +15,7 @@
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
         <qooxdoo.sdk.version>5.0.1</qooxdoo.sdk.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
-        <pgsql.jdbc.version>9.4.1209.jre7</pgsql.jdbc.version>
+        <pgsql.jdbc.version>9.4.1211.jre7</pgsql.jdbc.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <slf4j.version>1.7.21</slf4j.version>
         <logback.version>1.1.7</logback.version>
@@ -180,7 +180,7 @@
                 <plugin>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.5.3</version>
                 </plugin>
                 <plugin>
                     <groupId>softmotions</groupId>
@@ -191,7 +191,7 @@
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
                     <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.5.0</version>
+                    <version>1.6.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

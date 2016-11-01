@@ -62,7 +62,7 @@ nCMS в контексте другого сайта
     <app-prefix>/ncms_prefix</app-prefix>
     <security>
         ...
-        <shiro-config-locations>/WEB-INF/shiro.dev.ini</shiro-config-locations>
+        <shiro-config-locations>/WEB-INF/shiro.ini</shiro-config-locations>
         ...
     </security>
 

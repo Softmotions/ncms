@@ -21,13 +21,13 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.softmotions.ncms.NcmsEnvironment;
-import com.softmotions.ncms.security.NcmsSecurityContext;
 import com.softmotions.web.security.WSRole;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.mb.MBDAOSupport;
 import com.softmotions.weboot.mb.MBSqlSessionListenerSupport;
 import com.softmotions.weboot.mb.MBSqlSessionManager;
+import com.softmotions.weboot.security.WBSecurityContext;
 
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
@@ -49,7 +49,7 @@ public class PageSecurityService extends MBDAOSupport {
     private final WSUserDatabase userdb;
     private final LRUMap<String, Object> aclCache;
     private final MBSqlSessionManager sessionManager;
-    private final NcmsSecurityContext sctx;
+    private final WBSecurityContext sctx;
 
 
     @Inject
@@ -57,7 +57,7 @@ public class PageSecurityService extends MBDAOSupport {
                                WSUserDatabase userdb,
                                NcmsEnvironment env,
                                MBSqlSessionManager sessionManager,
-                               NcmsSecurityContext sctx) {
+                               WBSecurityContext sctx) {
         super(PageSecurityService.class, sess);
         this.userdb = userdb;
         this.aclCache = new LRUMap<>(env.xcfg().getInt("security.acl-lru-cache-size", 1024));

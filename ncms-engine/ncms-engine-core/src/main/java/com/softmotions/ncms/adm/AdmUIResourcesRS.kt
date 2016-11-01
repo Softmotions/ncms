@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Inject
 import com.softmotions.ncms.NcmsEnvironment
-import com.softmotions.ncms.security.NcmsSecurityContext
 import com.softmotions.weboot.i18n.I18n
+import com.softmotions.weboot.security.WBSecurityContext
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import javax.ws.rs.GET
@@ -29,7 +29,7 @@ constructor(
         private val env: NcmsEnvironment,
         private val mapper: ObjectMapper,
         private val msg: I18n,
-        private val sctx: NcmsSecurityContext) {
+        private val sctx: WBSecurityContext) {
 
 
     /**
