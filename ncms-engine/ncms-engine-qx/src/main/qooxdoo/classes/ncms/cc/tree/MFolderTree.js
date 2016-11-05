@@ -269,7 +269,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
 
                     } else { // ADD / REMOVE / UPDATE OF ONE ITEM
 
-                        (function () {
+                        var cnt = (function () {
 
                             var keyProperty = cfg["keyProperty"],
                                 keyAccessor = "get" + qx.lang.String.firstUp(keyProperty),
@@ -287,7 +287,7 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                             });
                             if (isEmpty) {  // children node is semi-empty                             // FULL REFRESH
                                 opts.updateOnly = null;
-                                continue;
+                                return true;
                             }
 
                             data.forEach(function (c) {
@@ -309,6 +309,9 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                                 children.splice(ind, 1, qx.data.marshal.Json.createModel(node, true));
                             }
                         })();
+                        if (cnt === true) {
+                            continue;
+                        }
                     }
 
                     break;

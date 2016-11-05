@@ -9,13 +9,18 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.shiro.guice.aop.ShiroAopModule;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.TinyParamMap;
+import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.ncms.adm.AdmModule;
 import com.softmotions.ncms.asm.AsmModule;
 import com.softmotions.ncms.asm.render.AsmFilter;
@@ -44,7 +49,7 @@ import com.softmotions.weboot.security.WBSecurityModule;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
+public class NcmsModule extends WBServletModule<NcmsEnvironment> {
 
     @Override
     protected void init(NcmsEnvironment env) {
@@ -140,5 +145,48 @@ public class NcmsServletModule extends WBServletModule<NcmsEnvironment> {
 
     protected void initMarketingToolsFilter(NcmsEnvironment env) {
         filter(env.getAppPrefix() + "/*", MttHttpFilter.class);
+    }
+
+    /**
+     * Display NCM logo after startup.
+     *
+     * @author Adamansky Anton (adamansky@gmail.com)
+     */
+    public static class NcmsLogoModule extends AbstractModule {
+
+        private static final Logger log = LoggerFactory.getLogger(NcmsLogoModule.class);
+
+        private static final String LOGO =
+                "                                                    \n" +
+                " _____ _____ _____ _____    _____         _         \n" +
+                "|   | |     |     |   __|  |   __|___ ___|_|___ ___ \n" +
+                "| | | |   --| | | |__   |  |   __|   | . | |   | -_|\n" +
+                "|_|___|_____|_|_|_|_____|  |_____|_|_|_  |_|_|_|___|\n" +
+                "                                     |___|          \n" +
+                " Environment: %s\n" +
+                " Version: %s\n" +
+                " Max heap: %s\n";
+
+
+        @Override
+        protected void configure() {
+            bind(LogoStarter.class).asEagerSingleton();
+        }
+
+        @SuppressWarnings("InnerClassTooDeeplyNested")
+        public static class LogoStarter {
+
+            final NcmsEnvironment env;
+
+            @Inject
+            public LogoStarter(NcmsEnvironment env) {
+                this.env = env;
+            }
+
+            @Start(order = Integer.MAX_VALUE)
+            public void startup() {
+                log.info(String.format(LOGO, env.getEnvironmentType(), env.getAppVersion(), Runtime.getRuntime().maxMemory()));
+            }
+        }
     }
 }

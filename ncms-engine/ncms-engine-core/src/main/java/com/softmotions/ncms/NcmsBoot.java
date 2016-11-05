@@ -32,14 +32,14 @@ import com.softmotions.weboot.WBServletListener;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class NcmsServletListener extends WBServletListener {
+public class NcmsBoot extends WBServletListener {
 
     protected final Logger log;
 
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
     private EnvironmentLoaderListener shiroEnvironmentLoaderListener;
 
-    public NcmsServletListener() {
+    public NcmsBoot() {
         log = LoggerFactory.getLogger(getClass());
     }
 
@@ -153,7 +153,7 @@ public class NcmsServletListener extends WBServletListener {
     @Override
     protected Collection<Module> getStartupModules() {
         List<Module> mlist = new ArrayList<>(1);
-        mlist.add(new NcmsServletModule());
+        mlist.add(new NcmsModule());
         return mlist;
     }
 }

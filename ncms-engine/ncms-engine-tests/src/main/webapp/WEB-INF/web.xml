@@ -6,6 +6,6 @@
          version="3.0"
          metadata-complete="true">
     <listener>
-        <listener-class>com.softmotions.ncms.NcmsServletListener</listener-class>
+        <listener-class>com.softmotions.ncms.NcmsBoot</listener-class>
     </listener>
 </web-app>

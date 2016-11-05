@@ -51,8 +51,8 @@ open class WebBaseTest(db: String) : DbBaseTest(db) {
         return Paths.get(projectBasedir, "src/main/webapp").toString()
     }
 
-    open protected fun getEnv(): NcmsServletListener? {
-        return runner?.getContextEventListener(NcmsServletListener::class.java)
+    open protected fun getEnv(): NcmsBoot? {
+        return runner?.getContextEventListener(NcmsBoot::class.java)
     }
 
 
