@@ -84,7 +84,7 @@
     <mybatis-guice.version>3.8</mybatis-guice.version>
     <testng.version>6.9.10</testng.version>  
     <junit.version>4.12</junit.version>  
-    <kotlin.version>1.0.4</kotlin.version>  
+    <kotlin.version>1.0.5</kotlin.version>
     <db2.jdbc.version>4.21.29</db2.jdbc.version>  
     <postgres.jdbc.version>9.4.1211.jre7</postgres.jdbc.version>
     <h2.version>1.4.192</h2.version>  
