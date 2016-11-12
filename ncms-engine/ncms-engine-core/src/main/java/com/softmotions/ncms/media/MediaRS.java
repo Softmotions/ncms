@@ -198,7 +198,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     public String path(@PathParam("id") Long id) {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         return String.valueOf(row.get("folder")) + row.get("name");
     }
@@ -279,7 +279,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                          @QueryParam("h") Integer height) throws Exception {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         return _get((String) row.get("folder"), (String) row.get("name"),
                     req, width, height,
@@ -700,6 +700,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             File f = new File(basedir, path);
             checkEditAccess(path, req);
 
+            id = selectOne("selectEntityIdByPath",
+                           "folder", folder,
+                           "name", name);
+
             isdir = f.isDirectory();
             if (isdir) {
 
@@ -714,9 +718,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
             } else {
 
-                id = selectOne("selectEntityIdByPath",
-                               "folder", folder,
-                               "name", name);
                 checkFileDeletion(id, req);
 
                 boolean exists = f.exists();
@@ -748,8 +749,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
         }
 
-        String user = req.getUserPrincipal() != null
-                      ? req.getUserPrincipal().getName() : null;
         ebus.fireOnSuccessCommit(
                 new MediaDeleteEvent(this, id, isdir, path, req)
         );
@@ -774,7 +773,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                               @Context HttpServletRequest req) throws Exception {
         Map<String, Object> meta = getCachedMeta(id);
         if (meta == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         ObjectNode res = mapper.createObjectNode();
         res.put("id", id);
@@ -1193,7 +1192,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (id != null) {
             rec = selectOne("selectIcon2", "id", id);
             if (rec == null) {
-                throw new NotFoundException("");
+                throw new NotFoundException();
             }
             folder = (String) rec.get("folder");
             name = (String) rec.get("name");
@@ -1203,7 +1202,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             folder = normalizeFolder(folder);
             rec = selectOne("selectIcon", "folder", folder, "name", name);
             if (rec == null) {
-                throw new NotFoundException("");
+                throw new NotFoundException();
             }
             id = ((Number) rec.get("id")).longValue();
         }
@@ -1304,7 +1303,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                           boolean inline) throws Exception {
         Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
         if (row == null) {
-            throw new NotFoundException("");
+            throw new NotFoundException();
         }
         return _get((String) row.get("folder"), (String) row.get("name"),
                     req, width, height, inline, true);
@@ -1689,7 +1688,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                      @Nullable HttpServletResponse resp) throws Exception {
         if (req.getRemoteUser() == null) {
             if (resp == null || !req.authenticate(resp)) {
-                throw new ForbiddenException("");
+                throw new ForbiddenException();
             }
         }
     }

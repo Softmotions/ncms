@@ -433,10 +433,10 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
     },
 
     destruct: function () {
-        //this._disposeObjects("__field_name");
-        ncms.Events.getInstance().removeListener("pageChangePublished", this.__onPagePublished, this);
-        ncms.Events.getInstance().removeListener("pageCreated", this.__onPageCreated, this);
-        ncms.Events.getInstance().removeListener("pageRemoved", this.__onPageEditedRemoved, this);
-        ncms.Events.getInstance().removeListener("pageEdited", this.__onPageEditedRemoved, this);
+        var events = ncms.Events.getInstance();
+        events.removeListener("pageChangePublished", this.__onPagePublished, this);
+        events.removeListener("pageCreated", this.__onPageCreated, this);
+        events.removeListener("pageRemoved", this.__onPageEditedRemoved, this);
+        events.removeListener("pageEdited", this.__onPageEditedRemoved, this);
     }
 });

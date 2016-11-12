@@ -189,6 +189,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__rmFiles, this);
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("F6"),
+            this.__moveFiles, this);
         this._registerCommandFocusWidget(table);
     },
 
@@ -600,7 +603,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             form.submit();
         },
 
-        __moveFiles: function (ev) {
+        __moveFiles: function () {
             var sfiles = this.__table.getSelectedFiles();
             if (sfiles.length == 0) {
                 return;

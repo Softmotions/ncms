@@ -14,7 +14,8 @@ qx.Class.define("ncms.Events", {
          *   name:          {String} Page assembly name (guid)
          *   hname:         {String} Page human name
          *   user:          {String} User initiates this event
-         *   hints:         {Map} optional event hints
+         *   hints:         {Map} optional event hints.
+         *                  app - Application UUID
          * }
          *
          */
@@ -28,12 +29,12 @@ qx.Class.define("ncms.Events", {
          *  id:     {Number} Page ID,
          *  user:   {String} User initiates this event
          *  hints:  {Map} optional event hints
-         *          `moveTargetId` - optional target page id if page has been moved,
+         *           moveTargetId - optional target page id if page has been moved,
          *                           0 (zero) if page moved into root.
+         *           app - Application UUID
          * }
          */
         "pageEdited": "qx.event.type.Data",
-
 
         /**
          * Page removed.
@@ -42,11 +43,11 @@ qx.Class.define("ncms.Events", {
          * {
          *  id:     {Number} Page ID,
          *  user:   {String} User initiates this event
-         *  hints:  {Map} optional event hints
+         *  hints:  {Map} optional event hints,
+         *          app - Application UUID
          * }
          */
         "pageRemoved": "qx.event.type.Data",
-
 
         /**
          * Page publish status changed.
@@ -56,7 +57,8 @@ qx.Class.define("ncms.Events", {
          *  id:        {Number} Page ID,
          *  published: {Boolean} Is page published
          *  user:      {String} User initiates this event
-         *  hints:     {Map} optional event hints
+         *  hints:     {Map} optional event hints,
+         *             app - Application UUID
          * }
          */
         "pageChangePublished": "qx.event.type.Data",
@@ -70,6 +72,7 @@ qx.Class.define("ncms.Events", {
          *  templateId: {Number} Page template ID
          *  user:       {String} User initiates this event
          *  hints:      {Map} optional event hints
+         *              app - Application UUID
          * }
          *
          */
@@ -105,7 +108,34 @@ qx.Class.define("ncms.Events", {
         /**
          * Marketing transfer tools rule properties changed
          */
-        "mttRulePropsChanged": "qx.event.type.Data"
+        "mttRulePropsChanged": "qx.event.type.Data",
+
+        /**
+         * Created/update media repository item.
+         *
+         * Data:
+         * {
+         *   id:        {Number}  Media item ID
+         *   isFolder   {Boolean} True if this media item is a folder
+         *   path:      {String}  Media repository path to this media item
+         *   user:      {String}  User initiates this event
+         * }
+         *
+         */
+        "mediaUpdated": "qx.event.type.Data",
+
+        /**
+         * Removed media repository item.
+         *
+         * Data:
+         * {
+         *   id:        {Number}  Media item ID.
+         *   isFolder   {Boolean} True if this media item is a folder
+         *   path:      {String}  Media repository path to this media item
+         *   user:      {String}  User initiates this event
+         * }
+         */
+        "mediaRemoved": "qx.event.type.Data"
     },
 
     members: {
@@ -148,6 +178,11 @@ qx.Class.define("ncms.Events", {
                 case "AsmRemovedEvent":
                     this.__fireDataEvent("pageRemoved", msg); // we are not using page hints
                     break;
+                case "MediaUpdateEvent":
+                    this.__fireDataEvent("mediaUpdated", msg);
+                    break;
+                case "MediaDeleteEvent":
+                    this.__fireDataEvent("mediaRemoved", msg);
             }
         },
 
