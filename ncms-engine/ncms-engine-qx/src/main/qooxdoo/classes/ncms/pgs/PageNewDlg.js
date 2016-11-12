@@ -37,12 +37,12 @@ qx.Class.define("ncms.pgs.PageNewDlg", {
                 parent: this._id,
                 type: items["container"].getValue() ? "page.folder" : "page"
             };
-            var req = new sm.io.Request(ncms.Application.ACT.getUrl("pages.new"), "PUT");
+            var req = new sm.io.Request(ncms.Application.ACT.getUrl("pages.new"), "PUT", "application/json");
             req.addListenerOnce("finished", cb);
             req.setRequestContentType("application/json");
             req.setData(JSON.stringify(data));
             req.send(function (resp) {
-                this.fireDataEvent("completed", data);
+                this.fireDataEvent("completed", resp.getContent());
             }, this);
         }
     },

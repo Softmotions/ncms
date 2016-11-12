@@ -27,10 +27,12 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         var me = this;
         this._initTree(
             {
+                keyProperty: "id",
                 action: "pages.layer",
                 idPathSegments: true,
                 rootLabel: this.tr("Pages"),
                 selectRootAsNull: true,
+                reloadOnFolderOpen: true,
                 setupChildrenRequestFn: this.__setupChildrenRequest,
                 iconConverter: this.__treeIconConverter.bind(this),
                 delegate: {
@@ -53,6 +55,8 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         var events = ncms.Events.getInstance();
         events.addListener("pageChangePublished", this.__onPagePublished, this);
         events.addListener("pageCreated", this.__onPageCreated, this);
+        events.addListener("pageRemoved", this.__onPageEditedRemoved, this);
+        events.addListener("pageEdited", this.__onPageEditedRemoved, this);
 
         // Init shortcuts
         this._registerCommand(
@@ -97,19 +101,52 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             }
         },
 
-        //event=pageCreated
-        //data={"uuid":"d7144d93-c928-4953-a575-2bc849bfffbb",
-        //     "type":"AsmCreatedEvent",
-        //     "user":"admin",
-        //     "hints":{"app":"612c60ac-d04f-46f8-b3af-58008789f1be","page":true},
-        //     "id":1058,"name":"ee","hname":"ee","navParentId":282}
+        __onPageEditedRemoved: function (ev) {
+            var parent;
+            var data = ev.getData();
+            if (data.hints["app"] === ncms.Application.UUID) {
+                return;
+            }
+            var item = null;
+            this._tree.iterateOverCachedNodes(function (node) {
+                if (node.getId() === data.id) {
+                    item = node;
+                    return true;
+                }
+            }, this);
+            if (item != null) {
+                parent = this._tree.getParent(item) || this._tree.getModel();
+                this._refreshNode(parent, {
+                    openNode: false,
+                    updateOnly: data.id
+                });
+            }
+            if (data.hints["moveTargetId"] != null) {
+                var moveTargetId = data.hints["moveTargetId"];
+                parent = null;
+                if (moveTargetId == 0) {
+                    parent = this._tree.getModel();
+                } else {
+                    this._tree.iterateOverCachedNodes(function (node) {
+                        if (node.getId() === moveTargetId) {
+                            parent = node;
+                            return true;
+                        }
+                    }, this);
+                }
+                parent && this._refreshNode(parent, {
+                    openNode: false,
+                    updateOnly: data.id
+                });
+            }
+        },
+
         __onPageCreated: function (ev) {
             var data = ev.getData();
             if (data.hints["app"] === ncms.Application.UUID) {
                 return;
             }
             var parent = null;
-            console.log("Handle external page created");
             if (data.navParentId == null) { // Page added to the root
                 parent = this._tree.getModel();
             }
@@ -121,14 +158,9 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                     }
                 }, this);
             }
-            if (parent == null) {
-                console.log("Nav parent is not found");
-                return;
-            }
-            this._refreshNode(parent, {
-                /* todo temp disabled
+            parent && this._refreshNode(parent, {
                 openNode: false,
-                updateOnly: data.id*/
+                updateOnly: data.id
             });
         },
 
@@ -341,7 +373,10 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             var parentId = parent.getId();
             var dlg = new ncms.pgs.PageNewDlg(parentId);
             dlg.addListener("completed", function (ev) {
-                this._refreshNode(parent);
+                var item = ev.getData();
+                this._refreshNode(parent, {
+                    updateOnly: item.id
+                });
                 dlg.close();
             }, this);
             if (ev.getTarget().getContentLocation) {
@@ -375,7 +410,10 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                         dlg.open();
                         return;
                     }
-                    this._refreshNode(parent, {focus: true});
+                    this._refreshNode(parent, {
+                        focus: true,
+                        updateOnly: item.getId()
+                    });
                 }, this);
             }, this);
         },
@@ -397,5 +435,8 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
     destruct: function () {
         //this._disposeObjects("__field_name");
         ncms.Events.getInstance().removeListener("pageChangePublished", this.__onPagePublished, this);
+        ncms.Events.getInstance().removeListener("pageCreated", this.__onPageCreated, this);
+        ncms.Events.getInstance().removeListener("pageRemoved", this.__onPageEditedRemoved, this);
+        ncms.Events.getInstance().removeListener("pageEdited", this.__onPageEditedRemoved, this);
     }
 });

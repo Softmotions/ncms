@@ -28,9 +28,24 @@ qx.Class.define("ncms.Events", {
          *  id:     {Number} Page ID,
          *  user:   {String} User initiates this event
          *  hints:  {Map} optional event hints
+         *          `moveTargetId` - optional target page id if page has been moved,
+         *                           0 (zero) if page moved into root.
          * }
          */
         "pageEdited": "qx.event.type.Data",
+
+
+        /**
+         * Page removed.
+         *
+         * Data:
+         * {
+         *  id:     {Number} Page ID,
+         *  user:   {String} User initiates this event
+         *  hints:  {Map} optional event hints
+         * }
+         */
+        "pageRemoved": "qx.event.type.Data",
 
 
         /**
@@ -129,6 +144,10 @@ qx.Class.define("ncms.Events", {
                     if (hints["page"]) {
                         this.__fireDataEvent("pageCreated", msg);
                     }
+                    break;
+                case "AsmRemovedEvent":
+                    this.__fireDataEvent("pageRemoved", msg); // we are not using page hints
+                    break;
             }
         },
 

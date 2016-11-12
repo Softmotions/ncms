@@ -50,6 +50,8 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
          *   keyProperty: {String?} Optional name of tree item unique key property (eg. `id` for id primary identifier)
          *
          *   iconConverter : {Function?}
+         *
+         *   reloadOnFolderOpen: {Boolean?false}
          * }
          */
         _initTree: function (cfg) {
@@ -114,29 +116,31 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                         controller.bindProperty("", "open", {
                             converter: function (value, model, source, target) {
                                 var open = target.isOpen();
-                                if (open && !value.getLoaded()) {
-                                    me._loadChildren(value, function () {
-                                        value.setLoaded(true);
-                                    });
+                                if (open) {
+                                    if (!value.getLoaded()) {
+                                        me._loadChildren(value, function () {
+                                            value.setLoaded(true);
+                                        });
+                                    }
+                                } else if (cfg["reloadOnFolderOpen"] && typeof value.setLoaded === "function") {
+                                    value.setLoaded(false);
                                 }
                                 return open;
                             }
                         }, item, index);
+
                         if (cfgDelegate && typeof cfgDelegate["bindItem"] === "function") {
                             cfgDelegate["bindItem"](controller, item, index);
                         }
                     }
                 };
-
                 if (cfgDelegate != null) { //apply delegate properties from config
                     qx.lang.Object.mergeWith(delegate, cfgDelegate, false);
                 }
-
                 tree.setDelegate(delegate);
                 tree.getSelection().addListener("change", function (e) {
                     this._onSelected(e.getTarget().getItem(0));
                 }, this);
-
                 this.addTree(tree);
                 this.fireEvent("treeLoaded");
             }, this);
@@ -242,32 +246,32 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                 var data = resp.getContent(),
                     children = parent.getChildren();
 
+                data.forEach(function (node) {
+                    if (node["id"] === undefined) {
+                        node["id"] = null;
+                    }
+                    node["icon"] = "default";
+                    if ((node["status"] & 1) !== 0) { // is folder?
+                        node["loaded"] = false;
+                        node["children"] = [
+                            {
+                                label: "Loading",
+                                icon: "loading"
+                            }
+                        ]
+                    } else {
+                        node["loaded"] = true;
+                    }
+                });
+
                 while (true) {
 
                     if (cfg["keyProperty"] == null || opts.updateOnly == null) { // children full refresh
-
                         children.removeAll();
-                        for (var i = 0, l = data.length; i < l; ++i) {
-                            var node = data[i];
-                            if (node["id"] === undefined) {
-                                node["id"] = null;
-                            }
-                            node["icon"] = "default";
-                            if ((node["status"] & 1) !== 0) { // is folder?
-                                node["loaded"] = false;
-                                node["children"] = [
-                                    {
-                                        label: "Loading",
-                                        icon: "loading"
-                                    }
-                                ]
-                            } else {
-                                node["loaded"] = true;
-                            }
-                            children.push(qx.data.marshal.Json.createModel(node, true));
-                        }
-
-                    } else { // ADD / REMOVE / UPDATE OF ONE ITEM
+                        children.append(data.map(function (node) {
+                            return qx.data.marshal.Json.createModel(node, true);
+                        }));
+                    } else { // ADD / REMOVE / UPDATE
 
                         var cnt = (function () {
 
@@ -279,20 +283,21 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                                 isEmpty = true;
 
                             children.forEach(function (c) {
-                                if ((typeof c["keyAccessor"] === "function")
-                                    && c["keyAccessor"]() === opts.updateOnly) {
-                                    onlyChildItem = c;
+                                if (typeof c[keyAccessor] === "function") {
                                     isEmpty = false;
+                                    if (c[keyAccessor]() === opts.updateOnly) {
+                                        onlyChildItem = c;
+                                    }
                                 }
                             });
+
                             if (isEmpty) {  // children node is semi-empty                             // FULL REFRESH
                                 opts.updateOnly = null;
                                 return true;
                             }
 
                             data.forEach(function (c) {
-                                if ((c["keyProperty"] != null)
-                                    && c[keyProperty] === opts.updateOnly) {
+                                if ((c[keyProperty] != null) && c[keyProperty] === opts.updateOnly) {
                                     onlyDataItem = c;
                                 }
                             });
@@ -301,22 +306,22 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
                                 children.remove(onlyChildItem);
                             } else if (onlyDataItem != null && onlyChildItem == null) {                  // ADD
                                 ind = data.indexOf(onlyDataItem);
-                                if (ind > 0) ind--; else ind = 0;
-                                children.splice(ind, 0, qx.data.marshal.Json.createModel(node, true));
+                                children.splice(ind, 0, qx.data.marshal.Json.createModel(onlyDataItem, true));
                             } else {                                                                     // UPDATE
                                 ind = children.indexOf(onlyChildItem);
-                                //todo do not create new node and update existing
-                                children.splice(ind, 1, qx.data.marshal.Json.createModel(node, true));
+                                if (ind !== -1) {
+                                    //todo do not create a new node and update existing
+                                    children.splice(ind, 1, qx.data.marshal.Json.createModel(onlyDataItem, true));
+                                }
                             }
                         })();
+
                         if (cnt === true) {
                             continue;
                         }
                     }
-
                     break;
                 }
-
                 if (cb != null) {
                     cb.call(self);
                 }

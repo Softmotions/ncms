@@ -922,7 +922,8 @@ public class PageRS extends MBDAOSupport implements PageService {
             while (update("finishMove") > 0) ;
             ebus.fireOnSuccessCommit(
                     new AsmModifiedEvent(this, srcPage.getId(), req)
-                            .hint("page", true));
+                            .hint("page", true)
+                            .hint("moveTargetId", (tgtPage != null ? tgtPage.getId() : 0)));
         } finally {
             if (!alreadyLocked) {
                 unlockPage(req, src, true);
@@ -1068,10 +1069,10 @@ public class PageRS extends MBDAOSupport implements PageService {
             final boolean includePath = BooleanUtils.toBoolean(req.getParameter("includePath"));
             final JsonGenerator gen = new JsonFactory().createGenerator(output);
             gen.writeStartArray();
-            Map<String, Object> q = createSelectLayerQ(path, req);
-            q.put("user", req.getRemoteUser());
-            String stmtName = q.containsKey("nav_parent_id") ? "selectChildLayer" : "selectRootLayer";
             try {
+                Map<String, Object> q = createSelectLayerQ(path, req);
+                q.put("user", req.getRemoteUser());
+                String stmtName = q.containsKey("nav_parent_id") ? "selectChildLayer" : "selectRootLayer";
                 select(stmtName, context -> {
                     //noinspection unchecked
                     Map<String, ?> row = (Map<String, ?>) context.getResultObject();
