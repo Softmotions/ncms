@@ -67,7 +67,7 @@
     <commons.collection.version>3.2.2</commons.collection.version>  
     <commons.validator.version>1.4.0</commons.validator.version>  
     <httpcomponents.version>4.5.2</httpcomponents.version>  
-    <tomcat.version>8.5.6</tomcat.version>  
+    <tomcat.version>8.5.8</tomcat.version>
     <tomcat.embed.logging.version>8.5.2</tomcat.embed.logging.version>  
     <httl.version>1.0.11-SNAPSHOT</httl.version>  
     <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>  
