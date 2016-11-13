@@ -82,7 +82,7 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
                     assertTrue(it.hasNonNull("id"))
                     assertTrue(it.hasNonNull("folder"))
                     assertTrue(it.hasNonNull("name"))
-                    assertEquals(204, DELETE("/delete/${it.path("folder").asText()}${it.path("name").asText()}").code())
+                    assertEquals(200, DELETE("/delete/${it.path("folder").asText()}${it.path("name").asText()}").code())
                 }
             }
         }
@@ -119,7 +119,7 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
                                     assertTrue(isArray)
                                     forEach {
                                         assertTrue(it.hasNonNull("id"))
-                                        if (fileName.equals(it.path("name").asText(null))) {
+                                        if (fileName == it.path("name").asText(null)) {
                                             resource = "/fileid/" + it.path("id").asLong()
                                         }
                                     }
@@ -205,7 +205,7 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
                                 assertTrue(isArray)
                                 forEach {
                                     assertTrue(it.hasNonNull("id"))
-                                    if (fileName.equals(it.path("name").asText(null))) {
+                                    if (fileName == it.path("name").asText(null)) {
                                         resource = "/thumbnail2/" + it.path("id").asLong()
                                     }
                                 }
@@ -269,7 +269,7 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
                 forEach {
                     assertTrue(it.hasNonNull("label"))
                     assertEquals(1, it.path("status").asInt())
-                    assertEquals(204, DELETE("/delete/${it.path("label").asText()}").code())
+                    assertEquals(200, DELETE("/delete/${it.path("label").asText()}").code())
                 }
             }
         }
@@ -515,13 +515,13 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
     private fun putFile(folder: String = "", type: String = "txt"): JsonNode {
         val fileExt: String
         val contentType: String
-        if ("txt".equals(type)) {
+        if ("txt" == type) {
             contentType = "text/plain"
             fileExt = "txt"
-        } else if ("png".equals(type)) {
+        } else if ("png" == type) {
             contentType = "image/png"
             fileExt = "png"
-        } else if ("svg".equals(type)) {
+        } else if ("svg" == type) {
             contentType = "image/svg+xml"
             fileExt = "svg"
         } else {
@@ -564,11 +564,12 @@ class _TestMediaRS(db: String) : BaseRSTest(db) {
     }
 
     private fun delete(folder: String = "", fileName: String) {
-        assertEquals(204, DELETE("/delete/${prepareFolder(folder)}$fileName").code())
+        val code = DELETE("/delete/${prepareFolder(folder)}$fileName").code()
+        assertTrue(code == 200 || code == 204)
     }
 
     private fun prepareFolder(folder: String): String {
-        if (!"".equals(folder) && !folder.endsWith("/")) {
+        if ("" != folder && !folder.endsWith("/")) {
             return folder + "/"
         } else {
             return folder

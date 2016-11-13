@@ -257,7 +257,7 @@
     <update id="updateIcon" parameterType="map">
         UPDATE MEDIA_ENTITY
         SET
-            icon              = #{icon,jdbcType=BLOB},
+            icon              = #{icon},
             icon_content_type = #{icon_content_type}
         WHERE id = #{id}
     </update>

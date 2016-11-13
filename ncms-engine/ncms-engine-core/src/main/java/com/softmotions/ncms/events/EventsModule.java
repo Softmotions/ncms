@@ -12,7 +12,7 @@ import com.google.common.eventbus.SubscriberExceptionHandler;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.commons.ServicesConfiguration;
 import com.softmotions.weboot.mb.MBSqlSessionListener;
 import com.softmotions.weboot.mb.MBSqlSessionManager;
 
@@ -52,9 +52,9 @@ public class EventsModule extends AbstractModule {
         }
 
         @Inject
-        LocalEventBus(NcmsEnvironment env,
+        LocalEventBus(ServicesConfiguration cfg,
                       MBSqlSessionManager sessionManager) {
-            super(Executors.newFixedThreadPool(env.xcfg().getInt("events.num-workers", 1)), EX_INSTANCE);
+            super(Executors.newFixedThreadPool(cfg.xcfg().getInt("events.num-workers", 1)), EX_INSTANCE);
             this.sessionManager = sessionManager;
         }
 
