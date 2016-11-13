@@ -15,23 +15,36 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
     construct: function (allowModify) {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.Grow());
+
         this._initTree({
+            reloadOnFolderOpen: true,
             action: "media.folders",
             rootLabel: this.tr("Files"),
             iconConverter: this.__treeIconConverter.bind(this)
         });
+
         if (allowModify) {
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
+            // Init shortcuts
+            this._registerCommand(
+                new sm.ui.core.ExtendedCommand("Delete"),
+                this.__onDelete, this);
+            this._registerCommand(
+                new sm.ui.core.ExtendedCommand("F2"),
+                this.__onRename, this);
+            this._registerCommand(
+                new sm.ui.core.ExtendedCommand("F6"),
+                this.__onMove, this);
+            this._registerCommand(
+                new sm.ui.core.ExtendedCommand("Alt+Insert"),
+                this.__onNewFolder, this);
         }
 
-        // Init shortcuts
-        this._registerCommand(
-            new sm.ui.core.ExtendedCommand("Delete"),
-            this.__onDelete, this);
-        this._registerCommand(
-            new sm.ui.core.ExtendedCommand("F2"),
-            this.__onRename, this);
+        var events = ncms.Events.getInstance();
+        events.addListener("mediaUpdated", this.__onMediaUpdatedRemoved, this);
+        events.addListener("mediaRemoved", this.__onMediaUpdatedRemoved, this);
+
         this.addListenerOnce("treeLoaded", function () {
             this._registerCommandFocusWidget(this._tree);
         }, this);
@@ -39,6 +52,13 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
 
     members: {
 
+        __onMediaUpdatedRemoved: function (ev) {
+            var data = ev.getData();
+            if (data.hints["app"] === ncms.Application.UUID || !data["isFolder"]) {
+                return;
+            }
+            // todo implement it
+        },
 
         __treeIconConverter: function (value, model, source, target) {
             switch (value) {
@@ -104,7 +124,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             menu.add(bt);
         },
 
-        __onRefresh: function (ev) {
+        __onRefresh: function () {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
@@ -112,7 +132,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             this._refreshNode2(item);
         },
 
-        __onDelete: function (ev) {
+        __onDelete: function () {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
@@ -123,8 +143,10 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
                 if (!yes) return;
                 var url = ncms.Application.ACT.getRestUrl("media.delete", path);
                 var req = new sm.io.Request(url, "DELETE", "application/json");
-                req.send(function (resp) {
-                    this._refreshNode(parent);
+                req.send(function () {
+                    this._refreshNode(parent, {
+                        focus: true
+                    });
                 }, this);
             }, this);
         },
@@ -152,7 +174,7 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
             dlg.open();
         },
 
-        __onMove: function (ev) {
+        __onMove: function () {
             var item = this._tree.getSelection().getItem(0);
             if (item == null) {
                 return;
@@ -202,7 +224,11 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
                 dlg.close();
                 this._refreshNode2(parent);
             }, this);
-            dlg.placeToWidget(ev.getTarget(), false);
+            if (ev.getTarget().getContentLocation) {
+                dlg.placeToWidget(ev.getTarget(), false);
+            } else {
+                dlg.placeToWidget(this._tree, false);
+            }
             dlg.open();
         },
 
@@ -231,5 +257,8 @@ qx.Class.define("ncms.mmgr.MediaItemTreeSelector", {
 
     destruct: function () {
         //this._disposeObjects("__field_name");
+        var events = ncms.Events.getInstance();
+        events.removeListener("mediaUpdated", this.__onMediaUpdatedRemoved, this);
+        events.removeListener("mediaRemoved", this.__onMediaUpdatedRemoved, this);
     }
 });

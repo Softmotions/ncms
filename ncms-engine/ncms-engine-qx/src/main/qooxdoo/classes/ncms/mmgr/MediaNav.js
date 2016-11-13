@@ -18,12 +18,6 @@ qx.Class.define("ncms.mmgr.MediaNav", {
             return new ncms.mmgr.MediaFolderEditor();
         }, null, this);
 
-        this.addListener("disappear", function () {
-            //Navigation side is inactive so hide mmfolder editor pane if it not done already
-            if (app.getActiveWSAID() == eclazz) {
-                app.showDefaultWSA();
-            }
-        }, this);
         this.addListener("appear", function () {
             if (app.getActiveWSAID() != eclazz) {
                 app.showWSA(eclazz);

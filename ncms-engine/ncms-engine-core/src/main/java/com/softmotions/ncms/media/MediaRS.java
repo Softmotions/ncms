@@ -676,8 +676,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @DELETE
     @javax.ws.rs.Path("/delete/{path:.*}")
+    @Nullable
     @Transactional(executorType = ExecutorType.BATCH)
-    public void deleteResource(@PathParam("path") String path,
+    public Long deleteResource(@PathParam("path") String path,
                                @Context HttpServletRequest req,
                                @Nullable @Context HttpServletResponse resp) throws Exception {
 
@@ -690,7 +691,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         boolean isdir;
-        Long id = null;
+        Long id;
         String name = getResourceName(path);
         String folder = getResourceParentFolder(path);
 
@@ -748,10 +749,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 }
             }
         }
-
-        ebus.fireOnSuccessCommit(
-                new MediaDeleteEvent(this, id, isdir, path, req)
-        );
+        ebus.fireOnSuccessCommit(new MediaDeleteEvent(this, id, isdir, path, req));
+        return id;
     }
 
     @DELETE

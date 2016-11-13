@@ -21,18 +21,13 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
             return new ncms.mtt.tp.MttTpEditor();
         }, null, this);
 
-        this.addListener("disappear", function () {
-            //Navigation side is inactive so hide mtt editor pane if it not done already
-            if (app.getActiveWSAID() == eclazz) {
-                app.showDefaultWSA();
-            }
-            this.__selector.resetSelection();
-            app.disposeWSA(eclazz);
-        }, this);
-
         this.addListener("appear", function () {
-            if (app.getActiveWSAID() != eclazz && this.__selector.getSelectedTp() != null) {
-                app.showWSA(eclazz);
+            if (app.getActiveWSAID() != eclazz) {
+                if (this.__selector.getSelectedTp() != null) {
+                    app.showWSA(eclazz);
+                } else {
+                    app.showDefaultWSA();
+                }
             }
         }, this);
 
@@ -55,7 +50,7 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
 
         __selector: null,
 
-        __tpSelected: function(ev) {
+        __tpSelected: function (ev) {
             var data = ev.getData();
             var app = ncms.Application.INSTANCE;
             if (data == null) {
@@ -119,7 +114,7 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
             this.__selector.reload();
         },
 
-        __onRenameTp: function(ev) {
+        __onRenameTp: function (ev) {
             var tp = this.__selector.getSelectedTp();
             if (tp == null) {
                 return;

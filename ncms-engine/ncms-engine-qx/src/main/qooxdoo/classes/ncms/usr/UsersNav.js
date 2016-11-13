@@ -46,15 +46,13 @@ qx.Class.define("ncms.usr.UsersNav", {
                 return new ncms.usr.UserEditor(userEditable, accessEditable);
             }, null, this);
 
-            this.addListener("disappear", function () {
-                //Navigation side is inactive so hide user editor pane if it not done already
-                if (app.getActiveWSAID() == eclazz) {
-                    app.showDefaultWSA();
-                }
-            }, this);
             this.addListener("appear", function () {
-                if (app.getActiveWSAID() != eclazz && this.__getSelectedUser() != null) {
-                    app.showWSA(eclazz);
+                if (app.getActiveWSAID() != eclazz) {
+                    if (this.__getSelectedUser() != null) {
+                        app.showWSA(eclazz);
+                    } else {
+                        app.showDefaultWSA();
+                    }
                 }
             }, this);
 

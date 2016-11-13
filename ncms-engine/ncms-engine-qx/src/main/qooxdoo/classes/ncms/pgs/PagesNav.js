@@ -17,18 +17,12 @@ qx.Class.define("ncms.pgs.PagesNav", {
         this.set({paddingTop: 5, paddingBottom: 5});
 
         //Register page editor
-        var eclazz = ncms.pgs.PagesSelector.PAGE_EDITOR_CLAZZ;
+        var eclazz = ncms.pgs.PagesNav.PAGE_EDITOR_CLAZZ;
         var app = ncms.Application.INSTANCE;
         app.registerWSA(eclazz, function () {
             return new ncms.pgs.PageEditor();
         }, null, this);
 
-        this.addListener("disappear", function () {
-            //Navigation side is inactive so hide page editor pane if it not done already
-            if (app.getActiveWSAID() == eclazz) {
-                app.showDefaultWSA();
-            }
-        }, this);
         this.addListener("appear", function () {
             if (app.getActiveWSAID() != eclazz) {
                 if (this.getSelectedPage() != null) {

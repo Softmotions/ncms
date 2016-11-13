@@ -74,16 +74,13 @@ qx.Class.define("ncms.mtt.MttNav", {
             return new ncms.mtt.MttEditor();
         }, null, this);
 
-        this.addListener("disappear", function () {
-            //Navigation side is inactive so hide mtt editor pane if it not done already
-            if (app.getActiveWSAID() == eclazz) {
-                app.showDefaultWSA();
-            }
-            //app.disposeWSA(eclazz);
-        }, this);
         this.addListener("appear", function () {
-            if (app.getActiveWSAID() != eclazz && this.__selector.getSelectedRule() != null) {
-                app.showWSA(eclazz);
+            if (app.getActiveWSAID() != eclazz) {
+                if (this.__selector.getSelectedRule() != null) {
+                    app.showWSA(eclazz);
+                } else {
+                    app.showDefaultWSA();
+                }
             }
         }, this);
 

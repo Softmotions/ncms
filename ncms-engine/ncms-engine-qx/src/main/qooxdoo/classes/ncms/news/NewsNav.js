@@ -28,12 +28,6 @@ qx.Class.define("ncms.news.NewsNav", {
             return new ncms.news.NewsEditor();
         }, null, this);
 
-        this.addListener("disappear", function () {
-            //Navigation side is inactive so hide page editor pane if it not done already
-            if (app.getActiveWSAID() == eclazz) {
-                app.showDefaultWSA();
-            }
-        }, this);
         this.addListener("appear", function () {
             if (app.getActiveWSAID() != eclazz) {
                 if (this.getSelectedPage() != null) {

@@ -53,10 +53,8 @@ public class NcmsSecurityRS {
     @Path("settings")
     public JsonNode settings() {
         ObjectNode res = mapper.createObjectNode();
-
         res.put("usersWritable", userDatabase.isCanUsersWrite());
         res.put("usersAccessWritable", userDatabase.isCanUsersAccessWrite());
-
         return res;
     }
 
