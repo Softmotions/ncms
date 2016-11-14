@@ -128,6 +128,7 @@ Escape $ и # символов
     #for(color: ["red","yellow","blue"])
         ${color}
     #end
+
 * Результатом выражения: `${["foo":"bar", "foo2":"bar2"]}` является `java.util.Map` с отношениями
   `foo => bar` и `foo2 => bar2`::
 
@@ -276,7 +277,8 @@ Escape $ и # символов
 которые возвращают коллекцию подэлементов. Итерация по всем
 элементам в данной иерархии::
 
-#for (Menu menu: menus.recursive ("getChildren"))
+    #for (Menu menu: menus.recursive ("getChildren"))
+
 
 Прерывание цикла с помощью #break
 *********************************
