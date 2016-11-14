@@ -26,5 +26,6 @@
     asmref/asmref
     table/table
     alias/alias
+    select/select
 
 
