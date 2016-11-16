@@ -192,6 +192,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("F6"),
             this.__moveFiles, this);
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__onNewFile, this);
         this._registerCommandFocusWidget(table);
     },
 
@@ -305,7 +308,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 part.add(bt);
 
                 this.__importBt = bt = new qx.ui.toolbar.Button(null, "ncms/icon/16/misc/document-import.png")
-                        .set({"appearance": "toolbar-table-button"});
+                .set({"appearance": "toolbar-table-button"});
                 bt.setToolTipText(this.tr("Import from media repository"));
                 bt.addListener("execute", this.__importFile, this);
                 this.__importBt.exclude();
@@ -405,7 +408,11 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 dlg.close();
                 this.reload();
             }, this);
-            dlg.placeToWidget(ev.getTarget(), false);
+            if (ev.getTarget().getContentLocation) {
+                dlg.placeToWidget(ev.getTarget(), false);
+            } else {
+                dlg.placeToWidget(this.__sf, false);
+            }
             dlg.open();
         },
 
@@ -774,7 +781,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 files.forEach(function (f) {
                     paths.push(f["folder"] + f["name"]);
                 });
-                var path=this.__getParentPath();
+                var path = this.__getParentPath();
                 var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.copy-batch", path), "PUT");
                 req.setRequestContentType("application/json");
                 req.setData(JSON.stringify(paths));

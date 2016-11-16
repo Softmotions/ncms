@@ -19,13 +19,16 @@
     wiki/wiki
     boolean/boolean
     date/date
-    image/image
     pageref/pageref
     webref/webref
     fileref/fileref
     asmref/asmref
+    image/image
+    richref/richref
     table/table
-    alias/alias
     select/select
+    core/core
+    alias/alias
+
 
 

@@ -187,6 +187,7 @@
         </createTable>
     </changeSet>
     <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-17">
+        <validCheckSum>any</validCheckSum>
         <createTable tableName="MEDIA_ENTITY">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_MEDIA_ENTITY"/>

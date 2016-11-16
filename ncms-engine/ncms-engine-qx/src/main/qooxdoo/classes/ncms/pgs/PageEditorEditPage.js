@@ -657,7 +657,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         },
 
         __files: function () {
-            qx.log.Logger.info("Files");
             var ps = this.getPageSpec();
             var dlg = new ncms.mmgr.PageFilesSelectorDlg(
                 ps["id"],
