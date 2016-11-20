@@ -1504,7 +1504,7 @@ msgstr "Не опубликовано"
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:664
+#: ncms/pgs/PageEditorEditPage.js:663
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 
