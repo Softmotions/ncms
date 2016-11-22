@@ -40,7 +40,7 @@ qx.Class.define("ncms.pgs.PagesSelectorDlg", {
             showMaximize: true,
             allowMaximize: true,
             width: 620,
-            height: 400
+            height: 500
         });
 
         var selector = this._selector = new ncms.pgs.PagesSelector(!!allowModify, options);

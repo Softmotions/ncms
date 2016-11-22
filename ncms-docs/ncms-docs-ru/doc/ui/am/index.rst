@@ -24,9 +24,10 @@
     fileref/fileref
     asmref/asmref
     image/image
-    richref/richref
-    table/table
     select/select
+    table/table
+    richref/richref
+    tree/tree
     core/core
     alias/alias
 
