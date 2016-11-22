@@ -58,7 +58,7 @@
 Использование в разметке
 ------------------------
 
-**Тип значения атрибута:** `com.softmotions.ncms.mhttl.Image`
+**Тип значения атрибута:** :ref:`com.softmotions.ncms.mhttl.Image`
 
 
 Пример вставки отмаштабируемой картинки в качестве элемента `<img>`:
@@ -73,4 +73,22 @@
 .. code-block:: html
 
     <img src="$!{((Image) asm('image')).link}"></img>
+
+
+.. _com.softmotions.ncms.mhttl.Image:
+
+com.softmotions.ncms.mhttl.Image
+--------------------------------
+
+.. js:attribute:: Long Image.id
+
+    Идентификатор медиафайла в репозитории nCMS
+
+.. js:function:: String getLink()
+
+    Возвращает ссылку на изображение в правильном масштабе.
+
+    **Изображение в httl разметке**::
+
+    <img src="$!{img.link}" ...>
 

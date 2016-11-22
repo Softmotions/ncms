@@ -51,7 +51,7 @@
 ------------------------
 
 В контексте httl разметки, значением данного атрибута
-является коллекция объектов типа `com.softmotions.ncms.mhttl.SelectNode`
+является коллекция объектов типа :ref:`com.softmotions.ncms.mhttl.SelectNode`
 где для каждого элемента определены следующие своства:
 
 * **key** Название элемента (java.lang.String)
@@ -69,4 +69,21 @@
         </option>
     #end
     </select>
+
+.. _com.softmotions.ncms.mhttl.SelectNode:
+
+com.softmotions.ncms.mhttl.SelectNode
+-------------------------------------
+
+.. js:attribute:: String SelectNode.key
+
+    Название опции select элемента, отображаемое пользователю
+
+.. js:attribute:: String SelectNode.value
+
+    Значение опции select элемента, используемое сайтом
+
+.. js:attribute:: boolean SelectNode.selected
+
+    Если ``true`` то текущая опция выбрана (является активной)
 

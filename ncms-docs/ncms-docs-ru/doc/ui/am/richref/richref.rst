@@ -89,25 +89,52 @@
 .. figure:: img/img3.png
 
 
+.. _com.softmotions.ncms.mhttl.RichRef:
+
+com.softmotions.ncms.mhttl.RichRef
+----------------------------------
+
+Все атрибуты RichRef являются опциональными.
+
+.. js:attribute:: Image RichRef.image
+
+    Изображение :ref:`com.softmotions.ncms.mhttl.Image`, связанное с richref
+
+.. js:attribute:: String RichRef.description
+
+   Дополнительный многострочный комментарий. См. опцию атрибута: **дополнительно (checkbox)**
 
 
+.. js:attribute:: String RichRef.link
 
+    HTTP ссылка заданная в данном атрибуте
 
+.. js:attribute:: String RichRef.name
 
+    Строковое имя, заданное в ссылке или отдельным
+    полем ``Название`` если включена опция **название (checkbox)**
 
+.. js:attribute:: String RichRef.style
 
+    Значение стиля из первого множества опций, выбранного редактором сайта, если
+    соответствующее множество опций было задано в опциях атрибута.
 
+.. js:attribute:: String RichRef.style2
 
+    Значение стиля из второго множества опций, выбранного редактором сайта, если
+    соответствующее множество опций было задано в опциях атрибута.
 
+.. js:attribute:: String RichRef.style3
 
+    Значение стиля из третьего множества опций, выбранного редактором сайта, если
+    соответствующее множество опций было задано в опциях атрибута.
 
+.. js:function:: String toHtmlLink(@Nullable Map<String, ?> amap)
 
+    Этот метод генерирует код HTML ссылки `<a>` атрибута
+    в том случае, если для `richref` задана ссылка (`link`).
+    При этом, дополнительно можно указать список атрибутов
+    которые будут связаны с ссылкой, как например::
 
-
-
-
-
-
-
-
+    $!{richref.toHtmlLink(['class':'active'])}
 

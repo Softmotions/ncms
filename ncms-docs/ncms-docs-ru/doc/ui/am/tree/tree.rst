@@ -77,6 +77,42 @@
 для этого атрибута.
 
 
+Отобразим заданное в этом примере двухуровневое дерево ссылок
+как простой список:
+
+.. code-block:: html
+
+    <html>
+      <body>
+        <h1>Tree demo</h1>
+        <ul>
+        <!-- первый уровень -->
+        #foreach(Tree n1 in asm('tree'))
+          <li>
+            ${n1.name}
+            <ul>
+              <!-- второй уровень -->
+              #foreach(Tree n2 in n1)
+               <li>$!{n2.toHtmlLink}</li>
+              #end
+            </ul>
+          </li>
+        #end
+        </ul>
+      </body>
+    </html>
+
+Что будет отображено на странице как:
+
+.. figure:: img/img5.png
+
+
+.. _com.softmotions.ncms.mhttl.Tree:
+
+com.softmotions.ncms.mhttl.Tree
+-------------------------------
+
+
 
 
 

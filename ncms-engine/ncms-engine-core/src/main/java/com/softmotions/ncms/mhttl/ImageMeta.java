@@ -2,6 +2,8 @@ package com.softmotions.ncms.mhttl;
 
 import java.io.Serializable;
 
+import com.google.common.base.MoreObjects;
+
 /**
  * @author Tyutyunkov Vyacheslav (tve@softmotions.com)
  * @version $Id$
@@ -82,15 +84,14 @@ public class ImageMeta implements Serializable {
     }
 
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Image{");
-        sb.append("id=").append(id);
-        sb.append(", optionsWidth=").append(optionsWidth);
-        sb.append(", optionsHeight=").append(optionsHeight);
-        sb.append(", restrict=").append(restrict);
-        sb.append(", cover=").append(cover);
-        sb.append(", resize=").append(resize);
-        sb.append(", skipSmall=").append(skipSmall);
-        sb.append('}');
-        return sb.toString();
+        return MoreObjects.toStringHelper(this)
+                          .add("id", id)
+                          .add("resize", resize)
+                          .add("cover", cover)
+                          .add("optionsWidth", optionsWidth)
+                          .add("optionsHeight", optionsHeight)
+                          .add("restrict", restrict)
+                          .add("skipSmall", skipSmall)
+                          .toString();
     }
 }

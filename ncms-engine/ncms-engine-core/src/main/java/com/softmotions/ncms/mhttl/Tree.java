@@ -12,11 +12,10 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.MoreObjects;
 
 /**
  * Simple tree container
@@ -25,8 +24,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @SuppressWarnings("unchecked")
 public final class Tree implements Iterable<Tree>, Serializable {
-
-    private static final Logger log = LoggerFactory.getLogger(Tree.class);
 
     private Long id;
 
@@ -202,20 +199,18 @@ public final class Tree implements Iterable<Tree>, Serializable {
     }
 
 
-    @SuppressWarnings("StringBufferReplaceableByString")
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Tree{");
-        sb.append("id=").append(id);
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", type='").append(type).append('\'');
-        sb.append(", extra='").append(extra).append('\'');
-        sb.append(", icon='").append(icon).append('\'');
-        sb.append(", link='").append(link).append('\'');
-        sb.append(", nam='").append(nam).append('\'');
-        sb.append(", richRef='").append(richRef).append('\'');
-        sb.append(", attributes='").append(attributes).append('\'');
-        sb.append(", children=").append(children);
-        sb.append('}');
-        return sb.toString();
+        return MoreObjects.toStringHelper(this)
+                          .add("id", id)
+                          .add("name", name)
+                          .add("type", type)
+                          .add("extra", extra)
+                          .add("icon", icon)
+                          .add("link", link)
+                          .add("nam", nam)
+                          .add("richRef", richRef)
+                          .add("attributes", attributes)
+                          .add("children", children)
+                          .toString();
     }
 }
