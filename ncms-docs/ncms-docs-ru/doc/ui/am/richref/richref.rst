@@ -129,7 +129,7 @@ com.softmotions.ncms.mhttl.RichRef
     Значение стиля из третьего множества опций, выбранного редактором сайта, если
     соответствующее множество опций было задано в опциях атрибута.
 
-.. js:function:: String toHtmlLink(@Nullable Map<String, ?> amap)
+.. js:function:: String RichRef.toHtmlLink(@Nullable Map<String, ?> amap)
 
     Этот метод генерирует код HTML ссылки `<a>` атрибута
     в том случае, если для `richref` задана ссылка (`link`).
