@@ -11,7 +11,7 @@
 Опции атрибута
 --------------
 
-.. figure:: img/img1.png
+.. figure:: img/image_img1.png
 
     Опции атрибута
 
@@ -37,7 +37,7 @@
 Режим редактирования
 --------------------
 
-.. figure:: img/img2.png
+.. figure:: img/image_img2.png
 
     Атрибут на панели редактирования страницы
 
@@ -45,12 +45,12 @@
 предлагает выбрать файл изображения:
 
 
-.. figure:: img/img3.png
+.. figure:: img/image_img3.png
 
     Выбор файла изображения
 
 
-.. figure:: img/img4.png
+.. figure:: img/image_img4.png
 
     Атрибут после выбора изображения
 

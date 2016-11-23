@@ -7,7 +7,7 @@
 Опции атрибута
 --------------
 
-.. figure:: img/img1.png
+.. figure:: img/fileref_img1.png
 
     Опции атрибута
 
@@ -26,7 +26,7 @@
 Режим редактирования
 --------------------
 
-.. figure:: img/img2.png
+.. figure:: img/fileref_img2.png
 
     Путь до файла в медиарепозитории nCMS
 
@@ -52,7 +52,7 @@
 
 В результате получим следующую страницу:
 
-.. image:: img/img3.png
+.. image:: img/fileref_img3.png
 
 
 

@@ -47,7 +47,7 @@
 
 В результате, при вводе адреса в поле будет появляться выпадающий список:
 
-.. figure:: img/suggestions.png
+.. figure:: img/dadata_suggestions.png
     :align: center
 
 Комплексный пример

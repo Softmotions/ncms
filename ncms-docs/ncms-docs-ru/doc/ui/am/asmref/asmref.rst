@@ -18,7 +18,7 @@
 Опции атрибута
 --------------
 
-.. figure:: img/img3.png
+.. figure:: img/asmref_img3.png
 
     Опции атрибута
 
@@ -37,13 +37,13 @@
 
 В данном примере мы создадим :term:`сборку <сборка>` с именем `docsink_included_assembly`:
 
-.. image:: img/img1.png
+.. image:: img/asmref_img1.png
 
 
 Для этой сборки создадим простой текстовой атрибут `greeting`
 со значением: `Hello from included assembly`:
 
-.. image:: img/img2.png
+.. image:: img/asmref_img2.png
 
 Для сборки создадим файл разметки `/site/docsink/included_asm_core.httl` со следующим содержимым:
 
@@ -64,17 +64,17 @@
 Перейдя в атрибуты сборки создадим атрибут с именем `asmref`  и
 типом `asmref`
 
-.. image:: img/img3.png
+.. image:: img/asmref_img3.png
 
 Нажав на кнопку `Выбор сборки (assembly)` укажем включаемую сборку:
 
-.. image:: img/img4.png
+.. image:: img/asmref_img4.png
 
 
 В при открытии страницы этой сборки
 получим:
 
-.. image:: img/img5.png
+.. image:: img/asmref_img5.png
 
 
 

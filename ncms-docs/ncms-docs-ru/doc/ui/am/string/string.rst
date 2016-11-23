@@ -11,7 +11,7 @@
 --------------
 
 
-.. figure:: img/img1.png
+.. figure:: img/string_img1.png
 
     Опиции строкового атрибута
 

@@ -36,26 +36,26 @@ wiki разметки:
 редактором разметки и элементами управления, которые облегчают
 выполнение многих рутинных задач:
 
-.. figure:: img/img1.png
+.. figure:: img/wiki_img1.png
 
     Интерфейс редактирования wiki разметки
 
 Ниже описаны основные элементы управления wiki разметкой
 при использовании языка разметки `mediawiki <https://www.mediawiki.org/wiki/Help:Formatting/ru>`_
 
-.. image:: img/img2.png
-.. image:: img/img3.png
-.. image:: img/img4.png
+.. image:: img/wiki_img2.png
+.. image:: img/wiki_img3.png
+.. image:: img/wiki_img4.png
 
 Заголовки первого, второго и третьего уровня, аналогично
 элементам `<h1>`, `<h2>`, `<h3>` в html.
 
-.. image:: img/img5.png
+.. image:: img/wiki_img5.png
     :align: left
 
 Полужирный **текст**
 
-.. image:: img/img6.png
+.. image:: img/wiki_img6.png
     :align: left
 
 Текст *курсивом*
@@ -64,7 +64,7 @@ wiki разметки:
 
 ----
 
-.. image:: img/img7.png
+.. image:: img/wiki_img7.png
     :align: left
 
 **Вставка ненумерованного списка**
@@ -80,7 +80,7 @@ Mediawiki разметка ненумерованного списка::
 
 ----
 
-.. image:: img/img8.png
+.. image:: img/wiki_img8.png
     :align: left
 
 **Вставка нумерованного списка**
@@ -97,12 +97,12 @@ Mediawiki разметка нумерованного списка::
 
 ----
 
-.. image:: img/img9.png
+.. image:: img/wiki_img9.png
     :align: left
 
 **Ссылка на страницу nCMS:**
 
-.. figure:: img/img18.png
+.. figure:: img/wiki_img18.png
 
     Диалог выбора страницы для ссылки.
 
@@ -118,12 +118,12 @@ Mediawiki разметка нумерованного списка::
 
 ----
 
-.. image:: img/img10.png
+.. image:: img/wiki_img10.png
     :align: left
 
 **Изображение, ссылка**
 
-.. figure:: img/img19.png
+.. figure:: img/wiki_img19.png
 
     Вставка изображения/ссылки в виде изображения.
 
@@ -200,12 +200,12 @@ Mediawiki разметка нумерованного списка::
 
 ----
 
-.. image:: img/img11.png
+.. image:: img/wiki_img11.png
     :align: left
 
 **Файл, ссылка** -- вставка ссылки на файл, который можно открыть при нажатии на ссылку.
 
-.. figure:: img/img20.png
+.. figure:: img/wiki_img20.png
 
     Диалог выбора файла
 
@@ -224,12 +224,12 @@ Mediawiki разметка нумерованного списка::
 
 ----
 
-.. image:: img/img12.png
+.. image:: img/wiki_img12.png
     :align: left
 
 **Вставка таблицы**
 
-.. figure:: img/img21.png
+.. figure:: img/wiki_img21.png
 
     Диалог заполнения таблицы
 
@@ -281,13 +281,13 @@ Mediawiki разметка нумерованного списка::
 
 ----
 
-.. image:: img/img13.png
+.. image:: img/wiki_img13.png
     :align: left
 
 **Вставка дерева**  -- дизайн некоторых сайтов предполагает наличие иерархических, древовидных
 элементов в контексте страниц.
 
-.. figure:: img/img22.png
+.. figure:: img/wiki_img22.png
 
     Опции дерева
 
@@ -326,7 +326,7 @@ Mediawiki разметка нумерованного списка::
     стилизовать HTML код отображения дерева на основе `<ul class='tree'>` списков.
 
 
-.. figure:: img/img23.png
+.. figure:: img/wiki_img23.png
 
     Приведенное дерево без стилизации
 
@@ -334,7 +334,7 @@ Mediawiki разметка нумерованного списка::
 
 ----
 
-.. image:: img/img14.png
+.. image:: img/wiki_img14.png
     :align: left
 
 **Вставка заметки** -- позволяет вставить на страницу контейнер для заметки/предупреждения.
@@ -355,13 +355,13 @@ HTML разметка предупреждения, которая может б
 
 ----
 
-.. image:: img/img24.png
+.. image:: img/wiki_img24.png
     :align: left
 
 **Вставка ролика Youtube**
 
 
-.. figure:: img/img25.png
+.. figure:: img/wiki_img25.png
 
     Опции вставки ролика Youtube
 
@@ -374,19 +374,19 @@ Wiki разметка для вставки youtube ролика:
 
 В результате, в контексте страницы сайта мы получаем youtube ролик:
 
-.. image:: img/img26.png
+.. image:: img/wiki_img26.png
     :target: https://www.youtube.com/watch?v=CABN2r4GPpQ
 
 
 ----
 
-.. image:: img/img28.png
+.. image:: img/wiki_img28.png
     :align: left
 
 **Вставка карты Google Maps**
 
 
-.. figure:: img/img29.png
+.. figure:: img/wiki_img29.png
 
     Диалог подключения участка google карты.
 
@@ -404,19 +404,19 @@ Wiki разметка для вставки youtube ролика:
 
 Мы получим карту на странице:
 
-.. image:: img/img30.png
+.. image:: img/wiki_img30.png
 
 
 |
 
 ----
 
-.. image:: img/img16.png
+.. image:: img/wiki_img16.png
     :align: left
 
 **Презентация SlideShare**
 
-.. figure:: img/img31.png
+.. figure:: img/wiki_img31.png
 
     Диалог подключения участка презентации SlideShare.
 
@@ -430,18 +430,18 @@ Wiki разметка для вставки youtube ролика:
 
 А при отображении страницы получим встроенную презентацию:
 
-.. image:: img/img32.png
+.. image:: img/wiki_img32.png
 
 |
 
 ----
 
-.. image:: img/img17.png
+.. image:: img/wiki_img17.png
     :align: left
 
 **Видеоролик vimeo**
 
-.. figure:: img/img33.png
+.. figure:: img/wiki_img33.png
 
     Опции вставки ролика Vimeo
 
@@ -454,7 +454,7 @@ Wiki разметка для вставки vimeo ролика:
 
 В результате, в контексте страницы сайта мы получаем vimeo ролик:
 
-.. image:: img/img34.png
+.. image:: img/wiki_img34.png
     :target: https://vimeo.com/105286558
 
 

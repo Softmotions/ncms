@@ -13,7 +13,7 @@ checkbox переключатель.
 Опции атрибута
 --------------
 
-.. figure:: img/img1.png
+.. figure:: img/boolean_img1.png
 
     Значение атрибута по умолчанию
 

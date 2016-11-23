@@ -58,7 +58,7 @@
 в формате :term:`mediawiki`
 
 
-.. figure:: img/img1.png
+.. figure:: img/tp_img1.png
     :align: center
 
     Конфигурация базового типа страниц  `base_content`  в итерфейсе `Сборки`
@@ -67,25 +67,25 @@
 Далее в интерфейсе редактирования содержимого страниц (`Страницы`)
 создаем страницу ``welcome`` на базе сбоки `base_content`
 
-.. figure:: img/img4.png
+.. figure:: img/tp_img4.png
     :align: center
 
     Нажимаем кнопку `Файл` и в контексте данной страницы создаем :term:`HTTL` разметку
 
 
-.. figure:: img/img5.png
+.. figure:: img/tp_img5.png
     :align: center
 
     Создаем файл `core.httl` в приватной зоне страницы
 
 
-.. figure:: img/img6.png
+.. figure:: img/tp_img6.png
     :align: center
 
     Запускаем редактор `core.httl`
 
 
-.. figure:: img/img8.png
+.. figure:: img/tp_img8.png
     :align: center
 
     Разметка для `core.httl`  для ``welcome`` страницы
@@ -96,7 +96,7 @@
 Аналогичным образом создаем страницу ``product1`` со
 следующей разметкой:
 
-.. figure:: img/img7.png
+.. figure:: img/tp_img7.png
     :align: center
 
     Разметка для `core.httl`  для ``product1`` страницы
@@ -131,18 +131,18 @@
 страницы ``welcome`` ссылку на страницу  ``product1``
 
 
-.. figure:: img/img9.png
+.. figure:: img/tp_img9.png
     :align: center
 
     В ``welcome`` создаем ссылку на ``product1``
 
-.. figure:: img/img10.png
+.. figure:: img/tp_img10.png
     :align: center
 
     В ``welcome`` создаем ссылку на ``product1``
 
 
-.. figure:: img/img11.png
+.. figure:: img/tp_img11.png
     :align: center
 
     Страница ``welcome`` со ссылкой на ``product1``
@@ -161,13 +161,13 @@
      создать правило для страниц или разделов сайта, где действительно
      необходима функциональность трекинг пикселей.
 
-.. figure:: img/img13.png
+.. figure:: img/tp_img13.png
     :align: center
 
     Выбираем из набора действий дествие с именем `Отслеживать источники трафика`
     и отмечаем галку `Активировать трекинг пиксели`
 
-.. figure:: img/img14.png
+.. figure:: img/tp_img14.png
     :align: center
 
     В результате имеем следующий вид конфигурации правила `all` для всех
@@ -177,7 +177,7 @@
 Определяем конфигурацию трекинг пикселей для сервиса globalboard
 ****************************************************************
 
-.. figure:: img/img15.png
+.. figure:: img/tp_img15.png
     :align: center
 
     Переходим в раздел `Трекинг пиксели`
@@ -185,7 +185,7 @@
 
 Добавляем новый трекинг пиксел `board1` со следующими своствами:
 
-.. figure:: img/img16.png
+.. figure:: img/tp_img16.png
     :align: center
 
     Конфигурация трекинг пикселя `board1`
@@ -229,7 +229,7 @@
 * utm_source=global_board
 * user_id=1332
 
-.. figure:: img/img18.png
+.. figure:: img/tp_img18.png
     :align: center
 
     Переход на ``welcome`` из ``globalboard``

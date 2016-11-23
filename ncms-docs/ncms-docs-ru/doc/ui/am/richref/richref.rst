@@ -13,7 +13,7 @@
 Опции атрибута
 --------------
 
-.. figure:: img/img1.png
+.. figure:: img/richref_img1.png
 
 Перечислим основные опции этого атрибута слева направо и сверху вниз.
 
@@ -48,7 +48,7 @@
 Режим редактирования
 --------------------
 
-.. figure:: img/img2.png
+.. figure:: img/richref_img2.png
 
     Агрегат в режиме редактирования страницы.
 
@@ -86,7 +86,7 @@
 
 Что в веб браузере будет отображено как:
 
-.. figure:: img/img3.png
+.. figure:: img/richref_img3.png
 
 
 .. _com.softmotions.ncms.mhttl.RichRef:
