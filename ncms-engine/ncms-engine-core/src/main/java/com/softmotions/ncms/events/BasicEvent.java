@@ -40,9 +40,13 @@ public class BasicEvent {
         this.type = type;
         if (req != null && req.getUserPrincipal() != null) {
             this.user = req.getUserPrincipal().getName();
-            String app = req.getParameter("__app");
-            if (!StringUtils.isBlank(app)) {
-                this.hint("app", app);
+            String val = req.getParameter("__app");
+            if (!StringUtils.isBlank(val)) {
+                this.hint("app", val);
+            }
+            val = req.getParameter("__ui");
+            if (!StringUtils.isBlank(val)) {
+                this.hint("ui", val);
             }
         } else {
             this.user = null;

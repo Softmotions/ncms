@@ -17,7 +17,8 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
         /**
          * Example:
-         * {"id":2,
+         * {
+         *   "id":2,
          *   "name":"496694.png",
          *   "folder":"/test/",
          *   "content_type":"image/png",
@@ -41,9 +42,10 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
     },
 
     /**
-     * @param fileSpec {Object?} Optional file specification.
+     * @param opts {Object?} Optional file specification.
      */
-    construct: function (fileSpec) {
+    construct: function (opts) {
+        this.__opts = opts || {};
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(5));
         this.__broadcaster = sm.event.Broadcaster.create({"enabled": false});
@@ -81,12 +83,17 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             this.__save, this);
         this._registerCommandFocusWidget(this);
 
-        if (fileSpec != null) {
-            this.setFileSpec(fileSpec)
-        }
+        // Update itself
+        var events = ncms.Events.getInstance();
+        events.addListener("mediaUpdated", this.__onMediaUpdated, this);
     },
 
     members: {
+
+        /**
+         * Options
+         */
+        __opts: null,
 
         __saveBt: null,
 
@@ -130,8 +137,23 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             this.__broadcaster.setEnabled(false);
         },
 
+        __onMediaUpdated: function (ev) {
+            var spec = this.getFileSpec(),
+                evspec = ev.getData(),
+                part = evspec.hints["ui"];
+            if (spec == null) {
+                return;
+            }
+            if (evspec.hints["app"] !== ncms.Application.UUID) {
+                part = null; // force refresh (no locking implemented in this version)
+            }
+            if (part != this.__opts.ui && spec.id == evspec.id) { // edit the same file
+                this.__applyFileSpec(spec); // refresh
+            }
+        },
+
         __save: function () {
-            if (this.__saveBt.getEnabled() == false)  { // Save bt not enabled
+            if (this.__saveBt.getEnabled() == false) { // Save bt not enabled
                 return;
             }
             var spec = this.getFileSpec();
@@ -141,6 +163,9 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             var text = this.__getCode();
             var path = (spec["folder"] + spec["name"]).split("/");
             var url = ncms.Application.ACT.getRestUrl("media.upload", path);
+            if (this.__opts.ui != null) {
+                url = url + "?__ui=" + encodeURIComponent(this.__opts.ui);
+            }
             var ctype = spec["content_type"] || "text/plain";
             ctype = ctype.split(";")[0];
             var req = new sm.io.Request(url, "PUT", "application/json");
@@ -196,7 +221,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             }
         },
 
-        setCode: function(code) {
+        setCode: function (code) {
             this.__setCode(code, null);
             this.__broadcaster.setEnabled(true);
         },
@@ -266,6 +291,10 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
     },
 
     destruct: function () {
+        var events = ncms.Events.getInstance();
+        events.removeListener("mediaUpdated", this.__onMediaUpdated, this);
+
+        this.__opts = null;
         this.__aceContainer = null;
         this.__ace = null;
         this.__area = null;
@@ -273,6 +302,5 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.__pendigRo = null;
         this.__saveBt = null;
         this.__broadcaster.destruct();
-        //this._disposeObjects("__field_name");
     }
 });

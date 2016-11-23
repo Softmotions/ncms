@@ -44,7 +44,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditorDlg", {
 
         this.__editor = ncms.mmgr.MediaTextFileEditorDlg.__EDITOR;
         if (this.__editor == null) {
-            this.__editor = ncms.mmgr.MediaTextFileEditorDlg.__EDITOR = new ncms.mmgr.MediaTextFileEditor();
+            this.__editor = ncms.mmgr.MediaTextFileEditorDlg.__EDITOR = new ncms.mmgr.MediaTextFileEditor({ui: "dlgEditor"});
         }
         this.__editor.setFileSpec(fileSpec);
         this.add(this.__editor);
