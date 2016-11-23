@@ -44,7 +44,7 @@
 Использование в разметке
 ------------------------
 
-**Тип значения атрибута:** `com.softmotions.ncms.mhttl.RichRef`
+**Тип значения атрибута:** :ref:`com.softmotions.ncms.mhttl.RichRef`
 
 Доступны следующие свойства `RichRef`:
 

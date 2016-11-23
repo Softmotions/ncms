@@ -61,10 +61,12 @@ UI атрибута Table
 ============================  ============
 
 
-API com.softmotions.ncms.mhttl .Table
--------------------------------------
+.. _com.softmotions.ncms.mhttl.Table:
 
-.. js:function:: String find(firstColVal, [String def])
+com.softmotions.ncms.mhttl.Table
+--------------------------------
+
+.. js:function:: String Table.find(firstColVal, [String def])
 
     Поиск строки в таблице со значением
     первой колонки строки равным `firstColVal`.
@@ -74,7 +76,7 @@ API com.softmotions.ncms.mhttl .Table
     :param String def: Значение которое будет возвращено если строка не найдена, по умолчанию ``null``
 
 
-.. js:function:: String find2(firstColVal, [String def])
+.. js:function:: String Table.find2(firstColVal, [String def])
 
     Поиск строки в таблице со значением
     первой колонки строки равным `firstColVal`.
@@ -84,7 +86,7 @@ API com.softmotions.ncms.mhttl .Table
     :param String def: Значение которое будет возвращено если строка не найдена, по умолчанию ``null``
 
 
-.. js:function:: String find2(firstColVal, [String def])
+.. js:function:: String Table.find2(firstColVal, [String def])
 
     Поиск строки в таблице со значением
     первой колонки строки равным `firstColVal`.
@@ -94,7 +96,7 @@ API com.softmotions.ncms.mhttl .Table
     :param String def: Значение которое будет возвращено если строка не найдена, по умолчанию ``null``
 
 
-.. js:function:: String find(String firstColVal, [int colIndex], [String def])
+.. js:function:: String Table.find(String firstColVal, [int colIndex], [String def])
 
     Поиск строки в таблице со значением
     первой колонки строки равным `firstColVal`.
@@ -107,7 +109,7 @@ API com.softmotions.ncms.mhttl .Table
     :param String def: Значение которое будет возвращено если строка не найдена, по умолчанию ``null``
 
 
-.. js:function:: String toHtml([Map<String,?> params]):
+.. js:function:: String Table.toHtml([Map<String,?> params]):
 
     Возвращает текущую таблицу в виде `html` разметки.
 

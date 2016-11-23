@@ -106,7 +106,7 @@ com.softmotions.ncms.mhttl .HttlAsmMethods
 
 .. js:function:: link(RichRef ref)
 
-    Возвращает URL для объекта `com.softmotions.ncms.mhttl.RichRef`
+    Возвращает URL для объекта :ref:`com.softmotions.ncms.mhttl.RichRef`
 
     :rtype: java.lang.String
 
@@ -118,8 +118,8 @@ com.softmotions.ncms.mhttl .HttlAsmMethods
 
     * java.lang.String - В этом случае это может быть :term:`псевдоним страницы`
       или :term:`GUID страницы`
-    * `com.softmotions.ncms.mhttl.Tree` Объект
-    * `com.softmotions.ncms.mhttl.RichRef` Объект
+    * :ref:`com.softmotions.ncms.mhttl.Tree` Объект
+    * :ref:`com.softmotions.ncms.mhttl.RichRef` Объект
 
 
     **Пример**

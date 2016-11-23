@@ -72,7 +72,7 @@
 ------------------------
 
 В контексте httl разметки, значением данного атрибута
-является объект типа `com.softmotions.ncms.mhttl.Tree`
+является объект типа :ref:`com.softmotions.ncms.mhttl.Tree`
 в котором содержатся все введенные редактором сайта данные
 для этого атрибута.
 
@@ -112,11 +112,48 @@
 com.softmotions.ncms.mhttl.Tree
 -------------------------------
 
+Все атрибуты Tree являются **опциональными.**
+Tree является рекурсивной структурой, где
+потомки дерева также являются объектами типа Tree.
 
+.. js:attribute:: Long Tree.id
 
+    Идентификатор объекта связанного с текущим
+    элементом дерева.
 
+.. js:attribute:: String Tree.name
 
+    Имя текущего элемента
 
+.. js:attribute:: String Tree.extra
 
+    Дополнительная строка связанная с элементом дерева
+
+.. js:attribute:: String Tree.link
+
+    Если элемент дерева является ссылкой
+    на страницу (веб ресурс) или файл, то этот атрибут
+    хранит HTTP ссылку до ресурса.
+
+.. js:attribute:: RichRef Tree.richRef
+
+    Этот атрибут не `null` в том случае
+    если элементом дерева является :ref:`richref <com.softmotions.ncms.mhttl.RichRef>`
+
+.. js:attribute:: Map<String,Object> Tree.attributes
+
+    Дополнительные атрибуты связанные с элементом дерева
+
+.. js:attribute:: List<Tree> Tree.children
+
+    Потомки текущего элемента дерева.
+    В :ref:`httl <HTTL>` коде итерация по объекту
+    дерева означает итерацию по его прямым потомкам
+
+    .. code-block:: text
+
+        #foreach(Tree n1 in asm('tree'))
+            ...
+        #end
 
 
