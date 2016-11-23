@@ -10,11 +10,16 @@
 атрибутов страниц сожет менять в :ref:`интерфейсе редактирования содержимого страницы <pmgr>`
 В этом документе представлены описания возможных типов атрибутов, используемых в сборках.
 
+.. note::
+    Для понимания основных возможностей работы с атрибутами страниц в nCMS
+    рекомендуется ознакомиться с
+    :ref:`attributes_access`
 
 
 .. toctree::
     :maxdepth: 1
 
+    attributes_access
     string/string
     wiki/wiki
     boolean/boolean
@@ -29,6 +34,7 @@
     richref/richref
     tree/tree
     core/core
+    breadcrumbs/breadcrumbs
     alias/alias
 
 
