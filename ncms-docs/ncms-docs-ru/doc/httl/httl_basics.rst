@@ -133,7 +133,7 @@ Escape $ и # символов
   `foo => bar` и `foo2 => bar2`::
 
     #for(entry: ["red":"# FF0000","yellow":"# 00FF00"])
-        ${entry.key} = $ {entry.value}
+        ${entry.key} = ${entry.value}
     #end
 
 * Прямое обращение к статическим методам при помощи префикса `@`::
@@ -486,15 +486,15 @@ HTTL: `import.methods`
 
 Пример включение контента `template.httl` в разметку::
 
-    $ {include("/template.httl")}
+    ${include("/template.httl")}
 
 Передача дополнительных аргументов при включении::
 
-    $ {include("/template.httl", ["arg":"value"])}
+    ${include("/template.httl", ["arg":"value"])}
 
 Использование относительного пути до файла::
 
-    $ {include("../template.httl")}
+    ${include("../template.httl")}
 
 .. note::
 
