@@ -39,7 +39,7 @@ msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
 #: ncms/pgs/PageEditorEditPage.js:315 ncms/asm/AsmEditor.js:88
-#: ncms/asm/am/AsmCoreAM.js:91 ncms/mtt/filters/MttResourceFilter.js:30
+#: ncms/asm/am/AsmCoreAM.js:101 ncms/mtt/filters/MttResourceFilter.js:30
 #: ncms/asm/am/ImageAMValueWidget.js:104 ncms/mtt/filters/MttFilterDlg.js:40
 #: ncms/mtt/actions/MttActionDlg.js:40 ncms/usr/UserEditForm.js:27
 #: ncms/asm/AsmAttrEditorDlg.js:54 ncms/usr/UserNewDlg.js:32
@@ -332,19 +332,19 @@ msgstr "Выбор сборки (assembly)"
 msgid "Alias"
 msgstr "Псевдоним"
 
-#: ncms/asm/am/AsmCoreAM.js:15
+#: ncms/asm/am/AsmCoreAM.js:21
 msgid "Assembly core selector"
 msgstr "Разметка страницы"
 
-#: ncms/asm/am/AsmCoreAM.js:50 ncms/asm/am/FileRefAM.js:99
+#: ncms/asm/am/AsmCoreAM.js:56 ncms/asm/am/FileRefAM.js:99
 msgid "File"
 msgstr "Файл"
 
-#: ncms/asm/am/AsmCoreAM.js:55
+#: ncms/asm/am/AsmCoreAM.js:65
 msgid "Please specify a core location"
 msgstr "Пожалуйста укажите httl файл разметки"
 
-#: ncms/asm/am/AsmCoreAM.js:62
+#: ncms/asm/am/AsmCoreAM.js:72
 msgid "Please specify a core location for: '%1'"
 msgstr "Пожалуйста укажите httl файл разметки для: '%1'"
 

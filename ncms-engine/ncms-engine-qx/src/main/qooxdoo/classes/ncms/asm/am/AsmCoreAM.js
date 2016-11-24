@@ -1,3 +1,9 @@
+/**
+ * Asm core widget.
+ *
+ * @asset(ncms/icon/16/actions/core_link.png)
+ * @asset(ncms/icon/16/actions/edit-document.png)
+ */
 qx.Class.define("ncms.asm.am.AsmCoreAM", {
     extend: qx.core.Object,
     implement: [ncms.asm.IAsmAttributeManager],
@@ -48,8 +54,12 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
 
         _initCoreSelectorBf: function (label, asmSpec) {
             var bf = new sm.ui.form.ButtonField(label ? this.tr("File") : null,
-                "ncms/icon/16/actions/core_link.png");
+                "ncms/icon/16/actions/core_link.png", false, null,
+                {
+                    "extraButtonIcon": "ncms/icon/16/actions/edit-document.png"
+                });
             bf.setShowResetButton(true);
+            bf.setShowExtraButton(true);
             bf.setReadOnly(true);
             bf.setRequired(true);
             bf.setPlaceholder(this.tr("Please specify a core location"));
