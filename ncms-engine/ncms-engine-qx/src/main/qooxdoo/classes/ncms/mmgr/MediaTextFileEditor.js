@@ -148,6 +148,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 part = null; // force refresh (no locking implemented in this version)
             }
             if (part != this.__opts.ui && spec.id == evspec.id) { // edit the same file
+                this.__opts.skipFocus = true;
                 this.__applyFileSpec(spec); // refresh
             }
         },
@@ -182,11 +183,9 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             if (spec == null || !ncms.Utils.isTextualContentType(spec["content_type"])) {
                 return;
             }
-
             var path = (spec.folder + spec.name).split("/");
             var url = ncms.Application.ACT.getRestUrl("media.file", path);
             var req = new sm.io.Request(url, "GET", "text/plain");
-
             req.send(function (resp) {
                 var fname = spec["name"] || "";
                 var ctype = spec["content_type"] || "";
@@ -209,9 +208,18 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                     lclass = "text";
                 }
                 this.__setCode(text, lclass);
+                this.__focus();
             }, this);
         },
 
+        __focus: function() {
+            if (this.__opts.skipFocus !== true) {
+                this.__ace && this.__ace.focus();
+                this.__area && this.__area.focus();
+            } else {
+                this.__opts.skipFocus = false;
+            }
+        },
 
         __getCode: function () {
             if (this.__area) {
@@ -241,7 +249,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 ace.renderer.scrollToX(0);
                 ace.renderer.scrollToY(0);
                 ace.selection.moveCursorFileStart();
-                ace.focus();
             } else {
                 this.__pendigCode = {code: code, lclass: lclass};
             }
@@ -249,12 +256,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         },
 
         __cleanup: function () {
-            if (this.__area) {
-                this.__area.resetValue();
-            } else if (this.__ace) {
-                //todo review
-                this.__setCode("");
-            }
+            this.__setCode("");
         },
 
         __onAceContainerAppear: function () {
@@ -271,6 +273,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 ace.renderer.setShowGutter(false);
                 if (this.__pendigCode != null) {
                     this.__setCode(this.__pendigCode["code"], this.__pendigCode["lclass"]);
+                    this.__focus();
                     this.__pendigCode = null;
                 }
                 if (this.__pendigRo != null) {
@@ -293,7 +296,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
     destruct: function () {
         var events = ncms.Events.getInstance();
         events.removeListener("mediaUpdated", this.__onMediaUpdated, this);
-
         this.__opts = null;
         this.__aceContainer = null;
         this.__ace = null;
