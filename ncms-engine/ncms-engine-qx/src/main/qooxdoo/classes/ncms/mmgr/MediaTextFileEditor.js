@@ -212,7 +212,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             }, this);
         },
 
-        __focus: function() {
+        __focus: function () {
             if (this.__opts.skipFocus !== true) {
                 this.__ace && this.__ace.focus();
                 this.__area && this.__area.focus();

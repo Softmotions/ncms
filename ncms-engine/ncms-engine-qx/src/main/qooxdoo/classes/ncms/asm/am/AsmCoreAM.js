@@ -69,7 +69,7 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
             bf.addListener("execute", function () {
                 var dlg = new ncms.mmgr.MediaSelectFileDlg(
                     true,
-                    this.tr("Please specify a core location for: '%1'", asmSpec["name"]), {
+                    this.tr("Please specify the core location for: '%1'", asmSpec["name"]), {
                         pageSpec: {id: asmSpec["id"], name: asmSpec["name"], active: true}
                     });
                 dlg.setCtypeAcceptor(ncms.Utils.isTextualContentType.bind(ncms.Utils));
@@ -93,6 +93,9 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
                 }, this);
                 dlg.show();
             }, this);
+            bf.addListener("extra", function() {
+               // todo
+            });
             return bf;
         },
 

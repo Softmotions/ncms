@@ -101,6 +101,7 @@ import com.softmotions.commons.io.watcher.FSWatcherEventSupport;
 import com.softmotions.commons.io.watcher.FSWatcherModifyEvent;
 import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
 import com.softmotions.commons.lifecycle.Dispose;
+import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
@@ -764,7 +765,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
-
     @GET
     @javax.ws.rs.Path("/meta/{id}")
     @Transactional
@@ -779,6 +779,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         res.put("folder", (String) meta.get("folder"));
         res.put("name", (String) meta.get("name"));
         res.put("meta", (String) meta.get("meta"));
+        res.put("content_type", (String) meta.get("content_type"));
+        res.put("content_length", (String) meta.get("content_length"));
+        res.put("owner", (String) meta.get("owner"));
+        res.put("tags", (String) meta.get("tags"));
+        res.put("status", (Integer) meta.get("status"));
+        res.put("system", NumberUtils.number2Boolean((Number) meta.get("system"), false));
         res.put("description", (String) meta.get("description"));
         return res;
     }
