@@ -108,7 +108,7 @@ qx.Class.define("ncms.Utils", {
          * @returns {boolean}
          */
         isTextualContentType: function (ctype) {
-            if (ctype == null) {
+            if (ctype == null || ctype == "") {
                 return false;
             }
             var cs = ctype.toString().trim();
@@ -121,7 +121,20 @@ qx.Class.define("ncms.Utils", {
             if (cs.indexOf(";") != -1) {
                 cs = cs.substring(0, cs.indexOf(";")).trim();
             }
-            return (this.TXT_CTYPES.indexOf(cs) != -1);
+            return sm.lang.Array.binaryStringSearch(this.TXT_CTYPES, cs) !== -1;
+        },
+
+        isTextualExtension: function (filename) {
+            if (filename == null || filename == "") {
+                return false;
+            }
+            var ind = filename.lastIndexOf(".");
+            if (ind === -1) {
+                return false;
+            }
+            return sm.lang.Array.binaryStringSearch(
+                    this.TXT_EXTENSIONS,
+                    filename.substring(ind + 1)) !== -1;
         },
 
         /**
@@ -148,42 +161,74 @@ qx.Class.define("ncms.Utils", {
     },
 
     defer: function (statics, members) {
+
+        // Sorted! (used in search) textual file types.
         statics.TXT_CTYPES = [
             "application/atom+xml",
+            "application/ecmascript",
+            "application/javascript",
+            "application/json",
             "application/rdf+xml",
             "application/rss+xml",
             "application/soap+xml",
-            "application/xop+xml",
+            "application/x-javascript",
+            "application/x-latex",
+            "application/x-tex",
             "application/xhtml+xml",
-            "application/json",
-            "application/javascript",
             "application/xml",
             "application/xml-dtd",
-            "application/x-tex",
-            "application/x-latex",
-            "application/x-javascript",
-            "application/ecmascript"
+            "application/xop+xml"
         ];
 
+        // Sorted! (used in search) textual file extensions.
         statics.TXT_EXTENSIONS = [
-            "txt",
+            "c",
+            "cc",
+            "cfg",
+            "cpp",
+            "css",
+            "csv",
+            "d",
+            "dtd",
+            "es6",
+            "es6",
+            "ft",
+            "h",
+            "hpp",
+            "htm",
             "html",
             "httl",
-            "vm",
-            "css",
+            "ini",
+            "js",
+            "jsf",
+            "json",
+            "jsp",
+            "jsx",
+            "latex",
+            "less",
+            "md",
+            "mk",
+            "pl",
+            "pm",
+            "po",
+            "properties",
+            "rdf",
+            "rst",
             "sass",
             "scss",
-            "less",
-            "js",
-            "json",
+            "sql",
+            "sql",
+            "tag",
+            "tex",
+            "ts",
+            "txt",
+            "vm",
+            "vm",
+            "xhtml",
             "xml",
             "xsl",
-            "rdf",
-            "csv",
-            "tex",
-            "latex",
-            "ts",
-            "es6"
+            "xslt",
+            "yaml"
         ]
     }
 });
