@@ -135,6 +135,9 @@ qx.Class.define("ncms.Actions", {
         //GET/POST Save extra file meta fields
         this._action("media.meta", "/rs/media/meta/{id}");
 
+        //GET Get file meta info by path
+        this._action("media.meta.by.path", "/rs/media/path/meta/{path}");
+
         //POST Save extra file meta fields (by path)
         this._action("media.path.meta", "/rs/media/meta/path");
 

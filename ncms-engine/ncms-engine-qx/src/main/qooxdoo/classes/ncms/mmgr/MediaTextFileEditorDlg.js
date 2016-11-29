@@ -28,8 +28,10 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditorDlg", {
             if (!opts["height"]) {
                 opts["height"] = Math.max(300, parseInt(bounds.height * 0.8));
             }
+            if (!opts["width"]) {
+                opts["width"] = Math.min(700, parseInt(bounds.width * 0.8));
+            }
         }
-
         this.base(arguments, caption);
         this.setLayout(new qx.ui.layout.Grow());
         this.set({

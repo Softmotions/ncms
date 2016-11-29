@@ -49,7 +49,7 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
             if (core == null) {
                 return "";
             }
-            return core["location"];
+            return core["location"] || "";
         },
 
         _initCoreSelectorBf: function (label, asmSpec) {
@@ -93,9 +93,15 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
                 }, this);
                 dlg.show();
             }, this);
-            bf.addListener("extra", function() {
-               // todo
-            });
+            bf.addListener("extra", function () {
+                var location = this._fetchAsmCoreLocation(asmSpec);
+                if (location != "") {
+                    ncms.mmgr.MediaFilesUtils.fetchMediaInfo(location, function (meta) {
+                        var dlg = new ncms.mmgr.MediaTextFileEditorDlg(meta);
+                        dlg.open();
+                    }, this);
+                }
+            }, this);
             return bf;
         },
 

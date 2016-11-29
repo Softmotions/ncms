@@ -2,6 +2,7 @@
  * File reference
  *
  * @asset(ncms/icon/16/misc/document-text.png)
+ * @asset(ncms/icon/16/actions/edit-document.png)
  */
 qx.Class.define("ncms.asm.am.FileRefAM", {
     extend: qx.core.Object,
@@ -97,8 +98,11 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
 
         _initFileSelectorBf: function (attrSpec, asmSpec, inOpts) {
             var bf = new sm.ui.form.ButtonField(this.tr("File"),
-                "ncms/icon/16/misc/document-text.png");
+                "ncms/icon/16/misc/document-text.png", false, null, {
+                    "extraButtonIcon": "ncms/icon/16/actions/edit-document.png"
+                });
             bf.setShowResetButton(true);
+            bf.setShowExtraButton(true);
             bf.setReadOnly(true);
             if (!inOpts) {
                 bf.setRequired(!!attrSpec["required"]);
@@ -135,6 +139,15 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
                     }
                 }, this);
                 dlg.open();
+            }, this);
+            bf.addListener("extra", function () {
+                var location = bf.getValue();
+                if (location && location != "") {
+                    ncms.mmgr.MediaFilesUtils.fetchMediaInfo(location, function (meta) {
+                        var dlg = new ncms.mmgr.MediaTextFileEditorDlg(meta);
+                        dlg.open();
+                    }, this);
+                }
             }, this);
             return bf;
         },

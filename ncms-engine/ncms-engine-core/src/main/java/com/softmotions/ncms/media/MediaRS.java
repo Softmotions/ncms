@@ -766,6 +766,20 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
     @GET
+    @javax.ws.rs.Path("/path/meta/{path:.*}")
+    @Transactional
+    public ObjectNode getLocationMeta(@PathParam("path") String path,
+                                      @Context HttpServletRequest req) throws Exception {
+        path = StringUtils.strip(path, "/");
+        checkFolder(path);
+        Map<String, Object> meta = getCachedMeta(path);
+        if (meta == null) {
+            throw new NotFoundException();
+        }
+        return meta2Response(meta);
+    }
+
+    @GET
     @javax.ws.rs.Path("/meta/{id}")
     @Transactional
     public ObjectNode getMeta(@PathParam("id") Long id,
@@ -774,13 +788,17 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (meta == null) {
             throw new NotFoundException();
         }
+        return meta2Response(meta);
+    }
+
+    private ObjectNode meta2Response(Map<String, Object> meta) throws Exception {
         ObjectNode res = mapper.createObjectNode();
-        res.put("id", id);
+        res.put("id", (Long) meta.get("id"));
         res.put("folder", (String) meta.get("folder"));
         res.put("name", (String) meta.get("name"));
         res.put("meta", (String) meta.get("meta"));
         res.put("content_type", (String) meta.get("content_type"));
-        res.put("content_length", (String) meta.get("content_length"));
+        res.put("content_length", (Integer) meta.get("content_length"));
         res.put("owner", (String) meta.get("owner"));
         res.put("tags", (String) meta.get("tags"));
         res.put("status", (Integer) meta.get("status"));

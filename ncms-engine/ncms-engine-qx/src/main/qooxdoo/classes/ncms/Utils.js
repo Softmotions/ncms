@@ -164,5 +164,26 @@ qx.Class.define("ncms.Utils", {
             "application/x-javascript",
             "application/ecmascript"
         ];
+
+        statics.TXT_EXTENSIONS = [
+            "txt",
+            "html",
+            "httl",
+            "vm",
+            "css",
+            "sass",
+            "scss",
+            "less",
+            "js",
+            "json",
+            "xml",
+            "xsl",
+            "rdf",
+            "csv",
+            "tex",
+            "latex",
+            "ts",
+            "es6"
+        ]
     }
 });
