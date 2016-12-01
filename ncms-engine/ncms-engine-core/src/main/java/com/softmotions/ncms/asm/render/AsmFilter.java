@@ -216,6 +216,12 @@ public class AsmFilter implements Filter {
         } catch (AsmResourceNotFoundException e) {
             log.error("Resource not found: {} assembly: {}", e.getResource(), asm.getName());
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+        } catch (IOException | AsmRenderingException e) {
+            log.error("", e);
+            throw e;
+        } catch (Throwable e) {
+            log.error("", e);
+            throw new AsmRenderingException(e);
         } finally {
             Thread.currentThread().setContextClassLoader(old);
         }

@@ -24,6 +24,7 @@ import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
+import com.softmotions.ncms.asm.render.AsmTemplateEvaluationException;
 import com.softmotions.ncms.mhttl.HttlAsmMethods;
 import com.softmotions.ncms.mhttl.HttlMttMethods;
 import com.softmotions.ncms.mhttl.HttlUtilsMethods;
@@ -184,9 +185,8 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
         try {
             Template template = engine.getTemplate(location, ctx.getLocale());
             template.render(ctx, out);
-        } catch (ParseException e) {
-            throw new AsmRenderingException("Failed to parse template: " + location +
-                                            " for asm: " + ctx.getAsm().getName(), e);
+        } catch (Throwable e) {
+            throw new AsmTemplateEvaluationException(ctx, location, e);
         }
     }
 
