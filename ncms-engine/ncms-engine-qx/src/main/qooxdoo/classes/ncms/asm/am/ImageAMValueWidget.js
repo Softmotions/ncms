@@ -59,7 +59,7 @@ qx.Class.define("ncms.asm.am.ImageAMValueWidget", {
                 return;
             }
             var url = ncms.Application.ACT.getRestUrl("media.fileid", udata);
-            qx.bom.Window.open(url + "?inline=true");
+            qx.bom.Window.open(url + "?inline=true", "NCMS:Media");
         }, this);
 
         this.bind("valid", this.__bf, "valid");

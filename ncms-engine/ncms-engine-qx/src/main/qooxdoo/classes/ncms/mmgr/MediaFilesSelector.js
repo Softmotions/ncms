@@ -599,7 +599,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
             var path = (f.folder + f.name).split("/");
             var url = ncms.Application.ACT.getRestUrl("media.file", path);
-            qx.bom.Window.open(url + "?inline=true");
+            qx.bom.Window.open(url + "?inline=true", "NCMS:Media");
         },
 
         __downloadFile: function (ev) {

@@ -32,7 +32,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         bt.setToolTipText(this.tr("Preview"));
         bt.addListener("execute", function () {
             var pp = ncms.Application.ACT.getRestUrl("pages.preview", this.getPageSpec());
-            qx.bom.Window.open(pp, "Preview", {}, false, false);
+            qx.bom.Window.open(pp, "NCMS:Preview");
         }, this);
         hcont.add(bt);
 

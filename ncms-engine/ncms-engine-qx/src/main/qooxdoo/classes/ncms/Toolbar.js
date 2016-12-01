@@ -44,7 +44,7 @@ qx.Class.define("ncms.Toolbar", {
                 var helpButton = new qx.ui.toolbar.Button(this.tr("Help"),
                     "ncms/icon/16/help/help.png");
                 helpButton.addListener("execute", function () {
-                    qx.bom.Window.open(apps.getHelpSite());
+                    qx.bom.Window.open(apps.getHelpSite(), "NCMS:Help");
                 });
                 helpButton.setToolTipText(this.tr("Help"));
                 this.__rightPart.add(helpButton);
