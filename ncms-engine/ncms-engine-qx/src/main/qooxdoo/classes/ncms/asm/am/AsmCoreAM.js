@@ -94,14 +94,19 @@ qx.Class.define("ncms.asm.am.AsmCoreAM", {
                 dlg.show();
             }, this);
             bf.addListener("extra", function () {
-                var location = this._fetchAsmCoreLocation(asmSpec);
-                if (location != "") {
+                var location = bf.getTextField().getValue();
+                if (ncms.Utils.isTextualFilePath(location)) {
                     ncms.mmgr.MediaFilesUtils.fetchMediaInfo(location, function (meta) {
                         var dlg = new ncms.mmgr.MediaTextFileEditorDlg(meta);
                         dlg.open();
                     }, this);
                 }
             }, this);
+            bf.getTextField().bind("value", bf.getExtraButton(), "enabled", {
+                converter: function (v) {
+                    return bf.getEnabled() && ncms.Utils.isTextualFilePath(v);
+                }
+            });
             return bf;
         },
 

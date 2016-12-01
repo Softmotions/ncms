@@ -142,13 +142,18 @@ qx.Class.define("ncms.asm.am.FileRefAM", {
             }, this);
             bf.addListener("extra", function () {
                 var location = bf.getValue();
-                if (location && location != "") {
+                if (ncms.Utils.isTextualFilePath(location)) {
                     ncms.mmgr.MediaFilesUtils.fetchMediaInfo(location, function (meta) {
                         var dlg = new ncms.mmgr.MediaTextFileEditorDlg(meta);
                         dlg.open();
                     }, this);
                 }
             }, this);
+            bf.getTextField().bind("value", bf.getExtraButton(), "enabled", {
+                converter: function (v) {
+                    return bf.getEnabled() && ncms.Utils.isTextualFilePath(v);
+                }
+            });
             return bf;
         },
 

@@ -124,7 +124,7 @@ qx.Class.define("ncms.Utils", {
             return sm.lang.Array.binaryStringSearch(this.TXT_CTYPES, cs) !== -1;
         },
 
-        isTextualExtension: function (filename) {
+        isTextualFilePath: function (filename) {
             if (filename == null || filename == "") {
                 return false;
             }
