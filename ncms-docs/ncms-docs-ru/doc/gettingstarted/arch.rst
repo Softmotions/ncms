@@ -205,6 +205,14 @@
 
 .. glossary::
 
+    главная страница
+    main page
+        TODO
+
+    иерархия наследования страницы
+    asm inheritance tree
+        TODO
+
     дерево навигации
     navigation tree
         Если при создании страницы ее тип был указан как `Контейнер` то эта
@@ -250,3 +258,4 @@
     mediawiki
         TODO
         `Спецификация разметки <https://www.mediawiki.org/wiki/Help:Formatting/ru>`_
+
