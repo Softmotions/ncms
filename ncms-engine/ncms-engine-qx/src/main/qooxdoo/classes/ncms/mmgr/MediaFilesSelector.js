@@ -195,6 +195,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("Alt+Insert"),
             this.__onNewFile, this);
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("F4"),
+            this.__onEdit, this);
         this._registerCommandFocusWidget(table);
     },
 
@@ -729,8 +732,12 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             if (file == null) {
                 return;
             }
-            var dlg = new ncms.mmgr.MediaTextFileEditorDlg(file, {});
-            dlg.open();
+            var canEdit = !!(file && this.__checkEditAccess([file])),
+                isTextual = !!(file && ncms.Utils.isTextualContentType(file["content_type"]));
+            if (canEdit && isTextual) {
+                var dlg = new ncms.mmgr.MediaTextFileEditorDlg(file, {});
+                dlg.open();
+            }
         },
 
         __checkEditAccess: function (selected) {

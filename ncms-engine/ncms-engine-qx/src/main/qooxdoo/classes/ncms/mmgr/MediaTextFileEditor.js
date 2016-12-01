@@ -208,7 +208,9 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                     lclass = "text";
                 }
                 this.__setCode(text, lclass);
-                this.__focus();
+                if (!this.__opts.noAutoFocus) {
+                    this.__focus();
+                }
             }, this);
         },
 
@@ -273,7 +275,9 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 ace.renderer.setShowGutter(false);
                 if (this.__pendigCode != null) {
                     this.__setCode(this.__pendigCode["code"], this.__pendigCode["lclass"]);
-                    this.__focus();
+                    if (!this.__opts.noAutoFocus) {
+                        this.__focus();
+                    }
                     this.__pendigCode = null;
                 }
                 if (this.__pendigRo != null) {

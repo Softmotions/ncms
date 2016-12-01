@@ -191,7 +191,6 @@ qx.Class.define("ncms.Utils", {
             "d",
             "dtd",
             "es6",
-            "es6",
             "ft",
             "h",
             "hpp",

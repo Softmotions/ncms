@@ -88,7 +88,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         });
 
         viewPane.registerWidget("texteditor", function () {
-            return new ncms.mmgr.MediaTextFileEditor({ui: "sideEditor"});
+            return new ncms.mmgr.MediaTextFileEditor({ui: "sideEditor", noAutoFocus: true});
         }, null, this);
 
         viewPane.setContextMenu(new qx.ui.menu.Menu());
