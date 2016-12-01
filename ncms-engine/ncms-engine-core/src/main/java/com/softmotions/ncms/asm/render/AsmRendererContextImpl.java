@@ -60,8 +60,6 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     Map<String, String[]> dedicatedParams;
 
-    Asm rootAsm;
-
 
     private AsmRendererContextImpl(AsmRendererContextImpl parent,
                                    HttpServletResponse resp,
@@ -80,7 +78,6 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         this.i18n = parent.i18n;
         this.subcontext = true;
         this.asm = asm;
-        this.rootAsm = parent.asm;
         this.asmCloneContext = parent.asmCloneContext;
         this.putAll(parent);
     }
@@ -129,8 +126,6 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         //rendering routines be free to change assembly structure and properties
         this.asmCloneContext = new HashMap<>();
         this.asm = asm0.cloneDeep(this.asmCloneContext);
-        this.rootAsm = asm;
-
         //Set basic content parameters
         this.put("ncmsroot", env.getAppRoot());
 
@@ -202,11 +197,6 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     @Override
     public Asm getAsm() {
         return asm;
-    }
-
-    @Override
-    public Asm getRootAsm() {
-        return rootAsm;
     }
 
     @Override

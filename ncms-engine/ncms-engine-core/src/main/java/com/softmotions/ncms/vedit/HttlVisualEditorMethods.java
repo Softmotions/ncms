@@ -65,7 +65,7 @@ public class HttlVisualEditorMethods {
     @Nullable
     public static String ncmsVEBlock(String sectionName) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        AsmAttribute attr = ctx.getAsm()
+        AsmAttribute attr = ctx.getRootContext().getAsm()
                                .getUniqueEffectiveAttributeByType(AsmVisualEditorAM.TYPE);
         AsmVisualEditorAM am = ctx.getPageService()
                                   .getAsmAttributeManagersRegistry()
@@ -79,7 +79,7 @@ public class HttlVisualEditorMethods {
     @Nonnull
     public static String ncmsVEBlockId(String sectionName) {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
-        return ctx.getAsm().getId() + ":" + sectionName;
+        return ctx.getRootContext().getAsm().getId() + ":" + sectionName;
     }
 
     /**

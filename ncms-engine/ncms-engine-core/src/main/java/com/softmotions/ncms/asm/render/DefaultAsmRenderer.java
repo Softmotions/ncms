@@ -147,7 +147,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
         }
         if (attr == null) {
             log.warn("Attribute: '{}' not found in assembly: '{}" + '\'',
-                     attributeName, ctx.getRootAsm().getName());
+                     attributeName, ctx.getRootContext().getAsm().getName());
             return null;
         }
 

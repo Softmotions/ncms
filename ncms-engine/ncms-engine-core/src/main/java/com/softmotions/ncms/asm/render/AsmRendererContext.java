@@ -118,9 +118,11 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
         return (T) userData.get(key);
     }
 
+    @Nonnull
     public AsmRendererContext getRootContext() {
         AsmRendererContext ret = this;
-        while (ret.getParent() != null) {
+        //noinspection ObjectEquality
+        while (ret.getParent() != null && ret != ret.getParent()) {
             ret = ret.getParent();
         }
         return ret;
@@ -160,9 +162,6 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
      */
     @Nonnull
     public abstract Asm getAsm();
-
-
-    public abstract Asm getRootAsm();
 
     /**
      * Return true is current context is subcontext.
