@@ -37,6 +37,7 @@ public class AsmBreadCrumbsAM extends AsmAttributeManagerSupport {
     @Override
     public Object renderAsmAttribute(AsmRendererContext ctx, String attrname, Map<String, String> options) throws AsmRenderingException {
         Tree res = new Tree();
+        ctx = ctx.getRootContext();
         CachedPage cp = pageService.getCachedPage(ctx.getAsm().getId(), true);
         if (cp == null) {
             return res;

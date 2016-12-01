@@ -118,6 +118,16 @@ public abstract class AsmRendererContext extends HashMap<String, Object> {
         return (T) userData.get(key);
     }
 
+    public AsmRendererContext getRootContext() {
+        AsmRendererContext ret = this;
+        while (ret.getParent() != null) {
+            ret = ret.getParent();
+        }
+        return ret;
+    }
+
+    public abstract AsmRendererContext getParent();
+
     public abstract AsmRenderer getRenderer();
 
     /**

@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,6 +52,8 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
     final MediaRepository mediaRepository;
 
+    AsmRendererContext parent;
+
     Locale cachedLocale;
 
     Map<String, Asm> asmCloneContext;
@@ -64,6 +67,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                                    HttpServletResponse resp,
                                    Asm asm) {
         super(parent.userData);
+        this.parent = parent;
         this.req = parent.req;
         this.resp = resp;
         this.env = parent.env;
@@ -133,6 +137,11 @@ public class AsmRendererContextImpl extends AsmRendererContext {
     }
 
     @Override
+    public AsmRendererContext getParent() {
+        return parent;
+    }
+
+    @Override
     public AsmRenderer getRenderer() {
         return renderer;
     }
@@ -189,6 +198,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         return pvals[0];
     }
 
+    @Nonnull
     @Override
     public Asm getAsm() {
         return asm;
@@ -268,7 +278,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
         if (this.asm.equals(nasm)) {
             return renderAttribute(attributeName, opts);
         }
-        Object res = null;
+        Object res;
         AsmRendererContext nctx = this.createSubcontext(nasm);
         nctx.push();
         try {
