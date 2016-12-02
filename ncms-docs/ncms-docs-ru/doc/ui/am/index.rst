@@ -34,6 +34,7 @@
     core/core
     breadcrumbs/breadcrumbs
     alias/alias
+    mainpage/mainpage
 
 
 
