@@ -274,6 +274,16 @@ jQuery(function () {
     initBtt();
     initImgFull();
 
+    $(window).on("load", function () {
+        var hash = document.location.hash;
+        if (hash != "") {
+            setTimeout(function () {
+                if (location.hash) {
+                    window.location.href = hash;
+                }
+            }, 0);
+        }
+    });
 
     function initImgFull() {
         $(".section img").on("click", function () {
@@ -285,7 +295,6 @@ jQuery(function () {
             }
         });
     }
-
 
     function initCSS() {
         $("table.docutils").each(function () {
