@@ -2,11 +2,11 @@
  * Info page tab of page editor tabbox.
  *
  * @asset(ncms/icon/16/user/user-blue.png)
+ * @asset(ncms/icon/32/home-page.png)
  */
 qx.Class.define("ncms.pgs.PageEditorInfoPage", {
     extend: qx.ui.tabview.Page,
     include: [ncms.pgs.MPageEditorPane],
-
 
     construct: function () {
         this.base(arguments, this.tr("General"));
@@ -19,11 +19,19 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
 
         //Optional warning/alert box
         this.__alertBox = new sm.ui.AlertBox();
+        this.__alertBox.setRich(true);
         this.add(this.__alertBox);
         this.__alertBox.exclude();
 
+        //Second optional warning/alert box (page status)
+        this.__statusBox = new sm.ui.AlertBox();
+        this.__statusBox.setRich(true);
+        this.add(this.__statusBox);
+        this.__statusBox.exclude();
+
         //Page mdate label
         this.__mdateLabel = new qx.ui.basic.Label();
+        this.__mdateLabel.set({rich: true, wrap: true});
         this.add(this.__mdateLabel);
 
         var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
@@ -74,6 +82,11 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         __mdateLabel: null,
 
         /**
+         * Page status box
+         */
+        __statusBox: null,
+
+        /**
          * Optional warning/alert box
          */
         __alertBox: null,
@@ -111,6 +124,29 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
             req.send(function (resp) {
                 var info = resp.getContent();
                 this.__info = info;
+                //"indexPage":{"virtualHosts":["localhost"],"langCodes":["*"]}
+                if (info["indexPage"] != null) {
+                    var ip = info["indexPage"];
+                    var msg = [];
+                    if (Array.isArray(ip["virtualHosts"])) {
+                        msg.push("<b>" + this.tr("Virtual hosts") + ":</b>");
+                        msg.push(ip["virtualHosts"]
+                        .map(function (vh) {
+                            // todo HTTP port?
+                            return "<a href='//" + vh + "' target='_blank'>" + vh + "</a>";
+                        }).join(" "));
+                    }
+                    if (Array.isArray(ip["langCodes"])) {
+                        msg.push("<br><b>" + this.tr("Languages") + ":</b>");
+                        msg.push(ip["langCodes"].join(", "));
+                    }
+                    this.__statusBox.setLabel(msg.join(" "));
+                    this.__statusBox.setIcon("ncms/icon/32/home-page.png");
+                    this.__statusBox.show();
+                } else {
+                    this.__statusBox.exclude();
+                }
+
                 if (info["mdate"] != null) {
                     this.__mdateLabel.setValue(this.tr("Last modification: %1, %2",
                         ncms.Application.formatDateTime(info["mdate"]),
@@ -198,6 +234,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         this.__pageNameLabel = null;
         this.__mdateLabel = null;
         this.__alertBox = null;
+        this.__statusBox = null;
         this.__info = null;
         ncms.Events.getInstance().removeListener("pageEdited", this.__onPageEdited, this);
         ncms.Events.getInstance().removeListener("pageChangePublished", this.__onPageEdited, this);

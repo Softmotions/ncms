@@ -62,8 +62,8 @@ msgstr "Обязательное поле"
 msgid "Name"
 msgstr "Название"
 
-#: ncms/mtt/filters/MttFilterDlg.js:48 ncms/mtt/actions/MttActionDlg.js:48
-#: ncms/mtt/filters/MttFiltersTable.js:87 ncms/cc/TypesSelectorDlg.js:161
+#: ncms/mtt/filters/MttFiltersTable.js:87 ncms/mtt/filters/MttFilterDlg.js:48
+#: ncms/mtt/actions/MttActionDlg.js:48 ncms/cc/TypesSelectorDlg.js:161
 #: ncms/asm/AsmAttrsTable.js:131 ncms/asm/AsmTable.js:25
 #: ncms/asm/AsmAttrEditorDlg.js:66 ncms/asm/AsmAttrEditorDlg.js:74
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:163 ncms/mmgr/MediaFilesTable.js:10
@@ -87,22 +87,22 @@ msgstr "Обязательное"
 msgid "GUI Required"
 msgstr "Обязательное в GUI"
 
-#: ncms/mmgr/PageFilesSelectorDlg.js:116 ncms/asm/AsmSelectorDlg.js:44
-#: ncms/pgs/PagesSelectorDlg.js:54 ncms/mtt/filters/MttFilterDlg.js:74
-#: ncms/mtt/actions/MttActionDlg.js:74 ncms/wiki/TreeDlg.js:50
-#: ncms/usr/UserSelectorDlg.js:36 ncms/mmgr/MediaSelectFolderDlg.js:54
-#: ncms/wiki/InsertVimeoDlg.js:51 ncms/wiki/InsertGMapDlg.js:41
-#: ncms/mmgr/MediaSelectFileDlg.js:90 ncms/cc/TypesSelectorDlg.js:46
-#: ncms/asm/AsmAttrEditorDlg.js:107 ncms/asm/am/TreeAMFoldersDlg.js:51
-#: ncms/usr/UserNewDlg.js:62 ncms/wiki/InsertYoutubeDlg.js:58
-#: ncms/asm/am/AMWrapperDlg.js:37 ncms/asm/AsmAttributeTypeSelectorDlg.js:48
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:53
+#: ncms/asm/AsmSelectorDlg.js:44 ncms/pgs/PagesSelectorDlg.js:54
+#: ncms/mtt/filters/MttFilterDlg.js:74 ncms/mtt/actions/MttActionDlg.js:74
+#: ncms/wiki/TreeDlg.js:50 ncms/usr/UserSelectorDlg.js:36
+#: ncms/mmgr/MediaSelectFolderDlg.js:54 ncms/wiki/InsertVimeoDlg.js:51
+#: ncms/wiki/InsertGMapDlg.js:41 ncms/mmgr/MediaSelectFileDlg.js:90
+#: ncms/cc/TypesSelectorDlg.js:46 ncms/asm/AsmAttrEditorDlg.js:107
+#: ncms/asm/am/TreeAMFoldersDlg.js:51 ncms/usr/UserNewDlg.js:62
+#: ncms/mmgr/PageFilesSelectorDlg.js:116 ncms/wiki/InsertYoutubeDlg.js:58
+#: ncms/asm/am/AMWrapperDlg.js:37 ncms/asm/AsmAttributeTypeSelectorDlg.js:48
 #: ncms/pgs/PagesCollectionDlg.js:40
 msgid "Ok"
 msgstr "Ок"
 
 #: ncms/pgs/PageEditorEditPage.js:77 ncms/mtt/tp/MttTpEditor.js:80
-#: ncms/mmgr/PageFilesSelectorDlg.js:120 ncms/wiki/TableDlg.js:59
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:57 ncms/wiki/TableDlg.js:59
 #: ncms/asm/AsmSelectorDlg.js:48 ncms/pgs/PagesSelectorDlg.js:58
 #: ncms/mtt/filters/MttFilterDlg.js:78 ncms/mtt/actions/MttActionDlg.js:78
 #: ncms/wiki/TreeDlg.js:54 ncms/usr/UserSelectorDlg.js:40
@@ -110,9 +110,9 @@ msgstr "Ок"
 #: ncms/usr/UserEditForm.js:66 ncms/wiki/InsertGMapDlg.js:45
 #: ncms/mmgr/MediaSelectFileDlg.js:94 ncms/cc/TypesSelectorDlg.js:51
 #: ncms/asm/AsmAttrEditorDlg.js:111 ncms/asm/am/TreeAMFoldersDlg.js:56
-#: ncms/usr/UserNewDlg.js:66 ncms/wiki/InsertYoutubeDlg.js:62
-#: ncms/asm/am/AMWrapperDlg.js:41 ncms/asm/AsmAttributeTypeSelectorDlg.js:53
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:57
+#: ncms/usr/UserNewDlg.js:66 ncms/mmgr/PageFilesSelectorDlg.js:120
+#: ncms/wiki/InsertYoutubeDlg.js:62 ncms/asm/am/AMWrapperDlg.js:41
+#: ncms/asm/AsmAttributeTypeSelectorDlg.js:53
 #: ncms/pgs/PagesCollectionDlg.js:45
 msgid "Cancel"
 msgstr "Отмена"
@@ -122,8 +122,8 @@ msgid "Select assembly attribute type"
 msgstr "Выбор типа атрибута"
 
 #: ncms/mtt/tp/MttTpEditor.js:63 ncms/asm/AsmEditor.js:103
-#: ncms/mtt/filters/MttFilterDlg.js:54 ncms/mtt/actions/MttActionDlg.js:54
-#: ncms/mmgr/MediaFileEditor.js:48 ncms/mtt/filters/MttFiltersTable.js:99
+#: ncms/mtt/filters/MttFiltersTable.js:99 ncms/mtt/filters/MttFilterDlg.js:54
+#: ncms/mtt/actions/MttActionDlg.js:54 ncms/mmgr/MediaFileEditor.js:48
 #: ncms/cc/TypesSelectorDlg.js:155 ncms/asm/AsmTable.js:21
 #: ncms/asm/AsmAttributeTypeSelectorDlg.js:157 ncms/mmgr/MediaFilesTable.js:13
 #: ncms/usr/UserRolesTable.js:158
@@ -173,20 +173,19 @@ msgstr "Перезаписать атрибут"
 msgid "New"
 msgstr "Создать"
 
-#: ncms/pgs/PageEditorEditPage.js:42 ncms/mmgr/MediaFilesSelector.js:686
-#: ncms/mtt/actions/MttActionsTree.js:236
-#: ncms/mtt/filters/MttFiltersTable.js:178 ncms/asm/AsmAttrsTable.js:208
-#: ncms/asm/am/TreeAMValueWidget.js:452
+#: ncms/pgs/PageEditorEditPage.js:42 ncms/mtt/filters/MttFiltersTable.js:178
+#: ncms/mmgr/MediaFilesSelector.js:686 ncms/mtt/actions/MttActionsTree.js:236
+#: ncms/asm/AsmAttrsTable.js:208 ncms/asm/am/TreeAMValueWidget.js:452
 msgid "Edit"
 msgstr "Редактировать"
 
-#: ncms/asm/AsmNav.js:87 ncms/usr/UsersNav.js:101
-#: ncms/mmgr/MediaFilesSelector.js:703 ncms/asm/am/TableAMValueWidget.js:337
+#: ncms/mtt/filters/MttFiltersTable.js:182 ncms/asm/AsmNav.js:87
+#: ncms/usr/UsersNav.js:101 ncms/mmgr/MediaFilesSelector.js:703
+#: ncms/asm/am/TableAMValueWidget.js:337
 #: ncms/mtt/actions/MttActionsTree.js:132
 #: ncms/mtt/actions/MttActionsTree.js:240 ncms/mtt/MttNav.js:41
-#: ncms/mtt/MttNav.js:156 ncms/mtt/filters/MttFiltersTable.js:182
-#: ncms/asm/AsmAttrsTable.js:212 ncms/asm/am/TreeAMValueWidget.js:461
-#: ncms/mtt/tp/MttTpNav.js:90
+#: ncms/mtt/MttNav.js:156 ncms/asm/AsmAttrsTable.js:212
+#: ncms/asm/am/TreeAMValueWidget.js:461 ncms/mtt/tp/MttTpNav.js:90
 msgid "Remove"
 msgstr "Удалить"
 
@@ -410,15 +409,15 @@ msgstr "Пожалуйста, выберите файл для '%1'"
 msgid "Image"
 msgstr "Изображение"
 
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:37
 #: ncms/wiki/InsertVimeoDlg.js:36 ncms/asm/am/ImageAM.js:40
 #: ncms/wiki/InsertYoutubeDlg.js:42
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:37
 msgid "Width"
 msgstr "Ширина"
 
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:40
 #: ncms/wiki/InsertVimeoDlg.js:39 ncms/asm/am/ImageAM.js:46
 #: ncms/wiki/InsertYoutubeDlg.js:45
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:40
 msgid "Height"
 msgstr "Высота"
 
@@ -549,7 +548,7 @@ msgid "Add video"
 msgstr "Добавить видео"
 
 #: ncms/news/NewsNav.js:125 ncms/mmgr/MediaItemTreeSelector.js:115
-#: ncms/pgs/PagesTreeSelector.js:265 ncms/asm/am/MedialineAMValueWidget.js:106
+#: ncms/asm/am/MedialineAMValueWidget.js:106 ncms/pgs/PagesTreeSelector.js:265
 msgid "Delete"
 msgstr "Удалить"
 
@@ -837,7 +836,7 @@ msgstr "Изменить"
 msgid "Choose the new file owner"
 msgstr "Выберите нового владельца файла"
 
-#: ncms/mmgr/MediaFileEditor.js:62 ncms/pgs/PageEditorInfoPage.js:41
+#: ncms/mmgr/MediaFileEditor.js:62 ncms/pgs/PageEditorInfoPage.js:49
 msgid "Owner"
 msgstr "Владелец"
 
@@ -863,7 +862,7 @@ msgid "Image size"
 msgstr "Размер изображения"
 
 #: ncms/pgs/PageEditorEditPage.js:96 ncms/mmgr/MediaFilesSelector.js:673
-#: ncms/mmgr/MediaFileEditor.js:295 ncms/pgs/PageEditorInfoPage.js:32
+#: ncms/mmgr/MediaFileEditor.js:295 ncms/pgs/PageEditorInfoPage.js:40
 msgid "Preview"
 msgstr "Предпросмотр"
 
@@ -961,7 +960,7 @@ msgstr "Файл успешно сохранен"
 msgid "Edit file %1"
 msgstr "Редактировать файл %1"
 
-#: ncms/mmgr/PageFilesSelectorDlg.js:84 ncms/pgs/LinkSelectorDlg.js:44
+#: ncms/pgs/LinkSelectorDlg.js:44 ncms/mmgr/PageFilesSelectorDlg.js:84
 msgid "Link text"
 msgstr "Текст ссылки"
 
@@ -1512,19 +1511,27 @@ msgstr "Управление файлами страницы"
 msgid "General"
 msgstr "Общее"
 
-#: ncms/pgs/PageEditorInfoPage.js:115
+#: ncms/pgs/PageEditorInfoPage.js:132
+msgid "Virtual hosts"
+msgstr "Виртуальные хосты"
+
+#: ncms/pgs/PageEditorInfoPage.js:140
+msgid "Languages"
+msgstr "Языки"
+
+#: ncms/pgs/PageEditorInfoPage.js:151
 msgid "Last modification: %1, %2"
 msgstr "Последнее редактирование: %1, %2"
 
-#: ncms/pgs/PageEditorInfoPage.js:124
+#: ncms/pgs/PageEditorInfoPage.js:160
 msgid "This page is not pulished yet"
 msgstr "Эта страница не опубликована"
 
-#: ncms/pgs/PageEditorInfoPage.js:172
+#: ncms/pgs/PageEditorInfoPage.js:208
 msgid "Choose the owner of %1"
 msgstr "Выберите владельца: %1"
 
-#: ncms/pgs/PageEditorInfoPage.js:173
+#: ncms/pgs/PageEditorInfoPage.js:209
 msgid "Choose the owner"
 msgstr "Выберите владельца"
 
@@ -1734,7 +1741,7 @@ msgstr "Расположение"
 msgid "Select image link"
 msgstr "Укажите ссылку на изображение"
 
-#: ncms/wiki/WikiEditor.js:611 ncms/wiki/InsertSlideSharePresentationDlg.js:12
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:12 ncms/wiki/WikiEditor.js:611
 msgid "Insert SlideShare presentation"
 msgstr "Вставить презентацию SlideShare"
 
@@ -1742,13 +1749,13 @@ msgstr "Вставить презентацию SlideShare"
 msgid "http://www.slideshare.com/presentation_url or embed_code"
 msgstr ""
 
-#: ncms/wiki/InsertVimeoDlg.js:29 ncms/wiki/InsertYoutubeDlg.js:35
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:30
+#: ncms/wiki/InsertVimeoDlg.js:29 ncms/wiki/InsertYoutubeDlg.js:35
 msgid "URL or code"
 msgstr "URL или код"
 
-#: ncms/wiki/InsertVimeoDlg.js:33 ncms/wiki/InsertYoutubeDlg.js:39
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:34
+#: ncms/wiki/InsertVimeoDlg.js:33 ncms/wiki/InsertYoutubeDlg.js:39
 msgid "Custom size"
 msgstr "Другой размер"
 
@@ -1985,6 +1992,9 @@ msgstr "Заметка"
 
 #~ msgid "Connection to the server lost.<br>Please wait."
 #~ msgstr ""
+
+#~ msgid "Hosts"
+#~ msgstr "Виртуальные хосты"
 
 #~ msgid "Incoming request parameters"
 #~ msgstr "Входящие параметры запроса"

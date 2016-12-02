@@ -39,6 +39,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -143,6 +144,10 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     private final MediaRepository mrepo;
 
+    //
+    // Cached pages
+    //
+
     @GuardedBy("pagesCache")
     private final Map<Long, CachedPage> pagesCache;
 
@@ -154,6 +159,10 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @GuardedBy("guid2AliasCache")
     private final Map<String, String> guid2AliasCache;
+
+    //
+    // Index pages caches
+    //
 
     /**
      * Map:  langCode => virtualHost => pageId
@@ -169,8 +178,19 @@ public class PageRS extends MBDAOSupport implements PageService {
     @GuardedBy("lvh2IndexPages")
     private final Map<Long, String> indexPage2FirstLang;
 
+    /**
+     * Map: pageId => langCode (Second page language)
+     */
     @GuardedBy("lvh2IndexPages")
     private final Map<Long, String> indexPage2SecondLang;
+
+    /**
+     * Map: pageId => IndexPageSlot
+     */
+    @GuardedBy("lvh2IndexPages")
+    private final Map<Long, IndexPageSlot> indexPage2Slot;
+
+    // EOF index pages caches
 
     private final Provider<AsmAttributeManagerContext> amCtxProvider;
 
@@ -207,6 +227,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.guid2AliasCache = new LRUMap<>(env.xcfg().getInt("pages.lru-aliases-cache-size", 4096));
         this.pageGuid2Cache = new HashMap<>();
         this.pageAlias2Cache = new HashMap<>();
+        this.indexPage2Slot = new HashMap<>();
         this.lvh2IndexPages = new HashMap<>();
         this.indexPage2FirstLang = new HashMap<>();
         this.indexPage2SecondLang = new HashMap<>();
@@ -275,7 +296,6 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         ObjectNode res = mapper.createObjectNode();
         JsonUtils.populateObjectNode(row, res);
-
         String username = (String) row.get("owner");
         WSUser user = (username != null) ? userdb.findUser(username) : null;
         if (user != null) {
@@ -284,17 +304,32 @@ public class PageRS extends MBDAOSupport implements PageService {
         } else {
             res.remove("owner");
         }
-
         username = (String) row.get("muser");
         user = (username != null) ? userdb.findUser(username) : null;
         if (user != null) {
-            JsonUtils.populateObjectNode(user, res.putObject("muser"),
-                                         "name", "fullName");
+            res.putObject("muser")
+               .put("name", StringEscapeUtils.escapeHtml4(user.getName()))
+               .put("fullName", StringEscapeUtils.escapeHtml4(user.getFullName()))
+               .put("email", StringEscapeUtils.escapeHtml4(user.getEmail()));
         } else {
             res.remove("muser");
         }
-
         res.put("accessMask", pageSecurity.getAccessRights(id, req));
+        IndexPageSlot ips;
+        synchronized (lvh2IndexPages) {
+            ips = indexPage2Slot.get(id);
+        }
+        if (ips != null) { // Page is an index page
+            ObjectNode ipo = res.putObject("indexPage");
+            ArrayNode virtualHosts = ipo.putArray("virtualHosts");
+            ArrayNode langCodes = ipo.putArray("langCodes");
+            for (String v : ips.virtualHosts) {
+                virtualHosts.add(StringEscapeUtils.escapeHtml4(v));
+            }
+            for (String v : ips.langCodes) {
+                langCodes.add(StringEscapeUtils.escapeHtml4(v));
+            }
+        }
         return res;
     }
 
@@ -1391,7 +1426,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
         for (String l : labels) {
             if (l == null) {
-                return Arrays.stream(labels).filter(s -> s != null).toArray(String[]::new);
+                return Arrays.stream(labels).filter(Objects::nonNull).toArray(String[]::new);
             }
         }
         return labels;
@@ -1753,7 +1788,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         spec = spec.toLowerCase();
         if (spec.startsWith("page:")) { //Page reference
             int plen = "page:".length();
-            spec = (spec.length() > plen && spec.charAt(plen) == '/') ? spec.substring(plen + 1) : spec.substring(plen);
+            spec = spec.substring(spec.length() > plen && spec.charAt(plen) == '/' ? plen + 1 : plen);
             int ind = spec.indexOf('|');
             if (ind != -1) {
                 spec = spec.substring(0, ind).trim();
@@ -1786,7 +1821,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         spec = spec.toLowerCase();
         if (spec.startsWith("page:")) { //Page reference
             int plen = "page:".length();
-            spec = (spec.length() > plen && spec.charAt(plen) == '/') ? spec.substring(plen + 1) : spec.substring(plen);
+            spec = spec.substring(spec.length() > plen && spec.charAt(plen) == '/' ? plen + 1 : plen);
             int ind = spec.indexOf('|');
             if (ind != -1) {
                 spec = spec.substring(0, ind).trim();
@@ -1930,6 +1965,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             lvh2IndexPages.clear();
             indexPage2FirstLang.clear();
             indexPage2SecondLang.clear();
+            indexPage2Slot.clear();
 
             for (Map row : ipages) {
                 Long pid = NumberUtils.number2Long((Number) row.get("id"), -1L);
@@ -1956,6 +1992,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 }
                 String[] lcodes = ArrayUtils.split(ln, " ,;");
                 String[] vhosts = ArrayUtils.split(vh, " ,;");
+                indexPage2Slot.put(pid, new IndexPageSlot(lcodes, vhosts));
 
                 for (int i = 0, c = 0; i < lcodes.length; ++i) {
                     String lc = lcodes[i].trim();
@@ -1968,11 +2005,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                     for (int j = 0; j < vhosts.length; ++j) {
                         vh = vhosts[i].trim();
                         if (vh.isEmpty()) continue;
-                        Map<String, Long> vh2i = lvh2IndexPages.get(lc);
-                        if (vh2i == null) {
-                            vh2i = new LinkedHashMap<>();
-                            lvh2IndexPages.put(lc, vh2i);
-                        }
+                        Map<String, Long> vh2i = lvh2IndexPages.computeIfAbsent(lc, k -> new LinkedHashMap<>());
                         log.info("BIND MAIN PAGE lang:{} vhost:{} TO {}", lc, vh, lp);
                         vh2i.put(vh, pid);
                     }
@@ -1981,6 +2014,16 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (indexPage2FirstLang.isEmpty()) {
                 log.warn("No main pages found!");
             }
+        }
+    }
+
+    private static class IndexPageSlot {
+        private String[] langCodes;
+        private String[] virtualHosts;
+
+        private IndexPageSlot(String[] langCodes, String[] virtualHosts) {
+            this.langCodes = langCodes;
+            this.virtualHosts = virtualHosts;
         }
     }
 
