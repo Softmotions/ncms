@@ -10,14 +10,14 @@
 
     doc/features
     doc/gettingstarted/index
-    doc/conf/index
-    doc/db/index
-    doc/httl/index
-    doc/ui/index
-    doc/mtt/index
-    doc/soclinks/index
-    doc/deployments/index
-    doc/cookbook/index
-    doc/extending/index
-    doc/misc/index
+    doc/conf/conf
+    doc/db/db
+    doc/httl/httl
+    doc/ui/ui
+    doc/mtt/mtt
+    doc/soclinks/soclinks
+    doc/deployments/deployments
+    doc/cookbook/cookbook
+    doc/extending/extending
+    doc/misc/misc
 
