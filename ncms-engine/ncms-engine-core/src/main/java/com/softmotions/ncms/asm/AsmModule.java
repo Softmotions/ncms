@@ -2,8 +2,10 @@ package com.softmotions.ncms.asm;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
@@ -27,6 +29,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContextImpl;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
 import com.softmotions.ncms.asm.render.ldrs.AsmClasspathResourceLoader;
+import com.softmotions.ncms.asm.render.ldrs.AsmMediaServiceResourceLoader;
 import com.softmotions.ncms.media.MediaResource;
 
 /**
@@ -94,6 +97,7 @@ public class AsmModule extends AbstractModule {
         @Inject
         AsmResourceLoaderImpl(NcmsEnvironment env, Injector injector) throws Exception {
             HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
+            Set<String> ldrsClasses = new HashSet<>();
             List<AsmResourceLoader> ldrs = new ArrayList<>();
             List<HierarchicalConfiguration<ImmutableNode>> hcl = xcfg.configurationsAt("asm.resource-loaders");
             ClassLoader cl = ObjectUtils.firstNonNull(
@@ -109,6 +113,11 @@ public class AsmModule extends AbstractModule {
                         injector.getInstance(cl.loadClass(className));
                 log.info("Register resource loader: {}", className);
                 ldrs.add(ldr);
+                ldrsClasses.add(className);
+            }
+            // Always add AsmMediaServiceResourceLoader to the list of loaders
+            if (!ldrsClasses.contains(AsmMediaServiceResourceLoader.class.getName())) {
+                ldrs.add(injector.getInstance(AsmMediaServiceResourceLoader.class));
             }
             if (ldrs.isEmpty()) {
                 log.warn("No resource loaders configured using fallback loader: {}", AsmClasspathResourceLoader.class);

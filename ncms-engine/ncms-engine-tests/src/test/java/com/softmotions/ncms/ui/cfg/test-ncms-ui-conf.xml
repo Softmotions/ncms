@@ -12,26 +12,18 @@
     </site>
     <app-prefix>/</app-prefix>
     <force-default-locale-for-requests>true</force-default-locale-for-requests>
-    <messages>
-        <bundle>com.softmotions.ncms.Messages</bundle>
-    </messages>
 
     <security>
         <shiro-config-locations>classpath:com/softmotions/ncms/ui/cfg/shiro.test.ini</shiro-config-locations>
         <dbJVMName>WSUserDatabase</dbJVMName>
         <web-access-control-allow>*</web-access-control-allow>
-        <acl-lru-cache-size>1024</acl-lru-cache-size>
     </security>
 
     <asm>
-        <site-files-root resolveRelativePaths="true">/site</site-files-root>
-        <resource-loaders>
-            <loader>com.softmotions.ncms.asm.render.ldrs.AsmMediaServiceResourceLoader</loader>
-        </resource-loaders>
+        <site-files-root>/site</site-files-root>
     </asm>
 
     <pages>
-        <default-page-language>en</default-page-language>
         <lru-cache-size>1024</lru-cache-size>
         <lru-aliases-cache-size>1024</lru-aliases-cache-size>
     </pages>
@@ -84,10 +76,6 @@
         <thumbnails-width>250</thumbnails-width>
         <resize-default-format>jpeg</resize-default-format>
         <max-edit-text-size>524288</max-edit-text-size>
-        <system-directories>
-            <directory>/site</directory>
-            <directory>/pages</directory>
-        </system-directories>
         <import>
             <directory>${project.basedir}/src/main/webapp</directory>
             <target>site</target>

@@ -62,7 +62,7 @@ public class NcmsModule extends WBServletModule<NcmsEnvironment> {
         initJAXRS(env);
         initAsmFilter(env);
         install(new ShiroAopModule());
-        install(new I18nModule());
+        install(new I18nModule(env, "com.softmotions.ncms.Messages"));
         install(new WBMyBatisModule(env));
         install(new WBLiquibaseModule(env));
         install(new WBSecurityModule(env, "Softmotions"));

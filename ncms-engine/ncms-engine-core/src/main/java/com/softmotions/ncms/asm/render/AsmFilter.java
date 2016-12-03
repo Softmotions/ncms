@@ -90,7 +90,7 @@ public class AsmFilter implements Filter {
         this.stripPrefixes = null;
         this.excludePrefixes = null;
         this.resolveRelativePaths = env.xcfg().getBoolean("asm.site-files-root[@resolveRelativePaths]", true);
-        this.siteFilesRoot = env.xcfg().getString("asm.site-files-root", "");
+        this.siteFilesRoot = env.xcfg().getString("asm.site-files-root", "/site");
 
         String ss = cfg.getInitParameter("strip-prefixes");
         if (ss != null) {

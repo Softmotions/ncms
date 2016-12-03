@@ -224,7 +224,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.ebus = ebus;
         this.userEnvRS = userEnvRS;
         this.pagesCache = new PagesLRUMap<>(env.xcfg().getInt("pages.lru-cache-size", 1024));
-        this.guid2AliasCache = new LRUMap<>(env.xcfg().getInt("pages.lru-aliases-cache-size", 4096));
+        this.guid2AliasCache = new LRUMap<>(env.xcfg().getInt("pages.lru-aliases-cache-size", 8192));
         this.pageGuid2Cache = new HashMap<>();
         this.pageAlias2Cache = new HashMap<>();
         this.indexPage2Slot = new HashMap<>();

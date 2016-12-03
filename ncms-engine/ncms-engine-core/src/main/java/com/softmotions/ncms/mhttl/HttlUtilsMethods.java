@@ -215,7 +215,7 @@ public final class HttlUtilsMethods {
         if (sfRoot == null) {
             synchronized (HttlUtilsMethods.class) {
                 if (sfRoot == null) {
-                    String sfr = env.xcfg().getString("asm.site-files-root", "");
+                    String sfr = env.xcfg().getString("asm.site-files-root", "/site/");
                     if (!sfr.endsWith("/")) {
                         sfr += "/";
                     }

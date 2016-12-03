@@ -1748,8 +1748,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
         if (!localFilePut) {
             HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
-            int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB); //1Mb by default
-            int uplTh = xcfg.getInt("media.max-upload-size", MB * 10); //10Mb by default
+            int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB * 10); //10Mb by default
+            int uplTh = xcfg.getInt("media.max-upload-size", MB * 30); //30Mb by default
             us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", env.getTmpdir());
         }
 
@@ -2063,11 +2063,15 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
     private boolean isInSystemFolder(String path) {
+        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
         path = normalizeFolder(path);
-        List<Object> sdirs = env.xcfg().getList("media.system-directories.directory");
-        for (final Object sdirObj : sdirs) {
-            String sdir = String.valueOf(sdirObj);
-            if (path.startsWith(normalizeFolder(sdir))) {
+        if (path.startsWith("/pages/") // pages dir is hardcoded in project
+            || path.startsWith(normalizeFolder(xcfg.getString("asm.site-files-root", "/site")))) {
+            return true;
+        }
+        for (final Object o : xcfg.getList("media.system-directories.directory")) {
+            String dir = String.valueOf(o);
+            if (path.startsWith(normalizeFolder(dir))) {
                 return true;
             }
         }
