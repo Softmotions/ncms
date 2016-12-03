@@ -9,7 +9,7 @@
     :maxdepth: 1
 
     doc/features
-    doc/gettingstarted/index
+    doc/gettingstarted/gettingstarted
     doc/conf/conf
     doc/db/db
     doc/httl/httl
