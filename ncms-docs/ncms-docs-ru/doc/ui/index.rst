@@ -6,10 +6,11 @@
 .. toctree::
     :maxdepth: 1
 
-    amgr/index
-    pmgr/index
-    am/index
-    news/index
+    pmgr/pmgr
+    mmgr/mmgr
+    am/am
+    amgr/amgr
+    news/news
 
 
 .. figure:: img/ui_img1.png
