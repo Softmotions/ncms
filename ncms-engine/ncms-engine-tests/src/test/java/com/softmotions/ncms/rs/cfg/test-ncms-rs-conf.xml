@@ -11,8 +11,6 @@
         <preferRequestUrl>true</preferRequestUrl>
     </site>
     <app-prefix>/</app-prefix>
-    <hide-server-exceptions>false</hide-server-exceptions>
-
     <messages>
         <bundle>com.softmotions.ncms.Messages</bundle>
     </messages>

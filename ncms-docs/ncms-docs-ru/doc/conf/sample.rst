@@ -5,23 +5,52 @@
 
 .. code-block:: xml
 
+    <?xml version="1.0" encoding="utf-8" ?>
     <configuration>
-        <logging-ref>ncmsapp-logging.xml</logging-ref>
-        <app-name>All about my parrots</app-name>
+        <!-- Ссылка на лог конфигурацию проекта
+             http://logback.qos.ch/manual/configuration.html -->
+        <logging-ref>app-logging.xml</logging-ref>
+        <!-- Название приложения -->
+        <app-name>My app</app-name>
+        <!--
+            Режим работы приложения:
+            - production    Приложение в нормальном режиме работы
+            - dev           Приложение в режиме работы для разработчика
+                                Включен debug режим работы.
+            - test          Приложение в режиме выполнения тест кейсов
+        -->
         <environment>dev</environment>
+        <!-- DNS имя веб сервера или IP адрес для по умолчанию внешних клиентов -->
         <server-name>127.0.0.1</server-name>
-        <server-port>9292</server-port>
+        <!-- Порт сервера для внешних клиентов -->
+        <server-port>${serverPort}</server-port>
         <site>
+            <!-- Основной адрес веб сервера для для внешних клиентов -->
             <root>http://${server-name}:${server-port}</root>
+            <!-- Если true, то адрес веб сервера для внешних
+                 клиентов (например в email сообщениях и ссылках)
+                 будет создаваться на основе данных
+                 HTTP запросов клиентов, если это возможно.
+                 В противном случае будет использоваться параметр
+                 xml конфигурации: site/root
+            -->
             <preferRequestUrl>true</preferRequestUrl>
         </site>
 
+        <!-- Префикс приложения относительно корня веб контейнера.
+             См. http://ncms.one/manual/doc/deployments/index.html
+        -->
         <app-prefix>/</app-prefix>
-        <hide-server-exceptions>false</hide-server-exceptions>
 
+        <!--
+            Список реусрсов используемых для локализации
+            сообщений сервера. Можно не включать этот
+            этот блок в конфигурацию, в том случае если
+            не используются расширения nCMS http://ncms.one/manual/doc/extending/index.html
+        -->
         <messages>
             <bundle>com.softmotions.ncms.Messages</bundle>
-            <bundle>org.myparrots.Messages</bundle>
+            <bundle>myapp.Messages</bundle>
         </messages>
 
         <asm>
@@ -40,7 +69,7 @@
         <jar-web-resources>
             <resource>
                 <path-prefix>/adm</path-prefix>
-                <options>/ncmsapp-qx/ncmsapp\,watch=true</options>
+                <options>/${rootArtifactId}-qx/${rootArtifactId},X-App-Prefix=/,watch=true</options>
             </resource>
             <resource>
                 <path-prefix>/manual</path-prefix>
@@ -50,16 +79,16 @@
 
         <cache-headers-groups>
             <cache-group>
-                <nocache>true</nocache>
-                <patterns>/adm/script/*</patterns>
-            </cache-group>
-            <cache-group>
                 <patterns>*.css,*.js</patterns>
                 <expiration>7200</expiration>
             </cache-group>
             <cache-group>
                 <patterns>/rs/media/fileid/*,/images/*,/adm/resource/*</patterns>
                 <expiration>7200</expiration>
+            </cache-group>
+            <cache-group>
+                <nocache>true</nocache>
+                <patterns>/adm/script/*</patterns>
             </cache-group>
         </cache-headers-groups>
 
@@ -71,7 +100,7 @@
         <mybatis>
             <bindDatasource>true</bindDatasource>
             <config>com/softmotions/ncms/db/mybatis-config.xml</config>
-            <propsFile>{home}/.ncmsapp.ds</propsFile>
+            <propsFile>{home}/.${rootArtifactId}.ds</propsFile>
             <extra-properties>
                 JDBC.driver=com.ibm.db2.jcc.DB2Driver
             </extra-properties>
@@ -83,7 +112,7 @@
         </mybatis>
 
         <media>
-            <basedir>{home}/.ncmsapp/media</basedir>
+            <basedir>{home}/.${rootArtifactId}/media</basedir>
             <max-upload-size>31457280</max-upload-size>
             <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
             <locks-lrucache-size>128</locks-lrucache-size>
@@ -112,20 +141,18 @@
             </import>
         </media>
 
-        <httl extensions="*,httl,html">
-            loggers=httl.spi.loggers.Slf4jLogger
-            loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
-            import.methods+=com.softmotions.ncms.mhttl.HttlAsmMethods\,com.softmotions.ncms.mhttl.HttlUtilsMethods\,org.myparrots.AppHttlMethods
-            import.packages+=com.softmotions.ncms.mhttl\,com.softmotions.ncms.asm\,com.softmotions.commons.cont\,org.apache.commons.configuration2\,org.myparrots
-            reloadable=true
+        <httl extensions="*,httl,html,httl.css">
+            import.methods+=${package}.AppHttlMethods
+            import.packages+=${package}
         </httl>
 
         <security>
-            <xml-user-database placeTo="{home}/.ncmsapp/ncmsapp-users.xml">conf/ncmsapp-users.xml</xml-user-database>
+            <xml-user-database placeTo="{home}/.${rootArtifactId}/${rootArtifactId}-users.xml">conf/${rootArtifactId}-users.xml</xml-user-database>
             <shiro-config-locations>/WEB-INF/shiro.ini</shiro-config-locations>
+            <password-hash-algorithm>sha256</password-hash-algorithm>
             <dbJVMName>WSUserDatabase</dbJVMName>
-            <web-access-control-allow>*</web-access-control-allow>
             <acl-lru-cache-size>4096</acl-lru-cache-size>
+            <!--<web-access-control-allow>*</web-access-control-allow>-->
         </security>
 
         <ui>
@@ -153,11 +180,11 @@
                 <tag name="ind" class="com.softmotions.ncms.mediawiki.IndentTag"/>
             </tags>
             <interwiki-links>
-                <!--<link key="page" value="/asm/$1"/>-->
+                <!--<link key="page" value="/asm/${dollar}1"/>-->
             </interwiki-links>
         </mediawiki>
 
         <modules>
-            <module>org.myparrots.AppModule</module>
+            <module>${package}.AppModule</module>
         </modules>
     </configuration>
