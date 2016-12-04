@@ -8,8 +8,8 @@
 
     pmgr/pmgr
     mmgr/mmgr
-    am/am
     amgr/amgr
+    am/am
     news/news
 
 
