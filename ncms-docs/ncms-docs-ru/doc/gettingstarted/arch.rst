@@ -277,7 +277,9 @@
         `Подробне о Glob нотации <https://en.wikipedia.org/wiki/Glob_(programming)>`_
 
     mediawiki
-        Популярный язык разметки wiki страниц. В mediawiki языке
+        Популярный язык разметки wiki страниц. В mediawiki разметке
         описаны страницы `wikipedia.org <https://www.wikipedia.org/>`_.
-        `Справочная информация <https://www.mediawiki.org/wiki/Help:Formatting/ru>`_
+        Mediawiki разметка, может быть использована для создания страниц nCMS
+        при помощи атрибута: :ref:`wiki <am_wiki>`.
+
 
