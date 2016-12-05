@@ -440,19 +440,15 @@ jQuery(function () {
             var href;
             if (cc === 39) { // right
                 href = $("div.rel-nav > a > i.mts-right").first().parent("a").attr("href");
-                if (href) {
-                    window.location = href;
-                }
             } else if (cc === 37) { // left
                 href = $("div.rel-nav > a > i.mts-left").first().parent("a").attr("href");
-                if (href) {
-                    window.location.href = href;
-                }
-            }  else if (cc == 38 && e.ctrlKey) { // up
+            }  else if (cc === 38 && e.ctrlKey) { // up
                 href  = $("#relnav-parents-1").find("> li > a").last().attr("href");
-                if (href) {
-                    window.location.href = href;
-                }
+            } else if (cc === 36){ // home
+                href = $("div.rel-nav > a > i.mdi-action-home").first().parent("a").attr("href");
+            }
+            if (href) {
+                window.location.href = href;
             }
         });
     }

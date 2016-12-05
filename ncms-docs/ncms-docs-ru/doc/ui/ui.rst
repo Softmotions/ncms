@@ -12,7 +12,7 @@
     am/am
     news/news
     mtt/mtt
-
+    umgr/umgr
 
 .. figure:: img/ui_img1.png
 
