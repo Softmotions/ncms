@@ -14,7 +14,6 @@
     doc/db/db
     doc/httl/httl
     doc/ui/ui
-    doc/mtt/mtt
     doc/soclinks/soclinks
     doc/deployments/deployments
     doc/cookbook/cookbook
