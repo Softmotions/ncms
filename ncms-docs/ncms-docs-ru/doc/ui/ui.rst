@@ -11,6 +11,7 @@
     amgr/amgr
     am/am
     news/news
+    visual/visual
     mtt/mtt
     umgr/umgr
 
