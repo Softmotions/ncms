@@ -20,7 +20,7 @@
     mvn archetype:generate \
         -DarchetypeGroupId=softmotions \
         -DarchetypeArtifactId=ncms-site-archetype \
-        -DarchetypeVersion=1.0 \
+        -DarchetypeVersion=1.0.1 \
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
 Продемострируем создание и дальнейшее развитие `nCMS` проекта на примере
@@ -32,7 +32,7 @@
     $:   mvn archetype:generate \
     >         -DarchetypeGroupId=softmotions \
     >         -DarchetypeArtifactId=ncms-site-archetype \
-    >         -DarchetypeVersion=1.0 \
+    >         -DarchetypeVersion=1.0.1 \
     >         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
     [INFO] Scanning for projects...
 
