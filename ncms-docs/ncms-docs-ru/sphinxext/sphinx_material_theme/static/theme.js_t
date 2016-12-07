@@ -441,7 +441,11 @@ jQuery(function () {
             if (cc === 39) { // right
                 href = $("div.rel-nav > a > i.mts-right").first().parent("a").attr("href");
             } else if (cc === 37) { // left
-                href = $("div.rel-nav > a > i.mts-left").first().parent("a").attr("href");
+                if (window.history && window.history.length) {
+                    window.history.back();
+                } else {
+                    href = $("div.rel-nav > a > i.mts-left").first().parent("a").attr("href");
+                }
             }  else if (cc === 38 && e.ctrlKey) { // up
                 href  = $("#relnav-parents-1").find("> li > a").last().attr("href");
             } else if (cc === 36){ // home
