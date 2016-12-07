@@ -51,11 +51,12 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/gettingstarted</outputDirectory>
+                            <encoding>UTF-8</encoding>
+                            <outputDirectory>${project.build.directory}/ncmsapp</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>
-                                        ${project.build.directory}/test-classes/projects/gettingstarted/project/gettingstarted
+                                        ${project.build.directory}/test-classes/projects/gettingstarted/project/ncmsapp
                                     </directory>
                                 </resource>
                             </resources>

@@ -6,6 +6,6 @@
          version="3.0"
          metadata-complete="true">
     <listener>
-        <listener-class>${package}.AppServletListener</listener-class>
+        <listener-class>${package}.AppBoot</listener-class>
     </listener>
 </web-app>
