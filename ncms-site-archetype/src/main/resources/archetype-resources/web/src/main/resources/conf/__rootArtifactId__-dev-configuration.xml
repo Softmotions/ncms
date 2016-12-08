@@ -65,7 +65,8 @@
         <config>com/softmotions/ncms/db/mybatis-config.xml</config>
         <propsFile>{home}/.${rootArtifactId}.ds</propsFile>
         <extra-properties>
-            JDBC.driver=com.ibm.db2.jcc.DB2Driver
+            #JDBC.driver=com.ibm.db2.jcc.DB2Driver
+            JDBC.driver=org.postgresql.Driver
         </extra-properties>
         <extra-mappers>
             <mapper>
