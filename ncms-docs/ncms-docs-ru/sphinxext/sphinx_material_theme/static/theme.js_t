@@ -274,6 +274,7 @@ jQuery(function () {
     initBtt();
     initImgFull();
     initKeys();
+    initScreen();
 
     $(window).on("load", function () {
         var hash = document.location.hash;
@@ -446,9 +447,9 @@ jQuery(function () {
                 } else {
                     href = $("div.rel-nav > a > i.mts-left").first().parent("a").attr("href");
                 }
-            }  else if (cc === 38 && e.ctrlKey) { // up
-                href  = $("#relnav-parents-1").find("> li > a").last().attr("href");
-            } else if (cc === 36){ // home
+            } else if (cc === 38 && e.ctrlKey) { // up
+                href = $("#relnav-parents-1").find("> li > a").last().attr("href");
+            } else if (cc === 36) { // home
                 href = $("div.rel-nav > a > i.mdi-action-home").first().parent("a").attr("href");
             }
             if (href) {
@@ -456,6 +457,23 @@ jQuery(function () {
             }
         });
     }
+
+    function initScreen() {
+        $(window).load(function() {
+            var hash = document.location.hash;
+            if (hash != "") {
+                return;
+            }
+            var width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            if (width < 601) {
+                var el = $("#page-content-block");
+                if (el.length) {
+                    $(window).scrollTop(el.offset().top);
+                }
+            }
+        });
+    }
+
 });
 
 
