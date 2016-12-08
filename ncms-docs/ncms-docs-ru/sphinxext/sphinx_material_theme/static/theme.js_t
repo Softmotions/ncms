@@ -459,7 +459,9 @@ jQuery(function () {
     }
 
     function initScreen() {
-        $(window).load(function() {
+        $(document).ready(setPos);
+        $(window).load(setPos);
+        function setPos() {
             var hash = document.location.hash;
             if (hash != "") {
                 return;
@@ -471,7 +473,7 @@ jQuery(function () {
                     $(window).scrollTop(el.offset().top);
                 }
             }
-        });
+        }
     }
 
 });
