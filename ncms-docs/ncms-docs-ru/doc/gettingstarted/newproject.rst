@@ -42,7 +42,7 @@
     Define value for property 'artifactId':  ncmsapp: : ncmsapp
     Define value for property 'version':  1.0-SNAPSHOT: :
     Define value for property 'package':  org.example: : org.myparrots
-    Define value for property 'projectName':  My NCMS Project: : All about my parrots
+    Define value for property 'projectName':  My nCMS Project: : All about my parrots
     Define value for property 'serverPort':  8080: : 9292
     Confirm properties configuration:
     groupId: org.myparrots

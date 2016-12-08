@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# NCMS documentation build configuration file, created by
+# nCMS documentation build configuration file, created by
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -64,7 +64,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'NCMS: инструкция по применению'
+project = 'nCMS: инструкция по применению'
 copyright = 'Softmotions Ltd, 2016'
 author = 'info@softmotions.com'
 
@@ -183,7 +183,7 @@ html_sidebars = {
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-html_title = 'NCMS'
+html_title = 'nCMS'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #

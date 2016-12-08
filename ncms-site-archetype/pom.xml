@@ -17,7 +17,7 @@
         <gettingstarted.app.groupId>com.softmotions.ncmstart</gettingstarted.app.groupId>
         <gettingstarted.app.artifactId>ncmsapp</gettingstarted.app.artifactId>
         <gettingstarted.app.version>0.1.0</gettingstarted.app.version>
-        <gettingstarted.app.name>Getting started with NCMS</gettingstarted.app.name>
+        <gettingstarted.app.name>Getting started with nCMS</gettingstarted.app.name>
     </properties>
 
     <build>
