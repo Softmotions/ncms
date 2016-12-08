@@ -48,6 +48,11 @@ nCMS поддерживает PostgreSQL версии не ниже `9.5`
         ...
     </mybatis>
 
+.. warning::
+
+    Убедитесь в том, что в элементе конфигурации `mybatis/extra-properties`
+    присутствует JDBC драйвер для Postgres: `org.postgresql.Driver`
+
 Где в файле `${HOME}/.ncms.ds` хранятся JDBC URL, имя пользователя и пароль к БД::
 
     JDBC.url=jdbc:postgresql://127.0.0.1:5432/ncms

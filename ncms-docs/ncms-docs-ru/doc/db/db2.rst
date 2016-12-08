@@ -10,11 +10,11 @@ nCMS поддерживает IBM DB2 версии не ниже `9.7`
 -------------
 Версия IBM DB2 Express-C является бесплатной и в тоже время
 мощной СУБД, достаточной для работы десятков высоконагруженных
-сайтов в одном экземпляре `nCMS`. Для установки и настройки DB2
+сайтов в одном экземпляре nCMS. Для установки и настройки DB2
 рекомендуем обратиться к документации IBM.
 
 Ниже пример шагов для быстрой установки db2 express-c `v11.1` на ОС Ubuntu
-для разработчика сайтов на `nCMS`
+для разработчика сайтов на nCMS
 
 Установка DB2 на Ubuntu
 ***********************
@@ -82,6 +82,35 @@ nCMS поддерживает IBM DB2 версии не ниже `9.7`
 
     GRANT DBADM ON DATABASE TO USER ncms;
 
+
+Конфигурация  nCMS
+------------------
+
+Для работы с новой базой необходимо настроить использование
+правильного JDBC драйвера. Пример конфигурации:
+
+.. code-block:: xml
+
+    <mybatis>
+        <bindDatasource>true</bindDatasource>
+        <config>com/softmotions/ncms/db/mybatis-config.xml</config>
+        <propsFile>{home}/.ncms.ds</propsFile>
+        <extra-properties>
+            JDBC.driver=com.ibm.db2.jcc.DB2Driver
+        </extra-properties>
+        ...
+    </mybatis>
+
+.. warning::
+
+    Убедитесь в том, что в элементе конфигурации `mybatis/extra-properties`
+    присутствует JDBC драйвер для DB2: `com.ibm.db2.jcc.DB2Driver`
+
+Где в файле `${HOME}/.ncms.ds` хранятся JDBC URL, имя пользователя и пароль к БД::
+
+    JDBC.url=jdbc:db2://127.0.0.1:50000/NCMS
+    JDBC.username=ncms
+    JDBC.password=xxxxxx
 
 
 
