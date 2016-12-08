@@ -19,7 +19,7 @@ wiki разметки:
 
 * `mediawiki <https://www.mediawiki.org/wiki/Help:Formatting/ru>`_
 
-В ближайших версиях nCMS будет реализована поддержка `markdown <https://daringfireball.net/projects/markdown/syntax>`_
+В ближайших версиях ηCMS будет реализована поддержка `markdown <https://daringfireball.net/projects/markdown/syntax>`_
 
 
 Опции атрибута
@@ -100,7 +100,7 @@ Mediawiki разметка нумерованного списка::
 .. image:: img/wiki_img9.png
     :align: left
 
-**Ссылка на страницу nCMS:**
+**Ссылка на страницу ηCMS:**
 
 .. figure:: img/wiki_img18.png
 
@@ -175,7 +175,7 @@ Mediawiki разметка нумерованного списка::
 .. note::
 
     При выборе размера изображения отличного от оригинального,
-    изображение масштабируется сохраняется на стороне сервера nCMS.
+    изображение масштабируется сохраняется на стороне сервера ηCMS.
 
 **Расположение изображения**
 

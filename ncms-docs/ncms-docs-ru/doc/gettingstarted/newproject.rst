@@ -14,7 +14,7 @@
 Использование Maven Archetype
 -----------------------------
 
-Лучший способ создать новый проект на базе nCMS это создать
+Лучший способ создать новый проект на базе ηCMS это создать
 его из maven архетипа (maven archetype).
 
 .. code-block:: sh
@@ -25,7 +25,7 @@
         -DarchetypeVersion=1.0.1 \
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
-Продемострируем создание и дальнейшее развитие nCMS проекта на примере
+Продемострируем создание и дальнейшее развитие ηCMS проекта на примере
 создания информационного сайта о попугаях.
 Код сайта будет в пакете `org.myparrots`.
 
@@ -44,7 +44,7 @@
     Define value for property 'artifactId':  ncmsapp: : ncmsapp
     Define value for property 'version':  1.0-SNAPSHOT: :
     Define value for property 'package':  org.example: : org.myparrots
-    Define value for property 'projectName':  My nCMS Project: : All about my parrots
+    Define value for property 'projectName':  My ηCMS Project: : All about my parrots
     Define value for property 'serverPort':  8080: : 9292
     Confirm properties configuration:
     groupId: org.myparrots
@@ -125,7 +125,7 @@
 
 Дополнительные параметры соединения с БД определяются в файле `{home}/.ncmsapp.ds`
 где `{home}` - домашняя директория пользователя из под которого запущен сервер
-nCMS. Вам необходимо создать этот файл и заполнить параметрами аналогично
+ηCMS. Вам необходимо создать этот файл и заполнить параметрами аналогично
 примеру:
 
 .. code-block:: sh

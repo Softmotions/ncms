@@ -1,6 +1,6 @@
 .. _httl_ncms:
 
-nCMS расширение HTTL
+ηCMS расширение HTTL
 ====================
 
 .. contents::
@@ -8,7 +8,7 @@ nCMS расширение HTTL
 :ref:`Основы HTTL <httl_basics>`
 
 
-nCMS добавляет в контекст :term:`HTTL` разметки дополнительные методы,
+ηCMS добавляет в контекст :term:`HTTL` разметки дополнительные методы,
 которые позволяют использовать сервисы и полезный функционал CMS на ваших
 страницах. Эти методы определены в двух классах: `com.softmotions.ncms.mhttl.HttlAsmMethods`
 и `com.softmotions.ncms.mhttl.HttlUtilsMethods` вы можете изучить их реализацию

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# nCMS documentation build configuration file, created by
+# ηCMS documentation build configuration file, created by
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -25,7 +25,7 @@ import sphinx_material_theme
 
 rst_epilog = """
 .. _homepage: http://ncms.github.org
-.. |ncmsversion| replace:: nCMS 1.0
+.. |ncmsversion| replace:: ηCMS 1.0
 """
 
 highlight_language = 'text'
@@ -64,7 +64,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'nCMS: инструкция по применению'
+project = 'ηCMS: инструкция по применению'
 copyright = 'Softmotions Ltd, 2016'
 author = 'info@softmotions.com'
 
@@ -183,7 +183,7 @@ html_sidebars = {
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-html_title = 'nCMS'
+html_title = 'ηCMS'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
