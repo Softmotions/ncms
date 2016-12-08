@@ -15,7 +15,7 @@
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
         <qooxdoo.sdk.version>5.0.1</qooxdoo.sdk.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
-        <pgsql.jdbc.version>9.4.1211.jre7</pgsql.jdbc.version>
+        <pgsql.jdbc.version>9.4.1212.jre7</pgsql.jdbc.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <slf4j.version>1.7.21</slf4j.version>
         <logback.version>1.1.7</logback.version>
@@ -175,7 +175,7 @@
                 <plugin>
                     <groupId>com.samaxes.maven</groupId>
                     <artifactId>minify-maven-plugin</artifactId>
-                    <version>1.7.4</version>
+                    <version>1.7.6</version>
                 </plugin>
                 <plugin>
                     <groupId>org.liquibase</groupId>
@@ -191,7 +191,7 @@
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
                     <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.6.0</version>
+                    <version>1.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -201,24 +201,15 @@
                 <plugin>
                     <groupId>com.github.warmuuh</groupId>
                     <artifactId>libsass-maven-plugin</artifactId>
-                    <version>0.2.4-libsass_3.3.4</version>
+                    <version>0.2.5-libsass_3.3.6</version>
                 </plugin>
             </plugins>
         </pluginManagement>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh</artifactId>
-                <version>2.10</version>
-            </extension>
-        </extensions>
     </build>
-
     <distributionManagement>
         <repository>
             <id>softmotions_repository</id>
             <url>https://repo.softmotions.com/repository/softmotions-public</url>
         </repository>
     </distributionManagement>
-
 </project>
