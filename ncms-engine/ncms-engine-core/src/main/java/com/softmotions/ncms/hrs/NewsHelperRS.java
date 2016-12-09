@@ -1,6 +1,7 @@
 package com.softmotions.ncms.hrs;
 
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -13,7 +14,10 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.softmotions.ncms.asm.Asm;
+import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.CachedPage;
+import com.softmotions.ncms.asm.PageCriteria;
 import com.softmotions.ncms.asm.PageService;
 
 /**
@@ -29,11 +33,15 @@ public class NewsHelperRS {
 
     private final PageService pageService;
 
+    private final AsmDAO adao;
+
     @Inject
     public NewsHelperRS(PageService pageService,
-                        ObjectMapper mapper) {
+                        ObjectMapper mapper,
+                        AsmDAO adao) {
         this.pageService = pageService;
         this.mapper = mapper;
+        this.adao = adao;
     }
 
     /**
@@ -54,21 +62,35 @@ public class NewsHelperRS {
      * @param limit       News list limit
      * @return
      */
+    @GET
     @Path("/page/{guidOrAlias}/list")
     public Response newsForPage(@PathParam("guidOrAlias") String guidOrAlias,
                                 @QueryParam("offset") @DefaultValue("0") Long offset,
-                                @QueryParam("limit") @DefaultValue("limit") Long limit) throws Exception {
+                                @QueryParam("limit") @DefaultValue("1000") Long limit) throws Exception {
 
         CachedPage cp = pageService.getCachedPage(guidOrAlias, true);
         if (cp == null) {
             throw new NotFoundException();
         }
 
+        PageCriteria crit = adao.newPageCriteria();
+        crit.withNavParentId(cp.getId());
+        crit.withPublished(true);
+        crit.skip(offset.intValue());
+        crit.limit(limit.intValue());
+        crit.onAsm().orderBy("ordinal").desc();
+
         return Response.ok((StreamingOutput) output -> {
             final JsonGenerator gen = new JsonFactory().createGenerator(output);
             gen.writeStartArray();
 
-            // todo
+            for (Asm child : crit.selectAsAsms()) {
+                gen.writeStartObject();
+                gen.writeStringField("guid", child.getName());
+                gen.writeStringField("hname", child.getHname());
+                gen.writeStringField("brief", child.getEffectiveAttributeAsString("brief", ""));
+                gen.writeEndObject();
+            }
 
             gen.writeEndArray();
             gen.flush();
