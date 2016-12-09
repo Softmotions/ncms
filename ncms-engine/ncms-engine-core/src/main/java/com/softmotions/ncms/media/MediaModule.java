@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -64,19 +63,10 @@ public class MediaModule extends AbstractModule {
         }
 
         private void processImportDir(HierarchicalConfiguration c) {
-            String srcDir = c.getString("directory");
-            if (StringUtils.isBlank(srcDir)) {
-                log.error("Missing required media.import.directory configuration attribute");
-                return;
-            }
+
             String target = c.getString("target");
             if (StringUtils.isBlank(target)) {
                 log.error("Missing required media.import.target configuration attribute");
-                return;
-            }
-            Path srcPath = Paths.get(srcDir).toAbsolutePath().normalize();
-            if (!Files.isDirectory(srcPath)) {
-                log.error("Failed to import: {} is not a directory", srcPath);
                 return;
             }
 
@@ -94,23 +84,34 @@ public class MediaModule extends AbstractModule {
                 flags |= MediaRepository.IMPORT_CLEANUP_MISSING;
             }
 
-            List<String> includes = new ArrayList<>();
-            List<String> excludes = new ArrayList<>();
-            for (Object o : c.getList("includes.include")) {
-                includes.add(String.valueOf(o));
-            }
-            for (Object o : c.getList("excludes.exclude")) {
-                excludes.add(String.valueOf(o));
-            }
+            String[] includes = c.getList("includes.include").stream()
+                                 .map(String::valueOf)
+                                 .toArray(String[]::new);
+            String[] excludes = c.getList("excludes.exclude").stream()
+                                 .map(String::valueOf)
+                                 .toArray(String[]::new);
 
-            try {
-                mediaRepository.importDirectory(srcPath.toString(),
-                                                target,
-                                                includes.toArray(new String[includes.size()]),
-                                                excludes.toArray(new String[excludes.size()]),
-                                                flags);
-            } catch (IOException e) {
-                log.error("Failed to import directory: ", e);
+            for (Object v : c.getList("directory")) {
+                String srcDir = (v != null ? v.toString() : null);
+                if (StringUtils.isBlank(srcDir)) {
+                    log.error("Missing required media.import.directory configuration attribute");
+                    continue;
+                }
+                Path srcPath = Paths.get(srcDir).toAbsolutePath().normalize();
+                if (!Files.isDirectory(srcPath)) {
+                    log.error("Failed to import: {} is not a directory", srcPath);
+                    continue;
+                }
+                try {
+                    mediaRepository.importDirectory(srcPath.toString(),
+                                                    target,
+                                                    includes,
+                                                    excludes,
+                                                    flags);
+                } catch (IOException e) {
+                    log.error("Failed to import directory: ", e);
+                }
+                break;
             }
         }
     }

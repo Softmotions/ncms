@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -93,7 +94,7 @@ import com.softmotions.commons.io.scanner.DirectoryScanner;
 import com.softmotions.commons.io.scanner.DirectoryScannerFactory;
 import com.softmotions.commons.io.scanner.DirectoryScannerVisitor;
 import com.softmotions.commons.io.watcher.FSWatcher;
-import com.softmotions.commons.io.watcher.FSWatcherCollectEventHandler;
+import com.softmotions.commons.io.watcher.FSWatcherCollectEventHandler2;
 import com.softmotions.commons.io.watcher.FSWatcherCreateEvent;
 import com.softmotions.commons.io.watcher.FSWatcherDeleteEvent;
 import com.softmotions.commons.io.watcher.FSWatcherEventHandler;
@@ -2255,42 +2256,61 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private final List<DirectoryScanner> watchScanners = Collections.synchronizedList(new ArrayList<>());
 
-    private final FSWatcherCollectEventHandler watchHandler = new FSWatcherCollectEventHandler(
-            FSWatcherCollectEventHandler.MOVE_CREATED_INTO_MODIFIED
+    private final FSWatcherCollectEventHandler2 watchHandler = new FSWatcherCollectEventHandler2(
+            FSWatcherCollectEventHandler2.MOVE_CREATED_INTO_MODIFIED
     );
 
     @Override
     public void init(FSWatcher watcher) {
     }
 
+
+    private boolean isIgnoredWatchFile(Path path) {
+        String fname = path != null && path.getFileName() != null ? path.getFileName().toString() : null;
+        return fname != null
+               && (fname.endsWith("___jb_tmp___")
+                   || (fname.startsWith(".") && fname.endsWith(".swp")));
+    }
+
     @Override
-    public void handlePollTimeout(FSWatcher watcher) {
-        FSWatcherCollectEventHandler snapshot;
+    public void handlePollTimeout(FSWatcher w) {
+
+        FSWatcherCollectEventHandler2 snapshot;
+
         synchronized (watchHandler) {
             if (watchHandler.getModified().isEmpty() &&
                 watchHandler.getDeleted().isEmpty()) {
                 watchHandler.clear();
                 return;
             }
-            snapshot = (FSWatcherCollectEventHandler) watchHandler.clone();
+            snapshot = (FSWatcherCollectEventHandler2) watchHandler.clone();
             watchHandler.clear();
         }
-        FSWatcherUserData data = watcher.getUserData();
-        Set<Path> modified = new HashSet<>(snapshot.getModified());
-        Set<Path> deleted = new HashSet<>(snapshot.getDeleted());
-        for (final Path path : snapshot.getModified()) {
-            if (modified.contains(path)) {
-                if (Files.exists(path)) {
-                    deleted.remove(path);
-                } else {
-                    modified.remove(path);
-                }
+
+        Map<Path, FSWatcherEventSupport> modified = new HashMap<>(snapshot.getModified().size());
+        Map<Path, FSWatcherEventSupport> deleted = new HashMap<>(snapshot.getDeleted().size());
+        for (FSWatcherEventSupport ev : snapshot.getDeleted()) {
+            if (isIgnoredWatchFile(ev.getFullPath())) {
+                continue;
+            }
+            deleted.put(ev.getFullPath(), ev);
+        }
+        for (FSWatcherEventSupport ev : snapshot.getModified()) {
+            if (isIgnoredWatchFile(ev.getFullPath())) {
+                continue;
+            }
+            if (Files.exists(ev.getFullPath())) {
+                modified.put(ev.getFullPath(), ev);
+                deleted.remove(ev.getFullPath());
             }
         }
 
-        for (final Path path : deleted) {
+        for (final FSWatcherEventSupport ev : deleted.values()) {
+            FSWatcherUserData data = Objects.requireNonNull(ev.getWatcher().getUserData());
+            Path path = ev.getFullPath();
             Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
             try {
+                log.info("Deleting resource: {}", target);
                 deleteResource(target.toString(),
                                new MediaRSLocalRequest(env, target.toFile()),
                                null);
@@ -2300,7 +2320,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
         }
 
-        for (final Path path : modified) {
+        for (final FSWatcherEventSupport ev : modified.values()) {
+            FSWatcherUserData data = Objects.requireNonNull(ev.getWatcher().getUserData());
+            Path path = ev.getFullPath();
             Path target = data.target.resolve(data.ds.getBasedir().relativize(path));
             try {
                 importFile(path.toString(),
@@ -2310,7 +2332,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             } catch (IOException e) {
                 log.error("File import failed. Path: {} target: {} error: {}", path, target, e.getMessage(), e);
             }
-
         }
     }
 
