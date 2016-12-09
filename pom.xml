@@ -5,8 +5,7 @@
   <packaging>pom</packaging>  
   <modules> 
     <module>ncms-engine</module>  
-    <module>ncms-client-agent</module>  
-    <module>ncms-docs</module>  
+    <module>ncms-docs</module>
     <module>ncms-site-pom</module> 
   </modules>  
   <parent> 
