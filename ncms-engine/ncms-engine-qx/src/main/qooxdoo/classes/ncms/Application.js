@@ -21,6 +21,12 @@
  *
  * Ace editor
  * @asset(ncms/script/ace_all.js)
+ * @asset(ncms/script/worker-css.js)
+ * @asset(ncms/script/worker-html.js)
+ * @asset(ncms/script/worker-javascript.js)
+ * @asset(ncms/script/worker-json.js)
+ * @asset(ncms/script/worker-xml.js)
+ * @asset(ncms/script/ext-language_tools.js)
  *
  * Atmosphere
  * @asset(ncms/script/atmosphere.js)
