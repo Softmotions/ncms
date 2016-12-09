@@ -1,5 +1,6 @@
 package com.softmotions.ncms.media;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import org.apache.commons.configuration2.HierarchicalConfiguration;
 import org.apache.commons.configuration2.tree.ImmutableNode;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.lifecycle.Start;
+import com.softmotions.commons.zip.ZipUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 
 /**
@@ -91,6 +94,11 @@ public class MediaModule extends AbstractModule {
                                  .map(String::valueOf)
                                  .toArray(String[]::new);
 
+            String unpack = env.xcfg().getString("media.unpack-directory", null);
+            if (StringUtils.isBlank(unpack)) {
+                unpack = env.getSessionTmpdir().toPath().resolve("unpack").toString();
+            }
+
             for (Object v : c.getList("directory")) {
                 String srcDir = (v != null ? v.toString() : null);
                 if (StringUtils.isBlank(srcDir)) {
@@ -98,6 +106,39 @@ public class MediaModule extends AbstractModule {
                     continue;
                 }
                 Path srcPath = Paths.get(srcDir).toAbsolutePath().normalize();
+                Path srcFileNamePath = srcPath.getFileName();
+                String srcFileName = (srcFileNamePath != null) ? srcFileNamePath.toString() : null;
+                if (srcFileName != null && StringUtils.endsWithAny(srcFileName.toLowerCase(), ".zip", ".jar")) {
+                    if (!Files.isRegularFile(srcPath)) {
+                        log.error("File: {} is not a regular JAR archive", srcDir);
+                        continue;
+                    }
+                    // we have specified jar file as directory, lets unpack it
+                    // to the directory specified by 'media/unpack-directory' parameter
+                    // or {newtmp}/unpack if this parameter us unspecified
+                    File unpackFile = new File(unpack);
+                    if (!unpackFile.isDirectory()) {
+                        unpackFile.mkdirs();
+                    }
+                    if (!unpackFile.isDirectory()) {
+                        log.error("Failed to create unpack directory: {}", unpackFile);
+                    } else {
+                        log.info("Using unpack directory: {}", unpackFile);
+                    }
+                    File unpackTarget = unpackFile.toPath()
+                                                  .resolve(srcFileName.substring(0, srcFileName.length() - 4))
+                                                  .toFile();
+                    if (unpackTarget.exists()) {
+                        FileUtils.deleteQuietly(unpackTarget);
+                    }
+                    try {
+                        ZipUtils.unjarFile(srcPath.toFile(), unpackFile);
+                    } catch (IOException e) {
+                        log.error("Failed to unpack jar file: {} to {}", srcPath, unpackFile, e);
+                        continue;
+                    }
+                    srcPath = unpackTarget.toPath();
+                }
                 if (!Files.isDirectory(srcPath)) {
                     log.error("Failed to import: {} is not a directory", srcPath);
                     continue;
