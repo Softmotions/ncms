@@ -6,7 +6,8 @@
   <modules> 
     <module>ncms-engine</module>  
     <module>ncms-docs</module>
-    <module>ncms-site-pom</module> 
+    <module>ncms-site-pom</module>
+    <module>ncms-extensions</module>
   </modules>  
   <parent> 
     <groupId>softmotions</groupId>  

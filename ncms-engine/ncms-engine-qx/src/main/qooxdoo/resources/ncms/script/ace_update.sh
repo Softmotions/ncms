@@ -27,6 +27,9 @@ curl ${ACE_BASE}/mode-markdown.js >> ./ace_all.js
 echo -e "\n\n//mode xml \n" >> ./ace_all.js
 curl ${ACE_BASE}/mode-xml.js >> ./ace_all.js
 
+echo -e "\n\n//mode sass \n" >> ./ace_all.js
+curl ${ACE_BASE}/mode-sass.js >> ./ace_all.js
+
 echo -e "\n\n//theme eclipse \n" >> ./ace_all.js
 curl ${ACE_BASE}/theme-eclipse.js >> ./ace_all.js
 

@@ -152,6 +152,11 @@
                 <artifactId>ncms-docs-ru</artifactId>
                 <version>${softmotions.ncms.version}</version>
             </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
+                <artifactId>ncms-sass-converter</artifactId>
+                <version>${softmotions.ncms.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
