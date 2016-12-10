@@ -267,7 +267,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             qx.event.Timer.once(function () {
                 var me = this;
                 require("ace/config").set("workerPath", "resource/ncms/script");
-                //require("ace/ext/language_tools");
+                require("ace/ext/language_tools");
                 var ace = this.__ace = window.ace.edit(this.__aceContainer.getContentElement().getDomElement());
                 ace.setOptions({enableLiveAutocompletion: true});
                 ace.$blockScrolling = Infinity;
