@@ -17,6 +17,8 @@ public final class MediaRSLocalRequest extends HttpServletRequestAdapter {
 
     private final NcmsEnvironment env;
 
+    private String user;
+
     MediaRSLocalRequest(NcmsEnvironment env) {
         this(env, null);
     }
@@ -38,7 +40,11 @@ public final class MediaRSLocalRequest extends HttpServletRequestAdapter {
 
     @Override
     public String getRemoteUser() {
-        return "system";
+        return user != null ? user : "system";
+    }
+
+    public void setRemoteUser(String user) {
+        this.user = user;
     }
 
     @Override

@@ -9,7 +9,10 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>ncms-sass-converter</artifactId>
-    <description>Automatic converts SASS files into CSS</description>
+    <description>
+        This module performs automatic on the fly .scss to .css conversion
+        for file edited in nCMS media-repository.
+    </description>
 
     <dependencies>
         <dependency>

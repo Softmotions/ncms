@@ -242,4 +242,15 @@ constructor(private val mapper: ObjectMapper,
                             .put("oldPath", evt.oldPath))
     }
 
+    @Subscribe
+    fun onServerMessage(evt: ServerMessageEvent) {
+        if (isBroadcastAllowed(evt))
+            metaBroadcaster.broadcastTo(BROADCAST_ALL,
+                    createMessage(evt)
+                            .put("message", evt.message)
+                            .put("error", evt.error)
+                            .put("persistent", evt.persistent))
+
+    }
+
 }

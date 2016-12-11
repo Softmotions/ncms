@@ -45,17 +45,21 @@ public interface MediaRepository extends MediaReader, Closeable {
      *
      * @param source    File path to import. It must be file.
      * @param target    Path to to the target file in the repository.
-     * @param overwrite If {@code false} pre-existed file will not be overriten it
+     * @param overwrite If {@code false} pre-existed file will not be overridden
+     * @param system    If {@code true} file will be marked as system
+     * @param user      Optional file owner
      */
     Long importFile(String source,
                     String target,
                     boolean overwrite,
-                    boolean system) throws IOException;
+                    boolean system,
+                    String user) throws IOException;
 
 
     Long importFile(InputStream source,
                     String target,
-                    boolean system) throws IOException;
+                    boolean system,
+                    String user) throws IOException;
 
     /**
      * Ensure existence of resized image file

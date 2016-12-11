@@ -200,10 +200,14 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                     lclass = "javascript";
                 } else if (ctype.indexOf("application/xml") !== -1) {
                     lclass = "xml";
-                } else if (ctype.indexOf("text/css") !== -1) {
-                    lclass = "css";
                 } else if (ctype.indexOf("application/json") !== -1) {
                     lclass = "json"
+                } else if (qx.lang.String.endsWith(fname, ".scss") || qx.lang.String.endsWith(fname, ".sass")) {
+                    lclass = "sass";
+                } else if (ctype.indexOf("text/css") !== -1) {
+                    lclass = "css";
+                } else if (qx.lang.String.endsWith(fname, ".jsp")) {
+                    lclass = "jsp";
                 } else {
                     lclass = "text";
                 }

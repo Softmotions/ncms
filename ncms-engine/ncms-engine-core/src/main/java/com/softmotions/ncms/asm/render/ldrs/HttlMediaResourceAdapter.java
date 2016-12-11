@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import httl.Resource;
@@ -60,6 +61,11 @@ public final class HttlMediaResourceAdapter implements MediaResource {
     @Override
     public String getContentType() {
         return "text/plain";
+    }
+
+    @Nonnull
+    public String getOwner() {
+        return "system";
     }
 
     @Override
