@@ -26,7 +26,7 @@ IBM DB2
      apt-get install libstdc++6:i386 libpam0g:i386 \
              libstdc++6 lib32stdc++6 \
              libaio1 gcc ksh numactl
-#. Установка экземпляра СУБД::
+#. Устанавливаем экземпляр СУБД::
 
     cd ./expc
     ./db2_install
@@ -34,7 +34,7 @@ IBM DB2
     useradd -m db2fenc1
     /opt/ibm/db2/V11.1/instance/db2icrt -u db2fenc1 db2inst1
 
-#. Добавьте себя в группу: `db2inst1`
+#. Добавляем себя в группу: `db2inst1`
 #. Базовая настройка режима работы экземпляра::
 
     sudo su - db2inst1
@@ -58,7 +58,7 @@ IBM DB2
 Создание новой базы данных
 --------------------------
 
-Пусть имя новой базы данных будет `NCMS`  имя пользователя базы `ncms`
+Пусть имя новой базы данных будет `NCMS`,  имя пользователя базы `ncms`
 
 .. code-block:: sql
 
