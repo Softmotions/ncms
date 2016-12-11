@@ -897,20 +897,24 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             return null;
         }
 
-        final String folder = (String) meta.get("folder");
-        final String name = (String) meta.get("name");
-        final Date mdate = (Date) meta.get("mdate");
-        final Number length = (Number) meta.get("content_length");
-        final KVOptions kvmeta = new KVOptions((String) meta.get("meta"));
+        String folder = (String) meta.get("folder");
+        String name = (String) meta.get("name");
+        Date mdate = (Date) meta.get("mdate");
+        Number length = (Number) meta.get("content_length");
+        String contentType = (String) meta.get("content_type");
+        String owner = (String) meta.get("owner");
+        String description = (String) meta.get("description");
+        KVOptions kvmeta = new KVOptions((String) meta.get("meta"));
 
         return new MediaResourceImpl(this,
                                      ((Number) meta.get("id")).longValue(),
                                      (folder + name),
-                                     (String) meta.get("content_type"),
+                                     owner,
+                                     contentType,
                                      (mdate != null ? mdate.getTime() : 0),
                                      (length != null ? length.longValue() : -1L),
                                      locale,
-                                     (String) meta.get("description"),
+                                     description,
                                      kvmeta);
     }
 
@@ -1705,6 +1709,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if ("httl".equalsIgnoreCase(ext)) {
             return "text/html";
         }
+        if ("scss".equalsIgnoreCase(ext)) {
+            return "text/plain";
+        }
         return req.getServletContext().getMimeType(name);
     }
 
@@ -2328,7 +2335,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 importFile(path.toString(),
                            target.toString(),
                            data.overwrite,
-                           data.system);
+                           data.system,
+                           null);
             } catch (IOException e) {
                 log.error("File import failed. Path: {} target: {} error: {}", path, target, e.getMessage(), e);
             }
@@ -2367,7 +2375,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         importFile(ev.getFullPath().toString(),
                    target.toString(),
                    data.overwrite,
-                   data.system);
+                   data.system,
+                   null);
     }
 
     @Override
@@ -2449,7 +2458,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     public void visit(Path path, BasicFileAttributes basicFileAttributes) throws IOException {
                         importFile(sf.getBasedir().resolve(path).toString(),
                                    Paths.get(importTarget).resolve(path).toString(),
-                                   overwrite, system);
+                                   overwrite,
+                                   system,
+                                   null);
                     }
 
                     @Override
@@ -2518,7 +2529,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     public Long importFile(String source,
                            String target,
                            boolean overwrite,
-                           boolean system) throws IOException {
+                           boolean system,
+                           String user) throws IOException {
         File srcFile = new File(source);
         if (!srcFile.isFile()) {
             throw new IOException(srcFile.getAbsolutePath() + " is not a file");
@@ -2550,7 +2562,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 if (system) {
                     flags |= PUT_SYSTEM;
                 }
-                return _put(folder, name, new MediaRSLocalRequest(env, srcFile), fis, flags);
+                MediaRSLocalRequest req = new MediaRSLocalRequest(env, srcFile);
+                req.setRemoteUser(user);
+                return _put(folder, name, req, fis, flags);
             } catch (Exception e) {
                 throw new IOException(e);
             }
@@ -2559,20 +2573,25 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @Nullable
     @Override
+    @Transactional(executorType = ExecutorType.SIMPLE)
     public Long importFile(InputStream source,
                            String target,
-                           boolean system) throws IOException {
+                           boolean system,
+                           String user) throws IOException {
         String name = getResourceName(target);
         if (name == null) {
             throw new IllegalArgumentException("target");
         }
+        log.info("Importing {}", target);
         String folder = getResourceParentFolder(target);
         try {
             int flags = 0;
             if (system) {
                 flags |= PUT_SYSTEM;
             }
-            return _put(folder, name, new MediaRSLocalRequest(env), source, flags);
+            MediaRSLocalRequest req = new MediaRSLocalRequest(env);
+            req.setRemoteUser(user);
+            return _put(folder, name, req, source, flags);
         } catch (Exception e) {
             throw new IOException(e);
         }

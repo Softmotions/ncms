@@ -183,6 +183,18 @@ qx.Class.define("ncms.Events", {
                     break;
                 case "MediaDeleteEvent":
                     this.__fireDataEvent("mediaRemoved", msg);
+                    break;
+                case "ServerMessageEvent":
+                    if (msg.hints["app"] === ncms.Application.UUID) {
+                        ((msg.error)
+                            ? ncms.Alerts.errorPopup
+                            : ncms.Alerts.infoPopup)(
+                            qx.lang.String.stripTags(msg.message).replace(/[\n\r]/g, "<br>"), {
+                                showTime: msg.persistent ? Number.MAX_VALUE : null
+                            }
+                        );
+                    }
+                    break;
             }
         },
 

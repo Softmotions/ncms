@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -34,6 +35,12 @@ public interface MediaResource {
      */
     @Nullable
     String getContentType();
+
+    /**
+     * Media file owner
+     */
+    @Nonnull
+    String getOwner();
 
     /**
      * Get the the template last modified time.

@@ -138,6 +138,8 @@ qx.Class.define("ncms.Alerts", {
             } else {
                 options["icon"] = (options["icon"] != null) ? options["icon"] : "ncms/icon/32/information.png";
             }
+
+            message = qx.lang.String.stripScripts(message);
             var el = new qx.ui.basic.Atom(message, options["icon"]).set({
                 center: true,
                 rich: true,

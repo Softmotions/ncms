@@ -9,9 +9,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
+import javax.annotation.Nonnull;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.tika.mime.MediaType;
@@ -31,6 +33,8 @@ class MediaResourceImpl implements MediaResource, Serializable {
 
     private final String path;
 
+    private final String owner;
+
     private final String contentType;
 
     private final long lastModified;
@@ -49,6 +53,7 @@ class MediaResourceImpl implements MediaResource, Serializable {
     MediaResourceImpl(MediaRS rs,
                       long id,
                       String path,
+                      String owner,
                       String contentType,
                       long lastModified,
                       long length,
@@ -58,6 +63,7 @@ class MediaResourceImpl implements MediaResource, Serializable {
         this.rs = rs;
         this.id = id;
         this.path = path;
+        this.owner = owner;
         this.contentType = contentType;
         this.lastModified = lastModified;
         this.length = length;
@@ -81,6 +87,12 @@ class MediaResourceImpl implements MediaResource, Serializable {
     @Override
     public String getName() {
         return path;
+    }
+
+    @Override
+    @Nonnull
+    public String getOwner() {
+        return owner;
     }
 
     @Override
@@ -114,12 +126,14 @@ class MediaResourceImpl implements MediaResource, Serializable {
 
     @Override
     public Reader openReader() throws IOException {
+        if (getLength() == 0) {
+            return new StringReader("");
+        }
         if (!CTypeUtils.isTextualContentType(getContentType())) {
             throw new IOException("Resource: " + getName() +
                                   " of type: " + getContentType() +
                                   " does not contains text data");
         }
-
         String spath = path;
         if (spath.charAt(0) == '/') {
             spath = spath.substring(1);
