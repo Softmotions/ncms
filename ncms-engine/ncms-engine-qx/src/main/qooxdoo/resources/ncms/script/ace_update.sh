@@ -39,6 +39,8 @@ curl ${ACE_BASE}/theme-eclipse.js >> ./ace_all.js
 echo -e "\n\n//ext-language_tools \n" >> ./ace_all.js
 curl ${ACE_BASE}/ext-language_tools.js >> ./ace_all.js
 
+echo -e "\n\n//ext-searchbox \n" >> ./ace_all.js
+curl ${ACE_BASE}/ext-searchbox.js >> ./ace_all.js
 
 curl ${ACE_BASE}/worker-css.js > ./worker-css.js
 curl ${ACE_BASE}/worker-html.js > ./worker-html.js
