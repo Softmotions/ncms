@@ -263,21 +263,21 @@ Escape $ и # символов
 
 Взять для итерации первое непустое множество `books1` или `books2`::
 
-    #for (book: books1 || books2)
+    #for(book: books1 || books2)
 
 Итерации по сумме двух множеств::
 
-    #for (book: books1 + books2)
+    #for(book: books1 + books2)
 
 Сортировать коллекцию, затем произвести по ней итерацию::
 
-    #for (book: books.sort)
+    #for(book: books.sort)
 
 Рекурсивная итерация, элементы меню имеют метод `getChildren`,
 которые возвращают коллекцию подэлементов. Итерация по всем
 элементам в данной иерархии::
 
-    #for (Menu menu: menus.recursive ("getChildren"))
+    #for(Menu menu: menus.recursive ("getChildren"))
 
 
 Прерывание цикла с помощью #break
@@ -311,7 +311,7 @@ Escape $ и # символов
 
 Пример::
 
-    #for (book: books)
+    #for(book: books)
 	    ...
     #else
 	    ... # выполняется когда коллекция пуста
