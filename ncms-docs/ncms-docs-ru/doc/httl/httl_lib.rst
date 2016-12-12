@@ -21,7 +21,7 @@ httl.spi.methods .CollectionMethod
 .. js:function:: toCycle(T[] values)
 
     Преобразует переданный перечень элементов в
-    бесконечную циклическую коллекцию в которой
+    бесконечную циклическую коллекцию, в которой
     будет постоянно повторятся переданная последовательность
     элементов.
 
@@ -111,7 +111,7 @@ httl.spi.methods .StringMethod
 
 .. js:function:: clip(String value, int max)
 
-    Возвращает максимум `max` символов `value` заменяя остаток на `...`
+    Возвращает максимум `max` символов `value` заменяя остаток на `...`.
 
     **Пример**::
 
@@ -139,21 +139,21 @@ httl.spi.methods .StringMethod
 
 .. js:function:: md5(String value)
 
-    Преобразует переданное значение в  `MD5` хеш
+    Преобразует переданное значение в  `MD5` хеш.
 
     :rtype: java.lang.String
 
 
 .. js:function:: sha(String value)
 
-    Преобразует переданное значение в  `SHA` хеш
+    Преобразует переданное значение в  `SHA` хеш.
 
     :rtype: java.lang.String
 
 
 .. js:function:: digest(String value, String digest)
 
-    Преобразует переданное значение в хеш с алгоритмом `digest`
+    Преобразует переданное значение в хеш с алгоритмом `digest`.
 
     **Пример**::
 
@@ -177,7 +177,7 @@ httl.spi.methods .TypeMethod
 
 .. js:function:: toDate(String value, [String format])
 
-    Преобразует строку в объект класса `java.util.Date`
+    Преобразует строку в объект класса `java.util.Date`.
 
     **Пример**::
 
@@ -193,22 +193,22 @@ httl.spi.methods .TypeMethod
 
 .. js:function:: toList(Object[] values)
 
-    Преобразует массив значений в список `java.util.List`
+    Преобразует массив значений в список `java.util.List`.
 
 
 .. js:function:: toList(Collection<T> values)
 
-    Преобразует массив значений в список `java.util.List<T>`
+    Преобразует массив значений в список `java.util.List<T>`.
 
 
 .. js:function:: toArray(Collection<T> values)
 
-    Преобразует коллекцию в массив значений  `T[]`
+    Преобразует коллекцию в массив значений  `T[]`.
 
 
 .. js:function:: toBoolean(Object obj)
 
-   Преобразует аргумент в `java.lang.Boolean`
+   Преобразует аргумент в `java.lang.Boolean`.
 
    **Пример**::
 
@@ -219,7 +219,7 @@ httl.spi.methods .TypeMethod
 
     Аналогично `toByte`, `toChar`, `toShort`,
     `toInt`, `toLong`, `toFloat`, `toDouble`,
-    `toClass`
+    `toClass`.
 
 
 
