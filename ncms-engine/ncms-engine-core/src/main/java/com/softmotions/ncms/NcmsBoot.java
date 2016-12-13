@@ -135,6 +135,9 @@ public class NcmsBoot extends WBServletListener {
         sreg.setInitParameter(ApplicationConfig.ANALYTICS, "false");
         sreg.setInitParameter(ApplicationConfig.ATMOSPHERE_INTERCEPTORS, ShiroInterceptor.class.getName());
         sreg.setInitParameter(ApplicationConfig.HEARTBEAT_INTERVAL_IN_SECONDS, "30");
+        sreg.setInitParameter(ApplicationConfig.BROADCASTER_ASYNC_WRITE_THREADPOOL_MAXSIZE, "50");
+        sreg.setInitParameter(ApplicationConfig.BROADCASTER_MESSAGE_PROCESSING_THREADPOOL_MAXSIZE, "50");
+        sreg.setInitParameter(ApplicationConfig.SCHEDULER_THREADPOOL_MAXSIZE, "4");
         sreg.setAsyncSupported(true);
         String mount = env.getAppPrefix() + "/ws/*";
         sreg.addMapping(mount);
