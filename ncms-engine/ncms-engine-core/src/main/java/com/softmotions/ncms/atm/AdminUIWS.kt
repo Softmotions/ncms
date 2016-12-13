@@ -74,8 +74,10 @@ constructor(private val mapper: ObjectMapper,
         val user = resource.request.wrappedRequest().userPrincipal?.name ?: return run {
             log.warn("Unauthenticated user within 'ws/admin/ui' atmosphere channel. UUID: {}", uuid)
         }
-        log.info("Register atmosphere resource: {} for user: {}", uuid, user)
         lock.withLock {
+            if (uuid !in ruuid2User) {
+                log.info("Register atmosphere resource: {} for user: {}", uuid, user)
+            }
             ruuid2User[uuid] = user
             val uuids = user2ruuids.getOrPut(user, {
                 HashSet<String>()

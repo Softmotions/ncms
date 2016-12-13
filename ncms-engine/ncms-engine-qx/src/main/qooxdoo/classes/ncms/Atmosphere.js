@@ -46,7 +46,7 @@ qx.Class.define("ncms.Atmosphere", {
             opts.url = window.location.protocol + "//" + window.location.host + opts.url;
         }
         opts = qx.lang.Object.mergeWith(opts, {
-            transport: "streaming",
+            transport: "long-polling",
             fallbackTransport: "long-polling",
             /*logLevel: "debug",*/
             trackMessageLength: true,
@@ -152,7 +152,6 @@ qx.Class.define("ncms.Atmosphere", {
         },
 
         __onOpenAfterResume: function (req) {
-            qx.log.Logger.info("onOpenAfterResume");
             this.__disconnected = false;
         },
 
