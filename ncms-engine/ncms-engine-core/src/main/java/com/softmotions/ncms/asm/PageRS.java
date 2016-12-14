@@ -2003,7 +2003,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                         indexPage2SecondLang.put(pid, lc);
                     }
                     for (int j = 0; j < vhosts.length; ++j) {
-                        vh = vhosts[i].trim();
+                        vh = vhosts[j].trim();
                         if (vh.isEmpty()) continue;
                         Map<String, Long> vh2i = lvh2IndexPages.computeIfAbsent(lc, k -> new LinkedHashMap<>());
                         log.info("BIND MAIN PAGE lang:{} vhost:{} TO {}", lc, vh, lp);
