@@ -3,6 +3,7 @@ package com.softmotions.ncms.asm.am;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,6 +28,11 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
     public static final String[] TYPES = new String[]{"alias"};
 
     private static final Pattern ALIAS_PATTERN = Pattern.compile("^[0-9a-zA-Z\\._\\-/]+$");
+
+    private static final String[] NOT_ALLOWED_ALIASES = {
+            "adm",
+            "rs"
+    };
 
     private final AsmDAO adao;
 
@@ -86,11 +92,14 @@ public class AsmAliasAM extends AsmAttributeManagerSupport {
             return;
         }
         if (alias != null) {
-            if (!ALIAS_PATTERN.matcher(alias).matches()) {
-                throw new NcmsNotificationException("ncms.asm.alias.non.allowed.symbols", true, ctx.getRequest());
-            }
             while (!alias.isEmpty() && alias.charAt(0) == '/') {
                 alias = alias.substring(1);
+            }
+            if (ArrayUtils.indexOf(NOT_ALLOWED_ALIASES, alias) != -1) {
+                throw new NcmsNotificationException("ncms.asm.alias.not.allowed", true, ctx.getRequest());
+            }
+            if (!ALIAS_PATTERN.matcher(alias).matches()) {
+                throw new NcmsNotificationException("ncms.asm.alias.non.allowed.symbols", true, ctx.getRequest());
             }
             if (!adao.asmIsUniqueAlias(alias, ctx.getAsmId())) {
                 throw new NcmsNotificationException("ncms.asm.alias.non.unique", true, ctx.getRequest());
