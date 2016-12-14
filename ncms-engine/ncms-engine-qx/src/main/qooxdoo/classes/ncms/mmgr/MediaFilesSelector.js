@@ -134,6 +134,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             "showCellFocusIndicator": false
         });
 
+        var events = ncms.Events.getInstance();
+        events.addListener("mediaUpdated", this.__handleMediaUpdated, this);
+
         table.getSelectionModel().addListener("changeSelection", function (ev) {
             this.__updateState();
             var file = this.__table.getSelectedFile();
@@ -521,6 +524,28 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
         },
 
+        __handleMediaUpdated: function (ev) {
+            var evspec = ev.getData();
+            var selectedFile = this.__table.getSelectedFile();
+            this.__table.getTableModel().iterateCachedRows(function (offset, item) {
+                if (evspec.id == item.id) {
+                    var updateSelectedFile = selectedFile != null && selectedFile.id == item.id;
+
+                    ncms.mmgr.MediaFilesUtils.fetchMediaInfo(item.id, function (meta) {
+                        Object.keys(item).forEach(function(k) {
+                            // copy data from meta to item if value differs
+                            if (meta[k] !== undefined && item[k] != meta[k]) {
+                                item[k] = meta[k];
+                                if (updateSelectedFile && this.hasListener("fileMetaEdited")) {
+                                    this.fireDataEvent("fileMetaEdited", {id: k, value: meta[k]});
+                                }
+                            }
+                        }, this);
+                    }, this);
+                }
+            }, this);
+        },
+
         __handleFormUploadFiles: function (ev) {
             var input = ev.target;
             input.onchange = null;
@@ -802,6 +827,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
     },
 
     destruct: function () {
+        var events = ncms.Events.getInstance();
+        events.removeListener("mediaUpdated", this.__handleMediaUpdated, this);
         if (this.getContentElement() != null) {
             var el = this.getContentElement().getDomElement();
             if (el != null) {
