@@ -75,9 +75,7 @@ public class NcmsGuardFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-        if (req.getServerName().equals(adminOnUrl.getHost())
-            && (adminOnUrl.getProtocol() == null
-                || req.getScheme().equals(adminOnUrl.getProtocol()))) {
+        if (req.getServerName().equals(adminOnUrl.getHost())) {
             chain.doFilter(request, response);
             return;
         }
