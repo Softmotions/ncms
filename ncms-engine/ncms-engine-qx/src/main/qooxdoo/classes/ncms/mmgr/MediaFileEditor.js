@@ -124,8 +124,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             }
 
             var spec = {};
-            spec[update["id"]] = update["value"];
             qx.lang.Object.mergeWith(spec, this.getFileSpec(), false);
+            spec[update["id"]] = update["value"];
             this.__updateInfoTable(spec);
         },
 
