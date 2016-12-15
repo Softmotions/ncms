@@ -529,14 +529,15 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             var selectedFile = this.__table.getSelectedFile();
             this.__table.getTableModel().iterateCachedRows(function (offset, item) {
                 if (evspec.id == item.id) {
-                    var updateSelectedFile = selectedFile != null && selectedFile.id == item.id;
-
+                    var updateSelectedFile = (selectedFile != null
+                    && selectedFile.id == item.id
+                    && this.hasListener("fileMetaEdited"));
                     ncms.mmgr.MediaFilesUtils.fetchMediaInfo(item.id, function (meta) {
-                        Object.keys(item).forEach(function(k) {
+                        Object.keys(item).forEach(function (k) {
                             // copy data from meta to item if value differs
                             if (meta[k] !== undefined && item[k] != meta[k]) {
                                 item[k] = meta[k];
-                                if (updateSelectedFile && this.hasListener("fileMetaEdited")) {
+                                if (updateSelectedFile) {
                                     this.fireDataEvent("fileMetaEdited", {id: k, value: meta[k]});
                                 }
                             }
