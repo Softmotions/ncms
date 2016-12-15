@@ -36,6 +36,9 @@
  * @asset(ncms/script/medium-editor.min.js)
  * @asset(ncms/script/ncms-preview.js)
  * @asset(ncms/css/medium-editor.css)
+ *
+ * Clipboard.js
+ * @asset(ncms/script/clipboard.min.js)
  */
 qx.Class.define("ncms.Application", {
     extend: qx.application.Standalone,
@@ -61,7 +64,8 @@ qx.Class.define("ncms.Application", {
         loadExtraScripts: function (cb, ctx) {
             var resource = [
                 "ncms/script/ace_all.js",
-                "ncms/script/atmosphere.js"
+                "ncms/script/atmosphere.js",
+                "ncms/script/clipboard.min.js"
             ];
             var load = function (list) {
                 if (list.length == 0) {
