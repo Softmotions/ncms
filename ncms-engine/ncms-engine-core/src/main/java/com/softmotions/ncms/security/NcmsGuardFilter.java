@@ -16,8 +16,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.softmotions.ncms.NcmsEnvironment;
 
 /**
@@ -28,7 +26,6 @@ import com.softmotions.ncms.NcmsEnvironment;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-@Singleton
 public class NcmsGuardFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(NcmsGuardFilter.class);
@@ -39,8 +36,6 @@ public class NcmsGuardFilter implements Filter {
 
     private boolean redirect;
 
-
-    @Inject
     public NcmsGuardFilter(NcmsEnvironment env) {
         adminRoot = env.getNcmsAdminRoot();
         String adminOn = env.xcfg().getString("admin-zone-on", null);

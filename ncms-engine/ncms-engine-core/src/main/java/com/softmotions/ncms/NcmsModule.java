@@ -34,7 +34,6 @@ import com.softmotions.ncms.mtt.MttModule;
 import com.softmotions.ncms.mtt.http.MttHttpFilter;
 import com.softmotions.ncms.qa.QAModule;
 import com.softmotions.ncms.rds.RefDataStoreModule;
-import com.softmotions.ncms.security.NcmsGuardFilter;
 import com.softmotions.ncms.security.NcmsSecurityModule;
 import com.softmotions.ncms.update.UpdateModule;
 import com.softmotions.ncms.user.UserModule;
@@ -59,7 +58,6 @@ public class NcmsModule extends WBServletModule<NcmsEnvironment> {
         bind(NcmsEnvironment.class).toInstance(env);
         bind(new TypeLiteral<HierarchicalConfiguration<ImmutableNode>>() {
         }).toInstance(env.xcfg());
-        initGuardFilter(env);
         initMarketingToolsFilter(env);
         initBrowserFilter(env);
         initJAXRS(env);
@@ -147,11 +145,6 @@ public class NcmsModule extends WBServletModule<NcmsEnvironment> {
         }
         opts.put("exclude-prefixes", ArrayUtils.stringJoin(exclude, ","));
         filter(ncmsp + "/*", BrowserFilter.class, opts);
-    }
-
-
-    protected void initGuardFilter(NcmsEnvironment env) {
-        filter(env.getAppPrefix() + "/*", NcmsGuardFilter.class);
     }
 
     protected void initMarketingToolsFilter(NcmsEnvironment env) {

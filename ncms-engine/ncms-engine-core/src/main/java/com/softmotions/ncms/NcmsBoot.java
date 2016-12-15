@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import com.softmotions.ncms.atm.NcmsAtmosphereObjectFactory;
+import com.softmotions.ncms.security.NcmsGuardFilter;
 import com.softmotions.ncms.shiro.NcmsShiroWebEnvironment;
 import com.softmotions.ncms.utils.GzipFilter;
 import com.softmotions.web.CharsetFilter;
@@ -66,6 +67,9 @@ public class NcmsBoot extends WBServletListener {
         initBeforeFilters(env, sctx);
         initCacheHeadersFilters(env, sctx);
 
+        sctx.addFilter("ncmsGuardFilter", new NcmsGuardFilter(env))
+            .addMappingForUrlPatterns(null,
+                                      false, env.getAppPrefix() + "/*");
         sctx.addFilter("charsetFilter", CharsetFilter.class)
             .addMappingForUrlPatterns(null,
                                       false, env.getAppPrefix() + "/*");

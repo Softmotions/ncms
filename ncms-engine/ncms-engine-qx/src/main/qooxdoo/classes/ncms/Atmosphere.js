@@ -68,7 +68,7 @@ qx.Class.define("ncms.Atmosphere", {
         opts.onLocalMessage = this.__onLocalMessage.bind(this);
 
     },
-
+                                
     members: {
 
         __atm: null,
