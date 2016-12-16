@@ -203,7 +203,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.__onEdit, this);
         this._registerCommandFocusWidget(table);
 
-        new Clipboard('.copy_button');
+        this.__clipboard = new Clipboard('.copy_button');
     },
 
     members: {
@@ -229,6 +229,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         __inpageBt: null,
 
         __opts: null,
+        
+        __clipboard: null,
 
         setViewSpec: function (vs) {
             this.__table.getTableModel().setViewSpec(vs);
@@ -857,5 +859,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__editBt = null;
         this.__subfoldersBt = null;
         this.__opts = null;
+        this.__clipboard.destroy();
     }
 });
