@@ -61,9 +61,21 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditorDlg", {
         __editor: null,
 
         close: function () {
-            this.base(arguments);
-            if (this.__editor) {
-                this.__editor.setFileSpec(null);
+            var me = this;
+            function doClose() {
+                qx.ui.window.Window.prototype.close.call(me);
+                if (me.__editor) {
+                    me.__editor.setFileSpec(null);
+                }
+            }
+            
+            if (!this.__editor.isSaved()) {
+                ncms.Application.confirm(this.tr("Changes will be lost. Continue?"), function (yes) {
+                    if (!yes) return;
+                    doClose();
+                }, this);
+            } else {
+                doClose();
             }
         },
 

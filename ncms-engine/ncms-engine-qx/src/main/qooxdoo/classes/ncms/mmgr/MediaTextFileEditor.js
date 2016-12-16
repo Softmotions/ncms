@@ -153,8 +153,12 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             }
         },
 
+        isSaved: function () {
+            return this.__saveBt.getEnabled() == false; // Save bt not enabled
+        },
+        
         __save: function () {
-            if (this.__saveBt.getEnabled() == false) { // Save bt not enabled
+            if (this.isSaved()) {
                 return;
             }
             var spec = this.getFileSpec();
