@@ -13,12 +13,15 @@ import httl.Resource;
 import httl.spi.Loader;
 
 import com.softmotions.ncms.asm.render.AsmRendererContext;
+import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.media.MediaResource;
 
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public class HttlLoaderAdapter implements Loader {
+
+    public static final ThreadLocal<AsmResourceLoader> contextLoaderStore = new ThreadLocal<>();
 
     private Engine engine;
 
@@ -38,18 +41,27 @@ public class HttlLoaderAdapter implements Loader {
 
     @Override
     public boolean exists(String name, Locale locale) {
-        AsmRendererContext ctx = AsmRendererContext.get();
-        return ctx != null && ctx.getLoader().exists(name, locale);
+        AsmResourceLoader loader = contextLoaderStore.get();
+        if (loader == null) {
+            AsmRendererContext ctx = AsmRendererContext.get();
+            if (ctx != null) {
+                loader = ctx.getLoader();
+            }
+        }
+        return loader != null && loader.exists(name, locale);
     }
 
     @Nullable
     @Override
     public Resource load(String name, Locale locale, String encoding) throws IOException {
-        AsmRendererContext ctx = AsmRendererContext.get();
-        if (ctx == null) {
-            return null;
+        AsmResourceLoader loader = contextLoaderStore.get();
+        if (loader == null) {
+            AsmRendererContext ctx = AsmRendererContext.get();
+            if (ctx != null) {
+                loader = ctx.getLoader();
+            }
         }
-        MediaResource asmres = ctx.getLoader().load(name, locale);
+        MediaResource asmres = loader != null ? loader.load(name, locale) : null;
         return (asmres != null ? new HttlResourceAsmAdapter(asmres, engine) : null);
     }
 

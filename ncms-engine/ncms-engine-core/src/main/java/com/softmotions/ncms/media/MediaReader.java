@@ -32,7 +32,7 @@ public interface MediaReader {
      *
      * @param path   Media resource specification.
      * @param locale Desired locale, can be null.
-     * @return
+     * @return Media resource description of {@code null} if resource is not found
      */
     @Nullable
     MediaResource findMediaResource(String path, @Nullable Locale locale);

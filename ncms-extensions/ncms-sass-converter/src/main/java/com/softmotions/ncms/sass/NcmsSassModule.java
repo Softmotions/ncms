@@ -69,15 +69,15 @@ public class NcmsSassModule extends AbstractModule {
             this.repository = repository;
         }
 
-        @Start(order = 20)
+        @Start
         public void startup() {
             log.info("Starting nCMS SCSS converter module");
-            this.ebus.register(this);
+            ebus.register(this);
         }
 
         @Dispose
         public void shutdown() {
-            this.ebus.unregister(this);
+            ebus.unregister(this);
         }
 
         @Subscribe

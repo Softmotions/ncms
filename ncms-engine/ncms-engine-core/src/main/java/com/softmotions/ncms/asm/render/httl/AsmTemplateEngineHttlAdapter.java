@@ -23,6 +23,7 @@ import com.softmotions.commons.lifecycle.Dispose;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
 import com.softmotions.ncms.asm.render.AsmTemplateEvaluationException;
 import com.softmotions.ncms.mhttl.HttlAsmMethods;
@@ -48,8 +49,16 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
 
     private final Engine engine;
 
+    private final AsmResourceLoader resourceLoader;
+
+    @Override
+    public String getType() {
+        return "httl";
+    }
+
     @Inject
-    public AsmTemplateEngineHttlAdapter(NcmsEnvironment cfg) {
+    public AsmTemplateEngineHttlAdapter(NcmsEnvironment cfg, AsmResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
         Properties httlProps = new Properties();
         String extsStr = cfg.xcfg().getString("httl[@extensions]", "*,httl,html,httl.css");
         if (!StringUtils.isBlank(extsStr)) {
@@ -197,6 +206,25 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
             template.render(ctx, out);
         } catch (ParseException e) {
             throw new AsmRenderingException("Failed to parse template: " + location, e);
+        }
+    }
+
+    @Override
+    public void checkTemplateSyntax(String location) throws AsmTemplateSyntaxException, IOException {
+        HttlLoaderAdapter.contextLoaderStore.set(resourceLoader);
+        try {
+            engine.parseTemplateByName(location, null, null, null);
+        } catch (ParseException e) {
+            String msg = e.getMessage() != null ? e.getMessage() : "";
+            // dirty parsing of httl message todo review it!
+            String sep = ", stack: ";
+            int ind = msg.indexOf(sep);
+            if (ind != -1) {
+                msg = msg.substring(0, ind);
+            }
+            throw new AsmTemplateSyntaxException(msg);
+        } finally {
+            HttlLoaderAdapter.contextLoaderStore.remove();
         }
     }
 

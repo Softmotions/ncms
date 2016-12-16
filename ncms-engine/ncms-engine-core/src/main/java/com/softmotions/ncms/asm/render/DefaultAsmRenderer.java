@@ -35,7 +35,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
     /**
      * Set of template engines.
      */
-    private final Set<AsmTemplateEngineAdapter> templateEgines;
+    private final Set<AsmTemplateEngineAdapter> templateEngines;
 
     private final AsmAttributeManagersRegistry amRegistry;
 
@@ -45,11 +45,11 @@ public class DefaultAsmRenderer implements AsmRenderer {
 
 
     @Inject
-    public DefaultAsmRenderer(Set<AsmTemplateEngineAdapter> templateEgines,
+    public DefaultAsmRenderer(Set<AsmTemplateEngineAdapter> templateEngines,
                               AsmAttributeManagersRegistry amRegistry,
                               PageService pageService,
                               AsmRendererHelper helper) {
-        this.templateEgines = templateEgines;
+        this.templateEngines = templateEngines;
         this.amRegistry = amRegistry;
         this.pageService = pageService;
         this.helper = helper;
@@ -186,7 +186,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
 
     @Override
     public boolean isHasSpecificTemplateEngineForLocation(String location) {
-        for (final AsmTemplateEngineAdapter te : templateEgines) {
+        for (final AsmTemplateEngineAdapter te : templateEngines) {
             for (String ext : te.getSupportedExtensions()) {
                 if (!ext.isEmpty() && ext.charAt(0) != '.') {
                     ext = '.' + ext;
@@ -203,7 +203,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
     @Nullable
     protected AsmTemplateEngineAdapter selectTemplateEngineForLocation(String location) {
         AsmTemplateEngineAdapter defaultTe = null;
-        for (final AsmTemplateEngineAdapter te : templateEgines) {
+        for (final AsmTemplateEngineAdapter te : templateEngines) {
             if (defaultTe == null) {
                 defaultTe = te;
             }
@@ -233,7 +233,7 @@ public class DefaultAsmRenderer implements AsmRenderer {
             type = "*";
         }
         String dotType = '.' + type;
-        for (final AsmTemplateEngineAdapter te : templateEgines) {
+        for (final AsmTemplateEngineAdapter te : templateEngines) {
             if (defaultTe == null) {
                 defaultTe = te;
             }
