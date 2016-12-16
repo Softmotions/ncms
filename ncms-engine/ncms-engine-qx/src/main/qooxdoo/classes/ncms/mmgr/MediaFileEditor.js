@@ -103,7 +103,9 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         this._add(sp);
 
         this.hide();
-        this.__clipboard = new Clipboard('.copy_button');
+        if (typeof window.Clipboard === 'function') {
+            this.__clipboard = new window.Clipboard('.copy_button');
+        }
     },
 
     members: {
@@ -171,17 +173,9 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             
         },
 
-        __getSelectedInfoTableInd: function () {
-            return this.__infoTable.getSelectionModel().getAnchorSelectionIndex();
-        },
-
-        __getSelectedInfoTableRow: function () {
-            var sind = this.__getSelectedInfoTableInd();
-            return sind != -1 ? this.__infoTable.getTableModel().getRowData(sind) : null;
-        },
-
         __getSelectedInfoTableValue: function () {
-            var info = this.__getSelectedInfoTableRow();
+            var sind = this.__infoTable.getSelectionModel().getAnchorSelectionIndex();
+            var info = sind != -1 ? this.__infoTable.getTableModel().getRowData(sind) : null;
             return (info != null && info[1] != null) ? info[1] : null;
         },
 
@@ -408,7 +402,9 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         this.__viewPane = null;
         this.__infoTable = null;
         this.__owner = null;
-        this.__clipboard.destroy();
+        if (this.__clipboard != null) {
+            this.__clipboard.destroy();
+        }
         this._disposeObjects("__form");
         this.removeAllBindings();
     }
