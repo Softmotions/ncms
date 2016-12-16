@@ -1,4 +1,4 @@
-package com.softmotions.ncms.io;
+package com.softmotions.ncms.utils;
 
 import java.io.File;
 import java.io.FileInputStream;

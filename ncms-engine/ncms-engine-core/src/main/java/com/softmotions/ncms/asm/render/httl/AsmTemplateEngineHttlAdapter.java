@@ -26,6 +26,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
 import com.softmotions.ncms.asm.render.AsmTemplateEvaluationException;
+import com.softmotions.ncms.js.HttlJsMethods;
 import com.softmotions.ncms.mhttl.HttlAsmMethods;
 import com.softmotions.ncms.mhttl.HttlMttMethods;
 import com.softmotions.ncms.mhttl.HttlUtilsMethods;
@@ -118,11 +119,14 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
         if (value == null) {
             key += '+';
         }
+
+        // todo use guice dynamic configuration
         value = httlProps.getProperty(key, "");
         for (String c : new String[]{HttlAsmMethods.class.getName(),
                                      HttlUtilsMethods.class.getName(),
                                      HttlMttMethods.class.getName(),
-                                     HttlVisualEditorMethods.class.getName()}) {
+                                     HttlVisualEditorMethods.class.getName(),
+                                     HttlJsMethods.class.getName()}) {
             if (!value.contains(c)) {
                 if (!value.isEmpty()) {
                     value += ',';

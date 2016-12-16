@@ -8,6 +8,8 @@ import com.softmotions.ncms.asm.am.AsmVisualEditorAM;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 /**
+ * Visual editor HTTL helper methods.
+ *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 public class HttlVisualEditorMethods {

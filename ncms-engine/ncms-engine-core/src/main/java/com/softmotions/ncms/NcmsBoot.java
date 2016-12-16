@@ -35,6 +35,17 @@ import com.softmotions.weboot.WBServletListener;
  */
 public class NcmsBoot extends WBServletListener {
 
+    private static final String LOGO =
+            "                                                    \n" +
+            " _____ _____ _____ _____    _____         _         \n" +
+            "|   | |     |     |   __|  |   __|___ ___|_|___ ___ \n" +
+            "| | | |   --| | | |__   |  |   __|   | . | |   | -_|\n" +
+            "|_|___|_____|_|_|_|_____|  |_____|_|_|_  |_|_|_|___|\n" +
+            "                                     |___|          \n" +
+            " Environment: %s\n" +
+            " Version: %s\n" +
+            " Max heap: %s\n";
+
     protected final Logger log;
 
     private GuiceResteasyBootstrapServletContextListener resteasyBootstrap;
@@ -46,7 +57,7 @@ public class NcmsBoot extends WBServletListener {
 
     @Override
     protected String getLogo() {
-        return "";
+        return LOGO;
     }
 
     @Override

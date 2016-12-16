@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class NcmsSecurityModule extends AbstractModule {
+public class SecurityModule extends AbstractModule {
 
     @Override
     protected void configure() {

@@ -1,4 +1,4 @@
-package com.softmotions.ncms.io;
+package com.softmotions.ncms.utils;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

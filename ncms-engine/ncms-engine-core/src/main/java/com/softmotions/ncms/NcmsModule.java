@@ -9,18 +9,14 @@ import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.shiro.guice.aop.ShiroAopModule;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
+import com.google.inject.multibindings.Multibinder;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.ncms.adm.AdmModule;
 import com.softmotions.ncms.asm.AsmModule;
 import com.softmotions.ncms.asm.render.AsmFilter;
@@ -28,16 +24,17 @@ import com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule;
 import com.softmotions.ncms.events.EventsModule;
 import com.softmotions.ncms.hrs.HrsModule;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionMapper;
+import com.softmotions.ncms.js.JsModule;
 import com.softmotions.ncms.media.MediaModule;
 import com.softmotions.ncms.mediawiki.MediaWikiModule;
 import com.softmotions.ncms.mtt.MttModule;
 import com.softmotions.ncms.mtt.http.MttHttpFilter;
-import com.softmotions.ncms.qa.QAModule;
 import com.softmotions.ncms.rds.RefDataStoreModule;
-import com.softmotions.ncms.security.NcmsSecurityModule;
+import com.softmotions.ncms.security.SecurityModule;
 import com.softmotions.ncms.update.UpdateModule;
 import com.softmotions.ncms.user.UserModule;
 import com.softmotions.ncms.utils.BrowserFilter;
+import com.softmotions.ncms.vedit.VisualEditorModule;
 import com.softmotions.weboot.WBServletModule;
 import com.softmotions.weboot.executor.TaskExecutorModule;
 import com.softmotions.weboot.i18n.I18nModule;
@@ -55,9 +52,14 @@ public class NcmsModule extends WBServletModule<NcmsEnvironment> {
 
     @Override
     protected void init(NcmsEnvironment env) {
+
+        // Multibinder to ncms module descriptors
+        Multibinder.newSetBinder(binder(), NcmsModuleDescriptor.class);
+
         bind(NcmsEnvironment.class).toInstance(env);
         bind(new TypeLiteral<HierarchicalConfiguration<ImmutableNode>>() {
         }).toInstance(env.xcfg());
+
         initMarketingToolsFilter(env);
         initBrowserFilter(env);
         initJAXRS(env);
@@ -67,7 +69,7 @@ public class NcmsModule extends WBServletModule<NcmsEnvironment> {
         install(new WBMyBatisModule(env));
         install(new WBLiquibaseModule(env));
         install(new WBSecurityModule(env, "Softmotions"));
-        install(new NcmsSecurityModule());
+        install(new SecurityModule());
         install(new SchedulerModule(env));
         install(new TaskExecutorModule(env));
         install(new UpdateModule());
@@ -79,10 +81,10 @@ public class NcmsModule extends WBServletModule<NcmsEnvironment> {
         install(new MediaWikiModule(env));
         install(new UserModule());
         install(new RefDataStoreModule());
-        install(new QAModule(env));
         install(new MttModule());
         install(new HrsModule());
-        install(new NcmsLogoModule());
+        install(new VisualEditorModule());
+        install(new JsModule());
     }
 
     protected void initAsmFilter(NcmsEnvironment env) {
@@ -149,48 +151,5 @@ public class NcmsModule extends WBServletModule<NcmsEnvironment> {
 
     protected void initMarketingToolsFilter(NcmsEnvironment env) {
         filter(env.getAppPrefix() + "/*", MttHttpFilter.class);
-    }
-
-    /**
-     * Display NCM logo after startup.
-     *
-     * @author Adamansky Anton (adamansky@gmail.com)
-     */
-    public static class NcmsLogoModule extends AbstractModule {
-
-        private static final Logger log = LoggerFactory.getLogger(NcmsLogoModule.class);
-
-        private static final String LOGO =
-                "                                                    \n" +
-                " _____ _____ _____ _____    _____         _         \n" +
-                "|   | |     |     |   __|  |   __|___ ___|_|___ ___ \n" +
-                "| | | |   --| | | |__   |  |   __|   | . | |   | -_|\n" +
-                "|_|___|_____|_|_|_|_____|  |_____|_|_|_  |_|_|_|___|\n" +
-                "                                     |___|          \n" +
-                " Environment: %s\n" +
-                " Version: %s\n" +
-                " Max heap: %s\n";
-
-
-        @Override
-        protected void configure() {
-            bind(LogoStarter.class).asEagerSingleton();
-        }
-
-        @SuppressWarnings("InnerClassTooDeeplyNested")
-        public static class LogoStarter {
-
-            final NcmsEnvironment env;
-
-            @Inject
-            public LogoStarter(NcmsEnvironment env) {
-                this.env = env;
-            }
-
-            @Start(order = Integer.MAX_VALUE)
-            public void startup() {
-                log.info(String.format(LOGO, env.getEnvironmentType(), env.getAppVersion(), Runtime.getRuntime().maxMemory()));
-            }
-        }
     }
 }

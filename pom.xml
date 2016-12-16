@@ -441,6 +441,11 @@
                 <version>${shiro.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.google.javascript</groupId>
+                <artifactId>closure-compiler</artifactId>
+                <version>v20161201</version>
+            </dependency>
+            <dependency>
                 <groupId>softmotions</groupId>
                 <artifactId>qx-client</artifactId>
                 <classifier>sources</classifier>

@@ -1,4 +1,4 @@
-package com.softmotions.ncms.fts;
+package com.softmotions.ncms.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
