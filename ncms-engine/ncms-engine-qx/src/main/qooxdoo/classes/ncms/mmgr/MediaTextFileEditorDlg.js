@@ -70,7 +70,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditorDlg", {
             }
             
             if (!this.__editor.isSaved()) {
-                ncms.Application.confirm(this.tr("Changes will be lost. Continue?"), function (yes) {
+                ncms.Application.confirm(this.tr("Changes will be lost. Close?"), function (yes) {
                     if (!yes) return;
                     doClose();
                 }, this);

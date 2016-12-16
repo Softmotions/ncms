@@ -969,8 +969,8 @@ msgid "Edit file %1"
 msgstr "Редактировать файл %1"
 
 #: ncms/mmgr/MediaTextFileEditorDlg.js:73
-msgid "Changes will be lost. Continue?"
-msgstr "Изменения будут потеряны. Продолжить?"
+msgid "Changes will be lost. Close?"
+msgstr "Изменения будут потеряны. Закрыть?"
 
 #: ncms/mmgr/PageFilesSelectorDlg.js:84 ncms/pgs/LinkSelectorDlg.js:44
 msgid "Link text"
