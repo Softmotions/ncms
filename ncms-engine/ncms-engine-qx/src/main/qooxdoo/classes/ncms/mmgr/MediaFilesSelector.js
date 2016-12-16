@@ -202,6 +202,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             new sm.ui.core.ExtendedCommand("F4"),
             this.__onEdit, this);
         this._registerCommandFocusWidget(table);
+
+        this.__clipboard = new Clipboard('.copy_button');
     },
 
     members: {
@@ -227,6 +229,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         __inpageBt: null,
 
         __opts: null,
+        
+        __clipboard: null,
 
         setViewSpec: function (vs) {
             this.__table.getTableModel().setViewSpec(vs);
@@ -703,6 +707,13 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     bt = new qx.ui.menu.Button(this.tr("Download"));
                     bt.addListener("execute", this.__downloadFile, this);
                     menu.add(bt);
+
+                    if (file.folder != null && file.name != null) {
+                        bt = new qx.ui.menu.Button(this.tr("Copy path"));
+                        bt.getContentElement().setAttribute("class", "copy_button");
+                        bt.getContentElement().setAttribute("data-clipboard-text", file.folder + file.name);
+                        menu.add(bt);
+                    }
                 }
 
                 if (this.__checkEditAccess(this.__table.getSelectedFiles())) {
@@ -848,5 +859,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__editBt = null;
         this.__subfoldersBt = null;
         this.__opts = null;
+        this.__clipboard.destroy();
     }
 });

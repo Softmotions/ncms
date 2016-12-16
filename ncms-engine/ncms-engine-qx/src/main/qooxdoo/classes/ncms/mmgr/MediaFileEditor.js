@@ -68,6 +68,9 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         this.__infoTable = this.__createInfoTable();
         topPane.add(this.__infoTable, {flex: 1});
 
+        topPane.setContextMenu(new qx.ui.menu.Menu());
+        topPane.addListener("beforeContextmenuOpen", this.__beforeInfoTableContextMenuOpen, this);
+        
         var viewPane = this.__viewPane = new sm.ui.cont.LazyStack();
 
         viewPane.registerWidget("default", function () {
@@ -100,6 +103,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         this._add(sp);
 
         this.hide();
+        this.__clipboard = new Clipboard('.copy_button');
     },
 
     members: {
@@ -113,6 +117,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         __viewPane: null,
 
         __owner: null,
+        
+        __clipboard: null,
 
         setUpdateFileMeta: function (update) {
             if (update == null) {
@@ -141,6 +147,42 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 allowGrowY: true
             });
             return table;
+        },
+
+        __beforeInfoTableContextMenuOpen: function (ev) {
+            var menu = ev.getData().getTarget();
+            menu.removeAll();
+
+            var value = this.__getSelectedInfoTableValue();
+            if (value != null) {
+                var bt = new qx.ui.menu.Button(this.tr("Copy value"));
+                bt.getContentElement().setAttribute("class", "copy_button");
+                bt.getContentElement().setAttribute("data-clipboard-text", value);
+                menu.add(bt);
+            }
+
+            var file = this.getFileSpec();
+            if (file != null && file.folder != null && file.name != null) {
+                bt = new qx.ui.menu.Button(this.tr("Copy path"));
+                bt.getContentElement().setAttribute("class", "copy_button");
+                bt.getContentElement().setAttribute("data-clipboard-text", file.folder + file.name);
+                menu.add(bt);
+            }
+            
+        },
+
+        __getSelectedInfoTableInd: function () {
+            return this.__infoTable.getSelectionModel().getAnchorSelectionIndex();
+        },
+
+        __getSelectedInfoTableRow: function () {
+            var sind = this.__getSelectedInfoTableInd();
+            return sind != -1 ? this.__infoTable.getTableModel().getRowData(sind) : null;
+        },
+
+        __getSelectedInfoTableValue: function () {
+            var info = this.__getSelectedInfoTableRow();
+            return (info != null && info[1] != null) ? info[1] : null;
         },
 
         __setJsonInfoTableData: function (tm, items) {
@@ -260,7 +302,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
             };
 
             this.__setupFileForm(spec);
-            this.__updateInfoTable(spec)
+            this.__updateInfoTable(spec);
             this.__setupDataView(spec);
             this.show();
         },
@@ -366,6 +408,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         this.__viewPane = null;
         this.__infoTable = null;
         this.__owner = null;
+        this.__clipboard.destroy();
         this._disposeObjects("__form");
         this.removeAllBindings();
     }
