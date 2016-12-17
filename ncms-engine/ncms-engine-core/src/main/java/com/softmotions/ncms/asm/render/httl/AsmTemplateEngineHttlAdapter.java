@@ -5,9 +5,12 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.ParseException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -21,6 +24,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.lifecycle.Dispose;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.NcmsModuleDescriptor;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
@@ -58,7 +62,39 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
     }
 
     @Inject
-    public AsmTemplateEngineHttlAdapter(NcmsEnvironment cfg, AsmResourceLoader resourceLoader) {
+    public AsmTemplateEngineHttlAdapter(NcmsEnvironment cfg,
+                                        AsmResourceLoader resourceLoader,
+                                        Set<NcmsModuleDescriptor> mset) {
+
+
+        Set<String> methodClasses = new HashSet<>();
+        Set<String> importPackages = new HashSet<>();
+        Set<String> templateFilters = new HashSet<>();
+
+        for (NcmsModuleDescriptor md : mset) {
+            Collections.addAll(methodClasses, md.httlMethodClasses());
+            Collections.addAll(importPackages, md.httlImportPackages());
+            Collections.addAll(templateFilters, md.httlTemplateFilters());
+        }
+
+        Collections.addAll(importPackages,
+                           "java.time",
+                           "com.softmotions.ncms.mhttl",
+                           "com.softmotions.ncms.asm",
+                           "com.softmotions.commons.cont",
+                           "org.apache.commons.configuration2");
+
+        Collections.addAll(methodClasses,
+                           HttlAsmMethods.class.getName(),
+                           HttlUtilsMethods.class.getName(),
+                           HttlMttMethods.class.getName(),
+                           HttlVisualEditorMethods.class.getName(),
+                           HttlJsMethods.class.getName());
+
+        Collections.addAll(templateFilters,
+                           HttlVisualEditorFilter.class.getName());
+
+
         this.resourceLoader = resourceLoader;
         Properties httlProps = new Properties();
         String extsStr = cfg.xcfg().getString("httl[@extensions]", "*,httl,html,httl.css");
@@ -120,13 +156,8 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
             key += '+';
         }
 
-        // todo use guice dynamic configuration
         value = httlProps.getProperty(key, "");
-        for (String c : new String[]{HttlAsmMethods.class.getName(),
-                                     HttlUtilsMethods.class.getName(),
-                                     HttlMttMethods.class.getName(),
-                                     HttlVisualEditorMethods.class.getName(),
-                                     HttlJsMethods.class.getName()}) {
+        for (String c : methodClasses) {
             if (!value.contains(c)) {
                 if (!value.isEmpty()) {
                     value += ',';
@@ -142,11 +173,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
             key += '+';
         }
         value = httlProps.getProperty(key, "");
-        for (String c : new String[]{"java.time",
-                                     "com.softmotions.ncms.mhttl",
-                                     "com.softmotions.ncms.asm",
-                                     "com.softmotions.commons.cont",
-                                     "org.apache.commons.configuration2"}) {
+        for (String c : importPackages) {
             if (!value.contains(c)) {
                 if (!value.isEmpty()) {
                     value += ',';
@@ -163,7 +190,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
             key += '+';
         }
         value = httlProps.getProperty(key, "");
-        for (String c : new String[]{HttlVisualEditorFilter.class.getName()}) {
+        for (String c : templateFilters) {
             if (!value.contains(c)) {
                 if (!value.isEmpty()) {
                     value += ',';
@@ -177,7 +204,6 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
         if (!httlProps.containsKey("reloadable")) {
             httlProps.setProperty("reloadable", "true");
         }
-
         try {
             StringWriter eprops = new StringWriter();
             httlProps.store(eprops, "HTTL effective properties");
