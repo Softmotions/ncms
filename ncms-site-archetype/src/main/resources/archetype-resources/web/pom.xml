@@ -31,7 +31,11 @@
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
-            <artifactId>ncms-docs-ru</artifactId>
+            <artifactId>ncms-sass-converter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>softmotions</groupId>
+            <artifactId>ncms-js-converter</artifactId>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>

@@ -144,6 +144,16 @@
             </dependency>
             <dependency>
                 <groupId>softmotions</groupId>
+                <artifactId>ncms-sass-converter</artifactId>
+                <version>${softmotions.ncms.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
+                <artifactId>ncms-js-converter</artifactId>
+                <version>${softmotions.ncms.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>softmotions</groupId>
                 <artifactId>ncms-engine-solr</artifactId>
                 <version>${softmotions.ncms.version}</version>
             </dependency>
@@ -154,7 +164,7 @@
             </dependency>
             <dependency>
                 <groupId>softmotions</groupId>
-                <artifactId>ncms-sass-converter</artifactId>
+                <artifactId>ncms-docs-en</artifactId>
                 <version>${softmotions.ncms.version}</version>
             </dependency>
         </dependencies>

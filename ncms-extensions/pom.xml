@@ -13,5 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>ncms-sass-converter</module>
+        <module>ncms-js-converter</module>
     </modules>
 </project>

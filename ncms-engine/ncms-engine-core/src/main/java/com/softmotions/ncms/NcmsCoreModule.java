@@ -24,7 +24,6 @@ import com.softmotions.ncms.asm.render.httl.AsmTemplateEngineHttlModule;
 import com.softmotions.ncms.events.EventsModule;
 import com.softmotions.ncms.hrs.HrsModule;
 import com.softmotions.ncms.jaxrs.NcmsRSExceptionMapper;
-import com.softmotions.ncms.js.JsModule;
 import com.softmotions.ncms.media.MediaModule;
 import com.softmotions.ncms.mediawiki.MediaWikiModule;
 import com.softmotions.ncms.mtt.MttModule;
@@ -85,7 +84,6 @@ public class NcmsCoreModule extends WBServletModule<NcmsEnvironment> {
         install(new MttModule());
         install(new HrsModule());
         install(new VisualEditorModule());
-        install(new JsModule());
     }
 
     protected void initAsmFilter(NcmsEnvironment env) {
