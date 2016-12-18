@@ -48,13 +48,14 @@ import com.softmotions.weboot.security.WBSecurityModule;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @SuppressWarnings("unchecked")
-public class NcmsModule extends WBServletModule<NcmsEnvironment> {
+public class NcmsCoreModule extends WBServletModule<NcmsEnvironment> {
 
     @Override
     protected void init(NcmsEnvironment env) {
 
         // Multibinder to ncms module descriptors
         Multibinder.newSetBinder(binder(), NcmsModuleDescriptor.class);
+        install(new NcmsWBIntegrationModule());
 
         bind(NcmsEnvironment.class).toInstance(env);
         bind(new TypeLiteral<HierarchicalConfiguration<ImmutableNode>>() {

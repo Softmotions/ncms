@@ -170,7 +170,7 @@ public class NcmsBoot extends WBServletListener {
     @Override
     protected Collection<Module> getStartupModules() {
         List<Module> mlist = new ArrayList<>(1);
-        mlist.add(new NcmsModule());
+        mlist.add(new NcmsCoreModule());
         return mlist;
     }
 }
