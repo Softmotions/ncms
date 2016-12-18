@@ -30,12 +30,8 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.asm.render.AsmTemplateEngineAdapter;
 import com.softmotions.ncms.asm.render.AsmTemplateEvaluationException;
-import com.softmotions.ncms.js.HttlJsMethods;
 import com.softmotions.ncms.mhttl.HttlAsmMethods;
-import com.softmotions.ncms.mhttl.HttlMttMethods;
 import com.softmotions.ncms.mhttl.HttlUtilsMethods;
-import com.softmotions.ncms.vedit.HttlVisualEditorFilter;
-import com.softmotions.ncms.vedit.HttlVisualEditorMethods;
 
 /**
  * Template engine adapter for HTTL template engine (http://httl.github.io)
@@ -86,14 +82,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
 
         Collections.addAll(methodClasses,
                            HttlAsmMethods.class.getName(),
-                           HttlUtilsMethods.class.getName(),
-                           HttlMttMethods.class.getName(),
-                           HttlVisualEditorMethods.class.getName(),
-                           HttlJsMethods.class.getName());
-
-        Collections.addAll(templateFilters,
-                           HttlVisualEditorFilter.class.getName());
-
+                           HttlUtilsMethods.class.getName());
 
         this.resourceLoader = resourceLoader;
         Properties httlProps = new Properties();
