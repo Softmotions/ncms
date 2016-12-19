@@ -7,8 +7,8 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
 
-    <changeSet id="16354140752"
-               author="adamansky@gmail.com">
+    <changeSet id="16354140752" author="adamansky@gmail.com">
+
         <createTable tableName="X_JS_DEPS">
             <column name="FINGERPRINT"
                     type="VARCHAR(32)"
@@ -20,11 +20,6 @@
                     remarks="Source script media-repo ID used to compile a final JS">
                 <constraints nullable="false"/>
             </column>
-            <column name="DEP_DATE"
-                    type="TIMSTAMP"
-                    remarks="Final script compilation timestamp">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
         <createIndex tableName="X_JS_DEPS" indexName="IDX_XJSDEPS_FP_FWD" unique="true">
             <column name="FINGERPRINT"/>
@@ -34,7 +29,27 @@
             <column name="SOURCE_SCRIPT_ID"/>
             <column name="FINGERPRINT"/>
         </createIndex>
+
+        <createTable tableName="X_JS_SPEC">
+            <column name="FINGERPRINT"
+                    type="VARCHAR(32)"
+                    remarks="Final JS script MD5 hash sum">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="SPEC"
+                    type="VARCHAR(2048)"
+                    remarks="Script generation specification">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 
+    <changeSet id="16354192323" author="adamansky@gmail.com">
+        <addColumn tableName="X_JS_DEPS">
+            <column name="SOURCE_SCRIPT_PATH"
+                    type="VARCHAR(512)">
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

@@ -6,6 +6,23 @@
 <!-- JsRS mybatis mapper -->
 <mapper namespace="com.softmotions.ncms.js.JsRS">
 
+
+    <!-- Select script path as part of dependency -->
+    <select id="selectScriptPathById" parameterType="long">
+        SELECT source_script_path
+        FROM x_js_spec
+        WHERE source_script_id = #{id}
+        LIMIT 1
+    </select>
+
+
+    <!-- Select script specification by script hash -->
+    <select id="selectScriptSpec" parameterType="string">
+        SELECT spec
+        FROM x_js_spec
+        WHERE fingerprint = #{fingerprint}
+    </select>
+
     <!-- Select scripts count for fingerprint -->
     <select id="selectFingerprintDepCount" parameterType="string">
         SELECT COUNT(*)
