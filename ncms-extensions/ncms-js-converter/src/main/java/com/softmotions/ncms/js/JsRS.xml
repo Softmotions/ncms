@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- JsRS mybatis mapper -->
+<mapper namespace="com.softmotions.ncms.js.JsRS">
+
+    <!-- Select scripts count for fingerprint -->
+    <select id="selectFingerprintDepCount" parameterType="string">
+        SELECT COUNT(*)
+        FROM x_js_deps
+        WHERE fingerprint = #{fingerprint}
+    </select>
+
+    <!-- Removes all dependencies with specified script ID  -->
+    <delete id="deleteAllDependenciesWithScript" parameterType="long">
+        DELETE FROM x_js_deps AS dep
+        WHERE dep.fingerprint IN (
+            SELECT fingerprint
+            FROM x_js_deps
+            WHERE source_script_id = #{id}
+        )
+    </delete>
+
+</mapper>

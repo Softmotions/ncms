@@ -188,6 +188,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         this.resizer = Executors.newSingleThreadExecutor();
     }
 
+    @Override
+    @Nonnull
+    public File getBaseDir() {
+        return basedir;
+    }
 
     /**
      * Get media-entity path by specified ID

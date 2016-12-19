@@ -17,6 +17,10 @@ public class JsModule extends AbstractModule {
     @Override
     protected void configure() {
 
+        // Register JS compiler service
+        bind(JsRS.class).asEagerSingleton();
+
+        // Bind module descriptor
         Multibinder.newSetBinder(binder(), NcmsModuleDescriptor.class)
                    .addBinding().toInstance(new NcmsModuleDescriptorSupport() {
 
@@ -30,11 +34,21 @@ public class JsModule extends AbstractModule {
             public String[] httlMethodClasses() {
                 return new String[]{HttlJsMethods.class.getName()};
             }
+
+            @Override
+            public String[] liquibaseChangeSets() {
+                return new String[]{
+                        "com/softmotions/ncms/js/x-js-db-changelog-16354140621.xml"
+                };
+            }
+
+            @Override
+            public String[] mybatisExtraMappers() {
+                return new String[]{
+                        "com/softmotions/ncms/js/JsRS.xml"
+                };
+            }
         });
-
-    }
-
-    public static class NcmsJsService {
 
     }
 }

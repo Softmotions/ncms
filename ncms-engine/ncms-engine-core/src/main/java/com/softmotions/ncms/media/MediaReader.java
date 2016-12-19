@@ -1,5 +1,6 @@
 package com.softmotions.ncms.media;
 
+import java.io.File;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,4 +58,10 @@ public interface MediaReader {
                  @Nullable Integer width,
                  @Nullable Integer height,
                  boolean inline) throws Exception;
+
+    /**
+     * Base directory for media content
+     */
+    @Nonnull
+    File getBaseDir();
 }

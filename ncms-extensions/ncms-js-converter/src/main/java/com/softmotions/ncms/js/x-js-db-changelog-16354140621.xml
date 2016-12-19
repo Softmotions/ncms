@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+
+    <changeSet id="16354140752"
+               author="adamansky@gmail.com">
+        <createTable tableName="X_JS_DEPS">
+            <column name="FINGERPRINT"
+                    type="VARCHAR(32)"
+                    remarks="Final JS script MD5 hash sum">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SOURCE_SCRIPT_ID"
+                    type="BIGINT"
+                    remarks="Source script media-repo ID used to compile a final JS">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DEP_DATE"
+                    type="TIMSTAMP"
+                    remarks="Final script compilation timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="X_JS_DEPS" indexName="IDX_XJSDEPS_FP_FWD" unique="true">
+            <column name="FINGERPRINT"/>
+            <column name="SOURCE_SCRIPT_ID"/>
+        </createIndex>
+        <createIndex tableName="X_JS_DEPS" indexName="IDX_XJSDEPS_FP_BWD" unique="true">
+            <column name="SOURCE_SCRIPT_ID"/>
+            <column name="FINGERPRINT"/>
+        </createIndex>
+    </changeSet>
+
+
+</databaseChangeLog>
