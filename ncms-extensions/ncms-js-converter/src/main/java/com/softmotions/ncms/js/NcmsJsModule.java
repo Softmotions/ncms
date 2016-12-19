@@ -12,7 +12,7 @@ import com.softmotions.ncms.NcmsModuleDescriptorSupport;
  *
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-public class JsModule extends AbstractModule {
+public class NcmsJsModule extends AbstractModule {
 
     @Override
     protected void configure() {
@@ -27,7 +27,7 @@ public class JsModule extends AbstractModule {
             @Override
             @Nonnull
             public Class<? extends AbstractModule> getModuleClass() {
-                return JsModule.class;
+                return NcmsJsModule.class;
             }
 
             @Override

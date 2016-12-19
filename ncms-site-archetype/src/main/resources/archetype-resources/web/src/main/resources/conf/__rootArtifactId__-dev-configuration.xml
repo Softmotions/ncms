@@ -144,7 +144,7 @@
 
     <modules>
         <module>com.softmotions.ncms.sass.NcmsSassModule</module>
-        <module>com.softmotions.ncms.js.JsModule</module>
+        <module>com.softmotions.ncms.js.NcmsJsModule</module>
         <module>${package}.AppModule</module>
     </modules>
 </configuration>
