@@ -12,7 +12,6 @@ import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-import com.google.inject.multibindings.Multibinder;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.KVOptions;
@@ -52,8 +51,6 @@ public class NcmsCoreModule extends WBServletModule<NcmsEnvironment> {
     @Override
     protected void init(NcmsEnvironment env) {
 
-        // Multibinder to ncms module descriptors
-        Multibinder.newSetBinder(binder(), NcmsModuleDescriptor.class);
         install(new NcmsWBIntegrationModule());
 
         bind(NcmsEnvironment.class).toInstance(env);

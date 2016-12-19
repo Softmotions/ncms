@@ -36,7 +36,7 @@ public interface NcmsModuleDescriptor {
     String[] mybatisExtraMappers();
 
     ///////////////////////////////////////////////////////////////////////////
-    //                          HTTL staff                                   //
+    //                             HTTL                                      //
     ///////////////////////////////////////////////////////////////////////////
 
     /**
@@ -56,5 +56,15 @@ public interface NcmsModuleDescriptor {
      */
     @Nonnull
     String[] httlTemplateFilters();
+
+    ///////////////////////////////////////////////////////////////////////////
+    //                             JS                                        //
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Set of JS resources loaded in nCMS admin zone.
+     */
+    @Nonnull
+    String[] adminScripts();
 
 }

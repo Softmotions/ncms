@@ -38,6 +38,11 @@ public abstract class NcmsModuleDescriptorSupport implements NcmsModuleDescripto
         return EMPTY_STRING_ARRAY;
     }
 
+    @Override
+    public String[] adminScripts() {
+        return EMPTY_STRING_ARRAY;
+    }
+
     public String toString() {
         return MoreObjects
                 .toStringHelper(getModuleClass().getName().toString())
@@ -46,6 +51,7 @@ public abstract class NcmsModuleDescriptorSupport implements NcmsModuleDescripto
                 .add("httlMethodClasses", Arrays.asList(httlMethodClasses()))
                 .add("httlImportPackages", Arrays.asList(httlImportPackages()))
                 .add("httlTemplateFilters", Arrays.asList(httlTemplateFilters()))
+                .add("adminScripts", Arrays.asList(adminScripts()))
                 .toString();
     }
 }

@@ -162,7 +162,7 @@ public class NcmsBoot extends WBServletListener {
         StringBuilder sb = new StringBuilder();
         String sep = System.getProperty("line.separator");
         for (Map.Entry<String, String> e : pmap.entrySet()) {
-            sb.append(sep).append("   ").append(e.getKey()).append(" => ").append(e.getValue());
+            sb.append(sep).append(e.getKey()).append(" => ").append(e.getValue());
         }
         log.info("Atmosphere servlet settings: {}", sb);
     }
