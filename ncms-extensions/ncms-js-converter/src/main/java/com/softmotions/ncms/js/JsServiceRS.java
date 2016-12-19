@@ -137,8 +137,6 @@ public class JsServiceRS extends MBDAOSupport {
     }
 
     @GuardedBy("RW_STRIPES")
-
-
     @Nullable
     String compileScript(String fp, Set<MediaResource> resources, KVOptions spec) throws Exception {
 
