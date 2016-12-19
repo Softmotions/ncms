@@ -3,8 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- JsRS mybatis mapper -->
-<mapper namespace="com.softmotions.ncms.js.JsRS">
+<!-- JsServiceRS mybatis mapper -->
+<mapper namespace="com.softmotions.ncms.js.JsServiceRS">
 
 
     <!-- Select script path as part of dependency -->
@@ -39,5 +39,11 @@
             WHERE source_script_id = #{id}
         )
     </delete>
+
+    <!-- Register script file - fingerprint dependency -->
+    <insert id="insertScriptDep" parameterMap="map">
+        INSERT INTO x_js_deps (fingerprint, source_script_id, source_script_path)
+        VALUES (#{fingerprint}, #{id}, #{path})
+    </insert>
 
 </mapper>

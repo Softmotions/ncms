@@ -18,7 +18,7 @@ public class NcmsJsModule extends AbstractModule {
     protected void configure() {
 
         // Register JS compiler service
-        bind(JsRS.class).asEagerSingleton();
+        bind(JsServiceRS.class).asEagerSingleton();
 
         // Bind module descriptor
         Multibinder.newSetBinder(binder(), NcmsModuleDescriptor.class)
@@ -45,7 +45,7 @@ public class NcmsJsModule extends AbstractModule {
             @Override
             public String[] mybatisExtraMappers() {
                 return new String[]{
-                        "com/softmotions/ncms/js/JsRS.xml"
+                        "com/softmotions/ncms/js/JsServiceRS.xml"
                 };
             }
         });

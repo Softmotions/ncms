@@ -13,6 +13,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Locale;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import org.apache.commons.io.IOUtils;
@@ -200,6 +201,17 @@ class MediaResourceImpl implements MediaResource, Serializable {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MediaResourceImpl that = (MediaResourceImpl) o;
+        return id == that.id;
+    }
+
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     private static class InputStreamSession extends InputStreamWrapper {
