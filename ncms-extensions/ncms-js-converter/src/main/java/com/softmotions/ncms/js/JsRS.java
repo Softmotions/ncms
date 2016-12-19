@@ -3,13 +3,18 @@ package com.softmotions.ncms.js;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
@@ -31,10 +36,12 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
+import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.media.MediaResource;
+import com.softmotions.ncms.utils.Digest;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
@@ -146,12 +153,8 @@ public class JsRS extends MBDAOSupport {
         Compiler compiler = new Compiler(new ClosureLoggerErrorManager(log));
 
         options.setOutputCharset(Charset.forName("utf-8"));
-
-        String val = spec.getOrDefault("languageIn", LanguageMode.ECMASCRIPT5.toString());
-        options.setLanguageIn(LanguageMode.valueOf(val));
-
-        val = spec.getOrDefault("languageOut", LanguageMode.ECMASCRIPT5.toString());
-        options.setLanguageOut(LanguageMode.valueOf(val));
+        options.setLanguageIn(languageLevel2Closure(spec.getOrDefault("in", "es5")));
+        options.setLanguageOut(languageLevel2Closure(spec.getOrDefault("out", "es5")));
 
         Result result = compiler.compile(externs, inputs, options);
         if (!result.success) {
@@ -164,4 +167,35 @@ public class JsRS extends MBDAOSupport {
     }
 
 
+    LanguageMode languageLevel2Closure(String in) {
+        switch (in) {
+            case "es3":
+                return LanguageMode.ECMASCRIPT3;
+            case "es6":
+                return LanguageMode.ECMASCRIPT_2015;
+            case "es5":
+            default:
+                return LanguageMode.ECMASCRIPT5;
+        }
+    }
+
+    String computeFingerprint(Set<String> scripts, Map<String, String> opts) {
+        Map<String, String> nopts = new HashMap<>(opts);
+        List<String> items = new ArrayList<>(scripts.size() + opts.size());
+        opts.entrySet().stream().filter(e -> {
+            switch (e.getKey()) {
+                case "in":
+                case "out":
+                    return true;
+                default:
+                    return false;
+            }
+        }).map(e -> e.getKey() + "=" + e.getValue())
+            .collect(Collectors.toCollection(() -> items));
+        scripts.stream()
+               .map(s -> (!s.isEmpty() && s.charAt(0) != '/') ? ('/' + s) : s)
+               .collect(Collectors.toCollection(() -> items));
+        items.sort(Collator.getInstance()::compare);
+        return Digest.getMD5(CollectionUtils.join("", items));
+    }
 }
