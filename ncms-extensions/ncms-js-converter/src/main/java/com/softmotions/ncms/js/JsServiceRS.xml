@@ -8,7 +8,9 @@
 
 
     <!-- Select script path as part of dependency -->
-    <select id="selectScriptPathById" parameterType="long">
+    <select id="selectScriptPathById"
+            parameterType="long"
+            resultType="string">
         SELECT source_script_path
         FROM x_js_spec
         WHERE source_script_id = #{id}
@@ -17,21 +19,26 @@
 
 
     <!-- Select script specification by script hash -->
-    <select id="selectScriptSpec" parameterType="string">
+    <select id="selectScriptSpec"
+            parameterType="string"
+            resultType="string">
         SELECT spec
         FROM x_js_spec
         WHERE fingerprint = #{fingerprint}
     </select>
 
     <!-- Select scripts count for fingerprint -->
-    <select id="selectFingerprintDepCount" parameterType="string">
+    <select id="selectFingerprintDepCount"
+            parameterType="string"
+            resultType="long">
         SELECT COUNT(*)
         FROM x_js_deps
         WHERE fingerprint = #{fingerprint}
     </select>
 
     <!-- Removes all dependencies with specified script ID  -->
-    <delete id="deleteAllDependenciesWithScript" parameterType="long">
+    <delete id="deleteAllDependenciesWithScript"
+            parameterType="long">
         DELETE FROM x_js_deps AS dep
         WHERE dep.fingerprint IN (
             SELECT fingerprint
@@ -54,37 +61,5 @@
         INSERT INTO x_js_spec (fingerprint, spec)
         VALUES (#{fingerprint}, #{spec})
     </insert>
-
-    <!-- <update id="insertScriptDep"
-             parameterType="map"
-             databaseId="POSTGRES">
-         WITH x_js_deps_ (fingerprint, source_script_id, source_script_path) AS (VALUES
-             (#{fingerprint}, #{id}, #{path})
-         )
-         INSERT INTO x_js_deps (fingerprint, source_script_id, source_script_path)
-             SELECT
-                 fingerprint,
-                 source_script_id,
-                 source_script_path
-             FROM x_js_deps_
-             WHERE NOT EXISTS(SELECT 1
-                              FROM x_js_deps d
-                              WHERE d.fingerprint = x_js_deps_.fingerprint
-                                    AND d.source_script_id = x_js_deps_.source_script_id)
-     </update>
-
-     <update id="insertScriptDep"
-             parameterType="map"
-             databaseId="DB2">
-         MERGE INTO x_js_deps AS d
-         USING (
-                   VALUES (#{fingerprint}, #{id}, #{path})
-               ) AS s(fingerprint, source_script_id, source_script_path)
-         ON d.fingerprint = s.fingerprint AND d.source_script_id = s.source_script_id
-         WHEN NOT MATCHED THEN
-         INSERT (fingerprint, source_script_id, source_script_path)
-         VALUES (s.fingerprint, s.source_script_id, s.source_script_path)
-         ELSE IGNORE
-     </update>-->
 
 </mapper>
