@@ -165,6 +165,9 @@ public class JsServiceRS extends MBDAOSupport {
 
         Result result = compiler.compile(externs, inputs, options);
         if (!result.success) {
+            log.warn("Failed to compile script for: {} opts: {}",
+                     resources.stream().map(MediaResource::getName).collect(Collectors.toList()),
+                     spec);
             return null;
         }
 
@@ -249,12 +252,24 @@ public class JsServiceRS extends MBDAOSupport {
         return env.getAppRoot() + "/rs/x/js/" + fp;
     }
 
+    @Transactional
     public void ensureScript(String fp, String[] scripts, Map<String, String> opts) {
-        String spec = selectOne("selectScriptSpec", fp);
-        if (spec != null) {
-            activeFingerprints.add(fp);
-            return;
+
+        String spec;
+        ReadWriteLock rwlock = RW_STRIPES.get(fp);
+        Lock rlock = rwlock.readLock();
+        rlock.lock();
+        try {
+            spec = selectOne("selectScriptSpec", fp);
+            if (spec != null) {
+                activeFingerprints.add(fp);
+                return;
+            }
+        } finally {
+            rlock.unlock();
         }
+
+        // Collect info for script compilation
         KVOptions kvspec = new KVOptions();
         for (Map.Entry<String, String> de : ALLOWED_JSGEN_OPTS.entrySet()) {
             kvspec.put(de.getKey(), opts.getOrDefault(de.getKey(), de.getValue()));
@@ -275,35 +290,48 @@ public class JsServiceRS extends MBDAOSupport {
         }
         kvspec.put("scripts", files.toString());
 
-        ReadWriteLock rwlock = RW_STRIPES.get(fp);
-        Lock lock = rwlock.writeLock();
-        lock.lock();
+        // Get exclusive write lock
+        Lock wlock = rwlock.writeLock();
+        wlock.lock();
         try {
-            if (compileScript(fp, resources, kvspec) == null) { // script failed to compile
+            spec = selectOne("selectScriptSpec", fp);
+            if (spec != null) {
+                // someone did our job already
+                wlock.unlock();
+                activeFingerprints.add(fp);
                 return;
             }
-            withinTransaction((sess, conn) -> {
 
-                // OK then register script files dependencies
-                for (MediaResource meta : resources) {
-                    insert("insertScriptDep",
-                           "fingerprint", fp,
-                           "id", meta.getId(),
-                           "path", meta.getName());
-                }
+            if (compileScript(fp, resources, kvspec) == null) {
+                // script failed to compile
+                wlock.unlock();
+                return;
+            }
 
-                // Register script spec
-                insert("insertScriptSpec",
+            // OK, then save dependencies
+            for (MediaResource meta : resources) {
+                insert("insertScriptDep",
                        "fingerprint", fp,
-                       "spec", kvspec.toString());
+                       "id", meta.getId(),
+                       "path", meta.getName());
+            }
 
-                return null;
-            });
-            activeFingerprints.add(fp);
-        } catch (Exception e) {
-            log.error("", e);
-        } finally {
-            lock.unlock();
+            // Save script spec for this fingerprint
+            insert("insertScriptSpec",
+                   "fingerprint", fp,
+                   "spec", kvspec.toString());
+
+            // Only if data persisted successfully
+            ebus.doOnSuccessCommit(() -> activeFingerprints.add(fp));
+            // Unlock current write lock only when Transaction finished
+            ebus.doOnTxFinish(wlock::unlock);
+        } catch (Throwable e) {
+            try {
+                log.error("", e);
+            } finally {
+                // Unlock on error
+                wlock.unlock();
+            }
         }
     }
 
