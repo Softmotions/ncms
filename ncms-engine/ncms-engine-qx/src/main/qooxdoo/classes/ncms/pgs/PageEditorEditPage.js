@@ -46,9 +46,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         .set({padding: [0, 5, 0, 0]});
 
         //Blocker
-        this.__blocker = new qx.ui.core.Blocker(this);
-        this.__blocker.setColor("#EFEFEF");
-        this.__blocker.setOpacity(0.7);
+        this.__alertBlocker = new ncms.cc.AlertBlocker(this);
 
         //Page name
         this.__pageNameLabel = new qx.ui.basic.Label();
@@ -153,10 +151,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
 
         __saveSc: null,
 
-        __blocker: null,
-
-        __blockerAtom: null,
-
+        __alertBlocker: null,
 
         getForm: function () {
             return this.__form;
@@ -195,74 +190,20 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             if (val === old) {
                 return;
             }
-            function centerBa() {
-                var me = this;
-                window.setTimeout(function () {
-                    if (me.__blockerAtom) {
-                        var hint = me.__blockerAtom.getSizeHint();
-                        var cl = me.getContentLocation("box");
-                        me.__blockerAtom.setLayoutProperties({
-                            left: Math.round(cl.left + (cl.right - cl.left - hint.width) / 2),
-                            top: Math.round(cl.top + (cl.bottom - cl.top - hint.height) / 2)
-                        });
-                    }
-                });
-            }
-
             if (val) {
-                var root = qx.core.Init.getApplication().getRoot();
-                if (this.__blockerAtom == null) {
-                    this.__blockerAtom =
-                        new qx.ui.basic.Atom(null, "ncms/icon/32/exclamation.png").set({
-                            center: true,
-                            rich: true,
-                            selectable: true,
-                            appearance: "ncms-info-popup",
-                            padding: 20,
-                            maxWidth: 300
-                        });
-                    this.addListener("resize", centerBa, this);
-                    this.addListener("move", centerBa, this);
-                    this.addListener("disappear", function () {
-                        this.__blockerAtom && this.__blockerAtom.exclude();
-                        this.addListenerOnce("appear", function () {
-                            if (this.getPageBlocked()) {
-                                centerBa.call(this);
-                                if (this.__blockerAtom) {
-
-                                    this.__blockerAtom.show();
-                                }
-                            }
-                        }, this);
-                    }, this);
-                    root.add(this.__blockerAtom);
-                    this.__blockerAtom.exclude();
-                }
-
                 var ps = this.getPageEditSpec();
-                this.__blockerAtom.setLabel(this.tr(
+                this.__alertBlocker.block(this.tr(
                     "This page is locked<br>since the user <b>%1</b> is editing it",
                     ps.lockUser
                 ));
-                this.__blockerAtom.setZIndex(1e3);
-                if (this._appeared) {
-                    this.__blocker.block();
-                    this.__blockerAtom.show();
-                    centerBa.call(this);
-                } else {
+                this.addListenerOnce("disappear", function () {
+                    this.__alertBlocker.unblock();
                     this.addListenerOnce("appear", function () {
-                        if (this.getPageBlocked()) {
-                            this.__blocker.block();
-                            this.__blockerAtom.show();
-                            centerBa.call(this);
-                        }
+                        this.__alertBlocker.onAppear(this.getPageBlocked());
                     }, this);
-                }
+                }, this);
             } else {
-                if (this.__blockerAtom) {
-                    this.__blockerAtom.exclude();
-                }
-                this.__blocker.unblock();
+                this.__alertBlocker.unblock();
             }
         },
 
@@ -699,7 +640,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__publishPageBt = null;
         this.__publishChangesBt = null;
         this.__saveSc = null;
-        this.__blocker = null;
-        this.__blockerAtom = null;
+        this.__alertBlocker = null;
     }
 });
