@@ -6,17 +6,15 @@
 <!-- JsServiceRS mybatis mapper -->
 <mapper namespace="com.softmotions.ncms.js.JsServiceRS">
 
-
     <!-- Select script path as part of dependency -->
     <select id="selectScriptPathById"
             parameterType="long"
             resultType="string">
         SELECT source_script_path
-        FROM x_js_spec
+        FROM x_js_deps
         WHERE source_script_id = #{id}
         LIMIT 1
     </select>
-
 
     <!-- Select script specification by script hash -->
     <select id="selectScriptSpec"
@@ -27,20 +25,30 @@
         WHERE fingerprint = #{fingerprint}
     </select>
 
-    <!-- Select scripts count for fingerprint -->
-    <select id="selectFingerprintDepCount"
-            parameterType="string"
-            resultType="long">
-        SELECT COUNT(*)
+    <select id="selectAffectedFingerprints"
+            parameterType="long"
+            resultType="string">
+        SELECT DISTINCT fingerprint
         FROM x_js_deps
-        WHERE fingerprint = #{fingerprint}
+        WHERE source_script_id = #{id}
     </select>
 
-    <!-- Removes all dependencies with specified script ID  -->
-    <delete id="deleteAllDependenciesWithScript"
+    <!-- Removes all dependencies with participated script -->
+    <delete id="deleteDepsByScriptId"
             parameterType="long">
         DELETE FROM x_js_deps AS dep
         WHERE dep.fingerprint IN (
+            SELECT fingerprint
+            FROM x_js_deps
+            WHERE source_script_id = #{id}
+        )
+    </delete>
+
+    <!-- Removes all spec with participated script -->
+    <delete id="deleteSpecsByScriptId"
+            parameterType="long">
+        DELETE FROM x_js_spec AS spec
+        WHERE spec.fingerprint IN (
             SELECT fingerprint
             FROM x_js_deps
             WHERE source_script_id = #{id}
@@ -53,7 +61,6 @@
         INSERT INTO x_js_deps (fingerprint, source_script_id, source_script_path)
         VALUES (#{fingerprint}, #{id}, #{path})
     </insert>
-
 
     <!-- Insert script spec -->
     <insert id="insertScriptSpec"

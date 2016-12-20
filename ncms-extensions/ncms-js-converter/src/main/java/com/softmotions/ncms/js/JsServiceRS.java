@@ -3,7 +3,6 @@ package com.softmotions.ncms.js;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +26,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.mybatis.guice.transactional.Transactional;
@@ -43,6 +43,7 @@ import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
+import com.softmotions.commons.ThreadUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.commons.lifecycle.Dispose;
@@ -54,7 +55,7 @@ import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.ncms.media.events.MediaDeleteEvent;
 import com.softmotions.ncms.media.events.MediaUpdateEvent;
 import com.softmotions.ncms.utils.Digest;
-import com.softmotions.weboot.mb.MBAction;
+import com.softmotions.weboot.executor.TaskExecutor;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
@@ -82,15 +83,19 @@ public class JsServiceRS extends MBDAOSupport {
 
     private final Set<String> activeFingerprints = ConcurrentHashMap.newKeySet();
 
+    private final TaskExecutor executor;
+
 
     @Inject
     public JsServiceRS(SqlSession sess,
                        MediaReader mediaReader,
                        NcmsEnvironment env,
+                       TaskExecutor executor,
                        NcmsEventBus ebus) throws IOException {
         super(JsServiceRS.class.getName(), sess);
         this.mediaReader = mediaReader;
         this.env = env;
+        this.executor = executor;
         this.ebus = ebus;
         this.jsCache = new File(mediaReader.getBaseDir(), ".jscache");
         DirUtils.ensureDir(jsCache, true);
@@ -163,11 +168,19 @@ public class JsServiceRS extends MBDAOSupport {
         options.setLanguageIn(languageLevel2Closure(spec.getOrDefault("in", ALLOWED_JSGEN_OPTS.get("in"))));
         options.setLanguageOut(languageLevel2Closure(spec.getOrDefault("out", ALLOWED_JSGEN_OPTS.get("out"))));
 
+        List<String> inputPaths = resources.stream().map(MediaResource::getName).collect(Collectors.toList());
+        log.info("Compiling script {}.js from: {} spec: {}",
+                 fp,
+                 inputPaths,
+                 spec);
+
         Result result = compiler.compile(externs, inputs, options);
         if (!result.success) {
-            log.warn("Failed to compile script for: {} opts: {}",
-                     resources.stream().map(MediaResource::getName).collect(Collectors.toList()),
-                     spec);
+            log.warn("Failed to compile script {}.js from: {} spec: {} opts: {}",
+                     fp,
+                     inputPaths,
+                     spec,
+                     options);
             return null;
         }
 
@@ -335,15 +348,58 @@ public class JsServiceRS extends MBDAOSupport {
         }
     }
 
-
     @Subscribe
     public void mediaUpdated(MediaUpdateEvent ev) {
-        // todo
+        if (ev.isFolder() || !"js".equals(FilenameUtils.getExtension(ev.getPath()).toLowerCase())) {
+            return;
+        }
+        executor.submit(() -> {
+            ThreadUtils.cleanInheritableThreadLocals();
+            try {
+                updateJsFile(ev.getId());
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        });
     }
 
-    @Subscribe
     public void mediaDeleted(MediaDeleteEvent ev) {
-        // todo
+        if (ev.isFolder() || !"js".equals(FilenameUtils.getExtension(ev.getPath()).toLowerCase())) {
+            return;
+        }
+        executor.submit(() -> {
+            ThreadUtils.cleanInheritableThreadLocals();
+            try {
+                updateJsFile(ev.getId());
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        });
+    }
+
+    @Transactional
+    public void updateJsFile(Long id) {
+        log.info("Update JS file: {}", id);
+        List<String> fps = select("selectAffectedFingerprints", id);
+        delete("deleteSpecsByScriptId", id);
+        delete("deleteDepsByScriptId", id);
+        // cleanup js cache
+        for (String fp : fps) {
+            ReadWriteLock rwlock = RW_STRIPES.get(fp);
+            Lock lock = rwlock.writeLock();
+            lock.lock();
+            try {
+                File f = new File(jsCache, fp + ".js");
+                if (f.exists()) {
+                    f.delete();
+                }
+            } catch (Throwable tr) {
+                log.error("Unable to delete: {}", new File(jsCache, fp + ".js"), tr);
+            } finally {
+                activeFingerprints.remove(fp);
+                lock.unlock();
+            }
+        }
     }
 
     @Start
@@ -354,11 +410,5 @@ public class JsServiceRS extends MBDAOSupport {
     @Dispose
     public void shutdown() {
         ebus.unregister(this);
-    }
-
-    @Override
-    @Transactional
-    public <T> T withinTransaction(MBAction<T> action) throws SQLException {
-        return super.withinTransaction(action);
     }
 }

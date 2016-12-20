@@ -122,13 +122,15 @@ public class AsmRendererContextImpl extends AsmRendererContext {
                 throw new AsmResourceNotFoundException("asm: " + asmRef);
             }
         }
+
         //Clone the assembly to allow
         //rendering routines be free to change assembly structure and properties
         this.asmCloneContext = new HashMap<>();
         this.asm = asm0.cloneDeep(this.asmCloneContext);
+
         //Set basic content parameters
         this.put("ncmsroot", env.getAppRoot());
-
+        this.put("ncmspage", this.asm.getId());
     }
 
     @Override
