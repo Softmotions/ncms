@@ -87,7 +87,7 @@ qx.Class.define("ncms.news.NewsNav", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onDelete, this);
-        this._registerCommandFocusWidget(ps);
+        this._registerCommandFocusWidget(ps.getTable());
 
     },
 

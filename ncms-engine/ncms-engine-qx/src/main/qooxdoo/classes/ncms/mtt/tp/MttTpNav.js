@@ -44,7 +44,7 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onRemoveTp, this);
-        this._registerCommandFocusWidget(this.__selector);
+        this._registerCommandFocusWidget(this.__selector.getTable());
     },
 
     members: {

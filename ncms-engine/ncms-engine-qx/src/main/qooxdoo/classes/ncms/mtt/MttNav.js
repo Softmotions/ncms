@@ -93,7 +93,7 @@ qx.Class.define("ncms.mtt.MttNav", {
         this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onRemoveRule, this);
-        this._registerCommandFocusWidget(this.__selector);
+        this._registerCommandFocusWidget(this.__selector.getTable());
     },
 
     members: {
