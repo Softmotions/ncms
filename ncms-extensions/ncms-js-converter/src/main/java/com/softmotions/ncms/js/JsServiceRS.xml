@@ -40,10 +40,51 @@
         )
     </delete>
 
-    <!-- Register script file - fingerprint dependency -->
-    <insert id="insertScriptDep" parameterMap="map">
+    <!-- Insert script to fingerprint dependency -->
+    <insert id="insertScriptDep"
+            parameterType="map">
         INSERT INTO x_js_deps (fingerprint, source_script_id, source_script_path)
         VALUES (#{fingerprint}, #{id}, #{path})
     </insert>
+
+
+    <!-- Insert script spec -->
+    <insert id="insertScriptSpec"
+            parameterType="map">
+        INSERT INTO x_js_spec (fingerprint, spec)
+        VALUES (#{fingerprint}, #{spec})
+    </insert>
+
+    <!-- <update id="insertScriptDep"
+             parameterType="map"
+             databaseId="POSTGRES">
+         WITH x_js_deps_ (fingerprint, source_script_id, source_script_path) AS (VALUES
+             (#{fingerprint}, #{id}, #{path})
+         )
+         INSERT INTO x_js_deps (fingerprint, source_script_id, source_script_path)
+             SELECT
+                 fingerprint,
+                 source_script_id,
+                 source_script_path
+             FROM x_js_deps_
+             WHERE NOT EXISTS(SELECT 1
+                              FROM x_js_deps d
+                              WHERE d.fingerprint = x_js_deps_.fingerprint
+                                    AND d.source_script_id = x_js_deps_.source_script_id)
+     </update>
+
+     <update id="insertScriptDep"
+             parameterType="map"
+             databaseId="DB2">
+         MERGE INTO x_js_deps AS d
+         USING (
+                   VALUES (#{fingerprint}, #{id}, #{path})
+               ) AS s(fingerprint, source_script_id, source_script_path)
+         ON d.fingerprint = s.fingerprint AND d.source_script_id = s.source_script_id
+         WHEN NOT MATCHED THEN
+         INSERT (fingerprint, source_script_id, source_script_path)
+         VALUES (s.fingerprint, s.source_script_id, s.source_script_path)
+         ELSE IGNORE
+     </update>-->
 
 </mapper>

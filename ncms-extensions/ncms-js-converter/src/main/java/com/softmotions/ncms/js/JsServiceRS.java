@@ -3,10 +3,10 @@ package com.softmotions.ncms.js;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +33,7 @@ import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -44,10 +45,16 @@ import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.io.DirUtils;
+import com.softmotions.commons.lifecycle.Dispose;
+import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.media.MediaResource;
+import com.softmotions.ncms.media.events.MediaDeleteEvent;
+import com.softmotions.ncms.media.events.MediaUpdateEvent;
 import com.softmotions.ncms.utils.Digest;
+import com.softmotions.weboot.mb.MBAction;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
@@ -71,16 +78,20 @@ public class JsServiceRS extends MBDAOSupport {
 
     private final NcmsEnvironment env;
 
+    private final NcmsEventBus ebus;
+
     private final Set<String> activeFingerprints = ConcurrentHashMap.newKeySet();
 
 
     @Inject
     public JsServiceRS(SqlSession sess,
                        MediaReader mediaReader,
-                       NcmsEnvironment env) throws IOException {
+                       NcmsEnvironment env,
+                       NcmsEventBus ebus) throws IOException {
         super(JsServiceRS.class.getName(), sess);
         this.mediaReader = mediaReader;
         this.env = env;
+        this.ebus = ebus;
         this.jsCache = new File(mediaReader.getBaseDir(), ".jscache");
         DirUtils.ensureDir(jsCache, true);
     }
@@ -205,18 +216,18 @@ public class JsServiceRS extends MBDAOSupport {
         put("out", "es5");
     }};
 
-    String computeFingerprint(Collection<String> scripts, Map<String, String> _opts) {
+    String computeFingerprint(String[] scripts, Map<String, String> _opts) {
         Map<String, String> opts = new HashMap<>(ALLOWED_JSGEN_OPTS.size());
         for (Map.Entry<String, String> de : ALLOWED_JSGEN_OPTS.entrySet()) {
             opts.put(de.getKey(), _opts.getOrDefault(de.getKey(), de.getValue()));
         }
-        List<String> items = new ArrayList<>(scripts.size() + opts.size());
+        List<String> items = new ArrayList<>(scripts.length + opts.size());
         opts.entrySet().stream()
             .map(e -> e.getKey() + e.getValue())
             .collect(Collectors.toCollection(() -> items));
-        scripts.stream()
-               .map(this::normalizePath)
-               .collect(Collectors.toCollection(() -> items));
+        Arrays.stream(scripts)
+              .map(this::normalizePath)
+              .collect(Collectors.toCollection(() -> items));
         Object[] itemsArr = items.toArray();
         Arrays.sort(itemsArr, Collator.getInstance());
         return Digest.getMD5(StringUtils.join(itemsArr));
@@ -230,7 +241,7 @@ public class JsServiceRS extends MBDAOSupport {
         return path;
     }
 
-    public String createScriptRef(List<String> scripts, Map<String, String> opts) {
+    public String createScriptRef(String[] scripts, Map<String, String> opts) {
         String fp = computeFingerprint(scripts, opts);
         if (!activeFingerprints.contains(fp)) {
             ensureScript(fp, scripts, opts);
@@ -238,8 +249,7 @@ public class JsServiceRS extends MBDAOSupport {
         return env.getAppRoot() + "/rs/x/js/" + fp;
     }
 
-    @Transactional
-    public void ensureScript(String fp, List<String> scripts, Map<String, String> opts) {
+    public void ensureScript(String fp, String[] scripts, Map<String, String> opts) {
         String spec = selectOne("selectScriptSpec", fp);
         if (spec != null) {
             activeFingerprints.add(fp);
@@ -250,9 +260,9 @@ public class JsServiceRS extends MBDAOSupport {
             kvspec.put(de.getKey(), opts.getOrDefault(de.getKey(), de.getValue()));
         }
         StringBuilder files = new StringBuilder();
-        Set<MediaResource> resources = new HashSet<>(scripts.size());
-        for (int i = 0, c = 0; i < scripts.size(); i++) {
-            String path = scripts.get(i);
+        Set<MediaResource> resources = new HashSet<>(scripts.length);
+        for (int i = 0, c = 0; i < scripts.length; i++) {
+            String path = scripts[i];
             path = normalizePath(path);
             MediaResource meta = mediaReader.findMediaResource(path, null);
             if (meta != null) {
@@ -272,11 +282,23 @@ public class JsServiceRS extends MBDAOSupport {
             if (compileScript(fp, resources, kvspec) == null) { // script failed to compile
                 return;
             }
+            withinTransaction((sess, conn) -> {
 
-            // OK then register script dependencies
+                // OK then register script files dependencies
+                for (MediaResource meta : resources) {
+                    insert("insertScriptDep",
+                           "fingerprint", fp,
+                           "id", meta.getId(),
+                           "path", meta.getName());
+                }
 
-            // todo
+                // Register script spec
+                insert("insertScriptSpec",
+                       "fingerprint", fp,
+                       "spec", kvspec.toString());
 
+                return null;
+            });
             activeFingerprints.add(fp);
         } catch (Exception e) {
             log.error("", e);
@@ -285,4 +307,30 @@ public class JsServiceRS extends MBDAOSupport {
         }
     }
 
+
+    @Subscribe
+    public void mediaUpdated(MediaUpdateEvent ev) {
+        // todo
+    }
+
+    @Subscribe
+    public void mediaDeleted(MediaDeleteEvent ev) {
+        // todo
+    }
+
+    @Start
+    public void start() {
+        ebus.register(this);
+    }
+
+    @Dispose
+    public void shutdown() {
+        ebus.unregister(this);
+    }
+
+    @Override
+    @Transactional
+    public <T> T withinTransaction(MBAction<T> action) throws SQLException {
+        return super.withinTransaction(action);
+    }
 }
