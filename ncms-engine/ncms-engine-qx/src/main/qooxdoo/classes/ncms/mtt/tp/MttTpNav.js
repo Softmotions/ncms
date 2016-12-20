@@ -39,9 +39,12 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
         this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
 
         this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__onNewTp, this);
+        this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onRemoveTp, this);
-        this._registerCommandFocusWidget(this.__selector.getTable());
+        this._registerCommandFocusWidget(this.__selector);
     },
 
     members: {
@@ -106,7 +109,11 @@ qx.Class.define("ncms.mtt.tp.MttTpNav", {
                 this.__selector.reload();
                 this.__selector.getTable().handleFocus();
             }, this);
-            dlg.placeToWidget(ev.getTarget(), false);
+            if (ev.getTarget().getContentLocation) {
+                dlg.placeToWidget(ev.getTarget(), false);
+            } else {
+                dlg.placeToWidget(this.__selector.getTable(), false);
+            }
             dlg.show();
         },
 

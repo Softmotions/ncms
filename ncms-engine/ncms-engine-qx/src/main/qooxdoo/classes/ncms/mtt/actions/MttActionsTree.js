@@ -51,6 +51,9 @@ qx.Class.define("ncms.mtt.actions.MttActionsTree", {
         var tree = this.getChildControl("tree");
 
         this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__onNewAction, this);
+        this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onRemove, this);
         this._registerCommandFocusWidget(tree);

@@ -35,6 +35,9 @@ qx.Class.define("ncms.mtt.filters.MttFiltersTable", {
         this._reload([]);
 
         this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__newFilter, this);
+        this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__removeFilter, this);
     },

@@ -6,6 +6,8 @@
 qx.Class.define("ncms.pgs.PageEditorAccessTable", {
     extend: sm.table.ToolbarLocalTable,
 
+    include: [ncms.cc.MCommands],
+    
     events: {
         /**
          * Fired when acl for page updated
@@ -52,6 +54,14 @@ qx.Class.define("ncms.pgs.PageEditorAccessTable", {
         this.setContextMenu(new qx.ui.menu.Menu());
         this.addListener("beforeContextmenuOpen", this.__beforeContextMenuOpen, this);
 
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__addUser, this);
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__deleteUser, this);
+        this._registerCommandFocusWidget(this._table);
     },
 
     members: {

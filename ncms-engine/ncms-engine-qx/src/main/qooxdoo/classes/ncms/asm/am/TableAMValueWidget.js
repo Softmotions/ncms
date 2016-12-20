@@ -55,6 +55,9 @@ qx.Class.define("ncms.asm.am.TableAMValueWidget", {
 
         // Init shortcuts
         this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__onAdd, this);
+        this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onRemoveConfirm, this);
 

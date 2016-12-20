@@ -20,7 +20,7 @@ qx.Class.define("ncms.pgs.PageEditorAccessPane", {
         var reload = function () {
             lat.reload();
             rat.reload();
-        }
+        };
         this.__locAclTable.addListener("aclUpdated", reload, this);
         this.__recAclTable.addListener("aclUpdated", reload, this);
     },
