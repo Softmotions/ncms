@@ -191,13 +191,14 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 return;
             }
             
-            if (spec["content_length"] > 1024) { // FIXME
-                this.__alertBlocker.block("File is too big!");
+            var maxEditTextSize = ncms.Application.APP_STATE.getStateProperty("max-edit-text-size");
+            if (spec["content_length"] > maxEditTextSize) {
+                this.__alertBlocker.block(this.tr("File is too big for internal editor"));
                 this.addListenerOnce("disappear", function () {
                     this.__alertBlocker.unblock();
                     this.addListenerOnce("appear", function () {
                         var spec = this.getFileSpec();
-                        this.__alertBlocker.onAppear(spec["content_length"] > 1024);
+                        this.__alertBlocker.onAppear(spec["content_length"] > maxEditTextSize);
                     }, this);
                 }, this);
                 return;

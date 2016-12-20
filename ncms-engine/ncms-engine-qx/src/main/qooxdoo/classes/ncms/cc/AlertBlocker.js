@@ -38,6 +38,22 @@ qx.Class.define("ncms.cc.AlertBlocker", {
 
         __blockerAtom: null,
 
+        __ensureOnTop : function() {
+            var me = this;
+            window.setTimeout(function() {
+                var root = qx.core.Init.getApplication().getRoot();
+                var maxWindowZIndex = me.__blockerAtom.getZIndex();
+                var windows = root.getWindows();
+                for (var i = 0; i < windows.length; i++) {
+                    if (windows[i] != this) {
+                        var zIndex = windows[i].getZIndex();
+                        maxWindowZIndex = Math.max(maxWindowZIndex, zIndex);
+                    }
+                }
+                me.__blockerAtom.setZIndex(maxWindowZIndex + 1e3);
+            }, 0);
+        },
+
         __centerBa: function () {
             var me = this;
             window.setTimeout(function () {
@@ -85,9 +101,8 @@ qx.Class.define("ncms.cc.AlertBlocker", {
                             padding: 20,
                             maxWidth: 300
                         });
-                    this.__blockerAtom.setLabel(this.tr(text));
-                    console.log(this.__widget.getZIndex());
-                    this.__blockerAtom.setZIndex(this.__widget.getZIndex() + 1e3);
+                    this.__blockerAtom.setLabel(text);
+                    this.__ensureOnTop();
                     this.__widget.addListener("resize", this.__centerBa, this);
                     this.__widget.addListener("move", this.__centerBa, this);
                     this.__widget.addListener("disappear", this.__doUnblock, this);
