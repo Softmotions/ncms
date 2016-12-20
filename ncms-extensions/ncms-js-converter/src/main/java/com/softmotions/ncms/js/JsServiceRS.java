@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -64,7 +65,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
  * @author Adamansky Anton (adamansky@gmail.com)
  */
 @Singleton
-@Path("adm/rs/x/js")
+@Path("x/js")
 public class JsServiceRS extends MBDAOSupport {
 
     private static final Logger log = LoggerFactory.getLogger(JsServiceRS.class);
@@ -104,17 +105,21 @@ public class JsServiceRS extends MBDAOSupport {
     /**
      * Retrieve compiled script by its fingerprint
      */
-    @Path("/script/{fingerprint}")
+    @GET
+    @Path("script/{fingerprint}")
     @Produces("application/javascript;charset=UTF-8")
     public String script(@PathParam("fingerprint") String fp) throws Exception {
         Matcher m = HASH_REGEXP.matcher(fp);
+        String fname = fp;
         if (!m.matches()) {
             throw new BadRequestException();
         }
         if (m.group(1) == null) {
-            fp += ".js";
+            fname += ".js";
+        } else {
+            fp = fp.substring(0, fp.length() - ".js".length());
         }
-        File jsFile = new File(jsCache, fp);
+        File jsFile = new File(jsCache, fname);
         String data = null;
         ReadWriteLock rwlock = RW_STRIPES.get(fp);
         Lock lock = rwlock.readLock();
@@ -262,7 +267,7 @@ public class JsServiceRS extends MBDAOSupport {
         if (!activeFingerprints.contains(fp)) {
             ensureScript(fp, scripts, opts);
         }
-        return env.getAppRoot() + "/rs/x/js/" + fp;
+        return env.getAppRoot() + "/rs/x/js/script/" + fp + ".js";
     }
 
     @Transactional
@@ -381,8 +386,6 @@ public class JsServiceRS extends MBDAOSupport {
     public void updateJsFile(Long id) {
         log.info("Update JS file: {}", id);
         List<String> fps = select("selectAffectedFingerprints", id);
-        delete("deleteSpecsByScriptId", id);
-        delete("deleteDepsByScriptId", id);
         // cleanup js cache
         for (String fp : fps) {
             ReadWriteLock rwlock = RW_STRIPES.get(fp);
