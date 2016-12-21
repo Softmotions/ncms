@@ -630,6 +630,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         events.removeListener("pageChangePublished", this.__onPageEdited, this);
         events.removeListener("pageChangeTemplate", this.__onPageEdited, this);
         events.removeListener("pageChangeTemplate", this.__onPageEdited, this);
+        this._disposeObjects("__alertBlocker");
         this.__cleanupFormPane();
         this.__templateBf = null;
         this.__form = null;
@@ -640,6 +641,5 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__publishPageBt = null;
         this.__publishChangesBt = null;
         this.__saveSc = null;
-        this._disposeObjects("__alertBlocker");
     }
 });

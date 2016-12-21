@@ -94,7 +94,6 @@ constructor(private val env: NcmsEnvironment,
         internal val properties: Map<String, Any?> = HashMap<String, Any?>().apply {
             put("max-edit-text-size", env.xcfg().getInt("media.max-edit-text-size", 524288))
         }
-
         init {
             put("appName", env.applicationName)
             put("sessionId", req.session.id)

@@ -49,7 +49,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox(5));
         this.__broadcaster = sm.event.Broadcaster.create({"enabled": false});
-
         this.__alertBlocker = new ncms.cc.AlertBlocker(this);
 
         var badIE = qx.core.Environment.get("engine.name") == "mshtml";
@@ -190,7 +189,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             if (spec == null || !ncms.Utils.isTextualContentType(spec["content_type"])) {
                 return;
             }
-            
             var maxEditTextSize = ncms.Application.APP_STATE.getStateProperty("max-edit-text-size");
             if (spec["content_length"] > maxEditTextSize) {
                 this.__alertBlocker.block(this.tr("File is too big for internal editor"));
@@ -337,7 +335,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.__pendigCode = null;
         this.__pendigRo = null;
         this.__saveBt = null;
-        this.__broadcaster.destruct();
-        this._disposeObjects("__alertBlocker");
+        this._disposeObjects("__alertBlocker", "__broadcaster");
     }
 });
