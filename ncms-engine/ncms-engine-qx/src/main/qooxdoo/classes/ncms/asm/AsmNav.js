@@ -45,6 +45,9 @@ qx.Class.define("ncms.asm.AsmNav", {
         this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);
 
         this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__onNewAssembly, this);
+        this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onRemoveAssembly, this);
         this._registerCommandFocusWidget(this.__selector.getTable());
@@ -134,8 +137,10 @@ qx.Class.define("ncms.asm.AsmNav", {
                 var spec = ev.getData();
                 this.__selector.setSearchBoxValue(spec["name"]);
             }, this);
-            if (ev) {
+            if (ev.getTarget().getContentLocation) {
                 dlg.placeToWidget(ev.getTarget(), false);
+            } else {
+                dlg.placeToWidget(this.__selector.getTable(), false);
             }
             dlg.show();
         }

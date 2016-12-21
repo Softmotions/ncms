@@ -82,6 +82,9 @@ qx.Class.define("ncms.news.NewsNav", {
 
         // Init shortcuts
         this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__onNews, this);
+        this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__onDelete, this);
         this._registerCommandFocusWidget(ps.getTable());
@@ -164,7 +167,11 @@ qx.Class.define("ncms.news.NewsNav", {
                 dlg.close();
                 this.__ps.refresh(true);
             }, this);
-            dlg.placeToWidget(ev.getTarget(), false);
+            if (ev.getTarget().getContentLocation) {
+                dlg.placeToWidget(ev.getTarget(), false);
+            } else {
+                dlg.placeToWidget(this.__ps.getTable(), false);
+            }
             dlg.open();
         },
 

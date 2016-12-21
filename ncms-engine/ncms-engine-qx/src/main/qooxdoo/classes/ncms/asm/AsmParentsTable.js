@@ -26,6 +26,9 @@ qx.Class.define("ncms.asm.AsmParentsTable", {
         this._reload([]);
         // Init shortcuts
         this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__addParents, this);
+        this._registerCommand(
             new sm.ui.core.ExtendedCommand("Delete"),
             this.__removeParent, this);
     },

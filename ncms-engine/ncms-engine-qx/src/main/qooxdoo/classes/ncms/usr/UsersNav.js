@@ -4,6 +4,8 @@
 qx.Class.define("ncms.usr.UsersNav", {
     extend: qx.ui.tabview.TabView,
 
+    include: [ncms.cc.MCommands],
+
     statics: {
         USER_EDITOR_CLAZZ: "ncms.usr.UserEditor"
     },
@@ -65,6 +67,15 @@ qx.Class.define("ncms.usr.UsersNav", {
         this.addListener("changeSelection", function (ev) {
             ev.getData()[0].getChildren()[0].reload();
         }, this);
+
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Alt+Insert"),
+            this.__onNewUser, this);
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Delete"),
+            this.__onRemoveUser, this);
+        this._registerCommandFocusWidget(this);
     },
 
     members: {
