@@ -640,6 +640,6 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         this.__publishPageBt = null;
         this.__publishChangesBt = null;
         this.__saveSc = null;
-        this.__alertBlocker = null;
+        this._disposeObjects("__alertBlocker");
     }
 });

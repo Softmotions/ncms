@@ -89,11 +89,11 @@ qx.Class.define("ncms.cc.AlertBlocker", {
             }
         },
         
-        block: function (text) {
+        block: function (text, icon) {
             if (text) {
                 if (this.__blockerAtom == null) {
                     this.__blockerAtom =
-                        new qx.ui.basic.Atom(null, "ncms/icon/32/exclamation.png").set({
+                        new qx.ui.basic.Atom(null, (icon == null) ? "ncms/icon/32/exclamation.png" : icon).set({
                             center: true,
                             rich: true,
                             selectable: true,
@@ -126,9 +126,8 @@ qx.Class.define("ncms.cc.AlertBlocker", {
 
     destruct: function () {
         this.__widget = null;
-        this.__blocker = null;
-        this.__blockerAtom = null;
-        this.__dispose();
+        qx.core.Init.getApplication().getRoot()._remove(this.__blockerAtom);
+        this._disposeObjects("__blocker", "__blockerAtom");
     }
 
 });

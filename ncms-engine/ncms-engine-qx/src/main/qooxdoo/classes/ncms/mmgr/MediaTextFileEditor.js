@@ -338,6 +338,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.__pendigRo = null;
         this.__saveBt = null;
         this.__broadcaster.destruct();
-        this.__alertBlocker = null;
+        this._disposeObjects("__alertBlocker");
     }
 });
