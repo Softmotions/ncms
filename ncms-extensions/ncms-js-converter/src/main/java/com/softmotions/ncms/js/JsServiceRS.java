@@ -193,7 +193,7 @@ public class JsServiceRS extends MBDAOSupport {
                      fp,
                      inputPaths,
                      spec,
-                     options);
+                     (log.isDebugEnabled() ? options : ""));
             return null;
         }
 
