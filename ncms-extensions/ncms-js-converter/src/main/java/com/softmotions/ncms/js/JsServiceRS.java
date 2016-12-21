@@ -262,7 +262,7 @@ public class JsServiceRS extends MBDAOSupport {
     private static final Map<String, String> ALLOWED_JSGEN_OPTS = new HashMap<String, String>() {{
         put("in", "es5");
         put("out", "es5");
-        put("level", "none");
+        put("level", "simple");
     }};
 
     String computeFingerprint(String[] scripts, Map<String, String> _opts) {
