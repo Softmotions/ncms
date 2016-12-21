@@ -110,8 +110,8 @@ public class NcmsSassModule extends AbstractModule {
             String app = (String) ev.hints().get("app");
             if (app != null) {
                 err.hint("app", app);
+                sassService.ebus.fire(err);
             }
-            sassService.ebus.fire(err);
         }
 
         // run conversion job

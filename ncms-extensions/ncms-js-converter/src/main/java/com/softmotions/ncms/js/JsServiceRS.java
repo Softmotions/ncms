@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,11 +42,14 @@ import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.CommandLineRunner;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
+import com.google.javascript.jscomp.JSError;
+import com.google.javascript.jscomp.LightweightMessageFormatter;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
 import com.softmotions.commons.ThreadUtils;
@@ -55,6 +59,7 @@ import com.softmotions.commons.io.DirUtils;
 import com.softmotions.commons.lifecycle.Dispose;
 import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.atm.ServerMessageEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.media.MediaResource;
@@ -168,7 +173,6 @@ public class JsServiceRS extends MBDAOSupport {
     @Nullable
     String compileScript(String fp, Set<MediaResource> resources, KVOptions spec) throws Exception {
 
-        List<SourceFile> externs = CommandLineRunner.getBuiltinExterns(CompilerOptions.Environment.BROWSER);
         List<SourceFile> inputs = new ArrayList<>(resources.size());
         for (MediaResource meta : resources) {
             inputs.add(SourceFile.fromCode(meta.getName(), meta.getSource()));
@@ -187,7 +191,7 @@ public class JsServiceRS extends MBDAOSupport {
                  inputPaths,
                  spec);
 
-        Result result = compiler.compile(externs, inputs, options);
+        Result result = compiler.compile(getExterns(), inputs, options);
         if (!result.success) {
             log.warn("Failed to compile script {}.js from: {} spec: {} opts: {}",
                      fp,
@@ -232,7 +236,7 @@ public class JsServiceRS extends MBDAOSupport {
             case "es3":
                 return LanguageMode.ECMASCRIPT3;
             case "es6":
-                return LanguageMode.ECMASCRIPT_2015;
+                return LanguageMode.ECMASCRIPT_2016;
             case "es5":
             default:
                 return LanguageMode.ECMASCRIPT5;
@@ -383,6 +387,61 @@ public class JsServiceRS extends MBDAOSupport {
         }
     }
 
+    List<SourceFile> getExterns() throws Exception {
+        return CommandLineRunner.getBuiltinExterns(CompilerOptions.Environment.BROWSER);
+    }
+
+    /**
+     * Syntax checking of the specified JS file.
+     * Return {@code true} of syntax is OK
+     */
+    boolean syntaxCheck(MediaUpdateEvent ev) {
+        try {
+            MediaResource meta = mediaReader.findMediaResource(ev.getId(), null);
+            if (meta == null) {
+                return false;
+            }
+            List<SourceFile> inputs = Collections.singletonList(SourceFile.fromCode(meta.getName(), meta.getSource()));
+            CompilerOptions options = new CompilerOptions();
+            ClosureLoggerErrorManager closureLogger = new ClosureLoggerErrorManager(log);
+            Compiler compiler = new Compiler(closureLogger);
+            options.setOutputCharset(Charset.forName("utf-8"));
+            options.setLanguageIn(LanguageMode.ECMASCRIPT_2016);
+            options.setLanguageOut(LanguageMode.ECMASCRIPT5);
+            Result result = compiler.compile(getExterns(), inputs, options);
+            if (!result.success) {
+                LightweightMessageFormatter fmt = LightweightMessageFormatter.withoutSource();
+                StringBuilder sb = new StringBuilder();
+                JSError[] errors = closureLogger.getErrors();
+                for (int i = 0; i < errors.length; i++) {
+                    JSError err = errors[i];
+                    if (i > 0) {
+                        sb.append('\n');
+                    }
+                    sb.append(err.format(CheckLevel.ERROR, fmt));
+                }
+                reportError(sb.toString(), ev);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            log.error("", e);
+        }
+        return false;
+    }
+
+    void reportError(String msg, MediaUpdateEvent ev) {
+        if (StringUtils.isBlank(msg)) {
+            return;
+        }
+        ServerMessageEvent err = new ServerMessageEvent(this, msg, true, true, null);
+        String app = (String) ev.hints().get("app");
+        if (app != null) {
+            err.hint("app", app);
+            ebus.fire(err);
+        }
+    }
+
     @Subscribe
     public void mediaUpdated(MediaUpdateEvent ev) {
         if (ev.isFolder() || !"js".equals(FilenameUtils.getExtension(ev.getPath()).toLowerCase())) {
@@ -391,7 +450,9 @@ public class JsServiceRS extends MBDAOSupport {
         executor.submit(() -> {
             ThreadUtils.cleanInheritableThreadLocals();
             try {
-                updateJsFile(ev.getId());
+                if (syntaxCheck(ev)) {
+                    updateJsFile(ev.getId());
+                }
             } catch (Exception e) {
                 log.error("", e);
             }
