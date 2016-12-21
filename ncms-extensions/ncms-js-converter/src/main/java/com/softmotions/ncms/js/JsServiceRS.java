@@ -6,6 +6,9 @@ import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,6 +48,7 @@ import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
 import com.softmotions.commons.ThreadUtils;
+import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.io.DirUtils;
 import com.softmotions.commons.lifecycle.Dispose;
@@ -58,6 +62,7 @@ import com.softmotions.ncms.media.events.MediaUpdateEvent;
 import com.softmotions.ncms.utils.Digest;
 import com.softmotions.weboot.executor.TaskExecutor;
 import com.softmotions.weboot.mb.MBDAOSupport;
+import com.softmotions.weboot.scheduler.Scheduled;
 
 /**
  * JS compiler service.
@@ -82,7 +87,7 @@ public class JsServiceRS extends MBDAOSupport {
 
     private final NcmsEventBus ebus;
 
-    private final Set<String> activeFingerprints = ConcurrentHashMap.newKeySet();
+    private final Map<String, ScriptSlot> activeScripts = new ConcurrentHashMap<>();
 
     private final TaskExecutor executor;
 
@@ -147,6 +152,7 @@ public class JsServiceRS extends MBDAOSupport {
         if (data == null) {
             throw new NotFoundException();
         }
+        touchScript(fp);
         return data;
     }
 
@@ -264,8 +270,10 @@ public class JsServiceRS extends MBDAOSupport {
 
     public String createScriptRef(String[] scripts, Map<String, String> opts) {
         String fp = computeFingerprint(scripts, opts);
-        if (!activeFingerprints.contains(fp)) {
+        if (!activeScripts.containsKey(fp)) {
             ensureScript(fp, scripts, opts);
+        } else {
+            touchScript(fp);
         }
         return env.getAppRoot() + "/rs/x/js/script/" + fp + ".js";
     }
@@ -280,7 +288,7 @@ public class JsServiceRS extends MBDAOSupport {
         try {
             spec = selectOne("selectScriptSpec", fp);
             if (spec != null) {
-                activeFingerprints.add(fp);
+                touchScript(fp);
                 return;
             }
         } finally {
@@ -316,7 +324,7 @@ public class JsServiceRS extends MBDAOSupport {
             if (spec != null) {
                 // someone did our job already
                 wlock.unlock();
-                activeFingerprints.add(fp);
+                touchScript(fp);
                 return;
             }
 
@@ -340,7 +348,7 @@ public class JsServiceRS extends MBDAOSupport {
                    "spec", kvspec.toString());
 
             // Only if data persisted successfully
-            ebus.doOnSuccessCommit(() -> activeFingerprints.add(fp));
+            ebus.doOnSuccessCommit(() -> touchScript(fp));
             // Unlock current write lock only when Transaction finished
             ebus.doOnTxFinish(wlock::unlock);
         } catch (Throwable e) {
@@ -399,7 +407,7 @@ public class JsServiceRS extends MBDAOSupport {
             } catch (Throwable tr) {
                 log.error("Unable to delete: {}", new File(jsCache, fp + ".js"), tr);
             } finally {
-                activeFingerprints.remove(fp);
+                activeScripts.remove(fp);
                 lock.unlock();
             }
         }
@@ -408,10 +416,73 @@ public class JsServiceRS extends MBDAOSupport {
     @Start
     public void start() {
         ebus.register(this);
+        cleanupOldScripts();
     }
 
     @Dispose
     public void shutdown() {
         ebus.unregister(this);
+    }
+
+    /**
+     * Flush scripts access time into DB and
+     * cleanup forgotten scripts
+     * every 15 min
+     */
+    @Scheduled("*/15 * * * *")
+    @Transactional
+    public void cleanupOldScripts() {
+        // Flush duty status in DB
+        List<String> dirtyFps =
+                activeScripts.entrySet().stream()
+                             .filter(e -> {
+                                 if (e.getValue().dirty) {
+                                     e.getValue().dirty = false;
+                                     return true;
+                                 }
+                                 return false;
+                             })
+                             .map(Map.Entry::getKey)
+                             .collect(Collectors.toList());
+
+        for (Collection<String> dg : CollectionUtils.split(dirtyFps, 128)) {
+            update("touchScriptSpecs", dg);
+        }
+
+        // Cleanup old script specs and deps from DB
+        int forgottenScriptLifetime =
+                env.xcfg().getInt("media.js.forgotten-scripts-max-life-days", 30);
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1 * forgottenScriptLifetime);
+        Date date = cal.getTime();
+        delete("deleteOldDeps", date);
+        delete("deleteOldSpecs", date);
+
+        // Leave old files in jscache untouched
+    }
+
+    void touchScript(String fp) {
+        ScriptSlot slot = activeScripts.get(fp);
+        if (slot == null) {
+            activeScripts.put(fp, new ScriptSlot());
+        } else {
+            slot.touch();
+        }
+    }
+
+    static class ScriptSlot {
+        volatile boolean dirty;
+
+        private ScriptSlot() {
+            this.dirty = true;
+        }
+
+        void touch() {
+            dirty = true;
+        }
+
+        void reset() {
+            dirty = false;
+        }
     }
 }

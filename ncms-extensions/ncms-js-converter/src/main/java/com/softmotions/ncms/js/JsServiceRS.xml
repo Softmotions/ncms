@@ -65,8 +65,35 @@
     <!-- Insert script spec -->
     <insert id="insertScriptSpec"
             parameterType="map">
-        INSERT INTO x_js_spec (fingerprint, spec)
-        VALUES (#{fingerprint}, #{spec})
+        INSERT INTO x_js_spec (fingerprint, spec, access_date)
+        VALUES (#{fingerprint}, #{spec}, CURRENT_TIMESTAMP)
     </insert>
+
+    <update id="touchScriptSpecs"
+            parameterType="collection">
+        UPDATE x_js_spec
+        SET access_date = CURRENT_TIMESTAMP
+        WHERE fingerprint IN
+        <foreach collection="collection" item="fp" open="(" close=")" separator=",">#{fp}</foreach>
+    </update>
+
+
+    <!-- Delete JS deps for old specs -->
+    <delete id="deleteOldDeps"
+            parameterType="date">
+        DELETE FROM x_js_deps AS d
+        WHERE d.fingerprint IN (
+            SELECT s.fingerprint
+            FROM x_js_spec AS s
+            WHERE s.access_date &lt; #{date}
+        )
+    </delete>
+
+    <!-- Delete old JS specs -->
+    <delete id="deleteOldSpecs"
+            parameterType="date">
+        DELETE FROM x_js_spec AS s
+        WHERE s.access_date &lt; #{date}
+    </delete>
 
 </mapper>

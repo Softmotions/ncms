@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -30,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.softmotions.commons.cont.ArrayUtils;
+import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
@@ -159,26 +159,7 @@ public final class HttlUtilsMethods {
     }
 
     public static <T> Collection<Collection<T>> split(Iterable<T> coll, int size) {
-        if (size < 1) {
-            return Collections.EMPTY_LIST;
-        }
-        final List<Collection<T>> ret = new ArrayList<>();
-        final Iterator<T> it = coll.iterator();
-        Collection<T> box = null;
-        for (int i = 0; it.hasNext(); ++i) {
-            if (i % size == 0) {
-                if (box != null) {
-                    ret.add(box);
-                }
-                box = new ArrayList<>(size);
-            }
-            //noinspection ConstantConditions
-            box.add(it.next());
-        }
-        if (box != null) {
-            ret.add(box);
-        }
-        return ret;
+       return CollectionUtils.split(coll, size);
     }
 
     @Nullable

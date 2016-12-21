@@ -52,4 +52,16 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="16356115508" author="adamansky@gmail.com">
+        <addColumn tableName="X_JS_SPEC">
+            <column name="ACCESS_DATE" type="TIMESTAMP(6)"/>
+        </addColumn>
+        <sql endDelimiter=";">
+            UPDATE x_js_spec
+            SET access_date = CURRENT_TIMESTAMP
+            WHERE access_date IS NULL;
+        </sql>
+        <addNotNullConstraint tableName="X_JS_SPEC" columnName="ACCESS_DATE"/>
+    </changeSet>
+
 </databaseChangeLog>
