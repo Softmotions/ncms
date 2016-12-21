@@ -81,7 +81,7 @@
         <tika.version>1.14</tika.version>
         <mybatis.version>3.4.1</mybatis.version>
         <mybatis-guice.version>3.8</mybatis-guice.version>
-        <testng.version>6.9.10</testng.version>
+        <testng.version>6.9.13.6</testng.version>
         <junit.version>4.12</junit.version>
         <kotlin.version>1.0.5-2</kotlin.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>

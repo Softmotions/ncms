@@ -104,7 +104,6 @@ public class AsmAttribute implements Serializable, Comparable<AsmAttribute> {
         this.name = name;
     }
 
-    @Nonnull
     public String getType() {
         return type;
     }
