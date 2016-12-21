@@ -42,6 +42,7 @@ import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.javascript.jscomp.CommandLineRunner;
+import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.CompilerOptions.LanguageMode;
@@ -178,6 +179,7 @@ public class JsServiceRS extends MBDAOSupport {
         options.setOutputCharset(Charset.forName("utf-8"));
         options.setLanguageIn(languageLevel2Closure(spec.getOrDefault("in", ALLOWED_JSGEN_OPTS.get("in"))));
         options.setLanguageOut(languageLevel2Closure(spec.getOrDefault("out", ALLOWED_JSGEN_OPTS.get("out"))));
+        applyCompilationLevel(spec.getOrDefault("level", ALLOWED_JSGEN_OPTS.get("level")), options);
 
         List<String> inputPaths = resources.stream().map(MediaResource::getName).collect(Collectors.toList());
         log.info("Compiling script {}.js from: {} spec: {}",
@@ -237,10 +239,30 @@ public class JsServiceRS extends MBDAOSupport {
         }
     }
 
+    void applyCompilationLevel(String level, CompilerOptions options) {
+        level = level.trim().toLowerCase();
+        CompilationLevel cl;
+        switch (level) {
+            case "simple":
+                cl = CompilationLevel.SIMPLE_OPTIMIZATIONS;
+                break;
+            case "advanced":
+                cl = CompilationLevel.ADVANCED_OPTIMIZATIONS;
+                break;
+            case "none":
+            default:
+                cl = CompilationLevel.WHITESPACE_ONLY;
+                break;
+        }
+        cl.setOptionsForCompilationLevel(options);
+    }
+
+
     @SuppressWarnings("StaticCollection")
     private static final Map<String, String> ALLOWED_JSGEN_OPTS = new HashMap<String, String>() {{
         put("in", "es5");
         put("out", "es5");
+        put("level", "none");
     }};
 
     String computeFingerprint(String[] scripts, Map<String, String> _opts) {
