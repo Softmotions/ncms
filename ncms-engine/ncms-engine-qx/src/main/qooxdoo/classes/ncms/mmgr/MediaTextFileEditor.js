@@ -50,6 +50,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this._setLayout(new qx.ui.layout.VBox(5));
         this.__broadcaster = sm.event.Broadcaster.create({"enabled": false});
 
+        this.__alertBlocker = new ncms.cc.AlertBlocker(this);
 
         var badIE = qx.core.Environment.get("engine.name") == "mshtml";
         if (badIE) {
@@ -120,6 +121,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
         __broadcaster: null,
 
+        __alertBlocker: null,
 
         _forwardStates: {
             focused: true
@@ -183,10 +185,25 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         },
 
         __applyFileSpec: function (spec) {
+            this.__alertBlocker.unblock();
             this.__cleanup();
             if (spec == null || !ncms.Utils.isTextualContentType(spec["content_type"])) {
                 return;
             }
+            
+            var maxEditTextSize = ncms.Application.APP_STATE.getStateProperty("max-edit-text-size");
+            if (spec["content_length"] > maxEditTextSize) {
+                this.__alertBlocker.block(this.tr("File is too big for internal editor"));
+                this.addListenerOnce("disappear", function () {
+                    this.__alertBlocker.unblock();
+                    this.addListenerOnce("appear", function () {
+                        var spec = this.getFileSpec();
+                        this.__alertBlocker.onAppear(spec["content_length"] > maxEditTextSize);
+                    }, this);
+                }, this);
+                return;
+            }
+            
             var path = (spec.folder + spec.name).split("/");
             var url = ncms.Application.ACT.getRestUrl("media.file", path);
             var req = new sm.io.Request(url, "GET", "text/plain");
@@ -321,5 +338,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.__pendigRo = null;
         this.__saveBt = null;
         this.__broadcaster.destruct();
+        this._disposeObjects("__alertBlocker");
     }
 });
