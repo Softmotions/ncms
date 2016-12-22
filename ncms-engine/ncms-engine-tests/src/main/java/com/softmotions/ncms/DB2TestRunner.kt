@@ -3,7 +3,7 @@ package com.softmotions.ncms
 /**
  * @author Adamansky Anton (adamansky@gmail.com)
  */
-class Db2TestRunner : DatabaseTestRunner {
+class DB2TestRunner : DatabaseTestRunner {
 
     override fun setupDb(props: Map<String, Any>) {
         val home = System.getProperty("user.home")

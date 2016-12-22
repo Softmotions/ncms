@@ -22,7 +22,7 @@ open class DbBaseTest(db: String) : GuiceBaseTest() {
 
         when (db) {
             "db2" -> {
-                dbTestRunner = Db2TestRunner()
+                dbTestRunner = DB2TestRunner()
             }
             "",
             "postgresql",

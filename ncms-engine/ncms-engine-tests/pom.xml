@@ -22,10 +22,14 @@
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-runner</artifactId>
             <version>${softmotions.commons.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
@@ -38,13 +42,11 @@
             <groupId>softmotions</groupId>
             <artifactId>softmotions-web-realms</artifactId>
             <version>${softmotions.commons.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
             <artifactId>softmotions-weboot-testing-tomcat</artifactId>
             <version>${softmotions.commons.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -71,7 +73,6 @@
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
             <version>2.53.1</version>
-            <scope>test</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.seleniumhq.selenium</groupId>
@@ -87,7 +88,6 @@
             <groupId>softmotions</groupId>
             <artifactId>qxwebdriver-java</artifactId>
             <version>0.0.5-SNAPSHOT</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

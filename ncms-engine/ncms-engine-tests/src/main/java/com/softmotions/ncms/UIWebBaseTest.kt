@@ -64,7 +64,7 @@ open class UIWebBaseTest(db: String) : WebBaseTest(db) {
     }
 
     protected open fun initDriver(driverType: String,
-                                  options:ChromeOptions = ChromeOptions()) {
+                                  options: ChromeOptions = ChromeOptions()) {
         log.info("WebDriver initializing...")
         try {
             val chromeDriver = ChromeDriver(
