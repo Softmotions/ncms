@@ -126,7 +126,9 @@ qx.Class.define("ncms.cc.AlertBlocker", {
 
     destruct: function () {
         this.__widget = null;
-        qx.core.Init.getApplication().getRoot()._remove(this.__blockerAtom);
+        if (this.__blockerAtom) {
+            qx.core.Init.getApplication().getRoot()._remove(this.__blockerAtom);
+        }
         this._disposeObjects("__blocker", "__blockerAtom");
     }
 
