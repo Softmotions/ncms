@@ -20,7 +20,7 @@ import com.softmotions.ncms.NcmsEnvironment;
 /**
  * MediaWiki integration module.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("unchecked")
 public class MediaWikiModule extends AbstractModule {

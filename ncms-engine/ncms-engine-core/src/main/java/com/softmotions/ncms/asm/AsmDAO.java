@@ -33,7 +33,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 /**
  * Assembly access DAO.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("unchecked")
 @Singleton

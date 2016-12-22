@@ -13,7 +13,7 @@ import com.softmotions.ncms.mtt.tp.MttTpRS;
 import com.softmotions.ncms.mtt.tp.MttTpService;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class MttModule extends AbstractModule {
 

@@ -29,7 +29,7 @@ import com.softmotions.weboot.jaxrs.Messages;
 /**
  * Handles Ncms REST API exceptions in friendly to qooxdoo GUI clients way.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("ChainOfInstanceofChecks")
 @Provider

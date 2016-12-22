@@ -4,7 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class MttHttpModule extends AbstractModule {
 

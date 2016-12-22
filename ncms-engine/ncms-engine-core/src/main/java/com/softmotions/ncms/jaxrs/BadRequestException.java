@@ -1,7 +1,7 @@
 package com.softmotions.ncms.jaxrs;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class BadRequestException extends RuntimeException {
 

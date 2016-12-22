@@ -3,7 +3,7 @@ package com.softmotions.ncms.jaxrs;
 /**
  * Exception used for lightweight UI notifications.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("ClassWithTooManyConstructors")
 public class NcmsNotificationException extends NcmsMessageException {

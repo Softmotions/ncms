@@ -13,7 +13,7 @@ import com.google.javascript.jscomp.parsing.parser.util.format.SimpleFormat;
 /**
  * Based on {@link com.google.javascript.jscomp.LoggerErrorManager}
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class ClosureLoggerErrorManager extends BasicErrorManager {
     private final MessageFormatter formatter;

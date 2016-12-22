@@ -18,7 +18,7 @@ import com.google.inject.Singleton;
 /**
  * Youtube embedded player tag.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 public class YoutubeTag extends HTMLTag implements INoBodyParsingTag {

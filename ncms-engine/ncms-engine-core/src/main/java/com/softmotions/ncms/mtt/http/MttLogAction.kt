@@ -6,7 +6,7 @@ import javax.annotation.concurrent.ThreadSafe
 import javax.servlet.http.HttpServletResponse
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @ThreadSafe

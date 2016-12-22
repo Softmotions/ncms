@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse
  * Remember request origin action.
  * Tracking pixels data is also remembered.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @ThreadSafe

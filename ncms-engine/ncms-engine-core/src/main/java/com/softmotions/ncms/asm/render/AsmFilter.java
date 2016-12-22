@@ -37,7 +37,7 @@ import com.softmotions.weboot.i18n.I18n;
 /**
  * Asm handler.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

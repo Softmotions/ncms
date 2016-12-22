@@ -9,7 +9,7 @@ import com.softmotions.weboot.WBConfiguration;
 /**
  * Ncms configuration.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @ThreadSafe
 public class NcmsEnvironment extends WBConfiguration {

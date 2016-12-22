@@ -22,7 +22,7 @@ import com.softmotions.weboot.i18n.I18n;
 /**
  * Rendering context for assembly renderer.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @NotThreadSafe
 public abstract class AsmRendererContext extends HashMap<String, Object> {

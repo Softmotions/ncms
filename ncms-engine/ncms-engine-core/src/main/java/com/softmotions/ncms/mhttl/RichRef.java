@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import com.softmotions.ncms.asm.PageService;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public final class RichRef implements Serializable {
 

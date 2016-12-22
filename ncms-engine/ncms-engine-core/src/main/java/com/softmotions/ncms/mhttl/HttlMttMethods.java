@@ -26,7 +26,7 @@ import com.softmotions.ncms.mtt.tp.MttTpService;
 import com.softmotions.web.HttpUtils;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class HttlMttMethods {
 

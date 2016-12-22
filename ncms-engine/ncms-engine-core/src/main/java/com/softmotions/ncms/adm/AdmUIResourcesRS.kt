@@ -17,7 +17,7 @@ import javax.ws.rs.core.Context
 /**
  * Accessible GUI resources configuration provider.
 
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Path("adm/ui")

@@ -9,7 +9,7 @@ package com.softmotions.ncms.asm.render;
  * <p/>
  * Handler's class can contain Guice IoC binding annotations.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public interface AsmController {
 

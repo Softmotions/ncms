@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 /**
  * Assembly attribute.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @NotThreadSafe
 @JsonRootName("attribute")

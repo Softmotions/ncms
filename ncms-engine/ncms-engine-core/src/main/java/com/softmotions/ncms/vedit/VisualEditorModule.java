@@ -8,7 +8,7 @@ import com.softmotions.ncms.NcmsModuleDescriptor;
 import com.softmotions.ncms.NcmsModuleDescriptorSupport;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class VisualEditorModule extends AbstractModule {
 

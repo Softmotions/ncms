@@ -8,7 +8,7 @@ import com.softmotions.weboot.liquibase.WBLiquibaseModule
 import com.softmotions.weboot.mb.WBMyBatisModule
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 open class DbBaseTest(db: String) : GuiceBaseTest() {
 

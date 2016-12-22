@@ -3,7 +3,7 @@ package com.softmotions.ncms.db
 import com.softmotions.ncms.DbTestsFactory
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 class TestDBs : DbTestsFactory() {
 

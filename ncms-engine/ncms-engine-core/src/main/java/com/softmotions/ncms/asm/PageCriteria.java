@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.softmotions.commons.cont.Pair;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class PageCriteria extends CriteriaBase<PageCriteria> {
 

@@ -20,7 +20,7 @@ import com.google.inject.Inject;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @SuppressWarnings("unchecked")

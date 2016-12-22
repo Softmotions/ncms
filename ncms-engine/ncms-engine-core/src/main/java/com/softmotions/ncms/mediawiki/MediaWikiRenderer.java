@@ -18,7 +18,7 @@ import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
 import com.softmotions.weboot.i18n.I18n;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 public class MediaWikiRenderer {

@@ -23,7 +23,7 @@ import kotlin.concurrent.withLock
 /**
  * Ncms admin UI atmosphere intergation layer.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

@@ -11,7 +11,7 @@ import java.util.*
 import kotlin.reflect.KClass
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 open class GuiceBaseTest : BaseTest() {
 

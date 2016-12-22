@@ -18,7 +18,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.ncms.mhttl.Table;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 public class AsmTableAM extends AsmAttributeManagerSupport {

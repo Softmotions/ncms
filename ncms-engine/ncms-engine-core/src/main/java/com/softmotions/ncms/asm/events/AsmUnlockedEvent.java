@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import com.softmotions.ncms.events.BasicEvent;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class AsmUnlockedEvent extends BasicEvent {
 

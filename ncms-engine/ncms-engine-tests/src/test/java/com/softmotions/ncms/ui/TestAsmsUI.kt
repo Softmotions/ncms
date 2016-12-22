@@ -4,7 +4,7 @@ import com.softmotions.ncms.DbTestsFactory
 import org.testng.annotations.Test
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 class TestAsmsUI : DbTestsFactory() {
 

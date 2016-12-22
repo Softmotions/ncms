@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 /**
  * Read-only access interface for media resources.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @ThreadSafe
 public interface MediaReader {

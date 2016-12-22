@@ -27,7 +27,7 @@ import kotlin.concurrent.write
 /**
  * Http traffic MTT filter.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @JvmSuppressWildcards

@@ -33,7 +33,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 /**
  * Assembly attribute manager context.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @NotThreadSafe

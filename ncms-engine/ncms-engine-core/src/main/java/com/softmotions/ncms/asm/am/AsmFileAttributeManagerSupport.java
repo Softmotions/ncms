@@ -9,7 +9,7 @@ import com.softmotions.ncms.media.MediaReader;
 import com.softmotions.ncms.media.MediaResource;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public abstract class AsmFileAttributeManagerSupport extends AsmAttributeManagerSupport {
 

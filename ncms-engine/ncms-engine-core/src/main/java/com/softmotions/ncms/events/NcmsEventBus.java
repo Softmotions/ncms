@@ -5,7 +5,7 @@ import java.util.concurrent.locks.Lock;
 import com.softmotions.commons.ebus.EBus;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public interface NcmsEventBus extends EBus {
 

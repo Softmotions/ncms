@@ -19,7 +19,7 @@ import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
 /**
  * Auxiliary
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 public class MediaWikiServices {

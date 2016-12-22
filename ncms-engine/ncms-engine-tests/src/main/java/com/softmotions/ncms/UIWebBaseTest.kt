@@ -14,7 +14,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 open class UIWebBaseTest(db: String) : WebBaseTest(db) {
 

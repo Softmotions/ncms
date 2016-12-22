@@ -3,7 +3,7 @@ package com.softmotions.ncms.asm.render;
 import com.google.common.base.MoreObjects;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class AsmTemplateEvaluationException extends AsmRenderingException {
 

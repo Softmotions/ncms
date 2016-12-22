@@ -7,7 +7,7 @@ import java.nio.file.Paths
 
 /**
  * Base class for web tests
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 open class WebBaseTest(db: String) : DbBaseTest(db) {
 

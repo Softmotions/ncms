@@ -8,7 +8,7 @@ import org.testng.annotations.Test
 
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Test(groups = arrayOf("ui"))
 class _TestSimpleSiteUI(db: String) : BaseAdminUITest(db) {

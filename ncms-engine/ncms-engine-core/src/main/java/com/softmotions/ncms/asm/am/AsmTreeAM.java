@@ -45,7 +45,7 @@ import com.softmotions.weboot.i18n.I18n;
 /**
  * Tree structure attribute manager.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @SuppressWarnings("unchecked")

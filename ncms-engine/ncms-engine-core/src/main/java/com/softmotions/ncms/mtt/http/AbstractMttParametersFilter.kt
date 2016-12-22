@@ -8,7 +8,7 @@ import javax.annotation.concurrent.ThreadSafe
 import javax.servlet.http.HttpServletRequest
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @ThreadSafe
 abstract class AbstractMttParametersFilter : MttFilterHandler {

@@ -5,7 +5,7 @@ import org.apache.shiro.util.Factory;
 import com.softmotions.commons.JVMResources;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class ShiroWBJVMObjectFactory implements Factory {
 

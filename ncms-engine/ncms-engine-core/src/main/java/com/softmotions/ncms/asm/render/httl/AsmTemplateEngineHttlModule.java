@@ -21,7 +21,7 @@ import com.softmotions.ncms.media.events.MediaUpdateEvent;
 import com.softmotions.weboot.executor.TaskExecutor;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class AsmTemplateEngineHttlModule extends AbstractModule {
 

@@ -126,7 +126,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 /**
  * Media files manager rest service.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @javax.ws.rs.Path("/media")
 @Produces("application/json;charset=UTF-8")

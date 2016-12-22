@@ -30,7 +30,7 @@ import com.softmotions.web.security.WSUserDatabase;
 /**
  * Rest service for operations on users database.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Path("adm/security")
 @Produces("application/json;charset=UTF-8")
@@ -326,7 +326,7 @@ public class NcmsSecurityRS {
      * <pre>
      *    {
      *      "name" : "admin",
-     *      "email" : "adamansky@gmail.com",
+     *      "email" : "adamansky@softmotions.com",
      *      "fullName" : "Антон Адаманский",
      *      "roles" : ["admin.asm", "admin", "user"],
      *      "groups" : [array of users groups]

@@ -10,7 +10,7 @@ import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.media.MediaResource;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 public class AsmClasspathResourceLoader implements AsmResourceLoader {

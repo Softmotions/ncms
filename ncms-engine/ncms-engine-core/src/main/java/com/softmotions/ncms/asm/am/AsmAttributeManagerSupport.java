@@ -10,7 +10,7 @@ import com.softmotions.ncms.asm.AsmAttribute;
 import com.softmotions.ncms.asm.AsmAttributeManagerContext;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public abstract class AsmAttributeManagerSupport implements AsmAttributeManager {
 

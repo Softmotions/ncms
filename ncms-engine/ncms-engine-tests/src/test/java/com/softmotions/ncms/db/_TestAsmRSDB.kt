@@ -15,7 +15,7 @@ import org.testng.annotations.Test
 /**
  * Testing of sql queries for AsmRS
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 class _TestAsmRSDB(db: String) : DbBaseTest(db) {
 

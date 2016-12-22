@@ -12,7 +12,7 @@ import com.softmotions.commons.cont.Pair;
 /**
  * Generic media service.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @ThreadSafe
 public interface MediaRepository extends MediaReader, Closeable {

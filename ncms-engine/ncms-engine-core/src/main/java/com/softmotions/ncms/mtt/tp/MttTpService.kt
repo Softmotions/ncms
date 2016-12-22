@@ -30,7 +30,7 @@ import kotlin.concurrent.read
 import kotlin.concurrent.write
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @JvmSuppressWildcards

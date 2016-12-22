@@ -17,7 +17,7 @@ import com.softmotions.ncms.asm.render.AsmResourceNotFoundException;
 import com.softmotions.ncms.media.MediaResource;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public final class HttlMediaResourceAdapter implements MediaResource {
 

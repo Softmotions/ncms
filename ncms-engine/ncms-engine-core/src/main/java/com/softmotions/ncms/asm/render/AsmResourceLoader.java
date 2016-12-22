@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import com.softmotions.ncms.media.MediaResource;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public interface AsmResourceLoader {
 

@@ -12,7 +12,7 @@ import org.testng.Assert.*
 import kotlin.test.assertEquals
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 open class BaseAdminUITest(db: String) : BaseQXTest(db) {
 

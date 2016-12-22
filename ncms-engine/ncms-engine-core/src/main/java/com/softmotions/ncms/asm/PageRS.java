@@ -92,7 +92,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 import com.softmotions.weboot.scheduler.Scheduled;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Path("adm/pages")
 @Produces("application/json;charset=UTF-8")

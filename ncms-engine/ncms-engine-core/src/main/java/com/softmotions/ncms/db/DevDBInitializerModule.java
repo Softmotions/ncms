@@ -15,7 +15,7 @@ import com.softmotions.ncms.asm.AsmDAO;
 /**
  * Initiates development database with initial data.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class DevDBInitializerModule extends AbstractModule {
 

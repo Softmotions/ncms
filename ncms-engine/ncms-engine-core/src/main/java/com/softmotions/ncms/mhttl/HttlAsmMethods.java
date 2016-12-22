@@ -20,7 +20,7 @@ import com.softmotions.ncms.asm.PageCriteria;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("unchecked")
 public final class HttlAsmMethods {

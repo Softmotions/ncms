@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse
 /**
  * Set request parameters action handler
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @ThreadSafe

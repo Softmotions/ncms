@@ -11,7 +11,7 @@ import com.softmotions.ncms.events.BasicEvent;
 /**
  * Fired if media item was removed.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class MediaDeleteEvent extends BasicEvent {
 

@@ -23,7 +23,7 @@ import com.softmotions.web.GenericResponseWrapper;
 import com.softmotions.weboot.i18n.I18n;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @NotThreadSafe
 public class AsmRendererContextImpl extends AsmRendererContext {

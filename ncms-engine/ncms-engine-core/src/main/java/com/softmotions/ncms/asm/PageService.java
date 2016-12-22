@@ -10,7 +10,7 @@ import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 /**
  * Page info service.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @ThreadSafe
 public interface PageService {

@@ -35,7 +35,7 @@ import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
 /**
  * Markdown/Mediawiki attribute manager.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

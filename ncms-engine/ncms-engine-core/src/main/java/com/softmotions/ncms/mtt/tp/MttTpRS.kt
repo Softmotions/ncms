@@ -21,7 +21,7 @@ import javax.ws.rs.core.StreamingOutput
 /**
  * MTT Tracking pixels support
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Path("adm/mtt/tp")
 @Produces("application/json;charset=UTF-8")

@@ -23,7 +23,7 @@ import com.softmotions.ncms.media.MediaResource;
 /**
  * Page assembly core manager.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class AsmCoreAM extends AsmFileAttributeManagerSupport {
 

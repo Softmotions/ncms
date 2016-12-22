@@ -6,7 +6,7 @@ import com.google.inject.Singleton;
 /**
  * REST helpers module.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class HrsModule extends AbstractModule {
 

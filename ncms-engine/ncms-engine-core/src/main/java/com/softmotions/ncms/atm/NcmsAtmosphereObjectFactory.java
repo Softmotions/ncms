@@ -18,7 +18,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("SynchronizeOnThis")
 public final class NcmsAtmosphereObjectFactory implements AtmosphereObjectFactory<AbstractModule> {

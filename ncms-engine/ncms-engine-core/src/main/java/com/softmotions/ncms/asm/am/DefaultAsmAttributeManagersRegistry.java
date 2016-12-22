@@ -10,7 +10,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

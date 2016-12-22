@@ -9,7 +9,7 @@ import com.softmotions.weboot.jaxrs.MessageException;
  * Exception used to generate messages
  * for Qooxdoo based GUI clients.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("ClassWithTooManyConstructors")
 public class NcmsMessageException extends MessageException {

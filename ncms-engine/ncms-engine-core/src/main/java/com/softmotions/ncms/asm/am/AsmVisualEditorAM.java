@@ -37,7 +37,7 @@ import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @Path("adm/am/ve")

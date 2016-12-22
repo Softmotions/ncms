@@ -9,7 +9,7 @@ import com.google.common.base.MoreObjects;
 /**
  * {@link NcmsModuleDescriptor} basic implementation.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public abstract class NcmsModuleDescriptorSupport implements NcmsModuleDescriptor {
 

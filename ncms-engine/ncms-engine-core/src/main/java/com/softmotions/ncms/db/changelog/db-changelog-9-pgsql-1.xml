@@ -5,23 +5,23 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
 
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-1">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-1">
         <createSequence sequenceName="SEQ_ACL_ID"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-2">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-2">
         <createSequence sequenceName="SEQ_ASMS_ORDINAL"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-3">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-3">
         <createSequence sequenceName="SEQ_ATTR_ID"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-4">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-4">
         <createSequence sequenceName="SEQ_MTT_ACTION_ID"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-5">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-5">
         <createSequence sequenceName="SEQ_MTT_RULE_ID"/>
     </changeSet>
 
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-6">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-6">
         <createTable remarks="Assemblies" tableName="ASMS">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_ASMS"/>
@@ -65,13 +65,13 @@
             <column name="LANG" type="CHAR(2)"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-7">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-7">
         <createTable tableName="ASM_ACCESS_ROLES">
             <column name="ASM_ID" type="BIGINT"/>
             <column name="ROLE_NAME" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-8">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-8">
         <createTable tableName="ASM_ACL_ENTITY">
             <column name="ACL_ID" remarks="ACL ID created by: CALL NEXT VALUE FOR SEQ_ACL_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -84,7 +84,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-9">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-9">
         <createTable remarks="Assembly attributes" tableName="ASM_ATTRS">
             <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -112,7 +112,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-10">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-10">
         <createTable tableName="ASM_ATTR_IDXVALS">
             <column name="ATTR_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -121,7 +121,7 @@
             <column name="IVALUE" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-11">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-11">
         <createTable tableName="ASM_CORES">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_ASM_CORES"/>
@@ -133,7 +133,7 @@
             <column name="TEMPLATE_ENGINE" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-12">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-12">
         <createTable tableName="ASM_MEDIA_DEPS">
             <column name="ATTR_ID" remarks="Assembly attribute reference" type="BIGINT">
                 <constraints nullable="false"/>
@@ -143,7 +143,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-13">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-13">
         <createTable tableName="ASM_PAGE_DEPS">
             <column name="ATTR_ID" remarks="Assembly attribute reference" type="BIGINT">
                 <constraints nullable="false"/>
@@ -153,7 +153,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-14">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-14">
         <createTable tableName="ASM_PARENTS">
             <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -163,7 +163,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-15">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-15">
         <createTable remarks="Assembly additional data" tableName="ASM_REFDATA">
             <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -175,7 +175,7 @@
             <column name="IVALUE" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-16">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-16">
         <createTable remarks="System tags assigned to assembly" tableName="ASM_SYSPROPS">
             <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -186,7 +186,7 @@
             <column name="VALUE" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-17">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-17">
         <validCheckSum>any</validCheckSum>
         <createTable tableName="MEDIA_ENTITY">
             <column autoIncrement="true" name="ID" type="BIGINT">
@@ -220,7 +220,7 @@
             <column defaultValueNumeric="0" name="FLAGS" remarks="Various flags bitmask" type="INTEGER"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-18">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-18">
         <createTable remarks="Media entity keywords" tableName="MEDIA_ENTITY_KWORDS">
             <column name="ENTITY_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -228,7 +228,7 @@
             <column name="KEYWORD" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-19">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-19">
         <createTable remarks="Marketing tools action attached to the rule (MTT_RULES)" tableName="MTT_ACTIONS">
             <column name="ID" remarks="Key values generated by SEQ_MTT_ACTION_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -259,7 +259,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-20">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-20">
         <createTable remarks="Marketing tools filter attached to rule (MTT_RULES)" tableName="MTT_FILTERS">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_MTT_FILTERS"/>
@@ -283,7 +283,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-21">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-21">
         <createTable remarks="Marketing tools rules" tableName="MTT_RULES">
             <column name="ID" remarks="Key values generated by SEQ_MTT_RULE_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -309,7 +309,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-22">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-22">
         <createTable remarks="Tracking pixels configuration" tableName="MTT_TP">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_MTT_TP"/>
@@ -334,7 +334,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-23">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-23">
         <createTable tableName="PAGE_QA_STATUS">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_PAGE_QA_STATUS"/>
@@ -348,7 +348,7 @@
             <column name="ERROR_DATA" type="VARCHAR(1024)"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-24">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-24">
         <createTable tableName="REFDATA">
             <column name="REF" type="VARCHAR(64)">
                 <constraints nullable="false"/>
@@ -359,7 +359,7 @@
             <column name="DATA" type="BYTEA"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-25">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-25">
         <createTable remarks="Applied updates list" tableName="UPDATE_STATE">
             <column name="ID" type="VARCHAR(64)">
                 <constraints nullable="false"/>
@@ -369,7 +369,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-26">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-26">
         <createTable remarks="Various user environment values" tableName="USER_ENV">
             <column name="USERID" type="VARCHAR(64)">
                 <constraints nullable="false"/>
@@ -382,49 +382,49 @@
             <column name="DESCRIPTION" type="VARCHAR(256)"/>
         </createTable>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-27">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-27">
         <addPrimaryKey columnNames="ID" constraintName="PK_ASM_ATTRS" tableName="ASM_ATTRS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-28">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-28">
         <addPrimaryKey columnNames="ID" constraintName="PK_MTT_ACTIONS" tableName="MTT_ACTIONS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-29">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-29">
         <addPrimaryKey columnNames="ID" constraintName="PK_MTT_RULES" tableName="MTT_RULES"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-30">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-30">
         <addPrimaryKey columnNames="ID" constraintName="PK_UPDATE_STATE" tableName="UPDATE_STATE"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-31">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-31">
         <addUniqueConstraint columnNames="NAME" constraintName="SQL160630125125040" tableName="ASMS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-32">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-32">
         <addUniqueConstraint columnNames="REF" constraintName="SQL160630125126920" tableName="REFDATA"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-33">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-33">
         <addUniqueConstraint columnNames="NAME" constraintName="SQL160711215337330" tableName="MTT_RULES"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-34">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-34">
         <addUniqueConstraint columnNames="NAME" constraintName="SQL160824121131200" tableName="MTT_TP"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-35">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-35">
         <createIndex indexName="IDX1410210525410" tableName="ASM_ATTRS">
             <column name="ASM_ID"/>
             <column name="ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-36">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-36">
         <createIndex indexName="IDX1410210525430" tableName="ASM_PARENTS" unique="true">
             <column name="ASM_PARENT_ID"/>
             <column name="ASM_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-37">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-37">
         <createIndex indexName="IDX1410210525480" tableName="ASMS" unique="true">
             <column name="NAME"/>
             <column name="ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-38">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-38">
         <createIndex indexName="IDX1410210525510" tableName="ASMS" unique="true">
             <column name="ID"/>
             <column name="TYPE"/>
@@ -434,7 +434,7 @@
             <column name="EDATE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-39">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-39">
         <createIndex indexName="IDX1410210526040" tableName="ASMS" unique="true">
             <column name="ID"/>
             <column name="ORDINAL"/>
@@ -447,7 +447,7 @@
             <column name="NAV_PARENT_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-40">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-40">
         <createIndex indexName="IDX1410210526140" tableName="ASM_ATTRS">
             <column name="ASM_ID"/>
             <column name="ID"/>
@@ -456,300 +456,300 @@
             <column name="NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-41">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-41">
         <createIndex indexName="IDX1410210526170" tableName="ASMS" unique="true">
             <column name="ID"/>
             <column name="NAME"/>
             <column name="HNAME"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-42">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-42">
         <createIndex indexName="IDX_ASMACCESSROLES_ALL" tableName="ASM_ACCESS_ROLES" unique="true">
             <column name="ROLE_NAME"/>
             <column name="ASM_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-43">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-43">
         <createIndex indexName="IDX_ASMATTRIDXVALS_IVALS" tableName="ASM_ATTR_IDXVALS">
             <column name="IVALUE"/>
             <column name="ATTR_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-44">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-44">
         <createIndex indexName="IDX_ASMATTRIDXVALS_VALS" tableName="ASM_ATTR_IDXVALS">
             <column name="VALUE"/>
             <column name="ATTR_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-45">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-45">
         <createIndex indexName="IDX_ASMATTRS_ORDINAL" tableName="ASM_ATTRS">
             <column name="ORDINAL"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-46">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-46">
         <createIndex indexName="IDX_ASMATTRS_TNV" tableName="ASM_ATTRS">
             <column name="TYPE"/>
             <column name="NAME"/>
             <column name="VALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-47">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-47">
         <createIndex indexName="IDX_ASMATTRS_UNIQ" tableName="ASM_ATTRS" unique="true">
             <column name="NAME"/>
             <column name="ASM_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-48">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-48">
         <createIndex indexName="IDX_ASMCORES_LOCATION" tableName="ASM_CORES" unique="true">
             <column name="LOCATION"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-49">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-49">
         <createIndex indexName="IDX_ASMPAGEDEPS" tableName="ASM_PAGE_DEPS" unique="true">
             <column name="ATTR_ID"/>
             <column name="ASM_NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-50">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-50">
         <createIndex indexName="IDX_ASMPARENTS_UNIQ" tableName="ASM_PARENTS" unique="true">
             <column name="ASM_ID"/>
             <column name="ASM_PARENT_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-51">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-51">
         <createIndex indexName="IDX_ASMSYSPROPS_BWD" tableName="ASM_SYSPROPS" unique="true">
             <column name="PROPERTY"/>
             <column name="ASM_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-52">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-52">
         <createIndex indexName="IDX_ASMSYSPROPS_FWD" tableName="ASM_SYSPROPS" unique="true">
             <column name="ASM_ID"/>
             <column name="PROPERTY"/>
             <column name="VALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-53">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-53">
         <createIndex indexName="IDX_ASMS_EDATE" tableName="ASMS">
             <column name="EDATE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-54">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-54">
         <createIndex indexName="IDX_ASMS_NAMETYPE" tableName="ASMS" unique="true">
             <column name="NAME"/>
             <column name="TYPE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-55">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-55">
         <createIndex indexName="IDX_ASMS_NAVALIAS" tableName="ASMS">
             <column name="NAV_ALIAS"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-56">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-56">
         <createIndex indexName="IDX_ASMS_NAVALIAS2" tableName="ASMS">
             <column name="NAV_ALIAS2"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-57">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-57">
         <createIndex indexName="IDX_ASMS_NAVCACHEDPATH" tableName="ASMS">
             <column name="NAV_CACHED_PATH"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-58">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-58">
         <createIndex indexName="IDX_ASMS_NAVPARENT" tableName="ASMS">
             <column name="NAV_PARENT_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-59">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-59">
         <createIndex indexName="IDX_ASMS_ORDINAL" tableName="ASMS" unique="true">
             <column name="ORDINAL"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-60">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-60">
         <createIndex indexName="IDX_ASMS_QACHECKDATE" tableName="ASMS">
             <column name="QA_CHECK_DATE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-61">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-61">
         <createIndex indexName="IDX_ASMS_SCOLS" tableName="ASMS">
             <column name="HNAME_LOWER"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-62">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-62">
         <createIndex indexName="IDX_ASMS_TYPENAME" tableName="ASMS">
             <column name="TYPE"/>
             <column name="NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-63">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-63">
         <createIndex indexName="IDX_ASM_REFDATA_IVAL" tableName="ASM_REFDATA">
             <column name="IVALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-64">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-64">
         <createIndex indexName="IDX_ASM_REFDATA_SVAL" tableName="ASM_REFDATA">
             <column name="TYPE"/>
             <column name="SVALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-65">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-65">
         <createIndex indexName="IDX_MEDIADEPS" tableName="ASM_MEDIA_DEPS" unique="true">
             <column name="ATTR_ID"/>
             <column name="FILE_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-66">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-66">
         <createIndex indexName="IDX_MEDIAENTITYKWORDS_BWD" tableName="MEDIA_ENTITY_KWORDS" unique="true">
             <column name="ENTITY_ID"/>
             <column name="KEYWORD"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-67">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-67">
         <createIndex indexName="IDX_MEDIAENTITYKWORDS_FWD" tableName="MEDIA_ENTITY_KWORDS" unique="true">
             <column name="KEYWORD"/>
             <column name="ENTITY_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-68">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-68">
         <createIndex indexName="IDX_MEDIAENTITY_CSUM" tableName="MEDIA_ENTITY">
             <column name="CSUM"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-69">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-69">
         <createIndex indexName="IDX_MEDIAENTITY_FOLDER" tableName="MEDIA_ENTITY">
             <column name="FOLDER"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-70">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-70">
         <createIndex indexName="IDX_MEDIAENTITY_NAME" tableName="MEDIA_ENTITY">
             <column name="NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-71">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-71">
         <createIndex indexName="IDX_MEDIAENTITY_PATH" tableName="MEDIA_ENTITY" unique="true">
             <column name="FOLDER"/>
             <column name="NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-72">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-72">
         <createIndex indexName="IDX_PAGEQASTATUS_ETYPE" tableName="PAGE_QA_STATUS">
             <column name="ERROR_TYPE"/>
             <column name="ID"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-73">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-73">
         <createIndex indexName="IDX_USERENV_IVAL" tableName="USER_ENV">
             <column name="USERID"/>
             <column name="TYPE"/>
             <column name="IVALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-74">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-74">
         <createIndex indexName="IDX_USERENV_SVAL" tableName="USER_ENV">
             <column name="USERID"/>
             <column name="TYPE"/>
             <column name="SVALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-75">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-75">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_ACCESS_ROLES"
                                  constraintName="FK_ASMACCESSROLES_ASMS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-76">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-76">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_ATTRS" constraintName="FK_ASMATTRS_ASM"
                                  deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
                                  referencedColumnNames="ID" referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-77">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-77">
         <addForeignKeyConstraint baseColumnNames="ATTR_ID" baseTableName="ASM_MEDIA_DEPS"
                                  constraintName="FK_ASMMEDIADEPS_ATTRS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASM_ATTRS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-78">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-78">
         <addForeignKeyConstraint baseColumnNames="FILE_ID" baseTableName="ASM_MEDIA_DEPS"
                                  constraintName="FK_ASMMEDIADEPS_FILES" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MEDIA_ENTITY"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-79">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-79">
         <addForeignKeyConstraint baseColumnNames="ASM_NAME" baseTableName="ASM_PAGE_DEPS"
                                  constraintName="FK_ASMPAGEDEPS_ASMS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="NAME"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-80">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-80">
         <addForeignKeyConstraint baseColumnNames="ATTR_ID" baseTableName="ASM_PAGE_DEPS"
                                  constraintName="FK_ASMPAGEDEPS_ATTRS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASM_ATTRS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-81">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-81">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_PARENTS"
                                  constraintName="FK_ASMPARENTS_ASMID" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-82">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-82">
         <addForeignKeyConstraint baseColumnNames="ASM_PARENT_ID" baseTableName="ASM_PARENTS"
                                  constraintName="FK_ASMPARENTS_ASMPARENTID" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-83">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-83">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_SYSPROPS"
                                  constraintName="FK_ASMSYSPROPS_ASMS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-84">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-84">
         <addForeignKeyConstraint baseColumnNames="ASM_CORE_ID" baseTableName="ASMS" constraintName="FK_ASMS_ASMCORES"
                                  deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="NO ACTION"
                                  referencedColumnNames="ID" referencedTableName="ASM_CORES"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-85">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-85">
         <addForeignKeyConstraint baseColumnNames="NAV_PARENT_ID" baseTableName="ASMS" constraintName="FK_ASMS_NAVPARENT"
                                  deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
                                  referencedColumnNames="ID" referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-86">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-86">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_REFDATA" constraintName="FK_ASM_REFDATA"
                                  deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
                                  referencedColumnNames="ID" referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-87">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-87">
         <addForeignKeyConstraint baseColumnNames="ATTR_ID" baseTableName="ASM_ATTR_IDXVALS"
                                  constraintName="FK_ATTRIDXVALS_ATTRS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASM_ATTRS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-88">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-88">
         <addForeignKeyConstraint baseColumnNames="ENTITY_ID" baseTableName="MEDIA_ENTITY_KWORDS"
                                  constraintName="FK_MEDIAENTITYKWORDS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MEDIA_ENTITY"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-89">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-89">
         <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="MTT_ACTIONS"
                                  constraintName="FK_MTT_ACTIONS_GROUP" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MTT_ACTIONS"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-90">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-90">
         <addForeignKeyConstraint baseColumnNames="RULE_ID" baseTableName="MTT_ACTIONS"
                                  constraintName="FK_MTT_ACTIONS_RULES" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MTT_RULES"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-91">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-91">
         <addForeignKeyConstraint baseColumnNames="RULE_ID" baseTableName="MTT_FILTERS"
                                  constraintName="FK_MTT_FILTERS_RULES" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MTT_RULES"/>
     </changeSet>
-    <changeSet dbms="postgresql" author="adamansky@gmail.com" id="16240231324-92">
+    <changeSet dbms="postgresql" author="adamansky@softmotions.com" id="16240231324-92">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="PAGE_QA_STATUS"
                                  constraintName="FK_PAGEQASTATUS_ASMS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"

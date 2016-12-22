@@ -24,7 +24,7 @@ import com.softmotions.commons.ctype.CTypeUtils;
 import com.softmotions.commons.io.InputStreamWrapper;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 class MediaResourceImpl implements MediaResource, Serializable {
 

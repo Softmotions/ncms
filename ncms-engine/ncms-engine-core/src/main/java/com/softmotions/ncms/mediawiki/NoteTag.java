@@ -14,7 +14,7 @@ import com.google.inject.Singleton;
 /**
  * Simple note tag.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 public class NoteTag extends HTMLTag implements INoBodyParsingTag {

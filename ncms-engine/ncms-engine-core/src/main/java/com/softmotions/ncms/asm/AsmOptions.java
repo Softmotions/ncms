@@ -8,7 +8,7 @@ import com.softmotions.commons.cont.KVOptions;
 /**
  * Parsed assembly options.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class AsmOptions extends KVOptions {
 

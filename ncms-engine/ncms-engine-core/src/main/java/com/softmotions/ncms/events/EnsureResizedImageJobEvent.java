@@ -3,7 +3,7 @@ package com.softmotions.ncms.events;
 import javax.annotation.Nullable;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class EnsureResizedImageJobEvent {
     private final long id;

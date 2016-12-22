@@ -6,7 +6,7 @@ import org.testng.Assert.*
 import org.testng.annotations.Test
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Test(groups = arrayOf("unit"))
 class TestVEditFilter : BaseTest() {

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse
 /**
  * Action what aggregates other actions.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @ThreadSafe

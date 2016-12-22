@@ -9,7 +9,7 @@ import com.softmotions.ncms.asm.Asm;
 /**
  * Various helpers.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

@@ -6,7 +6,7 @@ import org.testng.IAlterSuiteListener;
 import org.testng.xml.XmlSuite;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class TestNGSuiteListener implements IAlterSuiteListener {
 

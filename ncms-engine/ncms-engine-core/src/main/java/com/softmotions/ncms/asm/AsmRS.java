@@ -59,7 +59,7 @@ import com.softmotions.weboot.security.WBSecurityContext;
 /**
  * Редактирование выбранного экземпляра ассембли.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("unchecked")
 @Path("adm/asms")

@@ -5,7 +5,7 @@ import com.softmotions.ncms.events.BasicEvent;
 /**
  * Fired if UI user disconnected from server.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class UIUserDisconnectedEvent extends BasicEvent {
 

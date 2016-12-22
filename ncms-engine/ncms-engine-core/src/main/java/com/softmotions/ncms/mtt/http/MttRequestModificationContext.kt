@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequestWrapper
 import javax.servlet.http.HttpServletResponse
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 class MttRequestModificationContext(val req: HttpServletRequest) {
 

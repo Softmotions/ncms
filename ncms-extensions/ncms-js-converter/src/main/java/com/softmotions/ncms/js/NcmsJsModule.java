@@ -10,7 +10,7 @@ import com.softmotions.ncms.NcmsModuleDescriptorSupport;
 /**
  * Scripts concatenation and minification in HTTL templates
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class NcmsJsModule extends AbstractModule {
 

@@ -12,7 +12,7 @@ import net.jcip.annotations.NotThreadSafe;
 import com.softmotions.weboot.i18n.I18n;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @NotThreadSafe

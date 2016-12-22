@@ -5,7 +5,7 @@ import com.softmotions.ncms.mtt.MttRule
 import com.softmotions.ncms.mtt.MttRuleFilter
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 interface MttFilterHandlerContext : MutableMap<String, Any?> {
 

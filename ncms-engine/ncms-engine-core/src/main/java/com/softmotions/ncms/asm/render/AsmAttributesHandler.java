@@ -9,7 +9,7 @@ import com.softmotions.ncms.asm.AsmAttribute;
  * Modify the assembly attribute set
  * loaded in admin edit page.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public interface AsmAttributesHandler {
 

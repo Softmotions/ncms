@@ -7,7 +7,7 @@ import org.testng.annotations.Test
 
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Test(groups = arrayOf("rs"))
 class _TestWorkspaceRS(db: String) : BaseRSTest(db) {

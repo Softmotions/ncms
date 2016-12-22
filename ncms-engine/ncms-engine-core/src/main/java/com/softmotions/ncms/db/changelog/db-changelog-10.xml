@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <changeSet id="16250102339" author="adamansky@gmail.com">
+    <changeSet id="16250102339" author="adamansky@softmotions.com">
         <dropIndex tableName="ASMS" indexName="IDX_ASMS_TYPENAME"/>
         <createIndex tableName="ASMS"
                      indexName="IDX_ASMS_TYPENAME"
@@ -14,7 +14,7 @@
         </createIndex>
     </changeSet>
 
-    <changeSet id="16250102340" dbms="postgresql" author="adamansky@gmail.com">
+    <changeSet id="16250102340" dbms="postgresql" author="adamansky@softmotions.com">
 
         <dropIndex tableName="MEDIA_ENTITY" indexName="IDX_MEDIAENTITY_NAME"/>
         <dropIndex tableName="MEDIA_ENTITY" indexName="IDX_MEDIAENTITY_FOLDER"/>
@@ -63,7 +63,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="16250182617" dbms="postgresql" author="adamansky@gmail.com">
+    <changeSet id="16250182617" dbms="postgresql" author="adamansky@softmotions.com">
         <dropIndex tableName="ASMS" indexName="IDX_TPO_ASMS_HNAMETYPE"/>
         <dropColumn tableName="ASMS" columnName="hname_lower"/>
         <sql endDelimiter=";">
@@ -72,7 +72,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="16250185342" dbms="postgresql" author="adamansky@gmail.com">
+    <changeSet id="16250185342" dbms="postgresql" author="adamansky@softmotions.com">
         <dropIndex tableName="ASMS" indexName="IDX_TPO_ASMS_NAMEDESC"/>
         <sql endDelimiter=";">
             CREATE INDEX IDX_LTPO_ASMS_NAMEDESC
@@ -81,7 +81,7 @@
     </changeSet>
 
 
-    <changeSet id="16250185302" dbms="db2" author="adamansky@gmail.com">
+    <changeSet id="16250185302" dbms="db2" author="adamansky@softmotions.com">
         <sql endDelimiter=";">
             CREATE INDEX IDX_L_ASMS_HNAME
             ON ASMS (LOWER(hname));
@@ -91,7 +91,7 @@
         </sql>
     </changeSet>
 
-    <changeSet id="16250185944" dbms="db2" author="adamansky@gmail.com">
+    <changeSet id="16250185944" dbms="db2" author="adamansky@softmotions.com">
         <dropIndex tableName="ASMS" indexName="IDX_ASMS_SCOLS"/>
         <dropColumn tableName="ASMS" columnName="hname_lower"/>
         <sql>

@@ -21,7 +21,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 /**
  * Main(index) page marker template attribute.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

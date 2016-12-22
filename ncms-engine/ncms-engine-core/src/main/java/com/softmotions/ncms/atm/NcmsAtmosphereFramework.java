@@ -5,7 +5,7 @@ import java.util.Queue;
 import org.atmosphere.cpr.AtmosphereFramework;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class NcmsAtmosphereFramework extends AtmosphereFramework {
 

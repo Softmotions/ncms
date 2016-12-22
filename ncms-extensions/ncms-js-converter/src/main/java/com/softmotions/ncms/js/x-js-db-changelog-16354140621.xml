@@ -7,7 +7,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
 
-    <changeSet id="16354140752" author="adamansky@gmail.com">
+    <changeSet id="16354140752" author="adamansky@softmotions.com">
 
         <createTable tableName="X_JS_DEPS">
             <column name="FINGERPRINT"
@@ -44,7 +44,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="16354192323" author="adamansky@gmail.com">
+    <changeSet id="16354192323" author="adamansky@softmotions.com">
         <addColumn tableName="X_JS_DEPS">
             <column name="SOURCE_SCRIPT_PATH"
                     type="VARCHAR(512)">
@@ -52,7 +52,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet id="16356115508" author="adamansky@gmail.com">
+    <changeSet id="16356115508" author="adamansky@softmotions.com">
         <addColumn tableName="X_JS_SPEC">
             <column name="ACCESS_DATE" type="TIMESTAMP(6)"/>
         </addColumn>

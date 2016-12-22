@@ -31,7 +31,7 @@ import com.softmotions.weboot.i18n.I18n;
 /**
  * Media-wiki services.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Path("mw")
 public class MediaWikiRS {

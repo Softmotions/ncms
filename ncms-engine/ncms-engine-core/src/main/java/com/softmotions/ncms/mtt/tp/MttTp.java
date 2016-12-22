@@ -13,7 +13,7 @@ import com.google.common.base.MoreObjects;
 /**
  * Mtt tracking pixel.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @XmlAccessorType(XmlAccessType.NONE)

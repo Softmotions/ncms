@@ -19,7 +19,7 @@ import com.softmotions.ncms.NcmsEnvironment;
 /**
  * Mediawiki configuration.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 public class MediaWikiConfiguration extends Configuration {

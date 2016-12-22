@@ -22,7 +22,7 @@ fun Widget.executeInWidget(fspec: String): Any? =
 
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 open class BaseQXTest(db: String) : UIWebBaseTest(db) {
 

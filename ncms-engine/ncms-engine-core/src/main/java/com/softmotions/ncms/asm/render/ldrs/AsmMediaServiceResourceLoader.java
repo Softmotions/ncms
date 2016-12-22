@@ -12,7 +12,7 @@ import com.softmotions.ncms.media.MediaResource;
 /**
  * Template loader based on {@link com.softmotions.ncms.media.MediaRepository}
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 public class AsmMediaServiceResourceLoader implements AsmResourceLoader {

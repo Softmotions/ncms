@@ -43,7 +43,7 @@ import com.softmotions.weboot.scheduler.SchedulerModule;
 import com.softmotions.weboot.security.WBSecurityModule;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("unchecked")
 public class NcmsCoreModule extends WBServletModule<NcmsEnvironment> {

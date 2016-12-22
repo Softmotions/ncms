@@ -23,7 +23,7 @@ import com.softmotions.ncms.asm.PageService;
 /**
  * News helper REST API.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Path("/helpers/news")
 @Produces("application/json;charset=UTF-8")

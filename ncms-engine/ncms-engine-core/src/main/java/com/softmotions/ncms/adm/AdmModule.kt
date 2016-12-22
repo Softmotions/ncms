@@ -5,7 +5,7 @@ import com.google.inject.Singleton
 
 /**
  * Admin-zone GUI RESTFull modules.
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 class AdmModule : AbstractModule() {
 

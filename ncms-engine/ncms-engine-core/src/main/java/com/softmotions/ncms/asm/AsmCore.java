@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 /**
  * Assembly core instance.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @NotThreadSafe
 @JsonRootName("core")

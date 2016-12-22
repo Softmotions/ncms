@@ -11,7 +11,7 @@ import com.softmotions.ncms.asm.Asm;
 /**
  * Assembly {@link com.softmotions.ncms.asm.Asm} renderer.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public interface AsmRenderer {
 

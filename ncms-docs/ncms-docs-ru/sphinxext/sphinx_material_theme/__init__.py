@@ -2,7 +2,7 @@ import os
 
 """ Sphinx material theme. Based on http://materializecss.com framework """
 
-__author__ = "Adamansky Anton <adamansky@gmail.com>"
+__author__ = "Adamansky Anton <adamansky@softmotions.com>"
 __copyright__ = "Copyright 2015, Softmotions Ltd. <info@softmotions.com>"
 
 VERSION = (1, 0, 0)

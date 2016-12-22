@@ -18,7 +18,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Test(groups = arrayOf("rs"))
 class _TestMediaRS(db: String) : BaseRSTest(db) {

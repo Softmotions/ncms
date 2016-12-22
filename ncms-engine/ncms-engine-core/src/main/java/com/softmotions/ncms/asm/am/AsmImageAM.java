@@ -29,7 +29,7 @@ import com.softmotions.ncms.mhttl.Image;
 import com.softmotions.ncms.mhttl.ImageMeta;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

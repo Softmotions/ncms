@@ -16,7 +16,7 @@ import com.google.inject.Singleton;
 /**
  * Google map tag.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 public class GMapTag extends HTMLTag implements INoBodyParsingTag {

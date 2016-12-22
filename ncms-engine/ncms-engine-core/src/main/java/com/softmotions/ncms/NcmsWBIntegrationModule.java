@@ -20,7 +20,7 @@ import com.softmotions.weboot.mb.WBMyBatisExtraConfigSupplier;
  * nCMS integration with softmotions weboot components (https://github.com/Softmotions/softmotions-java-commons).
  * Extra configs for liquibase, mybatis, etc..
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class NcmsWBIntegrationModule extends AbstractModule {
 

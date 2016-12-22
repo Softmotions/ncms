@@ -8,7 +8,7 @@ import com.softmotions.ncms.events.BasicEvent;
  * Async server message, reported
  * to all connected users.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class ServerMessageEvent extends BasicEvent {
 

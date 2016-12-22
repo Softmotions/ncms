@@ -38,7 +38,7 @@ import com.softmotions.ncms.mhttl.SelectNode;
 /**
  * Select box controller
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

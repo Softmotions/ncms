@@ -7,7 +7,7 @@ import com.google.inject.AbstractModule;
 /**
  * Descriptor for external nCMS module.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public interface NcmsModuleDescriptor {
 

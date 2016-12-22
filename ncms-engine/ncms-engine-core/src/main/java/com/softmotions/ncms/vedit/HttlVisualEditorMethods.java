@@ -10,7 +10,7 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 /**
  * Visual editor HTTL helper methods.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class HttlVisualEditorMethods {
 

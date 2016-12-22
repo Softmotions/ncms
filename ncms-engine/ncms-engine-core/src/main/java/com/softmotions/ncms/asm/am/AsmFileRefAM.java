@@ -28,7 +28,7 @@ import com.softmotions.ncms.media.MediaResource;
 /**
  * File reference attribute manager.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

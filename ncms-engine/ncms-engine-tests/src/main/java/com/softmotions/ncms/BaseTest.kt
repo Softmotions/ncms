@@ -5,7 +5,7 @@ import ch.qos.logback.classic.LoggerContext
 import org.slf4j.LoggerFactory
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 open class BaseTest {
 

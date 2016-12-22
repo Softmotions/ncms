@@ -39,7 +39,7 @@ import com.softmotions.web.HttpUtils;
 /**
  * Various template utils.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings({"unchecked"})
 public final class HttlUtilsMethods {

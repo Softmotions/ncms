@@ -24,7 +24,7 @@ import com.softmotions.ncms.asm.am.AsmAttributeManager;
 import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @SuppressWarnings("unchecked")

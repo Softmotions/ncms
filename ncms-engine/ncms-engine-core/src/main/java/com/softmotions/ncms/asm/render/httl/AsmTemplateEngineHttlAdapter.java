@@ -36,7 +36,7 @@ import com.softmotions.ncms.mhttl.HttlUtilsMethods;
 /**
  * Template engine adapter for HTTL template engine (http://httl.github.io)
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

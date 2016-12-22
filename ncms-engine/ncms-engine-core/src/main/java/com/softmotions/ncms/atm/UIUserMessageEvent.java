@@ -14,7 +14,7 @@ import com.softmotions.ncms.events.BasicEvent;
 /**
  * Fired if got message from UI user.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class UIUserMessageEvent extends BasicEvent {
 

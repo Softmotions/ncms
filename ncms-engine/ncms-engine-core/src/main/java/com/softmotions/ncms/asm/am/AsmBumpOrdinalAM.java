@@ -9,7 +9,7 @@ import com.softmotions.ncms.asm.AsmDAO;
 
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Singleton

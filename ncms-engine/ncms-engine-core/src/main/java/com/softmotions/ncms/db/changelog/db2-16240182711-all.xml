@@ -5,23 +5,23 @@
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
 
-    <changeSet author="adamansky@gmail.com" id="1472296997555-1">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-1">
         <createSequence sequenceName="SEQ_ACL_ID"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-2">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-2">
         <createSequence sequenceName="SEQ_ASMS_ORDINAL"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-3">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-3">
         <createSequence sequenceName="SEQ_ATTR_ID"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-4">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-4">
         <createSequence sequenceName="SEQ_MTT_ACTION_ID"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-5">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-5">
         <createSequence sequenceName="SEQ_MTT_RULE_ID"/>
     </changeSet>
 
-    <changeSet author="adamansky@gmail.com" id="1472296997555-6">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-6">
         <createTable remarks="Assemblies" tableName="ASMS">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_ASMS"/>
@@ -65,13 +65,13 @@
             <column name="LANG" type="CHAR(2)"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-7">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-7">
         <createTable tableName="ASM_ACCESS_ROLES">
             <column name="ASM_ID" type="BIGINT"/>
             <column name="ROLE_NAME" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-8">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-8">
         <createTable tableName="ASM_ACL_ENTITY">
             <column name="ACL_ID" remarks="ACL ID created by: CALL NEXT VALUE FOR SEQ_ACL_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -84,7 +84,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-9">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-9">
         <createTable remarks="Assembly attributes" tableName="ASM_ATTRS">
             <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -112,7 +112,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-10">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-10">
         <createTable tableName="ASM_ATTR_IDXVALS">
             <column name="ATTR_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -121,7 +121,7 @@
             <column name="IVALUE" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-11">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-11">
         <createTable tableName="ASM_CORES">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_ASM_CORES"/>
@@ -133,7 +133,7 @@
             <column name="TEMPLATE_ENGINE" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-12">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-12">
         <createTable tableName="ASM_MEDIA_DEPS">
             <column name="ATTR_ID" remarks="Assembly attribute reference" type="BIGINT">
                 <constraints nullable="false"/>
@@ -143,7 +143,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-13">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-13">
         <createTable tableName="ASM_PAGE_DEPS">
             <column name="ATTR_ID" remarks="Assembly attribute reference" type="BIGINT">
                 <constraints nullable="false"/>
@@ -153,7 +153,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-14">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-14">
         <createTable tableName="ASM_PARENTS">
             <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -163,7 +163,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-15">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-15">
         <createTable remarks="Assembly additional data" tableName="ASM_REFDATA">
             <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -175,7 +175,7 @@
             <column name="IVALUE" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-16">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-16">
         <createTable remarks="System tags assigned to assembly" tableName="ASM_SYSPROPS">
             <column name="ASM_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -186,7 +186,7 @@
             <column name="VALUE" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-17">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-17">
         <createTable tableName="MEDIA_ENTITY">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_MEDIA_ENTITY"/>
@@ -219,7 +219,7 @@
             <column defaultValueNumeric="0" name="FLAGS" remarks="Various flags bitmask" type="INTEGER"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-18">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-18">
         <createTable remarks="Media entity keywords" tableName="MEDIA_ENTITY_KWORDS">
             <column name="ENTITY_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -227,7 +227,7 @@
             <column name="KEYWORD" type="VARCHAR(64)"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-19">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-19">
         <createTable remarks="Marketing tools action attached to the rule (MTT_RULES)" tableName="MTT_ACTIONS">
             <column name="ID" remarks="Key values generated by SEQ_MTT_ACTION_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -258,7 +258,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-20">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-20">
         <createTable remarks="Marketing tools filter attached to rule (MTT_RULES)" tableName="MTT_FILTERS">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_MTT_FILTERS"/>
@@ -282,7 +282,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-21">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-21">
         <createTable remarks="Marketing tools rules" tableName="MTT_RULES">
             <column name="ID" remarks="Key values generated by SEQ_MTT_RULE_ID" type="BIGINT">
                 <constraints nullable="false"/>
@@ -308,7 +308,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-22">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-22">
         <createTable remarks="Tracking pixels configuration" tableName="MTT_TP">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_MTT_TP"/>
@@ -333,7 +333,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-23">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-23">
         <createTable tableName="PAGE_QA_STATUS">
             <column autoIncrement="true" name="ID" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="PK_PAGE_QA_STATUS"/>
@@ -347,7 +347,7 @@
             <column name="ERROR_DATA" type="VARCHAR(1024)"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-24">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-24">
         <createTable tableName="REFDATA">
             <column name="REF" type="VARCHAR(64)">
                 <constraints nullable="false"/>
@@ -358,7 +358,7 @@
             <column name="DATA" type="BLOB(33554432)"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-25">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-25">
         <createTable remarks="Applied updates list" tableName="UPDATE_STATE">
             <column name="ID" type="VARCHAR(64)">
                 <constraints nullable="false"/>
@@ -368,7 +368,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-26">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-26">
         <createTable remarks="Various user environment values" tableName="USER_ENV">
             <column name="USERID" type="VARCHAR(64)">
                 <constraints nullable="false"/>
@@ -381,49 +381,49 @@
             <column name="DESCRIPTION" type="VARCHAR(256)"/>
         </createTable>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-27">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-27">
         <addPrimaryKey columnNames="ID" constraintName="PK_ASM_ATTRS" tableName="ASM_ATTRS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-28">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-28">
         <addPrimaryKey columnNames="ID" constraintName="PK_MTT_ACTIONS" tableName="MTT_ACTIONS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-29">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-29">
         <addPrimaryKey columnNames="ID" constraintName="PK_MTT_RULES" tableName="MTT_RULES"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-30">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-30">
         <addPrimaryKey columnNames="ID" constraintName="PK_UPDATE_STATE" tableName="UPDATE_STATE"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-31">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-31">
         <addUniqueConstraint columnNames="NAME" constraintName="SQL160630125125040" tableName="ASMS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-32">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-32">
         <addUniqueConstraint columnNames="REF" constraintName="SQL160630125126920" tableName="REFDATA"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-33">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-33">
         <addUniqueConstraint columnNames="NAME" constraintName="SQL160711215337330" tableName="MTT_RULES"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-34">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-34">
         <addUniqueConstraint columnNames="NAME" constraintName="SQL160824121131200" tableName="MTT_TP"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-35">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-35">
         <createIndex indexName="IDX1410210525410" tableName="ASM_ATTRS">
             <column name="ASM_ID"/>
             <column name="ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-36">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-36">
         <createIndex indexName="IDX1410210525430" tableName="ASM_PARENTS" unique="true">
             <column name="ASM_PARENT_ID"/>
             <column name="ASM_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-37">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-37">
         <createIndex indexName="IDX1410210525480" tableName="ASMS" unique="true">
             <column name="NAME"/>
             <column name="ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-38">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-38">
         <createIndex indexName="IDX1410210525510" tableName="ASMS" unique="true">
             <column name="ID"/>
             <column name="TYPE"/>
@@ -433,7 +433,7 @@
             <column name="EDATE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-39">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-39">
         <createIndex indexName="IDX1410210526040" tableName="ASMS" unique="true">
             <column name="ID"/>
             <column name="ORDINAL"/>
@@ -446,7 +446,7 @@
             <column name="NAV_PARENT_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-40">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-40">
         <createIndex indexName="IDX1410210526140" tableName="ASM_ATTRS">
             <column name="ASM_ID"/>
             <column name="ID"/>
@@ -455,300 +455,300 @@
             <column name="NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-41">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-41">
         <createIndex indexName="IDX1410210526170" tableName="ASMS" unique="true">
             <column name="ID"/>
             <column name="NAME"/>
             <column name="HNAME"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-42">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-42">
         <createIndex indexName="IDX_ASMACCESSROLES_ALL" tableName="ASM_ACCESS_ROLES" unique="true">
             <column name="ROLE_NAME"/>
             <column name="ASM_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-43">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-43">
         <createIndex indexName="IDX_ASMATTRIDXVALS_IVALS" tableName="ASM_ATTR_IDXVALS">
             <column name="IVALUE"/>
             <column name="ATTR_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-44">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-44">
         <createIndex indexName="IDX_ASMATTRIDXVALS_VALS" tableName="ASM_ATTR_IDXVALS">
             <column name="VALUE"/>
             <column name="ATTR_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-45">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-45">
         <createIndex indexName="IDX_ASMATTRS_ORDINAL" tableName="ASM_ATTRS">
             <column name="ORDINAL"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-46">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-46">
         <createIndex indexName="IDX_ASMATTRS_TNV" tableName="ASM_ATTRS">
             <column name="TYPE"/>
             <column name="NAME"/>
             <column name="VALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-47">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-47">
         <createIndex indexName="IDX_ASMATTRS_UNIQ" tableName="ASM_ATTRS" unique="true">
             <column name="NAME"/>
             <column name="ASM_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-48">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-48">
         <createIndex indexName="IDX_ASMCORES_LOCATION" tableName="ASM_CORES" unique="true">
             <column name="LOCATION"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-49">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-49">
         <createIndex indexName="IDX_ASMPAGEDEPS" tableName="ASM_PAGE_DEPS" unique="true">
             <column name="ATTR_ID"/>
             <column name="ASM_NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-50">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-50">
         <createIndex indexName="IDX_ASMPARENTS_UNIQ" tableName="ASM_PARENTS" unique="true">
             <column name="ASM_ID"/>
             <column name="ASM_PARENT_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-51">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-51">
         <createIndex indexName="IDX_ASMSYSPROPS_BWD" tableName="ASM_SYSPROPS" unique="true">
             <column name="PROPERTY"/>
             <column name="ASM_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-52">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-52">
         <createIndex indexName="IDX_ASMSYSPROPS_FWD" tableName="ASM_SYSPROPS" unique="true">
             <column name="ASM_ID"/>
             <column name="PROPERTY"/>
             <column name="VALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-53">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-53">
         <createIndex indexName="IDX_ASMS_EDATE" tableName="ASMS">
             <column name="EDATE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-54">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-54">
         <createIndex indexName="IDX_ASMS_NAMETYPE" tableName="ASMS" unique="true">
             <column name="NAME"/>
             <column name="TYPE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-55">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-55">
         <createIndex indexName="IDX_ASMS_NAVALIAS" tableName="ASMS">
             <column name="NAV_ALIAS"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-56">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-56">
         <createIndex indexName="IDX_ASMS_NAVALIAS2" tableName="ASMS">
             <column name="NAV_ALIAS2"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-57">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-57">
         <createIndex indexName="IDX_ASMS_NAVCACHEDPATH" tableName="ASMS">
             <column name="NAV_CACHED_PATH"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-58">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-58">
         <createIndex indexName="IDX_ASMS_NAVPARENT" tableName="ASMS">
             <column name="NAV_PARENT_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-59">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-59">
         <createIndex indexName="IDX_ASMS_ORDINAL" tableName="ASMS" unique="true">
             <column name="ORDINAL"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-60">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-60">
         <createIndex indexName="IDX_ASMS_QACHECKDATE" tableName="ASMS">
             <column name="QA_CHECK_DATE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-61">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-61">
         <createIndex indexName="IDX_ASMS_SCOLS" tableName="ASMS">
             <column name="HNAME_LOWER"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-62">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-62">
         <createIndex indexName="IDX_ASMS_TYPENAME" tableName="ASMS">
             <column name="TYPE"/>
             <column name="NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-63">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-63">
         <createIndex indexName="IDX_ASM_REFDATA_IVAL" tableName="ASM_REFDATA">
             <column name="IVALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-64">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-64">
         <createIndex indexName="IDX_ASM_REFDATA_SVAL" tableName="ASM_REFDATA">
             <column name="TYPE"/>
             <column name="SVALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-65">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-65">
         <createIndex indexName="IDX_MEDIADEPS" tableName="ASM_MEDIA_DEPS" unique="true">
             <column name="ATTR_ID"/>
             <column name="FILE_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-66">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-66">
         <createIndex indexName="IDX_MEDIAENTITYKWORDS_BWD" tableName="MEDIA_ENTITY_KWORDS" unique="true">
             <column name="ENTITY_ID"/>
             <column name="KEYWORD"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-67">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-67">
         <createIndex indexName="IDX_MEDIAENTITYKWORDS_FWD" tableName="MEDIA_ENTITY_KWORDS" unique="true">
             <column name="KEYWORD"/>
             <column name="ENTITY_ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-68">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-68">
         <createIndex indexName="IDX_MEDIAENTITY_CSUM" tableName="MEDIA_ENTITY">
             <column name="CSUM"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-69">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-69">
         <createIndex indexName="IDX_MEDIAENTITY_FOLDER" tableName="MEDIA_ENTITY">
             <column name="FOLDER"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-70">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-70">
         <createIndex indexName="IDX_MEDIAENTITY_NAME" tableName="MEDIA_ENTITY">
             <column name="NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-71">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-71">
         <createIndex indexName="IDX_MEDIAENTITY_PATH" tableName="MEDIA_ENTITY" unique="true">
             <column name="FOLDER"/>
             <column name="NAME"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-72">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-72">
         <createIndex indexName="IDX_PAGEQASTATUS_ETYPE" tableName="PAGE_QA_STATUS">
             <column name="ERROR_TYPE"/>
             <column name="ID"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-73">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-73">
         <createIndex indexName="IDX_USERENV_IVAL" tableName="USER_ENV">
             <column name="USERID"/>
             <column name="TYPE"/>
             <column name="IVALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-74">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-74">
         <createIndex indexName="IDX_USERENV_SVAL" tableName="USER_ENV">
             <column name="USERID"/>
             <column name="TYPE"/>
             <column name="SVALUE"/>
         </createIndex>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-75">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-75">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_ACCESS_ROLES"
                                  constraintName="FK_ASMACCESSROLES_ASMS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-76">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-76">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_ATTRS" constraintName="FK_ASMATTRS_ASM"
                                  deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
                                  referencedColumnNames="ID" referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-77">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-77">
         <addForeignKeyConstraint baseColumnNames="ATTR_ID" baseTableName="ASM_MEDIA_DEPS"
                                  constraintName="FK_ASMMEDIADEPS_ATTRS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASM_ATTRS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-78">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-78">
         <addForeignKeyConstraint baseColumnNames="FILE_ID" baseTableName="ASM_MEDIA_DEPS"
                                  constraintName="FK_ASMMEDIADEPS_FILES" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MEDIA_ENTITY"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-79">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-79">
         <addForeignKeyConstraint baseColumnNames="ASM_NAME" baseTableName="ASM_PAGE_DEPS"
                                  constraintName="FK_ASMPAGEDEPS_ASMS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="NAME"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-80">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-80">
         <addForeignKeyConstraint baseColumnNames="ATTR_ID" baseTableName="ASM_PAGE_DEPS"
                                  constraintName="FK_ASMPAGEDEPS_ATTRS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASM_ATTRS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-81">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-81">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_PARENTS"
                                  constraintName="FK_ASMPARENTS_ASMID" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-82">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-82">
         <addForeignKeyConstraint baseColumnNames="ASM_PARENT_ID" baseTableName="ASM_PARENTS"
                                  constraintName="FK_ASMPARENTS_ASMPARENTID" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-83">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-83">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_SYSPROPS"
                                  constraintName="FK_ASMSYSPROPS_ASMS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-84">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-84">
         <addForeignKeyConstraint baseColumnNames="ASM_CORE_ID" baseTableName="ASMS" constraintName="FK_ASMS_ASMCORES"
                                  deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="NO ACTION"
                                  referencedColumnNames="ID" referencedTableName="ASM_CORES"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-85">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-85">
         <addForeignKeyConstraint baseColumnNames="NAV_PARENT_ID" baseTableName="ASMS" constraintName="FK_ASMS_NAVPARENT"
                                  deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
                                  referencedColumnNames="ID" referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-86">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-86">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="ASM_REFDATA" constraintName="FK_ASM_REFDATA"
                                  deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION"
                                  referencedColumnNames="ID" referencedTableName="ASMS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-87">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-87">
         <addForeignKeyConstraint baseColumnNames="ATTR_ID" baseTableName="ASM_ATTR_IDXVALS"
                                  constraintName="FK_ATTRIDXVALS_ATTRS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="ASM_ATTRS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-88">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-88">
         <addForeignKeyConstraint baseColumnNames="ENTITY_ID" baseTableName="MEDIA_ENTITY_KWORDS"
                                  constraintName="FK_MEDIAENTITYKWORDS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MEDIA_ENTITY"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-89">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-89">
         <addForeignKeyConstraint baseColumnNames="GROUP_ID" baseTableName="MTT_ACTIONS"
                                  constraintName="FK_MTT_ACTIONS_GROUP" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MTT_ACTIONS"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-90">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-90">
         <addForeignKeyConstraint baseColumnNames="RULE_ID" baseTableName="MTT_ACTIONS"
                                  constraintName="FK_MTT_ACTIONS_RULES" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MTT_RULES"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-91">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-91">
         <addForeignKeyConstraint baseColumnNames="RULE_ID" baseTableName="MTT_FILTERS"
                                  constraintName="FK_MTT_FILTERS_RULES" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"
                                  referencedTableName="MTT_RULES"/>
     </changeSet>
-    <changeSet author="adamansky@gmail.com" id="1472296997555-92">
+    <changeSet author="adamansky@softmotions.com" id="1472296997555-92">
         <addForeignKeyConstraint baseColumnNames="ASM_ID" baseTableName="PAGE_QA_STATUS"
                                  constraintName="FK_PAGEQASTATUS_ASMS" deferrable="false" initiallyDeferred="false"
                                  onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="ID"

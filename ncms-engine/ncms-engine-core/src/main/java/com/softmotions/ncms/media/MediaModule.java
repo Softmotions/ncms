@@ -25,7 +25,7 @@ import com.softmotions.ncms.NcmsEnvironment;
 /**
  * Media guice components.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class MediaModule extends AbstractModule {
 

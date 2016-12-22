@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse
  * If cookie with same name was set previosly set
  * this action will be skipped
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @ThreadSafe

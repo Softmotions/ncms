@@ -31,7 +31,7 @@ import com.softmotions.web.CharsetFilter;
 import com.softmotions.weboot.WBServletListener;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class NcmsBoot extends WBServletListener {
 

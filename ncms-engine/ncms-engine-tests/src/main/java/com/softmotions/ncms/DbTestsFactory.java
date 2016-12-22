@@ -12,7 +12,7 @@ import org.testng.annotations.Factory;
 import com.softmotions.commons.cont.ArrayUtils;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public abstract class DbTestsFactory {
 

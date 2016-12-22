@@ -24,7 +24,7 @@ import com.softmotions.ncms.NcmsEnvironment;
  * Ensures serving of admin zone (/adm) in accordance
  * with a set of security restrictions.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class NcmsGuardFilter implements Filter {
 

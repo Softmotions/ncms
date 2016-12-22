@@ -13,7 +13,7 @@ import com.softmotions.ncms.media.events.MediaMoveEvent;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class AsmEventsListener extends MBDAOSupport {
 

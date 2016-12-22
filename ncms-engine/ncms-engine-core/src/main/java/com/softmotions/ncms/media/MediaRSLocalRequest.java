@@ -9,7 +9,7 @@ import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.web.HttpServletRequestAdapter;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public final class MediaRSLocalRequest extends HttpServletRequestAdapter {
 

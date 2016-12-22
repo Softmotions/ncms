@@ -15,7 +15,7 @@ import com.softmotions.commons.cont.KVOptions;
 /**
  * Tika metadata detector.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class MetadataDetector {
 

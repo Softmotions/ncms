@@ -19,7 +19,7 @@ import com.softmotions.weboot.mb.MBSqlSessionManager;
 /**
  * Application-wide event-bus based on Guava {@link com.google.common.eventbus.EventBus}
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class EventsModule extends AbstractModule {
 

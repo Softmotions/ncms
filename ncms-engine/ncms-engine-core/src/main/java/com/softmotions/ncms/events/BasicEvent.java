@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 import com.google.common.base.MoreObjects;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @JsonRootName("event")
 @XmlAccessorType(XmlAccessType.PROPERTY)

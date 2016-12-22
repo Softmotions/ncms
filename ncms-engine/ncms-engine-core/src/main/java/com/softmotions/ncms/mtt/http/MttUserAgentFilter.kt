@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest
 /**
  * User agent mtt filter.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 class MttUserAgentFilter : MttFilterHandler {
 

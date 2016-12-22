@@ -16,7 +16,7 @@ import javax.ws.rs.*
 import javax.ws.rs.core.Context
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @Path("adm/ws")

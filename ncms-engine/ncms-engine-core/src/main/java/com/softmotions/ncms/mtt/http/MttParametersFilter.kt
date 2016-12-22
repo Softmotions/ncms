@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest
 /**
  * Request parameters filter.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @ThreadSafe

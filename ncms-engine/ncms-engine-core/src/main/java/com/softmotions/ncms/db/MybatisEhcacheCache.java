@@ -12,7 +12,7 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class MybatisEhcacheCache implements Cache {
 

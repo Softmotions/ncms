@@ -4,7 +4,7 @@ import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("unchecked")
 class CriteriaBase<T extends CriteriaBase> extends MBCriteriaQuery<T> {

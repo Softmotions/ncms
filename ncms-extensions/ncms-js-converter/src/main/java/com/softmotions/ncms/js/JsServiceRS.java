@@ -73,7 +73,7 @@ import com.softmotions.weboot.scheduler.Scheduled;
 /**
  * JS compiler service.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @Singleton
 @Path("x/js")

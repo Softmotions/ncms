@@ -20,7 +20,7 @@ import com.google.common.base.MoreObjects;
 /**
  * Simple tree container
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @SuppressWarnings("unchecked")
 public final class Tree implements Iterable<Tree>, Serializable {

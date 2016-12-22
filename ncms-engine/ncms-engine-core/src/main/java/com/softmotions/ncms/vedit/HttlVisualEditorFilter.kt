@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
  *
  * Filter concept is based on [httl.spi.filters.AttributeSyntaxFilter]
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 class HttlVisualEditorFilter : AbstractFilter() {
 

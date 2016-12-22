@@ -58,7 +58,7 @@ import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.web.GenericResponseWrapper;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 
 @SuppressWarnings("unchecked")

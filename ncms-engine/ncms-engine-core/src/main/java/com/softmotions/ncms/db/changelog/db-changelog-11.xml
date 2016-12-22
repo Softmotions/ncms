@@ -15,7 +15,7 @@
     -->
 
     <changeSet id="16277111122"
-               author="adamansky@gmail.com"
+               author="adamansky@softmotions.com"
                dbms="db2">
         <addColumn tableName="ASMS">
             <column name="SHADOWED"
@@ -27,7 +27,7 @@
 
 
     <changeSet id="16277111122"
-               author="adamansky@gmail.com"
+               author="adamansky@softmotions.com"
                dbms="postgresql">
         <addColumn tableName="ASMS">
             <column name="SHADOWED"
@@ -38,7 +38,7 @@
     </changeSet>
 
     <changeSet id="16277121634"
-               author="adamansky@gmail.com">
+               author="adamansky@softmotions.com">
         <addColumn tableName="ASMS">
             <column name="LOCK_USER"
                     type="VARCHAR(64)"

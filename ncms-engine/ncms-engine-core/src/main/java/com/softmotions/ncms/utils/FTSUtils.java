@@ -25,7 +25,7 @@ import com.softmotions.commons.cont.CollectionUtils;
 /**
  * Full text search utilities.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class FTSUtils {
 

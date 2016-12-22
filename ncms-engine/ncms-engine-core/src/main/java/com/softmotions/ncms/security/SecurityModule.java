@@ -4,7 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 
 /**
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 public class SecurityModule extends AbstractModule {
 

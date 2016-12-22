@@ -39,7 +39,7 @@ import com.softmotions.commons.cont.Pair;
 /**
  * Assembly.
  *
- * @author Adamansky Anton (adamansky@gmail.com)
+ * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @NotThreadSafe
 @SuppressWarnings("unchecked")
