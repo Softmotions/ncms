@@ -12,7 +12,7 @@
     <!-- ====================== ASSEMBLY TABLES ============================= -->
     <!-- ==================================================================== -->
 
-    <changeSet id="1" author="adamansky@softmotions.com" dbms="db2">
+    <changeSet id="1" author="adamansky@gmail.com" dbms="db2">
 
         <!-- ===================== ASM CORE ========================== -->
 
@@ -268,7 +268,7 @@
     <!-- ====================== MEDIA TABLES ================================ -->
     <!-- ==================================================================== -->
 
-    <changeSet id="2" author="adamansky@softmotions.com" dbms="db2">
+    <changeSet id="2" author="adamansky@gmail.com" dbms="db2">
 
         <!-- ================ MEDIA_ENTITY ==================== -->
 

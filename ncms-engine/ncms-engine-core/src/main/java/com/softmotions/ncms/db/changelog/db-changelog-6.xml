@@ -6,7 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <changeSet id="6.1" author="adamansky@softmotions.com" dbms="db2">
+    <changeSet id="6.1" author="adamansky@gmail.com" dbms="db2">
         <addColumn tableName="ASMS">
             <column name="LANG" type="CHAR(2)"/>
         </addColumn>

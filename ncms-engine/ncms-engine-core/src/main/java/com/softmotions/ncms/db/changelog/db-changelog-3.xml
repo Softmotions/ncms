@@ -6,7 +6,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <changeSet id="3" author="adamansky@softmotions.com" dbms="db2">
+    <changeSet id="3" author="adamansky@gmail.com" dbms="db2">
 
         <createTable tableName="USER_ENV"
                      remarks="Various user environment values">
