@@ -52,7 +52,7 @@ open class WebBaseTest(db: String) : DbBaseTest(db) {
     }
 
     open protected fun getBaseWebappDir(): String {
-        return Paths.get(projectBasedir, "src/main/webapp").toString()
+        return Paths.get(projectBasedir, "src/test/webapp").toString()
     }
 
     open protected fun getEnv(): NcmsBoot? {

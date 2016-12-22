@@ -1,6 +1,5 @@
 package com.softmotions.ncms.js;
 
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -67,12 +66,6 @@ public class _TestJsServiceRS extends WebBaseTest {
                 new XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/js/cfg/users.xml", false);
         JVMResources.set(wsdb.getDatabaseName(), wsdb);
         b.withRealm(new WSUserDatabaseRealm(wsdb));
-    }
-
-    @Override
-    @Nonnull
-    protected String getBaseWebappDir() {
-        return Paths.get(getProjectBasedir(), "src/test/webapp").toString();
     }
 
     public _TestJsServiceRS(@Nonnull String db) {
