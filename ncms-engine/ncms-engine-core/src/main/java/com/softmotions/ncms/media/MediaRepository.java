@@ -53,13 +53,13 @@ public interface MediaRepository extends MediaReader, Closeable {
                     String target,
                     boolean overwrite,
                     boolean system,
-                    String user) throws IOException;
+                    @Nullable String user) throws IOException;
 
 
     Long importFile(InputStream source,
                     String target,
                     boolean system,
-                    String user) throws IOException;
+                    @Nullable String user) throws IOException;
 
     /**
      * Ensure existence of resized image file
@@ -106,6 +106,8 @@ public interface MediaRepository extends MediaReader, Closeable {
      *                     owner will be preserved
      * @return Copied files mapping: `source file id => target file id`
      */
-    Map<Long, Long> copyPageMedia(long sourcePageId, long targetPageId, String owner) throws IOException;
+    Map<Long, Long> copyPageMedia(long sourcePageId,
+                                  long targetPageId,
+                                  @Nullable String owner) throws IOException;
 }
 

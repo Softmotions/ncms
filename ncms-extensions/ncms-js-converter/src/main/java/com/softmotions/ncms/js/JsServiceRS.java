@@ -97,6 +97,9 @@ public class JsServiceRS extends MBDAOSupport {
 
     private final TaskExecutor executor;
 
+    boolean testingMode;
+
+
 
     @Inject
     public JsServiceRS(SqlSession sess,
@@ -294,7 +297,7 @@ public class JsServiceRS extends MBDAOSupport {
         return path;
     }
 
-    public String createScriptRef(String[] scripts, Map<String, String> opts) {
+    String createScriptRef(String[] scripts, Map<String, String> opts) {
         String fp = computeFingerprint(scripts, opts);
         if (!activeScripts.containsKey(fp)) {
             ensureScript(fp, scripts, opts);
@@ -305,7 +308,7 @@ public class JsServiceRS extends MBDAOSupport {
     }
 
     @Transactional
-    public void ensureScript(String fp, String[] scripts, Map<String, String> opts) {
+    void ensureScript(String fp, String[] scripts, Map<String, String> opts) {
 
         String spec;
         ReadWriteLock rwlock = RW_STRIPES.get(fp);
@@ -439,6 +442,8 @@ public class JsServiceRS extends MBDAOSupport {
         if (app != null) {
             err.hint("app", app);
             ebus.fire(err);
+        } else if (testingMode) {
+            ebus.fire(err);
         }
     }
 
@@ -474,7 +479,7 @@ public class JsServiceRS extends MBDAOSupport {
     }
 
     @Transactional
-    public void updateJsFile(Long id) {
+    void updateJsFile(Long id) {
         log.info("Update JS file: {}", id);
         List<String> fps = select("selectAffectedFingerprints", id);
         // cleanup js cache
