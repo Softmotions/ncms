@@ -43,4 +43,8 @@ open class GuiceBaseTest : BaseTest() {
     protected fun <T : Any> getInstance(kclass: KClass<T>): T {
         return injector?.getInstance(kclass.java)!!
     }
+
+    protected fun <T> getInstance(clazz: Class<T>): T {
+        return injector!!.getInstance(clazz)!!
+    }
 }
