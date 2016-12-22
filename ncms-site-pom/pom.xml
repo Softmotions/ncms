@@ -13,7 +13,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <softmotions.ncms.version>1.0-SNAPSHOT</softmotions.ncms.version>
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
-        <qooxdoo.sdk.version>5.0.1</qooxdoo.sdk.version>
+        <qooxdoo.sdk.version>5.0.2</qooxdoo.sdk.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
         <pgsql.jdbc.version>9.4.1212.jre7</pgsql.jdbc.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
