@@ -84,6 +84,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
+import com.softmotions.commons.Converters;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.Pair;
@@ -102,7 +103,6 @@ import com.softmotions.commons.io.watcher.FSWatcherEventSupport;
 import com.softmotions.commons.io.watcher.FSWatcherModifyEvent;
 import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
 import com.softmotions.commons.lifecycle.Dispose;
-import com.softmotions.commons.num.NumberUtils;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
@@ -808,7 +808,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         res.put("owner", (String) meta.get("owner"));
         res.put("tags", (String) meta.get("tags"));
         res.put("status", (Integer) meta.get("status"));
-        res.put("system", NumberUtils.number2Boolean((Number) meta.get("system"), false));
+        res.put("system", Converters.toBoolean(meta.get("system")));
         res.put("description", (String) meta.get("description"));
         return res;
     }
