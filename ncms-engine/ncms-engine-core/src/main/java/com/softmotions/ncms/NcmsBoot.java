@@ -42,9 +42,9 @@ public class NcmsBoot extends WBServletListener {
             "| | | |   --| | | |__   |  |   __|   | . | |   | -_|\n" +
             "|_|___|_____|_|_|_|_____|  |_____|_|_|_  |_|_|_|___|\n" +
             "                                     |___|          \n" +
-            " Environment: %s\n" +
-            " Version: %s\n" +
-            " Max heap: %s\n";
+            " Environment: {}\n" +
+            " Version: {}\n" +
+            " Max heap: {}\n";
 
     protected final Logger log;
 

@@ -14,9 +14,12 @@ open class DbBaseTest(db: String) : GuiceBaseTest() {
 
     val dbTestRunner: DatabaseTestRunner
 
+
     companion object {
+        @JvmField
         val DEFAULT_DB = ""
     }
+
 
     init {
 

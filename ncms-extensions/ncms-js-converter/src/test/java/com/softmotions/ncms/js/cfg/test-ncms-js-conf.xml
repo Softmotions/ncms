@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <app-name>NCMSTEST</app-name>
+    <environment>test</environment>
+    <logging-ref>logging.xml</logging-ref>
+    <newtmp-cleanup-on-exit>true</newtmp-cleanup-on-exit>
+    <server-name>127.0.0.1</server-name>
+    <server-port>8282</server-port>
+    <site>
+        <root>http://${server-name}:${server-port}</root>
+        <preferRequestUrl>true</preferRequestUrl>
+    </site>
+    <app-prefix>/</app-prefix>
+
+    <security>
+        <shiro-config-locations>classpath:com/softmotions/ncms/js/cfg/shiro.test.ini</shiro-config-locations>
+        <dbJVMName>WSUserDatabase</dbJVMName>
+        <web-access-control-allow>*</web-access-control-allow>
+    </security>
+
+    <cache-headers-groups>
+        <cache-group>
+            <nocache>true</nocache>
+            <patterns>/*</patterns>
+        </cache-group>
+    </cache-headers-groups>
+
+    <mybatis>
+        <dbenv>{sys:JDBC.env}</dbenv>
+        <bindDatasource>true</bindDatasource>
+        <config>com/softmotions/ncms/db/mybatis-config.xml</config>
+        {sys:JDBC.propsFile}
+        <extra-properties>
+            JDBC.url={sys:JDBC.url}
+            JDBC.driver={sys:JDBC.driver}
+        </extra-properties>
+    </mybatis>
+
+    <liquibase>
+        <changelog>com/softmotions/ncms/db/changelog/db-changelog-master.xml</changelog>
+        <update>
+            <dropAll>
+                <sql-before failOnError="false">
+                    DROP INDEX IDX_L_ASMS_HNAME;
+                    DROP INDEX IDX_L_ASMS_NAMEDESC;
+                </sql-before>
+                <activate>{sys:liquibase.dropAll}</activate>
+            </dropAll>
+            <contexts>testing</contexts>
+        </update>
+    </liquibase>
+
+    <media>
+        <basedir>{newtmp}/media</basedir>
+    </media>
+
+    <modules>
+        <module>com.softmotions.ncms.js.NcmsJsModule</module>
+    </modules>
+</configuration>

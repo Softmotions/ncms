@@ -8,7 +8,7 @@ import com.softmotions.ncms.DbTestsFactory
  */
 class TestRS : DbTestsFactory() {
 
-    override fun createTest(db: String): Array<out Any> {
+    override fun createTests(db: String): Array<out Any> {
         return arrayOf(
                 _TestAsmRS(db),
                 _TestPageRS(db),

@@ -2,6 +2,7 @@ package com.softmotions.ncms
 
 import ch.qos.logback.classic.Level
 import com.github.kevinsawicki.http.HttpRequest
+import com.google.inject.Injector
 import com.softmotions.weboot.testing.tomcat.TomcatRunner
 import java.nio.file.Paths
 
@@ -14,6 +15,9 @@ open class WebBaseTest(db: String) : DbBaseTest(db) {
     protected var runner: TomcatRunner? = null
 
     protected var projectBasedir: String? = null
+
+    override var injector: Injector? = null
+        get() = getEnv()!!.injector
 
     open fun setupWeb() {
         setupLogging(Level.INFO)
@@ -54,7 +58,6 @@ open class WebBaseTest(db: String) : DbBaseTest(db) {
     open protected fun getEnv(): NcmsBoot? {
         return runner?.getContextEventListener(NcmsBoot::class.java)
     }
-
 
     open protected fun auth(r: HttpRequest): HttpRequest {
         return auth("admin", "ncms1", r)

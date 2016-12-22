@@ -9,7 +9,7 @@ import org.testng.annotations.Test
 class TestAsmsUI : DbTestsFactory() {
 
     @Test
-    override fun createTest(db: String): Array<out Any> {
+    override fun createTests(db: String): Array<out Any> {
         return arrayOf(_TestSimpleSiteUI(db))
     }
 }

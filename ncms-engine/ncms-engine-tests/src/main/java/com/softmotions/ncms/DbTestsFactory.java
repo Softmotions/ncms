@@ -30,11 +30,11 @@ public abstract class DbTestsFactory {
         return tests;
     }
 
-    public abstract Object[] createTest(@Nonnull String db);
+    public abstract Object[] createTests(@Nonnull String db);
 
     @Factory
     public Object[] createInstances() {
-        Object[] instances = getDatabases().stream().flatMap(db -> Arrays.stream(createTest(db))).toArray();
+        Object[] instances = getDatabases().stream().flatMap(db -> Arrays.stream(createTests(db))).toArray();
         System.err.println("Test instances: " +
                            ArrayUtils.stringJoin(Arrays.stream(instances).map(o -> o.getClass().getName()).toArray(), ", "));
         return instances;

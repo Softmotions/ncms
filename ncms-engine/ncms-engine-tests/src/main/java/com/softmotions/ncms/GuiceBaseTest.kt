@@ -15,7 +15,10 @@ import kotlin.reflect.KClass
  */
 open class GuiceBaseTest : BaseTest() {
 
-    protected var injector: Injector? = null
+    open protected val injector: Injector?
+        get() = _injector
+
+    private var _injector: Injector? = null
 
     protected fun loadServicesConfiguration(cfgLocation: String): ServicesConfiguration {
         return ServicesConfiguration(cfgLocation);
@@ -25,7 +28,7 @@ open class GuiceBaseTest : BaseTest() {
         val mlist = ArrayList<Module>()
         mlist += LifeCycleModule()
         mlist += modules
-        injector = Guice.createInjector(Stage.PRODUCTION, mlist)
+        _injector = Guice.createInjector(Stage.PRODUCTION, mlist)
         injector?.getInstance(LifeCycleService::class.java)?.start()
     }
 
