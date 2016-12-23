@@ -44,7 +44,7 @@ Global settings in nCMS config file
   <media>
     <js>
       <!-- Max number of days to wait before cleanup 
-           of a compilation results what are no longer demanded.
+           of a compilation results what are no longer used.
            (30 days by default)             
       -->  
       <forgotten-scripts-max-life-days>30</forgotten-scripts-max-life-days>
