@@ -148,7 +148,6 @@ public class AsmFilter implements Filter {
                 return false;
             }
         }
-        boolean isAdmRequest = pi.startsWith(env.getNcmsAdminRoot());
         for (final String sp : stripPrefixes) {
             if (pi.startsWith(sp)) {
                 pi = pi.substring(sp.length());
@@ -186,11 +185,10 @@ public class AsmFilter implements Filter {
         boolean preview = pageSecurity.isPreviewPageRequest(req);
         Asm asm = ctx.getAsm();
         if (!asm.isPublished()) {
-            if (!(isAdmRequest && pageSecurity.checkAccessAny(asm.getId(), req, "wnd"))) {
-                if (req.getUserPrincipal() == null) {
+            boolean canAccess = (req.getUserPrincipal() != null) && pageSecurity.checkAccessAny(asm.getId(), req, "wnd");
+            if (!canAccess) {
                     resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-                }
-                return true;
+                    return true;
             }
         }
 
