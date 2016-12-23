@@ -1,7 +1,7 @@
 {%- block doctype %}<!DOCTYPE html>{%- endblock %}
 
 {%- set is_master = (master_doc + ".txt") == sourcename %}
-{%- set script_files = script_files + ['_static/materialize.min.js', '_static/theme.js'] %}
+{%- set script_files = script_files + ['_static/materialize.min.js', '_static/scrollmagic.min.js', '_static/theme.js'] %}
 {%- if not embedded and docstitle %}
 {%- set titlesuffix = " &mdash; "|safe + docstitle|e %}
 {%- else %}
@@ -106,6 +106,7 @@
         {%- if sidebars|length == 0 %}
         &nbsp;
         {%- endif %}
+        <span id="sidebarend"></span>
     </div>
     <div class="page-content-wrapper col s12 m8 l9 pull-m4 pull-l3">
         <div id="page-content-block">

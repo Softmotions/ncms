@@ -275,6 +275,7 @@ jQuery(function () {
     initImgFull();
     initKeys();
     initScreen();
+    initScrollMagic();
 
     $(window).on("load", function () {
         var hash = document.location.hash;
@@ -474,6 +475,28 @@ jQuery(function () {
                 }
             }
         }
+    }
+
+
+    function initScrollMagic() {
+        // var controller = new ScrollMagic.Controller();
+        // new ScrollMagic.Scene({triggerElement: "#sidebarend", triggerHook: "onLeave", duration: 100})
+        // .on("end", function (e) {
+        //     var $sidebar = $("#sidebar");
+        //     var $content = $(".page-content-wrapper");
+        //     var cc = $content.attr("class");
+        //     if (!cc) {
+        //         return;
+        //     }
+        //     if (cc.indexOf("pull") === -1) {
+        //         $content.attr("class", "page-content-wrapper col s12 m8 l9 pull-m4 pull-l3")
+        //     } else {
+        //         $content.attr("class", "page-content-wrapper col s12");
+        //     }
+        // })
+        // /*.addIndicators()*/
+        // .addTo(controller);
+
     }
 
 });
