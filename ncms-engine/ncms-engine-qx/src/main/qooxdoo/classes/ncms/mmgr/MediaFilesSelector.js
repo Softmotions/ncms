@@ -867,7 +867,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 el.ondragleave = null;
             }
         }
-        this._disposeObjects("__dropZone");
         this.__sf = null;
         this.__table = null;
         this.__dropFun = null;
@@ -877,8 +876,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__editBt = null;
         this.__subfoldersBt = null;
         this.__opts = null;
-        if (this.__clipboard != null) {
-            this.__clipboard.destroy();
-        }
+        this._disposeObjects("__dropZone", "__clipboard");
+
     }
 });
