@@ -74,11 +74,17 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         this.addListenerOnce("treeLoaded", function () {
             this._registerCommandFocusWidget(this._tree);
         }, this);
+
+        if (typeof window.Clipboard === 'function') {
+            this.__clipboard = new window.Clipboard('.copy_button');
+        }
     },
 
     members: {
 
         __options: null,
+        
+        __clipboard: null,
 
         getTree: function () {
             return this._tree;
@@ -228,6 +234,13 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             bt = new qx.ui.menu.Button(this.tr("Refresh"));
             bt.addListenerOnce("execute", this.__onRefresh, this);
             menu.add(bt);
+
+            if (sel != null) {
+                bt = new qx.ui.menu.Button(this.tr("Copy GUID"));
+                bt.getContentElement().setAttribute("class", "copy_button");
+                bt.getContentElement().setAttribute("data-clipboard-text", sel.getGuid());
+                menu.add(bt);
+            }
 
             var parent = this.__calcFirstFolderParent(sel);
             if (ncms.Application.userInRoles("admin.structure") || (parent !== root && parent.getAccessMask()
@@ -438,5 +451,8 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         events.removeListener("pageCreated", this.__onPageCreated, this);
         events.removeListener("pageRemoved", this.__onPageEditedRemoved, this);
         events.removeListener("pageEdited", this.__onPageEditedRemoved, this);
+        if (this.__clipboard != null) {
+            this.__clipboard.destroy();
+        }
     }
 });
