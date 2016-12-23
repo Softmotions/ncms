@@ -294,6 +294,13 @@ qx.Class.define("ncms.Application", {
                 this.__initAtmosphere();
                 this.fireEvent("guiInitialized");
             }, this);
+            
+            window.addEventListener("dragover", function (ev) {
+                ev.preventDefault();
+            }, false);
+            window.addEventListener("drop", function (ev) {
+                ev.preventDefault();
+            }, false);
         },
 
         __initAtmosphere: function () {

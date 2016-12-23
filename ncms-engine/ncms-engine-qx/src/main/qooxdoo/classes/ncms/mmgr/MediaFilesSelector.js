@@ -104,6 +104,21 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             opts["allowSubfoldersView"] = true;
         }
 
+        this.__dropZone = new ncms.cc.WidgetHighlighter(this);
+        var me = this;
+        window.addEventListener("dragover", function (ev) {
+            ev.preventDefault();
+            me.__dropZone.show();
+        }, false);
+        window.addEventListener("dragleave", function (ev) {
+            ev.preventDefault();
+            me.__dropZone.hide();
+        }, false);
+        window.addEventListener("drop", function (ev) {
+            ev.preventDefault();
+            me.__dropZone.hide();
+        }, false);
+
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", function () {
             this.__search(null);
@@ -214,6 +229,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         __dropFun: null,
 
+        __dropZone: null,
+        
         __sf: null,
 
         __table: null,
@@ -563,6 +580,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             ev.stopPropagation();
             ev.preventDefault();
             this.__uploadFiles(ev.dataTransfer.files);
+            this.__dropZone.hide();
         },
 
         __uploadFiles: function (files, cb, self) {
@@ -619,9 +637,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 return;
             }
             el.ondrop = this.__dropFun;
-            el.ondragover = function () {
-                return false;
-            };
         },
 
         __previewFile: function (ev) {
@@ -852,6 +867,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 el.ondragleave = null;
             }
         }
+        this._disposeObjects("__dropZone");
         this.__sf = null;
         this.__table = null;
         this.__dropFun = null;
