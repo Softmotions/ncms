@@ -27,6 +27,9 @@ public abstract class DbTestsFactory {
         if (testDb2) {
             tests.add("db2");
         }
+        if (tests.isEmpty()) {
+            tests.add("postgres");
+        }
         return tests;
     }
 
