@@ -235,12 +235,6 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             bt.addListenerOnce("execute", this.__onRefresh, this);
             menu.add(bt);
 
-            if (sel != null) {
-                bt = new qx.ui.menu.Button(this.tr("Copy GUID"));
-                bt.getContentElement().setAttribute("class", "copy_button");
-                bt.getContentElement().setAttribute("data-clipboard-text", sel.getGuid());
-                menu.add(bt);
-            }
 
             var parent = this.__calcFirstFolderParent(sel);
             if (ncms.Application.userInRoles("admin.structure") || (parent !== root && parent.getAccessMask()
@@ -251,6 +245,11 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             }
 
             if (sel != null && sel != root) {
+                bt = new qx.ui.menu.Button(this.tr("Copy GUID"));
+                bt.getContentElement().setAttribute("class", "copy_button");
+                bt.getContentElement().setAttribute("data-clipboard-text", sel.getGuid());
+                menu.add(bt);
+                
                 var canDuplicate = true;
                 if (parent !== root) {
                     var am = parent.getAccessMask();
