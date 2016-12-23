@@ -105,6 +105,15 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         }
 
         this.__dropZone = new ncms.cc.WidgetHighlighter(this);
+        var me = this;
+        window.addEventListener("dragover", function (ev) {
+            ev.preventDefault();
+            me.__dropZone.show();
+        }, false);
+        window.addEventListener("drop", function (ev) {
+            ev.preventDefault();
+            me.__dropZone.hide();
+        }, false);
 
         var sf = this.__sf = new sm.ui.form.SearchField();
         sf.addListener("clear", function () {
@@ -624,15 +633,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 return;
             }
             el.ondrop = this.__dropFun;
-            var me = this;
-            el.ondragleave = function () {
-                me.__dropZone.hide();
-                return false;
-            };
-            el.ondragover = function () {
-                me.__dropZone.show();
-                return false;
-            };
         },
 
         __previewFile: function (ev) {
