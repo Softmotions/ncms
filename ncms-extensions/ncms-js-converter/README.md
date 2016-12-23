@@ -8,7 +8,7 @@ in the nCMS code editor.
 In HTTL templates
 -----------------
 
-The following snippet:
+The snippet:
 ```html
 <html>
  <body>
@@ -19,7 +19,7 @@ The following snippet:
 </html>
 ```
 
-The specified httl template will produce following markup:
+will produce the following markup:
 ```html
 <html>
  <body> 
