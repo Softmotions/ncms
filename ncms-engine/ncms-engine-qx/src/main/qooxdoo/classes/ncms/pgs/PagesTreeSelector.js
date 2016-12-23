@@ -450,8 +450,6 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         events.removeListener("pageCreated", this.__onPageCreated, this);
         events.removeListener("pageRemoved", this.__onPageEditedRemoved, this);
         events.removeListener("pageEdited", this.__onPageEditedRemoved, this);
-        if (this.__clipboard != null) {
-            this.__clipboard.destroy();
-        }
+        this.__clipboard = null;
     }
 });

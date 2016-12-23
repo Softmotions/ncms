@@ -877,8 +877,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__subfoldersBt = null;
         this.__opts = null;
         this._disposeObjects("__dropZone");
-        if (this.__clipboard != null) {
-            this.__clipboard.destroy();
-        }
+        this.__clipboard = null;
     }
 });

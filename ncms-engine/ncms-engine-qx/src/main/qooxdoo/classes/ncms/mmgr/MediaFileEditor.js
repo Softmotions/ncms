@@ -402,9 +402,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         this.__viewPane = null;
         this.__infoTable = null;
         this.__owner = null;
-        if (this.__clipboard != null) {
-            this.__clipboard.destroy();
-        }
+        this.__clipboard = null;
         this._disposeObjects("__form");
         this.removeAllBindings();
     }
