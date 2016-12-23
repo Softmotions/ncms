@@ -110,6 +110,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             ev.preventDefault();
             me.__dropZone.show();
         }, false);
+        window.addEventListener("dragleave", function (ev) {
+            ev.preventDefault();
+            me.__dropZone.hide();
+        }, false);
         window.addEventListener("drop", function (ev) {
             ev.preventDefault();
             me.__dropZone.hide();

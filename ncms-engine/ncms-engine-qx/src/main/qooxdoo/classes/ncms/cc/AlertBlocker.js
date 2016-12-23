@@ -125,6 +125,9 @@ qx.Class.define("ncms.cc.AlertBlocker", {
     },
 
     destruct: function () {
+        this.__widget.removeListener("resize", this.__centerBa, this);
+        this.__widget.removeListener("move", this.__centerBa, this);
+        this.__widget.removeListener("disappear", this.__doUnblock, this);
         this.__widget = null;
         if (this.__blockerAtom) {
             qx.core.Init.getApplication().getRoot()._remove(this.__blockerAtom);

@@ -110,6 +110,9 @@ qx.Class.define("ncms.cc.WidgetHighlighter", {
     },
 
     destruct: function () {
+        this.__widget.removeListener("resize", this.__onBoundsChange, this);
+        this.__widget.removeListener("move", this.__onBoundsChange, this);
+        this.__widget.removeListener("disappear", this.__onWidgetDisappear, this);
         this.__widget = null;
         this._disposeObjects("__highlighter");
     }
