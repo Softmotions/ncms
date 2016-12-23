@@ -83,7 +83,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
     members: {
 
         __options: null,
-        
+
         __clipboard: null,
 
         getTree: function () {
@@ -450,6 +450,8 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         events.removeListener("pageCreated", this.__onPageCreated, this);
         events.removeListener("pageRemoved", this.__onPageEditedRemoved, this);
         events.removeListener("pageEdited", this.__onPageEditedRemoved, this);
-        this._disposeObjects("__clipboard");
+        if (this.__clipboard != null) {
+            this.__clipboard.destroy();
+        }
     }
 });
