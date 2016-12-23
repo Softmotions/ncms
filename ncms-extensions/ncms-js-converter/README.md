@@ -19,7 +19,7 @@ The snippet:
 </html>
 ```
 
-will produce the markup like this:
+will produce a markup like this:
 ```html
 <html>
  <body> 
