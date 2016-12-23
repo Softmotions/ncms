@@ -2,7 +2,7 @@ Integration of Google Closure JS compiler and nCMS
 ==================================================
 
 This module joins and minimizes scripts specified in httl templates 
-and produces links to compiled scripts. Also it provides js syntax checks
+and produces links to compiled scripts. Also it provides js syntax checking
 in the nCMS code editor.
  
 In HTTL templates
