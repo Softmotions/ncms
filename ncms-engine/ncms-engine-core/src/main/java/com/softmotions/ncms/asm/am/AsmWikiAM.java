@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -33,7 +32,7 @@ import com.softmotions.ncms.mediawiki.GMapTag;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
 
 /**
- * Markdown/Mediawiki attribute manager.
+ * Mediawiki attribute manager.
  *
  * @author Adamansky Anton (adamansky@softmotions.com)
  */
@@ -63,9 +62,9 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
                                                                   Pattern.CASE_INSENSITIVE);
 
 
-    private final ObjectMapper mapper;
-
     private final MediaWikiRenderer mediaWikiRenderer;
+
+    private final ObjectMapper mapper;
 
     private final PageService pageService;
 
@@ -86,16 +85,6 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
     @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
-    }
-
-    @Override
-    public AsmAttribute prepareGUIAttribute(HttpServletRequest req,
-                                            HttpServletResponse resp,
-                                            Asm page,
-                                            Asm template,
-                                            AsmAttribute tmplAttr,
-                                            AsmAttribute attr) throws Exception {
-        return attr;
     }
 
     @Override

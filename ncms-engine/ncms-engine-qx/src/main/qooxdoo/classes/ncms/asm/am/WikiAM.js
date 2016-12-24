@@ -1,5 +1,5 @@
 /**
- * Markdown/Mediawiki attribute manager.
+ * Mediawiki attribute manager.
  */
 qx.Class.define("ncms.asm.am.WikiAM", {
     extend: qx.core.Object,

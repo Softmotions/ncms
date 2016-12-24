@@ -92,7 +92,7 @@ constructor(private val env: NcmsEnvironment,
 
     inner class WSUserState(user: WSUser, req: HttpServletRequest) : HashMap<String, Any?>() {
         internal val properties: Map<String, Any?> = HashMap<String, Any?>().apply {
-            put("max-edit-text-size", env.xcfg().getInt("media.max-edit-text-size", 524288))
+            put("max-edit-text-size", env.xcfg().getInt("media.max-edit-text-size", 1048576))
         }
         init {
             put("appName", env.applicationName)
