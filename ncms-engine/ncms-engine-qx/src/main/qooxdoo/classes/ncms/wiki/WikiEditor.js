@@ -50,6 +50,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         this._setLayout(new qx.ui.layout.VBox(0));
 
         this.__controls = [];
+        this.__parts = {};
         this.__menuButtons = [];
         this.__asmSpec = asmSpec;
         this.__attrSpec = attrSpec;
@@ -100,7 +101,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __helpControls: null,
 
-        __mainPart: null,
+        __parts: null,
 
         __attrSpec: null,
 
@@ -159,9 +160,14 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             switch (id) {
 
                 case "toolbar":
-                    control = new qx.ui.toolbar.ToolBar().set({overflowHandling: true, "show": "icon"});
-                    this.__mainPart = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
-                    control.add(this.__mainPart);
+                    control = new qx.ui.toolbar.ToolBar().set({spacing: 4, overflowHandling: true, "show": "icon"});
+                    this.__parts["main"] = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
+                    control.add(this.__parts["main"]);
+                    this.__parts["extra"] = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
+                    control.add(this.__parts["extra"]);
+                    this.__parts["menu"] = new qx.ui.toolbar.Part().set({"appearance": "toolbar-table/part"});
+                    control.add(this.__parts["menu"]);
+
                     this._add(control, {flex: 0});
                     this.__lastToolbarItem = control.addSpacer();
                     var overflow = new qx.ui.toolbar.MenuButton(this.tr("Controls..."));
@@ -301,16 +307,12 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                         bts.push(mbt);
                     }
                 }, this);
-                if (this.__mainPart != null) {
-                    this.__mainPart.add(bt);
-                } else {
-                    toolbar.add(bt);
-                }
+                (this.__parts[options["part"] || "menu"] || this.__parts["menu"]).add(bt);
                 this.__menuButtons.push(bt);
             } else {
                 callback = this.__buildToolbarControlAction(options);
                 bt = this.__registerToolbarControl(
-                    toolbar, this.__mainPart,
+                    toolbar, (this.__parts[options["part"] || "main"] || this.__parts["main"]),
                     new qx.ui.toolbar.Button(null, options["icon"])
                     .set({appearance: "wiki-editor-toolbar-button"}),
                     callback, options);
@@ -458,6 +460,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
             this._addToolbarControl({
                 id: "H1",
+                part: "main",
                 icon: "ncms/icon/16/wiki/text_heading_1.png",
                 tooltipText: this.tr("Heading 1"),
                 prompt: cprompt(this.tr("Header text")),
@@ -466,6 +469,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             });
             this._addToolbarControl({
                 id: "H2",
+                part: "main",
                 icon: "ncms/icon/16/wiki/text_heading_2.png",
                 tooltipText: this.tr("Heading 2"),
                 prompt: cprompt(this.tr("Header text")),
@@ -474,6 +478,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             });
             this._addToolbarControl({
                 id: "H3",
+                part: "main",
                 icon: "ncms/icon/16/wiki/text_heading_3.png",
                 tooltipText: this.tr("Heading 3"),
                 prompt: cprompt(this.tr("Header text")),
@@ -482,6 +487,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             });
             this._addToolbarControl({
                 id: "Bold",
+                part: "main",
                 icon: "ncms/icon/16/wiki/text_bold.png",
                 tooltipText: this.tr("Bold"),
                 prompt: cprompt(this.tr("Bold text")),
@@ -491,6 +497,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             });
             this._addToolbarControl({
                 id: "Italic",
+                part: "main",
                 icon: "ncms/icon/16/wiki/text_italic.png",
                 tooltipText: this.tr("Italic"),
                 prompt: cprompt(this.tr("Italics text")),
@@ -501,6 +508,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
             this._addToolbarControl({
                 id: "UL",
+                part: "main",
                 icon: "ncms/icon/16/wiki/text_list_bullets.png",
                 tooltipText: this.tr("Bullet list"),
                 shortcut: "Ctrl+U",
@@ -509,6 +517,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             });
             this._addToolbarControl({
                 id: "OL",
+                part: "main",
                 icon: "ncms/icon/16/wiki/text_list_numbers.png",
                 tooltipText: this.tr("Numbered list"),
                 shortcut: "Ctrl+O",
@@ -518,22 +527,35 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
 
             this._addToolbarControl({
+                part: "extra",
                 icon: "ncms/icon/16/wiki/link_add.png",
                 title: this.tr("Insert link"),
                 tooltipText: this.tr("Insert link"),
                 prompt: this.__insertLinkPrompt.bind(this),
-                insertMediawiki: this.__mediaWikiLink.bind(this)
+                insertMediawiki: this.__mediaWikiLink.bind(this),
+                insertMarkdown: this.__markdownLink.bind(this)
             });
 
             this._addToolbarControl({
+                part: "extra",
                 icon: "ncms/icon/16/wiki/image_add.png",
                 title: this.tr("Insert image"),
-                prompt: this.__insertImagePrompt.bind(this),
+                prompt: this.__insertMediaWikiImagePrompt.bind(this),
                 tooltipText: this.tr("Insert image"),
                 insertMediawiki: wrap(this.__mediaWikiImage, this)
             });
 
             this._addToolbarControl({
+                part: "extra",
+                icon: "ncms/icon/16/wiki/image_add.png",
+                title: this.tr("Insert image"),
+                prompt: this.__insertMarkdownImagePrompt.bind(this),
+                tooltipText: this.tr("Insert image"),
+                insertMarkdown: wrap(this.__markdownImage, this)
+            });
+
+            this._addToolbarControl({
+                part: "extra",
                 icon: "ncms/icon/16/wiki/document_add.png",
                 title: this.tr("Insert file link"),
                 prompt: this.__insertFilePrompt.bind(this),
@@ -543,6 +565,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
             this._addToolbarControl({
                 id: "Table",
+                part: "extra",
                 icon: "ncms/icon/16/wiki/table_add.png",
                 title: this.tr("Table"),
                 tooltipText: this.tr("Insert table"),
@@ -558,6 +581,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             });
             this._addToolbarControl({
                 id: "Tree",
+                part: "extra",
                 icon: "ncms/icon/16/wiki/tree_add.png",
                 title: this.tr("Tree"),
                 tooltipText: this.tr("Insert tree"),
@@ -573,6 +597,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             });
             this._addToolbarControl({
                 id: "Note",
+                part: "menu",
                 icon: "ncms/icon/16/wiki/note_add.png",
                 tooltipText: this.tr("Create note"),
                 menu: [
@@ -595,6 +620,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
             this._addToolbarControl({
                 id: "Google",
+                part: "menu",
                 icon: "ncms/icon/16/wiki/google.png",
                 tooltipText: this.tr("Google services"),
                 menu: [
@@ -620,6 +646,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
             this._addToolbarControl({
                 id: "SlideShare",
+                part: "menu",
                 icon: "ncms/icon/16/wiki/slideshare.png",
                 title: this.tr("SlideShare"),
                 tooltipText: this.tr("Insert SlideShare presentation"),
@@ -629,6 +656,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
             this.addToolbarControl({
                 id: "Vimeo",
+                part: "menu",
                 icon: "ncms/icon/16/wiki/vimeo.png",
                 title: this.tr("Vimeo video"),
                 tooltipText: this.tr("Insert Vimeo video"),
@@ -736,7 +764,19 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             dlg.open();
         },
 
-        __insertImagePrompt: function (stext, cb) {
+        __insertMediaWikiImagePrompt: function (stext, cb) {
+            var dlg = new ncms.wiki.InsertImageDlg(
+                this.__asmSpec["id"],
+                this.tr("Insert image"));
+            dlg.addListener("completed", function (ev) {
+                var data = ev.getData();
+                dlg.close();
+                cb(data);
+            });
+            dlg.open();
+        },
+
+        __insertMarkdownImagePrompt: function (stext, cb) {
             var dlg = new ncms.wiki.InsertImageDlg(
                 this.__asmSpec["id"],
                 this.tr("Insert image"));
@@ -784,6 +824,29 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             return val.join("")
         },
 
+        __markdownLink: function (data) {
+            var val = [];
+            var link;
+            if (!sm.lang.String.isEmpty(data["externalLink"])) {
+                link = data["externalLink"];
+            } else {
+                link = "page:" + data["guidPath"][data["guidPath"].length - 1];
+            }
+            if (sm.lang.String.isEmpty(data["linkText"])) {
+                val.push("<");
+                val.push(link);
+                val.push(">")
+            } else {
+                val.push("[");
+                val.push(data["linkText"]);
+                val.push("]");
+                val.push("(");
+                val.push(link);
+                val.push(")");
+            }
+            return val.join("")
+        },
+
         __mediaWikiImage: function (data) {
             var val = [];
             val.push("[[Image:");
@@ -791,13 +854,13 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             val.push(data["name"]);
             switch (data["size"]) {
                 case "small":
-                    val.push("|100px");
-                    break;
-                case "medium":
                     val.push("|200px");
                     break;
+                case "medium":
+                    val.push("|400px");
+                    break;
                 case "large":
-                    val.push("|300px");
+                    val.push("|600px");
                     break;
             }
             if (data["position"] != null) {
@@ -811,6 +874,14 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 val.push("|link=" + data["link"]);
             }
             val.push("]]");
+            return val.join("");
+        },
+
+        __markdownImage: function (data) {
+            // /rs/mw/link/Image:300px-/1084/i31.png
+            // /rs/mw/link/Image:/1084/i31.png
+            var val = [];
+
             return val.join("");
         },
 
@@ -1035,6 +1106,6 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         this.__asmSpec = null;
         this.__attrSpec = null;
         this.__lastToolbarItem = null;
-        this.__mainPart = null;
+        this.__parts = null;
     }
 });

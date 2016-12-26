@@ -28,8 +28,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -119,6 +117,7 @@ import com.softmotions.ncms.utils.MimeTypeDetector;
 import com.softmotions.web.ResponseUtils;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.executor.TaskExecutor;
 import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
@@ -160,7 +159,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private final WSUserDatabase userdb;
 
-    private final Executor resizer;
+    private final TaskExecutor executor;
+
 
     @Inject
     public MediaRS(NcmsEnvironment env,
@@ -168,7 +168,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    ObjectMapper mapper,
                    I18n i18n,
                    NcmsEventBus ebus,
-                   WSUserDatabase userdb) throws IOException {
+                   WSUserDatabase userdb,
+                   TaskExecutor executor) throws IOException {
         super(MediaRS.class, sess);
         this.env = env;
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
@@ -184,8 +185,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         this.i18n = i18n;
         this.ebus = ebus;
         this.userdb = userdb;
+        this.executor = executor;
         this.ebus.register(this);
-        this.resizer = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -2168,28 +2169,28 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Subscribe
     public void mediaUpdate(MediaUpdateEvent ev) {
         if (!ev.isFolder()) {
-            try {
-                updateResizedImages(ev.getPath());
-            } catch (IOException e) {
-                log.error("Failed to update resized images dir", e);
-            }
+            executor.execute(() -> {
+                try {
+                    updateResizedImages(ev.getPath());
+                } catch (IOException e) {
+                    log.error("Failed to update resized images dir", e);
+                }
+            });
         }
     }
 
     @Subscribe
     public void ensureResizedImage(EnsureResizedImageJobEvent ev) {
-        resizer.execute(() -> _ensureResizedImage(ev));
-    }
-
-    private void _ensureResizedImage(EnsureResizedImageJobEvent ev) {
-        try {
-            ensureResizedImage(ev.getId(),
-                               ev.getWidth(),
-                               ev.getHeight(),
-                               ev.getFlags());
-        } catch (Exception e) {
-            log.error("", e);
-        }
+        executor.execute(() -> {
+            try {
+                ensureResizedImage(ev.getId(),
+                                   ev.getWidth(),
+                                   ev.getHeight(),
+                                   ev.getFlags());
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        });
     }
 
     @Override

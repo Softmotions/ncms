@@ -1,7 +1,7 @@
 package com.softmotions.ncms.asm.am;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +19,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.ext.toc.TocExtension;
+import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.parser.ParserEmulationFamily;
@@ -39,11 +42,10 @@ import com.softmotions.ncms.mediawiki.GMapTag;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
 
 /**
- * Mediawiki attribute manager.
+ * MediaWiki/Markdown attribute manager.
  *
  * @author Adamansky Anton (adamansky@softmotions.com)
  */
-
 @Singleton
 public class AsmWikiAM extends AsmAttributeManagerSupport {
 
@@ -56,21 +58,21 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
     public static final String[] TYPES = {"wiki"};
 
     // \[\[(image|media):(\s*)(/)?(\d+)/(.*)\]\]
-    private static final Pattern MW_MEDIAREF_REGEXP = Pattern.compile("\\[\\[(image|media):(\\s*)(/)?(\\d+)/(.*)\\]\\]",
-                                                                      Pattern.CASE_INSENSITIVE);
+    private static final Pattern MW_MEDIAREF_REGEXP =
+            Pattern.compile("\\[\\[(image|media):(\\s*)(/)?(\\d+)/(.*)\\]\\]", Pattern.CASE_INSENSITIVE);
 
     // \[\[page:\s*([0-9a-f]{32})(\s*\|.*)?\]\]
-    private static final Pattern MW_PAGEREF_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|.*)?\\]\\]",
-                                                                     Pattern.CASE_INSENSITIVE);
+    private static final Pattern MW_PAGEREF_REGEXP =
+            Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|.*)?\\]\\]", Pattern.CASE_INSENSITIVE);
 
 
     // \[\[page:\s*([0-9a-f]{32})(\s*\|(.*))?\]\]
-    private static final Pattern MW_PAGENAME_REGEXP = Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|(.*))?\\]\\]",
-                                                                      Pattern.CASE_INSENSITIVE);
+    private static final Pattern MW_PAGENAME_REGEXP =
+            Pattern.compile("\\[\\[page:\\s*([0-9a-f]{32})(\\s*\\|(.*))?\\]\\]", Pattern.CASE_INSENSITIVE);
 
 
-    private static final Pattern MW_WIKIFIX_REGEXP = Pattern.compile("(/rs/mw/[^\"\'>]+)|((/asm)?/([0-9a-f]{32}))",
-                                                                     Pattern.CASE_INSENSITIVE);
+    private static final Pattern MW_WIKIFIX_REGEXP =
+            Pattern.compile("(/rs/mw/[^\"\'>]+)|((/asm)?/([0-9a-f]{32}))", Pattern.CASE_INSENSITIVE);
 
 
     private final MediaWikiRenderer mediaWikiRenderer;
@@ -80,7 +82,6 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
     private final PageService pageService;
 
     private final NcmsEnvironment env;
-
 
     @Inject
     public AsmWikiAM(ObjectMapper mapper,
@@ -132,6 +133,7 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
             return null;
         }
         String res = null;
+        String markup = null;
         String value = attr.getEffectiveValue();
         try (JsonParser parser = mapper.getFactory().createParser(value)) {
             if (parser.nextToken() != JsonToken.START_OBJECT) {
@@ -141,47 +143,56 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
             do {
                 t = parser.nextValue();
                 if ("html".equals(parser.getCurrentName())) {
-                    res = postProcessHtml(parser.getValueAsString());
+                    res = parser.getValueAsString();
+                } else if ("markup".equals(parser.getCurrentName())) {
+                    markup = parser.getValueAsString();
+                }
+                if (res != null && markup != null) {
                     break;
                 }
             } while (t != null);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return res;
+        return postProcessHtml(markup, res);
     }
 
-    private String postProcessHtml(String html) {
+    private String postProcessHtml(String markup, String html) {
         if (StringUtils.isBlank(html)) {
             return "";
         }
         StringBuffer res = new StringBuffer(html.length());
-        // (/rs/mw/.*)|((/asm)?/([0-9a-f]{32}))
-        //
-        // 0:((/(12d5c7a0c3167d3d21d30f1c43368b32)4)2)0
-        // 0:((/rs/mw/link/Image:300px-/421/header.jpg)1)0
-        Matcher m = MW_WIKIFIX_REGEXP.matcher(html);
-        while (m.find()) {
-            final String guid = m.group(4);
-            final String fref = m.group(1);
-            if (!StringUtils.isBlank(guid)) {
-                String link = pageService.resolvePageLink(guid);
-                if (link != null) {
-                    m.appendReplacement(res, link);
+        if (MARKUP_MEDIAWIKI.equals(markup)) {
+            // (/rs/mw/.*)|((/asm)?/([0-9a-f]{32}))
+            //
+            // 0:((/(12d5c7a0c3167d3d21d30f1c43368b32)4)2)0
+            // 0:((/rs/mw/link/Image:300px-/421/header.jpg)1)0
+            Matcher m = MW_WIKIFIX_REGEXP.matcher(html);
+            while (m.find()) {
+                final String guid = m.group(4);
+                final String fref = m.group(1);
+                if (!StringUtils.isBlank(guid)) {
+                    String link = pageService.resolvePageLink(guid);
+                    if (link != null) {
+                        m.appendReplacement(res, link);
+                    } else {
+                        m.appendReplacement(res, m.group());
+                    }
+                } else if (!StringUtils.isBlank(fref)) {
+                    if (!fref.startsWith(env.getAppRoot())) {
+                        m.appendReplacement(res, env.getAppRoot() + fref);
+                    } else {
+                        m.appendReplacement(res, m.group());
+                    }
                 } else {
                     m.appendReplacement(res, m.group());
                 }
-            } else if (!StringUtils.isBlank(fref)) {
-                if (!fref.startsWith(env.getAppRoot())) {
-                    m.appendReplacement(res, env.getAppRoot() + fref);
-                } else {
-                    m.appendReplacement(res, m.group());
-                }
-            } else {
-                m.appendReplacement(res, m.group());
             }
+            m.appendTail(res);
+        } else if (MARKUP_MARKDOWN.equals(markup)) {
+            // todo ensure resized image
+            res.append(html);
         }
-        m.appendTail(res);
         return res.toString();
     }
 
@@ -202,21 +213,33 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
         String markup = val.path("markup").asText(MARKUP_MEDIAWIKI);
         String html = null;
         if (!StringUtils.isBlank(value)) {
+
+            checkAdminResource(ctx, value);
+
             if (MARKUP_MEDIAWIKI.equals(markup)) {
+
                 html = mediaWikiRenderer.render(preSaveMediaWiki(ctx, attr, value), ctx.getLocale());
                 html = "<div class=\"wiki\">" +
                        html +
                        "\n</div>";
+
             } else if (MARKUP_MARKDOWN.equals(markup)) {
+
                 MutableDataHolder options = new MutableDataSet();
                 options.setFrom(ParserEmulationFamily.KRAMDOWN.getOptions());
-                options.set(Parser.EXTENSIONS, Collections.singleton(TablesExtension.create()));
+                options.set(Parser.EXTENSIONS, Arrays.asList(
+                        TablesExtension.create(),
+                        TocExtension.create(),
+                        AutolinkExtension.create(),
+                        WikiLinkExtension.create()
+                ));
                 Parser parser = Parser.builder(options).build();
                 HtmlRenderer renderer = HtmlRenderer.builder(options).build();
                 html = "<div class=\"markdown\">" +
                        renderer.render(parser.parse(preSaveMarkdown(ctx, attr, value))) +
                        "\n</div>";
             } else {
+
                 log.warn("Unsupported markup language: {}", markup);
             }
         }
@@ -224,11 +247,12 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
 //            log.debug("Rendered HTML={}", html);
 //        }
 //        log.info("Rendered HTML={}", html);
-        ObjectNode root = mapper.createObjectNode();
-        root.put("html", html);
-        root.put("markup", markup);
-        root.put("value", value);
-        attr.setEffectiveValue(mapper.writeValueAsString(root));
+
+        attr.setEffectiveValue(mapper.writeValueAsString(
+                mapper.createObjectNode()
+                      .put("markup", markup)
+                      .put("html", html)
+                      .put("value", value)));
         return attr;
     }
 
@@ -244,10 +268,7 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
         }
     }
 
-
     private String preSaveMediaWiki(AsmAttributeManagerContext ctx, AsmAttribute attr, String value) {
-
-        checkAdminResource(ctx, value);
 
         // \[\[page:\s*([0-9a-f]{32})(\s*\|.*)?\]\]
         Matcher m = MW_PAGEREF_REGEXP.matcher(value);
@@ -265,8 +286,7 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
                 continue;
             }
             try {
-                long fid = Long.parseLong(fileId);
-                ctx.registerFileDependency(attr, fid);
+                ctx.registerFileDependency(attr, Long.parseLong(fileId));
             } catch (NumberFormatException e) {
                 log.error("", e);
             }

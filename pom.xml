@@ -387,6 +387,16 @@
                 <version>${flexmark.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.vladsch.flexmark</groupId>
+                <artifactId>flexmark-ext-wikilink</artifactId>
+                <version>${flexmark.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vladsch.flexmark</groupId>
+                <artifactId>flexmark-ext-escaped-character</artifactId>
+                <version>${flexmark.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.imgscalr</groupId>
                 <artifactId>imgscalr-lib</artifactId>
                 <version>${imgscalr.version}</version>

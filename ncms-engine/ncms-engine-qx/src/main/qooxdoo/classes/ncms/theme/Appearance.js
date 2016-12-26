@@ -15,6 +15,14 @@ qx.Theme.define("ncms.theme.Appearance", {
 
     appearances: {
 
+        "toolbar": {
+            style: function (states) {
+                return {
+                    backgroundColor: "#ededed",
+                    padding: 0
+                };
+            }
+        },
 
         "window/captionbar": {
             style: function (states) {
@@ -278,7 +286,7 @@ qx.Theme.define("ncms.theme.Appearance", {
 
             style: function (states) {
                 var source = states.placementLeft ?
-                    "qx/decoration/Modern/form/tooltip-error-arrow-right.png" : "qx/decoration/Modern/form/tooltip-error-arrow.png";
+                             "qx/decoration/Modern/form/tooltip-error-arrow-right.png" : "qx/decoration/Modern/form/tooltip-error-arrow.png";
                 return {
                     source: source,
                     padding: [6, 0, 0, 0],
