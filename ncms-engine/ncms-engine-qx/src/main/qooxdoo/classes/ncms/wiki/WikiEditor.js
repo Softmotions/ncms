@@ -2,6 +2,7 @@
  * Wiki editor
  *
  * @asset(ncms/icon/16/wiki/*)
+ * @asset(ncms/icon/16/help/help.png)
  */
 qx.Class.define("ncms.wiki.WikiEditor", {
     extend: qx.ui.core.Widget,
@@ -32,7 +33,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
     properties: {
 
         "markup": {
-            check: ["mediawiki"/*, "markdown"*/],
+            check: ["mediawiki", "markdown"],
             init: "mediawiki",
             apply: "_applyMarkup"
         },
@@ -49,6 +50,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         this._setLayout(new qx.ui.layout.VBox(0));
 
         this.__controls = [];
+        this.__menuButtons = [];
         this.__asmSpec = asmSpec;
         this.__attrSpec = attrSpec;
 
@@ -87,6 +89,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
     members: {
 
         __lastToolbarItem: null,
+
+        __menuButtons: null,
 
         __controls: null,
 
@@ -160,7 +164,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     control.add(this.__mainPart);
                     this._add(control, {flex: 0});
                     this.__lastToolbarItem = control.addSpacer();
-                    var overflow = new qx.ui.toolbar.MenuButton(this.tr("More..."));
+                    var overflow = new qx.ui.toolbar.MenuButton(this.tr("Controls..."));
                     overflow.setShow("both");
                     overflow.setAppearance("wiki-editor-toolbar-menubutton");
                     overflow.setMenu(new qx.ui.menu.Menu());
@@ -302,6 +306,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 } else {
                     toolbar.add(bt);
                 }
+                this.__menuButtons.push(bt);
             } else {
                 callback = this.__buildToolbarControlAction(options);
                 bt = this.__registerToolbarControl(
@@ -324,23 +329,32 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     shortcut.addListener("execute", callback, this);
                 }
             }
-            this.__controls.concat(bts);
+            this.__controls = this.__controls.concat(bts);
             this.__updateControls(bts);
         },
 
         __updateControls: function (bts) {
+            var markup = qx.lang.String.capitalize(this.getMarkup());
             bts = bts || this.__controls;
             bts.forEach(function (bt) {
                 var opts = bt.getUserData("opts");
                 if (opts) {
-                    var mfun = ("insert" + qx.lang.String.capitalize(this.getMarkup()));
-                    if (opts[mfun] && !opts["excluded"]) {
+                    if (opts["insert" + markup] && !opts["excluded"]) {
                         bt.show();
                     } else {
                         bt.exclude();
                     }
                 }
             }, this);
+            this.__menuButtons.forEach(function (mb) {
+                if (mb.getMenu().getChildren().filter(function (el) {
+                        return el.isVisible();
+                    }).length) {
+                    mb.show();
+                } else {
+                    mb.exclude();
+                }
+            });
         },
 
         __updateHelpControls: function () {
@@ -1015,9 +1029,12 @@ qx.Class.define("ncms.wiki.WikiEditor", {
     },
 
     destruct: function () {
+        this.__menuButtons = null;
         this.__controls = null;
         this.__helpControls = null;
         this.__asmSpec = null;
         this.__attrSpec = null;
+        this.__lastToolbarItem = null;
+        this.__mainPart = null;
     }
 });
