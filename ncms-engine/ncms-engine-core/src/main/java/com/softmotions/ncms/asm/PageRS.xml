@@ -377,11 +377,23 @@
               AND a.type LIKE #{pageType}
     </select>
 
-    <select id="selectCountOfDependentAttrs" resultType="long" parameterType="string">
+    <select id="selectCountOfAttrsDependentOn" resultType="long" parameterType="string">
         SELECT
             COUNT(*)
         FROM ASM_PAGE_DEPS
         WHERE asm_name = #{name}
+    </select>
+
+    <select id="selectAttributesDependentOn" resultType="map" parameterType="map">
+        SELECT
+            DISTINCT
+            attr.type as "type",
+            attr.name as "name"
+        FROM ASM_PAGE_DEPS AS d
+            INNER JOIN ASM_ATTRs AS attr
+        WHERE
+            d.asm_name = #{guid}
+            AND attr.asm_id = #{asmid}
     </select>
 
 
@@ -390,13 +402,22 @@
             DISTINCT
             asm.name      AS "guid",
             asm.hname     AS "name",
-            asm.published AS "published"
+            asm.published AS "published",
+            asm.nav_cached_path AS "path"
         FROM ASM_PAGE_DEPS AS d
             INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
             INNER JOIN ASMS AS asm ON attr.asm_id = asm.id
         WHERE
             d.asm_name = #{name}
         ORDER BY asm.hname
+    </select>
+
+    <select id="selectCountOfPagesDependentOn" resultType="long" parameterType="string">
+        SELECT
+            COUNT(DISTINCT attr.ASM_ID)
+        FROM ASM_PAGE_DEPS AS d
+            INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
+        WHERE d.asm_name = #{name}
     </select>
 
     <select id="selectOrphanPages" resultType="map" parameterType="string">

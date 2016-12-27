@@ -287,11 +287,15 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
 
         __onRefList: function (ev) {
             var item = this._tree.getSelection().getItem(0);
-            if (item == null) {
+            if (item == null || item.getGuid() == null) {
                 return;
             }
-            qx.bom.Window.open(ncms.Application.ACT.getRestUrl("pages.referrers", {guid: item.getGuid()}),
-                this.tr("List of pages referred %1", item.getLabel()));
+
+            var dlg = new ncms.pgs.PageReferersDlg(
+                item,
+                this.tr("List of referer pages")
+            );
+            dlg.open();
         },
 
         __onMovePage: function (ev) {

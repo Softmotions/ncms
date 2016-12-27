@@ -967,50 +967,59 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     @GET
-    @Path("/referers/{guid}")
-    public Response getPageReferers(@PathParam("guid") String guid,
-                                    @Context HttpServletRequest req) {
-
-        // todo Use more user friendly template
-        return Response.ok((StreamingOutput) o -> {
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter(o, "UTF-8"));
-            pw.println("<!DOCTYPE html>");
-            pw.println("<html>");
-            pw.println("<body>");
-            CachedPage cp = getCachedPage(guid, true);
-            if (cp != null) {
-                pw.print("<h2>");
-                pw.print("<a href='" + (asmRoot + cp.getName()) + "'>");
-                pw.print(i18n.get("ncms.page.nodel.refs.list", req, cp.getHname()));
-                pw.print("</a></h2>");
-            }
-            pw.println("<ol>");
-            select("selectPagesDependentOn", context -> {
-                //noinspection unchecked
-                Map<String, ?> row = (Map<String, ?>) context.getResultObject();
-                String pguid = (String) row.get("guid");
-                String name = (String) row.get("name");
-                boolean published = Converters.toBoolean(row.get("published"));
-                pw.println("<li><a href='" + (asmRoot + pguid) + "'>" + name + "</a> " +
-                           (!published ? "(not published)</li>" : "</li>"));
-            }, guid);
-            pw.println("</ol>");
-            pw.println("</body>");
-            pw.println("</html>");
-            pw.flush();
-        }).type("text/html;charset=UTF-8")
-                       .build();
+    @Path("/referrers/{guid}")
+    public JsonNode getPageReferrers(@PathParam("guid") String guid) {
+        ArrayNode res = mapper.createArrayNode();
+        List<Map<String, ?>> referrers = select("selectPagesDependentOn", "name", guid);
+        for (Map<String, ?> referrer : referrers) {
+            res.addObject()
+               .put("name", (String) referrer.get("name"))
+               .put("path", asmRoot + referrer.get("guid"));
+        }
+        return res;
     }
 
     @GET
-    @Path("/referers/count/{id}")
-    public Number getPageReferersCount(@PathParam("id") Long id) {
+    @Path("/referrers/count/{id}")
+    public Number getPageReferrersCount(@PathParam("id") Long id) {
         Asm page = adao.asmSelectById(id);
         if (page == null) {
             throw new NotFoundException();
         }
 
-        return count("selectCountOfDependentAttrs", page.getName());
+        return count("selectCountOfPagesDependentOn", page.getName());
+    }
+
+    @GET
+    @Path("/referrers/attributes/{guid}/{asmid}")
+    public Response getPageReferrerAttributes(@PathParam("guid") String guid,
+                                              @PathParam("asmid") Long asmid) {
+        return Response.ok((StreamingOutput) output -> {
+                               final JsonGenerator gen = new JsonFactory().createGenerator(output);
+                               gen.writeStartArray();
+                               select("selectPageReferrerAttributes", context -> {
+                                   List<Map<String, ?>> attrs = (List<Map<String, ?>>) context.getResultObject();
+                                   for (Map<String, ?> attr : attrs) {
+                                       try {
+                                           gen.writeStartObject();
+                                           gen.writeStringField("type", (String) attr.get("type"));
+                                           gen.writeStringField("name", (String) attr.get("name"));
+                                           gen.writeEndObject();
+                                       } catch (IOException e) {
+                                           throw new RuntimeException(e);
+                                       }
+                                   }
+                               }, "guid", guid, "asmid", asmid);
+                               gen.writeEndArray();
+                               gen.flush();
+                           }
+        ).type("application/json;charset=UTF-8").build();
+    }
+
+    @GET
+    @Path("/referrers/attributes/count/{guid}")
+    public Number getPageReferrerPagesCount(@PathParam("guid") String guid){
+        return count("selectCountOfPagesDependentOn", guid);
     }
 
     @GET

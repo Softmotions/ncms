@@ -261,10 +261,16 @@ qx.Class.define("ncms.Actions", {
         this._action("pages.single.get", "/rs/adm/pages/single/{collection}");
 
         //GET The list page referers
-        this._action("pages.referrers", "/rs/adm/pages/referers/{guid}");
+        this._action("pages.referrers", "/rs/adm/pages/referrers/{guid}");
 
         //GET The number of page referers
-        this._action("pages.referrers.count", "/rs/adm/pages/referers/count/{id}");
+        this._action("pages.referrers.count", "/rs/adm/pages/referrers/count/{id}");
+
+        //GET The list of referrer page's attributes
+        this._action("pages.referrers.attributes", "/rs/adm/pages/referrers/attributes/{guid}/{asmid}");
+
+        //GET The number of referrer page's attributes
+        this._action("pages.referrers.attributes.count", "/rs/adm/pages/referrers/attributes/count/{guid}");
 
         //PUT Acquire lock on the specified page
         // {id}: Page ID
