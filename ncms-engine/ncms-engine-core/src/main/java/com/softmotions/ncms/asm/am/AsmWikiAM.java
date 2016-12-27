@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
@@ -78,7 +79,11 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
             Pattern.compile("(/rs/mw/[^\"\'>]+)|((/asm)?/([0-9a-f]{32}))", Pattern.CASE_INSENSITIVE);
 
     private static final Pattern MD_LINKS_REGEXP =
-            Pattern.compile("([(<])((page:/?([0-9a-f]{32}))|((file|image):/?(\\d+)(/[^|]+)?(\\|(\\d+)px)?))([>)])",
+            Pattern.compile("([\\(<])((page:/?([0-9a-f]{32}))|((media|image):/?(\\d+)(/[^|\\]>)]+)?(\\|(\\d+)px)?))([>\\)])",
+                            Pattern.CASE_INSENSITIVE);
+
+    private static final Pattern MD_LINKS2_REGEXP =
+            Pattern.compile("([\\(<])(media|image:/?)(\\d+)(/[^|\\]>)]+)?(\\|\\d+px)?([>\\)])",
                             Pattern.CASE_INSENSITIVE);
 
 
@@ -245,15 +250,12 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
                        renderer.render(parser.parse(preSaveMarkdown(ctx, attr, value))) +
                        "\n</div>";
             } else {
-
                 log.warn("Unsupported markup language: {}", markup);
             }
         }
-//        if (log.isDebugEnabled()) {
-//            log.debug("Rendered HTML={}", html);
-//        }
-//        log.info("Rendered HTML={}", html);
-
+        if (log.isDebugEnabled()) {
+            log.debug("Rendered HTML={}", html);
+        }
         attr.setEffectiveValue(mapper.writeValueAsString(
                 mapper.createObjectNode()
                       .put("markup", markup)
@@ -303,9 +305,9 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
     private String preSaveMarkdown(AsmAttributeManagerContext ctx, AsmAttribute attr, String value) {
 
         // Links:
-        // <file:893892>
+        // <media:893892>
         // [test](page:32826bfa40b52c8ccf3359e69501ac7b)
-        // [test2](file:223)
+        // [test2](media:223)
         // ![gras](image:1001/ejdb.png|400px)
 
         StringBuffer res = new StringBuffer(value.length());
@@ -326,13 +328,13 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
                 ctx.registerPageDependency(attr, guid);
             } else if (mediaPart != null) {
                 // 0:((()1(((image)6:(1001)7(/ejdb.png)8(|(400)10px)9)5)2())11)0        ![gras](image:1001/ejdb.png|400px)
-                // 0:((()1(((file)6:(9329)7)5)2())11)0                                  (file:9329)
+                // 0:((()1(((file)6:(9329)7)5)2())11)0                                  (media:9329)
                 // 0:((()1(((image)6:(1001)7(/ejdb.png)8)5)2())11)0                     (/image:1001/ejdb.png)
                 String part = StringUtils.capitalize(m.group(6).toLowerCase());
                 Long fid = Long.parseLong(m.group(7));              // file id
                 String fname = StringUtils.trimToEmpty(m.group(8)); // file name
                 if (m.group(10) == null) {
-                    m.appendReplacement(res, open + "/rs/mw/link/" + part + fid + fname + close);
+                    m.appendReplacement(res, open + "/rs/mw/link/" + part + ':' + fid + fname + close);
                 } else {
                     // /rs/mw/link/image:400px-/1001/ejdb.png"
                     Integer px = Integer.parseInt(m.group(10));
@@ -354,21 +356,21 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
         }
         ObjectNode node = (ObjectNode) mapper.readTree(attr.getEffectiveValue());
         String markup = node.path("markup").asText("");
+        String value = node.path("value").asText("");
+        StringBuffer nmarkup = new StringBuffer(value.length());
+
         if (MARKUP_MEDIAWIKI.equals(markup)) {
-            String value = node.path("value").asText("");
-            StringBuffer nmarkup = new StringBuffer(value.length());
+
+            // \[\[(image|media):(\s*)(/)?(\d+)/(.*)\]\]
             Matcher m = MW_MEDIAREF_REGEXP.matcher(value);
             while (m.find()) {
-                String sfid = m.group(4);
-                if (sfid == null) continue;
-                Long fid;
-                try {
-                    fid = Long.parseLong(sfid);
-                } catch (NumberFormatException ignored) {
+                if (m.group(4) == null) {
+                    m.appendReplacement(nmarkup, m.group(0));
                     continue;
                 }
-                Long tfid = fmap.get(fid);
+                Long tfid = fmap.get(Long.parseLong(m.group(4)));
                 if (tfid == null) {
+                    m.appendReplacement(nmarkup, m.group(0));
                     continue;
                 }
                 // \[\[(image|media):(\s*)(/)?(\d+)/(.*)\]\]
@@ -384,13 +386,39 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
                                              "]]");
             }
             m.appendTail(nmarkup);
-            node.put("value", nmarkup.toString());
-            return applyAttributeValue(ctx, attr, node);
+
         } else if (MARKUP_MARKDOWN.equals(markup)) {
-            // todo
-            return attr;
+
+            // ([\(<])(media|image:/?)(\d+)(/[^|\]>)]+)?(\|\d+px)?([>\)])
+            Matcher m = MD_LINKS2_REGEXP.matcher(value);
+            while (m.find()) {
+                if (m.group(3) == null) {
+                    m.appendReplacement(nmarkup, m.group(0));
+                    continue;
+                }
+                Long tfid = fmap.get(Long.parseLong(m.group(3)));
+                if (tfid == null) {
+                    m.appendReplacement(nmarkup, m.group(0));
+                    continue;
+                }
+                // (image:1001/ejdb.png|500px)
+                // 0:((()1(image:)2(1001)3(/ejdb.png)4(|500px)5())6)0
+                m.appendReplacement(
+                        nmarkup,
+                        m.group(1) +
+                        m.group(2) +
+                        tfid +
+                        MoreObjects.firstNonNull(m.group(4), "") +
+                        MoreObjects.firstNonNull(m.group(5), "") +
+                        m.group(6));
+
+            }
+            m.appendTail(nmarkup);
+
         } else {
             return attr;
         }
+        node.put("value", nmarkup.toString());
+        return applyAttributeValue(ctx, attr, node);
     }
 }

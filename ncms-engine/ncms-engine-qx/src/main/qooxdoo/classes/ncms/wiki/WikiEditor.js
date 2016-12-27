@@ -181,7 +181,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     break;
 
                 case "textarea":
-                    control = new qx.ui.form.TextArea();
+                    control = new qx.ui.form.TextArea().set({font: "monospace", wrap: false});
                     control.setNativeContextMenu(true);
                     control.getContentElement().setAttribute("spellcheck", true);
                     control.setLiveUpdate(true);
@@ -560,7 +560,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 title: this.tr("Insert file link"),
                 prompt: this.__insertFilePrompt.bind(this),
                 tooltipText: this.tr("Insert file link"),
-                insertMediawiki: wrap(this.__mediaWikiFile, this)
+                insertMediawiki: wrap(this.__mediaWikiFile, this),
+                insertMarkdown: wrap(this.__markdownFile, this)
             });
 
             this._addToolbarControl({
@@ -577,8 +578,10 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     });
                     dlg.open();
                 },
-                insertMediawiki: wrap(this.__mediaWikiTable)
+                insertMediawiki: wrap(this.__mediaWikiTable),
+                insertMarkdown: wrap(this.__markdownTable)
             });
+
             this._addToolbarControl({
                 id: "Tree",
                 part: "extra",
@@ -779,7 +782,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         __insertMarkdownImagePrompt: function (stext, cb) {
             var dlg = new ncms.wiki.InsertImageDlg(
                 this.__asmSpec["id"],
-                this.tr("Insert image"));
+                this.tr("Insert image"),
+                {noLink: true, noPosition: true});
             dlg.addListener("completed", function (ev) {
                 var data = ev.getData();
                 dlg.close();
@@ -813,7 +817,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             if (!sm.lang.String.isEmpty(data["externalLink"])) {
                 val.push(data["externalLink"]);
             } else {
-                val.push("page:");
+                val.push("Page:");
                 val.push(data["guidPath"][data["guidPath"].length - 1]);
             }
             if (!sm.lang.String.isEmpty(data["linkText"])) {
@@ -849,7 +853,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __mediaWikiImage: function (data) {
             var val = [];
-            val.push("[[image:");
+            val.push("[[Image:");
             val.push("/" + data["id"] + "/");
             val.push(data["name"]);
             switch (data["size"]) {
@@ -878,16 +882,38 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
         __markdownImage: function (data) {
-            // /rs/mw/link/image:300px-/1084/i31.png
-            // /rs/mw/link/image:/1084/i31.png
             var val = [];
-
+            var name = data["name"];
+            var caption = data["caption"];
+            val.push("![");
+            if (!sm.lang.String.isEmpty(caption)) {
+                val.push(caption);
+            } else {
+                val.push(name);
+            }
+            val.push("]");
+            val.push("(Image:");
+            val.push(data["id"]);
+            val.push("/");
+            val.push(name);
+            switch (data["size"]) {
+                case "small":
+                    val.push("|200px");
+                    break;
+                case "medium":
+                    val.push("|400px");
+                    break;
+                case "large":
+                    val.push("|600px");
+                    break;
+            }
+            val.push(")");
             return val.join("");
         },
 
         __mediaWikiFile: function (data) {
             var val = [];
-            val.push("[[media:/");
+            val.push("[[Media:/");
             val.push(data["id"]);
             val.push("/");
             val.push(data["name"]);
@@ -898,6 +924,17 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 val.push(data["linkText"]);
             }
             val.push("]]");
+            return val.join("");
+        },
+
+        __markdownFile: function (data) {
+            var val = [];
+            var name = data["name"];
+            if (!sm.lang.String.isEmpty(data["linkText"])) {
+                name = data["linkText"];
+            }
+            val.push("[" + name + "]");
+            val.push("(Media:" + data["id"] + "/" + data["name"] + ")");
             return val.join("");
         },
 
@@ -1095,6 +1132,43 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             }
             tspec.push("|}");
             tspec.push("");
+            return tspec.join("\n");
+        },
+
+        __markdownTable: function (tm, isWide) {
+            var i, j, rdata, cval,
+                cc = tm.getColumnCount(),
+                rc = tm.getRowCount(),
+                tspec = [],
+                ccMax = new Array(cc);
+            ccMax.fill(0);
+            for (i = 0; i < rc; ++i) {
+                rdata = tm.getRowData(i);
+                for (j = 0; j < cc; ++j) {
+                    cval = (rdata != null && rdata[j] != null) ? rdata[j] : "";
+                    ccMax[j] = Math.max(ccMax[j] || 0, cval.length + 2);
+                }
+            }
+            // | Header1 | Header2 | Header3 |
+            // |:--------|---------|---------|
+            // | cell1   | cell2   | cell3   |
+            // | cell4   | cell5   | cell6   |
+            // | cell1   | cell2   | cell3   |
+            // | cell4   | cell5   | cell6   |
+            // | Foot1   | Foot2   | Foot3   |
+            for (i = 0; i < rc; ++i) {
+                var row = [];
+                rdata = tm.getRowData(i);
+                for (j = 0; j < cc; ++j) {
+                    cval = (rdata != null && rdata[j] != null) ? rdata[j] : "";
+                    row.push(cval + " ".repeat(Math.max(0, ccMax[j] - cval.length)));
+                }
+                var r = row.join("| ");
+                tspec.push("| " + r + "|");
+                if (i == 0) {
+                    tspec.push("|" + "-".repeat(r.length + 1) + "|");
+                }
+            }
             return tspec.join("\n");
         }
     },

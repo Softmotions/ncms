@@ -76,11 +76,10 @@ public class MediaWikiRS {
             //todo fallback for old site format
             throw new BadRequestException("");
         }
-        Integer width = null;
-        String widthStr = matcher.group(2);
+        Integer w = null;
         Long id = Long.parseLong(matcher.group(3));
-        if (widthStr != null) {
-            width = Integer.parseInt(widthStr);
+        if (matcher.group(2) != null) {
+            w = Integer.parseInt(matcher.group(2));
         } else {
             int maxWidth = env.xcfg().getInt("mediawiki.max-inline-image-width-px", 0);
             if (maxWidth > 0) {
@@ -91,25 +90,26 @@ public class MediaWikiRS {
                 if (CTypeUtils.isImageContentType(mres.getContentType())) {
                     if (mres.getImageWidth() > maxWidth) { //restrict maximal image width
                         repository.ensureResizedImage(id, maxWidth, null, MediaRepository.RESIZE_SKIP_SMALL);
-                        width = maxWidth;
+                        w = maxWidth;
                     }
                 }
             }
         }
-        return repository.get(id, req, width, null, true);
+        return repository.get(id, req, w, null, true);
     }
 
     @GET
     @Path("link/{spec:(Image|File|Media):.*}")
     public Response link(@PathParam("spec") String spec,
                          @Context HttpServletRequest req) throws Exception {
-        Matcher matcher = LINK_FILE_REGEXP.matcher(spec);
-        if (!matcher.matches()) {
+        Matcher m = LINK_FILE_REGEXP.matcher(spec);
+        if (!m.matches()) {
             //todo fallback for old site format
             throw new BadRequestException("spec: " + spec);
         }
-        Long id = Long.parseLong(matcher.group(4));
-        return repository.get(id, req, null, null, true);
+        Integer w = (m.group(3) != null) ? Integer.parseInt(m.group(3)) : null;
+        Long id = Long.parseLong(m.group(4));
+        return repository.get(id, req, w, null, true);
     }
 
     @GET
