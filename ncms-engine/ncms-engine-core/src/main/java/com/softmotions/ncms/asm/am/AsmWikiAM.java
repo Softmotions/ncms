@@ -328,7 +328,7 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
                 ctx.registerPageDependency(attr, guid);
             } else if (mediaPart != null) {
                 // 0:((()1(((image)6:(1001)7(/ejdb.png)8(|(400)10px)9)5)2())11)0        ![gras](image:1001/ejdb.png|400px)
-                // 0:((()1(((file)6:(9329)7)5)2())11)0                                  (media:9329)
+                // 0:((()1(((media)6:(9329)7)5)2())11)0                                 (media:9329)
                 // 0:((()1(((image)6:(1001)7(/ejdb.png)8)5)2())11)0                     (/image:1001/ejdb.png)
                 String part = StringUtils.capitalize(m.group(6).toLowerCase());
                 Long fid = Long.parseLong(m.group(7));              // file id

@@ -578,7 +578,23 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     });
                     dlg.open();
                 },
-                insertMediawiki: wrap(this.__mediaWikiTable),
+                insertMediawiki: wrap(this.__mediaWikiTable)
+            });
+
+            this._addToolbarControl({
+                id: "Table",
+                part: "extra",
+                icon: "ncms/icon/16/wiki/table_add.png",
+                title: this.tr("Table"),
+                tooltipText: this.tr("Insert table"),
+                prompt: function (stext, cb) {
+                    var dlg = new ncms.wiki.TableDlg({noClasses: true});
+                    dlg.addListener("completed", function (ev) {
+                        dlg.close();
+                        cb(ev.getData());
+                    });
+                    dlg.open();
+                },
                 insertMarkdown: wrap(this.__markdownTable)
             });
 
@@ -1100,7 +1116,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             return val.join("");
         },
 
-        __mediaWikiTable: function (tm, isWide) {
+        __mediaWikiTable: function (tm, cssClasses) {
             /*
              {| class="table01"
              |-
@@ -1119,7 +1135,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
              */
             var tspec = [];
             tspec.push("");
-            tspec.push("{| class=" + (isWide == true ? "'wide'" : "'short'"));
+            tspec.push("{| " + ((cssClasses != null) ? "class='" + cssClasses + "'" : ""));
             var cc = tm.getColumnCount();
             var rc = tm.getRowCount();
             for (var i = 0; i < rc; ++i) {
@@ -1135,7 +1151,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             return tspec.join("\n");
         },
 
-        __markdownTable: function (tm, isWide) {
+        __markdownTable: function (tm) {
             var i, j, rdata, cval,
                 cc = tm.getColumnCount(),
                 rc = tm.getRowCount(),
