@@ -1,25 +1,72 @@
 qx.Class.define("ncms.pgs.PageReferersAttributesTable", {
-    extend: sm.table.Table,
+    extend: sm.table.ToolbarLocalTable,
 
-    construct: function (item) {
-        var tm = new sm.model.RemoteVirtualTableModel({
-            "type": this.tr("type"),
-            "name": this.tr("name")
-        }).set({
-            "useColumns": ["type", "name"],
-            "rowdataUrl": ncms.Application.ACT.getRestUrl("pages.referrers.attributes",
-                {"guid": item.getGuid(), "asmid": 32}),
-            "rowcountUrl": ncms.Application.ACT.getRestUrl("pages.referrers.attributes.count",
-                {guid: item.getGuid()})
-        });
+    properties: {
+        "asmId": {
+            apply: "__applyAsmId",
+            nullable: true,
+            check: "Number"
+        }
+    },
 
-        var custom = {
-            tableColumnModel: function (obj) {
-                return new qx.ui.table.columnmodel.Resize(obj);
+    construct: function (id) {
+        this.base(arguments);
+        this.set({allowGrowX: true, allowGrowY: true});
+        this._reload([]);
+        this.__pageId = id;
+    },
+
+    members: {
+
+        __pageId: null,
+
+        reload: function () {
+            var rid = this.getAsmId();
+            this.__applyAsmId(rid);
+        },
+
+        __applyAsmId: function (id) {
+            var items = [];
+            if (id == null) {
+                this._reload(items);
+                return;
             }
-        };
+            var req = new sm.io.Request(ncms.Application.ACT.getRestUrl("pages.referrers.attributes",
+                {"guid": this.__pageId, "asmid": id}), "GET", "application/json");
+            req.send(function (resp) {
+                var data = resp.getContent();
+                data.forEach(function (it) {
+                    items.push([[it["type"], it["name"]], it]);
+                });
+                this._reload(items);
+            }, this);
 
-        tm.setViewSpec({sortInd: 1});
-        this.base(arguments, tm.custom);
+        },
+
+        //ovrriden
+        _setJsonTableData: function (tm, items) {
+            var data = {
+                "columns": [
+                    {
+                        "title": this.tr("Type").toString(),
+                        "id": "type",
+                        "sortable": false,
+                        "width": 80
+                    },
+                    {
+                        "title": this.tr("Name").toString(),
+                        "id": "name",
+                        "sortable": false,
+                        "width": "1*"
+                    }
+                ],
+                "items": items
+            };
+            tm.setJsonData(data);
+        },
+
+        destruct: function () {
+            this.__pageId = null;
+        }
     }
 });

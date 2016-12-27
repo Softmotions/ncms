@@ -44,6 +44,10 @@ qx.Class.define("ncms.pgs.PageReferersTable", {
 
         getViewSpec: function () {
             return this.getTableModel().getViewSpec();
+        },
+        
+        getRowData: function(rowId){
+            return this.getRowData2(rowId);
         }
     }
 });

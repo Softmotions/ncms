@@ -13,7 +13,6 @@ qx.Class.define("ncms.pgs.PageReferersInfo", {
         this.base(arguments);
         this._setLayout(new qx.ui.layout.VBox());
         this.getChildControl("pages");
-        this.getChildControl("attributes");
     },
 
     members: {
@@ -26,17 +25,38 @@ qx.Class.define("ncms.pgs.PageReferersInfo", {
             switch (id) {
                 case("pages"):
                     control = this.__pagesTable = new ncms.pgs.PageReferersTable(this.__item);
+                    control.getSelectionModel().addListener('changeSelection', this.__onSelectPage, this);
                     this._add(control, {flex: 1});
                     break;
                 case("attributes"):
-                    control = this.__attributesTable = new ncms.pgs.PageReferersAttributesTable(this.__item);
-                    this._add(control, {flex:1});
+                    control = this.__attributesTable = new ncms.pgs.PageReferersAttributesTable(this.__item.getGuid());
+                    this._add(control, {flex: 1});
                     break;
             }
             return control || this.base(arguments, id);
+        },
+
+        __onSelectPage: function (e) {
+            if (!this.hasChildControl("attributes")) {
+                this.getChildControl("attributes");
+            } else if (!this._isChildControlVisible()) {
+                this._showChildControl("attributes");
+            }
+            var selectionIndex = e.getTarget().getSelectedRanges()[0].minIndex;
+            var asmId = this.__pagesTable.getRowData(selectionIndex)["asmid"];
+            if (asmId != null) {
+                this.__attributesTable.setAsmId(asmId);
+            }
+        },
+
+        isAttributesTabShown: function () {
+            return this._isChildControlVisible("attributes");
+        },
+
+        hideAttributesTab: function () {
+            this._excludeChildControl("attributes");
         }
-    }
-    ,
+    },
 
     destruct: function () {
         this.__item = null;

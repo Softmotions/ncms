@@ -970,11 +970,12 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Path("/referrers/{guid}")
     public JsonNode getPageReferrers(@PathParam("guid") String guid) {
         ArrayNode res = mapper.createArrayNode();
-        List<Map<String, ?>> referrers = select("selectPagesDependentOn", "name", guid);
+        List<Map<String, ?>> referrers = select("selectPagesDependentOn", guid);
         for (Map<String, ?> referrer : referrers) {
             res.addObject()
                .put("name", (String) referrer.get("name"))
-               .put("path", asmRoot + referrer.get("guid"));
+               .put("path", asmRoot + referrer.get("guid"))
+               .put("asmid", (Long) referrer.get("asmid"));
         }
         return res;
     }
@@ -997,29 +998,17 @@ public class PageRS extends MBDAOSupport implements PageService {
         return Response.ok((StreamingOutput) output -> {
                                final JsonGenerator gen = new JsonFactory().createGenerator(output);
                                gen.writeStartArray();
-                               select("selectPageReferrerAttributes", context -> {
-                                   List<Map<String, ?>> attrs = (List<Map<String, ?>>) context.getResultObject();
-                                   for (Map<String, ?> attr : attrs) {
-                                       try {
-                                           gen.writeStartObject();
-                                           gen.writeStringField("type", (String) attr.get("type"));
-                                           gen.writeStringField("name", (String) attr.get("name"));
-                                           gen.writeEndObject();
-                                       } catch (IOException e) {
-                                           throw new RuntimeException(e);
-                                       }
-                                   }
-                               }, "guid", guid, "asmid", asmid);
+                               List<Map<String, ?>> attrs = select("selectAttributesDependentOn", "guid", guid, "asmid", asmid);
+                               for (Map<String, ?> attr : attrs) {
+                                   gen.writeStartObject();
+                                   gen.writeStringField("type", (String) attr.get("type"));
+                                   gen.writeStringField("name", (String) attr.get("name"));
+                                   gen.writeEndObject();
+                               }
                                gen.writeEndArray();
                                gen.flush();
                            }
         ).type("application/json;charset=UTF-8").build();
-    }
-
-    @GET
-    @Path("/referrers/attributes/count/{guid}")
-    public Number getPageReferrerPagesCount(@PathParam("guid") String guid){
-        return count("selectCountOfPagesDependentOn", guid);
     }
 
     @GET

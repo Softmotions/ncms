@@ -387,13 +387,12 @@
     <select id="selectAttributesDependentOn" resultType="map" parameterType="map">
         SELECT
             DISTINCT
-            attr.type as "type",
-            attr.name as "name"
+            attr.type AS "type",
+            attr.name AS "name"
         FROM ASM_PAGE_DEPS AS d
-            INNER JOIN ASM_ATTRs AS attr
-        WHERE
-            d.asm_name = #{guid}
-            AND attr.asm_id = #{asmid}
+            INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
+        WHERE d.asm_name = #{guid}
+              AND attr.asm_id = #{asmid}
     </select>
 
 
@@ -402,7 +401,7 @@
             DISTINCT
             asm.name      AS "guid",
             asm.hname     AS "name",
-            asm.published AS "published",
+            asm.id        AS "asmid",
             asm.nav_cached_path AS "path"
         FROM ASM_PAGE_DEPS AS d
             INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id

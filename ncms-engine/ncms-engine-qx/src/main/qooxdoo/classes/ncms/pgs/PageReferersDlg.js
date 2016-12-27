@@ -17,12 +17,20 @@ qx.Class.define("ncms.pgs.PageReferersDlg", {
             this.add(table, {flex: 1});
 
             var cmd = this.createCommand("Esc");
-            cmd.addListener("execute", this.close, this);
+            cmd.addListener("execute", this.__escPressed, this);
             this.addListenerOnce("resize", this.center, this);
         },
 
         members: {
-            __table: null
+            __table: null,
+
+            __escPressed: function(){
+                if(this.__table.isAttributesTabShown()){
+                    this.__table.hideAttributesTab();
+                    return;
+                }
+                this.close();
+            }
         },
 
         destruct: function () {
