@@ -1,0 +1,218 @@
+{%- block doctype %}<!DOCTYPE html>{%- endblock %}
+
+{%- set is_master = (master_doc + ".txt") == sourcename %}
+{%- set script_files = script_files + ['_static/materialize.min.js', '_static/scrollmagic.min.js', '_static/theme.js'] %}
+{%- if not embedded and docstitle %}
+{%- set titlesuffix = " &mdash; "|safe + docstitle|e %}
+{%- else %}
+{%- set titlesuffix = "" %}
+{%- endif %}
+
+{%- macro script() %}
+{%- for scriptfile in script_files %}
+<script type="text/javascript" src="{{ pathto(scriptfile, 1) }}"></script>
+{%- endfor %}
+{%- endmacro %}
+
+{%- macro css() %}
+<link rel="stylesheet" href="{{ pathto('_static/' + style, 1) }}" type="text/css"/>
+<link rel="stylesheet" href="{{ pathto('_static/pygments.css', 1) }}" type="text/css"/>
+{%- for cssfile in css_files %}
+<link rel="stylesheet" href="{{ pathto(cssfile, 1) }}" type="text/css"/>
+{%- endfor %}
+{%- endmacro %}
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset={{ encoding }}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {{ metatags }}
+    {%- block htmltitle %}
+    <title>{{ title|striptags|e }}{{ titlesuffix }}</title>
+    {%- endblock %}
+    {{ css() }}
+    {%- block linktags %}
+    {%- if hasdoc('about') %}
+    <link rel="author" title="{{ _('About these documents') }}" href="{{ pathto('about') }}"/>
+    {%- endif %}
+    {%- if hasdoc('genindex') %}
+    <link rel="index" title="{{ _('Index') }}" href="{{ pathto('genindex') }}"/>
+    {%- endif %}
+    {%- if hasdoc('search') %}
+    <link rel="search" title="{{ _('Search') }}" href="{{ pathto('search') }}"/>
+    {%- endif %}
+    {%- if hasdoc('copyright') %}
+    <link rel="copyright" title="{{ _('Copyright') }}" href="{{ pathto('copyright') }}"/>
+    {%- endif %}
+    <link rel="top" title="{{ docstitle|e }}" href="{{ pathto(master_doc) }}"/>
+    {%- if parents %}
+    <link rel="up" title="{{ parents[-1].title|striptags|e }}" href="{{ parents[-1].link|e }}"/>
+    {%- endif %}
+    {%- if next %}
+    <link rel="next" title="{{ next.title|striptags|e }}" href="{{ next.link|e }}"/>
+    {%- endif %}
+    {%- if prev %}
+    <link rel="prev" title="{{ prev.title|striptags|e }}" href="{{ prev.link|e }}"/>
+    {%- endif %}
+    {%- endblock %}
+    {%- block extrahead %} {% endblock %}
+</head>
+<body role="document">
+<div id="toc-modal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <h4>{{ _('Table Of Contents') }}</h4>
+
+        <div class="page-content">
+            {{ toc }}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect btn-flat ">Close</a>
+    </div>
+</div>
+{%- block topnav_popups %}
+{%- endblock %}
+<header style="margin-bottom: 20px">
+    <nav id="nav">
+        <div class="nav-wrapper">
+            {%- if logo %}
+            <a href="{{ pathto(master_doc) }}">
+                <img class="brand-logo" src="{{ pathto('_static/' + logo, 1) }}" alt="Logo"/>
+            </a>
+            {%- endif %}
+            <a href="#" data-activates="nav-mobile-sidebar" class="button-collapse"><i
+                    class="mdi-navigation-menu"></i></a>
+            <ul class="right hide-on-med-and-down">
+                {%- block topnav_li_items %}
+                {%- for n, l in theme_top_nav_links %}
+                <li><a href="{{ pathto(l, 1) }}">{{ n }}</a></li>
+                {%- endfor %}
+                {%- endblock %}
+                {%- block topnav_li_extra_items %}{%- endblock %}
+            </ul>
+            {%- block topnav_custom_items %}
+            {%- endblock %}
+            <ul class="side-nav" id="nav-mobile-sidebar">
+                {{ self.topnav_li_items() }}
+            </ul>
+        </div>
+    </nav>
+</header>
+<div class="row">
+    <div id="sidebar" class="col s12 m4 l3 push-m8 push-l9">
+        {%- for sidebartemplate in sidebars %}
+        {%- include sidebartemplate %}
+        {%- endfor %}
+        {%- if sidebars|length == 0 %}
+        &nbsp;
+        {%- endif %}
+        <span id="sidebarend"></span>
+    </div>
+    <div class="page-content-wrapper col s12 m8 l9 pull-m4 pull-l3">
+        <div id="page-content-block">
+            {%- macro relnav(navId) %}
+            <div class="rel-nav">
+                {%- block rootrellink %}
+                {%- if not is_master %}
+                <a href="{{ pathto(master_doc) }}"
+                   title="{{ shorttitle|e }}"
+                   class="waves-effect waves-light btn"><i class="mdi-action-home"></i></a>
+                {%- endif %}
+                {%- endblock %}
+                {%- block tocrellink %}
+                {%- if display_toc %}
+                <a href="#toc-modal"
+                   title="{{ shorttitle|e }}"
+                   class="modal-trigger waves-effect waves-light btn"><i class="mts-list-1"></i></a>
+                {%- endif %}
+                {%- endblock %}
+                {%- if parents %}
+                <a class="dropdown-button btn" href="#"
+                   data-beloworigin="true"
+                   data-activates="relnav-parents-{{ navId }}"><i class="mts-up"></i></a>
+                <ul id="relnav-parents-{{ navId }}"
+                    class="dropdown-content">
+                    {%- for parent in parents %}
+                    <li><a href="{{ parent.link|e }}">{{ parent.title }}</a></li>
+                    {%- endfor %}
+                </ul>
+                {%- endif %}
+                {%- block relbaritems %} {% endblock %}
+                {%- for rellink in rellinks|reverse %}
+                <a href="{{ pathto(rellink[0]) }}"
+                   title="{{ rellink[1]|striptags|e }}"
+                   class="waves-effect waves-light btn">
+                    {%- if rellink[2] == "N" %}
+                    <i class="mts-right"></i>
+                    {%- elif rellink[2] == "P" %}
+                    <i class="mts-left"></i>
+                    {%- else %}
+                    {{ rellink[3] }}
+                    {%- endif %}
+                </a>
+                {%- endfor %}
+            </div>
+            {%- endmacro %}
+            {{ relnav(1) }}
+            <div class="page-content">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+        <div id="page-content-footer">
+            <div id="bottom-rel-placeholder" style="display:none">
+                {{ relnav(2) }}
+            </div>
+        </div>
+    </div>
+</div>
+{%- block footer %}
+<footer class="page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                {%- block page_footer_left %}
+                <h5>Company Info</h5>
+
+                <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's
+                    our full time job. Any amount would help support and continue development on this project and is
+                    greatly appreciated.</p>
+                {%- endblock %}
+            </div>
+            <div class="col l6 s12">
+                {%- block page_footer_right %}
+                <ul>
+                    {%- for n, l in theme_top_nav_links %}
+                    <li><a href="{{ pathto(l, 1) }}">{{ n }}</a></li>
+                    {%- endfor %}
+                </ul>
+                {%- endblock %}
+            </div>
+        </div>
+    </div>
+    {%- if show_copyright %}
+    <div class="footer-copyright" role="contentinfo">
+        <div class="container">
+            {%- if hasdoc('copyright') %}
+            {%- trans path=pathto('copyright'), copyright=copyright|e %}&copy; <a class="orange-text text-lighten-3"
+                                                                                  href="{{ path }}">Copyright</a> {{
+            copyright }}.{%- endtrans %}
+            {%- else %}
+            {%- trans copyright=copyright|e %}&copy; Copyright {{ copyright }}.{%- endtrans %}
+            {%- endif %}
+        </div>
+    </div>
+    {%- endif %}
+</footer>
+{%- endblock %}
+{%- if not embedded %}
+{{ script() }}
+{%- block extrascript %} {% endblock %}
+{%- endif %}
+{%- block analytics %}
+{%- if theme_analytics_id %}
+{%- include 'analytics.html' %}
+{%- endif %}
+{%- endblock %}
+<a id="btt"><i class="mdi-navigation-expand-less"></i></a>
+</body>
+</html>

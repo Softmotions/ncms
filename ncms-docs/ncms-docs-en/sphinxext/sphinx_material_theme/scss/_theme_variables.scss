@@ -1,0 +1,39 @@
+
+
+/*** Colors ***/
+$body-bg-color: #F4F4F4 !default;
+$primary-color: color("grey", "darken-4") !default;
+$link-color: color("teal", "darken-1") !default;
+$search-highlight-color: #fbe54e !default;
+
+$input-focus-color: color("light-blue", "darken-1");
+
+$doc-nav-text-color: color("teal", "darken-1") !default;
+$doc-nav-header-color: #FFFFFF !default;
+$doc-nav-header-link-color: #EDEDED !default;
+$doc-nav-buttons-color: #009688 !default;
+
+$note-bg-color: #e3f2fd !default;
+$warning-bg-color: #009688 !default;
+$warning-text-color: #ffffff !default;
+$error-bg-color: #a72f0a !default;
+$error-text-color: #ffffff !default;
+
+$footer-bg-color: color("grey", "darken-4") !default;
+$footer-text-color: #ffffff !default;
+$footer-copyright-bg-color: #000000 !default;
+$back2top-bt-bg-color: #009688 !default;
+
+/*** Headers ***/
+$h1-fontsize: 3rem !default;
+$h2-fontsize: 2.5rem !default;
+$h3-fontsize: 2rem !default;
+$h4-fontsize: 1.5rem !default;
+$h5-fontsize: 1.2rem !default;
+$h6-fontsize: 1rem !default;
+
+/*** Fonts ***/
+$roboto-font-path: "font/roboto/" !default;
+$icons-font-path: "font/material-design-icons/" !default;
+$mts-font-path: "font/mt-sphinx/" !default;
+

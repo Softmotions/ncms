@@ -1,0 +1,64 @@
+/*
+  Back to top button.
+  Based on http://codyhouse.co/gem/back-to-top
+*/
+
+#btt {
+  padding: 0;
+  display: inline-block;
+  position: fixed;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  height: 60px;
+  width: 60px;
+  line-height: 60px;
+  right: 30px;
+  bottom: 30px;
+  background-color: $back2top-bt-bg-color;
+  overflow: hidden;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: opacity .3s 0s, visibility 0s .3s;
+  -moz-transition: opacity .3s 0s, visibility 0s .3s;
+  transition: opacity .3s 0s, visibility 0s .3s;
+
+  &.btt-visible, &.btt-fade-out, &:hover {
+    -webkit-transition: opacity .3s 0s, visibility 0s 0s;
+    -moz-transition: opacity .3s 0s, visibility 0s 0s;
+    transition: opacity .3s 0s, visibility 0s 0s;
+  }
+
+  &.btt-visible {
+    visibility: visible;
+    opacity: .7;
+  }
+
+  &.btt-fade-out {
+    opacity: .4;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+
+  i {
+    color: #ffffff;
+    font-size: 4rem;
+  }
+}
+
+@media #{$small-and-down} {
+
+  #btt {
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+    right: 10px;
+    bottom: 10px;
+    i {
+      font-size: 2rem;
+    }
+  }
+}

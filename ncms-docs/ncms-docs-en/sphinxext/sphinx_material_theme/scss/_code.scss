@@ -1,0 +1,146 @@
+
+pre, code, .function dt {
+  font-family: 'Consolas', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.015em;
+}
+
+.function > dd > p {
+  margin: 0 0 0.5em 0
+}
+
+code {
+  &.descname, &.descclassname {
+    background-color: transparent;
+    font-size: 1.2em;
+  }
+  &.descname {
+    font-weight: bold;
+  }
+}
+
+code.xref, a code {
+  background-color: transparent;
+  font-weight: bold;
+}
+
+h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+  background-color: transparent;
+}
+
+pre {
+  @extend .z-depth-1;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  //border-radius: 2px;
+}
+
+.highlight {
+  background-color: #f8f8f8;
+}
+
+td.linenos pre {
+  padding: 0.5em 0;
+  border: 0;
+  background-color: transparent;
+  color: #aaa;
+}
+
+table.highlighttable {
+  margin-left: 0.5em;
+  td {
+    padding: 0 0.5em 0 0.5em;
+  }
+}
+
+div.code-block-caption {
+  padding: 2px 5px;
+  font-size: small;
+
+  code {
+    background-color: transparent;
+  }
+
+  + div > div.highlight > pre {
+    margin-top: 0;
+  }
+
+  span.caption-number {
+    padding: 0.1em 0.3em;
+    font-style: italic;
+  }
+
+  span.caption-text {
+  }
+}
+
+div.literal-block-wrapper {
+  padding: 1em 1em 0;
+  div.highlight {
+    margin: 0;
+  }
+}
+
+.viewcode-link {
+  float: right;
+}
+
+.viewcode-back {
+  float: right;
+  font-family: sans-serif;
+}
+
+div.viewcode-block:target {
+  margin: -1px -10px;
+  padding: 0 10px;
+}
+
+cite {
+  background-color: rgba(0, 0, 0, 0.06);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: 'Consolas', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 1.6;
+
+}
+
+th.field-name, td.field-body {
+  vertical-align: top;
+
+  ul {
+    padding-left: 0;
+    li {
+      margin-left: 0;
+      list-style: none;
+    }
+  }
+}
+
+table.docutils.field-list {
+  width: 100%;
+
+  th.field-name {
+    width: 1%;
+  }
+}
+
+
+
+/* -- math display ---------------------------------------------------------- */
+
+img.math {
+  vertical-align: middle;
+}
+
+div.body div.math p {
+  text-align: center;
+}
+
+span.eqno {
+  float: right;
+}
+
+
+

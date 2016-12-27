@@ -1,0 +1,23 @@
+{%- extends "!layout.html" %}
+{%- block page_footer_left %}
+<h5>ηCMS Github</h5>
+<a class="github-button" href="https://github.com/Softmotions/ncms" data-style="mega"
+   data-count-href="/Softmotions/ncms/stargazers" data-count-api="/repos/Softmotions/ncms#stargazers_count"
+   data-count-aria-label="# stargazers on GitHub" aria-label="Star Softmotions/ncms on GitHub">Star</a>
+<a class="github-button" href="https://github.com/Softmotions/ncms/issues" data-style="mega"
+   data-count-api="/repos/Softmotions/ncms#open_issues_count" data-count-aria-label="# issues on GitHub"
+   aria-label="Issue Softmotions/ncms on GitHub">Issue</a>
+{%- endblock %}
+{%- block extrascript %}
+{{ super() }}
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+{%- endblock %}
+
+{%- block topnav_custom_items %}
+{%- if is_master %}
+<!--<div class="right" style="padding-top:0.4em;margin-right:1em;">
+    <a href="https://twitter.com/ejdblab" class="twitter-follow-button" data-show-count="false">Follow @ejdblab</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+</div>-->
+{%- endif %}
+{%- endblock %}

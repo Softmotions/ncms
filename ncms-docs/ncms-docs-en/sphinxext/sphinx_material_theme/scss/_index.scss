@@ -1,0 +1,64 @@
+/* -- index page ------------------------------------------------------------ */
+
+table.contentstable {
+  width: 90%;
+}
+
+table.contentstable p.biglink {
+  line-height: 150%;
+}
+
+a.biglink {
+  font-size: 1.3em;
+}
+
+span.linkdescr {
+  font-style: italic;
+  padding-top: 5px;
+  font-size: 90%;
+}
+
+/* -- general index --------------------------------------------------------- */
+
+table.indextable {
+  width: 100%;
+}
+
+table.indextable td {
+  text-align: left;
+  vertical-align: top;
+}
+
+table.indextable dl, table.indextable dd {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+table.indextable tr.pcap {
+  height: 10px;
+}
+
+table.indextable tr.cap {
+  margin-top: 10px;
+  background-color: #f2f2f2;
+}
+
+img.toggler {
+  margin-right: 3px;
+  margin-top: 3px;
+  cursor: pointer;
+}
+
+div.modindex-jumpbox {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin: 1em 0 1em 0;
+  padding: 0.4em;
+}
+
+div.genindex-jumpbox {
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  margin: 1em 0 1em 0;
+  padding: 0.4em;
+}
