@@ -37,7 +37,10 @@ import com.softmotions.ncms.asm.AsmOptions;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
+import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
+import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.NcmsNotificationException;
+import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.mediawiki.GMapTag;
 import com.softmotions.ncms.mediawiki.MediaWikiRenderer;
 
@@ -74,6 +77,10 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
     private static final Pattern MW_WIKIFIX_REGEXP =
             Pattern.compile("(/rs/mw/[^\"\'>]+)|((/asm)?/([0-9a-f]{32}))", Pattern.CASE_INSENSITIVE);
 
+    private static final Pattern MD_LINKS_REGEXP =
+            Pattern.compile("([(<])((page:/?([0-9a-f]{32}))|((file|image):/?(\\d+)(/[^|]+)?(\\|(\\d+)px)?))([>)])",
+                            Pattern.CASE_INSENSITIVE);
+
 
     private final MediaWikiRenderer mediaWikiRenderer;
 
@@ -83,15 +90,19 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
 
     private final NcmsEnvironment env;
 
+    private final NcmsEventBus ebus;
+
     @Inject
     public AsmWikiAM(ObjectMapper mapper,
                      MediaWikiRenderer mediaWikiRenderer,
                      NcmsEnvironment env,
-                     PageService pageService) {
+                     PageService pageService,
+                     NcmsEventBus ebus) {
         this.env = env;
         this.mapper = mapper;
         this.mediaWikiRenderer = mediaWikiRenderer;
         this.pageService = pageService;
+        this.ebus = ebus;
     }
 
     @Override
@@ -162,37 +173,32 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
             return "";
         }
         StringBuffer res = new StringBuffer(html.length());
-        if (MARKUP_MEDIAWIKI.equals(markup)) {
-            // (/rs/mw/.*)|((/asm)?/([0-9a-f]{32}))
-            //
-            // 0:((/(12d5c7a0c3167d3d21d30f1c43368b32)4)2)0
-            // 0:((/rs/mw/link/Image:300px-/421/header.jpg)1)0
-            Matcher m = MW_WIKIFIX_REGEXP.matcher(html);
-            while (m.find()) {
-                final String guid = m.group(4);
-                final String fref = m.group(1);
-                if (!StringUtils.isBlank(guid)) {
-                    String link = pageService.resolvePageLink(guid);
-                    if (link != null) {
-                        m.appendReplacement(res, link);
-                    } else {
-                        m.appendReplacement(res, m.group());
-                    }
-                } else if (!StringUtils.isBlank(fref)) {
-                    if (!fref.startsWith(env.getAppRoot())) {
-                        m.appendReplacement(res, env.getAppRoot() + fref);
-                    } else {
-                        m.appendReplacement(res, m.group());
-                    }
+        // (/rs/mw/.*)|((/asm)?/([0-9a-f]{32}))
+        //
+        // 0:((/(12d5c7a0c3167d3d21d30f1c43368b32)4)2)0
+        // 0:((/rs/mw/link/Image:300px-/421/header.jpg)1)0
+        Matcher m = MW_WIKIFIX_REGEXP.matcher(html);
+        while (m.find()) {
+            final String guid = m.group(4);
+            final String fref = m.group(1);
+            if (!StringUtils.isBlank(guid)) {
+                String link = pageService.resolvePageLink(guid);
+                if (link != null) {
+                    m.appendReplacement(res, link);
                 } else {
                     m.appendReplacement(res, m.group());
                 }
+            } else if (!StringUtils.isBlank(fref)) {
+                if (!fref.startsWith(env.getAppRoot())) {
+                    m.appendReplacement(res, env.getAppRoot() + fref);
+                } else {
+                    m.appendReplacement(res, m.group());
+                }
+            } else {
+                m.appendReplacement(res, m.group());
             }
-            m.appendTail(res);
-        } else if (MARKUP_MARKDOWN.equals(markup)) {
-            // todo ensure resized image
-            res.append(html);
         }
+        m.appendTail(res);
         return res.toString();
     }
 
@@ -296,14 +302,48 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
 
     private String preSaveMarkdown(AsmAttributeManagerContext ctx, AsmAttribute attr, String value) {
 
-        // [link](page:32826bfa40b52c8ccf3359e69501ac7b)
-        // ![smiley](smiley.png){:height="36px" width="36px"}
-        Pattern p = Pattern.compile("(page:([0-9a-f]{32}))|(file:(\\d+))", Pattern.CASE_INSENSITIVE);
+        // Links:
+        // <file:893892>
+        // [test](page:32826bfa40b52c8ccf3359e69501ac7b)
+        // [test2](file:223)
+        // ![gras](image:1001/ejdb.png|400px)
 
-
-        // todo
-
-        return value;
+        StringBuffer res = new StringBuffer(value.length());
+        // ([(<])((page:/?([0-9a-f]{32}))|((file|image):/?(\d+)(/[^|]+)?(\|(\d+)px)?))([>)])
+        Matcher m = MD_LINKS_REGEXP.matcher(value);
+        while (m.find()) {
+            String open = m.group(1);
+            String close = m.group(11);
+            if (("(".equals(open) && !")".equals(close)) || ("<".equals(open) && !">".equals(close))) {
+                m.appendReplacement(res, m.group(0));
+                continue;
+            }
+            //  0:((()1((page:(32826bfa40b52c8ccf3359e69501ac7b)4)3)2())11)0    (page:32826bfa40b52c8ccf3359e69501ac7b)
+            String guid = m.group(4);
+            String mediaPart = m.group(5);
+            if (guid != null) {
+                m.appendReplacement(res, open + '/' + guid + close);
+                ctx.registerPageDependency(attr, guid);
+            } else if (mediaPart != null) {
+                // 0:((()1(((image)6:(1001)7(/ejdb.png)8(|(400)10px)9)5)2())11)0        ![gras](image:1001/ejdb.png|400px)
+                // 0:((()1(((file)6:(9329)7)5)2())11)0                                  (file:9329)
+                // 0:((()1(((image)6:(1001)7(/ejdb.png)8)5)2())11)0                     (/image:1001/ejdb.png)
+                String part = StringUtils.capitalize(m.group(6).toLowerCase());
+                Long fid = Long.parseLong(m.group(7));              // file id
+                String fname = StringUtils.trimToEmpty(m.group(8)); // file name
+                if (m.group(10) == null) {
+                    m.appendReplacement(res, open + "/rs/mw/link/" + part + fid + fname + close);
+                } else {
+                    // /rs/mw/link/image:400px-/1001/ejdb.png"
+                    Integer px = Integer.parseInt(m.group(10));
+                    m.appendReplacement(res, open + "/rs/mw/link/" + part + ':' + px + "px-/" + fid + fname + close);
+                    ebus.fire(new EnsureResizedImageJobEvent(fid, px, null, MediaRepository.RESIZE_SKIP_SMALL));
+                }
+                ctx.registerFileDependency(attr, fid);
+            }
+        }
+        m.appendTail(res);
+        return res.toString();
     }
 
     @Override

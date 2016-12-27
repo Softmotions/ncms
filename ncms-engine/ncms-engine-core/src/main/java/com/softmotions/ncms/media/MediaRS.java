@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,6 +82,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
+import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
 import com.softmotions.commons.Converters;
 import com.softmotions.commons.cont.ArrayUtils;
@@ -147,7 +149,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private final File basedir;
 
-    private final RWLocksLRUCache<String, ReentrantReadWriteLock> locksCache;
+    private final Striped<ReadWriteLock> pathLocks;
 
     private final Map<Object, Map<String, Object>> metaCache;
 
@@ -179,7 +181,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
         this.basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);
-        this.locksCache = new RWLocksLRUCache<>(xcfg.getInt("media.locks-lrucache-size", 128));
+
+        this.pathLocks = Striped.lazyWeakReadWriteLock(xcfg.getInt("media.locks-lrucache-size", 1024));
         this.metaCache = new LRUMap<>(xcfg.getInt("media.meta-lrucache-size", 1024));
         this.mapper = mapper;
         this.i18n = i18n;
@@ -1025,7 +1028,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private boolean deleteDirectoryInternal(String path, boolean nolock) throws Exception {
         boolean res = true;
-        ReentrantReadWriteLock rwlock = null;
+        ReadWriteLock rwlock = null;
         try {
             rwlock = nolock ? null : acquirePathRWLock(path, true);
             File f = new File(basedir, path);
@@ -1176,7 +1179,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                            HttpServletRequest req) throws IOException {
         checkFolder(folder);
         ArrayNode res = mapper.createArrayNode();
-        ReentrantReadWriteLock rwlock = acquirePathRWLock(folder, false);
+        ReadWriteLock rwlock = acquirePathRWLock(folder, false);
         try {
             File f = new File(basedir, folder);
             if (!f.exists()) {
@@ -1887,9 +1890,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     final class ResourceLock implements Closeable {
 
-        ReentrantReadWriteLock parent;
+        ReadWriteLock parent;
 
-        ReentrantReadWriteLock child;
+        ReadWriteLock child;
 
         final boolean parentWriteLock;
 
@@ -1964,7 +1967,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
     }
 
-    private ReentrantReadWriteLock acquirePathRWLock(String path, boolean acquireWrite) {
+    private ReadWriteLock acquirePathRWLock(String path, boolean acquireWrite) {
         if (path.isEmpty() || path.charAt(0) != '/') {
             path = '/' + path;
         }
@@ -1974,38 +1977,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (log.isDebugEnabled()) {
             log.debug("Locking: {} W: {}", path, acquireWrite);
         }
-        ReentrantReadWriteLock rwlock;
-        while (true) {
-            synchronized (locksCache) {
-                rwlock = locksCache.get(path);
-                if (rwlock == null) {
-                    rwlock = new ReentrantReadWriteLock();
-                    locksCache.put(path, rwlock);
-                }
-            }
-
-            //Optimistic locking used here
-
-            if (acquireWrite) {
-                rwlock.writeLock().lock();
-            } else {
-                rwlock.readLock().lock();
-            }
-
-            synchronized (locksCache) {
-                //noinspection ObjectEquality
-                if (rwlock == locksCache.get(path)) {
-                    //Locked rwlock is not changed we are safe to use it until it remains locked
-                    break;
-                } else {
-                    //Locked rwlock is changed (removed from locksCache and replaced) so release it and try again
-                    if (acquireWrite) {
-                        rwlock.writeLock().unlock();
-                    } else {
-                        rwlock.readLock().unlock();
-                    }
-                }
-            }
+        ReadWriteLock rwlock = pathLocks.get(path);
+        if (acquireWrite) {
+            rwlock.writeLock().lock();
+        } else {
+            rwlock.readLock().lock();
         }
         return rwlock;
     }

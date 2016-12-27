@@ -813,7 +813,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             if (!sm.lang.String.isEmpty(data["externalLink"])) {
                 val.push(data["externalLink"]);
             } else {
-                val.push("Page:");
+                val.push("page:");
                 val.push(data["guidPath"][data["guidPath"].length - 1]);
             }
             if (!sm.lang.String.isEmpty(data["linkText"])) {
@@ -849,7 +849,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __mediaWikiImage: function (data) {
             var val = [];
-            val.push("[[Image:");
+            val.push("[[image:");
             val.push("/" + data["id"] + "/");
             val.push(data["name"]);
             switch (data["size"]) {
@@ -878,8 +878,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
         __markdownImage: function (data) {
-            // /rs/mw/link/Image:300px-/1084/i31.png
-            // /rs/mw/link/Image:/1084/i31.png
+            // /rs/mw/link/image:300px-/1084/i31.png
+            // /rs/mw/link/image:/1084/i31.png
             var val = [];
 
             return val.join("");
@@ -887,7 +887,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __mediaWikiFile: function (data) {
             var val = [];
-            val.push("[[Media:/");
+            val.push("[[media:/");
             val.push(data["id"]);
             val.push("/");
             val.push(data["name"]);
