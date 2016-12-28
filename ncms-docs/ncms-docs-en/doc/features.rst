@@ -1,18 +1,19 @@
 .. _features:
 
-Возможности ηCMS
-================
+ηCMS features
+=============
 
-* Одновременная работа множества сайтов на одном экземпляре ηCMS
-* Одновременная работа сотен редакторов контента сайтов
-* Гибкое управление правами доступа к страницам сайтов
-* Центральный репозиторий медиа-контента, разделяемый сайтами в ηCMS
-* Изменение любой части сайта/страницы через административный интерфейс,
-  включая статические ресурсы
-* ηCMS позволяет :ref:`расширять <extending>` функционал административной зоны сайта в соответствии
-  с требованиями проекта
-* Поддержка виртуальных хостов
-* :ref:`Инструменты A/B тестирования <mtt>`
+* Multiple websites on a single ηCMS application node.
+* Can handle hundreds of simultaneous website content editors.
+* Flexible access rights management for website pages.
+* Central repository of all media websites static content.
+* Ability to develop and deploy a whole website using the ηCMS user interface.
+  Any part of the site page can be changed through the ηCMS UI.
+* ηCMS module subsystem allows building a custom :ref:`extensions <extending>`.
+* Support of virtual hosts.
+* :ref:`A/B testing and marketing tools <mtt>`.
+* Support of `<postgresql>` and `<db2>`.
+
 
 
 

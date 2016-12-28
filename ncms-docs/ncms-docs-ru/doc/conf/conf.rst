@@ -50,7 +50,7 @@
             Режим работы приложения:
             - production    Приложение в нормальном режиме работы
             - dev           Приложение в режиме работы для разработчика
-                                Включен debug режим работы.
+                            Включен debug режим работы.
             - test          Приложение в режиме выполнения тест кейсов
         -->
         <environment>dev</environment>
@@ -72,7 +72,7 @@
         </site>
 
         <!-- Префикс приложения относительно корня веб контейнера.
-             См. http://ncms.one/manual/doc/deployments/index.html
+             См. http://ncms.one/manual/ru/doc/deployments/index.html
         -->
         <app-prefix>/</app-prefix>
 
@@ -80,7 +80,7 @@
             Список дополнительных ресурсов, используемых для локализации
             сообщений сервера. Можно опустить этот блок в конфигурации, в том случае если вы
             не используете дополнительные локализованные ресурсы.
-            См. http://ncms.one/manual/doc/extending/index.html
+            См. http://ncms.one/manual/ru/doc/extending/index.html
         -->
         <messages>
             <bundle>com.softmotions.ncms.Messages</bundle>
@@ -103,12 +103,6 @@
             <resource>
                 <path-prefix>/adm</path-prefix>
                 <options>/myapp-qx/myapp,watch=true</options>
-            </resource>
-            <!-- Русскоязычная документация по ηCMS,
-                включена как веб ресурс по адресу: /manual -->
-            <resource>
-                <path-prefix>/manual</path-prefix>
-                <options>/ncmsmanual_ru</options>
             </resource>
         </jar-web-resources>
 
@@ -170,7 +164,7 @@
             <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
             <!-- Размер иконок предпросмотра для изображений в репозитории ηCMS -->
             <thumbnails-width>250</thumbnails-width>
-            <!-- Максимальный размер текстового файла редактируемого в графическом редакторе -->
+            <!-- Максимальный размер текстового файла редактируемого в редакторе -->
             <max-edit-text-size>524288</max-edit-text-size>
             <!-- Множество элементов <import> автоматического импорта
                  медиа файлов из файловой системы (где работает сервер ηCMS)
@@ -188,12 +182,6 @@
                      По умолчанию: false
                      -->
                 <overwrite>false</overwrite>
-                <!-- В этом случае целевые файлы
-                     будут помечены, как системные,
-                     и могут быть изменены и удалены
-                     только администратором.
-                     По умолчанию: false -->
-                <system>true</system>
                 <!-- Шаблоны включаемых файлов в исходной директории
                      аналогично https://ant.apache.org/manual/dirtasks.html
                 -->
@@ -399,17 +387,9 @@
             <queue-size>1000</queue-size>
         </executor>
 
-        <browser-filter>
-            TODO
-        </browser-filter>
-
-        <solr>
-            TODO
-        </solr>
-
-        <scheduler>
-            TODO
-        </scheduler>
+        <browser-filter/>
+        <solr/>
+        <scheduler/>
 
     </configuration>
 

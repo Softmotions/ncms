@@ -2,83 +2,72 @@
 
 .. contents::
 
-Введение в ηCMS
-===============
+Introduction to ηCMS
+====================
 
-Основные понятия
-----------------
+Basic terms
+-----------
 
-Страница в ηCMS - это совокупность **данных** и **HTML разметки**.
-Совокупность данных страницы можно представить в виде набора :term:`атрибутов <атрибут>`,
-где каждый атрибут представляет пару: `имя атрибута` и `значение атрибута`.
-Для читателей, знакомых с принципами ООП, страницу можно рассматривать
-как объект некоторого класса с набором атрибутов и хранимых в них данными.
+Page in ηCMS is a set of **data** and **HTML markup**.
+A data set of the page can be described  as a set of :term:`attributes <attribute>`,
+where every attribute is a pair: `attribute name` and `attribute value`.
+For readers who are familiar with `OOP <https://en.wikipedia.org/wiki/Object-oriented_programming>`_
+principles, the page can be represented as an object of a certain class
+with a set of attributes and the data stored there.
 
 .. image:: img/ncms_arch1.png
 
-Введем несколько понятий, которые помогут нам разобраться в ηCMS и в дальнейшем будут использоваться в
-документации.
+Lets introduce some concepts used in the documentation to understand ηCMS better.
 
 .. glossary::
 
-    атрибут
     attribute
-        Атрибут - это именованный блок данных, принадлежащий :term:`сборке <сборка>`.
-        Это может быть как простая строка, так и более сложный объект, например, ссылка на другую страницу или файл,
-        список, дерево и т.п.
-        На атрибут можно сослаться по имени атрибута.
-        Данные атрибута имеют свое представление в HTML коде страницы.
-        :ref:`Описание возможных атрибутов. <am>`
+        Attribute - is a named block of data belonging to the :term:`assembly <assembly>`.
+        It can be a simple string or a complex object, such as a link to another page or file, list, tree, etc.
+        To refer to an attribute, use its name.
+        These attributes have their own representation in the HTML page code.
+        :ref:`Documentation on assembly attributes. <am>`
 
-
-    сборка
     assembly
-        Сборка - это поименованное множество :term:`атрибутов <атрибут>`. Атрибуты используются
-        для отображения информации в контексте страниц ηCMS. Иными словами, сборка - это
-        набор атрибутов, и на этот набор можно сослаться по имени сборки.
+        Assembly is a named set of :term:`attributes <attribute>`.
+        Attributes are used to display the page data in the context of the ηCMS pages.
+        In other words, the assembly is named set of attributes, and it can be referenced by the assembly name.
 
     HTTL
-        HTTL - это язык разметки (http://httl.github.io), с помощью которого определяется :term:`разметка <ядро>` страниц ηCMS.
-        HTTL достаточно сильно похож на популярный язык шаблонов
-        Apache Velocity. :ref:`Руководство по HTTL разметке в ηCMS. <httl>`
+        HTTL is a template markup language (http://httl.github.io),
+        on which ηCMS pages :term:`markup <core>` is defined.
+        HTTL is fairly similar to the popular markup language:
+        Apache Velocity. :ref:`Manual on how to use HTTL markup in ηCMS. <httl>`
 
-    ядро
     core
-        Ядро сборки - это :term:`HTTL` разметка для представления данных, хранимых в :term:`сборке <сборка>` в виде HTML
-        страницы. Ядро является :term:`атрибутом <атрибут>` сборки, который интерпретируется ηCMS
-        для создания конечного кода HTML страницы.
+        Assembly core is a :term:`HTTL` markup file used to represent
+        a :term:`page assembly <assembly>`  data as an HTML page.
 
-    шаблон
     template
-        Шаблон страницы - это :term:`сборка`, которая является базовой (родительской в смысле наследования) для
-        :term:`страницы <страница>`, отображаемой клиентам сайта. Шаблон определяет множество страниц с
-        одинаковой структурой, но с разным содержанием.
+        Template is a parent :term:`assembly` (in the sense of inheritance), for a
+        actually visible :term:`web page <page>`. Template defines a set of pages having
+        the same structure but different contents.
 
-    страница
     page
-        Страница - это :term:`сборка`, которая связана со своим :term:`ядром <ядро>`.
-        В ядро страницы (в HTML разметку) включаются данные атрибутов сборки, и
-        в результате страница отображается клиенту веб сайта.
+        Page is an :term:`assembly`, linked with its :term:`core <core>`
+        to be viewed as a complete HTML page.
 
+`Assemblies` can be inherited from each other. They can override attribute values of parent assemblies
+or add new attributes. `Assemblies` can be inherited from multiple parents. Here is a direct analogy
+with a inheritance of classes in Java, but we are considering `assemblies` to be as class instances.
 
-`Сборки` могут наследоваться друг от друга, переопределять значения атрибутов родительских сборок,
-добавлять новые `атрибуты`. `Сборки` поддерживают множественное наследование. Здесь можно
-провести прямую аналогию с наследование классов, но вместо классов
-мы рассматриваем объекты классов в виде `сборок (assemblies)`.
-
-Пример
+Sample
 ------
 
-Проиллюстрируем сказанное выше на примере -- сделаем простой веб сайт.
-Если вы хотите самостоятельно выполнить шаги, которые будут описаны ниже, вам
-необходимо :ref:`создать новый проект <newproject>`.
+Let us illustrate the statements above on the example - make a simple website.
+To follow the steps described below, initially :ref:`create a new project <newproject>`.
 
-Пусть большинство страниц нашего сайта имеют следующие общие свойства:
+Let the most of our website pages have the following common parts:
 
-* Заголовок страницы (title)
-* Подвал страницы (footer)
+* Page title
+* Page footer
 
-Положим, что `title` - это строка, которая находится в разметке внутри тега `head`:
+Let's assume that the `title` is a string which is placed in the markup inside the tag `head`:
 
 .. code-block:: html
 
@@ -86,70 +75,66 @@
         <title>The page title here</title>
     </head>
 
-А `footer` это часть HTML разметки, которая хранится в отдельном файле
-медиа-репозитория ηCMS.
+And `footer` is a part of HTML markup stored in a file in the ηCMS media-repository.
 
-Выделим из упомянутого большинства страницы, отображающие
-один блок контента, и объединим их в единый :term:`шаблон` (множество) под названием `Простая страница`.
+In the said majority we select pages displaying only a single content block,
+and unite them as :term:`template` called `Simple page`.
 
-Страницы шаблона `Простая страница` содержат атрибуты `title (заголовок)` и `footer (подвал)`,
-разделяемые большинством страниц сайта, а также дополнительные атрибуты и свойства:
+All pages based on `Simple page` template contain `title` and `footer` attributes
+among additional attributes:
 
-* Содержимое (content)
-* И разметку страницы (:term:`core`)
+* Content
+* Page markup (:term:`core`)
 
-Редактор сайта, используя графический интерфейс ηCMS, может создать экземпляр
-страницы с именем `mypage`, типом `Простая страница` и уникальным содержимым этой
-страницы (:ref:`wiki атрибутом <am_wiki>` `content`).
+Website editor using ηCMS UI can create an instance of the page
+called `mypage` having type `Simple page` and unique page specific contents
+stored in :ref:`wiki attribute <am_wiki>`.
 
 .. figure:: img/ncms_arch2.png
     :align: center
 
-    Иерархия наследования сборок для страницы `mypage` типа `Простая страница` (Simple page template)
+    Hierarchy of assemblies inheritance for `mypage` page having `Simple page` as template.
 
-При обращении к странице `mypage` ηCMS получит файл разметки для шаблона `Простая страница`,
-подставит в контекст этой :term:`HTTL` разметки множество атрибутов, относящихся к экземпляру
-:term:`сборки <сборка>` `mypage`, и в завершении сгенерирует HTML ответ клиенту. В этом процессе
-описана простая, но мощная идея, лежащая в основе ηCMS.
+While accessing the `mypage` page, ηCMS gets the markup file for the template `Simple page`,
+pushes the set of attributes pertaining to an instance of the `mypage`
+:term:`assembly <assembly>` in the context of the :term:`HTTL` markup,
+and finally generates the HTML response to the client.
+This process describes a simple but powerful idea underlying ηCMS.
 
-Давайте реализуем описанную выше структуру в графическом интерфейсе ηCMS.
+Let's implement the structure described above in the ηCMS GUI.
 
-В :ref:`интерфейсе управления сборками <amgr>` создаем сборку с именем `base`.
+Using :ref:`assembly management interface <amgr>` we create an assembly called `base`.
 
 .. figure:: img/step1.png
 
-    Новая `base` сборка
-
+    New `base` assembly
 
 .. figure:: img/step2.png
 
-    Новая `base` сборка
+    New `base` assembly
 
-Создаем общие для всех страниц атрибуты.
+Creating attributes common for all pages.
 
 .. figure:: img/step3.png
 
-    Создание нового атрибута для `base`
-
+    Creating new attribute for `base`
 
 .. figure:: img/step4.png
 
-    Создание нового атрибута `title` для `base`
+    Creating new attribute `title` for `base`
 
-Аналогичным образом добавляем атрибут `footer`.
+    Similarly, adding the attribute `footer`.
 
 .. image:: img/step5.png
 
-
-Создаем новый тип страниц: "Простая страница"
+Creating a new page type: "Simple page"
 
 .. figure:: img/step6.png
 
-    :term:`Шаблон <шаблон>` "простая страница"
+    :term:`Template <template>`: "Simple page"
 
-
-В :ref:`интерфейсе управления медиа контентом <mmgr>` создадим файл
-разметки для типа "Простая страница": `/site/httl/simple_core.httl`.
+Creating markup file for the type "Simple page": `/site/httl/simple_core.httl`
+in the :ref:`media content management interface <mmgr>`.
 
 .. code-block:: html
 
@@ -163,127 +148,114 @@
     </footer>
     </html>
 
-Здесь мы видим вывод значений атрибутов `title`, `content`, `footer`.
-:ref:`Руководство по HTTL разметке в ηCMS. <httl>`
+Here we can see the output of attribute values `title`, `content`, `footer`.
+:ref:`Manual on the HTTL markup in ηCMS. <httl>`
 
 
-После того, как определены базовые :term:`сборки <сборка>` и :term:`шаблон` страницы,
-в :ref:`интерфейсе управления страницами <pmgr>` редакторы сайта
-могут создать экземпляры страниц на основе определенного выше шаблона:
+After the basic :term:`assemblies <assembly>` and page :term:`template` are defined,
+site editors can create page instances via :ref:`page management UI <pmgr>`
+based on the template described above:
 
 .. image:: img/step7.png
 
-Выбираем шаблон страницы:
+Choose a page template:
 
 .. figure:: img/step8.png
 
-    Кнопка выбора шаблона
-
+    Button to select the template
 
 .. image:: img/step9.png
 
-После создания страницы активируется интерфейс редактора
-содержимого страницы:
+When the page is created an interface of a page content editor switches on.
 
 .. figure:: img/step10.png
 
-    Интерфейс редактора содержимого страницы
+    Interface of a page content editor
 
 
-Нажав на кнопку `Предпросмотр` получаем результат нашей работы:
+Pressing the key `Preview` displays the result of our work:
 
 
 .. figure:: img/step11.png
 
-    Отображение созданной страницы `mypage`
+    Showing the created page `mypage`
 
 
-Архитектура платформы
+Platform architecture
 ---------------------
 
-Платформа ηCMS является веб приложением на базе `Java servlet API 3.1`.
-В приложении используется `IoC` контейнер `Google Guice <https://github.com/google/guice>`_.
-Для связи с СУБД используется SQL библиотека `MyBatis <http://www.mybatis.org/mybatis-3/>`_.
+ΗCMS Platform is a web application based on `Java servlet API 3.1`.
+The application uses `IoC` container` Google Guice <https://github.com/google/guice> `_.
+For the communication with the database, use SQL library `MyBatis <http://www.mybatis.org/mybatis-3/>` _.
 
-Структура :ref:`нового проекта ηCMS <newproject>` построена так, чтобы разработчик
-имел возможность как расширять функционал самой платформы ηCMS в контексте проекта,
-так и создавать специфичные для проекта модули. Более подробно можно ознакомиться
-в разделе :ref:`extending`.
+Structure of the :ref:`new ηCMS project <newproject>` allows developer
+to have an opportunity to both expand the functionality of the ηCMS platforms in context of the project,
+or create modules specific to the project. More details can be found in the
+section :ref:`extending`.
 
 
-Дополнительные определения
---------------------------
+Additional definitions
+----------------------
 
 .. glossary::
 
-    главная страница
     main page
-        Домашняя (начальная) страница для определенного виртуального
-        хоста и языка. Для создания главной страницы используется атрибут
-        :ref:`маркер главной страницы <am_mainpage>`, добавляемый в сборку страницы.
+        Home (start) page for a particular virtual host and language.
+        To create a home page we use an attribute :ref:`front page marker <am_mainpage>` added
+        to the page assembly.
 
-    иерархия наследования страницы
     asm inheritance tree
-        Сборки могут наследоваться друг от друга.
-        Здесь используется семантика, аналогичная наследованию классов
-        о объектно-ориентированных языках программирования. Но в
-        данном случае сборку нужно рассматривать как объект,
-        хранящий данные (атрибуты), а наследование - как наследование
-        данных объектов.
+        Assemblies can be inherited from each other.
+        Here is used a semantics similar to a class inheritance in
+        object-oriented programming languages. But here an assembly
+        is to be treated as an object storing the data (attributes),
+        and inheritance - as an inheritance of data objects.
 
-    дерево навигации
     navigation tree
-        Если при создании страницы ее тип был указан как `Контейнер`, то эта
-        страница может иметь вложенные в нее подстраницы. Данная страница
-        будет являться родительской для вложенных страниц. Вложенные страницы
-        также могут являться контейнерами для других страниц. Комбинируя страницы
-        подобным образом, редактор сайта создает `дерево навигации` сайта.
+        If you create a page having the type `Container`, this page can have embedded pages (sub-pages).
+        This page is a parent for nested pages. Nested page also can be a container for other pages.
+        Combining page similarly, the site editor creates a `navigation tree` of the site.
 
         .. note::
 
-            Кроме отношения вложенности, страницы могут наследоваться друг
-            от друга, тем самым образуя `дерево наследования`. Не следует путать
-            наследование сборок с `деревом навигации`. :ref:`attributes_access`
+            Beside the nesting relationship, pages can inherit
+            from each other, thus forming a `Inheritance tree`. Not to be confused
+            inheritance assemblies and `Navigation tree`. :ref:`attributes_access`
 
-    тип страницы
     page type
-        Допустимы следующие типы страниц:
+        There are the following acceptable types of pages
 
-        * Обычная страница
-        * Страница ленты (новостная страница)
-        * :term:`Сборка <сборка>` - страница, которая является
-          прототипом (родителем в дереве наследования) для других страниц.
+        * Standard page
+        * News feed
+        * :term:`assembly <assembly>` - page-prototype for another pages (parent in `Inheritance tree`).
 
 
-    GUID страницы
     page GUID
-         Уникальный 32-х символьный идентификатор страницы,
-         используемый для доступа к странице по адресу: `http://hostname/<guid>`.
+         Unique 32-symbolical identifier of the page,
+         used for access to the page by the address: 'http://hostname / <guid>'.</guid>
 
-    псевдоним страницы
     page alias
-        Альтернативное уникальное имя страницы, по которому она может быть
-        отображена. Например, страница с :term:`guid <GUID страницы>` равным `b3ac2985453bf87b6851e07bcf4cfadc`
-        доступна по адресу `http://<hostname>/b3ac2985453bf87b6851e07bcf4cfadc`.
-        Однако если в контексте страницы зарегистрирован атрибут с типом :ref:`alias <am_alias>`
-        и значением `mypage`, то данная страница будет доступна по адресу: `http://<hostname>/mypage`.
-        Допускается использовать `/` в названии псевдонима, например, для псевдонима `/foo/bar`  страница может быть
-        доступна по адресу `http://<hostname>/foo/bar`.
+        Alternative unique page name which can be used to display the page.
+        For example, the page with the :term:`guid <page GUID>` equal to `b3ac2985453bf87b6851e07bcf4cfadc`
+        acceptable by thу address `http://<hostname>/b3ac2985453bf87b6851e07bcf4cfadc`.
+        However, if the attribute with the type :ref:`alias <am_alias>` is registered
+        in the context of the page and has the value of `mypage`, then this page
+        will be available at the following address:`http://<hostname>/mypage`.
+        Allowed to use the `/` in the alias name, for example, for the alias `/foo/bar`
+        the page can be available at `http://<hostname>/foo/bar`.
 
-    glob шаблон
     glob
-        Нотация шаблона поиска, где можно задавать
-        простейшие правила сответствия шаблона и данных.
+    glob
+        Notation of a search pattern, where you can set a simple rule for compliance of pattern and data.
 
-        * Символ `\*` обозначает ноль или несколько символов в строке искомых данных.
-        * Символ `\?` соответствует одному любому символу искомых данных.
+        * The symbol `\*` denotes zero or some characters in a line of the desired data.
+        * The symbol  `\?` matches any single character of the desired data.
 
-        `Подробнее о Glob нотации <https://en.wikipedia.org/wiki/Glob_(programming)>`_
+        `refer to a Glob notation for more details <https://en.wikipedia.org/wiki/Glob_(programming)>`_
 
     mediawiki
-        Популярный язык разметки wiki страниц. Например, в mediawiki разметке
-        описаны страницы сайта `wikipedia.org <https://www.wikipedia.org/>`_.
-        Mediawiki разметка может быть использована для создания страниц ηCMS
-        при помощи :ref:`wiki атрибута <am_wiki>`.
-
+        The popular language for wiki pages markup . For example, mediawiki markup
+        describes pages of the site `wikipedia.org <https://www.wikipedia.org/>` _.
+        Mediawiki markup can be used to create ηCMS pages
+        using :ref:`wiki attribute <am_wiki>`.
 

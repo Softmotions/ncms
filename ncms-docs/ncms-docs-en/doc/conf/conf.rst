@@ -39,6 +39,7 @@ Sample of ηСМС configuration file
 
 .. code-block:: xml
 
+
     <?xml version="1.0" encoding="utf-8" ?>
     <configuration>
         <!-- Reference to the logging configuration relative
@@ -91,8 +92,8 @@ Sample of ηСМС configuration file
 
         <asm>
             <!-- The directory in the ηCMS media repository,
-                 which is the root for files/resources
-                 available as a web resources via HTTP-protocol.
+                     which is the root for files/resources
+                     available as a web resources via HTTP-protocol.
                  Default value: /site -->
             <site-files-root>/site</site-files-root>
         </asm>
@@ -161,7 +162,7 @@ Sample of ηСМС configuration file
                  By default 30Мб -->
             <max-upload-size>31457280</max-upload-size>
             <!-- The maximum size of the data stored in the RAM cache
-                 of the ηCMS server while uploading a file.
+                     of the ηCMS server while uploading a file.
                  By default 10Мб-->
             <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
             <!-- The size of preview icons for the images in the ηCMS media repository -->
@@ -212,12 +213,12 @@ Sample of ηСМС configuration file
                           for the future editing via the ηCMS user management interface	 -->
             <xml-user-database placeTo="{home}/.myapp/mayapp-users.xml">
                 <!-- Initial path to the classpath for the read-only ηCMS users database.
-                     If placeTo attribute is set and the file is missing, the database will be copied
+                         If placeTo attribute is set and the file is missing, the database will be copied
                      to the location determined via placeTo -->
                 conf/mayapp-users.xml
             </xml-user-database>
             <!-- Hash  generation algorithm for passwords in an XML database ηCMS users.
-                 Possible values:
+                     Possible values:
                     - sha256
                     - bcrypt
                     - empty string or absent element: passwords are not encrypted
@@ -298,8 +299,8 @@ Additional (Advanced) configuration items
 
         <pages>
             <!-- The maximum size of the LRU cache
-                 for the storing of the meta information (com.softmotions.ncms.asm.CachedPage)
-                 about resently used pages of the site.
+                     for the storing of the meta information (com.softmotions.ncms.asm.CachedPage)
+                     about resently used pages of the site.
                  By default: 1024 -->
             <lru-cache-size>1024</lru-cache-size>
 
@@ -358,10 +359,10 @@ Additional (Advanced) configuration items
 
         <events>
             <!-- The number of threads that are used
-                  to handle asynchronous events in ηCMS
-                  Default: 1 thread.
-                  Do not change this setting,
-                  if you do not exactly know what you are doing
+                      to handle asynchronous events in ηCMS
+                      Default: 1 thread.
+                      Do not change this setting,
+                      if you do not exactly know what you are doing
             -->
             <num-workers>1</num-workers>
         </events>

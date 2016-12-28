@@ -1,7 +1,7 @@
 .. _gettingstarted:
 
-Начало работы
-=============
+Getting started
+===============
 
 .. toctree::
     :maxdepth: 1

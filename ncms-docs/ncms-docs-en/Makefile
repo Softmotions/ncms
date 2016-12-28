@@ -72,7 +72,7 @@ init:
     $(SPHINXBUILD) --version | grep -E '1\.(3|4)\.' || (echo "Unsupported sphinx version. You need execute 'pip3 install sphinx'" && exit 1)
 
 html: init
-    $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/ncmsmanual_ru
+    $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/ncmsmanual_en
     @echo
     @echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
