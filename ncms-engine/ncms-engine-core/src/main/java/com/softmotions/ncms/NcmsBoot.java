@@ -144,8 +144,6 @@ public class NcmsBoot extends WBServletListener {
         sreg.setInitParameter(ApplicationConfig.CUSTOM_ANNOTATION_PACKAGE, apkgs);
         sreg.setInitParameter(ApplicationConfig.WEBSOCKET_SUPPORT_SERVLET3, "true");
         sreg.setInitParameter(ApplicationConfig.PROPERTY_SESSION_SUPPORT, "false");
-        //sreg.setInitParameter(ApplicationConfig.DEFAULT_CONTENT_TYPE, "application/json");
-        //sreg.setInitParameter(ApplicationConfig.WEBSOCKET_CONTENT_TYPE, "application/json");
         sreg.setInitParameter(ApplicationConfig.ANALYTICS, "false");
         sreg.setInitParameter(ApplicationConfig.ATMOSPHERE_INTERCEPTORS, ShiroInterceptor.class.getName());
         sreg.setInitParameter(ApplicationConfig.HEARTBEAT_INTERVAL_IN_SECONDS, "30");

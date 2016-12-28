@@ -69,7 +69,7 @@
 Также следует поменять конфигурацию `Apache Shiro`, ссылка на которую содержит
 элемент `security/shiro-config-locations`.
 
-Добавляем `ncms_prefix` в пути перечисленные в конфигурации shiro:
+Добавляем `ncms_prefix` в пути, перечисленные в конфигурации shiro:
 
 .. code-block:: ini
 
