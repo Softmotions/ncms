@@ -2,85 +2,87 @@
 
 .. contents::
 
-Конфигурация сервера
+Server configuration
 ====================
 
-Конфигурация сервера ηCMS определяется в XML файле.
-Сервер при старте читает переменную ОС или системное JVM свойство
-с именем `WEBOOT_CFG_LOCATION`, которое указывает на файл конфигурации.
-Файл может быть ресурсом в файловой системе или ресурсом в classpath JVM сервера ηCMS.
-Система не запустится, если `WEBOOT_CFG_LOCATION` не был задан одним из указанных выше способов.
+The ηCMS server configuration is defined in the XML file. At the start the server reads
+the OS environment or system JVM property: `WEBOOT_CFG_LOCATION`,
+specifying the configuration file. The file can be a file system
+resource or a resource in server classpath on JVM.
+The system won't be launched if `WEBOOT_CFG_LOCATION`
+isn't set by one of the methods stated above.
 
-Для работы с конфигурацией сервера используется
+To work with the server configuration we use
 `Apache Сommons Сonfiguration <https://commons.apache.org/proper/commons-configuration/>`_
-и, как следствие, в файле поддерживаются ссылки на значения других
-элементов, например::
+and, as a consequence, a references to values of other items are supported in the file, e.g.::
 
     <root>http://${server-name}:${server-port}</root>
 
-где `server-name` и `server-port` являются XML элементами конфигурации.
+where `server-name` and `server-port` are XML items of the configuration.
 
-Дополнительно в файле конфигурации можно использовать заменители (placeholders)
-в виде `{name}`, где {name} может принимать следующие значения:
+Additionally, in the configuration file you can use substitutes (placeholders)
+as `{name}`, where `{name}` can take the following values:
 
-* {cwd}    --  текущая рабочая директория
-* {home}   --  домашняя директория пользователя и под которого запущен сервер ηCMS
-* {tmp}    --  временная папка
-* {newtmp} --  уникальная временная директория для запущенного приложения
-* {webapp} -- путь до корня развернутого веб приложения
-* {env:NAME} -- Где *NAME* - имя переменной окружения
-* {sys:NAME} -- Где *NAME* - имя системного свойства JVM
+* {cwd}    --  current working directory
+* {home}   --  home directory of the user who runs ηCMS server
+* {tmp}    --  temporary folder
+* {newtmp} --  unique temporary directory for the running application
+* {webapp} --  path to the root of the deployed web application
+* {env:NAME} -- where *NAME* - the name of the environment variable
+* {sys:NAME} -- where *NAME* - the name of the JVM system property
+
 
 .. _conf_sample:
 
-Пример файла конфигурации ηCMS с комментариями
-----------------------------------------------
+Sample of ηСМС configuration file
+---------------------------------
 
 .. code-block:: xml
 
     <?xml version="1.0" encoding="utf-8" ?>
     <configuration>
-        <!-- Ссылка на лог конфигурацию проекта
+        <!-- Reference to the logging configuration relative
+             to this config file
              http://logback.qos.ch/manual/configuration.html
-             Относительно этого файла -->
+        -->
         <logging-ref>app-logging.xml</logging-ref>
-        <!-- Название приложения -->
+
+        <!-- Application name -->
         <app-name>My app</app-name>
+
         <!--
-            Режим работы приложения:
-            - production    Приложение в нормальном режиме работы
-            - dev           Приложение в режиме работы для разработчика
-                                Включен debug режим работы.
-            - test          Приложение в режиме выполнения тест кейсов
+            Application working mode:
+            - production    Working in production
+            - dev           Developer mode, debugging enabled.
+            - test          Testing
         -->
         <environment>dev</environment>
-        <!-- DNS имя веб сервера или IP адрес для по умолчанию внешних клиентов -->
+        <!-- Domain name of web-server or IP-address for external clients by default -->
         <server-name>127.0.0.1</server-name>
-        <!-- Порт сервера для внешних клиентов -->
+        <!-- Server port -->
         <server-port>8080</server-port>
         <site>
-            <!-- Основной адрес веб сервера для для внешних клиентов -->
+            <!-- Main web-server HTTP url -->
             <root>http://${server-name}:${server-port}</root>
-            <!-- Если true, то адрес веб сервера для внешних
-                 клиентов (например в email сообщениях и ссылках)
-                 будет создаваться на основе данных
-                 HTTP запросов клиентов, если это возможно.
-                 В противном случае будет использоваться параметр
-                 xml конфигурации: site/root
+            <!-- If true, then the webserver address for external
+                 clients (for example for email messages and links)
+                 is created based on the data of client's HTTP requests
+                 if it is possible. Otherwise configuration
+                 parameter `site/root` is used.
             -->
             <preferRequestUrl>true</preferRequestUrl>
         </site>
 
-        <!-- Префикс приложения относительно корня веб контейнера.
-             См. http://ncms.one/manual/doc/deployments/index.html
+        <!-- Application prefix with respect to the web container root.
+             See http://ncms.one/manual/en/doc/deployments/index.html
         -->
         <app-prefix>/</app-prefix>
 
         <!--
-            Список дополнительных ресурсов, используемых для локализации
-            сообщений сервера. Можно опустить этот блок в конфигурации, в том случае если вы
-            не используете дополнительные локализованные ресурсы.
-            См. http://ncms.one/manual/doc/extending/index.html
+            A list of additional resources used for localization
+            of server messages.  If you do not use additional localized resources,
+            this configuration section can be omitted.
+            Refer to http://ncms.one/manual/en/doc/extending/index.html
         -->
         <messages>
             <bundle>com.softmotions.ncms.Messages</bundle>
@@ -88,119 +90,103 @@
         </messages>
 
         <asm>
-            <!-- Директория в медиа-репозитории ηCMS,
-                 являющаяся корневой для файлов/ресурсов
-                 доступных как веб ресурсы по HTTP протоколу.
-                 По умолчанию /site -->
+            <!-- The directory in the ηCMS media repository,
+                 which is the root for files/resources
+                 available as a web resources via HTTP-protocol.
+                 Default value: /site -->
             <site-files-root>/site</site-files-root>
         </asm>
 
-        <!-- Конфигурация статических веб ресурсов,
-             хранящихся в .jar файлах приложения -->
+        <!-- Configuration of static web-resources,
+             stored in .jar files of the application -->
         <jar-web-resources>
-            <!-- Административная зона сайта,
-                 доступная по адресу: /adm -->
+            <!-- Administrative site area,
+                 available by the address: /adm -->
             <resource>
                 <path-prefix>/adm</path-prefix>
                 <options>/myapp-qx/myapp,watch=true</options>
             </resource>
-            <!-- Русскоязычная документация по ηCMS
-                включена как веб ресурс по адресу: /manual -->
-            <resource>
-                <path-prefix>/manual</path-prefix>
-                <options>/ncmsmanual_ru</options>
-            </resource>
         </jar-web-resources>
 
-        <!-- Управление кешированием ресурсов ηCMS в на стороне клиента  -->
+        <!-- ηCMS resource caching on the client side  -->
         <cache-headers-groups>
             <cache-group>
-                <!-- Все css и js файлы кешируются на 2 часа-->
+                <!-- All css and js files are cached for 2 hours-->
                 <patterns>*.css,*.js</patterns>
                 <expiration>7200</expiration>
             </cache-group>
             <cache-group>
-                <!-- Статические медиа ресурсы сайтов кешируются на 2 часа -->
+                <!-- Static media resources of sites are cached for 2 hours -->
                 <patterns>/rs/media/fileid/*,/images/*,/adm/resource/*</patterns>
                 <expiration>7200</expiration>
             </cache-group>
             <cache-group>
-                <!-- Отмена кеширования для всех ресурсов под /adm/script/* -->
+                <!-- Cancel caching for all resources in /adm/script/* -->
                 <nocache>true</nocache>
                 <patterns>/adm/script/*</patterns>
             </cache-group>
         </cache-headers-groups>
 
-        <!-- Файл создания схемы базы данных http://www.liquibase.org/ -->
+        <!-- File of a database schema creation http://www.liquibase.org/ -->
         <liquibase>
             <changelog>com/softmotions/ncms/db/changelog/db-changelog-master.xml</changelog>
-            <!-- Liquibase обновит структуру базы данных при старте -->
+            <!-- Liquibase updates the database structure at the server start -->
             <update/>
         </liquibase>
 
-        <!-- Параметры связи приложения с базой данных -->
+        <!-- Parameters of communication between the application and the database -->
         <mybatis>
             <bindDatasource>true</bindDatasource>
-            <!-- Mybatis конфигурация приложения -->
+            <!-- Mybatis application configuration -->
             <config>com/softmotions/ncms/db/mybatis-config.xml</config>
-            <!-- Файл с логином и паролем для соединения с базой данных -->
+            <!-- File containing the login and password for the connection to the database -->
             <propsFile>{home}/.myapp.ds</propsFile>
             <extra-properties>
                 JDBC.driver=com.ibm.db2.jcc.DB2Driver
             </extra-properties>
             <extra-mappers>
                 <mapper>
-                    <!-- Дополнительно подключаемая конфигурация Mybatis
-                         в случае если вы расширяете функционал ηCMS
-                         См. http://ncms.one/manual/doc/extending/index.html -->
+                    <!-- Additionally, plug in the Mybatis configuration
+                         if you are to extend the ηCMS functionality
+                         Refer to http://ncms.one/manual/doc/extending/index.html -->
                     <!--<resource>extra_mybatis_mapper.xml</resource>-->
                 </mapper>
             </extra-mappers>
         </mybatis>
 
         <media>
-            <!-- Директория где хранятся медиа файлы сайтов ηCMS -->
+            <!-- Directory where ηCMS media files are stored -->
             <basedir>{home}/.myapp/media</basedir>
-            <!-- Максимальный размер файла в байтах загружаемого в ηCMS.
-                 По умолчанию 30Мб -->
+            <!-- The maximal size of the file loaded to ηCMS (bytes).
+                 By default 30Мб -->
             <max-upload-size>31457280</max-upload-size>
-            <!-- Максимальный размер данных, сохраняемых в оперативную
-                 память сервера ηCMS при загрузке файла.
-                 По умолчанию 10Мб-->
+            <!-- The maximum size of the data stored in the RAM cache
+                 of the ηCMS server while uploading a file.
+                 By default 10Мб-->
             <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
-            <!-- Размер иконок предпросмотра для изображений в репозитории ηCMS -->
+            <!-- The size of preview icons for the images in the ηCMS media repository -->
             <thumbnails-width>250</thumbnails-width>
-            <!-- Максимальный размер текстового файла редактируемого в графическом редакторе -->
-            <max-edit-text-size>1048576</max-edit-text-size>
-            <!-- Множество элементов <import> автоматического импорта
-                 медиа файлов из файловой системы (где работает сервер ηCMS)
+            <!-- The maximum size of the text file being edited in a editor -->
+            <max-edit-text-size>524288</max-edit-text-size>
+            <!-- Set of automatic import rules <import>
+                 of media-files from the file storage (where the ηCMS server works)
             <import>
-                <!-- Исходная директория для импорта. -->
+                <!-- Source directory for import -->
                 <directory>{webapp}</directory>
-                <!-- Целевая директория для импорта -->
+                <!-- Target directory for import -->
                 <target>site</target>
-                <!-- Следить за изменениями исходных файлов,
-                     для того, чтобы синхронно изменять их в
-                     медиа репозитории ηCMS -->
+                <!-- Watch for changes in the source files -->
                 <watch>true</watch>
-                <!-- В случае, если время изменения файла в целевой директории,
-                     больше чем время изменения исходного файла, то он не будет переписан.
-                     По умолчанию: false
-                     -->
+                <!-- If the file in the target directory was modified later than the source file,
+                     it will not be overwritten. By default: false -->
                 <overwrite>false</overwrite>
-                <!-- В этом случае целевые файлы
-                     будут помечены как системные,
-                     и могут быть изменены и удалены
-                     только администратором.
-                     По умолчанию: false -->
-                <system>true</system>
-                <!-- Шаблоны включаемых файлов в исходной директории
-                     аналогично https://ant.apache.org/manual/dirtasks.html
+                <!-- Templates of files included to the source directory
+                     same as Ant include patterns https://ant.apache.org/manual/dirtasks.html
                 -->
                 <includes>
                     <include>**/*</include>
                 </includes>
-                <!-- Шаблоны исключаемых файлов в исходной директории -->
+                <!-- Templates of files excluded from the source directory -->
                 <excludes>
                     <exclude>META-INF/**</exclude>
                     <exclude>WEB-INF/**</exclude>
@@ -209,69 +195,67 @@
             </import>
         </media>
 
-        <!-- Конфигурация парсера HTTL разметки.
-             extensions: Возможные расширения httl файлов.
-                         По умолчанию: *,httl,html,httl.css -->
+        <!-- Configuration of the HTTL markup parser.
+             extensions: Possible extensions of httl files.
+                         By default: *,httl,html,httl.css -->
         <httl extensions="*,httl,html,httl.css">
-            <!-- Свойства конфигурации HTTL
-                 см. http://httl.github.io/en/config.html -->
+            <!-- HTTL configuration properties
+                 Refer to http://httl.github.io/en/config.html -->
             import.methods+=myapp.AppHttlMethods
             import.packages+=myapp
         </httl>
 
-        <!-- Настройки системы аутентификации и авторизации ηCMS -->
+        <!-- ηCMS authentication and authorization setting -->
         <security>
-            <!-- Расположение базы данных пользователей ηCMS в XML файле.
-                 placeTo: Опционально. Расположение, в которое будет скопирована база данных
-                          пользователей, для последующего редактирования через интерфейс
-                          управления пользователями ηCMS -->
+            <!-- Location of the user ηCMS Database in an XML file.
+                 placeTo: Optional. Location to copy the user database
+                          for the future editing via the ηCMS user management interface	 -->
             <xml-user-database placeTo="{home}/.myapp/mayapp-users.xml">
-                <!-- Начальный путь в classpath для read-only базы данных пользователей ηCMS.
-                     Если указан атрибут placeTo, то база данных будет скопирована
-                     в место указанное placeTo в том случае если файл отсутствовал -->
+                <!-- Initial path to the classpath for the read-only ηCMS users database.
+                     If placeTo attribute is set and the file is missing, the database will be copied
+                     to the location determined via placeTo -->
                 conf/mayapp-users.xml
             </xml-user-database>
-            <!-- Алгоритм для генерации хешей для паролей в XML базе данных пользователей ηCMS.
-                 Возможные значения:
+            <!-- Hash  generation algorithm for passwords in an XML database ηCMS users.
+                 Possible values:
                     - sha256
                     - bcrypt
-                    - пустая строка или отсутствие элемента: пароли не шифруются
+                    - empty string or absent element: passwords are not encrypted
              -->
             <password-hash-algorithm>sha256</password-hash-algorithm>
-            <!-- Путь до конфигурации https://shiro.apache.org/
-                 который используется в ηCMS -->
+            <!-- Path to the Shiro(https://shiro.apache.org/) configuration
+                 used in ηCMS -->
             <shiro-config-locations>/WEB-INF/shiro.ini</shiro-config-locations>
-            <!-- Имя базы данных пользователей в ηCMS -->
+            <!-- ηCMS user database name -->
             <dbJVMName>WSUserDatabase</dbJVMName>
         </security>
 
-        <!-- Компоненты UI администратора -->
+        <!-- UI administrator components -->
         <ui>
             <navigation-selectors>
-                <!-- Компонент управления страницами ηCMS
-                     roles: роли пользователей
-                            имеющих доступ к данному компоненту -->
+                <!-- ηCMS pages management components
+                     roles: roles of users
+                            having access to the component -->
                 <widget qxClass="ncms.pgs.PagesNav" roles="user"/>
-                <!-- Ленты новостей и событий ηCMS -->
+                <!-- ηCMS news and events feed -->
                 <widget qxClass="ncms.news.NewsNav" roles="user"/>
-                <!-- Интерфейс управление медиафайлами -->
+                <!-- Interface of media files management -->
                 <widget qxClass="ncms.mmgr.MediaNav" roles="user"/>
-                <!-- Интерфейс управления сборкими -->
+                <!-- Interface of assembly management -->
                 <widget qxClass="ncms.asm.AsmNav" roles="admin.asm"/>
-                <!-- Интерфейс Marketing transfer tools (MTT) -->
+                <!-- Interface of  Marketing transfer tools (MTT) -->
                 <widget qxClass="ncms.mtt.MttNav" roles="mtt" extra="true"/>
-                <!-- Интерфейс управления tracking pixels в MTT
+                <!-- Interface of MTT tracking pixels management
                 <widget qxClass="ncms.mtt.tp.MttTpNav" roles="mtt" extra="true"/>
-                <!-- Интерфейс управления пользователями и правами доступа -->
+                <!-- Interface of user and user access management -->
                 <widget qxClass="ncms.usr.UsersNav" roles="admin.users" extra="true"/>
             </navigation-selectors>
         </ui>
 
         <mediawiki>
-            <!-- Максимальная ширина изображения при отображении mediawiki блока
-                 в контексте страницы -->
+            <!-- The maximum width of the image when displaying within mediawiki page -->
             <max-inline-image-width-px>900</max-inline-image-width-px>
-            <!-- Регистрация дополнительных тегов для mediawiki парсера -->
+            <!-- Additional mediawiki tags -->
             <tags>
                 <tag name="note" class="com.softmotions.ncms.mediawiki.NoteTag"/>
                 <tag name="gmap" class="com.softmotions.ncms.mediawiki.GMapTag"/>
@@ -284,19 +268,18 @@
             </tags>
         </mediawiki>
 
-        <!-- Дополнительные (опциональные) Guice модули
-             регистрируемые при старте ηCMS.
-             См. http://ncms.one/manual/doc/extending/index.html -->
+        <!-- Additional Guice modules
+             registered when ηCMS starts.
+             Refer to http://ncms.one/manual/doc/extending/index.html -->
         <modules>
             <module>myapp.AppModule</module>
         </modules>
     </configuration>
 
-
 .. _conf_extended:
 
-Дополнительные (Advanced) элементы конфигурации
------------------------------------------------
+Additional (Advanced) configuration items
+-----------------------------------------
 
 .. code-block:: xml
 
@@ -305,8 +288,8 @@
         ...
         <asm>
             ...
-            <!-- Загрузчики HTTL шаблонов ηCMS.
-                 По умолчанию используется загрузчик файлов медиа репозитория ηCMS.
+            <!-- Loaders of HTTL templates.
+                 By default a loader of media files of the ηCMS repository is used.
             -->
             <resource-loaders>
                 <loader>com.softmotions.ncms.asm.render.ldrs.AsmMediaServiceResourceLoader</loader>
@@ -314,23 +297,23 @@
         </asm>
 
         <pages>
-            <!-- Максимальный размер LRU кеша
-                 для хранения мета информации (com.softmotions.ncms.asm.CachedPage)
-                 о страницах сайта к которым недавно осуществлялся доступ (resently used).
-                 По умолчанию: 1024 -->
+            <!-- The maximum size of the LRU cache
+                 for the storing of the meta information (com.softmotions.ncms.asm.CachedPage)
+                 about resently used pages of the site.
+                 By default: 1024 -->
             <lru-cache-size>1024</lru-cache-size>
 
-            <!-- Максимальный разме LRU кеша псевдонимов страниц (page alias).
-                 Для быстрого нахождения страницы по псевдониму.
-                 По умолчанию: 8192
+            <!-- Maximum LRU size of a cache for page aliases.
+                 For the fast search of the page using its alias.
+                 By default: 8192
             -->
             <lru-aliases-cache-size>8192</lru-aliases-cache-size>
         </pages>
 
         <media>
             ...
-            <!-- Список директорий в медиа репозитории ηCMS
-                 которые будут помечены как системные -->
+            <!-- List of directories in the ηCMS media repository
+                 which are to be marked as 'system' -->
             <system-directories>
                 <directory>/site</directory>
                 <directory>/pages</directory>
@@ -339,19 +322,19 @@
 
         <security>
             ...
-            <!-- Максимальный размер LRU кеша
-                 для хранения прав доступа (ACL) пользователей
-                 к страницам сайта.
-                 По умолчанию: 1024
+            <!-- Maximum LRU cache size
+                 for storage of user access control list (ACL)
+                 to the website pages.
+                 By default: 1024
             -->
             <acl-lru-cache-size>1024</acl-lru-cache-size>
         </security>
 
         <mediawiki>
             ...
-            <!-- Регистрация дополнительных
-                 interwiki ссылок в mediawiki модуль ηCMS.
-                 API проекта Bliki https://bitbucket.org/axelclk/info.bliki.wiki/overview
+            <!-- Registration of additional
+                 interwiki links to ηCMS mediawiki unit (module).
+                 API project Bliki https://bitbucket.org/axelclk/info.bliki.wiki/overview
             -->
             <interwiki-links>
                 <link key="page" value="/asm/$1"/>
@@ -361,54 +344,43 @@
             <mediawiki.link-base-url>/rs/mw/link/${title}</mediawiki.link-base-url>
         </mediawiki>
 
-
-        <!-- Репозиторий справочных страниц, которые
-             используются в различных элементах UI ηCMS.
-             В формате: ключ => ссылка на страницу справки
-             В текущей версии используются следующие ключи: wiki.gmap, wiki -->
+        <!-- Help page references for ηCMS UI elements.
+             The format: key => link to the reference page
+             There are the following keys in the current version: wiki.gmap, wiki -->
         <help>
             <topics>
-                <!-- Справка по вставки фрейма местоположения в Google maps -->
+                <!-- Information on how to enter the frame of the Google Maps location -->
                 <topic key="wiki.gmap">https://support.google.com/maps/answer/3544418</topic>
-                <!-- Ссылка на документацию по wiki разметке -->
+                <!-- Information on wiki markup -->
                 <topic key="wiki">...</topic>
             </topics>
         </help>
 
         <events>
-            <!-- Количество потоков, которые используются
-                 для обработки асинхронных событий в ηCMS
-                 По умолчанию: 1 поток.
-                 Не меняйте данную настройку,
-                 если в точности не знаете что делаете
+            <!-- The number of threads that are used
+                  to handle asynchronous events in ηCMS
+                  Default: 1 thread.
+                  Do not change this setting,
+                  if you do not exactly know what you are doing
             -->
             <num-workers>1</num-workers>
         </events>
 
-        <!-- Конфигурация task executor-ов для различных
-             асинхронных задач. -->
-        <executor> <!-- множество элементов -->
-            <!-- Имя экзекютора -->
+        <!-- Task executor configuration for different
+             asynchronous tasks. -->
+        <executor> <!-- set of elements -->
+            <!-- executor name -->
             <name>default</name>
-            <!-- Количество потоков -->
+            <!-- Number of threads -->
             <threads-num>allcores</threads-num>
-            <!-- Максимальный размер очереди задач
+            <!-- Maximum size of the task queue
                  java.util.concurrent.LinkedBlockingQueue
             -->
             <queue-size>1000</queue-size>
         </executor>
 
-        <browser-filter>
-            TODO
-        </browser-filter>
-
-        <solr>
-            TODO
-        </solr>
-
-        <scheduler>
-            TODO
-        </scheduler>
+        <browser-filter/>
+        <solr/>
+        <scheduler/>
 
     </configuration>
-
