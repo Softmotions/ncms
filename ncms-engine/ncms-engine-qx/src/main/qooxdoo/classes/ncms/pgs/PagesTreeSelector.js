@@ -291,10 +291,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 return;
             }
 
-            var dlg = new ncms.pgs.PageReferersDlg(
-                item,
-                this.tr("List of referer pages")
-            );
+            var dlg = new ncms.pgs.referrers.PageReferersDlg(item);
             dlg.open();
         },
 

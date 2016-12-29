@@ -1,4 +1,4 @@
-qx.Class.define("ncms.pgs.PageReferersAttributesTable", {
+qx.Class.define("ncms.pgs.referrers.PageReferersAttributesTable", {
     extend: sm.table.ToolbarLocalTable,
 
     properties: {
@@ -9,16 +9,18 @@ qx.Class.define("ncms.pgs.PageReferersAttributesTable", {
         }
     },
 
-    construct: function (id) {
+    construct: function (id, title) {
+        this.__pageId = id;
+        this.__title = title;
         this.base(arguments);
         this.set({allowGrowX: true, allowGrowY: true});
         this._reload([]);
-        this.__pageId = id;
     },
 
     members: {
 
         __pageId: null,
+        __title: null,
 
         reload: function () {
             var rid = this.getAsmId();
@@ -43,7 +45,25 @@ qx.Class.define("ncms.pgs.PageReferersAttributesTable", {
 
         },
 
-        //ovrriden
+        //overriden
+        _createTable: function (tableModel) {
+            var table = new sm.table.Table(tableModel, tableModel.getCustom())
+            .set({"statusBarVisible": false});
+            return table;
+        },
+
+        _createToolbarItems: function (toolbar) {
+            console.log(this.__title);
+            if (this.__title) {
+                toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
+                toolbar.add(new qx.ui.basic.Label(this.__title).set({font: "bold", alignY: "middle"}));
+                toolbar.add(new qx.ui.core.Spacer(), {flex: 1});
+            }
+            console.log(toolbar);
+            return toolbar;
+        },
+
+        //overriden
         _setJsonTableData: function (tm, items) {
             var data = {
                 "columns": [
@@ -67,6 +87,7 @@ qx.Class.define("ncms.pgs.PageReferersAttributesTable", {
 
         destruct: function () {
             this.__pageId = null;
+            this.__title = null;
         }
     }
 });

@@ -1,19 +1,19 @@
-qx.Class.define("ncms.pgs.PageReferersDlg", {
+qx.Class.define("ncms.pgs.referrers.PageReferersDlg", {
         extend: qx.ui.window.Window,
 
-        construct: function (item, caption) {
-            this.base(arguments, caption != null ? caption : this.tr("Page referers"));
+        construct: function (item) {
+            this.base(arguments);
             this.setLayout(new qx.ui.layout.VBox(5));
             this.set({
                 modal: true,
                 showMinimize: false,
                 showMaximize: true,
                 allowMaximize: true,
-                width: 620,
-                height: 400
+                width: 720,
+                height: 500
             });
 
-            var table = this.__table = new ncms.pgs.PageReferersInfo(item);
+            var table = this.__table = new ncms.pgs.referrers.PageReferersInfo(item);
             this.add(table, {flex: 1});
 
             var cmd = this.createCommand("Esc");

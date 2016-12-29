@@ -1,4 +1,4 @@
-qx.Class.define("ncms.pgs.PageReferersInfo", {
+qx.Class.define("ncms.pgs.referrers.PageReferersInfo", {
     extend: qx.ui.core.Widget,
 
     properties: {
@@ -11,7 +11,9 @@ qx.Class.define("ncms.pgs.PageReferersInfo", {
     construct: function (item) {
         this.__item = item;
         this.base(arguments);
-        this._setLayout(new qx.ui.layout.VBox());
+        this._setLayout(new qx.ui.layout.Grow());
+        var sp = this.__sp = new qx.ui.splitpane.Pane("vertical");
+        this._add(sp);
         this.getChildControl("pages");
     },
 
@@ -19,24 +21,31 @@ qx.Class.define("ncms.pgs.PageReferersInfo", {
         __pagesTable: null,
         __attributesTable: null,
         __item: null,
+        __sp: null,
 
         _createChildControlImpl: function (id) {
             var control;
             switch (id) {
                 case("pages"):
-                    control = this.__pagesTable = new ncms.pgs.PageReferersTable(this.__item);
+                    control = this.__pagesTable = new ncms.pgs.referrers.PageReferersTable(this.__item)
+                    .set({"statusBarVisible": false});
                     control.getSelectionModel().addListener('changeSelection', this.__onSelectPage, this);
-                    this._add(control, {flex: 1});
+                    this.__sp.add(control, 3);
                     break;
                 case("attributes"):
-                    control = this.__attributesTable = new ncms.pgs.PageReferersAttributesTable(this.__item.getGuid());
-                    this._add(control, {flex: 1});
+                    control = this.__attributesTable = new ncms.pgs.referrers.PageReferersAttributesTable(this.__item.getGuid(), "Attributes");
+                    this.__sp.add(control, 1);
                     break;
             }
             return control || this.base(arguments, id);
         },
 
         __onSelectPage: function (e) {
+            if (e.getTarget().getSelectedCount() == 0) {
+                this._excludeChildControl("attributes");
+                return;
+            }
+
             if (!this.hasChildControl("attributes")) {
                 this.getChildControl("attributes");
             } else if (!this._isChildControlVisible()) {
@@ -54,7 +63,7 @@ qx.Class.define("ncms.pgs.PageReferersInfo", {
         },
 
         hideAttributesTab: function () {
-            this._excludeChildControl("attributes");
+            this.__pagesTable.getSelectionModel().resetSelection();
         }
     },
 
@@ -62,5 +71,6 @@ qx.Class.define("ncms.pgs.PageReferersInfo", {
         this.__item = null;
         this.__pagesTable = null;
         this.__attributesTable = null;
+        this.__sp = null;
     }
 });

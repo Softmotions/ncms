@@ -972,9 +972,14 @@ public class PageRS extends MBDAOSupport implements PageService {
         ArrayNode res = mapper.createArrayNode();
         List<Map<String, ?>> referrers = select("selectPagesDependentOn", guid);
         for (Map<String, ?> referrer : referrers) {
+            CachedPage cp = getCachedPage((Long) referrer.get("asmid"), true);
+            if(cp == null){
+                continue;
+            }
             res.addObject()
                .put("name", (String) referrer.get("name"))
-               .put("path", asmRoot + referrer.get("guid"))
+               .put("path", ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/"))
+               .put("icon", Converters.toBoolean(referrer.get("published")) ? "" : "ncms/icon/16/misc/exclamation.png")
                .put("asmid", (Long) referrer.get("asmid"));
         }
         return res;
