@@ -2,20 +2,20 @@
 
 .. contents::
 
-Создание нового проекта
-=======================
+Creating a new project
+======================
 
-Предварительные требования
---------------------------
+Prerequisites
+-------------
 
 * JDK `1.8`
-* Maven версии `3.3.x`
+* Maven 3.3.x
 
-Использование Maven Archetype
------------------------------
+Using Maven Archetype
+---------------------
 
-Лучший способ создать новый проект на базе ηCMS - это создать
-его из maven архетипа (maven archetype).
+The best way to create a new ηCMS project is to create
+it from the maven archetype.
 
 .. code-block:: sh
 
@@ -25,9 +25,9 @@
         -DarchetypeVersion=1.0.1 \
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
-Продемострируем создание и дальнейшее развитие ηCMS проекта на примере
-создания информационного сайта о попугаях.
-Код сайта будет в пакете `org.myparrots`.
+Let's consider a creation and further evolution of the ηCMS project
+using the creation of an information site about parrots as a sample.
+The site code is in the package `org.myparrots`.
 
 .. code-block:: text
 
@@ -54,11 +54,11 @@
     projectName: All about my parrots
     serverPort: 9292
 
-Структура проекта
+Project structure
 -----------------
 
-В результате выполнения `mvn archetype:generate` мы получили проект
-со следующей структурой:
+As a result of `mvn archetype: generate` we got the project
+with the following structure:
 
 .. code-block:: text
 
@@ -77,27 +77,26 @@
     └── README.md
 
 
-Где:
+Where:
 
-* `qx` - административный GUI интерфейс сайта построенный на основе `javascript библиотеки qooxdoo <http://qooxdoo.org>`_
-* `web` - бизнес логика сайтов на стороне сервера
-* `tomcat` - Файлы конфигурации сервера Apache Tomcat для запуска сервера
-           в режиме тестирования
+* `qx` - administrative GUI interface of the site based on `javascript library qooxdoo <http://qooxdoo.org>`_
+* `web` - business logics of sites on the server side
+* `tomcat` - configuration files of the Apache Tomcat server to start the server in the test mode
 
-Выбор и настройка соединения с БД
----------------------------------
+Choosing and configuring the database connection
+------------------------------------------------
 
-Перед тем как запустить систему в конфигурации проекта, необходимо настроить параметры
-соединения с базой данных.
+Before running the system in the project configuration,
+it is required to set parameters of the database connection.
 
-В версии |ncmsversion| поддерживаются следующие базы данных:
+ |ncmsversion| version supports the following databases:
 
 * :ref:`db2`
 * :ref:`postgresql`
 
-Параметры соединения приложения с базой данных, как и другие параметры приложения,
-определяются в :ref:`файлах конфигурации <conf>`. В данном проекте
-это файл: `conf/ncmsapp-dev-configuration.xml`.
+Parameters used to connect the application to the database and some other application
+parameters are defined by the :ref:`configuration files <conf>`.
+In the current project it is the file: `conf/ncmsapp-dev-configuration.xml`.
 
 
 .. code-block:: xml
@@ -123,16 +122,16 @@
         </extra-mappers>
     </mybatis>
 
-Дополнительные параметры соединения с БД определяются в файле `{home}/.ncmsapp.ds`,
-где `{home}` - домашняя директория пользователя, из-под которого запущен сервер
-ηCMS. Необходимо создать этот файл и заполнить его параметрами аналогично
-примеру:
+Additional parameters of the connection to the database are to be set in the file `{home}/.ncmsapp.ds`,
+where `{home}` is a home directory of user who runs the ηCMS server. It is required to create the file
+and fill it with the parameters like in the sample below:
+
 
 .. code-block:: sh
 
     cat ~/.ncmsapp.ds
 
-Для DB2:
+For DB2:
 
 .. code-block:: sh
 
@@ -140,7 +139,7 @@
     JDBC.username=ncms
     JDBC.password=*******
 
-Для PostgreSQL:
+For PostgreSQL:
 
 .. code-block:: sh
 
@@ -148,8 +147,8 @@
     JDBC.username=ncms
     JDBC.password=*******
 
-Сборка и запуск проекта
------------------------
+Building and running the project
+--------------------------------
 
 .. code-block:: sh
 

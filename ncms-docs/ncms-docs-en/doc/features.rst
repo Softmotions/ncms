@@ -1,7 +1,7 @@
 .. _features:
 
-ηCMS features
-=============
+ηCMS features and non-features
+==============================
 
 * Multiple websites on a single ηCMS application node.
 * Can handle hundreds of simultaneous website content editors.
@@ -13,6 +13,7 @@
 * Support of virtual hosts.
 * :ref:`A/B testing and marketing tools <mtt>`.
 * Support of `<postgresql>` and `<db2>`.
+* Developing projects on ηCMS requires knowledge of Java
 
 
 
