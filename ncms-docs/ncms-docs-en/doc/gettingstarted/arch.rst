@@ -9,33 +9,32 @@ Basic terms
 -----------
 
 Page in ηCMS is a set of **data** and **HTML markup**.
-A data set of the page can be described  as a set of :term:`attributes <attribute>`,
+A data set of the page can be treated as a set of :term:`attributes <attribute>`,
 where every attribute is a pair: `attribute name` and `attribute value`.
 For readers who are familiar with `OOP <https://en.wikipedia.org/wiki/Object-oriented_programming>`_
 principles, the page can be represented as an object of a certain class
-with a set of attributes and the data stored there.
+with a set of attributes stored there.
 
 .. image:: img/ncms_arch1.png
 
-Lets introduce some concepts used in the documentation to understand ηCMS better.
+Let's introduce some concepts used in the documentation to understand ηCMS better.
 
 .. glossary::
 
     attribute
         Attribute - is a named block of data belonging to the :term:`assembly <assembly>`.
         It can be a simple string or a complex object, such as a link to another page or file, list, tree, etc.
-        To refer to an attribute, use its name.
-        These attributes have their own representation in the HTML page code.
+        To refer to an attribute, use its name. Attributes have their own representation in the HTML page code.
         :ref:`Documentation on assembly attributes. <am>`
 
     assembly
         Assembly is a named set of :term:`attributes <attribute>`.
         Attributes are used to display the page data in the context of the ηCMS pages.
-        In other words, the assembly is named set of attributes, and it can be referenced by the assembly name.
+        Assembly can be referenced by its name.
 
     HTTL
         HTTL is a template markup language (http://httl.github.io),
-        on which ηCMS pages :term:`markup <core>` is defined.
+        on which ηCMS pages :term:`markup <core>` are defined.
         HTTL is fairly similar to the popular markup language:
         Apache Velocity. :ref:`Manual on how to use HTTL markup in ηCMS. <httl>`
 
@@ -54,13 +53,14 @@ Lets introduce some concepts used in the documentation to understand ηCMS bette
 
 `Assemblies` can be inherited from each other. They can override attribute values of parent assemblies
 or add new attributes. `Assemblies` can be inherited from multiple parents. Here is a direct analogy
-with a inheritance of classes in Java, but we are considering `assemblies` to be as class instances.
+with a inheritance of classes in C++ or Java, but here we are considering `assemblies`
+to be as class instances (objects).
 
 Sample
 ------
 
 Let us illustrate the statements above on the example - make a simple website.
-To follow the steps described below, initially :ref:`create a new project <newproject>`.
+To follow the steps described below, :ref:`create a new project <newproject>` initially.
 
 Let the most of our website pages have the following common parts:
 
@@ -75,12 +75,13 @@ Let's assume that the `title` is a string which is placed in the markup inside t
         <title>The page title here</title>
     </head>
 
-And `footer` is a part of HTML markup stored in a file in the ηCMS media-repository.
+The `footer` is a part of HTML markup stored in a file in the ηCMS media-repository.
 
-In the said majority we select pages displaying only a single content block,
-and unite them as :term:`template` called `Simple page`.
+In the said majority we get all possible pages with common footer and header
+displaying a single content block, giving `Simple page` name to this set and treat
+it as :term:`template` (prototype) for actual page instances.
 
-All pages based on `Simple page` template contain `title` and `footer` attributes
+All pages based on `Simple page` template will contain `title` and `footer` attributes
 among additional attributes:
 
 * Content
@@ -95,13 +96,12 @@ stored in :ref:`wiki attribute <am_wiki>`.
 
     Hierarchy of assemblies inheritance for `mypage` page having `Simple page` as template.
 
-While accessing the `mypage` page, ηCMS gets the markup file for the template `Simple page`,
-pushes the set of attributes pertaining to an instance of the `mypage`
-:term:`assembly <assembly>` in the context of the :term:`HTTL` markup,
-and finally generates the HTML response to the client.
-This process describes a simple but powerful idea underlying ηCMS.
+While accessing the `mypage` page, ηCMS gets the :term:`HTTL` :term:`core` markup file
+of the `Simple page` template, then pushes all of `mypage` attributes to the context of markup,
+and generates the HTML response to the client. This process describes a simple but powerful
+idea underlying ηCMS.
 
-Let's implement the structure described above in the ηCMS GUI.
+Let's implement the structure mentioned above using the the ηCMS GUI.
 
 Using :ref:`assembly management interface <amgr>` we create an assembly called `base`.
 
@@ -133,8 +133,8 @@ Creating a new page type: "Simple page"
 
     :term:`Template <template>`: "Simple page"
 
-Creating markup file for the type "Simple page": `/site/httl/simple_core.httl`
-in the :ref:`media content management interface <mmgr>`.
+Then create the core markup file for the "Simple page" type: `/site/httl/simple_core.httl`
+using the :ref:`media content management interface <mmgr>`.
 
 .. code-block:: html
 
@@ -153,7 +153,7 @@ Here we can see the output of attribute values `title`, `content`, `footer`.
 
 
 After the basic :term:`assemblies <assembly>` and page :term:`template` are defined,
-site editors can create page instances via :ref:`page management UI <pmgr>`
+site editors can create page instances with :ref:`page management UI <pmgr>`
 based on the template described above:
 
 .. image:: img/step7.png
@@ -184,15 +184,13 @@ Pressing the key `Preview` displays the result of our work:
 Platform architecture
 ---------------------
 
-ΗCMS Platform is a web application based on `Java servlet API 3.1`.
-The application uses `IoC` container` Google Guice <https://github.com/google/guice> `_.
-For the communication with the database, use SQL library `MyBatis <http://www.mybatis.org/mybatis-3/>` _.
+ηCMS platform based on `Java servlet API 3.1`.
+It uses `IoC` container `Google Guice <https://github.com/google/guice>`_.
+Data persistence layer based on `MyBatis <http://www.mybatis.org/mybatis-3/>` _ library.
 
-Structure of the :ref:`new ηCMS project <newproject>` allows developer
-to have an opportunity to both expand the functionality of the ηCMS platforms in context of the project,
-or create modules specific to the project. More details can be found in the
-section :ref:`extending`.
-
+:ref:`New ηCMS project <newproject>` structure allows developer to both expand
+the functionality of the ηCMS platform and create custom project modules.
+More details can be found in the section :ref:`extending`.
 
 Additional definitions
 ----------------------
@@ -201,61 +199,62 @@ Additional definitions
 
     main page
         Home (start) page for a particular virtual host and language.
-        To create a home page we use an attribute :ref:`front page marker <am_mainpage>` added
-        to the page assembly.
+        To create a home page we need :ref:`front page marker <am_mainpage>` attribute
+        in the page assembly.
 
     asm inheritance tree
         Assemblies can be inherited from each other.
-        Here is used a semantics similar to a class inheritance in
-        object-oriented programming languages. But here an assembly
-        is to be treated as an object storing the data (attributes),
-        and inheritance - as an inheritance of data objects.
+        Here is a big similarity to a class inheritance in
+        object-oriented programming languages. But in this case every assembly
+        should be treated as an object storing the data (attributes),
+        and inheritance of assembles - as an inheritance of data objects.
 
     navigation tree
-        If you create a page having the type `Container`, this page can have embedded pages (sub-pages).
-        This page is a parent for nested pages. Nested page also can be a container for other pages.
-        Combining page similarly, the site editor creates a `navigation tree` of the site.
+        If `Container` mode is enabled for page
+        it can have embedded pages (sub-pages).
+        Sub-pages can be containers for other pages and so on.
+        By combining pages in this way the site editor creates
+        a site's `navigation tree`.
 
         .. note::
 
             Beside the nesting relationship, pages can inherit
-            from each other, thus forming a `Inheritance tree`. Not to be confused
-            inheritance assemblies and `Navigation tree`. :ref:`attributes_access`
+            from each other, thus forming a `Inheritance tree`.
+            Do not confuse `assemblies inheritance` with `Navigation tree`.
+            :ref:`attributes_access`
 
     page type
-        There are the following acceptable types of pages
+        There are the following types of pages:
 
         * Standard page
         * News feed
-        * :term:`assembly <assembly>` - page-prototype for another pages (parent in `Inheritance tree`).
-
+        * :term:`assembly <assembly>` - page-prototype for another pages
+          (parent in :term:`Inheritance tree <asm inheritance tree>`).
 
     page GUID
-         Unique 32-symbolical identifier of the page,
-         used for access to the page by the address: 'http://hostname / <guid>'.</guid>
+         Unique 32-byte identifier of the page,
+         used to access pages by the address: `http://hostname/<guid>`.
 
     page alias
-        Alternative unique page name which can be used to display the page.
+        Alternative page name which can be used for accessing the page.
         For example, the page with the :term:`guid <page GUID>` equal to `b3ac2985453bf87b6851e07bcf4cfadc`
-        acceptable by thу address `http://<hostname>/b3ac2985453bf87b6851e07bcf4cfadc`.
-        However, if the attribute with the type :ref:`alias <am_alias>` is registered
-        in the context of the page and has the value of `mypage`, then this page
-        will be available at the following address:`http://<hostname>/mypage`.
-        Allowed to use the `/` in the alias name, for example, for the alias `/foo/bar`
-        the page can be available at `http://<hostname>/foo/bar`.
+        available on address `http://<hostname>/b3ac2985453bf87b6851e07bcf4cfadc`.
+        However if :ref:`alias <am_alias>` is presented in page's assembly this
+        page can be also accessible on `http://<hostname>/mypage`.
+        Slash (`\/`) chars are allowed in page alias, for example, page with alias `/foo/bar`
+        will be available at `http://<hostname>/foo/bar`.
 
     glob
     glob
-        Notation of a search pattern, where you can set a simple rule for compliance of pattern and data.
+        Format of simple matching patterns.
 
         * The symbol `\*` denotes zero or some characters in a line of the desired data.
-        * The symbol  `\?` matches any single character of the desired data.
+        * The symbol  `\?` matches any single character of the desired data.
 
         `refer to a Glob notation for more details <https://en.wikipedia.org/wiki/Glob_(programming)>`_
 
     mediawiki
-        The popular language for wiki pages markup . For example, mediawiki markup
-        describes pages of the site `wikipedia.org <https://www.wikipedia.org/>` _.
-        Mediawiki markup can be used to create ηCMS pages
-        using :ref:`wiki attribute <am_wiki>`.
+        The popular wiki pages markup language. Mediawiki markup used in
+        `wikipedia.org <https://www.wikipedia.org/>` _. You can create ηCMS pages
+        with mediawiki content blocks using :ref:`wiki attribute <am_wiki>`.
 
