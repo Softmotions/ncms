@@ -1,8 +1,7 @@
-qx.Class.define("ncms.pgs.referrers.PageReferersTable", {
+qx.Class.define("ncms.pgs.referrers.PageReferrersTable", {
         extend: sm.table.Table,
 
-        construct: function (item, title) {
-            this.__title = title;
+        construct: function (dataUrl, countUrl) {
             var cmeta = {
                 icon: {
                     title: "",
@@ -22,8 +21,8 @@ qx.Class.define("ncms.pgs.referrers.PageReferersTable", {
             var useColumns = ["icon", "name", "path"];
             var tm = new sm.model.RemoteVirtualTableModel(cmeta).set({
                 "useColumns": useColumns,
-                "rowdataUrl": ncms.Application.ACT.getRestUrl("pages.referrers", {guid: item.getGuid()}),
-                "rowcountUrl": ncms.Application.ACT.getRestUrl("pages.referrers.count", {id: item.getId()})
+                "rowdataUrl": dataUrl,
+                "rowcountUrl": countUrl
             });
 
             var custom = {
@@ -40,8 +39,6 @@ qx.Class.define("ncms.pgs.referrers.PageReferersTable", {
 
         members: {
 
-            __title: null,
-
             setViewSpec: function (spec) {
                 this.getTableModel().setViewSpec(spec);
             },
@@ -50,13 +47,18 @@ qx.Class.define("ncms.pgs.referrers.PageReferersTable", {
                 return this.getTableModel().getViewSpec();
             },
 
+            getSelectedPageInd: function () {
+                return this.getSelectionModel().getAnchorSelectionIndex();
+            },
+
+            getSelectedPage: function () {
+                var i = this.getSelectedPageInd();
+                return i != -1 ? this.getTableModel().getRowData(i) : null;
+            },
+
             getRowData: function (rowId) {
                 return this.getRowData2(rowId);
             }
-        },
-
-        destruct: function () {
-            this.__title = null;
         }
     }
 );

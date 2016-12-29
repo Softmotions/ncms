@@ -291,7 +291,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 return;
             }
 
-            var dlg = new ncms.pgs.referrers.PageReferersDlg(item);
+            var dlg = new ncms.pgs.referrers.PageReferrersDlg(item);
             dlg.open();
         },
 

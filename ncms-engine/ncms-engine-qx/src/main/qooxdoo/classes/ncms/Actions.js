@@ -260,11 +260,17 @@ qx.Class.define("ncms.Actions", {
         //GET Single page element from named collection
         this._action("pages.single.get", "/rs/adm/pages/single/{collection}");
 
-        //GET The list page referers
+        //GET The list of referers
         this._action("pages.referrers", "/rs/adm/pages/referrers/{guid}");
 
-        //GET The number of page referers
+        //GET The count of referers
         this._action("pages.referrers.count", "/rs/adm/pages/referrers/count/{id}");
+
+        //GET The list of pages that are referenced
+        this._action("pages.referrers.to", "/rs/adm/pages/referrers/to/{guid}");
+
+        //GET The count of pages that are referenced
+        this._action("pages.referrers.to.count", "/rs/adm/pages/referrers/to/count/{id}");
 
         //GET The list of referrer page's attributes
         this._action("pages.referrers.attributes", "/rs/adm/pages/referrers/attributes/{guid}/{asmid}");
@@ -472,7 +478,7 @@ qx.Class.define("ncms.Actions", {
         _resourceManager: null,
 
 
-        toUri: function(path) {
+        toUri: function (path) {
             path = this._prefix + path;
             if (qx.core.Environment.get("ncms.testing.urls")) {
                 return this._resourceManager.toUri(this._testPrefix + path);

@@ -973,7 +973,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         List<Map<String, ?>> referrers = select("selectPagesDependentOn", guid);
         for (Map<String, ?> referrer : referrers) {
             CachedPage cp = getCachedPage((Long) referrer.get("asmid"), true);
-            if(cp == null){
+            if (cp == null) {
                 continue;
             }
             res.addObject()
@@ -994,6 +994,25 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
 
         return count("selectCountOfPagesDependentOn", page.getName());
+    }
+
+    @GET
+    @Path("/referrers/to/{id}")
+    public JsonNode getPageReferrersTo(@PathParam("id") String id) {
+        ArrayNode res = mapper.createArrayNode();
+        List<Map<String, ?>> referrers = select("selectPagesDependentTo", id);
+        for (Map<String, ?> referrer : referrers) {
+            CachedPage cp = getCachedPage((Long) referrer.get("asmid"), true);
+            if (cp == null) {
+                continue;
+            }
+            res.addObject()
+               .put("name", (String) referrer.get("name"))
+               .put("path", ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/"))
+               .put("icon", Converters.toBoolean(referrer.get("published")) ? "" : "ncms/icon/16/misc/exclamation.png")
+               .put("guid", (Long) referrer.get("guid"));
+        }
+        return res;
     }
 
     @GET

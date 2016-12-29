@@ -9,10 +9,10 @@
 
     <select id="selectPageInfoIN" resultType="map" parameterType="map">
         SELECT
-        p.id        AS "id",
-        p.name      AS "guid",
-        p.hname     AS "name"
-        FROM ASMS   AS p
+        p.id AS "id",
+        p.name AS "guid",
+        p.hname AS "name"
+        FROM ASMS AS p
         WHERE p.id IN
         <foreach item="id" index="index" collection="ids"
                  open="(" separator="," close=")">
@@ -335,14 +335,14 @@
 
     <select id="searchPage" resultType="map" parameterType="map">
         SELECT
-            p.id                AS "id",
-            p.hname             AS "hname",
-            p.owner             AS "owner",
-            p.nav_cached_path   AS "nav_cached_path",
-            p.published         AS "published",
-            p.type              AS "type",
-            lacl.rights         AS "local_rights",
-            racl.rights         AS "recursive_rights"
+        p.id AS "id",
+        p.hname AS "hname",
+        p.owner AS "owner",
+        p.nav_cached_path AS "nav_cached_path",
+        p.published AS "published",
+        p.type AS "type",
+        lacl.rights AS "local_rights",
+        racl.rights AS "recursive_rights"
         FROM ASMS AS p
         LEFT JOIN ASM_ACL_ENTITY AS lacl ON lacl.acl_id = p.local_acl_id AND lacl."USER" = #{user}
         LEFT JOIN ASM_ACL_ENTITY AS racl ON racl.acl_id = p.recursive_acl_id AND racl."USER" = #{user}
@@ -408,6 +408,22 @@
             INNER JOIN ASMS AS asm ON attr.asm_id = asm.id
         WHERE
             d.asm_name = #{name}
+        ORDER BY asm.hname
+    </select>
+
+    <select id="selectPagesDependentTo" resultType="map" parameterType="string">
+        SELECT
+            DISTINCT
+            asm.name        AS "guid",
+            asm.hname       AS "name",
+            asm.id          AS "asmid",
+            asm.asm_core_id AS "guid",
+            asm.published   AS "published"
+        FROM ASMS AS asm
+            INNER JOIN ASM_ATTRS AS attr ON attr.id = asm.id
+            INNER JOIN ASM_PAGE_DEPS d ON d.attr_id = attr.id
+        WHERE
+            asm.id = #{asmid}
         ORDER BY asm.hname
     </select>
 

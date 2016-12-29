@@ -1,4 +1,4 @@
-qx.Class.define("ncms.pgs.referrers.PageReferersInfo", {
+qx.Class.define("ncms.pgs.referrers.PageReferrersFrom", {
     extend: qx.ui.core.Widget,
 
     properties: {
@@ -27,13 +27,16 @@ qx.Class.define("ncms.pgs.referrers.PageReferersInfo", {
             var control;
             switch (id) {
                 case("pages"):
-                    control = this.__pagesTable = new ncms.pgs.referrers.PageReferersTable(this.__item)
-                    .set({"statusBarVisible": false});
-                    control.getSelectionModel().addListener('changeSelection', this.__onSelectPage, this);
+                    control = this.__pagesTable = new ncms.pgs.referrers.PageReferrersSelector(
+                        ncms.Application.ACT.getRestUrl("pages.referrers", {guid: this.__item.getGuid()}),
+                        ncms.Application.ACT.getRestUrl("pages.referrers.count", {id: this.__item.getId()}),
+                        "Pages");
+                    control.addListener("pageSelected", this.__onSelectPage, this);
                     this.__sp.add(control, 3);
                     break;
                 case("attributes"):
-                    control = this.__attributesTable = new ncms.pgs.referrers.PageReferersAttributesTable(this.__item.getGuid(), "Attributes");
+                    control = this.__attributesTable = new ncms.pgs.referrers.PageReferrersAttributesTable("Attributes");
+                    this.__attributesTable.setPageId(this.__item.getGuid());
                     this.__sp.add(control, 1);
                     break;
             }
@@ -41,7 +44,8 @@ qx.Class.define("ncms.pgs.referrers.PageReferersInfo", {
         },
 
         __onSelectPage: function (e) {
-            if (e.getTarget().getSelectedCount() == 0) {
+            var data = e.getData();
+            if (!data) {
                 this._excludeChildControl("attributes");
                 return;
             }
@@ -51,19 +55,11 @@ qx.Class.define("ncms.pgs.referrers.PageReferersInfo", {
             } else if (!this._isChildControlVisible()) {
                 this._showChildControl("attributes");
             }
-            var selectionIndex = e.getTarget().getSelectedRanges()[0].minIndex;
-            var asmId = this.__pagesTable.getRowData(selectionIndex)["asmid"];
+
+            var asmId = data["asmid"];
             if (asmId != null) {
                 this.__attributesTable.setAsmId(asmId);
             }
-        },
-
-        isAttributesTabShown: function () {
-            return this._isChildControlVisible("attributes");
-        },
-
-        hideAttributesTab: function () {
-            this.__pagesTable.getSelectionModel().resetSelection();
         }
     },
 
