@@ -1416,7 +1416,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 if (clength != null) {
                     rb.header(HttpHeaders.CONTENT_LENGTH, clength);
                 }
-                l.releaseParent(); //unlock parent folder read-lock
                 rb.entity((StreamingOutput) output -> {
                               try (final FileInputStream fis = new FileInputStream(respFile)) {
                                   IOUtils.copyLarge(fis, output);
@@ -1890,38 +1889,21 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     final class ResourceLock implements Closeable {
 
-        ReadWriteLock parent;
-
         ReadWriteLock child;
-
-        final boolean parentWriteLock;
 
         final boolean childWriteLock;
 
         private ResourceLock(String path, boolean childWriteLock) {
-            this(path, false, childWriteLock);
-        }
-
-        private ResourceLock(String path, boolean parentWriteLock, boolean childWriteLock) {
             if (path.isEmpty() || path.charAt(0) != '/') {
                 path = '/' + path;
             }
             if (path.length() > 1 && path.endsWith("/")) {
                 path = path.substring(0, path.length() - 1);
             }
-            this.parent = null;
             this.child = null;
-            this.parentWriteLock = parentWriteLock;
             this.childWriteLock = childWriteLock;
-            String folder = getResourceParentFolder(path);
             try {
-                if (!folder.equals(path)) {
-                    parent = acquirePathRWLock(folder, parentWriteLock);
-                    child = acquirePathRWLock(path, childWriteLock);
-                } else {
-                    parent = null;
-                    child = acquirePathRWLock(path, childWriteLock);
-                }
+                child = acquirePathRWLock(path, childWriteLock);
             } catch (Throwable e) {
                 //noinspection finally
                 try {
@@ -1932,17 +1914,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     //noinspection ThrowFromFinallyBlock
                     throw new RuntimeException(e);
                 }
-            }
-        }
-
-        public void releaseParent() {
-            if (parent != null) {
-                if (parentWriteLock) {
-                    parent.writeLock().unlock();
-                } else {
-                    parent.readLock().unlock();
-                }
-                parent = null;
             }
         }
 
@@ -1959,11 +1930,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
         @Override
         public void close() throws IOException {
-            try {
-                releaseChild();
-            } finally {
-                releaseParent();
-            }
+            releaseChild();
         }
     }
 
