@@ -1,7 +1,7 @@
 .. _ui:
 
-Интерфейс администратора
-========================
+Administrator GUI
+=================
 
 .. toctree::
     :maxdepth: 1
@@ -17,8 +17,7 @@
 
 .. figure:: img/ui_img1.png
 
-    Общий вид интерфейса администратора
-
+    Overview of the administrator GUI
 
 
 

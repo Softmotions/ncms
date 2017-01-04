@@ -3,30 +3,27 @@
 IBM DB2
 =======
 
-ηCMS поддерживает IBM DB2 версии не ниже `9.7`
+ηCMS supports IBM DB2 9.7 or higher
 
+DB2 Installation
+----------------
+IBM DB2 Express-C is free powerful DBMS. It is enough to run a single copy of ηCMS
+for dozens of complex sites. To install and configure DB2 refer to the `IBM documentation <http://www.ibm.com/support/knowledgecenter/SSEPGG_11.1.0/com.ibm.db2.luw.welcome.doc/doc/welcome.html>`_.
 
-Установка DB2
--------------
-Версия IBM DB2 Express-C является бесплатной и, в тоже время,
-мощной СУБД, достаточной для работы десятков высоконагруженных
-сайтов в одном экземпляре ηCMS. Для установки и настройки DB2
-рекомендуем обратиться к документации IBM.
+Below are steps needed to install the DB2 Express-C `v11.1` on Ubuntu Linux
 
-Ниже пример шагов для быстрой установки db2 express-c `v11.1` на ОС Ubuntu
-для разработчика сайтов на ηCMS.
+Installing DB2 on Ubuntu
+************************
 
-Установка DB2 на Ubuntu
-***********************
-
-#. Предполагается, что система Ubuntu (x64) Версии 16.x
-#. Получаем дистрибутив `v11.1_linuxx64_expc.tar.gz`
-#. Становимся рутом `sudo su -`::
+#. It is assumed that the Ubuntu (x64) system has the 16.x version
+#. We use the `v11.1_linuxx64_expc.tar.gz` distribution kit
+#. Login as root `sudo su -`::
 
      apt-get install libstdc++6:i386 libpam0g:i386 \
              libstdc++6 lib32stdc++6 \
              libaio1 gcc ksh numactl
-#. Устанавливаем экземпляр СУБД::
+
+#. Install an instance of DB2::
 
     cd ./expc
     ./db2_install
@@ -34,8 +31,8 @@ IBM DB2
     useradd -m db2fenc1
     /opt/ibm/db2/V11.1/instance/db2icrt -u db2fenc1 db2inst1
 
-#. Добавляем себя в группу: `db2inst1`
-#. Базовая настройка режима работы экземпляра::
+#. Add yourself to the linux user group: `db2inst1`
+#. Set the database instance operation flags required to work with ηCMS::
 
     sudo su - db2inst1
     db2set DB2_COMPATIBILITY_VECTOR=4000
@@ -44,21 +41,20 @@ IBM DB2
 
 
 
-Создание базы данных
-********************
+Creating database
+*****************
 
-#. На данном шаге необходимо выбрать пользователя базы данных.
-   Пусть это будет `ncms`::
+#. On this step, we need to setup the database user.
+   Let it be `ncms`::
 
     useradd -m ncms
     passwd ncms
-    # Пароль пользователя ncms будет использоваться для доступа к базе
+    # Password of the ncms user to access the database
 
+Creating a new database
+-----------------------
 
-Создание новой базы данных
---------------------------
-
-Пусть имя новой базы данных будет `NCMS`,  имя пользователя базы `ncms`
+Let us set the name of the new database as `NCMS` and the database user name - `ncms`
 
 .. code-block:: sql
 
@@ -83,11 +79,11 @@ IBM DB2
     GRANT DBADM ON DATABASE TO USER ncms;
 
 
-Конфигурация  ηCMS
+ηCMS configuration
 ------------------
 
-Для работы с новой базой необходимо настроить использование
-правильного JDBC драйвера. Пример конфигурации:
+It is necessary to setup a correct JDBC driver to work with database.
+Example of a configuration:
 
 .. code-block:: xml
 
@@ -103,14 +99,12 @@ IBM DB2
 
 .. warning::
 
-    Убедитесь в том, что в элементе конфигурации `mybatis/extra-properties`
-    присутствует JDBC драйвер для DB2: `com.ibm.db2.jcc.DB2Driver`
+    Make sure that the `mybatis/extra-properties` configuration item contains
+    the JDBC driver for DB2: `com.ibm.db2.jcc.DB2Driver`
 
-Где в файле `${HOME}/.ncms.ds` хранятся JDBC URL, имя пользователя и пароль к БД::
+Where JDBC URL, user name and password are stored in the `${HOME}/.ncms.ds` file::
 
     JDBC.url=jdbc:db2://127.0.0.1:50000/NCMS
     JDBC.username=ncms
     JDBC.password=xxxxxx
-
-
 

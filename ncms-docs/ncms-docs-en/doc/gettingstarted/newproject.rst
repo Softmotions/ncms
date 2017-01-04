@@ -25,9 +25,9 @@ it from the maven archetype.
         -DarchetypeVersion=1.0.1 \
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
-Let's consider a creation and further evolution of the ηCMS project
-using the creation of an information site about parrots as a sample.
-The site code is in the package `org.myparrots`.
+Let's consider a creation and developing of the ηCMS project
+using the website about parrots as a sample. The java code of this project resides
+in package `org.myparrots`.
 
 .. code-block:: text
 
@@ -57,7 +57,7 @@ The site code is in the package `org.myparrots`.
 Project structure
 -----------------
 
-As a result of `mvn archetype: generate` we got the project
+As a result of `mvn archetype:generate` we got the project
 with the following structure:
 
 .. code-block:: text
@@ -79,24 +79,25 @@ with the following structure:
 
 Where:
 
-* `qx` - administrative GUI interface of the site based on `javascript library qooxdoo <http://qooxdoo.org>`_
-* `web` - business logics of sites on the server side
-* `tomcat` - configuration files of the Apache Tomcat server to start the server in the test mode
+* `qx` - The source code of the administrative GUI interface, it based on `javascript library qooxdoo <http://qooxdoo.org>`_
+* `web` - The server side web resources and project's java code
+* `tomcat` - Configuration files of the Apache Tomcat server to start the server
+  in the development mode using maven cargo plugin
 
 Choosing and configuring the database connection
 ------------------------------------------------
 
-Before running the system in the project configuration,
-it is required to set parameters of the database connection.
+Before running the application we need to setup configuration of the database connection.
 
- |ncmsversion| version supports the following databases:
+ |ncmsversion| version supports the following database systems:
 
 * :ref:`db2`
 * :ref:`postgresql`
 
-Parameters used to connect the application to the database and some other application
-parameters are defined by the :ref:`configuration files <conf>`.
-In the current project it is the file: `conf/ncmsapp-dev-configuration.xml`.
+
+All application configuration parameters alongside with database connection
+parameters are reside in the :ref:`configuration files <conf>`.
+In the our project it will be: `conf/ncmsapp-dev-configuration.xml`.
 
 
 .. code-block:: xml
@@ -122,7 +123,7 @@ In the current project it is the file: `conf/ncmsapp-dev-configuration.xml`.
         </extra-mappers>
     </mybatis>
 
-Additional parameters of the connection to the database are to be set in the file `{home}/.ncmsapp.ds`,
+Parameters of the connection to the database are defined in the file `{home}/.ncmsapp.ds`,
 where `{home}` is a home directory of user who runs the ηCMS server. It is required to create the file
 and fill it with the parameters like in the sample below:
 

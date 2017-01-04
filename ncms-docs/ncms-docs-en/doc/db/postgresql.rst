@@ -3,38 +3,37 @@
 PostgreSQL
 ==========
 
-ηCMS поддерживает PostgreSQL версии не ниже `9.5`.
+ηCMS supports PostgreSQL 9.5 or higher
 
-Установка PostgreSQL на Ubuntu
-------------------------------
+Installing PostgreSQL on Ubuntu
+-------------------------------
 
 .. code-block:: sh
 
     sudo apt-get install postgresql
 
-Создание новой базы данных
---------------------------
+Creating a new database
+-----------------------
 
-Пусть имя новой базы данных будет `ncms`  имя пользователя базы `ncms`
+Let us set the name of the new database as `ncms` and the database user name - `ncms`
 
-#. Становимся пользователем postgres: `sudo su - postgres`::
+#. Login as postgres owner: `sudo su - postgres`::
 
     psql
 
-#. Создаем БД
+#. Create the new database
 
 .. code-block:: sql
 
     CREATE DATABASE ncms WITH ENCODING 'UTF8' LC_COLLATE='ru_RU.UTF-8' LC_CTYPE='ru_RU.UTF-8' TEMPLATE=template0;
-    CREATE USER ncms WITH PASSWORD '<Пароль пользователя>';
-
+    CREATE USER ncms WITH PASSWORD '<User password>';
     GRANT ALL PRIVILEGES ON DATABASE ncms TO ncms;
 
-Конфигурация  ηCMS
+ηCMS Configuration
 ------------------
 
-Для работы с новой базой необходимо настроить использование
-правильного JDBC драйвера. Пример конфигурации:
+It is necessary to setup a correct JDBC driver to work with database.
+Example of a configuration:
 
 .. code-block:: xml
 
@@ -50,13 +49,12 @@ PostgreSQL
 
 .. warning::
 
-    Убедитесь в том, что в элементе конфигурации `mybatis/extra-properties`
-    присутствует JDBC драйвер для Postgres: `org.postgresql.Driver`
+    Make sure that the `mybatis/extra-properties` configuration item contains
+    the JDBC driver for Postgres: `org.postgresql.Driver`
 
-Где в файле `${HOME}/.ncms.ds` хранятся JDBC URL, имя пользователя и пароль к БД::
+Where  JDBC URL, user name and password are stored in the `${HOME}/.ncms.ds` file::
 
     JDBC.url=jdbc:postgresql://127.0.0.1:5432/ncms
     JDBC.username=ncms
     JDBC.password=xxxxxx
-
 

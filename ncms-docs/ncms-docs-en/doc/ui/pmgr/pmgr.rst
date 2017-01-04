@@ -1,123 +1,111 @@
 .. _pmgr:
 
-Управление содержимым страницы
-==============================
+Page content management
+=======================
 
-Данный интерфейс является основным для редактирования
-контента страниц ηCMS не в визуальном режиме. Доступ
-к этому интерфейсу имеют все зарегистрированные пользователи ηCMS.
+This interface used to edit ηCMS pages in non visual mode.
+All registered ηCMS users have an access to it.
 
-Пользователи с правами доступа `admin` или `admin.structure`
-могут редактировать страницу ηCMS.
+Users having `admin` or `admin.structure` access permissions
+can edit any ηCMS page.
 
 
 .. figure:: img/pmgr_img1.png
 
-    Общий вид интерфейса управления содержимым страницы
+    Overview of the page content management interface
 
 
-Слева представлено дерево навигации по всем страницам ηCMS с возможностью поиска по страницам.
-Справа: таб-панели предварительного просмотра контента страниц, редактирования контента и прав доступа к страницам.
+On the left side there is a navigation tree for all ηCMS pages.
+On the right side: the panes for page content preview, content editing and page access permissions management.
 
-Панель редактирования контента страницы (Редактировать)
--------------------------------------------------------
+Edit page content panel (Edit)
+------------------------------
 
-Каждая страница в ηCMS должна иметь :term:`шаблон`, его можно назначить в
-панели редактирования по кнопке `Шаблон`:
+Every page in ηCMS should have a :term:`template`, it can be chosen
+by `Template` button on the editing panel:
 
 .. figure:: img/pmgr_img6.png
 
-Далее, пользователь может выбрать доступный шаблон страницы,
-в соответствии с его правами доступа:
+Then the user can select an available page template,
+in accordance with user's access rights:
 
 .. figure:: img/pmgr_img7.png
 
-После выбора шаблона :term:`сборка` текущей страницы наследуется от сборки шаблона, и атрибуты,
-определенные в шаблоне, становятся доступными для редактирования в контексте этой страницы.
+After selecting a template the :term:`assembly` of the current page will be inherited from the template assembly,
+and attributes defined in a template will be available for editing in the context of the page.
 
 .. note::
 
-    В некоторых случаях в качестве шаблона для страницы удобно указать уже
-    существующую страницу, т.е. страница может являться шаблоном для другой страницы.
-    Для выбора страницы в качестве шаблона воспользуйтесь вкладками `Структура` и `Поиск`
-    в диалоге выбора шаблона.
+    In some cases, as a template for a page it's handy to choose a page which is already exists,
+    i.e. a page can be a template for another pages.
+    To select the page as a template, use `Structure` or `Search` tab in the selection template dialog.
 
-
-Содержимое панели `Редактировать` отображается в соответствии
-с присутствующими на странице :term:`атрибутами <атрибут>`
-и их настройками. На приведенном ниже скриншоте в странице имеются следующие
-редактируемые атрибуты: :ref:`псевдоним (alias) <am_alias>`, :ref:`заголовок (title) <am_string>`,
-:ref:`дерево (tree) <am_tree>`.
+The content of the `Edit` pane is shown in accordance with :term:`attributes <attribute>` used on the page
+and their settings. The screenshot below displays the following editable
+attributes :ref:`alias (alias) <am_alias>`, :ref:`header (title) <am_string>`, :ref:`tree (tree) <am_tree>`.
 
 .. figure:: img/pmgr_img1.png
 
-    Панель редактирования контента страницы
+    Edit page content panel
 
 
+Page permissions control panel (access permissions)
+---------------------------------------------------
 
-Панель управления правами доступа к странице (Права доступа)
-------------------------------------------------------------
+By default, the page owner and administrator can edit, delete or :ref:`manage news feeds <news>`
+associated with pages. The tab allows user to delegate the following permissions to other ηCMS users:
 
-По умолчанию владелец страницы и администратор ηCMS
-может редактировать(изменять), удалять и :ref:`управлять лентами (новостями) <news>`
-связанными со страницей.
-На этой вкладке можно делегировать другим пользователям ηCMS права на:
-
-* редактирование
-* удаление
-* управление лентами
+* editing
+* removing
+* news feed management
 
 .. figure:: img/pmgr_img2.png
 
-    Панель управления правами доступа к странице
+    Control panel of access permissions to the page
 
-При этом, права можно назначить как на конкретную страницу, так и `рекурсивные права`
-на все дочерние страницы - в том случае, если страница является контейнером (папкой).
-Рекурсивные права доступа могут
-быть переопределены/дополнены дочерними страницами.
+At the same time, the permissions can be assigned either for a particular page or
+as `recursive permissions` for all `child` pages, if the page is a container (folder).
+Recursive access permissions can be overridden by child pages.
 
 
-Панель Общее
-------------
+General Panel
+-------------
 
-В этот разделе можно увидеть страницу в режиме предпросмотра, а также
-текущий статус страницы:
+In this section you can see the page in the preview mode, and
+the current status of the page:
 
-* Опубликована ли страница,
-* Является ли страница :term:`главной <главная страница>`
+* Whether the page was published,
+* Is the page :term:`main <main page>`
 
 .. figure:: img/pmgr_img3.png
 
-    Панель `Общее` для выбранной страницы.
+    `General` panel for the selected page
 
 
 .. image:: img/pmgr_img4.png
     :align: left
 
-Предпросмотр страницы в новом окне/вкладке браузера.
+Preview of the page in a new window/tab of the browser
 
 .. image:: img/pmgr_img5.png
     :align: left
 
-Кнопка смены владельца страницы. Владельца страницы
-может поменять только текущий владелец или администратор.
+The button to change the owner of the page.
+Page owner can by changed only by the current owner or administrator
 
 
 .. _pmgr_hotkeys:
 
-Горячие клавиши (hot keys)
---------------------------
+Hot keys
+--------
 
-Активный элемент UI - это текущий, имеющий фокус элемент.
+The active element UI - the item having the current focus.
 
 ========================== ==================== ========================================
- Активный элемент UI        Комбинация клавиш               Действие
+  Active UI item           Shortcut             Action
 ========================== ==================== ========================================
-Дерево страниц              `Delete`             Удаление страницы
-Дерево страниц              `Alt+Insert`         Создание новой страницы
-Дерево страниц              `F2`                 Изменение имени/типа страницы
-Дерево страниц              `F6`                 Перенести страницу в другой каталог
+The page tree              `Delete`             Deleting a page
+The page tree              `Alt+Insert`         Creating a new page
+The page tree              `F2`                 Changing the name/type of page
+The page tree              `F6`                 Move the page to a different directory
 ========================== ==================== ========================================
-
-
-
