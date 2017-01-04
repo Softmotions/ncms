@@ -1,154 +1,150 @@
 .. _amgr:
 
-Управление сборками
+Assembly Management
 ===================
 
-В этом интерфейсе администратор может задать структуру :term:`сборок <сборка>` (страниц) ηCMS,
-определить типы возможных страниц и напрямую редактировать :term:`атрибуты <атрибут>`
-любой сборки. С этого интерфейса начинается создание концепции и логической
-структуры будущих страниц сайта.
+In this interface, the administrator can set a structure of ηCMS :term:`assemblies <assembly>` (pages),
+determine the types of possible pages and edit :term:`attributes <attribute>`
+of any assembly directly. With this interface you can create a structure of site pages.
 
-Доступ к данному интерфейсу имеют пользователи с правами доступа
-`admin` или `admin.asm`.
+Users having `admin` or `admin.asm` permissions have an access to this interface.
 
 
 .. figure:: img/amgr_img1.png
 
-    Общий вид интерфейса управления сборками
+    Overview of the assembly control interface
 
-Форма поиска
-------------
+Search form
+-----------
 
-В форме поиска слева можно выбрать:
+In the search form on the left, you can select:
 
-* :term:`сборку <сборка>` с атрибутами,
-* :term:`шаблон` страницы сайта или новости,
-* :term:`экземпляр страницы <страница>`.
+* :term:`assembly <assembly>` with attributes,
+* :term:`template` for a site page or news,
+* :term:`copy of the page <page>`.
 
-Иконка напротив каждого элемента в списке сборок обозначает тип сборки:
+The icon opposite every item in the list of assemblies means the type of assembly:
 
 .. image:: img/amgr_other.png
     :align: left
 
-Простая сборка с атрибутами, которая не является :term:`шаблоном <шаблон>` или экземпляром страницы.
-Сборки данного типа могут присутствовать в иерархии наследования сборок,
-предоставляя наследникам свои атрибуты.
+A simple assembly with attributes, which is not a :term:`template <template>` or a page instance.
+Assemblies of this type may be present in the inheritance hierarchy of assemblies,
+providing their attributes to heirs.
 
 .. image:: img/amgr_template.png
     :align: left
 
-Именованный :term:`шаблон <шаблон>` для страниц сайта,
-на основе которого создаются типовые страницы.
-
+Named :term:`template <template>` for site pages,
+to create typical pages.
 
 .. image:: img/amgr_page.png
     :align: left
 
-Экземпляр страницы, который является сборкой с уникальным
-именем в :term:`GUID формате <GUID страницы>`, и для которого
-определена :term:`разметка <ядро>`.
+A copy of the page, which is assembled with a unique
+name in the :term:`GUID format <page GUID>`,
+having a defined :term:`markup <core>`.
 
 .. image:: img/amgr_news.png
     :align: left
 
-Экземпляр :ref:`ленты событий (новости) <news>`.
+A copy of the :ref:`news feed (events) <news>`.
 
 
-Управление сборкой
-------------------
+Assembly management
+-------------------
 
 .. figure:: img/amgr_img2.png
 
-    Шаблон страницы с именем "Страница с контентом и возможностью указать разметку"
+    Page template called "Page with the content and the ability to specify the markup"
 
 
-**Название** -- название сборки. Для экземпляров страниц это :term:`уникальный GUID <GUID страницы>`.
+**Name** -- the name of the assembly. For page instances it is a :term:`unique GUID <page GUID>`.
 
-**Разметка** -- :ref:`HTTL <httl>`  файл разметки страницы.
+**Markup** -- :ref:`HTTL <httl>` markup file for a page.
 
-**Описание** -- краткое описание сборки. Значение данного поля отображается
-в форме поиска страниц. А также используется при выборе :term:`шаблона <шаблон>` для страниц.
+**Description** -- a brief description of the assembly. This field is displayed
+in the search page form and also used to select the :term:`template <template>` for pages.
 
-**Контроллер** -- опциональное имя java класса, который реализует интерфейс `com.softmotions.ncms.asm.render.AsmController`
-и вызывается при отображении страницы сайта. Контроллер может совершить
-дополнительные действия при отображении страницы или изменть HTTP ответ.
-Дополнительно смотрите раздел :ref:`расширение ηCMS <extending>`.
+**Controller** -- name of a java class that implements
+the `com.softmotions.ncms.asm.render.AsmController` interface
+and is called when page is served. The controller can perform
+additional actions, for example change a HTTP response.
 
-**Опубликовано** -- Флаг публикации страницы. Когда он включен,
-страница будет отображена клиентам сайта, а если для страницы флаг снят, то
-ηCMS ответит 404 HTTP кодом.
+**Published** -- Page publication status switch. When it is turned on,
+the page will be displayed for site users. The ηCMS sends HTTP 404 code in the case
+if this switch is off.
 
-**Шаблон**. Если выбрана `Страница`
-и для сборки определена :term:`разметка <ядро>`, то эта сборка будет
-шаблоном для типовых страниц сайта. А именем шаблона - значение поля `Описание`.
-Опция `Новость` определяет эту страницу как шаблон для элементов ленты
-новостей.
+**Template** -- If it set to the `Page` and an assembly :term:`markup <core>` is defined,
+then the assembly can be used as template for website pages. A value in the `Description` field
+will set a template name. The `News` option value means that this assembly will be a template
+the news feed pages.
 
-**Роли** -- список ролей прав доступа через запятую. Наличие одной из ролей у
-пользователя необходимо для создания страницы на основе данной сборки.
-Сборка в этом случае должна быть в режиме шаблона (**Шаблон**). Если
-данный список пуст, любой пользователь сможет создать страницу на основе
-этой сборки.
+**Roles** -- comma-separated list of user roles which have access to the template defined with this assembly.
+Any user having at least one of declared roles can create pages based on this template. If the list is empty,
+any user can create pages based on this template. This option has effect only if the **template** field is
+set to either `Page` or `News` values.
 
-**Родители** -- родительские сборки для текущей сборки. Позволяет текущей сборке
-наследовать атрибуты родительских сборок (по аналогии с множественным наследованием
-классов в ООП).
+**Parents** -- parent assemblies for the current assembly. It allows the current assembly
+to inherit the attributes of the parent assembly(es).
 
-**Атрибуты** -- доступные атрибуты в сборке, включая собственные атрибуты и
-наследуемые атрибуты.
+**Attributes** -- attributes available in the assembly, including its own attributes and
+inherited attributes.
 
 .. figure:: img/amgr_img9.png
 
-    Список атрибутов, связанных со страницей
+    The list of attributes associated with the page
 
 
-**Возможные операции над атрибутами:**
+**Feasible operations on attributes:**
 
 .. image:: img/amgr_img3.png
     :align: left
 
-Создание нового атрибута. В этом случае отобразится диалоговое окно выбора возможных
-атрибутов:
+To create a new attribute, the dialog box to select permissible
+attributes is displayed:
 
 .. figure:: img/amgr_img6.png
 
-    Диалог выбора нового :term:`атрибута <атрибут>`
+   Dialog to select a new :term:`attribute <attribute>`
 
-:ref:`Описание возможных атрибутов сборок <am>`
+:ref:`Description of permissible assembly attributes <am>`
 
-После выбора атрибута, ηCMS предложит настроить параметры атрибута.
+After choosing the attribute, ηCMS offers to customize attribute parameters.
 
 .. image:: img/amgr_img4.png
     :align: left
 
-Удаление выбранного атрибута. При этом удалить можно только атрибуты,
-принадлежащие текущей странице, но не атрибуты в базовых сборках по цепочке наследования.
+Deleting the selected attribute. Thus only attributes
+belonging to the current page can be removed,
+except attributes of the base assemblies
+in the inheritance chain.
 
 .. image:: img/amgr_img5.png
     :align: left
 
-Открыть опции атрибута для редактирования. При этом редактировать можно только атрибуты,
-принадлежащие текущей странице, но не атрибуты в базовых сборках по цепочке наследования.
-В случае, если для редактирования будет открыт атрибут базовой (родительской)
-сборки, ηCMS создаст копию атрибута в текущей странице и пометит этот атрибут значком |img_star|.
-В этом случае атрибут переопределит атрибут родителя (по аналогии с переопределением функций
-в объектно-ориентированных языках программирования). Наследуемые атрибуты базовых сборок отображаются
-на сером фоне: |img_grey| и не могут быть удалены из сборки.
+Opening attribute options for editing. It's possible to edit only attributes
+belonging to the current assembly, except attributes in the base assemblies
+in the inheritance chain. If the attribute of the base (parent) assembly is opened for editing,
+ηCMS creates a copy of the attribute for the current page, and marks it by |img_star| icon.
+In this context an attribute can override attribute with the same name in the parent assembly,
+similar to the overriding of methods in object-oriented programming languages.
+Inherited attributes of basic assemblies are displayed on a gray background: |img_grey|
+and can not be removed or rearranged.
 
 .. image:: img/amgr_img10.png
     :align: left
 
-Переместить выбранный атрибут **вверх**. В этом случае меняется порядок атрибутов
-в :ref:`интерфейсе редактирования содержимого страницы <pmgr>`.
+Moving the selected attribute **up**. In this case, the order of attributes
+can be changed in :ref:`Edit page content interface <pmgr>`.
 
 .. image:: img/amgr_img11.png
     :align: left
 
-Переместить выбранный атрибут **вниз**. В этом случае меняется порядок атрибутов
-в :ref:`интерфейсе редактирования содержимого страницы <pmgr>`.
+Moving the selected attribute **down**. In this case, the order of attributes
+can be changed in :ref:`Edit page content interface <pmgr>`.
 
 
 .. |img_star| image:: img/amgr_img7.png
 .. |img_grey| image:: img/amgr_img8.png
-
 
