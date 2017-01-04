@@ -1,132 +1,114 @@
 .. _mmgr:
 
-Управление файлами в ηCMS (медиа репозиторий)
-=============================================
-
+File management in ηCMS (media repository)
+==========================================
 
 .. figure:: img/mmgr_img1.png
 
-    Общий вид интерфейса управления медиа файлами ηCMS
+    Overview of the ηCMS media file management interface
 
-Слева пользователь может выбрать текущий каталог в медиарепозитории.
-В центре - список файлов в выбранном каталоге и его подкаталогах (в зависимости от
-текущих опций просмотра). Справа - информация о файле, основные свойства файла
-и интерфейс редактирования для текстовых файлов или панель просмотра файла, как
-изображения. Доступ к этому интерфейсу имеют все зарегистрированные пользователи
-системы.
+On the left, the user can select the current directory in the media-repository.
+In the center - the list of files in the selected directory and its subdirectories (depending on
+current viewing options). On the right - the file information is shown, main file properties
+and editing interface for text files, or panel to view images.
+All ηCMS users have an access to this interface.
 
-Обозначения для каталогов медиарепозитория
-------------------------------------------
+Media-repository folders notation
+---------------------------------
 
 .. image:: img/mmgr_img2.png
     :align: left
 
-Каталог является *системным* и может быть изменен пользователем, обладающим
-административными правами.
+The catalog is *system* and used to serve static website resources.
 
 .. image:: img/mmgr_img3.png
     :align: left
 
-Каталог является *пользовательским* и может быть изменен владельцем или
-пользователем, обладающим административными правами.
+A regular user's catalog.
 
+Every file or catalog can be changed by owner, creator or user having admin rights.
 
-Доступ к файлам медиарепозитория
+Access to media-repository files
 --------------------------------
 
-* Все файлы, которые находятся в каталогах `/page` и `/site` медиарепозитория ηCMS (опция конфигурации :ref:`asm/site-files-root <conf>`),
-  доступны внешним пользователям по HTTP протоколу, если в правилах shiro конфигурации сервера ηCMS (`shiro.ini`) не указаны
-  дополнительные ограничения.
-* Зарегистрированный в ηCMS пользователь может изменить содержимое файла или удалить его, когда выполняется
-  как минимум одно из следующих условий:
+* All files within the system directories `/page` or `/site` (configuration option
+  :ref:`asm/site-files-root <conf>`) are available for external users via the HTTP protocol,
+  until the security rules of the ηCMS server configuration (`shiro.ini`) don't include
+  additional restrictions.
+* ηCMS users can change the contents of the file or delete it when at least
+  one of the following conditions is respected:
 
-  * Пользователь является владельцем файла (пользователь создал этот файл)
-  * Пользователь обладает правами администратора (роль `admin`)
+  * The user is the owner of the file (user created this file)
+  * The user has administrator permissions (`admin` role)
 
 
-
-Операции над файлами и опции поиска и отображения
+File operations and options of search and display
 -------------------------------------------------
 
 .. figure:: img/mmgr_img4.png
 
-    Список файлов в выбраном каталоге
+    List of files in the selected directory
 
-Двойной клик по имени файла или его описанию позволяет переименовать
-файл или изменить описание.
-
+Double click on the file name or its description (`F2` hotkey) allows renaming
+the file or change its description.
 |
 
 .. image:: img/mmgr_img5.png
     :align: left
 
-Кнопка создания нового пустого файла `Новый файл`. Пустой файл можно создать
-комбинацией клавиш `Alt+Enter`. `Загрузить файлы` позволяет выбрать локальные
-файлы на диске и отправить их в текущий каталог ηCMS. Файлы можно
-добавить в репозиторий, перетащив их с рабочего стола в список файлов.
+Button `New file` creates a new empty file. Also it can be done by `Alt+Enter` hotkey.
+`Upload files` allows selecting local files on the disk and send them to the current ηCMS directory.
+Files can be added to the repository by dragging them from the desktop to the files list.
 
 .. image:: img/mmgr_img6.png
     :align: left
 
-Удаление выбранного файла в списке. Файл также можно удалить клавишей `Delete`.
+Deleting the selected file in the list. The file can also be removed by `Delete` hotkey.
 
 .. note::
 
-    ηCMS позволит удалить только те файлы, на которые отсутвуют ссылки со
-    страниц сайта.
+    ηCMS allows deleting only files not used in links located on the website pages.
 
 .. image:: img/mmgr_img7.png
     :align: left
 
-Запуск окна редактора для текстовых файлов. Запустить редактор на выбранном
-файле можно с помошью клавишы `F4`.
+Open the editor for text files. `F4` key opens the editor for the selected
+text file.
 
 .. image:: img/mmgr_img8.png
     :align: left
 
-Перенести выбранные файлы в другую папку.
+Move selected files to another folder.
 
 .. image:: img/mmgr_img9.png
     :align: left
 
-Переключатель сквозного режима просмотра файлов в каталоге. В том
-случае, если этот режим включен, в списке файлов будут отображены
-файлы в текущем каталоге и во всех дочерних подкаталогах этого каталога.
+The switch of the recursive viewing mode. If this mode is enabled, the file list displays
+files in the current directory and in all of its child subdirectories.
 
 .. image:: img/mmgr_img10.png
     :align: left
 
-При отключеном режиме сквозного просмотра будут отображены только файлы,
-находящиеся в этом каталоге.
-
+When recursive view mode is disabled the file list shows only files
+within the current directory.
 
 .. _mmgr_hotkeys:
 
-Горячие клавиши (hot keys)
---------------------------
+Hot keys
+--------
 
-Активный элемент UI - это текущий, имеющий фокус элемент.
+The active UI item  - is the item having the current focus.
 
 ========================== ==================== ========================================
- Активный элемент UI        Комбинация клавиш               Действие
+ Active UI item             Shortcut             Action
 ========================== ==================== ========================================
-Дерево папок                `Delete`             Удалить каталог
-Дерево папок                `F2`                 Переименовать каталог
-Дерево папок                `F6`                 Перенести каталог в другой каталог
-Дерево папок                `Alt+Insert`         Создать новый каталог в текущем выбранном каталоге
-Список файлов               `Alt+Insert`         Создать пустой текстовый файл
-Список файлов               `Delete`             Удалить выбранный файл/файлы
-Список файлов               `F2`                 Переименовать выбранный файл или сменить его описание
-Список файлов               `F4`                 Редактировать выбранный файл
-Список файлов               `F6`                 Перенести выбранный файл/файлы в другой каталог
+Folder tree                 `Delete`             Remove directory
+Folder tree                 `F2`                 Rename directory
+Folder tree                 `F6`                 Move directory to another directory
+Folder tree                 `Alt+Insert`         Create a new directory in the current selected directory
+List files                  `Alt+Insert`         Create an empty text file
+List files                  `Delete`             Remove selected file/files
+List files                  `F2`                 Rename the selected file or change its description
+List files                  `F4`                 Edit selected file
+List files                  `F6`                 Transfer the selected file / files to another directory
 ========================== ==================== ========================================
-
-
-
-
-
-
-
-
-
-
