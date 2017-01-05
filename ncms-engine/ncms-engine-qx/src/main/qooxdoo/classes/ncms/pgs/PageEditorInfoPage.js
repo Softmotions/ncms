@@ -133,7 +133,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
                         msg.push(ip["virtualHosts"]
                         .map(function (vh) {
                             // todo HTTP port?
-                            return "<a href='//" + vh + "' target='_blank'>" + vh + "</a>";
+                            return "<a href='http://" + vh + "' target='_blank'>" + vh + "</a>";
                         }).join(" "));
                     }
                     if (Array.isArray(ip["langCodes"])) {
