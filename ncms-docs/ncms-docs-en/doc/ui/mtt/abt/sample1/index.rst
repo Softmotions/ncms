@@ -1,28 +1,28 @@
 .. _abt_sample1:
 
-Пример A/B тестирования
-=======================
+Example of A/B testing
+======================
 
-В данном примере будет продемонстрировано создание
-простейшего веб сайта и применение `A/B` тестирования
-к пользователям сайта.
+This example demonstrates the creation
+of a simple website and the use of `A/B` testing
+to site users.
 
-С вероятностью 50% на 50% cайт показывает пользователям две картинки: `акула` и `дельфины`.
-Выбор режима показа для пользователя происходит при первом обращении к сайту
-и сохраняется 1 день. По истечении этого срока для пользователя произойдет повторный
-выбор режима показа сайта. Веб-сайт находится в виртуальном домене: `foo.example.com`.
+With a probability of 50% to 50% the website shows users two pictures: `shark` and `dolphins`.
+Selecting the display mode for user takes place at the first access to the site
+and stores for 1 day. After that, the selection of display mode for the user is repeated.
+The website is in a virtual domain: `foo.example.com`.
 
-Пример страницы сайта в режиме `A`:
+Sample pages of the site in the mode of `A`:
 
 .. figure:: img/screen10.png
     :align: center
 
-    Страница веб сайта в режиме `A`
+    Web site page mode `A`
 
 
 
-Итак, в интерфейсе медиарепозитория создадим файл `abtest_core.htt`
-главной страницы сайта:
+Thus, let's create a file `abtest_core.htt` of a home page of the website
+in the interface of media-repository:
 
 .. code-block:: html
 
@@ -44,98 +44,100 @@
 .. figure:: img/screen4.png
     :align: center
 
-    Файл `abtest_core.htt` в интерфейсе медиарепозитория
+     File `abtest_core.htt` in the interface of media-repository
 
-В разметке в текст `html` включаются три :term:`атрибута <атрибут>` сборки: `title`, `imageA`, `imageB`,
-при этом используется функция `abt` для определения текущего режима отображение страницы.
-В данном простом примере в режиме `A` где (``abt('A') == true``) отображаем картинку `imageA`,
-и, соответственно, `imageB` для режима `B`
+The following three :term:`attributes <attribute>` of assembly: `title`,` imageA`, `imageB` are
+included to the `html` text of markup.
+`abt` function is used to determine the current mode of the page display.
+In this simple example, in a mode`A` where(``abt('A') == true``) it displays a picture `imageA`,
+and, accordingly, `imageB` for` B` mode.
 
 
-Далее создаем шаблон страницы (сборку) для данной разметки с именем `absimple`
-и определяем атрибуты сборки как показано на снимке экрана ниже:
+Then create a page template (assembly) for this markup called `absimple`
+and define attributes of the assembly as shown in the screenshot below:
 
 
 .. figure:: img/screen1.png
     :align: center
 
-    Создание шаблона страницы
+    Create page template
 
-Создаем страницу на базе шаблона и загружаем
-соответствующие картинки в репозиторий страницы:
+Create a page based on the template and load
+the corresponding images to the page repository:
 
 .. figure:: img/screen3.png
     :align: center
 
-    Создание экземпляра страницы
+    Creating an instance of the page
 
 
-Выбираем созданную страницу в интерфейсе управления сборками
-и добавляем атрибут `mainpage`, инструктирующий ηCMS о том, что
-эта страница будет главной для домена `foo.example.com`:
+Select the page created in the assembly management interface
+and add the `mainpage` attribute, says ηCMS that
+this page is the main for domain `foo.example.com`:
 
 
 .. figure:: img/screen12.png
-   :align: center
+:align: center
 
-   Определение главной страницы для домена `foo.example.com`
+   Designation of the main page for `foo.example.com` domain
 
-На этом этапе создание сайта закончено. Если открыть сайт из предпросмотра
-в админ зоне, мы увидим одновременно дельфинов и акулу, поскольку
-в режиме предпросмотра администратора активированы все `A/B` варианты.
-Если этот сайт опубликовать, то картинки не будут отображены, поскольку для
-публичных пользователей не включены правила выбора `A/B` вариантов.
-Этим мы и займемся в следующих шагах примера.
+At this stage, the creation of the site is completed. While opening the website via the preview
+in admin zone, we see dolphins and shark simultaneously, because
+in the administrator preview mode all `A/B` options are activated.
+After publishing of the site, the pictures will not be displayed, because
+there are no rules for choosing `A/B` options for public users.
+This is what we are going to do on the following steps of a sample.
+
 
 .. figure:: img/screen5.png
     :align: center
 
-    Предварительный просмотр сайта из админ-зоны, все правила включены
+    Preview of the site through the admin zone, all the rules enabled
 
 
-Далее, в `MTT` консоли определим трафик-правило для включения `A/B` режимов
-для главной страницы `foo.example.com`. Назовем правило `docsing_abt1`
-и укажем, что действия правила будут применены только для доменного имени `foo.example.com`,
-как показано на скриншоте ниже:
+Further, using `MTT` console we define traffic-rule to include `A/B` modes
+for the main page `foo.example.com`. We call the rule `docsing_abt1`
+and indicate that the rule action is applied only for the domain name `foo.example.com`,
+as shown in the screenshot below:
 
 .. figure:: img/screen6.png
     :align: center
 
-    Активация правила только для `foo.example.com`
+    Activation of the rule only for `foo.example.com`
 
 
+It remains to determine parameters of enabling `A/B` modes.
+To do this, add to the rule a `probability group`
+where with a probability of 50/50 the different `A/B` modes will be activated:
 
-Осталось определить параметры включения `A/B` режимов.
-Для этого добавим в действия правила `Вероятностную группу`, в
-которой с вероятностью 50/50 будут активироваться различные `A/B` режимы:
 
 .. figure:: img/screen8.png
     :align: center
 
-    Конфигурация вероятностей включения `A/B` режимов
+    Configuration of the probabilities of `A/B` modes enabling
 
 
-Ниже представлен экран редактирования `A/B` режима `A`:
+Here is the screen of editing `A/B`, mode `A`:
 
 
 .. figure:: img/screen7.png
     :align: center
 
-    Экран редактирования `A/B` режима
+    Screen of editing `A/B` mode
 
-Стоит отметить, что в поле `A/B метки` могут быть перечислены через запятую произвольные режимы,
-которые будут включены, например, `A,B,C,...` либо `Mode1,Mode2,...`. ηCMS не накладывает ограничения
-на количество вариантов `A/B` тестирования и на имена этих вариантов. Конечно, они должны быть
-согласованы с httl кодом шаблонов веб сайтов.
+It is worth noting that in the `A/B label` field arbitrary regimes which are to be enabled,
+can be listed separated by commas, for example, `A, B, C, ...` or `Mode1, Mode2, ...`.
+ηCMS imposes no restrictions for the number of options for split testing and names of these options.
+Of course, they must be agreed with httl web site template code.
 
 
-В итоге мы получили сайт с простым `A/B` тестированием на уровне контента:
+As a result, we have a website with a simple `A/B` testing at the level of the content :
 
 
 .. figure:: img/screen11.png
     :align: center
 
-    Сайт в режиме `B` для внешнего пользователя
+    Website in `B` mode for external user
 
 
 
