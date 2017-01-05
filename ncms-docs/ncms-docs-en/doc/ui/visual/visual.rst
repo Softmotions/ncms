@@ -1,39 +1,33 @@
 .. _visual:
 
-Визуальный редактор страниц сайта
-=================================
+The visual editor of pages
+==========================
 
-Иногда возникает необходимость изменять большое количество
-текстовых данных на странице. Если каждый блок данных
-представить как отдельный :term:`атрибут`, то это может перегрузить
-:ref:`интерфейс управления содержимым страницы <pmgr>`
-и сделает правку страницы неудобной. Также, для многих
-пользователей, является более удобным визуальный
-способ редактирования контента страницы, когда правки вносятся
-прямо в контексте отображаемой в браузере страницы.
+Sometimes you need to manage a quite large number of text data blocks within a particular page.
+If every data block will be defined as single assembly :term:`attribute`, it may make the
+:ref:`page management UI <pmgr>` to be too heavy and complicated. Also, for many users it can be
+more convenient to edit a page content with visual editor.
 
-В ηCMS есть возможность легко создавать визуально редактируемые
-блоки, для этого в разметку нужно добавить
-HTML блок (например, `<div>`) с атрибутом `ncms-block`, значением
-которого является уникальный идентификатор блока в контексте страницы.
+In ηCMS we have an ability to create visually editable content blocks. In order to do it, add the HTML block (eg, `<div>`)
+to the markup along with `ncms-block` attribute, where its value should be a unique identifier of the block.
 
 .. code-block:: html
 
     <div ncms-block="block name">
-        Содержание блока по умолчанию.
+        The contents of the block by default.
     </div>
 
-После этого, открыв страницу предпросмотра, редактор
-сможет редактировать в блоке стилизованный HTML текст с
-помощью простого редактора `Medium Editor <https://yabwe.github.io/medium-editor/>`_.
+After that, on the page preview pane, a site editor
+can edit a stylized HTML text in the defined blocks,
+using  `Medium Editor <https://yabwe.github.io/medium-editor/>` _.
 
-Пример использования
---------------------
+Example of use
+--------------
 
-Создадим страницу с именем `VisualEditor`, выберем для
-нее шаблон с возможностью явно задать :term:`разметку <core>`
-в интерфейсе редактирования контента (в странице должен присутствовать
-атрибут с типом :ref:`core <am_core>`) и сделаем следующую разметку:
+Then we create a page called `VisualEditor`, choose the template with the ability
+to explicitly specify the :term:`markup <core>` in the `content editing UI <pmgr>`
+(In order to do that the page must contain the attribute having a type :ref:`core <am_core>`)
+and add the following markup:
 
 .. code-block:: html
 
@@ -53,44 +47,22 @@ HTML блок (например, `<div>`) с атрибутом `ncms-block`, з
       </body>
     </html>
 
-Здесь присутствуют два визуальных блока: с идентификаторами `main` и `footer`,
-соответственно. При этом `main` блок выделен серым цветом для наглядности.
+There are two visual blocks here: with identifiers `main` and` footer`,
+respectively. This `main` block is highlighted with gray for clarity.
 
-Открыв предпросмотр страницы мы получим:
+In the preview page we get:
 
 .. image:: img/visual_img1.png
 
-При наведении указателя мыши, визуальный блок будет выделен рамкой.
-Кликнув указателем в блок, мы перейдем в режим редактирования
-блока, в котором можно менять контент и стилизовать текст:
+When the mouse pointer is over the block, a visual block is highlighted with a frame.
+Click the block to open its edit mode where you can change the content and style the text:
 
 .. image:: img/visual_img2.png
 
 
-В результате получаем возможность простого и интуитивного
-редактирования блоков страниц ηCMS прямо в интерфейсе предпросмотра:
+The result we get a simple and intuitive ability of editing
+ηCMS pages blocks directly in the preview interface:
 
 .. figure:: img/visual_img3.png
 
-    Страница после внесенных изменений
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    Page after changes
