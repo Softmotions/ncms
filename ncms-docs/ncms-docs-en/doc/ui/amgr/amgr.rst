@@ -3,12 +3,9 @@
 Assembly Management
 ===================
 
-In this interface, the administrator can set a structure of ηCMS :term:`assemblies <assembly>` (pages),
-determine the types of possible pages and edit :term:`attributes <attribute>`
-of any assembly directly. With this interface you can create a structure of site pages.
-
-Users having `admin` or `admin.asm` permissions have an access to this interface.
-
+In this interface, the administrator can setup a structure of ηCMS :term:`assemblies <assembly>` (pages),
+define page templates and edit existing assemblies. Using this interface you can define a structure of site pages.
+Any users having `admin` or `admin.asm` permissions allowed to access this UI.
 
 .. figure:: img/amgr_img1.png
 
@@ -23,7 +20,7 @@ In the search form on the left, you can select:
 * :term:`template` for a site page or news,
 * :term:`copy of the page <page>`.
 
-The icon opposite every item in the list of assemblies means the type of assembly:
+Every item in the assembly list is marked by image shows its type:
 
 .. image:: img/amgr_other.png
     :align: left
@@ -35,15 +32,14 @@ providing their attributes to heirs.
 .. image:: img/amgr_template.png
     :align: left
 
-Named :term:`template <template>` for site pages,
-to create typical pages.
+Named :term:`template <template>` to create pages.
 
 .. image:: img/amgr_page.png
     :align: left
 
-A copy of the page, which is assembled with a unique
-name in the :term:`GUID format <page GUID>`,
-having a defined :term:`markup <core>`.
+A page instance which is defined as an assembly with
+a unique name in :term:`GUID format <page GUID>`,
+and :term:`markup <core>` attached.
 
 .. image:: img/amgr_news.png
     :align: left
@@ -58,31 +54,29 @@ Assembly management
 
     Page template called "Page with the content and the ability to specify the markup"
 
-
-**Name** -- the name of the assembly. For page instances it is a :term:`unique GUID <page GUID>`.
+**Name** -- the name of the assembly. For page instances it will be :term:`unique GUID <page GUID>`.
 
 **Markup** -- :ref:`HTTL <httl>` markup file for a page.
 
-**Description** -- a brief description of the assembly. This field is displayed
+**Description** -- a brief description of an assembly. This field is displayed
 in the search page form and also used to select the :term:`template <template>` for pages.
 
 **Controller** -- name of a java class that implements
 the `com.softmotions.ncms.asm.render.AsmController` interface
-and is called when page is served. The controller can perform
+its instance is called when page is served. The controller can perform
 additional actions, for example change a HTTP response.
 
-**Published** -- Page publication status switch. When it is turned on,
-the page will be displayed for site users. The ηCMS sends HTTP 404 code in the case
-if this switch is off.
+**Published** -- Page publication status. If this switch is on, the page
+will be displayed for site users otherwise ηCMS will send HTTP 404 response code.
 
-**Template** -- If it set to the `Page` and an assembly :term:`markup <core>` is defined,
-then the assembly can be used as template for website pages. A value in the `Description` field
-will set a template name. The `News` option value means that this assembly will be a template
-the news feed pages.
+**Template** -- If its value set to the `Page` and :term:`markup <core>` is defined,
+then the assembly can be used as template for new website pages. A value in the `Description` field
+will be treated a template name. The `News` option value means that this assembly will be a template
+the news feed items.
 
 **Roles** -- comma-separated list of user roles which have access to the template defined with this assembly.
-Any user having at least one of declared roles can create pages based on this template. If the list is empty,
-any user can create pages based on this template. This option has effect only if the **template** field is
+Any user having at least one of declared roles can create pages based on this template. If this list is empty,
+any user allowe to create pages based on this template. This option has effect only if the **template** field is
 set to either `Page` or `News` values.
 
 **Parents** -- parent assemblies for the current assembly. It allows the current assembly
@@ -93,16 +87,14 @@ inherited attributes.
 
 .. figure:: img/amgr_img9.png
 
-    The list of attributes associated with the page
+    The list of attributes attached to the page
 
-
-**Feasible operations on attributes:**
+**Possible operations on attributes:**
 
 .. image:: img/amgr_img3.png
     :align: left
 
-To create a new attribute, the dialog box to select permissible
-attributes is displayed:
+Available attributes for user:
 
 .. figure:: img/amgr_img6.png
 
@@ -110,21 +102,20 @@ attributes is displayed:
 
 :ref:`Description of permissible assembly attributes <am>`
 
-After choosing the attribute, ηCMS offers to customize attribute parameters.
+After choosing the attribute, ηCMS allows to customize attribute parameters.
 
 .. image:: img/amgr_img4.png
     :align: left
 
 Deleting the selected attribute. Thus only attributes
-belonging to the current page can be removed,
-except attributes of the base assemblies
-in the inheritance chain.
+defined in the current assembly can be removed, except attributes
+of the base assemblies in the inheritance chain.
 
 .. image:: img/amgr_img5.png
     :align: left
 
-Opening attribute options for editing. It's possible to edit only attributes
-belonging to the current assembly, except attributes in the base assemblies
+Opening attribute options for editing. It is possible to edit only attributes
+defined in the current assembly, except attributes in the base assemblies
 in the inheritance chain. If the attribute of the base (parent) assembly is opened for editing,
 ηCMS creates a copy of the attribute for the current page, and marks it by |img_star| icon.
 In this context an attribute can override attribute with the same name in the parent assembly,
@@ -143,7 +134,6 @@ can be changed in :ref:`Edit page content interface <pmgr>`.
 
 Moving the selected attribute **down**. In this case, the order of attributes
 can be changed in :ref:`Edit page content interface <pmgr>`.
-
 
 .. |img_star| image:: img/amgr_img7.png
 .. |img_grey| image:: img/amgr_img8.png
