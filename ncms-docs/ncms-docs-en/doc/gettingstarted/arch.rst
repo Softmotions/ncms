@@ -103,7 +103,7 @@ idea underlying ηCMS.
 
 Let's implement the structure mentioned above using the the ηCMS GUI.
 
-Using :ref:`assembly management interface <amgr>` we create an assembly called `base`.
+Using :ref:`assemblies management interface <amgr>` we create an assembly called `base`.
 
 .. figure:: img/step1.png
 

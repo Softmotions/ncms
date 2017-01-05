@@ -1,18 +1,16 @@
 .. _am:
 
-Атрибуты сборок
-===============
+Assembly attributes
+===================
 
-Как было показано в :ref:`описании архитектуры ηCMS <arch>`,
-контент страниц формируется из набора :term:`атрибутов <атрибут>`, принадлежащих :term:`сборкам <сборка>`.
-Задать опции и начальные значения атрибутов можно
-в интерфейсе :ref:`управления сборками <amgr>`. Содержимое некоторых
-атрибутов страниц можно менять в :ref:`интерфейсе редактирования содержимого страницы <pmgr>`.
-В данном документе представлены описания возможных типов атрибутов, используемых в сборках.
+As shown in the :ref:`ηCMS architecture description <arch>`,
+a page content is generated from a set of :term:`attributes <attribute>` belonging to :term:`assemblies <assembly>`.
+Options and initial values of attributes can be specified in :ref:`assemblies management UI <amgr>`.
+The content of some page attributes can be changed in the :ref:`page content editing UI <pmgr>`.
 
 .. note::
-    Рекомендуется ознакомиться с разделом :ref:`attributes_access`
-    для понимания того, как ηCMS находит значения атрибутов в :ref:`HTTL <HTTL>` разметке страниц.
+    Refer to :ref:`attributes_access` for more details on how ηCMS finds
+    the attribute values in the :ref:`HTTL <HTTL>` page markup.
 
 .. toctree::
     :maxdepth: 1
@@ -35,6 +33,3 @@
     breadcrumbs/breadcrumbs
     alias/alias
     mainpage/mainpage
-
-
-

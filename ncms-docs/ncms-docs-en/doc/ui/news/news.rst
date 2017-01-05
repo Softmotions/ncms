@@ -1,59 +1,55 @@
 .. _news:
 
-Управление лентами событий (новостями)
-======================================
+News feeds management
+=====================
 
-Страницы сайта, созданные на базе некоторого :term:`шаблона <шаблон>`,
-могут иметь одну или несколько лент событий; будем называть их **базовыми страницами**.
-Лента событий -- это множество страниц заданного типа, связанные с `базовой страницей`.
+Site pages based on a :term:`template <template>`, may have one or more news (events) feeds.
+Let's call them as the **basic pages**. News feed is the set of pages of a given type,
+associated with the `base page`.
 
 .. note::
 
-    Под лентой событий можно рассматривать новостную ленту сайта (раздела),
-    блог посты, список продуктов торгового сайта и т.п. Разные страницы сайта
-    могут иметь независимые друг от друга ленты событий, которые могут быть
-    отображены в контексте этих страниц.
+    News feed can be considered as a simple website news, blog posts, the goods list of a shop, etc.
+    Different pages may have independent news feeds, which can be displayed in the context of those pages.
 
+Example of the news feed for the site page
+------------------------------------------
 
-Пример новостной ленты для базовой страницы сайта
--------------------------------------------------
+This simple example demonstrates the adding of a news feed to a
+web page and the process of news creation.
 
-На этом простом примере мы продемонстрируем добавление новостной
-ленты на некоторую страницу сайта и процесс создания новостей.
+The following steps are to be done in order to create a news feed:
 
-Следующие шаги необходимо пройти для реализации новостной ленты:
+1. Creating the base page we are going to associate a news feed.
+2. Creating the :term:`template <template>` for news feed pages (news).
+3. Creating instances of pages of news feed in the context of the base page (using template created at the step 2).
 
-1. Создание базовой страницы, с которой мы в дальнейшем свяжем новостную ленту.
-2. Создание :term:`шаблонов <шаблон>` для страниц ленты событий (новостей).
-3. Создание экземпляров страниц ленты событий в контексте базовой страницы (на основе созданных шаблонов).
+Creating the base page
+**********************
 
-Создание базовой страницы
-*************************
-
-Создадим :term:`шаблон <шаблон>` с именем `docsink_newsdemo` для всех
-экземпляров базовых страниц с одинаковой структурой, соответствующей этому шаблону.
+Creating the :term:`template <template>` named as `docsink_newsdemo` which will be template
+for the base page instance.
 
 .. figure:: img/news_img2.png
 
-    Создание шаблона для базовой страницы
+    Creating a template for the base page
 
-Как мы видим на данном примере, наш шаблон наследуется от сборки `base_content`,
-в котором определена возможность задать следующие :term:`атрибуты <атрибут>`:
+As we can see the template `docsink_newsdemo` is inherited from the `base_content` assembly
+where we can set the following attributes:
 
-* `alias` - Псевдоним страницы -- альтернативный адрес, по которому будет доступна страница.
-* `core` - Разметка страницы, которую можно явно задать в интерфейсе редактирования
-  содержания страницы.
-* `title` - Заголовок страницы.
-* `content` - Основной контент страницы, который задается mediawiki разметкой.
+* `alias` - Page alias -- an alternative url on which the page is available.
+* `core` - Page markup which can be explicitly set in the `page management UI <pmgr>`.
+* `title` - Page title.
+* `content` - The main content of the page defined with the mediawiki markup.
 
-Назовем базовую страницу именем `NewsDemo` и заполним все требуемые атрибуты:
+We call the home page `NewsDemo` and fill all the required attributes:
 
 .. figure:: img/news_img4.png
 
-    Интерфейс редактирования содержания базовой страницы
+    Interface of editing the content of the base page
 
-Файл `core.httl` является разметкой для базовой страницы и на этом шаге
-содержит следующий httl код:
+File `core.httl` is a markup for the base page, and at this step
+contains the following httl code:
 
 .. code-block:: html
 
@@ -66,96 +62,93 @@
     </body>
     </html>
 
-Создание шаблона для элементов ленты событий
-********************************************
+Creating a template for news feed items
+***************************************
 
-Новостная страница является полноценной страницей сайта, и
-для нее должен быть определен шаблон. Шаблоны новостных страниц
-определяются стандартным способом, как и для любых других страниц сайта.
-**Но с одним ограничением:** название шаблона новостной страницы должно
-начинаться с имени шаблона базовой страницы до первого знака подчеркивания `\_` (если он присутствует в имени шаблона базовой страницы).
-Как показано на скриншоте ниже, название шаблона новостных страниц: `docksink_news_simple`.
-В тоже время, название шаблона  базовой страницы: `docsink_newsdemo`.
-У имен этих двух шаблонов общий префикс: `docsink_`, который позволяет
-ηCMS связать новостные страницы с базовой страницей. Дополнительно
-для шаблона новостной страницы должен быть проставлен пункт `Шаблон`
-в значение `Новость`.
+A news page is a site page based on a particular template with activated news option.
+Any template can be used to create news pages if its `Template` option is set to `News`
+in the `assemblies management UI <amgr>`.
+**One limitation:** the name of the news page template should
+begin from the name of the base page template
+till the first underscore `\_` (Of course if it contained in the name of the base page template).
+As shown in the screenshot below, the name of template for news pages is `docksink_news_simple`.
+At the same time, the name of the base page template is `docsink_newsdemo`.
+There is `docsink_` common prefix in their names. This simple convention allows ηCMS
+to associate news pages with the base page.
+
 
 .. figure:: img/news_img3.png
 
-    Шаблон новостной страницы для `docksink_newsdemo`
+    Template for a news page for `docksink_newsdemo`
 
+Creating instances of news pages
+********************************
 
-Создание эклемпляров страниц ленты событий
-******************************************
-
-В разделе `Ленты` необходимо указать базовую страницу,
-для которой в дальнейшем сделаем ленту событий (список новостей).
+In order to create a news page we need to choose the base page to which it will be attached:
 
 .. figure:: img/news_img5.png
 
-    Выбор базовой страницы для ленты
+    Selecting the base page
 
-После нажатия кнопки выбора базовой страницы для ленты откроется
-диалог для последних базовых страниц, с лентами которых работал
-текущий пользователь. Сейчас этот список пуст:
+After pressing the button to select the base page for a news feed
+the ηCMS opens the dialogue with the latest basic pages used by current user.
+Now this list is empty:
 
 .. figure:: img/news_img6.png
 
- Последние базовые страницы, с которыми работал пользователь
+    The last base pages user worked with
 
-
-Нажимаем на `+` и выбираем базовую страницу `NewsDemo`:
+Click on the `\+` and choose the base page `NewsDemo`:
 
 .. figure:: img/news_img7.png
 
-    Внесение `NewDemo` в список базовых страниц, нажимаем `Да`
+    Adding `NewDemo` to the list of basic pages, click `Yes`
 
 .. figure:: img/news_img8.png
 
-    Текущий спискок базовых страниц пользователя
+    The current list of base user pages
 
-Создание новости для выбранной базовой страницы
-***********************************************
+Creating news page for the selected base page
+*********************************************
 
-Правой кнопкой мыши активируем контекстное меню и нажимаем `Создать`, как показано на
-скриншоте ниже:
+Right-click to activate the context menu and click `Create`, as shown in
+the screenshot below:
 
 .. image:: img/news_img9.png
 
 
-Заполняем название новости
+Fill in the name of news
 
 .. image:: img/news_img10.png
 
 
-Выбираем новость и устанавливаем шаблон для новостной страницы:
+Choose the news and set the template for the news pages:
 
 .. image:: img/news_img11.png
 
 .. image:: img/news_img12.png
 
-Далее заполняем содержимое новости и проставляем статус публикации:
+Next, fill the contents of news and set the publication status:
 
 .. image:: img/news_img13.png
 
+Modification of the base page to display the list of news
+*********************************************************
 
-Модификация базовой страницы для отображения списка новостей
-************************************************************
-
-Перейдем в раздел редактирования контента базовой страницы
-и модифицируем разметку страницы для вывода списка связанных новостей:
+Let's go to edit the base page content
+and modify the markup of the page
+to display a list of linked news:
 
 .. image:: img/news_img15.png
 
-В появившимся окне редактирования модифицируем
-разметку для вывода списка новостей.
+In the edit box, modify the
+markup to display the news list.
 
-Получение списка новостей::
+Getting the news list::
 
     #foreach(Asm n in asmNavChilds("news.page"))
 
-Генерация ссылки на новость::
+Generating the link to news ::
 
     <li><a href="$!{n.link}">${n.hname}</a></li>
 
@@ -169,7 +162,7 @@
 
       $!{'content'.asm}
 
-      <h2>Новости</h2>
+      <h2>News</h2>
       <ul>
       #foreach(Asm n in asmNavChilds("news.page"))
         <li><a href="$!{n.link}">${n.hname}</a></li>
@@ -178,17 +171,6 @@
     </body>
     </html>
 
-В результате получаем страницу с новостями:
+The result we get a page containing news:
 
 .. image:: img/news_img16.png
-
-
-
-
-
-
-
-
-
-
-
