@@ -1,12 +1,12 @@
 .. _mtt:
 
-Управление трафиком
-===================
+Traffic management
+==================
 
-Консоль управления входящим трафиком (MTT - marketing transfer tools) позволяет
-избирательно задавать набор действий для входящих запросов к сайтам ηCMS.
-В частности, механизмы `MTT` позволяют осуществлять маркетинговое A/B тестирование
-пользователей веб сайтов.
+Management console for incoming site traffic rules (MTT - marketing transfer tools) allows
+you to selectively define a set of actions for the incoming requests to the ηCMS sites.
+In particular, the mechanisms of `MTT` allow making the marketing split (A/B testing)
+of website users.
 
 
 .. toctree::
