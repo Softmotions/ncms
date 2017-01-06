@@ -1,45 +1,43 @@
 .. _httl_ncms:
 
-ηCMS расширение HTTL
+HTTL ηCMS extensions
 ====================
 
 .. contents::
 
-:ref:`Основы HTTL <httl_basics>`
+:ref:`HTTL basics <httl_basics>`
 
-
-ηCMS добавляет в контекст :term:`HTTL` разметки дополнительные методы,
-которые позволяют использовать сервисы и полезный функционал CMS на ваших
-страницах. Эти методы определены в двух классах: `com.softmotions.ncms.mhttl.HttlAsmMethods`
-и `com.softmotions.ncms.mhttl.HttlUtilsMethods`. Вы можете изучить их реализацию
-в случае необходимости.
+ηCMS provides additional :term:`HTTL` utility methods.
+These extra methods allow using of services and ηCMS features on site pages.
+Methods are defined in two java classes:
+`com.softmotions.ncms.mhttl.HttlAsmMethods`
+and `com.softmotions.ncms.mhttl.HttlUtilsMethods`.
+You may learn their code if necessary.
 
 
 com.softmotions.ncms.mhttl .HttlAsmMethods
 ------------------------------------------
 
-Методы, предназначенные для доступа.
-
+Methods designed to access ηCMS objects.
 
 .. js:function:: page()
 
-    Возвращает объект, соответствующий текущей :term:`сборке <сборка>` (странице).
+    Returns the object corresponding to the current :term:`assembly <assembly>` (page).
 
-    **Пример**:
-    получение названия страницы в контексте `httl` шаблона::
+    **Example**:
+    obtaining the current page name(title)::
 
         ${page().hname}
 
     :rtype: com.softmotions.ncms.asm.Asm
 
 
-
 .. js:function:: asmHasAttribute(String name)
 
-    Возвращает `true`, если текущая :term:`сборка` имеет атрибут
-    с именем `name`, который может быть использован в `httl` разметке.
+    Returns `true` if the current :term:`assembly` has the attribute
+    called `name`, which can be used in the `httl` markup.
 
-    **Пример**::
+    **Example**::
 
         #if(asmHasAttribute("title"))
             ${"title".asm}
@@ -48,32 +46,32 @@ com.softmotions.ncms.mhttl .HttlAsmMethods
 .. js:function:: asmAny(String name)
 .. js:function:: asmAny(Asm asm, String name)
 
-    Возвращает rendered значение атрибута :term:`сборки <сборка>`.
-    В случае, если атрибут не найден, возвращает `null`, но в этом случае
-    система не будет сообщать в консоль(log), если атрибут не найден.
+    Returns a rendered value of the :term:`assembly <assembly>` attribute.
+    The `null` will be returned if the attribute is not found.
 
-    **Пример**::
+    **Example**::
 
         ${asmAny("title")}
 
-    :param com.softmotions.ncms.asm.Asm asm: Сборка, для которой
-        будет осуществляться поиска атрибута  `name`.
+    :param com.softmotions.ncms.asm.Asm asm: Assembly for that
+           a named attribute will be searched
     :rtype: java.lang.Object
 
 
 .. js:function:: asm(String name)
 .. js:function:: asm(Asm asm, String name)
 
-    Возвращает rendered значение атрибута текущей :term:`сборки <сборка>`.
+    Returns rendered attribute value for the current :term:`assembly <assembly>`.
 
-    :param String name: Название атрибута. Данный параметр может включать
-        дополнительные опции рендеринга атрибута. Например: `${asm("title,option=value")}`.
+    :param String name: Attribute name. The parameter can include
+            additional options of the attribute rendering.
+            For example: `${asm("title,option=value")}`.
 
-    :param com.softmotions.ncms.asm.Asm asm: Сборка для которой
-            будет осуществляться поиска атрибута  `name`.
+    :param com.softmotions.ncms.asm.Asm asm: Assembly for that a
+           named attribute will be searched
+    :rtype: java.lang.Object
 
-
-**Ниже перечислены альтернативные формы получения значения атрибутов с опциями отображения:**
+**Below are alternative forms of obtaining attribute values with some display options:**
 
 .. js:function:: asm(String name, String optionName, String optionValue)
 .. js:function:: asm(String name, String optionName, String optionValue, String optionName2, String optionValue2)
@@ -82,126 +80,113 @@ com.softmotions.ncms.mhttl .HttlAsmMethods
 .. js:function:: asm(Asm asm, String name, String optionName, String optionValue, String optionName2, String optionValue2)
 .. js:function:: asm(Asm asm, String name, String optionName, String optionValue, String optionName2, String optionValue2, String optionName3, String optionValue3)
 
-
-    Возвращает rendered значение атрибута текущей :term:`сборки <сборка>`.
-    С дополнительными опциями рендеринга значения атрибута.
+    Returns the rendered value of the attribute of the current
+    :term:`assembly <assembly>`. Contains additional options rendering attribute value.
 
 
 .. js:function:: link(Asm asm)
 
-    Возвращает URL ссылки на страницу идентифицируемую
-    объектом :term:`сборки <сборка>`
+    Returns URL to the page identified
+    by the :term:`assembly <assembly>`
 
     :rtype: java.lang.String
 
-
 .. js:function:: link(String guidOrAlias)
 
-    Возвращает URL ссылки на страницу, идентифицируемую
-    :term:`строковым GUID <GUID страницы>` страницы
-    или :term:`псевдонимом страницы <псевдоним страницы>`
+    Returns URL of the link to the page identified
+    by :term:`string GUID <page GUID>` page
+    or :term:`page alias <page alias>`
 
     :rtype: java.lang.String
 
 
 .. js:function:: link(RichRef ref)
 
-    Возвращает URL для объекта :ref:`com.softmotions.ncms.mhttl.RichRef`.
+    Returns URL for the object :ref:`com.softmotions.ncms.mhttl.RichRef`.
 
     :rtype: java.lang.String
 
 
 .. js:function:: linkHtml(Object ref, [Map<String, String> attrs])
 
-    Возвращает `<a href="....">` HTML ссылку для переданных объектов,
-    которые могут иметь следующие типы:
+    Returns `<a href="....">` HTML link for transferred objects,
+    which may have the following forms:
 
-    * java.lang.String - в этом случае это может быть :term:`псевдоним страницы`
-      или :term:`GUID страницы`.
-    * :ref:`com.softmotions.ncms.mhttl.Tree` - объект.
-    * :ref:`com.softmotions.ncms.mhttl.RichRef` - объект.
+    * java.lang.String - here it can be :term:`page alias`
+      or :term:`page GUID`.
+    * :ref:`com.softmotions.ncms.mhttl.Tree` - object.
+    * :ref:`com.softmotions.ncms.mhttl.RichRef` - object.
 
 
-    **Пример:**
-    Ссылка на страницу с GUID: `12d5c7a0c3167d3d21d30f1c43368b32` и классом `active` ::
+    **Example:**
+    Link to the page having GUID: `12d5c7a0c3167d3d21d30f1c43368b32` and class `active` ::
 
         $!{linkHtml('12d5c7a0c3167d3d21d30f1c43368b32', ['class':'active'])}
 
-    В результате:
+    As a result:
 
     .. code-block:: html
 
         <a href="/siteroot/12d5c7a0c3167d3d21d30f1c43368b32"
            class='active'>
-            Название страницы
+           Page name
         </a>
 
-    :param Map<String, String> attrs: Опциональный параметр, позволяет задать
-        произвольные атрибуты для тега ссылки `<a>`.
-
+    :param Map<String, String> attrs: Optional parameter to set
+            arbitrary attributes for the link tag `<a>`.
     :rtype: java.lang.String
 
 
 .. js:function:: ogmeta([Map<String, String> params])
 
-    `Open Graph <http://ogp.me>`_ - метаинформация о текущей
-    странице. Более подробно в разделе: :ref:`ogmeta`.
+    `Open Graph <http://ogp.me>`_ - meta-information about a current
+    page. For more details refer to: :ref:`ogmeta`.
 
 
-Методы A/B тестирования
-***********************
+A/B testing
+***********
 
 .. js:function:: abt(String name[, boolean def])
 
-    Возвращает `true`, если в контексте
-    текущей страницы включен режим `A/B`
-    тестирования с именем `name`.
-
-    :param boolean def: Возвращаемое значение в том случае, если `A/B` режим
-                        не включен. По умолчанию `false`.
+    Returns `true`, if the `A/B` mode specified by the `name` argument is active
 
 .. js:function:: abtA()
 .. js:function:: abtB()
 .. js:function:: abtC()
 .. js:function:: abtD()
 
-    Возвращает `true`, если для текущей страницы включен режим `A/B` тестирования
-    с именем `A, B, C или D` в зависимости от имени метода.
+    Returns `true`, if the `A/B` mode corresponding to method name is enabled.
 
 
-
-Дополнительные методы (Advanced)
-********************************
+Additional methods (Advanced)
+*****************************
 
 .. js:function:: asmNavChilds([String type], [Number skip], [Number limit])
 
-    Возвращает коллекцию страниц, которые являются прямыми потомками в
-    :term:`дереве навигации <дерево навигации>`
-    для текущей страницы.
+    Returns a collection of pages that are direct descendants of the current page
+    within a :term:`navigation tree <navigation tree>`
 
-    :param String type: :term:`Тип страницы`
-    :param Number skip: Количество страниц, которые будут пропущены при выборке.
-    :param Number limit: Максимальное количество страниц в выборке.
+    :param String type: :term:`Page type`
+    :param Number skip: Number of pages which will be skipped while fetching.
+    :param Number limit: The maximum number of pages in the selection.
     :rtype: Collection<Asm>
 
 
 .. js:function:: asmPageQuery(PageCriteria critObj, [Number skip], [Number limit])
 
-    Выполняет свободный запрос страниц сайта. Спецификация запроса задается объектом
-    класса `com.softmotions.ncms.asm.PageCriteria`
+    Select a pages matched a quiery specified by `critObj` which is an instance
+    of `com.softmotions.ncms.asm.PageCriteria`
 
-    :param Number skip: Количество страниц, которые будут пропущены при выборке.
-    :param Number limit: Максимальное количество страниц в выборке.
+    :param Number skip: Number of pages which will be skipped while fetching.
+    :param Number limit: The maximum number of pages in the result set.
     :rtype: Collection<Asm>
-
 
 com.softmotions.ncms.mhttl .HttlUtilsMethods
 --------------------------------------------
 
-Разнообразные утилиты для использования в контексте
-:term:`HTTL` шаблонов.
+A number utility methods for use in the context of
+:term:`HTTL` templates.
 
 .. todo::
 
     TODO
-
