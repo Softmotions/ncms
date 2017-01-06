@@ -1,232 +1,210 @@
 .. _tracking_pixels:
 
-Пример использования трекинг пикселей
-=====================================
+Example of using tracking pixels (web beacon)
+=============================================
 
 .. contents::
 
+Main abilities of the system of tracking pixels control
+-------------------------------------------------------
 
-Основные возможности системы управления трекинг пикселями
----------------------------------------------------------
+* Support for a large set of TP sources (Tracking Pixel).
+* TP information is stored in the client `cookies` with a long time to live.
+* Ability to use references to hidden images or JS code snippets as a TP.
 
-* Поддержка большого множества источников ТП (Трекинг Пикселей).
-* Информация о ТП сохраняется в `cookies`  клиента с длительным временем жизни.
-* Возможность использовать в качестве ТП как ссылок на скрытые изображения, так и сниплетов JS кода.
+Demo-example
+------------
 
+Let's illustrate the abilities of tracking pixels on a simple example of a site
+and its interaction with an abstract advertising service ``globalboard``:
 
-Демонстрационный пример
------------------------
+To do this, create two pages of our website offering some products.
+The first ``welcome`` page is the main page and includes a link to
+the page ``product1`` containing the description of a product.
 
-Проиллюстрируем возможности трекинг пикселей на простом примере сайта
-и взаимодействия его с абстрактным рекламным сервисом ``globalboard``:
+Let the products offered by the website, are advertised at some ad service ``globalboard``.
+During the advertising company, customers registered in the ``globalboard``
+can open the main page of the site. Then with a certain probability
+interested customers can go to the page ``product1``.
+For the site owner and for ``globalboard`` service  it is a successful `conversion`
+- confirmation of the success navigation to our site.
+``Globalboard`` owners would like to know conversion details,
+including details of involved users.
 
-Для этого создадим две страницы условного сайта, предлагающего некоторые
-продукты. Первая ``welcome`` страница является главной страницей сайта
-и содержит ссылку на страницу ``product1`` с описанием некоторого продукта.
+The interaction described above can be implemented using the ηCMS tracking pixel (TP) module.
+On the technical side the following actions occur when users visit our website:
 
-Пусть продукты, предлагаемые данным сайтом, рекламируются на некотором условном сервисе
-объявлений ``globalboard``. В ходе рекламной компании зарегистрированные в ``globalboard`` клиенты
-могут попасть на главную страницу сайта и, с некоторой вероятностью,
-заинтересованные клиенты могут перейти на страницу ``product1``,
-что для владельца сайта и сервиса ``globalboard`` является успешной `конверсией`
-- подтверждением успешности рекламной пересылки на наш сайт. Владельцы ``globalboard``
-желают знать о таких конверсиях, в том числе, для какого пользователя она произошла.
+1. ``globalboard`` redirects the client to the ``welcome`` page of our website at
+   the following address: ``http: //mysite.com/welcome utm_source = global_board&client_id = 1332``.
+2. If a client has passed with a request parameter ``utm_source = global_board``, the website
+   stores this information including ``client_id = 1332``.
+3. Opening the page ``product1`` is a sign of a successful conversion.
+4. If the client came from a ``globalboard`` and moved to the page ``product1``,
+   the system creates a hidden link to the picture with the address ``http://globalboard.com/feedback user_id = 1332``,
+   informing ``globalboard`` about this event.
+5. So long as the event occurred, the appropriate pixel tracking, stored on our website,
+   is removed and repeating opening of the page ``product1`` by the client
+   don't create a repeated conversion event.
 
-Описанное выше взаимодействие можно реализовать с помощью трекинг пикселей (ТП).
-С технической стороны при посещении нашего сайта происходят следующие действия:
+Let us step by step simulate this situation on ηCMS.
 
-1. ``globalboard`` перенаправляет клиента на ``welcome`` страницу нашего сайта по
-   следующему адресу: ``http://mysite.com/welcome?utm_source=global_board&client_id=1332``.
-2. Если клиент перешел с параметром запроса ``utm_source=global_board``, наш сайт
-   запоминает эту информацию, в том числе, ``client_id=1332``.
-3. Открытие страницы ``product1`` является признаком успешной конверсии.
-4. Если клиент пришел из ``globalboard`` и перешел на страницу ``product1``,
-   создается скрытая ссылка на картинку с адресом ``http://globalboard.com/feedback?user_id=1332``,
-   информирующая ``globalboard``  о данном событии.
-5. Поскольку событие наступило, соответствующий этому событию и сохраненный на нашем сайте трекинг пиксель
-   удаляется, и повторные обращения этого клиента к странице ``product1`` не приведут к появлению
-   событий о конверсии.
+Create Welcome page
+*******************
 
-Давайте по шагам смоделируем эту ситуацию на ηCMS.
-
-Создаем страницу welcome
-************************
-
-Если ранее этого не было сделано, то в интерфейсе `Сборки` создаем :term:`новый шаблон <сборка>` с именем `base_content`
-для страниц, у которых в интерфейсе редактирования контента можно явно
-задать :term:`псевдоним страницы`, :term:`разметку <ядро>` и основной контент
-в формате :term:`mediawiki`:
-
+If it was not done before, in the `assemblies UI <amgr>`
+create a new :term:`template <template>` called `base_content` with the ability to explicitly
+set :term:`page alias`, :term:`markup <core>` and the main content in the :term:`mediawiki` format:
 
 .. figure:: img/tp_img1.png
     :align: center
 
-    Конфигурация базового типа страниц  `base_content`  в итерфейсе `Сборки`
+    The configuration of the `base content` template in the `Assemblies` interface
 
 
-Далее в интерфейсе редактирования содержимого страниц (`Страницы`)
-создаем страницу ``welcome`` на базе сбоки `base_content`.
+Further, using the `pages UI <pmgr>` we create a `welcome``
+page based on the `base_content` template.
 
-Нажимаем кнопку `Файл` и в контексте данной страницы создаем :term:`HTTL` разметку:
+Click the button `File` to create a page's :term:`HTTL` markup:
 
 .. figure:: img/tp_img4.png
     :align: center
 
-Создаем файл `core.httl` в приватной зоне страницы:
+Create the file `core.http` as local page file:
 
 .. figure:: img/tp_img5.png
     :align: center
 
-Запускаем редактор `core.httl`:    
-
+Open the editor for `core.httl`:
 
 .. figure:: img/tp_img6.png
     :align: center
 
-Разметка для `core.httl`  для ``welcome`` страницы выглядит следующим образом:  
-
+Markup of `core.httl` for the ``welcome`` page looks as follows:
 
 .. figure:: img/tp_img8.png
     :align: center
 
-    
 
-Создаем страницу product1
-*************************
+Create product1 page
+********************
 
-Аналогичным образом создаем страницу ``product1`` со
-следующей разметкой:
+Similarly, create a ``product1`` page with the following markup:
 
 .. figure:: img/tp_img7.png
     :align: center
 
-    Разметка для `core.httl`  для ``product1`` страницы
+    `core.httl` markup for ``product1`` page
 
-В `core.httl`  для ``product1`` можно заметить вызов HTTL функции::
+In the `core.httl` for ``product1`` you can see the call of HTTP function::
 
     $!{trackingPixels('board1')}
 
-Вызов `trackingPixels` включает генерацию трекинг пикселов в виде ссылок на изображения или JS
-скриптов для сервиса `board1`, который мы определим ниже. Заметим, что в качестве аргумента для `trackingPixels`
-можно передавать :term:`glob шаблон` для подключаемых сервисов, а также дополнительные
-параметры генерации ТП ссылок. Например, для включения ТП ссылок всех
-известных сервисов можно использовать::
+Calling `trackingPixels` will cause generation of tracking pixels as hidden image links
+or scripts calling the service `board1` (it will be defined below).
+Note: you can pass a :term:`glob pattern <glob>` as a first argument for `trackingPixels`
+to select services, as well as additional parameters to tune generation of TP links.
+For example, to enable TP links to all known services you can use::
 
-      $!{trackingPixels('*')} или просто $!{trackingPixels()}
+      $!{trackingPixels('*')} или $!{trackingPixels()}
 
-Для вставки дополнительной информации в адрес ТП ссылки используем следующую форму::
+To insert extra parameters to the TP links use the following form::
 
      $!{trackingPixels('board1', ['action':'show'])}
 
-     Тогда для шаблона ссылки содержащего {action} placeholder
-     будет подставлено значение show:
+     Then for the link template containing {action} placeholder
+     the value will be substituted by show:
 
-     Шаблон:    http://globalboard.com/feedback?user_id={user_id}&action={action}
-     Результат: http://globalboard.com/feedback?user_id=1332&action=show
+     Template:    http://globalboard.com/feedback?user_id={user_id}&action={action}
+     Result: http://globalboard.com/feedback?user_id=1332&action=show
 
-
-Связываем welcome и product1
+Linking welcome and product1
 ****************************
 
-Другими словами, определяем в :term:`mediawiki` разметке
-страницы ``welcome`` ссылку на страницу  ``product1``.
-
+In other words, we define in the :term:`mediawiki` markup
+of the ``welcome`` page the link to the ``product1`` page.
 
 .. figure:: img/tp_img9.png
     :align: center
 
-    В ``welcome`` создаем ссылку на ``product1``
+    In ``welcome`` we create a reference to ``product1``
 
 .. figure:: img/tp_img10.png
     :align: center
 
-    В ``welcome`` создаем ссылку на ``product1``
-
+    In ``welcome`` create a reference to ``product1``
 
 .. figure:: img/tp_img11.png
     :align: center
 
-    Страница ``welcome`` со ссылкой на ``product1``
+    ``Welcome`` page with a reference to ``product1``
 
-Включаем отслеживание трекинг пикселей для всех страниц сайта
-*************************************************************
+Enable pixel tracking for all pages of the site
+***********************************************
 
-Переходим в рабочую зону `Трафик` и создаем новое правило с именем `all`
-для всех страниц сайта.
-
-.. note::
-
-     Отслеживание трекинг пикселей занимает некоторые ресурсы процессора сервера
-     во время показа страниц сайта. Дополнительная нагрузка очень небольшая,
-     но она есть. Поэтому для включения трекинг пикселей в интерфейсе `Трафик` необходимо
-     создать правило для страниц или разделов сайта, где действительно
-     необходима функциональность трекинг пикселей.
-
-	 
-Выбираем из набора действий действие с именем `Отслеживать источники трафика`
-и отмечаем галку `Активировать трекинг пиксели`:
+Go to the `Traffic` admin UI and create a new rule with the name `all`
+for all pages of the site. Then choose the action called `Track traffic sources`
+and activate it by the checkbox `Activate tracking pixels`:
 
 .. figure:: img/tp_img13.png
     :align: center
 
-В результате имеем следующий вид конфигурации правила `all` для всех публичных страниц сайта:    
+As a result we have the following view of the configuration of the rule `all`
+for all public pages of the site:
 
 .. figure:: img/tp_img14.png
     :align: center
 
+.. note::
 
+    Tracking pixels processing takes some server resources while showing pages.
+    Therefore, to enable the tracking pixels it is required to explicitly create
+    a rule matching the pages for which the tracking pixels is required.
 
-Определяем конфигурацию трекинг пикселей для сервиса globalboard
-****************************************************************
+Determine the tracking pixel configuration for the globalboard service
+**********************************************************************
 
-Переходим в раздел `Трекинг пиксели`:
+Go to the `Tracking pixels` section:
 
 .. figure:: img/tp_img15.png
     :align: center
 
-
-Добавляем новый трекинг пиксел `board1` со следующими своствами:
+Add a new tracking pixel `board1` having the following properties:
 
 .. figure:: img/tp_img16.png
     :align: center
 
-    Конфигурация трекинг пикселя `board1`
+    The configuration of the tracking pixel `board1`
 
 
-*  `utm_source=global_board` -- это шаблон параметров запроса, на основе
-   которого определяется источник перехода клиента. Он может содержать
-   несколько параметров и :term:`glob` шаблоны значений параметров.
-   Например::
+* `utm_source = global_board` -- a template of HTTP GET query parameters to detect source of
+  client's conversion. It may contain parameters and :term:`glob` parameters templates.
+  For example::
 
     utm_source={abc\,def},foo=bar
 
-   означает, что для запросов с `utm_source=abc` или `utm_source=def` и
-   значением параметра `foo=bar` трекинг пиксель будет сохранен и
-   может быть в дальнейшем использован. В перечислении возможных
-   вариантов параметра фигурных скобках необходимо экранировать
-   запятую с помошью обратного слеша `\\`.
+  means that for requests with `utm_source = abc` or `utm_source = def` and
+  the parameter value `foo = bar`, the tracking pixel will be saved and
+  may be further used. In the options list within the curly braces the `comma(,)`
+  must be escaped with the backslash '\\'.
 
-* В поле `Сохраняемые параметры` указываются дополнительные
-  GET параметры запроса, которые будут сохранены и в дальнейшем
-  использованы для генерации URL пикселя или скрипта. Типичный
-  пример использования это идентификатор клиента, в сервисе для
-  которого определен трекинг пиксель.
+* Additional GET request parameters are stored in the field `Stored parameters`.
+  Parameters will be saved for the future use to generate pixel URL or script.
+  Typical example of this is a remote service customer identifier.
 
-* `Шаблон URL для трекинг пикселя` определяет формат адреса пикселя
-  и сохраненные параметры запроса (`Сохраняемые параметры`),
-  которые будут включены в адрес пикселя.
-  В этот шаблон могут быть включены дополнительные параметры,
-  переданные в HTTL метод: `$!{trackingPixels(...)}`.
+* `URL template for pixels tracking` defines the format of pixel address
+  and parameters of the query to be saved which can be included
+  to the callback pixel address. Also in this template you can include
+  additional parameters sent to HTTL method: `$!{trackingPixels(...)}`.
 
-Тестирование работы трекинг пикселей
-************************************
+Testing the tracking pixels
+***************************
 
-Все готово для того, чтобы трекинг пиксели для ``globalboard`` заработали.
+Now everything is ready to start working of tracking pixels for ``globalboard``.
 
-Для этого перейдем на страницу ``welcome`` с дополнительными GET параметрами,
-эмулирующими обращение из сервиса ``globalboard``.
+To do this, go to the ``welcome`` page with additional GET parameters,
+emulating a call of the ``globalboard`` service.
 
-Следующие параметры определены:
+The following parameters are defined:
 
 * utm_source=global_board
 * user_id=1332
@@ -234,19 +212,20 @@
 .. figure:: img/tp_img18.png
     :align: center
 
-    Переход на ``welcome`` из ``globalboard``
+    Go to ``welcome`` from ``globalboard``
 
-При нажатии на ссылку `product1` пользователь переходит на
-страницу с описанием продукта, в контексте которой генерируются
-скрытые URL трекинг пикселя, оповещающие сервис ``globalboard``
-о конверсии:
+By clicking the link `product1` user navigates to the
+page containing the description of the product,
+where in the context of the page placed the hidden URL to notify the service ``globalboard``
+on a conversion:
 
 .. code-block:: html
 
     <html>
       <body>
         <h1>Page for product 1</h1>
-        <!-- product descripton here -->
+        <!-- product description here -->
         <img style="display:none;" width="0" height="0" src="http://globalboard.com/feedback?user_id=1332"/>
       </body>
     </html>
+
