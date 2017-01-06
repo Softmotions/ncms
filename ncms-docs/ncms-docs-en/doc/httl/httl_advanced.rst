@@ -1,16 +1,15 @@
 .. _httl_advanced:
 
-Дополнительные возможности HTTL
-===============================
+Advanced HTTL
+=============
 
+Using HTTL in CSS
+-----------------
 
-Использование HTTL в CSS
-------------------------
+Sometimes it's required to include a request dependent conditional logic into CSS.
+This can be done as shown below:
 
-Иногда возникает необходимость включать в CSS условную логику в зависимости от контекста запроса.
-Это можно сделать так, как показано в следующем примере.
-
-HTTL шаблон:
+HTTL template:
 
 .. code-block:: html
 
@@ -22,11 +21,11 @@ HTTL шаблон:
     ...
     </html>
 
-Здесь css ресурс вызывается с параметром запроса `?style=black`, который обрабатывается при
-генерации файла `site.httl.css` как шаблона.
+There css resource is called with a query parameter `?style = black`, which is processed while
+generating the file `site.httl.css` as a template.
 
 
-Файл `css/site.httl.css`:
+`css/site.httl.css` file:
 
 .. code-block:: css
 
@@ -38,29 +37,25 @@ HTTL шаблон:
         #end
     }
 
-Здесь используется условное выражение HTTL `#if` и ηCMS метод проверки значения параметра запроса `ifRequestParameter`.
-Для того, чтобы `css` файл был обработан как шаблон, необходимо указать его расширение как `.httl.css`.
+Here is a conditional HTTL directive `#if` and ηCMS method to check the value
+of the request parameter: `ifRequestParameter`. To provide the `css` file
+to be processed as a template, specify its extension as `.httl.css`.
 
-.. note::
-
-    Для правильного просессинга `*.httl.css`, включаемых из html, в ηCMS
-    должен быть корректно определен `mainpage` атрибут главной страницы,
-    соответствующей запросу.
 
 .. warning::
 
-    Использование такого метода включения динамической логики в `css` не является
-    рекомендуемым способом условной стилизации страниц. Во-первых, становится невозможным использование
-    сжатых css файлов, во-вторых, разметка css становится смешанной с HTTL и более сложной.
-    Более простым и, возможно, более подходящим методом будет использование разных `css` файлов для разных стилей страниц
-    и их условное включение в страницы.
-
-
+     Usage dynamic logic inside `css` is not a recommended way
+     of conditional stylization of pages. Firstly, it is impossible
+     to use compressed css files, and secondly, css markup
+     becomes mixed with HTTL and therefore it will be more complex.
+     A simpler and perhaps more appropriate method would be the usage
+     of different `css` files for different page styles
+     and their conditional inclusion to the pages.
 
 .. _httl_inheritance:
 
-Наследование HTTL шаблонов
---------------------------
+Inheritance of HTTL patterns
+----------------------------
 
 .. todo::
 
