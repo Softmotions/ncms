@@ -35,13 +35,12 @@ The interaction described above can be implemented using the ηCMS tracking pixe
 On the technical side the following actions occur when users visit our website:
 
 1. ``globalboard`` redirects the client to the ``welcome`` page of our website at
-   the following address: ``http: //mysite.com/welcome utm_source = global_board&client_id = 1332``.
+   the following address: ``http: //mysite.com/welcome utm_source = global_board&client_id = 1332``.
 2. If a client has passed with a request parameter ``utm_source = global_board``, the website
-   stores this information including ``client_id = 1332``.
+   stores this information including ``client_id = 1332``.
 3. Opening the page ``product1`` is a sign of a successful conversion.
 4. If the client came from a ``globalboard`` and moved to the page ``product1``,
-   the system creates a hidden link to the picture with the address ``http://globalboard.com/feedback user_id = 1332``,
-   informing ``globalboard`` about this event.
+   the system creates a hidden link to the picture with the address ``http://globalboard.com/feedback user_id = 1332``, informing ``globalboard`` about this event.
 5. So long as the event occurred, the appropriate pixel tracking, stored on our website,
    is removed and repeating opening of the page ``product1`` by the client
    don't create a repeated conversion event.
@@ -178,13 +177,13 @@ Add a new tracking pixel `board1` having the following properties:
 
 * `utm_source = global_board` -- a template of HTTP GET query parameters to detect source of
   client's conversion. It may contain parameters and :term:`glob` parameters templates.
-  For example::
+  For example::
 
     utm_source={abc\,def},foo=bar
 
   means that for requests with `utm_source = abc` or `utm_source = def` and
-  the parameter value `foo = bar`, the tracking pixel will be saved and
-  may be further used. In the options list within the curly braces the `comma(,)`
+  the parameter value `foo = bar`, the tracking pixel will be saved and
+  may be further used. In the options list within the curly braces the `comma(,)`
   must be escaped with the backslash '\\'.
 
 * Additional GET request parameters are stored in the field `Stored parameters`.
