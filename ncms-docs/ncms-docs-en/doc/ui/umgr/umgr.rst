@@ -1,69 +1,63 @@
 .. _umgr:
 
-Управление пользователями
-=========================
+User Management
+===============
 
-Доступ к панели управления пользователями
-имеют пользователи с правами доступа `admin` или `admin.users`.
+This UI is accessible to users having `admin` or `admin.users` roles.
 
-Интерфейс управления пользователями
------------------------------------
+User management interface
+-------------------------
 
 .. figure:: img/umgr_img1.png
 
-    Редактирование пользователя/смена пароля
+    User management
 
 .. figure:: img/umgr_img2.png
 
-    Распределение прав доступа для пользователей
+    Set of user's roles
 
-Конфигурация
-------------
+Configuration
+-------------
 
-По умолчанию в ηCMS используется база данных пользователей, хранящая данные в XML файле.
+By default ηCMS maintains a user database in an XML file.
 
 .. note::
 
-    ηCMS позволяет подключать любую другую базу данных пользователей, реализующую
-    интерфейс `com.softmotions.web.security.WSUserDatabase`.
+    ηCMS can use any user database which implements the
+    `com.softmotions.web.security.WSUserDatabase` interface.
 
-Используются следующие параметры конфигурации базы данных
-пользователей:
+The following user database configuration parameters are used:
 
 .. code-block:: xml
 
     <security>
-        <!-- Расположение базы данных пользователей ηCMS в XML файле.
-             placeTo: Опционально. Расположение, в которое будет скопирована
-                      база данных пользователей, для последующего редактирования
-                      через интерфейс управления пользователями ηCMS -->
+        <!-- Location of the ηCMS user database in an XML file.
+             placeTo: Optional location to which the initial user database file will be copied
+                       from its original location. -->
         <xml-user-database placeTo="{home}/.myapp/mayapp-users.xml">
-            <!-- Начальный путь в classpath для read-only
-                 базы данных пользователей ηCMS.
-                 Если указан атрибут placeTo,
-                 то база данных будет скопирована в место указанное placeTo
-                 в том случае если файл отсутствовал -->
+             <!-- The classpath of the read-only ηCMS user database resource file.
+                  If the placeTo attribute is defined, the database file
+                  will be initially copied to the specified location -->
             conf/mayapp-users.xml
         </xml-user-database>
-        <!-- Алгоритм для генерации хешей для паролей в XML
-             базе данных пользователей ηCMS.
-             Возможные значения:
+        <!-- The algorithm for generating password hashes       
+             Possible values are:
                 - sha256
                 - bcrypt
-                - пустая строка или отсутствие элемента: пароли не шифруются
-         -->
+                - empty string or no element: passwords are not encrypted
+        -->
         <password-hash-algorithm>sha256</password-hash-algorithm>
         ...
     </security>
 
-Данные в пользовательской XML базе
-----------------------------------
+Users database sample data
+--------------------------
 
 .. code-block:: xml
 
     <?xml version="1.0" encoding="UTF-8" standalone="no"?>
     <database>
-        <!-- Список прав доступа (ролей) -->
+        <!-- List of available user roles -->
         <role description="Superuser"
               name="admin"/>
         <role description="User"
@@ -79,7 +73,7 @@
         <role description="Transfer tools"
               name="mtt"/>
 
-        <!-- Группы ролей, которые можно назначить пользователям -->
+        <!-- Role groups to be assigned to users ->
         <group description="Superusers"
                name="admins"
                roles="admin,admin.asm,admin.users,
@@ -90,8 +84,8 @@
                roles="user">
         </group>
 
-        <!-- Пользователи -->
-        <user email="ncms@example.com"
+        <!-- Users -->
+        <user email="ncms@ncms.one"
               fullName="John Doe"
               groups="admins"
               name="admin"
@@ -103,4 +97,3 @@
               name="adam"
               password="{sha256}169cc9f549cc322c8f208baee2 ..."/>
     </database>
-
