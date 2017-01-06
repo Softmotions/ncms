@@ -3,11 +3,9 @@
 Traffic management
 ==================
 
-Management console for incoming site traffic rules (MTT - marketing transfer tools) allows
-you to selectively define a set of actions for the incoming requests to the ηCMS sites.
-In particular, the mechanisms of `MTT` allow making the marketing split (A/B testing)
-of website users.
-
+Management console for rules handle an incoming site traffic (MTT - marketing transfer tools)
+It allows to selectively define a set of actions for the incoming requests to the ηCMS sites.
+For example `MTT` allows making the marketing split (A/B testing) on website users.
 
 .. toctree::
     :maxdepth: 1
