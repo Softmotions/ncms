@@ -40,7 +40,7 @@ it will be home page :term:`core <core>` of `foo.example.com`
 .. figure:: img/screen4.png
     :align: center
 
-     File `abtest_core.htt` in the `media management UI <mmgr>`
+    File `abtest_core.htt` in the `media management UI <mmgr>`
 
 The following three assembly :term:`attributes <attribute>`: `title`, `imageA`, `imageB` are
 included to the `html` markup. Here the `abt` httl function is used to determine
@@ -74,7 +74,7 @@ this page is the `foo.example.com` home page:
 .. figure:: img/screen12.png
     :align: center
 
-   Home page for `foo.example.com` domain
+    Home page for `foo.example.com` domain
 
 At this stage, the creation of the site is completed.
 While opening the website in the page preview, we see dolphins and shark simultaneously,
