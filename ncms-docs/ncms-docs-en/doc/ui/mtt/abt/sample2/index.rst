@@ -1,27 +1,27 @@
 .. _abt_sample2:
 
-Пример A/B тестирования через наследование страниц
-==================================================
+Example of A/B testing through pages inheritance
+================================================
 
-:ref:`В рассмотренном примере A/B тестирования <abt_sample1>` есть
-существенный недостаток: в том случае, если для каждого `A/B` варианта
-меняются сразу несколько атрибутов и вариантов больше двух, в `сборке` приходится
-зарегистрировать сразу несколько вариантов одних и тех же атрибутов. Это неудобно.
+There is a significant drawback :ref:`in the previous A/B testing example <abt_sample1>`:
+if the number of `A/B` modes is more than two, we need to defined attributes
+specific for every `A/B` mode, it leads to a big set of similar attributes
+and can be very heavy and awkward.
 
-Реализовать варианты `A/B` тестирования можно через наследование страниц.
-Для любого из `A/B` вариантов создается базовая страница, страницы для других
-вариантов наследуются от базовой.
+More convenient way is to implement `A/B` testing through page inheritance.
+Create a base page for particular `A/B` mode and other `A/B` modes can be implemented
+within a pages which are inherited from a base page.
 
 .. figure:: img/screen1.png
 
-    Структура наследования страниц для `A/B/C` тестирования
+    Pages inheritance for `A/B/C` testing
 
-Продемонстрируем этот пример более подробно.
+Let's demonstrate this example in more detail.
 
-Создание базовой страницы
+Creating a base page
 -------------------------
 
-Разметка базовой страницы:
+Base page markup:
 
 .. code-block:: html
 
@@ -39,54 +39,42 @@
 
 .. figure:: img/screen2.png
 
-    Структура базовой страницы в режиме редактирования
+    Base page in the edit mode
 
-Создание дочерних страниц
--------------------------
+Creating child pages
+--------------------
 
-Создадим две страницы для вариантов `B` и `C` и в качестве родительской страницы укажем
-базовую для варианта `A`.
+Create two pages for modes `\B` and `\C` and specify the base page for the mode `\A`
+as the parent page for them.
 
-* Правой кнопкой мыши `Создать`:
+* Right-click `Create`:
 
 .. image:: img/screen3.png
 
 
-* Запускаем диалог выбора шаблона страницы:
+* Open the dialog to select a page template:
 
 .. image:: img/screen4.png
 
 
-* Выбираем вкладку `Структура` и родительскую страницу `(A) foo.example.com`:
+* Select the tab `Structure` and the parent page `(A) foo.example.com`:
 
 .. image:: img/screen5.png
 
-* Меняем в дочерней странице контент в соответствии с вариантом `B`. Заголовок `title` и
-  два изображения.
+* Change the page content in the child page in accordance with an mode `\B`. Title is `title` and two images.
 
-Аналогично поступаем с вариантом `С`.
+Similarly we proceed with the mode `\C`.
 
-Такой подход к созданию разных вариантов страниц при `A/B` тестировании,
-существенно гибче использования разных атрибутов для каждого варианта и
-он очень прост в реализации для относительно сложных изменений в каждом варианте.
+This approach to create different variants of pages for `A/B` modes,
+is significantly more flexible then the use of different attributes for each option and
+it is very simple to be implemented for relatively complex changes in every variant.
 
+Setting MTT rules for pages
+---------------------------
 
-Настройка MTT правил для страниц
---------------------------------
-
-Пусть требуется равновероятно распределить переходы между страницами A, B, C.
-Тогда конфигурация правил роутинга может быть такой:
+Let that the probabilities of A,B,C mode selection are equal.
+Then routing rules can be configured as follows:
 
 .. figure:: img/screen8.png
 
-    Пример равновероятного распределения трафика между вариантами страниц A, B, C
-
-
-
-
-
-
-
-
-
-
+    Equal probabilities for A, B, C modes
