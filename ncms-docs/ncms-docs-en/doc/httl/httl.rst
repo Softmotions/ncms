@@ -1,12 +1,11 @@
 .. _httl:
 
-Разметка HTTL
-=============
+HTTL markup
+===========
 
-Для генерации динамического контента ηCMS применяется
-шаблонный движок HTTL `<http://httl.github.io>`_.
-HTTL был разработан и используется в популярном сервисе продаж товаров http://alibaba.com.
-
+In order to generate a dynamic HTML content
+ηCMS uses the HTTL template engine `<http://httl.github.io>` _.
+HTTL was created by the http://alibaba.com e-commerce company.
 
 .. toctree::
     :maxdepth: 1

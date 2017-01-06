@@ -2,13 +2,13 @@
 
 .. contents::
 
-Основы HTTL
+Basics HTTL
 ===========
 
-HTTL - это язык шаблонов, подобный `Apache Velocity <http://velocity.apache.org>`_,  который
-компилируется в быстрый, исполняемый байт код.
+HTTL is a template language similar to `Apache Velocity <http://velocity.apache.org>`_,
+that compiled to an optimized byte code. ηCMS uses the patched httl engine located at https://github.com/Softmotions/httl
 
-Пример HTTL кода:
+Example of HTTL code:
 
 .. code-block:: html
 
@@ -18,212 +18,211 @@ HTTL - это язык шаблонов, подобный `Apache Velocity <http
         #end
     #end
 
-По умолчанию в HTTL включены 6 директив: `#set, #if, #else, #for, #break, #macro`.
+By default HTTL includes 6 directives: `#set, #if, #else, #for, #break, #macro`.
 
-Наличие базовых знаний языка `java` существенно облегчит понимание синтаксиса и конструкций HTTL.
+Basic knowledge of the `java` language greatly improves
+understanding the meaning of HTTL constructions.
 
+Output of HTTL statement
+------------------------
 
-Вывод результата выражений HTTL
--------------------------------
-
-Формат::
+Format::
 
     ${expression}
 
-Пример::
+Example::
 
     ${user.name}
 
-В данном случае результат выражений преобразуется в html код страницы так, чтобы он не был валидной `html` разметкой. Например
-`<b>text</b>` как результат выражения преобразуется в `&lt;b&gt;text&lt;/b&gt;` .
-Для того, чтобы отключить это преобразование используется конструкция `$!`::
+In this sample, the result of expression `user.name` printed, but this string
+is escaped to not be a valid `html` markup. For example the result of the expression: `<b>text</ b>`
+converted to `&lt;b&gt;text&lt;/b&gt;`. To disable escaping use `$!` before expression curly brace::
 
   $!{expression}
 
-В этом случае разработчик шаблона должен быть уверен, что результат выражения `$!{expression}` не вызовет проблем с безопасностью
-при отображении страницы.
+But in this case, the developer should be sure that the result of the `$!{expression}`
+will not cause security or layout problems inside html markup.
 
-Если результат выражения равен `null`, то HTTL выведет пустую строку::
+If the result of the expression is `null`, an empty string will be displayed::
 
     #set(String a = null)
     "${a}" == ""
 
-Выведет: `"" == ""`
+    Displays: `"" == ""`
 
+Comments in HTTL
+----------------
 
-Комментарии в HTTL
-------------------
+Inline comments are marked by `##` in the beginning of a line ::
 
-Строчные комментарии помечаюся как `##` в начале строки::
+    ## It's a comment
 
-    ## Это комментарий
-
-Блочные коментарии начинаются с `#*` и заканчиваются `*#`::
+Block comments start with `#*` and end with `*#`::
 
     #*
-        Это
-            блочный комментарий в HTTL
+        It's
+            a block comment in HTTL
     *#
 
 
-Escape директивы
-----------------
+Escape directives
+-----------------
 
-Escape директива #[...]#
+Escape directive #[...]#
 ************************
 
-Формат::
+Format::
 
-    #[этот блок не HTTL]#
+    #[this block is not HTTL]#
 
-Пример::
+Example::
 
    #[This is no parse block: #if ${name}]#
 
 
-Escape $ и # символов
-*********************
+Escaping $ and # chars
+**********************
 
-Формат::
+Format::
 
     \#
     \$
     \\
 
-Символ ``\`` перед ``#``, ``$``, ``\`` выводит эти символы как есть,
-исключая их из HTTL разметки.
+The symbol ``\`` before ``#``, ``$``, ``\`` displays these characters 'as is',
+excluding them from HTTL markup.
 
-Выражения
----------
+Expressions
+-----------
 
 .. note::
 
-    Выражения основаны на выражениях языка `Java`, поэтому ниже будут перечислены
-    только отличия от правил выражений в `Java`.
+    All httl expressions are based on the Java language expressions, therefore below we list only
+    differences from standard Java expressions.
 
-* Если в цепочке вызовов ``${foo.bar.blabla}`` один из элементов вернет `null`,
-  то все выражение будет интерпретировано как `null`, а при выводе преобразовано в пустую строку.
-* Оператор `==` соответствует сравнению `java` объектов с помощью `.equals`. Иными словами,
-  `foo == bar` эквивалентно `foo.equals(bar)`  в `java`.
-* Выражение в одинарных `'` или двойных кавычках `"` интерпретируется как строка.
-  Если есть необходимость использовать одиночный символ (типа `char`) то мы его
-  заключаем в обратные кавычки `\`\``.
-* `+` в выражениях, где первый аргумент число, будет интерпретироваться как
-   арифметическое сложение. Например: `${1 + "2"}` выведет `3` вместо 12. Для
-   конканценации строк используйте пару: `${s1}${s2}`.
-* Доступ к значениям свойств экземпляров `java` классов осуществляется по имени свойств
-  Например, `${user.name}` эквивалентно вызову `${user.getName()}`.
-* Результат выражения с логическим `OR` является последним ненулевым/непустым элементом выражения.
-  Например, результатом выражения `${list1 || list2}`  будет `list1`,  если `list1` не пуст,
-  в противном случае результатом будет `list2`.
-* Числовые long литералы могут быть заданы как `<number>L` или `<number>l`.
-  Например, `3L` или `3l`. В случае, если используется `L`, результатом будет
-  объект класса `java.lang.Long`, а для маленького `l` результатом будет примитивный `long`.
-* Для доступа к данным в списках `java.util.List` или в ассоциированных коллекциях
-  `java.util.Map` можно использовать оператор квадратные скобки `[]`.  Например,
-  выражение `${mylist[0]}` эквивалентно `${mylist.get(0)}`, а `${mymap['foo']}`
-  эквивалентно `${mymap.get("foo")}`.
-* Результатом выражения `${["a", "b", "c"]}` является `java.util.List` содержащий эти элементы::
+* If any item in a chain of calls ``${foo.bar.blabla}`` returns `null`,
+  the full expression is interpreted as `null`, and output will be an empty string.
+* The `==` operator is equal to a comparison of `java` objects via `.equals`. In other words,
+  `foo == bar` is equal to `foo.equals(bar)` in `java`.
+* An expression in single `\'` or double quotes `\"` is interpreted as a string.
+  To use a single character (like `char`) conclude it to back quotes `\`\``.
+* `\+` in expressions where the first argument is the number is interpreted as
+  arithmetic addition. For example: `${1 + "2"}` displays `3` not 12.
+  For string concatenation use a pair of: `${s1}${s2}`.
+* Access to a property values of the `java` classes instances is carried out by a property name.
+  For example, `${user.name}` is equivalent to calling `${user.getName()}`.
+* The result of expression with logical 'OR' is the last nonzero/nonempty element of expression.
+  For example, result of expression `${list1 || list2}` is `list1` while `list1` isn't empty,
+  otherwise the result is `list2`.
+* Numeric long literals can be specified as `<number>L` or `<number>l`.
+  For example, `3L` or `3l`. If used `\L`, the result is  `java.lang.Long` object,
+  and for a small `\l` the result is a primitive `long`.
+* To access the data in the `java.util.List` lists or in `Java.util.Map` associated collections
+  use the square brackets `[]` operator.
+  For example, the expression `${mylist[0]}` is equals to `${mylist.get(0)}` and `${mymap['foo']}`
+  is an equivalent of `${mymap.get("foo")}`.
+* The result of the `${["a", "b", "c"]}` expression is `java.util.List` containing these elements::
 
     #for(color: ["red","yellow","blue"])
         ${color}
     #end
 
-* Результатом выражения: `${["foo":"bar", "foo2":"bar2"]}` является `java.util.Map` с отношениями
+* The result of the expression: `${["foo":"bar", "foo2":"bar2"]}` is a `java.util.Map` with relationships
   `foo => bar` и `foo2 => bar2`::
 
     #for(entry: ["red":"# FF0000","yellow":"# 00FF00"])
         ${entry.key} = ${entry.value}
     #end
 
-* Прямое обращение к статическим методам при помощи префикса `@`::
+* Direct access to static methods using the prefix `\@`::
 
     ${@java.lang.Math.min(1,2)}
     ${@Math.min(1,2)}
 
-Дополнительно отметим поддержку `instanceof` и `new` операторов::
+Additionally, `instanceof` and `new` operators are supported::
 
     ${user instanceof httl.test.model.User}
     ${user instanceof User}
     ${new httl.test.model.User("a","b","c").name}
     ${new User("a","b","c").name}
 
-Вы можете использовать оператор приведения типов `()` в выражениях::
+You can use a type cast operator `()` in expressions::
 
     <img src="$!{((Image) asm('imageA')).link}"></img>
 
-Это приведение результата вызова метода `asm` к экземпляру класса `Image` и вызов у него
-`java` метода `.getLink()`
+This is a result of the `asm` method calling to an instance of the class `Image` and calling its
+`Java` method `.getLink()`
 
-Установка переменных #set
--------------------------
+Setting Variables #set
+----------------------
 
-Формат::
+Format::
 
     #set(type name)
     #set(name = expression)
     #set(type name = expression)
 
-Где `name` - это имя переменной, а `type` - java тип переменной
+Where `name` - variable name, and `type` - java variable type
 
 
-Пример::
+Example::
 
     #set(firstName = "John")
     #set(String lastName = "Doe")
 
-В этом примере переменная с именем  `firstName` должны быть определена выше по шаблону::
+
+	Here is a variable called `firstName` which is to be specified in the same template above the sample::
 
     #set(String firstName)
 
 
-Условные выражения #if и #else
-------------------------------
+Conditional expressions #if и #else
+-----------------------------------
 
-Формат::
+Format::
 
     #if(expression)
     ...
     #end
 
-Пример::
+Example::
 
     #if(user.role == "admin")
         ...
     #else(user.role =="member")
-        ... в противном случае если роль равна 'member'
+            ... otherwise, if the role is 'member'
     #else
-        ... если ни то и ни другое, тогда выполняется этот блок
+        ... otherwise this block will be executed
     #end
 
-Каждый `#if` должен завершаться `#end` после набора опциональных `#else` директив.
+Every `#if` operator is to be completed by the `#end`
+operator placed after a set of optional `#else` directives.
 
-Обработка условного выражения
-*****************************
+Processing of a conditional expression
+**************************************
 
-* Для не-Boolean результата эквивалентом истины(true) является:
-    * число, отличное от нуля
-    * непустая строка
-    * непустая коллекция
-    * объект, который не `null`
+* For any non-Boolean expression the following values are equivalents to the truth (true):
+     * A number other than zero
+     * Non-empty string
+     * Non-empty collection
+     * Object that is not `null`
 
-* `#if(expression)` эквивалентно `#if(expression != null && expression != false && expression != "")`
-* `#if(object)` эквивалентно `#if(object != null)`
-* `#if(string)` эквивалентно `#if(string != null && string != "")`
-* `#if(collection)` эквивалентно `#if(collection != null && collection.size > 0)`
+* `#if(expression)` is equal to `#if(expression != null && expression != false && expression != "")`
+* `#if(object)` is equal to `#if(object != null)`
+* `#if(string)` is equal to `#if(string != null && string != "")`
+* `#if(collection)` is equal to `#if(collection != null && collection.size > 0)`
 
 
+Iterate through the collection #for
+-----------------------------------
 
-Итерация по коллекциям #for
----------------------------
-
-Формат::
+Format::
 
     #for(name: expression)
 
     #for(type name: expression)
 
-Пример::
+Example::
 
     #for(books: books)
         ${for.index}
@@ -232,113 +231,112 @@ Escape $ и # символов
         ${for.last}
     #end
 
-В теле блока `for` определен объект `for` со следующими свойствами:
+In the body of the `for` block there is a `for` object with the following permissions:
 
-* `for.index` - текущий номер итерации, начиная с ``0``
-* `for.size` - размер коллекции по которой происходит итерация
-* `for.fist` - первый элемент коллекции
-* `for.last` - последний элемент коллекции
+* `for.index` - the current iteration number, starting with ``0``
+* `for.size` - size of the collection where the iteration is used
+* `for.fist` - the first item of the collection
+* `for.last` - the last item in the collection
 
 
-Явное определение типа элемента коллекции::
+Casting elements of the collection::
 
     #for(Book book: booklist)
         ${book.title}
     #end
 
-В данном примере явно определяем тип элемента коллекции, к которому приводится
-каждый элемент.
+In this example, there is an explicit identification of the type of item in the collection.
+Every item will casted to the specified type: `Book`.
 
-Выполнить девять раз::
+Run nine times ::
 
     #for(9)
 
-Вывести от одного до девяти::
+Output from one to nine ::
 
     #for(i: 1..9)
 
-Вывести ``10, 20, 30``, где аргумент определен как массив `[]`::
+Output ``10, 20, 30``, where the argument is defined as an array `[]` ::
 
     #for(i: [10, 20, 30])
 
-Взять для итерации первое непустое множество `books1` или `books2`::
+Use the first the non-empty set or `books1`` books2` for iteration::
 
     #for(book: books1 || books2)
 
-Итерации по сумме двух множеств::
+Iterations on the sum of two sets ::
 
     #for(book: books1 + books2)
 
-Сортировать коллекцию, затем произвести по ней итерацию::
+Sort the collection, then make the iteration above it::
 
     #for(book: books.sort)
 
-Рекурсивная итерация, элементы меню имеют метод `getChildren`,
-которые возвращают коллекцию подэлементов. Итерация по всем
-элементам в данной иерархии::
+Recursive iteration, menu items have a method `getChildren`,
+returning a collection of sub-items. Iteration over all
+items in the hierarchy::
 
-    #for(Menu menu: menus.recursive ("getChildren"))
+    #for(Menu menu: menus.recursive("getChildren"))
 
 
-Прерывание цикла с помощью #break
-*********************************
+Cycle interruption by a #break
+******************************
 
-Формат::
+Format::
 
     #break
     #break (expression)
 
-В случае, если `expression` возвращает `true` или непустую строку,
-выполнение цикла будет прервано.
+If the `expression` returns `true` or non-empty string,
+the cycle will be interrupted.
 
 .. note::
 
-    Делайте условный `#break` прямо в теле директивы::
+    Make a conditional `#break` directly in the body of the directive::
 
-        #break (i ​​== j) ## правильно
+        #break (i ​​== j) ## correct
 
-    Это существенно лаконичней и более производительно, чем::
+    This significantly shorter and more productive than::
 
         #if (i == j) #break #end
 
-Выполнение действия, если коллекция пуста #for #else
-****************************************************
+Implementation of the action if the collection is empty #for #else
+******************************************************************
 
-Формат::
+Format::
 
     #else
     #else(expression)
 
-Пример::
+Example::
 
     #for(book: books)
 	    ...
     #else
-	    ... # выполняется когда коллекция пуста
+	    ... # is run if the collection is empty
     #end
 
 
-Библиотеки функций в контексте HTTL шаблонов
---------------------------------------------
+Libraries of functions in the context of HTTL patterns
+------------------------------------------------------
 
-Регистрации библиотеки методов и доступные методы
-*************************************************
+Registration of methods library and  available methods
+******************************************************
 
-В контексте HTTL шаблонов доступны библиотеки переиспользуемых методов.
-Библиотека переиспользуемых методов это `java` класс с публичными статическими
-методами. Библиотека может быть зарегистрирована с помощью параметра конфигурации
-HTTL `import.methods`.
+In the context of HTTL templates there are available libraries of re-used methods.
+A library of re-used methods is a `java` class having public static methods
+The library can be registered using configuration parameter HTTL `import.methods`.
 
-Пример регистрации новой библиотеки методов в HTTL:
+Example of registering a new methods library in HTTL:
 
 .. code-block:: properties
 
     import.methods+=com.mycompany.MyHttlMethods
 
-После регистрации библиотеки все публичные статические методы класса библиотеки становятся
-доступными в контексте HTTL шаблона и их можно переиспользовать.
+After registering of a library all public static methods of the library class
+become available in the context of the HTTL template and can be reused.
 
-По умолчанию в HTTL определены следующие библиотеки:
+By default, the following libraries are defined in HTTL:
 
 .. code-block:: properties
 
@@ -354,15 +352,15 @@ HTTL `import.methods`.
                    httl.spi.methods.FileMethod,\
                    httl.spi.methods.MessageMethod
 
-Вы можете открыть код этих классов в проекте HTTL и изучить,
-какой функционал доступен в HTTL шаблонах по умолчанию.
+You can open the code of these classes in the HTTL project and learn
+the functionality available in HTTL templates.
 
-:ref:`Описание некоторых из методов стандартной библиотеки HTTL. <httl_lib>`
+:ref:`Description of some methods of the standard HTTL library. <httl_lib>`
 
-Вызов библиотечных методов HTTL
-*******************************
+Call HTTL library methods
+*************************
 
-Формат вызова метода::
+Method invocation format ::
 
     ${name(arg1, arg2, ...)}
     ${name()}
@@ -370,12 +368,11 @@ HTTL `import.methods`.
     ${arg1.name()}
     ${arg1.name(arg2, ...)}
 
-Где `name` - название метода, а `arg1, arg2, ...` - возможные аргументы метода.
+Where `name` - the method name, and `arg1, arg2, ...` - possible arguments of the method.
 
-Предположим, мы зарегистрировали библиотеку `MyHttlMethods`,
-как было описано выше. В нашей библиотеке - один простой метод,
-который добавляет `Hello\ ` к переданной в
-качестве аргумента строке:
+Suppose we have registered the library `MyHttlMethods`,
+as described above. In our library - the one simple method,
+it adds `Hello\ ` to the beginning of passed string argument:
 
 .. code-block:: java
 
@@ -388,7 +385,7 @@ HTTL `import.methods`.
         }
     }
 
-Из контекста HTTL этот метод может быть вызван следующими эквивалентными способами:
+This method can be called by the following equivalent ways:
 
 1. `${hello("Andy")}`
 2. `${"Andy".hello}`
@@ -399,20 +396,19 @@ HTTL `import.methods`.
     ${hello(name)}
     ${name.hello}
 
-Каждый из которых выведет::
+Every of them outputs::
 
     Hello Andy!
 
-Как можно видеть, первый аргумент метода может быть как аргументом явного вызова метода `${hello(name)}`,
-так и контекстом для вызова этого метода без первого аргумента: `${name.hello}`.
+As you can see, the first argument of the method can be either argument of an explicit
+method call `${hello(name)}`, or to be a context for call of this method without the first argument: `${name.hello}`.
 
-Давайте добавим в нашу библиотеку еще один метод, который немного расширяет функционал первого и
-позволяет к строке приветствия добавить произвольное сообщение:
-
+Let's add another method to our library to expand the functionality of the former one
+and allow adding an arbitrary string to end of a greeting message:
 
 .. code-block:: java
 
-    package com.mycompany;
+   package com.mycompany;
 
     public class MyHttlMethods {
 
@@ -425,17 +421,17 @@ HTTL `import.methods`.
         }
     }
 
-Тогда, в дополнение к существующим возможностям, мы сможем вывести `Hello Andy! Great to see u!`
-любым из ниже перечисленных способов::
+Then, we will be able to print `Hello Andy! Great to see u!`
+by any of the following ways::
 
     ${hello("Andy", "Great to see u!")}
 
     ${"Andy".hello("Great to see u!")}
 
 
-**Пример использования метода :js:func:`toCycle` из `httl.spi.methods.CollectionMethod`**
+**An example of using the method :js:func:`toCycle` from `httl.spi.methods.CollectionMethod`**
 
-Вывод списка продуктов с циклически меняющимся цветами строк из набора `colors`:
+Output of the list of products with cyclically changing colors of rows from a set of `colors`:
 
 .. code-block:: html
 
@@ -449,64 +445,60 @@ HTTL `import.methods`.
     </table>
 
 
+Macros #macro
+-------------
 
-Макросы #macro
---------------
+Macro is a HTTL markup unit which can be reused. Macros can use a set of parameters
+similar to parameters in a `java` function. When you call a macro HTTL
+the markup defined in the macro is inserted to the place of a macro call.
 
-Макрос - это блок HTTL разметки, который можно переиспользовать.
-Макрос может принимать набор параметров аналогично параметрам функции в `java`.
-При вызове макроса HTTL разметка, определенная в макросе, вставляется в место
-вызова макроса.
-
-Формат определения макроса::
+The format of the macro definition::
 
     #macro(name)
     #macro(name(arg1, arg2, ...))
     #macro(name(type1 arg1, type1 arg2, ...))
 
-Где `name` - имя макроса,
-`arg1, arg2, ...` - возможные аргументы макроса,
-`type1, type2, ...` - опциональные типы аргументов макроса.
+Where `name` is a macro name,
+`arg1, arg2, ...` are possible arguments of the macro,
+`type1, type2, ...` are optional types of macro arguments.
 
 
-Формат вызова макроса::
+The format of the macro definition::
 
     ${name(arg1, arg2)}
 
 
-Где `name` - имя макроса, `arg1, arg2, ...` - возможные аргументы макроса.
+Where `name` is macro name, `arg1, arg2, ...` are possible arguments of macro.
 
-:ref:`Макросы могут применяться в случае наследования HTTL шаблонов <httl_inheritance>`.
+:ref:`Macros can be used for inheritance HTTL patterns <httl_inheritance>`.
 
 
-Включение в разметку других файлов
-----------------------------------
+Inclusion of other files to the markup
+--------------------------------------
 
-Семейство `include` методов из `httl.spi.methods.FileMethod` позволяют
-включать другие файлы разметки в текущую разметку.
+The set of `include` methods from `httl.spi.methods.FileMethod` allow
+include other files into the current markup.
 
-**Пример:** включение контента `template.httl` в разметку::
+**Example:** inclusion of `template.html` content to the markup::
 
     ${include("/template.httl")}
 
-Передача дополнительных аргументов при включении::
+Passing an additional arguments to the context of included file::
 
     ${include("/template.httl", ["arg":"value"])}
 
-Использование относительного пути до файла::
+Use of a relative path to the file ::
 
     ${include("../template.httl")}
 
 .. note::
 
-    Файл, включаемый при помощи метода `include`, интерпретируется как HTTL разметка.
+    The file, included by the `include` method, is interpreted as HTTL markup.
 
-Включение содержимого файла в текущее место разметки::
+The inclusion of the file's contents to the current markup place::
 
     ${read("/text.txt")}
 
-
 .. note::
 
-    Файл, включаемый при помощи метода `read`, не интерпретируется как HTTL разметка.
-
+    The file, included by the method `read`, is not interpreted as HTTL markup.
