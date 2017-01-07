@@ -1,10 +1,9 @@
 .. _misc:
 
-Разное
-======
+Misc
+====
 
 .. toctree::
     :maxdepth: 1
 
     tstyles
-    dadata
