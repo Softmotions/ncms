@@ -45,7 +45,7 @@ The default ogmeta fields:
 * `og:url` - A page URL. Cannot be overridden.
 * `og:site_name` - A site virtual host name. Cannot be overridden.
 * `og:locale` - A locale of http request. Cannot be overridden.
-* `og:title` - Page title, the default is `page.hname`. It may be overridden by `title` argument passed to `ogmeta` method.
+* `og:title` - A page title, the default is `page.hname`. It may be overridden by `title` argument passed to `ogmeta` method.
 * `og:type` - Page type, the default is `article`. It may be overridden by `type` argument passed to `ogmeta` method.
 * `og:image` - An image banner associated with page. It will be used if the `image` argument is specified.
   The value of an argument may be a name of `image <am_image>` assembly attribute
