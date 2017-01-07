@@ -1,64 +1,59 @@
 .. _am_wiki:
 
-Wiki разметка (wiki)
-====================
+Wiki markup (wiki)
+==================
 
-Rich контент в виде wiki разметки. Значением
-атрибута является html код, получаемый в результате
-интерпретации wiki разметки. Обычно wiki разметка
-является основным инструментом для создания контента
-страниц.
+Rich content as wiki markup.
+The value of attribute is a html code obtained
+as a result of a wiki markup parsing.
 
 .. note::
 
-    Лучший способ вставлять в ваши страницы стилизованный контент (rich content) --
-    использовать wiki разметку.
+    The best way to embed stylized content (rich content) into your page --
+    use a wiki or markdown markup.
 
-В |ncmsversion| поддерживаются следующие форматы
-wiki разметки:
+
+In |ncmsversion| the following formats of a
+wiki markup are supported:
 
 * `mediawiki <https://www.mediawiki.org/wiki/Help:Formatting/ru>`_
+* `markdown <https://daringfireball.net/projects/markdown/syntax>`_
 
-В ближайших версиях ηCMS будет реализована поддержка `markdown <https://daringfireball.net/projects/markdown/syntax>`_.
+Attribute options
+-----------------
 
-
-Опции атрибута
---------------
-
-В |ncmsversion| в опциях атрибута возможно выбрать только `mediawiki <https://www.mediawiki.org/wiki/Help:Formatting/ru>`_
-разметку.
+Here you can select a markup type `mediawiki` or `markdown`.
 
 
-Режим редактирования
---------------------
+Edit mode
+---------
 
-Интерфейс редактирования wiki разметки представлен текстовым
-редактором разметки и элементами управления, которые облегчают
-выполнение многих рутинных задач:
+Wiki markup editor consists of a markup textarea and control buttons.
+Control buttons help you to make many routine tasks easier:
 
 .. figure:: img/wiki_img1.png
 
-    Интерфейс редактирования wiki разметки
+    Wiki markup editor
 
-Ниже описаны основные элементы управления wiki разметкой
-при использовании языка разметки `mediawiki <https://www.mediawiki.org/wiki/Help:Formatting/ru>`_
+Below there is a description of the basic controls of wiki markup editor
+for `mediawiki <https://www.mediawiki.org/wiki/Help:Formatting/ru>` _
 
 .. image:: img/wiki_img2.png
 .. image:: img/wiki_img3.png
 .. image:: img/wiki_img4.png
 
-Заголовки первого, второго и третьего уровня, аналогично
-элементам `<h1>`, `<h2>`, `<h3>` в html.
+The headers of the first, second and third level, similar to
+`<h1>`, `<h2>`, `<h3>` tags in html.
 
 .. image:: img/wiki_img5.png
     :align: left
 
-**Полужирный текст**
+**Bold text**
 
 .. image:: img/wiki_img6.png
     :align: left
 
-*Текст курсивом*
+*Text in italics*
 
 |
 
@@ -67,14 +62,14 @@ wiki разметки:
 .. image:: img/wiki_img7.png
     :align: left
 
-**Вставка ненумерованного списка**
+**Insert bulleted list**
 
-Mediawiki разметка ненумерованного списка::
+Mediawiki markup of a bulleted list::
 
-    * Первый
-    * Второй
-    ** Первый у второго
-    * Третий
+    * First
+    * second
+    ** The first of the second
+    * The third
 
 |
 
@@ -83,15 +78,14 @@ Mediawiki разметка ненумерованного списка::
 .. image:: img/wiki_img8.png
     :align: left
 
-**Вставка нумерованного списка**
+**Inserting a numbered list**
 
-Mediawiki разметка нумерованного списка::
+Mediawiki markup of a numbered list::
 
-    # Первый
-    # Второй
-    ## Первый у второго
-    # Третий
-
+    # First
+    # Second
+    ## The first of the second
+    # The third
 
 |
 
@@ -100,19 +94,18 @@ Mediawiki разметка нумерованного списка::
 .. image:: img/wiki_img9.png
     :align: left
 
-**Ссылка на страницу ηCMS:**
+**The link to ηCMS page:**
 
 .. figure:: img/wiki_img18.png
 
-    Диалог выбора страницы для ссылки.
+    Dialog to select the page for link.
 
-В результате в теле mediawiki редактора появится ссылка на страницу::
+As a result, a link to the page appears in the body of the mediawiki editor::
 
     [[Page:2df428a0510a00127cf5de19acf88fdd|Extra attributes for page elements]]
 
-Где `2df428a0510a00127cf5de19acf88fdd` это уникальный :term:`GUID страницы`.
-А `Extra attributes for page elements` - текст ссылки.
-
+Where `2df428a0510a00127cf5de19acf88fdd` is the unique :term:`page GUID`,
+`Extra attributes for page elements` is the link text.
 
 |
 
@@ -121,18 +114,18 @@ Mediawiki разметка нумерованного списка::
 .. image:: img/wiki_img10.png
     :align: left
 
-**Изображение, ссылка**
+**Image, link**
 
 .. figure:: img/wiki_img19.png
 
-    Вставка изображения/ссылки в виде изображения.
+    Inserting an image/image with link.
 
 
-**Параметры вставки изображения**
+**Parameters of an image insertion**
 
 
-**Заголовок** -- подпись под изображением. Верстальщику сайта необходимо
-корректно стилизовать html элементы, составляющие изображение и подпись:
+**Caption** - the caption beneath the image. You have to
+stylize html tags for the image and caption:
 
 .. code-block:: html
 
@@ -141,60 +134,63 @@ Mediawiki разметка нумерованного списка::
          style="width:202px;display:inline-block;">
         <a class="image"
            href="/rs/mw/link/Image:200px-/381/mountain.jpg"
-           title="Горы">
+           title="Mountains">
             <img src="/rs/mw/res/200px-/381/mountain.jpg"
                  class="thumbimage"
-                 alt="Горы"
-                 title="Горы"
+                 alt="Mountains"
+                 title="Mountains"
                  width="200">
         </a>
-        <div class="framecaption">Горы</div>
+        <div class="framecaption">Mountains</div>
     </div>
     </div>
 
-Определить отображение следующих стилей:
+Determine the display of the following styles:
 
-Стили для изображения с подписью:
+Styles for the image with the caption:
 
 * ``div.thumb.tleft, div.thumb.tcenter, div.thumb.tright``
 * ``.thumbinner``
 * ``.thumbimage``
 * ``.framecaption``
 
-Стили для изображения без подписи:
+Styles for images without captions:
 
 * ``img.location-left, img.location-center, img.location-right``
 
-**Размер изображения**
+**Image size**
 
-* **оригинальный** -- оригинальный размер изображения без масштабирования
-* **маленький** -- ширина изображения ``100px``
-* **средний** -- ширина изображения ``200px``
-* **большой** -- ширина изображения ``300px``
+* **original** -- the original size of the image without scaling
+* **small** -- width of the image ``200px``
+* **medium** -- width of the image ``400px``
+* **big** -- width of the image ``600px``
 
 .. note::
 
-    При выборе размера изображения, отличного от оригинального,
-    изображение масштабируется и сохраняется на стороне сервера ηCMS.
+    When choosing an image size which differs from the original,
+    the image is scaled and stored on the ηCMS server.
 
-**Расположение изображения**
+**Location of Image**
 
-* **по умолчанию** -- в этом случае к изображению не применяются позиционирующие стили.
-* **по центру** -- изображение  по центру. При вставке изображения с подписью применяется стиль `thumb tcenter` для `div`
-                контейнера, содержащего изображение и подпись. В случае отсутствия подписи к элементу
-                изображения `img` применяется стиль `location-center`.
-* **слева** -- изображение слева. При вставке изображения с подписью применяется стиль `thumb tleft` для `div`
-                контейнера, содержащего изображение и подпись. В случае отсутствия подписи к элементу
-                изображения `img` применяется стиль `location-left`.
-* **справа** -- изображение справа. При вставке изображения с подписью применяется стиль `thumb tright` для `div`
-                контейнера, содержащего изображение и подпись. В случае отсутствия подписи к элементу
-                изображения `img` применяется стиль `location-right`.
+* **default** - the positioning styles are not applied.
+* **in the center** - an image will be the center.
+    When you insert a centered image with the caption the `thumb tcenter` css classes
+    are applied for `div` container with an image. In the absence of a caption,
+    the `location-center` css class is applied.
+* **to the left** - the image on the left side.
+    For an image with the caption the `thumb tleft` css classes
+    are applied for `div` container with an image. In the absence of a caption,
+    the `location-left` css class is applied.
+* **right** - the image on the right side.
+    For an image with the caption the `thumb tright` css classes
+    are applied for `div` container with an image. In the absence of a caption,
+    the `location-right` css class is applied.
 
-**Ссылка**
+**Link**
 
-В случае, если это поле инициализировано, то при клике на изображение пользователь перейдет на выбранный
-ресурс. В случае, если ссылка на изображение не определена, то при клике на изображение
-пользователь перейдет на его просмотр в оригинальном размере.
+If this field is filled, the clicking on the image opens the selected
+resource. If the image link is undefined, the click
+on the image opens image in its original size.
 
 |
 
@@ -203,22 +199,22 @@ Mediawiki разметка нумерованного списка::
 .. image:: img/wiki_img11.png
     :align: left
 
-**Файл, ссылка** -- вставка ссылки на файл, который можно открыть при нажатии на ссылку.
+**File, link** - inserting a link to a file.
 
 .. figure:: img/wiki_img20.png
 
-    Диалог выбора файла
+    File selection dialog
 
-После выбора файла в wiki разметку вставится спецификация ссылки на файл, например::
+After selecting the file the link to the file is inserted to the wiki markup, for example::
 
-    [[Media:/381/mountain.jpg|Горы]]
+    [[Media:/381/mountain.jpg|Mountains]]
 
-А на странице отобразится `<a>` ссылка на файл
+At the same time ordinary html `<a>` links will be properly displayed on a page
 
 .. note::
 
-    Файл, на который ссылается страница, нельзя будет удалить,
-    пока ссылка на него находится в wiki разметке.
+    The file linked with the page is impossible to remove,
+    while its link is in the wiki markup.
 
 |
 
@@ -227,19 +223,19 @@ Mediawiki разметка нумерованного списка::
 .. image:: img/wiki_img12.png
     :align: left
 
-**Вставка таблицы**
+**Inserting tables**
 
 .. figure:: img/wiki_img21.png
 
-    Диалог заполнения таблицы
+    Dialog to fill the table
 
-При нажатии на кнопку `Вставить таблицу`  в wiki редактор будет вставлена следующая разметка::
+For the sample above the button `Insert table` will insert the following markup::
 
 
     {| class='wide'
     |-
-    ! Имя
-    ! Возраст
+    ! Name
+    ! Age
     |-
     | John
     | 25
@@ -248,11 +244,7 @@ Mediawiki разметка нумерованного списка::
     | 24
     |}
 
-
-Заметим, что при включенном переключателе `Широкая таблица` у элемента таблицы выставляется CSS класс `wide`,
-который может быть настроен дизайнером сайта.
-
-В данном примере эта таблица преобразуется в следующий HTML код:
+In this example, the table is converted to the following HTML code:
 
 .. code-block:: html
 
@@ -261,8 +253,8 @@ Mediawiki разметка нумерованного списка::
         <div style="page-break-inside: avoid;">
             <table class="wide">
                 <tr>
-                    <th>Имя</th>
-                    <th>Возраст</th>
+                    <th>Name</th>
+                    <th>Age</th>
                 </tr>
                 <tr>
                     <td>John</td>
@@ -274,7 +266,6 @@ Mediawiki разметка нумерованного списка::
                 </tr>
             </table>
         </div>
-
     </div>
 
 |
@@ -284,51 +275,51 @@ Mediawiki разметка нумерованного списка::
 .. image:: img/wiki_img13.png
     :align: left
 
-**Вставка дерева**  -- дизайн некоторых сайтов предполагает наличие иерархических, древовидных
-элементов в контексте страниц.
+**Insert tree** -- design of some sites requires a hierarchical trees within the pages.
 
 .. figure:: img/wiki_img22.png
 
-    Опции дерева
+    Tree options
 
-С текущими опциями мы получим следующую демонстрационную разметку:
+The current options provide the following demo markup:
 
 .. code-block:: html
 
     <tree>
-    - Корень
-    -- Потомок 1
-    --- Потомок уровня вложенности 3
-    -- Потомок уровня вложенности 2
+    -Root
+    -- Descendant 1
+    --- Descendant nesting level 3
+    -- Descendant nesting level 2
     </tree>
 
-Которая преобразуется в HTML с иерархической структурой на базе списков (`<ul>`, `<li>`):
+
+It is converted to HTML with a hierarchical structure based on lists ( `<ul>`, `<li>`):
 
 .. code-block:: html
 
 
     <ul class='tree'>
-        <li class='open node'><span></span> Корень
+        <li class='open node'><span></span> Root
             <ul>
-                <li class='open node'><span></span> Потомок 1
+                <li class='open node'><span></span> Descendant 1
                     <ul>
-                        <li class='file'><span></span> Потомок уровня вложенности 3</li>
+                        <li class='file'><span></span> Descendant of the nesting level 3</li>
                     </ul>
                 </li>
-                <li class='file'><span></span> Потомок уровня вложенности 2</li>
+                <li class='file'><span></span> Descendant of the nesting level 2</li>
             </ul>
         </li>
     </ul>
 
 .. note::
 
-    Для правильного отображения дерева в контексте сайта дизайнер сайта должен
-    стилизовать HTML код отображения дерева на основе `<ul class='tree'>` списков.
+    For the correct view of the tree in the context of the website, a site designer should
+    stylize HTML code to correctly trees.
 
 
 .. figure:: img/wiki_img23.png
 
-    Приведенное дерево без стилизации
+    The tree without stylization
 
 |
 
@@ -337,19 +328,19 @@ Mediawiki разметка нумерованного списка::
 .. image:: img/wiki_img14.png
     :align: left
 
-**Вставка заметки** -- позволяет вставить на страницу контейнер для заметки/предупреждения.
+**Note Insert** -- allows inserting the container for notes/warnings to the page.
 
-Wiki разметка для предупреждения:
-
-.. code-block:: html
-
-    <note style="warning">Заметка</note>
-
-HTML разметка предупреждения, которая может быть стилизована дизайнером сайта:
+Wiki markup for warning:
 
 .. code-block:: html
 
-    <div class="note-warn">Заметка</div>
+    <note style="warning">Note</note>
+
+HTML warning markup, which can be stylized by a site designer:
+
+.. code-block:: html
+
+    <div class="note-warn">Note</div>
 
 |
 
@@ -358,21 +349,21 @@ HTML разметка предупреждения, которая может б
 .. image:: img/wiki_img24.png
     :align: left
 
-**Вставка ролика Youtube**
+**Insert Youtube video**
 
 
 .. figure:: img/wiki_img25.png
 
-    Опции вставки ролика Youtube
+    Options to insert Youtube video
 
 
-Wiki разметка для вставки youtube ролика:
+Wiki markup to insert youtube video:
 
 .. code-block:: html
 
     <youtube videoId="CABN2r4GPpQ"/>
 
-В результате, в контексте страницы сайта мы получаем youtube ролик:
+As a result, in the context of the page we get youtube video:
 
 .. image:: img/wiki_img26.png
     :target: https://www.youtube.com/watch?v=CABN2r4GPpQ
@@ -383,14 +374,14 @@ Wiki разметка для вставки youtube ролика:
 .. image:: img/wiki_img28.png
     :align: left
 
-**Вставка карты Google Maps**
+**Insert the map of Google Maps**
 
 
 .. figure:: img/wiki_img29.png
 
-    Диалог подключения участка google карты.
+    Dialog of the insertion of a part of a Google map.
 
-Например, вставив в него скопированный из google maps `iframe`:
+For example, by inserting a google maps `iframe` copied from Google Maps:
 
 .. code-block:: html
 
@@ -402,7 +393,7 @@ Wiki разметка для вставки youtube ролика:
              allowfullscreen>
     </iframe>
 
-Мы получим карту на странице:
+We get the map on the page:
 
 .. image:: img/wiki_img30.png
 
@@ -414,21 +405,22 @@ Wiki разметка для вставки youtube ролика:
 .. image:: img/wiki_img16.png
     :align: left
 
-**Презентация SlideShare**
+**SlideShare Presentation**
 
 .. figure:: img/wiki_img31.png
 
-    Диалог подключения участка презентации SlideShare.
+    Inserting a SlideShare presentation.
 
-В данном примере введем в диалог интернет адрес презентации: http://www.slideshare.net/leoyuriev/dc2015-lmdb
-и в результате при сохранении получим следующую wiki разметку:
+In this example, we enter the Internet address
+of the presentation: http://www.slideshare.net/leoyuriev/dc2015-lmdb
+to the dialog and, as a result, we get the following wiki markup:
 
 .. code-block:: html
 
     <slideshare code="49593515"/>
 
 
-А при отображении страницы получим встроенную презентацию:
+On the page we get an embedded presentation:
 
 .. image:: img/wiki_img32.png
 
@@ -439,24 +431,23 @@ Wiki разметка для вставки youtube ролика:
 .. image:: img/wiki_img17.png
     :align: left
 
-**Видеоролик vimeo**
+**Vimeo video**
 
 .. figure:: img/wiki_img33.png
 
-    Опции вставки ролика Vimeo
+    Vimeo video insert
 
 
-Wiki разметка для вставки vimeo ролика:
+Wiki markup to insert vimeo video:
 
 .. code-block:: html
 
     <vimeo code="105286558"/>
 
-В результате, в контексте страницы сайта мы получаем vimeo ролик:
+As a result, in the context of the page we get vimeo video:
 
 .. image:: img/wiki_img34.png
     :target: https://vimeo.com/105286558
-
 
 
 
