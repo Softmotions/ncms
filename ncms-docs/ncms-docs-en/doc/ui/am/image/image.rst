@@ -1,74 +1,69 @@
 .. _am_image:
 
-Картинка (image)
-================
+Image
+=====
 
-Атрибут, с помощью которого можно задать файл изображения и отобразить его в контексте
-страницы сайта. ηCMS поддерживает автоматическое масштабирование изображения в зависимости
-от параметров атрибута.
+Attribute to specify an image file and display it on the page.
+ηCMS supports automatic zooming of the image according to attribute parameters.
 
 
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/image_img1.png
 
-    Опции атрибута
+    Attribute options
 
+=============================== =============
+Option                          Description
+=============================== =============
+** Width **                     The desirable width of the image on the page.
+** Height **                    The desirable height of the image on the page.
+** Auto-scaling **              To enable/disable automatic scaling of the image
+                                according to width (and/or) height.
+** To fill area **              The intelligent scale mode provides the picture scaling
+                                to fill the specified area with preserving of the aspect ratio.
+** To check the size **         If this flag is enabled, the loaded by user image is checked
+                                on compliance to the specified width and height.
+** Not to scale small **        Do not scale an image, if its size is less than specified
+                                restrictions. This mode is useful to avoid a grain at increase
+                                small images.
+=============================== =============
 
-=============================== =========
-Опция                           Описание
-=============================== =========
-**Ширина**                      Желаемая ширина изображения при отображении изображения.
-**Высота**                      Желаемая высота изображения при отображении изображения.
-**Автомасштабирование**         Включить/выключить автоматическое масштабирование изображения
-                                в соответствии с шириной (и/или) высотой.
-**Заполнить область**           Интеллектуальный режим масштабирования, при котором картинка масштабируется
-                                так, чтобы заполнилась указанная область с сохранением соотношения сторон изображения.
-**Проверять размер**            Если включен этот флаг, то загружаемое пользователем изображение будет проверяться
-                                на соответствие указанной ширине и высоте.
-**Не масштабировать маленькие** Не производить масштабирование изображений, актуальный размер
-                                которых меньше указанных ограничений. Этот режим полезен для
-                                того, чтобы избежать появления зернистости при увеличении
-                                маленьких изображений.
-=============================== =========
-
-
-Режим редактирования
---------------------
+Edit mode
+---------
 
 .. figure:: img/image_img2.png
 
-    Атрибут на панели редактирования страницы
+    Attribute on the edit page panel
 
-При нажатии на кнопку выбора изображения ηCMS
-предлагает выбрать файл изображения:
+By clicking the image selection button ηCMS
+offers to select an image file:
 
 
 .. figure:: img/image_img3.png
 
-    Выбор файла изображения
+    Selecting an image file
 
 
 .. figure:: img/image_img4.png
 
-    Атрибут после выбора изображения
+    Attribute after selecting the image
 
-
-Использование в разметке
+Using in the markup
 ------------------------
 
-**Тип значения атрибута:** :ref:`com.softmotions.ncms.mhttl.Image`
+**Type of an attribute value:** :ref:`com.softmotions.ncms.mhttl.Image`
 
 
-Пример вставки масштабируемой картинки в качестве элемента `<img>`:
+Example of the insertion of scaled image as a part of `<img>`:
 
 .. code-block:: html
 
     #set(Image img = asm('image'))
     <img src="$!{img.link}"></img>
 
-или:
+or:
 
 .. code-block:: html
 
@@ -82,13 +77,14 @@ com.softmotions.ncms.mhttl.Image
 
 .. js:attribute:: Long Image.id
 
-    Идентификатор медиафайла в репозитории ηCMS
+    Identifier of the media file in the ηCMS repository
 
 .. js:function:: String getLink()
 
-    Возвращает ссылку на изображение в правильном масштабе.
+    Returns a reference to the properly scaled image.
 
-    **Изображение в httl разметке**::
+    **Image in the в httl markup**::
 
     <img src="$!{img.link}" ...>
+
 
