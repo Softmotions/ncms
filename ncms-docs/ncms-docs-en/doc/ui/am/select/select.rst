@@ -1,65 +1,62 @@
 .. _am_selectbox:
 
-Список выбора (select)
-======================
+Select box
+==========
 
-Этот атрибут позволяет использовать списки выбора (selectbox)
-в интерфейсе редактирования содержания страницы и отображать
-их на страницах сайта.
+The attribute allows to use select box
+via the `pages management UI <pmgr>` and display
+select box data on the website page.
 
-
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/select_img1.png
 
-    Опции списка выбора
+    Options of a select box
 
-Отображать как
-**************
+Display as
+**********
 
-* **list** -- в разделе редактирования контента атрибут будет представлен в виде раскрытого
-    списка выбора, в котором можно выбрать сразу несколько  значений, одновременно нажав
-    клавишу `Ctrl` и выбрав элементы указателем мыши.
-* **selectbox** -- в разделе редактирования контента этот атрибут будет представлен
-    в виде выпадающего списка, с возможностью выбрать один элемент.
-
-
-Выбор множества значений
-************************
-
-Эта опция может быть включена при режиме отображения *list*
-и позволяет выбрать одновременно несколько элементов списка.
+* **List** -- in this mode the select box is expanded allowing to select multiple items
+              (holding `Ctrl` key)
+* **Selectbox** -- in this mode the select box displayed as drop-down list,
+    allowing to select only one item.
 
 
-Элементы
-********
+Selecting a multiple items
+**************************
 
-Таблица, в которой могут быть заданы возможные элементы списка, где для каждого
-элемента необходимо задать его `название`, а также `значение`, привязанное к элементу,
-которое может быть использовано в логике приложения.
+This option can be enabled for *list* display mode only
+and allows to select multiple items.
 
 
-Режим редактирования
---------------------
+Items
+*****
+
+The table, where items of the list can be specified as
+`name`, `value` pairs. The `value` is tied to the element and can
+be used in the application logic.
+
+Edit mode
+---------
 
 .. figure:: img/select_img2.png
 
-    Список выбора с опцией `list`  в режиме редктирования страницы
+    The selection box with the `list` option in the `pages management UI <pmgr>`
 
-Использование в разметке
-------------------------
+Using in the markup
+-------------------
 
-В контексте httl разметки значением данного атрибута
-является коллекция объектов типа :ref:`com.softmotions.ncms.mhttl.SelectNode`,
-где для каждого элемента определены следующие свойства:
+In the context of httl markup the value of this attribute
+is a collection of objects: :ref:`com.softmotions.ncms.mhttl.SelectNode`,
+where for every item the following properties are defined:
 
-* **key** - название элемента (java.lang.String),
-* **value** - значение, привязанное к элементу (java.lang.String),
-* **selected** - является ли данный элемент выбранным (boolean).
+* **key** - item name (java.lang.String),
+* **value** - value tied to the item (java.lang.String),
+* **selected** - whether this item is selected (boolean).
 
 
-**Пример**::
+**Example**::
 
     <select>
     #foreach(SelectNode node in asm('select'))
@@ -77,13 +74,13 @@ com.softmotions.ncms.mhttl.SelectNode
 
 .. js:attribute:: String SelectNode.key
 
-    Название опции select элемента, отображаемое пользователю
+    Select box pair name (label displayed to site users)
 
 .. js:attribute:: String SelectNode.value
 
-    Значение опции select элемента, используемое сайтом
+    Select box pair value
 
 .. js:attribute:: boolean SelectNode.selected
 
-    Если ``true`` то текущая опция выбрана (является активной)
+   If ``true`` the current option is selected (active)
 
