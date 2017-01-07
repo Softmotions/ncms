@@ -1,61 +1,60 @@
 .. _cookbook:
 
-
 .. contents::
 
 .. _best_practices:
 
-Рецепты и лучшие практики
-=========================
+Recipes and Best Practices
+==========================
 
 .. _best_practices1:
 
-Определяйте шаблоны для страниц с общей структурой
---------------------------------------------------
+Defining templates for pages having a common structure
+------------------------------------------------------
 
-Страницы ваших сайтов можно разделить по группам страниц, имеющих общую структуру, например:
+Pages of your sites can be divided into groups having the same structure, for ex.:
 
-* Стандартные страницы с контентом
-* Страницы подразделений корпоративного сайта
-* Новости
-* Блог посты
-* Страницы с описанием продукта или услуги
+* Standard pages with a content
+* Pages of departments on the corporative site
+* News
+* Blog posts
+* Pages describing products or services
 * ...
 
-Для каждой группы страниц должен быть *шаблон* с общей разметкой типовой страницы в группе и общими
-:term:`атрибутами <атрибут>`, разделяемыми всеми страницами группы (шаблоны страниц создаются в редакторе сборок).
-В этом случае создание типовой страницы из группы для редактора сводится к выбору доступного шаблона
-и заполнению атрибутов, необходимых для отображения страницы по выбранному шаблону.
+Any group of pages may have its own *template* containing
+shared markup and common :term:`attributes <attribute>` for all pages in the group
+Note: templates are to be created in the `assemblies manager UI <amgr>`.
+In this case, the creation of a standard page in the group comes
+down to the choosing of available template and filling
+the required attributes using `pages manager UI <pmgr>`
+for a particular page instance.
 
-**Но что делать со страницами со свободной структурой?** Например, это может быть *лендинг страницы*,
-рекламные страницы с уникальной структурой. Нет необходимости определять отдельный шаблон для
-каждой подобной страницы. Мы можем определить базовый шаблон для всех подобных страниц, в
-котором будут присутствовать:
+**What do we do if we need a pages having free structure?** For example, it can be *a lending page*,
+or advertising pages with unique structure. There is no need to define a separate template for
+each page. We can define a basic template for all suchlike pages, where we have:
 
-* атрибут с типом `core` (разметка страницы),
-* опционально - атрибуты с типом `fileref` с дополнительными css стилями страницы.
+* attribute with a `core` type (page markup) allows us to set an individual page markup.
+* optional - attributes with a `fileref` used to set additional css stylesheets.
 
-И после этого использовать возможности выбора разметки страницы и смены стилей прямо в интерфейсе редактирования
-контента страницы (раздел `Страницы`).
+After that we can change a page markup/css styles directly for a single page instance
+in the `pages manager UI <pmgr>`
 
 .. _best_practices2:
 
-Определяйте атрибуты страниц, которые имеет смысл редактировать
----------------------------------------------------------------
+Define only page attributes that can be really changed during a page lifetime
+-----------------------------------------------------------------------------
 
-Нет необходимости для каждой зоны с данными страницы определять отдельный
-редактируемый атрибут, поскольку, возможно, его значение никогда не будет
-меняться редакторами страниц.
+There is no need to setup a separate editable attribute for every text block on a page,
+because, there is a chances that such blocks never be changed by a site editor during
+a page lifetime.
 
-**Пример:** в редактируемый атрибут шаблона
-добавлен wiki атрибут с именем `copyright`, который содержит
-одну сроку::
+**Example:** We add the wiki attribute with the name `copyright` containing
+one single line::
 
-    Все права защищены моей компанией
+    All rights reserved
 
-Эта строка никогда не будет меняться отдельно для каждой страницы,
-а если и будет меняться, то для всех страниц. Лучше эти данные перенести прямо в шаблон
-страницы и вместо:
+This line never be changed individually for every page, it may be changed
+only for all site's pages. Therefore the best way is to set it directly in the template and instead of:
 
 .. code-block:: html
 
@@ -63,24 +62,17 @@
         ${asm('copyright')}
     </footer>
 
-Прямо в шаблоне написать:
+You can write this line directly
+in the template part shared by all site pages:
 
 .. code-block:: html
 
     <footer>
-        Все права защищены моей компанией
+        All rights reserved
     </footer>
 
-
-В случае необходимости изменения этих данных это можно сделать в разделе `Медиа`
-прямо в тексте разметки страницы.
-
-Существует множество других примеров, когда не стоит данные разметки страницы переносить
-в редактируемые редактором сайта атрибуты шаблона. Необходимость редактируемого атрибута
-должна определяться частотой изменения этих данных во время жизни страницы. Если данные
-будут меняться крайне редко или вовсе не будут меняться - перенесите их в разметку. Тем
-самым вы снизите сложность интерфейса редактирования страницы для редакторов.
-
-
-
-
+There are many other examples where it is not necessary to move all page data parts
+into  editable page attributes. The decision to define a page data part as
+an attribute should be guided by a frequency of this data part changes during
+a page lifetime. Also consider a `visual page editor <visual>` to modify a number of text blocks
+within a page.

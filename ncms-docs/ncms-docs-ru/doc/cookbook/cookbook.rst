@@ -1,6 +1,5 @@
 .. _cookbook:
 
-
 .. contents::
 
 .. _best_practices:

@@ -44,9 +44,8 @@ to be processed as a template, specify its extension as `.httl.css`.
 
 .. warning::
 
-     Usage dynamic logic inside `css` is not a recommended way
-     of conditional stylization of pages. Firstly, it is impossible
-     to use compressed css files, and secondly, css markup
+     Usage of dynamic HTTL logic inside `css` is not recommended.
+     Firstly, it is impossible to use compressed css files, and secondly, css markup
      becomes mixed with HTTL and therefore it will be more complex.
      A simpler and perhaps more appropriate method would be the usage
      of different `css` files for different page styles
