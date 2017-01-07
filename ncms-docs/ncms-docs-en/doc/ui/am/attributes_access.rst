@@ -1,32 +1,30 @@
 
 .. _attributes_access:
 
-Алгоритм поиска атрибута в контексте страницы (наследование атрибутов)
-======================================================================
+How attributes are searched in a page (inheritance of attributes)
+=================================================================
 
-Для отображения динамического контента в ηCMS мы обращаемся
-к :term:`атрибутам <атрибут>` доступным в контексте :term:`страницы <страница>`,
-используя конструкции :any:`asm` и :any:`asmAny` в :term:`HTTL` разметке :term:`ядра <ядро>` страницы.
-При доступе к атрибуту по имени, ηCMS использует следующий алгоритм
-нахождения значения :term:`атрибутов <атрибут>`:
+To display a dynamic content in ηCMS we refer to :term:`attributes <attribute>`
+available in the context of the particular :term:`page <page>`,
+using: :any:`asm` and :any:`asmAny` httl methods. When accessing an attribute by its name,
+ηCMS uses the following algorithm to find the :term:`attribute <attribute>`.
 
 |
 
-1. Если :term:`атрибут` явно принадлежит текущей странице (является частью :term:`сборки <сборка>`),
-   то он будет использован. В противном случае переходим на шаг **2**.
-2. Поднимаемся вверх по :term:`иерархии наследования текущей страницы <иерархия наследования страницы>`
-   и ищем данный атрибут в родительских :term:`сборках <сборка>`.
-   Если атрибут не найден, переходим на шаг **3**.
-3. Поднимаемся вверх по :term:`дереву навигации <дерево навигации>` страницы
-   и для каждой страницы осуществляем поиск атрибута в соответствии с шагами **1** и **2**.
-   Если атрибут с указанным именем не был найден, переходим на шаг **4**.
-4. ηCMS вычисляет :term:`главную страницу <главная страница>`
-   в зависимости от текущей локализации пользователя и настроек системы
-   и запрашивает требуемый атрибут у главной страницы, используя для данного HTTP запроса
-   алгоритм из шагов  **1** и **2**. Если атрибут у главной страницы не был найден, HTTL директива
-   :any:`asmAny` вернет `null`, директива :any:`asm` также вернет `null` и сообщит об ошибке
-   в консоль сервера ηCMS.
+1. If the :term:`attribute` explicitly belongs to the current page
+   (as a part of :term:`assembly <assembly>`) it will be used. Otherwise, go to **\2** step.
+2. Check the :term:`inheritance tree of the current page <asm inheritance tree>`
+   and look for the attribute in the parent :term:`assemblies <assembly>`.
+   If the attribute is not found, go to step **\3**.
+3. Check the :term:`navigation tree <navigation tree>` of the page
+   and search for attributes in accordance with steps **\1** ** and **\2** for every page.
+   If an attribute with the specified name was not found, go **\4** step.
+4. ηCMS determines a :term:`main page <main page>` depending on the current request locale
+   and system settings and examines a desired attribute for the main page,
+   using steps **\1** and **\2**.
+   If the requested attribute was not found, HTTL directive
+   :any:`asmAny` returns `null`, directive :any:`asm` also returns `null` and sends an error
+   to the server console.
 
-Несмотря на множество шагов в данном процессе, ηCMS достаточно быстро решает задачу нахождения
-атрибутов в контексте страниц, используя оптимизированный доступ к БД и алгоритмы кеширования.
-
+Despite of the many steps of this process, ηCMS fairly quickly solves the problem
+using an optimized access to the database and caching algorithms.

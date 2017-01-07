@@ -197,6 +197,7 @@ Additional definitions
 
 .. glossary::
 
+    home page
     main page
         Home (start) page for a particular virtual host and language.
         To create a home page we need :ref:`front page marker <am_mainpage>` attribute
