@@ -4,11 +4,11 @@ Page integration with social media services
 ===========================================
 
 Meta-information added to a page in conform to `open graph <http://ogp.me>`_ protocol
-allows you to integrate a content of a page to the social graph. In other words,
+allows you to integrate a content of a page to a social graph. In other words,
 by clicking a "Share" button for the page it will be correctly displayed for social services
 like Facebook.
 
-To generate a social meta-information for a page add a method call `ogmeta` inside the `head` tag:
+To generate a social meta-information for a page add a method call `ogmeta` inside a `head` html tag:
 
 .. code-block:: html
 
@@ -17,7 +17,7 @@ To generate a social meta-information for a page add a method call `ogmeta` insi
       ...
     </head>
 
-Or with with more specific parameters:
+Calling `ogmeta` with the more specific parameters:
 
 .. code-block:: html
 
@@ -26,7 +26,7 @@ Or with with more specific parameters:
       ...
     </head>
 
-As a result, the page will contain the html markup like the this:
+As a result, the page will contain the html markup like this:
 
 .. code-block:: html
 
@@ -40,15 +40,16 @@ As a result, the page will contain the html markup like the this:
       ...
     </head>
 
-The fist of fields generated automatically:
+The default ogmeta fields:
 
-* `og:url` - Page URL. Cannot be overridden.
-* `og:site_name` - A site's virtual host name. Cannot be overridden.
-* `og:locale` - Locale of http request. Cannot be overridden.
-* `og:title` - Page title, the default is `page.hname`. It may be overridden by `title` argument passed to `ogmeta`.
-* `og:type` - Page type, the default is `article`. It may be overridden by `type` argument passed to `ogmeta`.
-* `og:image` - Page image banner. it will be used if the `image` argument is specified. The argument's value
-   may be a name of `image <am_image>` assembly attribute or path to image file in media repository.
+* `og:url` - A page URL. Cannot be overridden.
+* `og:site_name` - A site virtual host name. Cannot be overridden.
+* `og:locale` - A locale of http request. Cannot be overridden.
+* `og:title` - Page title, the default is `page.hname`. It may be overridden by `title` argument passed to `ogmeta` method.
+* `og:type` - Page type, the default is `article`. It may be overridden by `type` argument passed to `ogmeta` method.
+* `og:image` - An image banner associated with page. It will be used if the `image` argument is specified.
+  The value of an argument may be a name of `image <am_image>` assembly attribute
+  or path to an image file in media repository.
 
 Any other named parameters passed in the call of `ogmeta`, will be added "as is",
 with the prefix `og:`.
