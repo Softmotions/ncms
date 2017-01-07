@@ -1,60 +1,51 @@
 .. _am_string:
 
-Строка (string)
-===============
+String
+======
 
-Строка - это самый широко используемый тип атрибута.
-Этот атрибут позволяет задать произвольные текстовые данные
-и отобразить их в контексте страниц.
+String - this is the most widely used attribute type.
+This attribute allows to set an arbitrary text data as value
+and display it in the context of the page.
 
-Опции атрибута
---------------
-
+Attribute options
+-----------------
 
 .. figure:: img/string_img1.png
 
-    Опции строкового атрибута
+    String attribute options
 
-Отображать как
-**************
+Display as
+**********
 
-* **поле** -- в разделе редактирования контента атрибут будет представлен в виде однострочного поля ввода.
-* **зона ввода** -- атрибут будет отображен в зоне редактирования контента страницы как широкое, многострочное поле,
-  удобное для ввода объемного текста.
+* **Field**  - in the `pages management UI <pmgr>` an attribute is represented as a single-line input field.
+* **Input**  - in the `pages management UI <pmgr>` an attribute is displayed as a broad,  multi-line,
+  convenient for bulk text input.
 
-Макс. длина (max length)
-************************
+Max length
+**********
 
-Максимальное количество символов для значения атрибута. Ноль означает отсутствие ограничения.
+Maximum number of characters for attribute value. Zero means no restrictions.
 
+The default value of the attribute
+**********************************
 
-Значение атрибута по умолчанию
-******************************
-
-Значение данного атрибута по умолчанию, если иное значение не задано редактором
-страницы.
+The value of this attribute by default, unless otherwise not specified by a page editor.
 
 Placeholder
 ***********
 
-Placeholder для данного элемента в интерфейсе редактирования страницы.
+Placeholder for the item in the in the `pages management UI <pmgr>`.
 
-Использование в разметке
-------------------------
+Using in the markup
+-------------------
 
-**Тип значения атрибута:** `java.lang.String`
+**Attribute value type:** `java.lang.String`
 
-Безопасный вывод значения атрибута в html::
+Output of an attribute value with escaped html markup::
 
-    ${asm('название атрибута')} или ${'название атрибута'.asm}
+    ${asm('attribute name')} or ${'attribute name'.asm}
 
-Вывод значения атрибута, допускающего html  разметку::
+The output of the attribuite value allowing an html markup::
 
-    $!{asm('название атрибута')} или $!{'название атрибута'.asm}
-
-
-
-
-
-
+    $!{asm('attribute name')} or $!{'attribute name'.asm}
 
