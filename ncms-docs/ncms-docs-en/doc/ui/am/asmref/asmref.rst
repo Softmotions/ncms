@@ -1,51 +1,48 @@
 .. _am_asmref:
 
-Вставка сборки (asmref)
-=======================
+Insert the assembly (asmref)
+============================
 
-Этот атрибут предоставляет возможность включать :term:`сборки <сборка>` друг в друга.
-Включение сборки подразумевает рендеринг содержимого сборки (так, как если бы к ней
-обратились напрямую) в контексте другой собрки. При этом для включаемой сборки
-должна быть задана :term:`разметка <ядро>`. Очевидно, что без разметки включаемая сборка
-не может быть представлена как отдельная страница.
+This attribute provides the ability to include :term:`assemblies <assembly>` to each other.
+Included assembly will be rendered in the context of other assembly,
+it needs to have a valid :term:`markup <core>` to be properly rendered.
+Without a markup the included assembly cannot be presented as a page or page part.
 
 .. warning::
 
-    Для сборки, которая будет включена, должна быть указана :term:`разметка <ядро>`.
-    В противном случае, этот атрибут не будет отображен, а в журналах ηCMS будет записана
-    ошибка.
+    For an assembly, that will be included the :term:`markup <core>` should be specified.
+    Otherwise, this attribute will not be displayed, and the ηCMS will report an error.
 
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/asmref_img3.png
 
-    Опции атрибута
+    Attribute options
 
-Этот атрибут требует обязательного задания включаемой сборки.
-
-
-Режим редактирования
---------------------
-
-В режиме редактирования контента элемент выбора
-значения для атрибута такой же, как в опциях.
+This attribute requires a mandatory specification of an included assembly.
 
 
-Пример использования
---------------------
+Edit mode
+---------
 
-В данном примере мы создадим :term:`сборку <сборка>` с именем `docsink_included_assembly`:
+In the page content edit mode, this is attribute is displayed
+in the same way as in options pane.
+
+
+Example
+-------
+
+In this example,we will create a :term:`assembly <assembly>` `docsink_included_assembly`:
 
 .. image:: img/asmref_img1.png
 
 
-Для этой сборки создадим простой текстовой атрибут `greeting`
-со значением `Hello from included assembly`:
+Let's create a simple text attribute `greeting` with the value of `Hello from included assembly`:
 
 .. image:: img/asmref_img2.png
 
-Для сборки создадим файл разметки `/site/docsink/included_asm_core.httl` со следующим содержимым:
+For the assembly we create a markup file `/site/docsink/included_asm_core.httl` with the following content:
 
 .. code-block:: html
 
@@ -53,29 +50,23 @@
        <strong>${asm('greeting')}</strong>
     </div>
 
-Затем создадим сборку, в которую будет
-включен контент `docsink_included_assembly`.
-Разметка этой сборки будет содержать::
+Then create an assembly, where the content `docsink_included_assembly` is included with a core markup::
 
     Asmref:
 
     $!{asm('asmref')}
 
-Перейдя в атрибуты сборки создадим атрибут с именем `asmref`  и
-типом `asmref`:
+In the `assembly managemennt UI <amgr>` we create an attribute having the name `asmref` and
+the type `asmref`:
 
 .. image:: img/asmref_img3.png
 
-Нажав на кнопку `Выбор сборки (assembly)`, укажем включаемую сборку:
+By clicking `Select assembly`, we choose the assembly to include:
 
 .. image:: img/asmref_img4.png
 
 
-При открытии страницы этой сборки
-получим:
+While opening the page we get:
 
 .. image:: img/asmref_img5.png
-
-
-
 
