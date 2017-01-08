@@ -1,42 +1,43 @@
 .. _am_fileref:
 
 
-Ссылка на файл медиарепозитория ηCMS (fileref)
-==============================================
+Link to a file (fileref)
+========================
 
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/fileref_img1.png
 
-    Опции атрибута
+    Attribute options
 
-================================== =========
-Опция                              Описание
-================================== =========
-**Местоположение**                 Местоположение файла в медиарепозитории ηCMS.
-**Отображать как шаблон**          Если данная опция включена, то контент файла будет интерпретирован как :ref:`HTTL <httl>` шаблон,
-                                   и это будет значением атрибута.
-**Отображать как местоположение**  В случае, если переключатель включен, значением атрибута будет
-                                   адрес (URL) ресурса. В противном случае значением атрибута будет текстовое
-                                   содержание ресурса либо результат вывода шаблона (параметр `Отображать как шаблон`).
-================================== =========
+================================== =============
+Option                             Description
+================================== =============
+**Location**                       Location of the file in the ηCMS media repository.
+**Show as a template**             If this option is enabled, the file content will
+                                   be interpreted as :ref:`HTTL <httl>` template and
+                                   inserted as attribute value.                                 
+**Display as a location**          If the switch is on, a file path will be a value of this attribute
+                                   otherwise it will be a file content or file content processed as a template
+                                   depending on `Show as template` option.
+================================== =============
 
 
-Режим редактирования
---------------------
+Edit mode
+---------
 
 .. figure:: img/fileref_img2.png
 
-    Путь до файла в медиарепозитории ηCMS
+    Path to the file in the ηCMS media repository
 
-Использование в разметке
-------------------------
+Using in the markup
+-------------------
 
-**Тип значения атрибута:** `java.lang.String`
+**Type of the attribute value:** `java.lang.String`
 
-Для примера, в опциях атрибута проставим галку `Отображать как шаблон`,
-создадим в контексте страницы файл с именем `template-inc.httl` и содержимым:
+For example, activate the checkbox `Display as template`,
+and create the file `template-inc.httl` containing:
 
 .. code-block:: html
 
@@ -45,14 +46,11 @@
       <b>Hello from ${name}</b>
     </p>
 
-Выберем этот файл в качестве значения для атрибута в разделе редактирования
-контента страницы и модифицируем :term:`ядро` страницы::
+Choose that file to set `filref` attribute and modify the page :term:`core`::
 
     FileRef: $!{asm('file1')}
 
-В результате получим следующую страницу:
+As a result, we get the following page:
 
 .. image:: img/fileref_img3.png
-
-
 
