@@ -3,9 +3,9 @@
 Select box
 ==========
 
-The attribute allows to use select box
-via the `pages management UI <pmgr>` and display
-select box data on the website page.
+The attribute is used to define the set of name value pairs
+and display them in website pages
+
 
 Attribute options
 -----------------
@@ -17,42 +17,39 @@ Attribute options
 Display as
 **********
 
-* **List** -- in this mode the select box is expanded allowing to select multiple items
-              (holding `Ctrl` key)
-* **Selectbox** -- in this mode the select box displayed as drop-down list,
-    allowing to select only one item.
+* **list** -- in the `pages management UI <pmgr>` select box will be displayed as a plain
+              list of possible values allowing to select multiple values (holding `Control` key)
+
+* **selectbox** -- in the `pages management UI <pmgr>` select box will be displayed as
+                   as a drop-down list, allowing to select only one pair.
 
 
-Selecting a multiple items
-**************************
+Selecting the set of values
+***************************
 
-This option can be enabled for *list* display mode only
-and allows to select multiple items.
-
+Used only for *list* display mode allowing to choose multiple values.
 
 Items
 *****
 
-The table, where items of the list can be specified as
-`name`, `value` pairs. The `value` is tied to the element and can
-be used in the application logic.
+The data table, where select box key value pairs are stored.
 
 Edit mode
 ---------
 
 .. figure:: img/select_img2.png
 
-    The selection box with the `list` option in the `pages management UI <pmgr>`
+    Select box in `list` display mode
 
 Using in the markup
 -------------------
 
-In the context of httl markup the value of this attribute
-is a collection of objects: :ref:`com.softmotions.ncms.mhttl.SelectNode`,
-where for every item the following properties are defined:
+In the context of httl markup the value of `selectbox` attribute
+will be a collection of objects of type :ref:`com.softmotions.ncms.mhttl.SelectNode`,
+where every element has the following properties:
 
 * **key** - item name (java.lang.String),
-* **value** - value tied to the item (java.lang.String),
+* **value** - value value (java.lang.String),
 * **selected** - whether this item is selected (boolean).
 
 
@@ -74,13 +71,15 @@ com.softmotions.ncms.mhttl.SelectNode
 
 .. js:attribute:: String SelectNode.key
 
-    Select box pair name (label displayed to site users)
+    Select box element name (title)
 
 .. js:attribute:: String SelectNode.value
 
-    Select box pair value
+    Select box element value
 
 .. js:attribute:: boolean SelectNode.selected
 
-   If ``true`` the current option is selected (active)
+    If ``true`` the current option is selected (active)
+
+
 
