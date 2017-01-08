@@ -1,61 +1,61 @@
 .. _am_webref:
 
-Веб-ресурс (webref)
-===================
+Web resource (webref)
+=====================
 
-Данный атрибут позволяет включать в страницу контент удаленного
-ресурса по протоколам: `http`, `https`, `ftp`.
+This attribute allows to include a content of remote
+resource to a page using `http`,`https`, `ftp` protocols.
 
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/webref_img1.png
 
-    Опции атрибута
+    Attribute options
 
+================================== =============
+Option                             Description
+================================== =============
+**Location**                       Default remote resource URL.
+**Display as location**            While the switch is turned on, the attribute value
+                                   is the address (URL) of the resource.
+                                   Otherwise, the attribute value is the text content of the resource.
+================================== =============
 
-================================== =========
-Опция                              Описание
-================================== =========
-**Местоположение**                 URL удаленного ресурса по умолчанию.
-**Отображать как местоположение**  В случае, если переключатель включен, значением атрибута
-                                   будет адрес (URL) ресурса.
-                                   В противном случае значением атрибута будет текстовое содержание ресурса.
-================================== =========
-
-Режим редактирования
---------------------
+Edit mode
+---------
 
 .. figure:: img/webref_img2.png
 
-    URL веб ресурса на панели редактирования страницы
+    Web resource URL on the `pages management UI <pmgr>`
 
-В данном примере в качестве ресурса был указан
-адрес страницы http://lib.ru/AKONANDOJL/doil1_5.txt
+In this example, a page address
+http://lib.ru/AKONANDOJL/doil1_5.txt was specified as a resource
 
-Использование в разметке
-------------------------
+Using in the markup
+-------------------
 
-**Тип значения атрибута:** `java.lang.String`.
+**Type of attribute value:** `java.lang.String`.
 
-Включение текста ресурса в html страницу::
+Including a resource text to the html page::
 
     Webref:
 
     $!{asm('webref')}
 
-Используя упомянутый адрес ресурса, в результате мы получаем:
+Using with that resource address, as a result we get:
 
 .. image:: img/webref_img3.png
 
 
-Ограничения
+Limitations
 -----------
 
-* В |ncmsversion| максимальный размер загружаемого файла ограничен `1Mb`.
-* В целях безопасности отключена загрузка локальных файлов и элементов classpath.
-* При загрузке http ресурсов используется кэширование. Максимальный размер документов,
-  которые могут быть сохранены в кэш: `128Kb`. Максимальное количество закешированных документов: `512`.
-* Timeout на подключение к удаленному ресурсу: `10 секунд`.
+* In the |ncmsversion| the maximum upload file size is limited to `1Mb`.
+* For security reasons, a loading of local files and the classpath elements is disabled.
+* When loading the http resource the caching is in use. The maximum size of documents
+  to be stored in the cache: `128Kb`. Maximum number of cached documents: `512`.
+* Timeout for connection to the remote resource: `10 sec`.
+
 
 
