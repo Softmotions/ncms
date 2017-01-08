@@ -1,36 +1,33 @@
 .. _onpath_deployment:
 
-ηCMS в контексте другого сайта
-==============================
+ηCMS deployment in the context of another site
+==============================================
 
-
-В данной схеме развертывания предполагается работа ηCMS
-в контексте другого сайта под некоторым префиксом.
+In this deployment scheme the ηCMS system is supposed to be
+in the context of other website under some URL suffix.
 
 .. figure:: img/ncms-onpath-deployment.png
     :align: center
 
-    ηCMS в контексте основного сайта
+    ηCMS in the context of the main site
 
-
-* Входящий трафик проксируется веб сервером `nginx` и, в зависимости от контекста, перенаправляется
-  либо на основной сайт, либо на ηCMS ресурсы, находящиеся под префиксом `/<ncms_prefix>`.
-* Все ресурсы за путем `http://example.com/<ncms_prefix>/*` обрабатываются ηCMS.
-* Все другие ресурсы обрабатываются основным сайтом.
+* Incoming traffic will be proxied by `nginx` web server and redirected either
+  to the main web site or to ηCMS under the prefix `/<ncms_prefix>` depending on the context.
+* All resources for `http://example.com/<ncms_prefix>/*` are processed by ηCMS.
+* All other resources are handled by the main site.
 
 .. warning::
 
-    Подобная конфигурация развертывания ηCMS не рекомендуется для работы
-    с MTT фильтрами трафика и A/B тестирования, поскольку при создании
-    MTT правил необходимо всегда учитывать, в каком контексте находятся
-    ресурсы ηCMS (`http://example.com/<ncms_prefix>/*`).
+    This configuration of ηCMS deployment is not recommended for a work
+    with MTT filters or A/B testing, because it is required
+    to take account of the context where the ηCMS resource
+    (`http://example.com/<ncms_prefix>/*`) is used.
 
-Конфигурация nginx
-------------------
+Nginx configuration
+-------------------
 
-Ниже приведен пример `nginx` конфигурации для данного режима развертывания.
-Здесь `rewrite` правило перенаправляет трафик за `/ncms_prefix/*`
-на экземпляр ηCMS:
+Below is a sample of a `nginx` configuration for this deployment mode.
+Here the `rewrite` rule redirects the traffic to the ηCMS instance  passing the `/ ncms_prefix /*`
 
 .. code-block:: nginx
 
@@ -50,12 +47,11 @@
      }
 
 
-Конфигурация ηCMS
------------------
+ηCMS configuration
+------------------
 
-Основной файл конфигурации ηCMS должен
-содержать директиву `app-prefix`, настроенную на корректный
-путь, под которым работает ηCMS:
+The main file of the ηCMS configuration should contain
+a directive `app-prefix` which should be set to a correct path where ηCMS works:
 
 .. code-block:: xml
 
@@ -66,16 +62,14 @@
         ...
     </security>
 
-Также следует поменять конфигурацию `Apache Shiro`, ссылка на которую содержит
-элемент `security/shiro-config-locations`.
+Also it is necessary to change the `Apache Shiro` configuration, the link passing to it contains the
+`security/shiro-config-locations` item.
 
-Добавляем `ncms_prefix` в пути перечисленные в конфигурации shiro:
+Add `ncms_prefix` to the paths specified in the configuration shiro:
 
 .. code-block:: ini
 
     [main]
-
-
 
     authc.successUrl = /ncms_prefix/adm/
 
@@ -86,12 +80,8 @@
     /ncms_prefix/adm/**         = authcBasic
 
 
-После перечисленных выше действий корень ηCMS будет доступен в контексте
-сайта example.com по адресу `http://example.com/ncms_prefix/`.
-
-
-
-
+Following the steps above, the ηCMS root is available in the context of
+example.com site at `http://example.com/ncms_prefix/`.
 
 
 
