@@ -33,7 +33,7 @@ s     second
 Edit mode
 ---------
 
-In the `pages management UI <pmgr>`, this attribute is displayed
+In the `page management UI <pmgr>`, this attribute is displayed
 as a selection box with a calendar.
 
 .. figure:: img/date_img2.png

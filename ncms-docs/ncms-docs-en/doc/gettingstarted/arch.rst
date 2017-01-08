@@ -153,7 +153,7 @@ Here we can see the output of attribute values `title`, `content`, `footer`.
 
 
 After the basic :term:`assemblies <assembly>` and page :term:`template` are defined,
-site editors can create page instances with :ref:`pages management UI <pmgr>`
+site editors can create page instances with :ref:`page management UI <pmgr>`
 based on the template described above:
 
 .. image:: img/step7.png

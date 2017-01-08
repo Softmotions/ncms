@@ -27,7 +27,7 @@ Edit mode
 
 .. figure:: img/webref_img2.png
 
-    Web resource URL on the `pages management UI <pmgr>`
+    Web resource URL on the `page management UI <pmgr>`
 
 In this example, a page address
 http://lib.ru/AKONANDOJL/doil1_5.txt was specified as a resource

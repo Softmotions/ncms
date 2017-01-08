@@ -129,3 +129,4 @@ All ``RichRef`` object properties are optional and can be ``null``.
     In addition, you can specify a list of extra attributes to be added to `<a>` for example::
 
     $!{richref.toHtmlLink(['class':'active'])}
+

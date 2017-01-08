@@ -1,32 +1,27 @@
 .. _tstyles:
 
-Использование table атрибутов в разметке страниц
-================================================
+Use of table attributes in a page markup
+========================================
 
-Достаточно часто возникает необходимость в
-контексте разметки страницы использовать
-множество предопределенных настроек с
-возможностью легкого редактирования данных для них.
+Sometimes we need to use a predefined tabular data within a page.
 
-**Например:**
+**Example:**
 
-* Редактируемые стили или данные страницы
-* Связывание настраиваемых обработчиков событий с различными элементами
-  страницы, например, привязка метрик для аналитики активности пользователей.
+* Editable styles or a page data.
+* Linking of the configured JS handlers of events with various items of the
+  page, for example, a binding of metrics to monitor an activity of users.
 
-Использование атрибутов с типом :ref:`таблица <am_table>` позволяет
-достаточно удобно решить эти задачи.
+The :ref:`table <am_table>` attribute helps solving these tasks quite easy.
 
-Приведем простой пример: страницы с ссылками разных стилей и возможностью
-на лету менять эти стили без необходимости редактировать разметку страницы.
+A simple example: pages with links of different styles and with the ability to
+to change the styles without having to edit the page markup.
 
-Для этого в контексте страницы добавим атрибут с типом :ref:`таблица <am_table>`
-и необходимыми данными для этих стилей:
+To do this add the :ref:`table <am_table>` attribute filled with
+the data required to define the styles:
 
 .. image:: img/tstyles_img1.png
 
-
-И в разметке укажем использовать данные из указанной таблицы:
+In the markup we use a data defined before:
 
 .. code-block:: html
 
@@ -44,8 +39,6 @@
     </html>
 
 
-В результате получим страницу с настраиваемыми с помощью табличных данных стилями:
+The result:
 
 .. image:: img/tstyles_img2.png
-
-
