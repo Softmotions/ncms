@@ -4,7 +4,7 @@ Image
 =====
 
 Attribute to specify an image file and display it on the page.
-ηCMS supports automatic zooming of the image according to attribute parameters.
+ηCMS supports automatic image resizing according to attribute parameters.
 
 
 Attribute options
@@ -14,21 +14,20 @@ Attribute options
 
     Attribute options
 
-=============================== =============
+=============================== ==================
 Option                          Description
-=============================== =============
-** Width **                     The desirable width of the image on the page.
-** Height **                    The desirable height of the image on the page.
-** Auto-scaling **              To enable/disable automatic scaling of the image
+=============================== ==================
+**Width**                       The desirable width of the image on the page.
+**Height**                      The desirable height of the image on the page.
+**Auto-scaling**                To enable/disable automatic scaling of the image
                                 according to width (and/or) height.
-** To fill area **              The intelligent scale mode provides the picture scaling
-                                to fill the specified area with preserving of the aspect ratio.
-** To check the size **         If this flag is enabled, the loaded by user image is checked
-                                on compliance to the specified width and height.
-** Not to scale small **        Do not scale an image, if its size is less than specified
-                                restrictions. This mode is useful to avoid a grain at increase
-                                small images.
-=============================== =============
+**To fill area**                The intelligent scale mode provides the picture scaling
+                                to fill the specified area with preserving of an aspect ratio.
+**To check the size**           If this flag is enabled, the specified image will be checked
+                                to match the specified width and height.
+**Not to scale small**          Do not scale an image, if its size is smaller than specified
+                                dimension. This mode is useful to avoid granularity on image resizing.
+=============================== ==================
 
 Edit mode
 ---------
@@ -55,7 +54,6 @@ Using in the markup
 
 **Type of an attribute value:** :ref:`com.softmotions.ncms.mhttl.Image`
 
-
 Example of the insertion of scaled image as a part of `<img>`:
 
 .. code-block:: html
@@ -81,7 +79,7 @@ com.softmotions.ncms.mhttl.Image
 
 .. js:function:: String getLink()
 
-    Returns a reference to the properly scaled image.
+    Returns a path to the properly scaled image.
 
     **Image in the в httl markup**::
 
