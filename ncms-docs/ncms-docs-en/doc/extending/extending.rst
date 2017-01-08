@@ -1,14 +1,14 @@
 .. _extending:
 
-Расширение функционала ηCMS
-===========================
+Extending ηCMS functionality
+============================
 
-ηCMS инсталлируется в форме :ref:`создания проекта <newproject>`
-веб приложения на java платформе. Тем самым, пользователь ηCMS
-с самого начала работы с этой системой имеет самые широкие
-возможности расширения функционала веб сайтов, построенных на этой системе.
+ηCMS system is created as a :ref:`new a web project <newproject>` based on Java platform.
+Thereby, an ηCMS user has the wide possibilities for farther project development
+and can extend every part of the platform.
 
-Структура нового ηCMS проекта в случае, если имя проекта `myncms`::
+Let the name of our project will be `myncms`,
+so the project structure will be like this::
 
     myncms
     │
@@ -29,9 +29,10 @@
     └── README.md
 
 
-После создания нового проекта создается `Guice <https://github.com/google/guice>`_
-модуль, в контексте которого можно регистрировать кастомные модули, специфичные для вашего
-проекта:
+
+After the creation a new project, the new `Guice <https://github.com/google/guice>` _
+module is created. In its context it's possible to register custom modules, specific to the
+project:
 
 .. code-block:: java
 
@@ -58,9 +59,8 @@
         }
     }
 
-При генерации нового проекта создается заготовка кастомного :ref:`HTTL <httl>` модуля, статические методы которого
-доступны в шаблонах ваших веб сайтов:
-
+When generating a new project, a blank custom :ref:`HTTL <httl>` module is created.
+Its static methods are available in all httl-templates:
 
 .. code-block:: java
 
@@ -76,20 +76,18 @@
         }
     }
 
-Использование `helloFromHttl` в HTTL шаблонах:
+Using of `helloFromHttl` in HTTL temlplates:
 
 .. code-block:: html
 
-    <!-- Вывод строки: Hello Andy -->
+    <!-- The output of the string: Hello Andy -->
     ${helloFromHttl('Andy')}
 
+The client part of the ηCMS GUI is implemented
+using the Qooxdoo framework http://qooxdoo.org
 
-Клиентская часть административной зоны ηCMS реализована
-на базе javascript фреймворка Qooxdoo http://qooxdoo.org.
-
-Стартовый класс qooxdoo приложения административной зоны ηCMS
-определен в подпроекте `qx` в файле `src/main/qooxdoo/classes/myncms/Application.js`.
-В случае, если ваш проект назван `myncms`:
+The main class of the ηCMS GUI qooxdoo application is defined by the
+file `src/main/qooxdoo/classes/myncms/Application.js` in the `qx` subproject.
 
 .. code-block:: js
 
@@ -111,7 +109,7 @@
         }
     });
 
-В данной стартовой точке административного GUI вашего
-приложения (`myncms.Application`) вы можете создавать
-и регистрировать кастомные qooxdoo элементы, расширяя и настраивая
-функционал административной зоны ηCMS.
+In this starting point of the ηCMS GUI application (`myncms.Application`)
+you can create and register custom qooxdoo elements,
+extending and customizing the functionality of the GUI.
+

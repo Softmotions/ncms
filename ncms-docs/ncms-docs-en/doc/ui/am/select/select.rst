@@ -17,10 +17,10 @@ Attribute options
 Display as
 **********
 
-* **list** -- in the `page management UI <pmgr>` select box will be displayed as a plain
+* **list** -- in the :ref:`page management UI <pmgr>` select box will be displayed as a plain
               list of possible values allowing to select multiple values (holding `Control` key)
 
-* **selectbox** -- in the `page management UI <pmgr>` select box will be displayed as
+* **selectbox** -- in the :ref:`page management UI <pmgr>` select box will be displayed as
                    as a drop-down list, allowing to select only one pair.
 
 

@@ -1,40 +1,37 @@
 .. _am_breadcrumbs:
 
-Хлебные крошки (breadcrumbs)
-============================
+Breadcrumbs
+===========
 
-Данный атрибут содержит путь по иерархии
-навигации от текущей страницы до главной
-в объекте :ref:`com.softmotions.ncms.mhttl.Tree`.
-Этот атрибут не имеет визуального представления в редакторе
-содержимого страницы.
+This attribute contains the path in the navigation  tree
+starting from the current page to the main page saved in
+:ref:`com.softmotions.ncms.mhttl.Tree`.
+This attribute has no visual representation in the :ref:`page management UI <pmgr>`.
 
-Чтобы включить хлебные крошки, необходимо
-добавить атрибут `breadcrumbs` в одну из следующий сборок:
+To enable breadcrumbs, add the corresponding `breadcrumbs`
+attribute into one of the following assemblies:
 
-* в главную страницу сайта
-* или в шаблон текущей страницы
-* или в текущую страницу
-* или в одну из родительских страниц текущей страницы
+* To the main page
+* Or to the current page template
+* Or to the current page
+* Or to one of the parent pages of the current page
 
-:ref:`Подробно о поиске атрибутов в контексте страницы <attributes_access>`.
+:ref:`Refer to page attributes search algorithm <attributes_access>`.
 
-В качестве демонстрации создадим следующую
-иерархию страниц::
+For example let's create the following hierarchy of pages::
 
     Documentation/
         └── AM/
-            └── Breadcrumbs/  <-- Здесь атрибут breadcrumbs
+            └── Breadcrumbs/  <-- Here is a breadcrumbs attribute
                 └── Page 1/
                     └── Page 2/
 
 
-Если в редакторе сборок в контексте страницы `Breadcrumbs`
-будет добавлен атрибут типа `breadcrumbs` с именем `breadcrumbs`, то,
-в соответствии с :ref:`алгоритмом <attributes_access>` поиска атрибутов на
-страницах сайта, он будет доступен в контексте :term:`страниц <страница>` `Breadcrumbs`, `Page 1`,
-`Page 2`. В таком случае, в каждой из этих страниц мы можем использовать следующий сниппет,
-показывающий текущее положение страницы в иерархии навигации в виде простого списка:
+If in the context of the page `Breadcrumbs` the attribute  `breadcrumbs` is added,
+then, in accordance with the attribute search :ref:`algorithm <attributes_access>`,
+it will be available in the context of :term:`page <page>` `Breadcrumbs`, `Page 1`, `Page 2`.
+On every page we can use the following snippet showing the current position
+of the page in the navigation tree as a simple list:
 
 .. code-block:: html
 
@@ -51,23 +48,16 @@
         </ul>
     </div>
 
-Что для страницы `Page 2` будет отображаться как:
+For the `Page 2` it will be displayed as:
 
 .. figure:: img/breadcrumbs_img1.png
 
 
-Заметим, что ссылки на страницы в хлебных крошках отображаются при выполнении каждого
-из следующих условий:
+Note that links to pages in the breadcrumbs are displayed
+in the fulfillment of each of the following conditions:
 
-* Страница не является текущей
-* Страница имеет разметку и опубликована для всех пользователей сайта
-
-
-
-
-
-
-
+* The page is not the currently displayed page
+* The page has a markup and published for all users of the website
 
 
 

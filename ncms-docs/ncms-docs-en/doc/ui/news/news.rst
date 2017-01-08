@@ -38,7 +38,7 @@ As we can see the template `docsink_newsdemo` is inherited from the `base_conten
 where we can set the following attributes:
 
 * `alias` - Page alias -- an alternative url on which the page is available.
-* `core` - Page markup which can be explicitly set in the `page management UI <pmgr>`.
+* `core` - Page markup which can be explicitly set in the :ref:`page management UI <pmgr>`.
 * `title` - Page title.
 * `content` - The main content of the page defined with the mediawiki markup.
 

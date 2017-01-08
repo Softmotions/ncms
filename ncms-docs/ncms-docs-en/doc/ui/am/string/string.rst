@@ -17,8 +17,8 @@ Attribute options
 Display as
 **********
 
-* **Field**  - in the `page management UI <pmgr>` an attribute is represented as a single-line input field.
-* **Input**  - in the `page management UI <pmgr>` an attribute is displayed as a broad,  multi-line,
+* **Field**  - in the :ref:`page management UI <pmgr>` an attribute is represented as a single-line input field.
+* **Input**  - in the :ref:`page management UI <pmgr>` an attribute is displayed as a broad,  multi-line,
   convenient for bulk text input.
 
 Max length

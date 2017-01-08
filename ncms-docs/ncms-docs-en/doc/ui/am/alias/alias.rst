@@ -1,14 +1,12 @@
 .. _am_alias:
 
-Псевдоним (alias)
-=================
+Alias
+=====
 
-Этот атрибут позволяет задать :term:`псевдоним страницы`.
-Псевдоним задается в текстовом поле, при этом не играет роли,
-будет ли он начинаться с начального слеша, (`\/`) или нет.
+The attribute allows to set a :term:`page alias`.
+Alias is set in the text field, alias name is
+allowed to contain a leading slash (`\/`)
 
 .. note::
 
-    Псевдоним должен быть уникален среди всех страниц в ηCMS.
-
-
+    The alias is to be unique among all pages in ηCMS.

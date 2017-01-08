@@ -1,84 +1,78 @@
 .. _am_tree:
 
-Дерево (tree)
-=============
+Tree
+====
 
-Этот атрибут удобно использовать для создания иерархических
-структур данных в веб сайте, например, для создания меню.
+This attribute is useful for creating a hierarchical
+data structures in a website, for example, to create a menu.
 
-Элементом дерева могут быть:
+Tree nodes are to be:
 
-* Папка (каталог)
-* :ref:`Ссылка на страницу ηCMS <am_pageref>` или внешний ресурс
-* :ref:`Ссылка на файл в медиарепозитории <am_fileref>`
-* :ref:`Агрегат <am_richref>`
+* The folder (directory)
+* :ref:`Link to the ηCMS <am_pageref>` page or to an external resource
+* :ref:`Link to the file in the media-repository <am_fileref>`
+* :ref:`Richref <am_richref>`
 
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/tree_img1.png
 
-**Страницы (checkbox):** Этот флаг позволять добавлять в дерево ссылки на страницы ηCMS.
+**Pages (checkbox):** This flag allows adding links to ηCMS pages to the tree.
 
-**Файлы (checkbox):** Возможность добавлять в дерево ссылки на файлы, хранимые в медиарепозитории ηCMS.
+**Files (checkbox):** Allows to add links to files stored in the ηCMS media-repository.
 
-**Внешние ссылки (checkbox):** Возможность указывать внешние ссылки (ссылки на другие веб ресурсы).
+**External links (checkbox):** Allows to specify external links.
 
-**Уровень вложенности (spinner):** Этот элемент задает максимальный уровень вложенности в дереве.
-Если уровень вложенности равен ``1``, то дерево будет представлено в виде плоского списка без какой-либо
-вложенности.
+**The level of nesting (spinner):** This item sets the maximum nesting level in the tree.
+If the nesting level is ``1``, the tree will be a flat having only one level.
 
-**Агрегат (checkbox):** Позволяет добавлять в дерево элементы типа :ref:`richref <am_richref>`.
-При клике на |IG| пользователь переходит в :ref:`опции настройки агрегата <am_richref_options>` для
-элементов дерева.
-
+**Richref (checkbox):** Allows to add :ref:`richref <am_richref>` items to the tree.
+By clicking |IG| the user goes to :ref:`options of richref configuration <am_richref_options>` for
+tree items.
 
 .. |IG| image:: img/tree_img2.png
     :align: bottom
 
-Режим редактирования
---------------------
+Edit mode
+---------
 
-Ниже приведен пример структуры простого меню,
-которое можно отобразить на странице.
+Below is an example of a simple menu structure,
+which can be displayed on the page.
 
 .. figure:: img/tree_img3.png
 
-    Дерево в интерфейсе редактирования контента страницы
+    Tree in the :ref:`page management UI <pmgr>`
 
-Синхронизация с tree атрибутом другой страницы
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Synchronisation with a tree attribute of another page
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Достаточно часто возникает необходимость иметь одно и тоже значение атрибута
-на нескольких страницах одновременно.
-Для этого можно воспользоваться режимом синхронизации значения атрибута страницы
-с атрибутом того же типа и именем, но на другой странице.
-При нажатии на кнопку `Синхронизировать` ηCMS предоставит возможность выбрать
-страницу, с которой будет осуществляться синхронизация.
+It often needs to have the same attribute value on multiple pages simultaneously.
+You can use the mode of synchronization of a page attribute value
+with the attribute of the same name and type, but on the other page.
+Clicking the `synchronise` button, ηCMS provides a way to choose
+the page where the synchronization will be performed.
 
 .. note::
 
-    Страница, с которой осуществляется синхронизация значения
-    атрибута, должна иметь атрибут типа `tree` с таким же именем.
+    Page where we synchronize attribute values
+    should have an attribute of type `tree` with the same name.
 
-После установления режима синхронизации атрибут нельзя будет
-редактировать, и все изменения, внесенные в атрибут страницы, с которой
-установлена синхронизация, будут переноситься в этот атрибут.
+After enabling synchronization mode, the attribute cannot be edited.
+All changes should be done for the 'ancestor' attribute where the synchronization is established,
+after that they are automatically copied to an 'descendant' attribute.
 
 .. figure:: img/tree_img4.png
 
 
-Использование в разметке
-------------------------
+Using in the markup
+-------------------
 
-В контексте httl разметки значением данного атрибута
-является объект типа :ref:`com.softmotions.ncms.mhttl.Tree`,
-в котором содержатся все введенные редактором сайта данные
-для этого атрибута.
+In the context of httl markup the value of this attribute
+is an object of the type :ref:`com.softmotions.ncms.mhttl.Tree`,
+containing all the data entered by the website editor.
 
-
-Отобразим заданное в этом примере двухуровневое дерево ссылок
-как простой список:
+In this example we display a two-level tree of links:
 
 .. code-block:: html
 
@@ -86,12 +80,12 @@
       <body>
         <h1>Tree demo</h1>
         <ul>
-        <!-- первый уровень -->
+        <!-- 1st level -->
         #foreach(Tree n1 in asm('tree'))
           <li>
             ${n1.name}
             <ul>
-              <!-- второй уровень -->
+              <!-- 2nd level -->
               #foreach(Tree n2 in n1)
                <li>$!{n2.toHtmlLink}</li>
               #end
@@ -102,7 +96,7 @@
       </body>
     </html>
 
-Что будет отображено на странице как:
+On the page it will be shown as:
 
 .. figure:: img/tree_img5.png
 
@@ -112,52 +106,51 @@
 com.softmotions.ncms.mhttl.Tree
 -------------------------------
 
-Все атрибуты Tree являются **опциональными.**
-Tree является рекурсивной структурой, где
-потомки дерева также являются объектами типа Tree.
+All attributes of Tree are  **optional**.
+Tree is a recursive structure where
+descendants of tree are also objects of type Tree.
 
 .. js:attribute:: Long Tree.id
 
-    Идентификатор объекта, связанного с текущим
-    элементом дерева. Например, это может быть
-    идентификатор файла в медиарепозитории, если
-    элемент дерева - ссылка на файл. Или
-    идентификатор страницы в иерархии навигации
-    при отображении :ref:`хлебных крошек <am_breadcrumbs>`.
+    Object identifier associated with the current
+    tree item. For example, it may be
+    an identifier of file in a media-repository if
+    the tree item is a link to the file. Or
+    page identifier in the navigation hierarchy
+    while displaying :ref:`breadcrumbs <am_breadcrumbs>`.
 
 .. js:attribute:: String Tree.name
 
-    Имя текущего элемента.
+    The name of the current item.
 
 .. js:attribute:: String Tree.extra
 
-    Дополнительная строка, связанная с элементом дерева.
+    Additional string associated with a tree item.
 
 .. js:attribute:: String Tree.link
 
-    Если элемент дерева является ссылкой
-    на страницу (веб ресурс) или файл, то этот атрибут
-    хранит HTTP ссылку до ресурса.
+    If the tree item is a link
+    to a page (web resource) or to a file, this attribute
+    stores HTTP link to a resource.
 
 .. js:attribute:: RichRef Tree.richRef
 
-    Этот атрибут не `null` в том случае,
-    если элементом дерева является :ref:`richref <com.softmotions.ncms.mhttl.RichRef>`.
+    This attribute is not `null` in case
+    if a tree item is :ref:`richref <com.softmotions.ncms.mhttl.RichRef>`.
 
 .. js:attribute:: Map<String,Object> Tree.attributes
 
-    Дополнительные атрибуты, связанные с элементом дерева.
+    Additional attributes associated with the tree item.
 
 .. js:attribute:: List<Tree> Tree.children
 
-    Потомки текущего элемента дерева.
-    В :ref:`httl <HTTL>` коде итерация по объекту
-    дерева означает итерацию по его прямым потомкам.
+    The descendants of the current tree item.
+    In the :ref:`httl <HTTL>` code the iterations over tree object
+    means an iteration through its direct descendants.
 
     .. code-block:: text
 
         #foreach(Tree n1 in asm('tree'))
             ...
         #end
-
 

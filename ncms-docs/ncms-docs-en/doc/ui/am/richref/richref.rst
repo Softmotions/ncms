@@ -49,7 +49,7 @@ Edit mode
 
 .. figure:: img/richref_img2.png
 
-    Richref in the page management UI
+    Richref in the :ref:`page management UI <pmgr>`
 
 The richref edit mode options are displayed as drop-down lists.
 

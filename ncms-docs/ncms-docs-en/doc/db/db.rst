@@ -1,6 +1,6 @@
 .. _db:
 
-Поддерживаемые СУБД
+Supported databases
 ===================
 
 .. toctree::

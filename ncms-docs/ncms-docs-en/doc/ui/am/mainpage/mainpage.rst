@@ -1,32 +1,29 @@
 .. _am_mainpage:
 
-Маркер главной страницы (mainpage)
-==================================
+Mainpage marker
+===============
 
-Этот атрибут помечает страницу в ηCMS как главную (домашнюю)
-для заданного набора виртуальных хостов и языков.
+This attribute marks the ηCMS page as the main (home)
+for the specified set of virtual hosts and languages.
 
 .. note::
 
-    Этот атрибут не наследуется и должен быть явно привязан к странице
-    в интерфейсе редактора сборок.
+    This attribute can not be inherited and should be explicitly
+    specified to the page instance in the :ref:`assemblies management UI<amgr>`.
 
-
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/mainpage_img1.png
 
-    Опции маркера главной страницы
+    Main page marker options
 
+**Language Codes:** List (separated by commas)
+`of two-letter language codes <https://en.wikipedia.org/wiki/ISO_639-1>` _
+of browser (useragent), to show this page. The **\*** symbol is allowed and means any language.
 
-**Коды языка:** Список (через запятую) `двухбуквенных кодов языка <https://en.wikipedia.org/wiki/ISO_639-1>`_
-браузера (useragent), для которых будет отображаться данная страница. Допускается символ **\***,
-который обозначает любой язык.
+**Virtual Hosts:** The list of virtual hosts (comma-separated) to show this page.
+Allowed symbol **\*** means any virtual host.
 
-**Виртуальные хосты:** Список виртуальных хостов (через запятую), для которых будет показана эта страница.
-Допускается символ **\***, который обозначает любой виртуальный хост.
-
-**Активно (checkbox):** Является ли данный атрибут активным. В этом случае правила для языков и
-виртуальных хостов будут использоваться при обращении клиентов к ηCMS.
-
+**Active (checkbox):** It shows if this attribute is active.
+The rules for languages and virtual hosts will apply.

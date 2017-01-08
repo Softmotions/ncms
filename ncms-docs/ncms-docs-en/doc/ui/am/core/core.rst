@@ -1,25 +1,23 @@
 .. _am_core:
 
-Выбор разметки для страницы (core)
-==================================
+Selecting page markup (core)
+============================
 
-Наличие данного атрибута в контексте страницы позволяет
-явно задать :term:`разметку <ядро>` для страницы в интерфейсе редактирования
-ее контента.
+This attribute in the context of the page allows to set
+the :term:`markup <core>` for a page in the :ref:`page management UI <pmgr>` explicitly.
 
-Обычно разметка типовых :term:`страниц <страница>` явно определяется в :term:`шаблонах <шаблон>`
-этих страниц и задается в интерфейсе редактирования :term:`сборок <сборка>`.
-Однако, может появиться необходимость в процессе редактирования содержания
-страниц задавать уникальную структуру (разметку)
-для страниц (отличную от других страниц на основе текущего шаблона), и в
-этом случае данный атрибут позволяет выбрать файл разметки страницы.
+Usually a markup of typical :term:`pages <page>` is explicitly defined in :term:`templates <template>`
+of these pages and is set in the :ref:`assembly management UI <amgr>`.
+However, while editing the page it can be necessary to set a markup
+different from others created under the current template.
+In this case the attribute allows to explicitly select the page markup file.
+This attribute has no options.
 
-Этот атрибут не имеет явно задаваемых опций в интерфейсе редактирования сборок.
-В интерфейсе редактирования контента страниц он выглядит следующим образом:
+In the page management UI it looks like this:
 
 .. figure:: img/core_img1.png
 
-    Элемент явного выбора разметки страницы в интерфейсе редактирования контента
+    Element of an explicit selection of the page markup in the page management UI
 
 
 

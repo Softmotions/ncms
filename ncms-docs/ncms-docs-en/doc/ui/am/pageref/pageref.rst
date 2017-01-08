@@ -16,7 +16,7 @@ Option                          Description
 **Link**                   The  default value of the attribute (link)
 **External links**              Switch allows to set external links.
                                 If it is off, the edit links dialog
-                                in the page management UI allows to specify only
+                                in the :ref:`page management UI <pmgr>` allows to specify only
                                 links to ηCMS pages.
 =============================== =============
 
