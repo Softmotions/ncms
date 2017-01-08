@@ -1,69 +1,68 @@
 .. _am_richref:
 
-Агрегат (richref)
-=================
+Richref
+=======
 
-С помощью `агрегата` редактор сайта имеет возможность
-вставлять в контекст страниц ссылки вместе с дополнительной
-информацией, сопровождающей ссылку:
-текстом, описанием, изображением, дополнительными стилями.
+Using a `richref` a website editor can insert links to a page,
+along with additional information: text, description, image, additional styles.
 
 .. _am_richref_options:
 
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/richref_img1.png
 
-Перечислим основные опции этого атрибута (слева направо и сверху вниз).
+Here are the main options of this attribute (from left to right and top to bottom).
 
-**Страницы (checkbox):** Позволяет вставлять ссылки как на внутренние ηCMS страницы,
-так и на внешние веб ресурсы.
+**Pages (checkbox):** Allows to insert a link to both internal ηCMS pages
+and external web resources.
 
-**Файлы (checkbox):** Опция предоставляет возможность вставлять ссылки на файлы, хранимые
-в медиарепозитории ηCMS.
+**Files (checkbox):** Allows to insert links to files stored
+in the ηCMS media repository.
 
-**Название (checkbox):** Возможность задать дополнительный однострочный
-текст вместе со ссылкой в том случае, если ссылка (вместе с названием) не быда задана.
+**Name (checkbox):** Allows to specify an additional single-line
+text with a link; for cases while a link (together with the name) was not specified.
 
-**Дополнительно (checkbox):** Возможность задать дополнительный многострочный текст вместе с ссылкой.
+**Additional (checkbox):** Allows to specify an additional multi-line text with a link.
 
-**Ссылки опционально (checkbox):** Если эта опция включена, ссылка на ресурс будет необязательной.
+**Optional links (checkbox):** If this option is enabled, a link to the resource will be optional.
 
-**Изображение (checkbox):** Возможность использовать изображение. При включении данной опции становятся
-доступны параметры отображения изображения. Опции полностью соответствуют опциям атрибута :ref:`am_image`.
+**Image (checkbox):** Allows to use the image. While this option is enabled, the image view parameters are
+available. Options are fully consistent to attribute options :ref:`am_image`.
 
-**Опции:** Три множества опций в виде пар: `ключ` => `значение`.
-Опции задаются в свободной форме, в текстовом поле и в следующем формате::
+**Features:** Three sets of options in the form of pairs: `key` => `values`.
+Options should be set in the text field in the following format::
 
-    ключ=значение[,ключ=значение, ...]
+    key=value[,key=value, ...]
 
-В приведенном примере заполнено первое множество опций::
+In the example below, the first set of options is filled::
 
-    Синий текст=blue, Красный текст=red
+    Blue text=blue, Red text=red
 
-Данные этих опции можно использовать при отображении ссылки. При этом `ключ` опции (синий текст, красный текст)
-будет отображаться в GUI редактора страницы, а значение опции (blue, red) будут доступны в httl разметке.
+The data of these options can be used for displaying links. Here the `key` option (blue text, red text)
+are displayed in the GUI page editor, and the value of the option (blue, red) are available
+in the httl markup.
 
-Режим редактирования
---------------------
+Edit mode
+---------
 
 .. figure:: img/richref_img2.png
 
-    Агрегат в режиме редактирования страницы
+    Richref in the page management UI
 
-В режиме редактирования опции агрегата отображаются в виде выпадающих списков выбора.
+The richref edit mode options are displayed as drop-down lists.
 
-Использование в разметке
-------------------------
+Using in the markup
+-------------------
 
-В контексте httl разметки значением данного атрибута
-является объект типа :ref:`com.softmotions.ncms.mhttl.RichRef`,
-в котором содержатся все введенные редактором сайта данные
-для этого атрибута.
+In the context of httl markup the value of this attribute
+is an object of type :ref:`com.softmotions.ncms.mhttl.RichRef`,
+containing all the data entered by the website editor
+for this attribute.
 
-Данные этого атрибута отобразим, как ссылку в виде изображения
-внутри блока, который имеет заголовок и описание:
+The data for this attribute are displayed as an image with link inside block
+having a caption and description:
 
 .. code-block:: html
 
@@ -84,57 +83,49 @@
     </body>
     </html>
 
-Что в веб браузере будет отображено как:
+In a web browser it will be shown as:
 
 .. figure:: img/richref_img3.png
-
 
 .. _com.softmotions.ncms.mhttl.RichRef:
 
 com.softmotions.ncms.mhttl.RichRef
 ----------------------------------
 
-Все атрибуты RichRef являются опциональными.
+All ``RichRef`` object properties are optional and can be ``null``.
 
 .. js:attribute:: Image RichRef.image
 
-    Изображение :ref:`com.softmotions.ncms.mhttl.Image`, связанное с richref.
+    Image :ref:`com.softmotions.ncms.mhttl.Image`, associated with richref.
 
 .. js:attribute:: String RichRef.description
 
-   Дополнительный многострочный комментарий. См. опцию атрибута: **дополнительно (checkbox)**.
-
+    Additional multi-line text. Refer to attribute option:. **additional (checkbox):**.
 
 .. js:attribute:: String RichRef.link
 
-    HTTP ссылка, заданная в данном атрибуте.
+    HTTP link specified in attribute.
 
 .. js:attribute:: String RichRef.name
 
-    Строковое имя, заданное в ссылке или отдельным
-    полем ``Название``, если включена опция **название (checkbox)**.
+    String name specified in the link or by individual
+    ``Name`` field, if  the **name (checkbox)** option is enabled.
 
 .. js:attribute:: String RichRef.style
 
-    Значение стиля из первого множества опций, выбранного редактором сайта, если
-    соответствующее множество опций было задано в опциях атрибута.
+    The value of the style from the first set of options selected by the site editor.
 
 .. js:attribute:: String RichRef.style2
 
-    Значение стиля из второго множества опций, выбранного редактором сайта, если
-    соответствующее множество опций было задано в опциях атрибута.
+    The value of the style from the second set of options selected by the site editor.
 
 .. js:attribute:: String RichRef.style3
 
-    Значение стиля из третьего множества опций, выбранного редактором сайта, если
-    соответствующее множество опций было задано в опциях атрибута.
+    The value of the style from the third set of options selected by the site editor.
 
 .. js:function:: String RichRef.toHtmlLink(@Nullable Map<String, ?> amap)
 
-    Этот метод генерирует код HTML ссылки `<a>` атрибута
-    в том случае, если для `richref` задана ссылка (`link`).
-    При этом, дополнительно можно указать список атрибутов
-    которые будут дабавлены в `<a>`, как например::
+    This method generates the code of HTML link `<a>`  if the link (`link`) is specified for `richref`.
+    In addition, you can specify a list of extra attributes to be added to `<a>` for example::
 
     $!{richref.toHtmlLink(['class':'active'])}
-
