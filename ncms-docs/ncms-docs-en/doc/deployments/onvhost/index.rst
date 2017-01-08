@@ -1,16 +1,14 @@
 .. _onvhost_deployment:
 
-ηCMS как самостоятельный сервис
-===============================
+Deployment as an independent service
+====================================
 
+:ref:`A new ηCMS web application <newproject>` will start
+at the root `\/` of Apache Tomcat server.
 
-ηCMS является веб приложением и при :ref:`создании нового проекта <newproject>`
-запускается в корне `/` сервера Apache Tomcat.
-
-В продакшн режиме этот сервис может быть запроксирован с помошью `Apache HTTP` веб сервера
-или сервера `NGinx`. Заметим, что в ηCMS включена поддержка виртуальных хостов, соответственно,
-данная система может обслуживать запросы для множества сайтов как без внешнего проксирования,
-так и с простым проксированием трафика.
-
+In production mode, this service can be proxied under `Apache` or `Nginx` web server.
+Note that ηCMS supports the virtual hosts, therefore,
+the system can handle requests for multiple sites either
+without an external proxy, or using a simple traffic proxy.
 
 

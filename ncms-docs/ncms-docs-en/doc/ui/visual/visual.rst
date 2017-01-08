@@ -19,7 +19,7 @@ with `ncms-block` attribute, its value should be a unique identifier of a block.
     </div>
 
 After that, a site editor can edit a stylized HTML text in the defined blocks,
-using  `Medium Editor <https://yabwe.github.io/medium-editor/>` _.
+using  `Medium Editor <https://yabwe.github.io/medium-editor/>`_.
 
 Example of use
 --------------

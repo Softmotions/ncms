@@ -1,10 +1,10 @@
 .. _soclinks:
 
-Интеграция с социальными сетями
-===============================
+Social networks integration
+===========================
 
 .. toctree::
     :maxdepth: 1
 
     ogmeta
-    uptolike
+

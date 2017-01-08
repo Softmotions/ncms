@@ -1,7 +1,7 @@
 .. _am_mainpage:
 
-Mainpage marker
-===============
+Main page marker
+================
 
 This attribute marks the ηCMS page as the main (home)
 for the specified set of virtual hosts and languages.
@@ -18,8 +18,7 @@ Attribute options
 
     Main page marker options
 
-**Language Codes:** List (separated by commas)
-`of two-letter language codes <https://en.wikipedia.org/wiki/ISO_639-1>` _
+**Language Codes:** List (separated by commas) `of two-letter language codes <https://en.wikipedia.org/wiki/ISO_639-1>`_
 of browser (useragent), to show this page. The **\*** symbol is allowed and means any language.
 
 **Virtual Hosts:** The list of virtual hosts (comma-separated) to show this page.

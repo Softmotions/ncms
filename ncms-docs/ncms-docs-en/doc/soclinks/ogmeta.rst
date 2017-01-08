@@ -1,11 +1,11 @@
 .. _ogmeta:
 
-Page integration with social media services
-===========================================
+Support of Open Graph protocol
+==============================
 
 Meta-information added to a page in conform to `open graph <http://ogp.me>`_ protocol
 allows you to integrate a content of a page to a social graph. In other words,
-by clicking a "Share" button for the page it will be correctly displayed for social services
+by clicking a "Share" button for the page it will be correctly displayed for social networks
 like Facebook.
 
 To generate a social meta-information for a page add a method call `ogmeta` inside a `head` html tag:

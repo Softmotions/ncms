@@ -186,7 +186,7 @@ Platform architecture
 
 ηCMS platform based on `Java servlet API 3.1`.
 It uses `IoC` container `Google Guice <https://github.com/google/guice>`_.
-Data persistence layer based on `MyBatis <http://www.mybatis.org/mybatis-3/>` _ library.
+Data persistence layer based on `MyBatis <http://www.mybatis.org/mybatis-3/>`_ library.
 
 :ref:`New ηCMS project <newproject>` structure allows developer to both expand
 the functionality of the ηCMS platform and create custom project modules.
@@ -256,6 +256,6 @@ Additional definitions
 
     mediawiki
         The popular wiki pages markup language. Mediawiki markup used in
-        `wikipedia.org <https://www.wikipedia.org/>` _. You can create ηCMS pages
+        `wikipedia.org <https://www.wikipedia.org/>`_. You can create ηCMS pages
         with mediawiki content blocks using :ref:`wiki attribute <am_wiki>`.
 

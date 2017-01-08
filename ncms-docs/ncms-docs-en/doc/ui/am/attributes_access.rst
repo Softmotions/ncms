@@ -17,7 +17,7 @@ using: :any:`asm` and :any:`asmAny` httl methods. When accessing an attribute by
    and look for the attribute in the parent :term:`assemblies <assembly>`.
    If the attribute is not found, go to step **\3**.
 3. Check the :term:`navigation tree <navigation tree>` of the page
-   and search for attributes in accordance with steps **\1** ** and **\2** for every page.
+   and search for attributes in accordance with steps **\1** and **\2** for every page.
    If an attribute with the specified name was not found, go **\4** step.
 4. ηCMS determines a :term:`main page <main page>` depending on the current request locale
    and system settings and examines a desired attribute for the main page,

@@ -36,7 +36,7 @@ Control buttons help you to make many routine tasks easier:
     Wiki markup editor
 
 Below there is a description of the basic controls of wiki markup editor
-for `mediawiki <https://www.mediawiki.org/wiki/Help:Formatting/ru>` _
+for `mediawiki <https://www.mediawiki.org/wiki/Help:Formatting/ru>`_
 
 .. image:: img/wiki_img2.png
 .. image:: img/wiki_img3.png

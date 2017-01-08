@@ -80,7 +80,7 @@ com.softmotions.ncms.mhttl.Table
     If the row is found the **the third column** value
     of the row is returned.
 
-     :param String def: The value if the row is not found; by default ``null``.
+    :param String def: The value if the row is not found; by default ``null``.
 
 
 .. js:function:: String Table.find2(firstColVal, [String def])
@@ -89,7 +89,7 @@ com.softmotions.ncms.mhttl.Table
     If the row is found the **the forth column** value
     of the row is returned.
 
-     :param String def: The value if the row is not found; by default ``null``.
+    :param String def: The value if the row is not found; by default ``null``.
 
 
 .. js:function:: String Table.find(String firstColVal, [int colIndex], [String def])

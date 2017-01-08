@@ -1,7 +1,7 @@
 .. _tracking_pixels:
 
-Example of using tracking pixels (web beacon)
-=============================================
+Tracking pixels example (web beacon)
+====================================
 
 .. contents::
 
@@ -12,8 +12,8 @@ Main abilities of the system of tracking pixels control
 * TP information is stored in the client `cookies` with a long time to live.
 * Ability to use references to hidden images or JS code snippets as a TP.
 
-Demo-example
-------------
+Demo
+----
 
 Let's illustrate the abilities of tracking pixels on a simple example of a site
 and its interaction with an abstract advertising service ``globalboard``:

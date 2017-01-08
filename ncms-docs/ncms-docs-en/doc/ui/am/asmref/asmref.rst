@@ -10,7 +10,7 @@ Without a markup the included assembly cannot be presented as a page or page par
 
 .. warning::
 
-    For an assembly, that will be included the :term:`markup <core>` should be specified.
+    For an assembly, that will be included, the :term:`markup <core>` should be specified.
     Otherwise, this attribute will not be displayed, and the ηCMS will report an error.
 
 Attribute options

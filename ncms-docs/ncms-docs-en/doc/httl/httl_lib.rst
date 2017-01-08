@@ -110,13 +110,13 @@ httl.spi.methods .StringMethod
    Returns the specified `value` limiting its length up to the `max` characters
    substituting the rest to `...`.
 
-    **Example**::
+   **Example**::
 
         ${"Hi word".clip(6)}
 
-    Displays: `Hi...`
+   Displays: `Hi...`
 
-    :rtype: java.lang.String
+   :rtype: java.lang.String
 
 
 .. js:function:: repeat(String value, int count)

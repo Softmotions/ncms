@@ -12,7 +12,7 @@
 * ηCMS module subsystem allows building a custom :ref:`extensions <extending>`.
 * Support of virtual hosts.
 * :ref:`A/B testing and marketing tools <mtt>`.
-* Support of `<postgresql>` and `<db2>`.
+* Support of :ref:`postgresql <postgresql>` and :ref:`db2 <db2>`.
 * Developing projects on ηCMS requires knowledge of Java
 
 

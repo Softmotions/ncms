@@ -30,7 +30,7 @@ so the project structure will be like this::
 
 
 
-After the creation a new project, the new `Guice <https://github.com/google/guice>` _
+After the creation a new project, the new `Guice <https://github.com/google/guice>`_
 module is created. In its context it's possible to register custom modules, specific to the
 project:
 

@@ -1,7 +1,7 @@
 .. _onpath_deployment:
 
-ηCMS deployment in the context of another site
-==============================================
+Deployment within a context of other website
+============================================
 
 In this deployment scheme the ηCMS system is supposed to be
 in the context of other website under some URL suffix.

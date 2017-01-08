@@ -89,7 +89,7 @@ Choosing and configuring the database connection
 
 Before running the application we need to setup configuration of the database connection.
 
- |ncmsversion| version supports the following database systems:
+|ncmsversion| version supports the following database systems:
 
 * :ref:`db2`
 * :ref:`postgresql`

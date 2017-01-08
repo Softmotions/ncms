@@ -4,7 +4,7 @@ HTTL markup
 ===========
 
 In order to generate a dynamic HTML content
-ηCMS uses the HTTL template engine `<http://httl.github.io>` _.
+ηCMS uses the HTTL template engine `<http://httl.github.io>`_.
 HTTL was created by the http://alibaba.com e-commerce company.
 
 .. toctree::
