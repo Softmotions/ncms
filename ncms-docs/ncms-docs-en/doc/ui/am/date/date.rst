@@ -1,55 +1,50 @@
 .. _am_date:
 
-Дата (date)
-===========
+Date
+====
 
-Поле ввода даты с точностью до секунд.
-Сохраняемая дата не зависит от часового пояса и содержит
-дату в виде строки ISO формата, как например: ``2007-12-03T10:15:30``.
+Input date/time field. Data in this attribute is a timezone independent
+and stored as string in ISO format, ex.: ``2007-12-03T10:15:30``.
 
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/date_img1.png
 
-    Опции атрибута
+    Attribute options
 
-Для атрибутов этого типа можно задать формат заполнения даты.
+For attributes of this type, you can specify the format of the date.
 
 ===== ===========
-Ключ   Описание
+Кey   Description
 ===== ===========
-y 	год
-M 	месяц
-d 	день месяца
-D 	день года
-E 	день недели
-h 	час в 12-часовом формате
-H 	час в 24-часовом формате
-m 	минута
-s 	секунда
+y     year
+M     month
+d     day of month
+D     day of year
+E     weekday
+h     hour in 12-hour format
+H     hour in 24-hour format
+m     min
+s     second
 ===== ===========
 
 
-Режим редактирования
---------------------
+Edit mode
+---------
 
-В режиме редактирования страницы этот атрибут
-отображается как поле выбора даты с календарем.
+In the `pages management UI <pmgr>`, this attribute is displayed
+as a selection box with a calendar.
 
 .. figure:: img/date_img2.png
 
-    Атрибут в разделе редактирования контента страницы
+    Attribute in the page management UI
 
 
-Использование в разметке
-------------------------
+Using in the markup
+-------------------
 
-**Тип значения:** `java.time.LocalDateTime`
-
-.. todo::
-
-    Примеры
+**Value type:** `java.time.LocalDateTime`
 
 
 

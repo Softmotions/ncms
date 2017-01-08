@@ -47,9 +47,6 @@ s 	секунда
 
 **Тип значения:** `java.time.LocalDateTime`
 
-.. todo::
-
-    Примеры
 
 
 
