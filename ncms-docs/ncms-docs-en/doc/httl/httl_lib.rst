@@ -2,8 +2,8 @@
 
 .. contents::
 
-Основные утилитные методы HTTL разметки
-=======================================
+Utility methods of HTTL markup
+==============================
 
 httl.spi.methods.FileMethod
 ---------------------------
@@ -16,24 +16,21 @@ httl.spi.methods.FileMethod
 httl.spi.methods .CollectionMethod
 ----------------------------------
 
-
 .. js:function:: toCycle(Collection<T> values)
 .. js:function:: toCycle(T[] values)
 
-    Преобразует переданный перечень элементов в
-    бесконечную циклическую коллекцию, в которой
-    будет постоянно повторятся переданная последовательность
-    элементов.
+    It converts the passed sequence of items into single endless cyclic collection
+    where that sequence will be repeated constantly.
 
-    Возвращает циклический итератор со следующими свойствами:
+    Returns a cyclic iterator having the following properties:
 
-    * *next* - следующий элемент
-    * *value* - текущий элемент
-    * *values* - массив всех элементов
-    * *size* - размер циклического массива
-    * *index* - текущий индекс элемента
+    * *next* - the next item
+    * *value* - the current item
+    * *values* - an array of all elements
+    * *size* - the size of the cyclic array
+    * *index* - the current index of element
 
-    **Пример:**
+    **Example:**
 
     .. code-block:: html
 
@@ -46,14 +43,14 @@ httl.spi.methods .CollectionMethod
         #end
         </table>
 
-    :rtype: Циклический итератор в зависимости от переданного типа
+    :rtype: Cyclic iterator, depending on the transferred type
 
 
 .. js:function:: length(Map<?,?> values)
 .. js:function:: length(Collection<T> values)
 .. js:function:: length(T[] values)
 
-    Возвращает длину переданной коллекции, массива.
+    Returns the length of the passed collection or array.
 
     :rtype: int
 
@@ -62,11 +59,10 @@ httl.spi.methods .CollectionMethod
 .. js:function:: sort(Collection<T> values)
 .. js:function:: sort(T[] values)
 
-    Создает новую копию переданной коллекции
-    и сортирует элементы в этой коллекции
+    Creates a new copy of the specified collection
+    and sorts its elements.
 
-    :rtype: Тип переданной коллекции `values`
-
+    :rtype: Type of transferred `values` collection
 
 
 .. js:function:: recursive(Map<K, V> values)
@@ -80,84 +76,84 @@ httl.spi.methods .EscapeMethod
 .. js:function:: escapeString(String value)
 .. js:function:: unescapeString(String value)
 
-    Escape/unescape `"`, `\`, `\t`, `\n`, `\r`, `\b`, `\f` символов в java строке.
+    Escape/unescape `"`, `\`, `\t`, `\n`, `\r`, `\b`, `\f` characters in the java string.
 
 .. js:function:: escapeXml(String value)
 
-    Escape XML в строке
+    Escape XML in the string.
 
 .. js:function:: unescapeXml(String value)
 
-    Unescape XML в строке
+    Unescape XML in the string.
 
 .. js:function:: escapeUrl(String value)
 
-    Encode части URL в строке.
+    Encode a part of URL in the string.
 
 .. js:function:: unescapeUrl(String value)
 
-    Decode части URL в строке.
+    Decode the part of URL in the string.
 
 .. js:function:: escapeBase64(String value)
 
-    Encode строки в `Base64`
+    Encode the string in the `Base64`.
 
 .. js:function:: unescapeBase64(String value)
 
-    Decode строки из `Base64`
+    Decode the string from the `Base64`.
 
 httl.spi.methods .StringMethod
 ------------------------------
 
 .. js:function:: clip(String value, int max)
 
-    Возвращает максимум `max` символов `value` заменяя остаток на `...`.
+   Returns the specified `value` limiting its length up to the `max` characters
+   substituting the rest to `...`.
 
-    **Пример**::
+    **Example**::
 
-        ${"Привет мир".clip(6)}
+        ${"Hi word".clip(6)}
 
-    Выведет: `Привет...`
+    Displays: `Hi...`
 
     :rtype: java.lang.String
 
 
 .. js:function:: repeat(String value, int count)
 
-    Повторяет вывод `value` `count` раз
+    Repeats an output `value` `count` times
 
     :rtype: java.lang.String
 
 
 .. js:function:: split(String value, char separator)
 
-    Переданное значение `value` разделяется на подстроки с разделителем `separator`
-    и возвращает подстроки в виде массива строк.
+    The transmitted `value` is divided into substrings delimited by `separator`
+    and returns substrings in the form of string array.
 
     :rtype: String[]
 
-
 .. js:function:: md5(String value)
 
-    Преобразует переданное значение в  `MD5` хеш.
+    Converts a transmitted value to `MD5` hash.
 
     :rtype: java.lang.String
 
 
 .. js:function:: sha(String value)
 
-    Преобразует переданное значение в  `SHA` хеш.
+    Converts a transmitted value to `SHA` hash.
 
     :rtype: java.lang.String
 
 
 .. js:function:: digest(String value, String digest)
 
-    Преобразует переданное значение в хеш с алгоритмом `digest`.
+    Converts a transmitted value to hash with `digest` algorithm.
 
-    **Пример**::
+    **Example**::
 
-        ${"abc".sha} эквивалентно ${"abc".digest("SHA")}
+        ${"abc".sha} equal to ${"abc".digest("SHA")}
 
     :rtype: java.lang.String
 
@@ -171,56 +167,55 @@ httl.spi.methods .TypeMethod
 
 .. js:function:: format([int,byte,short,long,float,double,Number] value, String format)
 
-    Преобразует число в строку в соответствии с заданным форматом. См. `java.text.DecimalFormat`
+    Converts a number to a string according
+    to a predetermined format. Refer to `java.text.DecimalFormat`.
 
     :rtype: java.lang.String
 
 .. js:function:: toDate(String value, [String format])
 
-    Преобразует строку в объект класса `java.util.Date`.
+    Converts a string to an object of `java.util.Date` class.
 
-    **Пример**::
+    **Example**::
 
         ${"2016-05-27".toDate}
 
 
-    :param String format: Формат переданной строки.
-                          HTTL конфигурация: `date.format=yyyy-MM-dd HH:mm:ss`
+    :param String format: Format of transmitted string.
+                          HTTL configuration: `date.format=yyyy-MM-dd HH:mm:ss`
 
     :rtype: java.util.Date
 
 
-
 .. js:function:: toList(Object[] values)
 
-    Преобразует массив значений в список `java.util.List`.
+    Converts an array of values to a `java.util.List` list.
 
 
 .. js:function:: toList(Collection<T> values)
 
-    Преобразует массив значений в список `java.util.List<T>`.
+    Converts an array of values to a `java.util.List<T>` list.
 
 
 .. js:function:: toArray(Collection<T> values)
 
-    Преобразует коллекцию в массив значений  `T[]`.
+    Converts a collection to an array of values `T[]`.
 
 
 .. js:function:: toBoolean(Object obj)
 
-   Преобразует аргумент в `java.lang.Boolean`.
+   Converts an argument to `java.lang.Boolean`.
 
-   **Пример**::
+   **Example**::
 
     ${"true".toBoolean}
 
 
 .. note::
 
-    Аналогично `toByte`, `toChar`, `toShort`,
+    Similarly `toByte`, `toChar`, `toShort`,
     `toInt`, `toLong`, `toFloat`, `toDouble`,
     `toClass`.
-
 
 
 httl.spi.methods .SystemMethod
@@ -228,17 +223,17 @@ httl.spi.methods .SystemMethod
 
 .. js:function:: now()
 
-    **Пример**::
+    **Example**::
 
         ${now()}
 
-    :return: Текущая дата
-        :rtype: java.util.Date
+    :return: current date
+            :rtype: java.util.Date
 
 
 .. js:function:: random()
 
-    :return: Нормально распределенное псевдослучайное число в промежутке: `[-2^31, 2^31-1]`
+    :return: Normally distributed pseudo-random number in the interval: `[-2^31, 2^31-1]`
 
 .. js:function:: uuid()
 
