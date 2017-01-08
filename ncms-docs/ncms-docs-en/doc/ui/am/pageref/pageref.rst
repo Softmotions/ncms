@@ -1,78 +1,76 @@
 .. _am_pageref:
 
-Ссылка на страницу (pageref)
-============================
+Page link (pageref)
+===================
 
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/pageref_img1.png
 
-    Опции атрибута
+    Attribute options
 
+=============================== =============
+Option                          Description
+=============================== =============
+**Link**                   The  default value of the attribute (link)
+**External links**              Switch allows to set external links.
+                                If it is off, the edit links dialog
+                                in the page management UI allows to specify only
+                                links to ηCMS pages.
+=============================== =============
 
-=============================== =========
-Опция                           Описание
-=============================== =========
-**Ссылка**                      Значение данного атрибута по умолчанию(ссылка)
-**Внешние ссылки**              Переключатель, позволяющий задавать внешние ссылки.
-                                В случае, если переключатель отключен, диалог редактирования
-                                ссылки в разделе управления содержимым страницы позволяет задавать только
-                                ссылки на страницы под управлением ηCMS.
-=============================== =========
-
-Режим редактирования
---------------------
+Edit mode
+---------
 
 .. figure:: img/pageref_img2.png
 
-    Атрибут на панели редактирования страницы
+    Attribute on the page editor pane
 
-При нажатии на кнопку выбора ссылки ηCMS
-предлагает выбрать страницу для ссылки, название ссылки
-или ввести внешнюю ссылку.
+Press the link button to select a target page for a link,
+edit link title or enter an external link.
 
 .. figure:: img/pageref_img3.png
 
-    Диалог выбора ссылки
+    Link selection dialog
 
 .. figure:: img/pageref_img4.png
 
-    Атрибут, инициализированный ссылкой.
+    Attribute value
 
 
-Использование в разметке
-------------------------
+Using in the markup
+-------------------
 
-**Тип значения атрибута:** :ref:`com.softmotions.ncms.mhttl.RichRef`
+**Type of attribute value:** :ref:`com.softmotions.ncms.mhttl.RichRef`
 
-Доступны следующие свойства `RichRef`:
+Here are properties of `RichRef`:
 
-=================   ========
-Свойство            Описание
-=================   ========
-**link**            URL ссылки
-**name**            Название ссылки
-**toHtmlLink()**    Метод, генерирующий html ссылку
-=================   ========
+==================== =============
+Property             Description
+==================== =============
+**link**             Link URL
+**name**             Link Name
+**toHtmlLink()**     Method generates html link
+==================== =============
 
-Генерация ссылки с помощью метода `toHtmlLink()`::
+Generating links using the `toHtmlLink()` method::
 
     #set(RichRef link = asm('pageref'))
     $!{link.toHtmlLink(['class':'active'])}
 
-В этом примере создается `<a>` ссылка на выбранную страницу с
-дополнительным атрибутом `class="active"`.
+This example creates `<a>` link to the selected page
+with an additional attribute `class ="active"`.
 
-Альтернативный пример::
+Alternative example::
 
     #set(RichRef link = asm('pageref'))
     <a href="$!{link.link}" class="active">$!{link.name}</a>
 
-Объекты класса `com.softmotions.ncms.mhttl.RichRef`
-могут использоваться в шаблонах с HTTL методом: :js:func:`linkHtml`
+`com.softmotions.ncms.mhttl.RichRef` objects can be used
+with :js:func:`linkHtml` method to create html links
 
-Пример создания ссылки::
+An example of a link creation::
 
     $!{linkHtml(asm('pageref'), ['class':'active'])}
 
