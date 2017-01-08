@@ -38,7 +38,7 @@
                 <configuration>
                     <classesDirectory>${project.build.directory}/_build</classesDirectory>
                     <includes>
-                        <include>ncmsmanual_ru/**</include>
+                        <include>ncmsmanual_en/**</include>
                     </includes>
                 </configuration>
             </plugin>

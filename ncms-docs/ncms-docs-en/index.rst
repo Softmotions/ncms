@@ -1,9 +1,9 @@
 .. The Ncms documentation root
 
-Добро пожаловать в |ncmsversion|
-================================
+Welcome to |ncmsversion|
+========================
 
-**Содержание**
+**Table of contents**
 
 .. toctree::
     :maxdepth: 1
@@ -22,10 +22,11 @@
 
 .. note::
 
-    На этом сайте вы можете использовать следующие
-    клавиатурные комбинации для навигации:
+    Here you can use the following keybindings for navigation:
 
-    |  `→` Перейти в следующий раздел справки
-    |  `←` Перейти на предыдущую страницу в истории переходов
-    |  `Ctrl + ↑` Перейти в раздел выше
-    |  `Home` Перейти на начальную страницу
+    |  `→` Go to the next chapter
+    |  `←` Got to the previous chapter
+    |  `Ctrl + ↑` Go to the parent chapter
+    |  `Home` Go to the documentation home page
+
+
