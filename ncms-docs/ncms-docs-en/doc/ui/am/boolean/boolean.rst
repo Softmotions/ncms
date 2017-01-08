@@ -1,29 +1,27 @@
 .. _am_boolean:
 
-Переключатель (да/нет)
-======================
+Switch (yes/no)
+===============
 
-Это простой перключатель, который может быть
-в одном из двух положений: ``да/нет``.
+It's a simple switch that can be
+in one of two states: ``Yes`` or ``No``.
 
-Атрибут а разделе редактирования контента страницы отображается как
-checkbox переключатель.
+This attribute is displayed as a checkbox.
 
-
-Опции атрибута
---------------
+Attribute options
+-----------------
 
 .. figure:: img/boolean_img1.png
 
-    Значение атрибута по умолчанию
+    The default value of the attribute
 
 
-Использование в разметке
-------------------------
+Using in the markup
+-------------------
 
-Тип значения: `java.lang.Boolean`
+Value type: `java.lang.Boolean`
 
-**Пример**::
+**Example**::
 
     #if(asm('showGallery').toBoolean)
         ...
