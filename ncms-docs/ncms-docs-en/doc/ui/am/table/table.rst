@@ -1,18 +1,18 @@
 .. _am_table:
 
-Таблица (table)
-===============
+Table
+=====
 
-Этот атрибут позволяет задать произвольные табличные данные
-в контексте :term:`сборки <сборка>`.
+This attribute allows to specify an arbitrary tabular data
+in the context of :term:`assembly <assembly>`.
 
 
 .. figure:: img/table_img1.png
 
-    Пример таблицы в контексте интерфейса редактирования данных страницы
+    Example of a table in the `pagea management UI <pmgr>`
 
 
-В контексте данного примера мы можем указать следующую разметку:
+In the context of the this sample we can use the following markup:
 
 
 .. code-block:: html
@@ -25,40 +25,39 @@
 
     #set(Table parrots = asm('parrots'))
 
-    <br>Вид Глаша: ${parrots.find('Глаша')}
-    <br>Возраст Глаша ${parrots.find('Глаша', 2)}
+    <br>Type Glasha: ${parrots.find('Glasha')}
+    <br>Age Glasha ${parrots.find('Glasha', 2)}
     </body>
     </html>
 
-И получаем:
+And we get:
 
 .. image:: img/table_img2.png
 
 
-В указанной разметке выражение `$!{asm('parrots').asTable.toHtml()}` мы выводим таблицу в виде html.
-Далее, с помошью `${parrots.find('Глаша')` выводим вторую колонку строки, для которой значение первой
-колонки равно переданному атрибуту `Глаша`.
+In this markup the expression `$!{asm('parrots').asTable.toHtml ()}`  outputs a table as html.
+Then, `${parrots.find('Glasha')` outputs the second column of the row, where the value of the first
+column is equal to the passed attribute `Glasha`.
 
 
 :ref:`tstyles`.
 
-UI атрибута Table
------------------
+Table attribute UI
+------------------
 
-Панель инструментов таблицы:
+Table Toolbar:
 
 .. image:: img/table_img3.png
 
+=============================== ============
+          Element UI            Description
+=============================== ============
+.. Image:: img/table_img4.png   Adds a new row to the table
 
-===============================  ============
-          Элемент UI               Описание
-===============================  ============
-.. image:: img/table_img4.png       Добавляет новую строку в таблицу
+.. Image:: img/table_img5.png   Removes selected rows
 
-.. image:: img/table_img5.png       Удаляет выбранные строки
-
-.. image:: img/table_img6.png       Задает количество колонок в таблице
-===============================  ============
+.. Image:: img/table_img6.png   Specifies the number of columns in the table
+=============================== ============
 
 
 .. _com.softmotions.ncms.mhttl.Table:
@@ -68,69 +67,58 @@ com.softmotions.ncms.mhttl.Table
 
 .. js:function:: String Table.find(firstColVal, [String def])
 
-    Поиск строки в таблице со значением
-    первой колонки строки, равным `firstColVal`.
-    В случае, если строка найдена, будет возвращено
-    значение **второй колонки** искомой строки.
+    Search the row in a table with the first column value equals to `firstColVal`.
+    If the row is found the **the second column** value
+    of the row is returned.
 
-    :param String def: Значение, которое будет возвращено, если строка не найдена; по умолчанию ``null``.
-
-
-.. js:function:: String Table.find2(firstColVal, [String def])
-
-    Поиск строки в таблице со значением
-    первой колонки строки, равным `firstColVal`.
-    В случае, если строка найдена, будет возвращено
-    значение **третьей колонки** искомой строки.
-
-    :param String def: Значение, которое будет возвращено, если строка не найдена, по умолчанию ``null``.
+    :param String def: The value if the row is not found; by default ``null``.
 
 
 .. js:function:: String Table.find2(firstColVal, [String def])
 
-    Поиск строки в таблице со значением
-    первой колонки строки, равным `firstColVal`.
-    В случае, если строка найдена, будет возвращено
-    значение **четвертой колонки** искомой строки.
+    Search the row in a table with the first column value equals to `firstColVal`.
+    If the row is found the **the third column** value
+    of the row is returned.
 
-    :param String def: Значение, которое будет возвращено, если строка не найдена, по умолчанию ``null``.
+     :param String def: The value if the row is not found; by default ``null``.
+
+
+.. js:function:: String Table.find2(firstColVal, [String def])
+
+    Search the row in a table with the first column value equals to `firstColVal`.
+    If the row is found the **the forth column** value
+    of the row is returned.
+
+     :param String def: The value if the row is not found; by default ``null``.
 
 
 .. js:function:: String Table.find(String firstColVal, [int colIndex], [String def])
 
-    Поиск строки в таблице со значением
-    первой колонки строки, равным `firstColVal`.
-    В случае, если строка найдена, будет возвращено
-    значение колонки с индексом `colIndex` искомой строки.
+    Search the row in a table with the first column value equals to `firstColVal`.
+    If the row is found it returns the value of the cell in the row with a `colIndex` index.
 
 
-    :param int firstColVal: Индекс колонки, значение которой будет возвращего. По умолчанию ``1``
-                            (вторая колонка при индексации от ``0``).
-    :param String def: Значение, которое будет возвращено, если строка не найдена, по умолчанию ``null``.
+    :param int firstColVal: Column index, where the value is found. By default, ``1``
+                            (Second column by indexing from ``0``).
+    :param String def: The value returned if the row is not found, by default ``null``.
 
 
 .. js:function:: String Table.toHtml([Map<String,?> params]):
 
-    Возвращает текущую таблицу в виде `html` разметки.
+    Returns the current table as the `html` markup.
 
-    **Пример** таблица без заголовков и с css классом `wide`::
+    **Example** the table with css class `wide` but without headers::
 
         ${asm('table').toHtml(['noHeader':true, 'tableAttrs':'class="wide"'])}
 
-    В опциональных параметрах настройки генерации html таблицы `params`
-    могут содержаться следующие пары:
+    There can exist the following pairs in the optional settings `params` of the html table generation:
 
-    * `noEscape => Boolean|String`  - не осуществлять html эскейпинг значений ячеек таблицы.
-      По умолчанию `false`.
-    * `noHeader => Boolean|String` Не отображать первую строку в качестве заголовка таблицы.
-      По умолчанию `false`.
-    * `tableAttrs => String` Дополнительные атрибуты таблицы.
+    * `NoEscape => Boolean | String` - don't escape of table cells values.
+      By default `false`.
+    * `NoHeader => Boolean | String` do not display the first row as a table header.
+      By default `false`.
+    * `TableAttrs => String` Additional table attributes.
 
-    :param Map<String,?> params: Опциональные параметры настройки генерации html таблицы.
-
-
-
-
-
+    :param Map<String,?> params: Optional settings of the html table generation.
 
 
