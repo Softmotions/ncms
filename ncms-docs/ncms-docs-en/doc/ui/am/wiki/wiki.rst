@@ -313,7 +313,7 @@ It is converted to HTML with a hierarchical structure based on lists ( `<ul>`, `
 .. note::
 
     For proper display of the tree on website pages, a site designer
-    should define `.tree` css class for suchlike `<ul class = 'tree'>` elements
+    should define `.tree` css class for suchlike `<ul class='tree'>` elements
 
 
 .. figure:: img/wiki_img23.png
@@ -373,7 +373,7 @@ As a result, in the context of the page we get youtube video:
 .. image:: img/wiki_img28.png
     :align: left
 
-**Insert the map of Google Maps**
+**Insert the Google Map**
 
 
 .. figure:: img/wiki_img29.png

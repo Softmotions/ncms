@@ -34,11 +34,6 @@ edit link title or enter an external link.
 
     Link selection dialog
 
-.. figure:: img/pageref_img4.png
-
-    Attribute value
-
-
 Using in the markup
 -------------------
 

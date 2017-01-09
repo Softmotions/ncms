@@ -30,7 +30,7 @@ Edit mode
     Web resource URL on the :ref:`page management UI <pmgr>`
 
 In this example, a page address
-http://lib.ru/AKONANDOJL/doil1_5.txt was specified as a resource
+https://tools.ietf.org/rfc/rfc6901.txt was specified as a resource
 
 Using in the markup
 -------------------
@@ -41,7 +41,9 @@ Including a resource text to the html page::
 
     Webref:
 
-    $!{asm('webref')}
+    <pre>
+        $!{asm('webref')}
+    </pre>
 
 Using the mentioned address of a resource, as a result we get:
 
