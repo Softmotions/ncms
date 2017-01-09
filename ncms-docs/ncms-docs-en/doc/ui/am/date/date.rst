@@ -3,7 +3,7 @@
 Date
 ====
 
-Input date/time field. This attribute contains a timezone independent data
+Date/time input field. This attribute contains a timezone independent data
 and stored it as a string in ISO format, ex.: ``2007-12-03T10:15:30``.
 
 Attribute options

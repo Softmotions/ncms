@@ -312,8 +312,8 @@ It is converted to HTML with a hierarchical structure based on lists ( `<ul>`, `
 
 .. note::
 
-    For the correct view of the tree in the context of the website, a site designer should
-    stylize HTML code to correctly trees.
+    For proper display of the tree on website pages, a site designer
+    should define `.tree` css class for suchlike `<ul class = 'tree'>` elements
 
 
 .. figure:: img/wiki_img23.png
@@ -378,9 +378,9 @@ As a result, in the context of the page we get youtube video:
 
 .. figure:: img/wiki_img29.png
 
-    Dialog of the insertion of a part of a Google map.
+    Google map insertion dialog.
 
-For example, by inserting a google maps `iframe` copied from Google Maps:
+For example, you can insert `iframe` copied from Google map:
 
 .. code-block:: html
 
@@ -437,7 +437,7 @@ On the page we get an embedded presentation:
     Vimeo video insert
 
 
-Wiki markup to insert vimeo video:
+Wiki markup for vimeo video:
 
 .. code-block:: html
 

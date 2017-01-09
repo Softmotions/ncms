@@ -43,7 +43,7 @@ Including a resource text to the html page::
 
     $!{asm('webref')}
 
-Using with that resource address, as a result we get:
+Using the mentioned address of a resource, as a result we get:
 
 .. image:: img/webref_img3.png
 
@@ -53,7 +53,7 @@ Limitations
 
 * In the |ncmsversion| the maximum upload file size is limited to `1Mb`.
 * For security reasons, a loading of local files and the classpath elements is disabled.
-* When loading the http resource the caching is in use. The maximum size of documents
+* When loading http resources the caching is in use. The maximum size of documents
   to be stored in the cache: `128Kb`. Maximum number of cached documents: `512`.
 * Timeout for connection to the remote resource: `10 sec`.
 

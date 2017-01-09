@@ -44,14 +44,14 @@ Using in the markup
 
 **Type of attribute value:** :ref:`com.softmotions.ncms.mhttl.RichRef`
 
-Here are properties of `RichRef`:
+Properties of `RichRef`:
 
 ==================== =============
 Property             Description
 ==================== =============
 **link**             Link URL
 **name**             Link Name
-**toHtmlLink()**     Method generates html link
+**toHtmlLink()**     Create an html link
 ==================== =============
 
 Generating links using the `toHtmlLink()` method::
@@ -59,7 +59,7 @@ Generating links using the `toHtmlLink()` method::
     #set(RichRef link = asm('pageref'))
     $!{link.toHtmlLink(['class':'active'])}
 
-This example creates `<a>` link to the selected page
+This example creates a `<a>` link to the selected page
 with an additional attribute `class ="active"`.
 
 Alternative example::

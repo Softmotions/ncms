@@ -26,14 +26,14 @@ This attribute requires a mandatory specification of an included assembly.
 Edit mode
 ---------
 
-In the page content edit mode, this is attribute is displayed
+In the page content edit mode, this attribute is displayed
 in the same way as in options pane.
 
 
 Example
 -------
 
-In this example,we will create a :term:`assembly <assembly>` `docsink_included_assembly`:
+In this example we will create a :term:`assembly <assembly>` `docsink_included_assembly`:
 
 .. image:: img/asmref_img1.png
 
@@ -42,7 +42,7 @@ Let's create a simple text attribute `greeting` with the value of `Hello from in
 
 .. image:: img/asmref_img2.png
 
-For the assembly we create a markup file `/site/docsink/included_asm_core.httl` with the following content:
+For this assembly we create a markup file `/site/docsink/included_asm_core.httl` with the following content:
 
 .. code-block:: html
 

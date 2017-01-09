@@ -18,8 +18,8 @@ Option                             Description
 **Show as a template**             If this option is enabled, the file content will
                                    be interpreted as :ref:`HTTL <httl>` template and
                                    inserted as attribute value.                                 
-**Display as a location**          If the switch is on, a file path will be a value of this attribute
-                                   otherwise it will be a file content or file content processed as a template
+**Display as a location**          If the switch is on, a file path will be a value of this attribute.
+                                   Otherwise it will be a file content or file content processed as a template
                                    depending on `Show as template` option.
 ================================== =============
 
