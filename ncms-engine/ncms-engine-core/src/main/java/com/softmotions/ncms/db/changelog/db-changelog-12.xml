@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="17009122656" author="adamansky@softmotions.com">
+        <sql endDelimiter=";">
+            DELETE FROM asm_page_deps;
+            DELETE FROM asm_media_deps;
+        </sql>
+        <dropIndex tableName="ASM_PAGE_DEPS" indexName="IDX_ASMPAGEDEPS"/>
+        <addColumn tableName="ASM_PAGE_DEPS">
+            <column name="ASM_ID" type="BIGINT"/>
+        </addColumn>
+        <dropIndex tableName="ASM_MEDIA_DEPS" indexName="IDX_MEDIADEPS"/>
+        <addColumn tableName="ASM_MEDIA_DEPS">
+            <column name="ASM_ID" type="BIGINT"/>
+        </addColumn>
+        <sql endDelimiter=";" dbms="db2">
+            CALL sysproc.admin_cmd('REORG TABLE ASM_PAGE_DEPS');
+            CALL sysproc.admin_cmd('REORG TABLE ASM_MEDIA_DEPS');
+        </sql>
+    </changeSet>
+
+    <changeSet id="17009130255" author="adamansky@softmotions.com">
+        <addNotNullConstraint tableName="ASM_PAGE_DEPS" columnName="asm_id"/>
+        <addNotNullConstraint tableName="ASM_MEDIA_DEPS" columnName="asm_id"/>
+        <createIndex indexName="IDX_MEDIADEPS" tableName="ASM_MEDIA_DEPS" unique="true">
+            <column name="ASM_ID"/>
+            <column name="ATTR_ID"/>
+            <column name="FILE_ID"/>
+        </createIndex>
+        <createIndex indexName="IDX_ASMPAGEDEPS" tableName="ASM_PAGE_DEPS" unique="true">
+            <column name="ASM_ID"/>
+            <column name="ATTR_ID"/>
+            <column name="ASM_NAME"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

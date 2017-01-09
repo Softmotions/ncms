@@ -1,7 +1,6 @@
 package com.softmotions.ncms.asm;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,9 +55,13 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
 
     private final I18n i18n;
 
+    private final AsmDAO adao;
+
     private final List<AsmAttribute> attributes = new ArrayList<>();
 
     private Long asmId;
+
+    private String asmName;
 
     private Map<AsmAttribute, Set<Long>> fileDeps;
 
@@ -77,14 +80,6 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         return response;
     }
 
-    public void setAsmId(Long asmId) {
-        this.asmId = asmId;
-    }
-
-    public Long getAsmId() {
-        return asmId;
-    }
-
     public Locale getLocale() {
         return locale;
     }
@@ -97,12 +92,22 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         return i18n;
     }
 
+    public void setAsmId(Long asmId) {
+        this.asmId = asmId;
+        this.asmName = null;
+    }
+
+    public Long getAsmId() {
+        return asmId;
+    }
+
     @Inject
     public AsmAttributeManagerContext(HttpServletRequest request,
                                       HttpServletResponse response,
                                       PageSecurityService pageSecurity,
                                       I18n i18n,
                                       ObjectMapper mapper,
+                                      AsmDAO adao,
                                       SqlSession sess) {
         super(AsmAttributeManagerContext.class, sess);
         this.pageSecurity = pageSecurity;
@@ -110,6 +115,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         this.response = response;
         this.mapper = mapper;
         this.i18n = i18n;
+        this.adao = adao;
         this.locale = i18n.getLocale(request);
     }
 
@@ -117,11 +123,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         if (fileDeps == null) {
             fileDeps = new HashMap<>();
         }
-        Set<Long> fset = fileDeps.get(attr);
-        if (fset == null) {
-            fset = new HashSet<>();
-            fileDeps.put(attr, fset);
-        }
+        Set<Long> fset = fileDeps.computeIfAbsent(attr, k -> new HashSet<>());
         fset.add(fileId);
     }
 
@@ -129,11 +131,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         if (pageDeps == null) {
             pageDeps = new HashMap<>();
         }
-        Set<String> pset = pageDeps.get(attr);
-        if (pset == null) {
-            pset = new HashSet<>();
-            pageDeps.put(attr, pset);
-        }
+        Set<String> pset = pageDeps.computeIfAbsent(attr, k -> new HashSet<>());
         pset.add(guid);
     }
 
@@ -179,20 +177,18 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
     }
 
     private void flushPageDeps() {
+        delete("deletePageDeps", getAsmId());
         if (pageDeps == null) {
             return;
         }
-        Collection<Long> attrs = new ArrayList<>(pageDeps.size());
         List<Object[]> rows = new ArrayList<>(pageDeps.size() * 3);
         for (final Map.Entry<AsmAttribute, Set<String>> e : pageDeps.entrySet()) {
-            attrs.add(e.getKey().getId());
             for (final String name : e.getValue()) {
                 if (GUID_REGEXP.matcher(name).matches()) {
-                    rows.add(new Object[]{e.getKey().getId(), name});
+                    rows.add(new Object[]{getAsmId(), e.getKey().getId(), name});
                 }
             }
         }
-        delete("deletePageDeps", "attrs", attrs);
         for (int i = 0, step = 128, to = Math.min(rows.size(), i + step);
              i < rows.size();
              i = to, to = Math.min(rows.size(), i + step)) {
@@ -201,6 +197,7 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
     }
 
     private void flushFileDeps() {
+        delete("deleteFileDeps", getAsmId());
         if (fileDeps == null) {
             return;
         }
@@ -210,17 +207,12 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
                           fde.getKey().getName(), fde.getKey().getId(), fde.getValue());
             }
         }
-        Collection<Long> attrs = new ArrayList<>(fileDeps.size());
         List<Long[]> rows = new ArrayList<>(fileDeps.size() * 3);
-
         for (final Map.Entry<AsmAttribute, Set<Long>> e : fileDeps.entrySet()) {
-            attrs.add(e.getKey().getId());
             for (final Long fid : e.getValue()) {
-                rows.add(new Long[]{e.getKey().getId(), fid});
+                rows.add(new Long[]{getAsmId(), e.getKey().getId(), fid});
             }
         }
-
-        delete("deleteFileDeps", "attrs", attrs);
         for (int i = 0, step = 128, to = Math.min(rows.size(), i + step);
              i < rows.size();
              i = to, to = Math.min(rows.size(), i + step)) {

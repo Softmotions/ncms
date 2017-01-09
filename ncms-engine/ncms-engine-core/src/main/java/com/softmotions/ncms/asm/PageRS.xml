@@ -437,4 +437,14 @@
     </select>
 
 
+    <delete id="deleteFileDeps" parameterType="long">
+        DELETE FROM ASM_MEDIA_DEPS
+        WHERE asm_id = #{id}
+    </delete>
+
+    <delete id="deletePageDeps" parameterType="long">
+        DELETE FROM ASM_PAGE_DEPS
+        WHERE asm_id = #{id}
+    </delete>
+
 </mapper>

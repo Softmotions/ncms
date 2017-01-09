@@ -1635,12 +1635,15 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     @Subscribe
+    @Transactional
     public void onAsmRemoved(AsmRemovedEvent ev) {
         Long pid = ev.getId();
         clearCachedPage(pid);
         if (removeFromIndexPages(pid)) {
             reloadIndexPages();
         }
+        delete("deleteFileDeps", pid);
+        delete("deletePageDeps", pid);
     }
 
     @Subscribe
