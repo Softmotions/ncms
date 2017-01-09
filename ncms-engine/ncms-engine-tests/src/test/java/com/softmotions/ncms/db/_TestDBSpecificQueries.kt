@@ -108,7 +108,7 @@ class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
                 else -> 0
             }
             Assert.assertEquals(res, amContext.update("mergeFileDependencies",
-                    "list", listOf(listOf(1L, 1L))))
+                    "list", listOf(listOf(0L, 1L, 1L))))
         }
 
         // test query mergePageDependencies@AsmAttributeManagerContext
@@ -119,10 +119,10 @@ class _TestDBSpecificQueries(db: String) : DbBaseTest(db) {
                 else -> 0
             }
             Assert.assertEquals(res, amContext.update("mergePageDependencies",
-                    "list", listOf(listOf(1L, "foo"))))
+                    "list", listOf(listOf(0L, 1L, "foo"))))
         }
         Assert.assertEquals(0, amContext.update("mergePageDependencies",
-                "list", listOf(listOf(1L, "bar"))))
+                "list", listOf(listOf(0L, 1L, "bar"))))
 
         // test query setAsmRefData@AsmDAO
         for (i in 0..1) {
