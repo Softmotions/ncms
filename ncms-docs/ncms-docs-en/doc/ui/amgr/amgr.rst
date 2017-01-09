@@ -74,8 +74,8 @@ will be displayed for site users otherwise ηCMS will send HTTP 404 response cod
 
 **Template** -- If its value set to the `Page` and :term:`markup <core>` is defined,
  the assembly can be used as template for new website pages. A value in the `Description` field
-will be treated a template name. The `News` option value means that this assembly will be a template
-for the news feed pages.
+ will be treated a template name. The `News` option value means that this assembly will be a template
+ for the news feed pages.
 
 **Roles** -- comma-separated list of user roles which have access to the template defined with this assembly.
 Any user who has at least one of declared roles can create pages based on this template.
