@@ -2480,6 +2480,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                            boolean overwrite,
                            boolean system,
                            String user) throws IOException {
+        source = FilenameUtils.separatorsToUnix(source);
+        target = FilenameUtils.separatorsToUnix(target);
         File srcFile = new File(source);
         if (!srcFile.isFile()) {
             throw new IOException(srcFile.getAbsolutePath() + " is not a file");
