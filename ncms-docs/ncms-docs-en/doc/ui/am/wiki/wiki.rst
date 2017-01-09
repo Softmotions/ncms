@@ -102,10 +102,9 @@ Mediawiki markup of a numbered list::
 
 As a result, a link to the page appears in the body of the mediawiki editor::
 
-    [[Page:2df428a0510a00127cf5de19acf88fdd|Extra attributes for page elements]]
+    [[Page:b3ac2985453bf87b6851e07bcf4cfadc|Documentation]]
 
-Where `2df428a0510a00127cf5de19acf88fdd` is the unique :term:`page GUID`,
-`Extra attributes for page elements` is the link text.
+Where `b3ac2985453bf87b6851e07bcf4cfadc` is the unique :term:`page GUID`, `Documentation` is the link text.
 
 |
 

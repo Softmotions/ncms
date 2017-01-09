@@ -646,8 +646,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                     {
                         id: "Youtube",
                         icon: "ncms/icon/16/wiki/youtube.png",
-                        title: this.tr("YouTube film"),
-                        tooltipText: this.tr("Insert YouTube film"),
+                        title: this.tr("Youtube video"),
+                        tooltipText: this.tr("Insert Youtube video"),
                         prompt: this.__insertYoutubePrompt.bind(this),
                         insertMediawiki: wrap(this.__mediaWikiYoutube, this)
                     },
