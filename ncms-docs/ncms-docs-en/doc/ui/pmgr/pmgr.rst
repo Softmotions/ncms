@@ -21,7 +21,7 @@ On the right side: the panes for page content preview, content editing and page 
 Edit page content panel (Edit)
 ------------------------------
 
-Every page in ηCMS should have a :term:`template`, it can be chosen
+Every page in ηCMS should have a :term:`template` which can be chosen
 by `Template` button on the editing panel:
 
 .. figure:: img/pmgr_img6.png
@@ -90,8 +90,8 @@ Preview of the page in a new window/tab of the browser
 .. image:: img/pmgr_img5.png
     :align: left
 
-The button to change the owner of the page.
-Page owner can by changed only by the current owner or administrator
+Change the page owner button.
+Page owner can by changed only by the current owner or administrator.
 
 
 .. _pmgr_hotkeys:
@@ -99,13 +99,13 @@ Page owner can by changed only by the current owner or administrator
 Hot keys
 --------
 
-The active element UI - the item having the current focus.
+The active UI element is the currently focused item
 
 ========================== ==================== ========================================
   Active UI item           Shortcut             Action
 ========================== ==================== ========================================
 The page tree              `Delete`             Deleting a page
 The page tree              `Alt+Insert`         Creating a new page
-The page tree              `F2`                 Changing the name/type of page
-The page tree              `F6`                 Move the page to a different directory
+The page tree              `F2`                 Changing the name/type of a page
+The page tree              `F6`                 Move a page to a different directory
 ========================== ==================== ========================================

@@ -3,7 +3,7 @@
 String
 ======
 
-String - this is the most widely used attribute type.
+String is the most widely used attribute type.
 This attribute allows to set an arbitrary text data as value
 and display it in the context of the page.
 
@@ -34,7 +34,7 @@ The value of this attribute by default, unless otherwise not specified by a page
 Placeholder
 ***********
 
-Placeholder for the item in the in the `pages management UI <pmgr>`.
+Placeholder for the item in the :ref:`pages management UI <pmgr>`.
 
 Using in the markup
 -------------------

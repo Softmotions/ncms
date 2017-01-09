@@ -149,8 +149,8 @@ html_theme = 'sphinx_material_theme'
 html_theme_path = [sphinx_material_theme.get_html_theme_path()]
 html_theme_options = {
     'top_nav_links': [
-        ('EN', 'http://ncms.one/manual/'),
-        ('Трекер', 'https://github.com/Softmotions/ncms/issues')
+        ('Трекер', 'https://github.com/Softmotions/ncms/issues'),
+        ('EN', 'http://ncms.one/manual/')
     ],
     #'analytics_id' : ''
 }

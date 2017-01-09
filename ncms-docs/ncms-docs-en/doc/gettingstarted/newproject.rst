@@ -79,7 +79,7 @@ with the following structure:
 
 Where:
 
-* `qx` - The source code of the administrative GUI interface, it based on `javascript library qooxdoo <http://qooxdoo.org>`_
+* `qx` - The source code of the administrative GUI interface, it is based on `javascript library qooxdoo <http://qooxdoo.org>`_
 * `web` - The server side web resources and project's java code
 * `tomcat` - Configuration files of the Apache Tomcat server to start the server
   in the development mode using maven cargo plugin
@@ -97,7 +97,7 @@ Before running the application we need to setup configuration of the database co
 
 All application configuration parameters alongside with database connection
 parameters are reside in the :ref:`configuration files <conf>`.
-In the our project it will be: `conf/ncmsapp-dev-configuration.xml`.
+In our project it will be: `conf/ncmsapp-dev-configuration.xml`.
 
 
 .. code-block:: xml

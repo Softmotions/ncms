@@ -7,10 +7,10 @@ IBM DB2
 
 DB2 Installation
 ----------------
-IBM DB2 Express-C is free powerful DBMS. It is enough to run a single copy of ηCMS
+IBM DB2 Express-C is a free powerful DBMS. It is enough to run a single copy of ηCMS
 for dozens of complex sites. To install and configure DB2 refer to the `IBM documentation <http://www.ibm.com/support/knowledgecenter/SSEPGG_11.1.0/com.ibm.db2.luw.welcome.doc/doc/welcome.html>`_.
 
-Below are steps needed to install the DB2 Express-C `v11.1` on Ubuntu Linux
+Below are steps needed to install DB2 Express-C `v11.1` on Ubuntu Linux
 
 Installing DB2 on Ubuntu
 ************************
@@ -83,7 +83,7 @@ Let us set the name of the new database as `NCMS` and the database user name - `
 ------------------
 
 It is necessary to setup a correct JDBC driver to work with database.
-Example of a configuration:
+Configuration example:
 
 .. code-block:: xml
 

@@ -9,8 +9,8 @@ as a result of a wiki markup parsing.
 
 .. note::
 
-    The best way to embed stylized content (rich content) into your page --
-    use a wiki or markdown markup.
+    The best way to embed stylized content (rich content)
+    into your page is to use a wiki or markdown markup.
 
 
 In |ncmsversion| the following formats of a
@@ -94,11 +94,11 @@ Mediawiki markup of a numbered list::
 .. image:: img/wiki_img9.png
     :align: left
 
-**The link to ηCMS page:**
+**Link to ηCMS page:**
 
 .. figure:: img/wiki_img18.png
 
-    Dialog to select the page for link.
+    Page link selection.
 
 As a result, a link to the page appears in the body of the mediawiki editor::
 
@@ -124,7 +124,7 @@ Where `2df428a0510a00127cf5de19acf88fdd` is the unique :term:`page GUID`,
 **Parameters of an image insertion**
 
 
-**Caption** - the caption beneath the image. You have to
+**Caption** - caption beneath the image. You have to
 stylize html tags for the image and caption:
 
 .. code-block:: html
@@ -161,9 +161,9 @@ Styles for images without captions:
 **Image size**
 
 * **original** -- the original size of the image without scaling
-* **small** -- width of the image ``200px``
-* **medium** -- width of the image ``400px``
-* **big** -- width of the image ``600px``
+* **small** -- width of the image is ``200px``
+* **medium** -- width of the image is ``400px``
+* **big** -- width of the image is ``600px``
 
 .. note::
 
@@ -173,15 +173,15 @@ Styles for images without captions:
 **Location of Image**
 
 * **default** - the positioning styles are not applied.
-* **in the center** - an image will be the center.
+* **center** - an image will be in the center.
     When you insert a centered image with the caption the `thumb tcenter` css classes
     are applied for `div` container with an image. In the absence of a caption,
     the `location-center` css class is applied.
-* **to the left** - the image on the left side.
+* **left** - the image is on the left side.
     For an image with the caption the `thumb tleft` css classes
     are applied for `div` container with an image. In the absence of a caption,
     the `location-left` css class is applied.
-* **right** - the image on the right side.
+* **right** - the image is on the right side.
     For an image with the caption the `thumb tright` css classes
     are applied for `div` container with an image. In the absence of a caption,
     the `location-right` css class is applied.
@@ -209,7 +209,7 @@ After selecting the file the link to the file is inserted to the wiki markup, fo
 
     [[Media:/381/mountain.jpg|Mountains]]
 
-At the same time ordinary html `<a>` links will be properly displayed on a page
+At the same time an ordinary html `<a>` links will be properly displayed on a page
 
 .. note::
 
@@ -227,7 +227,7 @@ At the same time ordinary html `<a>` links will be properly displayed on a page
 
 .. figure:: img/wiki_img21.png
 
-    Dialog to fill the table
+    Table data dialog
 
 For the sample above the button `Insert table` will insert the following markup::
 
@@ -281,7 +281,7 @@ In this example, the table is converted to the following HTML code:
 
     Tree options
 
-The current options provide the following demo markup:
+Current options provide the following demo markup:
 
 .. code-block:: html
 

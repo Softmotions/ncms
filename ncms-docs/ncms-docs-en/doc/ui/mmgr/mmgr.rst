@@ -9,8 +9,8 @@ File management in ηCMS (media repository)
 
 On the left, the user can select the current directory in the media-repository.
 In the center - the list of files in the selected directory and its subdirectories (depending on
-current viewing options). On the right - the file information is shown, main file properties
-and editing interface for text files, or panel to view images.
+current viewing options). On the right - the file information, main file properties
+and editing interface for text files, or images preview panel.
 All ηCMS users have an access to this interface.
 
 Media-repository folders notation
@@ -26,7 +26,7 @@ The catalog is *system* and used to serve static website resources.
 
 A regular user's catalog.
 
-Every file or catalog can be changed by owner, creator or user having admin rights.
+Every file or catalog can be changed by owner, creator or user with admin rights.
 
 Access to media-repository files
 --------------------------------
@@ -57,7 +57,7 @@ the file or change its description.
     :align: left
 
 Button `New file` creates a new empty file. Also it can be done by `Alt+Enter` hotkey.
-`Upload files` allows selecting local files on the disk and send them to the current ηCMS directory.
+`Upload files` allows to select local files on the disk and send them to the current ηCMS directory.
 Files can be added to the repository by dragging them from the desktop to the files list.
 
 .. image:: img/mmgr_img6.png
@@ -67,13 +67,12 @@ Deleting the selected file in the list. The file can also be removed by `Delete`
 
 .. note::
 
-    ηCMS allows deleting only files not used in links located on the website pages.
+    ηCMS allows to delete only files that are not used in links located on the website pages.
 
 .. image:: img/mmgr_img7.png
     :align: left
 
-Open the editor for text files. `F4` key opens the editor for the selected
-text file.
+Open the editor for text files. `F4` key opens the selected text file in the editor.
 
 .. image:: img/mmgr_img8.png
     :align: left
@@ -97,7 +96,7 @@ within the current directory.
 Hot keys
 --------
 
-The active UI item  - is the item having the current focus.
+The active UI element is the currently focused item
 
 ========================== ==================== ========================================
  Active UI item             Shortcut             Action

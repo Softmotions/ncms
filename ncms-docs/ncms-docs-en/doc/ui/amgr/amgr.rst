@@ -5,7 +5,7 @@ Assembly Management
 
 In this interface, the administrator can setup a structure of ηCMS :term:`assemblies <assembly>` (pages),
 define page templates and edit existing assemblies. Using this interface you can define a structure of site pages.
-Any users having `admin` or `admin.asm` permissions allowed to access this UI.
+Any users having `admin` or `admin.asm` permissions have access to this UI.
 
 .. figure:: img/amgr_img1.png
 
@@ -52,31 +52,35 @@ Assembly management
 
 .. figure:: img/amgr_img2.png
 
-    Page template called "Page with the content and the ability to specify the markup"
+    Page template: "Page with the content and the ability to specify the markup"
 
 **Name** -- the name of the assembly. For page instances it will be :term:`unique GUID <page GUID>`.
 
 **Markup** -- :ref:`HTTL <httl>` markup file for a page.
 
-**Description** -- a brief description of an assembly. This field is displayed
+**Description** -- a brief description of an assembly. This description
+is shown in the template selection dialog while choosing template for a page. It
+also used in a search index helping to find a current assembly.
+
+This field is displayed
 in the search page form and also used to select the :term:`template <template>` for pages.
 
-**Controller** -- name of a java class that implements
-the `com.softmotions.ncms.asm.render.AsmController` interface
-its instance is called when page is served. The controller can perform
+**Controller** -- name of a java class that implements the `com.softmotions.ncms.asm.render.AsmController`
+interface its instance. It is called when page is served. The controller can perform
 additional actions, for example change a HTTP response.
 
 **Published** -- Page publication status. If this switch is on, the page
 will be displayed for site users otherwise ηCMS will send HTTP 404 response code.
 
 **Template** -- If its value set to the `Page` and :term:`markup <core>` is defined,
-then the assembly can be used as template for new website pages. A value in the `Description` field
+ the assembly can be used as template for new website pages. A value in the `Description` field
 will be treated a template name. The `News` option value means that this assembly will be a template
-the news feed items.
+for the news feed pages.
 
 **Roles** -- comma-separated list of user roles which have access to the template defined with this assembly.
-Any user having at least one of declared roles can create pages based on this template. If this list is empty,
-any user allowe to create pages based on this template. This option has effect only if the **template** field is
+Any user who has at least one of declared roles can create pages based on this template.
+If this list is empty, any user is allowed to create pages based on this template.
+This option has effect only if the **template** field is
 set to either `Page` or `News` values.
 
 **Parents** -- parent assemblies for the current assembly. It allows the current assembly
@@ -98,7 +102,7 @@ Available attributes for user:
 
 .. figure:: img/amgr_img6.png
 
-   Dialog to select a new :term:`attribute <attribute>`
+   The :term:`attribute <attribute>` type selection dialog
 
 :ref:`Description of permissible assembly attributes <am>`
 
@@ -107,9 +111,9 @@ After choosing the attribute, ηCMS allows to customize attribute parameters.
 .. image:: img/amgr_img4.png
     :align: left
 
-Deleting the selected attribute. Thus only attributes
-defined in the current assembly can be removed, except attributes
-of the base assemblies in the inheritance chain.
+Deleting the selected attribute.
+Only attributes defined in the current assembly can be removed.
+Attributes of the base assemblies in the inheritance chain can't be deleted.
 
 .. image:: img/amgr_img5.png
     :align: left

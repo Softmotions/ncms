@@ -88,7 +88,7 @@ among additional attributes:
 * Page markup (:term:`core`)
 
 Website editor using ηCMS UI can create an instance of the page
-called `mypage` having type `Simple page` and unique page specific contents
+called `mypage` having template `Simple page` and unique page specific contents
 stored in :ref:`wiki attribute <am_wiki>`.
 
 .. figure:: img/ncms_arch2.png
@@ -127,13 +127,13 @@ Creating attributes common for all pages.
 
 .. image:: img/step5.png
 
-Creating a new page type: "Simple page"
+Creating a new page template: "Simple page"
 
 .. figure:: img/step6.png
 
     :term:`Template <template>`: "Simple page"
 
-Then create the core markup file for the "Simple page" type: `/site/httl/simple_core.httl`
+Then create the core markup file for the "Simple page" template: `/site/httl/simple_core.httl`
 using the :ref:`media content management interface <mmgr>`.
 
 .. code-block:: html
@@ -142,7 +142,7 @@ using the :ref:`media content management interface <mmgr>`.
     <head>
       <title>${asm('title')}</title>
     </head>
-    $!{asm('content')}
+    $!{asm('wiki')}
     <footer>
       $!{asm('footer')}
     </footer>

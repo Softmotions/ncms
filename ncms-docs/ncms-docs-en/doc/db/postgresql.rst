@@ -21,7 +21,7 @@ Let us set the name of the new database as `ncms` and the database user name - `
 
     psql
 
-#. Create the new database
+#. Create a new database
 
 .. code-block:: sql
 
@@ -33,7 +33,7 @@ Let us set the name of the new database as `ncms` and the database user name - `
 ------------------
 
 It is necessary to setup a correct JDBC driver to work with database.
-Example of a configuration:
+Configuration example:
 
 .. code-block:: xml
 
