@@ -162,7 +162,7 @@ Choose a page template:
 
 .. figure:: img/step8.png
 
-    Button to select the template
+    Template selection button
 
 .. image:: img/step9.png
 
@@ -172,13 +172,12 @@ When the page is created an interface of a page content editor switches on.
 
     Interface of a page content editor
 
-
-Pressing the key `Preview` displays the result of our work:
+Pressing the `Preview` key displays the result of our work:
 
 
 .. figure:: img/step11.png
 
-    Showing the created page `mypage`
+    Created page `mypage`
 
 
 Platform architecture
@@ -238,15 +237,15 @@ Additional definitions
 
     page alias
         Alternative page name which can be used for accessing the page.
-        For example, the page with the :term:`guid <page GUID>` equal to `b3ac2985453bf87b6851e07bcf4cfadc`
+        For example, the page with the :term:`guid <page GUID>` is equal to `b3ac2985453bf87b6851e07bcf4cfadc`
         available on address `http://<hostname>/b3ac2985453bf87b6851e07bcf4cfadc`.
-        However if :ref:`alias <am_alias>` is presented in page's assembly this
-        page can be also accessible on `http://<hostname>/mypage`.
+        However, if :ref:`alias <am_alias>` is presented in page’s assembly
+        this page can be also accessible on `http://<hostname>/mypage`.
         Slash (`\/`) chars are allowed in page alias, for example, page with alias `/foo/bar`
         will be available at `http://<hostname>/foo/bar`.
 
     glob
-    glob
+    glob pattern
         Format of simple matching patterns.
 
         * The symbol `\*` denotes zero or some characters in a line of the desired data.
@@ -255,7 +254,7 @@ Additional definitions
         `refer to a Glob notation for more details <https://en.wikipedia.org/wiki/Glob_(programming)>`_
 
     mediawiki
-        The popular wiki pages markup language. Mediawiki markup used in
+        The popular wiki pages markup language. Mediawiki markup is used in
         `wikipedia.org <https://www.wikipedia.org/>`_. You can create ηCMS pages
         with mediawiki content blocks using :ref:`wiki attribute <am_wiki>`.
 

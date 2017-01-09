@@ -323,8 +323,8 @@ jQuery(function () {
         $("a#toggle-search").click(function () {
             var el = $("div#search");
             el.is(":visible") ? el.slideUp() : el.slideDown(function () {
-                el.find("input").focus();
-            });
+                                  el.find("input").focus();
+                              });
             return false;
         });
     }
@@ -439,10 +439,11 @@ jQuery(function () {
         $(document).keydown(function (e) {
             e = e || window.event;
             var cc = e.which || e.keyCode;
+            var ctrl = e.altKey || e.ctrlKey || e.shiftKey;
             var href;
-            if (cc === 39) { // right
+            if (cc === 39 && !ctrl) { // right
                 href = $("div.rel-nav > a > i.mts-right").first().parent("a").attr("href");
-            } else if (cc === 37) { // left
+            } else if (cc === 37 && !ctrl) { // left
                 if (window.history && window.history.length) {
                     window.history.back();
                 } else {
