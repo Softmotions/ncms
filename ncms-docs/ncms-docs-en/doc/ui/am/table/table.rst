@@ -22,11 +22,11 @@ In the context of the this sample we can use the following markup:
     <h1>${asm('title')}</h1>
 
     $!{asm('parrots').asTable.toHtml()}
-
     #set(Table parrots = asm('parrots'))
 
-    <br>Type Glasha: ${parrots.find('Glasha')}
-    <br>Age Glasha ${parrots.find('Glasha', 2)}
+    <br>Glasha parrot kind: ${parrots.find('Glasha')}
+    <br>Glasha age: ${parrots.find('Glasha', 2)}
+
     </body>
     </html>
 
@@ -45,7 +45,7 @@ column is equal to the passed attribute `Glasha`.
 Table attribute UI
 ------------------
 
-Table Toolbar:
+Table toolbar:
 
 .. image:: img/table_img3.png
 

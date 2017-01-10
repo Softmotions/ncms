@@ -1013,6 +1013,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         return count("selectCountOfDependentAttrs", page.getName());
     }
 
+    // todo replace/review
     @GET
     @Path("/referers/orphans")
     public Response getOrphanPages() {
@@ -1070,7 +1071,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 return ret;
             }
 
-            //todo check dependent files
+            //todo check dependent files?
 
             adao.asmRemove(id);
             ebus.fireOnSuccessCommit(
