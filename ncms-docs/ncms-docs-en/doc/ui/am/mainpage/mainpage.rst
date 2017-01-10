@@ -3,7 +3,7 @@
 Main page marker
 ================
 
-This attribute marks the ηCMS page as the main (home)
+This attribute marks the ηCMS page as the :term:`main (home) <main page>`
 for the specified set of virtual hosts and languages.
 
 .. note::
@@ -24,5 +24,5 @@ of browser (useragent), to show this page. The **\*** symbol is allowed and mean
 **Virtual Hosts:** The list of virtual hosts (comma-separated) to show this page.
 Allowed symbol **\*** means any virtual host.
 
-**Active (checkbox):** It shows if this attribute is active.
+**Enabled (checkbox):** It shows if this attribute is active.
  The rules for languages and virtual hosts will be applied when clients access to ηCMS.

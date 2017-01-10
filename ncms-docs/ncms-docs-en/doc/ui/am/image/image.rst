@@ -21,11 +21,11 @@ Option                          Description
 **Height**                      The desirable height of the image on the page.
 **Auto-scaling**                Enable/disable automatic scaling of the image
                                 according to width (and/or) height.
-**To fill area**                The intelligent scale mode provides the picture scaling
+**Cover area**                  The intelligent scale mode provides the picture scaling
                                 will fill the specified area with preserving of an aspect ratio.
-**To check the size**           If this flag is enabled, the specified image will be checked
+**Restrict size**               If this flag is enabled, the specified image will be checked
                                 to match the specified width and height.
-**Not to scale small**          Do not scale an image, if its size is smaller than specified
+**Skip small**                  Do not scale an image, if its size is smaller than specified
                                 dimension. This mode is useful to avoid grain on resized image.
 =============================== ==================
 
@@ -47,10 +47,10 @@ offers to select an image file:
 
 .. figure:: img/image_img4.png
 
-    Attribute after selecting the image
+    Attribute view after the image is selected
 
 Using in the markup
-------------------------
+-------------------
 
 **Type of an attribute value:** :ref:`com.softmotions.ncms.mhttl.Image`
 

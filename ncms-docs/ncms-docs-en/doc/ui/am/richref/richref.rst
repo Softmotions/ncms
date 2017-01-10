@@ -24,14 +24,14 @@ in the ηCMS media repository.
 **Name (checkbox):** Allows to specify an additional single-line
 text with a link; for cases while a link (together with the name) was not specified.
 
-**Additional (checkbox):** Allows to specify an additional multi-line text with a link.
+**Extra (checkbox):** Allows to specify an additional multi-line text with a link.
 
 **Optional links (checkbox):** If this option is enabled, a link to the resource will be optional.
 
 **Image (checkbox):** Allows to use an image. If this option is enabled, the image view parameters are
 available. Options are fully consistent to attribute options :ref:`am_image`.
 
-**Features:** Three sets of options in the form of pairs: `key` => `values`.
+**Options:** Three sets of options in the form of pairs: `key` => `values`.
 Options should be set in the text field in the following format::
 
     key=value[,key=value, ...]
@@ -51,7 +51,7 @@ Edit mode
 
     Richref in the :ref:`page management UI <pmgr>`
 
-The richref edit mode options are displayed as drop-down lists.
+The richref options are displayed as drop-down lists.
 
 Using in the markup
 -------------------

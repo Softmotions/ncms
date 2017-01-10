@@ -24,8 +24,8 @@ Display as
                    as a drop-down list, allowing to select only one pair.
 
 
-Selecting the set of values
-***************************
+Multi select
+************
 
 Used only for *list* display mode allowing to choose multiple values.
 
@@ -44,7 +44,7 @@ Edit mode
 Using in the markup
 -------------------
 
-In the context of httl markup the value of `selectbox` attribute
+In the context of :ref:`HTTL <HTTL>` markup the value of `selectbox` attribute
 will be a collection of objects of type :ref:`com.softmotions.ncms.mhttl.SelectNode`,
 where every element has the following properties:
 

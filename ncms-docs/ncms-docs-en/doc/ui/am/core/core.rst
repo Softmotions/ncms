@@ -3,8 +3,8 @@
 Selecting page markup (core)
 ============================
 
-This attribute in the context of the page allows to set
-the :term:`markup <core>` for a page in the :ref:`page management UI <pmgr>` explicitly.
+This attribute allows to set the :term:`markup <core>`
+for a page in the :ref:`page management UI <pmgr>` explicitly.
 
 Usually a markup of typical :term:`pages <page>` is explicitly defined in :term:`templates <template>`
 of these pages and is set in the :ref:`assembly management UI <amgr>`.
@@ -17,7 +17,6 @@ In the page management UI it looks like this:
 
 .. figure:: img/core_img1.png
 
-    Element of an explicit selection of the page markup in the page management UI
 
 
 

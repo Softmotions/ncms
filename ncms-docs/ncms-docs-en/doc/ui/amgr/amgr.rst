@@ -59,18 +59,16 @@ Assembly management
 **Markup** -- :ref:`HTTL <httl>` markup file for a page.
 
 **Description** -- a brief description of an assembly. This description
-is shown in the template selection dialog while choosing template for a page. It
-also used in a search index helping to find a current assembly.
-
-This field is displayed
-in the search page form and also used to select the :term:`template <template>` for pages.
+is shown in the :term:`template <template>` selection dialog while choosing template for a page. It
+also used in a search index helping to find this assembly.
 
 **Controller** -- name of a java class that implements the `com.softmotions.ncms.asm.render.AsmController`
-interface its instance. It is called when page is served. The controller can perform
+interface. It is called when page is served. The controller can perform
 additional actions, for example change a HTTP response.
 
 **Published** -- Page publication status. If this switch is on, the page
 will be displayed for site users otherwise ηCMS will send HTTP 404 response code.
+This switch is actual only for page instances (not for templates or base assemblies).
 
 **Template** -- If its value set to the `Page` and :term:`markup <core>` is defined,
  the assembly can be used as template for new website pages. A value in the `Description` field
@@ -81,7 +79,7 @@ will be displayed for site users otherwise ηCMS will send HTTP 404 response cod
 Any user who has at least one of declared roles can create pages based on this template.
 If this list is empty, any user is allowed to create pages based on this template.
 This option has effect only if the **template** field is
-set to either `Page` or `News` values.
+set to either `Page` or `News`.
 
 **Parents** -- parent assemblies for the current assembly. It allows the current assembly
 to inherit the attributes of the parent assembly(es).

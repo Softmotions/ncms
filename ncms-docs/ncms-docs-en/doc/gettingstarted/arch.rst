@@ -75,7 +75,7 @@ Let's assume that the `title` is a string which is placed in the markup inside t
         <title>The page title here</title>
     </head>
 
-The `footer` is a part of HTML markup stored in a file in the ηCMS media-repository.
+The `footer` is a part of HTML markup stored in a file in the ηCMS :ref:`media repository <mmgr>`.
 
 In the said majority we get all possible pages with common footer and header
 displaying a single content block, giving `Simple page` name to this set and treat
@@ -97,7 +97,7 @@ stored in :ref:`wiki attribute <am_wiki>`.
     Hierarchy of assemblies inheritance for `mypage` page having `Simple page` as template.
 
 While accessing the `mypage` page, ηCMS gets the :term:`HTTL` :term:`core` markup file
-of the `Simple page` template, then pushes all of `mypage` attributes to the context of markup,
+of the `Simple page` template, then pushes all of `mypage` attributes to the httl markup context,
 and generates the HTML response to the client. This process describes a simple but powerful
 idea underlying ηCMS.
 
@@ -117,24 +117,37 @@ Creating attributes common for all pages.
 
 .. figure:: img/step3.png
 
-    Creating new attribute for `base`
+    Create a new attribute for `base`
 
-.. figure:: img/step4.png
 
-    Creating new attribute `title` for `base`
+Add the new attribute `title` to the base assembly:
 
-    Similarly, adding the attribute `footer`.
+.. image:: img/step4.png
+
+Then add the `footer` attribute. The footer is a :ref:`fileref <am_fileref>` attribute
+and we need to create a corresponding file `/site/httl/file.httl`
+in :ref:`media repository <mmgr>` and set it as `footer`'s value.
+The `file.httl` contains the following markup:
+
+.. code-block:: html
+
+    <b>Simple page footer</b>
+
+
+.. image:: img/footer.png
+
+The final overview of `base` assembly:
 
 .. image:: img/step5.png
 
-Creating a new page template: "Simple page"
+Then create a new page template: "Simple page":
 
 .. figure:: img/step6.png
 
     :term:`Template <template>`: "Simple page"
 
-Then create the core markup file for the "Simple page" template: `/site/httl/simple_core.httl`
-using the :ref:`media content management interface <mmgr>`.
+Then create the :ref:`HTTL markup <httl>` for the "Simple page" template: `/site/httl/simple_core.httl`
+in the :ref:`media repository <mmgr>`.
 
 .. code-block:: html
 
@@ -149,12 +162,12 @@ using the :ref:`media content management interface <mmgr>`.
     </html>
 
 Here we can see the output of attribute values `title`, `content`, `footer`.
-:ref:`Manual on the HTTL markup in ηCMS. <httl>`
 
 
-After the basic :term:`assemblies <assembly>` and page :term:`template` are defined,
+
+After the basic :term:`assembly <assembly>` and page :term:`template` are defined,
 site editors can create page instances with :ref:`page management UI <pmgr>`
-based on the template described above:
+based on the template created above:
 
 .. image:: img/step7.png
 
@@ -166,19 +179,21 @@ Choose a page template:
 
 .. image:: img/step9.png
 
-When the page is created an interface of a page content editor switches on.
+When the page is created an interface of a page content editor will be:
 
 .. figure:: img/step10.png
 
-    Interface of a page content editor
+    Content of `mypage`
 
-Pressing the `Preview` key displays the result of our work:
+The |IPreview| button displays the result of our work:
 
 
 .. figure:: img/step11.png
 
     Created page `mypage`
 
+.. |IPreview| image:: img/preview.png
+    :align: bottom
 
 Platform architecture
 ---------------------
@@ -228,7 +243,7 @@ Additional definitions
 
         * Standard page
         * News feed
-        * :term:`assembly <assembly>` - page-prototype for another pages
+        * :term:`Assembly <assembly>` - a page-prototype for another pages
           (parent in :term:`Inheritance tree <asm inheritance tree>`).
 
     page GUID

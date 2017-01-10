@@ -61,9 +61,9 @@ and the block text:
 
 .. image:: img/visual_img2.png
 
-As result we get a simple and intuitive way to edit
+As a result we get a simple and intuitive way to edit
 page data blocks directly in the page preview pane:
 
 .. figure:: img/visual_img3.png
 
-    Page after changes
+    Page after a changes

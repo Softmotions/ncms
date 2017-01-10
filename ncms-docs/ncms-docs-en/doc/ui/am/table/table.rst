@@ -9,7 +9,7 @@ in the context of :term:`assembly <assembly>`.
 
 .. figure:: img/table_img1.png
 
-    Example of a table in the `pagea management UI <pmgr>`
+    Example of a table in the :ref:`page management UI <pmgr>`
 
 
 In the context of the this sample we can use the following markup:
@@ -35,7 +35,7 @@ And we get:
 .. image:: img/table_img2.png
 
 
-In this markup the expression `$!{asm('parrots').asTable.toHtml ()}`  outputs a table as html.
+In this markup the expression `$!{asm('parrots').asTable.toHtml()}`  outputs a table as html.
 Then, `${parrots.find('Glasha')` outputs the second column of the row, where the value of the first
 column is equal to the passed attribute `Glasha`.
 

@@ -5,12 +5,12 @@ Insert the assembly (asmref)
 
 This attribute provides the ability to include :term:`assemblies <assembly>` to each other.
 Included assembly will be rendered in the context of other assembly,
-it needs to have a valid :term:`markup <core>` to be properly rendered.
-Without a markup the included assembly cannot be presented as a page or page part.
+it needs to have a valid :term:`core markup <core>` to be properly rendered.
+Without a :term:`core` the included assembly cannot be presented as a page or page part.
 
 .. warning::
 
-    For an assembly, that will be included, the :term:`markup <core>` should be specified.
+    For an assembly, that will be included, the :term:`core markup <core>` should be specified.
     Otherwise, this attribute will not be displayed, and the ηCMS will report an error.
 
 Attribute options
@@ -33,7 +33,7 @@ in the same way as in options pane.
 Example
 -------
 
-In this example we will create a :term:`assembly <assembly>` `docsink_included_assembly`:
+In this example we will create an :term:`assembly <assembly>` `docsink_included_assembly`:
 
 .. image:: img/asmref_img1.png
 

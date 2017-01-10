@@ -10,7 +10,7 @@ With a probability of 50% to 50% the website shows users two pictures: `shark` a
 `A/B` mode is selected on first access to the site page and remembered for one day by default.
 Let website will be in a virtual domain: `foo.example.com`.
 
-Sample pages of the site in the mode of `\A`:
+Sample page of the site in `\A` mode:
 
 .. figure:: img/screen10.png
     :align: center
@@ -44,7 +44,7 @@ it will be home page :term:`core <core>` of `foo.example.com`
 
 The following three assembly :term:`attributes <attribute>`: `title`, `imageA`, `imageB` are
 included to the `html` markup. Here the `abt` httl function is used to determine
-the current `AB` mode. In this sample the a result of ``abt('A')``  will be `true`
+the current `AB` mode. In this sample the result of ``abt('A')``  will be `true`
 if `\A` mode is active and a `imageA` will be displayed,
 accordingly the `imageB` will be displayed for `\B` mode.
 
@@ -66,7 +66,7 @@ the required images to the page repository:
     Creating an instance of the page
 
 
-Select the page created in the `assembly management UI <amgr>`
+Select the created page in the `assembly management UI <amgr>`
 and add the `mainpage` attribute, says ηCMS that
 this page is the `foo.example.com` home page:
 

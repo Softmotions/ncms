@@ -9,7 +9,15 @@ Prerequisites
 -------------
 
 * JDK `1.8`
-* Maven 3.3.x
+* Maven `3.3.x`
+* Python `2.7` installed (Needed to build the :ref:`admin GUI <ui>`)
+* Linux or Windows
+
+.. note::
+
+    You can run ηCMS on Windows, but the |ncmsversion| test
+    cases are designed to run only on linux platforms.
+    We highly recommend to run |ncmsversion| on Linux in production mode.
 
 Using Maven Archetype
 ---------------------

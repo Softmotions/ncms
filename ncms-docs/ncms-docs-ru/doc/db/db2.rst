@@ -94,7 +94,7 @@ IBM DB2
     <mybatis>
         <bindDatasource>true</bindDatasource>
         <config>com/softmotions/ncms/db/mybatis-config.xml</config>
-        <propsFile>{home}/.ncms.ds</propsFile>
+        <propsFile>{home}/.ncmsapp.ds</propsFile>
         <extra-properties>
             JDBC.driver=com.ibm.db2.jcc.DB2Driver
         </extra-properties>
@@ -106,7 +106,7 @@ IBM DB2
     Убедитесь в том, что в элементе конфигурации `mybatis/extra-properties`
     присутствует JDBC драйвер для DB2: `com.ibm.db2.jcc.DB2Driver`
 
-Где в файле `${HOME}/.ncms.ds` хранятся JDBC URL, имя пользователя и пароль к БД::
+Где в файле `${HOME}/.ncmsapp.ds` хранятся JDBC URL, имя пользователя и пароль к БД::
 
     JDBC.url=jdbc:db2://127.0.0.1:50000/NCMS
     JDBC.username=ncms

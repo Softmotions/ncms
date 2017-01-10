@@ -4,7 +4,7 @@ Web resource (webref)
 =====================
 
 This attribute allows to include a content of remote
-resource to a page using `http`,`https`, `ftp` protocols.
+resource to a page using `http`, `https`, `ftp` protocols.
 
 Attribute options
 -----------------
@@ -17,9 +17,9 @@ Attribute options
 Option                             Description
 ================================== =============
 **Location**                       Default remote resource URL.
-**Display as location**            While the switch is turned on, the attribute value
+**Render only location**           While the switch is turned on, the attribute value
                                    is the address (URL) of the resource.
-                                   Otherwise, the attribute value is the text content of the resource.
+                                   Otherwise, the attribute value is a textual content of a resource.
 ================================== =============
 
 Edit mode
@@ -30,7 +30,7 @@ Edit mode
     Web resource URL on the :ref:`page management UI <pmgr>`
 
 In this example, a page address
-https://tools.ietf.org/rfc/rfc6901.txt was specified as a resource
+https://tools.ietf.org/rfc/rfc6901.txt was specified as the resource
 
 Using in the markup
 -------------------
@@ -45,7 +45,7 @@ Including a resource text to the html page::
         $!{asm('webref')}
     </pre>
 
-Using the mentioned address of a resource, as a result we get:
+Using the mentioned address of a resource, we get:
 
 .. image:: img/webref_img3.png
 
@@ -53,7 +53,7 @@ Using the mentioned address of a resource, as a result we get:
 Limitations
 -----------
 
-* In the |ncmsversion| the maximum upload file size is limited to `1Mb`.
+* In the |ncmsversion| the maximum remote content size is limited to `1Mb`.
 * For security reasons, a loading of local files and the classpath elements is disabled.
 * When loading http resources the caching is in use. The maximum size of documents
   to be stored in the cache: `128Kb`. Maximum number of cached documents: `512`.

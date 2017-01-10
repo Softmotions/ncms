@@ -2,7 +2,7 @@
 
 .. contents::
 
-Basics HTTL
+HTTL Basics
 ===========
 
 HTTL is a template language similar to `Apache Velocity <http://velocity.apache.org>`_,
@@ -34,9 +34,9 @@ Example::
 
     ${user.name}
 
-In this sample, the result of expression `user.name` printed, but this string
+In this sample, the result of expression `user.name` is printed, but this string
 is escaped to not be a valid `html` markup. For example the result of the expression: `<b>text</ b>`
-converted to `&lt;b&gt;text&lt;/b&gt;`. To disable escaping use `$!` before expression curly brace::
+converted to `&lt;b&gt;text&lt;/b&gt;`. To disable escaping use `$!` before expression in curly braces::
 
   $!{expression}
 
@@ -108,7 +108,7 @@ Expressions
   To use a single character (like `char`) conclude it to back quotes `\`\``.
 * `\+` in expressions where the first argument is the number is interpreted as
   arithmetic addition. For example: `${1 + "2"}` displays `3` not 12.
-  For string concatenation use a pair of: `${s1}${s2}`.
+  For string concatenation use a pair: `${s1}${s2}`.
 * Access to a property values of the `java` classes instances is carried out by a property name.
   For example, `${user.name}` is equivalent to calling `${user.getName()}`.
 * The result of expression with logical 'OR' is the last nonzero/nonempty element of expression.
@@ -119,7 +119,7 @@ Expressions
   and for a small `\l` the result is a primitive `long`.
 * To access the data in the `java.util.List` lists or in `Java.util.Map` associated collections
   use the square brackets `[]` operator.
-  For example, the expression `${mylist[0]}` is equals to `${mylist.get(0)}` and `${mymap['foo']}`
+  For example, the expression `${mylist[0]}` is equal to `${mylist.get(0)}` and `${mymap['foo']}`
   is an equivalent of `${mymap.get("foo")}`.
 * The result of the `${["a", "b", "c"]}` expression is `java.util.List` containing these elements::
 
@@ -195,7 +195,7 @@ Example::
         ... otherwise this block will be executed
     #end
 
-Every `#if` operator is to be completed by the `#end`
+Every `#if` operator should be completed by the `#end`
 operator placed after a set of optional `#else` directives.
 
 Processing of a conditional expression
@@ -235,7 +235,7 @@ In the body of the `for` block there is a `for` object with the following permis
 
 * `for.index` - the current iteration number, starting with ``0``
 * `for.size` - size of the collection where the iteration is used
-* `for.fist` - the first item of the collection
+* `for.fist` - the first item in the collection
 * `for.last` - the last item in the collection
 
 
@@ -260,7 +260,7 @@ Output ``10, 20, 30``, where the argument is defined as an array `[]` ::
 
     #for(i: [10, 20, 30])
 
-Use the first the non-empty set or `books1`` books2` for iteration::
+Use the first the non-empty set `books1` or `books2` for iteration::
 
     #for(book: books1 || books2)
 
@@ -323,8 +323,8 @@ Libraries of functions in the context of HTTL patterns
 Registration of methods library and  available methods
 ******************************************************
 
-In the context of HTTL templates there are available libraries of re-used methods.
-A library of re-used methods is a `java` class having public static methods
+In the context of HTTL templates libraries of re-used methods are available.
+A library of re-used methods is a `java` class having public static methods.
 The library can be registered using configuration parameter HTTL `import.methods`.
 
 Example of registering a new methods library in HTTL:
@@ -431,7 +431,7 @@ by any of the following ways::
 
 **An example of using the method :js:func:`toCycle` from `httl.spi.methods.CollectionMethod`**
 
-Output of the list of products with cyclically changing colors of rows from a set of `colors`:
+Output of the product list with cyclically changing colors of rows from a set of `colors`:
 
 .. code-block:: html
 
@@ -448,9 +448,10 @@ Output of the list of products with cyclically changing colors of rows from a se
 Macros #macro
 -------------
 
-Macro is a HTTL markup unit which can be reused. Macros can use a set of parameters
-similar to parameters in a `java` function. When you call a macro HTTL
-the markup defined in the macro is inserted to the place of a macro call.
+Macro is a HTTL markup unit which can be reused.
+Macro can use a set of parameters similar to parameters in a `java` function.
+When you call a macro HTTL the markup defined in the macro
+is inserted to the place of a macro call.
 
 The format of the macro definition::
 
@@ -476,8 +477,8 @@ Where `name` is macro name, `arg1, arg2, ...` are possible arguments of macro.
 Inclusion of other files to the markup
 --------------------------------------
 
-The set of `include` methods from `httl.spi.methods.FileMethod` allow
-include other files into the current markup.
+The set of `include` methods from `httl.spi.methods.FileMethod`
+allows to include other files into the current markup.
 
 **Example:** inclusion of `template.html` content to the markup::
 

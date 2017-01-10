@@ -4,7 +4,7 @@ News feeds management
 =====================
 
 Site pages based on a :term:`template <template>`, may have one or more news (events) feeds.
-Let's call them the **basic pages**. News feed is the set of pages of a given type,
+Let's call them the **base pages**. News feed is the set of pages of a given type,
 associated with the `base page`.
 
 .. note::
@@ -171,6 +171,6 @@ Generating the link to news ::
     </body>
     </html>
 
-The result we get a page containing news:
+As a result we get a page containing news:
 
 .. image:: img/news_img16.png

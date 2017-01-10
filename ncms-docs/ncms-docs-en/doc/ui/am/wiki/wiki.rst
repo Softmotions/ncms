@@ -10,7 +10,7 @@ as a result of a wiki markup parsing.
 .. note::
 
     The best way to embed stylized content (rich content)
-    into your page is to use a wiki or markdown markup.
+    into your page is to use a wiki or markdown.
 
 
 In |ncmsversion| the following formats of a
@@ -162,7 +162,7 @@ Styles for images without captions:
 * **original** -- the original size of the image without scaling
 * **small** -- width of the image is ``200px``
 * **medium** -- width of the image is ``400px``
-* **big** -- width of the image is ``600px``
+* **large** -- width of the image is ``600px``
 
 .. note::
 
@@ -352,8 +352,6 @@ HTML warning markup, which can be stylized by a site designer:
 
 
 .. figure:: img/wiki_img25.png
-
-    Options to insert Youtube video
 
 
 Wiki markup to insert youtube video:

@@ -21,7 +21,7 @@ HTTL template:
     ...
     </html>
 
-There css resource is called with a query parameter `?style = black`, which is processed while
+Here css resource is called with a query parameter `?style = black`, which is processed while
 generating the file `site.httl.css` as a template.
 
 

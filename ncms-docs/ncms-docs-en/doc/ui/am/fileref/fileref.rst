@@ -15,12 +15,12 @@ Attribute options
 Option                             Description
 ================================== =============
 **Location**                       Location of the file in the ηCMS media repository.
-**Show as a template**             If this option is enabled, the file content will
+**Render as a template**           If this option is enabled, the file content will
                                    be interpreted as :ref:`HTTL <httl>` template and
                                    inserted as attribute value.                                 
-**Display as a location**          If the switch is on, a file path will be a value of this attribute.
+**Render only location**           If the switch is on, a file path will be a value of this attribute.
                                    Otherwise it will be a file content or file content processed as a template
-                                   depending on `Show as template` option.
+                                   depending on `Render as a template` option.
 ================================== =============
 
 
@@ -36,7 +36,7 @@ Using in the markup
 
 **Type of the attribute value:** `java.lang.String`
 
-For example, activate the checkbox `Display as template`,
+For example, activate the checkbox `Render as a template`,
 and create the file `template-inc.httl` containing:
 
 .. code-block:: html

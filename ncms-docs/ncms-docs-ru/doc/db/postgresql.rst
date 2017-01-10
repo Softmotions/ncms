@@ -41,7 +41,7 @@ PostgreSQL
     <mybatis>
         <bindDatasource>true</bindDatasource>
         <config>com/softmotions/ncms/db/mybatis-config.xml</config>
-        <propsFile>{home}/.ncms.ds</propsFile>
+        <propsFile>{home}/.ncmsapp.ds</propsFile>
         <extra-properties>
             JDBC.driver=org.postgresql.Driver
         </extra-properties>
@@ -53,7 +53,7 @@ PostgreSQL
     Убедитесь в том, что в элементе конфигурации `mybatis/extra-properties`
     присутствует JDBC драйвер для Postgres: `org.postgresql.Driver`
 
-Где в файле `${HOME}/.ncms.ds` хранятся JDBC URL, имя пользователя и пароль к БД::
+Где в файле `${HOME}/.ncmsapp.ds` хранятся JDBC URL, имя пользователя и пароль к БД::
 
     JDBC.url=jdbc:postgresql://127.0.0.1:5432/ncms
     JDBC.username=ncms

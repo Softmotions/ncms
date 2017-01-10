@@ -505,8 +505,8 @@ msgstr "Коды языка"
 msgid "Comma separated virtual hosts"
 msgstr "Список виртуальных хостов через запятую"
 
-#: ncms/asm/am/MainPageAM.js:47
-msgid "Visrtual hosts"
+#: ncms/pgs/PageEditorInfoPage.js:132 ncms/asm/am/MainPageAM.js:47
+msgid "Virtual hosts"
 msgstr "Виртуальные хосты"
 
 #: ncms/mtt/tp/MttTpEditor.js:38 ncms/mtt/filters/MttFilterDlg.js:59
@@ -514,6 +514,10 @@ msgstr "Виртуальные хосты"
 #: ncms/asm/am/MainPageAM.js:53 ncms/mtt/tp/MttTpNav.js:87
 msgid "Enabled"
 msgstr "Активно"
+
+#: ncms/asm/am/MainPageAM.js:47
+msgid "Virtual hosts"
+msgstr "Виртуальные хосты"
 
 #: ncms/asm/am/MedialineAM.js:15
 msgid "Medialine"
@@ -1531,10 +1535,6 @@ msgstr "Управление файлами страницы"
 #: ncms/pgs/PageEditorInfoPage.js:12
 msgid "General"
 msgstr "Общее"
-
-#: ncms/pgs/PageEditorInfoPage.js:132
-msgid "Virtual hosts"
-msgstr "Виртуальные хосты"
 
 #: ncms/pgs/PageEditorInfoPage.js:140
 msgid "Languages"

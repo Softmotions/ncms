@@ -90,7 +90,7 @@ Configuration example:
     <mybatis>
         <bindDatasource>true</bindDatasource>
         <config>com/softmotions/ncms/db/mybatis-config.xml</config>
-        <propsFile>{home}/.ncms.ds</propsFile>
+        <propsFile>{home}/.ncmsapp.ds</propsFile>
         <extra-properties>
             JDBC.driver=com.ibm.db2.jcc.DB2Driver
         </extra-properties>

@@ -13,8 +13,8 @@ Attribute options
 =============================== =============
 Option                          Description
 =============================== =============
-**Link**                   The  default value of the attribute (link)
-**External links**              Switch allows to set external links.
+**Link**                        The  default value of the attribute (link)
+**Allow external links**        Switch allows to set external links.
                                 If it is off, the edit links dialog
                                 in the :ref:`page management UI <pmgr>` allows to specify only
                                 links to ηCMS pages.
@@ -25,7 +25,7 @@ Edit mode
 
 .. figure:: img/pageref_img2.png
 
-    Attribute on the page editor pane
+    Attribute on the :ref:`page editor pane <pmgr>`
 
 Press the link button to select a target page for a link,
 edit link title or enter an external link.

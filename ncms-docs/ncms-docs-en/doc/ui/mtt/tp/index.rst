@@ -5,8 +5,8 @@ Tracking pixels example (web beacon)
 
 .. contents::
 
-Main abilities of the system of tracking pixels control
--------------------------------------------------------
+Main abilities of the tracking pixels control system
+----------------------------------------------------
 
 * Support for a large set of TP sources (Tracking Pixel).
 * TP information is stored in the client `cookies` with a long time to live.
@@ -43,9 +43,9 @@ On the technical side the following actions occur when users visit our website:
    the system creates a hidden link to the picture with the address ``http://globalboard.com/feedback user_id = 1332``, informing ``globalboard`` about this event.
 5. So long as the event occurred, the appropriate pixel tracking, stored on our website,
    is removed and repeating opening of the page ``product1`` by the client
-   don't create a repeated conversion event.
+   doesn't create a repeated conversion event.
 
-Let us step by step simulate this situation on ηCMS.
+Let's simulate this situation on ηCMS step by step.
 
 Create Welcome page
 *******************
@@ -215,7 +215,7 @@ The following parameters are defined:
 
 By clicking the link `product1` user navigates to the
 page containing the description of the product,
-where in the context of the page placed the hidden URL to notify the service ``globalboard``
+where in the context of the page placed the hidden URL which notifies the service ``globalboard``
 on a conversion:
 
 .. code-block:: html

@@ -50,7 +50,7 @@ httl.spi.methods .CollectionMethod
 .. js:function:: length(Collection<T> values)
 .. js:function:: length(T[] values)
 
-    Returns the length of the passed collection or array.
+    It returns the length of the passed collection or array.
 
     :rtype: int
 
@@ -107,7 +107,7 @@ httl.spi.methods .StringMethod
 
 .. js:function:: clip(String value, int max)
 
-   Returns the specified `value` limiting its length up to the `max` characters
+   It returns the specified `value` limiting its length up to the `max` characters
    substituting the rest to `...`.
 
    **Example**::

@@ -28,7 +28,7 @@ For example let's create the following hierarchy of pages::
 
 
 If in the context of the page `Breadcrumbs` the `breadcrumbs` attribute is added,
-then, in accordance with the attribute search :ref:`algorithm <attributes_access>`,
+then, in accordance with the :ref:`attribute search algorithm <attributes_access>`,
 it will be available in the context of :term:`page <page>` `Breadcrumbs`, `Page 1`, `Page 2`.
 On every page we can use the following snippet showing the current position
 of the page in the navigation tree as a simple list:

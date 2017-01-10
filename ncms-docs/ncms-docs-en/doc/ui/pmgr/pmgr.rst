@@ -36,13 +36,12 @@ and attributes defined in a template will be available for editing in the contex
 
 .. note::
 
-    In some cases, as a template for a page it's handy to choose a page which is already exists,
-    i.e. a page can be a template for another pages.
-    To select the page as a template, use `Structure` or `Search` tab in the selection template dialog.
+    In some cases, it's handy to use existing page instances a template for new pages
+    To use the page as a template, open `Structure` or `Search` tab in the template selection dialog.
 
 The content of the `Edit` pane is shown in accordance with :term:`attributes <attribute>` used on the page
 and their settings. The screenshot below displays the following editable
-attributes :ref:`alias (alias) <am_alias>`, :ref:`header (title) <am_string>`, :ref:`tree (tree) <am_tree>`.
+attributes :ref:`alias <am_alias>`, :ref:`header (title) <am_string>`, :ref:`tree <am_tree>`.
 
 .. figure:: img/pmgr_img1.png
 

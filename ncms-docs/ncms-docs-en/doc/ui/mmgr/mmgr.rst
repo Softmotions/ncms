@@ -7,13 +7,13 @@ File management in ηCMS (media repository)
 
     Overview of the ηCMS media file management interface
 
-On the left, the user can select the current directory in the media-repository.
+On the left, the user can select the current directory in the media repository.
 In the center - the list of files in the selected directory and its subdirectories (depending on
 current viewing options). On the right - the file information, main file properties
 and editing interface for text files, or images preview panel.
 All ηCMS users have an access to this interface.
 
-Media-repository folders notation
+Media repository folders notation
 ---------------------------------
 
 .. image:: img/mmgr_img2.png
@@ -28,7 +28,7 @@ A regular user's catalog.
 
 Every file or catalog can be changed by owner, creator or user with admin rights.
 
-Access to media-repository files
+Access to media repository files
 --------------------------------
 
 * All files within the system directories `/page` or `/site` (configuration option

@@ -53,7 +53,7 @@ Methods designed to access ηCMS objects.
 
         ${asmAny("title")}
 
-    :param com.softmotions.ncms.asm.Asm asm: Assembly for that
+    :param com.softmotions.ncms.asm.Asm asm: Assembly, for which
            a named attribute will be searched
     :rtype: java.lang.Object
 
@@ -139,7 +139,7 @@ Methods designed to access ηCMS objects.
 
 .. js:function:: ogmeta([Map<String, String> params])
 
-    `Open Graph <http://ogp.me>`_ - meta-information about a current
+    `Open Graph <http://ogp.me>`_ - meta-information about the current
     page. For more details refer to: :ref:`ogmeta`.
 
 

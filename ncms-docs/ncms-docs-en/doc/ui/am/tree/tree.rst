@@ -10,7 +10,7 @@ Tree nodes can be:
 
 * A folder (directory)
 * :ref:`Link to the ηCMS <am_pageref>` page or to an external resource
-* :ref:`Link to the file in the media-repository <am_fileref>`
+* :ref:`Link to the file in the media repository <am_fileref>`
 * :ref:`Richref <am_richref>`
 
 Attribute options
@@ -18,16 +18,16 @@ Attribute options
 
 .. figure:: img/tree_img1.png
 
-**Pages (checkbox):** This flag allows adding links to ηCMS pages to the tree.
+**Pages (checkbox):** Allows to add links to ηCMS pages.
 
-**Files (checkbox):** Allows to add links to files stored in the ηCMS media-repository.
+**Files (checkbox):** Allows to add links to files stored in the ηCMS :ref:`media repository <mmgr>`.
 
 **External links (checkbox):** Allows to specify external links.
 
-**The level of nesting (spinner):** This item sets the maximum nesting level in the tree.
+**Nesting level (spinner):** This item sets the maximum nesting level in the tree.
 If the nesting level is ``1``, the tree will be a flat, with only one level.
 
-**Richref (checkbox):** Allows to add :ref:`richref <am_richref>` items to the tree.
+**Rich reference (checkbox):** Allows to add :ref:`richref <am_richref>` items to the tree.
 By clicking |IG| user goes to :ref:`options of richref configuration <am_richref_options>` for
 tree items.
 
@@ -49,7 +49,7 @@ Synchronisation with a tree attribute of another page
 
 Quite often there is a need to have the same attribute value
 on multiple pages simultaneously.
-You can use the mode of synchronization of a page attribute value
+You can use the synchronization of a page attribute value
 with the attribute of the same name and type, but on the other page.
 Clicking the `synchronise` button, ηCMS provides a way to choose
 the page where the synchronization will be performed.
@@ -60,8 +60,9 @@ the page where the synchronization will be performed.
     should have an attribute of type `tree` with the same name.
 
 After enabling synchronization mode, the attribute cannot be edited.
-All changes should be done for the 'ancestor' attribute where the synchronization is established,
-after that they are automatically copied to an 'descendant' attribute.
+All changes should be done for the `ancestor` attribute,
+all changes to the `accessor` are automatically copied into
+the `descendant` attribute.
 
 .. figure:: img/tree_img4.png
 
@@ -107,9 +108,10 @@ On the page it will be shown as:
 com.softmotions.ncms.mhttl.Tree
 -------------------------------
 
-All attributes of Tree are  **optional**.
-Tree is a recursive structure where
-descendants of tree are also objects of type Tree.
+All properties of Tree object are  **optional**.
+Tree is a recursive structure where descendants of tree are stored
+in the `children` property.
+
 
 .. js:attribute:: Long Tree.id
 
