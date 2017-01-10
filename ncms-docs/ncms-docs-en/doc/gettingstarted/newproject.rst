@@ -17,7 +17,7 @@ Prerequisites
 
     You can run ηCMS on Windows, but the |ncmsversion| test
     cases are designed to run only on linux platforms.
-    We highly recommend to run |ncmsversion| on Linux in production mode.
+    We highly recommend to run |ncmsversion| on Linux in production.
 
 Using Maven Archetype
 ---------------------

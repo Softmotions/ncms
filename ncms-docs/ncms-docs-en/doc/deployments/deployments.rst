@@ -1,8 +1,8 @@
 
 .. _deployments:
 
-ηCMS deployment options
-=======================
+Deployment options
+==================
 
 
 .. toctree::
