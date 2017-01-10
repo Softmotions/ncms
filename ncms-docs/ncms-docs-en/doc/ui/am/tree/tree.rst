@@ -6,9 +6,9 @@ Tree
 This attribute is useful for creating a hierarchical
 data structures in a website, for example, to create a menu.
 
-Tree nodes are to be:
+Tree nodes can be:
 
-* The folder (directory)
+* A folder (directory)
 * :ref:`Link to the ηCMS <am_pageref>` page or to an external resource
 * :ref:`Link to the file in the media-repository <am_fileref>`
 * :ref:`Richref <am_richref>`
@@ -25,10 +25,10 @@ Attribute options
 **External links (checkbox):** Allows to specify external links.
 
 **The level of nesting (spinner):** This item sets the maximum nesting level in the tree.
-If the nesting level is ``1``, the tree will be a flat having only one level.
+If the nesting level is ``1``, the tree will be a flat, with only one level.
 
 **Richref (checkbox):** Allows to add :ref:`richref <am_richref>` items to the tree.
-By clicking |IG| the user goes to :ref:`options of richref configuration <am_richref_options>` for
+By clicking |IG| user goes to :ref:`options of richref configuration <am_richref_options>` for
 tree items.
 
 .. |IG| image:: img/tree_img2.png
@@ -37,7 +37,7 @@ tree items.
 Edit mode
 ---------
 
-Below is an example of a simple menu structure,
+Here is an example of a simple menu structure,
 which can be displayed on the page.
 
 .. figure:: img/tree_img3.png
@@ -47,7 +47,8 @@ which can be displayed on the page.
 Synchronisation with a tree attribute of another page
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-It often needs to have the same attribute value on multiple pages simultaneously.
+Quite often there is a need to have the same attribute value
+on multiple pages simultaneously.
 You can use the mode of synchronization of a page attribute value
 with the attribute of the same name and type, but on the other page.
 Clicking the `synchronise` button, ηCMS provides a way to choose

@@ -25,4 +25,4 @@ of browser (useragent), to show this page. The **\*** symbol is allowed and mean
 Allowed symbol **\*** means any virtual host.
 
 **Active (checkbox):** It shows if this attribute is active.
-The rules for languages and virtual hosts will apply.
+ The rules for languages and virtual hosts will be applied when clients access to ηCMS.

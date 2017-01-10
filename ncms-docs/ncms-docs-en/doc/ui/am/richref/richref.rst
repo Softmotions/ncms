@@ -28,7 +28,7 @@ text with a link; for cases while a link (together with the name) was not specif
 
 **Optional links (checkbox):** If this option is enabled, a link to the resource will be optional.
 
-**Image (checkbox):** Allows to use the image. While this option is enabled, the image view parameters are
+**Image (checkbox):** Allows to use an image. If this option is enabled, the image view parameters are
 available. Options are fully consistent to attribute options :ref:`am_image`.
 
 **Features:** Three sets of options in the form of pairs: `key` => `values`.
@@ -61,7 +61,8 @@ is an object of type :ref:`com.softmotions.ncms.mhttl.RichRef`,
 containing all the data entered by the website editor
 for this attribute.
 
-The data for this attribute are displayed as an image with link inside block
+The data for this attribute is displayed
+as an image with the link inside block
 having a caption and description:
 
 .. code-block:: html

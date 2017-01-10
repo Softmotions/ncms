@@ -3,7 +3,7 @@
 Select box
 ==========
 
-The attribute is used to define the set of name value pairs
+This attribute is used to define the set of name value pairs
 and display them in website pages
 
 
@@ -20,7 +20,7 @@ Display as
 * **list** -- in the :ref:`page management UI <pmgr>` select box will be displayed as a plain
               list of possible values allowing to select multiple values (holding `Control` key)
 
-* **selectbox** -- in the :ref:`page management UI <pmgr>` select box will be displayed as
+* **selectbox** -- in the :ref:`page management UI <pmgr>` select box will be displayed
                    as a drop-down list, allowing to select only one pair.
 
 

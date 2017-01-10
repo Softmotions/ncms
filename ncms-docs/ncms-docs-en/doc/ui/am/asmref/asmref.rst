@@ -56,7 +56,7 @@ Then create an assembly, where the content `docsink_included_assembly` is includ
 
     $!{asm('asmref')}
 
-In the `assembly managemennt UI <amgr>` we create an attribute having the name `asmref` and
+In the `assembly managemennt UI <amgr>` we create an attribute with the name `asmref` and
 the type `asmref`:
 
 .. image:: img/asmref_img3.png
@@ -66,7 +66,7 @@ By clicking `Select assembly`, we choose the assembly to include:
 .. image:: img/asmref_img4.png
 
 
-While opening the page we get:
+When we open the page we get:
 
 .. image:: img/asmref_img5.png
 

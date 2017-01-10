@@ -68,7 +68,7 @@ com.softmotions.ncms.mhttl.Table
 .. js:function:: String Table.find(firstColVal, [String def])
 
     Search the row in a table with the first column value equals to `firstColVal`.
-    If the row is found the **the second column** value
+    If the row is found **the second column** value
     of the row is returned.
 
     :param String def: The value if the row is not found; by default ``null``.
@@ -77,7 +77,7 @@ com.softmotions.ncms.mhttl.Table
 .. js:function:: String Table.find2(firstColVal, [String def])
 
     Search the row in a table with the first column value equals to `firstColVal`.
-    If the row is found the **the third column** value
+    If the row is found **the third column** value
     of the row is returned.
 
     :param String def: The value if the row is not found; by default ``null``.
@@ -86,7 +86,7 @@ com.softmotions.ncms.mhttl.Table
 .. js:function:: String Table.find2(firstColVal, [String def])
 
     Search the row in a table with the first column value equals to `firstColVal`.
-    If the row is found the **the forth column** value
+    If the row is found **the forth column** value
     of the row is returned.
 
     :param String def: The value if the row is not found; by default ``null``.
@@ -111,7 +111,7 @@ com.softmotions.ncms.mhttl.Table
 
         ${asm('table').toHtml(['noHeader':true, 'tableAttrs':'class="wide"'])}
 
-    There can exist the following pairs in the optional settings `params` of the html table generation:
+    The optional method params may contain the following pairs:
 
     * `NoEscape => Boolean | String` - don't escape of table cells values.
       By default `false`.

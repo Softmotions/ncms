@@ -27,7 +27,7 @@ For example let's create the following hierarchy of pages::
                     └── Page 2/
 
 
-If in the context of the page `Breadcrumbs` the attribute  `breadcrumbs` is added,
+If in the context of the page `Breadcrumbs` the `breadcrumbs` attribute is added,
 then, in accordance with the attribute search :ref:`algorithm <attributes_access>`,
 it will be available in the context of :term:`page <page>` `Breadcrumbs`, `Page 1`, `Page 2`.
 On every page we can use the following snippet showing the current position
@@ -53,10 +53,11 @@ For the `Page 2` it will be displayed as:
 .. figure:: img/breadcrumbs_img1.png
 
 
-Note that links to pages in the breadcrumbs are displayed
+Please Note that links to pages in the breadcrumbs are displayed
 in the fulfillment of each of the following conditions:
 
-* The page is not the currently displayed page
+
+* The page is not the currently displayed
 * The page has a markup and published for all users of the website
 
 

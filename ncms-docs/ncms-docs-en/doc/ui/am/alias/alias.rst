@@ -9,4 +9,4 @@ allowed to contain a leading slash (`\/`)
 
 .. note::
 
-    The alias is to be unique among all pages in ηCMS.
+    The alias should be unique among all pages in ηCMS.

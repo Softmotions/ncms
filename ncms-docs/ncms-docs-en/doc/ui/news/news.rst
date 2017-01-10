@@ -4,7 +4,7 @@ News feeds management
 =====================
 
 Site pages based on a :term:`template <template>`, may have one or more news (events) feeds.
-Let's call them as the **basic pages**. News feed is the set of pages of a given type,
+Let's call them the **basic pages**. News feed is the set of pages of a given type,
 associated with the `base page`.
 
 .. note::
@@ -20,15 +20,15 @@ web page and the process of news creation.
 
 The following steps are to be done in order to create a news feed:
 
-1. Creating the base page we are going to associate a news feed.
+1. Creating the base page we are going to associate with a news feed.
 2. Creating the :term:`template <template>` for news feed pages (news).
 3. Creating instances of pages of news feed in the context of the base page (using template created at the step 2).
 
 Creating the base page
 **********************
 
-Creating the :term:`template <template>` named as `docsink_newsdemo` which will be template
-for the base page instance.
+Creating the :term:`template <template>` named `docsink_newsdemo`
+which will be a template for the base page instance.
 
 .. figure:: img/news_img2.png
 
@@ -46,7 +46,7 @@ We call the home page `NewsDemo` and fill all the required attributes:
 
 .. figure:: img/news_img4.png
 
-    Interface of editing the content of the base page
+    Content of the base page editing interface
 
 File `core.httl` is a markup for the base page, and at this step
 contains the following httl code:

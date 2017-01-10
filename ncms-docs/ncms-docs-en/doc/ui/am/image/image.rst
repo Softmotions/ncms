@@ -19,14 +19,14 @@ Option                          Description
 =============================== ==================
 **Width**                       The desirable width of the image on the page.
 **Height**                      The desirable height of the image on the page.
-**Auto-scaling**                To enable/disable automatic scaling of the image
+**Auto-scaling**                Enable/disable automatic scaling of the image
                                 according to width (and/or) height.
 **To fill area**                The intelligent scale mode provides the picture scaling
-                                to fill the specified area with preserving of an aspect ratio.
+                                will fill the specified area with preserving of an aspect ratio.
 **To check the size**           If this flag is enabled, the specified image will be checked
                                 to match the specified width and height.
 **Not to scale small**          Do not scale an image, if its size is smaller than specified
-                                dimension. This mode is useful to avoid granularity on image resizing.
+                                dimension. This mode is useful to avoid grain on resized image.
 =============================== ==================
 
 Edit mode
