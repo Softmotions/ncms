@@ -1817,8 +1817,8 @@ msgstr "Неправильный Vimeo код"
 msgid "Failed to connect to Vimeo server. Try again later"
 msgstr "Не удалось соединиться с сервером Vimeo. Повторите попытку позже"
 
-#: ncms/wiki/InsertYoutubeDlg.js:19
-msgid "Insert YouTube video"
+#: ncms/wiki/WikiEditor.js:650 ncms/wiki/InsertYoutubeDlg.js:19
+msgid "Insert Youtube video"
 msgstr "Вставить ролик YouTube"
 
 #: ncms/wiki/InsertYoutubeDlg.js:34
@@ -1950,10 +1950,6 @@ msgstr "Сервисы google"
 msgid "Youtube video"
 msgstr "Ролик YouTube"
 
-#: ncms/wiki/WikiEditor.js:650
-msgid "Insert Youtube video"
-msgstr "Вставить ролик YouTube"
-
 #: ncms/wiki/WikiEditor.js:658
 msgid "Gmap location"
 msgstr "Карта google map"
@@ -2030,6 +2026,9 @@ msgstr "Заметка"
 
 #~ msgid "Incoming request parameters"
 #~ msgstr "Входящие параметры запроса"
+
+#~ msgid "Insert YouTube video"
+#~ msgstr "Вставить ролик YouTube"
 
 #~ msgid "Markdown editor"
 #~ msgstr ""
