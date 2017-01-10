@@ -65,7 +65,7 @@ a directive `app-prefix` which should be set to a correct path where ηCMS works
 Also it is necessary to change the `Apache Shiro` configuration, the link passing to it contains the
 `security/shiro-config-locations` item.
 
-Add `ncms_prefix` to the paths specified in the configuration shiro:
+Add `ncms_prefix` to the paths specified in the shiro configuration:
 
 .. code-block:: ini
 

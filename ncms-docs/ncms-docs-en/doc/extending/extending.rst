@@ -1,7 +1,7 @@
 .. _extending:
 
-Extending ηCMS functionality
-============================
+Extending ηCMS
+==============
 
 ηCMS system is created as a :ref:`new a web project <newproject>` based on Java platform.
 Thereby, an ηCMS user has the wide possibilities for farther project development
@@ -30,7 +30,7 @@ so the project structure will be like this::
 
 
 
-After the creation a new project, the new `Guice <https://github.com/google/guice>`_
+After creating a new project, the new `Guice <https://github.com/google/guice>`_
 module is created. In its context it's possible to register custom modules, specific to the
 project:
 

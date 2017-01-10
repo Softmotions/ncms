@@ -50,7 +50,7 @@ Let's simulate this situation on ηCMS step by step.
 Create Welcome page
 *******************
 
-If it was not done before, in the `assemblies UI <amgr>`
+If it was not done before, in the :ref:`assemblies UI <amgr>`
 create a new :term:`template <template>` called `base_content` with the ability to explicitly
 set :term:`page alias`, :term:`markup <core>` and the main content in the :term:`mediawiki` format:
 
@@ -60,7 +60,7 @@ set :term:`page alias`, :term:`markup <core>` and the main content in the :term:
     The configuration of the `base content` template in the `Assemblies` interface
 
 
-Further, using the `pages UI <pmgr>` we create a `welcome``
+Further, using the :ref:`pages UI <pmgr>` we create a `welcome`
 page based on the `base_content` template.
 
 Click the button `File` to create a page's :term:`HTTL` markup:
@@ -125,17 +125,17 @@ of the ``welcome`` page the link to the ``product1`` page.
 .. figure:: img/tp_img9.png
     :align: center
 
-    In ``welcome`` we create a reference to ``product1``
+    Create a reference to ``product1``
 
 .. figure:: img/tp_img10.png
     :align: center
 
-    In ``welcome`` create a reference to ``product1``
+    Create a reference to ``product1``
 
 .. figure:: img/tp_img11.png
     :align: center
 
-    ``Welcome`` page with a reference to ``product1``
+    Welcome page with a reference to ``product1``
 
 Enable pixel tracking for all pages of the site
 ***********************************************
@@ -211,7 +211,6 @@ The following parameters are defined:
 .. figure:: img/tp_img18.png
     :align: center
 
-    Go to ``welcome`` from ``globalboard``
 
 By clicking the link `product1` user navigates to the
 page containing the description of the product,

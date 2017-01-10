@@ -5,7 +5,7 @@ The visual editor of pages
 
 Sometimes you need to manage a lot of text data blocks within a page.
 When every data block is defined as a single assembly :term:`attribute`, it may make the
-:ref:`page management UI <pmgr>` to be too heavy and overloaded. Also for many users it can be
+:ref:`page management UI <pmgr>` to be too heavy and bloated. Also for many users it can be
 more convenient to edit a page content using a visual editor.
 
 In ηCMS we have an ability to create and manage visually editable content blocks.
@@ -21,14 +21,14 @@ with `ncms-block` attribute, its value should be a unique identifier of a block.
 After that, a site editor can edit a stylized HTML text in the defined blocks,
 using  `Medium Editor <https://yabwe.github.io/medium-editor/>`_.
 
-Example of use
---------------
+Example
+-------
 
 Let's create a page called `VisualEditor`, based on the template with the ability
-to explicitly specify the :term:`markup <core>` in the `content editing UI <pmgr>`
+to explicitly specify the :term:`markup <core>` in the :ref:`content editing UI <pmgr>`
 In order to do that the page template must contain
 the attribute with type :ref:`core <am_core>`.
-Then add the following page markup:
+Then add the following markup:
 
 .. code-block:: html
 
@@ -66,4 +66,4 @@ page data blocks directly in the page preview pane:
 
 .. figure:: img/visual_img3.png
 
-    Page after a changes
+

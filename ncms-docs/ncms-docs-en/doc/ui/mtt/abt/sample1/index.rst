@@ -17,8 +17,8 @@ Sample page of the site in `\A` mode:
 
     Web site page mode `\A`
 
-Then create a file `abtest_core.htt` in the `media management UI <mmgr>`
-it will be home page :term:`core <core>` of `foo.example.com`
+Then create a file `abtest_core.httl` in the :ref:`media management UI <mmgr>`
+it will be the :term:`core <core>` of `foo.example.com` home page:
 
 .. code-block:: html
 
@@ -40,7 +40,7 @@ it will be home page :term:`core <core>` of `foo.example.com`
 .. figure:: img/screen4.png
     :align: center
 
-    File `abtest_core.htt` in the `media management UI <mmgr>`
+    File `abtest_core.htt` in the :ref:`media management UI <mmgr>`
 
 The following three assembly :term:`attributes <attribute>`: `title`, `imageA`, `imageB` are
 included to the `html` markup. Here the `abt` httl function is used to determine
@@ -66,7 +66,7 @@ the required images to the page repository:
     Creating an instance of the page
 
 
-Select the created page in the `assembly management UI <amgr>`
+Select the created page in the :ref:`assembly management UI <amgr>`
 and add the `mainpage` attribute, says ηCMS that
 this page is the `foo.example.com` home page:
 
@@ -107,7 +107,7 @@ where with a probability of 50/50 the different `A/B` modes will be activated:
 
     Configuration of the probabilities of `A/B` modes
 
-Here is the screen of editing `A/B`, mode `\A`:
+Here is the screen of `\A` mode definition:
 
 .. figure:: img/screen7.png
     :align: center

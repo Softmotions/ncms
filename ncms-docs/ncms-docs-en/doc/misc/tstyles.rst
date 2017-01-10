@@ -14,7 +14,7 @@ Sometimes we need to use a predefined tabular data within a page.
 The :ref:`table <am_table>` attribute helps solving these tasks quite easy.
 
 A simple example: pages with links of different styles and with the ability to
-to change the styles without having to edit the page markup.
+change the styles without without editing the page markup.
 
 To do this add the :ref:`table <am_table>` attribute filled with
 the data required to define the styles:

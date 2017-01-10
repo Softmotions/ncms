@@ -51,7 +51,7 @@ constructor(private val env: NcmsEnvironment,
             helpTopics["wiki.gmap"] = "https://support.google.com/maps/answer/3544418"
         }
         if ("wiki" !in helpTopics) {
-            helpTopics["wiki"] = "${env.appRoot}/manual/doc/ui/am/wiki/wiki.html"
+            helpTopics["wiki"] = "http://ncms.one/manual/doc/ui/am/wiki/wiki.html"
         }
     }
 
@@ -116,7 +116,7 @@ constructor(private val env: NcmsEnvironment,
         if (!StringUtils.isBlank(alias)) {
             return@lazy pageService.resolvePageLink(alias)
         } else {
-            return@lazy env.xcfg().getString("help.site", "${env.appRoot}/manual/index.html")
+            return@lazy env.xcfg().getString("help.site", "http://ncms.one/manual")
         }
     }
 

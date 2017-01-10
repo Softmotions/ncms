@@ -61,7 +61,7 @@ as the parent page for them.
 
 .. image:: img/screen5.png
 
-* Change the page content in the child page in accordance with an mode `\B`. Title is `title` and two images.
+* Change the page content in the child page in accordance with an mode `\B`. The page `title` and two images.
 
 Similarly we proceed with the mode `\C`.
 
