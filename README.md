@@ -13,8 +13,9 @@
 * Support of virtual hosts.
 * [A/B testing and marketing tools](http://ncms.one/manual/doc/ui/mtt/mtt.html).
 * Support of [Postgresql](http://ncms.one/manual/doc/db/postgresql.html) and [DB2](http://ncms.one/manual/doc/db/db2.html) databases.
-                
-                                                                                                                                   
+
+                                                                          
+                                                                          
 * **[English docs](http://ncms.one/manual)**
 * **[Russian docs](http://ncms.one/manual/ru)**
 
