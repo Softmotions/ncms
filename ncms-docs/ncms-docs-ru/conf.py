@@ -152,7 +152,7 @@ html_theme_options = {
         ('Трекер', 'https://github.com/Softmotions/ncms/issues'),
         ('EN', 'http://ncms.one/manual/')
     ],
-    #'analytics_id' : ''
+    'analytics_id' : 'UA-90103695-1'
 }
 
 html_sidebars = {

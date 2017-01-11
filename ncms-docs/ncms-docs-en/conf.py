@@ -152,7 +152,7 @@ html_theme_options = {
         ('Issues', 'https://github.com/Softmotions/ncms/issues'),
         ('RU', 'http://ncms.one/manual/ru')
     ],
-    #'analytics_id' : ''
+    'analytics_id' : 'UA-90103695-1'
 }
 
 html_sidebars = {
