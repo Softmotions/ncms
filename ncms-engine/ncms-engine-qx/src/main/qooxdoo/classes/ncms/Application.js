@@ -481,7 +481,7 @@ qx.Class.define("ncms.Application", {
                     return;
                 }
                 this.__logoutPending = true;
-                window.alert(qx.locale.Manager.tr("Your user session expired! Please login again"));
+                window.alert(qx.locale.Manager.tr("Your session expired! Please login again"));
                 window.location.reload(true);
             }.bind(this);
             ncms.Application.INSTANCE = this;
