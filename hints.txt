@@ -1,3 +1,0 @@
-date +%g%j%H%M%S
-tree -F -A --dirsfirst -L 2 .
-optipng ./*.png
