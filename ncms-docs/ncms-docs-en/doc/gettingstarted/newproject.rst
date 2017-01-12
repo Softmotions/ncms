@@ -162,3 +162,6 @@ Building and running the project
 .. code-block:: sh
 
     mvn clean verify && mvn -Pcargo.run
+
+The admin zone will be available at: `http://localhost:<port>/adm/`
+Username: `admin`  and password is stored in `conf/ncmapp-users.xml`:

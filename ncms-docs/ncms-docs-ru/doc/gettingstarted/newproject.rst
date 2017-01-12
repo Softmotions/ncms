@@ -165,3 +165,7 @@
 .. code-block:: sh
 
     mvn clean verify && mvn -Pcargo.run
+
+
+Интерфейс администратора будет доступен по адресу: `http://localhost:<port>/adm/`
+Имя пользователя `admin` а пароль находтся в ресурсе: `conf/ncmapp-users.xml`

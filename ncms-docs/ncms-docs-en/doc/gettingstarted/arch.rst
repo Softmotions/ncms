@@ -62,6 +62,8 @@ Sample
 Let us illustrate the statements above on the example - make a simple website.
 To follow the steps described below, :ref:`create a new project <newproject>` initially.
 
+Got to the admin console: `http://localhost:<port>/adm/`
+
 Let the most of our website pages have the following common parts:
 
 * Page title
