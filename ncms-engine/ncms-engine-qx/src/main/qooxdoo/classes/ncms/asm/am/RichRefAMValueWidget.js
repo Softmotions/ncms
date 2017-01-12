@@ -39,7 +39,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
         if (opts["allowName"] === "true") {
             el = new qx.ui.form.TextField();
             el.setRequired(true);
-            el.setMaxLength(64);
+            el.setMaxLength(512);
             el.addListener("input", this.__modified, this);
             form.add(el, this.tr("Name"), null, "customName");
         }
@@ -109,7 +109,7 @@ qx.Class.define("ncms.asm.am.RichRefAMValueWidget", {
             el = new qx.ui.form.TextArea();
             el.setAutoSize(true);
             el.setRequired(false);
-            el.setMaxLength(1024); //todo
+            el.setMaxLength(4096);
             el.addListener("input", this.__modified, this);
             form.add(el, this.tr("Extra"), null, "description");
         }
