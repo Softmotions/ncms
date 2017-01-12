@@ -54,7 +54,10 @@ primary_domain = None
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
-# The suffix of source filenames.
+# The suffix(es) of source filenames.
+# You can specify multiple suffix as a list of string:
+#
+# source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
 
 # The encoding of source files.
@@ -249,7 +252,7 @@ html_use_index = False
 
 # If true, links to the reST sources are added to the pages.
 #
-#html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 html_show_sphinx = False
