@@ -267,7 +267,7 @@ qx.Class.define("ncms.Actions", {
         this._action("pages.referrers.count", "/rs/adm/pages/referrers/count/{id}");
 
         //GET The list of pages that are referenced
-        this._action("pages.referrers.to", "/rs/adm/pages/referrers/to/{guid}");
+        this._action("pages.referrers.to", "/rs/adm/pages/referrers/to/{id}");
 
         //GET The count of pages that are referenced
         this._action("pages.referrers.to.count", "/rs/adm/pages/referrers/to/count/{id}");

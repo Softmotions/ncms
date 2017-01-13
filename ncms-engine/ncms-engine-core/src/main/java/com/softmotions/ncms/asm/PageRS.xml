@@ -420,10 +420,10 @@
             asm.asm_core_id AS "guid",
             asm.published   AS "published"
         FROM ASMS AS asm
-            INNER JOIN ASM_ATTRS AS attr ON attr.id = asm.id
-            INNER JOIN ASM_PAGE_DEPS d ON d.attr_id = attr.id
+            INNER JOIN ASM_PAGE_DEPS d ON d.asm_name = asm.name
+            INNER JOIN ASM_ATTRS AS attr ON d.attr_id = attr.id
         WHERE
-            asm.id = #{asmid}
+            attr.asm_id = #{asmid}
         ORDER BY asm.hname
     </select>
 
@@ -433,6 +433,14 @@
         FROM ASM_PAGE_DEPS AS d
             INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
         WHERE d.asm_name = #{name}
+    </select>
+
+    <select id="selectCountOfPagesDependentTo" resultType="long" parameterType="long">
+        SELECT
+            COUNT(DISTINCT d.asm_name)
+        FROM ASM_PAGE_DEPS AS d
+            INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
+        WHERE attr.asm_id = #{asmid}
     </select>
 
     <select id="selectOrphanPages" resultType="map" parameterType="string">

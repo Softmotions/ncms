@@ -1010,9 +1010,16 @@ public class PageRS extends MBDAOSupport implements PageService {
                .put("name", (String) referrer.get("name"))
                .put("path", ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/"))
                .put("icon", Converters.toBoolean(referrer.get("published")) ? "" : "ncms/icon/16/misc/exclamation.png")
-               .put("guid", (Long) referrer.get("guid"));
+               .put("guid", (String) referrer.get("guid"));
         }
         return res;
+    }
+
+    @GET
+    @Path("/referrers/to/count/{id}")
+    public Number getPageReferrersCountTo(@PathParam("id") Long id) {
+        long selectCountOfPagesDependentTo = count("selectCountOfPagesDependentTo", id);
+        return selectCountOfPagesDependentTo;
     }
 
     @GET

@@ -15,8 +15,9 @@ qx.Class.define("ncms.pgs.referrers.PageReferrersAttributesTable", {
         }
     },
 
-    construct: function (title) {
+    construct: function (title, item) {
         this.__title = title;
+        this.initPageId()
         this.base(arguments);
         this.set({allowGrowX: true, allowGrowY: true});
         this._reload([]);

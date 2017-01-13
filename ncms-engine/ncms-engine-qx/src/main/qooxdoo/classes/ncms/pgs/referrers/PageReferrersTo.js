@@ -29,14 +29,14 @@ qx.Class.define("ncms.pgs.referrers.PageReferrersTo", {
                 case("pages"):
                     control = this.__pagesTable = new ncms.pgs.referrers.PageReferrersSelector(
                         ncms.Application.ACT.getRestUrl("pages.referrers.to", {id: this.__item.getId()}),
-                        ncms.Application.ACT.getRestUrl("pages.referrers.count", {id: this.__item.getId()}),
+                        ncms.Application.ACT.getRestUrl("pages.referrers.to.count", {id: this.__item.getId()}),
                         "Pages");
                     control.addListener("pageSelected", this.__onSelectPage, this);
                     this.__sp.add(control, 3);
                     break;
                 case("attributes"):
                     control = this.__attributesTable = new ncms.pgs.referrers.PageReferrersAttributesTable("Attributes");
-                    this.__attributesTable.setPageId(this.__item.getGuid());
+                    this.__attributesTable.setAsmId(this.__item.getId());
                     this.__sp.add(control, 1);
                     break;
             }
@@ -56,9 +56,9 @@ qx.Class.define("ncms.pgs.referrers.PageReferrersTo", {
                 this._showChildControl("attributes");
             }
 
-            var asmId = data["asmid"];
-            if (asmId != null) {
-                this.__attributesTable.setAsmId(asmId);
+            var pageId = data["guid"];
+            if (pageId != null) {
+                this.__attributesTable.setPageId(pageId);
             }
         }
     },
