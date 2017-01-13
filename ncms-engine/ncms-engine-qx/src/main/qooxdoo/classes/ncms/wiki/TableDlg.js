@@ -10,14 +10,17 @@ qx.Class.define("ncms.wiki.TableDlg", {
     events: {
         /**
          * Fired if insert table button clicked
-         * data: [{@link qx.ui.table.model.Simple}, isWide] Table model of current table & wide table flag
+         * Table model and optional css classes
+         *
+         * data: [{@link qx.ui.table.model.Simple}, cssClasses]
          */
         "completed": "qx.event.type.Data"
     },
 
     properties: {},
 
-    construct: function () {
+    construct: function (opts) {
+        opts = opts || {};
         this.base(arguments, this.tr("Insert table"));
         this.setLayout(new qx.ui.layout.Dock(5, 5));
         this.set({
@@ -54,7 +57,8 @@ qx.Class.define("ncms.wiki.TableDlg", {
             if (this.__table.isEditing()) {
                 this.__table.stopEditing();
             }
-            this.fireDataEvent("completed", [this.__table.getTableModel(), wideCb.getValue()]);
+            var data = [this.__table.getTableModel(), cssClasses.getValue()];
+            this.fireDataEvent("completed", data);
         }, this);
         var cancel = new qx.ui.form.Button(this.tr("Cancel"));
         cancel.addListener("execute", function (ev) {
@@ -65,10 +69,13 @@ qx.Class.define("ncms.wiki.TableDlg", {
         footer.add(cancel);
         this.add(footer, {edge: "south"});
 
-        var wideCb = new qx.ui.form.CheckBox(this.tr("Wide table"));
-        wideCb.setValue(true);
-        this.add(wideCb, {edge: "south"});
-
+        var cssClasses = new qx.ui.form.TextField();
+        if (!opts["noClasses"]) {
+            var cont = new qx.ui.container.Composite(new qx.ui.layout.HBox(4).set({alignY: "middle"}));
+            cont.add(new qx.ui.basic.Label(this.tr("CSS classes:")));
+            cont.add(cssClasses);
+            this.add(cont, {edge: "south"});
+        }
         this.addListenerOnce("resize", function () {
             this.center();
         }, this);

@@ -79,11 +79,10 @@
         <basedir>{home}/.${rootArtifactId}/media</basedir>
         <max-upload-size>31457280</max-upload-size>
         <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
-        <locks-lrucache-size>128</locks-lrucache-size>
         <meta-lrucache-size>1024</meta-lrucache-size>
         <thumbnails-width>250</thumbnails-width>
         <resize-default-format>jpeg</resize-default-format>
-        <max-edit-text-size>524288</max-edit-text-size>
+        <max-edit-text-size>1048576</max-edit-text-size>
         <import>
             <directory>{webapp}</directory>
             <target>site</target>

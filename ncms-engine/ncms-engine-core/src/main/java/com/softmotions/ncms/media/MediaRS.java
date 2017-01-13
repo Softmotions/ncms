@@ -28,8 +28,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -83,6 +82,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
+import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
 import com.softmotions.commons.Converters;
 import com.softmotions.commons.cont.ArrayUtils;
@@ -119,6 +119,7 @@ import com.softmotions.ncms.utils.MimeTypeDetector;
 import com.softmotions.web.ResponseUtils;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
+import com.softmotions.weboot.executor.TaskExecutor;
 import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
@@ -148,7 +149,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private final File basedir;
 
-    private final RWLocksLRUCache<String, ReentrantReadWriteLock> locksCache;
+    private final Striped<ReadWriteLock> pathLocks;
 
     private final Map<Object, Map<String, Object>> metaCache;
 
@@ -160,7 +161,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private final WSUserDatabase userdb;
 
-    private final Executor resizer;
+    private final TaskExecutor executor;
+
 
     @Inject
     public MediaRS(NcmsEnvironment env,
@@ -168,7 +170,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    ObjectMapper mapper,
                    I18n i18n,
                    NcmsEventBus ebus,
-                   WSUserDatabase userdb) throws IOException {
+                   WSUserDatabase userdb,
+                   TaskExecutor executor) throws IOException {
         super(MediaRS.class, sess);
         this.env = env;
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
@@ -178,14 +181,15 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
         this.basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);
-        this.locksCache = new RWLocksLRUCache<>(xcfg.getInt("media.locks-lrucache-size", 128));
+
+        this.pathLocks = Striped.lazyWeakReadWriteLock(xcfg.getInt("media.locks-lrucache-size", 1024));
         this.metaCache = new LRUMap<>(xcfg.getInt("media.meta-lrucache-size", 1024));
         this.mapper = mapper;
         this.i18n = i18n;
         this.ebus = ebus;
         this.userdb = userdb;
+        this.executor = executor;
         this.ebus.register(this);
-        this.resizer = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -1024,7 +1028,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private boolean deleteDirectoryInternal(String path, boolean nolock) throws Exception {
         boolean res = true;
-        ReentrantReadWriteLock rwlock = null;
+        ReadWriteLock rwlock = null;
         try {
             rwlock = nolock ? null : acquirePathRWLock(path, true);
             File f = new File(basedir, path);
@@ -1175,7 +1179,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                            HttpServletRequest req) throws IOException {
         checkFolder(folder);
         ArrayNode res = mapper.createArrayNode();
-        ReentrantReadWriteLock rwlock = acquirePathRWLock(folder, false);
+        ReadWriteLock rwlock = acquirePathRWLock(folder, false);
         try {
             File f = new File(basedir, folder);
             if (!f.exists()) {
@@ -1412,7 +1416,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 if (clength != null) {
                     rb.header(HttpHeaders.CONTENT_LENGTH, clength);
                 }
-                l.releaseParent(); //unlock parent folder read-lock
                 rb.entity((StreamingOutput) output -> {
                               try (final FileInputStream fis = new FileInputStream(respFile)) {
                                   IOUtils.copyLarge(fis, output);
@@ -1886,38 +1889,21 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     final class ResourceLock implements Closeable {
 
-        ReentrantReadWriteLock parent;
-
-        ReentrantReadWriteLock child;
-
-        final boolean parentWriteLock;
+        ReadWriteLock child;
 
         final boolean childWriteLock;
 
         private ResourceLock(String path, boolean childWriteLock) {
-            this(path, false, childWriteLock);
-        }
-
-        private ResourceLock(String path, boolean parentWriteLock, boolean childWriteLock) {
             if (path.isEmpty() || path.charAt(0) != '/') {
                 path = '/' + path;
             }
             if (path.length() > 1 && path.endsWith("/")) {
                 path = path.substring(0, path.length() - 1);
             }
-            this.parent = null;
             this.child = null;
-            this.parentWriteLock = parentWriteLock;
             this.childWriteLock = childWriteLock;
-            String folder = getResourceParentFolder(path);
             try {
-                if (!folder.equals(path)) {
-                    parent = acquirePathRWLock(folder, parentWriteLock);
-                    child = acquirePathRWLock(path, childWriteLock);
-                } else {
-                    parent = null;
-                    child = acquirePathRWLock(path, childWriteLock);
-                }
+                child = acquirePathRWLock(path, childWriteLock);
             } catch (Throwable e) {
                 //noinspection finally
                 try {
@@ -1928,17 +1914,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     //noinspection ThrowFromFinallyBlock
                     throw new RuntimeException(e);
                 }
-            }
-        }
-
-        public void releaseParent() {
-            if (parent != null) {
-                if (parentWriteLock) {
-                    parent.writeLock().unlock();
-                } else {
-                    parent.readLock().unlock();
-                }
-                parent = null;
             }
         }
 
@@ -1955,15 +1930,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
         @Override
         public void close() throws IOException {
-            try {
-                releaseChild();
-            } finally {
-                releaseParent();
-            }
+            releaseChild();
         }
     }
 
-    private ReentrantReadWriteLock acquirePathRWLock(String path, boolean acquireWrite) {
+    private ReadWriteLock acquirePathRWLock(String path, boolean acquireWrite) {
         if (path.isEmpty() || path.charAt(0) != '/') {
             path = '/' + path;
         }
@@ -1973,38 +1944,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (log.isDebugEnabled()) {
             log.debug("Locking: {} W: {}", path, acquireWrite);
         }
-        ReentrantReadWriteLock rwlock;
-        while (true) {
-            synchronized (locksCache) {
-                rwlock = locksCache.get(path);
-                if (rwlock == null) {
-                    rwlock = new ReentrantReadWriteLock();
-                    locksCache.put(path, rwlock);
-                }
-            }
-
-            //Optimistic locking used here
-
-            if (acquireWrite) {
-                rwlock.writeLock().lock();
-            } else {
-                rwlock.readLock().lock();
-            }
-
-            synchronized (locksCache) {
-                //noinspection ObjectEquality
-                if (rwlock == locksCache.get(path)) {
-                    //Locked rwlock is not changed we are safe to use it until it remains locked
-                    break;
-                } else {
-                    //Locked rwlock is changed (removed from locksCache and replaced) so release it and try again
-                    if (acquireWrite) {
-                        rwlock.writeLock().unlock();
-                    } else {
-                        rwlock.readLock().unlock();
-                    }
-                }
-            }
+        ReadWriteLock rwlock = pathLocks.get(path);
+        if (acquireWrite) {
+            rwlock.writeLock().lock();
+        } else {
+            rwlock.readLock().lock();
         }
         return rwlock;
     }
@@ -2168,28 +2112,28 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @Subscribe
     public void mediaUpdate(MediaUpdateEvent ev) {
         if (!ev.isFolder()) {
-            try {
-                updateResizedImages(ev.getPath());
-            } catch (IOException e) {
-                log.error("Failed to update resized images dir", e);
-            }
+            executor.execute(() -> {
+                try {
+                    updateResizedImages(ev.getPath());
+                } catch (IOException e) {
+                    log.error("Failed to update resized images dir", e);
+                }
+            });
         }
     }
 
     @Subscribe
     public void ensureResizedImage(EnsureResizedImageJobEvent ev) {
-        resizer.execute(() -> _ensureResizedImage(ev));
-    }
-
-    private void _ensureResizedImage(EnsureResizedImageJobEvent ev) {
-        try {
-            ensureResizedImage(ev.getId(),
-                               ev.getWidth(),
-                               ev.getHeight(),
-                               ev.getFlags());
-        } catch (Exception e) {
-            log.error("", e);
-        }
+        executor.execute(() -> {
+            try {
+                ensureResizedImage(ev.getId(),
+                                   ev.getWidth(),
+                                   ev.getHeight(),
+                                   ev.getFlags());
+            } catch (Exception e) {
+                log.error("", e);
+            }
+        });
     }
 
     @Override
@@ -2536,6 +2480,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                            boolean overwrite,
                            boolean system,
                            String user) throws IOException {
+        source = FilenameUtils.separatorsToUnix(source);
+        target = FilenameUtils.separatorsToUnix(target);
         File srcFile = new File(source);
         if (!srcFile.isFile()) {
             throw new IOException(srcFile.getAbsolutePath() + " is not a file");

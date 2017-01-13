@@ -15,6 +15,7 @@ import com.google.inject.Singleton;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
+import com.softmotions.weboot.executor.TaskExecutor;
 
 /**
  * Auxiliary
@@ -32,32 +33,38 @@ public class MediaWikiServices {
 
     private final MediaRepository repository;
 
+    private final TaskExecutor executor;
+
 
     @Inject
     public MediaWikiServices(NcmsEventBus ebus,
+                             TaskExecutor executor,
                              MediaRepository repository) {
         ebus.register(this);
         this.repository = repository;
+        this.executor = executor;
     }
 
     @Subscribe
     public void htmlRendered(MediaWikiHTMLRenderEvent ev) {
-        String markup = ev.getMarkup();
-        // [[Image:/121/P4033297.JPG|frame|none|100px|Даша]]
-        Matcher matcher = WIKI_IMAGE_REGEXP.matcher(markup);
-        while (matcher.find()) {
-            String idStr = matcher.group(2);
-            String widthStr = matcher.group(4);
-            if (idStr == null || widthStr == null) {
-                continue;
+        executor.submit(() -> {
+            String markup = ev.getMarkup();
+            // [[Image:/121/P4033297.JPG|frame|none|100px|Даша]]
+            Matcher matcher = WIKI_IMAGE_REGEXP.matcher(markup);
+            while (matcher.find()) {
+                String idStr = matcher.group(2);
+                String widthStr = matcher.group(4);
+                if (idStr == null || widthStr == null) {
+                    continue;
+                }
+                Long id = Long.parseLong(idStr);
+                Integer width = Integer.parseInt(widthStr);
+                try {
+                    repository.ensureResizedImage(id, width, null, MediaRepository.RESIZE_SKIP_SMALL);
+                } catch (Exception e) {
+                    log.error("Failed to resize image", e);
+                }
             }
-            Long id = Long.parseLong(idStr);
-            Integer width = Integer.parseInt(widthStr);
-            try {
-                repository.ensureResizedImage(id, width, null, MediaRepository.RESIZE_SKIP_SMALL);
-            } catch (Exception e) {
-                log.error("Failed to resize image", e);
-            }
-        }
+        });
     }
 }

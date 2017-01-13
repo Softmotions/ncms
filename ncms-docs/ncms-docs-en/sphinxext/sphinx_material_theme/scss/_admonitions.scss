@@ -1,0 +1,42 @@
+div.admonition {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 7px 10px;
+
+  &.note, &.warning, &.error, &.seealso {
+    @extend .z-depth-1;
+    border-radius: 4px;
+  }
+
+  &.note {
+    background-color: $note-bg-color;
+  }
+
+  &.warning {
+    background-color: $warning-bg-color;
+    color: $warning-text-color;
+  }
+
+  &.error {
+    background-color: $error-bg-color;
+    color: $error-text-color;
+  }
+}
+
+div.admonition dt {
+  font-weight: bold;
+}
+
+div.admonition dl {
+  margin-bottom: 0;
+}
+
+p.admonition-title {
+  margin: 0px 10px 5px 0px;
+  font-weight: bold;
+}
+
+div.body p.centered {
+  text-align: center;
+  margin-top: 25px;
+}

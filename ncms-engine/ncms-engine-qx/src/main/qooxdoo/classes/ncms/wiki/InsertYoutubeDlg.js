@@ -16,7 +16,7 @@ qx.Class.define("ncms.wiki.InsertYoutubeDlg", {
     },
 
     construct: function () {
-        this.base(arguments, this.tr("Insert YouTube video"));
+        this.base(arguments, this.tr("Insert Youtube video"));
         this.setLayout(new qx.ui.layout.VBox(4));
         this.set({
             modal: true,

@@ -1042,6 +1042,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         ).type("application/json;charset=UTF-8").build();
     }
 
+    // todo replace/review
     @GET
     @Path("/referers/orphans")
     public Response getOrphanPages() {
@@ -1099,7 +1100,7 @@ public class PageRS extends MBDAOSupport implements PageService {
                 return ret;
             }
 
-            //todo check dependent files
+            //todo check dependent files?
 
             adao.asmRemove(id);
             ebus.fireOnSuccessCommit(
@@ -1664,12 +1665,15 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     @Subscribe
+    @Transactional
     public void onAsmRemoved(AsmRemovedEvent ev) {
         Long pid = ev.getId();
         clearCachedPage(pid);
         if (removeFromIndexPages(pid)) {
             reloadIndexPages();
         }
+        delete("deleteFileDeps", pid);
+        delete("deletePageDeps", pid);
     }
 
     @Subscribe

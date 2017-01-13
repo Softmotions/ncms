@@ -44,7 +44,7 @@ qx.Class.define("ncms.asm.am.MainPageAM", {
                 el.setValue(opts["vhost"]);
             }
             el.setPlaceholder(this.tr("Comma separated virtual hosts"));
-            form.add(el, this.tr("Visrtual hosts"), null, "vhost");
+            form.add(el, this.tr("Virtual hosts"), null, "vhost");
 
             el = new qx.ui.form.CheckBox();
             if (opts["enabled"] == "true") {

@@ -9,76 +9,74 @@
 
     <update id="updateMUser" parameterType="map">
         UPDATE ASMS
-        SET muser = #{muser,jdbcType=VARCHAR}, mdate = #{mdate,jdbcType=TIMESTAMP}
+        SET muser = #{muser,jdbcType=VARCHAR},
+            mdate = #{mdate,jdbcType=TIMESTAMP}
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteFileDeps">
+    <delete id="deleteFileDeps" parameterType="long">
         DELETE FROM ASM_MEDIA_DEPS
-        WHERE
-        attr_id IN
-        <foreach collection="attrs" item="attr" open="(" separator="," close=")">
-            #{attr}
-        </foreach>
+        WHERE asm_id = #{id}
     </delete>
 
     <update id="mergeFileDependencies" databaseId="DB2" parameterType="list">
         MERGE INTO ASM_MEDIA_DEPS md
         USING (VALUES
             <foreach collection="list" item="r" separator=",">
-                (${r[0]}, ${r[1]})
+                (${r[0]}, ${r[1]}, ${r[2]})
             </foreach>
-        ) AS r(attr_id, file_id)
-        ON md.attr_id = r.attr_id AND md.file_id = r.file_id
+        ) AS r(asm_id, attr_id, file_id)
+        ON md.asm_id = r.asm_id
+        AND md.attr_id = r.attr_id
+        AND md.file_id = r.file_id
         WHEN NOT MATCHED THEN
-            INSERT(attr_id, file_id)
-            VALUES(r.attr_id, r.file_id)
+            INSERT(asm_id, attr_id, file_id)
+            VALUES(r.asm_id, r.attr_id, r.file_id)
         ELSE IGNORE
     </update>
 
     <update id="mergeFileDependencies" databaseId="POSTGRES" parameterType="list">
-        INSERT INTO ASM_MEDIA_DEPS (attr_id, file_id)
+        INSERT INTO ASM_MEDIA_DEPS (asm_id, attr_id, file_id)
         VALUES
         <foreach collection="list" item="r" separator=",">
-            (${r[0]}, ${r[1]})
+            (${r[0]}, ${r[1]}, ${r[2]})
         </foreach>
-        ON CONFLICT (attr_id, file_id)
+        ON CONFLICT (asm_id, attr_id, file_id)
         DO NOTHING
     </update>
 
-    <delete id="deletePageDeps">
+    <delete id="deletePageDeps" parameterType="long">
         DELETE FROM ASM_PAGE_DEPS
-        WHERE
-        attr_id IN
-        <foreach collection="attrs" item="attr" open="(" separator="," close=")">
-            #{attr}
-        </foreach>
+        WHERE asm_id = #{id}
     </delete>
 
     <update id="mergePageDependencies" databaseId="DB2" parameterType="list">
         MERGE INTO ASM_PAGE_DEPS md
         USING (VALUES
             <foreach collection="list" item="r" separator=",">
-                (${r[0]}, '${r[1]}')
+                (${r[0]}, ${r[1]}, '${r[2]}')
             </foreach>
-        ) AS r(attr_id, asm_name)
-        ON md.attr_id = r.attr_id AND md.asm_name = r.asm_name
+        ) AS r(asm_id, attr_id, asm_name)
+        ON md.asm_id = r.asm_id
+        AND md.attr_id = r.attr_id
+        AND md.asm_name = r.asm_name
         WHEN NOT MATCHED AND EXISTS (SELECT 1 FROM ASMS a WHERE a.name = r.asm_name) THEN
-          INSERT(attr_id, asm_name)
-          VALUES(r.attr_id, r.asm_name)
+          INSERT(asm_id, attr_id, asm_name)
+          VALUES(r.asm_id, r.attr_id, r.asm_name)
         ELSE IGNORE
     </update>
 
     <update id="mergePageDependencies" databaseId="POSTGRES" parameterType="list">
-        WITH new_deps (attr_id, asm_name) AS
+        WITH new_deps (asm_id, attr_id, asm_name) AS
           (VALUES
             <foreach collection="list" item="r" separator=",">
-                (${r[0]}, '${r[1]}')
+                (${r[0]}, ${r[1]}, '${r[2]}')
             </foreach>)
-        INSERT INTO ASM_PAGE_DEPS (attr_id, asm_name)
-            SELECT attr_id, asm_name FROM new_deps
+        INSERT INTO ASM_PAGE_DEPS (asm_id, attr_id, asm_name)
+            SELECT asm_id, attr_id, asm_name FROM new_deps
             WHERE NOT EXISTS (SELECT 1 FROM ASM_PAGE_DEPS md
-                              WHERE md.attr_id = new_deps.attr_id
+                              WHERE md.asm_id = new_deps.asm_id
+                                AND md.attr_id = new_deps.attr_id
                                 AND md.asm_name = new_deps.asm_name)
                   AND EXISTS (SELECT 1 FROM ASMS a
                               WHERE a.name = new_deps.asm_name)

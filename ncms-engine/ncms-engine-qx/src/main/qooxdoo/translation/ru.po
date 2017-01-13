@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:57 ncms/Application.js:484
+#: ncms/Application.js:57
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
@@ -16,13 +16,17 @@ msgstr ""
 msgid "Connection to server restored."
 msgstr "Соединение с сервером восстановлено."
 
+#: ncms/Application.js:484
+msgid "Your session expired! Please login again"
+msgstr ""
+
 #: ncms/Application.js:513
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
-#: ncms/Toolbar.js:44 ncms/Toolbar.js:49 ncms/wiki/WikiEditor.js:398
-#: ncms/wiki/WikiEditor.js:402 ncms/wiki/WikiEditor.js:406
-#: ncms/wiki/WikiEditor.js:408
+#: ncms/Toolbar.js:44 ncms/Toolbar.js:49 ncms/wiki/WikiEditor.js:414
+#: ncms/wiki/WikiEditor.js:418 ncms/wiki/WikiEditor.js:422
+#: ncms/wiki/WikiEditor.js:424
 msgid "Help"
 msgstr "Справка"
 
@@ -102,7 +106,7 @@ msgid "Ok"
 msgstr "Ок"
 
 #: ncms/pgs/PageEditorEditPage.js:75 ncms/mtt/tp/MttTpEditor.js:80
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:57 ncms/wiki/TableDlg.js:59
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:57 ncms/wiki/TableDlg.js:63
 #: ncms/asm/AsmSelectorDlg.js:48 ncms/pgs/PagesSelectorDlg.js:58
 #: ncms/mtt/filters/MttFilterDlg.js:78 ncms/mtt/actions/MttActionDlg.js:78
 #: ncms/wiki/TreeDlg.js:54 ncms/usr/UserSelectorDlg.js:40
@@ -505,8 +509,8 @@ msgstr "Коды языка"
 msgid "Comma separated virtual hosts"
 msgstr "Список виртуальных хостов через запятую"
 
-#: ncms/asm/am/MainPageAM.js:47
-msgid "Visrtual hosts"
+#: ncms/pgs/PageEditorInfoPage.js:132 ncms/asm/am/MainPageAM.js:47
+msgid "Virtual hosts"
 msgstr "Виртуальные хосты"
 
 #: ncms/mtt/tp/MttTpEditor.js:38 ncms/mtt/filters/MttFilterDlg.js:59
@@ -514,6 +518,10 @@ msgstr "Виртуальные хосты"
 #: ncms/asm/am/MainPageAM.js:53 ncms/mtt/tp/MttTpNav.js:87
 msgid "Enabled"
 msgstr "Активно"
+
+#: ncms/pgs/PageEditorInfoPage.js:132 ncms/asm/am/MainPageAM.js:47
+msgid "Virtual hosts"
+msgstr "Виртуальные хосты"
 
 #: ncms/asm/am/MedialineAM.js:15
 msgid "Medialine"
@@ -568,7 +576,7 @@ msgstr "Добавить изображения в галерею"
 msgid "Page reference"
 msgstr "Ссылка на страницу"
 
-#: ncms/wiki/InsertImageDlg.js:61 ncms/asm/am/RichRefAMValueWidget.js:60
+#: ncms/wiki/InsertImageDlg.js:69 ncms/asm/am/RichRefAMValueWidget.js:60
 #: ncms/asm/am/PageRefAM.js:38
 msgid "Link"
 msgstr "Ссылка"
@@ -693,7 +701,8 @@ msgstr "Max length"
 msgid "Placeholder"
 msgstr "Placeholder"
 
-#: ncms/asm/am/TableAM.js:19 ncms/wiki/WikiEditor.js:533
+#: ncms/asm/am/TableAM.js:19 ncms/wiki/WikiEditor.js:571
+#: ncms/wiki/WikiEditor.js:588
 msgid "Table"
 msgstr "Таблица"
 
@@ -800,11 +809,15 @@ msgstr "Пожалуйста укажите адрес веб ресурса"
 msgid "Wiki editor"
 msgstr "Wiki редактор"
 
-#: ncms/asm/am/WikiAM.js:35
+#: ncms/asm/am/WikiAM.js:34
 msgid "mediawiki"
 msgstr "mediawiki"
 
-#: ncms/asm/am/WikiAM.js:38
+#: ncms/asm/am/WikiAM.js:35
+msgid "markdown"
+msgstr "markdown"
+
+#: ncms/asm/am/WikiAM.js:37
 msgid "Markup language"
 msgstr "Язык разметки"
 
@@ -812,7 +825,7 @@ msgstr "Язык разметки"
 msgid "Select a type"
 msgstr "Выбрать тип"
 
-#: ncms/cc/tree/MFolderTree.js:62 ncms/wiki/WikiEditor.js:875
+#: ncms/cc/tree/MFolderTree.js:62 ncms/wiki/WikiEditor.js:1013
 msgid "Root"
 msgstr "Корень"
 
@@ -856,7 +869,7 @@ msgstr "Атрибут"
 msgid "Content type"
 msgstr "Тип данных"
 
-#: ncms/wiki/InsertImageDlg.js:30 ncms/mmgr/MediaFileEditor.js:307
+#: ncms/wiki/InsertImageDlg.js:34 ncms/mmgr/MediaFileEditor.js:307
 msgid "Size"
 msgstr "Размер"
 
@@ -1403,7 +1416,7 @@ msgstr "Вы действительно желаете удалить стран
 msgid "Please select the parent page for news"
 msgstr "Пожалуйста, укажите родительскую страницу для ленты"
 
-#: ncms/wiki/InsertImageDlg.js:23 ncms/news/NewsNewDlg.js:21
+#: ncms/wiki/InsertImageDlg.js:26 ncms/news/NewsNewDlg.js:21
 #: ncms/news/NewsNewDlg.js:22
 msgid "Caption"
 msgstr "Заголовок"
@@ -1526,10 +1539,6 @@ msgstr "Управление файлами страницы"
 #: ncms/pgs/PageEditorInfoPage.js:12
 msgid "General"
 msgstr "Общее"
-
-#: ncms/pgs/PageEditorInfoPage.js:132
-msgid "Virtual hosts"
-msgstr "Виртуальные хосты"
 
 #: ncms/pgs/PageEditorInfoPage.js:140
 msgid "Languages"
@@ -1721,47 +1730,47 @@ msgstr "Вставьте сюда сгенерированный google map <ifr
 msgid "Invalid google map location code"
 msgstr ""
 
-#: ncms/wiki/InsertImageDlg.js:26
+#: ncms/wiki/InsertImageDlg.js:30
 msgid "original"
 msgstr "оригинальный"
 
-#: ncms/wiki/InsertImageDlg.js:27
+#: ncms/wiki/InsertImageDlg.js:31
 msgid "small"
 msgstr "маленький"
 
-#: ncms/wiki/InsertImageDlg.js:28
+#: ncms/wiki/InsertImageDlg.js:32
 msgid "medium"
 msgstr "средний"
 
-#: ncms/wiki/InsertImageDlg.js:29
+#: ncms/wiki/InsertImageDlg.js:33
 msgid "large"
 msgstr "большой"
 
-#: ncms/wiki/InsertImageDlg.js:33
+#: ncms/wiki/InsertImageDlg.js:39
 msgid "default"
 msgstr "по умолчанию"
 
-#: ncms/wiki/InsertImageDlg.js:34
+#: ncms/wiki/InsertImageDlg.js:40
 msgid "center"
 msgstr "по центру"
 
-#: ncms/wiki/InsertImageDlg.js:35
+#: ncms/wiki/InsertImageDlg.js:41
 msgid "left"
 msgstr "слева"
 
-#: ncms/wiki/InsertImageDlg.js:36
+#: ncms/wiki/InsertImageDlg.js:42
 msgid "right"
 msgstr "справа"
 
-#: ncms/wiki/InsertImageDlg.js:37
+#: ncms/wiki/InsertImageDlg.js:43
 msgid "Position"
 msgstr "Расположение"
 
-#: ncms/wiki/InsertImageDlg.js:44
+#: ncms/wiki/InsertImageDlg.js:52
 msgid "Select image link"
 msgstr "Укажите ссылку на изображение"
 
-#: ncms/wiki/InsertSlideSharePresentationDlg.js:12 ncms/wiki/WikiEditor.js:611
+#: ncms/wiki/InsertSlideSharePresentationDlg.js:12 ncms/wiki/WikiEditor.js:671
 msgid "Insert SlideShare presentation"
 msgstr "Вставить презентацию SlideShare"
 
@@ -1792,7 +1801,7 @@ msgstr "Неправильный SlideShare код"
 msgid "Failed to connect to SlideShare server. Try again later"
 msgstr "Не удалось соединиться с сервером SlideShare. Повторите попытку позже"
 
-#: ncms/wiki/InsertVimeoDlg.js:12 ncms/wiki/WikiEditor.js:620
+#: ncms/wiki/InsertVimeoDlg.js:12 ncms/wiki/WikiEditor.js:681
 msgid "Insert Vimeo video"
 msgstr "Вставить Vimeo ролик"
 
@@ -1812,8 +1821,8 @@ msgstr "Неправильный Vimeo код"
 msgid "Failed to connect to Vimeo server. Try again later"
 msgstr "Не удалось соединиться с сервером Vimeo. Повторите попытку позже"
 
-#: ncms/wiki/InsertYoutubeDlg.js:19
-msgid "Insert YouTube video"
+#: ncms/wiki/WikiEditor.js:650 ncms/wiki/InsertYoutubeDlg.js:19
+msgid "Insert Youtube video"
 msgstr "Вставить ролик YouTube"
 
 #: ncms/wiki/InsertYoutubeDlg.js:34
@@ -1824,24 +1833,24 @@ msgstr ""
 msgid "Invalid YouTube video url or code"
 msgstr "Неправильный код или ссылка на видео YouTube"
 
-#: ncms/wiki/TableDlg.js:21 ncms/wiki/TableDlg.js:52
-#: ncms/wiki/WikiEditor.js:534
+#: ncms/wiki/TableDlg.js:24 ncms/wiki/TableDlg.js:55
+#: ncms/wiki/WikiEditor.js:572 ncms/wiki/WikiEditor.js:589
 msgid "Insert table"
 msgstr "Вставить таблицу"
 
-#: ncms/wiki/TableDlg.js:43
+#: ncms/wiki/TableDlg.js:46
 msgid "Columns"
 msgstr "Колонок"
 
-#: ncms/wiki/TableDlg.js:45
+#: ncms/wiki/TableDlg.js:48
 msgid "Rows"
 msgstr "Строк"
 
-#: ncms/wiki/TableDlg.js:68
-msgid "Wide table"
-msgstr "Широкая таблица"
+#: ncms/wiki/TableDlg.js:75
+msgid "CSS classes:"
+msgstr ""
 
-#: ncms/wiki/TreeDlg.js:18 ncms/wiki/WikiEditor.js:549
+#: ncms/wiki/TreeDlg.js:18 ncms/wiki/WikiEditor.js:606
 msgid "Insert tree"
 msgstr "Вставить дерево"
 
@@ -1861,146 +1870,143 @@ msgstr "Стиль дерева"
 msgid "Open all nodes"
 msgstr "Открыть все узлы"
 
-#: ncms/wiki/WikiEditor.js:163
-msgid "More..."
-msgstr "Больше..."
+#: ncms/wiki/WikiEditor.js:173
+msgid "Controls..."
+msgstr "Элементы..."
 
-#: ncms/wiki/WikiEditor.js:448
+#: ncms/wiki/WikiEditor.js:465
 msgid "Heading 1"
 msgstr "Заголовок 1"
 
-#: ncms/wiki/WikiEditor.js:449 ncms/wiki/WikiEditor.js:457
-#: ncms/wiki/WikiEditor.js:465
+#: ncms/wiki/WikiEditor.js:466 ncms/wiki/WikiEditor.js:475
+#: ncms/wiki/WikiEditor.js:484
 msgid "Header text"
 msgstr "Текст заголовка"
 
-#: ncms/wiki/WikiEditor.js:456
+#: ncms/wiki/WikiEditor.js:474
 msgid "Heading 2"
 msgstr "Заголовок 2"
 
-#: ncms/wiki/WikiEditor.js:464
+#: ncms/wiki/WikiEditor.js:483
 msgid "Heading 3"
 msgstr "Заголовок 3"
 
-#: ncms/wiki/WikiEditor.js:472
+#: ncms/wiki/WikiEditor.js:492
 msgid "Bold"
 msgstr "Жирный"
 
-#: ncms/wiki/WikiEditor.js:473
+#: ncms/wiki/WikiEditor.js:493
 msgid "Bold text"
 msgstr "Жирный текст"
 
-#: ncms/wiki/WikiEditor.js:481
+#: ncms/wiki/WikiEditor.js:502
 msgid "Italic"
 msgstr "Курсив"
 
-#: ncms/wiki/WikiEditor.js:482
+#: ncms/wiki/WikiEditor.js:503
 msgid "Italics text"
 msgstr "Текст курсивом"
 
-#: ncms/wiki/WikiEditor.js:491
+#: ncms/wiki/WikiEditor.js:513
 msgid "Bullet list"
 msgstr "Список"
 
-#: ncms/wiki/WikiEditor.js:499
+#: ncms/wiki/WikiEditor.js:522
 msgid "Numbered list"
 msgstr "Нумерованный список"
 
-#: ncms/wiki/WikiEditor.js:508 ncms/wiki/WikiEditor.js:509
-#: ncms/wiki/WikiEditor.js:708
+#: ncms/wiki/WikiEditor.js:532 ncms/wiki/WikiEditor.js:533
+#: ncms/wiki/WikiEditor.js:769
 msgid "Insert link"
 msgstr "Вставить ссылку"
 
-#: ncms/wiki/WikiEditor.js:516 ncms/wiki/WikiEditor.js:518
-#: ncms/wiki/WikiEditor.js:728
+#: ncms/wiki/WikiEditor.js:542 ncms/wiki/WikiEditor.js:544
+#: ncms/wiki/WikiEditor.js:551 ncms/wiki/WikiEditor.js:553
+#: ncms/wiki/WikiEditor.js:789 ncms/wiki/WikiEditor.js:801
 msgid "Insert image"
 msgstr "Вставить изображение"
 
-#: ncms/wiki/WikiEditor.js:524 ncms/wiki/WikiEditor.js:526
+#: ncms/wiki/WikiEditor.js:560 ncms/wiki/WikiEditor.js:562
 msgid "Insert file link"
 msgstr "Вставить ссылку на файл"
 
-#: ncms/wiki/WikiEditor.js:548
+#: ncms/wiki/WikiEditor.js:605
 msgid "Tree"
 msgstr "Дерево"
 
-#: ncms/wiki/WikiEditor.js:563
+#: ncms/wiki/WikiEditor.js:621
 msgid "Create note"
 msgstr "Создать узел"
 
-#: ncms/wiki/WikiEditor.js:568 ncms/wiki/WikiEditor.js:569
+#: ncms/wiki/WikiEditor.js:626 ncms/wiki/WikiEditor.js:627
 msgid "Simple note"
 msgstr "Простая заметка"
 
-#: ncms/wiki/WikiEditor.js:575 ncms/wiki/WikiEditor.js:576
+#: ncms/wiki/WikiEditor.js:633 ncms/wiki/WikiEditor.js:634
 msgid "Warning note"
 msgstr "Заметка предупреждение"
 
-#: ncms/wiki/WikiEditor.js:585
+#: ncms/wiki/WikiEditor.js:644
 msgid "Google services"
 msgstr "Сервисы google"
 
-#: ncms/wiki/WikiEditor.js:590
-msgid "YouTube film"
+#: ncms/wiki/WikiEditor.js:649
+msgid "Youtube video"
 msgstr "Ролик YouTube"
 
-#: ncms/wiki/WikiEditor.js:591
-msgid "Insert YouTube film"
-msgstr "Вставить ролик YouTube"
-
-#: ncms/wiki/WikiEditor.js:599
+#: ncms/wiki/WikiEditor.js:658
 msgid "Gmap location"
 msgstr "Карта google map"
 
-#: ncms/wiki/WikiEditor.js:600
+#: ncms/wiki/WikiEditor.js:659
 msgid "Insert gmap location"
 msgstr "Вставить карту google map"
 
-#: ncms/wiki/WikiEditor.js:610
+#: ncms/wiki/WikiEditor.js:670
 msgid "SlideShare"
 msgstr "Сервис презентаций"
 
-#: ncms/wiki/WikiEditor.js:619
+#: ncms/wiki/WikiEditor.js:680
 msgid "Vimeo video"
 msgstr "Ролик Vimeo"
 
-#: ncms/wiki/WikiEditor.js:740
+#: ncms/wiki/WikiEditor.js:814
 msgid "Insert link to file"
 msgstr "Вставить ссылку на файл"
 
-#: ncms/wiki/WikiEditor.js:823 ncms/wiki/WikiEditor.js:835
-#: ncms/wiki/WikiEditor.js:847 ncms/wiki/WikiEditor.js:859
+#: ncms/wiki/WikiEditor.js:961 ncms/wiki/WikiEditor.js:973
+#: ncms/wiki/WikiEditor.js:985 ncms/wiki/WikiEditor.js:997
 msgid "First"
 msgstr "Первый"
 
-#: ncms/wiki/WikiEditor.js:825 ncms/wiki/WikiEditor.js:837
-#: ncms/wiki/WikiEditor.js:849 ncms/wiki/WikiEditor.js:861
+#: ncms/wiki/WikiEditor.js:963 ncms/wiki/WikiEditor.js:975
+#: ncms/wiki/WikiEditor.js:987 ncms/wiki/WikiEditor.js:999
 msgid "Second"
 msgstr "Второй"
 
-#: ncms/wiki/WikiEditor.js:826 ncms/wiki/WikiEditor.js:838
-#: ncms/wiki/WikiEditor.js:850 ncms/wiki/WikiEditor.js:862
+#: ncms/wiki/WikiEditor.js:964 ncms/wiki/WikiEditor.js:976
+#: ncms/wiki/WikiEditor.js:988 ncms/wiki/WikiEditor.js:1000
 msgid "First for second"
 msgstr "Первый у второго"
 
-#: ncms/wiki/WikiEditor.js:827 ncms/wiki/WikiEditor.js:839
-#: ncms/wiki/WikiEditor.js:851 ncms/wiki/WikiEditor.js:863
+#: ncms/wiki/WikiEditor.js:965 ncms/wiki/WikiEditor.js:977
+#: ncms/wiki/WikiEditor.js:989 ncms/wiki/WikiEditor.js:1001
 msgid "Third"
 msgstr "Третий"
 
-#: ncms/wiki/WikiEditor.js:876
+#: ncms/wiki/WikiEditor.js:1014
 msgid "Child 1"
 msgstr "Потомок 1"
 
-#: ncms/wiki/WikiEditor.js:877
+#: ncms/wiki/WikiEditor.js:1015
 msgid "Child level 3"
 msgstr "Потомок уровня вложенности 3"
 
-#: ncms/wiki/WikiEditor.js:878
+#: ncms/wiki/WikiEditor.js:1016
 msgid "Child 2"
 msgstr "Потомок уровня вложенности 2"
 
-#: ncms/wiki/WikiEditor.js:893
+#: ncms/wiki/WikiEditor.js:1031
 msgid "Note text"
 msgstr "Заметка"
 
@@ -2008,6 +2014,9 @@ msgstr "Заметка"
 #~ msgstr ""
 
 #~ msgid "Are you sure to remove selected rows"
+#~ msgstr ""
+
+#~ msgid "CSS classes"
 #~ msgstr ""
 
 #~ msgid "Connection to the server lost.<br>Please wait."
@@ -2021,6 +2030,15 @@ msgstr "Заметка"
 
 #~ msgid "Incoming request parameters"
 #~ msgstr "Входящие параметры запроса"
+
+#~ msgid "Insert YouTube video"
+#~ msgstr "Вставить ролик YouTube"
+
+#~ msgid "Markdown editor"
+#~ msgstr ""
+
+#~ msgid "More..."
+#~ msgstr "Больше..."
 
 #~ msgid "Optional pixel JS"
 #~ msgstr "Опциональный JS трекинг пикселя"
@@ -2046,5 +2064,5 @@ msgstr "Заметка"
 #~ msgid "Track traffic pixels"
 #~ msgstr "От"
 
-#~ msgid "markdown"
-#~ msgstr "markdown"
+#~ msgid "Wide table"
+#~ msgstr "Широкая таблица"

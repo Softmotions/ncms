@@ -294,7 +294,7 @@ qx.Class.define("ncms.Application", {
                 this.__initAtmosphere();
                 this.fireEvent("guiInitialized");
             }, this);
-            
+
             window.addEventListener("dragover", function (ev) {
                 ev.preventDefault();
             }, false);
@@ -481,7 +481,7 @@ qx.Class.define("ncms.Application", {
                     return;
                 }
                 this.__logoutPending = true;
-                window.alert(qx.locale.Manager.tr("Your user session expired! Please login again"));
+                window.alert(qx.locale.Manager.tr("Your session expired! Please login again"));
                 window.location.reload(true);
             }.bind(this);
             ncms.Application.INSTANCE = this;
@@ -524,6 +524,7 @@ qx.Class.define("ncms.Application", {
     },
 
     defer: function (statics) {
+
         // Location of UI based on `navigator.languages[0]` instead of `navigator.language`
         // todo review it for IE/EDGE
         var browser = qx.core.Environment.get("browser.name");
@@ -538,5 +539,19 @@ qx.Class.define("ncms.Application", {
         }
         // Set alert windows implementation to `sm.io.Request.`
         sm.io.Request.ALERT_WND_IMPL = ncms.AlertPopupMessages;
+
+        document.onkeydown = function (e) {
+            e = e || window.event;
+            if (e.ctrlKey) {
+                var c = e.which || e.keyCode;
+                switch (c) {
+                    case 83: // Block Ctrl+S
+                    case 87: // Block Ctrl+W
+                        e.preventDefault();
+                        e.stopPropagation();
+                        break;
+                }
+            }
+        };
     }
 });

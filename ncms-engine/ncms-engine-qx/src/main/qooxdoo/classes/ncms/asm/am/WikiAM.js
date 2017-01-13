@@ -1,5 +1,5 @@
 /**
- * Markdown/Mediawiki attribute manager.
+ * Mediawiki attribute manager.
  */
 qx.Class.define("ncms.asm.am.WikiAM", {
     extend: qx.core.Object,
@@ -30,13 +30,11 @@ qx.Class.define("ncms.asm.am.WikiAM", {
         activateOptionsWidget: function (attrSpec, asmSpec) {
             var form = this._form = new sm.ui.form.ExtendedForm();
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
-
             var el = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(4));
             el.add(new qx.ui.form.RadioButton(this.tr("mediawiki")).set({"model": "mediawiki"}));
-            //el.add(new qx.ui.form.RadioButton(this.tr("markdown")).set({"model": "markdown"}));
+            el.add(new qx.ui.form.RadioButton(this.tr("markdown")).set({"model": "markdown"}));
             el.setModelSelection(opts["markup"] ? [opts["markup"]] : ["mediawiki"]);
             form.add(el, this.tr("Markup language"), null, "markup");
-
             return new sm.ui.form.FlexFormRenderer(form);
         },
 
@@ -54,9 +52,9 @@ qx.Class.define("ncms.asm.am.WikiAM", {
         activateValueEditorWidget: function (attrSpec, asmSpec) {
             var opts = ncms.Utils.parseOptions(attrSpec["options"]);
             var w = new ncms.wiki.WikiEditor(attrSpec, asmSpec);
-            //w.getTextArea().setAutoSize(true);
-            w.getTextArea().setMinimalLineHeight(25);
-            //w.getTextArea().setMaxHeight(500);
+            w.getTextArea().setAutoSize(true);
+            w.getTextArea().setMinimalLineHeight(10);
+            w.getTextArea().setMaxHeight(600);
             if (opts["markup"] != null) {
                 w.setMarkup(opts["markup"])
             }

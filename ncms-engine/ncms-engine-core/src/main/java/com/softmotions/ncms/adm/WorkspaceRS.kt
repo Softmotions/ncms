@@ -51,7 +51,7 @@ constructor(private val env: NcmsEnvironment,
             helpTopics["wiki.gmap"] = "https://support.google.com/maps/answer/3544418"
         }
         if ("wiki" !in helpTopics) {
-            helpTopics["wiki"] = "${env.appRoot}/manual/doc/ui/am/wiki/wiki.html"
+            helpTopics["wiki"] = "http://ncms.one/manual/doc/ui/am/wiki/wiki.html"
         }
     }
 
@@ -92,7 +92,7 @@ constructor(private val env: NcmsEnvironment,
 
     inner class WSUserState(user: WSUser, req: HttpServletRequest) : HashMap<String, Any?>() {
         internal val properties: Map<String, Any?> = HashMap<String, Any?>().apply {
-            put("max-edit-text-size", env.xcfg().getInt("media.max-edit-text-size", 524288))
+            put("max-edit-text-size", env.xcfg().getInt("media.max-edit-text-size", 1048576))
         }
         init {
             put("appName", env.applicationName)
@@ -116,7 +116,7 @@ constructor(private val env: NcmsEnvironment,
         if (!StringUtils.isBlank(alias)) {
             return@lazy pageService.resolvePageLink(alias)
         } else {
-            return@lazy env.xcfg().getString("help.site", "${env.appRoot}/manual/index.html")
+            return@lazy env.xcfg().getString("help.site", "http://ncms.one/manual")
         }
     }
 

@@ -18,7 +18,7 @@
 com.softmotions.ncms.mhttl .HttlAsmMethods
 ------------------------------------------
 
-Методы, предназначенные для доступа.
+Методы, предназначенные для доступа объектам ηCMS.
 
 
 .. js:function:: page()
@@ -156,9 +156,6 @@ com.softmotions.ncms.mhttl .HttlAsmMethods
     Возвращает `true`, если в контексте
     текущей страницы включен режим `A/B`
     тестирования с именем `name`.
-
-    :param boolean def: Возвращаемое значение в том случае, если `A/B` режим
-                        не включен. По умолчанию `false`.
 
 .. js:function:: abtA()
 .. js:function:: abtB()

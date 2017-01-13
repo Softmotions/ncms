@@ -1,0 +1,90 @@
+ul, ol {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  p {
+    margin-bottom: 0;
+  }
+}
+
+ul li {
+  margin-left: 15px;
+  list-style-type: disc;
+}
+
+ul li li {
+  list-style-type: circle;
+}
+
+ul li li li {
+  list-style-type: square;
+}
+
+ol li {
+  margin-left: 15px;
+}
+
+ol li li {
+}
+
+ol li li li {
+}
+
+ol.arabic {
+  list-style: decimal;
+}
+
+ol.loweralpha {
+  list-style: lower-alpha;
+}
+
+ol.upperalpha {
+  list-style: upper-alpha;
+}
+
+ol.lowerroman {
+  list-style: lower-roman;
+}
+
+ol.upperroman {
+  list-style: upper-roman;
+}
+
+dl {
+  margin-bottom: 15px;
+}
+
+dd p {
+  margin-top: 0px;
+}
+
+dd ul, dd table {
+  margin-bottom: 10px;
+}
+
+dd {
+  margin-top: 3px;
+  margin-bottom: 10px;
+  margin-left: 15px;
+}
+
+dt:target, .highlighted {
+  background-color: $search-highlight-color;
+}
+
+dl.glossary dt {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.field-list ul,  {
+  margin: 0;
+  padding-left: 1em;
+}
+
+.field-list p {
+  margin: 0;
+}
+

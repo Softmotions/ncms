@@ -42,7 +42,6 @@ import com.softmotions.weboot.mb.MBDAOSupport;
 /**
  * @author Adamansky Anton (adamansky@softmotions.com)
  */
-
 @Singleton
 public class AsmMedialineAM extends MBDAOSupport implements AsmAttributeManager {
 
