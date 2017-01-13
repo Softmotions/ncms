@@ -392,7 +392,7 @@
         FROM ASM_PAGE_DEPS AS d
             INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
         WHERE d.asm_name = #{guid}
-              AND attr.asm_id = #{asmid}
+              AND d.asm_id = #{asmid}
     </select>
 
 
@@ -404,8 +404,7 @@
             asm.id        AS "asmid",
             asm.published AS "published"
         FROM ASM_PAGE_DEPS AS d
-            INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
-            INNER JOIN ASMS AS asm ON attr.asm_id = asm.id
+            INNER JOIN ASMS AS asm ON d.asm_id = asm.id
         WHERE
             d.asm_name = #{name}
         ORDER BY asm.hname
@@ -421,17 +420,15 @@
             asm.published   AS "published"
         FROM ASMS AS asm
             INNER JOIN ASM_PAGE_DEPS d ON d.asm_name = asm.name
-            INNER JOIN ASM_ATTRS AS attr ON d.attr_id = attr.id
         WHERE
-            attr.asm_id = #{asmid}
+            d.asm_id = #{asmid}
         ORDER BY asm.hname
     </select>
 
     <select id="selectCountOfPagesDependentOn" resultType="long" parameterType="string">
         SELECT
-            COUNT(DISTINCT attr.ASM_ID)
+            COUNT(DISTINCT d.ASM_ID)
         FROM ASM_PAGE_DEPS AS d
-            INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
         WHERE d.asm_name = #{name}
     </select>
 
@@ -439,8 +436,7 @@
         SELECT
             COUNT(DISTINCT d.asm_name)
         FROM ASM_PAGE_DEPS AS d
-            INNER JOIN ASM_ATTRS AS attr ON attr.id = d.attr_id
-        WHERE attr.asm_id = #{asmid}
+        WHERE d.asm_id = #{asmid}
     </select>
 
     <select id="selectOrphanPages" resultType="map" parameterType="string">

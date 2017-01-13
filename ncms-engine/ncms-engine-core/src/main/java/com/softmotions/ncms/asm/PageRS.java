@@ -1018,8 +1018,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @GET
     @Path("/referrers/to/count/{id}")
     public Number getPageReferrersCountTo(@PathParam("id") Long id) {
-        long selectCountOfPagesDependentTo = count("selectCountOfPagesDependentTo", id);
-        return selectCountOfPagesDependentTo;
+        return count("selectCountOfPagesDependentTo", id);
     }
 
     @GET
@@ -1095,7 +1094,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             if (count("selectNumberOfDirectChilds", id) > 0) {
                 throw new NcmsNotificationException("ncms.page.nodel.children", true, req);
             }
-            if (count("selectCountOfDependentAttrs", page.getName()) > 0) {
+            if (count("selectCountOfAttrsDependentOn", page.getName()) > 0) {
                 ret.put("error", "ncms.page.nodel.refs.found");
                 return ret;
             }
