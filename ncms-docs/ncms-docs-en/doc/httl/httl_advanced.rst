@@ -7,7 +7,7 @@ Using HTTL in CSS
 -----------------
 
 Sometimes it's required to include a request dependent conditional logic into CSS.
-This can be done as shown below:
+This can be achieved as shown below:
 
 HTTL template:
 
@@ -21,8 +21,8 @@ HTTL template:
     ...
     </html>
 
-Here css resource is called with a query parameter `?style = black`, which is processed while
-generating the file `site.httl.css` as a template.
+In this example CSS resource is called with a query parameter `?style = black`, which is handled while
+processing `site.httl.css` template file.
 
 
 `css/site.httl.css` file:
@@ -37,19 +37,19 @@ generating the file `site.httl.css` as a template.
         #end
     }
 
-Here is a conditional HTTL directive `#if` and ηCMS method to check the value
-of the request parameter: `ifRequestParameter`. To provide the `css` file
-to be processed as a template, specify its extension as `.httl.css`.
+There is a conditional HTTL directive `#if` and ηCMS method to check a value
+of a given request parameter: `ifRequestParameter`. To allow the `css` file
+to be processed as a template, just specify its extension as `.httl.css`.
 
 
 .. warning::
 
-     Usage of dynamic HTTL logic inside `css` is not recommended.
-     Firstly, it is impossible to use compressed css files, and secondly, css markup
+     Usage of dynamic HTTL logic inside `css` is not recommended for a couple of reasons.
+     First, it is impossible to use compressed CSS files, and second, CSS markup
      becomes mixed with HTTL and therefore it will be more complex.
-     A simpler and perhaps more appropriate method would be the usage
-     of different `css` files for different page styles
-     and their conditional inclusion to the pages.
+     A simpler and perhaps more appropriate solution would be to utilize
+     different `CSS` files for different page styles
+     and to include them to a page conditionally.
 
 .. _httl_inheritance:
 

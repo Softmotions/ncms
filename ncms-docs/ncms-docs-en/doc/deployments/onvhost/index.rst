@@ -8,7 +8,6 @@ at the root `\/` of Apache Tomcat server.
 
 In production mode, this service can be proxied under `Apache` or `Nginx` web server.
 Note that ηCMS supports the virtual hosts, therefore,
-the system can handle requests for multiple sites either
-without an external proxy, or using a simple traffic proxy.
+the system can handle requests for multiple sites using either no external proxy or a simple traffic proxy.
 
 

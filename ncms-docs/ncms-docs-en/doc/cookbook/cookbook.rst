@@ -45,7 +45,7 @@ Define only page attributes that can be really changed during a page lifetime
 -----------------------------------------------------------------------------
 
 There is no need to setup a separate editable attribute for every text block on a page,
-because, there is a chances that such blocks will never be changed by a site editor during
+because, there is a chance that such blocks will never be changed by a site editor during
 a page lifetime.
 
 **Example:** We add the wiki attribute with the name `copyright` containing
@@ -53,8 +53,8 @@ one single line::
 
     All rights reserved
 
-This line will never be changed individually for every page, it may be changed
-only for all site's pages. Therefore the best way is to set it directly in the template and instead of:
+This line would never be changed individually for a single page, it would only be changed
+only for all site's pages. Therefore the best way is to set it directly in the template, so instead of:
 
 .. code-block:: html
 
@@ -62,7 +62,7 @@ only for all site's pages. Therefore the best way is to set it directly in the t
         ${asm('copyright')}
     </footer>
 
-You can write this line directly
+You may write this line directly
 in the template part shared by all site pages:
 
 .. code-block:: html
@@ -71,7 +71,7 @@ in the template part shared by all site pages:
         All rights reserved
     </footer>
 
-There are many other examples where it is not necessary to move all page data parts
+There are many other cases where it is not necessary to move all page data parts
 into  editable page attributes. The decision to define a page data part as
 an attribute should be guided by a frequency of this data part changes during
 a page lifetime. Also consider a :ref:`visual page editor <visual>` to modify a number of text blocks

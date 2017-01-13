@@ -81,7 +81,7 @@ com.softmotions.ncms.mhttl.Image
 
     Returns a path to the properly scaled image.
 
-    **Image in the в httl markup**::
+    **Image in HTTL markup**::
 
     <img src="$!{img.link}" ...>
 

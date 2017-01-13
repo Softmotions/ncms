@@ -6,7 +6,7 @@ How attributes are searched in a page (inheritance of attributes)
 
 To display a dynamic content in ηCMS we refer to :term:`attributes <attribute>`
 available in the context of the particular :term:`page <page>`,
-using: :any:`asm` and :any:`asmAny` httl methods. When accessing an attribute by its name,
+using: :any:`asm` and :any:`asmAny` HTTL methods. When accessing an attribute by its name,
 ηCMS uses the following algorithm to find the :term:`attribute <attribute>`.
 
 |

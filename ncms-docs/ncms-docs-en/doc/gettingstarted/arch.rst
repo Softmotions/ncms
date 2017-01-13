@@ -52,17 +52,17 @@ Let's introduce some concepts used in the documentation to understand ηCMS bett
         to be viewed as a complete HTML page.
 
 `Assemblies` can be inherited from each other. They can override attribute values of parent assemblies
-or add new attributes. `Assemblies` can be inherited from multiple parents. Here is a direct analogy
-with a inheritance of classes in C++ or Java, but here we are considering `assemblies`
+or add new attributes. `Assemblies` can be inherited from multiple parents. There is a direct analogy
+with a inheritance of classes in C++ or Java, but in our case we are considering `assemblies`
 to be as class instances (objects).
 
-Sample
+Example
 ------
 
-Let us illustrate the statements above on the example - make a simple website.
+Let us illustrate the statements above with an example - make a simple website.
 To follow the steps described below, :ref:`create a new project <newproject>` initially.
 
-Got to the admin console: `http://localhost:<port>/adm/`
+Go to the admin console: `http://localhost:<port>/adm/`
 
 Let the most of our website pages have the following common parts:
 
@@ -101,7 +101,7 @@ stored in :ref:`wiki attribute <am_wiki>`.
 While accessing the `mypage` page, ηCMS gets the :term:`HTTL` :term:`core` markup file
 of the `Simple page` template, then pushes all of `mypage` attributes to the httl markup context,
 and generates the HTML response to the client. This process describes a simple but powerful
-idea underlying ηCMS.
+idea that ηCMS is based upon.
 
 Let's implement the structure mentioned above using the the ηCMS GUI.
 
@@ -181,7 +181,7 @@ Choose a page template:
 
 .. image:: img/step9.png
 
-When the page is created an interface of a page content editor will be:
+When the page has been created an interface of a page content editor would look like this:
 
 .. figure:: img/step10.png
 
@@ -204,9 +204,9 @@ Platform architecture
 It uses `IoC` container `Google Guice <https://github.com/google/guice>`_.
 Data persistence layer based on `MyBatis <http://www.mybatis.org/mybatis-3/>`_ library.
 
-:ref:`New ηCMS project <newproject>` structure allows developer to both expand
-the functionality of the ηCMS platform and create custom project modules.
-More details can be found in the section :ref:`extending`.
+:ref:`New ηCMS project <newproject>` structure allows developer both to expand
+the functionality of the ηCMS platform and to create custom project modules.
+You could find more details can in the section :ref:`extending`.
 
 Additional definitions
 ----------------------
@@ -221,13 +221,13 @@ Additional definitions
 
     asm inheritance tree
         Assemblies can be inherited from each other.
-        Here is a big similarity to a class inheritance in
-        object-oriented programming languages. But in this case every assembly
+        Here is a plain similarity to a class inheritance in
+        object-oriented programming languages. But in our case each assembly
         should be treated as an object storing the data (attributes),
         and inheritance of assembles - as an inheritance of data objects.
 
     navigation tree
-        If `Container` mode is enabled for page
+        If `Container` mode is enabled for a page
         it can have embedded pages (sub-pages).
         Sub-pages can be containers for other pages and so on.
         By combining pages in this way the site editor creates

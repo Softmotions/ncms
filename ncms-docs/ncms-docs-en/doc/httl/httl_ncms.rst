@@ -12,7 +12,7 @@ These extra methods allow using of services and ηCMS features on site pages.
 Methods are defined in two java classes:
 `com.softmotions.ncms.mhttl.HttlAsmMethods`
 and `com.softmotions.ncms.mhttl.HttlUtilsMethods`.
-You may learn their code if necessary.
+You may explore their code as you deem necessary.
 
 
 com.softmotions.ncms.mhttl .HttlAsmMethods

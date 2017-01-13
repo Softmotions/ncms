@@ -228,7 +228,7 @@ At the same time an ordinary html `<a>` links will be properly displayed on a pa
 
     Table data dialog
 
-For the sample above the button `Insert table` will insert the following markup::
+For the example above the button `Insert table` will insert the following markup::
 
 
     {| class='wide'
