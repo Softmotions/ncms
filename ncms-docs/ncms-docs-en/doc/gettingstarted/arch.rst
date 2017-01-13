@@ -57,7 +57,7 @@ with a inheritance of classes in C++ or Java, but in our case we are considering
 to be as class instances (objects).
 
 Example
-------
+-------
 
 Let us illustrate the statements above with an example - make a simple website.
 To follow the steps described below, :ref:`create a new project <newproject>` initially.

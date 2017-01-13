@@ -177,7 +177,7 @@ Example::
 
 
 Conditional expressions #if and #else
------------------------------------
+-------------------------------------
 
 Format::
 

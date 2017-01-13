@@ -35,7 +35,7 @@ as `{name}`, where `{name}` can take the following values:
 .. _conf_sample:
 
 Example of ηСМС configuration file
----------------------------------
+----------------------------------
 
 .. code-block:: xml
 
