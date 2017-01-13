@@ -5,20 +5,23 @@ qx.Class.define("ncms.pgs.referrers.PageReferrersAttributesTable", {
         "pageId": {
             apply: "reload",
             nullable: true,
-            check: "String"
+            check: "String",
+            deferredInit:true
         },
 
         "asmId": {
             apply: "reload",
             nullable: true,
-            check: "Number"
+            check: "Number",
+            deferredInit:true
         }
     },
 
     construct: function (title, item) {
         this.__title = title;
-        this.initPageId()
         this.base(arguments);
+        this.initPageId(item.getGuid());
+        this.initAsmId(item.getId());
         this.set({allowGrowX: true, allowGrowY: true});
         this._reload([]);
     },
@@ -29,6 +32,7 @@ qx.Class.define("ncms.pgs.referrers.PageReferrersAttributesTable", {
 
         reload: function () {
             var items = [];
+            console.log("reload");
             if (this.getAsmId() == null || this.getPageId() == null) {
                 this._reload(items);
                 return;

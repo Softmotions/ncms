@@ -1,8 +1,15 @@
 qx.Class.define("ncms.pgs.referrers.PageReferrersDlg", {
         extend: qx.ui.window.Window,
 
-        construct: function (item) {
-            this.base(arguments);
+        // properties: {
+        //     appearance: {
+        //         refine: true,
+        //         init: "dlg-window/caption"
+        //     }
+        // },
+
+        construct: function (item, caption) {
+            this.base(arguments, caption);
             this.setLayout(new qx.ui.layout.VBox());
             this.set({
                 modal: true,
@@ -10,12 +17,19 @@ qx.Class.define("ncms.pgs.referrers.PageReferrersDlg", {
                 showMaximize: true,
                 allowMaximize: true,
                 width: 720,
-                height: 500,
-                contentPadding: 0
+                height: 500
             });
 
             var table = this.__navPanel = new ncms.pgs.referrers.PageReferrersNav(item);
             this.add(table, {flex: 1});
+
+            var hcont = new qx.ui.container.Composite(new qx.ui.layout.HBox(5, "right"));
+            hcont.setPadding(5);
+
+            var okButton = new qx.ui.form.Button("OK");
+            okButton.addListener("execute", this.close, this);
+            hcont.add(okButton);
+            this.add(hcont);
 
             var cmd = this.createCommand("Esc");
             cmd.addListener("execute", this.close, this);

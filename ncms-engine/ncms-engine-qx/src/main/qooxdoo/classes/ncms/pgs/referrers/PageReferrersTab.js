@@ -40,8 +40,8 @@ qx.Class.define("ncms.pgs.referrers.PageReferrersTab", {
                     break;
                 case("attributes"):
                     control = this.__attributesTable = new ncms.pgs.referrers.PageReferrersAttributesTable("Attributes", this.__item);
-                    this.__attributesTable.setAsmId(this.__item.getId());
-                    this.__attributesTable.setPageId(this.__item.getGuid());
+                    // this.__attributesTable.setAsmId(this.__item.getId());
+                    // this.__attributesTable.setPageId(this.__item.getGuid());
                     this.__sp.add(control, 1);
                     break;
             }
