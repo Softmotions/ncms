@@ -102,7 +102,7 @@ Configuration example:
     Make sure that the `mybatis/extra-properties` configuration item contains
     the JDBC driver for DB2: `com.ibm.db2.jcc.DB2Driver`
 
-JDBC URL, user name and password are stored in property file, it is placed to `${HOME}/.ncmsapp.ds` in the example above:
+JDBC URL, user name and password are stored in property file, it is placed to `${HOME}/.ncmsapp.ds` in the example above::
 
     JDBC.url=jdbc:db2://127.0.0.1:50000/NCMS
     JDBC.username=ncms
