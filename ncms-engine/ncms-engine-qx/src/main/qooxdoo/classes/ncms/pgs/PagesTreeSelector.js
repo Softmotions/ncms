@@ -417,9 +417,13 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                         var dlg = new sm.alert.DefaultAlertMessages(this.tr("Unable to delete this page"));
                         dlg.addMessages("",
                             this.tr(
-                                "This page cannot be removed because we found pages linked with this page. Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list of linked pages</a>",
-                                ncms.Application.ACT.getRestUrl("pages.referrers", {guid: item.getGuid()}))
+                                "This page cannot be removed because we found pages linked with this page. Please see the <a href=\"#\" onClick='showRefs(); return false;'>list of linked pages</a>")
                         );
+                        showRefs = function () {
+                            dlg.close();
+                            var refsDlg = new ncms.pgs.referrers.PageReferrersDlg(item, "Referrers pages");
+                            refsDlg.open();
+                        };
                         dlg.open();
                         return;
                     }
