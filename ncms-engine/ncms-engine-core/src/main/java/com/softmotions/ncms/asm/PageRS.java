@@ -998,7 +998,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @GET
     @Path("/referrers/to/{id}")
-    public JsonNode getPageReferrersTo(@PathParam("id") String id) {
+    public JsonNode getPageReferrersTo(@PathParam("id") Long id) {
         ArrayNode res = mapper.createArrayNode();
         List<Map<String, ?>> referrers = select("selectPagesDependentTo", id);
         for (Map<String, ?> referrer : referrers) {

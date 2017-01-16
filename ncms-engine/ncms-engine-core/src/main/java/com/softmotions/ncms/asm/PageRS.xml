@@ -410,7 +410,7 @@
         ORDER BY asm.hname
     </select>
 
-    <select id="selectPagesDependentTo" resultType="map" parameterType="string">
+    <select id="selectPagesDependentTo" resultType="map" parameterType="long">
         SELECT
             DISTINCT
             asm.name        AS "guid",

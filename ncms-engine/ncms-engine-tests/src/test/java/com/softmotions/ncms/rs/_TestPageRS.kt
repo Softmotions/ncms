@@ -514,7 +514,7 @@ class _TestPageRS(db: String) : BaseRSTest(db) {
             with(createPage()) {
                 val pid = path("id").asLong()
 
-                with(GET("/referers/count/$pid")) {
+                with(GET("/referrers/count/$pid")) {
                     assertEquals(200, code())
                     assertEquals("0", body())
                 }
