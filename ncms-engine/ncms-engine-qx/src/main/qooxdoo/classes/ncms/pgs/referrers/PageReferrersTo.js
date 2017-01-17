@@ -30,12 +30,12 @@ qx.Class.define("ncms.pgs.referrers.PageReferrersTo", {
                     control = this.__pagesTable = new ncms.pgs.referrers.PageReferrersSelector(
                         ncms.Application.ACT.getRestUrl("pages.referrers.to", {id: this.__item.getId()}),
                         ncms.Application.ACT.getRestUrl("pages.referrers.to.count", {id: this.__item.getId()}),
-                        "Pages");
+                        this.tr("Pages"));
                     control.addListener("pageSelected", this.__onSelectPage, this);
                     this.__sp.add(control, 3);
                     break;
                 case("attributes"):
-                    control = this.__attributesTable = new ncms.pgs.referrers.PageReferrersAttributesTable("Attributes");
+                    control = this.__attributesTable = new ncms.pgs.referrers.PageReferrersAttributesTable(this.tr("Attributes"));
                     this.__attributesTable.setAsmId(this.__item.getId());
                     this.__sp.add(control, 1);
                     break;

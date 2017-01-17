@@ -56,22 +56,25 @@ msgstr "Обязательное поле"
 #: ncms/mtt/tp/MttTpNewDlg.js:20 ncms/asm/am/RichRefAM.js:46
 #: ncms/asm/AsmParentsTable.js:109 ncms/asm/am/SelectAMTable.js:70
 #: ncms/usr/UserEditForm.js:33 ncms/mmgr/MediaFileEditor.js:309
+#: ncms/pgs/referrers/PageReferrersAttributesTable.js:78
 #: ncms/pgs/PagesTable.js:21 ncms/asm/AsmAttrsTable.js:122
 #: ncms/asm/am/TreeAMNewFolderDlg.js:22
 #: ncms/mtt/actions/MttSetCookieAction.js:47
 #: ncms/asm/am/TreeAMValueWidget.js:480 ncms/asm/AsmTable.js:17
 #: ncms/asm/AsmAttrEditorDlg.js:63 ncms/usr/UserNewDlg.js:37
-#: ncms/mtt/MttRulesTable.js:20 ncms/mmgr/MediaFilesTable.js:9
-#: ncms/mtt/tp/MttTpTable.js:18 ncms/usr/UsersTable.js:10
+#: ncms/pgs/referrers/PageReferrersTable.js:13 ncms/mtt/MttRulesTable.js:20
+#: ncms/mmgr/MediaFilesTable.js:9 ncms/mtt/tp/MttTpTable.js:18
+#: ncms/usr/UsersTable.js:10
 msgid "Name"
 msgstr "Название"
 
 #: ncms/mtt/filters/MttFiltersTable.js:90 ncms/mtt/filters/MttFilterDlg.js:48
-#: ncms/mtt/actions/MttActionDlg.js:48 ncms/cc/TypesSelectorDlg.js:161
-#: ncms/asm/AsmAttrsTable.js:134 ncms/asm/AsmTable.js:25
-#: ncms/asm/AsmAttrEditorDlg.js:66 ncms/asm/AsmAttrEditorDlg.js:74
-#: ncms/asm/AsmAttributeTypeSelectorDlg.js:163 ncms/mmgr/MediaFilesTable.js:10
-#: ncms/usr/UserRolesTable.js:153
+#: ncms/mtt/actions/MttActionDlg.js:48
+#: ncms/pgs/referrers/PageReferrersAttributesTable.js:72
+#: ncms/cc/TypesSelectorDlg.js:161 ncms/asm/AsmAttrsTable.js:134
+#: ncms/asm/AsmTable.js:25 ncms/asm/AsmAttrEditorDlg.js:66
+#: ncms/asm/AsmAttrEditorDlg.js:74 ncms/asm/AsmAttributeTypeSelectorDlg.js:163
+#: ncms/mmgr/MediaFilesTable.js:10 ncms/usr/UserRolesTable.js:153
 msgid "Type"
 msgstr "Тип"
 
@@ -270,7 +273,8 @@ msgstr "Роли"
 msgid "Parents"
 msgstr "Родители"
 
-#: ncms/asm/AsmEditor.js:142
+#: ncms/asm/AsmEditor.js:142 ncms/pgs/referrers/PageReferrersTab.js:42
+#: ncms/pgs/referrers/PageReferrersTo.js:38
 msgid "Attributes"
 msgstr "Атрибуты"
 
@@ -596,7 +600,8 @@ msgid "Rich reference"
 msgstr "Агрегат"
 
 #: ncms/asm/am/RichRefAM.js:38 ncms/asm/am/TreeAM.js:44
-#: ncms/pgs/PagesTreeSelector.js:33
+#: ncms/pgs/PagesTreeSelector.js:33 ncms/pgs/referrers/PageReferrersTab.js:37
+#: ncms/pgs/referrers/PageReferrersTo.js:33
 msgid "Pages"
 msgstr "Страницы"
 
@@ -1408,7 +1413,7 @@ msgstr "Подтвердите удаление трекинг пикселя: \
 msgid "Select the parent page for news"
 msgstr "Укажите родительскую страницу для ленты"
 
-#: ncms/news/NewsNav.js:153 ncms/pgs/PagesTreeSelector.js:409
+#: ncms/news/NewsNav.js:153 ncms/pgs/PagesTreeSelector.js:410
 msgid "Are you sure to remove page: %1"
 msgstr "Вы действительно желаете удалить страницу %1"
 
@@ -1608,7 +1613,7 @@ msgstr "Поиск"
 msgid "Select the page"
 msgstr "Выбрать страницу"
 
-#: ncms/pgs/PagesTable.js:24
+#: ncms/pgs/PagesTable.js:24 ncms/pgs/referrers/PageReferrersTable.js:16
 msgid "Path"
 msgstr "Путь"
 
@@ -1625,34 +1630,38 @@ msgid "Move"
 msgstr "Переместить"
 
 #: ncms/pgs/PagesTreeSelector.js:277
-msgid "List of referer pages"
-msgstr "Список ссылающихся страниц"
+msgid "Page references"
+msgstr "Связи страницы"
 
 #: ncms/pgs/PagesTreeSelector.js:281
 msgid "Copy GUID"
 msgstr "Скопировать GUID"
 
-#: ncms/pgs/PagesTreeSelector.js:294
-msgid "List of pages referred %1"
-msgstr "Список страниц, ссылающихся на %1"
-
-#: ncms/pgs/PagesTreeSelector.js:307
+#: ncms/pgs/PagesTreeSelector.js:308
 msgid "Choose the target container page"
 msgstr "Укажите папку"
 
-#: ncms/pgs/PagesTreeSelector.js:416
+#: ncms/pgs/PagesTreeSelector.js:417
 msgid "Unable to delete this page"
 msgstr "Невозможно удалить эту страницу"
 
-#: ncms/pgs/PagesTreeSelector.js:419
+#: ncms/pgs/PagesTreeSelector.js:420
 msgid ""
 "This page cannot be removed because we found pages linked with this page. "
-"Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"
-" of linked pages</a>"
+"Please see the <a href=\"#\" onClick='showRefs(); return false;'>list of "
+"linked pages</a>"
 msgstr ""
 "Страница не может быть удалена, поскольку найдены страницы, ссылающиеся на "
-"эту страницу. Пожалуйста, ознакомьтесь со <a href=\"%1\" target='_blank' "
-"rel='noopener noreferrer'>списком ссылающихся страниц</a>"
+"эту страницу. Пожалуйста, ознакомьтесь со <a href=\"#\" onClick='showRefs();"
+" return false;'>списком ссылающихся страниц</a>"
+
+#: ncms/pgs/referrers/PageReferrersNav.js:7
+msgid "Reverse referrals"
+msgstr "Ссылки на страницу"
+
+#: ncms/pgs/referrers/PageReferrersNav.js:15
+msgid "Page refers to"
+msgstr "Страница ссылается на"
 
 #: ncms/usr/UserEditForm.js:38 ncms/usr/UserNewDlg.js:41
 msgid "Full name"
@@ -2034,6 +2043,12 @@ msgstr "Заметка"
 #~ msgid "Insert YouTube video"
 #~ msgstr "Вставить ролик YouTube"
 
+#~ msgid "List of pages referred %1"
+#~ msgstr "Список страниц, ссылающихся на %1"
+
+#~ msgid "List of referer pages"
+#~ msgstr "Список ссылающихся страниц"
+
 #~ msgid "Markdown editor"
 #~ msgstr ""
 
@@ -2058,6 +2073,15 @@ msgstr "Заметка"
 #~ msgid "The page is blocked!!!"
 #~ msgstr ""
 
+#~ msgid ""
+#~ "This page cannot be removed because we found pages linked with this page. "
+#~ "Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"
+#~ " of linked pages</a>"
+#~ msgstr ""
+#~ "Страница не может быть удалена, поскольку найдены страницы, ссылающиеся на "
+#~ "эту страницу. Пожалуйста, ознакомьтесь со <a href=\"%1\" target='_blank' "
+#~ "rel='noopener noreferrer'>списком ссылающихся страниц</a>"
+
 #~ msgid "This page is locked<br>since the user %1 is editing it"
 #~ msgstr ""
 
@@ -2066,3 +2090,9 @@ msgstr "Заметка"
 
 #~ msgid "Wide table"
 #~ msgstr "Широкая таблица"
+
+#~ msgid "from"
+#~ msgstr ""
+
+#~ msgid "to"
+#~ msgstr ""

@@ -274,7 +274,7 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                     menu.add(bt);
                 }
 
-                bt = new qx.ui.menu.Button(this.tr("List of referer pages"));
+                bt = new qx.ui.menu.Button(this.tr("Page references"));
                 bt.addListenerOnce("execute", this.__onRefList, this);
                 menu.add(bt);
 
@@ -419,8 +419,9 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                             this.tr(
                                 "This page cannot be removed because we found pages linked with this page. Please see the <a href=\"#\" onClick='showRefs(); return false;'>list of linked pages</a>")
                         );
-                        showRefs = function () {
+                        window.showRefs = function () {
                             dlg.close();
+                            delete window.showRefs;
                             var refsDlg = new ncms.pgs.referrers.PageReferrersDlg(item, "Referrers pages");
                             refsDlg.open();
                         };
