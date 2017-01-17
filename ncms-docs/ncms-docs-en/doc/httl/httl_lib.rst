@@ -19,7 +19,7 @@ httl.spi.methods .CollectionMethod
 .. js:function:: toCycle(Collection<T> values)
 .. js:function:: toCycle(T[] values)
 
-    It converts the passed sequence of items into single endless cyclic collection
+    It converts a passed sequence of items into single endless cyclic collection
     where that sequence will be repeated constantly.
 
     Returns a cyclic iterator having the following properties:
@@ -76,7 +76,7 @@ httl.spi.methods .EscapeMethod
 .. js:function:: escapeString(String value)
 .. js:function:: unescapeString(String value)
 
-    Escape/unescape `"`, `\`, `\t`, `\n`, `\r`, `\b`, `\f` characters in the java string.
+    Escape/unescape `"`, `\`, `\t`, `\n`, `\r`, `\b`, `\f` characters in the Java string.
 
 .. js:function:: escapeXml(String value)
 

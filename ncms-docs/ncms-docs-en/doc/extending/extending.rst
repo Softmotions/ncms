@@ -4,7 +4,7 @@ Extending ηCMS
 ==============
 
 ηCMS system is created as a :ref:`new a web project <newproject>` based on Java platform.
-Thereby, an ηCMS user has the wide possibilities for farther project development
+Thereby, an ηCMS user has a wide range of possibilities for farther project development
 and can extend every part of the platform.
 
 Let the name of our project will be `myncms`,
@@ -31,8 +31,7 @@ so the project structure will be like this::
 
 
 After creating a new project, the new `Guice <https://github.com/google/guice>`_
-module is created. In its context it's possible to register custom modules, specific to the
-project:
+module is created. It's possible to register custom project specific modules in its context:
 
 .. code-block:: java
 
@@ -59,7 +58,7 @@ project:
         }
     }
 
-When generating a new project, a blank custom :ref:`HTTL <httl>` module is created.
+While generating a new project, a blank custom :ref:`HTTL <httl>` module is created.
 Its static methods are available in all httl-templates:
 
 .. code-block:: java
@@ -83,10 +82,10 @@ Using of `helloFromHttl` in HTTL temlplates:
     <!-- The output of the string: Hello Andy -->
     ${helloFromHttl('Andy')}
 
-The client part of the ηCMS GUI is implemented
-using the Qooxdoo framework http://qooxdoo.org
+A client part of the ηCMS GUI is implemented
+with Qooxdoo framework http://qooxdoo.org
 
-The main class of the ηCMS GUI qooxdoo application is defined by the
+The main class of ηCMS GUI Qooxdoo application is defined by a
 file `src/main/qooxdoo/classes/myncms/Application.js` in the `qx` subproject.
 
 .. code-block:: js
@@ -110,6 +109,6 @@ file `src/main/qooxdoo/classes/myncms/Application.js` in the `qx` subproject.
     });
 
 In this starting point of the ηCMS GUI application (`myncms.Application`)
-you can create and register custom qooxdoo elements,
+you can create and register custom Qooxdoo elements,
 extending and customizing the functionality of the GUI.
 

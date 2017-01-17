@@ -7,15 +7,15 @@ IBM DB2
 
 DB2 Installation
 ----------------
-IBM DB2 Express-C is a free powerful DBMS. It is enough to run a single copy of ηCMS
-for dozens of complex sites. To install and configure DB2 refer to the `IBM documentation <http://www.ibm.com/support/knowledgecenter/SSEPGG_11.1.0/com.ibm.db2.luw.welcome.doc/doc/welcome.html>`_.
+IBM DB2 Express-C is a free DBMS powerfull enough to support dosens of complex website on a single ηCMS node.
+To install and configure DB2 refer to `IBM documentation <http://www.ibm.com/support/knowledgecenter/SSEPGG_11.1.0/com.ibm.db2.luw.welcome.doc/doc/welcome.html>`_.
 
-Below are steps needed to install DB2 Express-C `v11.1` on Ubuntu Linux
+Below are steps to install DB2 Express-C `v11.1` on Ubuntu Linux
 
 Installing DB2 on Ubuntu
 ************************
 
-#. It is assumed that the Ubuntu (x64) system has the 16.x version
+#. We assume that a host we installing DB2 to is running x64 Ubuntu 16.x
 #. We use the `v11.1_linuxx64_expc.tar.gz` distribution kit
 #. Login as root `sudo su -`::
 
@@ -23,7 +23,7 @@ Installing DB2 on Ubuntu
              libstdc++6 lib32stdc++6 \
              libaio1 gcc ksh numactl
 
-#. Install an instance of DB2::
+#. Install a DB2 instance::
 
     cd ./expc
     ./db2_install
@@ -31,7 +31,7 @@ Installing DB2 on Ubuntu
     useradd -m db2fenc1
     /opt/ibm/db2/V11.1/instance/db2icrt -u db2fenc1 db2inst1
 
-#. Add yourself to the linux user group: `db2inst1`
+#. Add yourself to `db2inst1` user group:
 #. Set the database instance operation flags required to work with ηCMS::
 
     sudo su - db2inst1
@@ -49,12 +49,12 @@ Creating database
 
     useradd -m ncms
     passwd ncms
-    # Password of the ncms user to access the database
+    # Type in password for `ncms` user to access the database
 
 Creating a new database
 -----------------------
 
-Let us set the name of the new database as `NCMS` and the database user name - `ncms`
+Let us set a name of the new database as `NCMS` and the database user name - `ncms`
 
 .. code-block:: sql
 
@@ -102,7 +102,7 @@ Configuration example:
     Make sure that the `mybatis/extra-properties` configuration item contains
     the JDBC driver for DB2: `com.ibm.db2.jcc.DB2Driver`
 
-Where JDBC URL, user name and password are stored in the `${HOME}/.ncms.ds` file::
+JDBC URL, user name and password are stored in property file, it is placed to `${HOME}/.ncmsapp.ds` in the example above::
 
     JDBC.url=jdbc:db2://127.0.0.1:50000/NCMS
     JDBC.username=ncms

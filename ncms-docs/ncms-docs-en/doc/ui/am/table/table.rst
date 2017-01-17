@@ -12,7 +12,7 @@ in the context of :term:`assembly <assembly>`.
     Example of a table in the :ref:`page management UI <pmgr>`
 
 
-In the context of the this sample we can use the following markup:
+In the this example we could use the following markup:
 
 
 .. code-block:: html

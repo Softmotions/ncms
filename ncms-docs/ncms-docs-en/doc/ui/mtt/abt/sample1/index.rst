@@ -8,9 +8,9 @@ to site users.
 
 With a probability of 50% to 50% the website shows users two pictures: `shark` and `dolphins`.
 `A/B` mode is selected on first access to the site page and remembered for one day by default.
-Let website will be in a virtual domain: `foo.example.com`.
+Let's assume the website is located in a virtual domain: `foo.example.com`.
 
-Sample page of the site in `\A` mode:
+An example page of the site in `\A` mode:
 
 .. figure:: img/screen10.png
     :align: center
@@ -44,7 +44,7 @@ it will be the :term:`core <core>` of `foo.example.com` home page:
 
 The following three assembly :term:`attributes <attribute>`: `title`, `imageA`, `imageB` are
 included to the `html` markup. Here the `abt` httl function is used to determine
-the current `AB` mode. In this sample the result of ``abt('A')``  will be `true`
+the current `AB` mode. In this example the result of ``abt('A')``  will be `true`
 if `\A` mode is active and a `imageA` will be displayed,
 accordingly the `imageB` will be displayed for `\B` mode.
 
@@ -81,7 +81,7 @@ While opening the website in the page preview, we see dolphins and shark simulta
 because within the administrator preview mode all `A/B` options are activated.
 After publishing of the site, the pictures will not be displayed, because
 there are no rules for choosing `A/B` options for public users.
-This is what we are going to do on the following steps of a sample.
+This is what we are going to do on the following steps of the example.
 
 .. figure:: img/screen5.png
     :align: center

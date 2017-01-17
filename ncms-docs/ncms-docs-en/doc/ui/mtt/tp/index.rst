@@ -104,7 +104,7 @@ Note: you can pass a :term:`glob pattern <glob>` as a first argument for `tracki
 to select services, as well as additional parameters to tune generation of TP links.
 For example, to enable TP links to all known services you can use::
 
-      $!{trackingPixels('*')} или $!{trackingPixels()}
+      $!{trackingPixels('*')} or $!{trackingPixels()}
 
 To insert extra parameters to the TP links use the following form::
 

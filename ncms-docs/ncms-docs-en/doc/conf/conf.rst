@@ -34,8 +34,8 @@ as `{name}`, where `{name}` can take the following values:
 
 .. _conf_sample:
 
-Sample of ηСМС configuration file
----------------------------------
+Example of ηСМС configuration file
+----------------------------------
 
 .. code-block:: xml
 
@@ -159,11 +159,11 @@ Sample of ηСМС configuration file
             <!-- Directory where ηCMS media files are stored -->
             <basedir>{home}/.myapp/media</basedir>
             <!-- The maximal size of the file loaded to ηCMS (bytes).
-                 By default 30Мб -->
+                 By default 30MB -->
             <max-upload-size>31457280</max-upload-size>
             <!-- The maximum size of the data stored in the RAM cache
                      of the ηCMS server while uploading a file.
-                 By default 10Мб-->
+                 By default 10MB-->
             <max-upload-inmemory-size>1048576</max-upload-inmemory-size>
             <!-- The size of preview icons for the images in the ηCMS media repository -->
             <thumbnails-width>250</thumbnails-width>

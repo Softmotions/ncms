@@ -20,8 +20,8 @@ Example of HTTL code:
 
 By default HTTL includes 6 directives: `#set, #if, #else, #for, #break, #macro`.
 
-Basic knowledge of the `java` language greatly improves
-understanding the meaning of HTTL constructions.
+Basic knowledge of the `Java` language greatly improves
+understanding of HTTL constructions.
 
 Output of HTTL statement
 ------------------------
@@ -34,7 +34,7 @@ Example::
 
     ${user.name}
 
-In this sample, the result of expression `user.name` is printed, but this string
+In this example, the result of expression `user.name` is printed, but this string
 is escaped to not be a valid `html` markup. For example the result of the expression: `<b>text</ b>`
 converted to `&lt;b&gt;text&lt;/b&gt;`. To disable escaping use `$!` before expression in curly braces::
 
@@ -102,14 +102,14 @@ Expressions
 
 * If any item in a chain of calls ``${foo.bar.blabla}`` returns `null`,
   the full expression is interpreted as `null`, and output will be an empty string.
-* The `==` operator is equal to a comparison of `java` objects via `.equals`. In other words,
-  `foo == bar` is equal to `foo.equals(bar)` in `java`.
+* The `==` operator is equal to a comparison of `Java` objects via `.equals`. In other words,
+  `foo == bar` is equal to `foo.equals(bar)` in `Java`.
 * An expression in single `\'` or double quotes `\"` is interpreted as a string.
   To use a single character (like `char`) conclude it to back quotes `\`\``.
 * `\+` in expressions where the first argument is the number is interpreted as
   arithmetic addition. For example: `${1 + "2"}` displays `3` not 12.
   For string concatenation use a pair: `${s1}${s2}`.
-* Access to a property values of the `java` classes instances is carried out by a property name.
+* Access to a property values of the `Java` classes instances is carried out by a property name.
   For example, `${user.name}` is equivalent to calling `${user.getName()}`.
 * The result of expression with logical 'OR' is the last nonzero/nonempty element of expression.
   For example, result of expression `${list1 || list2}` is `list1` while `list1` isn't empty,
@@ -128,7 +128,7 @@ Expressions
     #end
 
 * The result of the expression: `${["foo":"bar", "foo2":"bar2"]}` is a `java.util.Map` with relationships
-  `foo => bar` и `foo2 => bar2`::
+  `foo => bar` and `foo2 => bar2`::
 
     #for(entry: ["red":"# FF0000","yellow":"# 00FF00"])
         ${entry.key} = ${entry.value}
@@ -162,7 +162,7 @@ Format::
     #set(name = expression)
     #set(type name = expression)
 
-Where `name` - variable name, and `type` - java variable type
+Where `name` - variable name, and `type` - Java variable type
 
 
 Example::
@@ -171,13 +171,13 @@ Example::
     #set(String lastName = "Doe")
 
 
-	Here is a variable called `firstName` which is to be specified in the same template above the sample::
+	Here is a variable called `firstName` which is to be specified in the same template above the example::
 
     #set(String firstName)
 
 
-Conditional expressions #if и #else
------------------------------------
+Conditional expressions #if and #else
+-------------------------------------
 
 Format::
 
@@ -449,7 +449,7 @@ Macros #macro
 -------------
 
 Macro is a HTTL markup unit which can be reused.
-Macro can use a set of parameters similar to parameters in a `java` function.
+Macro can use a set of parameters similar to parameters in a `Java` function.
 When you call a macro HTTL the markup defined in the macro
 is inserted to the place of a macro call.
 

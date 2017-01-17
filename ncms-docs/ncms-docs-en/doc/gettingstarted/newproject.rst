@@ -34,7 +34,7 @@ it from the maven archetype.
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
 Let's consider a creation and developing of the ηCMS project
-using the website about parrots as a sample. The java code of this project resides
+using the website about parrots as an example. The Java code of this project resides
 in package `org.myparrots`.
 
 .. code-block:: text
@@ -88,14 +88,14 @@ with the following structure:
 Where:
 
 * `qx` - The source code of the administrative GUI interface, it is based on `javascript library qooxdoo <http://qooxdoo.org>`_
-* `web` - The server side web resources and project's java code
-* `tomcat` - Configuration files of the Apache Tomcat server to start the server
+* `web` - The server side web resources and project's Java code
+* `tomcat` - Apache Tomcat configuration files to start the server
   in the development mode using maven cargo plugin
 
-Choosing and configuring the database connection
+Configuring the database connection
 ------------------------------------------------
 
-Before running the application we need to setup configuration of the database connection.
+Before running the application we have to setup configuration of the database connection.
 
 |ncmsversion| version supports the following database systems:
 
@@ -103,8 +103,8 @@ Before running the application we need to setup configuration of the database co
 * :ref:`postgresql`
 
 
-All application configuration parameters alongside with database connection
-parameters are reside in the :ref:`configuration files <conf>`.
+All application configuration parameters as well as database connection
+parameters are located in the :ref:`configuration files <conf>`.
 In our project it will be: `conf/ncmsapp-dev-configuration.xml`.
 
 
@@ -131,9 +131,9 @@ In our project it will be: `conf/ncmsapp-dev-configuration.xml`.
         </extra-mappers>
     </mybatis>
 
-Parameters of the connection to the database are defined in the file `{home}/.ncmsapp.ds`,
-where `{home}` is a home directory of user who runs the ηCMS server. It is required to create the file
-and fill it with the parameters like in the sample below:
+Database connection parameters are defined in the `{home}/.ncmsapp.ds` file ,
+where `{home}` is a home directory of user who runs the ηCMS server. You must create the file
+and specify the parameters within it:
 
 
 .. code-block:: sh

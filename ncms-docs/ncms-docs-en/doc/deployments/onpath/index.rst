@@ -18,16 +18,16 @@ in the context of other website under some URL suffix.
 
 .. warning::
 
-    This configuration of ηCMS deployment is not recommended for a work
-    with MTT filters or A/B testing, because it is required
-    to take account of the context where the ηCMS resource
-    (`http://example.com/<ncms_prefix>/*`) is used.
+    It is not recommended to use this deployment scheme in conjunction with
+    MTT filters or A/B testing, because it is required
+    to take into account the context where the ηCMS resource
+    (`http://example.com/<ncms_prefix>/*`) is used .
 
 Nginx configuration
 -------------------
 
-Below is a sample of a `nginx` configuration for this deployment mode.
-Here the `rewrite` rule redirects the traffic to the ηCMS instance  passing the `/ ncms_prefix /*`
+Below is an example of an `nginx` configuration for this deployment mode.
+the `rewrite` rule redirects traffic to the ηCMS instance  passing the `/ ncms_prefix /*`
 
 .. code-block:: nginx
 
@@ -51,7 +51,7 @@ Here the `rewrite` rule redirects the traffic to the ηCMS instance  passing the
 ------------------
 
 The main file of the ηCMS configuration should contain
-a directive `app-prefix` which should be set to a correct path where ηCMS works:
+a directive `app-prefix` which should be set to a correct path where ηCMS root is located:
 
 .. code-block:: xml
 
@@ -62,8 +62,8 @@ a directive `app-prefix` which should be set to a correct path where ηCMS works
         ...
     </security>
 
-Also it is necessary to change the `Apache Shiro` configuration, the link passing to it contains the
-`security/shiro-config-locations` item.
+Also it is necessary to change the `Apache Shiro` configuration, specified in
+`security/shiro-config-locations` configuration item.
 
 Add `ncms_prefix` to the paths specified in the shiro configuration:
 
@@ -80,7 +80,7 @@ Add `ncms_prefix` to the paths specified in the shiro configuration:
     /ncms_prefix/adm/**         = authcBasic
 
 
-Following the steps above, the ηCMS root is available in the context of
+After all the steps above are done, ηCMS root is available in the context of
 example.com site at `http://example.com/ncms_prefix/`.
 
 
