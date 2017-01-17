@@ -165,3 +165,9 @@ Building and running the project
 
 The admin zone will be available at: `http://localhost:<port>/adm/`
 Username: `admin`  and password is stored in `conf/ncmapp-users.xml`:
+
+
+New ηCMS project on Youtube
+---------------------------
+..  youtube:: nPIFHWlNcC0
+    :width: 100%

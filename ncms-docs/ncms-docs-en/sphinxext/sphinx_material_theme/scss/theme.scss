@@ -95,8 +95,8 @@ div.code-block-caption:hover > a.headerlink {
 
 .section {
 
-  img {
-    max-width: 100%;
+  img, iframe {
+    max-width: 100% !important;
   }
 
   img.img-full {

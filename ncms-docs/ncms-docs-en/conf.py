@@ -46,7 +46,8 @@ highlight_language = 'text'
 # ones.
 extensions = [
     'sphinx.ext.todo',
-    'sphinx.ext.ifconfig'
+    'sphinx.ext.ifconfig',
+    'youtube.youtube'
 ]
 
 primary_domain = None
