@@ -130,6 +130,7 @@ public class AsmRendererContextImpl extends AsmRendererContext {
 
         //Set basic content parameters
         this.put("ncmsroot", env.getAppRoot());
+        this.put("pageroot", env.getAppRoot() + mediaRepository.getPageLocalFolderPath(this.asm.getId()));
         this.put("ncmspage", this.asm.getId());
     }
 

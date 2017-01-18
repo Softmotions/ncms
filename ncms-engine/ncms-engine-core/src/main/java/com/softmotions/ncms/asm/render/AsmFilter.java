@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import javax.annotation.Nullable;
 import javax.servlet.Filter;
@@ -187,8 +188,8 @@ public class AsmFilter implements Filter {
         if (!asm.isPublished()) {
             boolean canAccess = (req.getUserPrincipal() != null) && pageSecurity.checkAccessAny(asm.getId(), req, "wnd");
             if (!canAccess) {
-                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-                    return true;
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return true;
             }
         }
 
@@ -261,33 +262,23 @@ public class AsmFilter implements Filter {
         if (!resolveRelativePaths) {
             return false;
         }
-        location = siteFilesRoot + location;
-        MediaResource mres = mediaRepository.findMediaResource(location, i18n.getLocale(req));
+        String l = siteFilesRoot + location;
+        Locale locale = i18n.getLocale(req);
+        MediaResource mres = mediaRepository.findMediaResource(l, locale);
         if (mres == null) {
-            return false;
+            if (location.startsWith("/pages/")) {
+                l = location;
+                mres = mediaRepository.findMediaResource(l, locale);
+            }
+            if (mres == null) {
+                return false;
+            }
         }
         resp.setContentType(mres.getContentType());
 
-        // Location can be rendered as template?
-        if (asmRenderer.isHasSpecificTemplateEngineForLocation(location)) {
-            i18n.initRequestI18N(req, resp);
-            CachedPage cp = pageService.getIndexPage(req, false);
-            if (cp != null) {
-                AsmRendererContext ctx = rendererContextFactory.createStandalone(req, resp, cp.getAsm());
-                ClassLoader old = Thread.currentThread().getContextClassLoader();
-                //noinspection ObjectEquality
-                if (old != ctx.getClassLoader()) {
-                    Thread.currentThread().setContextClassLoader(ctx.getClassLoader());
-                }
-                try {
-                    ctx.push();
-                    ctx.getRenderer().renderTemplate(location, ctx, resp.getWriter());
-                    resp.flushBuffer();
-                } finally {
-                    ctx.pop();
-                    Thread.currentThread().setContextClassLoader(old);
-                }
-            }
+        if (asmRenderer.isHasSpecificTemplateEngineForLocation(l)) {
+            // Template are forbidden to be served as static files
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return true;
         }
 
