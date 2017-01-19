@@ -266,9 +266,12 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
-        reload: function () {
+        reload: function (resetSelection) {
             this.__table.getTableModel().reloadData();
-            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
+            resetSelection = (resetSelection == undefined) ? true : resetSelection;
+            if (resetSelection) {
+                this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
+            }
         },
 
         resetSelection: function () {
@@ -568,6 +571,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     }, this);
                 }
             }, this);
+            this.reload(selectedFile == null);
         },
 
         __handleFormUploadFiles: function (ev) {
