@@ -230,7 +230,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         __dropFun: null,
 
         __dropZone: null,
-        
+
         __sf: null,
 
         __table: null,
@@ -248,7 +248,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         __inpageBt: null,
 
         __opts: null,
-        
+
         __clipboard: null,
 
         setViewSpec: function (vs) {
@@ -571,8 +571,16 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     }, this);
                 }
             }, this);
-            this.reload(selectedFile == null);
+            // this.reload(selectedFile == null);
         },
+
+        /* __handleMediaRemoved: function (ev) {
+             var evspec = ev.getData();
+             var selectedFile = this.__table.getSelectedFile();
+             this.__table.getTableModel().iterateCachedRows(function (offset, item) {
+
+             });
+         },*/
 
         __handleFormUploadFiles: function (ev) {
             var input = ev.target;
@@ -672,7 +680,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
             var dlg = new ncms.mmgr.MediaSelectFolderDlg(
                 sfiles.length == 1 ? this.tr("Move '%1' to another folder",
-                    sfiles[0].folder + sfiles[0].name) : this.tr("Move %1 files to another folder", sfiles.length)
+                                       sfiles[0].folder + sfiles[0].name) : this.tr("Move %1 files to another folder",
+                                       sfiles.length)
             );
 
             var moveFiles = function (files, target, iter, cb, self) {

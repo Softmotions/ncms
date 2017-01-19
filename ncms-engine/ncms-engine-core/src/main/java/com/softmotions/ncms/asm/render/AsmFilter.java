@@ -188,7 +188,9 @@ public class AsmFilter implements Filter {
         if (!asm.isPublished()) {
             boolean canAccess = (req.getUserPrincipal() != null) && pageSecurity.checkAccessAny(asm.getId(), req, "wnd");
             if (!canAccess) {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                if (!preview) {
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
                 return true;
             }
         }
