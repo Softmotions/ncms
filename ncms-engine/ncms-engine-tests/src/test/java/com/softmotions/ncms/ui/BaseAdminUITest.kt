@@ -24,8 +24,8 @@ open class BaseAdminUITest(db: String) : BaseQXTest(db) {
 
 
     fun checkPopupNotificationShown(msg: String? = null) {
-        //ncms-app-popup//
-        val w = qxd.findWidget(By.xpath("//div[contains(@class, 'ncms-app-popup')]"))
+        //sm-app-popup//
+        val w = qxd.findWidget(By.xpath("//div[contains(@class, 'sm-app-popup')]"))
         driverWait5.until(ExpectedConditions.visibilityOf(w))
         if (msg != null) {
             w.findWidget("*/[@label=${msg}]")

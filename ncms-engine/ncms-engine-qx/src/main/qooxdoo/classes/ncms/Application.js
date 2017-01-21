@@ -14,10 +14,6 @@
  *
  * @asset(ncms/icon/16/help/help.png)
  * @asset(ncms/icon/16/misc/door_in.png)
- * @asset(ncms/icon/32/information.png)
- * @asset(ncms/icon/32/exclamation.png)
- * @asset(ncms/icon/32/error.png)
- * @asset(ncms/icon/32/exclamation.png)
  *
  * Ace editor
  * @asset(ncms/script/ace_all.js)
@@ -50,7 +46,6 @@ qx.Class.define("ncms.Application", {
         APP_STATE: null,
         UUID: null,
         ACT: null,
-        INFO_POPUP: null,
 
         //translations
         EXTERNAL_TRANSLATIONS: [
@@ -103,17 +98,17 @@ qx.Class.define("ncms.Application", {
         //                         Alerts
         ///////////////////////////////////////////////////////////
 
-        confirmCb: ncms.Alerts.confirmCb,
+        confirmCb: sm.alert.Alerts.confirmCb,
 
-        confirm: ncms.Alerts.confirm,
+        confirm: sm.alert.Alerts.confirm,
 
-        alert: ncms.Alerts.alert,
+        alert: sm.alert.Alerts.alert,
 
-        warning: ncms.Alerts.warning,
+        warning: sm.alert.Alerts.warning,
 
-        errorPopup: ncms.Alerts.errorPopup,
+        errorPopup: sm.alert.Alerts.errorPopup,
 
-        infoPopup: ncms.Alerts.infoPopup,
+        infoPopup: sm.alert.Alerts.infoPopup,
 
         ///////////////////////////////////////////////////////////
         //              Components/Workspaces/Helpers            //
@@ -320,8 +315,8 @@ qx.Class.define("ncms.Application", {
             var blocker = this.getRoot().getBlocker();
             blocker.block();
             var restored = null;
-            ncms.Alerts.closeAllPopups();
-            ncms.Alerts.infoPopup(
+            sm.alert.Alerts.closeAllPopups();
+            sm.alert.Alerts.infoPopup(
                 this.tr("<b>Connection to server lost.</b><br>Please wait..."), {
                     forever: true,
                     overZ: 1e6,
@@ -330,8 +325,8 @@ qx.Class.define("ncms.Application", {
             this.__atmosphere.addListenerOnce("serverReconnected", function () {
                 qx.log.Logger.warn("Server reconnected");
                 blocker.unblock();
-                ncms.Alerts.closeAllPopups();
-                ncms.Alerts.infoPopup(this.tr("Connection to server restored."), {
+                sm.alert.Alerts.closeAllPopups();
+                sm.alert.Alerts.infoPopup(this.tr("Connection to server restored."), {
                     showTime: Number.MAX_VALUE
                 });
             }, this);
@@ -486,7 +481,7 @@ qx.Class.define("ncms.Application", {
             }.bind(this);
             ncms.Application.INSTANCE = this;
             ncms.Application.UUID = sm.util.UUID.generate();
-            ncms.Application.APP_STATE = new ncms.AppState("app.state");
+            ncms.Application.APP_STATE = new sm.AppState("app.state", ncms.Application.ACT);
             qx.log.Logger.info("Application UUID: " + ncms.Application.UUID);
             // Intercapt all xhr request
             sm.io.Request.registerSendInterceptor(this.__requestPreSend, this);
@@ -524,34 +519,8 @@ qx.Class.define("ncms.Application", {
     },
 
     defer: function (statics) {
-
-        // Location of UI based on `navigator.languages[0]` instead of `navigator.language`
-        // todo review it for IE/EDGE
-        var browser = qx.core.Environment.get("browser.name");
-        if (browser !== "ie" && browser !== "edge") { // Fix locale
-            navigator.userLanguage = navigator.languages[0] || navigator.language || "";
-            var locale = navigator.userLanguage;
-            var ind = locale.indexOf("-");
-            if (ind !== -1) {
-                locale = locale.substr(0, ind);
-            }
-            qx.locale.Manager.getInstance().setLocale(locale);
-        }
         // Set alert windows implementation to `sm.io.Request.`
-        sm.io.Request.ALERT_WND_IMPL = ncms.AlertPopupMessages;
-
-        document.onkeydown = function (e) {
-            e = e || window.event;
-            if (e.ctrlKey) {
-                var c = e.which || e.keyCode;
-                switch (c) {
-                    case 83: // Block Ctrl+S
-                    case 87: // Block Ctrl+W
-                        e.preventDefault();
-                        e.stopPropagation();
-                        break;
-                }
-            }
-        };
+        sm.io.Request.ALERT_WND_IMPL = sm.alert.AlertPopupMessages;
+        sm.AppFixes.applyPlatformFixes();
     }
 });

@@ -187,8 +187,8 @@ qx.Class.define("ncms.Events", {
                 case "ServerMessageEvent":
                     if (msg.hints["app"] === ncms.Application.UUID) {
                         ((msg.error)
-                            ? ncms.Alerts.errorPopup
-                            : ncms.Alerts.infoPopup)(
+                            ? sm.alert.Alerts.errorPopup
+                            : sm.alert.Alerts.infoPopup)(
                             qx.lang.String.stripTags(msg.message).replace(/[\n\r]/g, "<br>"), {
                                 showTime: msg.persistent ? Number.MAX_VALUE : null
                             }
