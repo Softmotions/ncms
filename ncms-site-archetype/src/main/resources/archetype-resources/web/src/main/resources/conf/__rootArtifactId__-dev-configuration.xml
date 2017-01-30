@@ -95,7 +95,6 @@
             <excludes>
                 <exclude>META-INF/**</exclude>
                 <exclude>WEB-INF/**</exclude>
-                <exclude>scss/**</exclude>
             </excludes>
         </import>
     </media>

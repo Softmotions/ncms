@@ -30,7 +30,7 @@ it from the maven archetype.
     mvn archetype:generate \
         -DarchetypeGroupId=softmotions \
         -DarchetypeArtifactId=ncms-site-archetype \
-        -DarchetypeVersion=1.0.1 \
+        -DarchetypeVersion=1.1-SNAPSHOT \
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
 Let's consider a creation and developing of the ηCMS project
@@ -42,7 +42,7 @@ in package `org.myparrots`.
     $:   mvn archetype:generate \
     >         -DarchetypeGroupId=softmotions \
     >         -DarchetypeArtifactId=ncms-site-archetype \
-    >         -DarchetypeVersion=1.0.1 \
+    >         -DarchetypeVersion=1.1-SNAPSHOT \
     >         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
     [INFO] Scanning for projects...
 

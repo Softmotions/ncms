@@ -1,6 +1,8 @@
 # Maven
 target/
 
+__pycache__
+
 # IDEA
 .idea/
 *.iml

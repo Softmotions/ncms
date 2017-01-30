@@ -3,7 +3,7 @@
 PostgreSQL
 ==========
 
-ηCMS supports PostgreSQL 9.5 or higher
+ηCMS supports PostgreSQL 9.6 or higher
 
 Installing PostgreSQL on Ubuntu
 -------------------------------

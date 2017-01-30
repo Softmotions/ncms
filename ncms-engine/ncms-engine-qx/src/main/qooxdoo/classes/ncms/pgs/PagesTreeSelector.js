@@ -231,11 +231,6 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
             var sel = tree.getSelection().getItem(0);
             var bt;
 
-            bt = new qx.ui.menu.Button(this.tr("Refresh"));
-            bt.addListenerOnce("execute", this.__onRefresh, this);
-            menu.add(bt);
-
-
             var parent = this.__calcFirstFolderParent(sel);
             if (ncms.Application.userInRoles("admin.structure") || (parent !== root && parent.getAccessMask()
                 .indexOf("w") != -1)) {
@@ -243,6 +238,10 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
                 bt.addListenerOnce("execute", this.__onNewPage, this);
                 menu.add(bt);
             }
+
+            bt = new qx.ui.menu.Button(this.tr("Refresh"));
+            bt.addListenerOnce("execute", this.__onRefresh, this);
+            menu.add(bt);
 
             if (sel != null && sel != root) {
                 var canDuplicate = true;
