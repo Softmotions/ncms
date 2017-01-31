@@ -1577,7 +1577,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
-    private final class CachedPageImpl implements CachedPage {
+    private class CachedPageImpl implements CachedPage {
 
         private final Asm asm;
 
@@ -1660,6 +1660,68 @@ public class PageRS extends MBDAOSupport implements PageService {
 
         private CachedPageImpl(Asm asm) {
             this.asm = asm;
+        }
+    }
+
+    private class IndexPageImpl implements IndexPage {
+
+        private final CachedPage cp;
+
+        public IndexPageImpl(CachedPage cp) {
+            this.cp = cp;
+        }
+
+        @Override
+        @Nonnull
+        public Asm getAsm() {
+            return cp.getAsm();
+        }
+
+        @Override
+        @Nonnull
+        public Long getId() {
+            return cp.getId();
+        }
+
+        @Override
+        @Nullable
+        public String getAlias() {
+            return cp.getAlias();
+        }
+
+        @Override
+        @Nonnull
+        public String getName() {
+            return cp.getName();
+        }
+
+        @Override
+        @Nullable
+        public String getHname() {
+            return cp.getHname();
+        }
+
+        @Override
+        public boolean isPublished() {
+            return cp.isPublished();
+        }
+
+        @Override
+        @Nullable
+        public Long getNavParentId() {
+            return cp.getNavParentId();
+        }
+
+        @Override
+        @Nonnull
+        public <T> Map<PATH_TYPE, T> fetchNavPaths() {
+            return cp.fetchNavPaths();
+        }
+
+        @Override
+        public String getRobotsConfig() {
+            // todo
+            return null;
         }
     }
 
@@ -1915,14 +1977,14 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     @Override
-    public CachedPage getIndexPage(HttpServletRequest req, boolean requirePublished) {
+    public IndexPage getIndexPage(HttpServletRequest req, boolean requirePublished) {
 
         CachedPage p;
         Long pid = (Long) req.getAttribute(INDEX_PAGE_REQUEST_ATTR_NAME);
         if (pid != null) {
             p = getCachedPage(pid, true);
             if (p != null && (!requirePublished || p.isPublished())) {
-                return p;
+                return new IndexPageImpl(p);
             }
             req.removeAttribute(INDEX_PAGE_REQUEST_ATTR_NAME);
             pid = null;
@@ -1964,7 +2026,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (p != null) {
             req.setAttribute(INDEX_PAGE_REQUEST_ATTR_NAME, pid);
         }
-        return p;
+        return new IndexPageImpl(p);
     }
 
     @Override

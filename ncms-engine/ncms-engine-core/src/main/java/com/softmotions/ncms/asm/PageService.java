@@ -16,7 +16,7 @@ import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 public interface PageService {
 
     @Nullable
-    CachedPage getIndexPage(HttpServletRequest req, boolean requirePublished);
+    IndexPage getIndexPage(HttpServletRequest req, boolean requirePublished);
 
     @Nullable
     String getIndexPageLanguage(HttpServletRequest req);

@@ -501,31 +501,36 @@ msgstr "Изображение должно быть следующего раз
 msgid "Main page marker"
 msgstr "Маркер главной страницы"
 
-#: ncms/asm/am/MainPageAM.js:38
+#: ncms/pgs/PageEditorInfoPage.js:132 ncms/asm/am/MainPageAM.js:47
+msgid "Virtual hosts"
+msgstr "Виртуальные хосты"
+
+#: ncms/asm/am/MainPageAMOptionsWidget.js:20
 msgid "Two letter language codes separated by comma"
 msgstr "Двухбуквенные коды языков через запятую"
 
-#: ncms/asm/am/MainPageAM.js:39
+#: ncms/asm/am/MainPageAMOptionsWidget.js:22
 msgid "Language codes"
 msgstr "Коды языка"
 
-#: ncms/asm/am/MainPageAM.js:46
+#: ncms/asm/am/MainPageAMOptionsWidget.js:28
 msgid "Comma separated virtual hosts"
 msgstr "Список виртуальных хостов через запятую"
 
-#: ncms/pgs/PageEditorInfoPage.js:132 ncms/asm/am/MainPageAM.js:47
+#: ncms/pgs/PageEditorInfoPage.js:132
+#: ncms/asm/am/MainPageAMOptionsWidget.js:30
 msgid "Virtual hosts"
 msgstr "Виртуальные хосты"
+
+#: ncms/asm/am/MainPageAMOptionsWidget.js:37
+msgid "max length 1000 chars"
+msgstr ""
 
 #: ncms/mtt/tp/MttTpEditor.js:38 ncms/mtt/filters/MttFilterDlg.js:59
 #: ncms/mtt/actions/MttActionDlg.js:59 ncms/mtt/MttNav.js:154
-#: ncms/asm/am/MainPageAM.js:53 ncms/mtt/tp/MttTpNav.js:87
+#: ncms/mtt/tp/MttTpNav.js:87 ncms/asm/am/MainPageAMOptionsWidget.js:46
 msgid "Enabled"
 msgstr "Активно"
-
-#: ncms/pgs/PageEditorInfoPage.js:132 ncms/asm/am/MainPageAM.js:47
-msgid "Virtual hosts"
-msgstr "Виртуальные хосты"
 
 #: ncms/asm/am/MedialineAM.js:15
 msgid "Medialine"
