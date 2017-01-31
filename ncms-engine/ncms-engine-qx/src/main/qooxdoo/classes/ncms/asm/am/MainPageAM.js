@@ -10,7 +10,7 @@ qx.Class.define("ncms.asm.am.MainPageAM", {
 
         __META: {
             attributeTypes: "mainpage",
-            hidden: true,
+            hidden: false,
             requiredSupported: false
         },
 
@@ -28,50 +28,19 @@ qx.Class.define("ncms.asm.am.MainPageAM", {
         _form: null,
 
         activateOptionsWidget: function (attrSpec, asmSpec) {
-            var form = this._form = new qx.ui.form.Form();
-            var opts = ncms.Utils.parseOptions(attrSpec["options"]);
-
-            var el = new qx.ui.form.TextField();
-            if (opts["lang"] != null) {
-                el.setValue(opts["lang"]);
-            }
-            el.setPlaceholder(this.tr("Two letter language codes separated by comma"));
-            form.add(el, this.tr("Language codes"), null, "lang");
-
-
-            el = new qx.ui.form.TextField();
-            if (opts["vhost"] != null) {
-                el.setValue(opts["vhost"]);
-            }
-            el.setPlaceholder(this.tr("Comma separated virtual hosts"));
-            form.add(el, this.tr("Virtual hosts"), null, "vhost");
-
-            el = new qx.ui.form.CheckBox();
-            if (opts["enabled"] == "true") {
-                el.setValue(true);
-            }
-            form.add(el, this.tr("Enabled"), null, "enabled");
-            return new sm.ui.form.FlexFormRenderer(form);
+            return this._form = new ncms.asm.am.MainPageAMOptionsWidget(attrSpec, true);
         },
 
         optionsAsJSON: function () {
-            if (this._form == null || !this._form.validate()) {
-                return null;
-            }
-            var items = this._form.getItems();
-            return {
-                "lang": items["lang"].getValue(),
-                "vhost": items["vhost"].getValue(),
-                "enabled": this._form.getItems()["enabled"].getValue()
-            };
+            return this._form._optionsAsJSON();
         },
 
-        activateValueEditorWidget: function () {
-            return null;
+        activateValueEditorWidget: function (attrSpec, asmSpec) {
+            return this._form = new ncms.asm.am.MainPageAMOptionsWidget(attrSpec, false);
         },
 
         valueAsJSON: function () {
-            return {}
+            return this._form._optionsAsJSON();
         }
     },
 

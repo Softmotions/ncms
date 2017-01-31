@@ -58,11 +58,12 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         AsmOptions old = new AsmOptions(attr.getOptions());
         AsmOptions opts = new AsmOptions();
-        JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "enabled", "vhost");
+        JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "enabled", "vhost", "robots.txt");
         attr.setOptions(opts.toString());
         if (!Objects.equals(old.get("lang"), opts.get("lang")) ||
-            !Objects.equals(old.get("vhost"), opts.get("vhost")) ||
-            !Objects.equals(old.get("enabled"), opts.get("enabled"))) {
+                !Objects.equals(old.get("vhost"), opts.get("vhost")) ||
+                !Objects.equals(old.get("enabled"), opts.get("enabled")) ||
+                !Objects.equals(old.get("robots.txt"), opts.get("robots.txt"))) {
             ctx.setUserData("reload", Boolean.TRUE);
         }
         return attr;
@@ -70,6 +71,16 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
+        if (val == null) {
+            return attr;
+        }
+        
+        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+        AsmOptions old = new AsmOptions(attr.getOptions());
+        AsmOptions opts = new AsmOptions(attr.getOptions());
+        JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "vhost", "robots.txt");
+        opts.put("enabled", old.get("enabled"));
+        attr.setOptions(opts.toString());
         return attr;
     }
 
