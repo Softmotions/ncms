@@ -71,17 +71,7 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        if (val == null) {
-            return attr;
-        }
-        
-        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-        AsmOptions old = new AsmOptions(attr.getOptions());
-        AsmOptions opts = new AsmOptions(attr.getOptions());
-        JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "vhost", "robots.txt");
-        opts.put("enabled", old.get("enabled"));
-        attr.setOptions(opts.toString());
-        return attr;
+        return  applyAttributeOptions(ctx, attr, val);
     }
 
     @Override

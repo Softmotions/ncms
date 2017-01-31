@@ -9,7 +9,7 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
         "changeValue": "qx.event.type.Data"
     },
 
-    construct: function (attrSpec, toggleEnabled) {
+    construct: function (attrSpec) {
         var form = this.__form = new qx.ui.form.Form();
         var opts = ncms.Utils.parseOptions(attrSpec["options"]);
 
@@ -38,14 +38,12 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
         el.addListener("input", this.__onChange, this);
         form.add(el, "robots.txt", null, "robots.txt");
 
-        if (toggleEnabled) {
-            el = new qx.ui.form.CheckBox();
-            if (opts["enabled"] == "true") {
-                el.setValue(true);
-            }
-            el.addListener("changeValue", this.__onChange, this);
-            form.add(el, this.tr("Enabled"), null, "enabled");
+        el = new qx.ui.form.CheckBox();
+        if (opts["enabled"] == "true") {
+            el.setValue(true);
         }
+        el.addListener("click", this.__onChange, this);
+        form.add(el, this.tr("Enabled"), null, "enabled");
 
         this.base(arguments, form);
     },
