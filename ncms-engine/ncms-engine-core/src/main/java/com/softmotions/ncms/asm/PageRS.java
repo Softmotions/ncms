@@ -1663,11 +1663,14 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
+    /**
+     * Represents page that has `mainpage` attribute
+     */
     private class IndexPageImpl implements IndexPage {
 
         private final CachedPage cp;
 
-        public IndexPageImpl(CachedPage cp) {
+        IndexPageImpl(CachedPage cp) {
             this.cp = cp;
         }
 
@@ -1718,9 +1721,20 @@ public class PageRS extends MBDAOSupport implements PageService {
             return cp.fetchNavPaths();
         }
 
+        /**
+         * Returns `robots.txt` option value of mainpage attribute
+         */
+        @Nullable
         @Override
         public String getRobotsConfig() {
-            // todo
+            Asm asm = cp.getAsm();
+            if (asm.isHasAttribute("mainpage")) {
+                AsmAttribute mainPageAttr = asm.getAttribute("mainpage");
+                if (mainPageAttr != null) {
+                    String robots = new AsmOptions(mainPageAttr.getOptions()).getString("robots.txt");
+                    return StringUtils.trimToEmpty(robots);
+                }
+            }
             return null;
         }
     }

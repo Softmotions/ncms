@@ -1,5 +1,7 @@
 package com.softmotions.ncms.asm;
 
+import javax.annotation.Nullable;
+
 /**
  * Index page.
  *
@@ -7,5 +9,6 @@ package com.softmotions.ncms.asm;
  */
 public interface IndexPage extends CachedPage {
 
+    @Nullable
     String getRobotsConfig();
 }

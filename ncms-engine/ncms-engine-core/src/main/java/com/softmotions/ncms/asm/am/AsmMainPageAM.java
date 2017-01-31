@@ -62,7 +62,7 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
         attr.setOptions(opts.toString());
         if (!Objects.equals(old.get("lang"), opts.get("lang")) ||
                 !Objects.equals(old.get("vhost"), opts.get("vhost")) ||
-                !Objects.equals(Boolean.getBoolean(old.get("enabled")), Boolean.getBoolean(opts.get("enabled"))) ||
+                !Objects.equals(old.get("enabled"), String.valueOf(opts.get("enabled"))) ||
                 !Objects.equals(old.get("robots.txt"), opts.get("robots.txt"))) {
             ctx.setUserData("reload", Boolean.TRUE);
         }

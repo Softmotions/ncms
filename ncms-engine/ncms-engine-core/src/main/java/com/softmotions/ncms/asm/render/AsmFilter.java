@@ -28,6 +28,7 @@ import com.google.inject.Singleton;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.CachedPage;
+import com.softmotions.ncms.asm.IndexPage;
 import com.softmotions.ncms.asm.PageSecurityService;
 import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.media.MediaRepository;
@@ -158,6 +159,13 @@ public class AsmFilter implements Filter {
         if (processResources(pi, req, resp)) { //find resources
             return true;
         }
+
+        //Handle robots.txt resource
+        if ("/robots.txt".equals(pi)) {
+            handleRobotsTXT(req, resp);
+            return true;
+        }
+
         i18n.initRequestI18N(req, resp);
         Object asmRef = fetchAsmRef(pi, req);
         if (asmRef == null) {
@@ -293,5 +301,20 @@ public class AsmFilter implements Filter {
         }
         resp.flushBuffer();
         return true;
+    }
+
+    /**
+     * Find and inject robotx.txt option of mainpage attribute in responce as plain text
+     */
+    private void handleRobotsTXT(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        IndexPage ip = pageService.getIndexPage(req, true);
+        String robots;
+        if (ip == null || (robots = ip.getRobotsConfig()) == null) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.getWriter().write(robots);
     }
 }
