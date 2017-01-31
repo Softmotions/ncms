@@ -62,7 +62,7 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
         attr.setOptions(opts.toString());
         if (!Objects.equals(old.get("lang"), opts.get("lang")) ||
                 !Objects.equals(old.get("vhost"), opts.get("vhost")) ||
-                !Objects.equals(old.get("enabled"), opts.get("enabled")) ||
+                !Objects.equals(Boolean.getBoolean(old.get("enabled")), Boolean.getBoolean(opts.get("enabled"))) ||
                 !Objects.equals(old.get("robots.txt"), opts.get("robots.txt"))) {
             ctx.setUserData("reload", Boolean.TRUE);
         }
@@ -71,7 +71,7 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
 
     @Override
     public AsmAttribute applyAttributeValue(AsmAttributeManagerContext ctx, AsmAttribute attr, JsonNode val) throws Exception {
-        return  applyAttributeOptions(ctx, attr, val);
+        return applyAttributeOptions(ctx, attr, val);
     }
 
     @Override
