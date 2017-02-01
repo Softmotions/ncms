@@ -3,6 +3,7 @@
  */
 qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
     extend: sm.ui.form.FlexFormRenderer,
+    include: [qx.locale.MTranslation, ncms.asm.am.MAttributeManager],
 
     events: {
         /** Fired when data in any field in form changes */
@@ -30,11 +31,17 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
         form.add(el, this.tr("Virtual hosts"), null, "vhost");
 
         el = new qx.ui.form.TextArea();
-        if (opts["robots.txt"] != null) {
-            el.setValue(opts["robots.txt"]);
-        }
-        el.setMaxLength(1000);
-        el.setPlaceholder(this.tr("max length 1000 chars"));
+        this._fetchAttributeValue(attrSpec, function (val) {
+            if (sm.lang.String.isEmpty(val)) {
+                return;
+            }
+            var value = JSON.parse(val)['robots.txt'];
+            if (value != null) {
+                el.setValue(value);
+            }
+        });
+        el.setMaxLength(10000);
+        el.setPlaceholder(this.tr("max length 10000 chars"));
         el.addListener("input", this.__onChange, this);
         form.add(el, "robots.txt", null, "robots.txt");
 
@@ -62,10 +69,14 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
             }
             var items = this.__form.getItems();
             return {
-                "lang": items["lang"] != null ? items["lang"].getValue() : null,
-                "vhost": items["vhost"] != null ? items["vhost"].getValue() : null,
-                "enabled": items["enabled"] != null ? items["enabled"].getValue() : null,
-                "robots.txt": items["robots.txt"] != null ? items["robots.txt"].getValue() : null
+                options: {
+                    "lang": items["lang"] != null ? items["lang"].getValue() : null,
+                    "vhost": items["vhost"] != null ? items["vhost"].getValue() : null,
+                    "enabled": items["enabled"] != null ? items["enabled"].getValue() : null
+                },
+                value: {
+                    "robots.txt": items["robots.txt"] != null ? items["robots.txt"].getValue() : null
+                }
             };
         }
     },

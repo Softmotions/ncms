@@ -3,6 +3,7 @@ package com.softmotions.ncms.asm.am;
 import java.util.Map;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,14 +34,17 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
 
     private PageRS pageRS;
 
+    private ObjectMapper mapper;
+
     @Override
     public String[] getSupportedAttributeTypes() {
         return TYPES;
     }
 
     @Inject
-    public AsmMainPageAM(PageRS pageRS) {
+    public AsmMainPageAM(PageRS pageRS, ObjectMapper mapper) {
         this.pageRS = pageRS;
+        this.mapper = mapper;
     }
 
     @Override
@@ -58,12 +62,21 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
         AsmOptions old = new AsmOptions(attr.getOptions());
         AsmOptions opts = new AsmOptions();
-        JsonUtils.populateMapByJsonNode((ObjectNode) val, opts, "lang", "enabled", "vhost", "robots.txt");
+
+        JsonNode newOptions = val.path("options");
+        JsonUtils.populateMapByJsonNode((ObjectNode) newOptions, opts, "lang", "enabled", "vhost");
         attr.setOptions(opts.toString());
+
+        JsonNode newValue = val.get("value");
+        boolean valueChanged = !Objects.equals(attr.getEffectiveValue(), mapper.writeValueAsString(newValue));
+        attr.setEffectiveValue(mapper.writeValueAsString(
+                mapper.createObjectNode().put("robots.txt", newValue.get("robots.txt").asText())
+        ));
+
         if (!Objects.equals(old.get("lang"), opts.get("lang")) ||
                 !Objects.equals(old.get("vhost"), opts.get("vhost")) ||
                 !Objects.equals(old.get("enabled"), String.valueOf(opts.get("enabled"))) ||
-                !Objects.equals(old.get("robots.txt"), opts.get("robots.txt"))) {
+                valueChanged) {
             ctx.setUserData("reload", Boolean.TRUE);
         }
         return attr;
