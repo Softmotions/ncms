@@ -156,12 +156,12 @@ public class AsmFilter implements Filter {
                 break;
             }
         }
-        //Handle robots.txt resource
-        if ("/robots.txt".equals(pi)) {
-            handleRobotsTXT(req, resp);
+        if (processResources(pi, req, resp)) { //find resources
             return true;
         }
-        if (processResources(pi, req, resp)) { //find resources
+        //Handle robots.txt resource
+        if ("/robots.txt".equals(pi)) {
+            handleRobots(req, resp);
             return true;
         }
         i18n.initRequestI18N(req, resp);
@@ -304,7 +304,7 @@ public class AsmFilter implements Filter {
     /**
      * Find and inject robotx.txt option of mainpage attribute in responce as plain text
      */
-    private void handleRobotsTXT(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void handleRobots(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         IndexPage ip = pageService.getIndexPage(req, true);
         String robots;
         if (ip == null || (robots = ip.getRobotsConfig()) == null) {

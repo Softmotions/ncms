@@ -1728,25 +1728,18 @@ public class PageRS extends MBDAOSupport implements PageService {
         @Override
         public String getRobotsConfig() {
             Asm asm = cp.getAsm();
-            if (asm.isHasAttribute("mainpage")) {
-                AsmAttribute mainPageAttr = asm.getAttribute("mainpage");
-                if (mainPageAttr != null) {
-                    String value = mainPageAttr.getEffectiveValue();
-                    if (StringUtils.isBlank(value)) {
-                        return null;
-                    }
-
-                    try {
-                        JsonNode robots = mapper.readTree(value);
-                        String res = robots.path("robots.txt").asText();
-                        return StringUtils.trimToEmpty(res);
-                    } catch (IOException e) {
-                        log.error("error parsing attribute value", e);
-                        return null;
-                    }
-                }
+            AsmAttribute mainPageAttr = asm.getAttribute("mainpage");
+            if (mainPageAttr == null) {
+                return null;
             }
-            return null;
+            String value = StringUtils.trimToNull(mainPageAttr.getEffectiveValue());
+            try {
+                String res = mapper.readTree(value).path("robots.txt").asText();
+                return StringUtils.trimToEmpty(res);
+            } catch (IOException e) {
+                log.error("error parsing attribute value", e);
+                return null;
+            }
         }
     }
 
