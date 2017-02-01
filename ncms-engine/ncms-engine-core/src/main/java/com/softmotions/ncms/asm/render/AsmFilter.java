@@ -156,16 +156,14 @@ public class AsmFilter implements Filter {
                 break;
             }
         }
-        if (processResources(pi, req, resp)) { //find resources
-            return true;
-        }
-
         //Handle robots.txt resource
         if ("/robots.txt".equals(pi)) {
             handleRobotsTXT(req, resp);
             return true;
         }
-
+        if (processResources(pi, req, resp)) { //find resources
+            return true;
+        }
         i18n.initRequestI18N(req, resp);
         Object asmRef = fetchAsmRef(pi, req);
         if (asmRef == null) {
@@ -313,7 +311,6 @@ public class AsmFilter implements Filter {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
-
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(robots);
     }
