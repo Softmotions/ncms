@@ -24,5 +24,8 @@ of browser (useragent), to show this page. The **\*** symbol is allowed and mean
 **Virtual Hosts:** The list of virtual hosts (comma-separated) to show this page.
 Allowed symbol **\*** means any virtual host.
 
+**robots.txt:** `Special instructions for search robots <https://en.wikipedia.org/wiki/Robots_exclusion_standard>`_,
+which will be available as `robots.txt` resource at the root directory of the site.
+
 **Enabled (checkbox):** It shows if this attribute is active.
  The rules for languages and virtual hosts will be applied when clients access to ηCMS.
