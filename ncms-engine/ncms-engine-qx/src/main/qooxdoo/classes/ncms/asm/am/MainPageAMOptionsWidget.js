@@ -41,7 +41,7 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
 
         el = new qx.ui.form.TextArea();
         el.setMaxLength(1024 * 10); // 10 kb
-        el.setPlaceholder(this.tr("max length 10000 chars"));
+        el.setPlaceholder(this.tr("robots.txt here"));
         el.addListener("input", this.__onChange, this);
         form.add(el, "robots.txt", null, "robots.txt");
 
