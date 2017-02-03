@@ -3,11 +3,14 @@ package com.softmotions.ncms.asm.am;
 import java.util.Map;
 import java.util.Objects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.softmotions.ncms.asm.IndexPage.FAVICON_ICO;
+import static com.softmotions.ncms.asm.IndexPage.ROBOTS_TXT;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -67,26 +70,28 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
         JsonUtils.populateMapByJsonNode((ObjectNode) newOptions, opts, "lang", "enabled", "vhost");
         attr.setOptions(opts.toString());
 
-        JsonNode vals = val.get("value");
-        ObjectNode newValues = mapper.createObjectNode();
-        newValues.put("robots.txt", vals.path("robots.txt").asText());
-        newValues.put("favicon.ico", vals.path("favicon.ico").asText());
+        JsonNode value = val.get("value");
+        ObjectNode n = mapper.createObjectNode();
+        n.put(ROBOTS_TXT, value.path(ROBOTS_TXT).asText());
+        n.put(FAVICON_ICO, value.path(FAVICON_ICO).asText());
 
         boolean valueChanged;
         String effectiveValue = attr.getEffectiveValue();
         if (effectiveValue != null) {
             JsonNode oldValues = mapper.readTree(effectiveValue);
-            valueChanged = !Objects.equals(oldValues.path("robots.txt").asText(), vals.path("robots.txt").asText()) ||
-                    !Objects.equals(oldValues.path("favicon.ico").asText(), vals.path("favicon.ico").asText());
+            valueChanged = !Objects.equals(oldValues.path(ROBOTS_TXT).asText(),
+                                           value.path(ROBOTS_TXT).asText()) ||
+                           !Objects.equals(oldValues.path(FAVICON_ICO).asText(),
+                                           value.path(FAVICON_ICO).asText());
         } else {
             valueChanged = true;
         }
 
-        attr.setEffectiveValue(mapper.writeValueAsString(newValues));
+        attr.setEffectiveValue(mapper.writeValueAsString(n));
         if (!Objects.equals(old.get("lang"), opts.get("lang")) ||
-                !Objects.equals(old.get("vhost"), opts.get("vhost")) ||
-                !Objects.equals(old.get("enabled"), String.valueOf(opts.get("enabled"))) ||
-                valueChanged) {
+            !Objects.equals(old.get("vhost"), opts.get("vhost")) ||
+            !Objects.equals(old.get("enabled"), String.valueOf(opts.get("enabled"))) ||
+            valueChanged) {
             ctx.setUserData("reload", Boolean.TRUE);
         }
         return attr;

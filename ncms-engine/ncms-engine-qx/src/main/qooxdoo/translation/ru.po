@@ -344,7 +344,8 @@ msgstr "Псевдоним"
 msgid "Assembly core selector"
 msgstr "Разметка страницы"
 
-#: ncms/asm/am/AsmCoreAM.js:56 ncms/asm/am/FileRefAM.js:100
+#: ncms/asm/am/AsmCoreAM.js:56 ncms/asm/am/MainPageAMOptionsWidget.js:48
+#: ncms/asm/am/FileRefAM.js:100
 msgid "File"
 msgstr "Файл"
 
@@ -387,6 +388,10 @@ msgstr "Выбор даты"
 #: ncms/asm/am/DateAM.js:34
 msgid "Date format"
 msgstr "Формат даты"
+
+#: ncms/asm/am/FaviconWidget.js:83 ncms/asm/am/FaviconWidget.js:94
+msgid "Not set"
+msgstr ""
 
 #: ncms/asm/am/FileRefAM.js:21
 msgid "Include file resource"
@@ -505,32 +510,36 @@ msgstr "Маркер главной страницы"
 msgid "Virtual hosts"
 msgstr "Виртуальные хосты"
 
-#: ncms/asm/am/MainPageAMOptionsWidget.js:20
+#: ncms/mtt/tp/MttTpEditor.js:38 ncms/mtt/filters/MttFilterDlg.js:59
+#: ncms/mtt/actions/MttActionDlg.js:59 ncms/mtt/MttNav.js:154
+#: ncms/mtt/tp/MttTpNav.js:87 ncms/asm/am/MainPageAMOptionsWidget.js:24
+msgid "Enabled"
+msgstr "Активно"
+
+#: ncms/asm/am/MainPageAMOptionsWidget.js:30
 msgid "Two letter language codes separated by comma"
 msgstr "Двухбуквенные коды языков через запятую"
 
-#: ncms/asm/am/MainPageAMOptionsWidget.js:22
+#: ncms/asm/am/MainPageAMOptionsWidget.js:32
 msgid "Language codes"
 msgstr "Коды языка"
 
-#: ncms/asm/am/MainPageAMOptionsWidget.js:28
+#: ncms/asm/am/MainPageAMOptionsWidget.js:38
 msgid "Comma separated virtual hosts"
 msgstr "Список виртуальных хостов через запятую"
 
 #: ncms/pgs/PageEditorInfoPage.js:132
-#: ncms/asm/am/MainPageAMOptionsWidget.js:30
+#: ncms/asm/am/MainPageAMOptionsWidget.js:40
 msgid "Virtual hosts"
 msgstr "Виртуальные хосты"
 
-#: ncms/asm/am/MainPageAMOptionsWidget.js:37
-msgid "max length 1000 chars"
+#: ncms/asm/am/MainPageAMOptionsWidget.js:44
+msgid "max length 10000 chars"
 msgstr ""
 
-#: ncms/mtt/tp/MttTpEditor.js:38 ncms/mtt/filters/MttFilterDlg.js:59
-#: ncms/mtt/actions/MttActionDlg.js:59 ncms/mtt/MttNav.js:154
-#: ncms/mtt/tp/MttTpNav.js:87 ncms/asm/am/MainPageAMOptionsWidget.js:46
-msgid "Enabled"
-msgstr "Активно"
+#: ncms/asm/am/MainPageAMOptionsWidget.js:50
+msgid "favicon.ico"
+msgstr ""
 
 #: ncms/asm/am/MedialineAM.js:15
 msgid "Medialine"
@@ -2097,6 +2106,9 @@ msgstr "Заметка"
 #~ msgstr "Широкая таблица"
 
 #~ msgid "from"
+#~ msgstr ""
+
+#~ msgid "max length 1000 chars"
 #~ msgstr ""
 
 #~ msgid "to"

@@ -1,7 +1,6 @@
 /**
- * Form field for image pick
+ * Form field for picking favicon.ico
  */
-
 qx.Class.define("ncms.asm.am.FaviconWidget", {
     extend: qx.ui.core.Widget,
     implement: [
@@ -42,15 +41,15 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
     /**
      * @param label {String} Button label
      * @param icon {String} Button icon path
-     * @param base64 {String=} widget value, Base64 encoded image
+     * @param base64 {String?} widget value, Base64 encoded image
      */
     construct: function (label, icon, base64) {
         this.__label = label;
         this.__icon = icon;
-        this.__base64 = base64;
         this.base(arguments);
         this._setLayout(new qx.ui.layout.HBox().set({alignY: "middle"}));
         this.__ensureControls();
+        this.setValue(base64);
     },
 
     members: {
@@ -66,6 +65,10 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
         __preview: null,
 
         setValue: function (value) {
+            if (value == null) {
+                this.resetValue();
+                return;
+            }
             this.__base64 = value;
             this.__preview.setValue(this.__wrapBase64(value));
             this.fireEvent("changeValue");
@@ -77,7 +80,7 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
 
         resetValue: function () {
             this.__base64 = null;
-            this.__preview.setValue(this.tr(this.__notSetPlaceholder));
+            this.__preview.setValue(this.tr("Not set"));
             this.fireEvent("changeValue");
         },
 
@@ -88,7 +91,7 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
                     if (sm.lang.String.isEmpty(this.__base64)) {
                         control = new qx.ui.basic.Label();
                         control.set({
-                            value: this.tr(this.__notSetPlaceholder),
+                            value: this.tr("Not set"),
                             rich: false,
                             marginRight: 5
                         })
@@ -150,24 +153,22 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
 
         __ensureControls: function () {
             var names = ["preview", "reset", "button"];
-
             names.forEach(function (n) {
                 this.getChildControl(n);
             }, this);
             var me = this;
             this.__preview.bind("value", this.getChildControl("reset"), "enabled", {
                 converter: function (v) {
-                    return me.getEnabled() && v != null && !sm.lang.String.isEmpty(v) && v != me.__notSetPlaceholder;
+                    return me.getEnabled() && !sm.lang.String.isEmpty(v);
                 }
             })
         },
 
         __wrapBase64: function (base64) {
-            return "<img style='display:block; height:22px;' src='data:image/jpeg;base64," + base64 + "'/>";
+            return "<img style='display:block; height:22px;' src='data:image/vnd.microsoft.icon;base64," + base64 + "'/>";
         },
 
         __destruct: function () {
-            this.__notSetPlaceholder = null;
             this.__base64 = null;
             this.__label = null;
             this.__icon = null;

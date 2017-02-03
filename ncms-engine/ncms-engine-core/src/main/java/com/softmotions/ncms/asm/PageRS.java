@@ -50,6 +50,9 @@ import org.slf4j.LoggerFactory;
 import static com.softmotions.ncms.asm.CachedPage.PATH_TYPE;
 import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.ADD;
 import static com.softmotions.ncms.asm.PageSecurityService.UpdateMode.REMOVE;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -384,7 +387,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         Collection<AsmAttribute> gattrs = new ArrayList<>(eattrs.size());
         AsmAttributeManagersRegistry amreg = amRegistry.get();
         for (AsmAttribute a : eattrs) {
-            if (!StringUtils.isBlank(a.getLabel())) { //it is GUI attribute?
+            if (!isBlank(a.getLabel())) { //it is GUI attribute?
                 if (template != null) {
                     AsmAttribute tmplAttr = template.getEffectiveAttribute(a.getName());
                     AsmAttributeManager am = amreg.getByType(a.getType());
@@ -400,7 +403,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
         }
         String contollerClassName = page.getEffectiveController();
-        if (!StringUtils.isBlank(contollerClassName)) {
+        if (!isBlank(contollerClassName)) {
             Object controller = helper
                     .createControllerInstance(page,
                                               contollerClassName);
@@ -1478,37 +1481,37 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
         }
         val = req.getParameter("name");
-        if (!StringUtils.isBlank(val)) {
+        if (!isBlank(val)) {
             cq.withParam("name_lower", val.toLowerCase() + "%");
         }
         String type = "page%";
         val = req.getParameter("type");
-        if (!StringUtils.isBlank(val)) {
+        if (!isBlank(val)) {
             type = val;
         } else if (BooleanUtils.toBoolean(req.getParameter("foldersOnly"))) {
             type = "page.folder";
         }
         val = req.getParameter("parentId");
-        if (!StringUtils.isBlank(val)) {
+        if (!isBlank(val)) {
             cq.withParam("parentId", Long.parseLong(val));
         }
         cq.withParam("type", type);
         cq.withParam("user", req.getRemoteUser());
 
         val = req.getParameter("collection");
-        if (!StringUtils.isBlank(val)) {
+        if (!isBlank(val)) {
             cq.withParam("collection", val);
         }
         if (!count) {
             val = req.getParameter("sortAsc");
-            if (!StringUtils.isBlank(val)) {
+            if (!isBlank(val)) {
                 if ("label".equals(val)) {
                     val = "hname";
                 }
                 cq.orderBy("p." + val).asc();
             }
             val = req.getParameter("sortDesc");
-            if (!StringUtils.isBlank(val)) {
+            if (!isBlank(val)) {
                 if ("label".equals(val)) {
                     val = "hname";
                 }
@@ -1622,7 +1625,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             String cpath = asm.getNavCachedPath();
             Map<PATH_TYPE, Object> res = new EnumMap<>(PATH_TYPE.class);
             cpath = (cpath != null) ? StringUtils.strip(cpath, "/") : null;
-            if (StringUtils.isBlank(cpath)) {
+            if (isBlank(cpath)) {
                 res.put(PATH_TYPE.GUID, new String[]{asm.getName()});
                 res.put(PATH_TYPE.LABEL, new String[]{asm.getHname()});
                 res.put(PATH_TYPE.ID, new Long[]{asm.getId()});
@@ -1669,6 +1672,8 @@ public class PageRS extends MBDAOSupport implements PageService {
     private class IndexPageImpl implements IndexPage {
 
         private final CachedPage cp;
+
+        private JsonNode cachedOptions;
 
         IndexPageImpl(CachedPage cp) {
             this.cp = cp;
@@ -1727,28 +1732,33 @@ public class PageRS extends MBDAOSupport implements PageService {
         @Nullable
         @Override
         public String getRobotsConfig() {
-            return StringUtils.trimToNull(getMainPageOptions().path("robots.txt").asText());
+            return trimToNull(getOptions().path(IndexPage.ROBOTS_TXT).asText());
         }
 
         @Nullable
         @Override
-        public String getFavicon() {
-            return StringUtils.trimToNull(getMainPageOptions().path("favicon.ico").asText());
+        public String getFaviconBase64() {
+            return trimToNull(getOptions().path(IndexPage.FAVICON_ICO).asText());
         }
 
         @Nonnull
-        private JsonNode getMainPageOptions() {
+        private JsonNode getOptions() {
+            if (cachedOptions != null) {
+                return cachedOptions;
+            }
             Asm asm = cp.getAsm();
             AsmAttribute mainPageAttr = asm.getAttribute("mainpage");
             if (mainPageAttr == null) {
-                return mapper.createObjectNode();
+                cachedOptions = mapper.createObjectNode();
+                return cachedOptions;
             }
             try {
-                return mapper.readTree(StringUtils.trimToEmpty(mainPageAttr.getEffectiveValue()));
+                cachedOptions = mapper.readTree(trimToEmpty(mainPageAttr.getEffectiveValue()));
             } catch (IOException e) {
-                log.error("error parsing attribute value", e);
-                return mapper.createObjectNode();
+                log.error("Failed to parse mainpage attribute value", e);
+                cachedOptions = mapper.createObjectNode();
             }
+            return cachedOptions;
         }
     }
 
@@ -1829,7 +1839,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @Override
     public CachedPage getCachedPage(String guidOrAlias, boolean create) {
-        if (StringUtils.isBlank(guidOrAlias)) {
+        if (isBlank(guidOrAlias)) {
             return null;
         }
         CachedPage cp;
@@ -2104,11 +2114,11 @@ public class PageRS extends MBDAOSupport implements PageService {
                 }
                 String lp = ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/");
                 String ln = options.get("lang");
-                if (StringUtils.isBlank(ln)) {
+                if (isBlank(ln)) {
                     ln = "*";
                 }
                 String vh = options.get("vhost");
-                if (StringUtils.isBlank(vh)) {
+                if (isBlank(vh)) {
                     vh = "*";
                 }
                 String[] lcodes = ArrayUtils.split(ln, " ,;");

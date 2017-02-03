@@ -157,24 +157,30 @@ public class AsmFilter implements Filter {
                 break;
             }
         }
-        if (processResources(pi, req, resp)) { //find resources
+
+        // Find site resources
+        if (processResources(pi, req, resp)) {
             return true;
         }
-        //Handle request for robots.txt resource
+
+        // Handle request for robots.txt
         if ("/robots.txt".equals(pi)) {
             handleRobots(req, resp);
             return true;
         }
-        //Handle request for favicon.ico resource
+
+        // Handle request for favicon.ico
         if ("/favicon.ico".equals(pi)) {
             handleFavicon(req, resp);
             return true;
         }
+
         i18n.initRequestI18N(req, resp);
         Object asmRef = fetchAsmRef(pi, req);
         if (asmRef == null) {
             return false;
         }
+
         //Set charset before calling javax.servlet.ServletResponse.getWriter()
         //Assumed all assemblies generated as utf8 encoded text data.
         //Content-Type can be overridden by assembly renderer.
@@ -308,7 +314,7 @@ public class AsmFilter implements Filter {
     }
 
     /**
-     * Find and inject in responce robotx.txt option of mainpage attribute as plain text
+     * Find and inject in response robots.txt option of mainpage attribute as plain text
      */
     private void handleRobots(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         IndexPage ip = pageService.getIndexPage(req, true);
@@ -322,12 +328,12 @@ public class AsmFilter implements Filter {
     }
 
     /**
-     * Find and return in responce favicon.ico option of mainpage attribute as image
+     * Find and return in response favicon.ico option of mainpage attribute as image
      */
     private void handleFavicon(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         IndexPage ip = pageService.getIndexPage(req, true);
         String favicon;
-        if (ip == null || (favicon = ip.getFavicon()) == null) {
+        if (ip == null || (favicon = ip.getFaviconBase64()) == null) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
