@@ -72,8 +72,8 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
 
         JsonNode value = val.get("value");
         ObjectNode n = mapper.createObjectNode();
-        n.put(ROBOTS_TXT, value.path(ROBOTS_TXT).asText());
-        n.put(FAVICON_ICO, value.path(FAVICON_ICO).asText());
+        n.put(ROBOTS_TXT, value.path(ROBOTS_TXT).asText(""));
+        n.put(FAVICON_ICO, value.path(FAVICON_ICO).asText(""));
 
         boolean valueChanged;
         String effectiveValue = attr.getEffectiveValue();
