@@ -65,7 +65,7 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
         __preview: null,
 
         setValue: function (value) {
-            if (value == null) {
+            if (sm.lang.String.isEmpty(value)) {
                 this.resetValue();
                 return;
             }
@@ -88,11 +88,11 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
             var control;
             switch (id) {
                 case "preview":
-                    if (sm.lang.String.isEmpty(this.__base64)) {
+                    if (!!sm.lang.String.isEmpty(this.__base64)) {
                         control = new qx.ui.basic.Label();
                         control.set({
                             value: this.tr("Not set"),
-                            rich: false,
+                            rich: true,
                             marginRight: 5
                         })
                     } else {
@@ -159,7 +159,7 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
             var me = this;
             this.__preview.bind("value", this.getChildControl("reset"), "enabled", {
                 converter: function (v) {
-                    return me.getEnabled() && !sm.lang.String.isEmpty(v);
+                    return me.getEnabled() && !sm.lang.String.isEmpty(v) && me.__base64 != null;
                 }
             })
         },
