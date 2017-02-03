@@ -388,7 +388,7 @@ msgstr "Выбор даты"
 msgid "Date format"
 msgstr "Формат даты"
 
-#: ncms/asm/am/FaviconWidget.js:83 ncms/asm/am/FaviconWidget.js:94
+#: ncms/asm/am/FaviconWidget.js:82 ncms/asm/am/FaviconWidget.js:92
 msgid "Not set"
 msgstr ""
 

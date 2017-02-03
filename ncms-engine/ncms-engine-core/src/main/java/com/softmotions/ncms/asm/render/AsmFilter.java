@@ -159,19 +159,7 @@ public class AsmFilter implements Filter {
         }
 
         // Find site resources
-        if (processResources(pi, req, resp)) {
-            return true;
-        }
-
-        // Handle request for robots.txt
-        if ("/robots.txt".equals(pi)) {
-            handleRobots(req, resp);
-            return true;
-        }
-
-        // Handle request for favicon.ico
-        if ("/favicon.ico".equals(pi)) {
-            handleFavicon(req, resp);
+        if (processResources(pi, req, resp) || handleBaseUrls(pi, req, resp)) {
             return true;
         }
 
@@ -246,6 +234,26 @@ public class AsmFilter implements Filter {
         }
         return true;
     }
+
+
+    private boolean handleBaseUrls(String pi,
+                                   HttpServletRequest req,
+                                   HttpServletResponse resp) throws IOException {
+
+        // Handle request for robots.txt
+        if ("/robots.txt".equals(pi)) {
+            handleRobots(req, resp);
+            return true;
+        }
+
+        // Handle request for favicon.ico
+        if ("/favicon.ico".equals(pi)) {
+            handleFavicon(req, resp);
+            return true;
+        }
+        return false;
+    }
+
 
     @Nullable
     protected Object fetchAsmRef(String pi, HttpServletRequest req) {

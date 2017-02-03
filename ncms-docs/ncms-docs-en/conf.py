@@ -69,7 +69,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'ηCMS: инструкция по применению'
-copyright = 'Softmotions Ltd, 2016'
+copyright = 'Softmotions Ltd, 2017'
 author = 'info@softmotions.com'
 
 # The version info for the project you're documenting, acts as replacement for
