@@ -30,7 +30,7 @@ Welcome to |ncmsversion|
     |  `Home` Go to the documentation home page
 
 
-**This manual on other languages**
+**This manual in other languages**
 
 * `Russian <http://ncms.one/manual/ru/>`_
 
