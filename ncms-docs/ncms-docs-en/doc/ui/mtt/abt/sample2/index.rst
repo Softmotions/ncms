@@ -10,7 +10,7 @@ and can be very heavy and awkward.
 
 More convenient way is to implement `A/B` testing through page inheritance.
 Create a base page for particular `A/B` mode and other `A/B` modes can be implemented
-within a pages which are inherited from a base page.
+within pages which are inherited from a base page.
 
 .. figure:: img/screen1.png
 

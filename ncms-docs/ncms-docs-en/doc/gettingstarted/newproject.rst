@@ -16,7 +16,7 @@ Prerequisites
 .. note::
 
     You can run ηCMS on Windows, but the |ncmsversion| test
-    cases are designed to run only on linux platforms.
+    cases are designed to run only on Linux platforms.
     We highly recommend to run |ncmsversion| on Linux in production.
 
 Using Maven Archetype
@@ -33,7 +33,7 @@ it from the maven archetype.
         -DarchetypeVersion=1.1-SNAPSHOT \
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
-Let's consider a creation and developing of the ηCMS project
+Let's consider the creation and development of the ηCMS project
 using the website about parrots as an example. The Java code of this project resides
 in package `org.myparrots`.
 
@@ -65,8 +65,7 @@ in package `org.myparrots`.
 Project structure
 -----------------
 
-As a result of `mvn archetype:generate` we got the project
-with the following structure:
+As a result of `mvn archetype:generate` we got the following structure:
 
 .. code-block:: text
 
@@ -87,9 +86,9 @@ with the following structure:
 
 Where:
 
-* `qx` - The source code of the administrative GUI interface, it is based on `javascript library qooxdoo <http://qooxdoo.org>`_
+* `qx` - The source code of the administrative GUI interface, is based on `javascript library qooxdoo <http://qooxdoo.org>`_
 * `web` - The server side web resources and project's Java code
-* `tomcat` - Apache Tomcat configuration files to start the server
+* `tomcat` - Apache Tomcat configuration files start the server
   in the development mode using maven cargo plugin
 
 Configuring the database connection
@@ -132,7 +131,7 @@ In our project it will be: `conf/ncmsapp-dev-configuration.xml`.
     </mybatis>
 
 Database connection parameters are defined in the `{home}/.ncmsapp.ds` file ,
-where `{home}` is a home directory of user who runs the ηCMS server. You must create the file
+where `{home}` is a home directory of users who run the ηCMS server. You must create the file
 and specify the parameters within it:
 
 

@@ -14,7 +14,7 @@ isn't set by one of the methods stated above.
 
 To work with the server configuration we use
 `Apache Сommons Сonfiguration <https://commons.apache.org/proper/commons-configuration/>`_
-and, as a consequence, a references to values of other items are supported in the file, e.g.::
+and, as a consequence, a reference to values of other items are supported in the file, e.g.::
 
     <root>http://${server-name}:${server-port}</root>
 
@@ -24,7 +24,7 @@ Additionally, in the configuration file you can use substitutes (placeholders)
 as `{name}`, where `{name}` can take the following values:
 
 * {cwd}    --  current working directory
-* {home}   --  home directory of the user who runs ηCMS server
+* {home}   --  home directory of the user who runs the ηCMS server
 * {tmp}    --  temporary folder
 * {newtmp} --  unique temporary directory for the running application
 * {webapp} --  path to the root of the deployed web application
@@ -158,7 +158,7 @@ Example of ηСМС configuration file
         <media>
             <!-- Directory where ηCMS media files are stored -->
             <basedir>{home}/.myapp/media</basedir>
-            <!-- The maximal size of the file loaded to ηCMS (bytes).
+            <!-- The maximum size of the file loaded to ηCMS (bytes).
                  By default 30MB -->
             <max-upload-size>31457280</max-upload-size>
             <!-- The maximum size of the data stored in the RAM cache
@@ -300,12 +300,12 @@ Additional (Advanced) configuration items
         <pages>
             <!-- The maximum size of the LRU cache
                      for the storing of the meta information (com.softmotions.ncms.asm.CachedPage)
-                     about resently used pages of the site.
+                     about recently used pages of the site.
                  By default: 1024 -->
             <lru-cache-size>1024</lru-cache-size>
 
             <!-- Maximum LRU size of a cache for page aliases.
-                 For the fast search of the page using its alias.
+                 For the fast search of a page using its alias.
                  By default: 8192
             -->
             <lru-aliases-cache-size>8192</lru-aliases-cache-size>

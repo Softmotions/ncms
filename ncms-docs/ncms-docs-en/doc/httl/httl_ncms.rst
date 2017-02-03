@@ -184,7 +184,7 @@ Additional methods (Advanced)
 com.softmotions.ncms.mhttl .HttlUtilsMethods
 --------------------------------------------
 
-A number utility methods for use in the context of
+A number of utility methods for use in the context of
 :term:`HTTL` templates.
 
 .. todo::

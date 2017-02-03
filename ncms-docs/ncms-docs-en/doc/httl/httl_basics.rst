@@ -296,7 +296,7 @@ the cycle will be interrupted.
 
         #break (i ​​== j) ## correct
 
-    This significantly shorter and more productive than::
+    This is significantly shorter and more productive than::
 
         #if (i == j) #break #end
 
@@ -396,7 +396,7 @@ This method can be called by the following equivalent ways:
     ${hello(name)}
     ${name.hello}
 
-Every of them outputs::
+Every one of them outputs::
 
     Hello Andy!
 
@@ -404,7 +404,7 @@ As you can see, the first argument of the method can be either argument of an ex
 method call `${hello(name)}`, or to be a context for call of this method without the first argument: `${name.hello}`.
 
 Let's add another method to our library to expand the functionality of the former one
-and allow adding an arbitrary string to end of a greeting message:
+and allow adding an arbitrary string to the end of a greeting message:
 
 .. code-block:: java
 

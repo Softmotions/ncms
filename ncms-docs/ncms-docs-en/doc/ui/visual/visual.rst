@@ -4,7 +4,7 @@ The visual editor of pages
 ==========================
 
 Sometimes you need to manage a lot of text data blocks within a page.
-When every data block is defined as a single assembly :term:`attribute`, it may make the
+If each data block is defined as a single assembly :term:`attribute`, it may make the
 :ref:`page management UI <pmgr>` to be too heavy and bloated. Also for many users it can be
 more convenient to edit a page content using a visual editor.
 
@@ -55,7 +55,7 @@ In the page preview pane we get:
 
 .. image:: img/visual_img1.png
 
-When the mouse pointer is over the block, it highlighted with a frame.
+When the mouse pointer is over the block, it is highlighted with a frame.
 You can click on the block to activate edit mode where you can change its content
 and the block text:
 

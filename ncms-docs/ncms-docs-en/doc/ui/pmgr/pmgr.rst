@@ -3,7 +3,7 @@
 Page content management
 =======================
 
-This interface used to edit ηCMS pages in non visual mode.
+This interface is used to edit ηCMS pages in non visual mode.
 All registered ηCMS users have an access to it.
 
 Users having `admin` or `admin.structure` access permissions
@@ -36,7 +36,7 @@ and attributes defined in a template will be available for editing in the contex
 
 .. note::
 
-    In some cases, it's handy to use existing page instances a template for new pages
+    In some cases, it's handy to use existing page instances as a template for new pages
     To use the page as a template, open `Structure` or `Search` tab in the template selection dialog.
 
 The content of the `Edit` pane is shown in accordance with :term:`attributes <attribute>` used on the page

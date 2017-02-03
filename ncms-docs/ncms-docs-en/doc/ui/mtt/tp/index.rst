@@ -23,7 +23,7 @@ The first ``welcome`` page is the main page and includes a link to
 the page ``product1`` containing the description of a product.
 
 Let the products offered by the website, are advertised at some ad service ``globalboard``.
-During the advertising company, customers registered in the ``globalboard``
+During the advertising campaign, customers registered in the ``globalboard``
 can open the main page of the site. Then with a certain probability
 interested customers can go to the page ``product1``.
 For the site owner and for ``globalboard`` service  it is a successful `conversion`

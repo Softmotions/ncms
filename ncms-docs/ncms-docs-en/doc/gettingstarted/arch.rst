@@ -43,7 +43,7 @@ Let's introduce some concepts used in the documentation to understand ηCMS bett
         a :term:`page assembly <assembly>`  data as an HTML page.
 
     template
-        Template is a parent :term:`assembly` (in the sense of inheritance), for a
+        Template is a parent :term:`assembly` (in the sense of inheritance), for 
         actually visible :term:`web page <page>`. Template defines a set of pages having
         the same structure but different contents.
 
@@ -53,7 +53,7 @@ Let's introduce some concepts used in the documentation to understand ηCMS bett
 
 `Assemblies` can be inherited from each other. They can override attribute values of parent assemblies
 or add new attributes. `Assemblies` can be inherited from multiple parents. There is a direct analogy
-with a inheritance of classes in C++ or Java, but in our case we are considering `assemblies`
+with a inheritance of classes in C++ or Java, but, in our case, we are considering `assemblies`
 to be as class instances (objects).
 
 Example
@@ -64,7 +64,7 @@ To follow the steps described below, :ref:`create a new project <newproject>` in
 
 Go to the admin console: `http://localhost:<port>/adm/`
 
-Let the most of our website pages have the following common parts:
+Most of our web pages have the following common parts:
 
 * Page title
 * Page footer
@@ -79,11 +79,11 @@ Let's assume that the `title` is a string which is placed in the markup inside t
 
 The `footer` is a part of HTML markup stored in a file in the ηCMS :ref:`media repository <mmgr>`.
 
-In the said majority we get all possible pages with common footer and header
+In the said majority we get all possible pages with common header and footer
 displaying a single content block, giving `Simple page` name to this set and treat
 it as :term:`template` (prototype) for actual page instances.
 
-All pages based on `Simple page` template will contain `title` and `footer` attributes
+All pages based on the 'Simple page` template will contain `title` and `footer` attributes
 among additional attributes:
 
 * Content
@@ -181,7 +181,7 @@ Choose a page template:
 
 .. image:: img/step9.png
 
-When the page has been created an interface of a page content editor would look like this:
+When the page has been created, an interface of a page content editor would look like this:
 
 .. figure:: img/step10.png
 
@@ -204,9 +204,9 @@ Platform architecture
 It uses `IoC` container `Google Guice <https://github.com/google/guice>`_.
 Data persistence layer based on `MyBatis <http://www.mybatis.org/mybatis-3/>`_ library.
 
-:ref:`New ηCMS project <newproject>` structure allows developer both to expand
+:ref:`New ηCMS project <newproject>` structure allows developers both to expand
 the functionality of the ηCMS platform and to create custom project modules.
-You could find more details can in the section :ref:`extending`.
+More details can be found in the section :ref:`extending`.
 
 Additional definitions
 ----------------------
@@ -241,11 +241,11 @@ Additional definitions
             :ref:`attributes_access`
 
     page type
-        There are the following types of pages:
+        Here are the following types of pages:
 
         * Standard page
         * News feed
-        * :term:`Assembly <assembly>` - a page-prototype for another pages
+        * :term:`Assembly <assembly>` - a page-prototype for other pages
           (parent in :term:`Inheritance tree <asm inheritance tree>`).
 
     page GUID

@@ -50,7 +50,7 @@ For this assembly we create a markup file `/site/docsink/included_asm_core.httl`
        <strong>${asm('greeting')}</strong>
     </div>
 
-Then create an assembly, where the content `docsink_included_assembly` is included with a core markup::
+Then create an assembly, in which the content `docsink_included_assembly` is included with a core markup::
 
     Asmref:
 

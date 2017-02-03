@@ -3,13 +3,13 @@
 Breadcrumbs
 ===========
 
-This attribute contains the path in the navigation  tree
+This attribute contains the path in the navigation tree
 starting from the current page to the main page saved in
 :ref:`com.softmotions.ncms.mhttl.Tree`.
 This attribute has no visual representation in the :ref:`page management UI <pmgr>`.
 
 To enable breadcrumbs, add the corresponding `breadcrumbs`
-attribute into one of the following assemblies:
+attribute to one of the following assemblies:
 
 * To the main page
 * Or to the current page template

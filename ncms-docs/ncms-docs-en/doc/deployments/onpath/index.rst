@@ -21,13 +21,13 @@ in the context of other website under some URL suffix.
     It is not recommended to use this deployment scheme in conjunction with
     MTT filters or A/B testing, because it is required
     to take into account the context where the ηCMS resource
-    (`http://example.com/<ncms_prefix>/*`) is used .
+    (`http://example.com/<ncms_prefix>/*`) is used.
 
 Nginx configuration
 -------------------
 
 Below is an example of an `nginx` configuration for this deployment mode.
-the `rewrite` rule redirects traffic to the ηCMS instance  passing the `/ ncms_prefix /*`
+the `rewrite` rule redirects traffic to the ηCMS instance passing the `/ ncms_prefix /*`
 
 .. code-block:: nginx
 
@@ -51,7 +51,7 @@ the `rewrite` rule redirects traffic to the ηCMS instance  passing the `/ ncms_
 ------------------
 
 The main file of the ηCMS configuration should contain
-a directive `app-prefix` which should be set to a correct path where ηCMS root is located:
+a directive `app-prefix` which should be set to a correct path where the ηCMS root is located:
 
 .. code-block:: xml
 
@@ -80,7 +80,7 @@ Add `ncms_prefix` to the paths specified in the shiro configuration:
     /ncms_prefix/adm/**         = authcBasic
 
 
-After all the steps above are done, ηCMS root is available in the context of
+After all the steps above are done, the ηCMS root is available in the context of
 example.com site at `http://example.com/ncms_prefix/`.
 
 

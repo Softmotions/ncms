@@ -20,7 +20,7 @@ In the search form on the left, you can select:
 * :term:`template` for a site page or news,
 * :term:`copy of the page <page>`.
 
-Every item in the assembly list is marked by image shows its type:
+Every item in the assembly list is marked by an image showing its type:
 
 .. image:: img/amgr_other.png
     :align: left
@@ -72,7 +72,7 @@ This switch is actual only for page instances (not for templates or base assembl
 
 **Template** -- If its value set to the `Page` and :term:`markup <core>` is defined,
  the assembly can be used as template for new website pages. A value in the `Description` field
- will be treated a template name. The `News` option value means that this assembly will be a template
+ will be treated as template name. The `News` option value means that this assembly will be a template
  for the news feed pages.
 
 **Roles** -- comma-separated list of user roles which have access to the template defined with this assembly.

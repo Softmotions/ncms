@@ -52,7 +52,7 @@ Configuration example:
     Make sure that the `mybatis/extra-properties` configuration item contains
     the JDBC driver for Postgres: `org.postgresql.Driver`
 
-JDBC URL, user name and password are stored in property file, it is placed to `${HOME}/.ncmsapp.ds` in the example above::
+JDBC URL, user name and password are stored in property file, it is placed at `${HOME}/.ncmsapp.ds` in the example above::
 
     JDBC.url=jdbc:postgresql://127.0.0.1:5432/ncms
     JDBC.username=ncms

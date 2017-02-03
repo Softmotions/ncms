@@ -7,7 +7,7 @@ Extending ηCMS
 Thereby, an ηCMS user has a wide range of possibilities for farther project development
 and can extend every part of the platform.
 
-Let the name of our project will be `myncms`,
+The name of our project will be `myncms`,
 so the project structure will be like this::
 
     myncms

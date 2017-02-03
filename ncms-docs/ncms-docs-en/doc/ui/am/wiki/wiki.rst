@@ -274,7 +274,7 @@ In this example, the table is converted to the following HTML code:
 .. image:: img/wiki_img13.png
     :align: left
 
-**Insert tree** -- design of some sites requires a hierarchical trees within the pages.
+**Insert tree** -- design of some sites requires a hierarchical tree within the pages.
 
 .. figure:: img/wiki_img22.png
 

@@ -4,7 +4,7 @@ Alias
 =====
 
 The attribute allows to set a :term:`page alias`.
-Alias is set in the text field, alias name is
+An alias is a set in a text field, the alias name is
 allowed to contain a leading slash (`\/`)
 
 .. note::
@@ -12,7 +12,7 @@ allowed to contain a leading slash (`\/`)
     The alias should be unique among all pages in ηCMS.
 
 
-Page alias a an alternative page name which can be used for accessing the page.
+A page alias is an alternative page name which can be used for accessing the page.
 For example, the page with the :term:`guid <page GUID>` is equal to `b3ac2985453bf87b6851e07bcf4cfadc`
 available on address `http://<hostname>/b3ac2985453bf87b6851e07bcf4cfadc`.
 However, if :ref:`alias <am_alias>` is presented in page’s assembly
