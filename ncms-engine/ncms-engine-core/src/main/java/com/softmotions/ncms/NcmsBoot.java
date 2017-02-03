@@ -28,6 +28,7 @@ import com.softmotions.ncms.security.NcmsGuardFilter;
 import com.softmotions.ncms.shiro.NcmsShiroWebEnvironment;
 import com.softmotions.ncms.utils.GzipFilter;
 import com.softmotions.web.CharsetFilter;
+import com.softmotions.weboot.WBConfiguration;
 import com.softmotions.weboot.WBServletListener;
 
 /**
@@ -42,9 +43,9 @@ public class NcmsBoot extends WBServletListener {
             "| | | |   --| | | |__   |  |   __|   | . | |   | -_|\n" +
             "|_|___|_____|_|_|_|_____|  |_____|_|_|_  |_|_|_|___|\n" +
             "                                     |___|          \n" +
-            " Environment: {}\n" +
-            " Version: {}\n" +
-            " Max heap: {}\n";
+            " Environment: %s\n" +
+            " Version: %s %s\n" +
+            " Max heap: %d\n";
 
     protected final Logger log;
 
@@ -56,8 +57,13 @@ public class NcmsBoot extends WBServletListener {
     }
 
     @Override
-    protected String getLogo() {
-        return LOGO;
+    protected String getLogo(WBConfiguration cfg) {
+        //log.info(getLogo(cfg), cfg.getEnvironmentType(), cfg.getAppVersion(), Runtime.getRuntime().maxMemory());
+        return String.format(LOGO,
+                             cfg.getEnvironmentType(),
+                             cfg.getAppVersion(),
+                             cfg.getCoreProperties().getProperty("commit.hash", ""),
+                             Runtime.getRuntime().maxMemory());
     }
 
     @Override

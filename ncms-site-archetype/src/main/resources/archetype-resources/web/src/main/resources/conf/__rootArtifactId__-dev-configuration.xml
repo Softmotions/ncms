@@ -6,6 +6,7 @@
     <environment>dev</environment>
     <server-name>127.0.0.1</server-name>
     <server-port>${serverPort}</server-port>
+    <logout-redirect>/adm</logout-redirect>
     <site>
         <root>http://${dollar}{server-name}:${dollar}{server-port}</root>
         <preferRequestUrl>true</preferRequestUrl>

@@ -533,7 +533,7 @@ msgid "Virtual hosts"
 msgstr "Виртуальные хосты"
 
 #: ncms/asm/am/MainPageAMOptionsWidget.js:44
-msgid "max length 10000 chars"
+msgid "robots.txt here"
 msgstr ""
 
 #: ncms/asm/am/MainPageAMOptionsWidget.js:48
@@ -2112,6 +2112,9 @@ msgstr "Заметка"
 #~ msgstr ""
 
 #~ msgid "max length 1000 chars"
+#~ msgstr ""
+
+#~ msgid "max length 10000 chars"
 #~ msgstr ""
 
 #~ msgid "to"

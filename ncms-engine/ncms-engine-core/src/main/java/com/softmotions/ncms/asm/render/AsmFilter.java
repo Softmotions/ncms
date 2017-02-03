@@ -17,9 +17,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.shiro.web.util.WebUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,7 @@ import com.softmotions.ncms.asm.PageService;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.media.MediaResource;
 import com.softmotions.web.GenericResponseWrapper;
+import com.softmotions.web.HttpUtils;
 import com.softmotions.weboot.i18n.I18n;
 
 /**
@@ -145,7 +148,7 @@ public class AsmFilter implements Filter {
                                  HttpServletResponse resp,
                                  boolean transfer)
             throws ServletException, IOException, AsmRenderingException {
-        String pi = req.getRequestURI();
+        String pi = HttpUtils.stripJsessionId(req.getRequestURI());
         for (final String ep : excludePrefixes) {
             if (pi.startsWith(ep)) {
                 return false;
@@ -157,9 +160,8 @@ public class AsmFilter implements Filter {
                 break;
             }
         }
-
         // Find site resources
-        if (processResources(pi, req, resp) || handleBaseUrls(pi, req, resp)) {
+        if (processResources(pi, req, resp) || handleCoreUrls(pi, req, resp)) {
             return true;
         }
 
@@ -236,24 +238,25 @@ public class AsmFilter implements Filter {
     }
 
 
-    private boolean handleBaseUrls(String pi,
+    private boolean handleCoreUrls(String pi,
                                    HttpServletRequest req,
                                    HttpServletResponse resp) throws IOException {
-
         // Handle request for robots.txt
         if ("/robots.txt".equals(pi)) {
             handleRobots(req, resp);
             return true;
         }
-
         // Handle request for favicon.ico
         if ("/favicon.ico".equals(pi)) {
             handleFavicon(req, resp);
             return true;
         }
+        if ("/login".equals(pi)) {
+            handleLogin(req, resp);
+            return true;
+        }
         return false;
     }
-
 
     @Nullable
     protected Object fetchAsmRef(String pi, HttpServletRequest req) {
@@ -279,7 +282,6 @@ public class AsmFilter implements Filter {
         }
         return pi;
     }
-
 
     protected boolean processResources(String location,
                                        HttpServletRequest req,
@@ -348,5 +350,28 @@ public class AsmFilter implements Filter {
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("image/png");
         IOUtils.write(Base64.getDecoder().decode(favicon), resp.getOutputStream());
+    }
+
+    /**
+     * Show nCMS login form
+     */
+    private void handleLogin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setHeader("X-Softmotions-Login", "true");
+        resp.setContentType("text/html;charset=UTF-8");
+        WebUtils.getAndClearSavedRequest(req);
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        InputStream is = getClass().getResourceAsStream("/com/softmotions/ncms/login.html");
+        if (is == null) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        try {
+            IOUtils.copyLarge(is, resp.getOutputStream());
+        } finally {
+            is.close();
+        }
     }
 }
