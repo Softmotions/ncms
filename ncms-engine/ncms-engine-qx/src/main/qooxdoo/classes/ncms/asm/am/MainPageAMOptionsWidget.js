@@ -47,7 +47,7 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
 
         el = new ncms.asm.am.FaviconWidget(this.tr("File"), "ncms/icon/16/misc/document-text.png", values["favicon.ico"]);
         el.addListener("changeValue", this.__onChange, this);
-        form.add(el, this.tr("Favicon"), null, "favicon.ico");
+        form.add(el, this.tr("favicon.ico"), null, "favicon.ico");
         
         el = new qx.ui.form.CheckBox();
         if (opts["enabled"] == "true") {
