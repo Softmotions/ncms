@@ -26,7 +26,7 @@ import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.ext.wikilink.WikiLinkExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.parser.ParserEmulationFamily;
+import com.vladsch.flexmark.parser.ParserEmulationProfile;
 import com.vladsch.flexmark.util.options.MutableDataHolder;
 import com.vladsch.flexmark.util.options.MutableDataSet;
 import com.softmotions.commons.json.JsonUtils;
@@ -237,7 +237,7 @@ public class AsmWikiAM extends AsmAttributeManagerSupport {
             } else if (MARKUP_MARKDOWN.equals(markup)) {
 
                 MutableDataHolder options = new MutableDataSet();
-                options.setFrom(ParserEmulationFamily.KRAMDOWN.getOptions());
+                options.setFrom(ParserEmulationProfile.KRAMDOWN.getOptions());
                 options.set(Parser.EXTENSIONS, Arrays.asList(
                         TablesExtension.create(),
                         TocExtension.create(),
