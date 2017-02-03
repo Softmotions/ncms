@@ -29,10 +29,10 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
     events: {
 
         /** Fired when the value was modified */
-        "changeValue": "qx.event.type.Event",
+        "changeValue": "qx.event.type.Data",
 
         /** Button pressed */
-        "execute": "qx.event.type.Event",
+        "execute": "qx.event.type.Data",
 
         /** Reset field event */
         "reset": "qx.event.type.Event"
@@ -71,7 +71,6 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
             }
             this.__base64 = value;
             this.__preview.setValue(this.__wrapBase64(value));
-            this.fireEvent("changeValue");
         },
 
         getValue: function () {
@@ -81,7 +80,6 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
         resetValue: function () {
             this.__base64 = null;
             this.__preview.setValue(this.tr("Not set"));
-            this.fireEvent("changeValue");
         },
 
         _createChildControlImpl: function (id) {
@@ -103,6 +101,7 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
                             marginRight: 5
                         });
                     }
+                    control.addListener("changeValue", this.forwardEvent, this);
                     this.__preview = control;
                     this._add(control);
                     break;
