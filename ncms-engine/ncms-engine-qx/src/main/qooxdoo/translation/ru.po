@@ -344,8 +344,7 @@ msgstr "Псевдоним"
 msgid "Assembly core selector"
 msgstr "Разметка страницы"
 
-#: ncms/asm/am/AsmCoreAM.js:56 ncms/asm/am/MainPageAMOptionsWidget.js:48
-#: ncms/asm/am/FileRefAM.js:100
+#: ncms/asm/am/AsmCoreAM.js:56 ncms/asm/am/FileRefAM.js:100
 msgid "File"
 msgstr "Файл"
 
@@ -535,6 +534,10 @@ msgstr "Виртуальные хосты"
 
 #: ncms/asm/am/MainPageAMOptionsWidget.js:44
 msgid "max length 10000 chars"
+msgstr ""
+
+#: ncms/asm/am/MainPageAMOptionsWidget.js:48
+msgid ".ico"
 msgstr ""
 
 #: ncms/asm/am/MainPageAMOptionsWidget.js:50

@@ -1,7 +1,7 @@
 /**
  * Wrapper for {@link MainPageAM} options form
  *
- * @asset(ncms/icon/16/misc/document-text.png)
+ * @asset(ncms/icon/16/misc/game.png)
  */
 qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
     extend: sm.ui.form.FlexFormRenderer,
@@ -45,7 +45,7 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
         el.addListener("input", this.__onChange, this);
         form.add(el, "robots.txt", null, "robots.txt");
 
-        el = new ncms.asm.am.FaviconWidget(this.tr("File"), "ncms/icon/16/misc/document-text.png");
+        el = new ncms.asm.am.FaviconWidget(this.tr(".ico"), "ncms/icon/16/misc/game.png");
         el.addListener("changeValue", this.__onChange, this);
         form.add(el, this.tr("favicon.ico"), null, "favicon.ico");
 
