@@ -1727,18 +1727,27 @@ public class PageRS extends MBDAOSupport implements PageService {
         @Nullable
         @Override
         public String getRobotsConfig() {
+            return StringUtils.trimToNull(getMainPageOptions().path("robots.txt").asText());
+        }
+
+        @Nullable
+        @Override
+        public String getFavicon() {
+            return StringUtils.trimToNull(getMainPageOptions().path("favicon.ico").asText());
+        }
+
+        @Nonnull
+        private JsonNode getMainPageOptions() {
             Asm asm = cp.getAsm();
             AsmAttribute mainPageAttr = asm.getAttribute("mainpage");
             if (mainPageAttr == null) {
-                return null;
+                return mapper.createObjectNode();
             }
-            String value = StringUtils.trimToNull(mainPageAttr.getEffectiveValue());
             try {
-                String res = mapper.readTree(value).path("robots.txt").asText();
-                return StringUtils.trimToEmpty(res);
+                return mapper.readTree(StringUtils.trimToEmpty(mainPageAttr.getEffectiveValue()));
             } catch (IOException e) {
                 log.error("error parsing attribute value", e);
-                return null;
+                return mapper.createObjectNode();
             }
         }
     }

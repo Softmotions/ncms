@@ -70,15 +70,14 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
         JsonNode vals = val.get("value");
         ObjectNode newValues = mapper.createObjectNode();
         newValues.put("robots.txt", vals.path("robots.txt").asText());
-        newValues.put("favicon", vals.path("favicon").asText());
-
+        newValues.put("favicon.ico", vals.path("favicon.ico").asText());
 
         boolean valueChanged;
         String effectiveValue = attr.getEffectiveValue();
         if (effectiveValue != null) {
             JsonNode oldValues = mapper.readTree(effectiveValue);
             valueChanged = !Objects.equals(oldValues.path("robots.txt").asText(), vals.path("robots.txt").asText()) ||
-                    !Objects.equals(oldValues.path("favicon").asText(), vals.path("favicon").asText());
+                    !Objects.equals(oldValues.path("favicon.ico").asText(), vals.path("favicon.ico").asText());
         } else {
             valueChanged = true;
         }

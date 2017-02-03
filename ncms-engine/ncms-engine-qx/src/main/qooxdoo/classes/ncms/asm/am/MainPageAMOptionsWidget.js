@@ -45,9 +45,9 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
         el.addListener("input", this.__onChange, this);
         form.add(el, "robots.txt", null, "robots.txt");
 
-        el = new ncms.asm.am.FaviconWidget(this.tr("File"), "ncms/icon/16/misc/document-text.png", values["favicon"]);
+        el = new ncms.asm.am.FaviconWidget(this.tr("File"), "ncms/icon/16/misc/document-text.png", values["favicon.ico"]);
         el.addListener("changeValue", this.__onChange, this);
-        form.add(el, this.tr("Favicon"), null, "favicon");
+        form.add(el, this.tr("Favicon"), null, "favicon.ico");
         
         el = new qx.ui.form.CheckBox();
         if (opts["enabled"] == "true") {
@@ -80,7 +80,7 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
                 },
                 value: {
                     "robots.txt": items["robots.txt"] != null ? items["robots.txt"].getValue() : null,
-                    "favicon": items["favicon"] != null ? items["favicon"].getValue() : null
+                    "favicon.ico": items["favicon.ico"] != null ? items["favicon.ico"].getValue() : null
                 }
             };
         }
