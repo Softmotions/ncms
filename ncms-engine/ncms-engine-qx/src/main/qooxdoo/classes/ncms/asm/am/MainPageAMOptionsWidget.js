@@ -67,7 +67,7 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
         __form: null,
 
         __onChange: function () {
-            this.fireEvent("changeValue");
+            this.fireEvent("changeValue", qx.event.type.Data);
         },
 
         _optionsAsJSON: function () {
