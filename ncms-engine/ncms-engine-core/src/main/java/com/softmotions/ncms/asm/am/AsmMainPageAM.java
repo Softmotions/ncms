@@ -67,12 +67,22 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
         JsonUtils.populateMapByJsonNode((ObjectNode) newOptions, opts, "lang", "enabled", "vhost");
         attr.setOptions(opts.toString());
 
-        JsonNode newValue = val.get("value");
-        boolean valueChanged = !Objects.equals(attr.getEffectiveValue(), mapper.writeValueAsString(newValue));
-        attr.setEffectiveValue(mapper.writeValueAsString(
-                mapper.createObjectNode().put("robots.txt", newValue.get("robots.txt").asText())
-        ));
+        JsonNode vals = val.get("value");
+        ObjectNode newValues = mapper.createObjectNode();
+        newValues.put("robots.txt", vals.path("robots.txt").asText());
+        newValues.put("favicon.ico", vals.path("favicon.ico").asText());
 
+        boolean valueChanged;
+        String effectiveValue = attr.getEffectiveValue();
+        if (effectiveValue != null) {
+            JsonNode oldValues = mapper.readTree(effectiveValue);
+            valueChanged = !Objects.equals(oldValues.path("robots.txt").asText(), vals.path("robots.txt").asText()) ||
+                    !Objects.equals(oldValues.path("favicon.ico").asText(), vals.path("favicon.ico").asText());
+        } else {
+            valueChanged = true;
+        }
+
+        attr.setEffectiveValue(mapper.writeValueAsString(newValues));
         if (!Objects.equals(old.get("lang"), opts.get("lang")) ||
                 !Objects.equals(old.get("vhost"), opts.get("vhost")) ||
                 !Objects.equals(old.get("enabled"), String.valueOf(opts.get("enabled"))) ||

@@ -11,4 +11,7 @@ public interface IndexPage extends CachedPage {
 
     @Nullable
     String getRobotsConfig();
+
+    @Nullable
+    String getFavicon();
 }

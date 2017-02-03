@@ -10,9 +10,15 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
         "changeValue": "qx.event.type.Data"
     },
 
-    construct: function (attrSpec) {
+    construct: function (attrSpec, asmSpec) {
         var form = this.__form = new qx.ui.form.Form();
         var opts = ncms.Utils.parseOptions(attrSpec["options"]);
+        var values = {};
+        this._fetchAttributeValue(attrSpec, function (val) {
+            if (!sm.lang.String.isEmpty(val)) {
+                values = JSON.parse(val);
+            }
+        }, this);
 
         var el = new qx.ui.form.TextField();
         if (opts["lang"] != null) {
@@ -31,20 +37,18 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
         form.add(el, this.tr("Virtual hosts"), null, "vhost");
 
         el = new qx.ui.form.TextArea();
-        this._fetchAttributeValue(attrSpec, function (val) {
-            if (sm.lang.String.isEmpty(val)) {
-                return;
-            }
-            var value = JSON.parse(val)['robots.txt'];
-            if (value != null) {
-                el.setValue(value);
-            }
-        });
+        if (values["robots.txt"] != null) {
+            el.setValue(values["robots.txt"]);
+        }
         el.setMaxLength(10000);
         el.setPlaceholder(this.tr("max length 10000 chars"));
         el.addListener("input", this.__onChange, this);
         form.add(el, "robots.txt", null, "robots.txt");
 
+        el = new ncms.asm.am.FaviconWidget(this.tr("File"), "ncms/icon/16/misc/document-text.png", values["favicon.ico"]);
+        el.addListener("changeValue", this.__onChange, this);
+        form.add(el, this.tr("favicon.ico"), null, "favicon.ico");
+        
         el = new qx.ui.form.CheckBox();
         if (opts["enabled"] == "true") {
             el.setValue(true);
@@ -75,7 +79,8 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
                     "enabled": items["enabled"] != null ? items["enabled"].getValue() : null
                 },
                 value: {
-                    "robots.txt": items["robots.txt"] != null ? items["robots.txt"].getValue() : null
+                    "robots.txt": items["robots.txt"] != null ? items["robots.txt"].getValue() : null,
+                    "favicon.ico": items["favicon.ico"] != null ? items["favicon.ico"].getValue() : null
                 }
             };
         }

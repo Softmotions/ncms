@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Locale;
 import java.util.StringTokenizer;
 import javax.annotation.Nullable;
@@ -159,9 +160,14 @@ public class AsmFilter implements Filter {
         if (processResources(pi, req, resp)) { //find resources
             return true;
         }
-        //Handle robots.txt resource
+        //Handle request for robots.txt resource
         if ("/robots.txt".equals(pi)) {
             handleRobots(req, resp);
+            return true;
+        }
+        //Handle request for favicon.ico resource
+        if ("/favicon.ico".equals(pi)) {
+            handleFavicon(req, resp);
             return true;
         }
         i18n.initRequestI18N(req, resp);
@@ -302,7 +308,7 @@ public class AsmFilter implements Filter {
     }
 
     /**
-     * Find and inject robotx.txt option of mainpage attribute in responce as plain text
+     * Find and inject in responce robotx.txt option of mainpage attribute as plain text
      */
     private void handleRobots(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         IndexPage ip = pageService.getIndexPage(req, true);
@@ -313,5 +319,20 @@ public class AsmFilter implements Filter {
         }
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(robots);
+    }
+
+    /**
+     * Find and return in responce favicon.ico option of mainpage attribute as image
+     */
+    private void handleFavicon(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        IndexPage ip = pageService.getIndexPage(req, true);
+        String favicon;
+        if (ip == null || (favicon = ip.getFavicon()) == null) {
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setContentType("image/png");
+        IOUtils.write(Base64.getDecoder().decode(favicon), resp.getOutputStream());
     }
 }

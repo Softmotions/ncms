@@ -28,7 +28,7 @@ qx.Class.define("ncms.asm.am.MainPageAM", {
         _form: null,
 
         activateOptionsWidget: function (attrSpec, asmSpec) {
-            return this._form = new ncms.asm.am.MainPageAMOptionsWidget(attrSpec);
+            return this._form = new ncms.asm.am.MainPageAMOptionsWidget(attrSpec, asmSpec);
         },
 
         optionsAsJSON: function () {
@@ -36,7 +36,7 @@ qx.Class.define("ncms.asm.am.MainPageAM", {
         },
 
         activateValueEditorWidget: function (attrSpec, asmSpec) {
-            return this._form = new ncms.asm.am.MainPageAMOptionsWidget(attrSpec);
+            return this._form = new ncms.asm.am.MainPageAMOptionsWidget(attrSpec, asmSpec);
         },
 
         valueAsJSON: function () {
