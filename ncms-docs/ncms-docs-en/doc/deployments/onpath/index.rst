@@ -1,10 +1,10 @@
 .. _onpath_deployment:
 
-Deployment within a context of other website
-============================================
+Deployment within a context of another website
+==============================================
 
 In this deployment scheme the ηCMS system is supposed to be
-in the context of other website under some URL suffix.
+in the context of another website under some URL suffix.
 
 .. figure:: img/ncms-onpath-deployment.png
     :align: center
