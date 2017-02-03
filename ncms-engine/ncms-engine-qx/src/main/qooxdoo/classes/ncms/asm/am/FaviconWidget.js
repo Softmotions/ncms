@@ -164,7 +164,7 @@ qx.Class.define("ncms.asm.am.FaviconWidget", {
         },
 
         __wrapBase64: function (base64) {
-            return "<img style='display:block; height:22px;' src='data:image/vnd.microsoft.icon;base64," + base64 + "'/>";
+            return "<img style='display:block; height:22px; width:22px;' src='data:image/vnd.microsoft.icon;base64," + base64 + "'/>";
         },
 
         __destruct: function () {
