@@ -10,7 +10,6 @@ Prerequisites
 
 * JDK `1.8`
 * Maven `3.3.x`
-* Python `2.7` installed (Needed to build the :ref:`admin GUI <ui>`)
 * Linux or Windows
 
 .. note::

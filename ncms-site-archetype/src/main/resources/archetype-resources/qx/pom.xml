@@ -1,5 +1,5 @@
 #set($dollar = '$')
-<?xml version="1.0" encoding="UTF-8"?>
+        <?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -17,13 +17,14 @@
         <qooxdoo.build.job>${dollar}{ncms.environment}</qooxdoo.build.job>
         <qooxdoo.application.summary>${dollar}{project.name}</qooxdoo.application.summary>
         <qooxdoo.application.description>${dollar}{project.description}</qooxdoo.application.description>
+        <qooxdoo.build.bindir>${dollar}{project.parent.basedir}/.bin</qooxdoo.build.bindir>
+        <qooxdoo.build.python>internal</qooxdoo.build.python>
     </properties>
     <build>
         <plugins>
             <plugin>
                 <groupId>softmotions</groupId>
                 <artifactId>qooxdoo-maven-plugin</artifactId>
-                <version>1.2-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
                     <namespace>${dollar}{qooxdoo.application.name}</namespace>
