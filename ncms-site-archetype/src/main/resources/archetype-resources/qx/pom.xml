@@ -25,6 +25,7 @@
             <plugin>
                 <groupId>softmotions</groupId>
                 <artifactId>qooxdoo-maven-plugin</artifactId>
+                <version>1.3-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
                     <namespace>${dollar}{qooxdoo.application.name}</namespace>
