@@ -26,7 +26,7 @@ it from the maven archetype.
 
 .. code-block:: sh
 
-    mvn archetype:generate \
+    mvn archetype:generate -U \
         -DarchetypeGroupId=softmotions \
         -DarchetypeArtifactId=ncms-site-archetype \
         -DarchetypeVersion=1.1-SNAPSHOT \
