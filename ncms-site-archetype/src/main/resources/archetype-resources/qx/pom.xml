@@ -18,7 +18,7 @@
         <qooxdoo.application.summary>${dollar}{project.name}</qooxdoo.application.summary>
         <qooxdoo.application.description>${dollar}{project.description}</qooxdoo.application.description>
         <qooxdoo.build.bindir>${dollar}{project.parent.basedir}/.bin</qooxdoo.build.bindir>
-        <qooxdoo.build.python>internal</qooxdoo.build.python>
+        <qooxdoo.build.python>python</qooxdoo.build.python>
     </properties>
     <build>
         <plugins>
