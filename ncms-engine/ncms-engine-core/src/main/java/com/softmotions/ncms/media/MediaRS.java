@@ -395,14 +395,14 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @javax.ws.rs.Path("/files/{folder:.*}")
     @Transactional
     public JsonNode listFiles(@PathParam("folder") String folder,
-                              @Context HttpServletRequest req) throws IOException {
+                              @Context HttpServletRequest req) throws Exception {
         return _list(folder, FileFileFilter.FILE, req);
     }
 
     @GET
     @javax.ws.rs.Path("/files")
     @Transactional
-    public JsonNode listFiles(@Context HttpServletRequest req) throws IOException {
+    public JsonNode listFiles(@Context HttpServletRequest req) throws Exception {
         return _list("", FileFileFilter.FILE, req);
     }
 
@@ -410,14 +410,14 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @javax.ws.rs.Path("/folders/{folder:.*}")
     @Transactional
     public JsonNode listFolders(@PathParam("folder") String folder,
-                                @Context HttpServletRequest req) throws IOException {
+                                @Context HttpServletRequest req) throws Exception {
         return _list(folder, DirectoryFileFilter.INSTANCE, req);
     }
 
     @GET
     @javax.ws.rs.Path("/folders")
     @Transactional
-    public JsonNode listFolders(@Context HttpServletRequest req) throws IOException {
+    public JsonNode listFolders(@Context HttpServletRequest req) throws Exception {
         return _list("", DirectoryFileFilter.INSTANCE, req);
     }
 
@@ -426,21 +426,22 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @javax.ws.rs.Path("/all/{folder:.*}")
     @Transactional
     public JsonNode listAll(@PathParam("folder") String folder,
-                            @Context HttpServletRequest req) throws IOException {
+                            @Context HttpServletRequest req) throws Exception {
         return _list(folder, TrueFileFilter.INSTANCE, req);
     }
 
     @GET
     @javax.ws.rs.Path("/all")
     @Transactional
-    public JsonNode listAll(@Context HttpServletRequest req) throws IOException {
+    public JsonNode listAll(@Context HttpServletRequest req) throws Exception {
         return _list("", TrueFileFilter.INSTANCE, req);
     }
 
     @GET
     @javax.ws.rs.Path("/select")
     @Transactional
-    public Response select(@Context final HttpServletRequest req) {
+    public Response select(@Context final HttpServletRequest req) throws Exception {
+        ensureAuthenticated(req, null);
         return Response.ok((StreamingOutput) output -> {
             final JsonGenerator gen = new JsonFactory().createGenerator(output);
             try {
@@ -483,7 +484,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     @javax.ws.rs.Path("/select/count")
     @Produces("text/plain")
     @Transactional
-    public Integer selectCount(@Context HttpServletRequest req) {
+    public Integer selectCount(@Context HttpServletRequest req) throws Exception {
+        ensureAuthenticated(req, null);
         MBCriteriaQuery cq = createSelectQ(req, true);
         //noinspection ConstantConditions
         return selectOne(cq.getStatement(), cq);
@@ -496,7 +498,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     public JsonNode newFolder(@PathParam("folder") String folder,
                               @Context HttpServletRequest req,
                               @Context HttpServletResponse resp) throws Exception {
-
         //noinspection unused
         try (final ResourceLock l = new ResourceLock(folder, true)) {
             File f = new File(basedir, folder);
@@ -1219,7 +1220,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
      */
     private JsonNode _list(String folder,
                            FileFilter filter,
-                           HttpServletRequest req) throws IOException {
+                           HttpServletRequest req) throws Exception {
+        ensureAuthenticated(req, null);
         checkFolder(folder);
         ArrayNode res = mapper.createArrayNode();
         ReadWriteLock rwlock = acquirePathRWLock(folder, false);
