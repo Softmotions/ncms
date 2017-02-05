@@ -63,8 +63,6 @@ public class AsmFilter implements Filter {
 
     private final AsmRendererContextFactory rendererContextFactory;
 
-    private final AsmRenderer asmRenderer;
-
     private boolean resolveRelativePaths;
 
     private String siteFilesRoot;
@@ -80,15 +78,13 @@ public class AsmFilter implements Filter {
                      I18n i18n,
                      PageSecurityService pageSecurity,
                      PageService pageService,
-                     AsmRendererContextFactory rendererContextFactory,
-                     AsmRenderer asmRenderer) {
+                     AsmRendererContextFactory rendererContextFactory) {
         this.env = env;
         this.mediaRepository = mediaRepository;
         this.i18n = i18n;
         this.pageSecurity = pageSecurity;
         this.pageService = pageService;
         this.rendererContextFactory = rendererContextFactory;
-        this.asmRenderer = asmRenderer;
     }
 
     @Override
@@ -304,13 +300,13 @@ public class AsmFilter implements Filter {
                 return false;
             }
         }
-        resp.setContentType(mres.getContentType());
-
-        if (asmRenderer.isHasSpecificTemplateEngineForLocation(l)) {
+        if (mediaRepository.isAllowedToResponse(mres, req)) {
             // Template are forbidden to be served as static files
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return true;
         }
+
+        resp.setContentType(mres.getContentType());
 
         // Response with raw resource
         if (mres.getLength() >= 0L) {

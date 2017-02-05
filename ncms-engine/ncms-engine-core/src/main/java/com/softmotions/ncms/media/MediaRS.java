@@ -84,6 +84,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.util.concurrent.Striped;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.softmotions.commons.Converters;
 import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.KVOptions;
@@ -105,6 +106,7 @@ import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
 import com.softmotions.commons.lifecycle.Dispose;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
+import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.jaxrs.BadRequestException;
@@ -163,6 +165,10 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private final TaskExecutor executor;
 
+    private final Provider<AsmRenderer> renderer;
+
+    private final String[] privateExtensions;
+
 
     @Inject
     public MediaRS(NcmsEnvironment env,
@@ -171,7 +177,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    I18n i18n,
                    NcmsEventBus ebus,
                    WSUserDatabase userdb,
-                   TaskExecutor executor) throws IOException {
+                   TaskExecutor executor,
+                   Provider<AsmRenderer> renderer) throws IOException {
         super(MediaRS.class, sess);
         this.env = env;
         HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
@@ -189,6 +196,12 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         this.ebus = ebus;
         this.userdb = userdb;
         this.executor = executor;
+        this.renderer = renderer;
+        this.privateExtensions =
+                xcfg.getString("media.private-extensions",
+                               "jsp,jspx,vm,ftl,httl")
+                    .split("\\s*[,;]\\s*");
+
         this.ebus.register(this);
     }
 
@@ -1413,15 +1426,15 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             if (ctype == null) {
                 ctype = "application/octet-stream";
             }
-
             Number clength = (Number) res.get("content_length");
             Number id = (Number) res.get("id");
             MediaType mtype = MediaType.parse(ctype);
             final File respFile;
 
-            if (id == null) {
+            if (id == null || !isAllowedToResponse(name, ctype, req)) {
                 throw new NotFoundException(path);
             }
+
             if ((width != null || height != null) && CTypeUtils.isImageContentType(ctype)) {
                 MediaType rsMtype = MediaType.parse("image/" + getImageFileResizeFormat(ctype));
                 File rsFile = getResizedImageFile(rsMtype, folder, id.longValue(), width, height);
@@ -1468,10 +1481,30 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (!transfer) {
             l.close();
         }
-
         return r;
     }
 
+    @Override
+    public boolean isAllowedToResponse(MediaResource resource,
+                                       HttpServletRequest req) {
+        return isAllowedToResponse(resource.getName(),
+                                   resource.getContentType(),
+                                   req);
+    }
+
+    private boolean isAllowedToResponse(String name,
+                                        String contentType,
+                                        HttpServletRequest req) {
+
+        if (req.getUserPrincipal() != null) { // Allowed to all logged-in users
+            return true;
+        }
+        if (renderer.get().isHasSpecificTemplateEngineForLocation(name)) {
+            // Template are forbidden to be served as static files
+            return false;
+        }
+        return (ArrayUtils.indexOf(privateExtensions, FilenameUtils.getExtension(name)) == -1);
+    }
 
     @Override
     @Transactional

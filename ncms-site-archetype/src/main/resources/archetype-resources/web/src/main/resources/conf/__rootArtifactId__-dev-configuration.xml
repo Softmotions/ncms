@@ -1,5 +1,5 @@
 #set($dollar = '$')
-<?xml version="1.0" encoding="utf-8" ?>
+        <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <logging-ref>${rootArtifactId}-logging.xml</logging-ref>
     <app-name>${projectName}</app-name>
@@ -84,6 +84,7 @@
         <thumbnails-width>250</thumbnails-width>
         <resize-default-format>jpeg</resize-default-format>
         <max-edit-text-size>1048576</max-edit-text-size>
+        <private-extensions>jsp,jspx,vm,ftl,httl</private-extensions>
         <import>
             <directory>{webapp}</directory>
             <target>site</target>
@@ -106,7 +107,9 @@
     </httl>
 
     <security>
-        <xml-user-database placeTo="{home}/.${rootArtifactId}/${rootArtifactId}-users.xml">conf/${rootArtifactId}-users.xml</xml-user-database>
+        <xml-user-database placeTo="{home}/.${rootArtifactId}/${rootArtifactId}-users.xml">
+            conf/${rootArtifactId}-users.xml
+        </xml-user-database>
         <shiro-config-locations>/WEB-INF/shiro.ini</shiro-config-locations>
         <password-hash-algorithm>sha256</password-hash-algorithm>
         <dbJVMName>WSUserDatabase</dbJVMName>

@@ -60,6 +60,16 @@ public interface MediaReader {
                  boolean inline) throws Exception;
 
     /**
+     * Returns {@code true} if all security checks passed
+     * and media resource allowed to be served as response.
+     *
+     * @param resource Media resource object
+     * @param req      Client request
+     */
+    boolean isAllowedToResponse(MediaResource resource,
+                                HttpServletRequest req);
+
+    /**
      * Base directory for media content
      */
     @Nonnull
