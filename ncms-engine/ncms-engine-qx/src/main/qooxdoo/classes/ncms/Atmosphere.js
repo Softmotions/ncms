@@ -68,7 +68,7 @@ qx.Class.define("ncms.Atmosphere", {
         opts.onLocalMessage = this.__onLocalMessage.bind(this);
 
     },
-                                
+
     members: {
 
         __atm: null,
@@ -79,7 +79,23 @@ qx.Class.define("ncms.Atmosphere", {
 
         __disconnected: false,
 
+        __checkResponse: function (resp) {
+            if (resp == null || !resp.headers) {
+                return true;
+            }
+            if (resp.headers["X-Softmotions-Login"] != null) {
+                qx.log.Logger.info("Perform logout!");
+                try {
+                    this.__atm.unsubscribe();
+                } finally {
+                    ncms.Application.logout();
+                }
+                return false;
+            }
+        },
+
         __onOpen: function (resp) {
+            if (!this.__checkResponse(resp)) return;
             qx.log.Logger.info("onOpen");
             if (this.__disconnected) {
                 this.fireEvent("serverReconnected");
@@ -100,6 +116,7 @@ qx.Class.define("ncms.Atmosphere", {
         },
 
         __onMessage: function (resp) {
+            if (!this.__checkResponse(resp)) return;
             var message = resp.responseBody;
             console.log("Atmosphere message: " + message);
             try {
@@ -110,6 +127,7 @@ qx.Class.define("ncms.Atmosphere", {
         },
 
         __onReopen: function (resp) {
+            if (!this.__checkResponse(resp)) return;
             qx.log.Logger.info("onReopen");
             if (this.__disconnected) {
                 this.fireEvent("serverReconnected");
@@ -118,6 +136,7 @@ qx.Class.define("ncms.Atmosphere", {
         },
 
         __onReconnect: function (req, resp) {
+            if (!this.__checkResponse(resp)) return;
             qx.log.Logger.info(
                 "onReconnect" +
                 " status=" + resp.status +
@@ -144,6 +163,7 @@ qx.Class.define("ncms.Atmosphere", {
         },
 
         __onError: function (resp) {
+            if (!this.__checkResponse(resp)) return;
             qx.log.Logger.info("onError");
         },
 

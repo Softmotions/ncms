@@ -235,8 +235,10 @@ qx.Class.define("ncms.Application", {
         },
 
         logout: function () {
-            this.__logoutPending = true;
-            window.location.href = ncms.Application.ACT.getUrl("app.logout");
+            if (!this.__logoutPending) {
+                this.__logoutPending = true;
+                window.location.href = ncms.Application.ACT.getUrl("app.logout");
+            }
         },
 
         main: function () {
