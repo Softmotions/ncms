@@ -103,9 +103,6 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         this._add(sp);
 
         this.hide();
-        if (typeof window.Clipboard === 'function') {
-            this.__clipboard = new window.Clipboard('.copy_button');
-        }
     },
 
     members: {
@@ -119,8 +116,6 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         __viewPane: null,
 
         __owner: null,
-        
-        __clipboard: null,
 
         setUpdateFileMeta: function (update) {
             if (update == null) {
@@ -402,7 +397,6 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         this.__viewPane = null;
         this.__infoTable = null;
         this.__owner = null;
-        this.__clipboard = null;
         this._disposeObjects("__form");
         this.removeAllBindings();
     }

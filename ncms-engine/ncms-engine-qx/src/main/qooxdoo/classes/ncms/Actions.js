@@ -125,6 +125,9 @@ qx.Class.define("ncms.Actions", {
         //GET Download file by id
         this._action("media.fileid", "/rs/media/fileid/{id}");
 
+        //GET Public link by file by id + name
+        this._action("media.public", "/rs/media/public/{id}/{name}");
+
         //GET Thumbnail of image media
         this._action("media.thumbnail2", "/rs/media/thumbnail2/{id}");
 
@@ -476,7 +479,6 @@ qx.Class.define("ncms.Actions", {
         _testPrefix: null,
 
         _resourceManager: null,
-
 
         toUri: function (path) {
             path = this._prefix + path;

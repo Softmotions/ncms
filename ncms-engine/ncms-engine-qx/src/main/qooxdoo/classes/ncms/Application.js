@@ -226,6 +226,8 @@ qx.Class.define("ncms.Application", {
 
         __atmosphere: null,
 
+        __clipboard: null,
+
         _createRootWidget: function () {
             var root = new qx.ui.root.Application(document);
             root.setWindowManager(new sm.ui.window.ExtendedWindowManager());
@@ -287,6 +289,9 @@ qx.Class.define("ncms.Application", {
 
             ncms.Application.loadExtraScripts(function () {
                 this.__initAtmosphere();
+                if (typeof window.Clipboard === 'function') {
+                    this.__clipboard = new window.Clipboard('.copy_button');
+                }
                 this.fireEvent("guiInitialized");
             }, this);
 

@@ -271,6 +271,36 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
 
     @GET
+    @javax.ws.rs.Path("/public/{id}/{name}")
+    @Transactional
+    public Response get(@PathParam("id") Long id,
+                        @PathParam("name") String name,
+                        @Context HttpServletRequest req,
+                        @QueryParam("w") Integer width,
+                        @QueryParam("h") Integer height) throws Exception {
+        return _get(id, req, width, height, BooleanUtils.toBoolean(req.getParameter("inline")));
+    }
+
+
+    @HEAD
+    @javax.ws.rs.Path("/public/{id}/{name}")
+    @Transactional
+    public Response head(@PathParam("id") Long id,
+                         @PathParam("name") String name,
+                         @Context HttpServletRequest req,
+                         @QueryParam("w") Integer width,
+                         @QueryParam("h") Integer height) throws Exception {
+        Map<String, ?> row = selectOne("selectEntityPathById", "id", id);
+        if (row == null) {
+            throw new NotFoundException();
+        }
+        return _get((String) row.get("folder"), (String) row.get("name"),
+                    req, width, height,
+                    BooleanUtils.toBoolean(req.getParameter("inline")), false);
+    }
+
+
+    @GET
     @javax.ws.rs.Path("/fileid/{id}")
     @Transactional
     public Response get(@PathParam("id") Long id,

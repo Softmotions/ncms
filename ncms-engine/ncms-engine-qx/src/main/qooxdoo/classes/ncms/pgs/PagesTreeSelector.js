@@ -74,17 +74,11 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         this.addListenerOnce("treeLoaded", function () {
             this._registerCommandFocusWidget(this._tree);
         }, this);
-
-        if (typeof window.Clipboard === 'function') {
-            this.__clipboard = new window.Clipboard('.copy_button');
-        }
     },
 
     members: {
 
         __options: null,
-
-        __clipboard: null,
 
         getTree: function () {
             return this._tree;
@@ -455,6 +449,5 @@ qx.Class.define("ncms.pgs.PagesTreeSelector", {
         events.removeListener("pageCreated", this.__onPageCreated, this);
         events.removeListener("pageRemoved", this.__onPageEditedRemoved, this);
         events.removeListener("pageEdited", this.__onPageEditedRemoved, this);
-        this.__clipboard = null;
     }
 });

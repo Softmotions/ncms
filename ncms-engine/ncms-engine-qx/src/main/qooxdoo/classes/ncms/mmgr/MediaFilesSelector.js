@@ -217,10 +217,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             new sm.ui.core.ExtendedCommand("F4"),
             this.__onEdit, this);
         this._registerCommandFocusWidget(table);
-
-        if (typeof window.Clipboard === 'function') {
-            this.__clipboard = new window.Clipboard('.copy_button');
-        }
     },
 
     members: {
@@ -248,8 +244,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         __inpageBt: null,
 
         __opts: null,
-
-        __clipboard: null,
 
         setViewSpec: function (vs) {
             this.__table.getTableModel().setViewSpec(vs);
@@ -738,6 +732,14 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     bt.addListener("execute", this.__downloadFile, this);
                     menu.add(bt);
 
+                    if (file.id && file.name != null) {
+                        bt = new qx.ui.menu.Button(this.tr("Copy public url"));
+                        bt.getContentElement().setAttribute("class", "copy_button");
+                        var url = ncms.Application.ACT.getRestUrl("media.public", file);
+                        url = "http://<hostname>" + url;
+                        bt.getContentElement().setAttribute("data-clipboard-text", url);
+                        menu.add(bt);
+                    }
                     if (file.folder != null && file.name != null) {
                         bt = new qx.ui.menu.Button(this.tr("Copy path"));
                         bt.getContentElement().setAttribute("class", "copy_button");
@@ -829,7 +831,6 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 if (spec.folder == null || spec.name == null) {
                     return;
                 }
-
                 var npath = (spec.folder + spec.name).split("/");
                 req = new sm.io.Request(ncms.Application.ACT.getRestUrl("media.move",
                     npath.slice(0, -1).concat(oldValue)), "PUT", "application/json");
@@ -890,6 +891,5 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         this.__subfoldersBt = null;
         this.__opts = null;
         this._disposeObjects("__dropZone");
-        this.__clipboard = null;
     }
 });
