@@ -247,25 +247,18 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         setViewSpec: function (vs) {
             this.__table.getTableModel().setViewSpec(vs);
-            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         updateViewSpec: function (vs) {
             this.__table.getTableModel().updateViewSpec(vs);
-            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         setConstViewSpec: function (vs) {
             this.__table.getTableModel().setConstViewSpec(vs);
-            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         reload: function (resetSelection) {
-            this.__table.getTableModel().reloadData();
-            resetSelection = (resetSelection == undefined) ? true : resetSelection;
-            if (resetSelection) {
-                this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
-            }
+            this.__table.getTableModel().reloadData(resetSelection);
         },
 
         resetSelection: function () {

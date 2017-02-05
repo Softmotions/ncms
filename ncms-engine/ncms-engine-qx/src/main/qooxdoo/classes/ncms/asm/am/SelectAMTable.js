@@ -86,6 +86,9 @@ qx.Class.define("ncms.asm.am.SelectAMTable", {
             tm.setJsonData(data);
         },
 
+        /**
+         * @param tableModel {sm.model.JsonTableModel}
+         */
         _createTable: function (tableModel) {
             var table = new sm.table.Table(tableModel, tableModel.getCustom());
             this.setContextMenu(new qx.ui.menu.Menu());

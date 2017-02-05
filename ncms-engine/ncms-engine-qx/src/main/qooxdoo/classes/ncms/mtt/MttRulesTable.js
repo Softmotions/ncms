@@ -36,7 +36,9 @@ qx.Class.define("ncms.mtt.MttRulesTable", {
 
         __useColumns: null,
 
-        // override
+        /**
+         * @param tableModel {sm.model.RemoteVirtualTableModel}
+         */
         _createTable: function (tableModel) {
             var useColumns = this.__useColumns;
             var cmeta = this.__cmeta;
@@ -67,6 +69,7 @@ qx.Class.define("ncms.mtt.MttRulesTable", {
             if (this.__smodel) {
                 table.setSelectionModel(this.__smodel);
             }
+            tableModel.setTable(table);
             return table;
         },
 

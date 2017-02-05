@@ -28,7 +28,7 @@ qx.Class.define("ncms.asm.AsmTable", {
             }
         };
         useColumns = useColumns || ["icon", "name", "description", "type"];
-        var tm = new sm.model.RemoteVirtualTableModel(cmeta).set({
+        var tm = new sm.model.RemoteVirtualTableModel(cmeta, null, this).set({
             "useColumns": useColumns,
             "rowdataUrl": ncms.Application.ACT.getUrl("asms.select"),
             "rowcountUrl": ncms.Application.ACT.getUrl("asms.select.count")

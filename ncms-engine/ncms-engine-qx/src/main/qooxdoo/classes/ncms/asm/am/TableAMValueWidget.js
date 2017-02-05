@@ -129,6 +129,9 @@ qx.Class.define("ncms.asm.am.TableAMValueWidget", {
             return bt;
         },
 
+        /**
+         * @param tableModel {sm.model.JsonTableModel}
+         */
         _createTable: function (tableModel) {
             var t = new sm.table.Table(tableModel, tableModel.getCustom())
             .set({"statusBarVisible": false});

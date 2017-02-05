@@ -48,7 +48,9 @@ qx.Class.define("ncms.pgs.referrers.PageReferrersAttributesTable", {
             }, this);
         },
 
-        //overriden
+        /**
+         * @param tableModel {sm.model.JsonTableModel}
+         */
         _createTable: function (tableModel) {
             var table = new sm.table.Table(tableModel, tableModel.getCustom())
             .set({"statusBarVisible": false});

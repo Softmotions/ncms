@@ -82,12 +82,10 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
 
         setViewSpec: function (vspec) {
             this.__table.setViewSpec(vspec);
-            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         updateViewSpec: function (vspec) {
             this.__table.updateViewSpec(vspec);
-            this.__table.getTableModel().addListenerOnce("rowsDataLoaded", this.resetSelection, this);
         },
 
         refresh: function (force) {

@@ -281,10 +281,9 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         __applyFileSpec: function (spec, old) {
             this.__flushMeta(null, old);
             if (spec == null) {
-                this.hide();
+                this.exclude();
                 return;
             }
-
             this.__owner = {
                 name: spec["owner"],
                 fullName: spec["owner_fullName"]

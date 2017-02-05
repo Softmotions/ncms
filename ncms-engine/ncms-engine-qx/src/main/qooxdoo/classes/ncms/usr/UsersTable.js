@@ -8,7 +8,7 @@ qx.Class.define("ncms.usr.UsersTable", {
         var tm = new sm.model.RemoteVirtualTableModel({
             "name": this.tr("Login"),
             "fullName": this.tr("Name")
-        }).set({
+        }, null, this).set({
             "useColumns": useColumns || ["name", "fullName"],
             "rowdataUrl": ncms.Application.ACT.getUrl("security.users"),
             "rowcountUrl": ncms.Application.ACT.getUrl("security.users.count")

@@ -149,7 +149,9 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
             this._syncState();
         },
 
-        //overridden
+        /**
+         * @param tableModel {sm.model.JsonTableModel}
+         */
         _createTable: function (tableModel) {
             var table = new sm.table.Table(tableModel, tableModel.getCustom());
 
@@ -171,8 +173,7 @@ qx.Class.define("ncms.asm.AsmAttrsTable", {
                 focusCellOnPointerMove: false
             });
 
-            table.getSelectionModel()
-            .addListener("changeSelection", this._syncState, this);
+            table.getSelectionModel().addListener("changeSelection", this._syncState, this);
 
             this.setContextMenu(new qx.ui.menu.Menu());
             this.addListener("beforeContextmenuOpen", this.__beforeContextmenuOpen, this);

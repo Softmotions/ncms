@@ -11,7 +11,7 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
             "content_length": this.tr("Length"),
             "folder": this.tr("Folder"),
             "description": this.tr("Description")
-        }).set({
+        }, null, this).set({
             "useColumns": useColumns || ["name", "description", "content_type", "content_length"],
             "rowdataUrl": ncms.Application.ACT.getUrl("media.select"),
             "rowcountUrl": ncms.Application.ACT.getUrl("media.select.count")
@@ -37,7 +37,7 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
         var tcm = this.getTableColumnModel();
         var cInd = tm.getColumnIndexById("name");
         if (cInd != null) {
-            tcm.getBehavior().setWidth(cInd, "2*");
+            tcm.getBehavior().setWidth(cInd, "3*");
         }
         cInd = tm.getColumnIndexById("content_type");
         if (cInd != null) {
@@ -49,7 +49,7 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
         }
         cInd = tm.getColumnIndexById("description");
         if (cInd != null) {
-            tcm.getBehavior().setWidth(cInd, "3*");
+            tcm.getBehavior().setWidth(cInd, "2*");
         }
 
         hideColumns = hideColumns || ["content_type", "content_length"];
@@ -71,7 +71,7 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
     },
 
     members: {
-
+        
         getSelectedFileInd: function () {
             return this.getSelectionModel().getAnchorSelectionIndex();
         },

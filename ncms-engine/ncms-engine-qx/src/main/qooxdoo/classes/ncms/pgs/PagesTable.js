@@ -33,7 +33,7 @@ qx.Class.define("ncms.pgs.PagesTable", {
             }
         }
         useColumns = useColumns || ["icon", "label"];
-        var tm = new sm.model.RemoteVirtualTableModel(cmeta).set({
+        var tm = new sm.model.RemoteVirtualTableModel(cmeta, null, this).set({
             "useColumns": useColumns,
             "rowdataUrl": ncms.Application.ACT.getUrl("pages.search"),
             "rowcountUrl": ncms.Application.ACT.getUrl("pages.search.count")
