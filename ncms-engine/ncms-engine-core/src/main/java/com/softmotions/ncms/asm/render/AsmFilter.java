@@ -300,7 +300,7 @@ public class AsmFilter implements Filter {
                 return false;
             }
         }
-        if (mediaRepository.isAllowedToResponse(mres, req)) {
+        if (!mediaRepository.isAllowedToResponse(mres, req)) {
             // Template are forbidden to be served as static files
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return true;
