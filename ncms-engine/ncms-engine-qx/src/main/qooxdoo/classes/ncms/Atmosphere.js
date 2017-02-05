@@ -87,11 +87,13 @@ qx.Class.define("ncms.Atmosphere", {
                 qx.log.Logger.info("Perform logout!");
                 try {
                     this.__atm.unsubscribe();
+                } catch (ignored) {
                 } finally {
                     ncms.Application.logout();
                 }
                 return false;
             }
+            return true;
         },
 
         __onOpen: function (resp) {
