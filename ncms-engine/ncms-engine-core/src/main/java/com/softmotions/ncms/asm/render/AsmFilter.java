@@ -7,20 +7,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import javax.annotation.Nullable;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.NotFoundException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.web.util.WebUtils;
 import org.mybatis.guice.transactional.Transactional;
 import org.slf4j.Logger;
@@ -127,10 +132,16 @@ public class AsmFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest sreq, ServletResponse sresp, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) sreq;
-        HttpServletResponse resp = (HttpServletResponse) sresp;
-        if (!getContent(req, resp, !"HEAD".equals(req.getMethod()))) {
-            chain.doFilter(req, resp);
+        HttpServletRequest req = null;
+        HttpServletResponse resp = null;
+        try {
+            req = (HttpServletRequest) sreq;
+            resp = (HttpServletResponse) sresp;
+            if (!getContent(req, resp, !"HEAD".equals(req.getMethod()))) {
+                chain.doFilter(req, resp);
+            }
+        } catch (Exception e) {
+            handleErrors(req, resp, e);
         }
     }
 
@@ -184,7 +195,7 @@ public class AsmFilter implements Filter {
             ctx = rendererContextFactory.createStandalone(req, renderResp, asmRef);
         } catch (AsmResourceNotFoundException e) {
             log.info("NOT FOUND: {}", e.getResource());
-            return false;
+            throw new NotFoundException("Resource not found");
         }
 
         boolean preview = pageSecurity.isPreviewPageRequest(req);
@@ -193,7 +204,7 @@ public class AsmFilter implements Filter {
             boolean canAccess = (req.getUserPrincipal() != null) && pageSecurity.checkAccessAny(asm.getId(), req, "wnd");
             if (!canAccess) {
                 if (!preview) {
-                    resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    throw new NotFoundException("preview not found");
                 }
                 return true;
             }
@@ -220,7 +231,7 @@ public class AsmFilter implements Filter {
             }
         } catch (AsmResourceNotFoundException e) {
             log.error("Resource not found: {} assembly: {}", e.getResource(), asm.getName());
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            throw new NotFoundException("Resource not found");
         } catch (IOException | AsmRenderingException e) {
             log.error("", e);
             throw e;
@@ -302,8 +313,7 @@ public class AsmFilter implements Filter {
         }
         if (!mediaRepository.isAllowedToResponse(mres, req)) {
             // Template are forbidden to be served as static files
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return true;
+            throw new NotFoundException("Resource not found");
         }
 
         resp.setContentType(mres.getContentType());
@@ -326,8 +336,7 @@ public class AsmFilter implements Filter {
         IndexPage ip = pageService.getIndexPage(req, true);
         String robots;
         if (ip == null || (robots = ip.getRobotsConfig()) == null) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
+            throw new NotFoundException("robots.txt not found");
         }
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(robots);
@@ -340,8 +349,7 @@ public class AsmFilter implements Filter {
         IndexPage ip = pageService.getIndexPage(req, true);
         String favicon;
         if (ip == null || (favicon = ip.getFaviconBase64()) == null) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
+            throw new NotFoundException("favicon.ico not found");
         }
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("image/png");
@@ -361,13 +369,35 @@ public class AsmFilter implements Filter {
         }
         InputStream is = getClass().getResourceAsStream("/com/softmotions/ncms/login.html");
         if (is == null) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
+            throw new NotFoundException("Login form not found");
         }
         try {
             IOUtils.copyLarge(is, resp.getOutputStream());
         } finally {
             is.close();
         }
+    }
+
+    /**
+     * Show custom error pages
+     */
+    private void handleErrors(HttpServletRequest req,
+                              HttpServletResponse resp,
+                              Exception exc) throws IOException, ServletException {
+        IndexPage ip = pageService.getIndexPage(req, true);
+        if (ip == null) {
+            throw new RuntimeException(exc);
+        }
+        String guid;
+        if (Objects.equals(exc.getClass(), NotFoundException.class)) {
+            guid = ip.get404page();
+        } else {
+            guid = ip.get500page();
+        }
+        if (StringUtils.isBlank(guid)) {
+            throw new RuntimeException(exc);
+        }
+        RequestDispatcher dispatcher = req.getServletContext().getRequestDispatcher("/" + guid);
+        dispatcher.forward(req, resp);
     }
 }

@@ -2,6 +2,7 @@
  * Wrapper for {@link MainPageAM} options form
  *
  * @asset(ncms/icon/16/misc/game.png)
+ * @asset(ncms/icon/16/misc/chain-plus.png)
  */
 qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
     extend: sm.ui.form.FlexFormRenderer,
@@ -39,6 +40,14 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
         el.addListener("input", this.__onChange, this);
         form.add(el, this.tr("Virtual hosts"), null, "vhost");
 
+        el = this.__initPageSelectorBf();
+        el.addListener("changeValue", this.__onChange, this);
+        form.add(el, this.tr("404 page"), null, "page_404");
+
+        el = this.__initPageSelectorBf();
+        el.addListener("changeValue", this.__onChange, this);
+        form.add(el, this.tr("500 page"), null, "page_500");
+
         el = new qx.ui.form.TextArea();
         el.setMaxLength(1024 * 10); // 10 kb
         el.setPlaceholder(this.tr("robots.txt here"));
@@ -57,6 +66,8 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
             }
             val = JSON.parse(val);
             var items = form.getItems();
+            items["page_404"].setValue(val["page_404"] || "");
+            items["page_500"].setValue(val["page_500"] || "");
             items["robots.txt"].setValue(val["robots.txt"] || "");
             items["favicon.ico"].setValue(val["favicon.ico"] || "");
         }, this);
@@ -82,10 +93,41 @@ qx.Class.define("ncms.asm.am.MainPageAMOptionsWidget", {
                     "enabled": items["enabled"] != null ? items["enabled"].getValue() : null
                 },
                 value: {
+                    "page_404": items["page_404"] != null ? items["page_404"].getValue() : null,
+                    "page_500": items["page_500"] != null ? items["page_500"].getValue() : null,
                     "robots.txt": items["robots.txt"] != null ? items["robots.txt"].getValue() : null,
                     "favicon.ico": items["favicon.ico"] != null ? items["favicon.ico"].getValue() : null
                 }
             };
+        },
+
+        __initPageSelectorBf: function () {
+            var bf = new sm.ui.form.ButtonField(this.tr("Page"), "ncms/icon/16/misc/chain-plus.png");
+            bf.setShowResetButton(true);
+            bf.setReadOnly(true);
+            bf.setPlaceholder(this.tr("Please set a page link"));
+            bf.addListener("reset", function () {
+                bf.resetValue();
+            });
+            bf.addListener("execute", function () {
+                var dlg = new ncms.pgs.LinkSelectorDlg(this.tr("Please set a page link"));
+                dlg.addListener("completed", function (ev) {
+                    var data = ev.getData();
+                    var val = [];
+                    if (!sm.lang.String.isEmpty(data["externalLink"])) {
+                        val.push(data["externalLink"]);
+                    } else {
+                        val.push("page:" + sm.lang.Array.lastElement(data["guidPath"]));
+                    }
+                    if (!sm.lang.String.isEmpty(data["linkText"])) {
+                        val.push(data["linkText"]);
+                    }
+                    bf.setValue(val.join(" | "));
+                    dlg.close();
+                }, this);
+                dlg.open();
+            }, this);
+            return bf;
         }
     },
 

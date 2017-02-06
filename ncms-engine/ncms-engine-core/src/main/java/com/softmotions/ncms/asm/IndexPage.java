@@ -9,14 +9,28 @@ import javax.annotation.Nullable;
  */
 public interface IndexPage extends CachedPage {
 
+    String PAGE_404 = "page_404";
+
+    String PAGE_500 = "page_500";
+
     String ROBOTS_TXT = "robots.txt";
 
     String FAVICON_ICO = "favicon.ico";
 
     /**
+     * guid of custom 404 page
+     */
+    @Nullable
+    String get404page();
+
+    /**
+     * guid of custom 500 page
+     */
+    @Nullable
+    String get500page();
+
+    /**
      * robots.txt content
-     *
-     * @return
      */
     @Nullable
     String getRobotsConfig();

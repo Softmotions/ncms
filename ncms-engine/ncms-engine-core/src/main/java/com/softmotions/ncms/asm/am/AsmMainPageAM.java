@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.softmotions.ncms.asm.IndexPage.FAVICON_ICO;
+import static com.softmotions.ncms.asm.IndexPage.PAGE_404;
+import static com.softmotions.ncms.asm.IndexPage.PAGE_500;
 import static com.softmotions.ncms.asm.IndexPage.ROBOTS_TXT;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -72,6 +74,8 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
 
         JsonNode value = val.get("value");
         ObjectNode n = mapper.createObjectNode();
+        n.put(PAGE_404, value.path(PAGE_404).asText(""));
+        n.put(PAGE_500, value.path(PAGE_500).asText(""));
         n.put(ROBOTS_TXT, value.path(ROBOTS_TXT).asText(""));
         n.put(FAVICON_ICO, value.path(FAVICON_ICO).asText(""));
 
@@ -82,7 +86,11 @@ public class AsmMainPageAM extends AsmAttributeManagerSupport {
             valueChanged = !Objects.equals(oldValues.path(ROBOTS_TXT).asText(),
                                            value.path(ROBOTS_TXT).asText()) ||
                            !Objects.equals(oldValues.path(FAVICON_ICO).asText(),
-                                           value.path(FAVICON_ICO).asText());
+                                           value.path(FAVICON_ICO).asText()) ||
+                           !Objects.equals(oldValues.path(PAGE_404).asText(),
+                                           value.path(PAGE_404).asText()) ||
+                           !Objects.equals(oldValues.path(PAGE_500).asText(),
+                                           value.path(PAGE_500).asText());
         } else {
             valueChanged = true;
         }

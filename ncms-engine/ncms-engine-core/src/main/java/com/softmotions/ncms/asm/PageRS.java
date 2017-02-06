@@ -1726,9 +1726,18 @@ public class PageRS extends MBDAOSupport implements PageService {
             return cp.fetchNavPaths();
         }
 
-        /**
-         * Returns `robots.txt` option value of mainpage attribute
-         */
+        @Nullable
+        @Override
+        public String get404page() {
+            return resolvePageGuid(trimToNull(getOptions().path(IndexPage.PAGE_404).asText()));
+        }
+
+        @Nullable
+        @Override
+        public String get500page() {
+            return resolvePageGuid(trimToNull(getOptions().path(IndexPage.PAGE_500).asText()));
+        }
+
         @Nullable
         @Override
         public String getRobotsConfig() {
