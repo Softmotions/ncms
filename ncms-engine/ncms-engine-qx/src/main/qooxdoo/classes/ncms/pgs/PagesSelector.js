@@ -70,7 +70,7 @@ qx.Class.define("ncms.pgs.PagesSelector", {
             var as = this._asmSelector =
                 new ncms.asm.AsmSelector(
                     asmOpts.constViewSpec || {},
-                    new qx.ui.table.selection.Model()
+                    new sm.table.selection.ExtendedSelectionModel()
                     .set({selectionMode: qx.ui.table.selection.Model.SINGLE_SELECTION}),
                     asmOpts.useColumns || ["name", "description"]);
 

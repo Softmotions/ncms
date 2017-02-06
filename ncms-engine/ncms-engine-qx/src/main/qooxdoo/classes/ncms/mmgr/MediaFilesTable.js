@@ -24,7 +24,7 @@ qx.Class.define("ncms.mmgr.MediaFilesTable", {
             },
 
             selectionModel: function (obj) {
-                var res = new qx.ui.table.selection.Model();
+                var res = new sm.table.selection.ExtendedSelectionModel();
                 if (smode != null) {
                     res.setSelectionMode(smode);
                 }

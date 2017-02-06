@@ -41,7 +41,7 @@ qx.Class.define("ncms.asm.am.MedialineAMValueWidget", {
         _createTable: function (tm) {
             var custom = tm.getCustom() || {};
             custom["selectionModel"] = function () {
-                var res = new qx.ui.table.selection.Model();
+                var res = new sm.table.selection.ExtendedSelectionModel();
                 res.setSelectionMode(qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION);
                 return res;
             };

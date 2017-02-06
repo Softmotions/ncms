@@ -141,7 +141,9 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             smode = qx.ui.table.selection.Model.MULTIPLE_INTERVAL_SELECTION;
         }
 
+        this.__dropFun = this.__handleDropFiles.bind(this);
         this.__allowModify = !!allowModify;
+
         var ecolumns = this.__allowModify ? ["name", "description"] : null;
         var table = this.__table = new ncms.mmgr.MediaFilesTable(null, null, ecolumns, smode)
         .set({
@@ -151,15 +153,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         var events = ncms.Events.getInstance();
         events.addListener("mediaUpdated", this.__handleMediaUpdated, this);
-
-        table.getSelectionModel().addListener("changeSelection", function (ev) {
-            this.__updateState();
-            var file = this.__table.getSelectedFile();
-            this.fireDataEvent("fileSelected", file ? file : null);
-        }, this);
-
-
-        this.__dropFun = this.__handleDropFiles.bind(this);
+        events.addListener("mediaRemoved", this.__handleMediaRemoved, this);
+        table.getSelectionModel().addListener("changeActualSelection", this.__onChangeSelection, this);
 
         if (constViewSpec != null) {
             this.setConstViewSpec(constViewSpec);
@@ -257,8 +252,27 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             this.__table.getTableModel().setConstViewSpec(vs);
         },
 
-        reload: function (resetSelection) {
-            this.__table.getTableModel().reloadData(resetSelection);
+        getConstViewSpec: function (vs) {
+            return this.__table.getTableModel().getConstViewSpec(vs);
+        },
+
+        reload: function () {
+            var table = this.__table;
+            var selectedIdx = table.getSelectedFileInd();
+            var selectFile = table.getSelectedFile();
+            var tm = table.getTableModel();
+            if (selectFile == null) {
+                return tm.reloadData(false);
+            }
+            tm.addListenerOnce("rowsDataLoaded", function () {
+                tm.iterateCachedRows(function (offset, item) {
+                    if (selectFile.id == item.id && offset != selectedIdx) {
+                        table.getSelectionModel().skipNextSelectionEventCnt = 1; // skip reselect to the offset
+                        table.selectSingleRow(offset);
+                    }
+                });
+            }, this);
+            tm.reloadData(false);
         },
 
         resetSelection: function () {
@@ -282,7 +296,11 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         },
 
         getSelectedFile: function () {
-            return this.__table.getSelectedFile()
+            return this.__table.getSelectedFile();
+        },
+
+        getSelectedFileInd: function () {
+            return this.__table.getSelectedFileInd();
         },
 
         getSelectedFiles: function () {
@@ -537,11 +555,34 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
             }
         },
 
+
+        __onChangeSelection: function (ev) {
+            this.__updateState();
+            var file = this.__table.getSelectedFile();
+            this.fireDataEvent("fileSelected", file ? file : null);
+        },
+
+
         __handleMediaUpdated: function (ev) {
-            var evspec = ev.getData();
+            // {"uuid":"53cc5198-46c2-40ce-ba89-fb91d74a7527",
+            //  "type":"MediaUpdateEvent",
+            //  "user":"adam",
+            //  "hints":{"app":"54f68f36-935c-4437-9729-5a124fb084c7"},
+            //   "id":1123,"isFolder":false,
+            //   "path":"/site/test/bar.txt"}
+            // CVS={"folder":"/site/test","status":0,"fts":true}
+            var cvs = this.getConstViewSpec();
+            var data = ev.getData();
+            if (data.isFolder
+                || (cvs == null || sm.lang.String.isEmpty(cvs.folder))
+                || data.path.indexOf(cvs.folder + '/') !== 0) {
+                return;
+            }
             var selectedFile = this.__table.getSelectedFile();
+            var found = false;
             this.__table.getTableModel().iterateCachedRows(function (offset, item) {
-                if (evspec.id == item.id) {
+                if (data.id == item.id) {
+                    found = true;
                     var updateSelectedFile = (selectedFile != null
                     && selectedFile.id == item.id
                     && this.hasListener("fileMetaEdited"));
@@ -558,16 +599,29 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                     }, this);
                 }
             }, this);
-            // this.reload(selectedFile == null);
+            if (!found) { // new file, reload this view
+                this.reload();
+            }
         },
 
-        /* __handleMediaRemoved: function (ev) {
-             var evspec = ev.getData();
-             var selectedFile = this.__table.getSelectedFile();
-             this.__table.getTableModel().iterateCachedRows(function (offset, item) {
-
-             });
-         },*/
+        __handleMediaRemoved: function (ev) {
+            var cvs = this.getConstViewSpec();
+            var data = ev.getData();
+            if (data.isFolder
+                || (cvs == null || sm.lang.String.isEmpty(cvs.folder))
+                || data.path.indexOf(cvs.folder + '/') !== 0) {
+                return;
+            }
+            var found = false;
+            this.__table.getTableModel().iterateCachedRows(function (offset, item) {
+                if (data.id == item.id) {
+                    found = true;
+                }
+            });
+            if (found) { // removed file from visible list
+                this.reload();
+            }
+        },
 
         __handleFormUploadFiles: function (ev) {
             var input = ev.target;

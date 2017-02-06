@@ -31,7 +31,7 @@ qx.Class.define("ncms.asm.AsmSelectorDlg", {
         var selector = this.__selector =
             new ncms.asm.AsmSelector(
                 constViewSpec,
-                new qx.ui.table.selection.Model()
+                new sm.table.selection.ExtendedSelectionModel()
                 .set({selectionMode: qx.ui.table.selection.Model.SINGLE_SELECTION}),
                 useColumns);
         selector.getTable().addListener("cellDbltap", this.__ok, this);
