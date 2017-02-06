@@ -258,13 +258,13 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
 
         reload: function () {
             var table = this.__table;
-            var selectedIdx = table.getSelectedFileInd();
             var selectFile = table.getSelectedFile();
             var tm = table.getTableModel();
             if (selectFile == null) {
                 return tm.reloadData(false);
             }
             tm.addListenerOnce("rowsDataLoaded", function () {
+                var selectedIdx = table.getSelectedFileInd();
                 tm.iterateCachedRows(function (offset, item) {
                     if (selectFile.id == item.id && offset != selectedIdx) {
                         table.getSelectionModel().skipNextSelectionEventCnt = 1; // skip reselect to the offset
