@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,6 +121,15 @@ public class NcmsSassModule extends AbstractModule {
                 Pattern.compile("@compile\\s+(compact|nested|expanded|compressed)\\s*;",
                                 Pattern.CASE_INSENSITIVE);
 
+        private static final Pattern COMMENTS_DIRECTIVE =
+                Pattern.compile("@comments\\s+(true|false|yes|no)\\s*;",
+                                Pattern.CASE_INSENSITIVE);
+
+        private static final Pattern EMAP_DIRECTIVE =
+                Pattern.compile("@emap\\s+(true|false|yes|no)\\s*;",
+                                Pattern.CASE_INSENSITIVE);
+
+
 
         private void setOutputStyle(String style, Options opts) {
             //noinspection SwitchStatementWithoutDefaultBranch
@@ -157,6 +167,14 @@ public class NcmsSassModule extends AbstractModule {
                 Matcher m = CSTYLE_DIRECTIVE.matcher(source);
                 if (m.find()) {
                     setOutputStyle(m.group(1).toUpperCase(), opts);
+                }
+                m = COMMENTS_DIRECTIVE.matcher(source);
+                if (m.find()) {
+                    opts.setSourceComments(BooleanUtils.toBoolean(m.group(1)));
+                }
+                m = EMAP_DIRECTIVE.matcher(source);
+                if (m.find()) {
+                    opts.setSourceMapEmbed(BooleanUtils.toBoolean(m.group(1)));
                 }
                 Output output = scp.compileString(source, opts);
                 String css = output.getCss() != null ? output.getCss() : "";
