@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -216,7 +215,7 @@ public class JsServiceRS extends MBDAOSupport {
         Long[] ids = Arrays.stream(spec.getOrDefault("scripts", "")
                                        .split(",")).map(Long::parseLong)
                            .toArray(Long[]::new);
-        Set<MediaResource> resources = new HashSet<>(ids.length);
+        Set<MediaResource> resources = new LinkedHashSet<>(ids.length);
         for (int i = 0; i < ids.length; ++i) {
             MediaResource meta = mediaReader.findMediaResource(ids[i], null);
             if (meta == null) {
