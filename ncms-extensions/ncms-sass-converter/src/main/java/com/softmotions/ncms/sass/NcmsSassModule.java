@@ -156,7 +156,7 @@ public class NcmsSassModule extends AbstractModule {
                 String source = src.getSource();
                 Matcher m = CSTYLE_DIRECTIVE.matcher(source);
                 if (m.find()) {
-                    setOutputStyle(m.group(1), opts);
+                    setOutputStyle(m.group(1).toUpperCase(), opts);
                 }
                 Output output = scp.compileString(source, opts);
                 String css = output.getCss() != null ? output.getCss() : "";
