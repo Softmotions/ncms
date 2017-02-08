@@ -84,7 +84,7 @@
         <thumbnails-width>250</thumbnails-width>
         <resize-default-format>jpeg</resize-default-format>
         <max-edit-text-size>1048576</max-edit-text-size>
-        <private-extensions>jsp,jspx,vm,ftl,httl</private-extensions>
+        <private-extensions>httl,jsp,jspx,vm,ftl,sass,scss,less</private-extensions>
         <import>
             <directory>{webapp}</directory>
             <target>site</target>

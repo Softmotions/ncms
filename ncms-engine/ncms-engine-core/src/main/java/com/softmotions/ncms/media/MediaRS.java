@@ -199,7 +199,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         this.renderer = renderer;
         this.privateExtensions =
                 xcfg.getString("media.private-extensions",
-                               "jsp,jspx,vm,ftl,httl")
+                               "httl,jsp,jspx,vm,ftl,sass,scss,less")
                     .split("\\s*[,;]\\s*");
 
         this.ebus.register(this);
