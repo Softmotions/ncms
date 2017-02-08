@@ -268,7 +268,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 tm.iterateCachedRows(function (offset, item) {
                     if (selectFile.id == item.id && offset != selectedIdx) {
                         table.getSelectionModel().skipNextSelectionEventCnt = 1; // skip reselect to the offset
-                        table.selectSingleRow(offset);
+                        table.selectSingleRow(offset);            
                     }
                 });
             }, this);
