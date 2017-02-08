@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -114,6 +116,22 @@ public class NcmsSassModule extends AbstractModule {
             }
         }
 
+        private static final Pattern CSTYLE_DIRECTIVE =
+                Pattern.compile("@compile\\s+(compact|nested|expanded|compressed)\\s*;",
+                                Pattern.CASE_INSENSITIVE);
+
+
+        private void setOutputStyle(String style, Options opts) {
+            //noinspection SwitchStatementWithoutDefaultBranch
+            switch (style) {
+                case "COMPACT":
+                case "NESTED":
+                case "EXPANDED":
+                case "COMPRESSED":
+                    opts.setOutputStyle(OutputStyle.valueOf(style));
+            }
+        }
+
         // run conversion job
         @Override
         public void run() {
@@ -132,20 +150,15 @@ public class NcmsSassModule extends AbstractModule {
             Options opts = new Options();
             opts.getImporters().add(this);
 
-            OutputStyle outputStyle = OutputStyle.COMPACT;
-            String v = env.xcfg().getString("media.sass.output-style", "COMPACT").toUpperCase();
-            //noinspection SwitchStatementWithoutDefaultBranch
-            switch (v) {
-                case "COMPACT":
-                case "NESTED":
-                case "EXPANDED":
-                case "COMPRESSED":
-                    outputStyle = OutputStyle.valueOf(v);
-            }
-            opts.setOutputStyle(outputStyle);
+            setOutputStyle(env.xcfg().getString("media.sass.output-style", "COMPACT").toUpperCase(), opts);
             try {
                 log.info("Sass compilation {} into {}", ev.getPath(), targetPath);
-                Output output = scp.compileString(src.getSource(), opts);
+                String source = src.getSource();
+                Matcher m = CSTYLE_DIRECTIVE.matcher(source);
+                if (m.find()) {
+                    setOutputStyle(m.group(1), opts);
+                }
+                Output output = scp.compileString(source, opts);
                 String css = output.getCss() != null ? output.getCss() : "";
                 try (InputStream is = IOUtils.toInputStream(css, "UTF-8")) {
                     repo.importFile(is, targetPath, false, src.getOwner());
