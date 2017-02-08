@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,7 +101,6 @@ public class JsServiceRS extends MBDAOSupport {
     boolean testingMode;
 
 
-
     @Inject
     public JsServiceRS(SqlSession sess,
                        MediaReader mediaReader,
@@ -174,7 +174,7 @@ public class JsServiceRS extends MBDAOSupport {
 
     @GuardedBy("RW_STRIPES")
     @Nullable
-    String compileScript(String fp, Set<MediaResource> resources, KVOptions spec) throws Exception {
+    String compileScript(String fp, Collection<MediaResource> resources, KVOptions spec) throws Exception {
 
         List<SourceFile> inputs = new ArrayList<>(resources.size());
         for (MediaResource meta : resources) {
@@ -330,7 +330,7 @@ public class JsServiceRS extends MBDAOSupport {
             kvspec.put(de.getKey(), opts.getOrDefault(de.getKey(), de.getValue()));
         }
         StringBuilder files = new StringBuilder();
-        Set<MediaResource> resources = new HashSet<>(scripts.length);
+        Set<MediaResource> resources = new LinkedHashSet<>(scripts.length);
         for (int i = 0, c = 0; i < scripts.length; i++) {
             String path = scripts[i];
             path = normalizePath(path);
