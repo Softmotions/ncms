@@ -67,7 +67,7 @@
         <commons.validator.version>1.4.0</commons.validator.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
         <tomcat.version>8.5.11</tomcat.version>
-        <httl.version>1.0.11-SNAPSHOT</httl.version>
+        <httl.version>1.0.12-SNAPSHOT</httl.version>
         <hibernate.validator.version>5.3.4.Final</hibernate.validator.version>
         <imgscalr.version>4.2</imgscalr.version>
         <google.inject.version>4.1.0</google.inject.version>

@@ -58,12 +58,8 @@ public class YoutubeTag extends HTMLTag implements INoBodyParsingTag {
                 return;
             }
         }
-        if (attrs.get("width") == null) {
-            attrs.put("width", "640");
-        }
-        if (attrs.get("height") == null) {
-            attrs.put("height", "360");
-        }
+        attrs.putIfAbsent("width", "640");
+        attrs.putIfAbsent("height", "360");
         videoId = Utils.escapeXml(videoId, true, true, true);
         String width = Utils.escapeXml(attrs.get("width"), true, true, true);
         String height = Utils.escapeXml(attrs.get("height"), true, true, true);
