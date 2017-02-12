@@ -32,6 +32,13 @@
                 <include>.gitignore</include>
             </includes>
         </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory/>
+            <includes>
+                <include>build-distr.sh</include>
+                <include>run-prerelease.sh</include>
+            </includes>
+        </fileSet>
 
         <!-- =========== QX ============ -->
         <fileSet filtered="true" encoding="UTF-8">

@@ -1,5 +1,4 @@
-#set($dollar = '$')
-        <?xml version="1.0" encoding="utf-8" ?>
+#set($dollar = '$')<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
     <logging-ref>${rootArtifactId}-logging.xml</logging-ref>
     <app-name>${projectName}</app-name>
