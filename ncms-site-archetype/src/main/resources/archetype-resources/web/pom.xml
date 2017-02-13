@@ -57,51 +57,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
-            <!--<plugin>
-                <groupId>com.samaxes.maven</groupId>
-                <artifactId>minify-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-minify</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>minify</goal>
-                        </goals>
-                        <configuration>
-                            <jsEngine>CLOSURE</jsEngine>
-                            <closureCompilationLevel>${dollar}{js.closure.compilation.level}</closureCompilationLevel>
-                            <closureLanguage>ECMASCRIPT3</closureLanguage>
-                            <jsSourceDir>js</jsSourceDir>
-                            <closureCreateSourceMap>true</closureCreateSourceMap>
-                            <preserveAllSemiColons>true</preserveAllSemiColons>
-                            <jsSourceFiles>
-                                <jsSourceFile>jquery.js</jsSourceFile>
-                                <jsSourceFile>${rootArtifactId}.js</jsSourceFile>
-                            </jsSourceFiles>
-                            <webappTargetDir>${dollar}{basedir}/src/main/webapp</webappTargetDir>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
-            <!--<plugin>
-                <groupId>com.github.warmuuh</groupId>
-                <artifactId>libsass-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <inputPath>${dollar}{basedir}/src/main/webapp/scss</inputPath>
-                    <outputPath>${dollar}{basedir}/src/main/webapp/css</outputPath>
-                    <outputStyle>${dollar}{sass.compile.style}</outputStyle>
-                    <generateSourceComments>${dollar}{sass.comments}</generateSourceComments>
-                    <generateSourceMap>${dollar}{sass.map}</generateSourceMap>
-                </configuration>
-            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven2-plugin</artifactId>
