@@ -33,6 +33,15 @@ it from the maven archetype.
         -DarchetypeVersion=1.1-SNAPSHOT \
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
+
+Alternatively you can run:
+ 
+.. code-block:sh
+
+    mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate \
+        -DarchetypeCatalog=https://softmotions.com/rs/media/public/1542/archetype-catalog.xml 
+
+
 Let's consider the creation and development of the ηCMS project
 using the website about parrots as an example. The Java code of this project resides
 in package `org.myparrots`.

@@ -36,6 +36,15 @@
         -DarchetypeVersion=1.1-SNAPSHOT \
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
+
+В качестве альтернативы можно выполнить более короткую команду:
+
+.. code-block:sh
+
+    mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate \
+        -DarchetypeCatalog=https://softmotions.com/rs/media/public/1542/archetype-catalog.xml
+
+
 Продемострируем создание и дальнейшее развитие ηCMS проекта на примере
 создания информационного сайта о попугаях.
 Код сайта будет в пакете `org.myparrots`.
