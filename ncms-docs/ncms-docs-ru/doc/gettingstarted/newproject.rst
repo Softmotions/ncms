@@ -30,7 +30,7 @@
 
 .. code-block:: sh
 
-    mvn archetype:generate -U \
+    mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate -U \
         -DarchetypeGroupId=softmotions \
         -DarchetypeArtifactId=ncms-site-archetype \
         -DarchetypeVersion=1.1-SNAPSHOT \
@@ -42,7 +42,7 @@
 
 .. code-block:: text
 
-    $:   mvn archetype:generate \
+    $:   mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate -U \
     >         -DarchetypeGroupId=softmotions \
     >         -DarchetypeArtifactId=ncms-site-archetype \
     >         -DarchetypeVersion=1.1-SNAPSHOT \
