@@ -35,11 +35,11 @@ it from the maven archetype.
 
 
 Alternatively you can run:
- 
-.. code-block:sh
+
+.. code-block:: sh
 
     mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate \
-        -DarchetypeCatalog=https://softmotions.com/rs/media/public/1542/archetype-catalog.xml 
+        -DarchetypeCatalog=https://softmotions.com/rs/media/public/1542/archetype-catalog.xml
 
 
 Let's consider the creation and development of the ηCMS project

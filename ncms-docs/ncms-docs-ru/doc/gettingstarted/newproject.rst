@@ -39,7 +39,7 @@
 
 В качестве альтернативы можно выполнить более короткую команду:
 
-.. code-block:sh
+.. code-block:: sh
 
     mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate \
         -DarchetypeCatalog=https://softmotions.com/rs/media/public/1542/archetype-catalog.xml
