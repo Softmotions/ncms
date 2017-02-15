@@ -19,7 +19,7 @@
 
 * **[English docs](http://ncms.one/manual)**
 * **[Russian docs](http://ncms.one/manual/ru)**
-* **[ηCMS Youtube lessons](https://www.youtube.com/playlist?list=PLPNg6amjI8NrWnYpwfx8p24oV2WIEQsHA)** 
+* **[ηCMS Video lessons](https://www.youtube.com/playlist?list=PLPNg6amjI8NrWnYpwfx8p24oV2WIEQsHA)** 
 
 ### ηCMS showcase 
 
