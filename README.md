@@ -1,6 +1,9 @@
 # Free enterprise Java CMS
 [![Join the chat at https://gitter.im/Softmotions/ncms](https://badges.gitter.im/Softmotions/ncms.svg)](https://gitter.im/Softmotions/ncms?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-                                                                                                        
+                 
+                 
+## [http://ncms.one](http://ncms.one)                 
+                 
 ## ηCMS features
 
 * Multiple websites on a single ηCMS application node.
@@ -17,8 +20,11 @@
       
 ## Documentation 
 
-* **[ηCMS Youtube lessons](https://www.youtube.com/playlist?list=PLPNg6amjI8NrWnYpwfx8p24oV2WIEQsHA)** 
 * **[English docs](http://ncms.one/manual)**
 * **[Russian docs](http://ncms.one/manual/ru)**
+* **[ηCMS Video lessons](https://www.youtube.com/playlist?list=PLPNg6amjI8NrWnYpwfx8p24oV2WIEQsHA)** 
 
-                                                                                                                                  
+### ηCMS showcase 
+
+[![ηCMS showcase](https://img.youtube.com/vi/-j9na4Q_ED0/0.jpg)](https://www.youtube.com/watch?v=-j9na4Q_ED0)
+                                                                                                                            

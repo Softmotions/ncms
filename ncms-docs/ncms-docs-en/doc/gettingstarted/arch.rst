@@ -56,6 +56,13 @@ or add new attributes. `Assemblies` can be inherited from multiple parents. Ther
 with a inheritance of classes in C++ or Java, but, in our case, we are considering `assemblies`
 to be as class instances (objects).
 
+
+Video showcase
+--------------
+
+..  youtube:: -j9na4Q_ED0
+    :width: 100%
+
 Example
 -------
 
