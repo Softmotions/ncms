@@ -149,6 +149,10 @@ qx.Mixin.define("ncms.cc.tree.MFolderTree", {
         addTree: function (tree) {
             this._add(tree);
         },
+        
+        resetSelection: function () {
+            this._tree && this._tree.getSelection().removeAll();
+        },
 
         _getItemPathSegments: function (item) {
             if (this._tree == null ||

@@ -81,13 +81,15 @@ qx.Class.define("ncms.pgs.PagesSelector", {
         }
 
         page = new qx.ui.tabview.Page(this.tr("Structure"));
+        page.setUserData("name", "structure");
         page.setLayout(new qx.ui.layout.Grow());
         var ts = this._treeSelector = new ncms.pgs.PagesTreeSelector(allowModify, opts);
-        ts.addListener("itemSelected", this.__pageSelected, this);
+        ts.addListener("itemSelected", this.__onPageSelected, this);
         page.add(ts);
         this.add(page);
 
         page = new qx.ui.tabview.Page(this.tr("Search"));
+        page.setUserData("name", "search");
         page.setLayout(new qx.ui.layout.Grow());
 
         var cvs = {};
@@ -96,8 +98,13 @@ qx.Class.define("ncms.pgs.PagesSelector", {
         }
         var ss = this._searchSelector = new ncms.pgs.PagesSearchSelector(cvs, ["icon", "label", "path"]);
         ss.addListener("appear", ss.refresh, ss);
-        ss.addListener("itemSelected", this.__pageSelected, this);
+        ss.addListener("itemSelected", this.__onPageSelected, this);
         page.add(ss);
+        
+        // Tab switched
+        this.addListener("changeSelection", this.resetPagesSelection, this);
+
+
         this.add(page);
     },
 
@@ -146,14 +153,17 @@ qx.Class.define("ncms.pgs.PagesSelector", {
             this.fireDataEvent("selected", data);
         },
 
-        __pageSelected: function (ev) {
-            var edata = ev.getData();
+        __onPageSelected: function (ev) {
+            this.__pageSelected(ev.getData());
+        },
+
+        __pageSelected: function (pspec) {
             var data = null;
-            if (edata != null) {
+            if (pspec != null) {
                 data = {
-                    id: edata["id"],
-                    name: edata["label"],
-                    accessMask: edata["accessMask"]
+                    id: pspec["id"],
+                    name: pspec["label"],
+                    accessMask: pspec["accessMask"]
                 };
                 this.setSelectedAsm(null);
             }
@@ -185,6 +195,16 @@ qx.Class.define("ncms.pgs.PagesSelector", {
 
         getSearchSelector: function () {
             return this._searchSelector;
+        },
+
+        resetPagesSelection: function () {
+            var s = this.getSelectedPage() || this.getSelectedAsm();
+            this._treeSelector && this._treeSelector.resetSelection();
+            this._searchSelector && this._searchSelector.resetSelection();
+            this._asmSelector && this._asmSelector.resetSelection();
+            if (s != null) {
+                this.fireDataEvent("selected", null);
+            }
         }
     },
 
