@@ -15,11 +15,11 @@
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
         <qooxdoo.sdk.version>5.0.2</qooxdoo.sdk.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
-        <pgsql.jdbc.version>9.4.1212.jre7</pgsql.jdbc.version>
+        <pgsql.jdbc.version>42.0.0.jre7</pgsql.jdbc.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
-        <slf4j.version>1.7.21</slf4j.version>
-        <logback.version>1.1.7</logback.version>
-        <tomcat.version>8.5.11</tomcat.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <logback.version>1.2.2</logback.version>
+        <tomcat.version>8.5.12</tomcat.version>
     </properties>
 
     <repositories>
@@ -178,7 +178,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.6.1</version>
                     <configuration>
                         <source>1.8</source>
                         <target>1.8</target>
@@ -207,7 +207,7 @@
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
                     <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.6.1</version>
+                    <version>1.6.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -217,7 +217,7 @@
                 <plugin>
                     <groupId>com.github.warmuuh</groupId>
                     <artifactId>libsass-maven-plugin</artifactId>
-                    <version>0.2.5-libsass_3.3.6</version>
+                    <version>0.2.6-libsass_3.4.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

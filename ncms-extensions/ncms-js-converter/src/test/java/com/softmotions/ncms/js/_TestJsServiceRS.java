@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -82,7 +81,7 @@ public class _TestJsServiceRS extends WebBaseTest {
     }
 
     @Override
-    protected void configureTomcatRunner(TomcatRunner.@NotNull Builder b) {
+    protected void configureTomcatRunner(TomcatRunner.Builder b) {
         super.configureTomcatRunner(b);
         XMLWSUserDatabase wsdb =
                 new XMLWSUserDatabase("WSUserDatabase", "com/softmotions/ncms/js/cfg/users.xml", false);
