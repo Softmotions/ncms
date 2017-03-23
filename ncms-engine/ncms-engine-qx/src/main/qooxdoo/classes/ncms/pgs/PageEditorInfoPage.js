@@ -102,7 +102,7 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         __info: null,
 
         __onPageEdited: function (ev) {
-            // reload temporaly disabled
+            //todo reloading temporally disabled
             // var myspec = this.getPageSpec();
             // var evspec = ev.getData();
             // if (myspec != null && evspec != null && myspec["id"] === evspec["id"]) {

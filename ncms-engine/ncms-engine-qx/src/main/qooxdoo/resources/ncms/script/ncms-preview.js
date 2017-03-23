@@ -56,7 +56,7 @@
                         "Failed to save section: " + data +
                         " status: " + this.statusText);
                 };
-                req.open("PUT", appRoot + "/rs/adm/am/ve/save");
+                req.open("PUT", appRoot + "/rs/adm/am/ve/save?__app=" + encodeURIComponent(ncms.Application.UUID));
                 req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 req.send(data);
             });
