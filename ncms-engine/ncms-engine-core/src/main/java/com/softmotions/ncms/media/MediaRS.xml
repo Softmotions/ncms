@@ -207,7 +207,7 @@
             </foreach>
             GROUP BY e.id
             HAVING COUNT(e.id) = #{keywordsSize}
-        )
+        ) AS e
     </select>
 
     <select id="selectByPath" resultType="map" parameterType="map">
