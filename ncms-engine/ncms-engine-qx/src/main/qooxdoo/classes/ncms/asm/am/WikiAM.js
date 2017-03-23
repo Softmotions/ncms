@@ -70,6 +70,7 @@ qx.Class.define("ncms.asm.am.WikiAM", {
                 var spec = JSON.parse(val);
                 w.setValue(spec["value"]);
             });
+            w.setRequired(!!attrSpec["required"]);
             this._valueWidget = w;
             return w;
         },
