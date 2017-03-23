@@ -109,11 +109,11 @@ public class UserEnvRS extends MBDAOSupport {
                                                "userid", req.getRemoteUser());
         List ret = new ArrayList(res.size());
         for (Map<String, Object> rec : res) {
-            Object val = rec.get("SVALUE");
+            Object val = rec.get("svalue");
             if (val != null) {
                 ret.add(val);
             }
-            val = rec.get("IVALUE");
+            val = rec.get("ivalue");
             if (val != null) {
                 ret.add(val);
             }

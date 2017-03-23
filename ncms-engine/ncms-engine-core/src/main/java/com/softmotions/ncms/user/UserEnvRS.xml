@@ -24,8 +24,8 @@
             resultType="map"
             parameterType="map">
         SELECT
-            svalue AS SVALUE,
-            ivalue AS IVALUE
+            svalue AS "svalue",
+            ivalue AS "ivalue"
         FROM USER_ENV
         WHERE userid = #{userid}
               AND type = #{type}
