@@ -527,7 +527,7 @@ msgstr "Коды языка"
 msgid "Comma separated virtual hosts"
 msgstr "Список виртуальных хостов через запятую"
 
-#: ncms/pgs/PageEditorInfoPage.js:132
+#: ncms/pgs/PageEditorInfoPage.js:133
 #: ncms/asm/am/MainPageAMOptionsWidget.js:40
 msgid "Virtual hosts"
 msgstr "Виртуальные хосты"
@@ -1566,23 +1566,23 @@ msgstr "Управление файлами страницы"
 msgid "General"
 msgstr "Общее"
 
-#: ncms/pgs/PageEditorInfoPage.js:140
+#: ncms/pgs/PageEditorInfoPage.js:141
 msgid "Languages"
 msgstr "Языки"
 
-#: ncms/pgs/PageEditorInfoPage.js:151
+#: ncms/pgs/PageEditorInfoPage.js:152
 msgid "Last modification: %1, %2"
 msgstr "Последнее редактирование: %1, %2"
 
-#: ncms/pgs/PageEditorInfoPage.js:160
+#: ncms/pgs/PageEditorInfoPage.js:161
 msgid "This page is not pulished yet"
 msgstr "Эта страница не опубликована"
 
-#: ncms/pgs/PageEditorInfoPage.js:208
+#: ncms/pgs/PageEditorInfoPage.js:209
 msgid "Choose the owner of %1"
 msgstr "Выберите владельца: %1"
 
-#: ncms/pgs/PageEditorInfoPage.js:209
+#: ncms/pgs/PageEditorInfoPage.js:210
 msgid "Choose the owner"
 msgstr "Выберите владельца"
 
