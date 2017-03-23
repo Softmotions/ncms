@@ -437,6 +437,9 @@ public class AsmRS extends MBDAOSupport {
     public void exchangeAttributesOrdinal(@PathParam("ordinal1") Long ordinal1,
                                           @PathParam("ordinal2") Long ordinal2,
                                           @Context HttpServletRequest req) {
+        if (ordinal1.equals(ordinal2)) {
+            return;
+        }
         Long id = selectOne("selectAsmIdByOrdinal", ordinal1);
         if (id != null) {
             ebus.unlockOnTxFinish(Asm.acquireLock(id));
