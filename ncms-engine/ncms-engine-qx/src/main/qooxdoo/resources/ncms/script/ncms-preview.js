@@ -59,7 +59,7 @@
                 console.log("window.parent=" + window.parent);
                 var url = appRoot + "/rs/adm/am/ve/save";
                 var parent = window.parent;
-                if (parent != null) {
+                if (parent != null && parent.ncms != null) {
                     url += "?__app=" + encodeURIComponent(parent.ncms.Application.UUID);
                 }
                 req.open("PUT", url);
