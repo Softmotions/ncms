@@ -163,20 +163,27 @@ public class PageCriteria extends CriteriaBase<PageCriteria> {
                 attr.setName(attrName);
                 attr.setType((String) row.get("attr_type"));
                 attr.setValue((String) row.get("attr_value"));
-                Clob lv = (Clob) row.get("attr_large_value");
-                if (lv != null) {
-                    Reader lvr = null;
-                    try {
-                        lvr = lv.getCharacterStream();
-                        attr.setLargeValue(IOUtils.toString(lvr));
-                    } catch (IOException | SQLException e) {
-                        throw new RuntimeException(e);
-                    } finally {
-                        if (lvr != null) {
-                            try {
-                                lvr.close();
-                            } catch (IOException e) {
-                                log.error("", e);
+
+                // Process large attribute value
+                Object lv = row.get("attr_large_value");
+                if (lv instanceof String) {
+                    attr.setLargeValue((String) lv);
+                } else if (lv instanceof Clob) {
+                    Clob clv = (Clob) row.get("attr_large_value");
+                    if (clv != null) {
+                        Reader lvr = null;
+                        try {
+                            lvr = clv.getCharacterStream();
+                            attr.setLargeValue(IOUtils.toString(lvr));
+                        } catch (IOException | SQLException e) {
+                            throw new RuntimeException(e);
+                        } finally {
+                            if (lvr != null) {
+                                try {
+                                    lvr.close();
+                                } catch (IOException e) {
+                                    log.error("", e);
+                                }
                             }
                         }
                     }
