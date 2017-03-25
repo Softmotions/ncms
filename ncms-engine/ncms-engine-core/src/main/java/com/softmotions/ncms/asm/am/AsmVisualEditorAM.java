@@ -187,6 +187,7 @@ public class AsmVisualEditorAM extends AsmAttributeManagerSupport {
         snode.add(html);
         attr.setEffectiveValue(mapper.writeValueAsString(sections));
         adao.asmUpsertAttribute(attr);
-        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, asmId, req));
+        ebus.fireOnSuccessCommit(new AsmModifiedEvent(this, asmId, req)
+                                         .hint("veditor", true));
     }
 }

@@ -102,12 +102,14 @@ qx.Class.define("ncms.pgs.PageEditorInfoPage", {
         __info: null,
 
         __onPageEdited: function (ev) {
-            //todo reloading temporally disabled
-            // var myspec = this.getPageSpec();
-            // var evspec = ev.getData();
-            // if (myspec != null && evspec != null && myspec["id"] === evspec["id"]) {
-            //     this.__reload();
-            // }
+            var myspec = this.getPageSpec();
+            var evspec = ev.getData();
+            if (myspec != null
+                && evspec != null
+                && myspec["id"] === evspec["id"]
+                && (evspec.hints["app"] !== ncms.Application.UUID || !evspec.hints["veditor"])) {
+                this.__reload();
+            }
         },
 
         __reload: function () {
