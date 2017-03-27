@@ -65,7 +65,7 @@ public class YoutubeTag extends HTMLTag implements INoBodyParsingTag {
         String height = Utils.escapeXml(attrs.get("height"), true, true, true);
 
         StringBuilder ibuff = new StringBuilder();
-        String vRef = String.format("https://www.youtube.com/v/%s?feature=player_embedded", videoId);
+        String vRef = String.format("//www.youtube.com/v/%s?feature=player_embedded", videoId);
         ibuff.append(String.format("<object style=\"%s\">\n", String.format("width:%s;height:%s;", width, height)));
         ibuff.append(String.format("<param name=\"movie\" value=\"%s\"/>\n", vRef));
         ibuff.append("<param name=\"allowFullScreen\" value=\"true\"/>\n");
