@@ -20,7 +20,8 @@ qx.Class.define("ncms.asm.am.TableAMValueWidget", {
         qx.ui.form.MForm,
         sm.table.MTableMutator,
         ncms.asm.am.MValueWidget,
-        ncms.cc.MCommands
+        ncms.cc.MCommands,
+        qx.core.MAssert
     ],
 
     events: {

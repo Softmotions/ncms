@@ -4,7 +4,7 @@
 qx.Class.define("ncms.pgs.PageLocker", {
     extend: qx.core.Object,
     type: "singleton",
-    include: [qx.locale.MTranslation],
+    include: [qx.locale.MTranslation, qx.core.MAssert],
 
     members: {
 

@@ -4,6 +4,7 @@
 qx.Class.define("ncms.mmgr.MediaTextFileEditorDlg", {
 
     extend: qx.ui.window.Window,
+    include: [qx.core.MAssert],
 
 
     statics: {

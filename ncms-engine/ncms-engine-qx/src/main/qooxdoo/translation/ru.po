@@ -188,7 +188,7 @@ msgstr "Редактировать"
 
 #: ncms/mtt/filters/MttFiltersTable.js:185 ncms/asm/AsmNav.js:90
 #: ncms/usr/UsersNav.js:112 ncms/mmgr/MediaFilesSelector.js:819
-#: ncms/asm/am/TableAMValueWidget.js:343
+#: ncms/asm/am/TableAMValueWidget.js:344
 #: ncms/mtt/actions/MttActionsTree.js:135
 #: ncms/mtt/actions/MttActionsTree.js:243 ncms/mtt/MttNav.js:41
 #: ncms/mtt/MttNav.js:159 ncms/asm/AsmAttrsTable.js:216
@@ -695,11 +695,11 @@ msgstr "Элементы"
 msgid "Selected"
 msgstr "Выбрано"
 
-#: ncms/asm/am/SelectAMTable.js:121 ncms/asm/am/TableAMValueWidget.js:88
+#: ncms/asm/am/SelectAMTable.js:121 ncms/asm/am/TableAMValueWidget.js:89
 msgid "Add record"
 msgstr "Добавить запись"
 
-#: ncms/asm/am/SelectAMTable.js:126 ncms/asm/am/TableAMValueWidget.js:93
+#: ncms/asm/am/SelectAMTable.js:126 ncms/asm/am/TableAMValueWidget.js:94
 msgid "Remove record"
 msgstr "Удалить запись"
 
@@ -728,15 +728,15 @@ msgstr "Placeholder"
 msgid "Table"
 msgstr "Таблица"
 
-#: ncms/asm/am/TableAMValueWidget.js:100
+#: ncms/asm/am/TableAMValueWidget.js:101
 msgid "Number of table columns"
 msgstr "Сколько колонок в таблице"
 
-#: ncms/asm/am/TableAMValueWidget.js:251
+#: ncms/asm/am/TableAMValueWidget.js:252
 msgid "Are you sure to remove the selected rows?"
 msgstr "Пожалуйста, подтвердите удаление выбранных строк"
 
-#: ncms/asm/am/TableAMValueWidget.js:338
+#: ncms/asm/am/TableAMValueWidget.js:339
 msgid "New row"
 msgstr "Новая строка"
 
@@ -1007,11 +1007,11 @@ msgstr "Файл успешно сохранен"
 msgid "File is too big for internal editor"
 msgstr "Файл слишком большой для встроенного редактора"
 
-#: ncms/mmgr/MediaTextFileEditorDlg.js:24
+#: ncms/mmgr/MediaTextFileEditorDlg.js:25
 msgid "Edit file %1"
 msgstr "Редактировать файл %1"
 
-#: ncms/mmgr/MediaTextFileEditorDlg.js:73
+#: ncms/mmgr/MediaTextFileEditorDlg.js:74
 msgid "Changes will be lost. Close?"
 msgstr "Изменения будут потеряны. Закрыть?"
 
