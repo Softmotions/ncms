@@ -8,8 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.ncms.NcmsEnvironment;
@@ -25,13 +24,33 @@ import com.softmotions.ncms.asm.render.AsmRendererContext;
 @SuppressWarnings("unchecked")
 public final class HttlAsmMethods {
 
-    private static final Logger log = LoggerFactory.getLogger(HttlAsmMethods.class);
-
     private HttlAsmMethods() {
     }
 
     public static Asm page() {
         return AsmRendererContext.getSafe().getAsm();
+    }
+
+    @Nullable
+    public static Object asmAnyTTN(String name) {
+        AsmRendererContext rctx = AsmRendererContext.getSafe();
+        return asmAnyTTN(rctx.getAsm(), name);
+    }
+
+    @Nullable
+    public static Object asmAnyTTN(Asm asm, String name) {
+        AsmRendererContext rctx = AsmRendererContext.getSafe();
+        Object v = asmAny(asm, name);
+        if (v instanceof String) {
+            v = StringUtils.trimToNull((String) v);
+        }
+        rctx.put("__asmAnyTTN", v);
+        return v;
+    }
+    
+    public static Object asmCachedTTN() {
+        AsmRendererContext rctx = AsmRendererContext.getSafe();
+        return rctx.get("__asmAnyTTN");
     }
 
     public static boolean asmHasAttribute(String name) {
