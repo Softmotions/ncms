@@ -47,7 +47,16 @@ public final class HttlAsmMethods {
         rctx.put("__asmAnyTTN", v);
         return v;
     }
-    
+
+    public static boolean asmHasAnyTTN(String name) {
+        return asmAnyTTN(name) != null;
+    }
+
+    public static boolean asmHasAnyTTN(Asm asm, String name) {
+        return asmAnyTTN(asm, name) != null;
+    }
+
+    @Nullable
     public static Object asmCachedTTN() {
         AsmRendererContext rctx = AsmRendererContext.getSafe();
         return rctx.get("__asmAnyTTN");
