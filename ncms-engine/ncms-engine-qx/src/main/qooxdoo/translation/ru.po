@@ -993,7 +993,7 @@ msgstr "Новая папка верхнего уровня"
 msgid "Are you sure to remove folder: %1"
 msgstr "Вы действительно желаете безвозвратно удалить папку: %1"
 
-#: ncms/mmgr/MediaTextFileEditor.js:74
+#: ncms/mmgr/MediaTextFileEditor.js:80
 msgid "Save (Ctrl+S)"
 msgstr "Сохранить (Ctrl+S)"
 

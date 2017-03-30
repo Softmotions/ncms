@@ -51,6 +51,12 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.__broadcaster = sm.event.Broadcaster.create({"enabled": false});
         this.__alertBlocker = new ncms.cc.AlertBlocker(this);
 
+        // Init shortcuts
+        this._registerCommand(
+            new sm.ui.core.ExtendedCommand("Control+S"),
+            this.__save, this);
+        this._registerCommandFocusWidget(this);
+
         var badIE = qx.core.Environment.get("engine.name") == "mshtml";
         if (badIE) {
             badIE = parseFloat(qx.core.Environment.get("browser.version")) <= 8 ||
@@ -76,12 +82,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         bt.addListener("execute", this.__save, this);
         hcont.add(bt, {flex: 1});
         this._add(hcont);
-
-        // Init shortcuts
-        this._registerCommand(
-            new sm.ui.core.ExtendedCommand("Control+S"),
-            this.__save, this);
-        this._registerCommandFocusWidget(this);
 
         // Update itself
         var events = ncms.Events.getInstance();
@@ -157,7 +157,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         isSaved: function () {
             return this.__saveBt.getEnabled() == false; // Save bt not enabled
         },
-        
+
         __save: function () {
             if (this.isSaved()) {
                 return;
@@ -201,7 +201,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                 }, this);
                 return;
             }
-            
+
             var path = (spec.folder + spec.name).split("/");
             var url = ncms.Application.ACT.getRestUrl("media.file", path);
             var req = new sm.io.Request(url, "GET", "text/plain");
@@ -267,6 +267,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             } else if (this.__ace) {
                 var ace = this.__ace;
                 var sess = ace.getSession();
+                sess.$lclass = lclass;
                 if (lclass != null) {
                     var Mode = require("ace/mode/" + lclass).Mode;
                     sess.setMode(new Mode());
@@ -292,9 +293,17 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             qx.event.Timer.once(function () {
                 var me = this;
                 require("ace/config").set("workerPath", "resource/ncms/script");
-                require("ace/ext/language_tools");
+                var lt = require("ace/ext/language_tools");
                 var ace = this.__ace = window.ace.edit(this.__aceContainer.getContentElement().getDomElement());
-                ace.setOptions({enableLiveAutocompletion: true});
+                if (!ace.completers || ace.completers.filter(function (c) {
+                        return !!c.$httl;
+                    }).length == 0) {
+                    lt.addCompleter(me.__httlAutocompleter());
+                }
+
+                ace.setOptions({
+                    enableLiveAutocompletion: true
+                });
                 ace.$blockScrolling = Infinity;
                 var session = ace.getSession();
                 session.setUseSoftTabs(true);
@@ -322,6 +331,34 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                     }, 0);
                 });
             }, this, 500);
+        },
+
+        //todo move it to safe place
+        __httlAutocompleter: function () {
+            var words = ncms.mmgr.MediaTextFileEditor.httlWords;
+            return {
+                $httl: true,
+                identifierRegexps: [/[#$*@{A-Za-z0-9]+/],
+                getCompletions: function (editor, sess, pos, prefix, callback) {
+                    if (prefix.length === 0 || sess.$lclass !== 'html') {
+                        callback(null, []);
+                        return;
+                    }
+                    var sa = [];
+                    for (var i = 0, l = words.length; i < l; ++i) {
+                        var w = words[i];
+                        if (prefix.indexOf(w.length > prefix.length ? w.substring(0, prefix.length) : w) === 0) {
+                            sa.push({
+                                caption: words[i],
+                                value: words[i],
+                                score: -words[i].length,
+                                meta: "httl"
+                            });
+                        }
+                    }
+                    callback(null, sa);
+                }
+            }
         }
     },
 
@@ -336,5 +373,118 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
         this.__pendigRo = null;
         this.__saveBt = null;
         this._disposeObjects("__alertBlocker", "__broadcaster");
+    },
+
+    defer: function (statics) {
+        var words = [
+            '##',
+            '#*',
+            '*#',
+            '#if()',
+            '#for()',
+            '#foreach()',
+            '#end',
+            '${@',
+            '${',
+            '#break',
+            '#break()',
+            '#else',
+            '#elseif()',
+            '#macro(',
+            '${include()}',
+            '${read()}',
+            'asm()',
+            'asmAnyTTN()',
+            'asmHasAnyTTN()',
+            'asmCachedTTN()',
+            'asmHasAttribute()',
+            'asmAny()',
+            'page()',
+            'asmNavChilds()',
+            'asmNavChildsAll()',
+            'asmNavChildsPageCriteria()',
+            'link()',
+            'resolve()',
+            'linkHtml()',
+            'asRichRef()',
+            'asTree()',
+            'asTable()',
+            'asImage()',
+            'ogmeta()',
+            'in()',
+            'inICase()',
+            'notNull()',
+            'blank()',
+            'ifTrue()',
+            'requestParamMatched()',
+            'requestParameter()',
+            'ifRequestParameter()',
+            'cookie()',
+            'ifCookie()',
+            'requestLanguage()',
+            'encodeUriComponent()',
+            'randomSublist()',
+            'split()',
+            'includeTemplate()',
+            'siteFile()',
+            'format()',
+            'format2()',
+            'formatEng()',
+            'translate()',
+            'config()',
+            'env()',
+            'rootUrl()',
+            'isPreview()',
+            'isAndroidMobile()',
+            'isAndroidTablet()',
+            'isIpad()',
+            'isIphone()',
+            'isMobile()',
+            'isTablet()',
+            'sum()',
+            'avg()',
+            'max()',
+            'min()',
+            'clip()',
+            'repeat()',
+            'split()',
+            'md5()',
+            'sha()',
+            'digest()',
+            'toUnderlineName()',
+            'toCamelName()',
+            'toCapitalName()',
+            'now()',
+            'random()',
+            'uuid()',
+            'toLocale()',
+            'toBoolean()',
+            'toChar()',
+            'toByte()',
+            'toShort()',
+            'toInt()',
+            'toLong()',
+            'toFloat()',
+            'toDouble()',
+            'toClass()',
+            'escapeXml()',
+            'escapeString()',
+            'unescapeString()',
+            'unescapeXml()',
+            'escapeBase64()',
+            'unescapeBase64()',
+            'toCycle()',
+            'sort()',
+            'recursive()'
+        ];
+        [].concat(words).forEach(function (w) {
+            if (!w.match(/^(#|\$\{).*/)) {
+                words.push('${' + w + '}');
+            }
+        });
+        words.sort(function (w1, w2) {
+            return (w1.length > w2.length) ? 1 : (w2.length < w1.length ? -1 : 0);
+        });
+        statics.httlWords = words;
     }
 });
