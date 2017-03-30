@@ -384,6 +384,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
             '${@',
             '${',
             '#break',
+            '#set',
             '#break()',
             '#else',
             '#elseif()',
