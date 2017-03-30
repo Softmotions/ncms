@@ -377,9 +377,6 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
     defer: function (statics) {
         var words = [
-            '##',
-            '#*',
-            '*#',
             '#if()',
             '#for()',
             '#foreach()',
