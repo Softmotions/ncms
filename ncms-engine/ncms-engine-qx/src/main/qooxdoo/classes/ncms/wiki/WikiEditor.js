@@ -496,6 +496,15 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 insertMarkdown: surround(2, "*", "")
             });
             this._addToolbarControl({
+                id: "Code",
+                part: "main",
+                icon: "ncms/icon/16/wiki/text_code.png",
+                tooltipText: this.tr("Code"),
+                prompt: cprompt(this.tr("Insert code string")),
+                shortcut: "Ctrl+'",
+                insertMediawiki: wrap(this.__mediaWikiCode)
+            });
+            this._addToolbarControl({
                 id: "Italic",
                 part: "main",
                 icon: "ncms/icon/16/wiki/text_italic.png",
@@ -952,6 +961,17 @@ qx.Class.define("ncms.wiki.WikiEditor", {
             val.push("[" + name + "]");
             val.push("(Media:" + data["id"] + "/" + data["name"] + ")");
             return val.join("");
+        },
+
+
+        __mediaWikiCode: function () {
+            var val = [];
+            val.push("<code>");
+            val.push(ncms.wiki.WikiEditor.SELECTION_START);
+            val.push(this.tr("Code"));
+            val.push(ncms.wiki.WikiEditor.SELECTION_END);
+            val.push("</code>");
+            return val;
         },
 
         __mediaWikiUL: function () {
