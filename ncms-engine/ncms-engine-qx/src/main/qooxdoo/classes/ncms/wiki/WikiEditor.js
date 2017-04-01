@@ -500,8 +500,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 part: "main",
                 icon: "ncms/icon/16/wiki/text_code.png",
                 tooltipText: this.tr("Code"),
-                prompt: cprompt(this.tr("Insert code string")),
-                shortcut: "Ctrl+'",
+                prompt: cprompt(this.tr("Code text")),
                 insertMediawiki: wrap(this.__mediaWikiCode)
             });
             this._addToolbarControl({
@@ -964,11 +963,11 @@ qx.Class.define("ncms.wiki.WikiEditor", {
         },
 
 
-        __mediaWikiCode: function () {
+        __mediaWikiCode: function (text) {
             var val = [];
             val.push("<code>");
             val.push(ncms.wiki.WikiEditor.SELECTION_START);
-            val.push(this.tr("Code"));
+            val.push(text);
             val.push(ncms.wiki.WikiEditor.SELECTION_END);
             val.push("</code>");
             return val;
