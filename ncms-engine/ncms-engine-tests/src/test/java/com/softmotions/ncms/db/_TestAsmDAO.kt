@@ -2,7 +2,6 @@ package com.softmotions.ncms.db
 
 import com.softmotions.ncms.DbBaseTest
 import com.softmotions.ncms.asm.*
-import kotlinx.support.jdk7.use
 import org.apache.ibatis.exceptions.PersistenceException
 import org.testng.Assert
 import org.testng.annotations.AfterClass
