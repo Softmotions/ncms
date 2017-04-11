@@ -59,7 +59,7 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/select/count")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     open fun count(@Context req: HttpServletRequest): Long =
             selectOneByCriteria(createTpQ(req), "count") ?: 0L
@@ -138,7 +138,7 @@ constructor(val sess: SqlSession,
 
     @DELETE
     @Path("/tp/{id}")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     @Transactional
     open fun tpDelete(@PathParam("id") id: Long): Int {
@@ -148,7 +148,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/tp/{id}/enable")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     @Transactional
     open fun tpEnable(@PathParam("id") id: Long): Int {
@@ -160,7 +160,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/tp/{id}/disable")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     @Transactional
     open fun tpDisable(@PathParam("id") id: Long): Int {

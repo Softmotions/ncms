@@ -67,7 +67,7 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/select/count")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     open fun rulesCount(@Context req: HttpServletRequest): Long =
             selectOneByCriteria(createRulesQ(req), "selectRulesCount") ?: 0L
@@ -180,7 +180,7 @@ constructor(val sess: SqlSession,
 
     @DELETE
     @Path("/rule/{rid}")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     @Transactional
     open fun ruleDelete(@PathParam("rid") rid: Long): Int {
@@ -190,7 +190,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}/enable")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     @Transactional
     open fun ruleEnable(@PathParam("rid") rid: Long): Int {
@@ -201,7 +201,7 @@ constructor(val sess: SqlSession,
 
     @POST
     @Path("/rule/{rid}/disable")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     @Transactional
     open fun ruleDisable(@PathParam("rid") rid: Long): Int {
@@ -236,7 +236,7 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/rule/{rid}/filters/select/count")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     @Transactional
     open fun filtersCount(@Context req: HttpServletRequest,
@@ -328,7 +328,7 @@ constructor(val sess: SqlSession,
 
     @GET
     @Path("/rule/{rid}/actions/select/count")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @RequiresRoles("mtt")
     @Transactional
     open fun actionsCount(@Context req: HttpServletRequest,

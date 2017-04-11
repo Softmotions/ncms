@@ -63,7 +63,7 @@ public class NcmsSecurityRS {
      */
     @GET
     @Path("users/count")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     public Integer usersCount(@QueryParam("stext") String stext, @QueryParam("onlyActive") boolean onlyActive) {
         return onlyActive ? userDatabase.getActiveUsersCount(stext) : userDatabase.getUsersCount(stext);
     }

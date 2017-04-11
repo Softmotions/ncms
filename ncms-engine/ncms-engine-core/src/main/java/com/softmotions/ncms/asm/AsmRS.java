@@ -613,7 +613,7 @@ public class AsmRS extends MBDAOSupport {
 
     @GET
     @Path("select/count")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @Transactional
     public Integer count(@Context HttpServletRequest req) {
         //noinspection ConstantConditions

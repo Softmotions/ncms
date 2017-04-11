@@ -132,7 +132,7 @@ public class MediaWikiRS {
      */
     @GET
     @Path("link/{spec:(Http|Https|Ftp|Smb|Sftp|Scp)://.*}")
-    @Produces("text/html")
+    @Produces("text/html;charset=UTF-8")
     public Redirect externalLink(@PathParam("spec") String spec,
                                  @Context HttpServletRequest req,
                                  @Context HttpServletResponse resp) throws Exception {

@@ -482,7 +482,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     @GET
     @javax.ws.rs.Path("/select/count")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @Transactional
     public Integer selectCount(@Context HttpServletRequest req) throws Exception {
         ensureAuthenticated(req, null);

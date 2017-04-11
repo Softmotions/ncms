@@ -1265,7 +1265,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @GET
     @Path("search/count")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @Nullable
     public Number searchPageCount(@Context HttpServletRequest req) {
         MBCriteriaQuery cq = createSearchQ(req, true);
@@ -1345,7 +1345,7 @@ public class PageRS extends MBDAOSupport implements PageService {
 
     @GET
     @Path("rights/{pid}")
-    @Produces("text/plain")
+    @Produces("text/plain;charset=UTF-8")
     @Transactional
     public String getAccessRights(@Context HttpServletRequest req,
                                   @PathParam("pid") Long pid) {
