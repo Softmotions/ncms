@@ -20,6 +20,10 @@ public class Digest {
         return getDigest("SHA", value);
     }
 
+    public static String getSHA256(String value) {
+        return getDigest("SHA-256", value);
+    }
+
     public static String getDigest(String digest, String value) {
         MessageDigest messageDigest;
         try {
