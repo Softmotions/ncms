@@ -9,9 +9,9 @@ import com.softmotions.commons.ebus.EBus;
  */
 public interface NcmsEventBus extends EBus {
 
-    void fireOnSuccessCommit(Object event);
+    <T> T fireOnSuccessCommit(T event);
 
-    void fireOnRollback(Object event);
+    <T> T fireOnRollback(T event);
 
     void unlockOnTxFinish(Lock lock);
 

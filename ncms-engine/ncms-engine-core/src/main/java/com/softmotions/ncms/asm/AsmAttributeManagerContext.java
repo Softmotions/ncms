@@ -55,13 +55,9 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
 
     private final I18n i18n;
 
-    private final AsmDAO adao;
-
     private final List<AsmAttribute> attributes = new ArrayList<>();
 
     private Long asmId;
-
-    private String asmName;
 
     private Map<AsmAttribute, Set<Long>> fileDeps;
 
@@ -94,7 +90,6 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
 
     public void setAsmId(Long asmId) {
         this.asmId = asmId;
-        this.asmName = null;
     }
 
     public Long getAsmId() {
@@ -107,7 +102,6 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
                                       PageSecurityService pageSecurity,
                                       I18n i18n,
                                       ObjectMapper mapper,
-                                      AsmDAO adao,
                                       SqlSession sess) {
         super(AsmAttributeManagerContext.class, sess);
         this.pageSecurity = pageSecurity;
@@ -115,7 +109,6 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
         this.response = response;
         this.mapper = mapper;
         this.i18n = i18n;
-        this.adao = adao;
         this.locale = i18n.getLocale(request);
     }
 
@@ -143,8 +136,9 @@ public class AsmAttributeManagerContext extends MBDAOSupport {
     }
 
     @Nullable
-    public Object getUserData(String key) {
-        return (userData == null) ? null : userData.get(key);
+    @SuppressWarnings("unchecked")
+    public <T> T getUserData(String key) {
+        return (userData == null) ? null : (T) userData.get(key);
     }
 
     public List<AsmAttribute> getAttributes() {

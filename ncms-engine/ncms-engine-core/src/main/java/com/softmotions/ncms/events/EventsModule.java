@@ -59,7 +59,7 @@ public class EventsModule extends AbstractModule {
         }
 
         @Override
-        public void fireOnSuccessCommit(Object event) {
+        public <T> T fireOnSuccessCommit(T event) {
             sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
                 @Override
                 public void commit(boolean success) {
@@ -79,10 +79,11 @@ public class EventsModule extends AbstractModule {
                 public void rollback() {
                 }
             });
+            return event;
         }
 
         @Override
-        public void fireOnRollback(Object event) {
+        public <T> T fireOnRollback(T event) {
             sessionManager.registerNextEventSessionListener(new MBSqlSessionListener() {
                 @Override
                 public void commit(boolean success) {
@@ -103,6 +104,7 @@ public class EventsModule extends AbstractModule {
                     fire(event);
                 }
             });
+            return event;
         }
 
         @Override
