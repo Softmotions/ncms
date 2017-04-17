@@ -6,10 +6,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -971,10 +970,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                      kvmeta);
     }
 
-    public File getBasedir() {
-        return basedir;
-    }
-
 
     @Nullable
     private Map<String, Object> getCachedMeta(Long id) {
@@ -1462,7 +1457,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     rb.header(HttpHeaders.CONTENT_LENGTH, clength);
                 }
                 rb.entity((StreamingOutput) output -> {
-                              try (final FileInputStream fis = new FileInputStream(respFile)) {
+                              try (final InputStream fis = Files.newInputStream(respFile.toPath())) {
                                   IOUtils.copyLarge(fis, output);
                               } finally {
                                   l.close();
@@ -1719,7 +1714,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             try (final ResourceLock wl = new ResourceLock(path, true)) {
                 if (source.exists()) {
                     tfile.getParentFile().mkdirs();
-                    try (final FileOutputStream fos = new FileOutputStream(tfile)) {
+                    try (final OutputStream fos = Files.newOutputStream(tfile.toPath())) {
                         if (!ImageIO.write(image, mtype.getSubtype(), fos)) {
                             throw new RuntimeException("Cannot find image writer for: '" +
                                                        mtype.getSubtype() + "'");
@@ -1866,7 +1861,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 log.debug("Writing {}{} into: {} as {} size: {}",
                           folder, name, target.getAbsolutePath(), mtype, actualLength);
             }
-            try (final FileOutputStream fos = new FileOutputStream(target)) {
+            try (final OutputStream fos = Files.newOutputStream(target.toPath())) {
                 if (us != null) {
                     us.writeTo(fos);
                 } else {
@@ -2502,7 +2497,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
 
             try (DirectoryScanner ds = new DirectoryScannerFactory(
-                    getBasedir().toPath().resolve(importTarget)).createScanner()) {
+                    getBaseDir().toPath().resolve(importTarget)).createScanner()) {
 
                 ds.scan(new DirectoryScannerVisitor() {
                     @Override
@@ -2572,7 +2567,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             }
         }
         log.info("Importing {}", target);
-        try (final FileInputStream fis = new FileInputStream(srcFile)) {
+        try (final InputStream fis = Files.newInputStream(srcFile.toPath())) {
             try {
                 int flags = 0;
                 if (system) {

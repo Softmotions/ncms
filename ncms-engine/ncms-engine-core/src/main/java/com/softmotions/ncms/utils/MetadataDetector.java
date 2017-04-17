@@ -1,8 +1,8 @@
 package com.softmotions.ncms.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.mime.MediaType;
@@ -42,7 +42,7 @@ public class MetadataDetector {
 
 
     public static Metadata detect(final MediaType type, File f) {
-        try (InputStream is = new FileInputStream(f)) {
+        try (InputStream is = Files.newInputStream(f.toPath())) {
             return detect(type, is);
         } catch (Exception e) {
             throw new RuntimeException(e);

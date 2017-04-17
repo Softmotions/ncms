@@ -1,8 +1,6 @@
 package com.softmotions.ncms.media;
 
 import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +10,7 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.nio.file.Files;
 import java.util.Locale;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -142,7 +141,7 @@ class MediaResourceImpl implements MediaResource, Serializable {
         Reader reader;
         Closeable lock = rs.acquireReadResourceLock(path);
         try {
-            InputStream is = new InputStreamSession(lock, new FileInputStream(new File(rs.getBasedir(), spath)));
+            InputStream is = new InputStreamSession(lock, Files.newInputStream(rs.getBaseDir().toPath().resolve(spath)));
             reader = (getEncoding() != null) ? new InputStreamReader(is, getEncoding()) : new InputStreamReader(is);
         } catch (Throwable t) {
             lock.close();
@@ -165,7 +164,7 @@ class MediaResourceImpl implements MediaResource, Serializable {
         InputStream is;
         Closeable lock = rs.acquireReadResourceLock(path);
         try {
-            is = new InputStreamSession(lock, new FileInputStream(new File(rs.getBasedir(), spath)));
+            is = new InputStreamSession(lock, Files.newInputStream(rs.getBaseDir().toPath().resolve(spath)));
         } catch (Throwable t) {
             lock.close();
             throw new IOException(t);
