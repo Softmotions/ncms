@@ -229,6 +229,8 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
                     lclass = "css";
                 } else if (qx.lang.String.endsWith(fname, ".jsp")) {
                     lclass = "jsp";
+                } else if (ctype.indexOf("python") !== -1) {
+                    lclass = "python";
                 } else {
                     lclass = "text";
                 }

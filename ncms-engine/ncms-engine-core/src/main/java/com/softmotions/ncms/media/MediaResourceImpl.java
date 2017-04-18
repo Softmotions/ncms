@@ -11,6 +11,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -122,6 +123,15 @@ class MediaResourceImpl implements MediaResource, Serializable {
             IOUtils.copyLarge(r, sw);
         }
         return sw.toString();
+    }
+
+    @Override
+    public Path getFileSystemPath() {
+        String spath = path;
+        if (spath.charAt(0) == '/') {
+            spath = spath.substring(1);
+        }
+        return rs.getBaseDir().toPath().resolve(spath);
     }
 
     @Override

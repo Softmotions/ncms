@@ -75,8 +75,7 @@ qx.Class.define("ncms.wiki.InsertVimeoDlg", {
         __isCodeLoading: false,
 
         __validateVimeoId: function (id) {
-            id = id.trim();
-
+            id = (id || "").trim();
             if (id.indexOf('http') === 0) {
                 this.__validateURL(id);
             } else {

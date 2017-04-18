@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -x
+set -e
 
 ACE_BASE="https://raw.githubusercontent.com/ajaxorg/ace-builds/2268d21c5893320330c9daf10b70b1973ca45eba/src-min"
 
@@ -32,6 +33,9 @@ curl ${ACE_BASE}/mode-sass.js >> ./ace_all.js
 
 echo -e "\n\n//mode scss \n" >> ./ace_all.js
 curl ${ACE_BASE}/mode-scss.js >> ./ace_all.js
+
+echo -e "\n\n//mode python \n" >> ./ace_all.js
+curl ${ACE_BASE}/mode-python.js >> ./ace_all.js
 
 echo -e "\n\n//theme eclipse \n" >> ./ace_all.js
 curl ${ACE_BASE}/theme-eclipse.js >> ./ace_all.js

@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -61,6 +62,11 @@ public interface MediaResource {
      * @throws java.io.IOException - If an I/O error occurs
      */
     String getSource() throws IOException;
+
+    /**
+     * Get real file system path of the media item.
+     */
+    Path getFileSystemPath();
 
     /**
      * Get the resource source reader.

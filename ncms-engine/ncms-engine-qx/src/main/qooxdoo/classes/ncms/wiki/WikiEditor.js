@@ -21,7 +21,11 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         SELECTION_START: {},
 
-        SELECTION_END: {}
+        SELECTION_END: {},
+
+        STATIC_TOOLBAR_CONTROLS: [],
+
+        STATIC_TOOLBAR_REMOVES: []
     },
 
     events: {
@@ -107,7 +111,10 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __asmSpec: null,
 
-
+        getAsmSpec: function () {
+            return this.__asmSpec;
+        },
+        
         getMinimalLineHeight: function () {
             return this._getTextArea().getMinimalLineHeight();
         },
@@ -202,9 +209,8 @@ qx.Class.define("ncms.wiki.WikiEditor", {
          *  "icon" : String. required. Icon for control in toobar and toolbar overflow menu
          *  "tooltipText" : String. optional. Text for control tooltip
          *  "prompt" : Function. optional. Callback for prompt additional params by user
-         *          function(cb, editor, stext) {}
+         *          function(stext, cb) {}
          *                  - cb : function(promptData) - callback for chain
-         *                  - editor - current WikiEditor instance
          *                  - stext - selected text
          *  "insert<type>": Function. optional-required. Callback for processing prompt data and modifying editor text.
          *         function(cb, promptData) {}
@@ -382,7 +388,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 if (typeof fprompt === "function") {
                     fprompt(stext, function (data) {
                         me._insertText(icb(data));
-                    });
+                    }, this);
                 } else {
                     me._insertText(icb(stext));
                 }
@@ -681,7 +687,7 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 insertMediawiki: wrap(this.__mediaWikiSlideSharePresentation, this)
             });
 
-            this.addToolbarControl({
+            this._addToolbarControl({
                 id: "Vimeo",
                 part: "menu",
                 icon: "ncms/icon/16/wiki/vimeo.png",
@@ -690,6 +696,14 @@ qx.Class.define("ncms.wiki.WikiEditor", {
                 prompt: this.__insertVimeoPrompt.bind(this),
                 insertMediawiki: wrap(this.__mediaWikiVimeo, this)
             });
+
+            ncms.wiki.WikiEditor.STATIC_TOOLBAR_CONTROLS.forEach(function (opts) {
+                this.addToolbarControl(opts);
+            }, this);
+
+            ncms.wiki.WikiEditor.STATIC_TOOLBAR_REMOVES.forEach(function (ex) {
+               this.excludeToolbarControl(ex);
+            }, this);
         },
 
         _getSelectionStart: function () {

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,6 +57,11 @@ public final class HttlMediaResourceAdapter implements MediaResource {
     @Override
     public long getLength() {
         return res.getLength();
+    }
+
+    @Override
+    public Path getFileSystemPath() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
