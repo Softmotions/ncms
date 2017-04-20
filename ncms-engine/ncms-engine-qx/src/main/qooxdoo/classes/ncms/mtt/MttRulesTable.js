@@ -64,6 +64,7 @@ qx.Class.define("ncms.mtt.MttRulesTable", {
                 statusBarVisible: true,
                 showCellFocusIndicator: false,
                 focusCellOnPointerMove: false,
+                columnVisibilityButtonVisible: false,
                 dataRowRenderer: rr
             });
             if (this.__smodel) {

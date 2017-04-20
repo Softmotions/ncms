@@ -47,13 +47,8 @@ qx.Class.define("ncms.usr.UserSelector", {
         this.addListener("appear", function () {
             sf.focus();
         });
-
-
-        this.__table = new ncms.usr.UsersTable().set({
-            "statusBarVisible": false,
-            "showCellFocusIndicator": false
-        });
-
+        
+        this.__table = new ncms.usr.UsersTable();
         if (smodel != null) {
             this.__table.setSelectionModel(smodel);
         }
@@ -61,10 +56,9 @@ qx.Class.define("ncms.usr.UserSelector", {
             var user = this.getSelectedUser();
             this.fireDataEvent("userSelected", user ? user : null);
         }, this);
-
+        
         this._add(this.__sf);
         this._add(this.__table, {flex: 1});
-
         this.setConstViewSpec(constViewSpec || null);
     },
 

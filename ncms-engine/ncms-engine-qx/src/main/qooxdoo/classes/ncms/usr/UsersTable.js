@@ -39,6 +39,11 @@ qx.Class.define("ncms.usr.UsersTable", {
         if (cInd != null) {
             tcm.getBehavior().setWidth(cInd, "2*");
         }
+        this.set({
+            "statusBarVisible": false,
+            "showCellFocusIndicator": false,
+            "columnVisibilityButtonVisible": false
+        });
     },
 
     members: {

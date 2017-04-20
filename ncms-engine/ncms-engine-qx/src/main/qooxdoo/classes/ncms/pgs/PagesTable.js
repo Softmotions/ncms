@@ -48,6 +48,11 @@ qx.Class.define("ncms.pgs.PagesTable", {
         };
 
         this.base(arguments, tm, custom);
+        this.set({
+            "statusBarVisible": false,
+            "showCellFocusIndicator": false,
+            "columnVisibilityButtonVisible": false
+        })
     },
 
     members: {

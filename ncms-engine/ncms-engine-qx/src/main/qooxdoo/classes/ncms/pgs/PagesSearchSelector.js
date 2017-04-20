@@ -51,12 +51,7 @@ qx.Class.define("ncms.pgs.PagesSearchSelector", {
         this.addListener("appear", function () {
             sf.focus();
         });
-
-        this.__table = new ncms.pgs.PagesTable(useColumns, overrideColumsMeta).set({
-            "statusBarVisible": false,
-            "showCellFocusIndicator": false
-        });
-
+        this.__table = new ncms.pgs.PagesTable(useColumns, overrideColumsMeta);
         this.__table.getSelectionModel().addListener("changeSelection", function () {
             var page = this.__table.getSelectedPage();
             this.fireDataEvent("itemSelected", page ? page : null);
