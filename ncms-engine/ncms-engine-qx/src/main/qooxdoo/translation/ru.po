@@ -42,7 +42,7 @@ msgstr "Инструменты"
 msgid "Edit assembly attribute"
 msgstr "Редактирование атрибута страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:256 ncms/asm/AsmEditor.js:88
+#: ncms/pgs/PageEditorEditPage.js:257 ncms/asm/AsmEditor.js:88
 #: ncms/asm/am/AsmCoreAM.js:115 ncms/mtt/filters/MttResourceFilter.js:30
 #: ncms/asm/am/ImageAMValueWidget.js:104 ncms/mtt/filters/MttFilterDlg.js:40
 #: ncms/mtt/actions/MttActionDlg.js:40 ncms/usr/UserEditForm.js:27
@@ -108,7 +108,7 @@ msgstr "Обязательное в GUI"
 msgid "Ok"
 msgstr "Ок"
 
-#: ncms/pgs/PageEditorEditPage.js:75 ncms/mtt/tp/MttTpEditor.js:80
+#: ncms/pgs/PageEditorEditPage.js:76 ncms/mtt/tp/MttTpEditor.js:80
 #: ncms/wiki/InsertSlideSharePresentationDlg.js:57 ncms/wiki/TableDlg.js:63
 #: ncms/asm/AsmSelectorDlg.js:48 ncms/pgs/PagesSelectorDlg.js:58
 #: ncms/wiki/InsertYoutubeDlg.js:62 ncms/mtt/filters/MttFilterDlg.js:78
@@ -180,7 +180,7 @@ msgstr "Перезаписать атрибут"
 msgid "New"
 msgstr "Создать"
 
-#: ncms/pgs/PageEditorEditPage.js:42 ncms/mtt/filters/MttFiltersTable.js:181
+#: ncms/pgs/PageEditorEditPage.js:43 ncms/mtt/filters/MttFiltersTable.js:181
 #: ncms/mmgr/MediaFilesSelector.js:802 ncms/mtt/actions/MttActionsTree.js:239
 #: ncms/asm/AsmAttrsTable.js:212 ncms/asm/am/TreeAMValueWidget.js:452
 msgid "Edit"
@@ -240,7 +240,7 @@ msgstr "Имя класса контроллера сборки (assembly)"
 msgid "Controller"
 msgstr "Контроллер"
 
-#: ncms/pgs/PageEditorEditPage.js:574 ncms/asm/AsmEditor.js:112
+#: ncms/pgs/PageEditorEditPage.js:575 ncms/asm/AsmEditor.js:112
 msgid "Published"
 msgstr "Опубликовано"
 
@@ -257,7 +257,7 @@ msgstr "Страница"
 msgid "News page"
 msgstr "Новость"
 
-#: ncms/pgs/PageEditorEditPage.js:104 ncms/asm/AsmEditor.js:119
+#: ncms/pgs/PageEditorEditPage.js:105 ncms/asm/AsmEditor.js:119
 msgid "Template"
 msgstr "Шаблон"
 
@@ -904,7 +904,7 @@ msgstr "Папка"
 msgid "Image size"
 msgstr "Размер изображения"
 
-#: ncms/pgs/PageEditorEditPage.js:94 ncms/mmgr/MediaFilesSelector.js:774
+#: ncms/pgs/PageEditorEditPage.js:95 ncms/mmgr/MediaFilesSelector.js:774
 #: ncms/mmgr/MediaFileEditor.js:325 ncms/pgs/PageEditorInfoPage.js:40
 msgid "Preview"
 msgstr "Предпросмотр"
@@ -1417,7 +1417,7 @@ msgstr "Шаблон URL для трекинг пикселя"
 msgid "Tracking pixel JS code"
 msgstr "JS код трекинг пикселя"
 
-#: ncms/pgs/PageEditorEditPage.js:68 ncms/mtt/tp/MttTpEditor.js:75
+#: ncms/pgs/PageEditorEditPage.js:69 ncms/mtt/tp/MttTpEditor.js:75
 #: ncms/usr/UserEditForm.js:61
 msgid "Save"
 msgstr "Сохранить"
@@ -1503,44 +1503,44 @@ msgstr "Добавить пользователя в список прав"
 msgid "Remove user recursively"
 msgstr "Убрать пользователя (рекурсивно)"
 
-#: ncms/pgs/PageEditorEditPage.js:64
+#: ncms/pgs/PageEditorEditPage.js:65
 msgid "Publish page changes"
 msgstr "Опубликовать внесенные изменения"
 
-#: ncms/pgs/PageEditorEditPage.js:99
+#: ncms/pgs/PageEditorEditPage.js:100
 msgid "Page files"
 msgstr "Файлы страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:108 ncms/pgs/PageEditorEditPage.js:109
-#: ncms/pgs/PageEditorEditPage.js:411
+#: ncms/pgs/PageEditorEditPage.js:109 ncms/pgs/PageEditorEditPage.js:110
+#: ncms/pgs/PageEditorEditPage.js:412
 msgid "Please select the template page"
 msgstr "Пожалуйста, выберите шаблон для страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:196
+#: ncms/pgs/PageEditorEditPage.js:197
 msgid "This page is locked<br>since the user <b>%1</b> is editing it"
 msgstr "В настоящий момент пользователь: <b>%1</b> редактирует эту страницу"
 
-#: ncms/pgs/PageEditorEditPage.js:415
+#: ncms/pgs/PageEditorEditPage.js:416
 msgid "Templates"
 msgstr "Шаблоны"
 
-#: ncms/pgs/PageEditorEditPage.js:463
+#: ncms/pgs/PageEditorEditPage.js:464
 msgid "Page fields contain errors"
 msgstr "В полях страницы обнаружены ошибки"
 
-#: ncms/pgs/PageEditorEditPage.js:487
+#: ncms/pgs/PageEditorEditPage.js:488
 msgid "Failed to save page."
 msgstr "Ошибка при сохранении страницы"
 
-#: ncms/pgs/PageEditorEditPage.js:509
+#: ncms/pgs/PageEditorEditPage.js:510
 msgid "Page saved successfully"
 msgstr "Страница успешно сохранена"
 
-#: ncms/pgs/PageEditorEditPage.js:516
+#: ncms/pgs/PageEditorEditPage.js:517
 msgid "Failed to save page. Error: %1"
 msgstr "Ошибка при сохранении страницы: %1"
 
-#: ncms/pgs/PageEditorEditPage.js:557
+#: ncms/pgs/PageEditorEditPage.js:558
 msgid ""
 "Are you sure to unpublish this page? There are pages linked with this page. "
 "Please see the <a href=\"%1\" target='_blank' rel='noopener noreferrer'>list"
@@ -1550,15 +1550,15 @@ msgstr ""
 "эту страницу. Пожалуйста, ознакомтесь со <a href=\"%1\" target='_blank' "
 "rel='noopener noreferrer'>списком ссылающихся страниц</a>"
 
-#: ncms/pgs/PageEditorEditPage.js:574
+#: ncms/pgs/PageEditorEditPage.js:575
 msgid "Not published"
 msgstr "Не опубликовано"
 
-#: ncms/pgs/PageEditorEditPage.js:581
+#: ncms/pgs/PageEditorEditPage.js:582
 msgid "Dow you really want to dispose pending changes?"
 msgstr "Вы действительно желаете отменить несохраненные изменения?"
 
-#: ncms/pgs/PageEditorEditPage.js:604
+#: ncms/pgs/PageEditorEditPage.js:605
 msgid "Organize the page files"
 msgstr "Управление файлами страницы"
 

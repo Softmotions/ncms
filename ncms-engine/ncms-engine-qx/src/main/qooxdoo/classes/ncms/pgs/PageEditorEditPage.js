@@ -24,7 +24,8 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
          */
         "pageEditSpec": {
             "check": "Object",
-            "apply": "__applyPageEditSpec"
+            "apply": "__applyPageEditSpec",
+            init: null
         },
 
         /**
@@ -170,7 +171,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         __onPageLocked: function (ev) {
             var data = ev.getData(),
                 ps = this.getPageEditSpec();
-            if (ps.id == data.id) {
+            if (ps != null && ps.id == data.id) {
                 var user = ncms.Application.getUserId();
                 ps.lockUser = data.user;
                 this.setPageBlocked(data.user != user);
@@ -180,7 +181,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         __onPageUnlocked: function (ev) {
             var data = ev.getData(),
                 ps = this.getPageEditSpec();
-            if (ps.id == data.id) {
+            if (ps != null && ps.id == data.id) {
                 ps.lockUser = null;
                 this.setPageBlocked(false);
             }
