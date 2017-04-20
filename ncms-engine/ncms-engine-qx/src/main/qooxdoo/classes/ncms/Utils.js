@@ -211,6 +211,7 @@ qx.Class.define("ncms.Utils", {
             "pm",
             "po",
             "properties",
+            "py",
             "rdf",
             "rst",
             "sass",
