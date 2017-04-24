@@ -58,7 +58,8 @@
           FROM new_set
           WHERE NOT EXISTS (SELECT 1 FROM USER_ENV u
                               WHERE u.userid = new_set.userid
-                              AND u.type = new_set.type)
+                              AND u.type = new_set.type
+                              AND u.${vcol} = new_set.${vcol})
     </update>
 
     <delete id="delSet"
