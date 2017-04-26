@@ -751,6 +751,17 @@
     </select>
 
 
+    <select id="asmAttributesByType"
+            parameterType="map"
+            resultType="com.softmotions.ncms.asm.AsmAttribute">
+        SELECT
+            attr.*
+        FROM ASM_ATTRS AS attr
+        WHERE attr.asm_id = #{asmId}
+              AND attr.type = #{type}
+    </select>
+
+
     <select id="countAsmRefByType" parameterType="map" resultType="long">
         SELECT COUNT(*)
         FROM ASM_REFDATA

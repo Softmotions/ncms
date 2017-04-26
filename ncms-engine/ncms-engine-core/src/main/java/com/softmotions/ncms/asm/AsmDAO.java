@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.StringUtils;
@@ -423,6 +424,14 @@ public class AsmDAO extends MBDAOSupport {
         return selectOne("asmAttributeByName",
                          "asmId", asmId,
                          "name", name);
+    }
+
+    @Nonnull
+    @Transactional
+    public List<AsmAttribute> asmAttributesByType(long asmId, String type) {
+        return select("asmAttributesByType",
+                      "asmId", asmId,
+                      "type", type);
     }
 
 
