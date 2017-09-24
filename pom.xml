@@ -76,7 +76,7 @@
         <bliki.version>3.1.1-SNAPSHOT</bliki.version>
         <shiro.version>1.4.0</shiro.version>
         <jericho.version>3.4</jericho.version>
-        <tika.version>1.15</tika.version>
+        <tika.version>1.16</tika.version>
         <mybatis.version>3.4.5</mybatis.version>
         <mybatis-guice.version>3.10</mybatis-guice.version>
         <testng.version>6.12</testng.version>
