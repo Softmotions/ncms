@@ -18,7 +18,7 @@
         <dependency>
             <groupId>io.bit3</groupId>
             <artifactId>jsass</artifactId>
-            <version>5.4.3</version>
+            <version>5.5.4</version>
         </dependency>
         <dependency>
             <groupId>softmotions</groupId>
