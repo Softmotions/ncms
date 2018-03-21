@@ -100,6 +100,7 @@ import com.softmotions.weboot.scheduler.Scheduled;
 @Path("adm/pages")
 @Produces("application/json;charset=UTF-8")
 @Singleton
+@SuppressWarnings("unchecked")
 public class PageRS extends MBDAOSupport implements PageService {
 
     public static final String INDEX_PAGE_REQUEST_ATTR_NAME = "_PAGERS_INDEX_PAGE";

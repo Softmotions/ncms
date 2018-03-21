@@ -13,6 +13,7 @@ import com.softmotions.ncms.asm.Asm;
  */
 
 @Singleton
+@SuppressWarnings("unchecked")
 public class AsmRendererHelper {
 
     private final Injector injector;

@@ -28,6 +28,7 @@ import com.softmotions.web.HttpUtils;
 /**
  * @author Adamansky Anton (adamansky@softmotions.com)
  */
+@SuppressWarnings("unchecked")
 public class HttlMttMethods {
 
     private static final Logger log = LoggerFactory.getLogger(HttlMttMethods.class);

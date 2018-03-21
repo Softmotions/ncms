@@ -25,6 +25,7 @@ import com.softmotions.weboot.i18n.I18n;
  * @author Adamansky Anton (adamansky@softmotions.com)
  */
 @NotThreadSafe
+@SuppressWarnings("unchecked")
 public abstract class AsmRendererContext extends HashMap<String, Object> {
 
     public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = new ThreadLocal<>();

@@ -14,6 +14,7 @@ import com.google.inject.Singleton;
  */
 
 @Singleton
+@SuppressWarnings("unchecked")
 public class DefaultAsmAttributeManagersRegistry implements AsmAttributeManagersRegistry {
 
     /**

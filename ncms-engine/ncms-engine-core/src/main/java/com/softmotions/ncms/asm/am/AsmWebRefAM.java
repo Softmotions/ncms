@@ -229,7 +229,7 @@ public class AsmWebRefAM extends AsmAttributeManagerSupport {
         if (cs == null) {
             cs = "UTF-8";
         }
-        List<NameValuePair> qparams = URLEncodedUtils.parse(location, cs);
+        List<NameValuePair> qparams = URLEncodedUtils.parse(location, Charset.forName(cs));
         if (!qparams.isEmpty()) {
             if (options == null) {
                 options = new Flat3Map<>();

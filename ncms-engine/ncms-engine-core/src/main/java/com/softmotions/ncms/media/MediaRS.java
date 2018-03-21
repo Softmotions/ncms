@@ -132,6 +132,7 @@ import com.softmotions.weboot.mb.MBDAOSupport;
  */
 @javax.ws.rs.Path("/media")
 @Produces("application/json;charset=UTF-8")
+@SuppressWarnings("unchecked")
 public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherEventHandler {
 
     private static final Logger log = LoggerFactory.getLogger(MediaRS.class);
