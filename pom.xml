@@ -70,7 +70,7 @@
         <httl.version>1.0.12-SNAPSHOT</httl.version>
         <hibernate.validator.version>5.4.2.Final</hibernate.validator.version>
         <imgscalr.version>4.2</imgscalr.version>
-        <google.inject.version>4.1.0</google.inject.version>
+        <google.inject.version>4.2.0</google.inject.version>
         <samaxes.cachefilter.version>2.3.1</samaxes.cachefilter.version>
         <flexmark.version>0.19.6</flexmark.version>
         <bliki.version>3.1.1-SNAPSHOT</bliki.version>
@@ -447,6 +447,12 @@
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-guice</artifactId>
                 <version>${shiro.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.inject.extensions</groupId>
+                        <artifactId>guice-multibindings</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.shiro</groupId>
