@@ -12,7 +12,6 @@ import javax.ws.rs.core.StreamingOutput;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.softmotions.ncms.asm.Asm;
 import com.softmotions.ncms.asm.AsmDAO;
@@ -29,18 +28,14 @@ import com.softmotions.ncms.asm.PageService;
 @Produces("application/json;charset=UTF-8")
 public class NewsHelperRS {
 
-    private final ObjectMapper mapper;
-
     private final PageService pageService;
 
     private final AsmDAO adao;
 
     @Inject
     public NewsHelperRS(PageService pageService,
-                        ObjectMapper mapper,
                         AsmDAO adao) {
         this.pageService = pageService;
-        this.mapper = mapper;
         this.adao = adao;
     }
 
