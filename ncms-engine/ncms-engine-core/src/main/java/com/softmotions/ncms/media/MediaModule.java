@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -79,19 +78,14 @@ public class MediaModule extends AbstractModule {
                 flags |= MediaRepository.IMPORT_CLEANUP_MISSING;
             }
 
-            String[] includes = Arrays.stream(c.arrPattern("includes.include"))
-                    .map(String::valueOf)
-                    .toArray(String[]::new);
-            String[] excludes = Arrays.stream(c.arrPattern("excludes.exclude"))
-                    .map(String::valueOf)
-                    .toArray(String[]::new);
-
+            String[] includes = c.listPattern("includes.include").toArray(new String[0]);
+            String[] excludes = c.listPattern("excludes.exclude").toArray(new String[0]);
             String unpack = env.xcfg().text("media.unpack-directory");
             if (StringUtils.isBlank(unpack)) {
                 unpack = env.getSessionTmpdir().toPath().resolve("unpack").toString();
             }
 
-            for (String srcDir : c.arrPattern("directory")) {
+            for (String srcDir : c.listPattern("directory")) {
                 if (StringUtils.isBlank(srcDir)) {
                     log.error("Missing required media.import.directory configuration attribute");
                     continue;

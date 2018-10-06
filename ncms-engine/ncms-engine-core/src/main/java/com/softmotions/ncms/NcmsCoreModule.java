@@ -1,7 +1,5 @@
 package com.softmotions.ncms;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.shiro.guice.aop.ShiroAopModule;
@@ -88,7 +86,7 @@ public class NcmsCoreModule extends WBServletModule<NcmsEnvironment> {
         String ncmsp = env.getAppPrefix();
         KVOptions opts = new KVOptions();
         opts.put("strip-prefixes", (ncmsp + "/asm,") + (ncmsp + "/adm/asm,") + (ncmsp.isEmpty() ? "/" : ncmsp));
-        List<String> exclude = new ArrayList<>(Arrays.asList(env.xcfg().arrPattern("asm.exclude")));
+        List<String> exclude = env.xcfg().listPattern("asm.exclude");
         for (String e : new String[]{
                 ncmsp + "/rs",
                 ncmsp + "/rjs",
@@ -136,7 +134,7 @@ public class NcmsCoreModule extends WBServletModule<NcmsEnvironment> {
         opts.put("min-trident", xcfg.textPattern("browser-filter.min-trident", "0"));
         String badUrl = xcfg.textPattern("browser-filter.bad-browser-uri", "");
         opts.put("redirect-uri", badUrl.isEmpty() ? null : ncmsp + badUrl);
-        String[] exclude = xcfg.arrPattern("browser-filter.exclude");
+        String[] exclude = xcfg.listPattern("browser-filter.exclude").toArray(new String[0]);
         if (exclude.length == 0) {
             exclude = new String[]{ncmsp + "/rs", ncmsp + "/rjs"};
         }

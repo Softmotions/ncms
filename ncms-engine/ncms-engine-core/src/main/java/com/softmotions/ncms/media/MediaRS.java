@@ -2086,7 +2086,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             || path.startsWith(normalizeFolder(xcfg.textPattern("asm.site-files-root", "/site")))) {
             return true;
         }
-        for (final String dir : xcfg.arrPattern("media.system-directories.directory")) {
+        for (final String dir : xcfg.listPattern("media.system-directories.directory")) {
             if (path.startsWith(normalizeFolder(dir))) {
                 return true;
             }

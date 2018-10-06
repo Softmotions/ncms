@@ -4,11 +4,11 @@
     <logging-ref>${rootArtifactId}-logging.xml</logging-ref>
     <app-name>${projectName}</app-name>
     <environment>dev</environment>
-    <server-name>127.0.0.1</server-name>
+    <server-name>localhost</server-name>
     <server-port>${serverPort}</server-port>
     <logout-redirect>/adm</logout-redirect>
     <site>
-        <root>http://${dollar}{server-name}:${dollar}{server-port}</root>
+        <root>http://localhost:${serverPort}</root>
         <preferRequestUrl>true</preferRequestUrl>
     </site>
 
