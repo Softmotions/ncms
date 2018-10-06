@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,7 +70,6 @@ import com.softmotions.commons.cont.ArrayUtils;
 import com.softmotions.commons.cont.CollectionUtils;
 import com.softmotions.commons.cont.KVOptions;
 import com.softmotions.commons.cont.TinyParamMap;
-import com.softmotions.commons.guid.RandomGUID;
 import com.softmotions.commons.json.JsonUtils;
 import com.softmotions.commons.lifecycle.Start;
 import com.softmotions.commons.num.NumberUtils;
@@ -227,8 +227,8 @@ public class PageRS extends MBDAOSupport implements PageService {
         this.pageSecurity = pageSecurity;
         this.ebus = ebus;
         this.userEnvRS = userEnvRS;
-        this.pagesCache = new PagesLRUMap<>(env.xcfg().getInt("pages.lru-cache-size", 1024));
-        this.guid2AliasCache = new LRUMap<>(env.xcfg().getInt("pages.lru-aliases-cache-size", 8192));
+        this.pagesCache = new PagesLRUMap<>(env.xcfg().numberPattern("pages.lru-cache-size", 1024L).intValue());
+        this.guid2AliasCache = new LRUMap<>(env.xcfg().numberPattern("pages.lru-aliases-cache-size", 8192L).intValue());
         this.pageGuid2Cache = new HashMap<>();
         this.pageAlias2Cache = new HashMap<>();
         this.indexPage2Slot = new HashMap<>();
@@ -312,9 +312,9 @@ public class PageRS extends MBDAOSupport implements PageService {
         user = (username != null) ? userdb.findUser(username) : null;
         if (user != null) {
             res.putObject("muser")
-               .put("name", StringEscapeUtils.escapeHtml4(user.getName()))
-               .put("fullName", StringEscapeUtils.escapeHtml4(user.getFullName()))
-               .put("email", StringEscapeUtils.escapeHtml4(user.getEmail()));
+                    .put("name", StringEscapeUtils.escapeHtml4(user.getName()))
+                    .put("fullName", StringEscapeUtils.escapeHtml4(user.getFullName()))
+                    .put("email", StringEscapeUtils.escapeHtml4(user.getEmail()));
         } else {
             res.remove("muser");
         }
@@ -373,15 +373,15 @@ public class PageRS extends MBDAOSupport implements PageService {
             res.putNull("template");
         } else {
             res.putObject("template")
-               .put("id", template.getId())
-               .put("name", template.getName())
-               .put("description", template.getDescription());
+                    .put("id", template.getId())
+                    .put("name", template.getName())
+                    .put("description", template.getDescription());
         }
         if (firstParent != null) {
             res.putObject("firstParent")
-               .put("id", firstParent.id)
-               .put("name", firstParent.getName())
-               .put("description", firstParent.getDescription());
+                    .put("id", firstParent.id)
+                    .put("name", firstParent.getName())
+                    .put("description", firstParent.getDescription());
         }
 
         Collection<AsmAttribute> eattrs = page.getEffectiveAttributes();
@@ -723,7 +723,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         String guid;
         Long id;
         do {
-            guid = new RandomGUID().toString();
+            guid = UUID.randomUUID().toString();
             id = adao.asmSelectIdByName(guid);
         } while (id != null); //very uncommon
 
@@ -799,7 +799,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         String guid;
         Long id;
         do {
-            guid = new RandomGUID().toString();
+            guid = UUID.randomUUID().toString();
             id = adao.asmSelectIdByName(guid);
         } while (id != null); //very uncommon
 
@@ -981,10 +981,10 @@ public class PageRS extends MBDAOSupport implements PageService {
                 continue;
             }
             res.addObject()
-               .put("name", (String) referrer.get("name"))
-               .put("path", ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/"))
-               .put("icon", Converters.toBoolean(referrer.get("published")) ? "" : "ncms/icon/16/misc/exclamation.png")
-               .put("asmid", (Long) referrer.get("asmid"));
+                    .put("name", (String) referrer.get("name"))
+                    .put("path", ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/"))
+                    .put("icon", Converters.toBoolean(referrer.get("published")) ? "" : "ncms/icon/16/misc/exclamation.png")
+                    .put("asmid", (Long) referrer.get("asmid"));
         }
         return res;
     }
@@ -1011,10 +1011,10 @@ public class PageRS extends MBDAOSupport implements PageService {
                 continue;
             }
             res.addObject()
-               .put("name", (String) referrer.get("name"))
-               .put("path", ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/"))
-               .put("icon", Converters.toBoolean(referrer.get("published")) ? "" : "ncms/icon/16/misc/exclamation.png")
-               .put("guid", (String) referrer.get("guid"));
+                    .put("name", (String) referrer.get("name"))
+                    .put("path", ArrayUtils.stringJoin(cp.<String[]>fetchNavPaths().get(PATH_TYPE.LABEL), "/"))
+                    .put("icon", Converters.toBoolean(referrer.get("published")) ? "" : "ncms/icon/16/misc/exclamation.png")
+                    .put("guid", (String) referrer.get("guid"));
         }
         return res;
     }
@@ -1073,7 +1073,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             pw.println("</html>");
             pw.flush();
         }).type("text/html;charset=UTF-8")
-                       .build();
+                .build();
     }
 
     @DELETE
@@ -1192,7 +1192,7 @@ public class PageRS extends MBDAOSupport implements PageService {
             }
             gen.flush();
         }).type("application/json;charset=UTF-8")
-                       .build();
+                .build();
     }
 
     @GET
@@ -2162,7 +2162,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     @Transactional
     @Scheduled("* * * * *")
     public void cleanupOldLockedPages() {
-        long maxIdleMins = env.xcfg().getInt("pages.userlock-max-idle-sec", 60 * 60 * 1); // 1 hour
+        long maxIdleMins = env.xcfg().numberPattern("pages.userlock-max-idle-sec", 60 * 60 * 1L); // 1 hour
         List<Long> ids = select("selectOldLockedPages", maxIdleMins);
         if (ids.isEmpty()) {
             return;

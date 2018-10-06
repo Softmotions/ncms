@@ -55,20 +55,20 @@ constructor(
         val user = sctx.getWSUser(req)
         val xcfg = env.xcfg()
         val cpath = "ui.$section.widget"
-        for (hc in xcfg.configurationsAt(cpath)) {
-            val widgetRoles = env.attrArray(hc.getString("[@roles]"))
-            if (widgetRoles.size == 0 || user.isHasAnyRole(*widgetRoles)) {
-                val qxClass = hc.getString("[@qxClass]")
-                val icon = hc.getString("[@qxIcon]")
+        for (hc in xcfg.subPattern(cpath)) {
+            val widgetRoles = env.attrArray(hc.textXPath("@roles"))
+            if (widgetRoles.isEmpty() || user.isHasAnyRole(*widgetRoles)) {
+                val qxClass = hc.textXPath("@qxClass")
+                val icon = hc.textXPath("@qxIcon")
                 val on = mapper.createObjectNode().put("qxClass", qxClass)
                 val label = msg.get(qxClass + ".label", req)
                 on.put("label", label)
                 if (icon != null) {
                     on.put("icon", icon)
                 }
-                on.put("extra", hc.getBoolean("[@extra]", false))
+                on.put("extra", hc.boolXPath("@extra", false))
                 val argsNode = on.putArray("args")
-                for (arg in env.attrArray(hc.getString("[@args]"))) {
+                for (arg in env.attrArray(hc.textXPath("@args"))) {
                     argsNode.add(arg)
                 }
                 arr.add(on)

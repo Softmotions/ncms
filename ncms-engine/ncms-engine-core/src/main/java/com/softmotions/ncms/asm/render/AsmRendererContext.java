@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.inject.Injector;
+import com.softmotions.commons.ThreadUtils;
 import com.softmotions.commons.cont.Stack;
 import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.asm.Asm;
@@ -28,7 +29,7 @@ import com.softmotions.weboot.i18n.I18n;
 @SuppressWarnings("unchecked")
 public abstract class AsmRendererContext extends HashMap<String, Object> {
 
-    public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = new ThreadLocal<>();
+    public static final ThreadLocal<Stack<AsmRendererContext>> ASM_CTX = ThreadUtils.createThreadLocal();
 
     protected Map<String, Object> userData;
 

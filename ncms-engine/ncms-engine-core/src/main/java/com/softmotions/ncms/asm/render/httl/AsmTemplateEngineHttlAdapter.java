@@ -86,7 +86,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
 
         this.resourceLoader = resourceLoader;
         Properties httlProps = new Properties();
-        String extsStr = cfg.xcfg().getString("httl[@extensions]", "*,httl,html,httl.css");
+        String extsStr = cfg.xcfg().textXPath("httl/@extensions", "*,httl,html,httl.css");
         if (!StringUtils.isBlank(extsStr)) {
             exts = extsStr.split(",");
             for (int i = 0; i < exts.length; ++i) {
@@ -95,7 +95,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
         } else {
             exts = DEFAULT_EXTS;
         }
-        String httlPropsStr = cfg.xcfg().getString("httl");
+        String httlPropsStr = cfg.xcfg().text("httl");
         if (!StringUtils.isBlank(httlPropsStr)) {
             try {
                 httlProps.load(new StringReader(httlPropsStr));

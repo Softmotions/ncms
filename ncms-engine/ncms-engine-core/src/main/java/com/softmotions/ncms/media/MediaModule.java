@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.configuration2.HierarchicalConfiguration;
-import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,8 +17,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.commons.lifecycle.Start;
-import com.softmotions.commons.zip.ZipUtils;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.utils.ZipUtils;
+import com.softmotions.xconfig.XConfig;
 
 /**
  * Media guice components.
@@ -53,54 +52,46 @@ public class MediaModule extends AbstractModule {
 
         @Start
         public void start() throws Exception {
-            HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
-            Iterator<String> mkeys = xcfg.getKeys("media");
-            while (mkeys.hasNext()) {
-                String mk = mkeys.next();
-                log.info("{}: {}", mk, xcfg.getString(mk));
-            }
-            List<HierarchicalConfiguration<ImmutableNode>> hcl = xcfg.configurationsAt("media.import");
-            for (final HierarchicalConfiguration hc : hcl) {
+            XConfig xcfg = env.xcfg();
+            List<XConfig> hcl = xcfg.subPattern("media.import");
+            for (final XConfig hc : hcl) {
                 processImportDir(hc);
             }
         }
 
-        private void processImportDir(HierarchicalConfiguration c) {
-
-            String target = c.getString("target");
+        private void processImportDir(XConfig c) {
+            String target = c.text("target");
             if (StringUtils.isBlank(target)) {
                 log.error("Missing required media.import.target configuration attribute");
                 return;
             }
-
             int flags = 0;
-            if (c.getBoolean("watch", false)) {
+            if (c.boolPattern("watch", false)) {
                 flags |= MediaRepository.IMPORT_WATCH;
             }
-            if (c.getBoolean("overwrite", false)) {
+            if (c.boolPattern("overwrite", false)) {
                 flags |= MediaRepository.IMPORT_OVERWRITE;
             }
-            if (c.getBoolean("system", false)) {
+            if (c.boolPattern("system", false)) {
                 flags |= MediaRepository.IMPORT_SYSTEM;
             }
-            if (c.getBoolean("cleanupMissing", false)) {
+            if (c.boolPattern("cleanupMissing", false)) {
                 flags |= MediaRepository.IMPORT_CLEANUP_MISSING;
             }
 
-            String[] includes = c.getList("includes.include").stream()
-                                 .map(String::valueOf)
-                                 .toArray(String[]::new);
-            String[] excludes = c.getList("excludes.exclude").stream()
-                                 .map(String::valueOf)
-                                 .toArray(String[]::new);
+            String[] includes = Arrays.stream(c.arrPattern("includes.include"))
+                    .map(String::valueOf)
+                    .toArray(String[]::new);
+            String[] excludes = Arrays.stream(c.arrPattern("excludes.exclude"))
+                    .map(String::valueOf)
+                    .toArray(String[]::new);
 
-            String unpack = env.xcfg().getString("media.unpack-directory", null);
+            String unpack = env.xcfg().text("media.unpack-directory");
             if (StringUtils.isBlank(unpack)) {
                 unpack = env.getSessionTmpdir().toPath().resolve("unpack").toString();
             }
 
-            for (Object v : c.getList("directory")) {
-                String srcDir = (v != null ? v.toString() : null);
+            for (String srcDir : c.arrPattern("directory")) {
                 if (StringUtils.isBlank(srcDir)) {
                     log.error("Missing required media.import.directory configuration attribute");
                     continue;
@@ -126,8 +117,8 @@ public class MediaModule extends AbstractModule {
                         log.info("Using unpack directory: {}", unpackFile);
                     }
                     File unpackTarget = unpackFile.toPath()
-                                                  .resolve(srcFileName.substring(0, srcFileName.length() - 4))
-                                                  .toFile();
+                            .resolve(srcFileName.substring(0, srcFileName.length() - 4))
+                            .toFile();
                     if (unpackTarget.exists()) {
                         FileUtils.deleteQuietly(unpackTarget);
                     }

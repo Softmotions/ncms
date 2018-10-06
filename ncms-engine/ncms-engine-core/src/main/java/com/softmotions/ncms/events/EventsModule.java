@@ -54,7 +54,7 @@ public class EventsModule extends AbstractModule {
         @Inject
         LocalEventBus(ServicesConfiguration cfg,
                       MBSqlSessionManager sessionManager) {
-            super(Executors.newFixedThreadPool(cfg.xcfg().getInt("events.num-workers", 1)), EX_INSTANCE);
+            super(Executors.newFixedThreadPool(cfg.xcfg().numberPattern("events.num-workers", 1L).intValue()), EX_INSTANCE);
             this.sessionManager = sessionManager;
         }
 

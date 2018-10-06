@@ -60,7 +60,7 @@ public class PageSecurityService extends MBDAOSupport {
                                WBSecurityContext sctx) {
         super(PageSecurityService.class, sess);
         this.userdb = userdb;
-        this.aclCache = new LRUMap<>(env.xcfg().getInt("security.acl-lru-cache-size", 1024));
+        this.aclCache = new LRUMap<>(env.xcfg().numberPattern("security.acl-lru-cache-size", 1024L).intValue());
         this.sessionManager = sessionManager;
         this.sctx = sctx;
     }

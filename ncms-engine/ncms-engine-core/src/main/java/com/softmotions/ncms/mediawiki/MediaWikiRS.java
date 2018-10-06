@@ -77,11 +77,11 @@ public class MediaWikiRS {
             throw new BadRequestException("");
         }
         Integer w = null;
-        Long id = Long.parseLong(matcher.group(3));
+        long id = Long.parseLong(matcher.group(3));
         if (matcher.group(2) != null) {
             w = Integer.parseInt(matcher.group(2));
         } else {
-            int maxWidth = env.xcfg().getInt("mediawiki.max-inline-image-width-px", 0);
+            int maxWidth = env.xcfg().numberPattern("mediawiki.max-inline-image-width-px", 0L).intValue();
             if (maxWidth > 0) {
                 MediaResource mres = repository.findMediaResource(id, messages.getLocale(req));
                 if (mres == null) {

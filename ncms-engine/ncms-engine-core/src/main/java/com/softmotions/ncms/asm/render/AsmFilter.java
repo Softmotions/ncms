@@ -91,8 +91,8 @@ public class AsmFilter implements Filter {
     public void init(FilterConfig cfg) throws ServletException {
         this.stripPrefixes = null;
         this.excludePrefixes = null;
-        this.resolveRelativePaths = env.xcfg().getBoolean("asm.site-files-root[@resolveRelativePaths]", true);
-        this.siteFilesRoot = env.xcfg().getString("asm.site-files-root", "/site");
+        this.resolveRelativePaths = env.xcfg().boolXPath("asm.site-files-root/@resolveRelativePaths", true);
+        this.siteFilesRoot = env.xcfg().textPattern("asm.site-files-root", "/site");
 
         String ss = cfg.getInitParameter("strip-prefixes");
         if (ss != null) {

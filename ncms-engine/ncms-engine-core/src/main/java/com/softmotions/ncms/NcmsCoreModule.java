@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.configuration2.HierarchicalConfiguration;
-import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.shiro.guice.aop.ShiroAopModule;
 import org.jboss.resteasy.jsapi.JSAPIServlet;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
@@ -41,6 +39,7 @@ import com.softmotions.weboot.liquibase.WBLiquibaseModule;
 import com.softmotions.weboot.mb.WBMyBatisModule;
 import com.softmotions.weboot.scheduler.SchedulerModule;
 import com.softmotions.weboot.security.WBSecurityModule;
+import com.softmotions.xconfig.XConfig;
 
 /**
  * @author Adamansky Anton (adamansky@softmotions.com)
@@ -54,7 +53,7 @@ public class NcmsCoreModule extends WBServletModule<NcmsEnvironment> {
         install(new NcmsWBIntegrationModule());
 
         bind(NcmsEnvironment.class).toInstance(env);
-        bind(new TypeLiteral<HierarchicalConfiguration<ImmutableNode>>() {
+        bind(new TypeLiteral<XConfig>() {
         }).toInstance(env.xcfg());
 
         initMarketingToolsFilter(env);
@@ -89,7 +88,7 @@ public class NcmsCoreModule extends WBServletModule<NcmsEnvironment> {
         String ncmsp = env.getAppPrefix();
         KVOptions opts = new KVOptions();
         opts.put("strip-prefixes", (ncmsp + "/asm,") + (ncmsp + "/adm/asm,") + (ncmsp.isEmpty() ? "/" : ncmsp));
-        List<String> exclude = new ArrayList<>(Arrays.asList(env.xcfg().getStringArray("asm.exclude")));
+        List<String> exclude = new ArrayList<>(Arrays.asList(env.xcfg().arrPattern("asm.exclude")));
         for (String e : new String[]{
                 ncmsp + "/rs",
                 ncmsp + "/rjs",
@@ -128,16 +127,16 @@ public class NcmsCoreModule extends WBServletModule<NcmsEnvironment> {
     }
 
     protected void initBrowserFilter(NcmsEnvironment env) {
-        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
-        if (xcfg.configurationsAt("browser-filter").isEmpty()) {
+        XConfig xcfg = env.xcfg();
+        if (!xcfg.hasPattern("browser-filter")) {
             return;
         }
         String ncmsp = env.getAppPrefix();
         KVOptions opts = new KVOptions();
-        opts.put("min-trident", String.valueOf(xcfg.getFloat("browser-filter.min-trident", 0)));
-        String badUrl = xcfg.getString("browser-filter.bad-browser-uri", "");
+        opts.put("min-trident", xcfg.textPattern("browser-filter.min-trident", "0"));
+        String badUrl = xcfg.textPattern("browser-filter.bad-browser-uri", "");
         opts.put("redirect-uri", badUrl.isEmpty() ? null : ncmsp + badUrl);
-        String[] exclude = xcfg.getStringArray("browser-filter.exclude");
+        String[] exclude = xcfg.arrPattern("browser-filter.exclude");
         if (exclude.length == 0) {
             exclude = new String[]{ncmsp + "/rs", ncmsp + "/rjs"};
         }

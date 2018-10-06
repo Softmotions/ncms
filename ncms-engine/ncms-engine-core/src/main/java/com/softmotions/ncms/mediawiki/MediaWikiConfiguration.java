@@ -3,8 +3,6 @@ package com.softmotions.ncms.mediawiki;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.configuration2.HierarchicalConfiguration;
-import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +13,7 @@ import info.bliki.wiki.model.Configuration;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.xconfig.XConfig;
 
 /**
  * Mediawiki configuration.
@@ -28,15 +27,15 @@ public class MediaWikiConfiguration extends Configuration {
 
     @Inject
     public MediaWikiConfiguration(Map<String, TagToken> tags, NcmsEnvironment env) {
-        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
+        XConfig xcfg = env.xcfg();
         for (final Map.Entry<String, TagToken> e : tags.entrySet()) {
             log.info("Mediawiki custom tag: '{}' class: '{}' registered", e.getKey(), e.getValue().getClass().getName());
             this.addTokenTag(e.getKey(), e.getValue());
         }
-        List<HierarchicalConfiguration<ImmutableNode>> cfgs = xcfg.configurationsAt("mediawiki.interwiki-links.link");
-        for (final HierarchicalConfiguration c : cfgs) {
-            String key = c.getString("[@key]");
-            String value = c.getString("[@value]");
+        List<XConfig> cfgs = xcfg.subPattern("mediawiki.interwiki-links.link");
+        for (final XConfig c : cfgs) {
+            String key = c.textXPath("@key", "");
+            String value = c.textXPath("@value", "");
             if (StringUtils.isBlank(key)) {
                 continue;
             }

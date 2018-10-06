@@ -146,7 +146,7 @@ public class NcmsSassModule extends AbstractModule {
         @Override
         public void run() {
 
-            ThreadUtils.cleanInheritableThreadLocals();
+            ThreadUtils.cleanThreadLocals();
 
             MediaRepository repo = sassService.repository;
             NcmsEnvironment env = sassService.env;
@@ -160,7 +160,7 @@ public class NcmsSassModule extends AbstractModule {
             Options opts = new Options();
             opts.getImporters().add(this);
 
-            setOutputStyle(env.xcfg().getString("media.sass.output-style", "COMPACT").toUpperCase(), opts);
+            setOutputStyle(env.xcfg().textPattern("media.sass.output-style", "COMPACT").toUpperCase(), opts);
             try {
                 log.info("Sass compilation {} into {}", ev.getPath(), targetPath);
                 String source = src.getSource();

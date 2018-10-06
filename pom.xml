@@ -12,10 +12,10 @@
     <parent>
         <groupId>softmotions</groupId>
         <artifactId>softmotions-base-pom</artifactId>
-        <version>1.2.0</version>
+        <version>1.3.0</version>
     </parent>
     <artifactId>ncms-base</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <name>ncms</name>
     <url>https://github.com/Softmotions/ncms</url>
     <inceptionYear>2014</inceptionYear>
@@ -51,26 +51,26 @@
     </scm>
     <properties>
         <!--<maven.test.skip>true</maven.test.skip>-->
-        <softmotions.commons.version>1.3-SNAPSHOT</softmotions.commons.version>
+        <softmotions.commons.version>1.5-SNAPSHOT</softmotions.commons.version>
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
         <slf4j-api.version>1.7.25</slf4j-api.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.source.version>1.8</java.source.version>
-        <servlet.api.version>3.1.0</servlet.api.version>
+        <java.source.version>11</java.source.version>
+        <servlet.api.version>4.0.1</servlet.api.version>
         <qooxdoo.sdk.version>5.0.2</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
-        <qooxdoo.maven.plugin.version>1.3-SNAPSHOT</qooxdoo.maven.plugin.version>
-        <jackson.version>2.9.4</jackson.version>
-        <resteasy.version>3.1.4.Final</resteasy.version>
+        <qooxdoo.maven.plugin.version>1.4-SNAPSHOT</qooxdoo.maven.plugin.version>
+        <jackson.version>2.9.7</jackson.version>
+        <resteasy.version>3.6.1.Final</resteasy.version>
         <commons.collection.version>3.2.2</commons.collection.version>
         <commons.validator.version>1.4.0</commons.validator.version>
-        <httpcomponents.version>4.5.5</httpcomponents.version>
-        <tomcat.version>8.5.29</tomcat.version>
+        <httpcomponents.version>4.5.6</httpcomponents.version>
+        <tomcat.version>9.0.12</tomcat.version>
         <httl.version>1.0.12-SNAPSHOT</httl.version>
         <hibernate.validator.version>5.4.2.Final</hibernate.validator.version>
         <imgscalr.version>4.2</imgscalr.version>
-        <google.inject.version>4.2.0</google.inject.version>
+        <google.inject.version>4.2.1</google.inject.version>
         <samaxes.cachefilter.version>2.3.1</samaxes.cachefilter.version>
         <flexmark.version>0.19.6</flexmark.version>
         <bliki.version>3.1.1-SNAPSHOT</bliki.version>
@@ -79,14 +79,14 @@
         <tika.version>1.16</tika.version>
         <mybatis.version>3.4.6</mybatis.version>
         <mybatis-guice.version>3.10</mybatis-guice.version>
-        <testng.version>6.14.2</testng.version>
+        <testng.version>6.14.3</testng.version>
         <junit.version>4.12</junit.version>
-        <kotlin.version>1.2.50</kotlin.version>
+        <kotlin.version>1.2.71</kotlin.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
         <postgres.jdbc.version>42.2.2.jre7</postgres.jdbc.version>
         <h2.version>1.4.196</h2.version>
-        <atmosphere.version>2.4.24</atmosphere.version>
-        <pdfbox.version>2.0.8</pdfbox.version>
+        <atmosphere.version>2.5.0</atmosphere.version>
+        <pdfbox.version>2.0.12</pdfbox.version>
         <web.run.port>8080</web.run.port>
         <web.context.reloadable>true</web.context.reloadable>
     </properties>
@@ -467,7 +467,7 @@
             <dependency>
                 <groupId>com.google.javascript</groupId>
                 <artifactId>closure-compiler</artifactId>
-                <version>v20180204</version>
+                <version>v20180910</version>
             </dependency>
             <dependency>
                 <groupId>softmotions</groupId>
@@ -514,12 +514,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
+                    <version>3.8.0</version>
                     <configuration>
                         <source>${java.source.version}</source>
                         <target>${java.source.version}</target>
@@ -558,7 +558,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.22.0</version>
                     <configuration>
                         <argLine>-Xmx1024M</argLine>
                         <reuseForks>false</reuseForks>
@@ -576,13 +576,13 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.2.2</version>
                     <configuration/>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>softmotions</groupId>
@@ -599,7 +599,7 @@
                 <plugin>
                     <groupId>com.googlecode.maven-download-plugin</groupId>
                     <artifactId>download-maven-plugin</artifactId>
-                    <version>1.4.0</version>
+                    <version>1.4.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

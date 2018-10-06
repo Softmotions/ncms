@@ -12,14 +12,6 @@ resource or a resource in server classpath on JVM.
 The system won't be launched if `WEBOOT_CFG_LOCATION`
 isn't set by one of the methods stated above.
 
-To work with the server configuration we use
-`Apache Сommons Сonfiguration <https://commons.apache.org/proper/commons-configuration/>`_
-and, as a consequence, a reference to values of other items are supported in the file, e.g.::
-
-    <root>http://${server-name}:${server-port}</root>
-
-where `server-name` and `server-port` are XML items of the configuration.
-
 Additionally, in the configuration file you can use substitutes (placeholders)
 as `{name}`, where `{name}` can take the following values:
 
@@ -64,7 +56,7 @@ Example of ηСМС configuration file
         <server-port>8080</server-port>
         <site>
             <!-- Main web-server HTTP url -->
-            <root>http://${server-name}:${server-port}</root>
+            <root>http://127.0.0.1:8080</root>
             <!-- If true, then the webserver address for external
                  clients (for example for email messages and links)
                  is created based on the data of client's HTTP requests

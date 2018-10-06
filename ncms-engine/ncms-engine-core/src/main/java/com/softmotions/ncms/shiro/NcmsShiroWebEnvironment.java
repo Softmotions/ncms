@@ -17,7 +17,7 @@ public class NcmsShiroWebEnvironment extends IniWebEnvironment {
         super.setServletContext(sctx);
         NcmsEnvironment env = (NcmsEnvironment)
                 sctx.getAttribute(WBServletListener.WEBOOT_CFG_SCTX_KEY);
-        String configLocations = env.xcfg().getString("security.shiro-config-locations", "/WEB-INF/shiro.ini");
+        String configLocations = env.xcfg().textPattern("security.shiro-config-locations", "/WEB-INF/shiro.ini");
         setConfigLocations(configLocations);
     }
 }

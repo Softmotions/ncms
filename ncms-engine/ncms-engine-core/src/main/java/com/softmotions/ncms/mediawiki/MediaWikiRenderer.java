@@ -3,9 +3,6 @@ package com.softmotions.ncms.mediawiki;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.apache.commons.configuration2.HierarchicalConfiguration;
-import org.apache.commons.configuration2.tree.ImmutableNode;
-
 import info.bliki.wiki.filter.ITextConverter;
 import info.bliki.wiki.filter.PlainTextConverter;
 
@@ -16,6 +13,7 @@ import com.softmotions.ncms.NcmsEnvironment;
 import com.softmotions.ncms.events.NcmsEventBus;
 import com.softmotions.ncms.mediawiki.events.MediaWikiHTMLRenderEvent;
 import com.softmotions.weboot.i18n.I18n;
+import com.softmotions.xconfig.XConfig;
 
 /**
  * @author Adamansky Anton (adamansky@softmotions.com)
@@ -48,9 +46,9 @@ public class MediaWikiRenderer {
         this.plaintextConverter = new PlainTextConverter(this.converter.renderLinks());
         this.ebus = ebus;
         this.messages = messages;
-        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
-        this.imageBaseUrl = xcfg.getString("mediawiki.image-base-url", "/rs/mw/res/${image}");
-        this.linkBaseUrl = xcfg.getString("mediawiki.link-base-url", "/rs/mw/link/${title}");
+        XConfig xcfg = env.xcfg();
+        this.imageBaseUrl = xcfg.textPattern("mediawiki.image-base-url", "/rs/mw/res/${image}");
+        this.linkBaseUrl = xcfg.textPattern("mediawiki.link-base-url", "/rs/mw/link/${title}");
     }
 
     public String render(String markup, Locale locale) throws IOException {

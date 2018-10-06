@@ -2,8 +2,6 @@ package com.softmotions.ncms.mediawiki;
 
 import java.util.List;
 
-import org.apache.commons.configuration2.HierarchicalConfiguration;
-import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,6 +14,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.MapBinder;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.xconfig.XConfig;
 
 /**
  * MediaWiki integration module.
@@ -41,17 +40,17 @@ public class MediaWikiModule extends AbstractModule {
                 getClass().getClassLoader()
         );
 
-        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
+        XConfig xcfg = env.xcfg();
         MapBinder<String, TagToken> tagsBinder =
                 MapBinder.newMapBinder(binder(), String.class, TagToken.class);
 
-        List<HierarchicalConfiguration<ImmutableNode>> tcfgs = xcfg.configurationsAt("mediawiki.tags.tag");
-        for (final HierarchicalConfiguration tcfg : tcfgs) {
-            String name = tcfg.getString("[@name]");
+        List<XConfig> tcfgs = xcfg.subPattern("mediawiki.tags.tag");
+        for (final XConfig tcfg : tcfgs) {
+            String name = tcfg.textXPath("@name", null);
             if (StringUtils.isBlank(name)) {
                 continue;
             }
-            String className = tcfg.getString("[@class]");
+            String className = tcfg.textXPath("@class", null);
             if (StringUtils.isBlank(className)) {
                 continue;
             }

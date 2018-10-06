@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.apache.commons.configuration2.HierarchicalConfiguration;
-import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -31,6 +29,7 @@ import com.softmotions.ncms.asm.render.DefaultAsmRenderer;
 import com.softmotions.ncms.asm.render.ldrs.AsmClasspathResourceLoader;
 import com.softmotions.ncms.asm.render.ldrs.AsmMediaServiceResourceLoader;
 import com.softmotions.ncms.media.MediaResource;
+import com.softmotions.xconfig.XConfig;
 
 /**
  * @author Adamansky Anton (adamansky@softmotions.com)
@@ -96,16 +95,16 @@ public class AsmModule extends AbstractModule {
 
         @Inject
         AsmResourceLoaderImpl(NcmsEnvironment env, Injector injector) throws Exception {
-            HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
+            XConfig xcfg = env.xcfg();
             Set<String> ldrsClasses = new HashSet<>();
             List<AsmResourceLoader> ldrs = new ArrayList<>();
-            List<HierarchicalConfiguration<ImmutableNode>> hcl = xcfg.configurationsAt("asm.resource-loaders");
+            List<XConfig> hcl = xcfg.subPattern("asm.resource-loaders");
             ClassLoader cl = ObjectUtils.firstNonNull(
                     Thread.currentThread().getContextClassLoader(),
                     getClass().getClassLoader()
             );
-            for (HierarchicalConfiguration hc : hcl) {
-                String className = hc.getString("loader");
+            for (XConfig hc : hcl) {
+                String className = hc.text("loader");
                 if (StringUtils.isBlank(className)) {
                     continue;
                 }

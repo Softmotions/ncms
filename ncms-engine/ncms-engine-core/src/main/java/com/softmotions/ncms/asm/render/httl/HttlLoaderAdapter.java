@@ -12,6 +12,7 @@ import httl.Engine;
 import httl.Resource;
 import httl.spi.Loader;
 
+import com.softmotions.commons.ThreadUtils;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmResourceLoader;
 import com.softmotions.ncms.media.MediaResource;
@@ -21,7 +22,7 @@ import com.softmotions.ncms.media.MediaResource;
  */
 public class HttlLoaderAdapter implements Loader {
 
-    public static final ThreadLocal<AsmResourceLoader> contextLoaderStore = new ThreadLocal<>();
+    public static final ThreadLocal<AsmResourceLoader> contextLoaderStore = ThreadUtils.createThreadLocal();
 
     private Engine engine;
 

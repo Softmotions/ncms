@@ -33,7 +33,7 @@
     mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate -U \
         -DarchetypeGroupId=softmotions \
         -DarchetypeArtifactId=ncms-site-archetype \
-        -DarchetypeVersion=1.1-SNAPSHOT \
+        -DarchetypeVersion=1.2-SNAPSHOT \
         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
 
 
@@ -54,7 +54,7 @@
     $:   mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate -U \
     >         -DarchetypeGroupId=softmotions \
     >         -DarchetypeArtifactId=ncms-site-archetype \
-    >         -DarchetypeVersion=1.1-SNAPSHOT \
+    >         -DarchetypeVersion=1.2-SNAPSHOT \
     >         -DarchetypeRepository=https://repo.softmotions.com/repository/softmotions-public
     [INFO] Scanning for projects...
 
@@ -183,4 +183,4 @@
 Новый ηCMS проект на Youtube
 ----------------------------
 ..  youtube:: nPIFHWlNcC0
-    :width: 100%
+:width: 100%

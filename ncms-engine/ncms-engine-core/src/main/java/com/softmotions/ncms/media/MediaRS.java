@@ -53,8 +53,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.collections4.map.LRUMap;
-import org.apache.commons.configuration2.HierarchicalConfiguration;
-import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -124,6 +122,7 @@ import com.softmotions.weboot.executor.TaskExecutor;
 import com.softmotions.weboot.i18n.I18n;
 import com.softmotions.weboot.mb.MBCriteriaQuery;
 import com.softmotions.weboot.mb.MBDAOSupport;
+import com.softmotions.xconfig.XConfig;
 
 /**
  * Media files manager rest service.
@@ -181,16 +180,16 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    Provider<AsmRenderer> renderer) throws IOException {
         super(MediaRS.class, sess);
         this.env = env;
-        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
-        String dir = xcfg.getString("media.basedir");
+        XConfig xcfg = env.xcfg();
+        String dir = xcfg.text("media.basedir");
         if (dir == null) {
             throw new RuntimeException("Missing required configuration property: media.basedir");
         }
         this.basedir = new File(dir);
         DirUtils.ensureDir(basedir, true);
 
-        this.pathLocks = Striped.lazyWeakReadWriteLock(xcfg.getInt("media.locks-lrucache-size", 1024));
-        this.metaCache = new LRUMap<>(xcfg.getInt("media.meta-lrucache-size", 1024));
+        this.pathLocks = Striped.lazyWeakReadWriteLock(xcfg.numberPattern("media.locks-lrucache-size", 1024L).intValue());
+        this.metaCache = new LRUMap<>(xcfg.numberPattern("media.meta-lrucache-size", 1024L).intValue());
         this.mapper = mapper;
         this.i18n = i18n;
         this.ebus = ebus;
@@ -198,9 +197,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         this.executor = executor;
         this.renderer = renderer;
         this.privateExtensions =
-                xcfg.getString("media.private-extensions",
-                               "httl,jsp,jspx,vm,ftl,sass,scss,less")
-                    .split("\\s*[,;]\\s*");
+                xcfg.textPattern("media.private-extensions",
+                                 "httl,jsp,jspx,vm,ftl,sass,scss,less")
+                        .split("\\s*[,;]\\s*");
 
         this.ebus.register(this);
     }
@@ -527,9 +526,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                 throw new NcmsNotificationException(i18n.get("ncms.mmgr.folder.exists", req, folder), true);
             }
             return mapper.createObjectNode()
-                         .put("label", name)
-                         .put("status", 1)
-                         .put("system", isInSystemFolder(dirname + name));
+                    .put("label", name)
+                    .put("status", 1)
+                    .put("system", isInSystemFolder(dirname + name));
         }
     }
 
@@ -1251,9 +1250,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                     continue;
                 }
                 res.addObject()
-                   .put("label", file.getName())
-                   .put("status", file.isDirectory() ? 1 : 0)
-                   .put("system", inSystem ? 1 : 0);
+                        .put("label", file.getName())
+                        .put("status", file.isDirectory() ? 1 : 0)
+                        .put("system", inSystem ? 1 : 0);
             }
         } finally {
             rwlock.readLock().unlock();
@@ -1286,8 +1285,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         String path = folder + name;
-        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
-        int thumbWidth = xcfg.getInt("media.thumbnails-width", 255);
+        XConfig xcfg = env.xcfg();
+        int thumbWidth = xcfg.numberPattern("media.thumbnails-width", 255L).intValue();
         String ctype = (String) rec.get("content_type");
         String iconCtype = (String) rec.get("icon_content_type");
         if (ctype == null || !ctype.startsWith("image/")) {
@@ -1315,8 +1314,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (icon != null) {
             final byte[] icondata = icon.getBytes(1, (int) icon.length());
             return Response.ok((StreamingOutput) output -> output.write(icondata)).type(iconCtype)
-                           .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
-                           .build();
+                    .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
+                    .build();
         }
 
         BufferedImage image;
@@ -1349,8 +1348,8 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                "icon_content_type", iconCtype);
 
         return Response.ok((StreamingOutput) output -> output.write(icondata)).type(iconCtype)
-                       .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
-                       .build();
+                .header(HttpHeaders.CONTENT_LENGTH, icondata.length)
+                .build();
     }
 
     private String getImageFileResizeFormat(String ctype) {
@@ -1359,7 +1358,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         } else if (ctype.startsWith("image/png")) {
             return "png";
         } else {
-            return env.xcfg().getString("media.resize-default-format", "jpeg");
+            return env.xcfg().textPattern("media.resize-default-format", "jpeg");
         }
     }
 
@@ -1824,9 +1823,9 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         }
 
         if (!localFilePut) {
-            HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
-            int memTh = xcfg.getInt("media.max-upload-inmemory-size", MB * 10); //10Mb by default
-            int uplTh = xcfg.getInt("media.max-upload-size", MB * 30); //30Mb by default
+            XConfig xcfg = env.xcfg();
+            int memTh = xcfg.numberPattern("media.max-upload-inmemory-size", MB * 10L).intValue(); //10Mb by default
+            int uplTh = xcfg.numberPattern("media.max-upload-size", MB * 30L).intValue(); //30Mb by default
             us = new FileUploadStream(memTh, uplTh, "ncms-", ".upload", env.getTmpdir());
         }
 
@@ -2081,14 +2080,13 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
     }
 
     private boolean isInSystemFolder(String path) {
-        HierarchicalConfiguration<ImmutableNode> xcfg = env.xcfg();
+        XConfig xcfg = env.xcfg();
         path = normalizeFolder(path);
         if (path.startsWith("/pages/") // pages dir is hardcoded in project
-            || path.startsWith(normalizeFolder(xcfg.getString("asm.site-files-root", "/site")))) {
+            || path.startsWith(normalizeFolder(xcfg.textPattern("asm.site-files-root", "/site")))) {
             return true;
         }
-        for (final Object o : xcfg.getList("media.system-directories.directory")) {
-            String dir = String.valueOf(o);
+        for (final String dir : xcfg.arrPattern("media.system-directories.directory")) {
             if (path.startsWith(normalizeFolder(dir))) {
                 return true;
             }

@@ -38,8 +38,8 @@ public class NcmsGuardFilter implements Filter {
 
     public NcmsGuardFilter(NcmsEnvironment env) {
         adminRoot = env.getNcmsAdminRoot();
-        String adminOn = env.xcfg().getString("admin-zone-on", null);
-        redirect = env.xcfg().getBoolean("admin-zone-on[@redirect]", false);
+        String adminOn = env.xcfg().text("admin-zone-on");
+        redirect = env.xcfg().boolXPath("admin-zone-on/@redirect", false);
         if (!StringUtils.isEmpty(adminOn)) {
             try {
                 adminOnUrl = new URL(adminOn);

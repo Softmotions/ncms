@@ -34,17 +34,17 @@ constructor(private val env: NcmsEnvironment,
 
     @Start
     open fun start() {
-        val topics = env.xcfg().configurationsAt("help.topics.topic")
+        val topics = env.xcfg().subPattern("help.topics.topic")
         for (topic in topics) {
-            val key = topic.getString("[@key]")
+            val key = topic.textXPath("@key")
             if (StringUtils.isBlank(key)) {
                 continue
             }
-            val alias = topic.getString("[@alias]")
+            val alias = topic.textXPath("@alias")
             if (!StringUtils.isBlank(alias)) {
-                helpTopics.put(key, pageService.resolvePageLink(alias))
+                helpTopics.put(key!!, pageService.resolvePageLink(alias))
             } else {
-                helpTopics.put(key, topic.getString("")) //get config tag content
+                helpTopics.put(key!!, topic.text(".")) //get config tag content
             }
         }
         if ("wiki.gmap" !in helpTopics) {
@@ -92,7 +92,7 @@ constructor(private val env: NcmsEnvironment,
 
     inner class WSUserState(user: WSUser, req: HttpServletRequest) : HashMap<String, Any?>() {
         internal val properties: Map<String, Any?> = HashMap<String, Any?>().apply {
-            put("max-edit-text-size", env.xcfg().getInt("media.max-edit-text-size", 1048576))
+            put("max-edit-text-size", env.xcfg().number("media.max-edit-text-size", 1048576L)!!.toInt())
         }
         init {
             put("appName", env.applicationName)
@@ -112,11 +112,11 @@ constructor(private val env: NcmsEnvironment,
     }
 
     private val helpSite: String? by lazy {
-        val alias = env.xcfg().getString("help.site[@alias]")
+        val alias = env.xcfg().textXPath("help/site/@alias")
         if (!StringUtils.isBlank(alias)) {
             return@lazy pageService.resolvePageLink(alias)
         } else {
-            return@lazy env.xcfg().getString("help.site", "http://ncms.one/manual")
+            return@lazy env.xcfg().text("help.site", "http://ncms.one/manual")
         }
     }
 

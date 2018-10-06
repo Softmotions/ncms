@@ -7,7 +7,7 @@
     <server-name>127.0.0.1</server-name>
     <server-port>8282</server-port>
     <site>
-        <root>http://${server-name}:${server-port}</root>
+        <root>http://127.0.0.1:8282</root>
         <preferRequestUrl>true</preferRequestUrl>
     </site>
     <app-prefix>/</app-prefix>

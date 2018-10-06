@@ -213,8 +213,8 @@ public class JsServiceRS extends MBDAOSupport {
     String compileScript(String fp, KVOptions spec) throws Exception {
 
         Long[] ids = Arrays.stream(spec.getOrDefault("scripts", "")
-                                       .split(",")).map(Long::parseLong)
-                           .toArray(Long[]::new);
+                                           .split(",")).map(Long::parseLong)
+                .toArray(Long[]::new);
         Set<MediaResource> resources = new LinkedHashSet<>(ids.length);
         for (int i = 0; i < ids.length; ++i) {
             MediaResource meta = mediaReader.findMediaResource(ids[i], null);
@@ -278,11 +278,11 @@ public class JsServiceRS extends MBDAOSupport {
         }
         List<String> items = new ArrayList<>(scripts.length + opts.size());
         opts.entrySet().stream()
-            .map(e -> e.getKey() + e.getValue())
-            .collect(Collectors.toCollection(() -> items));
+                .map(e -> e.getKey() + e.getValue())
+                .collect(Collectors.toCollection(() -> items));
         Arrays.stream(scripts)
-              .map(this::normalizePath)
-              .collect(Collectors.toCollection(() -> items));
+                .map(this::normalizePath)
+                .collect(Collectors.toCollection(() -> items));
         Object[] itemsArr = items.toArray();
         Arrays.sort(itemsArr, Collator.getInstance());
         return Digest.getMD5(StringUtils.join(itemsArr));
@@ -452,7 +452,7 @@ public class JsServiceRS extends MBDAOSupport {
             return;
         }
         executor.submit(() -> {
-            ThreadUtils.cleanInheritableThreadLocals();
+            ThreadUtils.cleanThreadLocals();
             try {
                 if (syntaxCheck(ev)) {
                     updateJsFile(ev.getId());
@@ -468,7 +468,7 @@ public class JsServiceRS extends MBDAOSupport {
             return;
         }
         executor.submit(() -> {
-            ThreadUtils.cleanInheritableThreadLocals();
+            ThreadUtils.cleanThreadLocals();
             try {
                 updateJsFile(ev.getId());
             } catch (Exception e) {
@@ -522,15 +522,15 @@ public class JsServiceRS extends MBDAOSupport {
         // Flush duty status in DB
         List<String> dirtyFps =
                 activeScripts.entrySet().stream()
-                             .filter(e -> {
-                                 if (e.getValue().dirty) {
-                                     e.getValue().dirty = false;
-                                     return true;
-                                 }
-                                 return false;
-                             })
-                             .map(Map.Entry::getKey)
-                             .collect(Collectors.toList());
+                        .filter(e -> {
+                            if (e.getValue().dirty) {
+                                e.getValue().dirty = false;
+                                return true;
+                            }
+                            return false;
+                        })
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
 
         for (Collection<String> dg : CollectionUtils.split(dirtyFps, 128)) {
             update("touchScriptSpecs", dg);
@@ -538,7 +538,7 @@ public class JsServiceRS extends MBDAOSupport {
 
         // Cleanup old script specs and deps from DB
         int forgottenScriptLifetime =
-                env.xcfg().getInt("media.js.forgotten-scripts-max-life-days", 30);
+                env.xcfg().numberPattern("media.js.forgotten-scripts-max-life-days", 30L).intValue();
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1 * forgottenScriptLifetime);
         Date date = cal.getTime();

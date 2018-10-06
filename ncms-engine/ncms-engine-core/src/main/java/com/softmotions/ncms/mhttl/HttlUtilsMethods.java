@@ -22,8 +22,6 @@ import javax.annotation.Nullable;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.configuration2.HierarchicalConfiguration;
-import org.apache.commons.configuration2.tree.ImmutableNode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +33,7 @@ import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.asm.render.AsmRendererContext;
 import com.softmotions.ncms.asm.render.AsmRenderingException;
 import com.softmotions.web.HttpUtils;
+import com.softmotions.xconfig.XConfig;
 
 /**
  * Various template utils.
@@ -196,7 +195,7 @@ public final class HttlUtilsMethods {
         if (sfRoot == null) {
             synchronized (HttlUtilsMethods.class) {
                 if (sfRoot == null) {
-                    String sfr = env.xcfg().getString("asm.site-files-root", "/site/");
+                    String sfr = env.xcfg().textPattern("asm.site-files-root", "/site/");
                     if (!sfr.endsWith("/")) {
                         sfr += "/";
                     }
@@ -265,17 +264,16 @@ public final class HttlUtilsMethods {
         }
     }
 
+    @Nullable
     public static String config(String key) {
-        HierarchicalConfiguration<ImmutableNode> config = config();
-        return config.getString(key);
+        return config().text(key);
     }
 
     public static String config(String key, String def) {
-        HierarchicalConfiguration<ImmutableNode> config = config();
-        return config.getString(key, def);
+        return config().textPattern(key, def);
     }
 
-    public static HierarchicalConfiguration<ImmutableNode> config() {
+    public static XConfig config() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         return ctx.getEnvironment().xcfg();
     }
