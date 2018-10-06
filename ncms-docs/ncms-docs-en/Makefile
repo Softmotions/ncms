@@ -69,7 +69,7 @@ watch:
 .PHONY: html
 init:
     git submodule update --init
-    $(SPHINXBUILD) --version | grep -E '1\.[345]\.' || (echo "Unsupported sphinx version. You need execute 'pip3 install sphinx'" && exit 1)
+    $(SPHINXBUILD) --version | grep -E '1\.[3456]\.' || (echo "Unsupported sphinx version. You need execute 'pip3 install sphinx'" && exit 1)
 
 html: init
     $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/ncmsmanual_en
