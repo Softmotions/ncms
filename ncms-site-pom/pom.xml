@@ -11,15 +11,16 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.source.version>11</java.source.version>
         <softmotions.ncms.version>1.1-SNAPSHOT</softmotions.ncms.version>
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
         <qooxdoo.sdk.version>5.0.2</qooxdoo.sdk.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
-        <pgsql.jdbc.version>42.2.2.jre7</pgsql.jdbc.version>
-        <javax.servlet.version>3.1.0</javax.servlet.version>
+        <pgsql.jdbc.version>42.2.5.jre7</pgsql.jdbc.version>
+        <javax.servlet.version>4.0.1</javax.servlet.version>
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
-        <tomcat.version>8.5.24</tomcat.version>
+        <tomcat.version>9.0.12</tomcat.version>
     </properties>
 
     <repositories>
@@ -178,10 +179,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
+                    <version>3.8.0</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>${java.source.version}</source>
+                        <target>${java.source.version}</target>
                         <encoding>UTF-8</encoding>
                         <compilerArgs>
                             <arg>-Xlint</arg>
@@ -196,18 +197,18 @@
                 <plugin>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
-                    <version>3.5.5</version>
+                    <version>3.6.2</version>
                 </plugin>
                 <plugin>
                     <groupId>softmotions</groupId>
                     <artifactId>qooxdoo-maven-plugin</artifactId>
-                    <version>1.2-SNAPSHOT</version>
+                    <version>1.4-SNAPSHOT</version>
                     <extensions>true</extensions>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
                     <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.6.7</version>
+                    <version>1.6.10</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -217,7 +218,7 @@
                 <plugin>
                     <groupId>com.github.warmuuh</groupId>
                     <artifactId>libsass-maven-plugin</artifactId>
-                    <version>0.2.9-libsass_3.4.7</version>
+                    <version>0.2.10-libsass_3.5.3</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -227,7 +228,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
+                    <version>3.1.1</version>
                 </plugin>
             </plugins>
         </pluginManagement>
