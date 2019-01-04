@@ -268,7 +268,7 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 tm.iterateCachedRows(function (offset, item) {
                     if (selectFile.id == item.id && offset != selectedIdx) {
                         table.getSelectionModel().skipNextSelectionEventCnt = 1; // skip reselect to the offset
-                        table.selectSingleRow(offset);            
+                        table.selectSingleRow(offset);
                     }
                 });
             }, this);
@@ -605,11 +605,8 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
         },
 
         __handleMediaRemoved: function (ev) {
-            var cvs = this.getConstViewSpec();
             var data = ev.getData();
-            if (data.isFolder
-                || (cvs == null || sm.lang.String.isEmpty(cvs.folder))
-                || data.path.indexOf(cvs.folder + '/') !== 0) {
+            if (data.isFolder) {
                 return;
             }
             var found = false;
@@ -619,6 +616,10 @@ qx.Class.define("ncms.mmgr.MediaFilesSelector", {
                 }
             });
             if (found) { // removed file from visible list
+                var selectedFile = this.__table.getSelectedFile();
+                if (selectedFile && selectedFile.id == data.id) {
+                  this.fireDataEvent("fileSelected", null);
+                }
                 this.reload();
             }
         },
