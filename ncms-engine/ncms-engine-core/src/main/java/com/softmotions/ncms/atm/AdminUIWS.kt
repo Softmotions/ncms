@@ -10,6 +10,7 @@ import com.softmotions.ncms.events.NcmsEventBus
 import com.softmotions.ncms.media.events.MediaDeleteEvent
 import com.softmotions.ncms.media.events.MediaMoveEvent
 import com.softmotions.ncms.media.events.MediaUpdateEvent
+import org.atmosphere.cache.UUIDBroadcasterCache
 import org.atmosphere.client.TrackMessageSizeInterceptor
 import org.atmosphere.config.service.AtmosphereHandlerService
 import org.atmosphere.cpr.*
@@ -35,7 +36,7 @@ import kotlin.concurrent.withLock
                               HeartbeatInterceptor::class,
                               JavaScriptProtocol::class
                           ],
-        //broadcasterCache = UUIDBroadcasterCache::class,
+                          broadcasterCache = UUIDBroadcasterCache::class,
                           listeners = [AdminUIWS.RSEvents::class])
 @JvmSuppressWildcards
 open class AdminUIWS
@@ -70,7 +71,7 @@ constructor(private val mapper: ObjectMapper,
             register(event.resource)
         }
     }
-    
+
     override fun onDisconnect(response: AtmosphereResponse, event: AtmosphereResourceEvent) = terminate(event.resource)
 
     override fun onTimeout(response: AtmosphereResponse, event: AtmosphereResourceEvent) = terminate(event.resource)
