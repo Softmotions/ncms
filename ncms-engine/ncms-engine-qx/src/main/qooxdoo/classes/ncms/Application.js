@@ -25,7 +25,6 @@
  *
  * Atmosphere
  * @asset(ncms/script/atmosphere.js)
- * @asset(ncms/script/atmosphere.min.js)
  *
  * Medium editor
  * @asset(ncms/script/medium-editor.js)

@@ -78,7 +78,7 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
                            "com.softmotions.ncms.mhttl",
                            "com.softmotions.ncms.asm",
                            "com.softmotions.commons.cont",
-                           "org.apache.commons.configuration2");
+                           "com.softmotions.xconfig");
 
         Collections.addAll(methodClasses,
                            HttlAsmMethods.class.getName(),
@@ -108,8 +108,8 @@ public class AsmTemplateEngineHttlAdapter implements AsmTemplateEngineAdapter {
 
 //        loggers=httl.spi.loggers.Slf4jLogger
 //        loaders=com.softmotions.ncms.asm.render.httl.HttlLoaderAdapter
-//        import.methods+=com.softmotions.ncms.mhttl.HttlAsmMethods\,com.softmotions.ncms.mhttl.HttlUtilsMethods\,com.smsfinance.sml.HttlMethods
-//        import.packages+=com.softmotions.ncms.mhttl\,com.softmotions.ncms.asm\,com.softmotions.commons.cont\,org.apache.commons.configuration2
+//        import.methods+=com.softmotions.ncms.mhttl.HttlAsmMethods,com.softmotions.ncms.mhttl.HttlUtilsMethods,com.smsfinance.sml.HttlMethods
+//        import.packages+=com.softmotions.ncms.mhttl,com.softmotions.ncms.asm,com.softmotions.commons.cont
 //        date.format=MM.dd.yyyy HH:mm
 //                reloadable=true
 

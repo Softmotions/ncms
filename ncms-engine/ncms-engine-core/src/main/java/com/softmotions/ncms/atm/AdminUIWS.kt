@@ -10,7 +10,6 @@ import com.softmotions.ncms.events.NcmsEventBus
 import com.softmotions.ncms.media.events.MediaDeleteEvent
 import com.softmotions.ncms.media.events.MediaMoveEvent
 import com.softmotions.ncms.media.events.MediaUpdateEvent
-import org.atmosphere.cache.UUIDBroadcasterCache
 import org.atmosphere.client.TrackMessageSizeInterceptor
 import org.atmosphere.config.service.AtmosphereHandlerService
 import org.atmosphere.cpr.*
@@ -28,15 +27,16 @@ import kotlin.concurrent.withLock
 
 @Singleton
 @AtmosphereHandlerService(path = "/ws/adm/ui",
-        interceptors = arrayOf(
-                AtmosphereResourceLifecycleInterceptor::class,
-                TrackMessageSizeInterceptor::class,
-                SuspendTrackerInterceptor::class,
-                BroadcastOnPostAtmosphereInterceptor::class,
-                HeartbeatInterceptor::class,
-                JavaScriptProtocol::class),
-        broadcasterCache = UUIDBroadcasterCache::class,
-        listeners = arrayOf(AdminUIWS.RSEvents::class))
+                          interceptors = [
+                              AtmosphereResourceLifecycleInterceptor::class,
+                              TrackMessageSizeInterceptor::class,
+                              SuspendTrackerInterceptor::class,
+                              BroadcastOnPostAtmosphereInterceptor::class,
+                              HeartbeatInterceptor::class,
+                              JavaScriptProtocol::class
+                          ],
+        //broadcasterCache = UUIDBroadcasterCache::class,
+                          listeners = [AdminUIWS.RSEvents::class])
 @JvmSuppressWildcards
 open class AdminUIWS
 @Inject
@@ -60,11 +60,17 @@ constructor(private val mapper: ObjectMapper,
 
     init {
         log.info("AdminUIWS instantiated")
-        ebus.register(this);
+        ebus.register(this)
     }
 
     override fun onOpen(resource: AtmosphereResource) = register(resource)
 
+    override fun onResume(response: AtmosphereResponse?, event: AtmosphereResourceEvent?) {
+        if (event?.resource != null) {
+            register(event.resource)
+        }
+    }
+    
     override fun onDisconnect(response: AtmosphereResponse, event: AtmosphereResourceEvent) = terminate(event.resource)
 
     override fun onTimeout(response: AtmosphereResponse, event: AtmosphereResourceEvent) = terminate(event.resource)
@@ -79,10 +85,10 @@ constructor(private val mapper: ObjectMapper,
                 log.info("Register atmosphere resource: {} for user: {}", uuid, user)
             }
             ruuid2User[uuid] = user
-            val uuids = user2ruuids.getOrPut(user, {
-                HashSet<String>()
-            })
-            uuids += uuid
+            val uuids = user2ruuids.getOrPut(user) {
+                HashSet()
+            }
+            uuids.add(uuid)
         }
     }
 
@@ -165,26 +171,26 @@ constructor(private val mapper: ObjectMapper,
     fun onDisconnected(evt: UIUserDisconnectedEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt))
+                                        createMessage(evt))
     }
 
     @Subscribe
     fun onAsmModified(evt: AsmModifiedEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt)
-                            .put("id", evt.id))
+                                        createMessage(evt)
+                                                .put("id", evt.id))
     }
 
     @Subscribe
     fun onAsmCreatedEvent(evt: AsmCreatedEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt)
-                            .put("id", evt.id)
-                            .put("name", evt.name)
-                            .put("hname", evt.hname)
-                            .put("navParentId", evt.navParentId)
+                                        createMessage(evt)
+                                                .put("id", evt.id)
+                                                .put("name", evt.name)
+                                                .put("hname", evt.hname)
+                                                .put("navParentId", evt.navParentId)
             )
     }
 
@@ -192,34 +198,34 @@ constructor(private val mapper: ObjectMapper,
     fun onAsmRemovedEvent(evt: AsmRemovedEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt)
-                            .put("id", evt.id))
+                                        createMessage(evt)
+                                                .put("id", evt.id))
     }
 
     @Subscribe
     fun onAsmLockedEvent(evt: AsmLockedEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt)
-                            .put("id", evt.id))
+                                        createMessage(evt)
+                                                .put("id", evt.id))
     }
 
     @Subscribe
     fun onAsmUnlockedEvent(evt: AsmUnlockedEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt)
-                            .put("id", evt.id))
+                                        createMessage(evt)
+                                                .put("id", evt.id))
     }
 
     @Subscribe
     fun onMediaUpdateEvent(evt: MediaUpdateEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt)
-                            .put("id", evt.id)
-                            .put("isFolder", evt.isFolder)
-                            .put("path", evt.path))
+                                        createMessage(evt)
+                                                .put("id", evt.id)
+                                                .put("isFolder", evt.isFolder)
+                                                .put("path", evt.path))
 
     }
 
@@ -227,31 +233,31 @@ constructor(private val mapper: ObjectMapper,
     fun onMediaDeleteEvent(evt: MediaDeleteEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt)
-                            .put("id", evt.id)
-                            .put("isFolder", evt.isFolder)
-                            .put("path", evt.path))
+                                        createMessage(evt)
+                                                .put("id", evt.id)
+                                                .put("isFolder", evt.isFolder)
+                                                .put("path", evt.path))
     }
 
     @Subscribe
     fun onMediaMoveEvent(evt: MediaMoveEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt)
-                            .put("id", evt.id)
-                            .put("isFolder", evt.isFolder)
-                            .put("newPath", evt.newPath)
-                            .put("oldPath", evt.oldPath))
+                                        createMessage(evt)
+                                                .put("id", evt.id)
+                                                .put("isFolder", evt.isFolder)
+                                                .put("newPath", evt.newPath)
+                                                .put("oldPath", evt.oldPath))
     }
 
     @Subscribe
     fun onServerMessage(evt: ServerMessageEvent) {
         if (isBroadcastAllowed(evt))
             metaBroadcaster.broadcastTo(BROADCAST_ALL,
-                    createMessage(evt)
-                            .put("message", evt.message)
-                            .put("error", evt.error)
-                            .put("persistent", evt.persistent))
+                                        createMessage(evt)
+                                                .put("message", evt.message)
+                                                .put("error", evt.error)
+                                                .put("persistent", evt.persistent))
 
     }
 

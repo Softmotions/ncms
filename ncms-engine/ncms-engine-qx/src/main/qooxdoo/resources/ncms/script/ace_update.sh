@@ -3,7 +3,7 @@
 set -x
 set -e
 
-ACE_BASE="https://raw.githubusercontent.com/ajaxorg/ace-builds/2268d21c5893320330c9daf10b70b1973ca45eba/src-min"
+ACE_BASE="https://raw.githubusercontent.com/ajaxorg/ace-builds/0d62c26de7b2e1922d8dd95ba587c9845c018c51/src-min"
 
 curl ${ACE_BASE}/ace.js > ./ace_all.js
 

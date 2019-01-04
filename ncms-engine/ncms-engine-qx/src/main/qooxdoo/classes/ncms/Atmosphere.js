@@ -83,7 +83,7 @@ qx.Class.define("ncms.Atmosphere", {
             if (resp == null || !resp.headers) {
                 return true;
             }
-            if (resp.headers["X-Softmotions-Login"] != null) {
+            if (resp.headers["x-softmotions-login"] != null) {
                 qx.log.Logger.info("Perform logout!");
                 try {
                     this.__atm.unsubscribe();

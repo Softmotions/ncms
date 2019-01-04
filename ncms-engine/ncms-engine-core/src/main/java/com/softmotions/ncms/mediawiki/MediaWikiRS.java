@@ -58,6 +58,8 @@ public class MediaWikiRS {
 
     private final NcmsEnvironment env;
 
+    private final int maxInlineImageWidth;
+
     @Inject
     public MediaWikiRS(MediaRepository repository,
                        I18n messages,
@@ -65,6 +67,7 @@ public class MediaWikiRS {
         this.repository = repository;
         this.messages = messages;
         this.env = env;
+        this.maxInlineImageWidth = env.xcfg().numberPattern("mediawiki.max-inline-image-width-px", 0L).intValue();
     }
 
     @GET
@@ -81,16 +84,15 @@ public class MediaWikiRS {
         if (matcher.group(2) != null) {
             w = Integer.parseInt(matcher.group(2));
         } else {
-            int maxWidth = env.xcfg().numberPattern("mediawiki.max-inline-image-width-px", 0L).intValue();
-            if (maxWidth > 0) {
+            if (maxInlineImageWidth > 0) {
                 MediaResource mres = repository.findMediaResource(id, messages.getLocale(req));
                 if (mres == null) {
                     throw new NotFoundException("");
                 }
                 if (CTypeUtils.isImageContentType(mres.getContentType())) {
-                    if (mres.getImageWidth() > maxWidth) { //restrict maximal image width
-                        repository.ensureResizedImage(id, maxWidth, null, MediaRepository.RESIZE_SKIP_SMALL);
-                        w = maxWidth;
+                    if (mres.getImageWidth() > maxInlineImageWidth) { //restrict maximal image width
+                        repository.ensureResizedImage(id, maxInlineImageWidth, null, MediaRepository.RESIZE_SKIP_SMALL);
+                        w = maxInlineImageWidth;
                     }
                 }
             }

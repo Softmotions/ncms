@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Async-IO.org
+ * Copyright 2018 Async-IO.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@
         hasOwn = Object.prototype.hasOwnProperty;
 
     atmosphere = {
-        version: "2.3.2-javascript",
+        version: "2.3.8-javascript",
         onError: function (response) {
         },
         onClose: function (response) {
@@ -196,6 +196,8 @@
                 closeAsync: false,
                 reconnectOnServerError: true,
                 handleOnlineOffline: true,
+                maxWebsocketErrorRetries: 1,
+                curWebsocketErrorRetries: 0,
                 onError: function (response) {
                 },
                 onClose: function (response) {
@@ -485,6 +487,7 @@
                 _response.responseBody = "";
                 _response.status = 408;
                 _response.partialMessage = "";
+                _request.curWebsocketErrorRetries = 0;
                 _invokeCallback();
                 _disconnect();
                 _clearState();
@@ -674,10 +677,11 @@
 
                         var storage = window.localStorage,
                             get = function (key) {
-                                return atmosphere.util.parseJSON(storage.getItem(name + "-" + key));
+                                var item = storage.getItem(name + "-" + key);
+                                return item === null ? [] : JSON.parse(item);
                             },
                             set = function (key, value) {
-                                storage.setItem(name + "-" + key, atmosphere.util.stringifyJSON(value));
+                                storage.setItem(name + "-" + key, JSON.stringify(value));
                             };
 
                         return {
@@ -687,7 +691,7 @@
                                 return get("opened");
                             },
                             signal: function (type, data) {
-                                storage.setItem(name, atmosphere.util.stringifyJSON({
+                                storage.setItem(name, JSON.stringify({
                                     target: "p",
                                     type: type,
                                     data: data
@@ -720,7 +724,7 @@
                             },
                             signal: function (type, data) {
                                 if (!win.closed && win.fire) {
-                                    win.fire(atmosphere.util.stringifyJSON({
+                                    win.fire(JSON.stringify({
                                         target: "p",
                                         type: type,
                                         data: data
@@ -753,7 +757,7 @@
 
                 // Receives open, close and message command from the parent
                 function listener(string) {
-                    var command = atmosphere.util.parseJSON(string), data = command.data;
+                    var command = JSON.parse(string), data = command.data;
 
                     if (command.target === "c") {
                         switch (command.type) {
@@ -790,7 +794,7 @@
                 function findTrace() {
                     var matcher = new RegExp("(?:^|; )(" + encodeURIComponent(name) + ")=([^;]*)").exec(document.cookie);
                     if (matcher) {
-                        return atmosphere.util.parseJSON(decodeURIComponent(matcher[2]));
+                        return JSON.parse(decodeURIComponent(matcher[2]));
                     }
                 }
 
@@ -816,7 +820,7 @@
                             trace = findTrace();
                             if (!trace || oldTrace.ts === trace.ts) {
                                 // Simulates a close signal
-                                listener(atmosphere.util.stringifyJSON({
+                                listener(JSON.stringify({
                                     target: "c",
                                     type: "close",
                                     data: {
@@ -840,7 +844,7 @@
                         connector.signal("send", event);
                     },
                     localSend: function (event) {
-                        connector.signal("localSend", atmosphere.util.stringifyJSON({
+                        connector.signal("localSend", JSON.stringify({
                             id: guid,
                             event: event
                         }));
@@ -880,17 +884,17 @@
                                 atmosphere.util.on(window, "storage", onstorage);
                             },
                             signal: function (type, data) {
-                                storage.setItem(name, atmosphere.util.stringifyJSON({
+                                storage.setItem(name, JSON.stringify({
                                     target: "c",
                                     type: type,
                                     data: data
                                 }));
                             },
                             get: function (key) {
-                                return atmosphere.util.parseJSON(storage.getItem(name + "-" + key));
+                                return JSON.parse(storage.getItem(name + "-" + key));
                             },
                             set: function (key, value) {
-                                storage.setItem(name + "-" + key, atmosphere.util.stringifyJSON(value));
+                                storage.setItem(name + "-" + key, JSON.stringify(value));
                             },
                             close: function () {
                                 atmosphere.util.off(window, "storage", onstorage);
@@ -933,7 +937,7 @@
                             },
                             signal: function (type, data) {
                                 if (!win.closed && win.fire) {
-                                    win.fire(atmosphere.util.stringifyJSON({
+                                    win.fire(JSON.stringify({
                                         target: "c",
                                         type: type,
                                         data: data
@@ -956,7 +960,7 @@
 
                 // Receives send and close command from the children
                 function listener(string) {
-                    var command = atmosphere.util.parseJSON(string), data = command.data;
+                    var command = JSON.parse(string), data = command.data;
 
                     if (command.target === "p") {
                         switch (command.type) {
@@ -981,7 +985,7 @@
                     document.cookie = _sharingKey + "=" +
                         // Opera's JSON implementation ignores a number whose a last digit of 0 strangely
                         // but has no problem with a number whose a last digit of 9 + 1
-                    encodeURIComponent(atmosphere.util.stringifyJSON({
+                    encodeURIComponent(JSON.stringify({
                         ts: atmosphere.util.now() + 1,
                         heir: (storageService.get("children") || [])[0]
                     })) + "; path=/";
@@ -1283,7 +1287,7 @@
 
                     if (_request.method === 'POST') {
                         _response.state = "messageReceived";
-                        _sse.send(_request.data);
+                        _push(_request.data);
                     }
                 };
 
@@ -1474,6 +1478,10 @@
                     if (_request.heartbeatTimer) {
                         clearTimeout(_request.heartbeatTimer);
                     }
+                    
+                    if (_request.curWebsocketErrorRetries++ < _request.maxWebsocketErrorRetries && _request.fallbackTransport !== 'websocket') {
+                        _reconnectWithFallbackTransport("Failed to connect via Websocket. Downgrading to " + _request.fallbackTransport + " and resending");
+                    }
                 };
 
                 _websocket.onclose = function (message) {
@@ -1535,7 +1543,7 @@
 
                     if (_abortingConnection) {
                         atmosphere.util.log(_request.logLevel, ["Websocket closed normally"]);
-                    } else if (!webSocketOpened) {
+                    } else if (!webSocketOpened && _request.fallbackTransport !== 'websocket') {
                         _reconnectWithFallbackTransport("Websocket failed on first connection attempt. Downgrading to " + _request.fallbackTransport + " and resending");
 
                     } else if (_request.reconnect && _response.transport === 'websocket' ) {
@@ -1687,8 +1695,11 @@
                         while (messageStart !== -1) {
                             var str = message.substring(0, messageStart);
                             var messageLength = +str;
-                            if (isNaN(messageLength))
+                            if (isNaN(messageLength)) {
+                                // Discard partial message, otherwise it would never recover from this condition
+                                response.partialMessage = '';
                                 throw new Error('message length "' + str + '" is not a number');
+                            }
                             messageStart += request.messageDelimiter.length;
                             if (messageStart + messageLength > message.length) {
                                 // message not complete, so there is no trailing messageDelimiter
@@ -1736,11 +1747,12 @@
                     atmosphere.util.onTransportFailure(errorMessage, _request);
                 }
 
-                _request.transport = _request.fallbackTransport;
                 var reconnectInterval = _request.connectTimeout === -1 ? 0 : _request.connectTimeout;
                 if (_request.reconnect && _request.transport !== 'none' || _request.transport == null) {
+                	_request.transport = _request.fallbackTransport;
                     _request.method = _request.fallbackMethod;
                     _response.transport = _request.fallbackTransport;
+                    _response.state = '';
                     _request.fallbackTransport = 'none';
                     if (reconnectInterval > 0) {
                         _request.reconnectId = setTimeout(function () {
@@ -2421,6 +2433,9 @@
                                 }
 
                                 var res = cdoc.body ? cdoc.body.lastChild : cdoc;
+                                if (res.omgThisIsBroken) {
+                                    // Cause an exception when res is null, to trigger a reconnect...
+                                }
                                 var readResponse = function () {
                                     // Clones the element not to disturb the original one
                                     var clone = res.cloneNode(true);
@@ -2576,7 +2591,7 @@
                     if (_localStorageService) {
                         _localStorageService.localSend(message);
                     } else if (_storageService) {
-                        _storageService.signal("localMessage", atmosphere.util.stringifyJSON({
+                        _storageService.signal("localMessage", JSON.stringify({
                             id: guid,
                             event: message
                         }));
@@ -2710,7 +2725,7 @@
             }
 
             function _localMessage(message) {
-                var m = atmosphere.util.parseJSON(message);
+                var m = JSON.parse(message);
                 if (m.id !== guid) {
                     if (typeof (_request.onLocalMessage) !== 'undefined') {
                         _request.onLocalMessage(m.event);
@@ -3274,6 +3289,7 @@
         error: function () {
             atmosphere.util.log('error', arguments);
         },
+
         xhr: function () {
             try {
                 return new window.XMLHttpRequest();
@@ -3284,84 +3300,7 @@
                 }
             }
         },
-        parseJSON: function (data) {
-            return !data ? null : window.JSON && window.JSON.parse ? window.JSON.parse(data) : new Function("return " + data)();
-        },
-        // http://github.com/flowersinthesand/stringifyJSON
-        stringifyJSON: function (value) {
-            var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g, meta = {
-                '\b': '\\b',
-                '\t': '\\t',
-                '\n': '\\n',
-                '\f': '\\f',
-                '\r': '\\r',
-                '"': '\\"',
-                '\\': '\\\\'
-            };
-
-            function quote(string) {
-                return '"' + string.replace(escapable, function (a) {
-                        var c = meta[a];
-                        return typeof c === "string" ? c : "\\u" + ("0000" + a.charCodeAt(0).toString(16)).slice(-4);
-                    }) + '"';
-            }
-
-            function f(n) {
-                return n < 10 ? "0" + n : n;
-            }
-
-            return window.JSON && window.JSON.stringify ? window.JSON.stringify(value) : (function str(key, holder) {
-                var i, v, len, partial, value = holder[key], type = typeof value;
-
-                if (value && typeof value === "object" && typeof value.toJSON === "function") {
-                    value = value.toJSON(key);
-                    type = typeof value;
-                }
-
-                switch (type) {
-                    case "string":
-                        return quote(value);
-                    case "number":
-                        return isFinite(value) ? String(value) : "null";
-                    case "boolean":
-                        return String(value);
-                    case "object":
-                        if (!value) {
-                            return "null";
-                        }
-
-                        switch (Object.prototype.toString.call(value)) {
-                            case "[object Date]":
-                                return isFinite(value.valueOf()) ? '"' + value.getUTCFullYear() + "-" + f(value.getUTCMonth() + 1) + "-"
-                                + f(value.getUTCDate()) + "T" + f(value.getUTCHours()) + ":" + f(value.getUTCMinutes()) + ":" + f(value.getUTCSeconds())
-                                + "Z" + '"' : "null";
-                            case "[object Array]":
-                                len = value.length;
-                                partial = [];
-                                for (i = 0; i < len; i++) {
-                                    partial.push(str(i, value) || "null");
-                                }
-
-                                return "[" + partial.join(",") + "]";
-                            default:
-                                partial = [];
-                                for (i in value) {
-                                    if (hasOwn.call(value, i)) {
-                                        v = str(i, value);
-                                        if (v) {
-                                            partial.push(quote(i) + ":" + v);
-                                        }
-                                    }
-                                }
-
-                                return "{" + partial.join(",") + "}";
-                        }
-                }
-            })("", {
-                "": value
-            });
-        },
-
+ 
         checkCORSSupport: function () {
             if (atmosphere.util.browser.msie && !window.XDomainRequest && +atmosphere.util.browser.version.split(".")[0] < 11) {
                 return true;
@@ -3423,64 +3362,68 @@
         }
     })();
 
-    atmosphere.util.on(window, "unload", function (event) {
-        atmosphere.util.debug(new Date() + " Atmosphere: " + "unload event");
-        atmosphere.unsubscribe();
-    });
+    atmosphere.callbacks = {
+        unload: function() {
+            atmosphere.util.debug(new Date() + " Atmosphere: " + "unload event");
+            atmosphere.unsubscribe();
+        },
+        beforeUnload: function() {
+            atmosphere.util.debug(new Date() + " Atmosphere: " + "beforeunload event");
 
-    atmosphere.util.on(window, "beforeunload", function (event) {
-        atmosphere.util.debug(new Date() + " Atmosphere: " + "beforeunload event");
+            // ATMOSPHERE-JAVASCRIPT-143: Delay reconnect to avoid reconnect attempts before an actual unload (we don't know if an unload will happen, yet)
+            atmosphere._beforeUnloadState = true;
+            setTimeout(function () {
+                atmosphere.util.debug(new Date() + " Atmosphere: " + "beforeunload event timeout reached. Reset _beforeUnloadState flag");
+                atmosphere._beforeUnloadState = false;
+            }, 5000);
+        },
+        offline: function() {
+            atmosphere.util.debug(new Date() + " Atmosphere: offline event");
+            offline = true;
+            if (requests.length > 0) {
+                var requestsClone = [].concat(requests);
+                for (var i = 0; i < requestsClone.length; i++) {
+                    var rq = requestsClone[i];
+                    if(rq.request.handleOnlineOffline) {
+                        rq.close();
+                        clearTimeout(rq.response.request.id);
 
-        // ATMOSPHERE-JAVASCRIPT-143: Delay reconnect to avoid reconnect attempts before an actual unload (we don't know if an unload will happen, yet)
-        atmosphere._beforeUnloadState = true;
-        setTimeout(function () {
-            atmosphere.util.debug(new Date() + " Atmosphere: " + "beforeunload event timeout reached. Reset _beforeUnloadState flag");
-            atmosphere._beforeUnloadState = false;
-        }, 5000);
-    });
-
-    // Pressing ESC key in Firefox kills the connection
-    // for your information, this is fixed in Firefox 20
-    // https://bugzilla.mozilla.org/show_bug.cgi?id=614304
-    atmosphere.util.on(window, "keypress", function (event) {
-        if (event.charCode === 27 || event.keyCode === 27) {
-            if (event.preventDefault) {
-                event.preventDefault();
-            }
-        }
-    });
-
-    atmosphere.util.on(window, "offline", function () {
-        atmosphere.util.debug(new Date() + " Atmosphere: offline event");
-        offline = true;
-        if (requests.length > 0) {
-            var requestsClone = [].concat(requests);
-            for (var i = 0; i < requestsClone.length; i++) {
-                var rq = requestsClone[i];
-                if(rq.request.handleOnlineOffline) {
-                    rq.close();
-                    clearTimeout(rq.response.request.id);
-
-                    if (rq.heartbeatTimer) {
-                        clearTimeout(rq.heartbeatTimer);
+                        if (rq.heartbeatTimer) {
+                            clearTimeout(rq.heartbeatTimer);
+                        }
                     }
                 }
             }
-        }
-    });
-
-    atmosphere.util.on(window, "online", function () {
-        atmosphere.util.debug(new Date() + " Atmosphere: online event");
-        if (requests.length > 0) {
-            for (var i = 0; i < requests.length; i++) {
-                if(requests[i].request.handleOnlineOffline) {
-                    requests[i].init();
-                    requests[i].execute();
+        },
+        online: function() {
+            atmosphere.util.debug(new Date() + " Atmosphere: online event");
+            if (requests.length > 0) {
+                for (var i = 0; i < requests.length; i++) {
+                    if(requests[i].request.handleOnlineOffline) {
+                        requests[i].init();
+                        requests[i].execute();
+                    }
                 }
             }
+            offline = false;
         }
-        offline = false;
-    });
+    };
+
+    atmosphere.bindEvents = function() {
+        atmosphere.util.on(window, "unload", atmosphere.callbacks.unload);
+        atmosphere.util.on(window, "beforeunload", atmosphere.callbacks.beforeUnload);
+        atmosphere.util.on(window, "offline", atmosphere.callbacks.offline);
+        atmosphere.util.on(window, "online", atmosphere.callbacks.online);
+    };
+
+    atmosphere.unbindEvents = function() {
+        atmosphere.util.off(window, "unload", atmosphere.callbacks.unload);
+        atmosphere.util.off(window, "beforeunload", atmosphere.callbacks.beforeUnload);
+        atmosphere.util.off(window, "offline", atmosphere.callbacks.offline);
+        atmosphere.util.off(window, "online", atmosphere.callbacks.online);
+    };
+
+    atmosphere.bindEvents();
 
     return atmosphere;
 }));

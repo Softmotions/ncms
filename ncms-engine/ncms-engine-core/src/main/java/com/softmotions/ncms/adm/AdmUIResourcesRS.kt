@@ -62,7 +62,7 @@ constructor(
                 val icon = hc.textXPath("@qxIcon")
                 val on = mapper.createObjectNode().put("qxClass", qxClass)
                 val label = msg.get(qxClass + ".label", req)
-                on.put("label", label)
+                 on.put("label", label)
                 if (icon != null) {
                     on.put("icon", icon)
                 }

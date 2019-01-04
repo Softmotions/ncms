@@ -544,6 +544,9 @@ MediumEditor.extensions = {};
             Util.moveTextRangeIntoElement(textNodes[0], textNodes[textNodes.length - 1], anchor);
             anchor.setAttribute('href', href);
             if (target) {
+                if (target === '_blank') {
+                    anchor.setAttribute('rel', 'noopener noreferrer');
+                }
                 anchor.setAttribute('target', target);
             }
             return anchor;
@@ -629,11 +632,10 @@ MediumEditor.extensions = {};
         splitEndNodeIfNeeded: function (currentNode, newNode, matchEndIndex, currentTextIndex) {
             var textIndexOfEndOfFarthestNode,
                 endSplitPoint;
-            textIndexOfEndOfFarthestNode = currentTextIndex + (newNode || currentNode).nodeValue.length +
-                    (newNode ? currentNode.nodeValue.length : 0) -
-                    1;
-            endSplitPoint = (newNode || currentNode).nodeValue.length -
-                    (textIndexOfEndOfFarthestNode + 1 - matchEndIndex);
+            textIndexOfEndOfFarthestNode = currentTextIndex + currentNode.nodeValue.length +
+                    (newNode ? newNode.nodeValue.length : 0) - 1;
+            endSplitPoint = matchEndIndex - currentTextIndex -
+                    (newNode ? currentNode.nodeValue.length : 0);
             if (textIndexOfEndOfFarthestNode >= matchEndIndex &&
                     currentTextIndex !== textIndexOfEndOfFarthestNode &&
                     endSplitPoint !== 0) {
@@ -990,12 +992,14 @@ MediumEditor.extensions = {};
             var i, url = anchorUrl || false;
             if (el.nodeName.toLowerCase() === 'a') {
                 el.target = '_blank';
+                el.rel = 'noopener noreferrer';
             } else {
                 el = el.getElementsByTagName('a');
 
                 for (i = 0; i < el.length; i += 1) {
                     if (false === url || url === el[i].attributes.href.value) {
                         el[i].target = '_blank';
+                        el[i].rel = 'noopener noreferrer';
                     }
                 }
             }
@@ -1009,17 +1013,24 @@ MediumEditor.extensions = {};
             var i;
             if (el.nodeName.toLowerCase() === 'a') {
                 el.removeAttribute('target');
+                el.removeAttribute('rel');
             } else {
                 el = el.getElementsByTagName('a');
 
                 for (i = 0; i < el.length; i += 1) {
                     if (anchorUrl === el[i].attributes.href.value) {
                         el[i].removeAttribute('target');
+                        el[i].removeAttribute('rel');
                     }
                 }
             }
         },
 
+        /*
+         * this function adds one or several classes on an a element.
+         * if el parameter is not an a, it will look for a children of el.
+         * if no a children are found, it will look for the a parent.
+         */
         addClassToAnchors: function (el, buttonClass) {
             var classes = buttonClass.split(' '),
                 i,
@@ -1029,7 +1040,13 @@ MediumEditor.extensions = {};
                     el.classList.add(classes[j]);
                 }
             } else {
-                el = el.getElementsByTagName('a');
+                var aChildren = el.getElementsByTagName('a');
+                if (aChildren.length === 0) {
+                    var parentAnchor = Util.getClosestTag(el, 'a');
+                    el = parentAnchor ? [parentAnchor] : [];
+                } else {
+                    el = aChildren;
+                }
                 for (i = 0; i < el.length; i += 1) {
                     for (j = 0; j < classes.length; j += 1) {
                         el[i].classList.add(classes[j]);
@@ -2435,6 +2452,10 @@ MediumEditor.extensions = {};
     'use strict';
 
     function isElementDescendantOfExtension(extensions, element) {
+        if (!extensions) {
+            return false;
+        }
+
         return extensions.some(function (extension) {
             if (typeof extension.getInteractionElements !== 'function') {
                 return false;
@@ -2485,15 +2506,17 @@ MediumEditor.extensions = {};
                 win = this.base.options.contentWindow,
                 doc = this.base.options.ownerDocument;
 
-            targets = MediumEditor.util.isElement(targets) || [win, doc].indexOf(targets) > -1 ? [targets] : targets;
+            if (targets) {
+                targets = MediumEditor.util.isElement(targets) || [win, doc].indexOf(targets) > -1 ? [targets] : targets;
 
-            Array.prototype.forEach.call(targets, function (target) {
-                index = this.indexOfListener(target, event, listener, useCapture);
-                if (index !== -1) {
-                    e = this.events.splice(index, 1)[0];
-                    e[0].removeEventListener(e[1], e[2], e[3]);
-                }
-            }.bind(this));
+                Array.prototype.forEach.call(targets, function (target) {
+                    index = this.indexOfListener(target, event, listener, useCapture);
+                    if (index !== -1) {
+                        e = this.events.splice(index, 1)[0];
+                        e[0].removeEventListener(e[1], e[2], e[3]);
+                    }
+                }.bind(this));
+            }
         },
 
         indexOfListener: function (target, event, listener, useCapture) {
@@ -3350,6 +3373,14 @@ MediumEditor.extensions = {};
             contentDefault: '<b>image</b>',
             contentFA: '<i class="fa fa-picture-o"></i>'
         },
+        'html': {
+            name: 'html',
+            action: 'html',
+            aria: 'evaluate html',
+            tagNames: ['iframe', 'object'],
+            contentDefault: '<b>html</b>',
+            contentFA: '<i class="fa fa-code"></i>'
+        },
         'orderedlist': {
             name: 'orderedlist',
             action: 'insertorderedlist',
@@ -3511,6 +3542,7 @@ MediumEditor.extensions = {};
     };
 
 })();
+
 (function () {
     'use strict';
 
@@ -3743,8 +3775,8 @@ MediumEditor.extensions = {};
                 // figure out how to deprecate? also consider `fa-` icon default implcations.
                 template.push(
                     '<div class="medium-editor-toolbar-form-row">',
-                    '<input type="checkbox" class="medium-editor-toolbar-anchor-target">',
-                    '<label>',
+                    '<input type="checkbox" class="medium-editor-toolbar-anchor-target" id="medium-editor-toolbar-anchor-target-field-' + this.getEditorId() + '">',
+                    '<label for="medium-editor-toolbar-anchor-target-field-' + this.getEditorId() + '">',
                     this.targetCheckboxText,
                     '</label>',
                     '</div>'
@@ -3890,22 +3922,35 @@ MediumEditor.extensions = {};
             // Matches common external protocols "mailto:" "tel:" "maps:"
             // Matches relative hash link, begins with "#"
             var urlSchemeRegex = /^([a-z]+:)?\/\/|^(mailto|tel|maps):|^\#/i,
+                hasScheme = urlSchemeRegex.test(value),
+                scheme = '',
                 // telRegex is a regex for checking if the string is a telephone number
                 telRegex = /^\+?\s?\(?(?:\d\s?\-?\)?){3,20}$/,
-                split = value.split('?'),
-                path = split[0],
-                query = split[1];
+                urlParts = value.match(/^(.*?)(?:\?(.*?))?(?:#(.*))?$/),
+                path = urlParts[1],
+                query = urlParts[2],
+                fragment = urlParts[3];
 
             if (telRegex.test(value)) {
                 return 'tel:' + value;
-            } else {
-                // Check for URL scheme and default to http:// if none found
-                return (urlSchemeRegex.test(value) ? '' : 'http://') +
-                    // Ensure path is encoded
-                    this.ensureEncodedUri(path) +
-                    // Ensure query is encoded
-                    (query === undefined ? '' : '?' + this.ensureEncodedQuery(query));
             }
+
+            if (!hasScheme) {
+                var host = path.split('/')[0];
+                // if the host part of the path looks like a hostname
+                if (host.match(/.+(\.|:).+/) || host === 'localhost') {
+                    scheme = 'http://';
+                }
+            }
+
+            return scheme +
+                // Ensure path is encoded
+                this.ensureEncodedUri(path) +
+                // Ensure query is encoded
+                (query === undefined ? '' : '?' + this.ensureEncodedQuery(query)) +
+                // Include fragment unencoded as encodeUriComponent is too
+                // heavy handed for the many characters allowed in a fragment
+                (fragment === undefined ? '' : '#' + fragment);
         },
 
         doFormCancel: function () {
@@ -4067,7 +4112,9 @@ MediumEditor.extensions = {};
         },
 
         hidePreview: function () {
-            this.anchorPreview.classList.remove('medium-editor-anchor-preview-active');
+            if (this.anchorPreview) {
+                this.anchorPreview.classList.remove('medium-editor-anchor-preview-active');
+            }
             this.activeAnchor = null;
         },
 
@@ -4305,7 +4352,8 @@ MediumEditor.extensions = {};
     var WHITESPACE_CHARS,
         KNOWN_TLDS_FRAGMENT,
         LINK_REGEXP_TEXT,
-        KNOWN_TLDS_REGEXP;
+        KNOWN_TLDS_REGEXP,
+        LINK_REGEXP;
 
     WHITESPACE_CHARS = [' ', '\t', '\n', '\r', '\u00A0', '\u2000', '\u2001', '\u2002', '\u2003',
                                     '\u2028', '\u2029'];
@@ -4326,6 +4374,8 @@ MediumEditor.extensions = {};
         ')|(([a-z0-9\\-]+\\.)?[a-z0-9\\-]+\\.(' + KNOWN_TLDS_FRAGMENT + '))';
 
     KNOWN_TLDS_REGEXP = new RegExp('^(' + KNOWN_TLDS_FRAGMENT + ')$', 'i');
+
+    LINK_REGEXP = new RegExp(LINK_REGEXP_TEXT, 'gi');
 
     function nodeIsNotInsideAnchorTag(node) {
         return !MediumEditor.util.getClosestTag(node, 'a');
@@ -4508,12 +4558,11 @@ MediumEditor.extensions = {};
         },
 
         findLinkableText: function (contenteditable) {
-            var linkRegExp = new RegExp(LINK_REGEXP_TEXT, 'gi'),
-                textContent = contenteditable.textContent,
+            var textContent = contenteditable.textContent,
                 match = null,
                 matches = [];
 
-            while ((match = linkRegExp.exec(textContent)) !== null) {
+            while ((match = LINK_REGEXP.exec(textContent)) !== null) {
                 var matchOk = true,
                     matchEnd = match.index + match[0].length;
                 // If the regexp detected something as a link that has text immediately preceding/following it, bail out.
@@ -5300,6 +5349,10 @@ MediumEditor.extensions = {};
                 return this.cleanPaste(pastedHTML);
             }
 
+            if (!pastedPlain) {
+                return;
+            }
+
             if (!(this.getEditorOption('disableReturn') || (editable && editable.getAttribute('data-disable-return')))) {
                 paragraphs = pastedPlain.split(/[\r\n]+/g);
                 // If there are no \r\n in data, don't wrap in <p>
@@ -5392,8 +5445,10 @@ MediumEditor.extensions = {};
                 // on empty line, rects is empty so we grab information from the first container of the range
                 if (rects.length) {
                     top += rects[0].top;
-                } else {
+                } else if (range.startContainer.getBoundingClientRect !== undefined) {
                     top += range.startContainer.getBoundingClientRect().top;
+                } else {
+                    top += range.getBoundingClientRect().top;
                 }
             }
 
@@ -6888,7 +6943,7 @@ MediumEditor.extensions = {};
         for (var i = 0, n = atts.length; i < n; i++) {
             // do not re-create existing attributes
             if (!div.hasAttribute(atts[i].nodeName)) {
-                div.setAttribute(atts[i].nodeName, atts[i].nodeValue);
+                div.setAttribute(atts[i].nodeName, atts[i].value);
             }
         }
 
@@ -7109,6 +7164,11 @@ MediumEditor.extensions = {};
         if (action === 'image') {
             var src = this.options.contentWindow.getSelection().toString().trim();
             return this.options.ownerDocument.execCommand('insertImage', false, src);
+        }
+
+        if (action === 'html') {
+            var html = this.options.contentWindow.getSelection().toString().trim();
+            return MediumEditor.util.insertHTMLCommand(this.options.ownerDocument, html);
         }
 
         /* Issue: https://github.com/yabwe/medium-editor/issues/595
@@ -7826,7 +7886,7 @@ MediumEditor.parseVersionString = function (release) {
 
 MediumEditor.version = MediumEditor.parseVersionString.call(this, ({
     // grunt-bump looks for this:
-    'version': '5.22.1'
+    'version': '5.23.3'
 }).version);
 
     return MediumEditor;
