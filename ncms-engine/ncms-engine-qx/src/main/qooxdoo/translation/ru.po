@@ -2,25 +2,25 @@
 msgid ""
 msgstr ""
 
-#: ncms/Application.js:51
+#: ncms/Application.js:50
 msgid "Your user session expired! Please login again"
 msgstr "Ваша сессия закончилась, пожалуйста, войдите заново"
 
-#: ncms/Application.js:326
+#: ncms/Application.js:325
 msgid "<b>Connection to server lost.</b><br>Please wait..."
 msgstr ""
 "<b>Соединение с сервером потеряно.</b><br>Пожалуйста, дождитесь "
 "восстановления связи..."
 
-#: ncms/Application.js:335
+#: ncms/Application.js:334
 msgid "Connection to server restored."
 msgstr "Соединение с сервером восстановлено."
 
-#: ncms/Application.js:485
+#: ncms/Application.js:484
 msgid "Your session expired! Please login again"
 msgstr ""
 
-#: ncms/Application.js:514
+#: ncms/Application.js:513
 msgid "You leave %1"
 msgstr "Вы покидаете %1"
 
