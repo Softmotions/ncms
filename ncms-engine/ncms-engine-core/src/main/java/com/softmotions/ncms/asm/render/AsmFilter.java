@@ -17,7 +17,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -355,19 +354,13 @@ public class AsmFilter implements Filter {
         resp.setHeader("X-Softmotions-Login", "true");
         resp.setContentType("text/html;charset=UTF-8");
         WebUtils.getAndClearSavedRequest(req);
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
         InputStream is = getClass().getResourceAsStream("/com/softmotions/ncms/login.html");
-        if (is == null) {
-            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-        try {
+        try (is) {
+            if (is == null) {
+                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
             IOUtils.copyLarge(is, resp.getOutputStream());
-        } finally {
-            is.close();
         }
     }
 }
