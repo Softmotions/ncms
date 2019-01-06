@@ -98,14 +98,14 @@ public class AsmDAO extends MBDAOSupport {
     }
 
     @Transactional
-    public int coreDelete(@Nullable Long id, @Nullable String location) {
+    public void coreDelete(@Nullable Long id, @Nullable String location) {
         AsmCore core = new AsmCore();
         if (id != null) {
             core.id = id;
         } else if (location != null) {
             core.location = location;
         }
-        return sess.delete(toStatementId("coreDelete"), core);
+        sess.delete(toStatementId("coreDelete"), core);
     }
 
     @Transactional

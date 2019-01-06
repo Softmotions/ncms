@@ -102,6 +102,7 @@ import com.softmotions.commons.io.watcher.FSWatcherModifyEvent;
 import com.softmotions.commons.io.watcher.FSWatcherRegisterEvent;
 import com.softmotions.commons.lifecycle.Dispose;
 import com.softmotions.ncms.NcmsEnvironment;
+import com.softmotions.ncms.asm.AsmDAO;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
 import com.softmotions.ncms.asm.render.AsmRenderer;
 import com.softmotions.ncms.events.EnsureResizedImageJobEvent;
@@ -168,6 +169,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
 
     private final String[] privateExtensions;
 
+    private final AsmDAO asmDAO;
 
     @Inject
     public MediaRS(NcmsEnvironment env,
@@ -177,9 +179,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                    NcmsEventBus ebus,
                    WSUserDatabase userdb,
                    TaskExecutor executor,
-                   Provider<AsmRenderer> renderer) throws IOException {
+                   Provider<AsmRenderer> renderer,
+                   AsmDAO asmDAO) throws IOException {
         super(MediaRS.class, sess);
         this.env = env;
+        this.asmDAO = asmDAO;
         XConfig xcfg = env.xcfg();
         String dir = xcfg.text("media.basedir");
         if (dir == null) {
@@ -717,7 +721,6 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                                 }
                             }
                         }
-
                         ebus.fireOnSuccessCommit(new MediaMoveEvent(this, id, false, path, npath, req));
                         updateFTSKeywords(id, req);
                     }
@@ -801,8 +804,11 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
                         }
                     }
                 }
+                
+                asmDAO.coreDelete(null, folder + name);
             }
         }
+        
         ebus.fireOnSuccessCommit(new MediaDeleteEvent(this, id, isdir, path, req));
         return id;
     }

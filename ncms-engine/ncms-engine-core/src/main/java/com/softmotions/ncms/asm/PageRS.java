@@ -79,6 +79,7 @@ import com.softmotions.ncms.asm.am.AsmAttributeManagersRegistry;
 import com.softmotions.ncms.asm.events.AsmCreatedEvent;
 import com.softmotions.ncms.asm.events.AsmModifiedEvent;
 import com.softmotions.ncms.asm.events.AsmRemovedEvent;
+import com.softmotions.ncms.asm.events.PagesCacheInvalidateEvent;
 import com.softmotions.ncms.asm.render.AsmAttributesHandler;
 import com.softmotions.ncms.asm.render.AsmRendererHelper;
 import com.softmotions.ncms.events.NcmsEventBus;
@@ -1787,6 +1788,11 @@ public class PageRS extends MBDAOSupport implements PageService {
         }
     }
 
+    @Subscribe
+    public void onAsmCoreUpdatedEvent(PagesCacheInvalidateEvent ev) {
+        clearCache();
+    }
+
     private void clearCachedPage(Long id) {
         synchronized (pagesCache) {
             CachedPage p = pagesCache.remove(id);
@@ -1800,6 +1806,7 @@ public class PageRS extends MBDAOSupport implements PageService {
     }
 
     private void clearCache() {
+        log.info("Clear pages cache");
         synchronized (pagesCache) {
             pagesCache.clear();
             pageGuid2Cache.clear();

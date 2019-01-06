@@ -1,5 +1,6 @@
 package com.softmotions.ncms.asm.events;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.MoreObjects;
@@ -14,8 +15,8 @@ public class AsmModifiedEvent extends BasicEvent {
 
     /**
      * Assembly ID.
-     * Cannot be {@code null}
      */
+    @Nonnull
     public Long getId() {
         return id;
     }
