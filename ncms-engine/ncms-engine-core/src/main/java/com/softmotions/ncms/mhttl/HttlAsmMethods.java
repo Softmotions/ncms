@@ -208,6 +208,21 @@ public final class HttlAsmMethods {
 
     private static final AtomicReference<AsmDAO> ASM_DAO_REF = new AtomicReference<>();
 
+    public static Asm asmNavParent() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        Asm asm = ctx.getAsm();
+        Long parentId = asm.getNavParentId();
+        if (parentId == null) {
+            return null;
+        }
+        CachedPage cp = ctx.getPageService().getCachedPage(parentId, true);
+        if (cp == null) {
+            return null;
+        }
+        return cp.getAsm();
+    }
+
+
     public static Collection<Asm> asmParentNavChilds() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         Asm asm = ctx.getAsm();
