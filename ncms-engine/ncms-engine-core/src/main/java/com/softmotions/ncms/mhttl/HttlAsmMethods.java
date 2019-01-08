@@ -315,6 +315,12 @@ public final class HttlAsmMethods {
         return crit.selectAsAsms();
     }
 
+    public static PageCriteria asmNewPageCriteria() {
+        AsmRendererContext ctx = AsmRendererContext.getSafe();
+        AsmDAO adao = getAsmDAO(ctx);
+        return adao.newPageCriteria();
+    }
+
     public static PageCriteria asmNavChildsPageCriteria() {
         AsmRendererContext ctx = AsmRendererContext.getSafe();
         AsmDAO adao = getAsmDAO(ctx);
