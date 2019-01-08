@@ -449,7 +449,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
             }
             var hasCore = (this.__form != null && es != null && es["core"] != null);
             this.__previewBt.setEnabled(hasCore && this.getEnabled());
-            this.__publishPageBt.setEnabled(hasCore && this.getEnabled());
+            this.__publishPageBt.setEnabled(this.getEnabled());
         },
 
         __save: function (cb) {
