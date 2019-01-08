@@ -470,6 +470,7 @@
             attr.name         AS "attr_name",
             attr.type         AS "attr_type",
             attr.value        AS "attr_value",
+            attr.options      AS "attr_options",
             <if test="largeAttrValues">
             attr.large_value  AS "attr_large_value",
             </if>

@@ -163,6 +163,7 @@ public class PageCriteria extends CriteriaBase<PageCriteria> {
                 attr.setName(attrName);
                 attr.setType((String) row.get("attr_type"));
                 attr.setValue((String) row.get("attr_value"));
+                attr.setOptions((String) row.get("attr_options"));
 
                 // Process large attribute value
                 Object lv = row.get("attr_large_value");
