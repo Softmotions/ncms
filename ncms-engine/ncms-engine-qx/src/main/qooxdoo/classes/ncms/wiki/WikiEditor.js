@@ -851,9 +851,22 @@ qx.Class.define("ncms.wiki.WikiEditor", {
 
         __mediaWikiLink: function (data) {
             var val = [];
+            var exlink = data["externalLink"] && data["externalLink"].trim();
+            if (exlink != null && exlink.length > 0 && exlink.charAt(0) != '#') {
+                if (!sm.lang.String.isEmpty(data["linkText"])) {
+                    val.push("[");
+                    val.push(exlink);
+                    val.push(" ");
+                    val.push(data["linkText"]);
+                    val.push("]");
+                } else {
+                    val.push(exlink);
+                }
+                return val.join("");
+            }
             val.push("[[");
-            if (!sm.lang.String.isEmpty(data["externalLink"])) {
-                val.push(data["externalLink"]);
+            if (exlink != null && exlink.length > 0) {
+                val.push(exlink);
             } else {
                 val.push("Page:");
                 val.push(data["guidPath"][data["guidPath"].length - 1]);
