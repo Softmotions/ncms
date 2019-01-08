@@ -446,9 +446,6 @@ public class PageRS extends MBDAOSupport implements PageService {
         if (page == null || !pageSecurity.canEdit2(page, req)) {
             throw new UnauthorizedException();
         }
-        if (published && page.getEffectiveCore() == null) {
-            throw new NcmsNotificationException("ncms.page.template.publish.error", true, req);
-        }
         update("updatePublishStatus",
                "id", id,
                "published", published);
