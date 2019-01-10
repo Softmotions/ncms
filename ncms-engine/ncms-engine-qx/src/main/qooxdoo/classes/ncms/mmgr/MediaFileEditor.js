@@ -70,7 +70,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
 
         topPane.setContextMenu(new qx.ui.menu.Menu());
         topPane.addListener("beforeContextmenuOpen", this.__beforeInfoTableContextMenuOpen, this);
-        
+
         var viewPane = this.__viewPane = new sm.ui.cont.LazyStack();
 
         viewPane.registerWidget("default", function () {
@@ -78,15 +78,8 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         });
 
         viewPane.registerWidget("thumbnail", function () {
-            var comp = new qx.ui.container.Composite(
-                new qx.ui.layout.HBox().set({alignX: "center", alignY: "middle"})
-            );
-            comp.add(new qx.ui.basic.Image().set(
-                {
-                    allowGrowX: false, allowGrowY: false,
-                    allowShrinkX: true, allowShrinkY: true,
-                    decorator: "main"
-                }), {flex: 1});
+            var comp = new qx.ui.container.Composite(new qx.ui.layout.Grow());
+            comp.add(new qx.ui.container.Scroll(new qx.ui.basic.Image().set({decorator: "main"})));
             return comp;
         });
 
@@ -165,7 +158,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
                 bt.getContentElement().setAttribute("data-clipboard-text", file.folder + file.name);
                 menu.add(bt);
             }
-            
+
         },
 
         __getSelectedInfoTableValue: function () {
@@ -197,7 +190,7 @@ qx.Class.define("ncms.mmgr.MediaFileEditor", {
         __setupDataView: function (spec) {
             var ctype = spec["content_type"] || "";
             if (ncms.Utils.isImageContentType(ctype)) {
-                var thumbnail = this.__viewPane.getWidget("thumbnail", true).getChildren()[0];
+                var thumbnail = this.__viewPane.getWidget("thumbnail", true).getChildren()[0].getChildren()[0];
                 this.__viewPane.showWidget("thumbnail");
                 thumbnail.setSource(ncms.Application.ACT.getRestUrl("media.thumbnail2", spec));
             } else if (ncms.Utils.isTextualContentType(ctype)) {

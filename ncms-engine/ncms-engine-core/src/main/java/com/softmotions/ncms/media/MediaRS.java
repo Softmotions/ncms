@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -1298,6 +1299,21 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
         if (ctype == null || !ctype.startsWith("image/")) {
             throw new BadRequestException(path);
         }
+
+        if ("image/svg+xml".equals(ctype)) {
+            // Write svg directly to user
+            //noinspection unused
+            try (final ResourceLock l = new ResourceLock(path, false)) {
+                return Response.ok((StreamingOutput) output -> {
+                    File f = new File(basedir, path.substring(1));
+                    if (!f.exists()) throw new NotFoundException(path);
+                    try (InputStream fis = new FileInputStream(f)) {
+                        IOUtils.copy(fis, output);
+                    }
+                }).type(ctype).build();
+            }
+        }
+
         String thumbFormat = getImageFileResizeFormat(ctype);
 
         // WARNING! WARNING!
@@ -1334,7 +1350,7 @@ public class MediaRS extends MBDAOSupport implements MediaRepository, FSWatcherE
             image = ImageIO.read(f);
         }
         if (image == null) {
-            log.warn("Unable to generated thumbnail. Content type: {} cannot read source image: {}", ctype, path);
+            log.warn("Unable to generate thumbnail. Content type: {} cannot read source image: {}", ctype, path);
             return Response.serverError().build();
         }
 
