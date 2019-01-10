@@ -16,7 +16,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -88,6 +87,7 @@ import com.softmotions.ncms.jaxrs.NcmsMessageException;
 import com.softmotions.ncms.jaxrs.NcmsNotificationException;
 import com.softmotions.ncms.media.MediaRepository;
 import com.softmotions.ncms.user.UserEnvRS;
+import com.softmotions.ncms.utils.RandomUUID;
 import com.softmotions.web.security.WSUser;
 import com.softmotions.web.security.WSUserDatabase;
 import com.softmotions.weboot.i18n.I18n;
@@ -721,7 +721,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         String guid;
         Long id;
         do {
-            guid = UUID.randomUUID().toString();
+            guid = RandomUUID.createCompactUUID();
             id = adao.asmSelectIdByName(guid);
         } while (id != null); //very uncommon
 
@@ -797,7 +797,7 @@ public class PageRS extends MBDAOSupport implements PageService {
         String guid;
         Long id;
         do {
-            guid = UUID.randomUUID().toString();
+            guid = RandomUUID.createCompactUUID();
             id = adao.asmSelectIdByName(guid);
         } while (id != null); //very uncommon
 
