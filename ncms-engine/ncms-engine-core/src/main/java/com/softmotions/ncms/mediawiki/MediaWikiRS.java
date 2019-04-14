@@ -17,6 +17,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jboss.resteasy.plugins.providers.html.Redirect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import info.bliki.wiki.filter.Encoder;
 
@@ -35,6 +37,8 @@ import com.softmotions.weboot.i18n.I18n;
  */
 @Path("mw")
 public class MediaWikiRS {
+
+    private static final Logger log = LoggerFactory.getLogger(MediaWikiRS.class);
 
     // 100px-/121/P4033297.JPG
     // /123/bg-interview.png
@@ -76,7 +80,7 @@ public class MediaWikiRS {
                         @Context HttpServletRequest req) throws Exception {
         Matcher matcher = RES_REGEXP.matcher(spec);
         if (!matcher.matches()) {
-            //todo fallback for old site format
+            log.warn("Resource spec '{}' not matched regexp {}", spec, RES_REGEXP);
             throw new BadRequestException("");
         }
         Integer w = null;
