@@ -43,12 +43,12 @@ public class MediaWikiRS {
     // 100px-/121/P4033297.JPG
     // /123/bg-interview.png
     private static final Pattern RES_REGEXP
-            = Pattern.compile("((\\d+)px\\-)?/(\\d+)/.*");
+            = Pattern.compile("((\\d+)px-)?/?(\\d+)/.*");
 
     // Image:100px-/121/P4033297.JPG
     // File:/121/P4033297.JPG
     private static final Pattern LINK_FILE_REGEXP
-            = Pattern.compile("(Image|File|Media):((\\d+)px\\-)?/?(\\d+)/?.*");
+            = Pattern.compile("(Image|File|Media):((\\d+)px-)?/?(\\d+)/?.*");
 
     private static final Pattern EXT_LINK_REGEXP
             = Pattern.compile("((Http|Https|Ftp|Smb|Sftp|Scp)://)(.*)");
