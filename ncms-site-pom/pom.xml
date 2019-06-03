@@ -14,7 +14,7 @@
         <java.source.version>11</java.source.version>
         <softmotions.ncms.version>1.1-SNAPSHOT</softmotions.ncms.version>
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
-        <qooxdoo.sdk.version>5.0.2</qooxdoo.sdk.version>
+        <qooxdoo.sdk.version>5.0.3</qooxdoo.sdk.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
         <pgsql.jdbc.version>42.2.5.jre7</pgsql.jdbc.version>
         <javax.servlet.version>4.0.1</javax.servlet.version>

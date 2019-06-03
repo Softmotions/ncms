@@ -58,7 +58,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <servlet.api.version>4.0.1</servlet.api.version>
-        <qooxdoo.sdk.version>5.0.2</qooxdoo.sdk.version>
+        <qooxdoo.sdk.version>5.0.3</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.maven.plugin.version>1.4-SNAPSHOT</qooxdoo.maven.plugin.version>
         <jackson.version>2.9.9</jackson.version>
