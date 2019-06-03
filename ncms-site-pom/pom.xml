@@ -18,9 +18,9 @@
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
         <pgsql.jdbc.version>42.2.5.jre7</pgsql.jdbc.version>
         <javax.servlet.version>4.0.1</javax.servlet.version>
-        <slf4j.version>1.7.25</slf4j.version>
+        <slf4j.version>1.7.26</slf4j.version>
         <logback.version>1.2.3</logback.version>
-        <tomcat.version>9.0.14</tomcat.version>
+        <tomcat.version>9.0.20</tomcat.version>
     </properties>
 
     <repositories>
