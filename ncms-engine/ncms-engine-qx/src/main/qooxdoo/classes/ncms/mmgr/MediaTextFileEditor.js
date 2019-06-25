@@ -53,7 +53,7 @@ qx.Class.define("ncms.mmgr.MediaTextFileEditor", {
 
         // Init shortcuts
         this._registerCommand(
-            new sm.ui.core.ExtendedCommand("Control+S"),
+            new sm.ui.core.ExtendedCommand("Ctrl+s"),
             this.__save, this);
         this._registerCommandFocusWidget(this);
 
