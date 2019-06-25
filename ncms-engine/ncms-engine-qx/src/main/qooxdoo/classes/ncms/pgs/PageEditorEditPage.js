@@ -70,7 +70,7 @@ qx.Class.define("ncms.pgs.PageEditorEditPage", {
         bt.setEnabled(false);
         bt.addListener("execute", this.__save, this);
         hcont.add(bt);
-        this.__saveSc = new sm.bom.ExtendedShortcut("Ctrl+S", false, this);
+        this.__saveSc = new sm.bom.ExtendedShortcut("Ctrl+s", false, this);
         this.__saveSc.addListener("execute", this.__save, this);
 
         bt = this.__cancelBt = new qx.ui.form.Button(this.tr("Cancel"), "ncms/icon/16/misc/cross-script.png");
