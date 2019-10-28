@@ -61,7 +61,7 @@
         <qooxdoo.sdk.version>5.0.3</qooxdoo.sdk.version>
         <qooxdoo.test.job>test</qooxdoo.test.job>
         <qooxdoo.maven.plugin.version>1.4-SNAPSHOT</qooxdoo.maven.plugin.version>
-        <jackson.version>2.9.9</jackson.version>
+        <jackson.version>2.10.0</jackson.version>
         <resteasy.version>3.7.0.Final</resteasy.version>
         <commons.collection.version>3.2.2</commons.collection.version>
         <commons.validator.version>1.4.0</commons.validator.version>
