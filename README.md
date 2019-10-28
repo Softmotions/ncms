@@ -1,6 +1,6 @@
 # Free enterprise Java CMS
                                   
-## [http://ncms.one](http://ncms.softmotions.com)                 
+## [http://ncms.softmotions.com](http://ncms.softmotions.com)                 
                  
 ## ηCMS features
 
