@@ -51,7 +51,7 @@ public class MediaWikiRS {
             = Pattern.compile("(Image|File|Media):((\\d+)px-)?/?(\\d+)/?.*");
 
     private static final Pattern EXT_LINK_REGEXP
-            = Pattern.compile("((Http|Https|Ftp|Smb|Sftp|Scp)://)(.*)");
+            = Pattern.compile("((Http|Https|Ftp|Smb|Sftp|Scp)://?)(.*)");
 
     private static final Pattern CHECK_ENCODED_REGEXP
             = Pattern.compile(".*[^a-zA-Z0-9-_.!~*'()/#%]+.*");
@@ -137,7 +137,7 @@ public class MediaWikiRS {
      * To differentiate links the trailing slash is checked manually.</p>
      */
     @GET
-    @Path("link/{spec:(Http|Https|Ftp|Smb|Sftp|Scp)://.*}")
+    @Path("link/{spec:(Http|Https|Ftp|Smb|Sftp|Scp)://?.*}")
     @Produces("text/html;charset=UTF-8")
     public Redirect externalLink(@PathParam("spec") String spec,
                                  @Context HttpServletRequest req,
@@ -150,6 +150,10 @@ public class MediaWikiRS {
         Matcher matcher = EXT_LINK_REGEXP.matcher(spec);
         if (!matcher.matches()) {
             throw new BadRequestException();
+        }
+
+        if (!spec.contains("://")) {
+            spec = StringUtils.replace(spec, ":/", "://", 1);
         }
 
         URL url;
