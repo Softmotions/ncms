@@ -16,11 +16,11 @@
         <softmotions.qxclient.version>1.0-SNAPSHOT</softmotions.qxclient.version>
         <qooxdoo.sdk.version>5.0.3</qooxdoo.sdk.version>
         <db2.jdbc.version>4.21.29</db2.jdbc.version>
-        <pgsql.jdbc.version>42.2.5.jre7</pgsql.jdbc.version>
+        <pgsql.jdbc.version>42.2.18.jre7</pgsql.jdbc.version>
         <javax.servlet.version>4.0.1</javax.servlet.version>
-        <slf4j.version>1.7.26</slf4j.version>
+        <slf4j.version>1.7.30</slf4j.version>
         <logback.version>1.2.3</logback.version>
-        <tomcat.version>9.0.22</tomcat.version>
+        <tomcat.version>9.0.40</tomcat.version>
     </properties>
 
     <repositories>
@@ -207,7 +207,7 @@
                 <plugin>
                     <groupId>org.liquibase</groupId>
                     <artifactId>liquibase-maven-plugin</artifactId>
-                    <version>3.6.2</version>
+                    <version>3.6.3</version>
                 </plugin>
                 <plugin>
                     <groupId>softmotions</groupId>
@@ -218,7 +218,7 @@
                 <plugin>
                     <groupId>org.codehaus.cargo</groupId>
                     <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.7.5</version>
+                    <version>1.8.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -233,12 +233,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.1.2</version>
                 </plugin>
             </plugins>
         </pluginManagement>
