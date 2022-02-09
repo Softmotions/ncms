@@ -74,7 +74,7 @@
         <samaxes.cachefilter.version>2.3.1</samaxes.cachefilter.version>
         <flexmark.version>0.19.6</flexmark.version>
         <bliki.version>3.1.1-SNAPSHOT</bliki.version>
-        <shiro.version>1.7.0</shiro.version>
+        <shiro.version>1.7.1</shiro.version>
         <jericho.version>3.4</jericho.version>
         <tika.version>1.24.1</tika.version>
         <mybatis.version>3.5.6</mybatis.version>
